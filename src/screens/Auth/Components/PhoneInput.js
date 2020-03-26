@@ -3,14 +3,11 @@ import { StyleSheet, View, TextInput, Image, Text } from 'react-native';
 import DefaultPhoneInput from 'react-native-phone-input';
 import PropTypes from 'prop-types';
 
-const PhoneInput = React.forwardRef(({ image, error,value, ...rest }, ref) => (
+const PhoneInput = React.forwardRef(({ icon, error,value, ...rest }, ref) => (
   <Fragment>
     <View style={styles.inputContainer}>
       <View style={styles.imageContainer}>
-        <Image
-          style={{ height: 20, width: 20 }}
-          source={image}
-        />
+        {icon}
       </View>
       <DefaultPhoneInput
         ref={ref}

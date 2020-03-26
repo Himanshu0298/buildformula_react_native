@@ -4,12 +4,12 @@ import { theme } from '../styles/theme';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import Home from '../screens/Home';
-import DrawerContent from './Components/DrawerContent';
-import Signup from '../screens/Auth/Signup';
+// import DrawerContent from './Components/DrawerContent';
+// import Signup from '../screens/Auth/Signup';
 import Login from '../screens/Auth/Login';
 // import { Platform, Image } from 'react-native';
 // import backIcon from './../assets/images/back_arrow.png';
-import OtpScreen from '../screens/Auth/OtpScreen';
+// import OtpScreen from '../screens/Auth/OtpScreen';
 import { useSelector } from 'react-redux';
 import LanguageSelect from '../screens/Auth/LanguageSelect';
 
@@ -45,14 +45,14 @@ function AppScreensStacks() {
         },
       }}>
       <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
-      <Stack.Screen
+      {/* <Stack.Screen
         name="LinkAccounts"
         component={Login}
         options={{ title: 'Link Accounts' }} />
       <Stack.Screen
         name="RideHistory"
         component={Login}
-        options={{ title: 'Ride History' }} />
+        options={{ title: 'Ride History' }} /> */}
     </Stack.Navigator>
   );
 }
@@ -60,7 +60,7 @@ function AppScreensStacks() {
 function AppDrawer() {
   return (
     <Drawer.Navigator
-      drawerContent={(props) => <DrawerContent {...props} />}
+      // drawerContent={(props) => <DrawerContent {...props} />}
       drawerStyle={{}}>
       <Drawer.Screen name="AppScreensStacks" component={AppScreensStacks} />
     </Drawer.Navigator>
@@ -85,8 +85,8 @@ function NavContainer() {
           <Fragment>
             <Stack.Screen name="LanguageSelect" component={LanguageSelect} options={{ headerShown: false }} />
             <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
-            <Stack.Screen name="SignUp" component={Signup} options={{ headerShown: false }} />
-            <Stack.Screen name="Otp" component={OtpScreen} options={{ headerShown: false }} />
+            {/* <Stack.Screen name="SignUp" component={Signup} options={{ headerShown: false }} /> */}
+            {/* <Stack.Screen name="Otp" component={OtpScreen} options={{ headerShown: false }} /> */}
           </Fragment>
         }
       </Stack.Navigator>

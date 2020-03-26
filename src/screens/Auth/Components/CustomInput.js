@@ -2,14 +2,11 @@ import React, { Fragment } from 'react';
 import { StyleSheet, View, TextInput, Image, Text } from 'react-native';
 import PropTypes from 'prop-types';
 
-const CustomInput = React.forwardRef(({ image, error, ...rest }, ref) => (
-  <Fragment>
+const CustomInput = React.forwardRef(({ icon, error, ...rest }, ref) => (
+  <View style={styles.container}>
     <View style={styles.inputContainer}>
       <View style={styles.imageContainer}>
-        <Image
-          style={{ height: 20, width: 20 }}
-          source={image}
-        />
+        {icon}
       </View>
       <TextInput
         {...rest}
@@ -24,7 +21,7 @@ const CustomInput = React.forwardRef(({ image, error, ...rest }, ref) => (
         <Text style={styles.errorStyles}>{error}</Text>
       </View>
     }
-  </Fragment>
+  </View>
 ));
 
 CustomInput.defaultProps = {
@@ -34,16 +31,19 @@ CustomInput.defaultProps = {
 CustomInput.prototype = {
   image: PropTypes.element,
   error: PropTypes.string,
-  ...PropTypes.instanceOf(TextInput),
+  ...TextInput.PropTypes,
 };
 
 const styles = StyleSheet.create({
+  container: {
+    marginTop: 20,
+    width:'100%',
+  },
   inputContainer: {
-    backgroundColor: '#fff',
+    backgroundColor: '#e6e6e6',
     flexDirection: 'row',
-    borderRadius: 5,
+    borderRadius: 20,
     height: 45,
-    marginVertical: 5,
     display: 'flex',
     alignItems: 'center',
   },
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 1,
-    marginHorizontal: 10,
+    marginHorizontal: 20,
   },
   iconStyle: {
   },
@@ -62,10 +62,10 @@ const styles = StyleSheet.create({
   },
   //Errors
   errorContainer: {
-    marginLeft: 15,
+    marginLeft: 25,
   },
   errorStyles: {
-    color: '#fff',
+    color: 'red',
   },
 });
 

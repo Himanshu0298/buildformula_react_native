@@ -1,28 +1,42 @@
-import React, { Fragment, useState } from 'react';
-import { StyleSheet, Text, StatusBar, Alert, View, Image, KeyboardAvoidingView, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, StatusBar, View, ScrollView, Image, Alert, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 import { withTheme } from 'react-native-paper';
 import { theme } from '../../../styles/theme';
-import logo from './../../../assets/images/logo.png';
-import phoneIcon from './../../../assets/images/phone.png';
-import passwordIcon from './../../../assets/images/password.png';
-import Layout from '../../../util/Layout';
+import banner from './../../../assets/images/banner.png';
+import image from './../../../assets/images/layer_1.png';
+import BaseText from '../../../components/BaseText';
+import FontistoIcon from 'react-native-vector-icons/Fontisto';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { Formik } from 'formik';
 import CustomInput from '../Components/CustomInput';
-import * as Yup from 'yup';
-import PhoneInput from '../Components/PhoneInput';
 import useAuthActions from '../../../redux/actions/authActions';
 import { useSelector } from 'react-redux';
+import * as Yup from 'yup';
 import Spinner from 'react-native-loading-spinner-overlay';
 
+function LoginButton({ label, onPress }) {
+  return (
+    <TouchableOpacity
+      style={styles.LoginButton}
+      onPress={onPress}>
+      <BaseText style={styles.buttonText}>
+        {label}
+      </BaseText>
+    </TouchableOpacity>
+  );
+}
+
 const schema = Yup.object().shape({
+  email: Yup.string().email('Please enter a valid email').label('email').required('Please enter a valid email'),
   password: Yup.string().label('Password').required().min(6, 'Password must have at least 6 characters '),
 });
 
 function Login(props) {
+
   const [loginError, setLoginError] = useState(null);
   const { loginInit } = useAuthActions();
 
-  const phoneRef = React.createRef();
+  const emailRef = React.createRef();
   const passwordRef = React.createRef();
   const { loading } = useSelector(state => state.user);
 
@@ -45,7 +59,7 @@ function Login(props) {
   };
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior="height" enabled>
+    <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={theme.colors.primary} />
       <Spinner
         visible={loading}
@@ -53,69 +67,68 @@ function Login(props) {
       />
       <ScrollView
         showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
         contentContainerStyle={styles.container}
       >
         <View style={styles.contentContainer}>
-          <View style={styles.logoContainer}>
-            <Image source={logo} style={styles.logo} />
+          <View style={styles.bannerContainer}>
+            <Image source={banner} style={styles.banner} />
           </View>
-          <View style={styles.headingContainer}>
-            <Text style={styles.headline}>
-              Welcome,
-            </Text>
-            <Text style={styles.caption}>Login to continue</Text>
-          </View>
-          {
-            loginError &&
-            <View style={styles.errorContainer}>
-              <Text style={styles.errorStyles}>{loginError}</Text>
-            </View>
-          }
-          <View style={styles.inputContainer}>
-            <Formik
-              validateOnBlur={false}
-              validateOnChange={false}
-              initialValues={{
-                phone: '+919687031045',
-                password: '123456',
-              }}
-              validationSchema={schema}
-              validate={(values) => {
-                const errors = {};
-                if (!values.phone) {
-                  errors.phone = 'Phone number is not valid';
-                }
-                else if (!phoneRef.current.isValidNumber()) {
-                  errors.phone = 'Phone number is not valid';
-                }
-                return errors;
-              }}
-              onSubmit={async (values) => {
-                loginInit(values)
-                  .then(() => props.navigation.navigate('Otp', { user: values, isLogin: true }))
-                  .catch((error) => {
-                    //Two possible codes : 400|| 203 (check login init function of authActions)
-                    if (error.code === 400) {
-                      userNotExistAlert(error.message);
-                    }
-                    else if (error.code === 203) {
-                      setLoginError(error.message);
-                    }
-                  });
-              }}
-            >
-              {({ handleChange, values, handleSubmit, handleBlur, isValid, errors }) => (
-                <Fragment>
-                  <PhoneInput
-                    name="phone"
-                    ref={phoneRef}
-                    value={values.phone}
-                    onChangeText={handleChange('phone')}
-                    onBlur={handleBlur('phone')}
+          <Formik
+            validateOnBlur={false}
+            validateOnChange={false}
+            initialValues={{
+              email: 'testing@vshwan.com',
+              password: '123456',
+            }}
+            validationSchema={schema}
+            validate={(values) => {
+              // const errors = {};
+              // if (!values.phone) {
+              //   errors.phone = 'Phone number is not valid';
+              // }
+              // else if (!phoneRef.current.isValidNumber()) {
+              //   errors.phone = 'Phone number is not valid';
+              // }
+              // return errors;
+            }}
+            onSubmit={async (values) => {
+              // loginInit(values)
+              //   .then(() => props.navigation.navigate('Otp', { user: values, isLogin: true }))
+              //   .catch((error) => {
+              //     //Two possible codes : 400|| 203 (check login init function of authActions)
+              //     if (error.code === 400) {
+              //       userNotExistAlert(error.message);
+              //     }
+              //     else if (error.code === 203) {
+              //       setLoginError(error.message);
+              //     }
+              //   });
+            }}
+          >
+            {({ handleChange, values, handleSubmit, handleBlur, isValid, errors }) => (
+              <View style={styles.inputMainContainer}>
+                <View style={styles.heading}>
+                  <BaseText style={[styles.headingText, { color: theme.colors.primary }]}>
+                    LOGIN
+                </BaseText>
+                  <BaseText style={styles.headingText}>
+                    {' to your account'}
+                  </BaseText>
+                </View>
+                <View style={styles.inputsContainer}>
+                  <CustomInput
+                    name="email"
+                    ref={emailRef}
+                    value={values.email}
+                    onChangeText={handleChange('email')}
+                    onBlur={handleBlur('email')}
+                    placeholder="Enter your Email"
+                    autoCapitalize="none"
+                    returnKeyType={'next'}
                     onSubmitEditing={() => passwordRef && passwordRef.current.focus()}
-                    placeholder="Mobile"
-                    image={phoneIcon}
-                    error={errors.phone}
+                    icon={<FontistoIcon name="email" color={theme.colors.primary} size={23} />}
+                    error={errors.email}
                   />
                   <CustomInput
                     name="password"
@@ -124,120 +137,103 @@ function Login(props) {
                     value={values.password}
                     onChangeText={handleChange('password')}
                     onBlur={handleBlur('password')}
-                    placeholder="Password"
+                    placeholder="Enter your Password"
                     autoCapitalize="none"
                     returnKeyType={'done'}
                     onSubmitEditing={handleSubmit}
-                    image={passwordIcon}
+                    icon={<MaterialIcons name="lock" color={theme.colors.primary} size={23} />}
                     error={errors.password}
                   />
-                  <TouchableOpacity
+                  <LoginButton
+                    label="Login"
                     onPress={handleSubmit}
-                    disabled={loading}
-                    style={styles.buttonContainer}
-                  >
-                    <View style={styles.submitButton}>
-                      <Text style={styles.buttonText}>Sign In</Text>
-                    </View>
+                  />
+                  <TouchableOpacity>
+                    <BaseText style={styles.forgotText}>Forgot Password?</BaseText>
                   </TouchableOpacity>
-                </Fragment>
-              )}
-            </Formik>
-            <View style={styles.footerContainer}>
-              <Text style={styles.smallCaption}>By signing up you have agreed to our</Text>
-              <Text style={styles.termsText}>Terms of Use & Privacy Policy</Text>
-            </View>
+                </View>
+              </View>
+            )}
+          </Formik>
+          <View style={styles.imageContainer}>
+            <Image source={image} style={styles.image} />
           </View>
         </View>
       </ScrollView>
-    </KeyboardAvoidingView>
+    </View >
   );
 }
-
-const commonStyles = StyleSheet.create({
-  text: {
-    fontSize: 15,
-    color: '#fff',
-  },
-  center: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
 
 const styles = StyleSheet.create({
   container: {
     height: '100%',
-  },
-  contentContainer: {
-    paddingHorizontal: 30,
-    flex: 1,
-    paddingVertical: 20,
     backgroundColor: theme.colors.primary,
   },
-  //Screen Header
-  logoContainer: {
-    paddingTop: 40,
+  contentContainer: {
+    flex: 1,
+    marginVertical: 40,
+    marginHorizontal: 30,
+    justifyContent: 'space-between',
+    borderRadius: 50,
+    backgroundColor: theme.colors.surface,
+  },
+  bannerContainer: {
+    width: '100%',
+    display: 'flex',
     alignItems: 'center',
   },
-  logo: {
-    height: Layout.window.width * 0.44,
-    width: Layout.window.width * 0.65,
+  banner: {
+    width: '75%',
+    height: 100,
   },
-  //Screen Heading
-  headingContainer: {
-    paddingTop: 50,
+  inputMainContainer: {
+    width: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-around',
   },
-  headline: {
-    ...commonStyles.text,
-    fontSize: 25,
-    fontWeight: 'bold',
+  inputsContainer: {
+    display: 'flex',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    width: '90%',
   },
-  caption: {
-    ...commonStyles.text,
-    fontSize: 12,
+  heading: {
+    flexDirection: 'row',
   },
-  //Errors
-  errorContainer: {
-    marginLeft: 15,
-    marginTop: 10,
+  headingText: {
+    fontFamily: 'Poppins-Medium',
+    fontSize: 20,
   },
-  errorStyles: {
-    color: '#fff',
-    textAlign:'center',
-    fontSize: 18,
-  },
-  //User Inputs Container
-  inputContainer: {
-    paddingTop: 20,
-  },
-  //SignUp Button
-  buttonContainer: {
-    paddingTop: 20,
-  },
-  submitButton: {
-    ...commonStyles.center,
-    borderRadius: 5,
-    height: 45,
-    backgroundColor: '#000',
+  LoginButton: {
+    width: '70%',
+    padding: 10,
+    elevation: 5,
+    borderRadius: 30,
+    display: 'flex',
+    alignItems: 'center',
+    marginVertical: 10,
+    backgroundColor: theme.colors.primary,
   },
   buttonText: {
-    ...commonStyles.text,
-  },
-  //footer
-  footerContainer: {
-    paddingTop: 40,
-    ...commonStyles.center,
-  },
-  smallCaption: {
-    ...commonStyles.text,
-    fontSize: 12,
-  },
-  termsText: {
-    ...commonStyles.text,
+    color: '#fff',
     fontWeight: 'bold',
-    fontSize: 12,
+    fontSize: 18,
+  },
+  forgotText: {
+    color: theme.colors.primary,
+    display: 'flex',
+    alignItems: 'center',
+    padding: 5,
+  },
+  imageContainer: {
+    display: 'flex',
+    marginBottom: -20,
+    alignItems: 'center',
+  },
+  image: {
+    width: '100%',
+    height: 190,
   },
 });
 
