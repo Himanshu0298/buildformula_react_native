@@ -2,7 +2,6 @@ import React, { useEffect, Fragment, Suspense } from 'react';
 import { StatusBar } from 'react-native';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { Provider as StoreProvider } from 'react-redux';
-import { LocalizeProvider } from 'react-localize-redux';
 import { SafeAreaProvider, initialWindowSafeAreaInsets } from 'react-native-safe-area-context';
 import SplashScreen from 'react-native-splash-screen';
 import { theme } from './src/styles/theme';
@@ -44,7 +43,6 @@ const App = () => {
     <Fragment>
       <StatusBar barStyle="light-content" />
       <StoreProvider store={Store}>
-        <LocalizeProvider>
           <PaperProvider theme={theme}>
             <SafeAreaProvider initialSafeAreaInsets={initialWindowSafeAreaInsets}>
               <Suspense fallback={<Spinner
@@ -55,7 +53,6 @@ const App = () => {
               </Suspense>
             </SafeAreaProvider>
           </PaperProvider>
-        </LocalizeProvider>
       </StoreProvider>
     </Fragment>
   );

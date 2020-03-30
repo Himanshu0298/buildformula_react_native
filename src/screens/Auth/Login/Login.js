@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, StatusBar, View, ScrollView, Image, Alert, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, StatusBar, View, ScrollView, Image, TouchableOpacity } from 'react-native';
 import { withTheme } from 'react-native-paper';
 import { theme } from '../../../styles/theme';
 import banner from './../../../assets/images/banner.png';
@@ -13,6 +13,7 @@ import useAuthActions from '../../../redux/actions/authActions';
 import { useSelector } from 'react-redux';
 import * as Yup from 'yup';
 import Spinner from 'react-native-loading-spinner-overlay';
+import { useTranslation } from 'react-i18next';
 
 function LoginButton({ label, onPress }) {
   return (
@@ -34,29 +35,14 @@ const schema = Yup.object().shape({
 function Login(props) {
 
   const [loginError, setLoginError] = useState(null);
-  const { loginInit } = useAuthActions();
+  const { login } = useAuthActions();
+  const { t,i18n } = useTranslation();
+
+  console.log('-----> i18n',i18n.languages )
 
   const emailRef = React.createRef();
   const passwordRef = React.createRef();
   const { loading } = useSelector(state => state.user);
-
-  const userNotExistAlert = (error) => {
-    return (
-      Alert.alert(
-        'Alert',
-        error,
-        [
-          {
-            text: 'Cancel',
-            onPress: () => console.log('Cancel Pressed'),
-            style: 'cancel',
-          },
-          { text: 'OK', onPress: () => props.navigation.navigate('SignUp') },
-        ],
-        { cancelable: false },
-      )
-    );
-  };
 
   return (
     <View style={styles.container}>
@@ -78,44 +64,37 @@ function Login(props) {
             validateOnBlur={false}
             validateOnChange={false}
             initialValues={{
-              email: 'testing@vshwan.com',
-              password: '123456',
+              email: 'tester@vshwan.com',
+              password: 'Hpenvyx360',
             }}
             validationSchema={schema}
-            validate={(values) => {
-              // const errors = {};
-              // if (!values.phone) {
-              //   errors.phone = 'Phone number is not valid';
-              // }
-              // else if (!phoneRef.current.isValidNumber()) {
-              //   errors.phone = 'Phone number is not valid';
-              // }
-              // return errors;
-            }}
             onSubmit={async (values) => {
-              // loginInit(values)
-              //   .then(() => props.navigation.navigate('Otp', { user: values, isLogin: true }))
-              //   .catch((error) => {
-              //     //Two possible codes : 400|| 203 (check login init function of authActions)
-              //     if (error.code === 400) {
-              //       userNotExistAlert(error.message);
-              //     }
-              //     else if (error.code === 203) {
-              //       setLoginError(error.message);
-              //     }
-              //   });
+              let formData = new FormData();
+
+              formData.append('email', values.email);
+              formData.append('password', values.password);
+
+              login(formData)
+                .catch(() => {
+                  setLoginError('Invalid email or password');
+                });
             }}
           >
             {({ handleChange, values, handleSubmit, handleBlur, isValid, errors }) => (
               <View style={styles.inputMainContainer}>
                 <View style={styles.heading}>
                   <BaseText style={[styles.headingText, { color: theme.colors.primary }]}>
-                    LOGIN
-                </BaseText>
+                    {t('labelLogin')}
+                  </BaseText>
                   <BaseText style={styles.headingText}>
-                    {' to your account'}
+                    {` ${t('accountText')}`}
                   </BaseText>
                 </View>
+                {loginError &&
+                  <View>
+                    <BaseText style={styles.loginError}>{loginError}</BaseText>
+                  </View>
+                }
                 <View style={styles.inputsContainer}>
                   <CustomInput
                     name="email"
@@ -185,6 +164,10 @@ const styles = StyleSheet.create({
   banner: {
     width: '75%',
     height: 100,
+  },
+  loginError: {
+    color: 'red',
+    textAlign: 'center',
   },
   inputMainContainer: {
     width: '100%',

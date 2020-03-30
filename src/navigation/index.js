@@ -1,9 +1,12 @@
-import React, { Fragment } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { Fragment, useEffect } from 'react';
+import { BackHandler } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { theme } from '../styles/theme';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import Home from '../screens/Home';
+import TouchID from 'react-native-touch-id';
 // import DrawerContent from './Components/DrawerContent';
 // import Signup from '../screens/Auth/Signup';
 import Login from '../screens/Auth/Login';
@@ -67,13 +70,49 @@ function AppDrawer() {
   );
 }
 
+const optionalConfigObject = {
+  unifiedErrors: false, // use unified error messages (default false)
+  passcodeFallback: false, // if true is passed, itwill allow isSupported to return an error if the device is not enrolled in touch id/face id etc. Otherwise, it will just tell you what method is supported, even if the user is not enrolled.  (default false)
+};
+
+const authObject = {
+  title: 'Authentication Required', // Android
+  imageColor: theme.colors.primary, // Android
+  imageErrorColor: theme.colors.error, // Android
+  sensorDescription: 'Input your fingerprint to verify your identity and continue', // Android
+  sensorErrorDescription: 'Input your fingerprint to verify your identity and continue', // Android
+  cancelText: 'Exit', // Android
+  fallbackLabel: 'Show Passcode', // iOS (if empty, then label is hidden)
+  unifiedErrors: false, // use unified error messages (default false)
+  passcodeFallback: true, // iOS - allows the device to fall back to using the passcode, if faceid/touch is not available. this does not mean that if touchid/faceid fails the first few times it will revert to passcode, rather that if the former are not enrolled, then it will use the passcode.
+};
+
 function NavContainer() {
 
   const { authenticated } = useSelector(state => state.user);
+
+  useEffect(() => {
+    if (authenticated) {
+      TouchID.isSupported(optionalConfigObject)
+        .then(biometryType => {
+          // Success code
+          TouchID.authenticate('', authObject)
+            .then(success => { })
+            .catch(async error => {
+              await BackHandler.exitApp();
+            });
+        })
+        .catch(error => {
+          // Failure code
+          console.log('----->error ', error);
+        });
+    }
+  }, []);
+
   return (
     <NavigationContainer theme={theme}>
       <Stack.Navigator
-      initialRouteName={authenticated ? 'HomeDrawer' : 'LanguageSelect'}
+        initialRouteName={authenticated ? 'HomeDrawer' : 'LanguageSelect'}
       >
         {authenticated ?
           //App Nav Screens

@@ -2,6 +2,8 @@ import { SET_USER_DATA, SIGN_UP_INIT, SIGN_UP, LOGIN_INIT, LOGIN } from './../ac
 
 const initialState = {
   user: undefined,
+  roles: [],
+  token: undefined,
   loading: false,
   authenticated: false,
   confirmation: undefined,
@@ -18,22 +20,22 @@ export default (state = initialState, action = {}) => {
       };
 
 
-    case `${SIGN_UP_INIT}_PENDING`:
-      return {
-        ...state,
-        loading: true,
-      };
-    case `${SIGN_UP_INIT}_FULFILLED`:
-      return {
-        ...state,
-        loading: false,
-        confirmation: action.payload,
-      };
-    case `${SIGN_UP_INIT}_REJECTED`:
-      return {
-        ...state,
-        loading: false,
-      };
+    // case `${SIGN_UP_INIT}_PENDING`:
+    //   return {
+    //     ...state,
+    //     loading: true,
+    //   };
+    // case `${SIGN_UP_INIT}_FULFILLED`:
+    //   return {
+    //     ...state,
+    //     loading: false,
+    //     confirmation: action.payload,
+    //   };
+    // case `${SIGN_UP_INIT}_REJECTED`:
+    //   return {
+    //     ...state,
+    //     loading: false,
+    //   };
 
     case `${SIGN_UP}_PENDING`:
       return {
@@ -53,22 +55,22 @@ export default (state = initialState, action = {}) => {
         loading: false,
       };
 
-    case `${LOGIN_INIT}_PENDING`:
-      return {
-        ...state,
-        loading: true,
-      };
-    case `${LOGIN_INIT}_FULFILLED`:
-      return {
-        ...state,
-        loading: false,
-        confirmation: action.payload,
-      };
-    case `${LOGIN_INIT}_REJECTED`:
-      return {
-        ...state,
-        loading: false,
-      };
+    // case `${LOGIN_INIT}_PENDING`:
+    //   return {
+    //     ...state,
+    //     loading: true,
+    //   };
+    // case `${LOGIN_INIT}_FULFILLED`:
+    //   return {
+    //     ...state,
+    //     loading: false,
+    //     confirmation: action.payload,
+    //   };
+    // case `${LOGIN_INIT}_REJECTED`:
+    //   return {
+    //     ...state,
+    //     loading: false,
+    //   };
 
     case `${LOGIN}_PENDING`:
       return {
@@ -79,7 +81,9 @@ export default (state = initialState, action = {}) => {
       return {
         ...state,
         loading: false,
-        user: action.payload,
+        user: action.payload.user,
+        roles: action.payload.roles,
+        token: action.payload.token,
         authenticated: true,
       };
     case `${LOGIN}_REJECTED`:

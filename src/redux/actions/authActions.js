@@ -1,23 +1,25 @@
 import * as types from './actionTypes';
 import { useDispatch } from 'react-redux';
+import useAuth from '../../services/auth';
 
 export default function useAuthActions() {
   const dispatch = useDispatch();
+  const { login } = useAuth();
   return ({
-    signUpInit: data => dispatch({
-      type: types.SIGN_UP_INIT,
-      payload: new Promise(async (resolve, reject) => {
-        const { phone } = data;
-        let existingUser;
+    // signUpInit: data => dispatch({
+    //   type: types.SIGN_UP_INIT,
+    //   payload: new Promise(async (resolve, reject) => {
+    //     const { phone } = data;
+    //     let existingUser;
 
-        if (existingUser) {
-          reject('User already registered, Would you like to login instead');
-        }
-        const confirmation = true;
-        resolve(confirmation);
-      }),
-    }),
-    signup: user => dispatch({
+    //     if (existingUser) {
+    //       reject('User already registered, Would you like to login instead');
+    //     }
+    //     const confirmation = true;
+    //     resolve(confirmation);
+    //   }),
+    // }),
+    signUp: user => dispatch({
       type: types.SIGN_UP,
       payload: new Promise(async (resolve, reject) => {
         const { email, password } = user;
@@ -26,40 +28,28 @@ export default function useAuthActions() {
         resolve();
       }),
     }),
-    loginInit: data => dispatch({
-      type: types.LOGIN_INIT,
-      payload: new Promise(async (resolve, reject) => {
+    // loginInit: data => dispatch({
+    //   type: types.LOGIN_INIT,
+    //   payload: new Promise(async (resolve, reject) => {
 
-        let existingUser;
+    //     let response = await login(data);
 
-        if (!existingUser) {
-          reject({
-            code: 400,
-            message: "User doesn't exist, Would you like to register instead?",
-          });
-        }
-        else {
-          let userId = Object.keys(existingUser)[0];
-          let userData = existingUser[userId];
+    //     console.log('----->response ', response)
 
-          if (data.password !== userData.password) {
-            reject({
-              code: 203,
-              message: 'Invalid Username/Password',
-            });
-          } else {
 
-            resolve();
-          }
-        }
-      }),
-    }),
+    //   }),
+    // }),
     login: data => dispatch({
       type: types.LOGIN,
       payload: new Promise(async (resolve, reject) => {
-        const user = {};
+        try {
+          let response = await login(data);
+          const { user, roles, token } = response.data.success;
 
-        resolve(user);
+          return resolve({ user, roles, token });
+        } catch (error) {
+          return reject(error);
+        }
       }),
     }),
   });

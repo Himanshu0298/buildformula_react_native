@@ -1,4 +1,4 @@
-export default {
+const translations = {
   en: {
     translation: {
       //label
@@ -454,3 +454,5 @@ export default {
     },
   },
 };
+
+export default translations;
