@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "329626313976-1hr5kgtb9m2r6oionpqj5ej6onmbo4qo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.vshwan",
+            "certificate_hash": "957c8a73c9c02bae6c935cd3bbc0f5d2d049ab7d"
+          }
+        },
+        {
           "client_id": "329626313976-4f1qq1ps14anrqob1faqier2s77umtib.apps.googleusercontent.com",
           "client_type": 3
         }

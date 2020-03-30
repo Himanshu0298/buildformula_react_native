@@ -1,5 +1,6 @@
-import { Animated, SafeAreaView, Text, Alert, TouchableOpacity } from 'react-native';
+import { Animated, SafeAreaView, Alert, View, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
+import auth from '@react-native-firebase/auth';
 import { useSelector } from 'react-redux';
 import {
   CodeField,
@@ -16,6 +17,7 @@ import styles, {
   NOT_EMPTY_CELL_BG_COLOR,
 } from './styles';
 import useAuthActions from '../../../redux/actions/authActions';
+import BaseText from '../../../components/BaseText';
 
 const { Value, Text: AnimatedText } = Animated;
 
@@ -37,9 +39,6 @@ const animateCell = ({ hasValue, index, isFocused }) => {
 };
 
 const OtpScreen = (props) => {
-  const { route, navigation } = props;
-  const { user, isLogin } = route.params;
-  const { phone } = user;
 
   const [value, setValue] = useState('');
   const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
@@ -48,8 +47,8 @@ const OtpScreen = (props) => {
     setValue,
   });
 
-  const { confirmation } = useSelector(state => state.user);
-  const { signup, login } = useAuthActions();
+  const { confirmation, user, token } = useSelector(state => state.user);
+  const { signUp, login } = useAuthActions();
 
   const invalidCodeAlert = () => {
     return (
@@ -67,13 +66,12 @@ const OtpScreen = (props) => {
   const verifyOtp = async () => {
     try {
       await confirmation.confirm(value);
-      if (!isLogin) {
-        await signup(user);
-      }
-      else {
-        await login(user);
-      }
-      navigation.navigate('Home');
+
+      auth().onAuthStateChanged(firebaseUser => {
+        if (firebaseUser) {
+          login({ user, token });
+        }
+      });
     } catch (e) {
       console.log('-----> verifyOtp error', e);
       invalidCodeAlert();
@@ -123,28 +121,30 @@ const OtpScreen = (props) => {
   };
 
   return (
-    <SafeAreaView style={styles.root}>
-      <Text style={styles.title}>Verification</Text>
-      <Text style={styles.subTitle}>
-        Please enter the verification code{'\n'}
-        send to {phone}
-      </Text>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.root}>
+        <BaseText style={styles.title}>Verification</BaseText>
+        <BaseText style={styles.subTitle}>
+          Please enter the verification code{'\n'}
+          send to {`+91 ${user.phone}`}
+        </BaseText>
 
-      <CodeField
-        ref={ref}
-        {...inputProps}
-        value={value}
-        onChangeText={setValue}
-        cellCount={CELL_COUNT}
-        rootStyle={styles.codeFiledRoot}
-        keyboardType="number-pad"
-        renderCell={renderCell}
-      />
-      <TouchableOpacity
-        onPress={verifyOtp}
-        style={styles.nextButton}>
-        <Text style={styles.nextButtonText}>Verify</Text>
-      </TouchableOpacity>
+        <CodeField
+          ref={ref}
+          {...inputProps}
+          value={value}
+          onChangeText={setValue}
+          cellCount={CELL_COUNT}
+          rootStyle={styles.codeFiledRoot}
+          keyboardType="number-pad"
+          renderCell={renderCell}
+        />
+        <TouchableOpacity
+          onPress={verifyOtp}
+          style={styles.nextButton}>
+          <BaseText style={styles.nextButtonText}>Verify</BaseText>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 };

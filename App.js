@@ -2,10 +2,11 @@ import React, { useEffect, Fragment, Suspense } from 'react';
 import { StatusBar } from 'react-native';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { Provider as StoreProvider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react'
 import { SafeAreaProvider, initialWindowSafeAreaInsets } from 'react-native-safe-area-context';
 import SplashScreen from 'react-native-splash-screen';
 import { theme } from './src/styles/theme';
-import Store from './src/redux/store';
+import { store, persistor } from './src/redux/store';
 import NavContainer from './src/navigation';
 import i18next from 'i18next';
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -30,9 +31,17 @@ i18next
   .use(initReactI18next)
   .init({
     fallbackLng: 'en',
-    debug: true,
+    debug: false,
     resources: translations,
   });
+
+const Loader = () => {
+  return (
+    <Spinner
+      visible={true}
+      textContent={''} />
+  )
+}
 
 const App = () => {
 
@@ -43,17 +52,16 @@ const App = () => {
   return (
     <Fragment>
       <StatusBar barStyle="light-content" />
-      <StoreProvider store={Store}>
-        <PaperProvider theme={theme}>
-          <SafeAreaProvider initialSafeAreaInsets={initialWindowSafeAreaInsets}>
-            <Suspense fallback={<Spinner
-              visible={true}
-              textContent={''} />
-            }>
-              <NavContainer />
-            </Suspense>
-          </SafeAreaProvider>
-        </PaperProvider>
+      <StoreProvider store={store}>
+        <PersistGate loading={<Loader />} persistor={persistor}>
+          <PaperProvider theme={theme}>
+            <SafeAreaProvider initialSafeAreaInsets={initialWindowSafeAreaInsets}>
+              <Suspense fallback={<Loader />}>
+                <NavContainer />
+              </Suspense>
+            </SafeAreaProvider>
+          </PaperProvider>
+        </PersistGate>
       </StoreProvider>
     </Fragment>
   );

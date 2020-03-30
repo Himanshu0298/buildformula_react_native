@@ -37,40 +37,43 @@ export default (state = initialState, action = {}) => {
     //     loading: false,
     //   };
 
-    case `${SIGN_UP}_PENDING`:
-      return {
-        ...state,
-        loading: true,
-      };
-    case `${SIGN_UP}_FULFILLED`:
-      return {
-        ...state,
-        loading: false,
-        user: action.payload,
-        authenticated: true,
-      };
-    case `${SIGN_UP}_REJECTED`:
-      return {
-        ...state,
-        loading: false,
-      };
-
-    // case `${LOGIN_INIT}_PENDING`:
+    // case `${SIGN_UP}_PENDING`:
     //   return {
     //     ...state,
     //     loading: true,
     //   };
-    // case `${LOGIN_INIT}_FULFILLED`:
+    // case `${SIGN_UP}_FULFILLED`:
     //   return {
     //     ...state,
     //     loading: false,
-    //     confirmation: action.payload,
+    //     user: action.payload,
+    //     authenticated: true,
     //   };
-    // case `${LOGIN_INIT}_REJECTED`:
+    // case `${SIGN_UP}_REJECTED`:
     //   return {
     //     ...state,
     //     loading: false,
     //   };
+
+    case `${LOGIN_INIT}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${LOGIN_INIT}_FULFILLED`:
+      return {
+        ...state,
+        loading: false,
+        confirmation: action.payload.confirmation,
+        user: action.payload.user,
+        roles: action.payload.roles,
+        token: action.payload.token,
+      };
+    case `${LOGIN_INIT}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+      };
 
     case `${LOGIN}_PENDING`:
       return {
@@ -81,9 +84,6 @@ export default (state = initialState, action = {}) => {
       return {
         ...state,
         loading: false,
-        user: action.payload.user,
-        roles: action.payload.roles,
-        token: action.payload.token,
         authenticated: true,
       };
     case `${LOGIN}_REJECTED`:

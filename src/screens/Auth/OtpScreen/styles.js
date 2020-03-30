@@ -1,17 +1,17 @@
 import { StyleSheet, Platform } from 'react-native';
 import { theme } from '../../../styles/theme';
 
-export const CELL_SIZE = 50;
+export const CELL_SIZE = 40;
 export const CELL_BORDER_RADIUS = 8;
-export const DEFAULT_CELL_BG_COLOR = '#db4545';
-export const NOT_EMPTY_CELL_BG_COLOR = '#db4545';
-export const ACTIVE_CELL_BG_COLOR = '#db4545';
+export const DEFAULT_CELL_BG_COLOR = theme.colors.primary;
+export const NOT_EMPTY_CELL_BG_COLOR = theme.colors.primary;
+export const ACTIVE_CELL_BG_COLOR = theme.colors.primary;
 
 const styles = StyleSheet.create({
   codeFiledRoot: {
     height: CELL_SIZE,
     marginTop: 30,
-    width:'100%',
+    width: '100%',
     paddingHorizontal: 20,
     justifyContent: 'space-between',
   },
@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     borderRadius: CELL_BORDER_RADIUS,
     color: '#fff',
-    backgroundColor: '#db4545',
+    backgroundColor: theme.colors.primary,
 
     // IOS
     shadowColor: '#000',
@@ -41,32 +41,35 @@ const styles = StyleSheet.create({
   },
 
   // =======================
-
+  container: {
+    backgroundColor: theme.colors.primary,
+    height: '100%',
+  },
   root: {
     padding: 20,
-    height: '100%',
-    display: 'flex',
-    justifyContent: 'center',
+    flex: 1,
     alignItems: 'center',
-    backgroundColor: theme.colors.primary,
+    marginVertical: 40,
+    paddingTop: 100,
+    marginHorizontal: 30,
+    borderRadius: 50,
+    backgroundColor: theme.colors.surface,
   },
   title: {
-    color: '#fff',
     fontSize: 25,
     fontWeight: '700',
     textAlign: 'center',
   },
   subTitle: {
     paddingTop: 30,
-    color: '#fff',
     textAlign: 'center',
   },
   nextButton: {
     marginTop: 40,
     borderRadius: 10,
     height: 50,
-    width:'60%',
-    backgroundColor: '#db4545',
+    width: '60%',
+    backgroundColor: theme.colors.primary,
     justifyContent: 'center',
   },
   nextButtonText: {

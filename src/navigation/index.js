@@ -12,7 +12,7 @@ import TouchID from 'react-native-touch-id';
 import Login from '../screens/Auth/Login';
 // import { Platform, Image } from 'react-native';
 // import backIcon from './../assets/images/back_arrow.png';
-// import OtpScreen from '../screens/Auth/OtpScreen';
+import OtpScreen from '../screens/Auth/OtpScreen';
 import { useSelector } from 'react-redux';
 import LanguageSelect from '../screens/Auth/LanguageSelect';
 
@@ -48,14 +48,6 @@ function AppScreensStacks() {
         },
       }}>
       <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
-      {/* <Stack.Screen
-        name="LinkAccounts"
-        component={Login}
-        options={{ title: 'Link Accounts' }} />
-      <Stack.Screen
-        name="RideHistory"
-        component={Login}
-        options={{ title: 'Ride History' }} /> */}
     </Stack.Navigator>
   );
 }
@@ -112,12 +104,12 @@ function NavContainer() {
   return (
     <NavigationContainer theme={theme}>
       <Stack.Navigator
-        initialRouteName={authenticated ? 'HomeDrawer' : 'LanguageSelect'}
+        initialRouteName={authenticated ? 'App' : 'LanguageSelect'}
       >
         {authenticated ?
           //App Nav Screens
           <Fragment>
-            <Stack.Screen name="HomeDrawer" component={AppDrawer} options={{ headerShown: false }} />
+            <Stack.Screen name="App" component={AppDrawer} options={{ headerShown: false }} />
           </Fragment>
           :
           //Auth Nav Screens
@@ -125,7 +117,7 @@ function NavContainer() {
             <Stack.Screen name="LanguageSelect" component={LanguageSelect} options={{ headerShown: false }} />
             <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
             {/* <Stack.Screen name="SignUp" component={Signup} options={{ headerShown: false }} /> */}
-            {/* <Stack.Screen name="Otp" component={OtpScreen} options={{ headerShown: false }} /> */}
+            <Stack.Screen name="Otp" component={OtpScreen} options={{ headerShown: false }} />
           </Fragment>
         }
       </Stack.Navigator>

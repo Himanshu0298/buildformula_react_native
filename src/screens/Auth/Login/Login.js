@@ -35,7 +35,7 @@ const schema = Yup.object().shape({
 function Login(props) {
 
   const [loginError, setLoginError] = useState(null);
-  const { login } = useAuthActions();
+  const { loginInit } = useAuthActions();
   const { t } = useTranslation();
 
   const emailRef = React.createRef();
@@ -72,8 +72,13 @@ function Login(props) {
               formData.append('email', values.email);
               formData.append('password', values.password);
 
-              login(formData)
-                .catch(() => {
+              loginInit(formData)
+                .then((data) => {
+                  console.log('----->data ', data.action.payload.user.first_name);
+                  props.navigation.navigate('Otp');
+                })
+                .catch((error) => {
+                  console.log('----->login error ', error)
                   setLoginError('Invalid email or password');
                 });
             }}
