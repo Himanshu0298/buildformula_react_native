@@ -17,7 +17,8 @@ const languageDetector = {
   type: 'languageDetector',
   async: true,
   detect: cb => {
-    const { languageTag } = RNLocalize.findBestAvailableLanguage(Object.keys(translations)) || { languageTag: 'en' };
+    const languages = Object.keys(translations);
+    const { languageTag } = RNLocalize.findBestAvailableLanguage(languages) || { languageTag: 'en' };
     cb(languageTag);
   },
   init: () => { },
@@ -43,16 +44,16 @@ const App = () => {
     <Fragment>
       <StatusBar barStyle="light-content" />
       <StoreProvider store={Store}>
-          <PaperProvider theme={theme}>
-            <SafeAreaProvider initialSafeAreaInsets={initialWindowSafeAreaInsets}>
-              <Suspense fallback={<Spinner
-                visible={true}
-                textContent={''} />
-              }>
-                <NavContainer />
-              </Suspense>
-            </SafeAreaProvider>
-          </PaperProvider>
+        <PaperProvider theme={theme}>
+          <SafeAreaProvider initialSafeAreaInsets={initialWindowSafeAreaInsets}>
+            <Suspense fallback={<Spinner
+              visible={true}
+              textContent={''} />
+            }>
+              <NavContainer />
+            </Suspense>
+          </SafeAreaProvider>
+        </PaperProvider>
       </StoreProvider>
     </Fragment>
   );

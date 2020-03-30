@@ -1,7 +1,14 @@
 export default {
   en: {
     translation: {
-      //label
+      //Login Screen
+      labelLogin: 'Login',
+      accountText: 'to your account',
+      msgBlankEmail: 'Enter your email!',
+      msgBlankPassword: 'Enter your password!',
+      login: 'Login',
+      forgotPassword: 'Forgot Password?',
+
       paymentInstallment: [{ id: 1, name: 'Full payment' }, { id: 2, name: 'Custom Payment' }, { id: 3, name: '1st big installment' }],
       labelSignInInfo: 'Sign in to your account',
       labelSignUp: 'Sign Up to your account',
@@ -11,8 +18,6 @@ export default {
       labelForgotPasswordInstruction: "Enter your e-mail address and we we'll send you a link to reset your password.",
       labelCreate: 'Create',
       labelSearch: 'Search',
-      labelLogin: 'Login',
-      accountText: 'to your account',
       labelLoading: 'Loading...',
       labelSignIn: 'Sign in',
       labelOk: 'OK',
@@ -179,7 +184,6 @@ export default {
       msgBlankFirstName: 'Please enter First Name!',
       msgBlankLastName: 'Please enter Last Name!',
       msgBlankPhone: 'Please enter Phone Number!',
-      msgBlankEmail: 'Please enter email!',
       msgBlankRole: 'Please enter role!',
       msgBlankInquiryCategory: 'Please select inquiry category!',
       msgBlankInquiryPriority: 'Please select lead priority!',
@@ -192,15 +196,6 @@ export default {
       msgBlankAge: 'Please enter age',
       msgBlankOccupation: 'Please enter occupation',
 
-
-
-
-
-
-
-
-
-      msgBlankPassword: 'Please enter password!',
       msgBlankConfirmPassword: 'Please enter confirm password!',
       msgBlankCompany: 'Please select company!',
       msgBlankBirthDate: 'Please select birthdate!',
@@ -238,6 +233,15 @@ export default {
   },
   hi: {
     translation: {
+      //Login Screen
+      labelLogin: 'लॉग इन करें',
+      accountText: 'अपने खाते में',
+      msgBlankEmail: 'कृपया ईमेल दर्ज करें!',
+      msgBlankPassword: 'कृप्या पास्वर्ड भरो!',
+      login: 'लॉग इन करें',
+      forgotPassword: 'पासवर्ड भूल गए?',
+
+
       labelSignInInfo: 'अपने अकाउंट में साइन इन करें',
       labelSignUp: 'अपने खाते में साइन अप करें',
       labelDontHaveAccount: 'क्या आपका खाता नहीं है? ',
@@ -246,8 +250,6 @@ export default {
       labelAlreadyHaveAccount: 'पहले से ही एक खाता है?',
       labelCreate: 'सर्जन करना',
       labelSearch: 'खोज',
-      labelLogin: 'लॉग इन करें',
-      accountText: 'अपने खाते में',
       labelLoading: 'लोड हो रहा है...',
       labelSignIn: 'दाखिल करना',
       labelSend: 'भेजना',
@@ -402,13 +404,11 @@ export default {
       msgBlankFirstName: 'कृपया प्रथम नाम दर्ज करें!',
       msgBlankLastName: 'कृपया अंतिम नाम दर्ज करें!',
       msgBlankPhone: 'कृपया फ़ोन नंबर दर्ज करें!',
-      msgBlankEmail: 'कृपया ईमेल दर्ज करें!',
       msgBlankRole: 'कृपया भूमिका दर्ज करें!',
       msgBlankInquiryCategory: 'कृपया जांच श्रेणी का चयन करें!',
       msgBlankInstallmentDate: 'किस्त की तारीख का चयन करें!',
       msgBlankInquiryPriority: 'कृपया मुख्य प्राथमिकता चुनें',
       msgBlankAddress: 'कृपया पता दर्ज करें!',
-      msgBlankPassword: 'कृप्या पास्वर्ड भरो!',
       msgBlankConfirmPassword: 'कृपया पुष्टि पासवर्ड दर्ज करें!',
       msgBlankCompany: 'कृपया कंपनी का चयन करें!',
       msgBlankBirthDate: 'कृपया जन्मतिथि का चयन करें!',

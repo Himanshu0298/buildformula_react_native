@@ -36,9 +36,7 @@ function Login(props) {
 
   const [loginError, setLoginError] = useState(null);
   const { login } = useAuthActions();
-  const { t,i18n } = useTranslation();
-
-  console.log('-----> i18n',i18n.languages )
+  const { t } = useTranslation();
 
   const emailRef = React.createRef();
   const passwordRef = React.createRef();
@@ -102,7 +100,7 @@ function Login(props) {
                     value={values.email}
                     onChangeText={handleChange('email')}
                     onBlur={handleBlur('email')}
-                    placeholder="Enter your Email"
+                    placeholder={t('msgBlankEmail')}
                     autoCapitalize="none"
                     returnKeyType={'next'}
                     onSubmitEditing={() => passwordRef && passwordRef.current.focus()}
@@ -116,7 +114,7 @@ function Login(props) {
                     value={values.password}
                     onChangeText={handleChange('password')}
                     onBlur={handleBlur('password')}
-                    placeholder="Enter your Password"
+                    placeholder={t('msgBlankPassword')}
                     autoCapitalize="none"
                     returnKeyType={'done'}
                     onSubmitEditing={handleSubmit}
@@ -124,11 +122,11 @@ function Login(props) {
                     error={errors.password}
                   />
                   <LoginButton
-                    label="Login"
+                    label={t('login')}
                     onPress={handleSubmit}
                   />
                   <TouchableOpacity>
-                    <BaseText style={styles.forgotText}>Forgot Password?</BaseText>
+                    <BaseText style={styles.forgotText}>{t('forgotPassword')}</BaseText>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -195,7 +193,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     display: 'flex',
     alignItems: 'center',
-    marginVertical: 10,
+    marginTop: 20,
     backgroundColor: theme.colors.primary,
   },
   buttonText: {

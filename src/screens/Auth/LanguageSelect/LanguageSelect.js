@@ -25,7 +25,7 @@ function LanguageSelect(props) {
   const { i18n } = useTranslation();
 
   const selectLanguage = (language) => {
-    i18n.changeLanguage('language');
+    i18n.changeLanguage(language);
     props.navigation.navigate('Login');
   };
 
