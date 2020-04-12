@@ -1,1 +1,1 @@
-export const BASE_URL = 'http://vshwanbuild.com/public/api/';
+export const BASE_URL = 'http://vshwanbuild.com/public/api';

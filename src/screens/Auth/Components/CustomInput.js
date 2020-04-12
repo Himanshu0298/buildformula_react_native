@@ -1,19 +1,28 @@
-import React, { Fragment } from 'react';
-import { StyleSheet, View, TextInput, Image, Text } from 'react-native';
+import React from 'react';
+import { StyleSheet, View, Text } from 'react-native';
 import PropTypes from 'prop-types';
+import { TextInput, withTheme } from 'react-native-paper';
 
-const CustomInput = React.forwardRef(({ icon, error, ...rest }, ref) => (
-  <View style={styles.container}>
+const CustomInput = React.forwardRef(({ error, containerStyles, theme, ...rest }, ref) => (
+  <View style={[containerStyles, styles.container]}>
     <View style={styles.inputContainer}>
-      <View style={styles.imageContainer}>
-        {icon}
-      </View>
       <TextInput
         {...rest}
         ref={ref}
-        placeholderTextColor="grey"
+        error={error}
+        mode="outlined"
         style={styles.input}
         blurOnSubmit
+        theme={{
+          roundness: 10,
+          colors: {
+            placeholder: '#fff',
+            text: '#fff',
+            primary: '#fff',
+            underlineColor: 'transparent',
+            background: theme.colors.primary,
+          },
+        }}
       />
     </View>
     {error &&
@@ -26,35 +35,22 @@ const CustomInput = React.forwardRef(({ icon, error, ...rest }, ref) => (
 
 CustomInput.defaultProps = {
   returnKeyType: 'next',
+  containerStyles: {},
 };
 
 CustomInput.prototype = {
-  image: PropTypes.element,
   error: PropTypes.string,
   ...TextInput.PropTypes,
 };
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 20,
-    width:'100%',
+    width: '100%',
   },
   inputContainer: {
-    backgroundColor: '#e6e6e6',
     flexDirection: 'row',
-    borderRadius: 20,
-    height: 45,
     display: 'flex',
     alignItems: 'center',
-  },
-  imageContainer: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 1,
-    marginHorizontal: 20,
-  },
-  iconStyle: {
   },
   input: {
     height: 45,
@@ -69,4 +65,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CustomInput;
+export default withTheme(CustomInput);

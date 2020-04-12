@@ -5,14 +5,19 @@ import { Text } from 'react-native';
 import PropTypes from 'prop-types';
 
 function BaseText({ style, variant, children, ...restProps }) {
+  const defaultStyles = {
+    fontFamily: `Nunito-${variant.charAt(0).toUpperCase() + variant.slice(1)}`,
+    color: '#fff',
+  };
+
   return (
     <Text
       {...restProps}
       style={Array.isArray(style) ?
-        [...style, { fontFamily: `Poppins-${variant.charAt(0).toUpperCase() + variant.slice(1)}` }]
+        [...style, defaultStyles]
         :
         {
-          fontFamily: `Poppins-${variant.charAt(0).toUpperCase() + variant.slice(1)}`,
+          ...defaultStyles,
           ...style,
         }
       }>
@@ -26,7 +31,7 @@ BaseText.defaultProps = {
 };
 
 BaseText.propTypes = {
-  variant: PropTypes.string,
+  variant: PropTypes.oneOf(['regular', 'extraLight', 'light', 'regular', 'semiBold']),
   ...Text.propTypes,
 };
 

@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
-import { StyleSheet, StatusBar, View, ScrollView, Image, TouchableOpacity } from 'react-native';
-import { withTheme } from 'react-native-paper';
+import { StyleSheet, View, ScrollView, Image, TouchableOpacity } from 'react-native';
+import { withTheme, Headline, Subheading, Button, TextInput } from 'react-native-paper';
 import { theme } from '../../../styles/theme';
 import banner from './../../../assets/images/banner.png';
-import image from './../../../assets/images/layer_1.png';
+import image from './../../../assets/images/buildings.png';
 import BaseText from '../../../components/BaseText';
-import FontistoIcon from 'react-native-vector-icons/Fontisto';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { Formik } from 'formik';
 import CustomInput from '../Components/CustomInput';
 import useAuthActions from '../../../redux/actions/authActions';
@@ -14,27 +12,33 @@ import { useSelector } from 'react-redux';
 import * as Yup from 'yup';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { useTranslation } from 'react-i18next';
+import Layout from '../../../utils/Layout';
 
 function LoginButton({ label, onPress }) {
   return (
-    <TouchableOpacity
-      style={styles.LoginButton}
+    <Button
+      style={{ width: '90%' }}
+      color={theme.colors.accent}
+      mode="contained"
+      contentStyle={{ padding: 8 }}
+      theme={{ roundness: 15 }}
       onPress={onPress}>
       <BaseText style={styles.buttonText}>
         {label}
       </BaseText>
-    </TouchableOpacity>
+    </Button >
   );
 }
 
 const schema = Yup.object().shape({
   email: Yup.string().email('Please enter a valid email').label('email').required('Please enter a valid email'),
-  password: Yup.string().label('Password').required().min(6, 'Password must have at least 6 characters '),
+  password: Yup.string().label('Password').required('Please enter a valid password').min(6, 'Password must have at least 6 characters '),
 });
 
 function Login(props) {
 
   const [loginError, setLoginError] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
   const { loginInit } = useAuthActions();
   const { t } = useTranslation();
 
@@ -44,7 +48,6 @@ function Login(props) {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor={theme.colors.primary} />
       <Spinner
         visible={loading}
         textContent={''}
@@ -54,45 +57,44 @@ function Login(props) {
         keyboardShouldPersistTaps="handled"
         contentContainerStyle={styles.container}
       >
-        <View style={styles.contentContainer}>
-          <View style={styles.bannerContainer}>
-            <Image source={banner} style={styles.banner} />
-          </View>
-          <Formik
-            validateOnBlur={false}
-            validateOnChange={false}
-            initialValues={{
-              email: 'tester@vshwan.com',
-              password: 'Hpenvyx360',
-            }}
-            validationSchema={schema}
-            onSubmit={async (values) => {
-              let formData = new FormData();
+        <View style={styles.bannerContainer}>
+          <Image source={banner} style={styles.banner} />
+        </View>
+        <View style={styles.imageContainer}>
+          <Image source={image} style={styles.image} />
+        </View>
+        <Formik
+          validateOnBlur={false}
+          validateOnChange={false}
+          initialValues={{
+            email: 'tester@vshwan.com',
+            password: 'Hpenvyx360',
+          }}
+          validationSchema={schema}
+          onSubmit={async (values) => {
+            let formData = new FormData();
 
-              formData.append('email', values.email);
-              formData.append('password', values.password);
+            formData.append('email', values.email);
+            formData.append('password', values.password);
 
-              loginInit(formData)
-                .then((data) => {
-                  console.log('----->data ', data.action.payload.user.first_name);
-                  props.navigation.navigate('Otp');
-                })
-                .catch((error) => {
-                  console.log('----->login error ', error)
-                  setLoginError('Invalid email or password');
-                });
-            }}
-          >
-            {({ handleChange, values, handleSubmit, handleBlur, isValid, errors }) => (
+            loginInit(formData)
+              .then((data) => {
+                console.log('----->data ', data.action.payload);
+                props.navigation.navigate('Otp');
+              })
+              .catch((error) => {
+                console.log('----->login error ', error.response);
+                setLoginError('Invalid email or password');
+              });
+          }}
+        >
+          {({ handleChange, values, handleSubmit, handleBlur, isValid, errors }) => (
+            <View style={styles.contentContainer}>
+              <View style={styles.headlineContainer}>
+                <Headline style={{ fontWeight: 'bold' }}>{t('heading')}</Headline>
+                <Subheading>{t('subHeading')}</Subheading>
+              </View>
               <View style={styles.inputMainContainer}>
-                <View style={styles.heading}>
-                  <BaseText style={[styles.headingText, { color: theme.colors.primary }]}>
-                    {t('labelLogin')}
-                  </BaseText>
-                  <BaseText style={styles.headingText}>
-                    {` ${t('accountText')}`}
-                  </BaseText>
-                </View>
                 {loginError &&
                   <View>
                     <BaseText style={styles.loginError}>{loginError}</BaseText>
@@ -101,6 +103,7 @@ function Login(props) {
                 <View style={styles.inputsContainer}>
                   <CustomInput
                     name="email"
+                    label={t('emailLabel')}
                     ref={emailRef}
                     value={values.email}
                     onChangeText={handleChange('email')}
@@ -109,13 +112,14 @@ function Login(props) {
                     autoCapitalize="none"
                     returnKeyType={'next'}
                     onSubmitEditing={() => passwordRef && passwordRef.current.focus()}
-                    icon={<FontistoIcon name="email" color={theme.colors.primary} size={23} />}
                     error={errors.email}
                   />
                   <CustomInput
                     name="password"
+                    label={t('passwordLabel')}
                     ref={passwordRef}
-                    secureTextEntry
+                    containerStyles={{ marginTop: 20 }}
+                    secureTextEntry={showPassword}
                     value={values.password}
                     onChangeText={handleChange('password')}
                     onBlur={handleBlur('password')}
@@ -123,24 +127,28 @@ function Login(props) {
                     autoCapitalize="none"
                     returnKeyType={'done'}
                     onSubmitEditing={handleSubmit}
-                    icon={<MaterialIcons name="lock" color={theme.colors.primary} size={23} />}
                     error={errors.password}
+                  // right={
+                  //   <TextInput.Icon
+                  //     name={showPassword ? 'eye-off' : 'eye'}
+                  //     onPress={() => setShowPassword(show => !show)}
+                  //   />
+                  // }
                   />
-                  <LoginButton
-                    label={t('login')}
-                    onPress={handleSubmit}
-                  />
-                  <TouchableOpacity>
-                    <BaseText style={styles.forgotText}>{t('forgotPassword')}</BaseText>
+                  <TouchableOpacity style={styles.forgotContainer}>
+                    <BaseText>{t('forgotPassword')}</BaseText>
                   </TouchableOpacity>
                 </View>
+                <LoginButton
+                  label={t('login')}
+                  onPress={handleSubmit} />
+                <TouchableOpacity style={styles.registerContainer}>
+                  <BaseText>{t('registerLink')}</BaseText>
+                </TouchableOpacity>
               </View>
-            )}
-          </Formik>
-          <View style={styles.imageContainer}>
-            <Image source={image} style={styles.image} />
-          </View>
-        </View>
+            </View>
+          )}
+        </Formik>
       </ScrollView>
     </View >
   );
@@ -149,15 +157,6 @@ function Login(props) {
 const styles = StyleSheet.create({
   container: {
     height: '100%',
-    backgroundColor: theme.colors.primary,
-  },
-  contentContainer: {
-    flex: 1,
-    marginVertical: 40,
-    marginHorizontal: 30,
-    justifyContent: 'space-between',
-    borderRadius: 50,
-    backgroundColor: theme.colors.surface,
   },
   bannerContainer: {
     width: '100%',
@@ -165,31 +164,53 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   banner: {
-    width: '75%',
-    height: 100,
+    width: Layout.window.width * 0.75,
+    height: (Layout.window.width * 0.75) * (5 / 12),
+  },
+  imageContainer: {
+    display: 'flex',
+    marginBottom: -30,
+    right: 10,
+    alignItems: 'center',
+  },
+  image: {
+    width: Layout.window.width * 0.75,
+    height: (Layout.window.width * 0.75) * (15 / 22),
+  },
+  contentContainer: {
+    flex: 1,
+    backgroundColor: theme.colors.primary,
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    borderTopLeftRadius: 50,
+    borderTopRightRadius: 50,
+  },
+  headlineContainer: {
+    flex: 0.2,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   loginError: {
-    color: 'red',
+    fontSize: 16,
+    fontWeight: 'bold',
     textAlign: 'center',
   },
   inputMainContainer: {
     width: '100%',
-    display: 'flex',
-    alignItems: 'center',
+    flex: 0.8,
+    paddingBottom: 10,
     justifyContent: 'space-around',
+    alignItems: 'center',
   },
   inputsContainer: {
-    display: 'flex',
-    justifyContent: 'space-around',
     alignItems: 'center',
     width: '90%',
   },
-  heading: {
-    flexDirection: 'row',
-  },
-  headingText: {
-    fontFamily: 'Poppins-Medium',
-    fontSize: 20,
+  forgotContainer: {
+    display: 'flex',
+    width: '100%',
+    padding: 2,
+    alignItems: 'flex-end',
   },
   LoginButton: {
     width: '70%',
@@ -202,24 +223,14 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.primary,
   },
   buttonText: {
-    color: '#fff',
     fontWeight: 'bold',
     fontSize: 18,
   },
-  forgotText: {
-    color: theme.colors.primary,
+  registerContainer: {
     display: 'flex',
-    alignItems: 'center',
-    padding: 5,
-  },
-  imageContainer: {
-    display: 'flex',
-    marginBottom: -20,
-    alignItems: 'center',
-  },
-  image: {
+    padding: 3,
     width: '100%',
-    height: 190,
+    alignItems: 'center',
   },
 });
 

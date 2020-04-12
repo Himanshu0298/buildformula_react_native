@@ -10,7 +10,14 @@ const initialState = {
 };
 
 export default (state = initialState, action = {}) => {
+  console.log('-----> action.type', action.type);
   switch (action.type) {
+
+    case 'persist/REHYDRATE':
+      return {
+        ...state,
+        loading: false,
+      };
 
     case `${SET_USER_DATA}_FULFILLED`:
       return {
@@ -18,7 +25,6 @@ export default (state = initialState, action = {}) => {
         user: action.payload,
         authenticated: true,
       };
-
 
     // case `${SIGN_UP_INIT}_PENDING`:
     //   return {

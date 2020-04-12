@@ -2,12 +2,16 @@ export default {
   en: {
     translation: {
       //Login Screen
-      labelLogin: 'Login',
-      accountText: 'to your account',
+      heading: 'Welcome Back',
+      subHeading: 'Sign in to continue',
+      emailLabel: 'Email',
+      passwordLabel: 'Password',
       msgBlankEmail: 'Enter your email!',
       msgBlankPassword: 'Enter your password!',
       login: 'Login',
       forgotPassword: 'Forgot Password?',
+      registerLink: 'Don’t have account? Register as company',
+
 
       paymentInstallment: [{ id: 1, name: 'Full payment' }, { id: 2, name: 'Custom Payment' }, { id: 3, name: '1st big installment' }],
       labelSignInInfo: 'Sign in to your account',
@@ -234,13 +238,15 @@ export default {
   hi: {
     translation: {
       //Login Screen
-      labelLogin: 'लॉग इन करें',
-      accountText: 'अपने खाते में',
+      heading: 'वापसी पर स्वागत है',
+      subHeading: 'जारी रखने के लिए साइन इन करें',
+      emailLabel: 'ईमेल',
+      passwordLabel: 'पासवर्ड',
       msgBlankEmail: 'कृपया ईमेल दर्ज करें!',
       msgBlankPassword: 'कृप्या पास्वर्ड भरो!',
       login: 'लॉग इन करें',
       forgotPassword: 'पासवर्ड भूल गए?',
-
+      registerLink: 'क्या आपका खाता नहीं है? कंपनी के रूप में पंजीकरण करें',
 
       labelSignInInfo: 'अपने अकाउंट में साइन इन करें',
       labelSignUp: 'अपने खाते में साइन अप करें',

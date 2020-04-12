@@ -1,27 +1,32 @@
 import React from 'react';
-import { StyleSheet, StatusBar, View, Image, TouchableOpacity } from 'react-native';
-import { withTheme } from 'react-native-paper';
-import { theme } from '../../../styles/theme';
-import welcomeImage from './../../../assets/images/layer_2.png';
+import { StyleSheet, StatusBar, View, Image } from 'react-native';
+import { withTheme, Button, Headline } from 'react-native-paper';
+import welcomeImage from './../../../assets/images/language.png';
 import banner from './../../../assets/images/banner.png';
 import BaseText from '../../../components/BaseText';
 import { useTranslation } from 'react-i18next';
+import Layout from '../../../utils/Layout';
+import { theme } from '../../../styles/theme';
 
 
-function LanguageButton({ label, language, onPress }) {
+function LanguageButton({ label, language, onPress, ...props }) {
   return (
-    <TouchableOpacity
+    <Button
+      {...props}
       style={styles.languageButton}
-      onPress={() => onPress(language)}
-    >
+      contentStyle={{ padding: 8, borderColor: props.color, borderWidth: 1, borderRadius: 15 }}
+      theme={{ roundness: 15 }}
+      onPress={() => onPress(language)}>
       <BaseText style={styles.buttonText}>
         {label}
       </BaseText>
-    </TouchableOpacity>
+    </Button >
   );
 }
 
 function LanguageSelect(props) {
+  const { colors } = props.theme;
+
   const { i18n } = useTranslation();
 
   const selectLanguage = (language) => {
@@ -31,19 +36,32 @@ function LanguageSelect(props) {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor={theme.colors.primary} />
-      <View style={styles.contentContainer}>
-        <View style={styles.topContainer}>
-          <View style={styles.bannerContainer}>
-            <Image source={banner} style={styles.banner} />
-          </View>
-          <View style={styles.buttonContainer}>
-            <LanguageButton label="English" language="en" onPress={selectLanguage} />
-            <LanguageButton label="हिन्दी" language="hi" onPress={selectLanguage} />
-          </View>
+      <StatusBar barStyle="dark-content" backgroundColor={colors.text} />
+      <View style={styles.topContainer}>
+        <View style={styles.bannerContainer}>
+          <Image source={banner} style={styles.banner} />
         </View>
         <View style={styles.imageContainer}>
           <Image source={welcomeImage} style={styles.image} />
+        </View>
+      </View>
+      <View style={styles.contentContainer}>
+        <View style={styles.headlineContainer}>
+          <Headline style={{ fontWeight: '500', fontSize: 26 }}>Select Language</Headline>
+        </View>
+        <View style={styles.buttonContainer}>
+          <LanguageButton
+            color={colors.accent}
+            label="English"
+            mode="contained"
+            language="en"
+            onPress={selectLanguage} />
+          <LanguageButton
+            color={colors.text}
+            mode="outlined"
+            label="हिन्दी"
+            language="hi"
+            onPress={selectLanguage} />
         </View>
       </View>
     </View>
@@ -53,19 +71,10 @@ function LanguageSelect(props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.colors.primary,
-  },
-  contentContainer: {
-    marginVertical: 40,
-    marginHorizontal: 30,
-    flex: 1,
-    justifyContent: 'space-between',
-    borderRadius: 50,
-    backgroundColor: theme.colors.surface,
   },
   topContainer: {
     display: 'flex',
-    flexGrow: 1,
+    flex: 0.4,
     alignItems: 'center',
     justifyContent: 'space-around',
   },
@@ -75,37 +84,44 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   banner: {
-    width: '75%',
-    height: 100,
-  },
-  buttonContainer: {
-    width: '100%',
-    display: 'flex',
-    paddingVertical: 50,
-    alignItems: 'center',
-  },
-  languageButton: {
-    width: '75%',
-    padding: 15,
-    elevation: 5,
-    borderRadius: 30,
-    display: 'flex',
-    alignItems: 'center',
-    marginVertical: 10,
-    backgroundColor: theme.colors.primary,
-  },
-  buttonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 18,
+    width: Layout.window.width * 0.75,
+    height: (Layout.window.width * 0.75) * (5 / 12),
   },
   imageContainer: {
     display: 'flex',
+    width: '100%',
     alignItems: 'center',
   },
   image: {
-    width: '70%',
-    height: 255,
+    width: Layout.window.width * 0.75,
+    height: (Layout.window.width * 0.75) * (77 / 120),
+  },
+  contentContainer: {
+    flex: 0.6,
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    borderTopLeftRadius: 50,
+    borderTopRightRadius: 50,
+    backgroundColor: theme.colors.primary,
+  },
+  headlineContainer: {
+    flex: 0.5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonContainer: {
+    width: '100%',
+    flex: 1.5,
+    alignItems: 'center',
+  },
+  languageButton: {
+    width: '80%',
+    marginVertical: 20,
+  },
+  buttonText: {
+    color: theme.colors.text,
+    fontWeight: 'bold',
+    fontSize: 18,
   },
 });
 

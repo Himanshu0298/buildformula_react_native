@@ -8,15 +8,23 @@ export const useConfig = () => {
   let token = useSelector(({ user }) => user.token);
 
   return ({
-    config: ({ multipart = false }) => {
+    config: ({ multipart = false, auth = true }) => {
       let headers = {
-        Authorization: 'bearer ' + token,
         'Content-Type': 'application/json',
       };
       if (multipart) { headers['Content-Type'] = 'multipart/form-data'; }
+      if (auth) { headers.Authorization = 'bearer ' + token; }
       return ({ headers });
     },
   });
 };
 
+instance.interceptors.request.use(request => {
+  console.log('-----> Request', request);
+  return request;
+});
 
+instance.interceptors.response.use(response => {
+  console.log('-----> response', response);
+  return response;
+});
