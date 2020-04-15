@@ -9,6 +9,7 @@ const CustomInput = React.forwardRef(({ error, containerStyles, theme, ...rest }
       <TextInput
         {...rest}
         ref={ref}
+        dense
         error={error}
         mode="outlined"
         style={styles.input}
@@ -53,7 +54,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   input: {
-    height: 45,
     flex: 1,
   },
   //Errors

@@ -15,6 +15,7 @@ import BaseText from '../../../components/BaseText';
 import { theme } from '../../../styles/theme';
 import { Button, withTheme } from 'react-native-paper';
 import Layout from '../../../utils/Layout';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const CELL_SIZE = 50;
 const CELL_BORDER_RADIUS = 8;
@@ -53,7 +54,7 @@ const OtpScreen = (props) => {
   });
 
   const { colors } = props.theme;
-  const { confirmation, user, token } = useSelector(state => state.user);
+  const { confirmation, user, token, loading } = useSelector(state => state.user);
   const { signUp, login } = useAuthActions();
 
   const invalidCodeAlert = () => {
@@ -138,6 +139,10 @@ const OtpScreen = (props) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <Spinner
+        visible={loading}
+        textContent={''}
+      />
       <View style={styles.root}>
         <View style={styles.imageContainer}>
           <Image source={image} style={styles.image} />
