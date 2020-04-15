@@ -1,66 +1,20 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { BackHandler } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { theme } from '../styles/theme';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Home from '../screens/Home';
 import TouchID from 'react-native-touch-id';
-// import DrawerContent from './Components/DrawerContent';
+import DrawerContent from './Components/DrawerContent';
 // import Signup from '../screens/Auth/Signup';
 import Login from '../screens/Auth/Login';
-// import { Platform, Image } from 'react-native';
-// import backIcon from './../assets/images/back_arrow.png';
 import OtpScreen from '../screens/Auth/OtpScreen';
 import { useSelector } from 'react-redux';
 import LanguageSelect from '../screens/Auth/LanguageSelect';
-
-const Drawer = createDrawerNavigator();
-const Stack = createStackNavigator();
-
-/**
- * The Whole App navigation is divided into 3 layers
- * 1. The top stack navigator for App and Auth screens
- * 2. The Drawer for App screens
- * 3. The App stack to achieve stack navigation like animation when transitioning between screens
- * <Main Stack>
- *    <App Drawer>
- *      <App Stack Screens/>
- *    </App Drawer>
- *    <>
- *      <Auth Screens/>
- *    </>
- * </Main Stack>
- */
-
-// const renderBackImage = () => <Image style={{ height: 15, width: 22 }} source={backIcon} />;
-
-function AppScreensStacks() {
-  return (
-    <Stack.Navigator
-      initialRouteName="Home"
-      screenOptions={{
-        // headerBackImage: Platform.OS === 'android' ? renderBackImage : undefined,
-        headerTitleAlign: 'center',
-        headerTitleStyle: {
-          fontWeight: 'bold',
-        },
-      }}>
-      <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
-    </Stack.Navigator>
-  );
-}
-
-function AppDrawer() {
-  return (
-    <Drawer.Navigator
-      // drawerContent={(props) => <DrawerContent {...props} />}
-      drawerStyle={{}}>
-      <Drawer.Screen name="AppScreensStacks" component={AppScreensStacks} />
-    </Drawer.Navigator>
-  );
-}
+import SettingsScreen from '../screens/Settings';
+import CustomTabBar from './Components/CustomTabBar';
 
 const optionalConfigObject = {
   unifiedErrors: false, // use unified error messages (default false)
@@ -79,12 +33,98 @@ const authObject = {
   passcodeFallback: true, // iOS - allows the device to fall back to using the passcode, if faceid/touch is not available. this does not mean that if touchid/faceid fails the first few times it will revert to passcode, rather that if the former are not enrolled, then it will use the passcode.
 };
 
-function NavContainer() {
+const Drawer = createDrawerNavigator();
+const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator();
 
+const RouteContext = React.createContext('Dashboard');
+
+/**
+ * The Whole App navigation is divided into 4 layers
+ * 1. The top stack navigator for App and Auth screens
+ * 2. The Drawer for App screens
+ * 3. The App Tab to achieve bottom tab for all screens
+ * 4. All screens
+ * <Main Stack>
+ *    <App Drawer>
+ *      <App Tab Screens>
+ *        {...allScreens}
+ *      </App Tab Screens>
+ *    </App Drawer>
+ *    <>
+ *      <Auth Screens/>
+ *    </>
+ * </Main Stack>
+ */
+
+// const renderBackImage = () => <Image style={{ height: 15, width: 22 }} source={backIcon} />;
+
+// function AppScreensStacks() {
+//   return (
+//     <Stack.Navigator
+//       initialRouteName="Dashboard"
+//       screenOptions={{
+//         // headerBackImage: Platform.OS === 'android' ? renderBackImage : undefined,
+//         headerTitleAlign: 'center',
+//         headerTitleStyle: {
+//           fontWeight: 'bold',
+//         },
+//       }}>
+//       <Stack.Screen name="Dashboard" component={Home} options={{ headerShown: false }} />
+//     </Stack.Navigator>
+//   );
+// }
+
+function BottomTabs() {
+  return (
+    <Tab.Navigator
+      initialRouteName="HomeStack"
+      tabBar={props => <CustomTabBar {...props} />}>
+      <Tab.Screen name="Dashboard" component={Home} />
+      <Tab.Screen name="Settings" component={SettingsScreen} />
+    </Tab.Navigator>
+  );
+}
+
+function AppDrawer() {
+  return (
+    <Drawer.Navigator
+      drawerContent={(props) =>
+        <RouteContext.Consumer>
+          {currentScreen => <DrawerContent {...props} currentScreen={currentScreen} />}
+        </RouteContext.Consumer>
+      }>
+      <Drawer.Screen name="tabs" component={BottomTabs} />
+    </Drawer.Navigator>
+  );
+}
+
+// Gets the current screen from navigation state
+const getActiveRouteName = state => {
+  const route = state.routes[state.index];
+
+  if (route.state) {
+    // Dive into nested navigators
+    return getActiveRouteName(route.state);
+  }
+
+  return route.name;
+};
+
+function NavContainer() {
   const { authenticated } = useSelector(state => state.user);
+  const [currentScreen, setCurrentScreen] = useState('Dashboard');
+  const routeNameRef = React.useRef();
+  const navigationRef = React.useRef();
 
   useEffect(() => {
-    if (authenticated) {
+    const state = navigationRef.current.getRootState();
+    // Save the initial route name
+    routeNameRef.current = getActiveRouteName(state);
+  }, []);
+
+  useEffect(() => {
+    if (false) {
       TouchID.isSupported(optionalConfigObject)
         .then(biometryType => {
           // Success code
@@ -102,25 +142,43 @@ function NavContainer() {
   }, []);
 
   return (
-    <NavigationContainer theme={theme}>
-      <Stack.Navigator
-        initialRouteName={authenticated ? 'App' : 'LanguageSelect'}
-      >
-        {authenticated ?
-          //App Nav Screens
-          <Fragment>
-            <Stack.Screen name="App" component={AppDrawer} options={{ headerShown: false }} />
-          </Fragment>
-          :
-          //Auth Nav Screens
-          <Fragment>
-            <Stack.Screen name="LanguageSelect" component={LanguageSelect} options={{ headerShown: false }} />
-            <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
-            {/* <Stack.Screen name="SignUp" component={Signup} options={{ headerShown: false }} /> */}
-            <Stack.Screen name="Otp" component={OtpScreen} options={{ headerShown: false }} />
-          </Fragment>
+    <NavigationContainer
+      theme={theme}
+      ref={navigationRef}
+      onStateChange={state => {
+        const previousRouteName = routeNameRef.current;
+        const currentRouteName = getActiveRouteName(state);
+        if (previousRouteName !== currentRouteName) {
+          setCurrentScreen(currentRouteName);
         }
-      </Stack.Navigator>
+
+        // Save the current route name for later comparison
+        routeNameRef.current = currentRouteName;
+      }}
+    >
+      <RouteContext.Provider value={currentScreen}>
+        <Stack.Navigator
+          initialRouteName={authenticated ? 'AppDrawer' : 'LanguageSelect'}
+        >
+          {authenticated ?
+            //App Nav Screens
+            <Fragment>
+              <Stack.Screen
+                name="AppDrawer"
+                component={AppDrawer}
+                options={{ headerShown: false }} />
+            </Fragment>
+            :
+            //Auth Nav Screens
+            <Fragment>
+              <Stack.Screen name="LanguageSelect" component={LanguageSelect} options={{ headerShown: false }} />
+              <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+              {/* <Stack.Screen name="SignUp" component={Signup} options={{ headerShown: false }} /> */}
+              <Stack.Screen name="Otp" component={OtpScreen} options={{ headerShown: false }} />
+            </Fragment>
+          }
+        </Stack.Navigator>
+      </RouteContext.Provider>
     </NavigationContainer>
   );
 }

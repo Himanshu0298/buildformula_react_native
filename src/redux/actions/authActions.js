@@ -49,10 +49,9 @@ export default function useAuthActions() {
 
           const confirmation = await auth().signInWithPhoneNumber('+919687031045');
 
-          console.log('----->confirmation ', confirmation)
-
           return resolve({ user, roles, token, confirmation });
         } catch (error) {
+          console.log('-----> error', error.data);
           return reject(error);
         }
       }),
@@ -60,8 +59,8 @@ export default function useAuthActions() {
     login: authenticated => dispatch({
       type: types.LOGIN,
       payload: new Promise(async (resolve, reject) => {
-       
-          return resolve();
+
+        return resolve();
       }),
     }),
   });

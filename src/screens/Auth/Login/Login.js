@@ -67,8 +67,8 @@ function Login(props) {
           validateOnBlur={false}
           validateOnChange={false}
           initialValues={{
-            email: 'tester@vshwan.com',
-            password: 'Hpenvyx360',
+            email: 'sawan@vshwan.com',
+            password: '123456',
           }}
           validationSchema={schema}
           onSubmit={async (values) => {

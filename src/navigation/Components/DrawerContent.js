@@ -1,205 +1,307 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity, View, Image } from 'react-native';
+import { StyleSheet, View, Image } from 'react-native';
+import { DrawerContentScrollView } from '@react-navigation/drawer';
 import {
-  Avatar,
-  Caption,
-  Title,
-  Drawer,
   useTheme,
+  Paragraph,
+  Drawer,
+  TouchableRipple,
 } from 'react-native-paper';
 import Animated from 'react-native-reanimated';
-import providerIcon from './../../assets/images/provider.png';
-import profilePlaceholder from './../../assets/images/profile_placeholder.png';
-import yourRidesIcon from './../../assets/images/rides.png';
-import rateCardIcon from './../../assets/images/ratecard.png';
-import paymentsIcon from './../../assets/images/payments.png';
-import inviteFriendsIcon from './../../assets/images/invitefriends.png';
-import helpIcon from './../../assets/images/help.png';
-import aboutIcon from './../../assets/images/about.png';
-import logoutIcon from './../../assets/images/logout.png';
-import menuIcon from './../../assets/images/menu.png';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Feather from 'react-native-vector-icons/Feather';
 import { theme } from '../../styles/theme';
+import Arrow from './../../assets/images/arrow_icon.png';
+import StructureActive from './../../assets/images/structure_icon_active.png';
+import Structure from './../../assets/images/structure_icon.png';
+import PaymentActive from './../../assets/images/payment_icon_active.png';
+import Payment from './../../assets/images/payment_icon.png';
+import AssignTaskActive from './../../assets/images/task_icon_active.png';
+import AssignTask from './../../assets/images/task_icon.png';
+import ProcessIconActive from './../../assets/images/process_icon_active.png';
+import ProcessIcon from './../../assets/images/process_icon.png';
+import EstimationIconActive from './../../assets/images/estimation_icon_active.png';
+import EstimationIcon from './../../assets/images/estimation_icon.png';
+import OrderIconActive from './../../assets/images/order_icon_active.png';
+import OrderIcon from './../../assets/images/order_icon.png';
+import BaseText from '../../components/BaseText';
+
+const sections = [
+  {
+    title: 'SALES',
+    routes: [
+      {
+        route: 'Inquiry',
+        label: 'Inquiry',
+        icon: 'account-question-outline',
+      }, {
+        route: 'ProjectStructure',
+        label: 'Project Structure',
+        activeIcon: ({ color, size }) => (
+          <Image
+            source={StructureActive}
+            style={{ height: size, width: size }}
+          />),
+        inactiveIcon: ({ color, size }) => (
+          <Image
+            source={Structure}
+            style={{ height: size, width: size }}
+          />),
+      }, {
+        route: 'BookingChart',
+        label: 'Booking Chart',
+        icon: 'chart-line',
+      }, {
+        route: 'Payment',
+        label: 'Payment',
+        activeIcon: ({ color, size }) => (
+          <Image
+            source={PaymentActive}
+            style={{ height: size - 5, width: size + 5 }}
+          />),
+        inactiveIcon: ({ color, size }) => (
+          <Image
+            source={Payment}
+            style={{ height: size - 5, width: size + 5 }}
+          />),
+      },
+    ],
+  }, {
+    title: 'PROJECT MANAGEMENT',
+    routes: [
+      {
+        route: 'ProjectSchedule',
+        label: 'Project Schedule',
+        icon: 'calendar-month-outline',
+      }, {
+        route: 'MainPhase',
+        label: 'Main Phase',
+        icon: 'clock-outline',
+      }, {
+        route: 'AssignTask',
+        label: 'Assign Task',
+        activeIcon: ({ color, size }) => (
+          <Image
+            source={AssignTaskActive}
+            style={{ height: size, width: size }}
+          />),
+        inactiveIcon: ({ color, size }) => (
+          <Image
+            source={AssignTask}
+            style={{ height: size, width: size }}
+          />),
+      }, {
+        route: 'ProcessChart',
+        label: 'Process Chart',
+        activeIcon: ({ color, size }) => (
+          <Image
+            source={ProcessIconActive}
+            style={{ height: size, width: size }}
+          />),
+        inactiveIcon: ({ color, size }) => (
+          <Image
+            source={ProcessIcon}
+            style={{ height: size, width: size }}
+          />),
+      },
+    ],
+  }, {
+    title: 'MATERIAL MANAGEMENT',
+    routes: [
+      {
+        route: 'Estimation',
+        label: 'Estimation',
+        activeIcon: ({ color, size }) => (
+          <Image
+            source={EstimationIconActive}
+            style={{ height: size, width: size }}
+          />),
+        inactiveIcon: ({ color, size }) => (
+          <Image
+            source={EstimationIcon}
+            style={{ height: size, width: size }}
+          />),
+      }, {
+        route: 'RequestForPrice',
+        label: 'Request For Price',
+        icon: 'tag-outline',
+      }, {
+        route: 'PurchaseOrders',
+        label: 'Purchase Orders',
+        activeIcon: ({ color, size }) => (
+          <Image
+            source={OrderIconActive}
+            style={{ height: size, width: size }}
+          />),
+        inactiveIcon: ({ color, size }) => (
+          <Image
+            source={OrderIcon}
+            style={{ height: size, width: size }}
+          />),
+      },
+    ],
+  }, {
+    title: 'FILES',
+    routes: [
+      {
+        route: 'Files',
+        label: 'Files',
+        icon: 'folder-open-outline',
+      },
+    ],
+  },
+];
 
 function DrawerItem(props) {
-  const { activeRoute, route, Label, image, ...restProps } = props;
-  let active = activeRoute === route;
+  const { currentRoute, route, navigation, label, icon,
+    activeIcon, inactiveIcon, image, ...restProps } = props;
+  let active = route === currentRoute;
+  let drawerIcon;
+  if (typeof icon === 'string') {
+    drawerIcon = ({ color, size }) => (
+      <MaterialCommunityIcons
+        name={icon}
+        color={color}
+        size={size}
+      />
+    );
+  }
+  else if (icon) {
+    drawerIcon = icon;
+  }
+  else if (active) {
+    drawerIcon = activeIcon;
+  }
+  else {
+    drawerIcon = inactiveIcon;
+  }
+
   return (
     <Drawer.Item
       {...restProps}
-      Label={Label}
-      theme={{ colors: { text: '#fff', primary: active ? '#fff' : theme.primary } }}
+      label={label}
+      theme={{ colors: { text: '#000', primary: active ? '#fff' : theme.primary } }}
+      onPress={() => navigation.navigate(route)}
       style={active ? styles.activeDrawerItem : {}}
       active={active}
-      icon={({ color, size }) => (
-        <Image
-          style={{ height: size, width: size }}
-          source={image}
-        />
-      )} />
+      icon={drawerIcon}
+    />
   );
 }
 
 export default function DrawerContent(props) {
+  const { navigation, currentScreen } = props;
   const paperTheme = useTheme();
 
   const translateX = Animated.interpolate(props.progress, {
     inputRange: [0, 0.5, 0.7, 0.8, 1],
     outputRange: [-100, -85, -70, -45, 0],
   });
-
-  let { routeNames } = props.state;
-  let currentRoute = routeNames[routeNames.length - 1];
-
   return (
-    <View style={styles.drawerContainer}>
-      <TouchableOpacity style={styles.menuIconContainer} onPress={() => props.navigation.toggleDrawer()}>
-        <Image style={{ height: 40, width: 40 }} source={menuIcon} />
-      </TouchableOpacity>
-
+    <DrawerContentScrollView
+      {...props}
+      showsVerticalScrollIndicator={false}>
       <Animated.View
+        //@ts-ignore
         style={[
           styles.drawerContent,
           {
-            backgroundColor: paperTheme.colors.primary,
+            backgroundColor: paperTheme.colors.surface,
             transform: [{ translateX }],
           },
-        ]}>
-        { /**
-           * Top Section of Drawer
-           * Using fragment instead of view will be ignored during bundling 
-           * so justify content css will be combined
-           */}
-        <View>
-          <TouchableOpacity
-            style={styles.userInfoSection}
-            onPress={() => props.navigation.toggleDrawer()}
+        ]}
+      >
+        <View style={styles.backContainer}>
+          <TouchableRipple
+            onPress={() => navigation.toggleDrawer()}
+            rippleColor="rgba(0, 0, 0, .32)"
+            style={{ width: 100 }}
           >
-            <Avatar.Image source={profilePlaceholder}
-              size={50}
-            />
-            <View style={styles.userName}>
-              <Title style={styles.title}>Dawid Urbaniak</Title>
-              <Caption style={styles.caption}>@trensik</Caption>
+            <View style={styles.backButton}>
+              <BaseText variant="semiBold" style={styles.backText}>Back</BaseText>
+              <Image
+                source={Arrow}
+                style={{ height: 12, width: 18 }}
+              />
             </View>
-          </TouchableOpacity>
-          <View style={styles.divider} />
-          <DrawerItem
-            label="Providers"
-            route="LinkAccounts"
-            activeRoute={currentRoute}
-            onPress={() => props.navigation.navigate('LinkAccounts')}
-            image={providerIcon}
-          />
-          <DrawerItem
-            label="Your Rides"
-            route="RideHistory"
-            activeRoute={false}
-            onPress={() => props.navigation.navigate('RideHistory')}
-            image={yourRidesIcon}
-          />
-          <View style={styles.divider} />
-          <DrawerItem
-            label="Rate Card"
-            route="RateCard"
-            activeRoute={false}
-            onPress={() => { }}
-            image={rateCardIcon}
-          />
-          <DrawerItem
-            label="Payments"
-            route="Payments"
-            activeRoute={false}
-            onPress={() => { }}
-            image={paymentsIcon}
-          />
-          <View style={styles.divider} />
-          <DrawerItem
-            label="Invite Friends"
-            route="InviteFriends"
-            activeRoute={false}
-            onPress={() => { }}
-            image={inviteFriendsIcon}
-          />
-          <DrawerItem
-            label="Help"
-            route="Help"
-            activeRoute={false}
-            onPress={() => { }}
-            image={helpIcon}
-          />
-          <DrawerItem
-            label="About"
-            route="About"
-            activeRoute={false}
-            onPress={() => { }}
-            image={aboutIcon}
-          />
+          </TouchableRipple>
         </View>
+        <DrawerItem
+          label={'Dashboard'}
+          route="Dashboard"
+          navigation={navigation}
+          currentRoute={currentScreen}
+          icon={({ color, size }) => (
+            <Feather
+              name={'home'}
+              color={color}
+              size={size}
+            />)}
+        />
+        {
+          sections.map(section => {
+            return (
+              <Drawer.Section key={section.title} style={styles.drawerSection}>
+                <Paragraph
+                  style={styles.title}
+                  theme={{
+                    colors: { text: paperTheme.colors.primary },
+                  }}>
+                  {section.title}
+                </Paragraph>
+                {section.routes.map(route => {
+                  return (
+                    <DrawerItem
+                      key={route.route}
+                      {...route}
+                      navigation={navigation}
+                      currentRoute={currentScreen} />
+                  );
+                })}
+              </Drawer.Section>
+            );
+          })
+        }
 
-        { /**
-     * Bottom Section of Drawer
-     * Using fragment instead of view will be ignored during bundling so all will be combined
-     */}
-        <View style={{ paddingTop: 10 }}>
-          <View style={styles.divider} />
-          <DrawerItem
-            label="Logout"
-            activeRoute={false}
-            onPress={() => { }}
-            image={logoutIcon}
-          />
-        </View>
       </Animated.View>
-    </View>
+    </DrawerContentScrollView >
   );
 }
 
 const styles = StyleSheet.create({
-  drawerContainer: {
-    flex: 1,
-    position: 'relative',
-  },
   drawerContent: {
     flex: 1,
-    width: '75%',
-    justifyContent: 'space-between',
-    paddingTop: 40,
-    paddingBottom: 20,
-    paddingHorizontal: 30,
   },
-  divider: {
-    height: StyleSheet.hairlineWidth,
-    marginVertical: 5,
-    backgroundColor: '#fff',
-  },
-  menuIconContainer: {
-    position: 'absolute',
-    right: 20,
-    top: 20,
-  },
-  //Drawer Header
-  userInfoSection: {
+  backContainer: {
+    marginTop: 5,
+    marginRight: 5,
+    display: 'flex',
+    borderRadius: 10,
     flexDirection: 'row',
-    marginBottom: 10,
+    justifyContent: 'flex-end',
+  },
+  backButton: {
+    flexDirection: 'row',
     display: 'flex',
     alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
   },
-  userName: {
-    marginLeft: 10,
+  backText: {
+    color: '#000',
+    fontSize: 16,
+    marginRight: 5,
+  },
+  drawerSection: {
+    marginTop: 5,
   },
   title: {
     fontWeight: 'bold',
-    lineHeight: 16,
-    fontSize: 16,
-    color: '#fff',
-  },
-  caption: {
-    lineHeight: 13,
+    marginLeft: 10,
     fontSize: 14,
-    color: '#fff',
   },
-  //Drawer Item
   activeDrawerItem: {
-    backgroundColor: '#871a1a',
+    backgroundColor: theme.colors.primary,
   },
 });

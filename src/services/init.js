@@ -19,12 +19,12 @@ export const useConfig = () => {
   });
 };
 
-instance.interceptors.request.use(request => {
-  console.log('-----> Request', request);
-  return request;
-});
+// instance.interceptors.request.use(request => {
+//   console.log('-----> Request', request);
+//   return request;
+// });
 
-instance.interceptors.response.use(response => {
-  console.log('-----> response', response);
-  return response;
-});
+// instance.interceptors.response.use(response => {
+//   console.log('-----> response', response);
+//   return response;
+// });
