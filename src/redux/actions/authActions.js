@@ -1,11 +1,12 @@
-import auth from '@react-native-firebase/auth';
 import * as types from './actionTypes';
 import { useDispatch } from 'react-redux';
 import useAuth from '../../services/auth';
+import useOtpActions from './otpActions';
 
 export default function useAuthActions() {
   const dispatch = useDispatch();
   const { login } = useAuth();
+  const { sentOtp } = useOtpActions();
   return ({
     // signUpInit: data => dispatch({
     //   type: types.SIGN_UP_INIT,
@@ -47,9 +48,9 @@ export default function useAuthActions() {
           let response = await login(data);
           const { user, roles, token } = response.data.success;
 
-          const confirmation = await auth().signInWithPhoneNumber('+919687031045');
+          sentOtp(user.phone);
 
-          return resolve({ user, roles, token, confirmation });
+          return resolve({ user, roles, token });
         } catch (error) {
           console.log('-----> error', error.data);
           return reject(error);
@@ -65,3 +66,4 @@ export default function useAuthActions() {
     }),
   });
 }
+

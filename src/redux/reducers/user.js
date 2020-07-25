@@ -1,4 +1,4 @@
-import { SET_USER_DATA, SIGN_UP_INIT, SIGN_UP, LOGIN_INIT, LOGIN } from './../actions/actionTypes';
+import { SET_USER_DATA, SIGN_UP_INIT, SIGN_UP, LOGIN_INIT, LOGIN, SEND_OTP } from './../actions/actionTypes';
 
 const initialState = {
   user: undefined,
@@ -70,12 +70,28 @@ export default (state = initialState, action = {}) => {
       return {
         ...state,
         loading: false,
-        confirmation: action.payload.confirmation,
         user: action.payload.user,
         roles: action.payload.roles,
         token: action.payload.token,
       };
     case `${LOGIN_INIT}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+      };
+
+    case `${SEND_OTP}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${SEND_OTP}_FULFILLED`:
+      return {
+        ...state,
+        loading: false,
+        confirmation: action.payload.confirmation,
+      };
+    case `${SEND_OTP}_REJECTED`:
       return {
         ...state,
         loading: false,

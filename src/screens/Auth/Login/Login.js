@@ -13,6 +13,7 @@ import * as Yup from 'yup';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { useTranslation } from 'react-i18next';
 import Layout from '../../../utils/Layout';
+import useOtpActions from '../../../redux/actions/otpActions';
 
 function LoginButton({ label, onPress }) {
   return (
@@ -40,6 +41,8 @@ function Login(props) {
   const [loginError, setLoginError] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
   const { loginInit } = useAuthActions();
+  const { sentOtp } = useOtpActions();
+
   const { t } = useTranslation();
 
   const emailRef = React.createRef();
@@ -67,7 +70,7 @@ function Login(props) {
           validateOnBlur={false}
           validateOnChange={false}
           initialValues={{
-            email: 'sawan@vshwan.com',
+            email: 'nilesh@newtest.com',
             password: '123456',
           }}
           validationSchema={schema}
@@ -83,8 +86,14 @@ function Login(props) {
                 props.navigation.navigate('Otp');
               })
               .catch((error) => {
-                console.log('----->login error ', error.response);
-                setLoginError('Invalid email or password');
+                const { otp_verified, email, phone } = error.response.data.data;
+                if (email) {
+                  sentOtp(phone);
+                  props.navigation.navigate('Otp');
+                }
+                else {
+                  setLoginError('Invalid email or password');
+                }
               });
           }}
         >
