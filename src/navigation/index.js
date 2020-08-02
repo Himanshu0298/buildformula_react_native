@@ -14,7 +14,7 @@ import { useSelector } from 'react-redux';
 import LanguageSelect from '../screens/Auth/LanguageSelect';
 import SettingsScreen from '../screens/Settings';
 import CustomTabBar from './Components/CustomTabBar';
-import SignUp from '../screens/Auth/Register';
+import SignUp from '../screens/Auth/SignUp';
 import PackageSelect from '../screens/Auth/PackageSelect';
 
 const optionalConfigObject = {
