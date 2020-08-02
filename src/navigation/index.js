@@ -8,13 +8,14 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Home from '../screens/Home';
 import TouchID from 'react-native-touch-id';
 import DrawerContent from './Components/DrawerContent';
-// import Signup from '../screens/Auth/Signup';
 import Login from '../screens/Auth/Login';
 import OtpScreen from '../screens/Auth/OtpScreen';
 import { useSelector } from 'react-redux';
 import LanguageSelect from '../screens/Auth/LanguageSelect';
 import SettingsScreen from '../screens/Settings';
 import CustomTabBar from './Components/CustomTabBar';
+import SignUp from '../screens/Auth/SignUp';
+import PackageSelect from '../screens/Auth/PackageSelect';
 
 const optionalConfigObject = {
   unifiedErrors: false, // use unified error messages (default false)
@@ -173,8 +174,9 @@ function NavContainer() {
             <Fragment>
               <Stack.Screen name="LanguageSelect" component={LanguageSelect} options={{ headerShown: false }} />
               <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
-              {/* <Stack.Screen name="SignUp" component={Signup} options={{ headerShown: false }} /> */}
+              <Stack.Screen name="SignUp" component={SignUp} options={{ headerShown: false }} />
               <Stack.Screen name="Otp" component={OtpScreen} options={{ headerShown: false }} />
+              <Stack.Screen name="PackageSelect" component={PackageSelect} options={{ headerShown: false }} />
             </Fragment>
           }
         </Stack.Navigator>

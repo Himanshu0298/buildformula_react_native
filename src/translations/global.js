@@ -12,6 +12,16 @@ export default {
       forgotPassword: 'Forgot Password?',
       registerLink: 'Don’t have account? Register as company',
 
+      //SignUp
+      subHeading_signUp: 'Sign up to continue',
+      firstNameLabel: 'First Name',
+      lastNameLabel: 'Last Name',
+      phoneLabel: 'Phone',
+      GenderLabel: 'Gender',
+      SignUp: 'SIGN UP',
+      cnfPasswordLabel: 'Confirm password!',
+      msgBlankCnfPassword: 'Re-Enter your password!',
+      loginLink: 'Already have an account? Log in',
 
       paymentInstallment: [{ id: 1, name: 'Full payment' }, { id: 2, name: 'Custom Payment' }, { id: 3, name: '1st big installment' }],
       labelSignInInfo: 'Sign in to your account',

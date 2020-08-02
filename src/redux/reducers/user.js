@@ -1,4 +1,4 @@
-import { SET_USER_DATA, SIGN_UP_INIT, SIGN_UP, LOGIN_INIT, LOGIN, SEND_OTP } from './../actions/actionTypes';
+import { SET_USER_DATA, SIGN_UP_INIT, SIGN_UP, LOGIN_INIT, LOGIN, SEND_OTP, VERIFY_OTP } from './../actions/actionTypes';
 
 const initialState = {
   user: undefined,
@@ -61,37 +61,17 @@ export default (state = initialState, action = {}) => {
     //     loading: false,
     //   };
 
-    case `${LOGIN_INIT}_PENDING`:
+    case `${VERIFY_OTP}_PENDING`:
       return {
         ...state,
         loading: true,
       };
-    case `${LOGIN_INIT}_FULFILLED`:
-      return {
-        ...state,
-        loading: false,
-        user: action.payload.user,
-        roles: action.payload.roles,
-        token: action.payload.token,
-      };
-    case `${LOGIN_INIT}_REJECTED`:
+    case `${VERIFY_OTP}_FULFILLED`:
       return {
         ...state,
         loading: false,
       };
-
-    case `${SEND_OTP}_PENDING`:
-      return {
-        ...state,
-        loading: true,
-      };
-    case `${SEND_OTP}_FULFILLED`:
-      return {
-        ...state,
-        loading: false,
-        confirmation: action.payload.confirmation,
-      };
-    case `${SEND_OTP}_REJECTED`:
+    case `${VERIFY_OTP}_REJECTED`:
       return {
         ...state,
         loading: false,
@@ -103,10 +83,11 @@ export default (state = initialState, action = {}) => {
         loading: true,
       };
     case `${LOGIN}_FULFILLED`:
+      console.log('----->  action.payload', action.payload)
       return {
         ...state,
         loading: false,
-        authenticated: true,
+        user: action.payload.user,
       };
     case `${LOGIN}_REJECTED`:
       return {

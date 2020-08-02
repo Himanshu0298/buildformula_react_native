@@ -6,5 +6,8 @@ export default function useAuth() {
     login: (data) => {
       return instance.post('/login', data, config({ multipart: true, auth: false }));
     },
+    otpCheck: (data) => {
+      return instance.post('/otp_check', data, config({ multipart: true, auth: false }));
+    },
   });
 }

@@ -1,12 +1,11 @@
 import * as types from './actionTypes';
 import { useDispatch } from 'react-redux';
 import useAuth from '../../services/auth';
-import useOtpActions from './otpActions';
 
 export default function useAuthActions() {
   const dispatch = useDispatch();
   const { login } = useAuth();
-  const { sentOtp } = useOtpActions();
+
   return ({
     // signUpInit: data => dispatch({
     //   type: types.SIGN_UP_INIT,
@@ -41,27 +40,25 @@ export default function useAuthActions() {
     //     resolve(userCredential.user);
     //   }),
     // }),
-    loginInit: data => dispatch({
-      type: types.LOGIN_INIT,
+    login: data => dispatch({
+      type: types.LOGIN,
       payload: new Promise(async (resolve, reject) => {
         try {
           let response = await login(data);
-          const { user, roles, token } = response.data.success;
+          const { data: userData } = response.data;
+          console.log('-----> response', userData);
 
-          sentOtp(user.phone);
-
-          return resolve({ user, roles, token });
+          return resolve({ user: userData });
         } catch (error) {
-          console.log('-----> error', error.data);
-          return reject(error);
+          const { data: userData = {} } = error?.response?.data;
+          const { email } = userData;
+          if (email) {
+            return resolve({ user: userData });
+          }
+          else {
+            return reject('Invalid email or password');
+          }
         }
-      }),
-    }),
-    login: authenticated => dispatch({
-      type: types.LOGIN,
-      payload: new Promise(async (resolve, reject) => {
-
-        return resolve();
       }),
     }),
   });

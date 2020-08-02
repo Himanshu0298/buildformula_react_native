@@ -1,269 +1,297 @@
-import React, { Fragment } from 'react';
-import {
-  StyleSheet, Text, View, StatusBar, Image, KeyboardAvoidingView, ScrollView, Alert,
-  TouchableOpacity,
-} from 'react-native';
-import { withTheme } from 'react-native-paper';
+import React, { useState } from 'react';
+import { StyleSheet, View, Image, TouchableOpacity } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { withTheme, Headline, Subheading, Button } from 'react-native-paper';
 import { theme } from '../../../styles/theme';
-import logo from './../../../assets/images/logo.png';
-import nameIcon from './../../../assets/images/name.png';
-import emailIcon from './../../../assets/images/email.png';
-import phoneIcon from './../../../assets/images/phone.png';
-import passwordIcon from './../../../assets/images/password.png';
-import Layout from '../../../util/Layout';
+import banner from './../../../assets/images/banner.png';
+import image from './../../../assets/images/buildings.png';
+import BaseText from '../../../components/BaseText';
 import { Formik } from 'formik';
 import CustomInput from '../Components/CustomInput';
-import * as Yup from 'yup';
 import useAuthActions from '../../../redux/actions/authActions';
-import Spinner from 'react-native-loading-spinner-overlay';
 import { useSelector } from 'react-redux';
-import PhoneInput from '../Components/PhoneInput';
+import * as Yup from 'yup';
+import Spinner from 'react-native-loading-spinner-overlay';
+import { useTranslation } from 'react-i18next';
+import Layout from '../../../utils/Layout';
+import { TextInput } from 'react-native-paper';
 
-const schema = Yup.object().shape({
-  name: Yup.string().label('Name').required('Name is required'),
-  email: Yup.string().label('Email').email('Enter a valid email').required('Please enter a registered email'),
-  password: Yup.string().label('Password').required().min(6, 'Password must have at least 6 characters '),
-  confirmPassword: Yup.string().oneOf([Yup.ref('password')], 'Passwords do not match').required('Confirm Password is required'),
-});
-
-function Signup(props) {
-
-  const { loading } = useSelector(state => state.user);
-  const { signUpInit } = useAuthActions();
-
-  const emailRef = React.createRef();
-  const phoneRef = React.createRef();
-  const passwordRef = React.createRef();
-  const currentPasswordRef = React.createRef();
-
-  const userExistAlert = (error) => {
-    return (
-      Alert.alert(
-        'Alert',
-        error,
-        [
-          {
-            text: 'Cancel',
-            onPress: () => console.log('Cancel Pressed'),
-            style: 'cancel',
-          },
-          { text: 'OK', onPress: () => props.navigation.navigate('Login') },
-        ],
-        { cancelable: false },
-      )
-    );
-  };
-
+function LoginButton({ label, onPress }) {
   return (
-    <KeyboardAvoidingView behavior="height" styles={styles.container} enabled>
-      <StatusBar barStyle="light-content" backgroundColor={theme.colors.primary} />
-      <Spinner
-        visible={loading}
-        textContent={''}
-      />
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        styles={styles.container}
-      >
-        <View style={styles.contentContainer}>
-          <View style={styles.logoContainer}>
-            <Image source={logo} style={styles.logo} />
-          </View>
-          <View style={styles.headingContainer}>
-            <Text style={styles.headline}>
-              Welcome,
-          </Text>
-            <Text style={styles.caption}>Sign Up to continue</Text>
-          </View>
-          <View style={styles.inputContainer}>
-            <Formik
-              initialValues={{
-                name: 'Ravi',
-                email: 'ravi@gmail.com',
-                phone: '+919687031045',
-                password: '123456',
-                confirmPassword: '123456',
-              }}
-              validate={(values) => {
-                const errors = {};
-                if (!values.phone) {
-                  errors.phone = 'Phone number is not valid';
-                }
-                else if (!phoneRef.current.isValidNumber()) {
-                  errors.phone = 'Phone number is not valid';
-                }
-                return errors;
-              }}
-              validateOnBlur={false}
-              validateOnChange={false}
-              validationSchema={schema}
-              onSubmit={values => {
-                delete values.confirmPassword;
-                signUpInit(values)
-                  .then(() => props.navigation.navigate('Otp', { user: values, isLogin: false }))
-                  .catch((error) => userExistAlert(error));
-              }}
-            >
-              {({ handleChange, values, handleSubmit, handleBlur, isValid, errors }) => (
-                <Fragment>
-                  <CustomInput
-                    name="name"
-                    value={values.name}
-                    onChangeText={handleChange('name')}
-                    placeholder="Name"
-                    autoCapitalize="none"
-                    onBlur={handleBlur('name')}
-                    onSubmitEditing={() => emailRef && emailRef.current.focus()}
-                    image={nameIcon}
-                    error={errors.name}
-                  />
-                  <CustomInput
-                    name="email"
-                    ref={emailRef}
-                    value={values.email}
-                    onChangeText={handleChange('email')}
-                    placeholder="Email"
-                    autoCapitalize="none"
-                    onBlur={handleBlur('email')}
-                    onSubmitEditing={() => phoneRef && phoneRef.current.focus()}
-                    image={emailIcon}
-                    error={errors.email}
-                  />
-                  <PhoneInput
-                    name="phone"
-                    ref={phoneRef}
-                    value={values.phone}
-                    onChangeText={handleChange('phone')}
-                    onBlur={handleBlur('phone')}
-                    onSubmitEditing={() => passwordRef && passwordRef.current.focus()}
-                    placeholder="Mobile"
-                    image={phoneIcon}
-                    error={errors.phone}
-                  />
-                  <CustomInput
-                    name="password"
-                    ref={passwordRef}
-                    secureTextEntry
-                    value={values.password}
-                    onChangeText={handleChange('password')}
-                    onBlur={handleBlur('password')}
-                    onSubmitEditing={() => currentPasswordRef && currentPasswordRef.current.focus()}
-                    placeholder="Password"
-                    autoCapitalize="none"
-                    image={passwordIcon}
-                    error={errors.password}
-                  />
-                  <CustomInput
-                    name="confirmPassword"
-                    ref={currentPasswordRef}
-                    secureTextEntry
-                    value={values.confirmPassword}
-                    onChangeText={handleChange('confirmPassword')}
-                    onBlur={handleBlur('confirmPassword')}
-                    onSubmitEditing={handleSubmit}
-                    placeholder="Confirm Password"
-                    autoCapitalize="none"
-                    image={passwordIcon}
-                    returnKeyType={'done'}
-                    error={errors.confirmPassword}
-                  />
-                  <TouchableOpacity
-                    onPress={handleSubmit}
-                    disabled={loading}
-                    style={styles.buttonContainer}
-                  >
-                    <View style={styles.submitButton}>
-                      <Text style={styles.signUpText}>Sign Up</Text>
-                    </View>
-                  </TouchableOpacity>
-                </Fragment>
-              )}
-            </Formik>
-            <View style={styles.footerContainer}>
-              <Text style={styles.smallCaption}>By signing up you have agreed to our</Text>
-              <Text style={styles.termsText}>Terms of Use & Privacy Policy</Text>
-            </View>
-          </View>
-        </View>
-      </ScrollView >
-    </KeyboardAvoidingView >
+    <Button
+      style={{ width: '90%' }}
+      color={theme.colors.accent}
+      mode="contained"
+      contentStyle={{ padding: 8 }}
+      theme={{ roundness: 15 }}
+      onPress={onPress}>
+      <BaseText style={styles.buttonText}>
+        {label}
+      </BaseText>
+    </Button >
   );
 }
 
-const commonStyles = StyleSheet.create({
-  text: {
-    fontSize: 15,
-    color: '#fff',
-  },
-  center: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+const schema = Yup.object().shape({
+  email: Yup.string().email('Please enter a valid email').label('email').required('Please enter a valid email'),
+  password: Yup.string().label('Password').required('Please enter a valid password').min(6, 'Password must have at least 6 characters '),
 });
+
+function SignUp(props) {
+
+  const [loginError, setLoginError] = useState(null);
+  const [showCnfPass, toggleShowCnfPass] = useState(null);
+  const [showPass, toggleShowPass] = useState(null);
+  const { loginInit } = useAuthActions();
+  const { t } = useTranslation();
+
+  const lastRef = React.createRef();
+  const phoneRef = React.createRef();
+  const emailRef = React.createRef();
+  const passwordRef = React.createRef();
+  const cnfPassRef = React.createRef();
+
+  const { loading } = useSelector(state => state.user);
+
+  return (
+    <Formik
+      validateOnBlur={false}
+      validateOnChange={false}
+      initialValues={{}}
+      validationSchema={schema}
+      onSubmit={async (values) => {
+        let formData = new FormData();
+
+        formData.append('email', values.email);
+        formData.append('password', values.password);
+
+        loginInit(formData)
+          .then((data) => {
+            console.log('----->data ', data.action.payload);
+            props.navigation.navigate('Otp');
+          })
+          .catch((error) => {
+            console.log('----->login error ', error.response);
+            setLoginError('Invalid email or password');
+          });
+      }}
+    >
+      {({ handleChange, values, handleSubmit, handleBlur, isValid, errors }) => (
+        <View style={styles.container}>
+          <Spinner
+            visible={loading}
+            textContent={''}
+          />
+          <>
+            <View style={styles.bannerContainer}>
+              <Image source={banner} style={styles.banner} />
+            </View>
+            <View style={styles.imageContainer}>
+              <Image source={image} style={styles.image} />
+            </View>
+
+            <View style={styles.contentContainer}>
+              <View style={styles.headlineContainer}>
+                <Headline style={{ fontWeight: 'bold' }}>{t('heading')}</Headline>
+                <Subheading>{t('subHeading')}</Subheading>
+              </View>
+              <View style={styles.inputMainContainer}>
+                <KeyboardAwareScrollView
+                  showsVerticalScrollIndicator={false}
+                  keyboardShouldPersistTaps="handled"
+                  keyboardDismissMode="on-drag"
+                >
+                  <View style={styles.inputsContainer}>
+                    <CustomInput
+                      name="firstName"
+                      label={t('firstNameLabel')}
+                      containerStyles={styles.inputStyles}
+                      value={values.firstName}
+                      onChangeText={handleChange('firstName')}
+                      onBlur={handleBlur('firstName')}
+                      placeholder={t('firstNameLabel')}
+                      autoCapitalize="none"
+                      returnKeyType={'next'}
+                      onSubmitEditing={() => lastRef && lastRef.current.focus()}
+                      error={errors.firstName}
+                    />
+                    <CustomInput
+                      name="lastName"
+                      label={t('lastNameLabel')}
+                      containerStyles={styles.inputStyles}
+                      ref={lastRef}
+                      value={values.lastName}
+                      onChangeText={handleChange('lastName')}
+                      onBlur={handleBlur('lastName')}
+                      placeholder={t('lastNameLabel')}
+                      autoCapitalize="none"
+                      returnKeyType={'next'}
+                      onSubmitEditing={() => phoneRef && phoneRef.current.focus()}
+                      error={errors.lastName}
+                    />
+                    <CustomInput
+                      name="phone"
+                      label={t('phoneLabel')}
+                      containerStyles={styles.inputStyles}
+                      ref={phoneRef}
+                      value={values.phone}
+                      onChangeText={handleChange('phone')}
+                      onBlur={handleBlur('phone')}
+                      placeholder={t('phoneLabel')}
+                      autoCapitalize="none"
+                      returnKeyType={'next'}
+                      onSubmitEditing={() => emailRef && emailRef.current.focus()}
+                      error={errors.phone}
+                    />
+                    <CustomInput
+                      name="email"
+                      label={t('emailLabel')}
+                      containerStyles={styles.inputStyles}
+                      ref={emailRef}
+                      value={values.email}
+                      onChangeText={handleChange('email')}
+                      onBlur={handleBlur('email')}
+                      placeholder={t('msgBlankEmail')}
+                      autoCapitalize="none"
+                      returnKeyType={'done'}
+                      onSubmitEditing={() => passwordRef && passwordRef.current.focus()}
+                      error={errors.email}
+                    />
+                    <CustomInput
+                      name="password"
+                      label={t('passwordLabel')}
+                      containerStyles={styles.inputStyles}
+                      ref={passwordRef}
+                      value={values.password}
+                      onChangeText={handleChange('password')}
+                      onBlur={handleBlur('password')}
+                      placeholder={t('msgBlankPassword')}
+                      autoCapitalize="none"
+                      returnKeyType={'next'}
+                      secureTextEntry={!showPass}
+                      onSubmitEditing={() => cnfPassRef && cnfPassRef.current.focus()}
+                      error={errors.password}
+                      right={
+                        <TextInput.Icon
+                          name={showPass ? 'eye-off' : 'eye'}
+                          onPress={() => toggleShowPass(value => !value)}
+                        />
+                      }
+                    />
+                    <CustomInput
+                      name="confirmPassword"
+                      label={t('cnfPasswordLabel')}
+                      containerStyles={styles.inputStyles}
+                      ref={cnfPassRef}
+                      value={values.confirmPassword}
+                      onChangeText={handleChange('email')}
+                      onBlur={handleBlur('email')}
+                      placeholder={t('msgBlankCnfPassword')}
+                      autoCapitalize="none"
+                      returnKeyType={'done'}
+                      error={errors.confirmPassword}
+                      secureTextEntry={!showCnfPass}
+                      right={
+                        <TextInput.Icon
+                          name={showCnfPass ? 'eye-off' : 'eye'}
+                          onPress={() => toggleShowCnfPass(value => !value)}
+                        />
+                      }
+                    />
+                    <LoginButton
+                      label={t('signUp')}
+                      onPress={handleSubmit} />
+                    <TouchableOpacity onPress={() => props.navigation.goBack()} style={styles.registerContainer}>
+                      <BaseText>{t('loginLink')}</BaseText>
+                    </TouchableOpacity>
+                  </View>
+                </KeyboardAwareScrollView>
+              </View>
+            </View>
+          </>
+        </View >
+      )}
+    </Formik>
+  );
+}
 
 const styles = StyleSheet.create({
   container: {
     height: '100%',
   },
-  contentContainer: {
-    paddingHorizontal: 30,
-    paddingVertical: 20,
-    backgroundColor: theme.colors.primary,
-  },
-  //Screen Header
-  logoContainer: {
-    paddingTop: 20,
+  bannerContainer: {
+    width: '100%',
+    display: 'flex',
     alignItems: 'center',
   },
-  logo: {
-    height: Layout.window.width * 0.44,
-    width: Layout.window.width * 0.65,
+  banner: {
+    width: Layout.window.width * 0.75,
+    height: (Layout.window.width * 0.75) * (5 / 12),
   },
-  //Screen Heading
-  headingContainer: {
-    paddingTop: 30,
+  imageContainer: {
+    display: 'flex',
+    marginBottom: -30,
+    right: 10,
+    alignItems: 'center',
   },
-  headline: {
-    ...commonStyles.text,
-    fontSize: 25,
+  image: {
+    width: Layout.window.width * 0.75,
+    height: (Layout.window.width * 0.75) * (15 / 22),
+  },
+  contentContainer: {
+    display: 'flex',
+    backgroundColor: theme.colors.primary,
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    borderTopLeftRadius: 50,
+    borderTopRightRadius: 50,
+  },
+  headlineContainer: {
+    display: 'flex',
+    margin: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loginError: {
+    fontSize: 16,
     fontWeight: 'bold',
+    textAlign: 'center',
   },
-  caption: {
-    ...commonStyles.text,
-    fontSize: 12,
+  inputMainContainer: {
+    width: '100%',
+    display: 'flex',
+    paddingBottom: 10,
+    justifyContent: 'space-around',
+    alignItems: 'center',
   },
-  //User Inputs Container
-  inputContainer: {
-    paddingTop: 20,
+  inputsContainer: {
+    alignItems: 'center',
+    display: 'flex',
+    width: '90%',
   },
-  //SignUp Button
-  buttonContainer: {
-    paddingTop: 20,
+  inputStyles: {
+    marginVertical: 20,
   },
-  submitButton: {
-    ...commonStyles.center,
-    borderRadius: 5,
-    height: 45,
-    backgroundColor: '#000',
+  LoginButton: {
+    width: '70%',
+    padding: 10,
+    elevation: 5,
+    borderRadius: 30,
+    display: 'flex',
+    alignItems: 'center',
+    marginTop: 20,
+    backgroundColor: theme.colors.primary,
   },
-  signUpText: {
-    ...commonStyles.text,
-  },
-  //footer
-  footerContainer: {
-    paddingTop: 30,
-    ...commonStyles.center,
-  },
-  smallCaption: {
-    ...commonStyles.text,
-    fontSize: 12,
-  },
-  termsText: {
-    ...commonStyles.text,
+  buttonText: {
     fontWeight: 'bold',
-    fontSize: 12,
+    fontSize: 18,
+  },
+  registerContainer: {
+    display: 'flex',
+    padding: 3,
+    width: '100%',
+    alignItems: 'center',
   },
 });
 
-export default withTheme(Signup);
+export default withTheme(SignUp);

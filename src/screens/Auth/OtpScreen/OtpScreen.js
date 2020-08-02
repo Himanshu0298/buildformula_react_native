@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Animated, SafeAreaView, Alert, View, StyleSheet, Platform, TouchableOpacity, Image } from 'react-native';
-import auth from '@react-native-firebase/auth';
 import { useSelector } from 'react-redux';
 import image from './../../../assets/images/otp.png';
 import {
@@ -10,12 +9,12 @@ import {
   useClearByFocusCell,
 } from 'react-native-confirmation-code-field';
 
-import useAuthActions from '../../../redux/actions/authActions';
 import BaseText from '../../../components/BaseText';
 import { theme } from '../../../styles/theme';
 import { Button, withTheme } from 'react-native-paper';
 import Layout from '../../../utils/Layout';
 import Spinner from 'react-native-loading-spinner-overlay';
+import useOtpActions from '../../../redux/actions/otpActions';
 
 const CELL_SIZE = 50;
 const CELL_BORDER_RADIUS = 8;
@@ -38,52 +37,18 @@ const animateCell = ({ hasValue, index, isFocused }) => {
     }),
     Animated.spring(animationsScale[index], {
       useNativeDriver: false,
-      toValue: hasValue ? 0 : 1,
+      toValue: hasValue ? 1 : 1,
       duration: hasValue ? 300 : 250,
     }),
   ]).start();
 };
 
-const OtpScreen = (props) => {
-
-  const [value, setValue] = useState('');
+const OtpInput = ({ value, setValue, colors }) => {
   const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
   const [inputProps, getCellOnLayoutHandler] = useClearByFocusCell({
     value,
     setValue,
   });
-
-  const { colors } = props.theme;
-  const { confirmation, user, token, loading } = useSelector(state => state.user);
-  const { signUp, login } = useAuthActions();
-
-  const invalidCodeAlert = () => {
-    return (
-      Alert.alert(
-        'Alert',
-        'Invalid Code, Please try again',
-        [
-          { text: 'OK', onPress: () => setValue('') },
-        ],
-        { cancelable: false },
-      )
-    );
-  };
-
-  const verifyOtp = async () => {
-    try {
-      await confirmation.confirm(value);
-
-      auth().onAuthStateChanged(firebaseUser => {
-        if (firebaseUser) {
-          login({ user, token });
-        }
-      });
-    } catch (e) {
-      console.log('-----> verifyOtp error', e);
-      invalidCodeAlert();
-    }
-  };
 
   const renderCell = ({ index, symbol, isFocused }) => {
     const hasValue = Boolean(symbol);
@@ -138,6 +103,69 @@ const OtpScreen = (props) => {
   };
 
   return (
+    <CodeField
+      ref={ref}
+      {...inputProps}
+      value={value}
+      onChangeText={setValue}
+      cellCount={CELL_COUNT}
+      rootStyle={styles.codeFiledRoot}
+      keyboardType="number-pad"
+      renderCell={renderCell}
+    />
+  );
+};
+
+const OtpScreen = (props) => {
+  const { navigation } = props;
+
+  const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
+
+  const { colors } = props.theme;
+  const { user, loading } = useSelector(state => state.user);
+  const { verifyOtp } = useOtpActions();
+
+  const submit = async () => {
+    let formData = new FormData();
+    //TODO: Update translations
+    formData.append('mobile_otp', phone);
+    formData.append('user_id', user.id);
+    formData.append('email_otp', email);
+
+    verifyOtp(formData)
+      .then(data => {
+        navigation.navigate('PackageSelect');
+      })
+      .catch(error => {
+        console.log('-----> error', error);
+        Alert.alert(
+          'Alert',
+          error,
+          [
+            {
+              text: 'OK', onPress: () => {
+                if (error === 'Email OTP is invalid') {
+                  setEmail('');
+                }
+                else if (error === 'OTP not match') {
+                  setPhone('');
+                }
+                else {
+                  setEmail('');
+                  setPhone('');
+                }
+              },
+            },
+          ],
+          { cancelable: false },
+        );
+      });
+  };
+
+
+
+  return (
     <SafeAreaView style={styles.container}>
       <Spinner
         visible={loading}
@@ -149,29 +177,39 @@ const OtpScreen = (props) => {
         </View>
         <BaseText style={styles.title}>Verification Code</BaseText>
         <BaseText style={styles.subTitle}>
-          Enter the verification code{'\n'}
-          send to {'+91 9687031045'}
+          Enter the OTP send to {`+91 ${user.phone || '1111111111'}`}
           {/* send to {`+91 ${user.phone}`} */}
         </BaseText>
+        <OtpInput
+          value={phone}
+          setValue={setPhone}
+          colors={colors}
+        />
 
-        <CodeField
-          ref={ref}
-          {...inputProps}
-          value={value}
-          onChangeText={setValue}
-          cellCount={CELL_COUNT}
-          rootStyle={styles.codeFiledRoot}
-          keyboardType="number-pad"
-          renderCell={renderCell}
+        <View style={styles.resendContainer}>
+          <BaseText style={styles.subTitle}>Didn’t receive a code.</BaseText>
+          <TouchableOpacity onPress={() => console.log('----->resend ')}>
+            <BaseText style={styles.resend}> Resend</BaseText>
+          </TouchableOpacity>
+        </View>
+
+        <BaseText style={styles.subTitle}>
+          Enter the OTP send to {`${user.email}`}
+          {/* send to {`+91 ${user.phone}`} */}
+        </BaseText>
+        <OtpInput
+          value={email}
+          setValue={setEmail}
+          colors={colors}
         />
         <View style={styles.resendContainer}>
-          <BaseText style={styles.subTitle}>I didn’t receive a code.</BaseText>
+          <BaseText style={styles.subTitle}>Didn’t receive a code.</BaseText>
           <TouchableOpacity onPress={() => console.log('----->resend ')}>
             <BaseText style={styles.resend}> Resend</BaseText>
           </TouchableOpacity>
         </View>
         <Button
-          onPress={verifyOtp}
+          onPress={submit}
           color={colors.primary}
           mode="contained"
           style={styles.nextButton}
