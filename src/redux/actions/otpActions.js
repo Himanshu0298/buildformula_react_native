@@ -1,7 +1,7 @@
 import * as types from './actionTypes';
 import auth from '@react-native-firebase/auth';
 import { useDispatch } from 'react-redux';
-import useAuth from '../../services/auth';
+import useAuth from '../../services/user';
 
 export default function useOtpActions() {
   const dispatch = useDispatch();

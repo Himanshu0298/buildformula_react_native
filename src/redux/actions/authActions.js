@@ -1,10 +1,10 @@
 import * as types from './actionTypes';
 import { useDispatch } from 'react-redux';
-import useAuth from '../../services/auth';
+import useAuth from '../../services/user';
 
 export default function useAuthActions() {
   const dispatch = useDispatch();
-  const { login } = useAuth();
+  const { login, signUp } = useAuth();
 
   return ({
     // signUpInit: data => dispatch({
@@ -24,22 +24,21 @@ export default function useAuthActions() {
     //     resolve(confirmation);
     //   }),
     // }),
-    // signup: user => dispatch({
-    //   type: types.SIGN_UP,
-    //   payload: new Promise(async (resolve, reject) => {
-    //     const { email, password } = user;
+    signUp: user => dispatch({
+      type: types.SIGN_UP,
+      payload: new Promise(async (resolve, reject) => {
+        try {
+          let response = await signUp(user);
+          const { data: userData } = response.data;
+          console.log('-----> response', userData);
 
-    //     const emailCredentials = auth.EmailAuthProvider.credential(email, password);
-    //     const userCredential = await auth().currentUser.linkWithCredential(emailCredentials);
-    //     await writeUserData(userCredential.user.uid, {
-    //       ...user,
-    //       userId: userCredential.user.uid,
-    //       created: new Date(),
-    //     });
-
-    //     resolve(userCredential.user);
-    //   }),
-    // }),
+          return resolve({ user: userData });
+        } catch (error) {
+          const { msg } = error?.response?.data;
+          return reject(msg);
+        }
+      }),
+    }),
     login: data => dispatch({
       type: types.LOGIN,
       payload: new Promise(async (resolve, reject) => {

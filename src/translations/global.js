@@ -13,6 +13,7 @@ export default {
       registerLink: 'Don’t have account? Register as company',
 
       //SignUp
+      heading_signup: 'Welcome',
       subHeading_signUp: 'Sign up to continue',
       firstNameLabel: 'First Name',
       lastNameLabel: 'Last Name',

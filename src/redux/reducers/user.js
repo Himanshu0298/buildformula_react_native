@@ -26,40 +26,22 @@ export default (state = initialState, action = {}) => {
         authenticated: true,
       };
 
-    // case `${SIGN_UP_INIT}_PENDING`:
-    //   return {
-    //     ...state,
-    //     loading: true,
-    //   };
-    // case `${SIGN_UP_INIT}_FULFILLED`:
-    //   return {
-    //     ...state,
-    //     loading: false,
-    //     confirmation: action.payload,
-    //   };
-    // case `${SIGN_UP_INIT}_REJECTED`:
-    //   return {
-    //     ...state,
-    //     loading: false,
-    //   };
-
-    // case `${SIGN_UP}_PENDING`:
-    //   return {
-    //     ...state,
-    //     loading: true,
-    //   };
-    // case `${SIGN_UP}_FULFILLED`:
-    //   return {
-    //     ...state,
-    //     loading: false,
-    //     user: action.payload,
-    //     authenticated: true,
-    //   };
-    // case `${SIGN_UP}_REJECTED`:
-    //   return {
-    //     ...state,
-    //     loading: false,
-    //   };
+    case `${SIGN_UP}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${SIGN_UP}_FULFILLED`:
+      return {
+        ...state,
+        loading: false,
+        user: action.payload.user,
+      };
+    case `${SIGN_UP}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+      };
 
     case `${VERIFY_OTP}_PENDING`:
       return {
