@@ -61,6 +61,7 @@ function PackageSelect(props) {
         title="Customer"
         colors={['#F5576C', '#F093FB']}
         onSelectPackage={onSelectPackage}
+        roleId={3}
       />
     </View>
   );
