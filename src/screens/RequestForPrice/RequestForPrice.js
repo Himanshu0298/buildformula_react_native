@@ -6,12 +6,12 @@ import {
   StatusBar,
 } from 'react-native';
 
-export default function Home(props) {
+export default function RequestForPrice(props) {
 
   return (
     <View style={styles.container}>
       {/* <StatusBar barStyle="dark-content" backgroundColor="#eaeff1" /> */}
-      <Text>Dashboard</Text>
+      <Text>Request For Price</Text>
     </View>
   );
 }

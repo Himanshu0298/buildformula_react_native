@@ -6,12 +6,12 @@ import {
   StatusBar,
 } from 'react-native';
 
-export default function Home(props) {
+export default function MainPhase(props) {
 
   return (
     <View style={styles.container}>
       {/* <StatusBar barStyle="dark-content" backgroundColor="#eaeff1" /> */}
-      <Text>Dashboard</Text>
+      <Text>Main Phase</Text>
     </View>
   );
 }

@@ -1,4 +1,4 @@
-import { SET_USER_DATA, SIGN_UP_INIT, SIGN_UP, LOGIN_INIT, LOGIN, SEND_OTP, VERIFY_OTP } from './../actions/actionTypes';
+import { SET_USER_DATA, SELECT_ROLE, SIGN_UP, LOGIN, VERIFY_OTP } from './../actions/actionTypes';
 
 const initialState = {
   user: undefined,
@@ -59,17 +59,37 @@ export default (state = initialState, action = {}) => {
         loading: false,
       };
 
+    case `${SELECT_ROLE}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${SELECT_ROLE}_FULFILLED`:
+      return {
+        ...state,
+        loading: false,
+        authenticated: true,
+        //TODO: enable this once user data is returned in response
+        // user: action.payload.user,
+      };
+    case `${SELECT_ROLE}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+      };
+
     case `${LOGIN}_PENDING`:
       return {
         ...state,
         loading: true,
       };
     case `${LOGIN}_FULFILLED`:
-      console.log('----->  action.payload', action.payload)
+      const { user } = action.payload;
       return {
         ...state,
         loading: false,
-        user: action.payload.user,
+        user: user,
+        authenticated: user.default_role_id !== 0,
       };
     case `${LOGIN}_REJECTED`:
       return {

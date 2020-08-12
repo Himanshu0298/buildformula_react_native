@@ -8,7 +8,7 @@ import image from './../../../assets/images/buildings.png';
 import BaseText from '../../../components/BaseText';
 import { Formik } from 'formik';
 import CustomInput from '../Components/CustomInput';
-import useAuthActions from '../../../redux/actions/authActions';
+import useUserActions from '../../../redux/actions/userActions';
 import { useSelector } from 'react-redux';
 import * as Yup from 'yup';
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -117,7 +117,7 @@ function Login(props) {
   const { navigation } = props;
   const [loginError, setLoginError] = useState(null);
 
-  const { login } = useAuthActions();
+  const { login } = useUserActions();
 
   const bottomSheetRef = React.createRef();
 
@@ -177,15 +177,14 @@ function Login(props) {
 
         login(formData)
           .then((data) => {
-            const { otp_verified, email_verified, email } = data.value.user;
+            const { otp_verified, email_verified, default_role_id } = data.value.user;
 
             if (otp_verified === 'N' || email_verified === 'N') {
               navigation.navigate('Otp');
             }
-            else {
+            else if (default_role_id === 0) {
               navigation.navigate('PackageSelect');
             }
-
           })
           .catch((error) => {
             setLoginError(error);

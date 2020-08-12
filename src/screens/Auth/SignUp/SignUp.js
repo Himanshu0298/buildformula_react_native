@@ -8,7 +8,7 @@ import image from './../../../assets/images/buildings.png';
 import BaseText from '../../../components/BaseText';
 import { Formik } from 'formik';
 import CustomInput from '../Components/CustomInput';
-import useAuthActions from '../../../redux/actions/authActions';
+import useUserActions from '../../../redux/actions/userActions';
 import { useSelector } from 'react-redux';
 import * as Yup from 'yup';
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -129,7 +129,7 @@ function RenderContent(props) {
           right={
             <TextInput.Icon
               name={showPass ? 'eye-off' : 'eye'}
-              onPress={() => toggleShowPass(value => !value)}
+              onPress={() => toggleShowPass(v => !v)}
             />
           }
         />
@@ -149,7 +149,7 @@ function RenderContent(props) {
           right={
             <TextInput.Icon
               name={showCnfPass ? 'eye-off' : 'eye'}
-              onPress={() => console.log('-----> Icon',)}
+              onPress={() => toggleShowCnfPass(v => !v)}
             />
           }
         />
@@ -184,7 +184,7 @@ function SignUp(props) {
   const { navigation } = props;
 
   const [validationError, setValidationError] = React.useState({});
-  const { signUp } = useAuthActions();
+  const { signUp } = useUserActions();
 
   const bottomSheetRef = React.createRef();
 
@@ -247,15 +247,10 @@ function SignUp(props) {
         signUp(formData)
           .then((data) => {
             console.log('-----> data', data.value);
-            const { otp_verified, email_verified, email } = data.value.user;
-
-            if (otp_verified === 'N' || email_verified === 'N') {
+            const { email } = data.value.user;
+            if (email) {
               navigation.navigate('Otp');
             }
-            else {
-              navigation.navigate('PackageSelect');
-            }
-
           })
           .catch((error) => {
             setValidationError(error);

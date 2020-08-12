@@ -6,12 +6,12 @@ import {
   StatusBar,
 } from 'react-native';
 
-export default function Home(props) {
+export default function ProjectSchedule(props) {
 
   return (
     <View style={styles.container}>
       {/* <StatusBar barStyle="dark-content" backgroundColor="#eaeff1" /> */}
-      <Text>Dashboard</Text>
+      <Text>Project Schedule</Text>
     </View>
   );
 }

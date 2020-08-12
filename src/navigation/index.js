@@ -16,6 +16,18 @@ import SettingsScreen from '../screens/Settings';
 import CustomTabBar from './Components/CustomTabBar';
 import SignUp from '../screens/Auth/SignUp';
 import PackageSelect from '../screens/Auth/PackageSelect';
+import Inquiry from '../screens/Inquiry';
+import ProjectSchedule from '../screens/ProjectSchedule';
+import BookingChart from '../screens/BookingChart';
+import Payment from '../screens/Payment';
+import ProjectStructure from '../screens/ProjectStructure';
+import MainPhase from '../screens/MainPhase';
+import AssignTask from '../screens/AssignTask';
+import ProcessChart from '../screens/ProcessChart/Home';
+import Estimation from '../screens/Estimation';
+import RequestForPrice from '../screens/RequestForPrice';
+import PurchaseOrders from '../screens/PurchaseOrders';
+import Files from '../screens/Files';
 
 const optionalConfigObject = {
   unifiedErrors: false, // use unified error messages (default false)
@@ -82,6 +94,18 @@ function BottomTabs() {
       initialRouteName="HomeStack"
       tabBar={props => <CustomTabBar {...props} />}>
       <Tab.Screen name="Dashboard" component={Home} />
+      <Tab.Screen name="Inquiry" component={Inquiry} />
+      <Tab.Screen name="ProjectStructure" component={ProjectStructure} />
+      <Tab.Screen name="BookingChart" component={BookingChart} />
+      <Tab.Screen name="Payment" component={Payment} />
+      <Tab.Screen name="ProjectSchedule" component={ProjectSchedule} />
+      <Tab.Screen name="MainPhase" component={MainPhase} />
+      <Tab.Screen name="AssignTask" component={AssignTask} />
+      <Tab.Screen name="ProcessChart" component={ProcessChart} />
+      <Tab.Screen name="Estimation" component={Estimation} />
+      <Tab.Screen name="RequestForPrice" component={RequestForPrice} />
+      <Tab.Screen name="PurchaseOrders" component={PurchaseOrders} />
+      <Tab.Screen name="Files" component={Files} />
       <Tab.Screen name="Settings" component={SettingsScreen} />
     </Tab.Navigator>
   );

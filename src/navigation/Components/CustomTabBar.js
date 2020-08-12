@@ -45,7 +45,7 @@ function CustomTabBar({ navigation, state, descriptors }) {
           Menu
         </Button>
         <Button
-          icon="settings"
+          icon="cog-outline"
           mode="text"
           accessibilityRole="button"
           accessibilityStates={isFocused ? ['selected'] : []}

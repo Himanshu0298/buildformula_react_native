@@ -1,37 +1,66 @@
 import React from 'react';
 import { StyleSheet, View, TouchableOpacity } from 'react-native';
 import { Title, withTheme, Caption, Subheading } from 'react-native-paper';
-import useAuthActions from '../../../redux/actions/authActions';
+import useUserActions from '../../../redux/actions/userActions';
 import { useSelector } from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { useTranslation } from 'react-i18next';
 import LinearGradient from 'react-native-linear-gradient';
 
-function PlanBox({ title, onPress, colors }) {
+function RoleBox({ title, onSelectPackage, roleId, colors }) {
   return (
-    <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} colors={colors} style={styles.planContainer}>
-      <Subheading>{title}</Subheading>
-    </LinearGradient>
+    <TouchableOpacity onPress={() => onSelectPackage(roleId)} style={styles.roleContainer}>
+      <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} colors={colors} style={styles.roleBox}>
+        <Subheading>{title}</Subheading>
+      </LinearGradient>
+    </TouchableOpacity>
   );
 }
 
 function PackageSelect(props) {
+  const { user, loading } = useSelector(state => state.user);
+  const { selectRole } = useUserActions();
+
+  function onSelectPackage(roleId) {
+    let formData = new FormData();
+    //TODO: Update translations
+    formData.append('user_id', user.id);
+    formData.append('default_role_id', roleId);
+
+    selectRole(formData)
+      .then(data => {
+        console.log('-----> data', data.value);
+
+      })
+      .catch(error => {
+        console.log('-----> error', error);
+      });
+  }
 
   return (
     <View style={styles.container}>
+      <Spinner
+        visible={loading}
+        textContent={''}
+      />
       <Title style={{ color: '#000' }}>Select Your Role</Title>
       <Caption style={{ color: 'rgba(0, 0, 0, 0.5)' }}>Choose your Role for the project</Caption>
-      <PlanBox
+      <RoleBox
         title="Developer"
         colors={['#8C55FE', '#21D4FD']}
+        onSelectPackage={onSelectPackage}
+        roleId={1}
       />
-      <PlanBox
+      <RoleBox
         title="Supplier"
         colors={['#FA6A88', '#FF9A8B']}
+        onSelectPackage={onSelectPackage}
+        roleId={2}
       />
-      <PlanBox
+      <RoleBox
         title="Customer"
         colors={['#F5576C', '#F093FB']}
+        onSelectPackage={onSelectPackage}
       />
     </View>
   );
@@ -40,15 +69,17 @@ function PackageSelect(props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    borderWidth: 1,
     paddingHorizontal: 20,
     paddingVertical: 30,
   },
-  planContainer: {
+  roleContainer: {
     flex: 0.22,
-    padding: 12,
-    borderRadius: 15,
     marginVertical: 15,
+  },
+  roleBox: {
+    flex: 1,
+    borderRadius: 15,
+    padding: 12,
   },
 });
 
