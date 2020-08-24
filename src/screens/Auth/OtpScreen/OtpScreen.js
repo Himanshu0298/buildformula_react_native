@@ -1,6 +1,15 @@
-import React, { useState } from 'react';
-import { Animated, SafeAreaView, Alert, View, StyleSheet, Platform, TouchableOpacity, Image } from 'react-native';
-import { useSelector } from 'react-redux';
+import React, {useState} from 'react';
+import {
+  Animated,
+  SafeAreaView,
+  Alert,
+  View,
+  StyleSheet,
+  Platform,
+  TouchableOpacity,
+  Image,
+} from 'react-native';
+import {useSelector} from 'react-redux';
 import image from './../../../assets/images/otp.png';
 import {
   CodeField,
@@ -10,8 +19,8 @@ import {
 } from 'react-native-confirmation-code-field';
 
 import BaseText from '../../../components/BaseText';
-import { theme } from '../../../styles/theme';
-import { Button, withTheme } from 'react-native-paper';
+import {theme} from '../../../styles/theme';
+import {Button, withTheme} from 'react-native-paper';
 import Layout from '../../../utils/Layout';
 import Spinner from 'react-native-loading-spinner-overlay';
 import useOtpActions from '../../../redux/actions/otpActions';
@@ -22,13 +31,13 @@ const DEFAULT_CELL_BG_COLOR = 'rgba(4, 29, 54, 0.1)';
 const NOT_EMPTY_CELL_BG_COLOR = 'rgba(4, 29, 54, 0.1)';
 const ACTIVE_CELL_BG_COLOR = '#fff';
 
-const { Value, Text: AnimatedText } = Animated;
+const {Value, Text: AnimatedText} = Animated;
 
 const CELL_COUNT = 6;
 
 const animationsColor = [...new Array(CELL_COUNT)].map(() => new Value(0));
 const animationsScale = [...new Array(CELL_COUNT)].map(() => new Value(1));
-const animateCell = ({ hasValue, index, isFocused }) => {
+const animateCell = ({hasValue, index, isFocused}) => {
   Animated.parallel([
     Animated.timing(animationsColor[index], {
       useNativeDriver: false,
@@ -43,35 +52,37 @@ const animateCell = ({ hasValue, index, isFocused }) => {
   ]).start();
 };
 
-const OtpInput = ({ value, setValue, colors }) => {
-  const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
+const OtpInput = ({value, setValue, colors}) => {
+  const ref = useBlurOnFulfill({value, cellCount: CELL_COUNT});
   const [inputProps, getCellOnLayoutHandler] = useClearByFocusCell({
     value,
     setValue,
   });
 
-  const renderCell = ({ index, symbol, isFocused }) => {
+  const renderCell = ({index, symbol, isFocused}) => {
     const hasValue = Boolean(symbol);
     const animatedCellStyle = {
       backgroundColor: hasValue
         ? animationsScale[index].interpolate({
-          inputRange: [0, 1],
-          outputRange: [NOT_EMPTY_CELL_BG_COLOR, ACTIVE_CELL_BG_COLOR],
-        })
+            inputRange: [0, 1],
+            outputRange: [NOT_EMPTY_CELL_BG_COLOR, ACTIVE_CELL_BG_COLOR],
+          })
         : animationsColor[index].interpolate({
-          inputRange: [0, 1],
-          outputRange: [DEFAULT_CELL_BG_COLOR, ACTIVE_CELL_BG_COLOR],
-        }),
+            inputRange: [0, 1],
+            outputRange: [DEFAULT_CELL_BG_COLOR, ACTIVE_CELL_BG_COLOR],
+          }),
       borderWidth: isFocused
         ? animationsScale[index].interpolate({
-          inputRange: [0, 1],
-          outputRange: [0, 1],
-        }) : null,
+            inputRange: [0, 1],
+            outputRange: [0, 1],
+          })
+        : null,
       borderColor: isFocused
         ? animationsScale[index].interpolate({
-          inputRange: [0, 1],
-          outputRange: ['transparent', colors.primary],
-        }) : null,
+            inputRange: [0, 1],
+            outputRange: ['transparent', colors.primary],
+          })
+        : null,
       borderRadius: animationsScale[index].interpolate({
         inputRange: [0, 1],
         outputRange: [CELL_SIZE, CELL_BORDER_RADIUS],
@@ -89,7 +100,7 @@ const OtpInput = ({ value, setValue, colors }) => {
     // Run animation on next event loop tik
     // Because we need first return new style prop and then animate this value
     setTimeout(() => {
-      animateCell({ hasValue, index, isFocused });
+      animateCell({hasValue, index, isFocused});
     }, 0);
 
     return (
@@ -117,14 +128,14 @@ const OtpInput = ({ value, setValue, colors }) => {
 };
 
 const OtpScreen = (props) => {
-  const { navigation } = props;
+  const {navigation} = props;
 
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
 
-  const { colors } = props.theme;
-  const { user, loading } = useSelector(state => state.user);
-  const { verifyOtp } = useOtpActions();
+  const {colors} = props.theme;
+  const {user, loading} = useSelector((state) => state.user);
+  const {verifyOtp} = useOtpActions();
 
   const submit = async () => {
     let formData = new FormData();
@@ -134,43 +145,37 @@ const OtpScreen = (props) => {
     formData.append('email_otp', email);
 
     verifyOtp(formData)
-      .then(data => {
+      .then((data) => {
         navigation.navigate('PackageSelect');
       })
-      .catch(error => {
+      .catch((error) => {
         console.log('-----> error', error);
         Alert.alert(
           'Alert',
           error,
           [
             {
-              text: 'OK', onPress: () => {
+              text: 'OK',
+              onPress: () => {
                 if (error === 'Email OTP is invalid') {
                   setEmail('');
-                }
-                else if (error === 'OTP not match') {
+                } else if (error === 'OTP not match') {
                   setPhone('');
-                }
-                else {
+                } else {
                   setEmail('');
                   setPhone('');
                 }
               },
             },
           ],
-          { cancelable: false },
+          {cancelable: false},
         );
       });
   };
 
-
-
   return (
     <SafeAreaView style={styles.container}>
-      <Spinner
-        visible={loading}
-        textContent={''}
-      />
+      <Spinner visible={loading} textContent={''} />
       <View style={styles.root}>
         <View style={styles.imageContainer}>
           <Image source={image} style={styles.image} />
@@ -180,11 +185,7 @@ const OtpScreen = (props) => {
           Enter the OTP send to {`+91 ${user.phone || '1111111111'}`}
           {/* send to {`+91 ${user.phone}`} */}
         </BaseText>
-        <OtpInput
-          value={phone}
-          setValue={setPhone}
-          colors={colors}
-        />
+        <OtpInput value={phone} setValue={setPhone} colors={colors} />
 
         <View style={styles.resendContainer}>
           <BaseText style={styles.subTitle}>Didn’t receive a code.</BaseText>
@@ -197,11 +198,7 @@ const OtpScreen = (props) => {
           Enter the OTP send to {`${user.email}`}
           {/* send to {`+91 ${user.phone}`} */}
         </BaseText>
-        <OtpInput
-          value={email}
-          setValue={setEmail}
-          colors={colors}
-        />
+        <OtpInput value={email} setValue={setEmail} colors={colors} />
         <View style={styles.resendContainer}>
           <BaseText style={styles.subTitle}>Didn’t receive a code.</BaseText>
           <TouchableOpacity onPress={() => console.log('----->resend ')}>
@@ -213,13 +210,12 @@ const OtpScreen = (props) => {
           color={colors.primary}
           mode="contained"
           style={styles.nextButton}
-          contentStyle={{ paddingVertical: 10, borderRadius: 15 }}
-          theme={{ roundness: 18 }}
-        >
+          contentStyle={{paddingVertical: 10, borderRadius: 15}}
+          theme={{roundness: 18}}>
           CONFIRM
         </Button>
       </View>
-    </SafeAreaView >
+    </SafeAreaView>
   );
 };
 
@@ -236,7 +232,7 @@ const styles = StyleSheet.create({
     height: CELL_SIZE + 5,
     width: CELL_SIZE - 12,
     lineHeight: CELL_SIZE,
-    ...Platform.select({ web: { lineHeight: 65 } }),
+    ...Platform.select({web: {lineHeight: 65}}),
     fontSize: 30,
     textAlign: 'center',
     color: '#000',
@@ -270,8 +266,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   image: {
-    width: Layout.window.width * 0.30,
-    height: (Layout.window.width * 0.32),
+    width: Layout.window.width * 0.3,
+    height: Layout.window.width * 0.32,
   },
   title: {
     fontSize: 25,
@@ -306,6 +302,5 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
 });
-
 
 export default withTheme(OtpScreen);

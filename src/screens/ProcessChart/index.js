@@ -1,1 +1,1 @@
-export { default } from './ProcessChart';
+export {default} from './ProcessChart';

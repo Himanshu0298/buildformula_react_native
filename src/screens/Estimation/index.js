@@ -1,1 +1,1 @@
-export { default } from './Estimation';
+export {default} from './Estimation';

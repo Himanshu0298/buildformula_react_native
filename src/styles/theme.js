@@ -1,4 +1,4 @@
-import { configureFonts, DefaultTheme } from 'react-native-paper';
+import {configureFonts, DefaultTheme} from 'react-native-paper';
 
 const fontConfig = {
   default: {
@@ -39,4 +39,3 @@ export const theme = {
   },
   fonts: configureFonts(fontConfig),
 };
-

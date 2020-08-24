@@ -1,13 +1,7 @@
 import React from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  StatusBar,
-} from 'react-native';
+import {StyleSheet, Text, View, StatusBar} from 'react-native';
 
 export default function Files(props) {
-
   return (
     <View style={styles.container}>
       {/* <StatusBar barStyle="dark-content" backgroundColor="#eaeff1" /> */}

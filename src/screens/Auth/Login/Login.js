@@ -1,60 +1,78 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState } from 'react';
-import { StyleSheet, View, ScrollView, Image, TouchableOpacity, Keyboard } from 'react-native';
-import { withTheme, Headline, Subheading, Button, TextInput } from 'react-native-paper';
-import { theme } from '../../../styles/theme';
+import React, {useState} from 'react';
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  Image,
+  TouchableOpacity,
+  Keyboard,
+} from 'react-native';
+import {
+  withTheme,
+  Headline,
+  Subheading,
+  Button,
+  TextInput,
+} from 'react-native-paper';
+import {theme} from '../../../styles/theme';
 import banner from './../../../assets/images/banner.png';
 import image from './../../../assets/images/buildings.png';
 import BaseText from '../../../components/BaseText';
-import { Formik } from 'formik';
+import {Formik} from 'formik';
 import CustomInput from '../Components/CustomInput';
 import useUserActions from '../../../redux/actions/userActions';
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
 import * as Yup from 'yup';
 import Spinner from 'react-native-loading-spinner-overlay';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 import Layout from '../../../utils/Layout';
 import BottomSheet from 'reanimated-bottom-sheet';
 
-function LoginButton({ label, onPress }) {
+function LoginButton({label, onPress}) {
   return (
     <View style={styles.loginButton}>
       <Button
         color={theme.colors.accent}
-        style={{ width: '100%' }}
+        style={{width: '100%'}}
         mode="contained"
-        contentStyle={{ padding: 8 }}
-        theme={{ roundness: 15 }}
+        contentStyle={{padding: 8}}
+        theme={{roundness: 15}}
         onPress={onPress}>
-        <BaseText style={styles.buttonText}>
-          {label}
-        </BaseText>
-      </Button >
+        <BaseText style={styles.buttonText}>{label}</BaseText>
+      </Button>
     </View>
-
   );
 }
 
 function RenderContent(props) {
-  const { loginError, values, handleChange, handleBlur, errors, handleSubmit, navigation } = props;
+  const {
+    loginError,
+    values,
+    handleChange,
+    handleBlur,
+    errors,
+    handleSubmit,
+    navigation,
+  } = props;
 
   const emailRef = React.useRef();
   const passwordRef = React.useRef();
 
-  const { t } = useTranslation();
+  const {t} = useTranslation();
 
   return (
     <View style={styles.contentContainer}>
       <View style={styles.headlineContainer}>
-        <Headline style={{ fontWeight: 'bold' }}>{t('heading')}</Headline>
+        <Headline style={{fontWeight: 'bold'}}>{t('heading')}</Headline>
         <Subheading>{t('subHeading')}</Subheading>
       </View>
       <View style={styles.inputMainContainer}>
-        {loginError &&
+        {loginError && (
           <View>
             <BaseText style={styles.loginError}>{loginError}</BaseText>
           </View>
-        }
+        )}
         <View style={styles.inputsContainer}>
           <CustomInput
             name="email"
@@ -73,7 +91,7 @@ function RenderContent(props) {
             name="password"
             label={t('passwordLabel')}
             ref={passwordRef}
-            containerStyles={{ marginTop: 20 }}
+            containerStyles={{marginTop: 20}}
             secureTextEntry={true}
             value={values.password}
             onChangeText={handleChange('password')}
@@ -83,21 +101,18 @@ function RenderContent(props) {
             returnKeyType={'done'}
             onSubmitEditing={handleSubmit}
             error={errors.password}
-          // right={
-          //   <TextInput.Icon
-          //     name={showPassword ? 'eye-off' : 'eye'}
-          //     onPress={() => setShowPassword(show => !show)}
-          //   />
-          // }
+            // right={
+            //   <TextInput.Icon
+            //     name={showPassword ? 'eye-off' : 'eye'}
+            //     onPress={() => setShowPassword(show => !show)}
+            //   />
+            // }
           />
           <TouchableOpacity style={styles.forgotContainer}>
             <BaseText>{t('forgotPassword')}</BaseText>
           </TouchableOpacity>
         </View>
-        <LoginButton
-          label={t('log in')}
-          onPress={handleSubmit}
-        />
+        <LoginButton label={t('log in')} onPress={handleSubmit} />
         <TouchableOpacity
           onPress={() => navigation.navigate('SignUp')}
           style={styles.registerContainer}>
@@ -109,19 +124,25 @@ function RenderContent(props) {
 }
 
 const schema = Yup.object().shape({
-  email: Yup.string().email('Please enter a valid email').label('email').required('Please enter a valid email'),
-  password: Yup.string().label('Password').required('Please enter a valid password').min(6, 'Password must have at least 6 characters '),
+  email: Yup.string()
+    .email('Please enter a valid email')
+    .label('email')
+    .required('Please enter a valid email'),
+  password: Yup.string()
+    .label('Password')
+    .required('Please enter a valid password')
+    .min(6, 'Password must have at least 6 characters '),
 });
 
 function Login(props) {
-  const { navigation } = props;
+  const {navigation} = props;
   const [loginError, setLoginError] = useState(null);
 
-  const { login } = useUserActions();
+  const {login} = useUserActions();
 
   const bottomSheetRef = React.createRef();
 
-  const { loading } = useSelector(state => state.user);
+  const {loading} = useSelector((state) => state.user);
 
   React.useEffect(() => {
     const focusUnsubscribe = navigation.addListener('focus', () => {
@@ -164,10 +185,12 @@ function Login(props) {
     <Formik
       validateOnBlur={false}
       validateOnChange={false}
-      initialValues={{
-        email: 'testuser1@gmail.com',
-        password: '123456',
-      }}
+      initialValues={
+        {
+          // email: 'testuser1@gmail.com',
+          // password: '123456',
+        }
+      }
       validationSchema={schema}
       onSubmit={async (values) => {
         let formData = new FormData();
@@ -177,26 +200,25 @@ function Login(props) {
 
         login(formData)
           .then((data) => {
-            const { otp_verified, email_verified, default_role_id } = data.value.user;
+            const {
+              otp_verified,
+              email_verified,
+              default_role_id,
+            } = data.value.user;
 
             if (otp_verified === 'N' || email_verified === 'N') {
               navigation.navigate('Otp');
-            }
-            else if (default_role_id === 0) {
+            } else if (default_role_id === 0) {
               navigation.navigate('PackageSelect');
             }
           })
           .catch((error) => {
             setLoginError(error);
           });
-      }}
-    >
-      {({ handleChange, values, handleSubmit, handleBlur, isValid, errors }) => (
+      }}>
+      {({handleChange, values, handleSubmit, handleBlur, isValid, errors}) => (
         <View style={styles.container}>
-          <Spinner
-            visible={loading}
-            textContent={''}
-          />
+          <Spinner visible={loading} textContent={''} />
           <View style={styles.topImageContainer}>
             <View style={styles.bannerContainer}>
               <Image source={banner} style={styles.banner} />
@@ -210,16 +232,17 @@ function Login(props) {
             snapPoints={['85%', '60%']}
             initialSnap={1}
             renderHeader={renderHeader}
-            renderContent={() => <RenderContent
-              loginError={loginError}
-              handleChange={handleChange}
-              values={values}
-              handleSubmit={handleSubmit}
-              handleBlur={handleBlur}
-              errors={errors}
-              navigation={navigation}
-            />
-            }
+            renderContent={() => (
+              <RenderContent
+                loginError={loginError}
+                handleChange={handleChange}
+                values={values}
+                handleSubmit={handleSubmit}
+                handleBlur={handleBlur}
+                errors={errors}
+                navigation={navigation}
+              />
+            )}
           />
         </View>
       )}
@@ -241,7 +264,7 @@ const styles = StyleSheet.create({
   },
   banner: {
     width: Layout.window.width * 0.75,
-    height: (Layout.window.width * 0.75) * (5 / 12),
+    height: Layout.window.width * 0.75 * (5 / 12),
   },
   imageContainer: {
     display: 'flex',
@@ -251,7 +274,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: Layout.window.width * 0.75,
-    height: (Layout.window.width * 0.75) * (15 / 22),
+    height: Layout.window.width * 0.75 * (15 / 22),
   },
   header: {
     backgroundColor: theme.colors.primary,
@@ -275,7 +298,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     height: '100%',
     justifyContent: 'space-around',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   headlineContainer: {
     height: '5%',

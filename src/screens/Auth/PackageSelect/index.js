@@ -1,1 +1,1 @@
-export { default } from './PackageSelect';
+export {default} from './PackageSelect';

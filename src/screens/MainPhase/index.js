@@ -1,1 +1,1 @@
-export { default } from './MainPhase';
+export {default} from './MainPhase';

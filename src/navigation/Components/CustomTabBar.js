@@ -1,12 +1,13 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { withTheme, Button, FAB, Appbar } from 'react-native-paper';
-import { theme } from '../../styles/theme';
+import {View, StyleSheet} from 'react-native';
+import {withTheme, Button, FAB, Appbar} from 'react-native-paper';
+import {theme} from '../../styles/theme';
 
-function CustomTabBar({ navigation, state, descriptors }) {
-
-  const settingIndex = state.routes.findIndex(route => route.name === 'Settings');
-  const { options } = descriptors[state.routes[settingIndex].key];
+function CustomTabBar({navigation, state, descriptors}) {
+  const settingIndex = state.routes.findIndex(
+    (route) => route.name === 'Settings',
+  );
+  const {options} = descriptors[state.routes[settingIndex].key];
   const isFocused = state.index === settingIndex;
 
   const onPress = () => {
@@ -40,7 +41,7 @@ function CustomTabBar({ navigation, state, descriptors }) {
           icon="format-list-bulleted"
           mode="text"
           style={styles.buttonStyles}
-          contentStyle={{ paddingVertical: 5 }}
+          contentStyle={{paddingVertical: 5}}
           onPress={() => navigation.toggleDrawer()}>
           Menu
         </Button>
@@ -53,17 +54,16 @@ function CustomTabBar({ navigation, state, descriptors }) {
           onLongPress={onLongPressSettings}
           style={styles.buttonStyles}
           onPress={onPress}
-          contentStyle={{ paddingVertical: 5 }}>
+          contentStyle={{paddingVertical: 5}}>
           Settings
         </Button>
       </Appbar>
-    </View >
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-  },
+  container: {},
   searchContainer: {
     position: 'absolute',
     alignSelf: 'center',

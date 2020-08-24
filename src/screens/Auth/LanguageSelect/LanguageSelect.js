@@ -1,33 +1,35 @@
 import React from 'react';
-import { StyleSheet, StatusBar, View, Image } from 'react-native';
-import { withTheme, Button, Headline } from 'react-native-paper';
+import {StyleSheet, StatusBar, View, Image} from 'react-native';
+import {withTheme, Button, Headline} from 'react-native-paper';
 import welcomeImage from './../../../assets/images/language.png';
 import banner from './../../../assets/images/banner.png';
 import BaseText from '../../../components/BaseText';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 import Layout from '../../../utils/Layout';
-import { theme } from '../../../styles/theme';
+import {theme} from '../../../styles/theme';
 
-
-function LanguageButton({ label, language, onPress, ...props }) {
+function LanguageButton({label, language, onPress, ...props}) {
   return (
     <Button
       {...props}
       style={styles.languageButton}
-      contentStyle={{ padding: 8, borderColor: props.color, borderWidth: 1, borderRadius: 15 }}
-      theme={{ roundness: 15 }}
+      contentStyle={{
+        padding: 8,
+        borderColor: props.color,
+        borderWidth: 1,
+        borderRadius: 15,
+      }}
+      theme={{roundness: 15}}
       onPress={() => onPress(language)}>
-      <BaseText style={styles.buttonText}>
-        {label}
-      </BaseText>
-    </Button >
+      <BaseText style={styles.buttonText}>{label}</BaseText>
+    </Button>
   );
 }
 
 function LanguageSelect(props) {
-  const { colors } = props.theme;
+  const {colors} = props.theme;
 
-  const { i18n } = useTranslation();
+  const {i18n} = useTranslation();
 
   const selectLanguage = (language) => {
     i18n.changeLanguage(language);
@@ -47,7 +49,9 @@ function LanguageSelect(props) {
       </View>
       <View style={styles.contentContainer}>
         <View style={styles.headlineContainer}>
-          <Headline style={{ fontWeight: '500', fontSize: 26 }}>Select Language</Headline>
+          <Headline style={{fontWeight: '500', fontSize: 26}}>
+            Select Language
+          </Headline>
         </View>
         <View style={styles.buttonContainer}>
           <LanguageButton
@@ -55,13 +59,15 @@ function LanguageSelect(props) {
             label="English"
             mode="contained"
             language="en"
-            onPress={selectLanguage} />
+            onPress={selectLanguage}
+          />
           <LanguageButton
             color={colors.text}
             mode="outlined"
             label="हिन्दी"
             language="hi"
-            onPress={selectLanguage} />
+            onPress={selectLanguage}
+          />
         </View>
       </View>
     </View>
@@ -85,7 +91,7 @@ const styles = StyleSheet.create({
   },
   banner: {
     width: Layout.window.width * 0.75,
-    height: (Layout.window.width * 0.75) * (5 / 12),
+    height: Layout.window.width * 0.75 * (5 / 12),
   },
   imageContainer: {
     display: 'flex',
@@ -94,7 +100,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: Layout.window.width * 0.75,
-    height: (Layout.window.width * 0.75) * (77 / 120),
+    height: Layout.window.width * 0.75 * (77 / 120),
   },
   contentContainer: {
     flex: 0.6,

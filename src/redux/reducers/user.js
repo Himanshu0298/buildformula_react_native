@@ -1,4 +1,10 @@
-import { SET_USER_DATA, SELECT_ROLE, SIGN_UP, LOGIN, VERIFY_OTP } from './../actions/actionTypes';
+import {
+  SET_USER_DATA,
+  SELECT_ROLE,
+  SIGN_UP,
+  LOGIN,
+  VERIFY_OTP,
+} from './../actions/actionTypes';
 
 const initialState = {
   user: undefined,
@@ -12,7 +18,6 @@ const initialState = {
 export default (state = initialState, action = {}) => {
   console.log('-----> action.type', action.type);
   switch (action.type) {
-
     case 'persist/REHYDRATE':
       return {
         ...state,
@@ -84,7 +89,7 @@ export default (state = initialState, action = {}) => {
         loading: true,
       };
     case `${LOGIN}_FULFILLED`:
-      const { user } = action.payload;
+      const {user} = action.payload;
       return {
         ...state,
         loading: false,

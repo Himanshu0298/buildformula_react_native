@@ -1,14 +1,12 @@
-import React, { Fragment } from 'react';
-import { StyleSheet, View, TextInput, Image, Text } from 'react-native';
+import React, {Fragment} from 'react';
+import {StyleSheet, View, TextInput, Image, Text} from 'react-native';
 import DefaultPhoneInput from 'react-native-phone-input';
 import PropTypes from 'prop-types';
 
-const PhoneInput = React.forwardRef(({ icon, error,value, ...rest }, ref) => (
+const PhoneInput = React.forwardRef(({icon, error, value, ...rest}, ref) => (
   <Fragment>
     <View style={styles.inputContainer}>
-      <View style={styles.imageContainer}>
-        {icon}
-      </View>
+      <View style={styles.imageContainer}>{icon}</View>
       <DefaultPhoneInput
         ref={ref}
         value={value}
@@ -21,11 +19,11 @@ const PhoneInput = React.forwardRef(({ icon, error,value, ...rest }, ref) => (
         }}
       />
     </View>
-    {error &&
+    {error && (
       <View style={styles.errorContainer}>
         <Text style={styles.errorStyles}>{error}</Text>
       </View>
-    }
+    )}
   </Fragment>
 ));
 
@@ -56,8 +54,7 @@ const styles = StyleSheet.create({
     padding: 1,
     marginHorizontal: 10,
   },
-  iconStyle: {
-  },
+  iconStyle: {},
   input: {
     height: 45,
     flex: 1,

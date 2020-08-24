@@ -1,38 +1,40 @@
 import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import {StyleSheet, View, Text} from 'react-native';
 import PropTypes from 'prop-types';
-import { TextInput, withTheme } from 'react-native-paper';
+import {TextInput, withTheme} from 'react-native-paper';
 
-const CustomInput = React.forwardRef(({ error, containerStyles, theme, ...rest }, ref) => (
-  <View style={[containerStyles, styles.container]}>
-    <View style={styles.inputContainer}>
-      <TextInput
-        {...rest}
-        ref={ref}
-        dense
-        error={error}
-        mode="outlined"
-        style={styles.input}
-        blurOnSubmit
-        theme={{
-          roundness: 10,
-          colors: {
-            placeholder: '#fff',
-            text: '#fff',
-            primary: '#fff',
-            underlineColor: 'transparent',
-            background: theme.colors.primary,
-          },
-        }}
-      />
-    </View>
-    {error &&
-      <View style={styles.errorContainer}>
-        <Text style={styles.errorStyles}>{error}</Text>
+const CustomInput = React.forwardRef(
+  ({error, containerStyles, theme, ...rest}, ref) => (
+    <View style={[containerStyles, styles.container]}>
+      <View style={styles.inputContainer}>
+        <TextInput
+          {...rest}
+          ref={ref}
+          dense
+          error={error}
+          mode="outlined"
+          style={styles.input}
+          blurOnSubmit
+          theme={{
+            roundness: 10,
+            colors: {
+              placeholder: '#fff',
+              text: '#fff',
+              primary: '#fff',
+              underlineColor: 'transparent',
+              background: theme.colors.primary,
+            },
+          }}
+        />
       </View>
-    }
-  </View>
-));
+      {error && (
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorStyles}>{error}</Text>
+        </View>
+      )}
+    </View>
+  ),
+);
 
 CustomInput.defaultProps = {
   returnKeyType: 'next',

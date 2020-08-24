@@ -1,16 +1,16 @@
-import React, { Fragment, useEffect, useState } from 'react';
-import { BackHandler } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { theme } from '../styles/theme';
-import { createStackNavigator } from '@react-navigation/stack';
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import React, {Fragment, useEffect, useState} from 'react';
+import {BackHandler} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
+import {theme} from '../styles/theme';
+import {createStackNavigator} from '@react-navigation/stack';
+import {createDrawerNavigator} from '@react-navigation/drawer';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Home from '../screens/Home';
 import TouchID from 'react-native-touch-id';
 import DrawerContent from './Components/DrawerContent';
 import Login from '../screens/Auth/Login';
 import OtpScreen from '../screens/Auth/OtpScreen';
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
 import LanguageSelect from '../screens/Auth/LanguageSelect';
 import SettingsScreen from '../screens/Settings';
 import CustomTabBar from './Components/CustomTabBar';
@@ -38,8 +38,10 @@ const authObject = {
   title: 'Authentication Required', // Android
   imageColor: theme.colors.primary, // Android
   imageErrorColor: theme.colors.error, // Android
-  sensorDescription: 'Input your fingerprint to verify your identity and continue', // Android
-  sensorErrorDescription: 'Input your fingerprint to verify your identity and continue', // Android
+  sensorDescription:
+    'Input your fingerprint to verify your identity and continue', // Android
+  sensorErrorDescription:
+    'Input your fingerprint to verify your identity and continue', // Android
   cancelText: 'Exit', // Android
   fallbackLabel: 'Show Passcode', // iOS (if empty, then label is hidden)
   unifiedErrors: false, // use unified error messages (default false)
@@ -92,7 +94,7 @@ function BottomTabs() {
   return (
     <Tab.Navigator
       initialRouteName="HomeStack"
-      tabBar={props => <CustomTabBar {...props} />}>
+      tabBar={(props) => <CustomTabBar {...props} />}>
       <Tab.Screen name="Dashboard" component={Home} />
       <Tab.Screen name="Inquiry" component={Inquiry} />
       <Tab.Screen name="ProjectStructure" component={ProjectStructure} />
@@ -114,18 +116,20 @@ function BottomTabs() {
 function AppDrawer() {
   return (
     <Drawer.Navigator
-      drawerContent={(props) =>
+      drawerContent={(props) => (
         <RouteContext.Consumer>
-          {currentScreen => <DrawerContent {...props} currentScreen={currentScreen} />}
+          {(currentScreen) => (
+            <DrawerContent {...props} currentScreen={currentScreen} />
+          )}
         </RouteContext.Consumer>
-      }>
+      )}>
       <Drawer.Screen name="tabs" component={BottomTabs} />
     </Drawer.Navigator>
   );
 }
 
 // Gets the current screen from navigation state
-const getActiveRouteName = state => {
+const getActiveRouteName = (state) => {
   const route = state.routes[state.index];
 
   if (route.state) {
@@ -137,7 +141,7 @@ const getActiveRouteName = state => {
 };
 
 function NavContainer() {
-  const { authenticated } = useSelector(state => state.user);
+  const {authenticated} = useSelector((state) => state.user);
   const [currentScreen, setCurrentScreen] = useState('Dashboard');
   const routeNameRef = React.useRef();
   const navigationRef = React.useRef();
@@ -151,15 +155,15 @@ function NavContainer() {
   useEffect(() => {
     if (false) {
       TouchID.isSupported(optionalConfigObject)
-        .then(biometryType => {
+        .then((biometryType) => {
           // Success code
           TouchID.authenticate('', authObject)
-            .then(success => { })
-            .catch(async error => {
+            .then((success) => {})
+            .catch(async (error) => {
               await BackHandler.exitApp();
             });
         })
-        .catch(error => {
+        .catch((error) => {
           // Failure code
           console.log('----->error ', error);
         });
@@ -170,7 +174,7 @@ function NavContainer() {
     <NavigationContainer
       theme={theme}
       ref={navigationRef}
-      onStateChange={state => {
+      onStateChange={(state) => {
         const previousRouteName = routeNameRef.current;
         const currentRouteName = getActiveRouteName(state);
         if (previousRouteName !== currentRouteName) {
@@ -179,30 +183,49 @@ function NavContainer() {
 
         // Save the current route name for later comparison
         routeNameRef.current = currentRouteName;
-      }}
-    >
+      }}>
       <RouteContext.Provider value={currentScreen}>
         <Stack.Navigator
-          initialRouteName={authenticated ? 'AppDrawer' : 'LanguageSelect'}
-        >
-          {authenticated ?
+          initialRouteName={authenticated ? 'AppDrawer' : 'LanguageSelect'}>
+          {authenticated ? (
             //App Nav Screens
             <Fragment>
               <Stack.Screen
                 name="AppDrawer"
                 component={AppDrawer}
-                options={{ headerShown: false }} />
+                options={{headerShown: false}}
+              />
             </Fragment>
-            :
+          ) : (
             //Auth Nav Screens
             <Fragment>
-              <Stack.Screen name="LanguageSelect" component={LanguageSelect} options={{ headerShown: false }} />
-              <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
-              <Stack.Screen name="SignUp" component={SignUp} options={{ headerShown: false }} />
-              <Stack.Screen name="Otp" component={OtpScreen} options={{ headerShown: false }} />
-              <Stack.Screen name="PackageSelect" component={PackageSelect} options={{ headerShown: false }} />
+              <Stack.Screen
+                name="LanguageSelect"
+                component={LanguageSelect}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="Login"
+                component={Login}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="SignUp"
+                component={SignUp}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="Otp"
+                component={OtpScreen}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="PackageSelect"
+                component={PackageSelect}
+                options={{headerShown: false}}
+              />
             </Fragment>
-          }
+          )}
         </Stack.Navigator>
       </RouteContext.Provider>
     </NavigationContainer>

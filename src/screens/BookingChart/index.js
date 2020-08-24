@@ -1,1 +1,1 @@
-export { default } from './BookingChart';
+export {default} from './BookingChart';

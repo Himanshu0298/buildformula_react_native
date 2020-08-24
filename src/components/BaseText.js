@@ -1,10 +1,10 @@
 //@flow
 
 import React from 'react';
-import { Text } from 'react-native';
+import {Text} from 'react-native';
 import PropTypes from 'prop-types';
 
-function BaseText({ style, variant, children, ...restProps }) {
+function BaseText({style, variant, children, ...restProps}) {
   const defaultStyles = {
     fontFamily: `Nunito-${variant.charAt(0).toUpperCase() + variant.slice(1)}`,
     color: '#fff',
@@ -13,16 +13,16 @@ function BaseText({ style, variant, children, ...restProps }) {
   return (
     <Text
       {...restProps}
-      style={Array.isArray(style) ?
-        [...style, defaultStyles]
-        :
-        {
-          ...defaultStyles,
-          ...style,
-        }
+      style={
+        Array.isArray(style)
+          ? [...style, defaultStyles]
+          : {
+              ...defaultStyles,
+              ...style,
+            }
       }>
       {children}
-    </Text >
+    </Text>
   );
 }
 
@@ -31,7 +31,13 @@ BaseText.defaultProps = {
 };
 
 BaseText.propTypes = {
-  variant: PropTypes.oneOf(['regular', 'extraLight', 'light', 'regular', 'semiBold']),
+  variant: PropTypes.oneOf([
+    'regular',
+    'extraLight',
+    'light',
+    'regular',
+    'semiBold',
+  ]),
   ...Text.propTypes,
 };
 

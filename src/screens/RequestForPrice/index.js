@@ -1,1 +1,1 @@
-export { default } from './RequestForPrice';
+export {default} from './RequestForPrice';

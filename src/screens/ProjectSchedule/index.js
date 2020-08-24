@@ -1,1 +1,1 @@
-export { default } from './ProjectSchedule';
+export {default} from './ProjectSchedule';

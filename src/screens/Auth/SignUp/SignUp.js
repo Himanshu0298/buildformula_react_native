@@ -1,43 +1,64 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState } from 'react';
-import { StyleSheet, View, Image, TouchableOpacity, Keyboard } from 'react-native';
-import { withTheme, Headline, Subheading, Button, TextInput, Colors } from 'react-native-paper';
-import { theme } from '../../../styles/theme';
+import React, {useState} from 'react';
+import {
+  StyleSheet,
+  View,
+  Image,
+  TouchableOpacity,
+  Keyboard,
+} from 'react-native';
+import {
+  withTheme,
+  Headline,
+  Subheading,
+  Button,
+  TextInput,
+  Colors,
+} from 'react-native-paper';
+import {theme} from '../../../styles/theme';
 import banner from './../../../assets/images/banner.png';
 import image from './../../../assets/images/buildings.png';
 import BaseText from '../../../components/BaseText';
-import { Formik } from 'formik';
+import {Formik} from 'formik';
 import CustomInput from '../Components/CustomInput';
 import useUserActions from '../../../redux/actions/userActions';
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
 import * as Yup from 'yup';
 import Spinner from 'react-native-loading-spinner-overlay';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 import Layout from '../../../utils/Layout';
 import BottomSheet from 'reanimated-bottom-sheet';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 
-function SignUpButton({ label, onPress }) {
+function SignUpButton({label, onPress}) {
   return (
     <View style={styles.loginButton}>
       <Button
         color={theme.colors.accent}
-        style={{ width: '100%' }}
+        style={{width: '100%'}}
         mode="contained"
-        contentStyle={{ padding: 8 }}
-        theme={{ roundness: 15 }}
+        contentStyle={{padding: 8}}
+        theme={{roundness: 15}}
         onPress={onPress}>
-        <BaseText style={styles.buttonText}>
-          {label}
-        </BaseText>
-      </Button >
+        <BaseText style={styles.buttonText}>{label}</BaseText>
+      </Button>
     </View>
-
   );
 }
 
 function RenderContent(props) {
-  const { t, values, handleChange, handleBlur, errors, handleSubmit, navigation } = props;
+  const {
+    t,
+    values,
+    handleChange,
+    handleBlur,
+    errors,
+    handleSubmit,
+    navigation,
+  } = props;
 
   const [showCnfPass, toggleShowCnfPass] = useState(null);
   const [showPass, toggleShowPass] = useState(null);
@@ -51,7 +72,7 @@ function RenderContent(props) {
   return (
     <View style={styles.contentContainer}>
       <View style={styles.headlineContainer}>
-        <Headline style={{ fontWeight: 'bold' }}>{t('heading_signup')}</Headline>
+        <Headline style={{fontWeight: 'bold'}}>{t('heading_signup')}</Headline>
         <Subheading>{t('subHeading_signUp')}</Subheading>
       </View>
       <View style={styles.inputMainContainer}>
@@ -95,7 +116,7 @@ function RenderContent(props) {
           autoCapitalize="none"
           returnKeyType={'next'}
           onSubmitEditing={() => emailRef && emailRef.current.focus()}
-          left={<TextInput.Affix style={{ marginRight: 2 }} text="+91" />}
+          left={<TextInput.Affix style={{marginRight: 2}} text="+91" />}
           error={errors.phone}
         />
         <CustomInput
@@ -129,7 +150,7 @@ function RenderContent(props) {
           right={
             <TextInput.Icon
               name={showPass ? 'eye-off' : 'eye'}
-              onPress={() => toggleShowPass(v => !v)}
+              onPress={() => toggleShowPass((v) => !v)}
             />
           }
         />
@@ -149,15 +170,12 @@ function RenderContent(props) {
           right={
             <TextInput.Icon
               name={showCnfPass ? 'eye-off' : 'eye'}
-              onPress={() => toggleShowCnfPass(v => !v)}
+              onPress={() => toggleShowCnfPass((v) => !v)}
             />
           }
         />
       </View>
-      <SignUpButton
-        label={t('SIGN UP')}
-        onPress={handleSubmit}
-      />
+      <SignUpButton label={t('SIGN UP')} onPress={handleSubmit} />
       <TouchableOpacity
         onPress={() => navigation.goBack()}
         style={styles.registerContainer}>
@@ -169,28 +187,45 @@ function RenderContent(props) {
 const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 
 const schema = Yup.object().shape({
-  firstName: Yup.string().label('firstName').required('required').min(3, 'to short'),
-  lastName: Yup.string().label('firstName').required('required').min(3, 'to short'),
-  phone: Yup.string().label('phone').required('required')
+  firstName: Yup.string()
+    .label('firstName')
+    .required('required')
+    .min(3, 'to short'),
+  lastName: Yup.string()
+    .label('firstName')
+    .required('required')
+    .min(3, 'to short'),
+  phone: Yup.string()
+    .label('phone')
+    .required('required')
     .matches(phoneRegExp, 'Phone number is not valid')
     .min(10, 'to short')
     .max(10, 'to long'),
-  email: Yup.string().email('Please enter a valid email').label('email').required('invalid email'),
-  password: Yup.string().label('Password').required('Please enter a valid password').min(6, 'Password must have at least 6 characters '),
-  confirmPassword: Yup.string().oneOf([Yup.ref('password'), null], 'Passwords must match'),
+  email: Yup.string()
+    .email('Please enter a valid email')
+    .label('email')
+    .required('invalid email'),
+  password: Yup.string()
+    .label('Password')
+    .required('Please enter a valid password')
+    .min(6, 'Password must have at least 6 characters '),
+  confirmPassword: Yup.string().oneOf(
+    [Yup.ref('password'), null],
+    'Passwords must match',
+  ),
 });
 
 function SignUp(props) {
-  const { navigation } = props;
+  const {navigation} = props;
 
   const [validationError, setValidationError] = React.useState({});
-  const { signUp } = useUserActions();
+  const {signUp} = useUserActions();
 
   const bottomSheetRef = React.createRef();
 
-  const { t } = useTranslation();
+  const {t} = useTranslation();
 
-  const { loading } = useSelector(state => state.user);
+  const {loading} = useSelector((state) => state.user);
 
   React.useEffect(() => {
     const focusUnsubscribe = navigation.addListener('focus', () => {
@@ -225,14 +260,16 @@ function SignUp(props) {
     <Formik
       validateOnBlur={false}
       validateOnChange={false}
-      initialValues={{
-        firstName: 'test',
-        lastName: 'user',
-        phone: '1234567894',
-        email: 'testuser1@gmail.com',
-        password: '123456',
-        confirmPassword: '123456',
-      }}
+      initialValues={
+        {
+          // firstName: 'test',
+          // lastName: 'user',
+          // phone: '1234567894',
+          // email: 'testuser1@gmail.com',
+          // password: '123456',
+          // confirmPassword: '123456',
+        }
+      }
       validationSchema={schema}
       onSubmit={async (values) => {
         let formData = new FormData();
@@ -246,8 +283,7 @@ function SignUp(props) {
 
         signUp(formData)
           .then((data) => {
-            console.log('-----> data', data.value);
-            const { email } = data.value.user;
+            const {email} = data.value.user;
             if (email) {
               navigation.navigate('Otp');
             }
@@ -255,14 +291,10 @@ function SignUp(props) {
           .catch((error) => {
             setValidationError(error);
           });
-      }}
-    >
-      {({ handleChange, values, handleSubmit, handleBlur, isValid, errors }) => (
+      }}>
+      {({handleChange, values, handleSubmit, handleBlur, isValid, errors}) => (
         <View style={styles.container}>
-          <Spinner
-            visible={loading}
-            textContent={''}
-          />
+          <Spinner visible={loading} textContent={''} />
           <View style={styles.topImageContainer}>
             <View style={styles.bannerContainer}>
               <Image source={banner} style={styles.banner} />
@@ -276,16 +308,17 @@ function SignUp(props) {
             snapPoints={['85%', '60%']}
             initialSnap={1}
             renderHeader={renderHeader}
-            renderContent={() => <RenderContent
-              t={t}
-              handleChange={handleChange}
-              values={values}
-              handleSubmit={handleSubmit}
-              handleBlur={handleBlur}
-              errors={{ ...errors, ...validationError }}
-              navigation={navigation}
-            />
-            }
+            renderContent={() => (
+              <RenderContent
+                t={t}
+                handleChange={handleChange}
+                values={values}
+                handleSubmit={handleSubmit}
+                handleBlur={handleBlur}
+                errors={{...errors, ...validationError}}
+                navigation={navigation}
+              />
+            )}
           />
         </View>
       )}
@@ -307,7 +340,7 @@ const styles = StyleSheet.create({
   },
   banner: {
     width: Layout.window.width * 0.75,
-    height: (Layout.window.width * 0.75) * (5 / 12),
+    height: Layout.window.width * 0.75 * (5 / 12),
   },
   imageContainer: {
     display: 'flex',
@@ -317,7 +350,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: Layout.window.width * 0.75,
-    height: (Layout.window.width * 0.75) * (15 / 22),
+    height: Layout.window.width * 0.75 * (15 / 22),
   },
   header: {
     backgroundColor: theme.colors.primary,

@@ -24,13 +24,18 @@ export default {
       msgBlankCnfPassword: 'Re-Enter your password!',
       loginLink: 'Already have an account? Log in',
 
-      paymentInstallment: [{ id: 1, name: 'Full payment' }, { id: 2, name: 'Custom Payment' }, { id: 3, name: '1st big installment' }],
+      paymentInstallment: [
+        {id: 1, name: 'Full payment'},
+        {id: 2, name: 'Custom Payment'},
+        {id: 3, name: '1st big installment'},
+      ],
       labelSignInInfo: 'Sign in to your account',
       labelSignUp: 'Sign Up to your account',
       labelDontHaveAccount: 'Don’t have an account? ',
       labelAlreadyHaveAccount: 'Already have an account? ',
       labelForgotPassword: 'Forgot password?',
-      labelForgotPasswordInstruction: "Enter your e-mail address and we we'll send you a link to reset your password.",
+      labelForgotPasswordInstruction:
+        "Enter your e-mail address and we we'll send you a link to reset your password.",
       labelCreate: 'Create',
       labelSearch: 'Search',
       labelLoading: 'Loading...',
@@ -93,7 +98,6 @@ export default {
       labelTotalOtherCharges: 'Total Other Charges',
       labelReminingPaymet: 'Remaining Payment',
 
-
       labelMainPhase: 'Main Phase',
 
       labelTower: 'Tower',
@@ -101,14 +105,14 @@ export default {
       labelOptions: 'Options',
       labelCreateFolder: 'Create Folder',
 
-
       labelSelectProfileImage: 'Select profile picture',
       labelSelectPan: 'Select pan card',
       labelSelectAadhar: 'Select aadhar card',
       labelBookingChart: 'Booking Chart',
       labelMyBookings: 'My Bookings',
 
-      labelTerms: 'All provided information and uploaded documents are original',
+      labelTerms:
+        'All provided information and uploaded documents are original',
       labelUserProfile: 'User profile',
       labelGroundFloor: 'Ground floor',
       labelFloor: 'Floor',
@@ -163,10 +167,8 @@ export default {
       placeHolderInstallmentDate: 'Installment Date',
       placeHolderAddRemainingPayment: 'Add remaining Payment',
 
-
       placeHolderBrokerName: 'Broker Name',
       placeHolderBrokerPhone: 'Broker Phone Number',
-
 
       //Arrays
       filterStoreOptions: ['Verified', 'Pending', 'Cancel'],
@@ -178,7 +180,8 @@ export default {
       msgBlankJointUserPanImage: 'Please select joint PAN image',
       msgBlankJointUserAadharImage: 'Please select joint Aadhar image',
       msgWrongTotalBasicAmount: 'Total amount must be greater than 0',
-      msgWrongBigInstallmentAmount: '1st big installment amount is greater than 0',
+      msgWrongBigInstallmentAmount:
+        '1st big installment amount is greater than 0',
       msgSomethingWrong: 'Something went wrong.Please try again later.',
       msgBlankAllRate: 'Please fill any one rate',
       msgBlankSuperBuildUp: 'Select measurement for super built up',
@@ -194,7 +197,8 @@ export default {
       msgBlankUserAadharImage: 'Please select Aadhar image',
       msgTermsAndCondition: 'Please accepts terms and conditions',
       msgSelectPaymentMethod: 'Please select payment method!',
-      msgInstallmentNotComplete: 'Please add installments until remaining payment is 0.',
+      msgInstallmentNotComplete:
+        'Please add installments until remaining payment is 0.',
       msgBlankEmailOrPhone: 'Please enter email or phone!',
       msgBlankFirstName: 'Please enter First Name!',
       msgBlankLastName: 'Please enter Last Name!',
@@ -221,7 +225,8 @@ export default {
       msgBlankEndDate: 'Please enter payment end date.',
       msgPasswordNotMatch: 'Password dose not match!',
       msgWrongPhone: 'Please enter correct phone number!',
-      msgWrongInstallmentLarge: 'Your entered amount is larger than remaining payment',
+      msgWrongInstallmentLarge:
+        'Your entered amount is larger than remaining payment',
       msgWrongAlternetPhone: 'Please enter correct alternet phone number',
       msgWrongEmail: 'Please enter correct email!',
       msgWrongAadhar: 'please enter correct Aadhar Number',
@@ -263,7 +268,8 @@ export default {
       labelSignUp: 'अपने खाते में साइन अप करें',
       labelDontHaveAccount: 'क्या आपका खाता नहीं है? ',
       labelForgotPassword: 'पासवर्ड भूल गए?',
-      labelForgotPasswordInstruction: 'अपना ई-मेल पता दर्ज करें और हम आपको अपना पासवर्ड रीसेट करने के लिए एक लिंक भेजेंगे।',
+      labelForgotPasswordInstruction:
+        'अपना ई-मेल पता दर्ज करें और हम आपको अपना पासवर्ड रीसेट करने के लिए एक लिंक भेजेंगे।',
       labelAlreadyHaveAccount: 'पहले से ही एक खाता है?',
       labelCreate: 'सर्जन करना',
       labelSearch: 'खोज',
@@ -294,7 +300,8 @@ export default {
       labelCarpet: 'फ़र्श',
       labelBuildUp: 'बिल्ड अप',
       labelStoragePermissionTitle: 'फ़ोन संग्रहण अनुमति की आवश्यकता है।',
-      labelStoragePermissionMsg: 'ऐप को आपके फोन स्टोरेज तक पहुंचने की जरूरत है',
+      labelStoragePermissionMsg:
+        'ऐप को आपके फोन स्टोरेज तक पहुंचने की जरूरत है',
       labelAskMeLater: 'मुझसे बाद में पूछना',
       labelAreaCarpet: 'फ़र्श के लिए क्षेत्र',
       labelFinalBill: 'अंतिम बिल राशि',
@@ -345,7 +352,6 @@ export default {
       placeHolderInstallemntPercentageBig: 'पहली बड़ी किश्त प्रतिशत',
       placeHolderOtherCharges: 'जैसे। पार्किंग, कर आदि।',
       placeHolderFolderName: 'फोल्डर का नाम',
-
 
       //PlaceHolders
 
@@ -464,10 +470,11 @@ export default {
       msgNoFollowUpFound: 'कोई अनुगमन नहीं!',
       msgBlankInstallment: 'कृपया किस्त जोड़ें।',
 
-      paymentInstallment: [{ id: 1, name: 'पूरा भुगतान' }, { id: 2, name: 'कस्टम भुगतान' }, { id: 3, name: 'पहली बड़ी किश्त' }],
-
-
-
+      paymentInstallment: [
+        {id: 1, name: 'पूरा भुगतान'},
+        {id: 2, name: 'कस्टम भुगतान'},
+        {id: 3, name: 'पहली बड़ी किश्त'},
+      ],
     },
   },
 };
