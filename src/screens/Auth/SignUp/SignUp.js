@@ -372,6 +372,7 @@ const styles = StyleSheet.create({
   contentContainer: {
     backgroundColor: theme.colors.primary,
     display: 'flex',
+    height: '100%',
     paddingBottom: 20,
     alignItems: 'center',
   },

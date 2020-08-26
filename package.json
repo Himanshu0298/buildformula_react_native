@@ -28,6 +28,7 @@
     "react-native": "0.63.2",
     "react-native-confirmation-code-field": "^6.5.0",
     "react-native-gesture-handler": "^1.7.0",
+    "react-native-image-picker": "^2.3.3",
     "react-native-keyboard-aware-scroll-view": "^0.9.2",
     "react-native-linear-gradient": "^2.5.6",
     "react-native-loading-spinner-overlay": "^1.1.0",

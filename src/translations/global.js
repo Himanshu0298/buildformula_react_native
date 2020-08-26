@@ -24,6 +24,14 @@ export default {
       msgBlankCnfPassword: 'Re-Enter your password!',
       loginLink: 'Already have an account? Log in',
 
+      //Project Creation
+      StepOneTitle: 'Project Details',
+      StepOneSubTitle: 'Fill in the below details for your company',
+      CompanyName: 'Company Name',
+      pan: 'PAN',
+      tan: 'TAN',
+      gst: 'GST No.',
+
       paymentInstallment: [
         {id: 1, name: 'Full payment'},
         {id: 2, name: 'Custom Payment'},
@@ -263,6 +271,26 @@ export default {
       login: 'लॉग इन करें',
       forgotPassword: 'पासवर्ड भूल गए?',
       registerLink: 'क्या आपका खाता नहीं है? कंपनी के रूप में पंजीकरण करें',
+
+      //SignUp
+      heading_signup: 'स्वागत हे',
+      subHeading_signUp: 'जारी रखने के लिए साइन अप करें',
+      firstNameLabel: 'पहला नाम',
+      lastNameLabel: 'उपनाम',
+      phoneLabel: 'फ़ोन',
+      GenderLabel: 'लिंग',
+      SignUp: 'साइन अप करें',
+      cnfPasswordLabel: 'पासवर्ड की पुष्टि कीजिये!',
+      msgBlankCnfPassword: 'फिर पासवर्ड लिखो',
+      loginLink: 'क्या आपके पास पहले से एक खाता मौजूद है? लॉग इन करें',
+
+      //Project Creation
+      StepOneTitle: 'परियोजना विवरण',
+      StepOneSubTitle: 'अपनी कंपनी के लिए नीचे दिए गए विवरण भरें',
+      CompanyName: 'कंपनी का नाम',
+      pan: 'PAN',
+      tan: 'TAN',
+      gst: 'GST No.',
 
       labelSignInInfo: 'अपने अकाउंट में साइन इन करें',
       labelSignUp: 'अपने खाते में साइन अप करें',

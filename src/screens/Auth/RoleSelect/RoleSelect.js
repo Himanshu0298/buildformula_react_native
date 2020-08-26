@@ -23,7 +23,7 @@ function RoleBox({title, onSelectPackage, roleId, colors}) {
   );
 }
 
-function PackageSelect(props) {
+function RoleSelect(props) {
   const {user, loading} = useSelector((state) => state.user);
   const {selectRole} = useUserActions();
 
@@ -88,4 +88,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default withTheme(PackageSelect);
+export default withTheme(RoleSelect);

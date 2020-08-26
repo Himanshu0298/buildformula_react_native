@@ -146,7 +146,7 @@ const OtpScreen = (props) => {
 
     verifyOtp(formData)
       .then((data) => {
-        navigation.navigate('PackageSelect');
+        navigation.navigate('RoleSelect');
       })
       .catch((error) => {
         console.log('-----> error', error);

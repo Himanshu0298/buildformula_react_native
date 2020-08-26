@@ -15,7 +15,7 @@ import LanguageSelect from '../screens/Auth/LanguageSelect';
 import SettingsScreen from '../screens/Settings';
 import CustomTabBar from './Components/CustomTabBar';
 import SignUp from '../screens/Auth/SignUp';
-import PackageSelect from '../screens/Auth/PackageSelect';
+import RoleSelect from '../screens/Auth/RoleSelect';
 import Inquiry from '../screens/Inquiry';
 import ProjectSchedule from '../screens/ProjectSchedule';
 import BookingChart from '../screens/BookingChart';
@@ -28,6 +28,8 @@ import Estimation from '../screens/Estimation';
 import RequestForPrice from '../screens/RequestForPrice';
 import PurchaseOrders from '../screens/PurchaseOrders';
 import Files from '../screens/Files';
+import StepOne from '../screens/Auth/ProjectCreation/StepOne';
+import StepTwo from '../screens/Auth/ProjectCreation/StepTwo';
 
 const optionalConfigObject = {
   unifiedErrors: false, // use unified error messages (default false)
@@ -186,7 +188,9 @@ function NavContainer() {
       }}>
       <RouteContext.Provider value={currentScreen}>
         <Stack.Navigator
-          initialRouteName={authenticated ? 'AppDrawer' : 'LanguageSelect'}>
+          initialRouteName={
+            authenticated ? 'AppDrawer' : 'ProjectCreationStepOne'
+          }>
           {authenticated ? (
             //App Nav Screens
             <Fragment>
@@ -220,8 +224,18 @@ function NavContainer() {
                 options={{headerShown: false}}
               />
               <Stack.Screen
-                name="PackageSelect"
-                component={PackageSelect}
+                name="RoleSelect"
+                component={RoleSelect}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="ProjectCreationStepOne"
+                component={StepOne}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="ProjectCreationStepTwo"
+                component={StepTwo}
                 options={{headerShown: false}}
               />
             </Fragment>

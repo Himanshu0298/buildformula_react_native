@@ -209,7 +209,7 @@ function Login(props) {
             if (otp_verified === 'N' || email_verified === 'N') {
               navigation.navigate('Otp');
             } else if (default_role_id === 0) {
-              navigation.navigate('PackageSelect');
+              navigation.navigate('RoleSelect');
             }
           })
           .catch((error) => {

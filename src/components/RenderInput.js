@@ -3,7 +3,7 @@ import {StyleSheet, View, Text} from 'react-native';
 import PropTypes from 'prop-types';
 import {TextInput, withTheme} from 'react-native-paper';
 
-const CustomInput = React.forwardRef((props, ref) => {
+const RenderInput = React.forwardRef((props, ref) => {
   const {error, containerStyles, theme, ...rest} = props;
   return (
     <View style={[containerStyles, styles.container]}>
@@ -19,11 +19,8 @@ const CustomInput = React.forwardRef((props, ref) => {
           theme={{
             roundness: 10,
             colors: {
-              placeholder: '#fff',
-              text: '#fff',
-              primary: '#fff',
               underlineColor: 'transparent',
-              background: theme.colors.primary,
+              accent: theme.colors.primary,
             },
           }}
         />
@@ -37,12 +34,12 @@ const CustomInput = React.forwardRef((props, ref) => {
   );
 });
 
-CustomInput.defaultProps = {
+RenderInput.defaultProps = {
   returnKeyType: 'next',
   containerStyles: {},
 };
 
-CustomInput.prototype = {
+RenderInput.prototype = {
   error: PropTypes.string,
   ...TextInput.PropTypes,
 };
@@ -68,4 +65,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default withTheme(CustomInput);
+export default withTheme(RenderInput);
