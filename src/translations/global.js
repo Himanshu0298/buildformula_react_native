@@ -31,6 +31,12 @@ export default {
       pan: 'PAN',
       tan: 'TAN',
       gst: 'GST No.',
+      projectName: 'Project name',
+      projectAddress: 'Project address',
+      projectRera: 'RERA No.',
+      projectWebsite: 'Project Website',
+      projectEmail: 'Project Email',
+      projectPhone: 'Project Phone',
 
       paymentInstallment: [
         {id: 1, name: 'Full payment'},

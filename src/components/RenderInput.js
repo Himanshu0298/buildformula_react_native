@@ -1,10 +1,11 @@
 import React from 'react';
 import {StyleSheet, View, Text} from 'react-native';
 import PropTypes from 'prop-types';
-import {TextInput, withTheme} from 'react-native-paper';
+import {TextInput} from 'react-native-paper';
+import {theme} from '../styles/theme';
 
 const RenderInput = React.forwardRef((props, ref) => {
-  const {error, containerStyles, theme, ...rest} = props;
+  const {error, containerStyles, ...rest} = props;
   return (
     <View style={[containerStyles, styles.container]}>
       <View style={styles.inputContainer}>
@@ -20,6 +21,7 @@ const RenderInput = React.forwardRef((props, ref) => {
             roundness: 10,
             colors: {
               underlineColor: 'transparent',
+              text: '#000',
               accent: theme.colors.primary,
             },
           }}
@@ -36,6 +38,7 @@ const RenderInput = React.forwardRef((props, ref) => {
 
 RenderInput.defaultProps = {
   returnKeyType: 'next',
+  autoCapitalize: 'none',
   containerStyles: {},
 };
 
@@ -65,4 +68,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default withTheme(RenderInput);
+export default RenderInput;

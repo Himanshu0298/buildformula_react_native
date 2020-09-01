@@ -3,18 +3,11 @@ import React, {useState} from 'react';
 import {
   StyleSheet,
   View,
-  ScrollView,
   Image,
   TouchableOpacity,
   Keyboard,
 } from 'react-native';
-import {
-  withTheme,
-  Headline,
-  Subheading,
-  Button,
-  TextInput,
-} from 'react-native-paper';
+import {withTheme, Headline, Subheading, Button} from 'react-native-paper';
 import {theme} from '../../../styles/theme';
 import banner from './../../../assets/images/banner.png';
 import image from './../../../assets/images/buildings.png';
@@ -319,17 +312,17 @@ const styles = StyleSheet.create({
   inputsContainer: {
     width: '100%',
   },
-  loginButton: {
-    marginTop: 25,
-    width: '100%',
-    display: 'flex',
-    alignItems: 'center',
-  },
   forgotContainer: {
     display: 'flex',
     width: '100%',
     padding: 2,
     alignItems: 'flex-end',
+  },
+  loginButton: {
+    marginTop: 25,
+    width: '100%',
+    display: 'flex',
+    alignItems: 'center',
   },
   buttonText: {
     fontWeight: 'bold',

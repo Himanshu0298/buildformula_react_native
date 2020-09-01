@@ -13,7 +13,6 @@ import {
   Subheading,
   Button,
   TextInput,
-  Colors,
 } from 'react-native-paper';
 import {theme} from '../../../styles/theme';
 import banner from './../../../assets/images/banner.png';
@@ -32,6 +31,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import {PHONE_REGEX} from '../../../utils/constant';
 
 function SignUpButton({label, onPress}) {
   return (
@@ -184,7 +184,6 @@ function RenderContent(props) {
     </View>
   );
 }
-const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 
 const schema = Yup.object().shape({
   firstName: Yup.string()
@@ -198,7 +197,7 @@ const schema = Yup.object().shape({
   phone: Yup.string()
     .label('phone')
     .required('required')
-    .matches(phoneRegExp, 'Phone number is not valid')
+    .matches(PHONE_REGEX, 'Phone number is not valid')
     .min(10, 'to short')
     .max(10, 'to long'),
   email: Yup.string()

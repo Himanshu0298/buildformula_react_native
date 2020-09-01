@@ -52,6 +52,7 @@ const FileInput = React.forwardRef((props, ref) => {
           theme={{
             roundness: 10,
             colors: {
+              text: '#000',
               underlineColor: 'transparent',
             },
           }}
@@ -93,6 +94,7 @@ const FileInput = React.forwardRef((props, ref) => {
 
 FileInput.defaultProps = {
   returnKeyType: 'next',
+  autoCapitalize: 'none',
   containerStyles: {},
 };
 
