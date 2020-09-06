@@ -65,7 +65,7 @@ function StepTwo(props) {
           validationSchema={schema}
           onSubmit={async (values) => {
             console.log('-----> values', values);
-            // navigation.navigate('ProjectCreationStepTwo');
+            navigation.navigate('ProjectCreationStepThree');
           }}>
           {({
             handleChange,

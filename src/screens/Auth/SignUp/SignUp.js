@@ -27,10 +27,6 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import {useTranslation} from 'react-i18next';
 import Layout from '../../../utils/Layout';
 import BottomSheet from 'reanimated-bottom-sheet';
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
 import {PHONE_REGEX} from '../../../utils/constant';
 
 function SignUpButton({label, onPress}) {

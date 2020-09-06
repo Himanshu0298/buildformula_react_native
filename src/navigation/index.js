@@ -30,6 +30,7 @@ import PurchaseOrders from '../screens/PurchaseOrders';
 import Files from '../screens/Files';
 import StepOne from '../screens/Auth/ProjectCreation/StepOne';
 import StepTwo from '../screens/Auth/ProjectCreation/StepTwo';
+import StepThree from '../screens/Auth/ProjectCreation/StepThree';
 
 const optionalConfigObject = {
   unifiedErrors: false, // use unified error messages (default false)
@@ -189,7 +190,7 @@ function NavContainer() {
       <RouteContext.Provider value={currentScreen}>
         <Stack.Navigator
           initialRouteName={
-            authenticated ? 'AppDrawer' : 'ProjectCreationStepOne'
+            authenticated ? 'AppDrawer' : 'ProjectCreationStepThree'
           }>
           {authenticated ? (
             //App Nav Screens
@@ -236,6 +237,11 @@ function NavContainer() {
               <Stack.Screen
                 name="ProjectCreationStepTwo"
                 component={StepTwo}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="ProjectCreationStepThree"
+                component={StepThree}
                 options={{headerShown: false}}
               />
             </Fragment>

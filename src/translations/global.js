@@ -38,6 +38,9 @@ export default {
       projectEmail: 'Project Email',
       projectPhone: 'Project Phone',
 
+      projectStructure: 'Project Structure',
+      projectStructureSubtitle: 'Select the appropriate option',
+
       paymentInstallment: [
         {id: 1, name: 'Full payment'},
         {id: 2, name: 'Custom Payment'},
@@ -297,6 +300,9 @@ export default {
       pan: 'PAN',
       tan: 'TAN',
       gst: 'GST No.',
+
+      projectStructure: 'प्रोजेक्ट संरचना',
+      projectStructureSubtitle: 'उपयुक्त विकल्प का चयन करें',
 
       labelSignInInfo: 'अपने अकाउंट में साइन इन करें',
       labelSignUp: 'अपने खाते में साइन अप करें',
