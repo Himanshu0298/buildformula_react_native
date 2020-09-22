@@ -28,9 +28,10 @@ import Estimation from '../screens/Estimation';
 import RequestForPrice from '../screens/RequestForPrice';
 import PurchaseOrders from '../screens/PurchaseOrders';
 import Files from '../screens/Files';
-import StepOne from '../screens/Auth/ProjectCreation/StepOne';
-import StepTwo from '../screens/Auth/ProjectCreation/StepTwo';
-import StepThree from '../screens/Auth/ProjectCreation/StepThree';
+import PC_StepOne from '../screens/Auth/ProjectCreation/StepOne';
+import PC_StepTwo from '../screens/Auth/ProjectCreation/StepTwo';
+import PS_StepOne from '../screens/Auth/ProjectStructure/StepOne';
+import PS_StepTwo from '../screens/Auth/ProjectStructure/StepTwo';
 
 const optionalConfigObject = {
   unifiedErrors: false, // use unified error messages (default false)
@@ -190,7 +191,7 @@ function NavContainer() {
       <RouteContext.Provider value={currentScreen}>
         <Stack.Navigator
           initialRouteName={
-            authenticated ? 'AppDrawer' : 'ProjectCreationStepThree'
+            authenticated ? 'AppDrawer' : 'ProjectStructureStepTwo'
           }>
           {authenticated ? (
             //App Nav Screens
@@ -231,17 +232,22 @@ function NavContainer() {
               />
               <Stack.Screen
                 name="ProjectCreationStepOne"
-                component={StepOne}
+                component={PC_StepOne}
                 options={{headerShown: false}}
               />
               <Stack.Screen
                 name="ProjectCreationStepTwo"
-                component={StepTwo}
+                component={PC_StepTwo}
                 options={{headerShown: false}}
               />
               <Stack.Screen
-                name="ProjectCreationStepThree"
-                component={StepThree}
+                name="ProjectStructureStepOne"
+                component={PS_StepOne}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="ProjectStructureStepTwo"
+                component={PS_StepTwo}
                 options={{headerShown: false}}
               />
             </Fragment>

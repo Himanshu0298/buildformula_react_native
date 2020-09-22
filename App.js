@@ -16,6 +16,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import {initReactI18next} from 'react-i18next';
 import translations from './src/translations/global';
 import * as RNLocalize from 'react-native-localize';
+import {SnackbarProvider} from './src/components/Snackbar';
 
 const languageDetector = {
   type: 'languageDetector',
@@ -55,7 +56,9 @@ const App = () => {
             <SafeAreaProvider
               initialSafeAreaInsets={initialWindowSafeAreaInsets}>
               <Suspense fallback={<Loader />}>
-                <NavContainer />
+                <SnackbarProvider>
+                  <NavContainer />
+                </SnackbarProvider>
               </Suspense>
             </SafeAreaProvider>
           </PaperProvider>

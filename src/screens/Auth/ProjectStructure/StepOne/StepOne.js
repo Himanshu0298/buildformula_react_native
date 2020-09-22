@@ -22,6 +22,7 @@ import bungalowInactive from '../../../../assets/images/bungalow_inactive.png';
 import plot from '../../../../assets/images/plot.png';
 import plotInactive from '../../../../assets/images/plot_inactive.png';
 import Layout from '../../../../utils/Layout';
+import {useSnackbar} from '../../../../components/Snackbar';
 
 function ImageRender({
   title,
@@ -43,12 +44,13 @@ function ImageRender({
   );
 }
 
-function StepTwo(props) {
+function StepOne(props) {
   const {navigation} = props;
 
   const [projectTypes, setProjectTypes] = useState([]);
 
   const {t} = useTranslation();
+  const snackbar = useSnackbar();
 
   const updateTypes = (type) => {
     let types = [...projectTypes];
@@ -62,7 +64,14 @@ function StepTwo(props) {
   };
 
   const handleSubmit = () => {
-    navigation.navigate('ProjectCreationStepFour');
+    if (projectTypes.length === 0) {
+      snackbar.showMessage({
+        message: 'Please select a type',
+        variant: 'error',
+      });
+    } else {
+      navigation.navigate('ProjectStructureStepTwo');
+    }
   };
 
   return (
@@ -196,4 +205,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default withTheme(StepTwo);
+export default withTheme(StepOne);

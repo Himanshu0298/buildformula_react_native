@@ -38,8 +38,12 @@ export default {
       projectEmail: 'Project Email',
       projectPhone: 'Project Phone',
 
+      //Project Structure
       projectStructure: 'Project Structure',
       projectStructureSubtitle: 'Select the appropriate option',
+      projectStructureApartment: 'Project Structure: Apartment',
+      projectStructureSubtitleTowers: 'Fill in the number of towers',
+      projectStructureSubtitleFloors: 'Fill in the number of floors',
 
       paymentInstallment: [
         {id: 1, name: 'Full payment'},
