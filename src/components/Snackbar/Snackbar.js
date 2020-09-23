@@ -1,5 +1,6 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {Snackbar, Colors} from 'react-native-paper';
+import {Keyboard} from 'react-native';
 
 const VariantProps = {
   success: {
@@ -12,7 +13,8 @@ const VariantProps = {
     color: Colors.orange400,
   },
 };
-
+let keyboardDidShowListener;
+let keyboardDidHideListener;
 function CustomSnackbar({
   open,
   message,
@@ -22,6 +24,37 @@ function CustomSnackbar({
   isKeyboardShown,
   autoHideDuration,
 }) {
+  const [margin, setMargin] = useState(8);
+
+  useEffect(() => {
+    _componentDidMount();
+    () => _componentWillUnmount();
+  });
+
+  const _componentDidMount = () => {
+    keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      _keyboardDidShow,
+    );
+    keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      _keyboardDidHide,
+    );
+  };
+
+  const _componentWillUnmount = () => {
+    keyboardDidShowListener.remove();
+    keyboardDidHideListener.remove();
+  };
+
+  const _keyboardDidShow = (e) => {
+    setMargin(e.endCoordinates.height);
+  };
+
+  const _keyboardDidHide = () => {
+    setMargin(8);
+  };
+
   return (
     <Snackbar
       visible={open}
@@ -31,6 +64,7 @@ function CustomSnackbar({
           accent: '#fff',
         },
       }}
+      style={{marginBottom: margin}}
       duration={autoHideDuration}
       onDismiss={onClose}
       action={

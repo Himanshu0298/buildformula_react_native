@@ -1,9 +1,10 @@
-import React, {useState} from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, {useEffect, useState} from 'react';
 import {
   View,
   StatusBar,
   StyleSheet,
-  Image,
+  Keyboard,
   TouchableOpacity,
   SafeAreaView,
 } from 'react-native';
@@ -14,14 +15,30 @@ import {theme} from '../../../../styles/theme';
 import {getShadow} from '../../../../utils';
 import {useSnackbar} from '../../../../components/Snackbar';
 import MaterialTabs from 'react-native-material-tabs';
+import TowersScreen from './Components/TowersScreen';
+import FloorsScreen from './Components/FloorsScreen';
+import UnitsScreen from './Components/UnitsScreen';
 
 function StepTwo(props) {
   const {navigation} = props;
 
   const [selectedTab, setSelectedTab] = useState(0);
+  const [towers, setTowers] = useState(10);
 
   const {t} = useTranslation();
   const snackbar = useSnackbar();
+
+  const updateTowers = (value) => {
+    if (value && value > 30) {
+      snackbar.showMessage({
+        variant: 'warning',
+        message: 'Max 30 towers are allowed',
+      });
+      setTowers(30);
+    } else {
+      setTowers(value);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -48,6 +65,11 @@ function StepTwo(props) {
           }}
         />
       </View>
+      {selectedTab === 0 ? (
+        <TowersScreen towers={towers} onChangeTowers={updateTowers} />
+      ) : null}
+      {selectedTab === 1 ? <FloorsScreen /> : null}
+      {selectedTab === 2 ? <UnitsScreen /> : null}
     </SafeAreaView>
   );
 }
