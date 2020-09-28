@@ -85,3 +85,24 @@ const shadowsArray = {
 };
 
 export const getShadow = (elevation) => shadowsArray[elevation][Platform.OS];
+
+export function getFloorNumber(i) {
+  var j = i % 10,
+    k = i % 100;
+  let floor;
+  if (j === 1 && k !== 11) {
+    floor = i + 'st';
+  } else if (j === 2 && k !== 12) {
+    floor = i + 'nd';
+  } else if (j === 3 && k !== 13) {
+    floor = i + 'rd';
+  } else {
+    floor = i + 'th';
+  }
+
+  if (i === 0) {
+    return 'Ground Floor';
+  }
+
+  return `${floor} Floor`;
+}

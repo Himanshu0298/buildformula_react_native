@@ -18,25 +18,39 @@ import MaterialTabs from 'react-native-material-tabs';
 import TowersScreen from './Components/TowersScreen';
 import FloorsScreen from './Components/FloorsScreen';
 import UnitsScreen from './Components/UnitsScreen';
+import {MAX_TOWERS, MAX_FLOORS} from '../../../../utils/constant';
 
 function StepTwo(props) {
   const {navigation} = props;
 
   const [selectedTab, setSelectedTab] = useState(0);
   const [towers, setTowers] = useState(10);
+  const [floors, setFloors] = useState();
 
   const {t} = useTranslation();
   const snackbar = useSnackbar();
 
   const updateTowers = (value) => {
-    if (value && value > 30) {
+    if (value && value > MAX_TOWERS) {
       snackbar.showMessage({
         variant: 'warning',
-        message: 'Max 30 towers are allowed',
+        message: `Max ${MAX_TOWERS} towers are allowed`,
       });
-      setTowers(30);
+      setTowers(MAX_TOWERS);
     } else {
       setTowers(value);
+    }
+  };
+
+  const updateFloors = (value) => {
+    if (value && value > MAX_FLOORS) {
+      snackbar.showMessage({
+        variant: 'warning',
+        message: `Max ${MAX_FLOORS} floors are allowed`,
+      });
+      setFloors(MAX_FLOORS);
+    } else {
+      setFloors(value);
     }
   };
 
@@ -68,7 +82,9 @@ function StepTwo(props) {
       {selectedTab === 0 ? (
         <TowersScreen towers={towers} onChangeTowers={updateTowers} />
       ) : null}
-      {selectedTab === 1 ? <FloorsScreen /> : null}
+      {selectedTab === 1 ? (
+        <FloorsScreen floors={floors} onChangeFloors={updateFloors} />
+      ) : null}
       {selectedTab === 2 ? <UnitsScreen /> : null}
     </SafeAreaView>
   );

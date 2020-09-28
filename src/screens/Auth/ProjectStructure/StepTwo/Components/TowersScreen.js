@@ -42,9 +42,17 @@ function RenderTowers({towers, selectedTower, onPress}) {
 function TowersScreen(props) {
   const {theme, towers, onChangeTowers} = props;
   const [selectedTower, setSelectedTower] = useState();
+
+  const toggleSelectedTower = (value) => {
+    if (selectedTower === value) {
+      setSelectedTower(undefined);
+    } else {
+      setSelectedTower(value);
+    }
+  };
+
   return (
     <SafeAreaView>
-      {/* TODO:ScrollView not working */}
       <ScrollView>
         <View style={styles.container}>
           <View style={styles.headingContainer}>
@@ -82,23 +90,25 @@ function TowersScreen(props) {
             <View style={styles.towersListContainer}>
               <RenderTowers
                 selectedTower={selectedTower}
-                onPress={setSelectedTower}
+                onPress={toggleSelectedTower}
                 towers={towers}
               />
             </View>
           ) : null}
           <View style={styles.button}>
-            <Button
-              style={{width: '50%'}}
-              compact
-              mode="contained"
-              contentStyle={{padding: 5}}
-              theme={{roundness: 15}}
-              onPress={() => {
-                console.log('----->next ');
-              }}>
-              <BaseText style={styles.nextButtonLabel}>{'Next'}</BaseText>
-            </Button>
+            {!isNaN(selectedTower) ? (
+              <Button
+                style={{width: '50%'}}
+                compact
+                mode="contained"
+                contentStyle={{padding: 5}}
+                theme={{roundness: 15}}
+                onPress={() => {
+                  console.log('----->next ');
+                }}>
+                <BaseText style={styles.nextButtonLabel}>{'Next'}</BaseText>
+              </Button>
+            ) : null}
           </View>
         </View>
       </ScrollView>
@@ -111,6 +121,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 20,
     paddingVertical: 30,
+    marginBottom: 150,
   },
   headingContainer: {
     flexDirection: 'row',
@@ -160,6 +171,7 @@ const styles = StyleSheet.create({
     color: 'gray',
   },
   button: {
+    marginTop: 20,
     width: '95%',
     display: 'flex',
     alignItems: 'flex-end',
