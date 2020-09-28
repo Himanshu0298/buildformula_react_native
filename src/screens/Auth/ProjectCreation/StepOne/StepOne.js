@@ -48,30 +48,30 @@ function StepOne(props) {
         validateOnBlur={false}
         validateOnChange={false}
         initialValues={{
-          company_gst: '1234567899',
-          company_name: 'test',
-          company_pan: '1234567890',
-          company_tan: '1234567890',
+          company_gst: '12345675667',
+          company_name: 'test1',
+          company_pan: '12345674567',
+          company_tan: '12345674567',
           pan_image: {
             name: 'image-79dd4bc1-4f8f-43e1-a906-544570d12a27.jpg',
             type: 'image/jpeg',
-            uri: 'content://media/external/images/media/694909',
+            uri: 'file://' + 'content://media/external/images/media/694909',
           },
           tan_image: {
             name: 'image-79dd4bc1-4f8f-43e1-a906-544570d12a27.jpg',
             type: 'image/jpeg',
-            uri: 'content://media/external/images/media/694909',
+            uri: 'file://' + 'content://media/external/images/media/694909',
           },
           gst_image: {
             name: 'image-79dd4bc1-4f8f-43e1-a906-544570d12a27.jpg',
             type: 'image/jpeg',
-            uri: 'content://media/external/images/media/694909',
+            uri: 'file://' + 'content://media/external/images/media/694909',
           },
         }}
         validationSchema={schema}
         onSubmit={async (values) => {
           // console.log('-----> values', values);
-          navigation.navigate('ProjectCreationStepTwo');
+          navigation.navigate('ProjectCreationStepTwo', {stepOneData: values});
         }}>
         {({
           handleChange,

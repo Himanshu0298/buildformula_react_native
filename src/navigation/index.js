@@ -190,9 +190,7 @@ function NavContainer() {
       }}>
       <RouteContext.Provider value={currentScreen}>
         <Stack.Navigator
-          initialRouteName={
-            authenticated ? 'AppDrawer' : 'ProjectStructureStepTwo'
-          }>
+          initialRouteName={authenticated ? 'AppDrawer' : 'LanguageSelect'}>
           {authenticated ? (
             //App Nav Screens
             <Fragment>

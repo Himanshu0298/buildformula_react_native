@@ -21,6 +21,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import {useTranslation} from 'react-i18next';
 import Layout from '../../../utils/Layout';
 import BottomSheet from 'reanimated-bottom-sheet';
+import {useSnackbar} from '../../../components/Snackbar';
 
 function LoginButton({label, onPress}) {
   return (
@@ -40,7 +41,6 @@ function LoginButton({label, onPress}) {
 
 function RenderContent(props) {
   const {
-    loginError,
     values,
     handleChange,
     handleBlur,
@@ -61,11 +61,6 @@ function RenderContent(props) {
         <Subheading>{t('subHeading')}</Subheading>
       </View>
       <View style={styles.inputMainContainer}>
-        {loginError && (
-          <View>
-            <BaseText style={styles.loginError}>{loginError}</BaseText>
-          </View>
-        )}
         <View style={styles.inputsContainer}>
           <CustomInput
             name="email"
@@ -134,8 +129,18 @@ function Login(props) {
   const {login} = useUserActions();
 
   const bottomSheetRef = React.createRef();
+  const snackbar = useSnackbar();
 
   const {loading} = useSelector((state) => state.user);
+
+  React.useEffect(() => {
+    if (loginError) {
+      snackbar.showMessage({
+        message: loginError,
+        variant: 'error',
+      });
+    }
+  }, [loginError]);
 
   React.useEffect(() => {
     const focusUnsubscribe = navigation.addListener('focus', () => {
@@ -187,7 +192,10 @@ function Login(props) {
       validationSchema={schema}
       onSubmit={async (values) => {
         let formData = new FormData();
-
+        Keyboard.dismiss();
+        if (loginError) {
+          setLoginError(null);
+        }
         formData.append('email', values.email);
         formData.append('password', values.password);
 
@@ -203,6 +211,8 @@ function Login(props) {
               navigation.navigate('Otp');
             } else if (default_role_id === 0) {
               navigation.navigate('RoleSelect');
+            } else {
+              navigation.navigate('ProjectCreationStepOne');
             }
           })
           .catch((error) => {
@@ -227,7 +237,6 @@ function Login(props) {
             renderHeader={renderHeader}
             renderContent={() => (
               <RenderContent
-                loginError={loginError}
                 handleChange={handleChange}
                 values={values}
                 handleSubmit={handleSubmit}
@@ -297,11 +306,6 @@ const styles = StyleSheet.create({
     height: '5%',
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  loginError: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    textAlign: 'center',
   },
   inputMainContainer: {
     width: '100%',

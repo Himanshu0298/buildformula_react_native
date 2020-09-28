@@ -40,16 +40,14 @@ function RenderTowers({towers, selectedTower, onPress}) {
 }
 
 function TowersScreen(props) {
-  const {theme, towers, onChangeTowers} = props;
-  const [selectedTower, setSelectedTower] = useState();
-
-  const toggleSelectedTower = (value) => {
-    if (selectedTower === value) {
-      setSelectedTower(undefined);
-    } else {
-      setSelectedTower(value);
-    }
-  };
+  const {
+    theme,
+    towers,
+    onChangeTowers,
+    selectedTower,
+    toggleSelectedTower,
+    saveTowers,
+  } = props;
 
   return (
     <SafeAreaView>
@@ -103,9 +101,7 @@ function TowersScreen(props) {
                 mode="contained"
                 contentStyle={{padding: 5}}
                 theme={{roundness: 15}}
-                onPress={() => {
-                  console.log('----->next ');
-                }}>
+                onPress={saveTowers}>
                 <BaseText style={styles.nextButtonLabel}>{'Next'}</BaseText>
               </Button>
             ) : null}

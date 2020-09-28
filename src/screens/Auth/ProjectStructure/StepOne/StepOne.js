@@ -23,6 +23,8 @@ import plot from '../../../../assets/images/plot.png';
 import plotInactive from '../../../../assets/images/plot_inactive.png';
 import Layout from '../../../../utils/Layout';
 import {useSnackbar} from '../../../../components/Snackbar';
+import useStructureActions from '../../../../redux/actions/structureActions';
+import {useSelector} from 'react-redux';
 
 function ImageRender({
   title,
@@ -47,30 +49,34 @@ function ImageRender({
 function StepOne(props) {
   const {navigation} = props;
 
-  const [projectTypes, setProjectTypes] = useState([]);
-
   const {t} = useTranslation();
   const snackbar = useSnackbar();
 
+  const {updateStructure} = useStructureActions();
+
+  const {structureTypes} = useSelector((state) => state.structure);
+
   const updateTypes = (type) => {
-    let types = [...projectTypes];
+    let types = [...structureTypes];
     let index = types.indexOf(type);
     if (index > -1) {
       types.splice(index, 1);
     } else {
       types.push(type);
     }
-    setProjectTypes(types);
+    updateStructure({structureTypes: types});
   };
 
   const handleSubmit = () => {
-    if (projectTypes.length === 0) {
+    if (structureTypes.length === 0) {
       snackbar.showMessage({
         message: 'Please select a type',
         variant: 'error',
       });
     } else {
-      navigation.navigate('ProjectStructureStepTwo');
+      navigation.navigate('ProjectStructureStepTwo', {
+        structureType: structureTypes[0],
+      });
     }
   };
 
@@ -91,7 +97,7 @@ function StepOne(props) {
           inactiveSrc={apartmentInactive}
           value={1}
           updateTypes={updateTypes}
-          active={projectTypes.includes(1)}
+          active={structureTypes.includes(1)}
           imageStyle={styles.apartment}
         />
         <ImageRender
@@ -100,7 +106,7 @@ function StepOne(props) {
           inactiveSrc={shopInactive}
           value={2}
           updateTypes={updateTypes}
-          active={projectTypes.includes(2)}
+          active={structureTypes.includes(2)}
           imageStyle={styles.shop}
         />
         <ImageRender
@@ -109,7 +115,7 @@ function StepOne(props) {
           inactiveSrc={officeInactive}
           value={3}
           updateTypes={updateTypes}
-          active={projectTypes.includes(3)}
+          active={structureTypes.includes(3)}
           imageStyle={styles.office}
         />
         <ImageRender
@@ -118,7 +124,7 @@ function StepOne(props) {
           inactiveSrc={bungalowInactive}
           value={4}
           updateTypes={updateTypes}
-          active={projectTypes.includes(4)}
+          active={structureTypes.includes(4)}
           imageStyle={styles.shop}
         />
         <ImageRender
@@ -128,7 +134,7 @@ function StepOne(props) {
           value={5}
           style={styles.plotContainer}
           updateTypes={updateTypes}
-          active={projectTypes.includes(5)}
+          active={structureTypes.includes(5)}
           imageStyle={styles.plot}
         />
         <View style={styles.button}>

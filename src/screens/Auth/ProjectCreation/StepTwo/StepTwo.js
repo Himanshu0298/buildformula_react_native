@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, StatusBar, StyleSheet} from 'react-native';
+import {View, StatusBar, StyleSheet, Keyboard} from 'react-native';
 import {withTheme, Button, TextInput} from 'react-native-paper';
 import FormTitle from '../../../../components/FormTitle';
 import {Formik} from 'formik';
@@ -8,9 +8,11 @@ import {theme} from '../../../../styles/theme';
 import RenderInput from '../../../../components/RenderInput';
 import FileInput from '../../../../components/FileInput';
 import BaseText from '../../../../components/BaseText';
+import useProjectActions from '../../../../redux/actions/projectActions';
 import * as Yup from 'yup';
 import {PHONE_REGEX} from '../../../../utils/constant';
 import {ScrollView} from 'react-native-gesture-handler';
+import {useSelector} from 'react-redux';
 
 const schema = Yup.object().shape({
   project_name: Yup.string().required('name is required'),
@@ -30,9 +32,15 @@ const schema = Yup.object().shape({
 });
 
 function StepTwo(props) {
-  const {navigation} = props;
+  const {navigation, route} = props;
+
+  const {stepOneData} = route.params;
 
   const {t} = useTranslation();
+
+  const {createProject} = useProjectActions();
+
+  const {user} = useSelector((state) => state.user);
 
   const nameRef = React.useRef();
   const addressRef = React.useRef();
@@ -52,20 +60,42 @@ function StepTwo(props) {
         <Formik
           validateOnBlur={false}
           validateOnChange={false}
-          initialValues={
-            {
-              // project_rera: '1234567899',
-              // project_website: 'www.hello.com',
-              // project_name: 'test',
-              // project_email: 'abcdef@gmail.com',
-              // project_phone: '1234567890',
-              // project_address: 'test,testing,testVilla 202020',
-            }
-          }
+          initialValues={{
+            project_rera: '12345674567',
+            project_website: 'www.hello1.com',
+            project_name: 'test1',
+            project_email: 'abcdefghi@gmail.com',
+            project_phone: '1234567890',
+            project_address: 'test,testing,testVilla 202020',
+            rera_image: {
+              name: 'image-79dd4bc1-4f8f-43e1-a906-544570d12a27.jpg',
+              type: 'image/jpeg',
+              uri: 'file://' + 'content://media/external/images/media/694909',
+            },
+          }}
           validationSchema={schema}
           onSubmit={async (values) => {
-            console.log('-----> values', values);
-            navigation.navigate('ProjectCreationStepThree');
+            Keyboard.dismiss();
+
+            let formData = new FormData();
+            formData.append('project_rera', values.project_rera);
+            formData.append('project_website', values.project_website);
+            formData.append('project_name', values.project_name);
+            formData.append('project_email', values.project_email);
+            formData.append('project_phone', values.project_phone);
+            formData.append('project_address', values.project_address);
+            formData.append('rera_image', values.rera_image);
+            formData.append('company_gst', stepOneData.company_gst);
+            formData.append('company_name', stepOneData.company_name);
+            formData.append('company_pan', stepOneData.company_pan);
+            formData.append('company_tan', stepOneData.company_tan);
+            formData.append('pan_image', stepOneData.pan_image);
+            formData.append('tan_image', stepOneData.tan_image);
+            formData.append('gst_image', stepOneData.gst_image);
+            formData.append('user_id', user.id);
+            formData.append('terms', 1);
+
+            createProject(formData);
           }}>
           {({
             handleChange,
@@ -111,8 +141,8 @@ function StepTwo(props) {
                   label={t('projectRera')}
                   ref={reraRef}
                   containerStyles={styles.input}
-                  value={values.company_pan}
-                  file={values.pan_image}
+                  value={values.project_rera}
+                  file={values.rera_image}
                   onChangeText={handleChange('project_rera')}
                   onChoose={(v) => setFieldValue('rera_image', v)}
                   onBlur={handleBlur('project_rera')}

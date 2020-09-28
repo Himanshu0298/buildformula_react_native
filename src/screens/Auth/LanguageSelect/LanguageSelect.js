@@ -7,6 +7,7 @@ import BaseText from '../../../components/BaseText';
 import {useTranslation} from 'react-i18next';
 import Layout from '../../../utils/Layout';
 import {theme} from '../../../styles/theme';
+import {useSelector} from 'react-redux';
 
 function LanguageButton({label, language, onPress, ...props}) {
   return (
@@ -27,13 +28,31 @@ function LanguageButton({label, language, onPress, ...props}) {
 }
 
 function LanguageSelect(props) {
+  const {navigation} = props;
   const {colors} = props.theme;
 
   const {i18n} = useTranslation();
 
+  const {user = {}} = useSelector((state) => state.user);
+  const {project_id} = useSelector((state) => state.project);
+  const all = useSelector((state) => state);
+  console.log('-----> LanguageSelect', all);
+
   const selectLanguage = (language) => {
     i18n.changeLanguage(language);
-    props.navigation.navigate('Login');
+    console.log('-----> user', user);
+    const {id, otp_verified, email_verified, default_role_id} = user;
+    if (id) {
+      if (otp_verified === 'N' || email_verified === 'N') {
+        navigation.navigate('Otp');
+      } else if (default_role_id === 0) {
+        navigation.navigate('RoleSelect');
+      } else if (project_id) {
+        navigation.navigate('ProjectStructureStepOne');
+      }
+    } else {
+      props.navigation.navigate('Login');
+    }
   };
 
   return (

@@ -19,16 +19,63 @@ import TowersScreen from './Components/TowersScreen';
 import FloorsScreen from './Components/FloorsScreen';
 import UnitsScreen from './Components/UnitsScreen';
 import {MAX_TOWERS, MAX_FLOORS} from '../../../../utils/constant';
+import useStructureActions from '../../../../redux/actions/structureActions';
+import {useSelector} from 'react-redux';
+
+function updateTower(structureType, towerCount) {
+  return {
+    structure: {
+      [structureType]: {
+        towerCount: towerCount,
+        towers: {},
+      },
+    },
+  };
+}
+
+function updateFloor(structure, structureType, towerIndex, floorCount) {
+  const {towers} = structure[structureType];
+  return {
+    structure: {
+      [structureType]: {
+        towerCount: MAX_TOWERS,
+        towers: {
+          ...towers,
+          [towerIndex]: {
+            floorCount,
+            floors: {},
+          },
+        },
+      },
+    },
+  };
+}
 
 function StepTwo(props) {
-  const {navigation} = props;
+  const {
+    navigation,
+    route: {params = {}},
+  } = props;
+  const {structureType = 1} = params;
 
   const [selectedTab, setSelectedTab] = useState(0);
-  const [towers, setTowers] = useState(10);
-  const [floors, setFloors] = useState();
+  const [selectedTower, setSelectedTower] = useState();
 
   const {t} = useTranslation();
   const snackbar = useSnackbar();
+
+  const {updateStructure, saveTowersCount} = useStructureActions();
+
+  const {structureTypes, structure} = useSelector((state) => state.structure);
+  const {user} = useSelector((state) => state.user);
+
+  const toggleSelectedTower = (value) => {
+    if (selectedTower === value) {
+      setSelectedTower(undefined);
+    } else {
+      setSelectedTower(value);
+    }
+  };
 
   const updateTowers = (value) => {
     if (value && value > MAX_TOWERS) {
@@ -36,9 +83,9 @@ function StepTwo(props) {
         variant: 'warning',
         message: `Max ${MAX_TOWERS} towers are allowed`,
       });
-      setTowers(MAX_TOWERS);
+      updateStructure(updateTower(structureType, MAX_TOWERS));
     } else {
-      setTowers(value);
+      updateStructure(updateTower(structureType, value));
     }
   };
 
@@ -48,10 +95,23 @@ function StepTwo(props) {
         variant: 'warning',
         message: `Max ${MAX_FLOORS} floors are allowed`,
       });
-      setFloors(MAX_FLOORS);
+      updateStructure(updateFloor(structureType, selectedTower, MAX_FLOORS));
     } else {
-      setFloors(value);
+      updateStructure(updateFloor(structureType, selectedTower, value));
     }
+  };
+
+  const saveTowers = () => {
+    let formData = new FormData();
+
+    formData.append('current_type_id', structureType);
+    formData.append('tower', structure[structureType].towerCount);
+    formData.append('user_id', user.id);
+    formData.append('project_id', 1);
+
+    saveTowersCount(formData).then(() => {
+      setSelectedTab(1);
+    });
   };
 
   return (
@@ -80,10 +140,19 @@ function StepTwo(props) {
         />
       </View>
       {selectedTab === 0 ? (
-        <TowersScreen towers={towers} onChangeTowers={updateTowers} />
+        <TowersScreen
+          towers={structure[structureType].towerCount}
+          selectedTower={selectedTower}
+          onChangeTowers={updateTowers}
+          toggleSelectedTower={toggleSelectedTower}
+          saveTowers={saveTowers}
+        />
       ) : null}
       {selectedTab === 1 ? (
-        <FloorsScreen floors={floors} onChangeFloors={updateFloors} />
+        <FloorsScreen
+          floors={structure[structureType].towers[selectedTower].floorCount}
+          onChangeFloors={updateFloors}
+        />
       ) : null}
       {selectedTab === 2 ? <UnitsScreen /> : null}
     </SafeAreaView>

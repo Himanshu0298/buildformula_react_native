@@ -1,5 +1,4 @@
 import {
-  SET_USER_DATA,
   SELECT_ROLE,
   SIGN_UP,
   LOGIN,
@@ -8,15 +7,13 @@ import {
 
 const initialState = {
   user: undefined,
-  roles: [],
   token: undefined,
   loading: false,
   authenticated: false,
-  confirmation: undefined,
 };
 
 export default (state = initialState, action = {}) => {
-  console.log('-----> action.type', action.type);
+  console.log('-----> action.type', action);
   switch (action.type) {
     case 'persist/REHYDRATE':
       return {
@@ -24,11 +21,24 @@ export default (state = initialState, action = {}) => {
         loading: false,
       };
 
-    case `${SET_USER_DATA}_FULFILLED`:
+    case `${LOGIN}_PENDING`:
       return {
         ...state,
-        user: action.payload,
-        authenticated: true,
+        loading: true,
+      };
+    case `${LOGIN}_FULFILLED`:
+      const {user} = action.payload;
+      return {
+        ...state,
+        loading: false,
+        user: user.user,
+        token: user.token,
+        // authenticated: user.default_role_id !== 0,
+      };
+    case `${LOGIN}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
       };
 
     case `${SIGN_UP}_PENDING`:
@@ -73,30 +83,11 @@ export default (state = initialState, action = {}) => {
       return {
         ...state,
         loading: false,
-        authenticated: true,
+        // authenticated: true,
         //TODO: enable this once user data is returned in response
         // user: action.payload.user,
       };
     case `${SELECT_ROLE}_REJECTED`:
-      return {
-        ...state,
-        loading: false,
-      };
-
-    case `${LOGIN}_PENDING`:
-      return {
-        ...state,
-        loading: true,
-      };
-    case `${LOGIN}_FULFILLED`:
-      const {user} = action.payload;
-      return {
-        ...state,
-        loading: false,
-        user: user,
-        authenticated: user.default_role_id !== 0,
-      };
-    case `${LOGIN}_REJECTED`:
       return {
         ...state,
         loading: false,

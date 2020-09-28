@@ -35,7 +35,7 @@ function RoleSelect(props) {
 
     selectRole(formData)
       .then((data) => {
-        console.log('-----> data', data.value);
+        props.navigation.navigate('ProjectCreationStepOne');
       })
       .catch((error) => {
         console.log('-----> error', error);
