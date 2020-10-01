@@ -2,6 +2,7 @@ import * as types from './actionTypes';
 import {useDispatch} from 'react-redux';
 import useProject from '../../services/project';
 import {useSnackbar} from '../../components/Snackbar';
+import {processError} from '../../utils';
 
 export default function useProjectActions() {
   const dispatch = useDispatch();
@@ -20,17 +21,12 @@ export default function useProjectActions() {
 
             return resolve(data);
           } catch (error) {
-            const msg =
-              error &&
-              error.response &&
-              error.response.data &&
-              error.response.data.msg;
-
+            let errorMessage = processError(error);
             snackbar.showMessage({
-              message: msg || error.message,
+              message: errorMessage,
               variant: 'error',
             });
-            return reject(msg || error);
+            return reject(errorMessage);
           }
         }),
       }),

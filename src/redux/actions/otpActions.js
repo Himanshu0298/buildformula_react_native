@@ -1,23 +1,19 @@
 import * as types from './actionTypes';
-import auth from '@react-native-firebase/auth';
 import {useDispatch} from 'react-redux';
 import useAuth from '../../services/user';
+import {processError} from '../../utils';
+import {useSnackbar} from '../../components/Snackbar';
 
 export default function useOtpActions() {
   const dispatch = useDispatch();
   const {otpCheck} = useAuth();
+  const snackbar = useSnackbar();
 
   return {
     sentOtp: (phone) =>
       dispatch({
         type: types.SEND_OTP,
-        payload: new Promise(async (resolve, reject) => {
-          const confirmation = await auth().signInWithPhoneNumber(
-            `+91${phone}`,
-          );
-
-          return resolve({confirmation});
-        }),
+        payload: new Promise(async (resolve, reject) => {}),
       }),
     verifyOtp: (data) =>
       dispatch({
@@ -27,8 +23,12 @@ export default function useOtpActions() {
             let response = await otpCheck(data);
             return resolve({response});
           } catch (error) {
-            const {data, msg} = error?.response?.data;
-            return reject(msg);
+            let errorMessage = processError(error);
+            snackbar.showMessage({
+              message: errorMessage,
+              variant: 'error',
+            });
+            return reject(errorMessage);
           }
         }),
       }),

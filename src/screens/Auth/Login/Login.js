@@ -132,6 +132,7 @@ function Login(props) {
   const snackbar = useSnackbar();
 
   const {loading} = useSelector((state) => state.user);
+  const {project} = useSelector((state) => state.project);
 
   React.useEffect(() => {
     if (loginError) {
@@ -211,8 +212,10 @@ function Login(props) {
               navigation.navigate('Otp');
             } else if (default_role_id === 0) {
               navigation.navigate('RoleSelect');
-            } else {
+            } else if (!project.project_id) {
               navigation.navigate('ProjectCreationStepOne');
+            } else {
+              navigation.navigate('ProjectStructureStepOne');
             }
           })
           .catch((error) => {

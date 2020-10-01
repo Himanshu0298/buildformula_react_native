@@ -1,36 +1,31 @@
 import React, {useState} from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  ImageBackground,
-  TouchableOpacity,
-  SafeAreaView,
-  ScrollView,
-} from 'react-native';
-import {Button, Subheading, TextInput, withTheme} from 'react-native-paper';
+import {View, StyleSheet, Image, SafeAreaView, ScrollView} from 'react-native';
+import {Button, TextInput, withTheme} from 'react-native-paper';
 import BaseText from '../../../../../components/BaseText';
 import floorSlab from '../../../../../assets/images/slab.png';
 import Layout from '../../../../../utils/Layout';
-import {getFloorNumber} from '../../../../../utils/Layout';
+import {getFloorNumber} from '../../../../../utils';
 import {theme} from '../../../../../styles/theme';
 
-function RenderFloors({floors, onChangeUnit, selectedFloor, onPress}) {
+function RenderFloors({floors, floorCount, onChangeUnit, showAllUnits}) {
   let floorsList = [];
-  for (let i = 0; i < floors; i += 1) {
+  for (let i = 0; i < floorCount; i += 1) {
     floorsList.push(
       <View key={i} style={styles.floorContainer}>
-        <View onPress={() => onPress(i)} style={styles.row1Container}>
+        <View style={styles.row1Container}>
           <BaseText style={styles.floorLabel}>{getFloorNumber(i)}</BaseText>
           <View style={{flexDirection: 'row'}}>
             <TextInput
               dense
               blurOnSubmit
-              value={floors ? floors.toString() : floors}
-              onChangeText={onChangeUnit}
+              onChangeText={(units) => onChangeUnit(i, units)}
               style={styles.unitsInput}
               keyboardType="decimal-pad"
+              value={
+                floors[i] && floors[i].unitsCount
+                  ? floors[i].unitsCount.toString()
+                  : ''
+              }
               theme={{
                 colors: {
                   underlineColor: 'transparent',
@@ -46,9 +41,7 @@ function RenderFloors({floors, onChangeUnit, selectedFloor, onPress}) {
               uppercase={false}
               contentStyle={{paddingVertical: 5}}
               theme={{roundness: 5}}
-              onPress={() => {
-                console.log('----->next ');
-              }}>
+              onPress={() => showAllUnits(i)}>
               <BaseText style={styles.allUnitsLabel}>
                 {'Show all units'}
               </BaseText>
@@ -63,7 +56,13 @@ function RenderFloors({floors, onChangeUnit, selectedFloor, onPress}) {
 }
 
 function FloorsScreen(props) {
-  const {theme, floors, onChangeFloors} = props;
+  const {
+    floors,
+    floorCount,
+    onChangeFloors,
+    showAllUnits,
+    onChangeUnit,
+  } = props;
   const [selectedFloor, setSelectedFloor] = useState();
 
   const toggleSelectedFloor = (value) => {
@@ -84,7 +83,7 @@ function FloorsScreen(props) {
               dense
               mode="outlined"
               blurOnSubmit
-              value={floors ? floors.toString() : floors}
+              value={floorCount ? floorCount.toString() : floorCount}
               onChangeText={onChangeFloors}
               style={styles.input}
               keyboardType="decimal-pad"
@@ -109,12 +108,14 @@ function FloorsScreen(props) {
               </BaseText>
             </Button>
           </View>
-          {floors && floors > 0 ? (
+          {floorCount && floorCount > 0 ? (
             <View style={styles.floorsListContainer}>
               <RenderFloors
-                selectedFloor={selectedFloor}
                 onPress={toggleSelectedFloor}
+                onChangeUnit={onChangeUnit}
                 floors={floors}
+                floorCount={floorCount}
+                showAllUnits={showAllUnits}
               />
             </View>
           ) : null}
@@ -166,6 +167,7 @@ const styles = StyleSheet.create({
     width: 45,
     display: 'flex',
     marginHorizontal: 10,
+    fontSize: 16,
     justifyContent: 'center',
   },
   applyButton: {
@@ -190,7 +192,8 @@ const styles = StyleSheet.create({
   },
   floorLabel: {
     color: 'grey',
-    fontSize: 13,
+    fontSize: 12,
+    width: 70,
   },
   allUnitsLabel: {
     fontSize: 14,

@@ -106,3 +106,12 @@ export function getFloorNumber(i) {
 
   return `${floor} Floor`;
 }
+
+export const processError = (error) => {
+  let errorMessage =
+    error && error.response && error.response.data && error.response.data.msg;
+  console.log('-----> error.response.data', error.response);
+
+  errorMessage = errorMessage || error.message;
+  return errorMessage;
+};

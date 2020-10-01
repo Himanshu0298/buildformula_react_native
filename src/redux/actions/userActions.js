@@ -1,10 +1,13 @@
 import * as types from './actionTypes';
 import {useDispatch} from 'react-redux';
 import useAuth from '../../services/user';
+import {processError} from '../../utils';
+import {useSnackbar} from '../../components/Snackbar';
 
 export default function useUserActions() {
   const dispatch = useDispatch();
   const {login, signUp, updateUser} = useAuth();
+  const snackbar = useSnackbar();
 
   return {
     signUp: (user) =>
@@ -18,8 +21,12 @@ export default function useUserActions() {
 
             return resolve({user: userData});
           } catch (error) {
-            const {msg} = error?.response?.data;
-            return reject(msg);
+            let errorMessage = processError(error);
+            snackbar.showMessage({
+              message: errorMessage,
+              variant: 'error',
+            });
+            return reject(errorMessage);
           }
         }),
       }),
@@ -55,13 +62,12 @@ export default function useUserActions() {
 
             return resolve({user: userData});
           } catch (error) {
-            const {data: userData = {}} = error?.response?.data;
-            const {email} = userData;
-            if (email) {
-              return resolve({user: userData});
-            } else {
-              return reject('Invalid email or password');
-            }
+            let errorMessage = processError(error);
+            snackbar.showMessage({
+              message: errorMessage,
+              variant: 'error',
+            });
+            return reject(errorMessage);
           }
         }),
       }),

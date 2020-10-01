@@ -34,20 +34,18 @@ function LanguageSelect(props) {
   const {i18n} = useTranslation();
 
   const {user = {}} = useSelector((state) => state.user);
-  const {project_id} = useSelector((state) => state.project);
-  const all = useSelector((state) => state);
-  console.log('-----> LanguageSelect', all);
+  const {project} = useSelector((state) => state.project);
+  console.log('-----> user', user);
 
   const selectLanguage = (language) => {
     i18n.changeLanguage(language);
-    console.log('-----> user', user);
     const {id, otp_verified, email_verified, default_role_id} = user;
     if (id) {
       if (otp_verified === 'N' || email_verified === 'N') {
         navigation.navigate('Otp');
       } else if (default_role_id === 0) {
         navigation.navigate('RoleSelect');
-      } else if (project_id) {
+      } else if (project.project_id) {
         navigation.navigate('ProjectStructureStepOne');
       }
     } else {

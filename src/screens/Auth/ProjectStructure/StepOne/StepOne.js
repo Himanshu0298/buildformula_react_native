@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {
   View,
   StatusBar,
@@ -25,6 +25,7 @@ import Layout from '../../../../utils/Layout';
 import {useSnackbar} from '../../../../components/Snackbar';
 import useStructureActions from '../../../../redux/actions/structureActions';
 import {useSelector} from 'react-redux';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 function ImageRender({
   title,
@@ -52,9 +53,11 @@ function StepOne(props) {
   const {t} = useTranslation();
   const snackbar = useSnackbar();
 
-  const {updateStructure} = useStructureActions();
+  const {updateStructureTypes, updateStructure} = useStructureActions();
 
   const {structureTypes} = useSelector((state) => state.structure);
+  const {project} = useSelector((state) => state.project);
+  const {loading} = useSelector((state) => state.structure);
 
   const updateTypes = (type) => {
     let types = [...structureTypes];
@@ -74,8 +77,14 @@ function StepOne(props) {
         variant: 'error',
       });
     } else {
-      navigation.navigate('ProjectStructureStepTwo', {
-        structureType: structureTypes[0],
+      let formData = new FormData();
+      formData.append('project_id', project.project_id);
+      formData.append('project_types', structureTypes.join());
+
+      updateStructureTypes(formData).then(() => {
+        navigation.navigate('ProjectStructureStepTwo', {
+          structureType: structureTypes[0],
+        });
       });
     }
   };
@@ -90,6 +99,7 @@ function StepOne(props) {
         title={t('projectStructure')}
         subTitle={t('projectStructureSubtitle')}
       />
+      <Spinner visible={loading} textContent={''} />
       <View style={styles.container}>
         <ImageRender
           title="Apartments"

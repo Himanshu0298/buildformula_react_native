@@ -50,49 +50,53 @@ function TowersScreen(props) {
   } = props;
 
   return (
-    <SafeAreaView>
-      <ScrollView>
+    <SafeAreaView style={{flex: 1}}>
+      <ScrollView
+        contentContainerStyle={styles.scrollView}
+        keyboardShouldPersistTaps="handled">
         <View style={styles.container}>
-          <View style={styles.headingContainer}>
-            <BaseText style={styles.title}>Towers</BaseText>
-            <TextInput
-              dense
-              mode="outlined"
-              blurOnSubmit
-              value={towers ? towers.toString() : towers}
-              onChangeText={onChangeTowers}
-              style={styles.input}
-              keyboardType="decimal-pad"
-              theme={{
-                roundness: 10,
-                colors: {
-                  underlineColor: 'transparent',
-                  text: '#000',
-                  accent: theme.colors.primary,
-                },
-              }}
-            />
-            <Button
-              compact={true}
-              mode="contained"
-              uppercase={false}
-              contentStyle={{paddingVertical: 2, paddingHorizontal: 6}}
-              theme={{roundness: 10}}
-              onPress={() => {}}>
-              <BaseText style={styles.applyButton}>
-                {'Apply for all towers'}
-              </BaseText>
-            </Button>
-          </View>
-          {towers && towers > 0 ? (
-            <View style={styles.towersListContainer}>
-              <RenderTowers
-                selectedTower={selectedTower}
-                onPress={toggleSelectedTower}
-                towers={towers}
+          <View>
+            <View style={styles.headingContainer}>
+              <BaseText style={styles.title}>Towers</BaseText>
+              <TextInput
+                dense
+                mode="outlined"
+                blurOnSubmit
+                value={towers ? towers.toString() : towers}
+                onChangeText={onChangeTowers}
+                style={styles.input}
+                keyboardType="decimal-pad"
+                theme={{
+                  roundness: 10,
+                  colors: {
+                    underlineColor: 'transparent',
+                    text: '#000',
+                    accent: theme.colors.primary,
+                  },
+                }}
               />
+              <Button
+                compact={true}
+                mode="contained"
+                uppercase={false}
+                contentStyle={{paddingVertical: 2, paddingHorizontal: 6}}
+                theme={{roundness: 10}}
+                onPress={() => {}}>
+                <BaseText style={styles.applyButton}>
+                  {'Apply for all towers'}
+                </BaseText>
+              </Button>
             </View>
-          ) : null}
+            {towers && towers > 0 ? (
+              <View style={styles.towersListContainer}>
+                <RenderTowers
+                  selectedTower={selectedTower}
+                  onPress={toggleSelectedTower}
+                  towers={towers}
+                />
+              </View>
+            ) : null}
+          </View>
           <View style={styles.button}>
             {!isNaN(selectedTower) ? (
               <Button
@@ -113,11 +117,15 @@ function TowersScreen(props) {
 }
 
 const styles = StyleSheet.create({
+  scrollView: {
+    paddingBottom: 20,
+    flexGrow: 1,
+  },
   container: {
     flex: 1,
+    justifyContent: 'space-between',
     paddingHorizontal: 20,
     paddingVertical: 30,
-    marginBottom: 150,
   },
   headingContainer: {
     flexDirection: 'row',

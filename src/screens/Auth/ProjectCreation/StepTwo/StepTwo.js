@@ -60,19 +60,21 @@ function StepTwo(props) {
         <Formik
           validateOnBlur={false}
           validateOnChange={false}
-          initialValues={{
-            project_rera: '12345674567',
-            project_website: 'www.hello1.com',
-            project_name: 'test1',
-            project_email: 'abcdefghi@gmail.com',
-            project_phone: '1234567890',
-            project_address: 'test,testing,testVilla 202020',
-            rera_image: {
-              name: 'image-79dd4bc1-4f8f-43e1-a906-544570d12a27.jpg',
-              type: 'image/jpeg',
-              uri: 'file://' + 'content://media/external/images/media/694909',
-            },
-          }}
+          initialValues={
+            {
+              // project_rera: '12345674567',
+              // project_website: 'www.hello1.com',
+              // project_name: 'test1',
+              // project_email: 'abcdefghi@gmail.com',
+              // project_phone: '1234567890',
+              // project_address: 'test,testing,testVilla 202020',
+              // rera_image: {
+              //   name: 'image-79dd4bc1-4f8f-43e1-a906-544570d12a27.jpg',
+              //   type: 'image/jpeg',
+              //   uri: 'content://media/external/images/media/694909',
+              // },
+            }
+          }
           validationSchema={schema}
           onSubmit={async (values) => {
             Keyboard.dismiss();

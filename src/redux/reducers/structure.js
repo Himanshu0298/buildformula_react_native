@@ -1,4 +1,4 @@
-import {UPDATE_LOCAL_STRUCTURE} from './../actions/actionTypes';
+import {UPDATE_LOCAL_STRUCTURE, SAVE_STRUCTURE} from './../actions/actionTypes';
 
 const initialState = {
   loading: false,
@@ -30,19 +30,25 @@ const initialState = {
 
 export default (state = initialState, action = {}) => {
   switch (action.type) {
-    case `${UPDATE_LOCAL_STRUCTURE}_PENDING`:
+    case UPDATE_LOCAL_STRUCTURE:
+      console.log('--->payload');
+      console.log(action.payload);
+      return {
+        ...state,
+        ...action.payload,
+      };
+
+    case `${SAVE_STRUCTURE}_PENDING`:
       return {
         ...state,
         loading: true,
       };
-    case `${UPDATE_LOCAL_STRUCTURE}_FULFILLED`:
-      console.log('-----> action.payload', action.payload);
+    case `${SAVE_STRUCTURE}_FULFILLED`:
       return {
         ...state,
-        ...action.payload,
         loading: false,
       };
-    case `${UPDATE_LOCAL_STRUCTURE}_REJECTED`:
+    case `${SAVE_STRUCTURE}_REJECTED`:
       return {
         ...state,
         loading: false,

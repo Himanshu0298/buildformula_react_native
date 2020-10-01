@@ -1,14 +1,12 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import React, {useEffect, useState} from 'react';
+import React, {useMemo, useState} from 'react';
 import {
   View,
   StatusBar,
   StyleSheet,
-  Keyboard,
-  TouchableOpacity,
   SafeAreaView,
+  Keyboard,
 } from 'react-native';
-import {withTheme, Button} from 'react-native-paper';
+import {withTheme} from 'react-native-paper';
 import FormTitle from '../../../../components/FormTitle';
 import {useTranslation} from 'react-i18next';
 import {theme} from '../../../../styles/theme';
@@ -18,32 +16,89 @@ import MaterialTabs from 'react-native-material-tabs';
 import TowersScreen from './Components/TowersScreen';
 import FloorsScreen from './Components/FloorsScreen';
 import UnitsScreen from './Components/UnitsScreen';
-import {MAX_TOWERS, MAX_FLOORS} from '../../../../utils/constant';
+import {MAX_TOWERS, MAX_FLOORS, MAX_UNITS} from '../../../../utils/constant';
 import useStructureActions from '../../../../redux/actions/structureActions';
 import {useSelector} from 'react-redux';
+import Spinner from 'react-native-loading-spinner-overlay';
 
-function updateTower(structureType, towerCount) {
+function updateTower({structure, structureType, towerCount}) {
+  console.log('-----> towerCount', towerCount);
+  let towers = {};
+  for (let i = 1; i <= towerCount; i += 1) {
+    towers[i] = {};
+  }
   return {
     structure: {
+      ...structure,
       [structureType]: {
-        towerCount: towerCount,
-        towers: {},
+        towerCount,
+        towers,
       },
     },
   };
 }
 
-function updateFloor(structure, structureType, towerIndex, floorCount) {
-  const {towers} = structure[structureType];
+function updateFloor({
+  structure,
+  currentStructureData,
+  structureType,
+  selectedTower,
+  floorCount,
+}) {
+  const {towers} = currentStructureData;
+  let floors = {};
+  for (let i = 0; i < floorCount; i += 1) {
+    floors[i] = {};
+  }
+  console.log('----->floors ', floors);
   return {
     structure: {
+      ...structure,
       [structureType]: {
-        towerCount: MAX_TOWERS,
+        ...currentStructureData,
         towers: {
           ...towers,
-          [towerIndex]: {
+          [selectedTower]: {
             floorCount,
-            floors: {},
+            floors,
+          },
+        },
+      },
+    },
+  };
+}
+
+function updateUnits({
+  structure,
+  currentStructureData,
+  structureType,
+  selectedTower,
+  floorId,
+  unitsCount,
+}) {
+  const {towers} = currentStructureData;
+  const towerData = towers[selectedTower];
+
+  let units = {};
+  for (let i = 1; i <= unitsCount; i += 1) {
+    units[i] = {};
+  }
+  return {
+    structure: {
+      ...structure,
+      [structureType]: {
+        ...currentStructureData,
+        towers: {
+          ...towers,
+          [selectedTower]: {
+            ...towerData,
+            floors: {
+              ...towerData.floors,
+              [floorId]: {
+                unitsCount,
+                units,
+              },
+            },
           },
         },
       },
@@ -60,21 +115,33 @@ function StepTwo(props) {
 
   const [selectedTab, setSelectedTab] = useState(0);
   const [selectedTower, setSelectedTower] = useState();
+  const [selectedFloor, setSelectedFloor] = useState();
 
   const {t} = useTranslation();
   const snackbar = useSnackbar();
 
   const {updateStructure, saveTowersCount} = useStructureActions();
 
-  const {structureTypes, structure} = useSelector((state) => state.structure);
+  const {structure, loading} = useSelector((state) => state.structure);
   const {user} = useSelector((state) => state.user);
 
+  const currentStructureData = useMemo(() => {
+    return structure[structureType];
+  }, [structure, structureType]);
+
   const toggleSelectedTower = (value) => {
+    Keyboard.dismiss();
     if (selectedTower === value) {
       setSelectedTower(undefined);
     } else {
       setSelectedTower(value);
     }
+  };
+
+  const showAllUnits = (floorId) => {
+    Keyboard.dismiss();
+    setSelectedFloor(floorId);
+    setSelectedTab(2);
   };
 
   const updateTowers = (value) => {
@@ -83,9 +150,13 @@ function StepTwo(props) {
         variant: 'warning',
         message: `Max ${MAX_TOWERS} towers are allowed`,
       });
-      updateStructure(updateTower(structureType, MAX_TOWERS));
+      updateStructure(
+        updateTower({structure, structureType, towerCount: MAX_TOWERS}),
+      );
     } else {
-      updateStructure(updateTower(structureType, value));
+      updateStructure(
+        updateTower({structure, structureType, towerCount: value}),
+      );
     }
   };
 
@@ -95,9 +166,55 @@ function StepTwo(props) {
         variant: 'warning',
         message: `Max ${MAX_FLOORS} floors are allowed`,
       });
-      updateStructure(updateFloor(structureType, selectedTower, MAX_FLOORS));
+      updateStructure(
+        updateFloor({
+          structure,
+          currentStructureData,
+          structureType,
+          selectedTower,
+          floorCount: MAX_FLOORS,
+        }),
+      );
     } else {
-      updateStructure(updateFloor(structureType, selectedTower, value));
+      updateStructure(
+        updateFloor({
+          structure,
+          currentStructureData,
+          structureType,
+          selectedTower,
+          floorCount: value,
+        }),
+      );
+    }
+  };
+
+  const onChangeUnit = (floorId, units) => {
+    if (units && units > MAX_UNITS) {
+      snackbar.showMessage({
+        variant: 'warning',
+        message: `Max ${MAX_UNITS} units are allowed per floor`,
+      });
+      updateStructure(
+        updateUnits({
+          structure,
+          currentStructureData,
+          structureType,
+          selectedTower,
+          floorId,
+          unitsCount: MAX_FLOORS,
+        }),
+      );
+    } else {
+      updateStructure(
+        updateUnits({
+          structure,
+          currentStructureData,
+          structureType,
+          selectedTower,
+          floorId,
+          unitsCount: units,
+        }),
+      );
     }
   };
 
@@ -105,7 +222,20 @@ function StepTwo(props) {
     let formData = new FormData();
 
     formData.append('current_type_id', structureType);
-    formData.append('tower', structure[structureType].towerCount);
+    formData.append('tower', currentStructureData.towerCount);
+    formData.append('user_id', user.id);
+    formData.append('project_id', 1);
+
+    saveTowersCount(formData).then(() => {
+      setSelectedTab(1);
+    });
+  };
+
+  const saveFloors = () => {
+    let formData = new FormData();
+
+    formData.append('current_type_id', structureType);
+    formData.append('tower', currentStructureData.towerCount);
     formData.append('user_id', user.id);
     formData.append('project_id', 1);
 
@@ -116,6 +246,7 @@ function StepTwo(props) {
 
   return (
     <SafeAreaView style={styles.container}>
+      <Spinner visible={loading} textContent={''} />
       <StatusBar
         barStyle="light-content"
         backgroundColor={theme.colors.primary}
@@ -141,20 +272,36 @@ function StepTwo(props) {
       </View>
       {selectedTab === 0 ? (
         <TowersScreen
-          towers={structure[structureType].towerCount}
+          towers={currentStructureData.towerCount}
           selectedTower={selectedTower}
-          onChangeTowers={updateTowers}
           toggleSelectedTower={toggleSelectedTower}
+          onChangeTowers={updateTowers}
           saveTowers={saveTowers}
         />
       ) : null}
       {selectedTab === 1 ? (
         <FloorsScreen
-          floors={structure[structureType].towers[selectedTower].floorCount}
+          floors={currentStructureData.towers[selectedTower].floors}
+          floorCount={currentStructureData.towers[selectedTower].floorCount}
+          showAllUnits={showAllUnits}
           onChangeFloors={updateFloors}
+          saveFloors={saveFloors}
+          onChangeUnit={onChangeUnit}
         />
       ) : null}
-      {selectedTab === 2 ? <UnitsScreen /> : null}
+      {selectedTab === 2 ? (
+        <UnitsScreen
+          selectedFloor={selectedFloor}
+          units={
+            currentStructureData.towers[selectedTower].floors[selectedFloor]
+              .units
+          }
+          unitsCount={
+            currentStructureData.towers[selectedTower].floors[selectedFloor]
+              .unitsCount
+          }
+        />
+      ) : null}
     </SafeAreaView>
   );
 }

@@ -11,4 +11,4 @@ export const CREATE_PROJECT = 'CREATE_PROJECT';
 
 //For Project Structure
 export const UPDATE_LOCAL_STRUCTURE = 'UPDATE_LOCAL_STRUCTURE';
-export const SAVE_TOWERS = 'SAVE_TOWERS';
+export const SAVE_STRUCTURE = 'SAVE_STRUCTURE';

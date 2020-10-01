@@ -13,7 +13,7 @@ import BaseText from '../../../../../components/BaseText';
 import {getFloorNumber} from '../../../../../utils';
 import Layout from '../../../../../utils/Layout';
 
-function RenderUnits({units, selectedUnit, onPress}) {
+function RenderUnits({units, selectedFloor, selectedUnit, onPress}) {
   let unitsList = [];
   for (let i = 1; i <= units; i += 1) {
     const active = selectedUnit === i;
@@ -23,7 +23,7 @@ function RenderUnits({units, selectedUnit, onPress}) {
         onPress={() => onPress(i)}
         style={styles.unitContainer}>
         <Subheading style={!active && styles.inactiveLabel}>
-          {String.fromCharCode(64 + i)}
+          {`${selectedFloor}${i.toString().padStart(2, '0')}`}
         </Subheading>
       </TouchableOpacity>,
     );
@@ -32,8 +32,7 @@ function RenderUnits({units, selectedUnit, onPress}) {
 }
 
 function UnitsScreen(props) {
-  const {floor = 0, floors = [30]} = props;
-  const units = floors[floor];
+  const {units, unitsCount, selectedFloor} = props;
 
   const [selectedUnit, setSelectedUnit] = useState();
 
@@ -51,15 +50,16 @@ function UnitsScreen(props) {
         <View style={styles.container}>
           <View style={styles.headingContainer}>
             <BaseText style={styles.title}>
-              {getFloorNumber(floor)} units - {units}
+              {getFloorNumber(selectedFloor)} units - {unitsCount || 0}
             </BaseText>
           </View>
-          {units && units > 0 ? (
+          {unitsCount && unitsCount > 0 ? (
             <View style={styles.unitsListContainer}>
               <RenderUnits
                 selectedUnit={selectedUnit}
+                selectedFloor={selectedFloor}
                 onPress={toggleSelectedUnit}
-                units={units}
+                units={unitsCount}
               />
             </View>
           ) : null}
