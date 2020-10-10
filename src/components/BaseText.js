@@ -13,7 +13,7 @@ function BaseText({style, variant, children, ...restProps}) {
       {...restProps}
       style={
         Array.isArray(style)
-          ? [...style, defaultStyles]
+          ? [defaultStyles, ...style]
           : {
               ...defaultStyles,
               ...style,

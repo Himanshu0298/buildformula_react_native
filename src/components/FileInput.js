@@ -9,6 +9,7 @@ import {
   IconButton,
 } from 'react-native-paper';
 import ImagePicker from 'react-native-image-picker';
+import {secondaryTheme} from '../styles/theme';
 
 const options = {
   title: 'Choose File',
@@ -32,6 +33,7 @@ const FileInput = React.forwardRef((props, ref) => {
           uri: response.uri,
           type: response.type,
           name: response.fileName,
+          size: response.size,
           data: response.data,
         });
       }
@@ -61,12 +63,7 @@ const FileInput = React.forwardRef((props, ref) => {
       <View style={styles.fileContainer}>
         <View style={styles.captionContainer}>
           <IconButton icon="alert-box" color={theme.colors.primary} size={15} />
-          <Caption
-            theme={{
-              colors: {
-                text: '#000',
-              },
-            }}>
+          <Caption theme={secondaryTheme}>
             {file
               ? file.name.length > MAX_LIMIT
                 ? file.name.substring(0, MAX_LIMIT - 3) + '...'
@@ -79,7 +76,7 @@ const FileInput = React.forwardRef((props, ref) => {
           compact
           style={styles.button}
           uppercase={false}
-          onPress={() => handleImagePicker()}>
+          onPress={handleImagePicker}>
           Choose File
         </Button>
       </View>

@@ -24,5 +24,12 @@ export default function useStructure() {
         config({multipart: true, auth: false}),
       );
     },
+    saveUnits: (data) => {
+      return instance.post(
+        '/project/update_project_units',
+        data,
+        config({multipart: true, auth: false}),
+      );
+    },
   };
 }

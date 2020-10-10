@@ -16,7 +16,7 @@ if (__DEV__) {
   allMiddleware.push(createDebugger());
 }
 
-// const middleware = applyMiddleware(...allMiddleware);
+const middleware = applyMiddleware(...allMiddleware);
 
 const rootReducer = (state, action) => {
   /**
@@ -38,8 +38,8 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 const store = createStore(
   persistedReducer,
-  // compose(middleware, Reactotron.createEnhancer()),
-  applyMiddleware(...allMiddleware),
+  compose(middleware, Reactotron.createEnhancer()),
+  // applyMiddleware(...allMiddleware),
 );
 
 let persistor = persistStore(store);

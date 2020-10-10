@@ -3,7 +3,7 @@ import {View} from 'react-native';
 import PropTypes from 'prop-types';
 import {withTheme, Title, Caption} from 'react-native-paper';
 
-function FormTitle({title, subTitle, theme}) {
+function FormTitle({title, renderTitle, subTitle, theme}) {
   return (
     <View
       style={{
@@ -11,7 +11,7 @@ function FormTitle({title, subTitle, theme}) {
         padding: 20,
         wight: '100%',
       }}>
-      <Title>{title}</Title>
+      <Title>{title || (renderTitle && renderTitle())}</Title>
       <Caption>{subTitle}</Caption>
     </View>
   );
@@ -19,11 +19,13 @@ function FormTitle({title, subTitle, theme}) {
 
 FormTitle.defaultProps = {
   title: 'title',
+  renderTitle: undefined,
   subTitle: 'subTitle',
 };
 
 FormTitle.propTypes = {
-  title: PropTypes.string.isRequired,
+  title: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]).isRequired,
+  renderTitle: PropTypes.func,
   subTitle: PropTypes.string.isRequired,
 };
 

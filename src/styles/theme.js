@@ -1,4 +1,4 @@
-import {configureFonts, DefaultTheme} from 'react-native-paper';
+import {Colors, configureFonts, DefaultTheme} from 'react-native-paper';
 
 const fontConfig = {
   default: {
@@ -36,6 +36,13 @@ export const theme = {
     background: '#fff',
     surface: '#fff',
     text: '#fff',
+    success: Colors.green700,
   },
   fonts: configureFonts(fontConfig),
+};
+
+export const secondaryTheme = {
+  colors: {
+    text: '#000',
+  },
 };

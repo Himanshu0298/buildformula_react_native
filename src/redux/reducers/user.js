@@ -15,12 +15,6 @@ const initialState = {
 export default (state = initialState, action = {}) => {
   console.log('-----> action.type', action.type);
   switch (action.type) {
-    case 'persist/REHYDRATE':
-      return {
-        ...state,
-        loading: false,
-      };
-
     case `${LOGIN}_PENDING`:
       return {
         ...state,

@@ -1,11 +1,12 @@
 import {BASE_URL} from '../utils/constant';
 import {useSelector} from 'react-redux';
+import {store} from '../redux/store';
 const axios = require('axios');
 
 export const instance = axios.create({baseURL: BASE_URL});
 
 export const useConfig = () => {
-  let token = useSelector(({user}) => user.token);
+  let token = store.getState().user.token;
 
   return {
     config: ({multipart = false, auth = true}) => {
@@ -16,7 +17,7 @@ export const useConfig = () => {
         headers['Content-Type'] = 'multipart/form-data';
       }
       if (auth) {
-        headers.Authorization = 'bearer ' + token;
+        headers.Authorization = 'Bearer ' + token;
       }
       return {headers};
     },

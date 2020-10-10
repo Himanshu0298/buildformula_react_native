@@ -115,3 +115,7 @@ export const processError = (error) => {
   errorMessage = errorMessage || error.message;
   return errorMessage;
 };
+
+export const getUnitLabel = (floor, unit) => {
+  return `${floor}${unit.toString().padStart(2, '0')}`;
+};

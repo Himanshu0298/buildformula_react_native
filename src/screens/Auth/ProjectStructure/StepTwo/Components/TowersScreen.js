@@ -1,9 +1,7 @@
-import React, {useState} from 'react';
+import React, {useMemo} from 'react';
 import {
   View,
-  Text,
   StyleSheet,
-  Image,
   ImageBackground,
   TouchableOpacity,
   SafeAreaView,
@@ -14,11 +12,12 @@ import BaseText from '../../../../../components/BaseText';
 import towerActive from '../../../../../assets/images/tower.png';
 import towerInactive from '../../../../../assets/images/tower_inactive.png';
 import Layout from '../../../../../utils/Layout';
+import {useSnackbar} from '../../../../../components/Snackbar';
 
-function RenderTowers({towers, selectedTower, onPress}) {
+function RenderTowers({towerCount, towerValidationById, onPress}) {
   let towersList = [];
-  for (let i = 1; i <= towers; i += 1) {
-    const active = selectedTower === i;
+  for (let i = 1; i <= towerCount; i += 1) {
+    const active = towerValidationById[i];
     towersList.push(
       <TouchableOpacity
         key={i}
@@ -43,11 +42,54 @@ function TowersScreen(props) {
   const {
     theme,
     towers,
+    towerCount,
+    showAllFloors,
     onChangeTowers,
-    selectedTower,
-    toggleSelectedTower,
-    saveTowers,
+    saveStructureType,
   } = props;
+
+  const snackbar = useSnackbar();
+
+  //check towers data is valid for all floors
+  const {towerValidationById, allTowersValid, errorMessage} = useMemo(() => {
+    let result = {};
+    let error = '';
+    let allValid = true;
+
+    Object.keys(towers).map((towerId) => {
+      result[towerId] = true;
+      const {floors = {}, floorCount} = towers[towerId];
+      if (isNaN(floorCount)) {
+        //check if floorCount is 0 or more than 0
+        result[towerId] = false;
+        allValid = false;
+        if (!error) {
+          error = `Please Provide missing data for tower ${String.fromCharCode(
+            64 + parseInt(towerId, 10),
+          )}`;
+        }
+      } else {
+        Object.keys(floors).map((floorId) => {
+          //check if all floors has 0 or more units
+          if (isNaN(floors[floorId].unitCount)) {
+            result[towerId] = false;
+            allValid = false;
+            if (!error) {
+              error = `Please Provide missing data for tower ${String.fromCharCode(
+                64 + parseInt(towerId, 10),
+              )}`;
+            }
+          }
+        });
+      }
+    });
+
+    return {
+      towerValidationById: result,
+      allTowersValid: allValid,
+      errorMessage: error,
+    };
+  }, [towers]);
 
   return (
     <SafeAreaView style={{flex: 1}}>
@@ -62,7 +104,7 @@ function TowersScreen(props) {
                 dense
                 mode="outlined"
                 blurOnSubmit
-                value={towers ? towers.toString() : towers}
+                value={towerCount ? towerCount.toString() : towerCount}
                 onChangeText={onChangeTowers}
                 style={styles.input}
                 keyboardType="decimal-pad"
@@ -87,28 +129,35 @@ function TowersScreen(props) {
                 </BaseText>
               </Button>
             </View>
-            {towers && towers > 0 ? (
+            {towerCount && towerCount > 0 ? (
               <View style={styles.towersListContainer}>
                 <RenderTowers
-                  selectedTower={selectedTower}
-                  onPress={toggleSelectedTower}
-                  towers={towers}
+                  towerValidationById={towerValidationById}
+                  onPress={showAllFloors}
+                  towerCount={towerCount}
                 />
               </View>
             ) : null}
           </View>
           <View style={styles.button}>
-            {!isNaN(selectedTower) ? (
-              <Button
-                style={{width: '50%'}}
-                compact
-                mode="contained"
-                contentStyle={{padding: 5}}
-                theme={{roundness: 15}}
-                onPress={saveTowers}>
-                <BaseText style={styles.nextButtonLabel}>{'Next'}</BaseText>
-              </Button>
-            ) : null}
+            <Button
+              style={{width: '50%'}}
+              compact
+              mode="contained"
+              contentStyle={{padding: 5}}
+              theme={{roundness: 15}}
+              onPress={() => {
+                if (!allTowersValid) {
+                  snackbar.showMessage({
+                    variant: 'warning',
+                    message: errorMessage,
+                  });
+                } else {
+                  saveStructureType();
+                }
+              }}>
+              <BaseText style={styles.nextButtonLabel}>{'Next'}</BaseText>
+            </Button>
           </View>
         </View>
       </ScrollView>

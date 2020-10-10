@@ -60,31 +60,38 @@ function StepOne(props) {
   const {loading} = useSelector((state) => state.structure);
 
   const updateTypes = (type) => {
-    let types = [...structureTypes];
-    let index = types.indexOf(type);
-    if (index > -1) {
-      types.splice(index, 1);
-    } else {
-      types.push(type);
+    let types = {...structureTypes};
+    types[type] = !types[type];
+    let selectedStructureType = 1;
+    if (types[2]) {
+      selectedStructureType = 2;
+    } else if (types[3]) {
+      selectedStructureType = 3;
     }
-    updateStructure({structureTypes: types});
+
+    updateStructure({structureTypes: types, selectedStructureType});
   };
 
   const handleSubmit = () => {
-    if (structureTypes.length === 0) {
+    const selectedTypes = Object.keys(structureTypes).filter(
+      (key) => structureTypes[key],
+    );
+    if (selectedTypes.length === 0) {
       snackbar.showMessage({
         message: 'Please select a type',
         variant: 'error',
       });
     } else {
+      const types = Object.keys(structureTypes)
+        .filter((key) => structureTypes[key])
+        .join();
+
       let formData = new FormData();
       formData.append('project_id', project.project_id);
-      formData.append('project_types', structureTypes.join());
+      formData.append('project_types', types);
 
       updateStructureTypes(formData).then(() => {
-        navigation.navigate('ProjectStructureStepTwo', {
-          structureType: structureTypes[0],
-        });
+        navigation.navigate('ProjectStructureStepTwo');
       });
     }
   };
@@ -102,21 +109,12 @@ function StepOne(props) {
       <Spinner visible={loading} textContent={''} />
       <View style={styles.container}>
         <ImageRender
-          title="Apartments"
-          activeSrc={apartment}
-          inactiveSrc={apartmentInactive}
-          value={1}
-          updateTypes={updateTypes}
-          active={structureTypes.includes(1)}
-          imageStyle={styles.apartment}
-        />
-        <ImageRender
           title="Shops"
           activeSrc={shop}
           inactiveSrc={shopInactive}
           value={2}
           updateTypes={updateTypes}
-          active={structureTypes.includes(2)}
+          active={structureTypes[2]}
           imageStyle={styles.shop}
         />
         <ImageRender
@@ -125,8 +123,17 @@ function StepOne(props) {
           inactiveSrc={officeInactive}
           value={3}
           updateTypes={updateTypes}
-          active={structureTypes.includes(3)}
+          active={structureTypes[3]}
           imageStyle={styles.office}
+        />
+        <ImageRender
+          title="Apartments"
+          activeSrc={apartment}
+          inactiveSrc={apartmentInactive}
+          value={1}
+          updateTypes={updateTypes}
+          active={structureTypes[1]}
+          imageStyle={styles.apartment}
         />
         <ImageRender
           title="Bungalows"
@@ -134,7 +141,7 @@ function StepOne(props) {
           inactiveSrc={bungalowInactive}
           value={4}
           updateTypes={updateTypes}
-          active={structureTypes.includes(4)}
+          active={structureTypes[4]}
           imageStyle={styles.shop}
         />
         <ImageRender
@@ -144,7 +151,7 @@ function StepOne(props) {
           value={5}
           style={styles.plotContainer}
           updateTypes={updateTypes}
-          active={structureTypes.includes(5)}
+          active={structureTypes[5]}
           imageStyle={styles.plot}
         />
         <View style={styles.button}>

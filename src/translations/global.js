@@ -41,7 +41,11 @@ export default {
       //Project Structure
       projectStructure: 'Project Structure',
       projectStructureSubtitle: 'Select the appropriate option',
-      projectStructureApartment: 'Project Structure: Apartment',
+      apartment: 'Apartment',
+      shop: 'Shop',
+      office: 'Office',
+      bungalow: 'Bungalow',
+      plot: 'Plot',
       projectStructureSubtitleTowers: 'Fill in the number of towers',
       projectStructureSubtitleFloors: 'Fill in the number of floors',
 
@@ -305,8 +309,16 @@ export default {
       tan: 'TAN',
       gst: 'GST No.',
 
+      //Project Structure
       projectStructure: 'प्रोजेक्ट संरचना',
       projectStructureSubtitle: 'उपयुक्त विकल्प का चयन करें',
+      apartment: 'अपार्टमेंट',
+      shop: 'दुकान',
+      office: 'कार्यालय',
+      bungalow: 'बंगला',
+      plot: 'भूमि',
+      projectStructureSubtitleTowers: 'टावरों की संख्या में भरें',
+      projectStructureSubtitleFloors: 'मंजिलों की संख्या में भरें',
 
       labelSignInInfo: 'अपने अकाउंट में साइन इन करें',
       labelSignUp: 'अपने खाते में साइन अप करें',

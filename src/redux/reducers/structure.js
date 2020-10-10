@@ -3,7 +3,14 @@ import {UPDATE_LOCAL_STRUCTURE, SAVE_STRUCTURE} from './../actions/actionTypes';
 const initialState = {
   loading: false,
   errorMessage: undefined,
-  structureTypes: [],
+  structureTypes: {
+    2: false,
+    3: false,
+    1: false,
+    4: false,
+    5: false,
+  },
+  selectedStructureType: 2,
   structure: {
     1: {
       towerCount: undefined,
@@ -31,7 +38,6 @@ const initialState = {
 export default (state = initialState, action = {}) => {
   switch (action.type) {
     case UPDATE_LOCAL_STRUCTURE:
-      console.log('--->payload');
       console.log(action.payload);
       return {
         ...state,

@@ -35,7 +35,7 @@ function LanguageSelect(props) {
 
   const {user = {}} = useSelector((state) => state.user);
   const {project} = useSelector((state) => state.project);
-  console.log('-----> user', user);
+  console.log('----->LanguageSelect user', user);
 
   const selectLanguage = (language) => {
     i18n.changeLanguage(language);
@@ -46,6 +46,10 @@ function LanguageSelect(props) {
       } else if (default_role_id === 0) {
         navigation.navigate('RoleSelect');
       } else if (project.project_id) {
+        navigation.navigate('ProjectStructureStepOne');
+      } else if (!project.project_id) {
+        navigation.navigate('ProjectCreationStepOne');
+      } else {
         navigation.navigate('ProjectStructureStepOne');
       }
     } else {
