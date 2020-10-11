@@ -10,6 +10,7 @@ const initialState = {
   token: undefined,
   loading: false,
   authenticated: false,
+  selectedLanguage: 'en',
 };
 
 export default (state = initialState, action = {}) => {

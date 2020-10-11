@@ -1,5 +1,11 @@
 import React from 'react';
-import {View, StatusBar, StyleSheet, Keyboard} from 'react-native';
+import {
+  View,
+  StatusBar,
+  StyleSheet,
+  Keyboard,
+  SafeAreaView,
+} from 'react-native';
 import {withTheme, Button, TextInput} from 'react-native-paper';
 import FormTitle from '../../../../components/FormTitle';
 import {Formik} from 'formik';
@@ -13,6 +19,7 @@ import * as Yup from 'yup';
 import {PHONE_REGEX} from '../../../../utils/constant';
 import {ScrollView} from 'react-native-gesture-handler';
 import {useSelector} from 'react-redux';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const schema = Yup.object().shape({
   project_name: Yup.string().required('name is required'),
@@ -41,6 +48,7 @@ function StepTwo(props) {
   const {createProject} = useProjectActions();
 
   const {user} = useSelector((state) => state.user);
+  const {loading} = useSelector((state) => state.project);
 
   const nameRef = React.useRef();
   const addressRef = React.useRef();
@@ -50,31 +58,20 @@ function StepTwo(props) {
   const phoneRef = React.useRef();
 
   return (
-    <>
+    <SafeAreaView style={{flex: 1}}>
       <StatusBar
         barStyle="light-content"
         backgroundColor={theme.colors.primary}
       />
       <FormTitle title={t('StepOneTitle')} subTitle={t('StepOneSubTitle')} />
-      <ScrollView>
+      <Spinner visible={loading} textContent={''} />
+      <ScrollView
+        contentContainerStyle={styles.scrollView}
+        keyboardShouldPersistTaps="handled">
         <Formik
           validateOnBlur={false}
           validateOnChange={false}
-          initialValues={
-            {
-              // project_rera: '12345674567',
-              // project_website: 'www.hello1.com',
-              // project_name: 'test1',
-              // project_email: 'abcdefghi@gmail.com',
-              // project_phone: '1234567890',
-              // project_address: 'test,testing,testVilla 202020',
-              // rera_image: {
-              //   name: 'image-79dd4bc1-4f8f-43e1-a906-544570d12a27.jpg',
-              //   type: 'image/jpeg',
-              //   uri: 'content://media/external/images/media/694909',
-              // },
-            }
-          }
+          initialValues={{}}
           validationSchema={schema}
           onSubmit={async (values) => {
             Keyboard.dismiss();
@@ -97,7 +94,9 @@ function StepTwo(props) {
             formData.append('user_id', user.id);
             formData.append('terms', 1);
 
-            createProject(formData);
+            createProject(formData).then(() => {
+              navigation.navigate('ProjectStructureStepOne');
+            });
           }}>
           {({
             handleChange,
@@ -217,13 +216,18 @@ function StepTwo(props) {
           )}
         </Formik>
       </ScrollView>
-    </>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  scrollView: {
+    flexGrow: 1,
+  },
   container: {
-    height: '100%',
+    flex: 1,
+    paddingBottom: 20,
+    justifyContent: 'space-between',
   },
   inputsContainer: {
     width: '100%',

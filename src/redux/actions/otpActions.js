@@ -1,7 +1,7 @@
 import * as types from './actionTypes';
 import {useDispatch} from 'react-redux';
 import useAuth from '../../services/user';
-import {processError} from '../../utils';
+import {processError, processResponse} from '../../utils';
 import {useSnackbar} from '../../components/Snackbar';
 
 export default function useOtpActions() {
@@ -20,7 +20,7 @@ export default function useOtpActions() {
         type: types.VERIFY_OTP,
         payload: new Promise(async (resolve, reject) => {
           try {
-            let response = await otpCheck(data);
+            let response = processResponse(await otpCheck(data));
             return resolve({response});
           } catch (error) {
             let errorMessage = processError(error);

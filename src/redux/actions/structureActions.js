@@ -1,7 +1,7 @@
 import * as types from './actionTypes';
 import {useDispatch} from 'react-redux';
 import useStructure from '../../services/structure';
-import {processError} from '../../utils';
+import {processError, processResponse} from '../../utils';
 import {useSnackbar} from '../../components/Snackbar';
 
 export default function useStructureActions() {
@@ -68,8 +68,9 @@ export default function useStructureActions() {
         type: types.SAVE_STRUCTURE,
         payload: new Promise(async (resolve, reject) => {
           try {
-            let response = await structure.updateStructureTypes(formData);
-            response = response.data;
+            let response = processResponse(
+              await structure.updateStructureTypes(formData),
+            );
             console.log('-----> response', response);
             snackbar.showMessage({
               message: 'Updated Project Structure!',
@@ -92,29 +93,33 @@ export default function useStructureActions() {
           try {
             const {typeId, structureTypeData, projectId, userId} = data;
             const {towers} = structureTypeData;
-            await saveTowers(data);
+            processResponse(await saveTowers(data));
             await Promise.all(
               Object.keys(towers).map(async (towerId) => {
                 const {floorCount, floors} = towers[towerId];
-                await saveFloors({
-                  typeId,
-                  projectId,
-                  towerId,
-                  userId,
-                  floorCount,
-                });
+                processResponse(
+                  await saveFloors({
+                    typeId,
+                    projectId,
+                    towerId,
+                    userId,
+                    floorCount,
+                  }),
+                );
 
                 await Promise.all(
                   Object.keys(floors).map(async (floorId) => {
                     const {unitCount} = floors[floorId];
-                    await saveUnits({
-                      typeId,
-                      projectId,
-                      towerId,
-                      userId,
-                      floorId,
-                      unitCount,
-                    });
+                    processResponse(
+                      await saveUnits({
+                        typeId,
+                        projectId,
+                        towerId,
+                        userId,
+                        floorId,
+                        unitCount,
+                      }),
+                    );
                   }),
                 );
               }),

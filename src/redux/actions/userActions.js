@@ -1,7 +1,7 @@
 import * as types from './actionTypes';
 import {useDispatch} from 'react-redux';
 import useAuth from '../../services/user';
-import {processError} from '../../utils';
+import {processError, processResponse} from '../../utils';
 import {useSnackbar} from '../../components/Snackbar';
 
 export default function useUserActions() {
@@ -15,9 +15,9 @@ export default function useUserActions() {
         type: types.SIGN_UP,
         payload: new Promise(async (resolve, reject) => {
           try {
-            let response = await signUp(user);
-            const {data: userData} = response.data;
-            console.log('-----> response', userData);
+            let response = processResponse(await signUp(user));
+            const {data: userData} = response;
+            console.log('----->signUp response', userData);
 
             return resolve({user: userData});
           } catch (error) {
@@ -35,9 +35,9 @@ export default function useUserActions() {
         type: types.LOGIN,
         payload: new Promise(async (resolve, reject) => {
           try {
-            let response = await login(data);
-            const {data: userData} = response.data;
-            console.log('-----> response', userData);
+            let response = processResponse(await login(data));
+            const {data: userData} = response;
+            console.log('----->login response', userData);
 
             return resolve({user: userData});
           } catch (error) {
@@ -56,8 +56,8 @@ export default function useUserActions() {
         type: types.SELECT_ROLE,
         payload: new Promise(async (resolve, reject) => {
           try {
-            let response = await updateUser(data);
-            const {data: userData} = response.data;
+            let response = processResponse(await updateUser(data));
+            const {data: userData} = response;
             console.log('-----> response', userData);
 
             return resolve({user: userData});

@@ -7,7 +7,7 @@ export default function useStructure() {
       return instance.post(
         '/project/update_types',
         data,
-        config({multipart: true, auth: false}),
+        config({multipart: true, auth: true}),
       );
     },
     saveTowers: (data) => {

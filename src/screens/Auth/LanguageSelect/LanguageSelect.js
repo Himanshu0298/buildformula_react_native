@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {StyleSheet, StatusBar, View, Image} from 'react-native';
 import {withTheme, Button, Headline} from 'react-native-paper';
 import welcomeImage from './../../../assets/images/language.png';
@@ -7,19 +7,16 @@ import BaseText from '../../../components/BaseText';
 import {useTranslation} from 'react-i18next';
 import Layout from '../../../utils/Layout';
 import {theme} from '../../../styles/theme';
+import {getInitialAuthScreen} from '../../../navigation';
 import {useSelector} from 'react-redux';
+import useAppActions from '../../../redux/actions/appActions';
 
 function LanguageButton({label, language, onPress, ...props}) {
   return (
     <Button
       {...props}
       style={styles.languageButton}
-      contentStyle={{
-        padding: 8,
-        borderColor: props.color,
-        borderWidth: 1,
-        borderRadius: 15,
-      }}
+      contentStyle={[styles.buttonContent, {borderColor: props.color}]}
       theme={{roundness: 15}}
       onPress={() => onPress(language)}>
       <BaseText style={styles.buttonText}>{label}</BaseText>
@@ -32,29 +29,23 @@ function LanguageSelect(props) {
   const {colors} = props.theme;
 
   const {i18n} = useTranslation();
+  const {setAppLanguage} = useAppActions();
 
-  const {user = {}} = useSelector((state) => state.user);
-  const {project} = useSelector((state) => state.project);
-  console.log('----->LanguageSelect user', user);
+  const reduxStore = useSelector((v) => v);
+  const {language} = useSelector((state) => state.app);
 
-  const selectLanguage = (language) => {
-    i18n.changeLanguage(language);
-    const {id, otp_verified, email_verified, default_role_id} = user;
-    if (id) {
-      if (otp_verified === 'N' || email_verified === 'N') {
-        navigation.navigate('Otp');
-      } else if (default_role_id === 0) {
-        navigation.navigate('RoleSelect');
-      } else if (project.project_id) {
-        navigation.navigate('ProjectStructureStepOne');
-      } else if (!project.project_id) {
-        navigation.navigate('ProjectCreationStepOne');
-      } else {
-        navigation.navigate('ProjectStructureStepOne');
-      }
-    } else {
-      props.navigation.navigate('Login');
+  useEffect(() => {
+    if (language) {
+      selectLanguage(language);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const selectLanguage = (selectedLanguage) => {
+    i18n.changeLanguage(selectedLanguage);
+    setAppLanguage(selectedLanguage);
+    let route = getInitialAuthScreen(reduxStore);
+    navigation.navigate(route);
   };
 
   return (
@@ -144,6 +135,11 @@ const styles = StyleSheet.create({
   languageButton: {
     width: '80%',
     marginVertical: 20,
+  },
+  buttonContent: {
+    padding: 8,
+    borderWidth: 1,
+    borderRadius: 15,
   },
   buttonText: {
     color: theme.colors.text,

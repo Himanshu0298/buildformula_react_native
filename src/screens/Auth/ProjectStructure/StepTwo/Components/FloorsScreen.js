@@ -98,7 +98,7 @@ function RenderFloors({
                 theme={{roundness: 5}}
                 onPress={() => showAllUnits(i)}>
                 <BaseText style={styles.allUnitsLabel}>
-                  {unitsValidity[i] ? 'View Units' : 'Assign BHK'}
+                  {unitsValidity[i] ? 'BHK assigned' : '  Assign BHK  '}
                 </BaseText>
               </Button>
             </View>

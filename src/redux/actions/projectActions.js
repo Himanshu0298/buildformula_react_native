@@ -2,7 +2,7 @@ import * as types from './actionTypes';
 import {useDispatch} from 'react-redux';
 import useProject from '../../services/project';
 import {useSnackbar} from '../../components/Snackbar';
-import {processError} from '../../utils';
+import {processError, processResponse} from '../../utils';
 
 export default function useProjectActions() {
   const dispatch = useDispatch();
@@ -15,9 +15,9 @@ export default function useProjectActions() {
         type: types.CREATE_PROJECT,
         payload: new Promise(async (resolve, reject) => {
           try {
-            let response = await createProject(formData);
-            const {data} = response.data;
-            console.log('-----> response', data);
+            let response = processResponse(await createProject(formData));
+            const {data} = response;
+            console.log('-----> data', data);
 
             return resolve(data);
           } catch (error) {

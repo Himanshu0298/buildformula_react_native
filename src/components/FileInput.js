@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, Text} from 'react-native';
+import {StyleSheet, View, Text, Platform} from 'react-native';
 import PropTypes from 'prop-types';
 import {
   TextInput,
@@ -29,13 +29,17 @@ const FileInput = React.forwardRef((props, ref) => {
       } else if (response.customButton) {
         console.log('User tapped custom button: ', response.customButton);
       } else {
-        onChoose({
-          uri: response.uri,
+        const data = {
+          uri:
+            Platform.OS === 'android'
+              ? `file:///${response.path}`
+              : response.path,
           type: response.type,
           name: response.fileName,
-          size: response.size,
-          data: response.data,
-        });
+        };
+
+        console.log('-----> data', data);
+        onChoose(data);
       }
     });
   };
@@ -62,13 +66,13 @@ const FileInput = React.forwardRef((props, ref) => {
       </View>
       <View style={styles.fileContainer}>
         <View style={styles.captionContainer}>
-          <IconButton icon="alert-box" color={theme.colors.primary} size={15} />
+          <IconButton
+            icon={file ? 'checkbox-marked-circle-outline' : 'alert-box'}
+            color={file ? theme.colors.success : theme.colors.primary}
+            size={15}
+          />
           <Caption theme={secondaryTheme}>
-            {file
-              ? file.name.length > MAX_LIMIT
-                ? file.name.substring(0, MAX_LIMIT - 3) + '...'
-                : file.name
-              : 'No file chosen'}
+            {file ? 'File Selected!' : 'No file chosen'}
           </Caption>
         </View>
         <Button

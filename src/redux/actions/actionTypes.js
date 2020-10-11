@@ -1,3 +1,6 @@
+//For App
+export const SET_LANGUAGE = 'SET_LANGUAGE';
+
 //For Auth
 export const LOGIN = 'LOGIN';
 export const SIGN_UP_INIT = 'SIGN_UP_INIT';

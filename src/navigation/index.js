@@ -1,4 +1,4 @@
-import React, {Fragment, useEffect, useState} from 'react';
+import React, {Fragment, useEffect, useMemo, useState} from 'react';
 import {BackHandler} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {theme} from '../styles/theme';
@@ -144,16 +144,37 @@ const getActiveRouteName = (state) => {
   return route.name;
 };
 
+export function getInitialAuthScreen({user, project}) {
+  const {id, otp_verified, email_verified, default_role_id} = user;
+  if (id) {
+    if (otp_verified === 'N' || email_verified === 'N') {
+      return 'Otp';
+    } else if (default_role_id === 0) {
+      return 'RoleSelect';
+    } else if (project.project_id) {
+      return 'ProjectStructureStepOne';
+    } else if (!project.project_id) {
+      return 'ProjectCreationStepOne';
+    } else {
+      return 'ProjectStructureStepOne';
+    }
+  } else {
+    return 'Login';
+  }
+}
+
 function NavContainer() {
   const {authenticated} = useSelector((state) => state.user);
+  const {language} = useSelector((state) => state.app);
+  const state = useSelector((v) => v);
   const [currentScreen, setCurrentScreen] = useState('Dashboard');
   const routeNameRef = React.useRef();
   const navigationRef = React.useRef();
 
   useEffect(() => {
-    const state = navigationRef.current.getRootState();
+    const navState = navigationRef.current.getRootState();
     // Save the initial route name
-    routeNameRef.current = getActiveRouteName(state);
+    routeNameRef.current = getActiveRouteName(navState);
   }, []);
 
   useEffect(() => {
@@ -174,13 +195,24 @@ function NavContainer() {
     }
   }, []);
 
+  const initialScreen = useMemo(() => {
+    if (authenticated) {
+      return 'AppDrawer';
+    } else {
+      if (language) {
+        return getInitialAuthScreen(state);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <NavigationContainer
       theme={theme}
       ref={navigationRef}
-      onStateChange={(state) => {
+      onStateChange={(navState) => {
         const previousRouteName = routeNameRef.current;
-        const currentRouteName = getActiveRouteName(state);
+        const currentRouteName = getActiveRouteName(navState);
         if (previousRouteName !== currentRouteName) {
           setCurrentScreen(currentRouteName);
         }
@@ -189,8 +221,7 @@ function NavContainer() {
         routeNameRef.current = currentRouteName;
       }}>
       <RouteContext.Provider value={currentScreen}>
-        <Stack.Navigator
-          initialRouteName={authenticated ? 'AppDrawer' : 'LanguageSelect'}>
+        <Stack.Navigator initialRouteName={initialScreen}>
           {authenticated ? (
             //App Nav Screens
             <Fragment>

@@ -108,12 +108,24 @@ export function getFloorNumber(i) {
 }
 
 export const processError = (error) => {
-  let errorMessage =
-    error && error.response && error.response.data && error.response.data.msg;
-  console.log('-----> error.response.data', error.response);
+  const {response} = error;
+  let errorMessage;
+  if (response) {
+    errorMessage = response && response.data && response.data.msg;
+  }
 
   errorMessage = errorMessage || error.message;
   return errorMessage;
+};
+
+export const processResponse = (response) => {
+  const {data} = response;
+
+  if (data.status) {
+    return data;
+  } else {
+    throw {response};
+  }
 };
 
 export const getUnitLabel = (floor, unit) => {

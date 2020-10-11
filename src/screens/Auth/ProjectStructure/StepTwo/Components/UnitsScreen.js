@@ -9,7 +9,7 @@ import {
 import {Button, Subheading, withTheme} from 'react-native-paper';
 import BaseText from '../../../../../components/BaseText';
 import {useSnackbar} from '../../../../../components/Snackbar';
-import {getFloorNumber, getShadow, getUnitLabel} from '../../../../../utils';
+import {getFloorNumber, getUnitLabel} from '../../../../../utils';
 import Layout from '../../../../../utils/Layout';
 
 const BHK_OPTIONS = [
@@ -24,13 +24,11 @@ const BHK_OPTIONS = [
 
 const DEFAULT_UNIT_COLOR = '#5B6F7C';
 
-function RenderUnits({unitCount, units, selectedFloor, selectedUnit, onPress}) {
+function RenderUnits({unitCount, units, selectedFloor, selectedBhk, onPress}) {
   let unitsList = [];
   for (let i = 1; i <= unitCount; i += 1) {
-    const active = selectedUnit === i;
-
     const {bhk} = units[i];
-    let selectedBhk;
+
     if (bhk) {
       selectedBhk = BHK_OPTIONS.find((item) => item.type === bhk);
     }
@@ -42,7 +40,7 @@ function RenderUnits({unitCount, units, selectedFloor, selectedUnit, onPress}) {
         style={[
           styles.unitContainer,
           {
-            borderRadius: active ? 20 : 5,
+            borderRadius: 5,
             backgroundColor:
               (selectedBhk && addOpacity(selectedBhk.color, 1)) ||
               DEFAULT_UNIT_COLOR,
@@ -98,22 +96,22 @@ function UnitsScreen(props) {
 
   const snackbar = useSnackbar();
 
-  const [selectedUnit, setSelectedUnit] = useState();
+  const [selectedBhk, setSelectedBhk] = useState();
 
   const toggleSelectedUnit = (value) => {
-    if (selectedUnit === value) {
-      setSelectedUnit(undefined);
+    if (selectedBhk === value) {
+      setSelectedBhk(undefined);
     } else {
-      setSelectedUnit(value);
+      setSelectedBhk(value);
     }
   };
 
-  const assignBhk = (bhk) => {
-    if (selectedUnit) {
-      assignBhkToUnit(selectedUnit, bhk);
+  const assignBhk = (unit) => {
+    if (selectedBhk) {
+      assignBhkToUnit(unit, selectedBhk);
     } else {
       snackbar.showMessage({
-        message: 'Select a unit to assign BHK',
+        message: 'Select a BHK to assign to unit',
         variant: 'warning',
       });
     }
@@ -140,11 +138,11 @@ function UnitsScreen(props) {
   };
 
   const assignToAll = (bhk) => {
-    if (selectedUnit && units[selectedUnit].bhk) {
-      assignToAllUnits(unitCount, units[selectedUnit].bhk);
+    if (selectedBhk) {
+      assignToAllUnits(unitCount, selectedBhk);
     } else {
       snackbar.showMessage({
-        message: 'Selected unit has no BHK assigned',
+        message: 'Select a BHK to assign to all units',
         variant: 'warning',
       });
     }
@@ -167,10 +165,7 @@ function UnitsScreen(props) {
                 <RenderBhkButton
                   key={index}
                   bhk={bhk}
-                  selected={
-                    selectedUnit &&
-                    parseInt(units[selectedUnit].bhk, 10) === bhk.type
-                  }
+                  selected={selectedBhk === bhk.type}
                   onPress={assignBhk}
                 />
               ))}
@@ -183,7 +178,7 @@ function UnitsScreen(props) {
                 compact
                 mode="contained"
                 uppercase={false}
-                disabled={!selectedUnit}
+                disabled={!selectedBhk}
                 contentStyle={{paddingHorizontal: 6}}
                 theme={{roundness: 10}}
                 onPress={assignToAll}>
@@ -195,7 +190,7 @@ function UnitsScreen(props) {
             {unitCount && unitCount > 0 ? (
               <View style={styles.unitsListContainer}>
                 <RenderUnits
-                  selectedUnit={selectedUnit}
+                  selectedBhk={selectedBhk}
                   selectedFloor={selectedFloor}
                   onPress={toggleSelectedUnit}
                   unitCount={unitCount}
