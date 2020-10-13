@@ -9,6 +9,7 @@ import {
   IconButton,
 } from 'react-native-paper';
 import ImagePicker from 'react-native-image-picker';
+import DocumentPicker from 'react-native-document-picker';
 import {secondaryTheme} from '../styles/theme';
 
 const options = {
@@ -18,7 +19,15 @@ const options = {
 const MAX_LIMIT = 20;
 
 const FileInput = React.forwardRef((props, ref) => {
-  const {error, file, containerStyles, theme, onChoose, ...rest} = props;
+  const {
+    error,
+    file,
+    containerStyles,
+    theme,
+    onChoose,
+    type = 'file',
+    ...rest
+  } = props;
 
   const handleImagePicker = () => {
     ImagePicker.showImagePicker(options, (response) => {
@@ -42,6 +51,24 @@ const FileInput = React.forwardRef((props, ref) => {
         onChoose(data);
       }
     });
+  };
+
+  const handleFilePicker = async () => {
+    try {
+      const res = await DocumentPicker.pick({
+        type: [DocumentPicker.types.images, DocumentPicker.types.pdf],
+      });
+      console.log('-----> res.uri', res.uri);
+      console.log('-----> res.typ', res.typ);
+      console.log('-----> res.name', res.name);
+      console.log('-----> res.size', res.size);
+    } catch (err) {
+      if (DocumentPicker.isCancel(err)) {
+        // User cancelled the picker, exit any dialogs or menus and move on
+      } else {
+        throw err;
+      }
+    }
   };
 
   return (
@@ -80,7 +107,7 @@ const FileInput = React.forwardRef((props, ref) => {
           compact
           style={styles.button}
           uppercase={false}
-          onPress={handleImagePicker}>
+          onPress={type === 'file' ? handleFilePicker : handleImagePicker}>
           Choose File
         </Button>
       </View>

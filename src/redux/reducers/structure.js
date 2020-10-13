@@ -25,12 +25,12 @@ const initialState = {
       towers: {},
     },
     4: {
-      towerCount: undefined,
-      towers: {},
+      unitCount: undefined,
+      units: {},
     },
     5: {
-      towerCount: undefined,
-      towers: {},
+      unitCount: undefined,
+      units: {},
     },
   },
 };

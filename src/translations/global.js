@@ -48,6 +48,10 @@ export default {
       plot: 'Plot',
       projectStructureSubtitleTowers: 'Fill in the number of towers',
       projectStructureSubtitleFloors: 'Fill in the number of floors',
+      projectStructureSubtitleUnits:
+        'Select and assign BHK type to individual unit',
+      projectStructureSubtitleBungalows: 'Fill in the numbers of Bungalows',
+      projectStructureSubtitlePlots: 'Fill in the number of Plots',
 
       paymentInstallment: [
         {id: 1, name: 'Full payment'},
@@ -319,6 +323,10 @@ export default {
       plot: 'भूमि',
       projectStructureSubtitleTowers: 'टावरों की संख्या में भरें',
       projectStructureSubtitleFloors: 'मंजिलों की संख्या में भरें',
+      projectStructureSubtitleUnits:
+        'BHK प्रकार को अलग-अलग इकाई के लिए चुनें और असाइन करें',
+      projectStructureSubtitleBungalows: 'बंगलों की संख्या भरें',
+      projectStructureSubtitlePlots: 'प्लॉट की संख्या भरें',
 
       labelSignInInfo: 'अपने अकाउंट में साइन इन करें',
       labelSignUp: 'अपने खाते में साइन अप करें',

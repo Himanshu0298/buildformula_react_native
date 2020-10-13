@@ -13,6 +13,7 @@ import towerActive from '../../../../../assets/images/tower.png';
 import towerInactive from '../../../../../assets/images/tower_inactive.png';
 import Layout from '../../../../../utils/Layout';
 import {useSnackbar} from '../../../../../components/Snackbar';
+import {getTowerLabel} from '../../../../../utils';
 
 function RenderTowers({towerCount, towerValidationById, onPress}) {
   let towersList = [];
@@ -28,7 +29,7 @@ function RenderTowers({towerCount, towerValidationById, onPress}) {
           style={styles.towerImage}>
           <View style={styles.towerLabelContainer}>
             <Subheading style={!active && styles.inactiveLabel}>
-              {String.fromCharCode(64 + i)}
+              {getTowerLabel(i)}
             </Subheading>
           </View>
         </ImageBackground>
@@ -41,8 +42,8 @@ function RenderTowers({towerCount, towerValidationById, onPress}) {
 function TowersScreen(props) {
   const {
     theme,
-    towers,
-    towerCount,
+    towers = {},
+    towerCount = '',
     showAllFloors,
     onChangeTowers,
     saveStructureType,
@@ -64,8 +65,8 @@ function TowersScreen(props) {
         result[towerId] = false;
         allValid = false;
         if (!error) {
-          error = `Please Provide missing data for tower ${String.fromCharCode(
-            64 + parseInt(towerId, 10),
+          error = `Please Provide missing data for tower ${getTowerLabel(
+            towerId,
           )}`;
         }
       } else {
@@ -75,8 +76,8 @@ function TowersScreen(props) {
             result[towerId] = false;
             allValid = false;
             if (!error) {
-              error = `Please Provide missing data for tower ${String.fromCharCode(
-                64 + parseInt(towerId, 10),
+              error = `Please Provide missing data for tower ${getTowerLabel(
+                towerId,
               )}`;
             }
           }

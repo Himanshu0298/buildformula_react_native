@@ -1,4 +1,4 @@
-import React, {useMemo, useState} from 'react';
+import React, {useMemo, useState, useEffect} from 'react';
 import {
   View,
   StatusBar,
@@ -11,7 +11,7 @@ import {Menu, Title, withTheme} from 'react-native-paper';
 import FormTitle from '../../../../components/FormTitle';
 import {useTranslation} from 'react-i18next';
 import {secondaryTheme, theme} from '../../../../styles/theme';
-import {getShadow} from '../../../../utils';
+import {getFloorNumber, getShadow, getTowerLabel} from '../../../../utils';
 import {useSnackbar} from '../../../../components/Snackbar';
 import MaterialTabs from 'react-native-material-tabs';
 import TowersScreen from './Components/TowersScreen';
@@ -86,36 +86,47 @@ function updateUnits({
   unitCount,
   bhk,
 }) {
-  const {towers} = currentStructureData;
-  const towerData = towers[selectedTower];
-
   let units = {};
   for (let i = 1; i <= unitCount; i += 1) {
     units[i] = {bhk};
   }
 
-  console.log('-----> units', units);
-  return {
-    structure: {
-      ...structure,
-      [selectedStructureType]: {
-        ...currentStructureData,
-        towers: {
-          ...towers,
-          [selectedTower]: {
-            ...towerData,
-            floors: {
-              ...towerData.floors,
-              [floorId]: {
-                unitCount,
-                units,
+  if (selectedStructureType < 4) {
+    const {towers} = currentStructureData;
+    const towerData = towers[selectedTower];
+
+    return {
+      structure: {
+        ...structure,
+        [selectedStructureType]: {
+          ...currentStructureData,
+          towers: {
+            ...towers,
+            [selectedTower]: {
+              ...towerData,
+              floors: {
+                ...towerData.floors,
+                [floorId]: {
+                  unitCount,
+                  units,
+                },
               },
             },
           },
         },
       },
-    },
-  };
+    };
+  } else {
+    return {
+      structure: {
+        ...structure,
+        [selectedStructureType]: {
+          unitCount,
+          units,
+        },
+      },
+    };
+  }
 }
 
 function updateUnitsBhk({
@@ -127,34 +138,69 @@ function updateUnitsBhk({
   unitId,
   bhk,
 }) {
-  const {towers} = currentStructureData;
-  const towerData = towers[selectedTower];
-  const floorData = towerData.floors[floorId];
-  const {units} = towerData.floors[floorId];
+  if (selectedStructureType < 4) {
+    const {towers} = currentStructureData;
+    const towerData = towers[selectedTower];
+    const floorData = towerData.floors[floorId];
+    const {units} = towerData.floors[floorId];
 
-  return {
-    structure: {
-      ...structure,
-      [selectedStructureType]: {
-        ...currentStructureData,
-        towers: {
-          ...towers,
-          [selectedTower]: {
-            ...towerData,
-            floors: {
-              ...towerData.floors,
-              [floorId]: {
-                ...floorData,
-                units: {
-                  ...units,
-                  [unitId]: {
-                    bhk,
+    return {
+      structure: {
+        ...structure,
+        [selectedStructureType]: {
+          ...currentStructureData,
+          towers: {
+            ...towers,
+            [selectedTower]: {
+              ...towerData,
+              floors: {
+                ...towerData.floors,
+                [floorId]: {
+                  ...floorData,
+                  units: {
+                    ...units,
+                    [unitId]: {
+                      bhk,
+                    },
                   },
                 },
               },
             },
           },
         },
+      },
+    };
+  } else {
+    const {units} = currentStructureData;
+
+    return {
+      structure: {
+        ...structure,
+        [selectedStructureType]: {
+          ...currentStructureData,
+          units: {
+            ...units,
+            [unitId]: {
+              bhk,
+            },
+          },
+        },
+      },
+    };
+  }
+}
+
+function updateStructureUnits({structure, selectedStructureType, unitCount}) {
+  let units = {};
+  for (let i = 1; i <= unitCount; i += 1) {
+    units[i] = {};
+  }
+  return {
+    structure: {
+      ...structure,
+      [selectedStructureType]: {
+        unitCount,
+        units,
       },
     },
   };
@@ -163,40 +209,35 @@ function updateUnitsBhk({
 function StepTwo(props) {
   const {navigation} = props;
 
-  const [showModal, setShowModal] = useState(false);
-  const [selectedTab, setSelectedTab] = useState(0);
-  const [selectedTower, setSelectedTower] = useState();
-  const [selectedFloor, setSelectedFloor] = useState();
-
   const {t} = useTranslation();
   const snackbar = useSnackbar();
 
-  const {updateStructure, saveStructure} = useStructureActions();
-
-  const {
-    structure,
-    structureTypes,
-    selectedStructureType,
-    loading,
-  } = useSelector((state) => state.structure);
-
+  let {structure, structureTypes, selectedStructureType, loading} = useSelector(
+    (state) => state.structure,
+  );
   const {project_id} = useSelector((state) => state.project);
   const {user} = useSelector((state) => state.user);
+
+  const [showModal, setShowModal] = useState(false);
+  const [selectedTab, setSelectedTab] = useState(
+    selectedStructureType < 4 ? 0 : 2,
+  );
+  const [selectedTower, setSelectedTower] = useState();
+  const [selectedFloor, setSelectedFloor] = useState();
+
+  const {updateStructure, saveStructure} = useStructureActions();
+
+  selectedStructureType = parseInt(selectedStructureType, 10);
+
+  useEffect(() => {
+    setSelectedTab(selectedStructureType < 4 ? 0 : 2);
+  }, [selectedStructureType]);
 
   const currentStructureData = useMemo(() => {
     return structure[selectedStructureType];
   }, [structure, selectedStructureType]);
 
   const toggleMenu = () => setShowModal((v) => !v);
-
-  const toggleSelectedTower = (value) => {
-    Keyboard.dismiss();
-    if (selectedTower === value) {
-      setSelectedTower(undefined);
-    } else {
-      setSelectedTower(value);
-    }
-  };
 
   const showAllFloors = (towerId) => {
     Keyboard.dismiss();
@@ -261,14 +302,14 @@ function StepTwo(props) {
     }
   };
 
-  const onChangeUnit = (floorId, units) => {
-    if (units === '') {
-      units = undefined;
+  const onChangeUnit = (floorId, unitCount) => {
+    if (unitCount === '') {
+      unitCount = undefined;
     }
-    if (units && units > MAX_UNITS) {
+    if (unitCount && unitCount > MAX_UNITS) {
       snackbar.showMessage({
         variant: 'warning',
-        message: `Max ${MAX_UNITS} units are allowed per floor`,
+        message: `Max ${MAX_UNITS} units are allowed`,
       });
       updateStructure(
         updateUnits({
@@ -288,7 +329,7 @@ function StepTwo(props) {
           selectedStructureType,
           selectedTower,
           floorId,
-          unitCount: units,
+          unitCount,
         }),
       );
     }
@@ -335,6 +376,10 @@ function StepTwo(props) {
     );
   };
 
+  const updateBungalows = (unitCount) => {
+    onChangeUnit(null, unitCount);
+  };
+
   const saveStructureType = async () => {
     saveStructure({
       typeId: selectedStructureType,
@@ -342,6 +387,27 @@ function StepTwo(props) {
       projectId: project_id,
       userId: user.id,
     });
+  };
+
+  const getSubtitle = () => {
+    if (selectedStructureType < 4) {
+      switch (selectedTab) {
+        case 0:
+          return t('projectStructureSubtitleTowers');
+        case 1:
+          return `${t(
+            'projectStructureSubtitleFloors',
+          )} : tower ${getTowerLabel(selectedTower)}`;
+        case 2:
+          return `tower ${getTowerLabel(selectedTower)} > ${getFloorNumber(
+            selectedFloor,
+          )} : ${t('projectStructureSubtitleUnits')}`;
+      }
+    } else if (selectedStructureType === 4) {
+      return t('projectStructureSubtitleBungalows');
+    } else if (selectedStructureType === 5) {
+      return t('projectStructureSubtitlePlots');
+    }
   };
 
   return (
@@ -353,7 +419,7 @@ function StepTwo(props) {
       />
       <FormTitle
         title={false}
-        subTitle={t('projectStructureSubtitleTowers')}
+        subTitle={getSubtitle()}
         renderTitle={() => {
           return (
             <View style={styles.titleContainer}>
@@ -394,24 +460,26 @@ function StepTwo(props) {
         }}
       />
       <View style={styles.barContainer}>
-        <MaterialTabs
-          items={['Towers', 'Floors', 'Units']}
-          selectedIndex={selectedTab}
-          onChange={() => {}}
-          barColor="#fff"
-          indicatorColor={theme.colors.primary}
-          inactiveTextColor={'#ccc'}
-          activeTextColor={theme.colors.primary}
-          uppercase={false}
-          textStyle={{
-            fontFamily: 'Nunito-Regular',
-          }}
-        />
+        {selectedStructureType < 4 ? (
+          <MaterialTabs
+            items={['Towers', 'Floors', 'Units']}
+            selectedIndex={selectedTab}
+            onChange={() => {}}
+            barColor="#fff"
+            indicatorColor={theme.colors.primary}
+            inactiveTextColor={'#ccc'}
+            activeTextColor={theme.colors.primary}
+            uppercase={false}
+            textStyle={{
+              fontFamily: 'Nunito-Regular',
+            }}
+          />
+        ) : null}
       </View>
       {selectedTab === 0 ? (
         <TowersScreen
-          towers={currentStructureData.towers}
-          towerCount={currentStructureData.towerCount}
+          towers={currentStructureData?.towers}
+          towerCount={currentStructureData?.towerCount}
           showAllFloors={showAllFloors}
           onChangeTowers={updateTowers}
           saveStructureType={saveStructureType}
@@ -419,8 +487,8 @@ function StepTwo(props) {
       ) : null}
       {selectedTab === 1 ? (
         <FloorsScreen
-          floors={currentStructureData.towers[selectedTower].floors}
-          floorCount={currentStructureData.towers[selectedTower].floorCount}
+          floors={currentStructureData?.towers?.[selectedTower]?.floors}
+          floorCount={currentStructureData?.towers?.[selectedTower]?.floorCount}
           selectedFloor={selectedFloor}
           setSelectedFloor={setSelectedFloor}
           assignToAllFloors={assignToAllFloors}
@@ -433,16 +501,19 @@ function StepTwo(props) {
       {selectedTab === 2 ? (
         <UnitsScreen
           selectedFloor={selectedFloor}
+          selectedStructureType={selectedStructureType}
+          currentStructureData={currentStructureData}
           goBack={() => setSelectedTab(1)}
           assignBhkToUnit={assignBhkToUnit}
           assignToAllUnits={assignToAllUnits}
+          updateBungalows={updateBungalows}
           units={
-            currentStructureData.towers[selectedTower].floors[selectedFloor]
-              .units
+            currentStructureData?.towers?.[selectedTower]?.floors[selectedFloor]
+              ?.units || currentStructureData?.units
           }
           unitCount={
-            currentStructureData.towers[selectedTower].floors[selectedFloor]
-              .unitCount
+            currentStructureData?.towers?.[selectedTower]?.floors[selectedFloor]
+              ?.unitCount || currentStructureData?.unitCount
           }
         />
       ) : null}

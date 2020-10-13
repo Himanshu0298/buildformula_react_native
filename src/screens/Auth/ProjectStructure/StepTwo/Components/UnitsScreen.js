@@ -4,13 +4,16 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  Image,
   SafeAreaView,
 } from 'react-native';
-import {Button, Subheading, withTheme} from 'react-native-paper';
+import {Button, Subheading, TextInput, withTheme} from 'react-native-paper';
 import BaseText from '../../../../../components/BaseText';
 import {useSnackbar} from '../../../../../components/Snackbar';
+import {theme} from '../../../../../styles/theme';
 import {getFloorNumber, getUnitLabel} from '../../../../../utils';
 import Layout from '../../../../../utils/Layout';
+import bungalowHut from '../../../../../assets/images/bungalow_hut.png';
 
 const BHK_OPTIONS = [
   {type: 1, color: 'rgba(244,175,72)'},
@@ -24,31 +27,62 @@ const BHK_OPTIONS = [
 
 const DEFAULT_UNIT_COLOR = '#5B6F7C';
 
-function RenderUnits({unitCount, units, selectedFloor, selectedBhk, onPress}) {
+function RenderUnits({
+  unitCount,
+  units = {},
+  selectedFloor,
+  selectedStructureType,
+  selectedBhk,
+  onPress,
+}) {
   let unitsList = [];
   for (let i = 1; i <= unitCount; i += 1) {
     const {bhk} = units[i];
 
-    if (bhk) {
-      selectedBhk = BHK_OPTIONS.find((item) => item.type === bhk);
+    const unitBhk = BHK_OPTIONS.find((item) => item.type === bhk);
+
+    let unit;
+
+    if (selectedStructureType < 4) {
+      unit = (
+        <TouchableOpacity
+          key={i}
+          onPress={() => onPress(i)}
+          style={[
+            styles.unitContainer,
+            {
+              borderRadius: 5,
+              backgroundColor:
+                (unitBhk && addOpacity(unitBhk.color, 1)) || DEFAULT_UNIT_COLOR,
+            },
+          ]}>
+          <Subheading>{getUnitLabel(selectedFloor, i)}</Subheading>
+        </TouchableOpacity>
+      );
+    } else {
+      unit = (
+        <TouchableOpacity
+          key={i}
+          onPress={() => onPress(i)}
+          style={[styles.imageContainer]}>
+          <Image source={bungalowHut} style={styles.hut} />
+          <View
+            style={{
+              paddingHorizontal: 6,
+              marginTop: 3,
+              borderRadius: 20,
+              backgroundColor: unitBhk ? addOpacity(unitBhk.color, 1) : null,
+            }}>
+            <BaseText
+              style={[styles.hutLabel, {color: unitBhk ? '#fff' : '#000'}]}>
+              {i}
+            </BaseText>
+          </View>
+        </TouchableOpacity>
+      );
     }
 
-    unitsList.push(
-      <TouchableOpacity
-        key={i}
-        onPress={() => onPress(i)}
-        style={[
-          styles.unitContainer,
-          {
-            borderRadius: 5,
-            backgroundColor:
-              (selectedBhk && addOpacity(selectedBhk.color, 1)) ||
-              DEFAULT_UNIT_COLOR,
-          },
-        ]}>
-        <Subheading>{getUnitLabel(selectedFloor, i)}</Subheading>
-      </TouchableOpacity>,
-    );
+    unitsList.push(unit);
   }
   return <View style={styles.unitsList}>{unitsList}</View>;
 }
@@ -86,19 +120,22 @@ function RenderBhkButton({bhk, onPress, selected}) {
 
 function UnitsScreen(props) {
   const {
-    units,
+    units = {},
     goBack,
-    unitCount,
+    unitCount = 0,
     selectedFloor,
     assignBhkToUnit,
     assignToAllUnits,
+    selectedStructureType,
+    updateBungalows,
+    currentStructureData,
   } = props;
 
   const snackbar = useSnackbar();
 
   const [selectedBhk, setSelectedBhk] = useState();
 
-  const toggleSelectedUnit = (value) => {
+  const toggleSelectedBhk = (value) => {
     if (selectedBhk === value) {
       setSelectedBhk(undefined);
     } else {
@@ -134,7 +171,10 @@ function UnitsScreen(props) {
         variant: 'warning',
       });
     }
-    return goBack();
+    if (selectedStructureType < 4) {
+      return goBack();
+    }
+    console.log('----->handle back ');
   };
 
   const assignToAll = (bhk) => {
@@ -166,14 +206,37 @@ function UnitsScreen(props) {
                   key={index}
                   bhk={bhk}
                   selected={selectedBhk === bhk.type}
-                  onPress={assignBhk}
+                  onPress={toggleSelectedBhk}
                 />
               ))}
             </View>
             <View style={styles.headingContainer}>
-              <BaseText style={styles.title}>
-                {getFloorNumber(selectedFloor)} units - {unitCount || 0}
-              </BaseText>
+              {selectedStructureType < 4 ? (
+                <BaseText style={styles.title}>
+                  {getFloorNumber(selectedFloor)} units - {unitCount || 0}
+                </BaseText>
+              ) : (
+                <>
+                  <BaseText style={styles.title}>Bungalow</BaseText>
+                  <TextInput
+                    dense
+                    mode="outlined"
+                    blurOnSubmit
+                    value={currentStructureData?.unitCount?.toString() || ''}
+                    onChangeText={updateBungalows}
+                    style={styles.input}
+                    keyboardType="decimal-pad"
+                    theme={{
+                      roundness: 10,
+                      colors: {
+                        underlineColor: 'transparent',
+                        text: '#000',
+                        accent: theme.colors.primary,
+                      },
+                    }}
+                  />
+                </>
+              )}
               <Button
                 compact
                 mode="contained"
@@ -191,8 +254,9 @@ function UnitsScreen(props) {
               <View style={styles.unitsListContainer}>
                 <RenderUnits
                   selectedBhk={selectedBhk}
+                  selectedStructureType={selectedStructureType}
                   selectedFloor={selectedFloor}
-                  onPress={toggleSelectedUnit}
+                  onPress={assignBhk}
                   unitCount={unitCount}
                   units={units}
                 />
@@ -208,7 +272,9 @@ function UnitsScreen(props) {
               contentStyle={{padding: 5}}
               theme={{roundness: 15}}
               onPress={validateUnits}>
-              <BaseText style={styles.nextButtonLabel}>{'Back'}</BaseText>
+              <BaseText style={styles.nextButtonLabel}>
+                {selectedStructureType < 4 ? 'Back' : 'Next'}
+              </BaseText>
             </Button>
           </View>
         </View>
@@ -262,6 +328,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#000',
   },
+  input: {
+    width: 80,
+    display: 'flex',
+    justifyContent: 'center',
+  },
   unitsListContainer: {},
   unitsList: {
     flexWrap: 'wrap',
@@ -274,6 +345,22 @@ const styles = StyleSheet.create({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  imageContainer: {
+    width: Layout.window.width * 0.15,
+    height: Layout.window.width * 0.18,
+    marginHorizontal: Layout.window.width * 0.037,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  hut: {
+    height: Layout.window.width * 0.11,
+    width: Layout.window.width * 0.15,
+  },
+  hutLabel: {
+    fontSize: 14,
+    color: '#000',
   },
   button: {
     marginTop: 20,
