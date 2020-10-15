@@ -1,7 +1,8 @@
-import React, {useMemo} from 'react';
+import React, {useMemo, useState} from 'react';
 import {
   View,
   StyleSheet,
+  Alert,
   ImageBackground,
   TouchableOpacity,
   SafeAreaView,
@@ -45,11 +46,14 @@ function TowersScreen(props) {
     towers = {},
     towerCount = '',
     showAllFloors,
+    assignToAllTowers,
     onChangeTowers,
     saveStructureType,
   } = props;
 
   const snackbar = useSnackbar();
+
+  const [applyToAll, setApplyToAll] = useState(false);
 
   //check towers data is valid for all floors
   const {towerValidationById, allTowersValid, errorMessage} = useMemo(() => {
@@ -61,7 +65,7 @@ function TowersScreen(props) {
       result[towerId] = true;
       const {floors = {}, floorCount} = towers[towerId];
       if (isNaN(floorCount)) {
-        //check if floorCount is 0 or more than 0
+        //check if floorCount is null
         result[towerId] = false;
         allValid = false;
         if (!error) {
@@ -91,6 +95,36 @@ function TowersScreen(props) {
       errorMessage: error,
     };
   }, [towers]);
+
+  const handleTowerSelect = (towerId) => {
+    if (!applyToAll) {
+      showAllFloors(towerId);
+    } else {
+      Alert.alert(
+        'Confirm',
+        `Are you sure you want to assign all the towers with Tower ${getTowerLabel(
+          towerId,
+        )}'s Data`,
+        [
+          {
+            text: 'Cancel',
+            onPress: () => {
+              setApplyToAll(false);
+            },
+            style: 'cancel',
+          },
+          {
+            text: 'OK',
+            onPress: () => {
+              setApplyToAll(false);
+              assignToAllTowers(towerCount, towers[towerId]);
+            },
+          },
+        ],
+        {cancelable: true},
+      );
+    }
+  };
 
   return (
     <SafeAreaView style={{flex: 1}}>
@@ -124,17 +158,26 @@ function TowersScreen(props) {
                 uppercase={false}
                 contentStyle={{paddingVertical: 2, paddingHorizontal: 6}}
                 theme={{roundness: 10}}
-                onPress={() => {}}>
+                onPress={() => setApplyToAll((v) => !v)}>
                 <BaseText style={styles.applyButton}>
-                  {'Apply for all towers'}
+                  {applyToAll
+                    ? '  Cancel Apply All   '
+                    : 'Apply for all towers'}
                 </BaseText>
               </Button>
             </View>
+            {applyToAll ? (
+              <View style={styles.selectTowerHeadingContainer}>
+                <BaseText style={styles.selectTowerHeading}>
+                  Select the Base Tower for the assignment
+                </BaseText>
+              </View>
+            ) : null}
             {towerCount && towerCount > 0 ? (
               <View style={styles.towersListContainer}>
                 <RenderTowers
                   towerValidationById={towerValidationById}
-                  onPress={showAllFloors}
+                  onPress={handleTowerSelect}
                   towerCount={towerCount}
                 />
               </View>
@@ -190,11 +233,19 @@ const styles = StyleSheet.create({
   },
   input: {
     width: 80,
+    marginTop: -7,
     display: 'flex',
     justifyContent: 'center',
   },
   applyButton: {
     fontSize: 12,
+  },
+  selectTowerHeadingContainer: {
+    marginTop: 15,
+  },
+  selectTowerHeading: {
+    fontSize: 14,
+    color: '#000',
   },
   towersListContainer: {
     marginTop: 20,
@@ -213,8 +264,8 @@ const styles = StyleSheet.create({
     marginVertical: 2,
   },
   towerImage: {
-    height: 50,
-    width: 65,
+    height: Layout.window.width * 0.133,
+    width: Layout.window.width * 0.17,
     display: 'flex',
     alignItems: 'center',
   },

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   StyleSheet,
@@ -14,6 +14,8 @@ import {theme} from '../../../../../styles/theme';
 import {getFloorNumber, getUnitLabel} from '../../../../../utils';
 import Layout from '../../../../../utils/Layout';
 import bungalowHut from '../../../../../assets/images/bungalow_hut.png';
+import plotHut from '../../../../../assets/images/plot.png';
+import {useBackHandler} from '@react-native-community/hooks';
 
 const BHK_OPTIONS = [
   {type: 1, color: 'rgba(244,175,72)'},
@@ -65,7 +67,10 @@ function RenderUnits({
           key={i}
           onPress={() => onPress(i)}
           style={[styles.imageContainer]}>
-          <Image source={bungalowHut} style={styles.hut} />
+          <Image
+            source={selectedStructureType === 4 ? bungalowHut : plotHut}
+            style={selectedStructureType === 4 ? styles.hut : styles.plot}
+          />
           <View
             style={{
               paddingHorizontal: 6,
@@ -129,11 +134,20 @@ function UnitsScreen(props) {
     selectedStructureType,
     updateBungalows,
     currentStructureData,
+    handleNext,
   } = props;
 
   const snackbar = useSnackbar();
 
-  const [selectedBhk, setSelectedBhk] = useState();
+  const [selectedBhk, setSelectedBhk] = useState(1);
+
+  useBackHandler(() => {
+    if (selectedStructureType < 4) {
+      validateUnits();
+      return true;
+    }
+    return false;
+  });
 
   const toggleSelectedBhk = (value) => {
     if (selectedBhk === value) {
@@ -146,7 +160,7 @@ function UnitsScreen(props) {
   const assignBhk = (unit) => {
     if (selectedBhk) {
       assignBhkToUnit(unit, selectedBhk);
-    } else {
+    } else if (selectedStructureType === 4 || selectedStructureType === 1) {
       snackbar.showMessage({
         message: 'Select a BHK to assign to unit',
         variant: 'warning',
@@ -157,34 +171,41 @@ function UnitsScreen(props) {
   const validateUnits = () => {
     let error = '';
     let allValid = true;
-    for (let i = 1; i <= unitCount; i++) {
-      if (!units[i].bhk) {
-        allValid = false;
-        error = `Assign BHK to unit ${getUnitLabel(selectedFloor, i)}`;
-        break;
+    if (selectedStructureType === 1 || selectedStructureType === 4) {
+      for (let i = 1; i <= unitCount; i++) {
+        if (!units[i].bhk) {
+          allValid = false;
+          error = `Assign BHK to unit ${getUnitLabel(selectedFloor, i)}`;
+          break;
+        }
+      }
+
+      if (!allValid) {
+        return snackbar.showMessage({
+          message: error,
+          variant: 'warning',
+        });
       }
     }
-
-    if (!allValid) {
-      return snackbar.showMessage({
-        message: error,
-        variant: 'warning',
-      });
-    }
-    if (selectedStructureType < 4) {
-      return goBack();
-    }
-    console.log('----->handle back ');
+    return goBack();
   };
 
   const assignToAll = (bhk) => {
     if (selectedBhk) {
       assignToAllUnits(unitCount, selectedBhk);
-    } else {
+    } else if (selectedStructureType === 4 || selectedStructureType === 1) {
       snackbar.showMessage({
         message: 'Select a BHK to assign to all units',
         variant: 'warning',
       });
+    }
+  };
+
+  const handleButtonPress = () => {
+    if (selectedStructureType < 4) {
+      validateUnits();
+    } else {
+      handleNext();
     }
   };
 
@@ -195,29 +216,35 @@ function UnitsScreen(props) {
         keyboardShouldPersistTaps="handled">
         <View style={styles.container}>
           <View>
-            <View style={styles.headingContainer}>
-              <BaseText style={styles.assignHeading}>
-                Select and assign BHK type to individual unit
-              </BaseText>
-            </View>
-            <View style={styles.bhkListContainer}>
-              {BHK_OPTIONS.map((bhk, index) => (
-                <RenderBhkButton
-                  key={index}
-                  bhk={bhk}
-                  selected={selectedBhk === bhk.type}
-                  onPress={toggleSelectedBhk}
-                />
-              ))}
-            </View>
+            {selectedStructureType === 4 || selectedStructureType === 1 ? (
+              <View>
+                <View style={styles.headingContainer}>
+                  <BaseText style={styles.assignHeading}>
+                    Select and assign BHK type to individual unit
+                  </BaseText>
+                </View>
+                <View style={styles.bhkListContainer}>
+                  {BHK_OPTIONS.map((bhk, index) => (
+                    <RenderBhkButton
+                      key={index}
+                      bhk={bhk}
+                      selected={selectedBhk === bhk.type}
+                      onPress={toggleSelectedBhk}
+                    />
+                  ))}
+                </View>
+              </View>
+            ) : null}
             <View style={styles.headingContainer}>
               {selectedStructureType < 4 ? (
                 <BaseText style={styles.title}>
                   {getFloorNumber(selectedFloor)} units - {unitCount || 0}
                 </BaseText>
               ) : (
-                <>
-                  <BaseText style={styles.title}>Bungalow</BaseText>
+                <View style={styles.unitInputContainer}>
+                  <BaseText style={styles.title}>
+                    {selectedStructureType === 4 ? 'Bungalows' : 'Plots'}
+                  </BaseText>
                   <TextInput
                     dense
                     mode="outlined"
@@ -235,20 +262,22 @@ function UnitsScreen(props) {
                       },
                     }}
                   />
-                </>
+                </View>
               )}
-              <Button
-                compact
-                mode="contained"
-                uppercase={false}
-                disabled={!selectedBhk}
-                contentStyle={{paddingHorizontal: 6}}
-                theme={{roundness: 10}}
-                onPress={assignToAll}>
-                <BaseText style={styles.applyButton}>
-                  {'Apply for all'}
-                </BaseText>
-              </Button>
+              {selectedStructureType === 4 || selectedStructureType === 1 ? (
+                <Button
+                  compact
+                  mode="contained"
+                  uppercase={false}
+                  disabled={!selectedBhk}
+                  contentStyle={{paddingHorizontal: 6}}
+                  theme={{roundness: 10}}
+                  onPress={assignToAll}>
+                  <BaseText style={styles.applyButton}>
+                    {'Apply for all'}
+                  </BaseText>
+                </Button>
+              ) : null}
             </View>
             {unitCount && unitCount > 0 ? (
               <View style={styles.unitsListContainer}>
@@ -271,7 +300,7 @@ function UnitsScreen(props) {
               mode="contained"
               contentStyle={{padding: 5}}
               theme={{roundness: 15}}
-              onPress={validateUnits}>
+              onPress={handleButtonPress}>
               <BaseText style={styles.nextButtonLabel}>
                 {selectedStructureType < 4 ? 'Back' : 'Next'}
               </BaseText>
@@ -320,6 +349,10 @@ const styles = StyleSheet.create({
     marginTop: 15,
     marginBottom: 10,
   },
+  unitInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   assignHeading: {
     fontSize: 14,
     color: '#000',
@@ -330,6 +363,8 @@ const styles = StyleSheet.create({
   },
   input: {
     width: 80,
+    marginLeft: 20,
+    marginTop: -7,
     display: 'flex',
     justifyContent: 'center',
   },
@@ -357,6 +392,10 @@ const styles = StyleSheet.create({
   hut: {
     height: Layout.window.width * 0.11,
     width: Layout.window.width * 0.15,
+  },
+  plot: {
+    height: Layout.window.width * 0.11,
+    width: Layout.window.width * 0.18,
   },
   hutLabel: {
     fontSize: 14,

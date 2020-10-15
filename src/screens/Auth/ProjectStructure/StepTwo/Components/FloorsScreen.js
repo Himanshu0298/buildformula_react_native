@@ -15,6 +15,7 @@ import Layout from '../../../../../utils/Layout';
 import {getFloorNumber, getUnitLabel} from '../../../../../utils';
 import {theme} from '../../../../../styles/theme';
 import {useSnackbar} from '../../../../../components/Snackbar';
+import {useBackHandler} from '@react-native-community/hooks';
 
 const checkUnitBhkValidity = (floors, floorCount) => {
   let result = {};
@@ -28,9 +29,7 @@ const checkUnitBhkValidity = (floors, floorCount) => {
         result[floorId] = false;
         allValid = false;
         if (!error) {
-          error = `Assign BHK to units on floor ${getFloorNumber(
-            parseInt(floorId, 10),
-          )}`;
+          error = `Assign BHK to units on floor ${getFloorNumber(floorId)}`;
         }
       } else {
         result[floorId] = true;
@@ -53,6 +52,7 @@ function RenderFloors({
   onChangeUnit,
   showAllUnits,
   unitsValidity,
+  selectedStructureType,
 }) {
   let floorsList = [];
   for (let i = 0; i < floorCount; i += 1) {
@@ -92,13 +92,18 @@ function RenderFloors({
               />
               <Button
                 compact
-                color={unitsValidity[i] ? theme.colors.success : '#5B6F7C'}
+                disabled={!(floors[i] && floors[i].unitCount)}
+                color={unitsValidity[i] ? theme.colors.primary : '#5B6F7C'}
+                contentStyle={{padding: 1}}
                 mode="contained"
                 uppercase={false}
-                theme={{roundness: 5}}
                 onPress={() => showAllUnits(i)}>
                 <BaseText style={styles.allUnitsLabel}>
-                  {unitsValidity[i] ? 'BHK assigned' : '  Assign BHK  '}
+                  {selectedStructureType === 4 || selectedStructureType === 1
+                    ? unitsValidity[i]
+                      ? 'BHK assigned'
+                      : '  Assign BHK  '
+                    : 'View Units'}
                 </BaseText>
               </Button>
             </View>
@@ -121,31 +126,50 @@ function FloorsScreen(props) {
     showAllUnits,
     onChangeUnit,
     assignToAllFloors,
+    selectedStructureType,
     goBack,
   } = props;
 
   const snackbar = useSnackbar();
 
+  useBackHandler(() => {
+    validateFloors();
+    return true;
+  });
+
   //check units data is valid for all floors
-  const {unitsValidityData, allUnitsValid, unitsError} = useMemo(() => {
-    return checkUnitBhkValidity(floors, floorCount);
-  }, [floors, floorCount]);
+  const {
+    unitsValidityData = {},
+    allUnitsValid = true,
+    unitsError = '',
+  } = useMemo(() => {
+    if (selectedStructureType === 4 || selectedStructureType === 1) {
+      return checkUnitBhkValidity(floors, floorCount);
+    }
+    return {};
+  }, [floors, floorCount, selectedStructureType]);
 
   //check floors data is valid for all floors
-  const validateFloors = () => {
+  const validateFloors = (floorId) => {
     let allValid = true;
     let error = '';
+
+    if (!isNaN(floorId)) {
+      const {unitCount = ''} = floors[floorId];
+      return {
+        valid: !isNaN(unitCount),
+        error: `Please Provide units for the ${getFloorNumber(floorId)}`,
+      };
+    }
 
     for (let i = 0; i < floorCount; i += 1) {
       const {unitCount} = floors[i];
 
+      //check if unitCount is 0 or more than 0
       if (isNaN(unitCount)) {
-        //check if unitCount is 0 or more than 0
         allValid = false;
         if (!error) {
-          error = `Please Provide units for the ${getFloorNumber(
-            parseInt(i, 10),
-          )}`;
+          error = `Please Provide units for the ${getFloorNumber(i)}`;
         }
       }
     }
@@ -157,16 +181,23 @@ function FloorsScreen(props) {
       });
     }
 
+    setSelectedFloor();
     return goBack();
   };
 
   const assignToAll = () => {
-    console.log('-----> selectedFloor', selectedFloor);
     if (!isNaN(selectedFloor)) {
+      const validationResult = validateFloors(selectedFloor);
+      if (!validationResult.valid) {
+        return snackbar.showMessage({
+          variant: 'warning',
+          message: validationResult.error,
+        });
+      }
       Alert.alert(
         'Confirm',
         `Are you sure you want to assign all the floors with ${getFloorNumber(
-          parseInt(selectedFloor, 10),
+          selectedFloor,
         )}'s Data`,
         [
           {
@@ -231,6 +262,7 @@ function FloorsScreen(props) {
               <View style={styles.floorsListContainer}>
                 <RenderFloors
                   setSelectedFloor={setSelectedFloor}
+                  selectedStructureType={selectedStructureType}
                   unitsValidity={unitsValidityData}
                   selectedFloor={selectedFloor}
                   onChangeUnit={onChangeUnit}
@@ -249,7 +281,7 @@ function FloorsScreen(props) {
                 mode="contained"
                 contentStyle={{padding: 5}}
                 theme={{roundness: 15}}
-                onPress={validateFloors}>
+                onPress={() => validateFloors()}>
                 <BaseText style={styles.nextButtonLabel}>{'Back'}</BaseText>
               </Button>
             ) : null}
@@ -283,6 +315,7 @@ const styles = StyleSheet.create({
   },
   input: {
     width: 80,
+    marginTop: -7,
     display: 'flex',
     justifyContent: 'center',
   },

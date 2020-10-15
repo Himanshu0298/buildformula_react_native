@@ -1,4 +1,6 @@
 import {UPDATE_LOCAL_STRUCTURE, SAVE_STRUCTURE} from './../actions/actionTypes';
+import _ from 'lodash';
+import {DEFAULT_STRUCTURE} from '../../utils/constant';
 
 const initialState = {
   loading: false,
@@ -11,34 +13,12 @@ const initialState = {
     5: false,
   },
   selectedStructureType: 2,
-  structure: {
-    1: {
-      towerCount: undefined,
-      towers: {},
-    },
-    2: {
-      towerCount: undefined,
-      towers: {},
-    },
-    3: {
-      towerCount: undefined,
-      towers: {},
-    },
-    4: {
-      unitCount: undefined,
-      units: {},
-    },
-    5: {
-      unitCount: undefined,
-      units: {},
-    },
-  },
+  structure: _.cloneDeep(DEFAULT_STRUCTURE),
 };
 
 export default (state = initialState, action = {}) => {
   switch (action.type) {
     case UPDATE_LOCAL_STRUCTURE:
-      console.log(action.payload);
       return {
         ...state,
         ...action.payload,

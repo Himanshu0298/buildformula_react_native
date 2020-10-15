@@ -26,6 +26,7 @@ import {useSnackbar} from '../../../../components/Snackbar';
 import useStructureActions from '../../../../redux/actions/structureActions';
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
+import {DEFAULT_STRUCTURE} from '../../../../utils/constant';
 
 function ImageRender({
   title,
@@ -55,7 +56,7 @@ function StepOne(props) {
 
   const {updateStructureTypes, updateStructure} = useStructureActions();
 
-  const {structureTypes} = useSelector((state) => state.structure);
+  const {structureTypes, structure} = useSelector((state) => state.structure);
   const {project} = useSelector((state) => state.project);
   const {loading} = useSelector((state) => state.structure);
 
@@ -90,9 +91,20 @@ function StepOne(props) {
       formData.append('project_id', project.project_id);
       formData.append('project_types', types);
 
-      updateStructureTypes(formData).then(() => {
-        navigation.navigate('ProjectStructureStepTwo');
+      const updatedStructure = {};
+      selectedTypes.map((type) => {
+        if (structure[type]) {
+          updatedStructure[type] = structure[type];
+        } else {
+          updatedStructure[type] = DEFAULT_STRUCTURE[type];
+        }
       });
+
+      updateStructure({structure: updatedStructure});
+
+      // updateStructureTypes(formData).then(() => {
+      navigation.navigate('ProjectStructureStepTwo');
+      // });
     }
   };
 

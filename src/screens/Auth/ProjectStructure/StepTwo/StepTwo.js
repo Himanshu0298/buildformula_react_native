@@ -22,19 +22,33 @@ import useStructureActions from '../../../../redux/actions/structureActions';
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
 import AntIcons from 'react-native-vector-icons/AntDesign';
+import {useBackHandler} from '@react-native-community/hooks';
 
 const TYPE_LABELS = {
-  2: 'shop',
-  3: 'office',
-  1: 'apartment',
-  4: 'bungalow',
-  5: 'plot',
+  2: 'shops',
+  3: 'offices',
+  1: 'apartments',
+  4: 'bungalows',
+  5: 'plots',
 };
 
-function updateTower({structure, selectedStructureType, towerCount}) {
+const MENU_OPTIONS = [
+  {label: 'shops', value: 2},
+  {label: 'offices', value: 3},
+  {label: 'apartments', value: 1},
+  {label: 'bungalows', value: 4},
+  {label: 'plots', value: 5},
+];
+
+function updateTower({
+  structure,
+  selectedStructureType,
+  towerCount,
+  towerData,
+}) {
   let towers = {};
   for (let i = 1; i <= towerCount; i += 1) {
-    towers[i] = {};
+    towers[i] = towerData;
   }
   return {
     structure: {
@@ -239,6 +253,27 @@ function StepTwo(props) {
 
   const toggleMenu = () => setShowModal((v) => !v);
 
+  const handleBack = () => {
+    const types = [2, 3, 1, 4, 5];
+    const selectedTypes = types.filter((key) => structureTypes[key]);
+    const index = selectedTypes.indexOf(selectedStructureType);
+
+    if (index > 0) {
+      if (
+        (selectedTab === 0 && selectedStructureType < 4) ||
+        selectedStructureType >= 4
+      ) {
+        const previousType = selectedTypes[index - 1];
+        updateStructure({selectedStructureType: previousType});
+        return true;
+      }
+    }
+    return false;
+  };
+
+  //Handle back press
+  useBackHandler(handleBack);
+
   const showAllFloors = (towerId) => {
     Keyboard.dismiss();
     setSelectedTower(towerId);
@@ -349,6 +384,17 @@ function StepTwo(props) {
     );
   };
 
+  const assignToAllTowers = (towerCount, towerData) => {
+    updateStructure(
+      updateTower({
+        structure,
+        selectedStructureType,
+        towerCount,
+        towerData,
+      }),
+    );
+  };
+
   const assignToAllFloors = (floorCount, floorData) => {
     updateStructure(
       updateFloor({
@@ -393,15 +439,23 @@ function StepTwo(props) {
     if (selectedStructureType < 4) {
       switch (selectedTab) {
         case 0:
-          return t('projectStructureSubtitleTowers');
+          return t('project_structure_subtitle_towers');
         case 1:
           return `${t(
-            'projectStructureSubtitleFloors',
+            'project_structure_subtitle_floors',
           )} : tower ${getTowerLabel(selectedTower)}`;
         case 2:
-          return `tower ${getTowerLabel(selectedTower)} > ${getFloorNumber(
-            selectedFloor,
-          )} : ${t('projectStructureSubtitleUnits')}`;
+          if (selectedStructureType === 1) {
+            return `tower ${getTowerLabel(selectedTower)} > ${getFloorNumber(
+              selectedFloor,
+            )} : ${t('project_structure_subtitle_units_bhk')}`;
+          } else {
+            return `${t(
+              'project_structure_subtitle_units',
+            )} : tower ${getTowerLabel(selectedTower)} > ${getFloorNumber(
+              selectedFloor,
+            )}`;
+          }
       }
     } else if (selectedStructureType === 4) {
       return t('projectStructureSubtitleBungalows');
@@ -439,21 +493,23 @@ function StepTwo(props) {
                     />
                   </TouchableOpacity>
                 }>
-                {Object.keys(structureTypes)
-                  .filter((key) => structureTypes[key])
-                  .map((key) => {
+                {MENU_OPTIONS.map((option) => {
+                  if (structureTypes[option.value]) {
                     return (
                       <Menu.Item
-                        key={key}
+                        key={option.value}
                         theme={secondaryTheme}
+                        title={t(TYPE_LABELS[option.value])}
                         onPress={() => {
-                          updateStructure({selectedStructureType: key});
+                          updateStructure({
+                            selectedStructureType: option.value,
+                          });
                           toggleMenu();
                         }}
-                        title={t(TYPE_LABELS[key])}
                       />
                     );
-                  })}
+                  }
+                })}
               </Menu>
             </View>
           );
@@ -480,6 +536,9 @@ function StepTwo(props) {
         <TowersScreen
           towers={currentStructureData?.towers}
           towerCount={currentStructureData?.towerCount}
+          selectedTower={selectedTower}
+          assignToAllTowers={assignToAllTowers}
+          setSelectedTower={setSelectedTower}
           showAllFloors={showAllFloors}
           onChangeTowers={updateTowers}
           saveStructureType={saveStructureType}
@@ -489,6 +548,7 @@ function StepTwo(props) {
         <FloorsScreen
           floors={currentStructureData?.towers?.[selectedTower]?.floors}
           floorCount={currentStructureData?.towers?.[selectedTower]?.floorCount}
+          selectedStructureType={selectedStructureType}
           selectedFloor={selectedFloor}
           setSelectedFloor={setSelectedFloor}
           assignToAllFloors={assignToAllFloors}
