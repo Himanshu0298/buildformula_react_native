@@ -148,7 +148,7 @@ const getActiveRouteName = (state) => {
 function NavContainer() {
   const {authenticated} = useSelector((state) => state.user);
   const {language} = useSelector((state) => state.app);
-  const state = useSelector((v) => v);
+  const state = useSelector((root) => root);
   const [currentScreen, setCurrentScreen] = useState('Dashboard');
   const routeNameRef = React.useRef();
   const navigationRef = React.useRef();

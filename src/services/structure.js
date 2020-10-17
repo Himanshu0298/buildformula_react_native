@@ -4,32 +4,20 @@ export default function useStructure() {
   let {config} = useConfig();
   return {
     updateStructureTypes: (data) => {
-      return instance.post(
-        '/project/update_types',
-        data,
-        config({multipart: true, auth: true}),
-      );
+      return instance.post('/project/update_types', data, config());
     },
     saveTowers: (data) => {
       return instance.post(
         'project/update_tower_data',
         data,
-        config({multipart: false, auth: true}),
+        config({multipart: false}),
       );
     },
     saveFloors: (data) => {
-      return instance.post(
-        '/project/update_project_floors',
-        data,
-        config({multipart: true, auth: false}),
-      );
+      return instance.post('/project/update_project_floors', data, config());
     },
     saveUnits: (data) => {
-      return instance.post(
-        '/project/update_project_units',
-        data,
-        config({multipart: true, auth: false}),
-      );
+      return instance.post('/project/update_project_units', data, config());
     },
   };
 }

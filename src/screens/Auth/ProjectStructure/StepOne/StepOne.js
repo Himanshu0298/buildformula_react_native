@@ -102,9 +102,9 @@ function StepOne(props) {
 
       updateStructure({structure: updatedStructure});
 
-      // updateStructureTypes(formData).then(() => {
-      navigation.navigate('ProjectStructureStepTwo');
-      // });
+      updateStructureTypes(formData).then(() => {
+        navigation.navigate('ProjectStructureStepTwo');
+      });
     }
   };
 

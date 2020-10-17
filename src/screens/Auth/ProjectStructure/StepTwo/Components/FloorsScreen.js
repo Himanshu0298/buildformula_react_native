@@ -122,8 +122,6 @@ function FloorsScreen(props) {
     selectedFloor,
     setSelectedFloor,
     onChangeFloors,
-    showAllUnits,
-    onChangeUnit,
     assignToAllFloors,
     selectedStructureType,
     goBack,
@@ -256,9 +254,9 @@ function FloorsScreen(props) {
           </View>
           <View style={styles.floorsListContainer}>
             <FlatList
-              data={Object.keys(props.floors)}
+              data={Object.keys(floors)}
               contentContainerStyle={{flexGrow: 1, paddingBottom: 30}}
-              extraData={props.floors}
+              extraData={floors}
               showsVerticalScrollIndicator={false}
               keyExtractor={(item) => item.toString()}
               renderItem={({item}) => (

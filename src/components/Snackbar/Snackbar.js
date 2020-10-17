@@ -13,8 +13,7 @@ const VariantProps = {
     color: Colors.orange400,
   },
 };
-let keyboardDidShowListener;
-let keyboardDidHideListener;
+
 function CustomSnackbar({
   open,
   message,
@@ -32,23 +31,17 @@ function CustomSnackbar({
   });
 
   const _componentDidMount = () => {
-    keyboardDidShowListener = Keyboard.addListener(
-      'keyboardDidShow',
-      _keyboardDidShow,
-    );
-    keyboardDidHideListener = Keyboard.addListener(
-      'keyboardDidHide',
-      _keyboardDidHide,
-    );
+    Keyboard.addListener('keyboardDidShow', _keyboardDidShow);
+    Keyboard.addListener('keyboardDidHide', _keyboardDidHide);
   };
 
   const _componentWillUnmount = () => {
-    keyboardDidShowListener.remove();
-    keyboardDidHideListener.remove();
+    Keyboard.removeListener('keyboardDidShow', _keyboardDidShow);
+    Keyboard.removeListener('keyboardDidHide', _keyboardDidHide);
   };
 
   const _keyboardDidShow = (e) => {
-    setMargin(e.endCoordinates.height);
+    setMargin(e.endCoordinates.height + 30);
   };
 
   const _keyboardDidHide = () => {

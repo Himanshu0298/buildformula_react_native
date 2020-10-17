@@ -9,7 +9,7 @@ export const useConfig = () => {
   let token = store.getState().user.token;
 
   return {
-    config: ({multipart = false, auth = true}) => {
+    config: ({multipart = true, auth = true} = {}) => {
       let headers = {
         'Content-Type': 'application/json',
       };
