@@ -2,7 +2,6 @@ import React, {useMemo, useState} from 'react';
 import {
   View,
   StyleSheet,
-  Alert,
   ImageBackground,
   TouchableOpacity,
   SafeAreaView,
@@ -15,6 +14,7 @@ import towerInactive from '../../../../../assets/images/tower_inactive.png';
 import Layout from '../../../../../utils/Layout';
 import {useSnackbar} from '../../../../../components/Snackbar';
 import {getTowerLabel} from '../../../../../utils';
+import {useAlert} from '../../../../../components/Alert';
 
 function RenderTowers({towerCount, towerValidationById, onPress}) {
   let towersList = [];
@@ -52,6 +52,7 @@ function TowersScreen(props) {
   } = props;
 
   const snackbar = useSnackbar();
+  const alert = useAlert();
 
   const [applyToAll, setApplyToAll] = useState(false);
 
@@ -100,29 +101,19 @@ function TowersScreen(props) {
     if (!applyToAll) {
       showAllFloors(towerId);
     } else {
-      Alert.alert(
-        'Confirm',
-        `Are you sure you want to assign all the towers with Tower ${getTowerLabel(
+      alert.show({
+        title: 'Confirm',
+        message: `Are you sure you want to assign all the towers with Tower ${getTowerLabel(
           towerId,
         )}'s Data`,
-        [
-          {
-            text: 'Cancel',
-            onPress: () => {
-              setApplyToAll(false);
-            },
-            style: 'cancel',
-          },
-          {
-            text: 'OK',
-            onPress: () => {
-              setApplyToAll(false);
-              assignToAllTowers(towerCount, towers[towerId]);
-            },
-          },
-        ],
-        {cancelable: true},
-      );
+        confirmText: 'Confirm',
+        dismissable: false,
+        onCancel: () => setApplyToAll(false),
+        onConfirm: () => {
+          setApplyToAll(false);
+          assignToAllTowers(towerCount, towers[towerId]);
+        },
+      });
     }
   };
 

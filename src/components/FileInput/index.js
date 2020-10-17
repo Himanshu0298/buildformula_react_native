@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {StyleSheet, View, Text, Platform, Keyboard, Alert} from 'react-native';
+import React from 'react';
+import {StyleSheet, View, Text, Platform, Keyboard} from 'react-native';
 import PropTypes from 'prop-types';
 import {TextInput, Caption, Button, IconButton} from 'react-native-paper';
 import ImagePicker from 'react-native-image-picker';
@@ -27,7 +27,6 @@ const FileInput = React.forwardRef((props, ref) => {
   const {
     error,
     file: selectedFile,
-    compress = true,
     containerStyles,
     onChoose,
     type = 'file',
@@ -35,8 +34,6 @@ const FileInput = React.forwardRef((props, ref) => {
   } = props;
 
   const {showActionSheetWithOptions} = useActionSheet();
-
-  const [showAlert, setShowAlert] = useState(false);
 
   const toggleConfirm = () => {
     Keyboard.dismiss();

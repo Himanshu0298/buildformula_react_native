@@ -18,6 +18,7 @@ import translations from './src/translations/global';
 import * as RNLocalize from 'react-native-localize';
 import {SnackbarProvider} from './src/components/Snackbar';
 import {ActionSheetProvider} from '@expo/react-native-action-sheet';
+import AlertProvider from './src/components/Alert/AlertProvider';
 
 const languageDetector = {
   type: 'languageDetector',
@@ -48,6 +49,8 @@ const App = () => {
     SplashScreen.hide();
   }, []);
 
+  // TODO: figure out action sheet (ActionSheetProvider) is only required for file Input or the whole app
+
   return (
     <Fragment>
       <StatusBar barStyle="light-content" />
@@ -58,9 +61,11 @@ const App = () => {
               initialSafeAreaInsets={initialWindowSafeAreaInsets}>
               <Suspense fallback={<Loader />}>
                 <SnackbarProvider>
-                  <ActionSheetProvider>
-                    <NavContainer />
-                  </ActionSheetProvider>
+                  <AlertProvider>
+                    <ActionSheetProvider>
+                      <NavContainer />
+                    </ActionSheetProvider>
+                  </AlertProvider>
                 </SnackbarProvider>
               </Suspense>
             </SafeAreaProvider>

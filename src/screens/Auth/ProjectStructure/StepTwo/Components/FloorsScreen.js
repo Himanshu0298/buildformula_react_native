@@ -4,7 +4,6 @@ import {
   StyleSheet,
   Image,
   SafeAreaView,
-  Alert,
   TouchableOpacity,
   FlatList,
 } from 'react-native';
@@ -16,6 +15,7 @@ import {getFloorNumber} from '../../../../../utils';
 import {theme} from '../../../../../styles/theme';
 import {useSnackbar} from '../../../../../components/Snackbar';
 import {useBackHandler} from '@react-native-community/hooks';
+import {useAlert} from '../../../../../components/Alert';
 
 const checkUnitBhkValidity = (floors, floorCount) => {
   let result = {};
@@ -128,6 +128,7 @@ function FloorsScreen(props) {
   } = props;
 
   const snackbar = useSnackbar();
+  const alert = useAlert();
 
   useBackHandler(() => {
     validateFloors();
@@ -191,24 +192,15 @@ function FloorsScreen(props) {
           message: validationResult.error,
         });
       }
-      Alert.alert(
-        'Confirm',
-        `Are you sure you want to assign all the floors with ${getFloorNumber(
+      alert.show({
+        title: 'Confirm',
+        message: `Are you sure you want to assign all the floors with ${getFloorNumber(
           selectedFloor,
         )}'s Data`,
-        [
-          {
-            text: 'Cancel',
-            onPress: () => {},
-            style: 'cancel',
-          },
-          {
-            text: 'OK',
-            onPress: () => assignToAllFloors(floorCount, floors[selectedFloor]),
-          },
-        ],
-        {cancelable: true},
-      );
+        confirmText: 'Confirm',
+        dismissable: false,
+        onConfirm: () => assignToAllFloors(floorCount, floors[selectedFloor]),
+      });
     } else {
       snackbar.showMessage({
         variant: 'warning',
@@ -256,7 +248,7 @@ function FloorsScreen(props) {
             <FlatList
               data={Object.keys(floors)}
               contentContainerStyle={{flexGrow: 1, paddingBottom: 30}}
-              extraData={floors}
+              extraData={{...floors, selectedFloor}}
               showsVerticalScrollIndicator={false}
               keyExtractor={(item) => item.toString()}
               renderItem={({item}) => (

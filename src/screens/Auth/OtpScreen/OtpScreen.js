@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 import {
   Animated,
   SafeAreaView,
-  Alert,
   View,
   StyleSheet,
   Platform,
@@ -24,6 +23,7 @@ import {Button, withTheme} from 'react-native-paper';
 import Layout from '../../../utils/Layout';
 import Spinner from 'react-native-loading-spinner-overlay';
 import useOtpActions from '../../../redux/actions/otpActions';
+import {useAlert} from '../../../components/Alert';
 
 const CELL_SIZE = 50;
 const CELL_BORDER_RADIUS = 8;
@@ -129,6 +129,7 @@ const OtpInput = ({value, setValue, colors}) => {
 
 const OtpScreen = (props) => {
   const {navigation} = props;
+  const alert = useAlert();
 
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
@@ -150,26 +151,21 @@ const OtpScreen = (props) => {
       })
       .catch((error) => {
         console.log('-----> error', error);
-        Alert.alert(
-          'Alert',
-          error,
-          [
-            {
-              text: 'OK',
-              onPress: () => {
-                if (error === 'Email OTP is invalid') {
-                  setEmail('');
-                } else if (error === 'OTP not match') {
-                  setPhone('');
-                } else {
-                  setEmail('');
-                  setPhone('');
-                }
-              },
-            },
-          ],
-          {cancelable: false},
-        );
+        alert.show({
+          title: 'Alert',
+          message: error,
+          dismissable: false,
+          onConfirm: () => {
+            if (error === 'Email OTP is invalid') {
+              setEmail('');
+            } else if (error === 'OTP not match') {
+              setPhone('');
+            } else {
+              setEmail('');
+              setPhone('');
+            }
+          },
+        });
       });
   };
 
