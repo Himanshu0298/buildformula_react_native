@@ -7,7 +7,6 @@ import BaseText from '../../../components/BaseText';
 import {useTranslation} from 'react-i18next';
 import Layout from '../../../utils/Layout';
 import {theme} from '../../../styles/theme';
-import {getInitialAuthScreen} from '../../../navigation';
 import {useSelector} from 'react-redux';
 import useAppActions from '../../../redux/actions/appActions';
 
@@ -31,7 +30,6 @@ function LanguageSelect(props) {
   const {i18n} = useTranslation();
   const {setAppLanguage} = useAppActions();
 
-  const reduxStore = useSelector((v) => v);
   const {language} = useSelector((state) => state.app);
 
   useEffect(() => {
@@ -44,8 +42,7 @@ function LanguageSelect(props) {
   const selectLanguage = (selectedLanguage) => {
     i18n.changeLanguage(selectedLanguage);
     setAppLanguage(selectedLanguage);
-    let route = getInitialAuthScreen(reduxStore);
-    navigation.navigate(route);
+    navigation.navigate('login');
   };
 
   return (

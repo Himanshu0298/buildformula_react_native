@@ -9,15 +9,15 @@ export default function useStructureActions() {
   const structure = useStructure();
   const snackbar = useSnackbar();
 
-  const saveTowers = async ({typeId, structureTypeData, projectId, userId}) => {
-    let formData = new FormData();
-    formData.append('current_type_id', typeId);
-    formData.append('tower', structureTypeData.towerCount);
-    formData.append('user_id', userId);
-    formData.append('project_id', projectId);
+  // const saveTowers = async ({typeId, structureTypeData, projectId, userId}) => {
+  //   let formData = new FormData();
+  //   formData.append('current_type_id', typeId);
+  //   formData.append('tower', structureTypeData.towerCount);
+  //   formData.append('user_id', userId);
+  //   formData.append('project_id', projectId);
 
-    await structure.saveTowers(formData);
-  };
+  //   await structure.saveTowers(formData);
+  // };
 
   const saveFloors = async ({
     typeId,
@@ -93,39 +93,17 @@ export default function useStructureActions() {
           try {
             const {typeId, structureTypeData, projectId, userId} = data;
             const {towers} = structureTypeData;
-            processResponse(await saveTowers(data));
-            await Promise.all(
-              Object.keys(towers).map(async (towerId) => {
-                const {floorCount, floors} = towers[towerId];
-                processResponse(
-                  await saveFloors({
-                    typeId,
-                    projectId,
-                    towerId,
-                    userId,
-                    floorCount,
-                  }),
-                );
-
-                await Promise.all(
-                  Object.keys(floors).map(async (floorId) => {
-                    const {unitCount} = floors[floorId];
-                    processResponse(
-                      await saveUnits({
-                        typeId,
-                        projectId,
-                        towerId,
-                        userId,
-                        floorId,
-                        unitCount,
-                      }),
-                    );
-                  }),
-                );
-              }),
-            );
+            const payload = {
+              typeId,
+              projectId,
+              userId,
+              towerData: towers[1],
+            };
+            console.log('-----> payload', payload);
+            await structure.saveTowers(JSON.stringify(payload));
             return resolve();
           } catch (error) {
+            console.log('-----> error', error);
             let errorMessage = processError(error);
             snackbar.showMessage({
               message: errorMessage,

@@ -12,9 +12,9 @@ export default function useStructure() {
     },
     saveTowers: (data) => {
       return instance.post(
-        '/project/update_project_towers',
+        'project/update_project_tower_data',
         data,
-        config({multipart: true, auth: false}),
+        config({multipart: false, auth: true}),
       );
     },
     saveFloors: (data) => {

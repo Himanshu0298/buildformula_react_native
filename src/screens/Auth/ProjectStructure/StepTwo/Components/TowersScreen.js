@@ -63,7 +63,7 @@ function TowersScreen(props) {
 
     Object.keys(towers).map((towerId) => {
       result[towerId] = true;
-      const {floors = {}, floorCount} = towers[towerId];
+      const {floors = {}, floorCount} = towers[towerId] || {};
       if (isNaN(floorCount)) {
         //check if floorCount is null
         result[towerId] = false;

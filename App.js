@@ -17,6 +17,7 @@ import {initReactI18next} from 'react-i18next';
 import translations from './src/translations/global';
 import * as RNLocalize from 'react-native-localize';
 import {SnackbarProvider} from './src/components/Snackbar';
+import {ActionSheetProvider} from '@expo/react-native-action-sheet';
 
 const languageDetector = {
   type: 'languageDetector',
@@ -57,7 +58,9 @@ const App = () => {
               initialSafeAreaInsets={initialWindowSafeAreaInsets}>
               <Suspense fallback={<Loader />}>
                 <SnackbarProvider>
-                  <NavContainer />
+                  <ActionSheetProvider>
+                    <NavContainer />
+                  </ActionSheetProvider>
                 </SnackbarProvider>
               </Suspense>
             </SafeAreaProvider>

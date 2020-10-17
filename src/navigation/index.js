@@ -32,6 +32,7 @@ import PC_StepOne from '../screens/Auth/ProjectCreation/StepOne';
 import PC_StepTwo from '../screens/Auth/ProjectCreation/StepTwo';
 import PS_StepOne from '../screens/Auth/ProjectStructure/StepOne';
 import PS_StepTwo from '../screens/Auth/ProjectStructure/StepTwo';
+import {getInitialAuthScreen} from '../utils';
 
 const optionalConfigObject = {
   unifiedErrors: false, // use unified error messages (default false)
@@ -143,25 +144,6 @@ const getActiveRouteName = (state) => {
 
   return route.name;
 };
-
-export function getInitialAuthScreen({user, project}) {
-  const {id, otp_verified, email_verified, default_role_id} = user;
-  if (id) {
-    if (otp_verified === 'N' || email_verified === 'N') {
-      return 'Otp';
-    } else if (default_role_id === 0) {
-      return 'RoleSelect';
-    } else if (project.project_id) {
-      return 'ProjectStructureStepOne';
-    } else if (!project.project_id) {
-      return 'ProjectCreationStepOne';
-    } else {
-      return 'ProjectStructureStepOne';
-    }
-  } else {
-    return 'Login';
-  }
-}
 
 function NavContainer() {
   const {authenticated} = useSelector((state) => state.user);
