@@ -4,15 +4,15 @@ import {
   StyleSheet,
   Image,
   SafeAreaView,
-  ScrollView,
   Alert,
   TouchableOpacity,
+  FlatList,
 } from 'react-native';
 import {Badge, Button, TextInput, withTheme} from 'react-native-paper';
 import BaseText from '../../../../../components/BaseText';
 import floorSlab from '../../../../../assets/images/slab.png';
 import Layout from '../../../../../utils/Layout';
-import {getFloorNumber, getUnitLabel} from '../../../../../utils';
+import {getFloorNumber} from '../../../../../utils';
 import {theme} from '../../../../../styles/theme';
 import {useSnackbar} from '../../../../../components/Snackbar';
 import {useBackHandler} from '@react-native-community/hooks';
@@ -44,76 +44,75 @@ const checkUnitBhkValidity = (floors, floorCount) => {
   };
 };
 
-function RenderFloors({
-  floors,
-  floorCount,
-  selectedFloor,
-  setSelectedFloor,
-  onChangeUnit,
-  showAllUnits,
-  unitsValidity,
-  selectedStructureType,
-}) {
-  let floorsList = [];
-  for (let i = 0; i < floorCount; i += 1) {
-    floorsList.push(
-      <View key={i} style={styles.floorContainer}>
-        <View style={styles.badgeContainer}>
-          <View>
-            <Badge style={styles.badge} visible={selectedFloor === i} />
+function RenderFloor(props) {
+  const {
+    floorId,
+    floors,
+    selectedFloor,
+    setSelectedFloor,
+    onChangeUnit,
+    unitsValidity,
+    showAllUnits,
+    selectedStructureType,
+  } = props;
+  return (
+    <View style={styles.floorContainer}>
+      <View style={styles.badgeContainer}>
+        <View>
+          <Badge style={styles.badge} visible={selectedFloor === floorId} />
+        </View>
+      </View>
+      <View style={styles.floorContent}>
+        <View style={styles.rowContainer}>
+          <TouchableOpacity
+            style={styles.floorLabelContainer}
+            onPress={() => setSelectedFloor(floorId)}>
+            <BaseText style={styles.floorLabel}>
+              {getFloorNumber(floorId)}
+            </BaseText>
+          </TouchableOpacity>
+          <View style={{flexDirection: 'row'}}>
+            <TextInput
+              dense
+              blurOnSubmit
+              onChangeText={(units) => onChangeUnit(floorId, units)}
+              style={styles.unitsInput}
+              keyboardType="decimal-pad"
+              value={
+                floors[floorId] && floors[floorId].unitCount
+                  ? floors[floorId].unitCount.toString()
+                  : ''
+              }
+              theme={{
+                colors: {
+                  underlineColor: 'transparent',
+                  text: '#000',
+                  accent: theme.colors.primary,
+                },
+              }}
+            />
+            <Button
+              compact
+              disabled={!(floors[floorId] && floors[floorId].unitCount)}
+              color={unitsValidity[floorId] ? theme.colors.primary : '#5B6F7C'}
+              contentStyle={{padding: 1}}
+              mode="contained"
+              uppercase={false}
+              onPress={() => showAllUnits(floorId)}>
+              <BaseText style={styles.allUnitsLabel}>
+                {selectedStructureType === 4 || selectedStructureType === 1
+                  ? unitsValidity[floorId]
+                    ? 'BHK assigned'
+                    : '  Assign BHK  '
+                  : 'View Units'}
+              </BaseText>
+            </Button>
           </View>
         </View>
-        <View style={styles.floorContent}>
-          <View style={styles.rowContainer}>
-            <TouchableOpacity
-              style={styles.floorLabelContainer}
-              onPress={() => setSelectedFloor(i)}>
-              <BaseText style={styles.floorLabel}>{getFloorNumber(i)}</BaseText>
-            </TouchableOpacity>
-            <View style={{flexDirection: 'row'}}>
-              <TextInput
-                dense
-                blurOnSubmit
-                onChangeText={(units) => onChangeUnit(i, units)}
-                style={styles.unitsInput}
-                keyboardType="decimal-pad"
-                value={
-                  floors[i] && floors[i].unitCount
-                    ? floors[i].unitCount.toString()
-                    : ''
-                }
-                theme={{
-                  colors: {
-                    underlineColor: 'transparent',
-                    text: '#000',
-                    accent: theme.colors.primary,
-                  },
-                }}
-              />
-              <Button
-                compact
-                disabled={!(floors[i] && floors[i].unitCount)}
-                color={unitsValidity[i] ? theme.colors.primary : '#5B6F7C'}
-                contentStyle={{padding: 1}}
-                mode="contained"
-                uppercase={false}
-                onPress={() => showAllUnits(i)}>
-                <BaseText style={styles.allUnitsLabel}>
-                  {selectedStructureType === 4 || selectedStructureType === 1
-                    ? unitsValidity[i]
-                      ? 'BHK assigned'
-                      : '  Assign BHK  '
-                    : 'View Units'}
-                </BaseText>
-              </Button>
-            </View>
-          </View>
-          <Image source={floorSlab} style={styles.slabImage} />
-        </View>
-      </View>,
-    );
-  }
-  return <View style={styles.floorsList}>{floorsList}</View>;
+        <Image source={floorSlab} style={styles.slabImage} />
+      </View>
+    </View>
+  );
 }
 
 function FloorsScreen(props) {
@@ -222,72 +221,70 @@ function FloorsScreen(props) {
 
   return (
     <SafeAreaView style={{flex: 1}}>
-      <ScrollView
-        contentContainerStyle={styles.scrollView}
-        keyboardShouldPersistTaps="handled">
-        <View style={styles.container}>
-          <View>
-            <View style={styles.headingContainer}>
-              <BaseText style={styles.title}>Floors</BaseText>
-              <TextInput
-                dense
-                mode="outlined"
-                blurOnSubmit
-                value={floorCount ? floorCount.toString() : floorCount}
-                onChangeText={onChangeFloors}
-                style={styles.input}
-                keyboardType="decimal-pad"
-                theme={{
-                  roundness: 10,
-                  colors: {
-                    underlineColor: 'transparent',
-                    text: '#000',
-                    accent: theme.colors.primary,
-                  },
-                }}
-              />
-              <Button
-                compact={true}
-                mode="contained"
-                uppercase={false}
-                contentStyle={{paddingVertical: 2, paddingHorizontal: 6}}
-                theme={{roundness: 10}}
-                onPress={assignToAll}>
-                <BaseText style={styles.applyButton}>
-                  {'Apply for all floors'}
-                </BaseText>
-              </Button>
-            </View>
-            {floorCount && floorCount > 0 ? (
-              <View style={styles.floorsListContainer}>
-                <RenderFloors
-                  setSelectedFloor={setSelectedFloor}
-                  selectedStructureType={selectedStructureType}
-                  unitsValidity={unitsValidityData}
-                  selectedFloor={selectedFloor}
-                  onChangeUnit={onChangeUnit}
-                  floors={floors}
-                  floorCount={floorCount}
-                  showAllUnits={showAllUnits}
-                />
-              </View>
-            ) : null}
+      <View style={styles.container}>
+        <View style={{flex: 1}}>
+          <View style={styles.headingContainer}>
+            <BaseText style={styles.title}>Floors</BaseText>
+            <TextInput
+              dense
+              mode="outlined"
+              blurOnSubmit
+              value={floorCount ? floorCount.toString() : floorCount}
+              onChangeText={onChangeFloors}
+              style={styles.input}
+              keyboardType="decimal-pad"
+              theme={{
+                roundness: 10,
+                colors: {
+                  underlineColor: 'transparent',
+                  text: '#000',
+                  accent: theme.colors.primary,
+                },
+              }}
+            />
+            <Button
+              compact={true}
+              mode="contained"
+              uppercase={false}
+              contentStyle={{paddingVertical: 2, paddingHorizontal: 6}}
+              theme={{roundness: 10}}
+              onPress={assignToAll}>
+              <BaseText style={styles.applyButton}>
+                {'Apply for all floors'}
+              </BaseText>
+            </Button>
           </View>
-          <View style={styles.button}>
-            {floorCount && floorCount > 0 ? (
-              <Button
-                style={{width: '50%'}}
-                compact
-                mode="contained"
-                contentStyle={{padding: 5}}
-                theme={{roundness: 15}}
-                onPress={() => validateFloors()}>
-                <BaseText style={styles.nextButtonLabel}>{'Back'}</BaseText>
-              </Button>
-            ) : null}
+          <View style={styles.floorsListContainer}>
+            <FlatList
+              data={Object.keys(props.floors)}
+              contentContainerStyle={{flexGrow: 1, paddingBottom: 30}}
+              extraData={props.floors}
+              showsVerticalScrollIndicator={false}
+              keyExtractor={(item) => item.toString()}
+              renderItem={({item}) => (
+                <RenderFloor
+                  floorId={item}
+                  unitsValidity={unitsValidityData}
+                  {...props}
+                />
+              )}
+            />
           </View>
         </View>
-      </ScrollView>
+        <View style={styles.button}>
+          {floorCount && floorCount > 0 ? (
+            <Button
+              style={{width: '50%'}}
+              compact
+              mode="contained"
+              contentStyle={{padding: 5}}
+              theme={{roundness: 15}}
+              onPress={() => validateFloors()}>
+              <BaseText style={styles.nextButtonLabel}>{'Back'}</BaseText>
+            </Button>
+          ) : null}
+        </View>
+      </View>
     </SafeAreaView>
   );
 }
@@ -300,7 +297,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'space-between',
     paddingHorizontal: Layout.window.width * 0.05,
-    paddingVertical: 30,
+    paddingTop: 20,
+    paddingBottom: 10,
   },
   headingContainer: {
     flexDirection: 'row',
@@ -331,6 +329,8 @@ const styles = StyleSheet.create({
   },
   floorsListContainer: {
     marginTop: 20,
+    marginBottom: 30,
+    flexGrow: 1,
   },
   floorsList: {
     display: 'flex',
