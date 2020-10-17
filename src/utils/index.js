@@ -134,3 +134,22 @@ export const processResponse = (response) => {
 export const getUnitLabel = (floor, unit) => {
   return `${floor}${unit.toString().padStart(2, '0')}`;
 };
+
+export function getInitialAuthScreen({user, project}) {
+  const {id, otp_verified, email_verified, default_role_id} = user;
+  if (id) {
+    if (otp_verified === 'N' || email_verified === 'N') {
+      return 'Otp';
+    } else if (default_role_id === 0) {
+      return 'RoleSelect';
+    } else if (project.project_id) {
+      return 'ProjectStructureStepOne';
+    } else if (!project.project_id) {
+      return 'ProjectCreationStepOne';
+    } else {
+      return 'ProjectStructureStepOne';
+    }
+  } else {
+    return 'Login';
+  }
+}
