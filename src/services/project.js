@@ -9,5 +9,8 @@ export default function useProject() {
     updatePayment: (data) => {
       return instance.post('/project/update_project_payment', data, config());
     },
+    updateAdmins: (data) => {
+      return instance.post('/project/update_project_admins', data, config());
+    },
   };
 }

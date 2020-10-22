@@ -13,8 +13,9 @@ import {
   Subheading,
   Button,
   TextInput,
+  Text,
 } from 'react-native-paper';
-import {theme} from '../../../styles/theme';
+import {secondaryTheme, theme} from '../../../styles/theme';
 import banner from './../../../assets/images/banner.png';
 import image from './../../../assets/images/buildings.png';
 import BaseText from '../../../components/BaseText';
@@ -28,6 +29,7 @@ import {useTranslation} from 'react-i18next';
 import Layout from '../../../utils/Layout';
 import BottomSheet from 'reanimated-bottom-sheet';
 import {PHONE_REGEX} from '../../../utils/constant';
+import useProjectActions from '../../../redux/actions/projectActions';
 
 function SignUpButton({label, onPress}) {
   return (
@@ -54,6 +56,8 @@ function RenderContent(props) {
     errors,
     handleSubmit,
     navigation,
+    adminSignUp,
+    adminId = 2,
   } = props;
 
   const [showCnfPass, toggleShowCnfPass] = useState(null);
@@ -67,10 +71,18 @@ function RenderContent(props) {
 
   return (
     <View style={styles.contentContainer}>
-      <View style={styles.headlineContainer}>
-        <Headline style={{fontWeight: 'bold'}}>{t('heading_signup')}</Headline>
-        <Subheading>{t('subHeading_signUp')}</Subheading>
-      </View>
+      {!adminSignUp ? (
+        <View style={styles.headlineContainer}>
+          <Headline style={{fontWeight: 'bold'}}>
+            {t('heading_signup')}
+          </Headline>
+          <Subheading>{t('subHeading_signUp')}</Subheading>
+        </View>
+      ) : (
+        <Subheading>
+          {t(adminId === 2 ? 'admin_title_2nd' : 'admin_title_3rd')}
+        </Subheading>
+      )}
       <View style={styles.inputMainContainer}>
         <CustomInput
           name="firstName"
@@ -171,12 +183,23 @@ function RenderContent(props) {
           }
         />
       </View>
-      <SignUpButton label={t('SIGN UP')} onPress={handleSubmit} />
-      <TouchableOpacity
-        onPress={() => navigation.goBack()}
-        style={styles.registerContainer}>
-        <BaseText>{t('loginLink')}</BaseText>
-      </TouchableOpacity>
+      <SignUpButton
+        onPress={handleSubmit}
+        label={t(
+          !adminSignUp
+            ? 'label_signup'
+            : adminId === 2
+            ? 'label_next'
+            : 'label_save',
+        )}
+      />
+      {!adminSignUp ? (
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.registerContainer}>
+          <BaseText>{t('loginLink')}</BaseText>
+        </TouchableOpacity>
+      ) : null}
     </View>
   );
 }
@@ -211,16 +234,22 @@ const schema = Yup.object().shape({
 });
 
 function SignUp(props) {
-  const {navigation} = props;
+  const {navigation, route} = props;
+
+  const {adminSignUp = false, adminId, adminData} = route?.params || {};
 
   const [validationError, setValidationError] = React.useState({});
   const {signUp} = useUserActions();
+  const {updateAdmins} = useProjectActions();
 
   const bottomSheetRef = React.createRef();
 
   const {t} = useTranslation();
 
   const {loading} = useSelector((state) => state.user);
+  const {loading: updatingAdmin, project} = useSelector(
+    (state) => state.project,
+  );
 
   React.useEffect(() => {
     const focusUnsubscribe = navigation.addListener('focus', () => {
@@ -255,61 +284,102 @@ function SignUp(props) {
     <Formik
       validateOnBlur={false}
       validateOnChange={false}
-      initialValues={
-        {
-          // firstName: 'test',
-          // lastName: 'user',
-          // phone: '1234567894',
-          // email: 'testuser1@gmail.com',
-          // password: '123456',
-          // confirmPassword: '123456',
-        }
-      }
+      initialValues={{
+        firstName: 'test',
+        lastName: 'user',
+        phone: '1234567894',
+        email: 'testuser1@gmail.com',
+        password: '123456',
+        confirmPassword: '123456',
+      }}
       validationSchema={schema}
       onSubmit={async (values) => {
-        let formData = new FormData();
+        if (!adminSignUp) {
+          let formData = new FormData();
 
-        formData.append('email', values.email);
-        formData.append('phone', values.phone);
-        formData.append('password', values.password);
-        formData.append('first_name', values.firstName);
-        formData.append('last_name', values.lastName);
-        formData.append('confirm_password', values.confirmPassword);
+          formData.append('email', values.email);
+          formData.append('phone', values.phone);
+          formData.append('password', values.password);
+          formData.append('first_name', values.firstName);
+          formData.append('last_name', values.lastName);
+          formData.append('confirm_password', values.confirmPassword);
 
-        signUp(formData)
-          .then((data) => {
-            const {email} = data.value.user;
-            if (email) {
-              navigation.navigate('Otp');
-            }
-          })
-          .catch((error) => {
-            setValidationError(error);
+          signUp(formData)
+            .then((data) => {
+              const {email} = data.value.user;
+              if (email) {
+                navigation.navigate('Otp');
+              }
+            })
+            .catch((error) => {
+              setValidationError(error);
+            });
+        } else if (adminId === 2) {
+          navigation.navigate('SignUp', {
+            adminSignUp: true,
+            adminId: 3,
+            adminData: values,
           });
+        } else if (adminId === 3) {
+          let formData = new FormData();
+
+          formData.append('project_id', project.project_id);
+          formData.append('first_name_1', adminData.firstName);
+          formData.append('last_name_1', adminData.lastName);
+          formData.append('email_1', adminData.email);
+          formData.append('phone_1', adminData.phone);
+          formData.append('password_1', adminData.password);
+          formData.append('confirm_password_1', adminData.confirmPassword);
+          formData.append('first_name_2', values.firstName);
+          formData.append('last_name_2', values.lastName);
+          formData.append('email_2', values.email);
+          formData.append('phone_2', values.phone);
+          formData.append('password_2', values.password);
+          formData.append('confirm_password_2', values.confirmPassword);
+
+          updateAdmins(formData);
+        }
       }}>
       {({handleChange, values, handleSubmit, handleBlur, isValid, errors}) => (
         <View style={styles.container}>
-          <Spinner visible={loading} textContent={''} />
+          <Spinner visible={loading || updatingAdmin} textContent={''} />
           <View style={styles.topImageContainer}>
             <View style={styles.bannerContainer}>
               <Image source={banner} style={styles.banner} />
             </View>
-            <View style={styles.imageContainer}>
-              <Image source={image} style={styles.image} />
-            </View>
+            {!adminSignUp ? (
+              <View style={styles.imageContainer}>
+                <Image source={image} style={styles.image} />
+              </View>
+            ) : (
+              <View style={styles.noteContainer}>
+                <Text theme={secondaryTheme}>
+                  <Text
+                    theme={secondaryTheme}
+                    style={{color: theme.colors.primary, fontWeight: 'bold'}}>
+                    {'NOTE: '}
+                  </Text>
+                  Vshwan build Project or site have three main admins so if
+                  anyone admin isn't available your team can be manged without
+                  interruption.
+                </Text>
+              </View>
+            )}
           </View>
           <BottomSheet
             ref={bottomSheetRef}
-            snapPoints={['85%', '60%']}
+            snapPoints={adminSignUp ? ['85%', '70%'] : ['85%', '60%']}
             initialSnap={1}
             renderHeader={renderHeader}
             renderContent={() => (
               <RenderContent
                 t={t}
-                handleChange={handleChange}
+                adminSignUp={adminSignUp}
+                adminId={adminId}
                 values={values}
                 handleSubmit={handleSubmit}
                 handleBlur={handleBlur}
+                handleChange={handleChange}
                 errors={{...errors, ...validationError}}
                 navigation={navigation}
               />
@@ -346,6 +416,9 @@ const styles = StyleSheet.create({
   image: {
     width: Layout.window.width * 0.75,
     height: Layout.window.width * 0.75 * (15 / 22),
+  },
+  noteContainer: {
+    paddingHorizontal: 20,
   },
   header: {
     backgroundColor: theme.colors.primary,

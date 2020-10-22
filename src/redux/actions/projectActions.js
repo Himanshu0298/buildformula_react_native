@@ -7,7 +7,7 @@ import {processError, processResponse} from '../../utils';
 export default function useProjectActions() {
   const dispatch = useDispatch();
   const snackbar = useSnackbar();
-  const {createProject, updatePayment} = useProject();
+  const {createProject, updatePayment, updateAdmins} = useProject();
 
   return {
     createProject: (formData) =>
@@ -37,6 +37,26 @@ export default function useProjectActions() {
         payload: new Promise(async (resolve, reject) => {
           try {
             let response = processResponse(await updatePayment(formData));
+            const {data} = response;
+
+            return resolve(data);
+          } catch (error) {
+            let errorMessage = processError(error);
+            snackbar.showMessage({
+              message: errorMessage,
+              variant: 'error',
+            });
+            return reject(errorMessage);
+          }
+        }),
+      }),
+
+    updateAdmins: (formData) =>
+      dispatch({
+        type: types.UPDATE_ADMINS,
+        payload: new Promise(async (resolve, reject) => {
+          try {
+            let response = processResponse(await updateAdmins(formData));
             const {data} = response;
 
             return resolve(data);

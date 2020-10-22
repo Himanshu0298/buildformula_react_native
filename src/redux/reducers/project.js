@@ -1,4 +1,8 @@
-import {CREATE_PROJECT, UPDATE_PAYMENT} from './../actions/actionTypes';
+import {
+  CREATE_PROJECT,
+  UPDATE_PAYMENT,
+  UPDATE_ADMINS,
+} from './../actions/actionTypes';
 
 const initialState = {
   loading: false,
@@ -48,6 +52,23 @@ export default (state = initialState, action = {}) => {
         loading: false,
       };
     case `${UPDATE_PAYMENT}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+        errorMessage: action.payload,
+      };
+
+    case `${UPDATE_ADMINS}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${UPDATE_ADMINS}_FULFILLED`:
+      return {
+        ...state,
+        loading: false,
+      };
+    case `${UPDATE_ADMINS}_REJECTED`:
       return {
         ...state,
         loading: false,

@@ -36,7 +36,8 @@ function RoleBox({title, onSelectPlan, amount, colors}) {
 }
 
 function PlanSelect(props) {
-  const [showAlert, setShowAlert] = useState(true);
+  const {navigation} = props;
+  const [showAlert, setShowAlert] = useState(false);
   const {project, loading} = useSelector((state) => state.project);
   const {selectPlan} = useProjectActions();
 
@@ -58,7 +59,8 @@ function PlanSelect(props) {
   }
 
   const handleNext = () => {
-    console.log('-----> handleNext');
+    toggleAlert();
+    navigation.navigate('SignUp', {adminSignUp: true, adminId: 2});
   };
 
   return (
@@ -89,12 +91,12 @@ function PlanSelect(props) {
       <Portal>
         <Dialog
           visible={showAlert}
-          onDismiss={toggleAlert}
+          onDismiss={handleNext}
           theme={{roundness: 15}}>
           <Dialog.Content>
             <View style={styles.alertContainer}>
               <View style={styles.splashImage}>
-                <LottieView source={splash} autoPlay loop speed={5} />
+                <LottieView source={splash} autoPlay loop speed={3} />
               </View>
               <Title theme={secondaryTheme} style={styles.titleText}>
                 Successful!

@@ -13,6 +13,7 @@ export const SELECT_ROLE = 'SELECT_ROLE';
 //For Project
 export const CREATE_PROJECT = 'CREATE_PROJECT';
 export const UPDATE_PAYMENT = 'UPDATE_PAYMENT';
+export const UPDATE_ADMINS = 'UPDATE_ADMINS';
 
 //For Project Structure
 export const UPDATE_LOCAL_STRUCTURE = 'UPDATE_LOCAL_STRUCTURE';
