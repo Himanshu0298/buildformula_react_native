@@ -93,14 +93,31 @@ export default function useStructureActions() {
           try {
             const {typeId, structureTypeData, projectId, userId} = data;
             const {towers} = structureTypeData;
-            const payload = {
-              typeId,
-              projectId,
-              userId,
-              towerData: towers[1],
-            };
-            console.log('-----> payload', payload);
-            await structure.saveTowers(JSON.stringify(payload));
+
+            if (towers) {
+              await Promise.all(
+                Object.keys(towers).map(async (towerId) => {
+                  const payload = {
+                    typeId,
+                    projectId,
+                    userId,
+                    towerId,
+                    towerData: towers[towerId],
+                  };
+                  await structure.saveTowers(JSON.stringify(payload));
+                }),
+              );
+            } else {
+              const payload = {
+                typeId,
+                projectId,
+                userId,
+                towerId: 1,
+                towerData: structureTypeData,
+              };
+              await structure.saveTowers(JSON.stringify(payload));
+            }
+
             return resolve();
           } catch (error) {
             console.log('-----> error', error);

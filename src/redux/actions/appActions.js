@@ -10,5 +10,9 @@ export default function useAppActions() {
         type: types.SET_LANGUAGE,
         payload: language,
       }),
+    setInitialState: () =>
+      dispatch({
+        type: types.SET_INITIAL_STATE,
+      }),
   };
 }

@@ -18,6 +18,12 @@ const initialState = {
 
 export default (state = initialState, action = {}) => {
   switch (action.type) {
+    case 'SET_INITIAL_STATE':
+      return {
+        ...state,
+        loading: false,
+      };
+
     case UPDATE_LOCAL_STRUCTURE:
       return {
         ...state,

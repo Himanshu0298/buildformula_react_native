@@ -1,5 +1,6 @@
 //For App
 export const SET_LANGUAGE = 'SET_LANGUAGE';
+export const SET_INITIAL_STATE = 'SET_INITIAL_STATE';
 
 //For Auth
 export const LOGIN = 'LOGIN';
@@ -11,6 +12,7 @@ export const SELECT_ROLE = 'SELECT_ROLE';
 
 //For Project
 export const CREATE_PROJECT = 'CREATE_PROJECT';
+export const UPDATE_PAYMENT = 'UPDATE_PAYMENT';
 
 //For Project Structure
 export const UPDATE_LOCAL_STRUCTURE = 'UPDATE_LOCAL_STRUCTURE';

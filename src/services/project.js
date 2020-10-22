@@ -6,5 +6,8 @@ export default function useProject() {
     createProject: (data) => {
       return instance.post('/project/create', data, config());
     },
+    updatePayment: (data) => {
+      return instance.post('/project/update_project_payment', data, config());
+    },
   };
 }

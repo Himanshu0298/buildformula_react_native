@@ -118,6 +118,14 @@ export const processError = (error) => {
   }
 
   errorMessage = errorMessage || error.message;
+
+  if (typeof errorMessage !== 'string') {
+    if (typeof errorMessage === 'object') {
+      errorMessage = Object.values(errorMessage)[0];
+    }
+  }
+
+  console.log('-----> errorMessage', errorMessage);
   return errorMessage;
 };
 

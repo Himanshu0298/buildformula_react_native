@@ -24,6 +24,8 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import AntIcons from 'react-native-vector-icons/AntDesign';
 import {useBackHandler} from '@react-native-community/hooks';
 
+const STRUCTURE_TYPES = [2, 3, 1, 4, 5];
+
 const TYPE_LABELS = {
   2: 'shops',
   3: 'offices',
@@ -229,7 +231,7 @@ function StepTwo(props) {
   let {structure, structureTypes, selectedStructureType, loading} = useSelector(
     (state) => state.structure,
   );
-  const {project_id} = useSelector((state) => state.project);
+  const {project} = useSelector((state) => state.project);
   const {user} = useSelector((state) => state.user);
 
   const [showModal, setShowModal] = useState(false);
@@ -254,8 +256,7 @@ function StepTwo(props) {
   const toggleMenu = () => setShowModal((v) => !v);
 
   const handleBack = () => {
-    const types = [2, 3, 1, 4, 5];
-    const selectedTypes = types.filter((key) => structureTypes[key]);
+    const selectedTypes = STRUCTURE_TYPES.filter((key) => structureTypes[key]);
     const index = selectedTypes.indexOf(selectedStructureType);
 
     if (index > 0) {
@@ -273,6 +274,18 @@ function StepTwo(props) {
 
   //Handle back press
   useBackHandler(handleBack);
+
+  const handleNext = () => {
+    const selectedTypes = STRUCTURE_TYPES.filter((key) => structureTypes[key]);
+    const index = selectedTypes.indexOf(selectedStructureType);
+
+    if (index < selectedTypes.length - 1) {
+      const nextType = selectedTypes[index + 1];
+      updateStructure({selectedStructureType: nextType});
+    } else {
+      navigation.navigate('PlanSelect');
+    }
+  };
 
   const showAllFloors = (towerId) => {
     Keyboard.dismiss();
@@ -430,8 +443,10 @@ function StepTwo(props) {
     saveStructure({
       typeId: selectedStructureType,
       structureTypeData: currentStructureData,
-      projectId: project_id,
+      projectId: project.project_id,
       userId: user.id,
+    }).then(() => {
+      handleNext();
     });
   };
 
@@ -564,6 +579,7 @@ function StepTwo(props) {
           selectedStructureType={selectedStructureType}
           currentStructureData={currentStructureData}
           goBack={() => setSelectedTab(1)}
+          handleNext={saveStructureType}
           assignBhkToUnit={assignBhkToUnit}
           assignToAllUnits={assignToAllUnits}
           updateBungalows={updateBungalows}

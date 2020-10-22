@@ -33,6 +33,8 @@ import PC_StepTwo from '../screens/Auth/ProjectCreation/StepTwo';
 import PS_StepOne from '../screens/Auth/ProjectStructure/StepOne';
 import PS_StepTwo from '../screens/Auth/ProjectStructure/StepTwo';
 import {getInitialAuthScreen} from '../utils';
+import useAppActions from '../redux/actions/appActions';
+import PlanSelect from '../screens/Auth/PlanSelect';
 
 const optionalConfigObject = {
   unifiedErrors: false, // use unified error messages (default false)
@@ -153,10 +155,14 @@ function NavContainer() {
   const routeNameRef = React.useRef();
   const navigationRef = React.useRef();
 
+  const {setInitialState} = useAppActions();
+
   useEffect(() => {
     const navState = navigationRef.current.getRootState();
     // Save the initial route name
     routeNameRef.current = getActiveRouteName(navState);
+    setInitialState();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -259,6 +265,11 @@ function NavContainer() {
               <Stack.Screen
                 name="ProjectStructureStepTwo"
                 component={PS_StepTwo}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="PlanSelect"
+                component={PlanSelect}
                 options={{headerShown: false}}
               />
             </Fragment>
