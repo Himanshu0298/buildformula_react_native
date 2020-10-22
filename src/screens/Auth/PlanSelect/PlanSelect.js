@@ -16,7 +16,8 @@ import {useTranslation} from 'react-i18next';
 import LinearGradient from 'react-native-linear-gradient';
 import useProjectActions from '../../../redux/actions/projectActions';
 import {secondaryTheme} from '../../../styles/theme';
-import splash from '../../../assets/images/splash.png';
+import splash from '../../../assets/animation/splash.json';
+import LottieView from 'lottie-react-native';
 
 function RoleBox({title, onSelectPlan, amount, colors}) {
   return (
@@ -92,7 +93,9 @@ function PlanSelect(props) {
           theme={{roundness: 15}}>
           <Dialog.Content>
             <View style={styles.alertContainer}>
-              <Image source={splash} style={styles.splashImage} />
+              <View style={styles.splashImage}>
+                <LottieView source={splash} autoPlay loop speed={5} />
+              </View>
               <Title theme={secondaryTheme} style={styles.titleText}>
                 Successful!
               </Title>
@@ -100,7 +103,6 @@ function PlanSelect(props) {
                 First admin was added successfully! Proceed to add second and
                 third admins
               </Paragraph>
-
               <Button
                 mode="contained"
                 onPress={handleNext}
@@ -132,13 +134,12 @@ const styles = StyleSheet.create({
   },
   alertContainer: {
     display: 'flex',
-    justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 15,
   },
   splashImage: {
-    height: 120,
-    width: 120,
+    height: 150,
+    width: 180,
   },
   titleText: {
     fontWeight: '600',
