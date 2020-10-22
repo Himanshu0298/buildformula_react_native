@@ -1,6 +1,7 @@
 //For App
 export const SET_LANGUAGE = 'SET_LANGUAGE';
 export const SET_INITIAL_STATE = 'SET_INITIAL_STATE';
+export const SET_AUTH = 'SET_AUTH';
 
 //For Auth
 export const LOGIN = 'LOGIN';

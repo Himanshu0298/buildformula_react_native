@@ -14,5 +14,9 @@ export default function useAppActions() {
       dispatch({
         type: types.SET_INITIAL_STATE,
       }),
+    navToHome: () =>
+      dispatch({
+        type: types.SET_AUTH,
+      }),
   };
 }

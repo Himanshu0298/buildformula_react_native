@@ -1,4 +1,9 @@
-import {UPDATE_LOCAL_STRUCTURE, SAVE_STRUCTURE} from './../actions/actionTypes';
+import {
+  UPDATE_LOCAL_STRUCTURE,
+  SAVE_STRUCTURE,
+  SET_AUTH,
+  SET_INITIAL_STATE,
+} from './../actions/actionTypes';
 import _ from 'lodash';
 import {DEFAULT_STRUCTURE} from '../../utils/constant';
 
@@ -18,10 +23,15 @@ const initialState = {
 
 export default (state = initialState, action = {}) => {
   switch (action.type) {
-    case 'SET_INITIAL_STATE':
+    case SET_INITIAL_STATE:
       return {
         ...state,
         loading: false,
+      };
+    case SET_AUTH:
+      return {
+        ...state,
+        initialState,
       };
 
     case UPDATE_LOCAL_STRUCTURE:

@@ -1,8 +1,10 @@
 import {
   SELECT_ROLE,
   SIGN_UP,
+  SET_AUTH,
   LOGIN,
   VERIFY_OTP,
+  SET_INITIAL_STATE,
 } from './../actions/actionTypes';
 
 const initialState = {
@@ -16,10 +18,15 @@ const initialState = {
 export default (state = initialState, action = {}) => {
   console.log('-----> action.type', action.type);
   switch (action.type) {
-    case 'SET_INITIAL_STATE':
+    case SET_INITIAL_STATE:
       return {
         ...state,
         loading: false,
+      };
+    case SET_AUTH:
+      return {
+        ...state,
+        authenticated: true,
       };
 
     case `${LOGIN}_PENDING`:

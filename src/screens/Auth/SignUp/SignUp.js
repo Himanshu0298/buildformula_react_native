@@ -30,6 +30,7 @@ import Layout from '../../../utils/Layout';
 import BottomSheet from 'reanimated-bottom-sheet';
 import {PHONE_REGEX} from '../../../utils/constant';
 import useProjectActions from '../../../redux/actions/projectActions';
+import useAppActions from '../../../redux/actions/appActions';
 
 function SignUpButton({label, onPress}) {
   return (
@@ -241,6 +242,7 @@ function SignUp(props) {
   const [validationError, setValidationError] = React.useState({});
   const {signUp} = useUserActions();
   const {updateAdmins} = useProjectActions();
+  const {navToHome} = useAppActions();
 
   const bottomSheetRef = React.createRef();
 
@@ -337,7 +339,7 @@ function SignUp(props) {
           formData.append('password_2', values.password);
           formData.append('confirm_password_2', values.confirmPassword);
 
-          updateAdmins(formData);
+          updateAdmins(formData).then(() => navToHome());
         }
       }}>
       {({handleChange, values, handleSubmit, handleBlur, isValid, errors}) => (
