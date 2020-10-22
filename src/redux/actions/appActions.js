@@ -18,5 +18,9 @@ export default function useAppActions() {
       dispatch({
         type: types.SET_AUTH,
       }),
+    logout: () =>
+      dispatch({
+        type: types.LOGOUT,
+      }),
   };
 }

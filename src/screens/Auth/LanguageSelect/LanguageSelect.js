@@ -42,7 +42,7 @@ function LanguageSelect(props) {
   const selectLanguage = (selectedLanguage) => {
     i18n.changeLanguage(selectedLanguage);
     setAppLanguage(selectedLanguage);
-    navigation.navigate('login');
+    navigation.navigate('Login');
   };
 
   return (

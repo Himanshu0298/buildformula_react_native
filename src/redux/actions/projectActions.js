@@ -59,6 +59,8 @@ export default function useProjectActions() {
             let response = processResponse(await updateAdmins(formData));
             const {data} = response;
 
+            snackbar.showMessage({message: 'Updated Admins Successfully!'});
+
             return resolve(data);
           } catch (error) {
             let errorMessage = processError(error);

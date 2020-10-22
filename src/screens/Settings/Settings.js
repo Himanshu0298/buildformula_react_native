@@ -1,7 +1,10 @@
 import * as React from 'react';
 import {Text, View} from 'react-native';
+import {Button} from 'react-native-paper';
+import useAppActions from '../../redux/actions/appActions';
 
 function Settings() {
+  const {logout} = useAppActions();
   return (
     <View
       style={{
@@ -11,6 +14,7 @@ function Settings() {
         alignItems: 'center',
       }}>
       <Text>Settings!</Text>
+      <Button onPress={logout}>Logout</Button>
     </View>
   );
 }
