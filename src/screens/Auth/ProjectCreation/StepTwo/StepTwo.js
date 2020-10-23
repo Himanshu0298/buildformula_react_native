@@ -27,6 +27,7 @@ const schema = Yup.object().shape({
     // .matches(PAN_REGEX, 'PAN number is invalid')
     .required('address is required'),
   project_rera: Yup.string().required('RERANo. is required'),
+  rera_image: Yup.object().required('RERA image is required'),
   project_email: Yup.string()
     .email('email is invalid')
     .label('email')

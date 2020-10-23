@@ -34,14 +34,14 @@ function LanguageSelect(props) {
 
   useEffect(() => {
     if (language) {
-      selectLanguage(language);
+      i18n.changeLanguage(language);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const selectLanguage = (selectedLanguage) => {
-    i18n.changeLanguage(selectedLanguage);
     setAppLanguage(selectedLanguage);
+    i18n.changeLanguage(selectedLanguage);
     navigation.navigate('Login');
   };
 
