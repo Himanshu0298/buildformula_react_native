@@ -139,7 +139,7 @@ function UnitsScreen(props) {
 
   const snackbar = useSnackbar();
 
-  const [selectedBhk, setSelectedBhk] = useState(1);
+  const [selectedBhk, setSelectedBhk] = useState();
 
   useBackHandler(() => {
     if (selectedStructureType < 4) {

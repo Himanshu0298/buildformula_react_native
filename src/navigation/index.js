@@ -151,7 +151,7 @@ function NavContainer() {
   const {authenticated} = useSelector((state) => state.user);
   const {language} = useSelector((state) => state.app);
   const state = useSelector((root) => root);
-  const [currentScreen, setCurrentScreen] = useState('Dashboard');
+  const [currentScreen, setCurrentScreen] = useState('LanguageSelect');
   const routeNameRef = React.useRef();
   const navigationRef = React.useRef();
 
@@ -187,12 +187,12 @@ function NavContainer() {
     if (authenticated) {
       return 'AppDrawer';
     } else {
-      if (language) {
+      if (language && currentScreen === 'LanguageSelect') {
         return getInitialAuthScreen(state);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [language]);
 
   return (
     <NavigationContainer

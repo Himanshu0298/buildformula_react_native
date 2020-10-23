@@ -15,6 +15,7 @@ const CustomInput = React.forwardRef((props, ref) => {
           error={error}
           mode="outlined"
           style={styles.input}
+          selectionColor={theme.colors.accent}
           blurOnSubmit
           theme={{
             roundness: 10,

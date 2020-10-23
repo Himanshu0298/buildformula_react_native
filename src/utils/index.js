@@ -143,7 +143,10 @@ export const getUnitLabel = (floor, unit) => {
   return `${floor}${unit.toString().padStart(2, '0')}`;
 };
 
-export function getInitialAuthScreen({user: {user}, project: {project}}) {
+export function getInitialAuthScreen({
+  user: {user = {}},
+  project: {project = {}},
+}) {
   const {id, otp_verified, email_verified, default_role_id} = user;
   if (id) {
     if (otp_verified === 'N' || email_verified === 'N') {
