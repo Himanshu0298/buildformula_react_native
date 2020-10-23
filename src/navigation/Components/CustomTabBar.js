@@ -1,61 +1,55 @@
 import React from 'react';
 import {View, StyleSheet} from 'react-native';
-import {withTheme, Button, FAB, Appbar} from 'react-native-paper';
-import {theme} from '../../styles/theme';
+import {withTheme, Button, Appbar} from 'react-native-paper';
 
-function CustomTabBar({navigation, state, descriptors}) {
-  const settingIndex = state.routes.findIndex(
-    (route) => route.name === 'Settings',
-  );
-  const {options} = descriptors[state.routes[settingIndex].key];
-  const isFocused = state.index === settingIndex;
-
-  const onPress = () => {
-    const event = navigation.emit({
-      type: 'tabPress',
-      target: state.routes[settingIndex].key,
-      canPreventDefault: true,
-    });
-    if (!isFocused && !event.defaultPrevented) {
-      navigation.navigate(state.routes[settingIndex].name);
+function CustomTabBar({navigation, state, descriptors, handleSwitch}) {
+  const onPressSwitch = () => {
+    if (handleSwitch) {
+      navigation.reset({
+        index: 0,
+        routes: [{name: 'GeneralDashboard'}],
+      });
     }
   };
 
-  const onLongPressSettings = () => {
-    navigation.emit({
-      type: 'tabLongPress',
-      target: state.routes[settingIndex].key,
-    });
+  const onPressSearch = () => {
+    navigation.navigate('Search');
   };
 
   return (
     <View style={styles.container}>
-      <FAB
-        color="#fff"
-        style={styles.searchContainer}
-        icon="magnify"
-        onPress={() => console.log('Pressed')}
-      />
       <Appbar style={styles.contentContainer}>
         <Button
           icon="format-list-bulleted"
           mode="text"
+          uppercase={false}
+          color={'rgba(4, 29, 54, 0.4)'}
           style={styles.buttonStyles}
           contentStyle={{paddingVertical: 5}}
           onPress={() => navigation.toggleDrawer()}>
           Menu
         </Button>
         <Button
-          icon="cog-outline"
+          icon="magnify"
           mode="text"
           accessibilityRole="button"
-          accessibilityStates={isFocused ? ['selected'] : []}
-          accessibilityLabel={options.tabBarAccessibilityLabel}
-          onLongPress={onLongPressSettings}
+          color={'rgba(4, 29, 54, 0.4)'}
           style={styles.buttonStyles}
-          onPress={onPress}
+          uppercase={false}
+          contentStyle={{paddingVertical: 5}}
+          onPress={onPressSearch}>
+          Search
+        </Button>
+        <Button
+          icon="apps"
+          mode="text"
+          uppercase={false}
+          accessibilityRole="button"
+          color={'rgba(4, 29, 54, 0.4)'}
+          style={styles.buttonStyles}
+          onPress={onPressSwitch}
           contentStyle={{paddingVertical: 5}}>
-          Settings
+          Switch
         </Button>
       </Appbar>
     </View>
@@ -64,14 +58,6 @@ function CustomTabBar({navigation, state, descriptors}) {
 
 const styles = StyleSheet.create({
   container: {},
-  searchContainer: {
-    position: 'absolute',
-    alignSelf: 'center',
-    backgroundColor: theme.colors.primary,
-    margin: 16,
-    bottom: 5,
-    zIndex: 10,
-  },
   contentContainer: {
     position: 'absolute',
     left: 0,
@@ -79,9 +65,8 @@ const styles = StyleSheet.create({
     bottom: 0,
     backgroundColor: '#fff',
     justifyContent: 'space-between',
-  },
-  buttonStyles: {
-    width: '45%',
+    display: 'flex',
+    paddingHorizontal: 20,
   },
 });
 

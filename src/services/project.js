@@ -3,6 +3,12 @@ import {instance, useConfig} from './init';
 export default function useProject() {
   let {config} = useConfig();
   return {
+    getProjects: (data) => {
+      return instance.get('/get_project', config());
+    },
+    getProject: (id) => {
+      return instance.get(`/get_project/${id}`, config());
+    },
     createProject: (data) => {
       return instance.post('/project/create', data, config());
     },

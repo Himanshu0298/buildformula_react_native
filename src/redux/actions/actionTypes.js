@@ -13,6 +13,7 @@ export const VERIFY_OTP = 'VERIFY_OTP';
 export const SELECT_ROLE = 'SELECT_ROLE';
 
 //For Project
+export const GET_PROJECTS = 'GET_PROJECTS';
 export const CREATE_PROJECT = 'CREATE_PROJECT';
 export const UPDATE_PAYMENT = 'UPDATE_PAYMENT';
 export const UPDATE_ADMINS = 'UPDATE_ADMINS';

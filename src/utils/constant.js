@@ -1,5 +1,6 @@
-export const BASE_URL = 'http://34.67.24.115/api/';
-// export const BASE_URL = 'http://vshwanbuild.in/api/';
+export const SITE_URL = 'http://34.67.24.115';
+// export const SITE_URL = 'http://vshwanbuild.in';
+export const BASE_API_URL = `${SITE_URL}/api/`;
 
 export const PHONE_REGEX = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 

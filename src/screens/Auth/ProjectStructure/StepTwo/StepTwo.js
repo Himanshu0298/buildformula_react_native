@@ -538,7 +538,7 @@ function StepTwo(props) {
             onChange={() => {}}
             barColor="#fff"
             indicatorColor={theme.colors.primary}
-            inactiveTextColor={'#ccc'}
+            inactiveTextColor={'#919191'}
             activeTextColor={theme.colors.primary}
             uppercase={false}
             textStyle={{

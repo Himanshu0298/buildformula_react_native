@@ -13,9 +13,11 @@ import OtpScreen from '../screens/Auth/OtpScreen';
 import {useSelector} from 'react-redux';
 import LanguageSelect from '../screens/Auth/LanguageSelect';
 import SettingsScreen from '../screens/Settings';
+import SearchScreen from '../screens/Search';
 import CustomTabBar from './Components/CustomTabBar';
 import SignUp from '../screens/Auth/SignUp';
 import RoleSelect from '../screens/Auth/RoleSelect';
+import ProjectDashboard from '../screens/ProjectDashboard';
 import Inquiry from '../screens/Inquiry';
 import ProjectSchedule from '../screens/ProjectSchedule';
 import BookingChart from '../screens/BookingChart';
@@ -97,12 +99,23 @@ const RouteContext = React.createContext('Dashboard');
 //   );
 // }
 
-function BottomTabs() {
+function GeneralBottomTabs() {
   return (
     <Tab.Navigator
-      initialRouteName="HomeStack"
+      initialRouteName="Home"
       tabBar={(props) => <CustomTabBar {...props} />}>
-      <Tab.Screen name="Dashboard" component={Home} />
+      <Tab.Screen name="Home" component={Home} />
+      <Tab.Screen name="Settings" component={SettingsScreen} />
+    </Tab.Navigator>
+  );
+}
+
+function ProjectBottomTabs() {
+  return (
+    <Tab.Navigator
+      initialRouteName="ProjectDashboard"
+      tabBar={(props) => <CustomTabBar {...props} handleSwitch={true} />}>
+      <Tab.Screen name="ProjectDashboard" component={ProjectDashboard} />
       <Tab.Screen name="Inquiry" component={Inquiry} />
       <Tab.Screen name="ProjectStructure" component={ProjectStructure} />
       <Tab.Screen name="BookingChart" component={BookingChart} />
@@ -115,22 +128,44 @@ function BottomTabs() {
       <Tab.Screen name="RequestForPrice" component={RequestForPrice} />
       <Tab.Screen name="PurchaseOrders" component={PurchaseOrders} />
       <Tab.Screen name="Files" component={Files} />
-      <Tab.Screen name="Settings" component={SettingsScreen} />
     </Tab.Navigator>
   );
 }
 
-function AppDrawer() {
+function GeneralDrawer() {
   return (
     <Drawer.Navigator
       drawerContent={(props) => (
         <RouteContext.Consumer>
           {(currentScreen) => (
-            <DrawerContent {...props} currentScreen={currentScreen} />
+            <DrawerContent
+              {...props}
+              currentScreen={currentScreen}
+              type="general"
+            />
           )}
         </RouteContext.Consumer>
       )}>
-      <Drawer.Screen name="tabs" component={BottomTabs} />
+      <Drawer.Screen name="tabs" component={GeneralBottomTabs} />
+    </Drawer.Navigator>
+  );
+}
+
+function ProjectDrawer() {
+  return (
+    <Drawer.Navigator
+      drawerContent={(props) => (
+        <RouteContext.Consumer>
+          {(currentScreen) => (
+            <DrawerContent
+              {...props}
+              currentScreen={currentScreen}
+              type="project"
+            />
+          )}
+        </RouteContext.Consumer>
+      )}>
+      <Drawer.Screen name="tabs" component={ProjectBottomTabs} />
     </Drawer.Navigator>
   );
 }
@@ -151,7 +186,9 @@ function NavContainer() {
   const {authenticated} = useSelector((state) => state.user);
   const {language} = useSelector((state) => state.app);
   const state = useSelector((root) => root);
-  const [currentScreen, setCurrentScreen] = useState('LanguageSelect');
+  const [currentScreen, setCurrentScreen] = useState(
+    authenticated ? 'Home' : 'LanguageSelect',
+  );
   const routeNameRef = React.useRef();
   const navigationRef = React.useRef();
 
@@ -185,7 +222,7 @@ function NavContainer() {
 
   const initialScreen = useMemo(() => {
     if (authenticated) {
-      return 'AppDrawer';
+      return 'GeneralDashboard';
     } else {
       if (language && currentScreen === 'LanguageSelect') {
         return getInitialAuthScreen(state);
@@ -202,6 +239,7 @@ function NavContainer() {
         const previousRouteName = routeNameRef.current;
         const currentRouteName = getActiveRouteName(navState);
         if (previousRouteName !== currentRouteName) {
+          console.log('----->currentRouteName ', currentRouteName);
           setCurrentScreen(currentRouteName);
         }
 
@@ -214,8 +252,18 @@ function NavContainer() {
             //App Nav Screens
             <Fragment>
               <Stack.Screen
-                name="AppDrawer"
-                component={AppDrawer}
+                name="GeneralDashboard"
+                component={GeneralDrawer}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="ProjectDashboard"
+                component={ProjectDrawer}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="Search"
+                component={SearchScreen}
                 options={{headerShown: false}}
               />
             </Fragment>

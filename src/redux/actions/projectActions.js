@@ -7,9 +7,34 @@ import {processError, processResponse} from '../../utils';
 export default function useProjectActions() {
   const dispatch = useDispatch();
   const snackbar = useSnackbar();
-  const {createProject, updatePayment, updateAdmins} = useProject();
+  const {
+    getProjects,
+    createProject,
+    updatePayment,
+    updateAdmins,
+  } = useProject();
 
   return {
+    getProjects: (formData) =>
+      dispatch({
+        type: types.GET_PROJECTS,
+        payload: new Promise(async (resolve, reject) => {
+          try {
+            let response = processResponse(await getProjects(formData));
+            const {data} = response;
+
+            return resolve(data);
+          } catch (error) {
+            let errorMessage = processError(error);
+            snackbar.showMessage({
+              message: errorMessage,
+              variant: 'error',
+            });
+            return reject(errorMessage);
+          }
+        }),
+      }),
+
     createProject: (formData) =>
       dispatch({
         type: types.CREATE_PROJECT,

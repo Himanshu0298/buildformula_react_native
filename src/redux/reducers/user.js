@@ -41,7 +41,7 @@ export default (state = initialState, action = {}) => {
         loading: false,
         user: user.user,
         token: user.token,
-        // authenticated: user.default_role_id !== 0,
+        authenticated: true,
       };
     case `${LOGIN}_REJECTED`:
       return {

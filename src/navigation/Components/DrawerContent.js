@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, Image} from 'react-native';
+import {StyleSheet, View, Image, Linking} from 'react-native';
 import {DrawerContentScrollView} from '@react-navigation/drawer';
 import {useTheme, Paragraph, Drawer, TouchableRipple} from 'react-native-paper';
 import Animated from 'react-native-reanimated';
@@ -20,8 +20,10 @@ import EstimationIcon from './../../assets/images/estimation_icon.png';
 import OrderIconActive from './../../assets/images/order_icon_active.png';
 import OrderIcon from './../../assets/images/order_icon.png';
 import BaseText from '../../components/BaseText';
+import useAppActions from '../../redux/actions/appActions';
+import {SITE_URL} from '../../utils/constant';
 
-const sections = [
+const PROJECT_DRAWER_ITEMS = [
   {
     title: 'SALES',
     routes: [
@@ -153,6 +155,7 @@ function DrawerItem(props) {
     navigation,
     label,
     icon,
+    onPress = () => navigation.navigate(route),
     activeIcon,
     inactiveIcon,
     image,
@@ -177,7 +180,7 @@ function DrawerItem(props) {
       {...restProps}
       label={label}
       theme={{colors: {text: '#000', primary: active ? '#fff' : theme.primary}}}
-      onPress={() => navigation.navigate(route)}
+      onPress={onPress}
       style={active ? styles.activeDrawerItem : {}}
       active={active}
       icon={drawerIcon}
@@ -186,15 +189,20 @@ function DrawerItem(props) {
 }
 
 export default function DrawerContent(props) {
-  const {navigation, currentScreen} = props;
+  const {navigation, currentScreen, type} = props;
   const paperTheme = useTheme();
+  const {logout} = useAppActions();
 
   const translateX = Animated.interpolate(props.progress, {
     inputRange: [0, 0.5, 0.7, 0.8, 1],
     outputRange: [-100, -85, -70, -45, 0],
   });
+
   return (
-    <DrawerContentScrollView {...props} showsVerticalScrollIndicator={false}>
+    <DrawerContentScrollView
+      {...props}
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={styles.scrollView}>
       <Animated.View
         //@ts-ignore
         style={[
@@ -217,46 +225,88 @@ export default function DrawerContent(props) {
             </View>
           </TouchableRipple>
         </View>
-        <DrawerItem
-          label={'Dashboard'}
-          route="Dashboard"
-          navigation={navigation}
-          currentRoute={currentScreen}
-          icon={({color, size}) => (
-            <Feather name={'home'} color={color} size={size} />
-          )}
-        />
-        {sections.map((section) => {
-          return (
-            <Drawer.Section key={section.title} style={styles.drawerSection}>
-              <Paragraph
-                style={styles.title}
-                theme={{
-                  colors: {text: paperTheme.colors.primary},
-                }}>
-                {section.title}
-              </Paragraph>
-              {section.routes.map((route) => {
-                return (
-                  <DrawerItem
-                    key={route.route}
-                    {...route}
-                    navigation={navigation}
-                    currentRoute={currentScreen}
-                  />
-                );
-              })}
-            </Drawer.Section>
-          );
-        })}
+        {type === 'general' ? (
+          <>
+            <DrawerItem
+              label={'Home'}
+              route="Home"
+              navigation={navigation}
+              currentRoute={currentScreen}
+              icon={({color, size}) => (
+                <Feather name={'home'} color={color} size={size} />
+              )}
+            />
+            <DrawerItem
+              label={'Settings'}
+              route="Settings"
+              navigation={navigation}
+              currentRoute={currentScreen}
+              icon={'cog-outline'}
+            />
+            <DrawerItem
+              label={'Help'}
+              route="help"
+              onPress={() => Linking.openURL(SITE_URL)}
+              currentRoute={currentScreen}
+              icon={'help-box'}
+            />
+            <DrawerItem
+              label={'Logout'}
+              currentRoute={currentScreen}
+              onPress={logout}
+              icon={'logout'}
+            />
+          </>
+        ) : (
+          <>
+            <DrawerItem
+              label={'Dashboard'}
+              route="ProjectDashboard"
+              navigation={navigation}
+              currentRoute={currentScreen}
+              icon={({color, size}) => (
+                <Feather name={'home'} color={color} size={size} />
+              )}
+            />
+            {PROJECT_DRAWER_ITEMS.map((section) => {
+              return (
+                <Drawer.Section
+                  key={section.title}
+                  style={styles.drawerSection}>
+                  <Paragraph
+                    style={styles.title}
+                    theme={{
+                      colors: {text: paperTheme.colors.primary},
+                    }}>
+                    {section.title}
+                  </Paragraph>
+                  {section.routes.map((route) => {
+                    return (
+                      <DrawerItem
+                        key={route.route}
+                        {...route}
+                        navigation={navigation}
+                        currentRoute={currentScreen}
+                      />
+                    );
+                  })}
+                </Drawer.Section>
+              );
+            })}
+          </>
+        )}
       </Animated.View>
     </DrawerContentScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  scrollView: {
+    flexGrow: 1,
+  },
   drawerContent: {
-    flex: 1,
+    flexGrow: 1,
+    marginTop: -4,
   },
   backContainer: {
     marginTop: 5,

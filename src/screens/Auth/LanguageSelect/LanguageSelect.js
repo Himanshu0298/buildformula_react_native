@@ -89,7 +89,6 @@ const styles = StyleSheet.create({
   },
   topContainer: {
     display: 'flex',
-    flex: 0.4,
     alignItems: 'center',
     justifyContent: 'space-around',
   },
@@ -112,7 +111,7 @@ const styles = StyleSheet.create({
     height: Layout.window.width * 0.75 * (77 / 120),
   },
   contentContainer: {
-    flex: 0.6,
+    flex: 1,
     justifyContent: 'space-around',
     alignItems: 'center',
     borderTopLeftRadius: 50,

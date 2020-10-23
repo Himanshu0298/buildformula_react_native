@@ -3,6 +3,7 @@ import {
   UPDATE_PAYMENT,
   UPDATE_ADMINS,
   SET_INITIAL_STATE,
+  GET_PROJECTS,
 } from './../actions/actionTypes';
 
 const initialState = {
@@ -23,6 +24,25 @@ export default (state = initialState, action = {}) => {
         ...state,
         loading: false,
       };
+
+    case `${GET_PROJECTS}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${GET_PROJECTS}_FULFILLED`:
+      return {
+        ...state,
+        projects: action.payload,
+        loading: false,
+      };
+    case `${GET_PROJECTS}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+        errorMessage: action.payload,
+      };
+
     case `${CREATE_PROJECT}_PENDING`:
       return {
         ...state,

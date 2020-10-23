@@ -1,9 +1,9 @@
-import {BASE_URL} from '../utils/constant';
+import {BASE_API_URL} from '../utils/constant';
 import {useSelector} from 'react-redux';
 import {store} from '../redux/store';
 const axios = require('axios');
 
-export const instance = axios.create({baseURL: BASE_URL});
+export const instance = axios.create({baseURL: BASE_API_URL});
 
 export const useConfig = () => {
   let token = store.getState().user.token;
