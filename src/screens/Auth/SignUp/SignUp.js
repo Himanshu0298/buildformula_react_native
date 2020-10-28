@@ -242,7 +242,7 @@ function SignUp(props) {
   const [validationError, setValidationError] = React.useState({});
   const {signUp} = useUserActions();
   const {updateAdmins} = useProjectActions();
-  const {navToHome} = useAppActions();
+  const {resetStructure} = useAppActions();
 
   const bottomSheetRef = React.createRef();
 
@@ -317,7 +317,7 @@ function SignUp(props) {
               setValidationError(error);
             });
         } else if (adminId === 2) {
-          navigation.navigate('SignUp', {
+          navigation.navigate('AdminCreation', {
             adminSignUp: true,
             adminId: 3,
             adminData: values,
@@ -339,7 +339,13 @@ function SignUp(props) {
           formData.append('password_2', values.password);
           formData.append('confirm_password_2', values.confirmPassword);
 
-          updateAdmins(formData).then(() => navToHome());
+          updateAdmins(formData).then(() => {
+            resetStructure();
+            navigation.reset({
+              index: 0,
+              routes: [{name: 'GeneralDashboard'}],
+            });
+          });
         }
       }}>
       {({handleChange, values, handleSubmit, handleBlur, isValid, errors}) => (

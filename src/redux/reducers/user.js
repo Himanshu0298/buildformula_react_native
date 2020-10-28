@@ -1,7 +1,6 @@
 import {
   SELECT_ROLE,
   SIGN_UP,
-  SET_AUTH,
   LOGIN,
   VERIFY_OTP,
   SET_INITIAL_STATE,
@@ -22,11 +21,6 @@ export default (state = initialState, action = {}) => {
       return {
         ...state,
         loading: false,
-      };
-    case SET_AUTH:
-      return {
-        ...state,
-        authenticated: true,
       };
 
     case `${LOGIN}_PENDING`:

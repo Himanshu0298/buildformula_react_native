@@ -14,9 +14,9 @@ export default function useAppActions() {
       dispatch({
         type: types.SET_INITIAL_STATE,
       }),
-    navToHome: () =>
+    resetStructure: () =>
       dispatch({
-        type: types.SET_AUTH,
+        type: types.RESET_STRUCTURE,
       }),
     logout: () =>
       dispatch({

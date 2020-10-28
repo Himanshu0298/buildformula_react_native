@@ -43,12 +43,15 @@ function RenderTowers({towerCount, towerValidationById, onPress}) {
 function TowersScreen(props) {
   const {
     theme,
+    currentStructureData,
     towers = {},
     towerCount = '',
+    selectedStructureType,
     showAllFloors,
     assignToAllTowers,
     onChangeTowers,
     saveStructureType,
+    validateTowers,
   } = props;
 
   const snackbar = useSnackbar();
@@ -57,45 +60,11 @@ function TowersScreen(props) {
   const [applyToAll, setApplyToAll] = useState(false);
 
   //check towers data is valid for all floors
-  const {towerValidationById, allTowersValid, errorMessage} = useMemo(() => {
-    let result = {};
-    let error = '';
-    let allValid = true;
-
-    Object.keys(towers).map((towerId) => {
-      result[towerId] = true;
-      const {floors = {}, floorCount} = towers[towerId] || {};
-      if (isNaN(floorCount)) {
-        //check if floorCount is null
-        result[towerId] = false;
-        allValid = false;
-        if (!error) {
-          error = `Please Provide missing data for tower ${getTowerLabel(
-            towerId,
-          )}`;
-        }
-      } else {
-        Object.keys(floors).map((floorId) => {
-          //check if all floors has 0 or more units
-          if (isNaN(floors[floorId].unitCount)) {
-            result[towerId] = false;
-            allValid = false;
-            if (!error) {
-              error = `Please Provide missing data for tower ${getTowerLabel(
-                towerId,
-              )}`;
-            }
-          }
-        });
-      }
-    });
-
-    return {
-      towerValidationById: result,
-      allTowersValid: allValid,
-      errorMessage: error,
-    };
-  }, [towers]);
+  const {towerValidationById, allTowersValid, errorMessage} = useMemo(
+    () => validateTowers(currentStructureData, selectedStructureType),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [currentStructureData],
+  );
 
   const handleTowerSelect = (towerId) => {
     if (!applyToAll) {
@@ -202,7 +171,6 @@ function TowersScreen(props) {
 
 const styles = StyleSheet.create({
   scrollView: {
-    paddingBottom: 20,
     flexGrow: 1,
   },
   container: {

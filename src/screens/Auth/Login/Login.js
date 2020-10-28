@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   StyleSheet,
   View,
@@ -134,16 +134,7 @@ function Login(props) {
   const {loading} = useSelector((state) => state.user);
   const {project} = useSelector((state) => state.project);
 
-  React.useEffect(() => {
-    if (loginError) {
-      snackbar.showMessage({
-        message: loginError,
-        variant: 'error',
-      });
-    }
-  }, [loginError]);
-
-  React.useEffect(() => {
+  useEffect(() => {
     const focusUnsubscribe = navigation.addListener('focus', () => {
       Keyboard.addListener('keyboardDidShow', _keyboardDidShow);
       Keyboard.addListener('keyboardDidHide', _keyboardDidHide);
@@ -159,6 +150,15 @@ function Login(props) {
       focusUnsubscribe();
     };
   }, []);
+
+  useEffect(() => {
+    if (loginError) {
+      snackbar.showMessage({
+        message: loginError,
+        variant: 'error',
+      });
+    }
+  }, [loginError]);
 
   const _keyboardDidShow = () => {
     if (bottomSheetRef) {
@@ -201,20 +201,14 @@ function Login(props) {
         formData.append('password', values.password);
 
         login(formData)
-          .then((data) => {
-            const {
-              otp_verified,
-              email_verified,
-              default_role_id,
-            } = data.value.user;
+          .then(({value}) => {
+            const {otp_verified, email_verified, default_role_id} = value.user;
 
             if (otp_verified === 'N' || email_verified === 'N') {
               navigation.navigate('Otp');
             } else if (default_role_id === 0) {
               navigation.navigate('RoleSelect');
-            } else if (!project.project_id) {
-              navigation.navigate('ProjectCreationStepOne');
-            } else {
+            } else if (project.project_id) {
               navigation.navigate('ProjectStructureStepOne');
             }
           })

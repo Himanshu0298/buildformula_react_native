@@ -30,13 +30,13 @@ import Estimation from '../screens/Estimation';
 import RequestForPrice from '../screens/RequestForPrice';
 import PurchaseOrders from '../screens/PurchaseOrders';
 import Files from '../screens/Files';
-import PC_StepOne from '../screens/Auth/ProjectCreation/StepOne';
-import PC_StepTwo from '../screens/Auth/ProjectCreation/StepTwo';
-import PS_StepOne from '../screens/Auth/ProjectStructure/StepOne';
-import PS_StepTwo from '../screens/Auth/ProjectStructure/StepTwo';
+import PC_StepOne from '../screens/CreateProject/ProjectCreation/StepOne';
+import PC_StepTwo from '../screens/CreateProject/ProjectCreation/StepTwo';
+import PS_StepOne from '../screens/CreateProject/ProjectStructure/StepOne';
+import PS_StepTwo from '../screens/CreateProject/ProjectStructure/StepTwo';
+import PlanSelect from '../screens/CreateProject/PlanSelect';
 import {getInitialAuthScreen} from '../utils';
 import useAppActions from '../redux/actions/appActions';
-import PlanSelect from '../screens/Auth/PlanSelect';
 
 const optionalConfigObject = {
   unifiedErrors: false, // use unified error messages (default false)
@@ -221,13 +221,8 @@ function NavContainer() {
   }, []);
 
   const initialScreen = useMemo(() => {
-    if (authenticated) {
-      return 'GeneralDashboard';
-    } else {
-      if (language && currentScreen === 'LanguageSelect') {
-        return getInitialAuthScreen(state);
-      }
-    }
+    return getInitialAuthScreen(authenticated, state);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [language]);
 
@@ -266,6 +261,36 @@ function NavContainer() {
                 component={SearchScreen}
                 options={{headerShown: false}}
               />
+              <Stack.Screen
+                name="ProjectCreationStepOne"
+                component={PC_StepOne}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="ProjectCreationStepTwo"
+                component={PC_StepTwo}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="ProjectStructureStepOne"
+                component={PS_StepOne}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="ProjectStructureStepTwo"
+                component={PS_StepTwo}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="PlanSelect"
+                component={PlanSelect}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="AdminCreation"
+                component={SignUp}
+                options={{headerShown: false}}
+              />
             </Fragment>
           ) : (
             //Auth Nav Screens
@@ -293,31 +318,6 @@ function NavContainer() {
               <Stack.Screen
                 name="RoleSelect"
                 component={RoleSelect}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="ProjectCreationStepOne"
-                component={PC_StepOne}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="ProjectCreationStepTwo"
-                component={PC_StepTwo}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="ProjectStructureStepOne"
-                component={PS_StepOne}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="ProjectStructureStepTwo"
-                component={PS_StepTwo}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="PlanSelect"
-                component={PlanSelect}
                 options={{headerShown: false}}
               />
             </Fragment>

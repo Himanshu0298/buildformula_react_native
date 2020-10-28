@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React from 'react';
 import {
   StyleSheet,
@@ -7,8 +8,9 @@ import {
   SafeAreaView,
   TouchableOpacity,
   ScrollView,
+  RefreshControl,
 } from 'react-native';
-import {Badge, withTheme, Subheading, Caption} from 'react-native-paper';
+import {Badge, withTheme, Subheading, Caption, FAB} from 'react-native-paper';
 import logo from './../../assets/images/logo.png';
 import developerImage from './../../assets/images/developer_building.png';
 import supplierImage from './../../assets/images/supplier_building.png';
@@ -23,201 +25,50 @@ import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {secondaryTheme} from '../../styles/theme';
 import Layout from '../../utils/Layout';
+import useAppActions from '../../redux/actions/appActions';
 
 const TABS = ['Developer', 'Supplier', 'Customer'];
 
-const projects = [
-  {
-    project: {
-      id: 15,
-      project_id: 'VB5f72537beb5bc',
-      company_name: 'test',
-      company_gst: '1234567899',
-      gst_verified: 'N',
-      gst_url: 'http://vshwanbuild.com/uploads/documents/8843gst_image.jpg',
-      company_tan: '1234567890',
-      tan_verified: 'N',
-      tan_url: 'http://vshwanbuild.com/uploads/documents/31159tan_image.jpg',
-      company_pan: '1234567890',
-      pan_verified: 'N',
-      pan_url: 'http://vshwanbuild.com/uploads/documents/68275pan_image.jpg',
-      rera_url: null,
-      project_name: 'test',
-      project_address: 'test,testing,testVilla 202020',
-      project_rera: '1234567899',
-      project_website: 'www.hello.com',
-      project_email: 'abcdef@gmail.com',
-      project_phone: '1234567890',
-      isPaid: 'N',
-      is_completed: 'N',
-      completed_time: null,
-      created: '2020-09-28 21:19:55',
-      project_approved: 'N',
-      approve_time: null,
-      status: 1,
-      user_id: 74,
-      admin_3: 0,
-      admin_2: 0,
-      project_types: 'N',
-      project_structure: 'N',
-    },
-    projectData: {
-      towerCount: 0,
-    },
-  },
-  {
-    project: {
-      id: 15,
-      project_id: 'VB5f72537beb5bc',
-      company_name: 'test',
-      company_gst: '1234567899',
-      gst_verified: 'N',
-      gst_url: 'http://vshwanbuild.com/uploads/documents/8843gst_image.jpg',
-      company_tan: '1234567890',
-      tan_verified: 'N',
-      tan_url: 'http://vshwanbuild.com/uploads/documents/31159tan_image.jpg',
-      company_pan: '1234567890',
-      pan_verified: 'N',
-      pan_url: 'http://vshwanbuild.com/uploads/documents/68275pan_image.jpg',
-      rera_url: null,
-      project_name: 'test',
-      project_address: 'test,testing,testVilla 202020',
-      project_rera: '1234567899',
-      project_website: 'www.hello.com',
-      project_email: 'abcdef@gmail.com',
-      project_phone: '1234567890',
-      isPaid: 'N',
-      is_completed: 'N',
-      completed_time: null,
-      created: '2020-09-28 21:19:55',
-      project_approved: 'N',
-      approve_time: null,
-      status: 1,
-      user_id: 74,
-      admin_3: 0,
-      admin_2: 0,
-      project_types: 'N',
-      project_structure: 'N',
-    },
-    projectData: {
-      towerCount: 0,
-    },
-  },
-  {
-    project: {
-      id: 15,
-      project_id: 'VB5f72537beb5bc',
-      company_name: 'test',
-      company_gst: '1234567899',
-      gst_verified: 'N',
-      gst_url: 'http://vshwanbuild.com/uploads/documents/8843gst_image.jpg',
-      company_tan: '1234567890',
-      tan_verified: 'N',
-      tan_url: 'http://vshwanbuild.com/uploads/documents/31159tan_image.jpg',
-      company_pan: '1234567890',
-      pan_verified: 'N',
-      pan_url: 'http://vshwanbuild.com/uploads/documents/68275pan_image.jpg',
-      rera_url: null,
-      project_name: 'test',
-      project_address: 'test,testing,testVilla 202020',
-      project_rera: '1234567899',
-      project_website: 'www.hello.com',
-      project_email: 'abcdef@gmail.com',
-      project_phone: '1234567890',
-      isPaid: 'N',
-      is_completed: 'N',
-      completed_time: null,
-      created: '2020-09-28 21:19:55',
-      project_approved: 'N',
-      approve_time: null,
-      status: 1,
-      user_id: 74,
-      admin_3: 0,
-      admin_2: 0,
-      project_types: 'N',
-      project_structure: 'N',
-    },
-    projectData: {
-      towerCount: 0,
-    },
-  },
-  {
-    project: {
-      id: 15,
-      project_id: 'VB5f72537beb5bc',
-      company_name: 'test',
-      company_gst: '1234567899',
-      gst_verified: 'N',
-      gst_url: 'http://vshwanbuild.com/uploads/documents/8843gst_image.jpg',
-      company_tan: '1234567890',
-      tan_verified: 'N',
-      tan_url: 'http://vshwanbuild.com/uploads/documents/31159tan_image.jpg',
-      company_pan: '1234567890',
-      pan_verified: 'N',
-      pan_url: 'http://vshwanbuild.com/uploads/documents/68275pan_image.jpg',
-      rera_url: null,
-      project_name: 'test',
-      project_address: 'test,testing,testVilla 202020',
-      project_rera: '1234567899',
-      project_website: 'www.hello.com',
-      project_email: 'abcdef@gmail.com',
-      project_phone: '1234567890',
-      isPaid: 'N',
-      is_completed: 'N',
-      completed_time: null,
-      created: '2020-09-28 21:19:55',
-      project_approved: 'N',
-      approve_time: null,
-      status: 1,
-      user_id: 74,
-      admin_3: 0,
-      admin_2: 0,
-      project_types: 'N',
-      project_structure: 'N',
-    },
-    projectData: {
-      towerCount: 0,
-    },
-  },
-  {
-    project: {
-      id: 15,
-      project_id: 'VB5f72537beb5bc',
-      company_name: 'test',
-      company_gst: '1234567899',
-      gst_verified: 'N',
-      gst_url: 'http://vshwanbuild.com/uploads/documents/8843gst_image.jpg',
-      company_tan: '1234567890',
-      tan_verified: 'N',
-      tan_url: 'http://vshwanbuild.com/uploads/documents/31159tan_image.jpg',
-      company_pan: '1234567890',
-      pan_verified: 'N',
-      pan_url: 'http://vshwanbuild.com/uploads/documents/68275pan_image.jpg',
-      rera_url: null,
-      project_name: 'test',
-      project_address: 'test,testing,testVilla 202020',
-      project_rera: '1234567899',
-      project_website: 'www.hello.com',
-      project_email: 'abcdef@gmail.com',
-      project_phone: '1234567890',
-      isPaid: 'N',
-      is_completed: 'N',
-      completed_time: null,
-      created: '2020-09-28 21:19:55',
-      project_approved: 'N',
-      approve_time: null,
-      status: 1,
-      user_id: 74,
-      admin_3: 0,
-      admin_2: 0,
-      project_types: 'N',
-      project_structure: 'N',
-    },
-    projectData: {
-      towerCount: 0,
-    },
-  },
-];
+// const projects = [
+//   {
+//     project: {
+//       id: 15,
+//       project_id: 'VB5f72537beb5bc',
+//       company_name: 'test',
+//       company_gst: '1234567899',
+//       gst_verified: 'N',
+//       gst_url: 'http://vshwanbuild.com/uploads/documents/8843gst_image.jpg',
+//       company_tan: '1234567890',
+//       tan_verified: 'N',
+//       tan_url: 'http://vshwanbuild.com/uploads/documents/31159tan_image.jpg',
+//       company_pan: '1234567890',
+//       pan_verified: 'N',
+//       pan_url: 'http://vshwanbuild.com/uploads/documents/68275pan_image.jpg',
+//       rera_url: null,
+//       project_name: 'test',
+//       project_address: 'test,testing,testVilla 202020',
+//       project_rera: '1234567899',
+//       project_website: 'www.hello.com',
+//       project_email: 'abcdef@gmail.com',
+//       project_phone: '1234567890',
+//       isPaid: 'N',
+//       is_completed: 'N',
+//       completed_time: null,
+//       created: '2020-09-28 21:19:55',
+//       project_approved: 'N',
+//       approve_time: null,
+//       status: 1,
+//       user_id: 74,
+//       admin_3: 0,
+//       admin_2: 0,
+//       project_types: 'N',
+//       project_structure: 'N',
+//     },
+//     projectData: {
+//       towerCount: 0,
+//     },
+//   },
+// ];
 
 function RenderHeader({theme}) {
   return (
@@ -283,54 +134,82 @@ function RenderProject({data, navigation, tab}) {
 }
 
 function Home(props) {
-  const {theme} = props;
+  const {theme, navigation} = props;
 
   const [selectedTab, setSelectedTab] = useState(0);
 
-  const {loading} = useSelector((state) => state.project);
+  const {loading, projects} = useSelector((state) => state.project);
 
   const {getProjects} = useProjectActions();
 
   useEffect(() => {
-    // getProjects();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    getProjects().then(({value}) => {
+      if (value.length === 0) {
+        navigation.navigate('ProjectCreationStepOne');
+      }
+    });
   }, []);
 
+  const onRefresh = () => {
+    getProjects();
+  };
+
+  const projectsData = [projects, [], []];
+
   return (
-    <SafeAreaView style={styles.container}>
-      <Spinner visible={loading} textContent={''} />
-      <StatusBar barStyle="light-content" />
-      <View style={styles.headerContainer}>
-        <RenderHeader theme={theme} />
-        <MaterialTabs
-          items={TABS}
-          selectedIndex={selectedTab}
-          onChange={setSelectedTab}
-          barColor="#fff"
-          indicatorColor={theme.colors.primary}
-          inactiveTextColor={'#919191'}
-          activeTextColor={theme.colors.primary}
-          uppercase={false}
-          textStyle={{
-            fontFamily: 'Nunito-Regular',
-          }}
-        />
-      </View>
-      <ScrollView
-        style={styles.scrollView}
-        showsVerticalScrollIndicator={false}>
-        <View style={styles.projectsContainer}>
-          {projects.map((project, index) => (
-            <RenderProject
-              {...props}
-              key={index}
-              data={project}
-              tab={TABS[selectedTab]}
-            />
-          ))}
+    <>
+      <SafeAreaView style={styles.container}>
+        <Spinner visible={loading} textContent={''} />
+        <StatusBar barStyle="light-content" />
+        <View style={styles.headerContainer}>
+          <RenderHeader theme={theme} />
+          <MaterialTabs
+            items={TABS}
+            selectedIndex={selectedTab}
+            onChange={setSelectedTab}
+            barColor="#fff"
+            indicatorColor={theme.colors.primary}
+            inactiveTextColor={'#919191'}
+            activeTextColor={theme.colors.primary}
+            uppercase={false}
+            textStyle={{
+              fontFamily: 'Nunito-Regular',
+            }}
+          />
         </View>
-      </ScrollView>
-    </SafeAreaView>
+        {projectsData[selectedTab].length > 0 ? (
+          <ScrollView
+            style={styles.scrollView}
+            showsVerticalScrollIndicator={false}
+            refreshControl={
+              <RefreshControl refreshing={false} onRefresh={onRefresh} />
+            }>
+            <View style={styles.projectsContainer}>
+              {projectsData[selectedTab].map((project, index) => (
+                <RenderProject
+                  {...props}
+                  key={index}
+                  data={project}
+                  tab={TABS[selectedTab]}
+                />
+              ))}
+            </View>
+          </ScrollView>
+        ) : (
+          <View style={styles.noResultContainer}>
+            <Subheading theme={secondaryTheme}>
+              {'No Projects Found'}
+            </Subheading>
+          </View>
+        )}
+      </SafeAreaView>
+      <FAB
+        style={[styles.fab, {backgroundColor: theme.colors.primary}]}
+        small
+        icon="plus"
+        onPress={() => navigation.navigate('ProjectCreationStepOne')}
+      />
+    </>
   );
 }
 
@@ -377,6 +256,12 @@ const styles = StyleSheet.create({
     padding: 5,
     borderRadius: 20,
   },
+  fab: {
+    position: 'absolute',
+    margin: 16,
+    right: 20,
+    bottom: 50,
+  },
   scrollView: {
     flexGrow: 1,
   },
@@ -417,9 +302,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#DEE1E7',
     paddingVertical: 10,
     paddingHorizontal: 5,
+    flexGrow: 1,
   },
   projectLabel: {
     textAlign: 'center',
     textTransform: 'capitalize',
+  },
+  noResultContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

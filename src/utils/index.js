@@ -143,24 +143,26 @@ export const getUnitLabel = (floor, unit) => {
   return `${floor}${unit.toString().padStart(2, '0')}`;
 };
 
-export function getInitialAuthScreen({
-  user: {user = {}},
-  project: {project = {}},
-}) {
+export function getInitialAuthScreen(
+  authenticated,
+  {user: {user = {}}, project: {project = {}}},
+) {
   const {id, otp_verified, email_verified, default_role_id} = user;
-  if (id) {
-    if (otp_verified === 'N' || email_verified === 'N') {
-      return 'Otp';
-    } else if (default_role_id === 0) {
-      return 'RoleSelect';
-    } else if (project.project_id) {
+  if (authenticated) {
+    if (project.project_id) {
       return 'ProjectStructureStepOne';
     } else if (!project.project_id) {
-      return 'ProjectCreationStepOne';
-    } else {
-      return 'ProjectStructureStepOne';
+      return 'GeneralDashboard';
     }
   } else {
-    return 'Login';
+    if (id) {
+      if (otp_verified === 'N' || email_verified === 'N') {
+        return 'Otp';
+      } else if (default_role_id === 0) {
+        return 'RoleSelect';
+      }
+    } else {
+      return 'Login';
+    }
   }
 }

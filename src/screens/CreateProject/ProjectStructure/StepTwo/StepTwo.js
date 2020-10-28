@@ -1,4 +1,4 @@
-import React, {useMemo, useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {
   View,
   StatusBar,
@@ -11,7 +11,12 @@ import {Menu, Title, withTheme} from 'react-native-paper';
 import FormTitle from '../../../../components/FormTitle';
 import {useTranslation} from 'react-i18next';
 import {secondaryTheme, theme} from '../../../../styles/theme';
-import {getFloorNumber, getShadow, getTowerLabel} from '../../../../utils';
+import {
+  getFloorNumber,
+  getShadow,
+  getTowerLabel,
+  getUnitLabel,
+} from '../../../../utils';
 import {useSnackbar} from '../../../../components/Snackbar';
 import MaterialTabs from 'react-native-material-tabs';
 import TowersScreen from './Components/TowersScreen';
@@ -27,11 +32,11 @@ import {useBackHandler} from '@react-native-community/hooks';
 const STRUCTURE_TYPES = [2, 3, 1, 4, 5];
 
 const TYPE_LABELS = {
-  2: 'shops',
-  3: 'offices',
-  1: 'apartments',
-  4: 'bungalows',
-  5: 'plots',
+  2: 'Shops',
+  3: 'Offices',
+  1: 'Apartments',
+  4: 'Bungalows',
+  5: 'Plots',
 };
 
 const MENU_OPTIONS = [
@@ -46,7 +51,7 @@ function updateTower({
   structure,
   selectedStructureType,
   towerCount,
-  towerData,
+  towerData = {},
 }) {
   let towers = {};
   for (let i = 1; i <= towerCount; i += 1) {
@@ -69,12 +74,12 @@ function updateFloor({
   selectedStructureType,
   selectedTower,
   floorCount,
-  floorData,
+  floorData = {},
 }) {
   const {towers} = currentStructureData;
   let floors = {};
-  for (let i = 0; i < floorCount; i += 1) {
-    floors[i] = floorData || {};
+  for (let i = 0; i <= floorCount; i += 1) {
+    floors[i] = floorData;
   }
   return {
     structure: {
@@ -206,19 +211,102 @@ function updateUnitsBhk({
   }
 }
 
-function updateStructureUnits({structure, selectedStructureType, unitCount}) {
-  let units = {};
-  for (let i = 1; i <= unitCount; i += 1) {
-    units[i] = {};
+function validateUnits({
+  selectedStructureType,
+  units,
+  unitCount,
+  selectedFloor,
+}) {
+  let error = '';
+  let allValid = true;
+  if (selectedStructureType === 1 || selectedStructureType === 4) {
+    for (let i = 1; i <= unitCount; i++) {
+      if (!units[i].bhk) {
+        allValid = false;
+        error = `Assign BHK to unit ${getUnitLabel(selectedFloor, i)}`;
+        break;
+      }
+    }
   }
+  if (selectedStructureType >= 4) {
+    if (!unitCount) {
+      allValid = false;
+      error = 'Minimum one unit is required';
+    }
+  }
+  return {allValid, error};
+}
+
+function validateTowers(data, selectedStructureType) {
+  let result = {};
+  let error = '';
+  let allValid = true;
+
+  if (selectedStructureType < 4) {
+    const {towers, towerCount} = data;
+    if (!towerCount || towerCount === 0) {
+      allValid = false;
+      error = 'Minimum one tower is required';
+    }
+    Object.keys(towers).map((towerId) => {
+      result[towerId] = true;
+      const {floors = {}, floorCount} = towers[towerId] || {};
+      if (isNaN(floorCount)) {
+        //check if floorCount is null
+        result[towerId] = false;
+        allValid = false;
+        if (!error) {
+          error = `Please Provide missing data for tower ${getTowerLabel(
+            towerId,
+          )}`;
+        }
+      } else {
+        Object.keys(floors).map((floorId) => {
+          //check if all floors has 0 or more units
+          if (isNaN(floors[floorId].unitCount)) {
+            result[towerId] = false;
+            allValid = false;
+            if (!error) {
+              error = `Please Provide missing data for tower ${getTowerLabel(
+                towerId,
+              )}`;
+            }
+          } else {
+            const unitResult = validateUnits({
+              selectedStructureType,
+              units: floors[floorId].units,
+              unitCount: floors[floorId].unitCount,
+              selectedFloor: floorId,
+            });
+            result[towerId] = unitResult.allValid;
+            allValid = unitResult.allValid;
+            if (!allValid && !error) {
+              error = `Please Provide missing data for tower ${getTowerLabel(
+                towerId,
+              )}`;
+            }
+          }
+        });
+      }
+    });
+  } else {
+    const {units, unitCount} = data;
+    const unitResult = validateUnits({
+      selectedStructureType,
+      units: units,
+      unitCount: unitCount,
+      selectedFloor: 0,
+    });
+    allValid = unitResult.allValid;
+    if (!allValid && !error) {
+      error = unitResult.error;
+    }
+  }
+
   return {
-    structure: {
-      ...structure,
-      [selectedStructureType]: {
-        unitCount,
-        units,
-      },
-    },
+    towerValidationById: result,
+    allTowersValid: allValid,
+    errorMessage: error,
   };
 }
 
@@ -245,47 +333,31 @@ function StepTwo(props) {
 
   selectedStructureType = parseInt(selectedStructureType, 10);
 
-  useEffect(() => {
-    setSelectedTab(selectedStructureType < 4 ? 0 : 2);
-  }, [selectedStructureType]);
-
-  const currentStructureData = useMemo(() => {
-    return structure[selectedStructureType];
-  }, [structure, selectedStructureType]);
+  const currentStructureData = structure[selectedStructureType];
 
   const toggleMenu = () => setShowModal((v) => !v);
 
   const handleBack = () => {
     const selectedTypes = STRUCTURE_TYPES.filter((key) => structureTypes[key]);
-    const index = selectedTypes.indexOf(selectedStructureType);
+    const selectedTypeIndex = selectedTypes.indexOf(selectedStructureType);
 
-    if (index > 0) {
+    if (selectedTypeIndex > 0) {
       if (
         (selectedTab === 0 && selectedStructureType < 4) ||
         selectedStructureType >= 4
       ) {
-        const previousType = selectedTypes[index - 1];
+        const previousType = selectedTypes[selectedTypeIndex - 1];
         updateStructure({selectedStructureType: previousType});
+        setSelectedTab(previousType < 4 ? 0 : 2);
         return true;
       }
     }
     return false;
   };
 
+  //TODO: use event-listener instead of hook and unmount on screen un-focus
   //Handle back press
   useBackHandler(handleBack);
-
-  const handleNext = () => {
-    const selectedTypes = STRUCTURE_TYPES.filter((key) => structureTypes[key]);
-    const index = selectedTypes.indexOf(selectedStructureType);
-
-    if (index < selectedTypes.length - 1) {
-      const nextType = selectedTypes[index + 1];
-      updateStructure({selectedStructureType: nextType});
-    } else {
-      navigation.navigate('PlanSelect');
-    }
-  };
 
   const showAllFloors = (towerId) => {
     Keyboard.dismiss();
@@ -435,19 +507,52 @@ function StepTwo(props) {
     );
   };
 
-  const updateBungalows = (unitCount) => {
-    onChangeUnit(null, unitCount);
-  };
+  const updateBungalows = (unitCount) => onChangeUnit(null, unitCount);
 
   const saveStructureType = async () => {
-    saveStructure({
-      typeId: selectedStructureType,
-      structureTypeData: currentStructureData,
-      projectId: project.project_id,
-      userId: user.id,
-    }).then(() => {
-      handleNext();
-    });
+    //Validate all the previous types data is valid or not
+    const selectedTypes = STRUCTURE_TYPES.filter((key) => structureTypes[key]);
+    const selectedTypeIndex = selectedTypes.indexOf(selectedStructureType);
+
+    let allTypeValid = true;
+
+    await Promise.all(
+      selectedTypes.map(async (type, index) => {
+        if (index <= selectedTypeIndex && allTypeValid) {
+          const data = structure[type];
+          const {allTowersValid, errorMessage} = await validateTowers(
+            data,
+            type,
+          );
+
+          if (!allTowersValid) {
+            allTypeValid = allTowersValid;
+
+            updateStructure({selectedStructureType: type});
+            setSelectedTab(type < 4 ? 0 : 2);
+            snackbar.showMessage({
+              variant: 'warning',
+              message: errorMessage,
+            });
+          }
+        }
+      }),
+    );
+    if (allTypeValid) {
+      if (selectedTypeIndex < selectedTypes.length - 1) {
+        const nextType = selectedTypes[selectedTypeIndex + 1];
+        updateStructure({selectedStructureType: nextType});
+        setSelectedTab(nextType < 4 ? 0 : 2);
+      } else {
+        saveStructure({
+          structureData: structure,
+          projectId: project.project_id,
+          userId: user.id,
+        }).then(() => {
+          navigation.navigate('PlanSelect');
+        });
+      }
+    }
   };
 
   const getSubtitle = () => {
@@ -552,11 +657,14 @@ function StepTwo(props) {
           towers={currentStructureData?.towers}
           towerCount={currentStructureData?.towerCount}
           selectedTower={selectedTower}
+          currentStructureData={currentStructureData}
+          selectedStructureType={selectedStructureType}
           assignToAllTowers={assignToAllTowers}
           setSelectedTower={setSelectedTower}
           showAllFloors={showAllFloors}
           onChangeTowers={updateTowers}
           saveStructureType={saveStructureType}
+          validateTowers={validateTowers}
         />
       ) : null}
       {selectedTab === 1 ? (
@@ -583,6 +691,7 @@ function StepTwo(props) {
           assignBhkToUnit={assignBhkToUnit}
           assignToAllUnits={assignToAllUnits}
           updateBungalows={updateBungalows}
+          validateUnits={validateUnits}
           units={
             currentStructureData?.towers?.[selectedTower]?.floors[selectedFloor]
               ?.units || currentStructureData?.units

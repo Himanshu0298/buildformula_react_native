@@ -1,7 +1,7 @@
 import {
   UPDATE_LOCAL_STRUCTURE,
   SAVE_STRUCTURE,
-  SET_AUTH,
+  RESET_STRUCTURE,
   SET_INITIAL_STATE,
 } from './../actions/actionTypes';
 import _ from 'lodash';
@@ -28,10 +28,9 @@ export default (state = initialState, action = {}) => {
         ...state,
         loading: false,
       };
-    case SET_AUTH:
+    case RESET_STRUCTURE:
       return {
-        ...state,
-        initialState,
+        ...initialState,
       };
 
     case UPDATE_LOCAL_STRUCTURE:

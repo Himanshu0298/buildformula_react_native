@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {StyleSheet, View, Image, TouchableOpacity} from 'react-native';
+import {StyleSheet, View, TouchableOpacity} from 'react-native';
 import {
   Title,
   withTheme,
@@ -60,7 +60,7 @@ function PlanSelect(props) {
 
   const handleNext = () => {
     toggleAlert();
-    navigation.navigate('SignUp', {adminSignUp: true, adminId: 2});
+    navigation.navigate('AdminCreation', {adminSignUp: true, adminId: 2});
   };
 
   return (

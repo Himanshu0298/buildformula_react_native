@@ -22,7 +22,7 @@ const checkUnitBhkValidity = (floors, floorCount) => {
   let error = '';
   let allValid = true;
 
-  for (let floorId = 0; floorId < floorCount; floorId += 1) {
+  for (let floorId = 0; floorId <= floorCount; floorId += 1) {
     const {units = {}, unitCount} = floors[floorId];
     for (let unitId = 1; unitId <= unitCount; unitId++) {
       if (!units[unitId].bhk) {
@@ -160,7 +160,7 @@ function FloorsScreen(props) {
       };
     }
 
-    for (let i = 0; i < floorCount; i += 1) {
+    for (let i = 0; i <= floorCount; i += 1) {
       const {unitCount} = floors[i];
 
       //check if unitCount is 0 or more than 0
@@ -250,6 +250,7 @@ function FloorsScreen(props) {
               contentContainerStyle={{flexGrow: 1, paddingBottom: 30}}
               extraData={{...floors, selectedFloor}}
               showsVerticalScrollIndicator={false}
+              keyboardShouldPersistTaps="handled"
               keyExtractor={(item) => item.toString()}
               renderItem={({item}) => (
                 <RenderFloor
@@ -262,17 +263,15 @@ function FloorsScreen(props) {
           </View>
         </View>
         <View style={styles.button}>
-          {floorCount && floorCount > 0 ? (
-            <Button
-              style={{width: '50%'}}
-              compact
-              mode="contained"
-              contentStyle={{padding: 5}}
-              theme={{roundness: 15}}
-              onPress={() => validateFloors()}>
-              <BaseText style={styles.nextButtonLabel}>{'Back'}</BaseText>
-            </Button>
-          ) : null}
+          <Button
+            style={{width: '50%'}}
+            compact
+            mode="contained"
+            contentStyle={{padding: 5}}
+            theme={{roundness: 15}}
+            onPress={() => validateFloors()}>
+            <BaseText style={styles.nextButtonLabel}>{'Back'}</BaseText>
+          </Button>
         </View>
       </View>
     </SafeAreaView>
@@ -287,8 +286,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'space-between',
     paddingHorizontal: Layout.window.width * 0.05,
-    paddingTop: 20,
-    paddingBottom: 10,
+    paddingVertical: 30,
   },
   headingContainer: {
     flexDirection: 'row',
@@ -350,7 +348,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   floorLabelContainer: {
-    width: 70,
+    flexGrow: 1,
     height: '100%',
     display: 'flex',
     justifyContent: 'center',

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {
   View,
   StyleSheet,
@@ -135,6 +135,7 @@ function UnitsScreen(props) {
     updateBungalows,
     currentStructureData,
     handleNext,
+    validateUnits,
   } = props;
 
   const snackbar = useSnackbar();
@@ -143,7 +144,20 @@ function UnitsScreen(props) {
 
   useBackHandler(() => {
     if (selectedStructureType < 4) {
-      validateUnits();
+      const {allValid, error} = validateUnits({
+        selectedStructureType,
+        units,
+        unitCount,
+        selectedFloor,
+      });
+      if (!allValid) {
+        snackbar.showMessage({
+          message: error,
+          variant: 'warning',
+        });
+      } else {
+        goBack();
+      }
       return true;
     }
     return false;
@@ -168,28 +182,6 @@ function UnitsScreen(props) {
     }
   };
 
-  const validateUnits = () => {
-    let error = '';
-    let allValid = true;
-    if (selectedStructureType === 1 || selectedStructureType === 4) {
-      for (let i = 1; i <= unitCount; i++) {
-        if (!units[i].bhk) {
-          allValid = false;
-          error = `Assign BHK to unit ${getUnitLabel(selectedFloor, i)}`;
-          break;
-        }
-      }
-
-      if (!allValid) {
-        return snackbar.showMessage({
-          message: error,
-          variant: 'warning',
-        });
-      }
-    }
-    return goBack();
-  };
-
   const assignToAll = (bhk) => {
     if (selectedBhk) {
       assignToAllUnits(unitCount, selectedBhk);
@@ -203,7 +195,20 @@ function UnitsScreen(props) {
 
   const handleButtonPress = () => {
     if (selectedStructureType < 4) {
-      validateUnits();
+      const {allValid, error} = validateUnits({
+        selectedStructureType,
+        units,
+        unitCount,
+        selectedFloor,
+      });
+      if (!allValid) {
+        snackbar.showMessage({
+          message: error,
+          variant: 'warning',
+        });
+      } else {
+        goBack();
+      }
     } else {
       handleNext();
     }

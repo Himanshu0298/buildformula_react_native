@@ -1,7 +1,6 @@
 //For App
 export const SET_LANGUAGE = 'SET_LANGUAGE';
 export const SET_INITIAL_STATE = 'SET_INITIAL_STATE';
-export const SET_AUTH = 'SET_AUTH';
 export const LOGOUT = 'LOGOUT';
 
 //For Auth
@@ -21,3 +20,4 @@ export const UPDATE_ADMINS = 'UPDATE_ADMINS';
 //For Project Structure
 export const UPDATE_LOCAL_STRUCTURE = 'UPDATE_LOCAL_STRUCTURE';
 export const SAVE_STRUCTURE = 'SAVE_STRUCTURE';
+export const RESET_STRUCTURE = 'RESET_STRUCTURE';
