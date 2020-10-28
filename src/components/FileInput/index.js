@@ -193,7 +193,6 @@ FileInput.defaultProps = {
 
 FileInput.prototype = {
   error: PropTypes.string,
-  ...TextInput.PropTypes,
 };
 
 const styles = StyleSheet.create({

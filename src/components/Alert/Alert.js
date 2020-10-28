@@ -10,6 +10,7 @@ const CustomAlert = (props) => {
     handleClose,
     handleConfirm,
     title,
+    content,
     message,
     cancelText,
     confirmText,
@@ -23,9 +24,15 @@ const CustomAlert = (props) => {
     <View>
       <Portal>
         <Dialog visible={open} onDismiss={handleClose} {...dialogProps}>
-          <Dialog.Title theme={secondaryTheme}>{title}</Dialog.Title>
+          {title ? (
+            <Dialog.Title theme={secondaryTheme}>{title}</Dialog.Title>
+          ) : null}
           <Dialog.Content>
-            <Paragraph theme={secondaryTheme}>{message}</Paragraph>
+            {content ? (
+              content
+            ) : (
+              <Paragraph theme={secondaryTheme}>{message}</Paragraph>
+            )}
           </Dialog.Content>
           <Dialog.Actions>
             {showCancelButton ? (
@@ -48,7 +55,7 @@ const CustomAlert = (props) => {
 CustomAlert.propTypes = {
   open: PropTypes.bool,
   showProgress: PropTypes.bool,
-  title: PropTypes.string,
+  title: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
   message: PropTypes.string,
   dismissable: PropTypes.bool,
   showCancelButton: PropTypes.bool,

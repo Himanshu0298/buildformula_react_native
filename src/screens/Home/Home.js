@@ -25,50 +25,11 @@ import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {secondaryTheme} from '../../styles/theme';
 import Layout from '../../utils/Layout';
-import useAppActions from '../../redux/actions/appActions';
+import {useAlert} from '../../components/Alert';
+import LottieView from 'lottie-react-native';
+import waiting from './../../assets/animation/waiting.json';
 
 const TABS = ['Developer', 'Supplier', 'Customer'];
-
-// const projects = [
-//   {
-//     project: {
-//       id: 15,
-//       project_id: 'VB5f72537beb5bc',
-//       company_name: 'test',
-//       company_gst: '1234567899',
-//       gst_verified: 'N',
-//       gst_url: 'http://vshwanbuild.com/uploads/documents/8843gst_image.jpg',
-//       company_tan: '1234567890',
-//       tan_verified: 'N',
-//       tan_url: 'http://vshwanbuild.com/uploads/documents/31159tan_image.jpg',
-//       company_pan: '1234567890',
-//       pan_verified: 'N',
-//       pan_url: 'http://vshwanbuild.com/uploads/documents/68275pan_image.jpg',
-//       rera_url: null,
-//       project_name: 'test',
-//       project_address: 'test,testing,testVilla 202020',
-//       project_rera: '1234567899',
-//       project_website: 'www.hello.com',
-//       project_email: 'abcdef@gmail.com',
-//       project_phone: '1234567890',
-//       isPaid: 'N',
-//       is_completed: 'N',
-//       completed_time: null,
-//       created: '2020-09-28 21:19:55',
-//       project_approved: 'N',
-//       approve_time: null,
-//       status: 1,
-//       user_id: 74,
-//       admin_3: 0,
-//       admin_2: 0,
-//       project_types: 'N',
-//       project_structure: 'N',
-//     },
-//     projectData: {
-//       towerCount: 0,
-//     },
-//   },
-// ];
 
 function RenderHeader({theme}) {
   return (
@@ -97,14 +58,12 @@ function RenderHeader({theme}) {
   );
 }
 
-function RenderProject({data, navigation, tab}) {
+function RenderProject({data, handleOnPress, tab}) {
   const {project} = data;
 
   return (
     <TouchableOpacity
-      onPress={() => {
-        navigation.navigate('ProjectDashboard');
-      }}
+      onPress={() => handleOnPress(project)}
       style={styles.projectContainer}>
       {tab === 'Developer' ? (
         <View style={styles.developerImageContainer}>
@@ -136,6 +95,8 @@ function RenderProject({data, navigation, tab}) {
 function Home(props) {
   const {theme, navigation} = props;
 
+  const alert = useAlert();
+
   const [selectedTab, setSelectedTab] = useState(0);
 
   const {loading, projects} = useSelector((state) => state.project);
@@ -150,11 +111,33 @@ function Home(props) {
     });
   }, []);
 
+  const projectsData = [projects, [], []];
+
+  const handleOnPress = (project) => {
+    if (project.project_approved === 'Y') {
+      navigation.navigate('ProjectDashboard');
+    } else {
+      alert.show({
+        dismissable: false,
+        title: false,
+        showCancelButton: false,
+        content: (
+          <View style={styles.alertContainer}>
+            <View style={styles.splashImage}>
+              <LottieView source={waiting} autoPlay loop />
+            </View>
+            <Subheading theme={secondaryTheme} style={styles.subtitleText}>
+              Waiting for Project Approval
+            </Subheading>
+          </View>
+        ),
+      });
+    }
+  };
+
   const onRefresh = () => {
     getProjects();
   };
-
-  const projectsData = [projects, [], []];
 
   return (
     <>
@@ -191,6 +174,7 @@ function Home(props) {
                   key={index}
                   data={project}
                   tab={TABS[selectedTab]}
+                  handleOnPress={handleOnPress}
                 />
               ))}
             </View>
@@ -203,12 +187,14 @@ function Home(props) {
           </View>
         )}
       </SafeAreaView>
-      <FAB
-        style={[styles.fab, {backgroundColor: theme.colors.primary}]}
-        small
-        icon="plus"
-        onPress={() => navigation.navigate('ProjectCreationStepOne')}
-      />
+      {selectedTab === 0 ? (
+        <FAB
+          style={[styles.fab, {backgroundColor: theme.colors.primary}]}
+          small
+          icon="plus"
+          onPress={() => navigation.navigate('ProjectCreationStepOne')}
+        />
+      ) : null}
     </>
   );
 }
@@ -312,5 +298,18 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  alertContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    paddingVertical: 15,
+  },
+  splashImage: {
+    height: 300,
+    width: 300,
+  },
+  subtitleText: {
+    textAlign: 'center',
+    color: 'rgba(4, 29, 54, 0.5)',
   },
 });

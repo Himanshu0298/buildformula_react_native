@@ -4,6 +4,7 @@ import {
   UPDATE_ADMINS,
   SET_INITIAL_STATE,
   GET_PROJECTS,
+  RESET_STRUCTURE,
 } from './../actions/actionTypes';
 
 const initialState = {
@@ -23,6 +24,12 @@ export default (state = initialState, action = {}) => {
       return {
         ...state,
         loading: false,
+      };
+
+    case RESET_STRUCTURE:
+      return {
+        ...state,
+        project: {},
       };
 
     case `${GET_PROJECTS}_PENDING`:
