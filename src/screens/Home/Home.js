@@ -58,9 +58,7 @@ function RenderHeader({theme}) {
   );
 }
 
-function RenderProject({data, handleOnPress, tab}) {
-  const {project} = data;
-
+function RenderProject({project, handleOnPress, tab}) {
   return (
     <TouchableOpacity
       onPress={() => handleOnPress(project)}
@@ -135,9 +133,7 @@ function Home(props) {
     }
   };
 
-  const onRefresh = () => {
-    getProjects();
-  };
+  const onRefresh = () => getProjects();
 
   return (
     <>
@@ -172,7 +168,7 @@ function Home(props) {
                 <RenderProject
                   {...props}
                   key={index}
-                  data={project}
+                  project={project}
                   tab={TABS[selectedTab]}
                   handleOnPress={handleOnPress}
                 />

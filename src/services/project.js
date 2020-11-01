@@ -4,10 +4,10 @@ export default function useProject() {
   let {config} = useConfig();
   return {
     getProjects: (data) => {
-      return instance.get('/get_project', config());
+      return instance.get('/get_project_structure', config());
     },
     getProject: (id) => {
-      return instance.get(`/get_project/${id}`, config());
+      return instance.get(`/get_project_structure/${id}`, config());
     },
     createProject: (data) => {
       return instance.post('/project/create', data, config());

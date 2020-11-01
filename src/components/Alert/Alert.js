@@ -41,7 +41,10 @@ const CustomAlert = (props) => {
               </Button>
             ) : null}
             {showConfirmButton ? (
-              <Button color={confirmButtonColor} onPress={handleConfirm}>
+              <Button
+                style={{minWidth: 80}}
+                color={confirmButtonColor}
+                onPress={handleConfirm}>
                 {confirmText}
               </Button>
             ) : null}
