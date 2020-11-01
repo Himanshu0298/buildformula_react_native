@@ -99,7 +99,7 @@ function Home(props) {
 
   const {loading, projects} = useSelector((state) => state.project);
 
-  const {getProjects} = useProjectActions();
+  const {getProjects, setSelectedProject} = useProjectActions();
 
   useEffect(() => {
     getProjects().then(({value}) => {
@@ -112,7 +112,8 @@ function Home(props) {
   const projectsData = [projects, [], []];
 
   const handleOnPress = (project) => {
-    if (project.project_approved === 'Y') {
+    if (project.project_approved === 'N') {
+      setSelectedProject(project);
       navigation.navigate('ProjectDashboard');
     } else {
       alert.show({
@@ -207,7 +208,7 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
-    paddingVertical: 15,
+    paddingVertical: 10,
     paddingHorizontal: 20,
     display: 'flex',
     alignItems: 'center',

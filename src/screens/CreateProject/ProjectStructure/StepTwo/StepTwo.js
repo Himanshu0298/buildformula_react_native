@@ -22,7 +22,12 @@ import MaterialTabs from 'react-native-material-tabs';
 import TowersScreen from './Components/TowersScreen';
 import FloorsScreen from './Components/FloorsScreen';
 import UnitsScreen from './Components/UnitsScreen';
-import {MAX_TOWERS, MAX_FLOORS, MAX_UNITS} from '../../../../utils/constant';
+import {
+  MAX_TOWERS,
+  MAX_FLOORS,
+  MAX_UNITS,
+  TYPE_LABELS,
+} from '../../../../utils/constant';
 import useStructureActions from '../../../../redux/actions/structureActions';
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -30,14 +35,6 @@ import AntIcons from 'react-native-vector-icons/AntDesign';
 import {useBackHandler} from '@react-native-community/hooks';
 
 const STRUCTURE_TYPES = [2, 3, 1, 4, 5];
-
-const TYPE_LABELS = {
-  2: 'Shops',
-  3: 'Offices',
-  1: 'Apartments',
-  4: 'Bungalows',
-  5: 'Plots',
-};
 
 const MENU_OPTIONS = [
   {label: 'shops', value: 2},

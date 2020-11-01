@@ -1,10 +1,15 @@
+/* eslint-disable react-native/no-raw-text */
+import {useNavigation, useRoute} from '@react-navigation/native';
 import React from 'react';
 import {View, StyleSheet} from 'react-native';
 import {withTheme, Button, Appbar} from 'react-native-paper';
 
-function CustomTabBar({navigation, state, descriptors, handleSwitch}) {
+function CustomTabBar() {
+  const navigation = useNavigation();
+  const route = useRoute();
+
   const onPressSwitch = () => {
-    if (handleSwitch) {
+    if (route.name !== 'Home') {
       navigation.reset({
         index: 0,
         routes: [{name: 'GeneralDashboard'}],

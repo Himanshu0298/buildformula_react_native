@@ -15,6 +15,11 @@ export default function useProjectActions() {
   } = useProject();
 
   return {
+    setSelectedProject: (project) =>
+      dispatch({
+        type: types.SET_SELECTED_PROJECT,
+        payload: project,
+      }),
     getProjects: (formData) =>
       dispatch({
         type: types.GET_PROJECTS,

@@ -5,11 +5,13 @@ import {
   SET_INITIAL_STATE,
   GET_PROJECTS,
   RESET_STRUCTURE,
+  SET_SELECTED_PROJECT,
 } from './../actions/actionTypes';
 
 const initialState = {
   loading: false,
   errorMessage: undefined,
+  selectedProject: {},
   projects: [],
   project: {
     // project_id: 21,
@@ -30,6 +32,12 @@ export default (state = initialState, action = {}) => {
       return {
         ...state,
         project: {},
+      };
+
+    case SET_SELECTED_PROJECT:
+      return {
+        ...state,
+        selectedProject: action.payload,
       };
 
     case `${GET_PROJECTS}_PENDING`:

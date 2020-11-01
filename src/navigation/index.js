@@ -14,7 +14,6 @@ import {useSelector} from 'react-redux';
 import LanguageSelect from '../screens/Auth/LanguageSelect';
 import SettingsScreen from '../screens/Settings';
 import SearchScreen from '../screens/Search';
-import CustomTabBar from './Components/CustomTabBar';
 import SignUp from '../screens/Auth/SignUp';
 import RoleSelect from '../screens/Auth/RoleSelect';
 import ProjectDashboard from '../screens/ProjectDashboard';
@@ -99,39 +98,6 @@ const RouteContext = React.createContext('Dashboard');
 //   );
 // }
 
-function GeneralBottomTabs() {
-  return (
-    <Tab.Navigator
-      initialRouteName="Home"
-      tabBar={(props) => <CustomTabBar {...props} />}>
-      <Tab.Screen name="Home" component={Home} />
-      <Tab.Screen name="Settings" component={SettingsScreen} />
-    </Tab.Navigator>
-  );
-}
-
-function ProjectBottomTabs() {
-  return (
-    <Tab.Navigator
-      initialRouteName="ProjectDashboard"
-      tabBar={(props) => <CustomTabBar {...props} handleSwitch={true} />}>
-      <Tab.Screen name="ProjectDashboard" component={ProjectDashboard} />
-      <Tab.Screen name="Inquiry" component={Inquiry} />
-      <Tab.Screen name="ProjectStructure" component={ProjectStructure} />
-      <Tab.Screen name="BookingChart" component={BookingChart} />
-      <Tab.Screen name="Payment" component={Payment} />
-      <Tab.Screen name="ProjectSchedule" component={ProjectSchedule} />
-      <Tab.Screen name="MainPhase" component={MainPhase} />
-      <Tab.Screen name="AssignTask" component={AssignTask} />
-      <Tab.Screen name="ProcessChart" component={ProcessChart} />
-      <Tab.Screen name="Estimation" component={Estimation} />
-      <Tab.Screen name="RequestForPrice" component={RequestForPrice} />
-      <Tab.Screen name="PurchaseOrders" component={PurchaseOrders} />
-      <Tab.Screen name="Files" component={Files} />
-    </Tab.Navigator>
-  );
-}
-
 function GeneralDrawer() {
   return (
     <Drawer.Navigator
@@ -146,7 +112,8 @@ function GeneralDrawer() {
           )}
         </RouteContext.Consumer>
       )}>
-      <Drawer.Screen name="tabs" component={GeneralBottomTabs} />
+      <Drawer.Screen name="Home" component={Home} />
+      <Drawer.Screen name="Settings" component={SettingsScreen} />
     </Drawer.Navigator>
   );
 }
@@ -165,7 +132,19 @@ function ProjectDrawer() {
           )}
         </RouteContext.Consumer>
       )}>
-      <Drawer.Screen name="tabs" component={ProjectBottomTabs} />
+      <Drawer.Screen name="ProjectDashboard" component={ProjectDashboard} />
+      <Drawer.Screen name="Inquiry" component={Inquiry} />
+      <Drawer.Screen name="ProjectStructure" component={ProjectStructure} />
+      <Drawer.Screen name="BookingChart" component={BookingChart} />
+      <Drawer.Screen name="Payment" component={Payment} />
+      <Drawer.Screen name="ProjectSchedule" component={ProjectSchedule} />
+      <Drawer.Screen name="MainPhase" component={MainPhase} />
+      <Drawer.Screen name="AssignTask" component={AssignTask} />
+      <Drawer.Screen name="ProcessChart" component={ProcessChart} />
+      <Drawer.Screen name="Estimation" component={Estimation} />
+      <Drawer.Screen name="RequestForPrice" component={RequestForPrice} />
+      <Drawer.Screen name="PurchaseOrders" component={PurchaseOrders} />
+      <Drawer.Screen name="Files" component={Files} />
     </Drawer.Navigator>
   );
 }

@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-raw-text */
 import React from 'react';
 import {StyleSheet, View, Image, Linking} from 'react-native';
 import {DrawerContentScrollView} from '@react-navigation/drawer';

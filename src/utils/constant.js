@@ -33,3 +33,11 @@ export const DEFAULT_STRUCTURE = {
     units: {},
   },
 };
+
+export const TYPE_LABELS = {
+  2: 'Shops',
+  3: 'Offices',
+  1: 'Apartments',
+  4: 'Bungalows',
+  5: 'Plots',
+};
