@@ -64,7 +64,7 @@ function RenderContent(props) {
         <View style={styles.inputsContainer}>
           <CustomInput
             name="email"
-            label={t('emailLabel')}
+            label={t('label_email')}
             ref={emailRef}
             value={values.email}
             onChangeText={handleChange('email')}

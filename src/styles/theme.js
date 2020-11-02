@@ -37,6 +37,7 @@ export const theme = {
     surface: '#fff',
     text: '#fff',
     success: Colors.green700,
+    warning: Colors.orange500,
   },
   fonts: configureFonts(fontConfig),
 };

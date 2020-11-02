@@ -1,11 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {useMemo} from 'react';
+import React, {useMemo, useEffect, useState} from 'react';
 import {
   StyleSheet,
   View,
   StatusBar,
   SafeAreaView,
-  TouchableOpacity,
   ScrollView,
   RefreshControl,
 } from 'react-native';
@@ -16,28 +15,19 @@ import {
   Title,
   Subheading,
   Divider,
-  Portal,
 } from 'react-native-paper';
 import MaterialTabs from 'react-native-material-tabs';
-import {useState} from 'react';
 import {getShadow} from '../../utils';
-import {useEffect} from 'react';
 import useSalesActions from '../../redux/actions/salesActions';
 import {useSelector} from 'react-redux';
 import dayjs from 'dayjs';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {secondaryTheme, theme} from '../../styles/theme';
-import Layout from '../../utils/Layout';
 import ProjectHeader from '../../components/Layout/ProjectHeader';
-import {TYPE_LABELS} from '../../utils/constant';
+import {PRIORITY_COLORS, TYPE_LABELS} from '../../utils/constant';
 import BaseText from '../../components/BaseText';
 
 const TABS = ["Visitor's list", 'Follow up list', "Today's list"];
-const PRIORITY_COLORS = {
-  low: theme.colors.success,
-  medium: theme.colors.warning,
-  high: 'rgba(255, 93, 93, 1)',
-};
 
 function StatsRow({visitors}) {
   const weekly = useMemo(() => {
@@ -103,47 +93,50 @@ function RenderVisitorItem({visitor}) {
     inquiry_for,
   } = visitor;
   return (
-    <View style={styles.rowMainContainer}>
-      <View style={styles.rowItemContainer}>
-        <Subheading
-          theme={secondaryTheme}
-          style={[styles.visitorTitle, styles.name]}>
-          {first_name} {last_name}
-        </Subheading>
-        <Caption theme={secondaryTheme} style={styles.rowLabel}>
-          +91 {phone}
-        </Caption>
-      </View>
-      <View style={styles.rowItemContainer}>
-        <Subheading theme={secondaryTheme} style={styles.visitorTitle}>
-          {dayjs(follow_up_date).format('DD MMM')}
-        </Subheading>
-        <View
-          style={[
-            styles.priorityBadge,
-            {backgroundColor: PRIORITY_COLORS[priority]},
-          ]}>
-          <BaseText style={styles.priorityLabel}>{priority}</BaseText>
+    <>
+      <View style={styles.rowMainContainer}>
+        <View style={styles.rowItemContainer}>
+          <Subheading
+            theme={secondaryTheme}
+            style={[styles.visitorTitle, styles.name]}>
+            {first_name} {last_name}
+          </Subheading>
+          <Caption theme={secondaryTheme} style={styles.rowLabel}>
+            +91 {phone}
+          </Caption>
+        </View>
+        <View style={styles.rowItemContainer}>
+          <Subheading theme={secondaryTheme} style={styles.visitorTitle}>
+            {dayjs(follow_up_date).format('DD MMM')}
+          </Subheading>
+          <View
+            style={[
+              styles.priorityBadge,
+              {backgroundColor: PRIORITY_COLORS[priority]},
+            ]}>
+            <BaseText style={styles.priorityLabel}>{priority}</BaseText>
+          </View>
+        </View>
+        <View style={styles.rowItemContainer}>
+          <Subheading theme={secondaryTheme} style={styles.visitorTitle}>
+            {TYPE_LABELS[inquiry_for]}
+          </Subheading>
+          <View
+            style={[
+              styles.priorityBadge,
+              {backgroundColor: 'rgba(72,114,244,0.3)'},
+            ]}>
+            <BaseText style={styles.statusLabel}>{'NEGOTIATION'}</BaseText>
+          </View>
         </View>
       </View>
-      <View style={styles.rowItemContainer}>
-        <Subheading theme={secondaryTheme} style={styles.visitorTitle}>
-          {TYPE_LABELS[inquiry_for]}
-        </Subheading>
-        <View
-          style={[
-            styles.priorityBadge,
-            {backgroundColor: 'rgba(72,114,244,0.3)'},
-          ]}>
-          <BaseText style={styles.statusLabel}>{'NEGOTIATION'}</BaseText>
-        </View>
-      </View>
-    </View>
+      <Divider />
+    </>
   );
 }
 
-function Home(props) {
-  const {theme, navigation} = props;
+function Inquiry(props) {
+  const {navigation} = props;
 
   const [selectedTab, setSelectedTab] = useState(0);
   const [selectDialog, setSelectDialog] = useState(false);
@@ -193,10 +186,7 @@ function Home(props) {
                 <RefreshControl refreshing={false} onRefresh={onRefresh} />
               }>
               {visitors.map((visitor, index) => (
-                <>
-                  <RenderVisitorItem key={index} visitor={visitor} />
-                  <Divider />
-                </>
+                <RenderVisitorItem key={index} visitor={visitor} />
               ))}
             </ScrollView>
           </>
@@ -221,7 +211,7 @@ function Home(props) {
           {
             icon: 'account-question-outline',
             label: 'New visitor',
-            onPress: () => console.log('Pressed email'),
+            onPress: () => navigation.navigate('AddVisitor'),
           },
           {
             icon: 'arrow-up',
@@ -234,7 +224,7 @@ function Home(props) {
   );
 }
 
-export default withTheme(Home);
+export default withTheme(Inquiry);
 
 const styles = StyleSheet.create({
   container: {

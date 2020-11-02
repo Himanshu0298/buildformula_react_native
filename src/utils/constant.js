@@ -1,3 +1,5 @@
+import {theme} from '../styles/theme';
+
 export const SITE_URL = 'http://34.67.24.115';
 // export const SITE_URL = 'http://vshwanbuild.in';
 export const BASE_API_URL = `${SITE_URL}/api/`;
@@ -40,4 +42,10 @@ export const TYPE_LABELS = {
   1: 'Apartments',
   4: 'Bungalows',
   5: 'Plots',
+};
+
+export const PRIORITY_COLORS = {
+  low: theme.colors.success,
+  medium: theme.colors.warning,
+  high: 'rgba(255, 93, 93, 1)',
 };

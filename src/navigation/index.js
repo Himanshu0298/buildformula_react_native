@@ -4,7 +4,6 @@ import {NavigationContainer} from '@react-navigation/native';
 import {theme} from '../styles/theme';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createDrawerNavigator} from '@react-navigation/drawer';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Home from '../screens/Home';
 import TouchID from 'react-native-touch-id';
 import DrawerContent from './Components/DrawerContent';
@@ -18,6 +17,7 @@ import SignUp from '../screens/Auth/SignUp';
 import RoleSelect from '../screens/Auth/RoleSelect';
 import ProjectDashboard from '../screens/ProjectDashboard';
 import Inquiry from '../screens/Inquiry';
+import AddVisitor from '../screens/AddVisitor';
 import ProjectSchedule from '../screens/ProjectSchedule';
 import BookingChart from '../screens/BookingChart';
 import Payment from '../screens/Payment';
@@ -58,7 +58,6 @@ const authObject = {
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
-const Tab = createBottomTabNavigator();
 
 const RouteContext = React.createContext('Dashboard');
 
@@ -268,6 +267,11 @@ function NavContainer() {
               <Stack.Screen
                 name="AdminCreation"
                 component={SignUp}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="AddVisitor"
+                component={AddVisitor}
                 options={{headerShown: false}}
               />
             </Fragment>

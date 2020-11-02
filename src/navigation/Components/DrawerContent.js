@@ -1,4 +1,3 @@
-/* eslint-disable react-native/no-raw-text */
 import React from 'react';
 import {StyleSheet, View, Image, Linking} from 'react-native';
 import {DrawerContentScrollView} from '@react-navigation/drawer';
@@ -162,6 +161,7 @@ function DrawerItem(props) {
     image,
     ...restProps
   } = props;
+
   let active = route === currentRoute;
   let drawerIcon;
   if (typeof icon === 'string') {
@@ -180,7 +180,9 @@ function DrawerItem(props) {
     <Drawer.Item
       {...restProps}
       label={label}
-      theme={{colors: {text: '#000', primary: active ? '#fff' : theme.primary}}}
+      theme={{
+        colors: {text: '#000', primary: active ? '#fff' : theme.primary},
+      }}
       onPress={onPress}
       style={active ? styles.activeDrawerItem : {}}
       active={active}

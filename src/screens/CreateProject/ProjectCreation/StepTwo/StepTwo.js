@@ -180,7 +180,7 @@ function StepTwo(props) {
                 />
                 <RenderInput
                   name="project_phone"
-                  label={t('projectPhone')}
+                  label={t('label_project_phone')}
                   ref={phoneRef}
                   keyboardType="number-pad"
                   containerStyles={styles.input}
@@ -188,7 +188,9 @@ function StepTwo(props) {
                   onChangeText={handleChange('project_phone')}
                   onBlur={handleBlur('project_phone')}
                   returnKeyType="done"
-                  placeholder={t('projectPhone')}
+                  placeholder={t('label_project_phone')}
+                  onSubmitEditing={handleSubmit}
+                  error={errors.project_phone}
                   left={
                     <TextInput.Affix
                       text="+91"
@@ -199,8 +201,6 @@ function StepTwo(props) {
                       }}
                     />
                   }
-                  onSubmitEditing={handleSubmit}
-                  error={errors.project_phone}
                 />
               </View>
               <View style={styles.button}>

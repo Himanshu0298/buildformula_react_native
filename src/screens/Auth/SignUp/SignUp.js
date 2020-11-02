@@ -87,12 +87,12 @@ function RenderContent(props) {
       <View style={styles.inputMainContainer}>
         <CustomInput
           name="firstName"
-          label={t('firstNameLabel')}
+          label={t('label_first_name')}
           containerStyles={styles.inputStyles}
           value={values.firstName}
           onChangeText={handleChange('firstName')}
           onBlur={handleBlur('firstName')}
-          placeholder={t('firstNameLabel')}
+          placeholder={t('label_first_name')}
           autoCapitalize="none"
           returnKeyType={'next'}
           onSubmitEditing={() => lastRef && lastRef.current.focus()}
@@ -100,13 +100,13 @@ function RenderContent(props) {
         />
         <CustomInput
           name="lastName"
-          label={t('lastNameLabel')}
+          label={t('label_last_name')}
           containerStyles={styles.inputStyles}
           ref={lastRef}
           value={values.lastName}
           onChangeText={handleChange('lastName')}
           onBlur={handleBlur('lastName')}
-          placeholder={t('lastNameLabel')}
+          placeholder={t('label_last_name')}
           autoCapitalize="none"
           returnKeyType={'next'}
           onSubmitEditing={() => phoneRef && phoneRef.current.focus()}
@@ -114,14 +114,14 @@ function RenderContent(props) {
         />
         <CustomInput
           name="phone"
-          label={t('phoneLabel')}
+          label={t('label_phone')}
           containerStyles={styles.inputStyles}
           ref={phoneRef}
           value={values.phone}
           keyboardType="number-pad"
           onChangeText={handleChange('phone')}
           onBlur={handleBlur('phone')}
-          placeholder={t('phoneLabel')}
+          placeholder={t('label_phone')}
           autoCapitalize="none"
           returnKeyType={'next'}
           onSubmitEditing={() => emailRef && emailRef.current.focus()}
@@ -130,7 +130,7 @@ function RenderContent(props) {
         />
         <CustomInput
           name="email"
-          label={t('emailLabel')}
+          label={t('label_email')}
           containerStyles={styles.inputStyles}
           ref={emailRef}
           value={values.email}
