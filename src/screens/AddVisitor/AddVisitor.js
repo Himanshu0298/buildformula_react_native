@@ -35,7 +35,7 @@ import RenderInput from '../../components/RenderInput';
 import {useTranslation} from 'react-i18next';
 import RenderSelect from '../../components/RenderSelect';
 import RenderDatePicker from '../../components/RenderDatePicker';
-import {PRIORITY_COLORS} from '../../utils/constant';
+import {PRIORITY_COLORS, TYPE_LABELS} from '../../utils/constant';
 import Radio from '../../components/Radio';
 
 const TABS = ['Personal details', 'Inquiry details'];
@@ -186,11 +186,30 @@ function InquiryTab({navigation, formikProps, setSelectedTab}) {
 
   const {t} = useTranslation();
 
+  const {
+    selectedProject: {projectData},
+  } = useSelector((state) => state.project);
+
   const budgetFromRef = React.useRef();
   const budgetToRef = React.useRef();
   const inquiryForRef = React.useRef();
   const forBhkRef = React.useRef();
   const remarkRef = React.useRef();
+
+  const inquiryOptions = useMemo(() => {
+    const options = [{label: 'Cancel', value: 0}];
+    const structureTypes = Object.keys(projectData);
+    if (structureTypes.length > 0) {
+      structureTypes.map((type) => {
+        type = Number(type);
+        options.push({
+          label: TYPE_LABELS[type],
+          value: type,
+        });
+      });
+    }
+    return options;
+  }, [projectData]);
 
   return (
     <View style={styles.container}>
@@ -287,10 +306,7 @@ function InquiryTab({navigation, formikProps, setSelectedTab}) {
         <RenderSelect
           name="inquiry_for"
           label={t('label_inquiry_for')}
-          options={[
-            {label: 'Cancel', value: 0},
-            {label: 'Test', value: 2},
-          ]}
+          options={inquiryOptions}
           containerStyles={styles.input}
           value={values.inquiry_for}
           placeholder={t('label_inquiry_for')}
@@ -299,21 +315,23 @@ function InquiryTab({navigation, formikProps, setSelectedTab}) {
             setFieldValue('inquiry_for', value);
           }}
         />
-        <RenderSelect
-          name="for_bhk"
-          label={t('label_for_bhk')}
-          options={[
-            {label: 'Cancel', value: 0},
-            {label: 'Test', value: 2},
-          ]}
-          containerStyles={styles.input}
-          value={values.for_bhk}
-          placeholder={t('label_for_bhk')}
-          error={errors.for_bhk}
-          onSelect={(value) => {
-            setFieldValue('for_bhk', value);
-          }}
-        />
+        {values.inquiry_for === 1 || values.inquiry_for === 4 ? (
+          <RenderSelect
+            name="for_bhk"
+            label={t('label_for_bhk')}
+            options={[
+              {label: 'Cancel', value: 0},
+              {label: 'Test', value: 2},
+            ]}
+            containerStyles={styles.input}
+            value={values.for_bhk}
+            placeholder={t('label_for_bhk')}
+            error={errors.for_bhk}
+            onSelect={(value) => {
+              setFieldValue('for_bhk', value);
+            }}
+          />
+        ) : null}
         <RenderInput
           name="remark"
           multiline
@@ -342,7 +360,7 @@ function InquiryTab({navigation, formikProps, setSelectedTab}) {
           contentStyle={{padding: 5}}
           theme={{roundness: 15}}
           onPress={handleSubmit}>
-          <BaseText style={styles.buttonText}>{'Next'}</BaseText>
+          <BaseText style={styles.buttonText}>{'Save'}</BaseText>
         </Button>
       </View>
     </View>

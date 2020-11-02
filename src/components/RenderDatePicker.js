@@ -39,23 +39,25 @@ const RenderDatePicker = React.forwardRef((props, ref) => {
           }
         />
       </TouchableOpacity>
-      <Dialog visible={open} onDismiss={togglePicker}>
-        <Dialog.Content>
-          <DatePicker
-            date={dayjs(date).toDate()}
-            mode={mode}
-            onDateChange={setDate}
-          />
-        </Dialog.Content>
-        <Dialog.Actions>
-          <Button color={theme.colors.error} onPress={togglePicker}>
-            Cancel
-          </Button>
-          <Button style={{minWidth: 80}} onPress={handleConfirm}>
-            Confirm
-          </Button>
-        </Dialog.Actions>
-      </Dialog>
+      <Portal>
+        <Dialog visible={open} onDismiss={togglePicker}>
+          <Dialog.Content>
+            <DatePicker
+              date={dayjs(date).toDate()}
+              mode={mode}
+              onDateChange={setDate}
+            />
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button color={theme.colors.error} onPress={togglePicker}>
+              Cancel
+            </Button>
+            <Button style={{minWidth: 80}} onPress={handleConfirm}>
+              Confirm
+            </Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
     </>
   );
 });

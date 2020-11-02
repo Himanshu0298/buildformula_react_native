@@ -7,7 +7,7 @@ import useSales from '../../services/sales';
 export default function useSalesActions() {
   const dispatch = useDispatch();
   const snackbar = useSnackbar();
-  const {getVisitorsList} = useSales();
+  const {getVisitorsList, getFollowUpList} = useSales();
 
   return {
     getVisitors: (projectId) =>
@@ -19,6 +19,28 @@ export default function useSalesActions() {
             formData.append('project_id', projectId);
 
             let response = processResponse(await getVisitorsList(formData));
+            const {data} = response;
+
+            return resolve(data);
+          } catch (error) {
+            let errorMessage = processError(error);
+            snackbar.showMessage({
+              message: errorMessage,
+              variant: 'error',
+            });
+            return reject(errorMessage);
+          }
+        }),
+      }),
+    getFollowUps: (projectId) =>
+      dispatch({
+        type: types.GET_FOLLOWUP_LIST,
+        payload: new Promise(async (resolve, reject) => {
+          try {
+            const formData = new FormData();
+            formData.append('project_id', projectId);
+
+            let response = processResponse(await getFollowUpList(formData));
             const {data} = response;
 
             return resolve(data);

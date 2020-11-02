@@ -99,7 +99,7 @@ function Home(props) {
 
   const {loading, projects} = useSelector((state) => state.project);
 
-  const {getProjects, setSelectedProject} = useProjectActions();
+  const {getProjects} = useProjectActions();
 
   useEffect(() => {
     getProjects().then(({value}) => {
@@ -113,8 +113,10 @@ function Home(props) {
 
   const handleOnPress = (project) => {
     if (project.project_approved === 'N') {
-      setSelectedProject(project);
-      navigation.navigate('ProjectDashboard');
+      navigation.navigate('ProjectDashboard', {
+        screen: 'ProjectDashboard',
+        params: {projectId: project.id},
+      });
     } else {
       alert.show({
         dismissable: false,

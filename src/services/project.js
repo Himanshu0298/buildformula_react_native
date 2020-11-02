@@ -9,6 +9,9 @@ export default function useProject() {
     getProject: (id) => {
       return instance.get(`/get_project_structure/${id}`, config());
     },
+    getProjectData: (id) => {
+      return instance.get(`/get_project/${id}`, config());
+    },
     createProject: (data) => {
       return instance.post('/project/create', data, config());
     },

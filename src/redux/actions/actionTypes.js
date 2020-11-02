@@ -12,7 +12,7 @@ export const VERIFY_OTP = 'VERIFY_OTP';
 export const SELECT_ROLE = 'SELECT_ROLE';
 
 //For Project
-export const SET_SELECTED_PROJECT = 'SET_SELECTED_PROJECT';
+export const GET_SELECTED_PROJECT = 'GET_SELECTED_PROJECT';
 export const GET_PROJECTS = 'GET_PROJECTS';
 export const CREATE_PROJECT = 'CREATE_PROJECT';
 export const UPDATE_PAYMENT = 'UPDATE_PAYMENT';
@@ -25,3 +25,4 @@ export const RESET_STRUCTURE = 'RESET_STRUCTURE';
 
 //For Sales
 export const GET_VISITORS = 'GET_VISITORS';
+export const GET_FOLLOWUP_LIST = 'GET_FOLLOWUP_LIST';

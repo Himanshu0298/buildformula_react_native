@@ -9,16 +9,35 @@ export default function useProjectActions() {
   const snackbar = useSnackbar();
   const {
     getProjects,
+    getProjectData,
     createProject,
     updatePayment,
     updateAdmins,
   } = useProject();
 
   return {
-    setSelectedProject: (project) =>
+    getProjectData: (projectId) =>
       dispatch({
-        type: types.SET_SELECTED_PROJECT,
-        payload: project,
+        type: types.GET_SELECTED_PROJECT,
+        payload: new Promise(async (resolve, reject) => {
+          try {
+            let response = processResponse(await getProjectData(projectId));
+            const {data} = response;
+
+            if (data?.projectData?.towerCount) {
+              delete data.projectData.towerCount;
+            }
+
+            return resolve(data);
+          } catch (error) {
+            let errorMessage = processError(error);
+            snackbar.showMessage({
+              message: errorMessage,
+              variant: 'error',
+            });
+            return reject(errorMessage);
+          }
+        }),
       }),
     getProjects: (formData) =>
       dispatch({

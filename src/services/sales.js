@@ -6,7 +6,7 @@ export default function useSales() {
     getVisitorsList: (data) => {
       return instance.post('/visitors/get_lists', data, config());
     },
-    getProject: (data) => {
+    getFollowUpList: (data) => {
       return instance.post('/followup/get_lists', data, config());
     },
   };

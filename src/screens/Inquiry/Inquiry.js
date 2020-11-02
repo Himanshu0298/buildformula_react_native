@@ -135,6 +135,55 @@ function RenderVisitorItem({visitor}) {
   );
 }
 
+function VisitorsTab({visitors, onRefresh}) {
+  if (visitors.length > 0) {
+    return (
+      <>
+        <StatsRow visitors={visitors} />
+        <ScrollView
+          style={styles.scrollView}
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl refreshing={false} onRefresh={onRefresh} />
+          }>
+          {visitors.map((visitor, index) => (
+            <RenderVisitorItem key={index} visitor={visitor} />
+          ))}
+        </ScrollView>
+      </>
+    );
+  }
+  return (
+    <View style={styles.noResultContainer}>
+      <Caption theme={secondaryTheme}>{'No Projects Found'}</Caption>
+    </View>
+  );
+}
+
+function FollowUpTab({followups, onRefresh}) {
+  if (followups.length > 0) {
+    return (
+      <>
+        <ScrollView
+          style={styles.scrollView}
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl refreshing={false} onRefresh={onRefresh} />
+          }>
+          {followups.map((visitor, index) => (
+            <RenderVisitorItem key={index} visitor={visitor} />
+          ))}
+        </ScrollView>
+      </>
+    );
+  }
+  return (
+    <View style={styles.noResultContainer}>
+      <Caption theme={secondaryTheme}>{'No Projects Found'}</Caption>
+    </View>
+  );
+}
+
 function Inquiry(props) {
   const {navigation} = props;
 
@@ -142,15 +191,25 @@ function Inquiry(props) {
   const [selectDialog, setSelectDialog] = useState(false);
 
   const {selectedProject} = useSelector((state) => state.project);
-  const {loading, visitors} = useSelector((state) => state.sales);
+  const {loading, visitors, followups} = useSelector((state) => state.sales);
 
-  const {getVisitors} = useSalesActions();
+  const {getVisitors, getFollowUps} = useSalesActions();
+
+  const projectId = 2;
 
   useEffect(() => {
-    getVisitors(2);
-  }, []);
+    getVisitors(projectId);
+    getFollowUps(projectId);
+  }, [projectId]);
 
-  const onRefresh = () => getVisitors(2);
+  const onRefresh = () => {
+    if (selectedTab === 0) {
+      getVisitors(projectId);
+    } else if (selectedTab === 1) {
+      getFollowUps(projectId);
+    }
+  };
+
   const toggleSelectDialog = () => setSelectDialog((v) => !v);
 
   const onStateChange = ({open}) => setSelectDialog(open);
@@ -176,25 +235,15 @@ function Inquiry(props) {
             }}
           />
         </View>
-        {visitors.length > 0 ? (
-          <>
-            <StatsRow visitors={visitors} />
-            <ScrollView
-              style={styles.scrollView}
-              showsVerticalScrollIndicator={false}
-              refreshControl={
-                <RefreshControl refreshing={false} onRefresh={onRefresh} />
-              }>
-              {visitors.map((visitor, index) => (
-                <RenderVisitorItem key={index} visitor={visitor} />
-              ))}
-            </ScrollView>
-          </>
-        ) : (
-          <View style={styles.noResultContainer}>
-            <Caption theme={secondaryTheme}>{'No Projects Found'}</Caption>
-          </View>
-        )}
+        {selectedTab === 0 ? (
+          <VisitorsTab visitors={visitors} onRefresh={onRefresh} />
+        ) : null}
+        {selectedTab === 1 ? (
+          <FollowUpTab followups={followups} onRefresh={onRefresh} />
+        ) : null}
+        {selectedTab === 2 ? (
+          <VisitorsTab visitors={visitors} onRefresh={onRefresh} />
+        ) : null}
       </SafeAreaView>
       <FAB.Group
         open={selectDialog}
