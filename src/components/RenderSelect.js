@@ -7,16 +7,7 @@ import {useActionSheet} from '@expo/react-native-action-sheet';
 import RenderInput from './RenderInput';
 
 const RenderSelect = React.forwardRef((props, ref) => {
-  let {
-    error,
-    options,
-    destructiveButtonIndex,
-    cancelButtonIndex,
-    onSelect,
-    value,
-    ...rest
-  } = props;
-
+  let {error, options, cancelButtonIndex, onSelect, value, ...rest} = props;
   const {showActionSheetWithOptions} = useActionSheet();
 
   let {parsedOptions, withValue} = useMemo(() => {
@@ -42,12 +33,13 @@ const RenderSelect = React.forwardRef((props, ref) => {
 
     showActionSheetWithOptions(
       {
-        options: parsedOptions,
+        options: ['Cancel', ...parsedOptions],
         cancelButtonIndex,
-        destructiveButtonIndex,
+        destructiveButtonIndex: cancelButtonIndex,
       },
       (buttonIndex) => {
         if (buttonIndex > 0) {
+          buttonIndex = buttonIndex - 1;
           let selectedValue = parsedOptions[buttonIndex];
           if (withValue && options[buttonIndex].value) {
             selectedValue = options[buttonIndex].value;
@@ -78,14 +70,14 @@ const RenderSelect = React.forwardRef((props, ref) => {
 
 RenderSelect.defaultProps = {
   options: [],
-  destructiveButtonIndex: 0,
   cancelButtonIndex: 0,
   onSelect: () => {},
 };
 
 RenderSelect.prototype = {
-  error: PropTypes.string,
-  ...TextInput.PropTypes,
+  options: PropTypes.array,
+  cancelButtonIndex: PropTypes.number,
+  onSelect: PropTypes.func,
 };
 
 export default RenderSelect;

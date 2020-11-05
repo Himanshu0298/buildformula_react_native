@@ -40,11 +40,9 @@ import Radio from '../../components/Radio';
 
 const TABS = ['Personal details', 'Inquiry details'];
 
-const OCCUPATION_OPTIONS = ['Cancel', 'Job', 'Business', 'Other'];
-
 const personalSchema = Yup.object().shape({});
 
-function PersonalTab({navigation, setSelectedTab, formikProps, selectedTab}) {
+function PersonalTab({navigation, formikProps, occupationOptions}) {
   const {
     handleChange,
     setFieldValue,
@@ -130,7 +128,7 @@ function PersonalTab({navigation, setSelectedTab, formikProps, selectedTab}) {
               ? t('label_occupation')
               : t('placeholder_occupation')
           }
-          options={OCCUPATION_OPTIONS}
+          options={occupationOptions}
           containerStyles={styles.input}
           value={values.occupation}
           placeholder={t('placeholder_occupation')}
@@ -174,7 +172,14 @@ function PersonalTab({navigation, setSelectedTab, formikProps, selectedTab}) {
   );
 }
 
-function InquiryTab({navigation, formikProps, setSelectedTab}) {
+function InquiryTab({
+  navigation,
+  formikProps,
+  setSelectedTab,
+  inquiryOptions,
+  bhkOptions,
+  assignOptions,
+}) {
   const {
     handleChange,
     setFieldValue,
@@ -186,30 +191,11 @@ function InquiryTab({navigation, formikProps, setSelectedTab}) {
 
   const {t} = useTranslation();
 
-  const {
-    selectedProject: {projectData},
-  } = useSelector((state) => state.project);
-
   const budgetFromRef = React.useRef();
   const budgetToRef = React.useRef();
   const inquiryForRef = React.useRef();
   const forBhkRef = React.useRef();
   const remarkRef = React.useRef();
-
-  const inquiryOptions = useMemo(() => {
-    const options = [{label: 'Cancel', value: 0}];
-    const structureTypes = Object.keys(projectData);
-    if (structureTypes.length > 0) {
-      structureTypes.map((type) => {
-        type = Number(type);
-        options.push({
-          label: TYPE_LABELS[type],
-          value: type,
-        });
-      });
-    }
-    return options;
-  }, [projectData]);
 
   return (
     <View style={styles.container}>
@@ -265,10 +251,7 @@ function InquiryTab({navigation, formikProps, setSelectedTab}) {
         <RenderSelect
           name="assign_to"
           label={t('label_assign_to')}
-          options={[
-            {label: 'Cancel', value: 0},
-            {label: 'Test', value: 2},
-          ]}
+          options={assignOptions}
           containerStyles={styles.input}
           value={values.assign_to}
           placeholder={t('label_assign_to')}
@@ -315,14 +298,12 @@ function InquiryTab({navigation, formikProps, setSelectedTab}) {
             setFieldValue('inquiry_for', value);
           }}
         />
-        {values.inquiry_for === 1 || values.inquiry_for === 4 ? (
+        {(values.inquiry_for === 1 || values.inquiry_for === 4) &&
+        bhkOptions[values.inquiry_for] ? (
           <RenderSelect
             name="for_bhk"
             label={t('label_for_bhk')}
-            options={[
-              {label: 'Cancel', value: 0},
-              {label: 'Test', value: 2},
-            ]}
+            options={bhkOptions?.[values.inquiry_for]}
             containerStyles={styles.input}
             value={values.for_bhk}
             placeholder={t('label_for_bhk')}
@@ -370,11 +351,17 @@ function InquiryTab({navigation, formikProps, setSelectedTab}) {
 function AddVisitor(props) {
   const {theme, navigation} = props;
 
-  const [selectedTab, setSelectedTab] = useState(1);
+  const [selectedTab, setSelectedTab] = useState(0);
   const [selectDialog, setSelectDialog] = useState(false);
 
-  const {selectedProject} = useSelector((state) => state.project);
   const {loading, visitors} = useSelector((state) => state.sales);
+
+  const {
+    bhkOptions,
+    occupationOptions,
+    inquiryOptions,
+    assignOptions,
+  } = useSelector((state) => state.sales);
 
   return (
     <>
@@ -416,12 +403,16 @@ function AddVisitor(props) {
                   <PersonalTab
                     {...props}
                     setSelectedTab={setSelectedTab}
+                    occupationOptions={occupationOptions}
                     formikProps={formikProps}
                   />
                 ) : (
                   <InquiryTab
                     {...props}
                     setSelectedTab={setSelectedTab}
+                    inquiryOptions={inquiryOptions}
+                    bhkOptions={bhkOptions}
+                    assignOptions={assignOptions}
                     formikProps={formikProps}
                   />
                 )
