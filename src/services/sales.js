@@ -12,5 +12,8 @@ export default function useSales() {
     getSalesData: (data) => {
       return instance.post('/followup/other_info', data, config());
     },
+    addVisitor: (data) => {
+      return instance.post('/visitors/add', data, config());
+    },
   };
 }

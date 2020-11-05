@@ -6,6 +6,7 @@ import {theme} from '../styles/theme';
 
 const RenderInput = React.forwardRef((props, ref) => {
   const {error, containerStyles, ...rest} = props;
+
   return (
     <View style={[containerStyles, styles.container]}>
       <View style={styles.inputContainer}>

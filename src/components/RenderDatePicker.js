@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useImperativeHandle, useState} from 'react';
 import {TouchableOpacity} from 'react-native';
 import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
@@ -9,6 +9,12 @@ import DatePicker from 'react-native-date-picker';
 
 const RenderDatePicker = React.forwardRef((props, ref) => {
   const {error, value, mode, onChange, theme, format, ...rest} = props;
+
+  useImperativeHandle(ref, () => ({
+    focus: () => {
+      togglePicker();
+    },
+  }));
 
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState(value);
@@ -25,6 +31,7 @@ const RenderDatePicker = React.forwardRef((props, ref) => {
     <>
       <TouchableOpacity onPress={togglePicker}>
         <RenderInput
+          ref={ref}
           editable={false}
           {...rest}
           value={value ? dayjs(value).format(valueFormat) : value}

@@ -170,7 +170,7 @@ function Inquiry(props) {
 
   const {getVisitors, getFollowUps, getSalesData} = useSalesActions();
 
-  const projectId = 2;
+  const projectId = selectedProject.id;
 
   useEffect(() => {
     getVisitors(projectId);
@@ -302,6 +302,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     textTransform: 'uppercase',
     fontSize: 10,
+    borderRadius: 10,
   },
   statusLabel: {
     color: theme.colors.primary,

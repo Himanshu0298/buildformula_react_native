@@ -1,27 +1,12 @@
-import React, {useMemo, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   StyleSheet,
   View,
   StatusBar,
   SafeAreaView,
-  TouchableOpacity,
-  Keyboard,
   ScrollView,
-  RefreshControl,
-  TouchableWithoutFeedback,
 } from 'react-native';
-import {
-  withTheme,
-  Caption,
-  FAB,
-  Title,
-  Subheading,
-  Divider,
-  Portal,
-  Button,
-  TextInput,
-  RadioButton,
-} from 'react-native-paper';
+import {withTheme, Subheading, Button, TextInput} from 'react-native-paper';
 import MaterialTabs from 'react-native-material-tabs';
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -35,28 +20,58 @@ import RenderInput from '../../components/RenderInput';
 import {useTranslation} from 'react-i18next';
 import RenderSelect from '../../components/RenderSelect';
 import RenderDatePicker from '../../components/RenderDatePicker';
-import {PRIORITY_COLORS, TYPE_LABELS} from '../../utils/constant';
+import {PRIORITY_COLORS} from '../../utils/constant';
 import Radio from '../../components/Radio';
+import useSalesActions from '../../redux/actions/salesActions';
+import dayjs from 'dayjs';
 
 const TABS = ['Personal details', 'Inquiry details'];
 
-const personalSchema = Yup.object().shape({});
+const schema = Yup.object().shape({
+  first_name: Yup.string('Invalid').required('Required'),
+  last_name: Yup.string('Invalid').required('Required'),
+  email: Yup.string('Invalid').email('Invalid').required('Required'),
+  phone: Yup.number('Invalid').required('Required'),
+  occupation: Yup.string('Invalid').required('Required'),
+  current_locality: Yup.string('Invalid').required('Required'),
+  budget_from: Yup.number('Invalid').required('Required'),
+  budget_to: Yup.number('Invalid').required('Required'),
+  follow_up_date: Yup.date('Invalid').required('Required'),
+  follow_up_time: Yup.date('Invalid').required('Required'),
+  assign_to: Yup.string('Invalid').required('Required'),
+  inquiry_for: Yup.string('Invalid').required('Required'),
+});
 
-function PersonalTab({navigation, formikProps, occupationOptions}) {
-  const {
-    handleChange,
-    setFieldValue,
-    values,
-    handleSubmit,
-    handleBlur,
-    errors,
-  } = formikProps;
+function PersonalTab({
+  navigation,
+  formikProps,
+  occupationOptions,
+  setSelectedTab,
+}) {
+  const {handleChange, setFieldValue, values, handleBlur, errors} = formikProps;
   const {t} = useTranslation();
+
+  useEffect(() => {
+    if (
+      errors.first_name ||
+      errors.last_name ||
+      errors.phone ||
+      errors.occupation ||
+      errors.current_locality
+    ) {
+      setSelectedTab(0);
+    } else if (Object.keys(errors).length > 0) {
+      setSelectedTab(1);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [errors]);
 
   const firstNameRef = React.useRef();
   const lastNameRef = React.useRef();
   const emailRef = React.useRef();
   const phoneRef = React.useRef();
+  const occupationRef = React.useRef();
+  const localityRef = React.useRef();
 
   return (
     <View style={styles.container}>
@@ -105,10 +120,11 @@ function PersonalTab({navigation, formikProps, occupationOptions}) {
           containerStyles={styles.input}
           value={values.phone}
           onChangeText={handleChange('phone')}
+          onSubmitEditing={() => {
+            occupationRef && occupationRef.current.focus();
+          }}
           onBlur={handleBlur('phone')}
-          returnKeyType="done"
           placeholder={t('label_phone')}
-          onSubmitEditing={handleSubmit}
           error={errors.phone}
           left={
             <TextInput.Affix
@@ -123,6 +139,7 @@ function PersonalTab({navigation, formikProps, occupationOptions}) {
         />
         <RenderSelect
           name="occupation"
+          ref={occupationRef}
           label={
             values.occupation
               ? t('label_occupation')
@@ -135,19 +152,20 @@ function PersonalTab({navigation, formikProps, occupationOptions}) {
           error={errors.occupation}
           onSelect={(value) => {
             setFieldValue('occupation', value);
+            localityRef && localityRef.current.focus();
           }}
         />
         <RenderInput
+          ref={localityRef}
           returnKeyType="done"
           name="current_locality"
           label={t('label_current_locality')}
-          ref={emailRef}
           containerStyles={styles.input}
           value={values.current_locality}
           onChangeText={handleChange('current_locality')}
           onBlur={handleBlur('current_locality')}
           placeholder={t('label_current_locality')}
-          onSubmitEditing={handleSubmit}
+          onSubmitEditing={() => setSelectedTab(1)}
           error={errors.email}
         />
       </View>
@@ -164,7 +182,7 @@ function PersonalTab({navigation, formikProps, occupationOptions}) {
           mode="contained"
           contentStyle={{padding: 5}}
           theme={{roundness: 15}}
-          onPress={handleSubmit}>
+          onPress={() => setSelectedTab(1)}>
           <BaseText style={styles.buttonText}>{'Next'}</BaseText>
         </Button>
       </View>
@@ -191,11 +209,26 @@ function InquiryTab({
 
   const {t} = useTranslation();
 
+  useEffect(() => {
+    if (
+      errors.first_name ||
+      errors.last_name ||
+      errors.phone ||
+      errors.occupation ||
+      errors.current_locality
+    ) {
+      setSelectedTab(0);
+    } else if (Object.keys(errors).length > 0) {
+      setSelectedTab(1);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [errors]);
+
   const budgetFromRef = React.useRef();
   const budgetToRef = React.useRef();
-  const inquiryForRef = React.useRef();
-  const forBhkRef = React.useRef();
-  const remarkRef = React.useRef();
+  const followUpDateRef = React.useRef();
+  const followUpTimeRef = React.useRef();
+  const assignToRef = React.useRef();
 
   return (
     <View style={styles.container}>
@@ -221,12 +254,16 @@ function InquiryTab({
           containerStyles={styles.input}
           value={values.budget_to}
           onChangeText={handleChange('budget_to')}
+          onSubmitEditing={() =>
+            followUpDateRef && followUpDateRef.current.focus()
+          }
           onBlur={handleBlur('budget_to')}
           placeholder={t('label_budget_to')}
           error={errors.budget_to}
         />
         <RenderDatePicker
           name="follow_up_date"
+          ref={followUpDateRef}
           label={t('label_follow_up_date')}
           containerStyles={styles.input}
           value={values.follow_up_date}
@@ -234,10 +271,12 @@ function InquiryTab({
           error={errors.follow_up_date}
           onChange={(date) => {
             setFieldValue('follow_up_date', date);
+            followUpTimeRef && followUpTimeRef.current.focus();
           }}
         />
         <RenderDatePicker
           mode="time"
+          ref={followUpTimeRef}
           name="follow_up_time"
           label={t('label_follow_up_time')}
           containerStyles={styles.input}
@@ -246,10 +285,12 @@ function InquiryTab({
           error={errors.follow_up_time}
           onChange={(date) => {
             setFieldValue('follow_up_time', date);
+            assignToRef && assignToRef.current.focus();
           }}
         />
         <RenderSelect
           name="assign_to"
+          ref={assignToRef}
           label={t('label_assign_to')}
           options={assignOptions}
           containerStyles={styles.input}
@@ -318,11 +359,12 @@ function InquiryTab({
           multiline
           numberOfLines={5}
           label={t('label_remark')}
-          ref={remarkRef}
           containerStyles={styles.input}
           value={values.remark}
           onChangeText={handleChange('remark')}
           onBlur={handleBlur('remark')}
+          onSubmitEditing={handleSubmit}
+          returnKeyType="done"
           placeholder={t('label_remark')}
           error={errors.remark}
         />
@@ -349,19 +391,26 @@ function InquiryTab({
 }
 
 function AddVisitor(props) {
-  const {theme, navigation} = props;
+  const {navigation} = props;
 
   const [selectedTab, setSelectedTab] = useState(0);
-  const [selectDialog, setSelectDialog] = useState(false);
-
-  const {loading, visitors} = useSelector((state) => state.sales);
 
   const {
+    loading,
     bhkOptions,
     occupationOptions,
     inquiryOptions,
     assignOptions,
   } = useSelector((state) => state.sales);
+  const {selectedProject} = useSelector((state) => state.project);
+  const {user} = useSelector((state) => state.user);
+
+  const {
+    addVisitor,
+    getVisitors,
+    getFollowUps,
+    getSalesData,
+  } = useSalesActions();
 
   return (
     <>
@@ -391,12 +440,36 @@ function AddVisitor(props) {
             <Formik
               validateOnBlur={false}
               validateOnChange={false}
-              initialValues={{}}
-              validationSchema={personalSchema}
+              initialValues={{priority: 'low'}}
+              validationSchema={schema}
               onSubmit={async (values) => {
-                if (selectedTab === 0) {
-                  setSelectedTab(1);
-                }
+                const formData = new FormData();
+
+                formData.append(
+                  'follow_up_date',
+                  dayjs(values.follow_up_date).format('DD-MM-YYYY'),
+                );
+                formData.append(
+                  'follow_up_time',
+                  dayjs(values.follow_up_time).format('HH:mm'),
+                );
+
+                delete values.follow_up_date;
+                delete values.follow_up_time;
+
+                Object.keys(values).map((key) => {
+                  formData.append(key, values[key]);
+                });
+
+                formData.append('project_id', selectedProject.id);
+                formData.append('user_id', user.id);
+
+                addVisitor(formData).then(() => {
+                  getVisitors(selectedProject.id);
+                  getFollowUps(selectedProject.id);
+                  getSalesData(selectedProject.id);
+                  navigation.goBack();
+                });
               }}>
               {(formikProps) =>
                 selectedTab === 0 ? (

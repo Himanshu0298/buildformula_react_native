@@ -3,6 +3,7 @@ import {
   GET_VISITORS,
   GET_FOLLOWUP_LIST,
   GET_SALES_DATA,
+  ADD_VISITOR,
 } from './../actions/actionTypes';
 
 const initialState = {
@@ -102,6 +103,23 @@ export default (state = initialState, action = {}) => {
       };
     }
     case `${GET_FOLLOWUP_LIST}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+        errorMessage: action.payload,
+      };
+    case `${ADD_VISITOR}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${ADD_VISITOR}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+      };
+    }
+    case `${ADD_VISITOR}_REJECTED`:
       return {
         ...state,
         loading: false,

@@ -27,3 +27,4 @@ export const RESET_STRUCTURE = 'RESET_STRUCTURE';
 export const GET_SALES_DATA = 'GET_SALES_DATA';
 export const GET_VISITORS = 'GET_VISITORS';
 export const GET_FOLLOWUP_LIST = 'GET_FOLLOWUP_LIST';
+export const ADD_VISITOR = 'ADD_VISITOR';

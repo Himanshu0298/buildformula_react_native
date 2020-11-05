@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import React, {useImperativeHandle, useMemo} from 'react';
 import {TouchableOpacity, Keyboard} from 'react-native';
 import PropTypes from 'prop-types';
 import {TextInput} from 'react-native-paper';
@@ -7,8 +7,14 @@ import {useActionSheet} from '@expo/react-native-action-sheet';
 import RenderInput from './RenderInput';
 
 const RenderSelect = React.forwardRef((props, ref) => {
-  let {error, options, cancelButtonIndex, onSelect, value, ...rest} = props;
+  let {options, cancelButtonIndex, onSelect, value, ...rest} = props;
   const {showActionSheetWithOptions} = useActionSheet();
+
+  useImperativeHandle(ref, () => ({
+    focus: () => {
+      toggleOptions();
+    },
+  }));
 
   let {parsedOptions, withValue} = useMemo(() => {
     if (options[0] && options[0].label) {
@@ -54,6 +60,7 @@ const RenderSelect = React.forwardRef((props, ref) => {
     <TouchableOpacity onPress={toggleOptions}>
       <RenderInput
         editable={false}
+        ref={ref}
         {...rest}
         value={value}
         right={
