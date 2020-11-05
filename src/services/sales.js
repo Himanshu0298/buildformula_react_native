@@ -9,5 +9,8 @@ export default function useSales() {
     getFollowUpList: (data) => {
       return instance.post('/followup/get_lists', data, config());
     },
+    getSalesData: (data) => {
+      return instance.post('/followup/other_info', data, config());
+    },
   };
 }

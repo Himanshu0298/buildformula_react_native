@@ -7,9 +7,31 @@ import useSales from '../../services/sales';
 export default function useSalesActions() {
   const dispatch = useDispatch();
   const snackbar = useSnackbar();
-  const {getVisitorsList, getFollowUpList} = useSales();
+  const {getVisitorsList, getFollowUpList, getSalesData} = useSales();
 
   return {
+    getSalesData: (projectId) =>
+      dispatch({
+        type: types.GET_SALES_DATA,
+        payload: new Promise(async (resolve, reject) => {
+          try {
+            const formData = new FormData();
+            formData.append('project_id', projectId);
+
+            let response = processResponse(await getSalesData(formData));
+            const {data} = response;
+
+            return resolve(data);
+          } catch (error) {
+            let errorMessage = processError(error);
+            snackbar.showMessage({
+              message: errorMessage,
+              variant: 'error',
+            });
+            return reject(errorMessage);
+          }
+        }),
+      }),
     getVisitors: (projectId) =>
       dispatch({
         type: types.GET_VISITORS,
@@ -41,9 +63,12 @@ export default function useSalesActions() {
             formData.append('project_id', projectId);
 
             let response = processResponse(await getFollowUpList(formData));
-            const {data} = response;
+            const {data, filter} = response;
 
-            return resolve(data);
+            return resolve({
+              followups: data.data,
+              todayFollowups: filter.today_followups,
+            });
           } catch (error) {
             let errorMessage = processError(error);
             snackbar.showMessage({

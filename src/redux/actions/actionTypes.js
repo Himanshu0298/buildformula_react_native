@@ -24,5 +24,6 @@ export const SAVE_STRUCTURE = 'SAVE_STRUCTURE';
 export const RESET_STRUCTURE = 'RESET_STRUCTURE';
 
 //For Sales
+export const GET_SALES_DATA = 'GET_SALES_DATA';
 export const GET_VISITORS = 'GET_VISITORS';
 export const GET_FOLLOWUP_LIST = 'GET_FOLLOWUP_LIST';

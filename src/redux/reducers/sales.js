@@ -2,6 +2,7 @@ import {
   SET_INITIAL_STATE,
   GET_VISITORS,
   GET_FOLLOWUP_LIST,
+  GET_SALES_DATA,
 } from './../actions/actionTypes';
 
 const initialState = {
@@ -9,6 +10,7 @@ const initialState = {
   errorMessage: undefined,
   visitors: [],
   followups: [],
+  todayFollowups: [],
   bhkOptions: {},
   occupationOptions: [],
   inquiryOptions: [],
@@ -24,6 +26,47 @@ export default (state = initialState, action = {}) => {
       return {
         ...state,
         loading: false,
+      };
+
+    case `${GET_SALES_DATA}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${GET_SALES_DATA}_FULFILLED`: {
+      const {
+        occupations,
+        project_bhk,
+        inquiry_for,
+        visitors_autosuggestions,
+        assign_to,
+        total_visitors,
+        yearly_visitor,
+        month_visitor,
+        weekly_visitor,
+      } = action.payload;
+
+      return {
+        ...state,
+        loading: false,
+        occupationOptions: occupations,
+        inquiryOptions: inquiry_for,
+        bhkOptions: project_bhk,
+        visitorSuggestions: visitors_autosuggestions,
+        assignOptions: assign_to,
+        visitorAnalytics: {
+          totalVisitors: total_visitors,
+          weeklyVisitors: weekly_visitor,
+          monthlyVisitors: month_visitor,
+          yearlyVisitors: yearly_visitor,
+        },
+      };
+    }
+    case `${GET_SALES_DATA}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+        errorMessage: action.payload,
       };
 
     case `${GET_VISITORS}_PENDING`:
@@ -49,12 +92,15 @@ export default (state = initialState, action = {}) => {
         ...state,
         loading: true,
       };
-    case `${GET_FOLLOWUP_LIST}_FULFILLED`:
+    case `${GET_FOLLOWUP_LIST}_FULFILLED`: {
+      const {followups, todayFollowups} = action.payload;
       return {
         ...state,
         loading: false,
-        followups: action.payload.data,
+        followups: followups,
+        todayFollowups: todayFollowups,
       };
+    }
     case `${GET_FOLLOWUP_LIST}_REJECTED`:
       return {
         ...state,

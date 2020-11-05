@@ -1,12 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {useMemo, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   StyleSheet,
   View,
   StatusBar,
   SafeAreaView,
-  ScrollView,
   RefreshControl,
+  FlatList,
 } from 'react-native';
 import {
   withTheme,
@@ -29,27 +29,18 @@ import BaseText from '../../components/BaseText';
 
 const TABS = ["Visitor's list", 'Follow up list', "Today's list"];
 
-function StatsRow({visitors}) {
-  const weekly = useMemo(() => {
-    return visitors.filter((visitor) =>
-      dayjs(visitor.created).isAfter(dayjs().startOf('week')),
-    );
-  }, [visitors]);
-  const monthly = useMemo(() => {
-    return visitors.filter((visitor) =>
-      dayjs(visitor.created).isAfter(dayjs().startOf('month')),
-    );
-  }, [visitors]);
-  const yearly = useMemo(() => {
-    return visitors.filter((visitor) =>
-      dayjs(visitor.created).isAfter(dayjs().startOf('year')),
-    );
-  }, [visitors]);
+function StatsRow({visitorAnalytics}) {
+  const {
+    totalVisitors = 0,
+    weeklyVisitors = 0,
+    monthlyVisitors = 0,
+    yearlyVisitors = 0,
+  } = visitorAnalytics;
   return (
     <View style={styles.rowMainContainer}>
       <View style={styles.rowItemContainer}>
         <Title theme={secondaryTheme} style={styles.rowTitle}>
-          {visitors.length}
+          {totalVisitors}
         </Title>
         <Caption theme={secondaryTheme} style={styles.rowLabel}>
           Total
@@ -57,7 +48,7 @@ function StatsRow({visitors}) {
       </View>
       <View style={styles.rowItemContainer}>
         <Title theme={secondaryTheme} style={styles.rowTitle}>
-          {weekly.length}
+          {weeklyVisitors}
         </Title>
         <Caption theme={secondaryTheme} style={styles.rowLabel}>
           Weekly
@@ -65,7 +56,7 @@ function StatsRow({visitors}) {
       </View>
       <View style={styles.rowItemContainer}>
         <Title theme={secondaryTheme} style={styles.rowTitle}>
-          {monthly.length}
+          {monthlyVisitors}
         </Title>
         <Caption theme={secondaryTheme} style={styles.rowLabel}>
           Monthly
@@ -73,7 +64,7 @@ function StatsRow({visitors}) {
       </View>
       <View style={styles.rowItemContainer}>
         <Title theme={secondaryTheme} style={styles.rowTitle}>
-          {yearly.length}
+          {yearlyVisitors}
         </Title>
         <Caption theme={secondaryTheme} style={styles.rowLabel}>
           Yearly
@@ -83,7 +74,7 @@ function StatsRow({visitors}) {
   );
 }
 
-function RenderVisitorItem({visitor}) {
+function RenderVisitorItem({data}) {
   const {
     first_name,
     last_name,
@@ -91,7 +82,7 @@ function RenderVisitorItem({visitor}) {
     follow_up_date,
     priority = 'low',
     inquiry_for,
-  } = visitor;
+  } = data;
   return (
     <>
       <View style={styles.rowMainContainer}>
@@ -135,52 +126,30 @@ function RenderVisitorItem({visitor}) {
   );
 }
 
-function VisitorsTab({visitors, onRefresh}) {
-  if (visitors.length > 0) {
-    return (
-      <>
-        <StatsRow visitors={visitors} />
-        <ScrollView
-          style={styles.scrollView}
-          showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl refreshing={false} onRefresh={onRefresh} />
-          }>
-          {visitors.map((visitor, index) => (
-            <RenderVisitorItem key={index} visitor={visitor} />
-          ))}
-        </ScrollView>
-      </>
-    );
-  }
+function RenderContent({data, onRefresh, showAnalyticsRow, visitorAnalytics}) {
   return (
-    <View style={styles.noResultContainer}>
-      <Caption theme={secondaryTheme}>{'No Projects Found'}</Caption>
-    </View>
-  );
-}
-
-function FollowUpTab({followups, onRefresh}) {
-  if (followups.length > 0) {
-    return (
-      <>
-        <ScrollView
-          style={styles.scrollView}
-          showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl refreshing={false} onRefresh={onRefresh} />
-          }>
-          {followups.map((visitor, index) => (
-            <RenderVisitorItem key={index} visitor={visitor} />
-          ))}
-        </ScrollView>
-      </>
-    );
-  }
-  return (
-    <View style={styles.noResultContainer}>
-      <Caption theme={secondaryTheme}>{'No Projects Found'}</Caption>
-    </View>
+    <>
+      {showAnalyticsRow ? (
+        <StatsRow visitorAnalytics={visitorAnalytics} />
+      ) : null}
+      <FlatList
+        data={data}
+        extraData={data}
+        keyExtractor={(item, index) => index.toString()}
+        style={styles.scrollView}
+        contentContainerStyle={{flexGrow: 1}}
+        showsVerticalScrollIndicator={false}
+        renderItem={({item}) => <RenderVisitorItem data={item} />}
+        refreshControl={
+          <RefreshControl refreshing={false} onRefresh={onRefresh} />
+        }
+        ListEmptyComponent={
+          <View style={styles.noResultContainer}>
+            <Subheading theme={secondaryTheme}>{'No Data Found'}</Subheading>
+          </View>
+        }
+      />
+    </>
   );
 }
 
@@ -191,21 +160,29 @@ function Inquiry(props) {
   const [selectDialog, setSelectDialog] = useState(false);
 
   const {selectedProject} = useSelector((state) => state.project);
-  const {loading, visitors, followups} = useSelector((state) => state.sales);
+  const {
+    loading,
+    visitors,
+    followups,
+    todayFollowups,
+    visitorAnalytics,
+  } = useSelector((state) => state.sales);
 
-  const {getVisitors, getFollowUps} = useSalesActions();
+  const {getVisitors, getFollowUps, getSalesData} = useSalesActions();
 
   const projectId = 2;
 
   useEffect(() => {
     getVisitors(projectId);
     getFollowUps(projectId);
+    getSalesData(projectId);
   }, [projectId]);
 
   const onRefresh = () => {
     if (selectedTab === 0) {
       getVisitors(projectId);
-    } else if (selectedTab === 1) {
+      getSalesData(projectId);
+    } else if (selectedTab === 1 || selectedTab === 2) {
       getFollowUps(projectId);
     }
   };
@@ -213,6 +190,8 @@ function Inquiry(props) {
   const toggleSelectDialog = () => setSelectDialog((v) => !v);
 
   const onStateChange = ({open}) => setSelectDialog(open);
+
+  const tabData = [visitors, followups, todayFollowups];
 
   return (
     <>
@@ -235,15 +214,12 @@ function Inquiry(props) {
             }}
           />
         </View>
-        {selectedTab === 0 ? (
-          <VisitorsTab visitors={visitors} onRefresh={onRefresh} />
-        ) : null}
-        {selectedTab === 1 ? (
-          <FollowUpTab followups={followups} onRefresh={onRefresh} />
-        ) : null}
-        {selectedTab === 2 ? (
-          <VisitorsTab visitors={visitors} onRefresh={onRefresh} />
-        ) : null}
+        <RenderContent
+          data={tabData[selectedTab]}
+          onRefresh={onRefresh}
+          showAnalyticsRow={selectedTab === 0}
+          visitorAnalytics={visitorAnalytics}
+        />
       </SafeAreaView>
       <FAB.Group
         open={selectDialog}
@@ -339,5 +315,10 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flexGrow: 1,
+  },
+  noResultContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
