@@ -1,11 +1,11 @@
 import React from 'react';
 import CustomTabBar from './CustomTabBar';
 
-export default function BaseLayout({children}) {
+export default function BaseLayout({children, tabBar = true}) {
   return (
     <>
       {children}
-      <CustomTabBar />
+      {tabBar ? <CustomTabBar /> : null}
     </>
   );
 }

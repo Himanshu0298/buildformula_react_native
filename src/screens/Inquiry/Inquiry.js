@@ -6,6 +6,7 @@ import {
   StatusBar,
   SafeAreaView,
   RefreshControl,
+  TouchableOpacity,
   FlatList,
 } from 'react-native';
 import {
@@ -26,6 +27,8 @@ import {secondaryTheme, theme} from '../../styles/theme';
 import ProjectHeader from '../../components/Layout/ProjectHeader';
 import {PRIORITY_COLORS, TYPE_LABELS} from '../../utils/constant';
 import BaseText from '../../components/BaseText';
+import Modal from 'react-native-modal';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const TABS = ["Visitor's list", 'Follow up list', "Today's list"];
 
@@ -37,7 +40,7 @@ function StatsRow({visitorAnalytics}) {
     yearlyVisitors = 0,
   } = visitorAnalytics;
   return (
-    <View style={styles.rowMainContainer}>
+    <View style={styles.statsRowMainContainer}>
       <View style={styles.rowItemContainer}>
         <Title theme={secondaryTheme} style={styles.rowTitle}>
           {totalVisitors}
@@ -74,7 +77,7 @@ function StatsRow({visitorAnalytics}) {
   );
 }
 
-function RenderVisitorItem({data}) {
+function RenderVisitorItem({data, index, toggleSheet}) {
   const {
     first_name,
     last_name,
@@ -83,8 +86,9 @@ function RenderVisitorItem({data}) {
     priority = 'low',
     inquiry_for,
   } = data;
+
   return (
-    <>
+    <TouchableOpacity onPress={() => toggleSheet(index)}>
       <View style={styles.rowMainContainer}>
         <View style={styles.rowItemContainer}>
           <Subheading
@@ -102,7 +106,7 @@ function RenderVisitorItem({data}) {
           </Subheading>
           <View
             style={[
-              styles.priorityBadge,
+              styles.badge,
               {backgroundColor: PRIORITY_COLORS[priority]},
             ]}>
             <BaseText style={styles.priorityLabel}>{priority}</BaseText>
@@ -113,20 +117,23 @@ function RenderVisitorItem({data}) {
             {TYPE_LABELS[inquiry_for]}
           </Subheading>
           <View
-            style={[
-              styles.priorityBadge,
-              {backgroundColor: 'rgba(72,114,244,0.3)'},
-            ]}>
+            style={[styles.badge, {backgroundColor: 'rgba(72,114,244,0.3)'}]}>
             <BaseText style={styles.statusLabel}>{'NEGOTIATION'}</BaseText>
           </View>
         </View>
       </View>
       <Divider />
-    </>
+    </TouchableOpacity>
   );
 }
 
-function RenderContent({data, onRefresh, showAnalyticsRow, visitorAnalytics}) {
+function RenderContent({
+  data,
+  onRefresh,
+  showAnalyticsRow,
+  visitorAnalytics,
+  toggleSheet,
+}) {
   return (
     <>
       {showAnalyticsRow ? (
@@ -139,7 +146,13 @@ function RenderContent({data, onRefresh, showAnalyticsRow, visitorAnalytics}) {
         style={styles.scrollView}
         contentContainerStyle={{flexGrow: 1}}
         showsVerticalScrollIndicator={false}
-        renderItem={({item}) => <RenderVisitorItem data={item} />}
+        renderItem={({item, index}) => (
+          <RenderVisitorItem
+            data={item}
+            index={index}
+            toggleSheet={toggleSheet}
+          />
+        )}
         refreshControl={
           <RefreshControl refreshing={false} onRefresh={onRefresh} />
         }
@@ -153,11 +166,116 @@ function RenderContent({data, onRefresh, showAnalyticsRow, visitorAnalytics}) {
   );
 }
 
+function RenderVisitorDetails({data = {}, handleClose, handleEdit}) {
+  return (
+    <Modal
+      isVisible={Boolean(data.user_id)}
+      swipeDirection="down"
+      backdropOpacity={0.4}
+      onSwipeComplete={handleClose}
+      onBackButtonPress={handleClose}
+      onBackdropPress={handleClose}
+      style={{justifyContent: 'flex-end', margin: 0}}>
+      <View style={styles.sheetContainer}>
+        <View style={styles.sheetRow}>
+          <Caption theme={secondaryTheme} style={styles.sheetRowLabel}>
+            Visitor Name:
+          </Caption>
+          <Caption theme={secondaryTheme} style={styles.sheetRowValue}>
+            {' '}
+            {data.first_name} {data.last_name}
+          </Caption>
+        </View>
+        <View style={styles.sheetRow}>
+          <Caption theme={secondaryTheme} style={styles.sheetRowLabel}>
+            Visitor Phone:
+          </Caption>
+          <Caption theme={secondaryTheme} style={styles.sheetRowValue}>
+            {' +91'}
+            {data.phone}
+          </Caption>
+        </View>
+        <View style={styles.sheetRow}>
+          <Caption theme={secondaryTheme} style={styles.sheetRowLabel}>
+            Budget Range:
+          </Caption>
+          <Caption theme={secondaryTheme} style={styles.sheetRowValue}>
+            {' Rs. '}
+            {data.budget_from} {'-'} {' Rs. '}
+            {data.budget_to}
+          </Caption>
+        </View>
+        <View style={styles.sheetRow}>
+          <Caption theme={secondaryTheme} style={styles.sheetRowLabel}>
+            Date:
+          </Caption>
+          <Caption theme={secondaryTheme} style={styles.sheetRowValue}>
+            {' '}
+            {dayjs(data.follow_up_date).format('DD MMM')}
+          </Caption>
+        </View>
+        <View style={styles.sheetRow}>
+          <Caption theme={secondaryTheme} style={styles.sheetRowLabel}>
+            Priority:
+          </Caption>
+          <View
+            style={[
+              styles.badge,
+              {
+                backgroundColor: PRIORITY_COLORS[data.priority],
+                marginLeft: 10,
+              },
+            ]}>
+            <BaseText style={styles.priorityLabel}>{data.priority}</BaseText>
+          </View>
+        </View>
+        <View style={styles.sheetRow}>
+          <Caption theme={secondaryTheme} style={styles.sheetRowLabel}>
+            Inquiry:
+          </Caption>
+          <Caption theme={secondaryTheme} style={styles.sheetRowValue}>
+            {' '}
+            {TYPE_LABELS[data.inquiry_for]} {data.bhk} BHK
+          </Caption>
+        </View>
+        <View style={styles.sheetRow}>
+          <Caption theme={secondaryTheme} style={styles.sheetRowLabel}>
+            Status:
+          </Caption>
+          <View
+            style={[
+              styles.badge,
+              {backgroundColor: 'rgba(72,114,244,0.3)', marginLeft: 10},
+            ]}>
+            <BaseText style={styles.statusLabel}>{'NEGOTIATION'}</BaseText>
+          </View>
+        </View>
+        <View style={styles.sheetRow}>
+          <Caption theme={secondaryTheme} style={styles.sheetRowLabel}>
+            Remarks:
+          </Caption>
+          <Caption theme={secondaryTheme} style={styles.sheetRowValue}>
+            {' '}
+            {data.remarks}
+          </Caption>
+        </View>
+
+        <View style={styles.editButtonContainer}>
+          <TouchableOpacity style={styles.editButton}>
+            <MaterialIcons name={'edit'} color={'#fff'} size={19} />
+          </TouchableOpacity>
+        </View>
+      </View>
+    </Modal>
+  );
+}
+
 function Inquiry(props) {
   const {navigation} = props;
 
   const [selectedTab, setSelectedTab] = useState(0);
   const [selectDialog, setSelectDialog] = useState(false);
+  const [sheetData, setSheetData] = useState();
 
   const {selectedProject} = useSelector((state) => state.project);
   const {
@@ -171,6 +289,8 @@ function Inquiry(props) {
   const {getVisitors, getFollowUps, getSalesData} = useSalesActions();
 
   const projectId = selectedProject.id;
+
+  const tabData = [visitors, followups, todayFollowups];
 
   useEffect(() => {
     getVisitors(projectId);
@@ -191,7 +311,16 @@ function Inquiry(props) {
 
   const onStateChange = ({open}) => setSelectDialog(open);
 
-  const tabData = [visitors, followups, todayFollowups];
+  const toggleSheet = (index) => {
+    if (!isNaN(index)) {
+      return setSheetData(tabData[selectedTab][index]);
+    }
+    return setSheetData();
+  };
+
+  const handleEdit = (index) => {
+    console.log('----->handleEdit ');
+  };
 
   return (
     <>
@@ -219,6 +348,7 @@ function Inquiry(props) {
           onRefresh={onRefresh}
           showAnalyticsRow={selectedTab === 0}
           visitorAnalytics={visitorAnalytics}
+          toggleSheet={toggleSheet}
         />
       </SafeAreaView>
       <FAB.Group
@@ -245,6 +375,11 @@ function Inquiry(props) {
           },
         ]}
       />
+      <RenderVisitorDetails
+        data={sheetData}
+        handleClose={toggleSheet}
+        handleEdit={handleEdit}
+      />
     </>
   );
 }
@@ -260,13 +395,21 @@ const styles = StyleSheet.create({
     ...getShadow(5),
     backgroundColor: '#fff',
   },
-  rowMainContainer: {
+  statsRowMainContainer: {
     paddingVertical: 5,
     paddingHorizontal: 5,
     flexDirection: 'row',
     display: 'flex',
     alignItems: 'center',
     ...getShadow(2),
+    backgroundColor: '#fff',
+  },
+  rowMainContainer: {
+    paddingVertical: 5,
+    paddingHorizontal: 5,
+    flexDirection: 'row',
+    display: 'flex',
+    alignItems: 'center',
     backgroundColor: '#fff',
   },
   rowItemContainer: {
@@ -290,10 +433,10 @@ const styles = StyleSheet.create({
   name: {
     textTransform: 'capitalize',
   },
-  priorityBadge: {
-    paddingHorizontal: 15,
-    paddingVertical: 3,
+  badge: {
     borderRadius: 20,
+    paddingHorizontal: 15,
+    paddingVertical: 2,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -321,5 +464,40 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  sheetContainer: {
+    backgroundColor: '#fff',
+    display: 'flex',
+    borderTopLeftRadius: 50,
+    borderTopRightRadius: 50,
+    paddingLeft: 30,
+    paddingRight: 40,
+    paddingVertical: 40,
+  },
+  sheetRow: {
+    display: 'flex',
+    flexDirection: 'row',
+    marginTop: 5,
+  },
+  sheetRowLabel: {
+    fontWeight: 'bold',
+  },
+  sheetRowValue: {
+    textTransform: 'capitalize',
+    flexWrap: 'wrap',
+  },
+  editButtonContainer: {
+    marginTop: 20,
+    display: 'flex',
+    alignItems: 'flex-end',
+  },
+  editButton: {
+    borderRadius: 100,
+    height: 50,
+    width: 50,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: theme.colors.primary,
   },
 });

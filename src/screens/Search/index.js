@@ -4,7 +4,7 @@ import Search from './Search';
 
 export default (props) => {
   return (
-    <BaseLayout>
+    <BaseLayout tabBar={false}>
       <Search {...props} />
     </BaseLayout>
   );

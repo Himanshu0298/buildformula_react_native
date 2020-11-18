@@ -22,6 +22,7 @@ import {useTranslation} from 'react-i18next';
 import Layout from '../../../utils/Layout';
 import BottomSheet from 'reanimated-bottom-sheet';
 import {useSnackbar} from '../../../components/Snackbar';
+import SheetHeader from '../../../components/SheetHeader';
 
 function LoginButton({label, onPress}) {
   return (
@@ -172,14 +173,6 @@ function Login(props) {
     }
   };
 
-  const renderHeader = () => (
-    <View style={styles.header}>
-      <View style={styles.panelHeader}>
-        <View style={styles.panelHandle} />
-      </View>
-    </View>
-  );
-
   return (
     <Formik
       validateOnBlur={false}
@@ -231,7 +224,7 @@ function Login(props) {
             ref={bottomSheetRef}
             snapPoints={['85%', '60%']}
             initialSnap={1}
-            renderHeader={renderHeader}
+            renderHeader={() => <SheetHeader />}
             renderContent={() => (
               <RenderContent
                 handleChange={handleChange}
@@ -274,23 +267,6 @@ const styles = StyleSheet.create({
   image: {
     width: Layout.window.width * 0.75,
     height: Layout.window.width * 0.75 * (15 / 22),
-  },
-  header: {
-    backgroundColor: theme.colors.primary,
-    shadowColor: theme.colors.primary,
-    paddingTop: 20,
-    borderTopLeftRadius: 50,
-    borderTopRightRadius: 50,
-  },
-  panelHeader: {
-    alignItems: 'center',
-  },
-  panelHandle: {
-    width: 40,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#00000040',
-    marginBottom: 10,
   },
   contentContainer: {
     backgroundColor: theme.colors.primary,

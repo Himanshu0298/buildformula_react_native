@@ -112,7 +112,7 @@ function Home(props) {
   const projectsData = [projects, [], []];
 
   const handleOnPress = (project) => {
-    if (project.project_approved === 'N') {
+    if (project.project_approved === 'Y') {
       navigation.navigate('ProjectDashboard', {
         screen: 'ProjectDashboard',
         params: {projectId: project.id},

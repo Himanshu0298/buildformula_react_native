@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useMemo} from 'react';
 import {
   StyleSheet,
   View,
@@ -395,7 +395,7 @@ function AddVisitor(props) {
 
   const [selectedTab, setSelectedTab] = useState(0);
 
-  const {
+  let {
     loading,
     bhkOptions,
     occupationOptions,
@@ -411,6 +411,13 @@ function AddVisitor(props) {
     getFollowUps,
     getSalesData,
   } = useSalesActions();
+
+  assignOptions = useMemo(() => {
+    return assignOptions.unshift({
+      value: user.id,
+      label: `${user.first_name} ${user.last_name}`,
+    });
+  }, [assignOptions, user.first_name, user.id, user.last_name]);
 
   return (
     <>

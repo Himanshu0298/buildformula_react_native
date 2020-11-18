@@ -4,6 +4,7 @@ import {
   GET_FOLLOWUP_LIST,
   GET_SALES_DATA,
   ADD_VISITOR,
+  GET_SELECTED_PROJECT,
 } from './../actions/actionTypes';
 
 const initialState = {
@@ -27,6 +28,12 @@ export default (state = initialState, action = {}) => {
       return {
         ...state,
         loading: false,
+      };
+
+    //RESET sales data on project change
+    case `${GET_SELECTED_PROJECT}_PENDING`:
+      return {
+        ...initialState,
       };
 
     case `${GET_SALES_DATA}_PENDING`:
