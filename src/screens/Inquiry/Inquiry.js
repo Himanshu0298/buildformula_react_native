@@ -17,7 +17,6 @@ import {
   Subheading,
   Divider,
 } from 'react-native-paper';
-import MaterialTabs from 'react-native-material-tabs';
 import {getShadow} from '../../utils';
 import useSalesActions from '../../redux/actions/salesActions';
 import {useSelector} from 'react-redux';
@@ -29,8 +28,9 @@ import {PRIORITY_COLORS, TYPE_LABELS} from '../../utils/constant';
 import BaseText from '../../components/BaseText';
 import Modal from 'react-native-modal';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-
-const TABS = ["Visitor's list", 'Follow up list', "Today's list"];
+import {TabView} from 'react-native-tab-view';
+import Layout from '../../utils/Layout';
+import MaterialTabBar from '../../components/MaterialTabBar';
 
 function StatsRow({visitorAnalytics}) {
   const {
@@ -274,6 +274,11 @@ function Inquiry(props) {
   const {navigation} = props;
 
   const [selectedTab, setSelectedTab] = useState(0);
+  const [routes] = React.useState([
+    {key: 0, title: "Visitor's list"},
+    {key: 1, title: 'Follow up list'},
+    {key: 2, title: "Today's list"},
+  ]);
   const [selectDialog, setSelectDialog] = useState(false);
   const [sheetData, setSheetData] = useState();
 
@@ -322,33 +327,37 @@ function Inquiry(props) {
     console.log('----->handleEdit ');
   };
 
+  const renderScene = ({route: {key}}) => {
+    return (
+      <RenderContent
+        data={tabData[key]}
+        onRefresh={onRefresh}
+        showAnalyticsRow={key === 0}
+        visitorAnalytics={visitorAnalytics}
+        toggleSheet={toggleSheet}
+      />
+    );
+  };
+
   return (
     <>
       <SafeAreaView style={styles.container}>
         <Spinner visible={loading} textContent={''} />
         <StatusBar barStyle="light-content" />
-        <View style={styles.headerContainer}>
-          <ProjectHeader />
-          <MaterialTabs
-            items={TABS}
-            selectedIndex={selectedTab}
-            onChange={setSelectedTab}
-            barColor="#fff"
-            indicatorColor={theme.colors.primary}
-            inactiveTextColor={'#919191'}
-            activeTextColor={theme.colors.primary}
-            uppercase={false}
-            textStyle={{
-              fontFamily: 'Nunito-Regular',
-            }}
-          />
-        </View>
-        <RenderContent
-          data={tabData[selectedTab]}
-          onRefresh={onRefresh}
-          showAnalyticsRow={selectedTab === 0}
-          visitorAnalytics={visitorAnalytics}
-          toggleSheet={toggleSheet}
+
+        <TabView
+          navigationState={{index: selectedTab, routes}}
+          renderScene={renderScene}
+          onIndexChange={setSelectedTab}
+          initialLayout={{width: Layout.window.width}}
+          renderTabBar={(tabBarProps) => {
+            return (
+              <View style={styles.headerContainer}>
+                <ProjectHeader />
+                <MaterialTabBar {...tabBarProps} />
+              </View>
+            );
+          }}
         />
       </SafeAreaView>
       <FAB.Group
