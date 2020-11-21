@@ -2,11 +2,13 @@ import * as types from './actionTypes';
 import {useDispatch} from 'react-redux';
 import useProject from '../../services/project';
 import {useSnackbar} from '../../components/Snackbar';
-import {processError, processResponse} from '../../utils';
+import {useResProcessor} from '../../utils/responseProcessor';
 
 export default function useProjectActions() {
   const dispatch = useDispatch();
   const snackbar = useSnackbar();
+  const {processError, processResponse} = useResProcessor();
+
   const {
     getProjects,
     getProjectData,

@@ -110,35 +110,6 @@ export function getFloorNumber(i) {
   return `${floor} Floor`;
 }
 
-export const processError = (error) => {
-  const {response} = error;
-  let errorMessage;
-  if (response) {
-    errorMessage = response && response.data && response.data.msg;
-  }
-
-  errorMessage = errorMessage || error.message;
-
-  if (typeof errorMessage !== 'string') {
-    if (typeof errorMessage === 'object') {
-      errorMessage = Object.values(errorMessage)[0];
-    }
-  }
-
-  console.log('-----> errorMessage', errorMessage);
-  return errorMessage;
-};
-
-export const processResponse = (response) => {
-  const {data} = response;
-
-  if (data.status) {
-    return data;
-  } else {
-    throw {response};
-  }
-};
-
 export const getUnitLabel = (floor, unit) => {
   return `${floor}${unit.toString().padStart(2, '0')}`;
 };

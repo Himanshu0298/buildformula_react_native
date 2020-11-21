@@ -1,12 +1,13 @@
 import * as types from './actionTypes';
 import {useDispatch} from 'react-redux';
 import {useSnackbar} from '../../components/Snackbar';
-import {processError, processResponse} from '../../utils';
+import {useResProcessor} from '../../utils/responseProcessor';
 import useSales from '../../services/sales';
 
 export default function useSalesActions() {
   const dispatch = useDispatch();
   const snackbar = useSnackbar();
+  const {processError, processResponse} = useResProcessor();
   const {
     getVisitorsList,
     getFollowUpList,

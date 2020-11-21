@@ -1,13 +1,14 @@
 import * as types from './actionTypes';
 import {useDispatch} from 'react-redux';
 import useAuth from '../../services/user';
-import {processError, processResponse} from '../../utils';
 import {useSnackbar} from '../../components/Snackbar';
+import {useResProcessor} from '../../utils/responseProcessor';
 
 export default function useOtpActions() {
   const dispatch = useDispatch();
-  const {otpCheck} = useAuth();
   const snackbar = useSnackbar();
+  const {otpCheck} = useAuth();
+  const {processError, processResponse} = useResProcessor();
 
   return {
     sentOtp: (phone) =>
