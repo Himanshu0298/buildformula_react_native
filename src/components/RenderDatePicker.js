@@ -34,6 +34,7 @@ const RenderDatePicker = React.forwardRef((props, ref) => {
           ref={ref}
           editable={false}
           {...rest}
+          error={error}
           value={value ? dayjs(value).format(valueFormat) : value}
           right={
             <TextInput.Icon
