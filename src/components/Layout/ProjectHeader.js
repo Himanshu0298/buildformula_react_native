@@ -5,8 +5,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useSelector} from 'react-redux';
 import {secondaryTheme} from 'styles/theme';
-
-const PERSON_ICON_BACKGROUND = 'rgba(72,114,244,0.3)';
+import {COLORS} from 'utils/constant';
 
 function ProjectHeader({theme}) {
   const {selectedProject} = useSelector((state) => state.project);
@@ -25,7 +24,7 @@ function ProjectHeader({theme}) {
         <TouchableOpacity
           style={[
             styles.personContainer,
-            {backgroundColor: PERSON_ICON_BACKGROUND},
+            {backgroundColor: COLORS.primaryLight},
           ]}>
           <MaterialIcons
             name={'person'}

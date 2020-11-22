@@ -330,9 +330,9 @@ function Inquiry(props) {
 
   return (
     <>
+      <StatusBar barStyle="light-content" />
       <SafeAreaView style={styles.container}>
         <Spinner visible={loading} textContent={''} />
-        <StatusBar barStyle="light-content" />
 
         <TabView
           navigationState={{index: selectedTab, routes}}
@@ -387,7 +387,6 @@ export default withTheme(Inquiry);
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginBottom: 60,
   },
   headerContainer: {
     ...getShadow(5),

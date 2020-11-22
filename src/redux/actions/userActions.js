@@ -14,63 +14,63 @@ export default function useUserActions() {
     signUp: (user) =>
       dispatch({
         type: types.SIGN_UP,
-        payload: new Promise(async (resolve, reject) => {
+        payload: async () => {
           try {
             let response = processResponse(await signUp(user));
             const {data: userData} = response;
             console.log('----->signUp response', userData);
 
-            return resolve({user: userData});
+            return Promise.resolve({user: userData});
           } catch (error) {
             let errorMessage = processError(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',
             });
-            return reject(errorMessage);
+            return Promise.reject(errorMessage);
           }
-        }),
+        },
       }),
     login: (data) =>
       dispatch({
         type: types.LOGIN,
-        payload: new Promise(async (resolve, reject) => {
+        payload: async () => {
           try {
             let response = processResponse(await login(data));
             const {data: userData} = response;
             console.log('----->login response', userData);
 
-            return resolve({user: userData});
+            return Promise.resolve({user: userData});
           } catch (error) {
             const {data: userData = {}} = error?.response?.data;
             const {email} = userData;
             if (email) {
-              return resolve({user: userData});
+              return Promise.resolve({user: userData});
             } else {
-              return reject('Invalid email or password');
+              return Promise.reject('Invalid email or password');
             }
           }
-        }),
+        },
       }),
     selectRole: (data) =>
       dispatch({
         type: types.SELECT_ROLE,
-        payload: new Promise(async (resolve, reject) => {
+        payload: async () => {
           try {
             let response = processResponse(await updateUser(data));
             const {data: userData} = response;
             console.log('-----> response', userData);
 
-            return resolve({user: userData});
+            return Promise.resolve({user: userData});
           } catch (error) {
             let errorMessage = processError(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',
             });
-            return reject(errorMessage);
+            return Promise.reject(errorMessage);
           }
-        }),
+        },
       }),
   };
 }

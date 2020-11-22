@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   StyleSheet,
   Image,
@@ -17,9 +17,7 @@ import supplierImage from 'assets/images/supplier_building.png';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialTabs from 'react-native-material-tabs';
-import {useState} from 'react';
 import {getShadow} from 'utils';
-import {useEffect} from 'react';
 import useProjectActions from '../../redux/actions/projectActions';
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -28,6 +26,7 @@ import Layout from 'utils/Layout';
 import {useAlert} from 'components/Alert';
 import LottieView from 'lottie-react-native';
 import waiting from 'assets/animation/waiting.json';
+import {COLORS} from 'utils/constant';
 
 const TABS = ['Developer', 'Supplier', 'Customer'];
 
@@ -45,7 +44,7 @@ function RenderHeader({theme}) {
         <TouchableOpacity
           style={[
             styles.personContainer,
-            {backgroundColor: 'rgba(72,114,244,0.3)'},
+            {backgroundColor: COLORS.primaryLight},
           ]}>
           <MaterialIcons
             name={'person'}
@@ -254,7 +253,6 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     flexDirection: 'row',
     paddingTop: 10,
-    paddingBottom: 60,
     paddingHorizontal: Layout.window.width * 0.02,
   },
   projectContainer: {

@@ -6,6 +6,7 @@ import {
   ADD_VISITOR,
   GET_SELECTED_PROJECT,
   ADD_FOLLOW_UP,
+  GET_PIPELINES,
 } from './../actions/actionTypes';
 
 const initialState = {
@@ -20,6 +21,7 @@ const initialState = {
   assignOptions: [],
   visitorAnalytics: {},
   visitorSuggestions: [],
+  pipelines: [],
 };
 
 export default (state = initialState, action = {}) => {
@@ -116,6 +118,27 @@ export default (state = initialState, action = {}) => {
         loading: false,
         errorMessage: action.payload,
       };
+
+    case `${GET_PIPELINES}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${GET_PIPELINES}_FULFILLED`: {
+      const {pipelines} = action.payload;
+      return {
+        ...state,
+        loading: false,
+        pipelines,
+      };
+    }
+    case `${GET_PIPELINES}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+        errorMessage: action.payload,
+      };
+
     case `${ADD_VISITOR || ADD_FOLLOW_UP}_PENDING`:
       return {
         ...state,

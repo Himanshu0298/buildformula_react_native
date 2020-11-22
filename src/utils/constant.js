@@ -49,3 +49,10 @@ export const PRIORITY_COLORS = {
   medium: theme.colors.warning,
   high: 'rgba(255, 93, 93, 1)',
 };
+
+export const COLORS = {
+  primaryLight: 'rgba(72,114,244,0.3)',
+  deleteLight: 'rgba(255,93,93,0.2)',
+};
+
+export const APP_BOTTOM_TAB_HEIGHT = 50;

@@ -19,7 +19,7 @@ export default function useStructureActions() {
     updateStructureTypes: (formData) =>
       dispatch({
         type: types.SAVE_STRUCTURE,
-        payload: new Promise(async (resolve, reject) => {
+        payload: async () => {
           try {
             let response = processResponse(
               await structure.updateStructureTypes(formData),
@@ -28,21 +28,21 @@ export default function useStructureActions() {
             snackbar.showMessage({
               message: 'Updated Project Structure!',
             });
-            return resolve();
+            return Promise.resolve();
           } catch (error) {
             let errorMessage = processError(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',
             });
-            return reject(errorMessage);
+            return Promise.reject(errorMessage);
           }
-        }),
+        },
       }),
     saveStructure: (data) =>
       dispatch({
         type: types.SAVE_STRUCTURE,
-        payload: new Promise(async (resolve, reject) => {
+        payload: async () => {
           try {
             const {structureData, projectId, userId} = data;
             await Promise.all(
@@ -73,7 +73,7 @@ export default function useStructureActions() {
               }),
             );
 
-            return resolve();
+            return Promise.resolve();
           } catch (error) {
             console.log('-----> error', error);
             let errorMessage = processError(error);
@@ -81,9 +81,9 @@ export default function useStructureActions() {
               message: errorMessage,
               variant: 'error',
             });
-            return reject(errorMessage);
+            return Promise.reject(errorMessage);
           }
-        }),
+        },
       }),
   };
 }

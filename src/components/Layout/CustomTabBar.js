@@ -3,6 +3,7 @@ import {useNavigation, useRoute} from '@react-navigation/native';
 import React from 'react';
 import {View, StyleSheet} from 'react-native';
 import {withTheme, Button, Appbar} from 'react-native-paper';
+import {APP_BOTTOM_TAB_HEIGHT} from 'utils/constant';
 
 function CustomTabBar() {
   const navigation = useNavigation();
@@ -65,6 +66,7 @@ const styles = StyleSheet.create({
   container: {},
   contentContainer: {
     position: 'absolute',
+    height: APP_BOTTOM_TAB_HEIGHT,
     left: 0,
     right: 0,
     bottom: 0,

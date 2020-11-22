@@ -14,24 +14,24 @@ export default function useOtpActions() {
     sentOtp: (phone) =>
       dispatch({
         type: types.SEND_OTP,
-        payload: new Promise(async (resolve, reject) => {}),
+        payload: async () => {},
       }),
     verifyOtp: (data) =>
       dispatch({
         type: types.VERIFY_OTP,
-        payload: new Promise(async (resolve, reject) => {
+        payload: async () => {
           try {
             let response = processResponse(await otpCheck(data));
-            return resolve({response});
+            return Promise.resolve({response});
           } catch (error) {
             let errorMessage = processError(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',
             });
-            return reject(errorMessage);
+            return Promise.reject(errorMessage);
           }
-        }),
+        },
       }),
   };
 }
