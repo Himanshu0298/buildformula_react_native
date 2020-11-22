@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {View} from 'react-native';
 import {Button, Paragraph, Dialog, Portal} from 'react-native-paper';
-import {secondaryTheme, theme} from '../../styles/theme';
+import {secondaryTheme, theme} from 'styles/theme';
 import PropTypes from 'prop-types';
 
 const CustomAlert = (props) => {

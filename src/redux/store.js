@@ -5,7 +5,7 @@ import * as types from './actions/actionTypes';
 import reducer from './reducers';
 import {persistStore, persistReducer} from 'redux-persist';
 import AsyncStorage from '@react-native-community/async-storage';
-import Reactotron from './../../ReactotronConfig';
+import Reactotron from '../../ReactotronConfig';
 
 const appReducer = combineReducers(reducer);
 

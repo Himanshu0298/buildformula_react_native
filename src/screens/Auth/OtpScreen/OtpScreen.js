@@ -9,7 +9,7 @@ import {
   Image,
 } from 'react-native';
 import {useSelector} from 'react-redux';
-import image from './../../../assets/images/otp.png';
+import image from 'assets/images/otp.png';
 import {
   CodeField,
   Cursor,
@@ -17,13 +17,13 @@ import {
   useClearByFocusCell,
 } from 'react-native-confirmation-code-field';
 
-import BaseText from '../../../components/BaseText';
-import {theme} from '../../../styles/theme';
+import BaseText from 'components/BaseText';
+import {theme} from 'styles/theme';
 import {Button, withTheme} from 'react-native-paper';
-import Layout from '../../../utils/Layout';
+import Layout from 'utils/Layout';
 import Spinner from 'react-native-loading-spinner-overlay';
-import useOtpActions from '../../../redux/actions/otpActions';
-import {useAlert} from '../../../components/Alert';
+import useOtpActions from 'redux/actions/otpActions';
+import {useAlert} from 'components/Alert';
 
 const CELL_SIZE = 50;
 const CELL_BORDER_RADIUS = 8;

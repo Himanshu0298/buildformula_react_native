@@ -1,4 +1,4 @@
-import {theme} from '../styles/theme';
+import {theme} from 'styles/theme';
 
 export const SITE_URL = 'http://34.67.24.115';
 // export const SITE_URL = 'http://vshwanbuild.in';

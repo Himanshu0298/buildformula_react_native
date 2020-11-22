@@ -8,14 +8,14 @@ import {
   FlatList,
 } from 'react-native';
 import {Badge, Button, TextInput, withTheme} from 'react-native-paper';
-import BaseText from '../../../../../components/BaseText';
-import floorSlab from '../../../../../assets/images/slab.png';
-import Layout from '../../../../../utils/Layout';
-import {getFloorNumber} from '../../../../../utils';
-import {theme} from '../../../../../styles/theme';
-import {useSnackbar} from '../../../../../components/Snackbar';
+import BaseText from 'components/BaseText';
+import floorSlab from 'assets/images/slab.png';
+import Layout from 'utils/Layout';
+import {getFloorNumber} from 'utils';
+import {theme} from 'styles/theme';
+import {useSnackbar} from 'components/Snackbar';
 import {useBackHandler} from '@react-native-community/hooks';
-import {useAlert} from '../../../../../components/Alert';
+import {useAlert} from 'components/Alert';
 
 const checkUnitBhkValidity = (floors, floorCount) => {
   let result = {};

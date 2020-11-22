@@ -7,16 +7,16 @@ import {
   SafeAreaView,
 } from 'react-native';
 import {withTheme, Button, TextInput} from 'react-native-paper';
-import FormTitle from '../../../../components/FormTitle';
+import FormTitle from 'components/FormTitle';
 import {Formik} from 'formik';
 import {useTranslation} from 'react-i18next';
-import {theme} from '../../../../styles/theme';
-import RenderInput from '../../../../components/RenderInput';
-import FileInput from '../../../../components/FileInput';
-import BaseText from '../../../../components/BaseText';
-import useProjectActions from '../../../../redux/actions/projectActions';
+import {theme} from 'styles/theme';
+import RenderInput from 'components/RenderInput';
+import FileInput from 'components/FileInput';
+import BaseText from 'components/BaseText';
+import useProjectActions from 'redux/actions/projectActions';
 import * as Yup from 'yup';
-import {PHONE_REGEX} from '../../../../utils/constant';
+import {PHONE_REGEX} from 'utils/constant';
 import {ScrollView} from 'react-native-gesture-handler';
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';

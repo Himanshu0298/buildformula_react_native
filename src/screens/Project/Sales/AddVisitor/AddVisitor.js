@@ -9,23 +9,23 @@ import {
 import {withTheme, Subheading, Button, TextInput} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
-import ProjectHeader from '../../components/Layout/ProjectHeader';
-import BaseText from '../../components/BaseText';
-import {getShadow} from '../../utils';
-import {secondaryTheme, theme} from '../../styles/theme';
+import ProjectHeader from 'components/Layout/ProjectHeader';
+import BaseText from 'components/BaseText';
+import {getShadow} from 'utils';
+import {secondaryTheme, theme} from 'styles/theme';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
-import RenderInput from '../../components/RenderInput';
+import RenderInput from 'components/RenderInput';
 import {useTranslation} from 'react-i18next';
-import RenderSelect from '../../components/RenderSelect';
-import RenderDatePicker from '../../components/RenderDatePicker';
-import {PRIORITY_COLORS} from '../../utils/constant';
-import Radio from '../../components/Radio';
-import useSalesActions from '../../redux/actions/salesActions';
+import RenderSelect from 'components/RenderSelect';
+import RenderDatePicker from 'components/RenderDatePicker';
+import {PRIORITY_COLORS} from 'utils/constant';
+import Radio from 'components/Radio';
+import useSalesActions from 'redux/actions/salesActions';
 import dayjs from 'dayjs';
 import {TabView} from 'react-native-tab-view';
-import Layout from '../../utils/Layout';
-import MaterialTabBar from '../../components/MaterialTabBar';
+import Layout from 'utils/Layout';
+import MaterialTabBar from 'components/MaterialTabBar';
 
 const schema = Yup.object().shape({
   first_name: Yup.string('Invalid').required('Required'),

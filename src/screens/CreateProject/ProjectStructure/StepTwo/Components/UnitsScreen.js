@@ -8,13 +8,13 @@ import {
   SafeAreaView,
 } from 'react-native';
 import {Button, Subheading, TextInput, withTheme} from 'react-native-paper';
-import BaseText from '../../../../../components/BaseText';
-import {useSnackbar} from '../../../../../components/Snackbar';
-import {theme} from '../../../../../styles/theme';
-import {getFloorNumber, getUnitLabel} from '../../../../../utils';
-import Layout from '../../../../../utils/Layout';
-import bungalowHut from '../../../../../assets/images/bungalow_hut.png';
-import plotHut from '../../../../../assets/images/plot.png';
+import BaseText from 'components/BaseText';
+import {useSnackbar} from 'components/Snackbar';
+import {theme} from 'styles/theme';
+import {getFloorNumber, getUnitLabel} from 'utils';
+import Layout from 'utils/Layout';
+import bungalowHut from 'assets/images/bungalow_hut.png';
+import plotHut from 'assets/images/plot.png';
 import {useBackHandler} from '@react-native-community/hooks';
 
 const BHK_OPTIONS = [

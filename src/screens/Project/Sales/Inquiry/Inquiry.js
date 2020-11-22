@@ -17,20 +17,20 @@ import {
   Subheading,
   Divider,
 } from 'react-native-paper';
-import {getShadow} from '../../utils';
-import useSalesActions from '../../redux/actions/salesActions';
+import {getShadow} from 'utils';
+import useSalesActions from 'redux/actions/salesActions';
 import {useSelector} from 'react-redux';
 import dayjs from 'dayjs';
 import Spinner from 'react-native-loading-spinner-overlay';
-import {secondaryTheme, theme} from '../../styles/theme';
-import ProjectHeader from '../../components/Layout/ProjectHeader';
-import {PRIORITY_COLORS, TYPE_LABELS} from '../../utils/constant';
+import {secondaryTheme, theme} from 'styles/theme';
+import ProjectHeader from 'components/Layout/ProjectHeader';
+import {PRIORITY_COLORS, TYPE_LABELS} from 'utils/constant';
 import Modal from 'react-native-modal';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {TabView} from 'react-native-tab-view';
-import Layout from '../../utils/Layout';
-import MaterialTabBar from '../../components/MaterialTabBar';
-import CustomBadge from '../../components/CustomBadge';
+import Layout from 'utils/Layout';
+import MaterialTabBar from 'components/MaterialTabBar';
+import CustomBadge from 'components/CustomBadge';
 
 function StatsRow({visitorAnalytics}) {
   const {

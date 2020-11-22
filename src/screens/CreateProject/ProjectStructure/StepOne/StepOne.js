@@ -7,26 +7,26 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {withTheme, Button} from 'react-native-paper';
-import FormTitle from '../../../../components/FormTitle';
+import FormTitle from 'components/FormTitle';
 import {useTranslation} from 'react-i18next';
-import {theme} from '../../../../styles/theme';
-import BaseText from '../../../../components/BaseText';
-import apartment from '../../../../assets/images/apartment.png';
-import apartmentInactive from '../../../../assets/images/apartment_inactive.png';
-import shop from '../../../../assets/images/shop.png';
-import shopInactive from '../../../../assets/images/shop_inactive.png';
-import office from '../../../../assets/images/office.png';
-import officeInactive from '../../../../assets/images/office_inactive.png';
-import bungalow from '../../../../assets/images/bungalow.png';
-import bungalowInactive from '../../../../assets/images/bungalow_inactive.png';
-import plot from '../../../../assets/images/plot.png';
-import plotInactive from '../../../../assets/images/plot_inactive.png';
-import Layout from '../../../../utils/Layout';
-import {useSnackbar} from '../../../../components/Snackbar';
-import useStructureActions from '../../../../redux/actions/structureActions';
+import {theme} from 'styles/theme';
+import BaseText from 'components/BaseText';
+import apartment from 'assets/images/apartment.png';
+import apartmentInactive from 'assets/images/apartment_inactive.png';
+import shop from 'assets/images/shop.png';
+import shopInactive from 'assets/images/shop_inactive.png';
+import office from 'assets/images/office.png';
+import officeInactive from 'assets/images/office_inactive.png';
+import bungalow from 'assets/images/bungalow.png';
+import bungalowInactive from 'assets/images/bungalow_inactive.png';
+import plot from 'assets/images/plot.png';
+import plotInactive from 'assets/images/plot_inactive.png';
+import Layout from 'utils/Layout';
+import {useSnackbar} from 'components/Snackbar';
+import useStructureActions from 'redux/actions/structureActions';
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
-import {DEFAULT_STRUCTURE} from '../../../../utils/constant';
+import {DEFAULT_STRUCTURE} from 'utils/constant';
 
 function ImageRender({
   title,

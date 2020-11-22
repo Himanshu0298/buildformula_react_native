@@ -1,14 +1,14 @@
 import React, {useEffect} from 'react';
 import {StyleSheet, StatusBar, View, Image} from 'react-native';
 import {withTheme, Button, Headline} from 'react-native-paper';
-import welcomeImage from './../../../assets/images/language.png';
-import banner from './../../../assets/images/banner.png';
-import BaseText from '../../../components/BaseText';
+import welcomeImage from 'assets/images/language.png';
+import banner from 'assets/images/banner.png';
+import BaseText from 'components/BaseText';
 import {useTranslation} from 'react-i18next';
-import Layout from '../../../utils/Layout';
-import {theme} from '../../../styles/theme';
+import Layout from 'utils/Layout';
+import {theme} from 'styles/theme';
 import {useSelector} from 'react-redux';
-import useAppActions from '../../../redux/actions/appActions';
+import useAppActions from 'redux/actions/appActions';
 
 function LanguageButton({label, language, onPress, ...props}) {
   return (

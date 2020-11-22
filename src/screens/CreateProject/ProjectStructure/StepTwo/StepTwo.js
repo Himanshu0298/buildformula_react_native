@@ -8,16 +8,16 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {Menu, Title, withTheme} from 'react-native-paper';
-import FormTitle from '../../../../components/FormTitle';
+import FormTitle from 'components/FormTitle';
 import {useTranslation} from 'react-i18next';
-import {secondaryTheme, theme} from '../../../../styles/theme';
+import {secondaryTheme, theme} from 'styles/theme';
 import {
   getFloorNumber,
   getShadow,
   getTowerLabel,
   getUnitLabel,
-} from '../../../../utils';
-import {useSnackbar} from '../../../../components/Snackbar';
+} from 'utils';
+import {useSnackbar} from 'components/Snackbar';
 import MaterialTabs from 'react-native-material-tabs';
 import TowersScreen from './Components/TowersScreen';
 import FloorsScreen from './Components/FloorsScreen';
@@ -27,8 +27,8 @@ import {
   MAX_FLOORS,
   MAX_UNITS,
   TYPE_LABELS,
-} from '../../../../utils/constant';
-import useStructureActions from '../../../../redux/actions/structureActions';
+} from 'utils/constant';
+import useStructureActions from 'redux/actions/structureActions';
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
 import AntIcons from 'react-native-vector-icons/AntDesign';

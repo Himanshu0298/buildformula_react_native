@@ -14,9 +14,9 @@ import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {useTranslation} from 'react-i18next';
 import LinearGradient from 'react-native-linear-gradient';
-import useProjectActions from '../../../redux/actions/projectActions';
-import {secondaryTheme} from '../../../styles/theme';
-import splash from '../../../assets/animation/splash.json';
+import useProjectActions from 'redux/actions/projectActions';
+import {secondaryTheme} from 'styles/theme';
+import splash from 'assets/animation/splash.json';
 import LottieView from 'lottie-react-native';
 
 function RoleBox({title, onSelectPlan, amount, colors}) {

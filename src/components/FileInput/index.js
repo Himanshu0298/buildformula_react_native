@@ -5,7 +5,7 @@ import {TextInput, Caption, Button, IconButton} from 'react-native-paper';
 import ImagePicker from 'react-native-image-picker';
 import ImageResizer from 'react-native-image-resizer';
 import DocumentPicker from 'react-native-document-picker';
-import {secondaryTheme, theme} from '../../styles/theme';
+import {secondaryTheme, theme} from 'styles/theme';
 import {useActionSheet} from '@expo/react-native-action-sheet';
 import RNFS from 'react-native-fs';
 

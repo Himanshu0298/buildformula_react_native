@@ -11,23 +11,23 @@ import {
   RefreshControl,
 } from 'react-native';
 import {Badge, withTheme, Subheading, Caption, FAB} from 'react-native-paper';
-import logo from './../../assets/images/logo.png';
-import developerImage from './../../assets/images/developer_building.png';
-import supplierImage from './../../assets/images/supplier_building.png';
+import logo from 'assets/images/logo.png';
+import developerImage from 'assets/images/developer_building.png';
+import supplierImage from 'assets/images/supplier_building.png';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialTabs from 'react-native-material-tabs';
 import {useState} from 'react';
-import {getShadow} from '../../utils';
+import {getShadow} from 'utils';
 import {useEffect} from 'react';
 import useProjectActions from '../../redux/actions/projectActions';
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
-import {secondaryTheme} from '../../styles/theme';
-import Layout from '../../utils/Layout';
-import {useAlert} from '../../components/Alert';
+import {secondaryTheme} from 'styles/theme';
+import Layout from 'utils/Layout';
+import {useAlert} from 'components/Alert';
 import LottieView from 'lottie-react-native';
-import waiting from './../../assets/animation/waiting.json';
+import waiting from 'assets/animation/waiting.json';
 
 const TABS = ['Developer', 'Supplier', 'Customer'];
 

@@ -4,7 +4,7 @@ import {View, TouchableOpacity, StyleSheet} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useSelector} from 'react-redux';
-import {secondaryTheme} from '../../styles/theme';
+import {secondaryTheme} from 'styles/theme';
 
 const PERSON_ICON_BACKGROUND = 'rgba(72,114,244,0.3)';
 

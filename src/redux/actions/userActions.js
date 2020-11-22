@@ -1,8 +1,8 @@
 import * as types from './actionTypes';
 import {useDispatch} from 'react-redux';
 import useAuth from '../../services/user';
-import {useResProcessor} from '../../utils/responseProcessor';
-import {useSnackbar} from '../../components/Snackbar';
+import {useResProcessor} from 'utils/responseProcessor';
+import {useSnackbar} from 'components/Snackbar';
 
 export default function useUserActions() {
   const dispatch = useDispatch();

@@ -5,7 +5,7 @@ import {
   SET_INITIAL_STATE,
 } from './../actions/actionTypes';
 import _ from 'lodash';
-import {DEFAULT_STRUCTURE} from '../../utils/constant';
+import {DEFAULT_STRUCTURE} from 'utils/constant';
 
 const initialState = {
   loading: false,

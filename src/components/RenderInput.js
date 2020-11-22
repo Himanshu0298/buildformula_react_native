@@ -2,7 +2,7 @@ import React from 'react';
 import {StyleSheet, View, Text} from 'react-native';
 import PropTypes from 'prop-types';
 import {TextInput} from 'react-native-paper';
-import {theme} from '../styles/theme';
+import {theme} from 'styles/theme';
 
 const RenderInput = React.forwardRef((props, ref) => {
   const {error, containerStyles, ...rest} = props;

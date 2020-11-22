@@ -15,22 +15,22 @@ import {
   TextInput,
   Text,
 } from 'react-native-paper';
-import {secondaryTheme, theme} from '../../../styles/theme';
-import banner from './../../../assets/images/banner.png';
-import image from './../../../assets/images/buildings.png';
-import BaseText from '../../../components/BaseText';
+import {secondaryTheme, theme} from 'styles/theme';
+import banner from 'assets/images/banner.png';
+import image from 'assets/images/buildings.png';
+import BaseText from 'components/BaseText';
 import {Formik} from 'formik';
-import CustomInput from '../Components/CustomInput';
-import useUserActions from '../../../redux/actions/userActions';
+import CustomInput from './../Components/CustomInput';
+import useUserActions from 'redux/actions/userActions';
 import {useSelector} from 'react-redux';
 import * as Yup from 'yup';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {useTranslation} from 'react-i18next';
-import Layout from '../../../utils/Layout';
+import Layout from 'utils/Layout';
 import BottomSheet from 'reanimated-bottom-sheet';
-import {PHONE_REGEX} from '../../../utils/constant';
-import useProjectActions from '../../../redux/actions/projectActions';
-import useAppActions from '../../../redux/actions/appActions';
+import {PHONE_REGEX} from 'utils/constant';
+import useProjectActions from 'redux/actions/projectActions';
+import useAppActions from 'redux/actions/appActions';
 
 function SignUpButton({label, onPress}) {
   return (
@@ -456,11 +456,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     height: 70,
     alignItems: 'center',
-  },
-  loginError: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    textAlign: 'center',
   },
   inputMainContainer: {
     width: '100%',

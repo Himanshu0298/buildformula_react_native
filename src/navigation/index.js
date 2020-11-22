@@ -1,42 +1,57 @@
 import React, {Fragment, useEffect, useMemo, useState} from 'react';
 import {BackHandler} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
-import {theme} from '../styles/theme';
+import {theme} from 'styles/theme';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createDrawerNavigator} from '@react-navigation/drawer';
-import Home from '../screens/Home';
 import TouchID from 'react-native-touch-id';
 import DrawerContent from './Components/DrawerContent';
-import Login from '../screens/Auth/Login';
-import OtpScreen from '../screens/Auth/OtpScreen';
 import {useSelector} from 'react-redux';
+import {getInitialAuthScreen} from 'utils';
+import useAppActions from '../redux/actions/appActions';
+
+//Auth Screens
 import LanguageSelect from '../screens/Auth/LanguageSelect';
-import SettingsScreen from '../screens/Settings';
-import SearchScreen from '../screens/Search';
+import Login from '../screens/Auth/Login';
 import SignUp from '../screens/Auth/SignUp';
+import OtpScreen from '../screens/Auth/OtpScreen';
 import RoleSelect from '../screens/Auth/RoleSelect';
-import ProjectDashboard from '../screens/ProjectDashboard';
-import Inquiry from '../screens/Inquiry';
-import AddVisitor from '../screens/AddVisitor';
-import AddFollowUp from '../screens/AddFollowUp';
-import ProjectSchedule from '../screens/ProjectSchedule';
-import BookingChart from '../screens/BookingChart';
-import Payment from '../screens/Payment';
-import ProjectStructure from '../screens/ProjectStructure';
-import MainPhase from '../screens/MainPhase';
-import AssignTask from '../screens/AssignTask';
-import ProcessChart from '../screens/ProcessChart/Home';
-import Estimation from '../screens/Estimation';
-import RequestForPrice from '../screens/RequestForPrice';
-import PurchaseOrders from '../screens/PurchaseOrders';
-import Files from '../screens/Files';
+
+//Project Creation Screens
 import PC_StepOne from '../screens/CreateProject/ProjectCreation/StepOne';
 import PC_StepTwo from '../screens/CreateProject/ProjectCreation/StepTwo';
 import PS_StepOne from '../screens/CreateProject/ProjectStructure/StepOne';
 import PS_StepTwo from '../screens/CreateProject/ProjectStructure/StepTwo';
 import PlanSelect from '../screens/CreateProject/PlanSelect';
-import {getInitialAuthScreen} from '../utils';
-import useAppActions from '../redux/actions/appActions';
+
+//Home Screen
+import Home from '../screens/Home';
+//Settings Screen
+import SettingsScreen from '../screens/Settings';
+//Project Search Screen
+import SearchScreen from '../screens/Search';
+
+/*************   Project Sub Screens    *************/
+import ProjectDashboard from '../screens/Project/Dashboard';
+//Project : Sales Screens
+import Inquiry from '../screens/Project/Sales/Inquiry';
+import ProjectStructure from '../screens/Project/Sales/ProjectStructure';
+import BookingChart from '../screens/Project/Sales/BookingChart';
+import Payment from '../screens/Project/Sales/Payment';
+import AddVisitor from '../screens/Project/Sales/AddVisitor';
+import AddFollowUp from '../screens/Project/Sales/AddFollowUp';
+//Project : Project management screens
+import ProjectSchedule from '../screens/Project/ProjectManagement/ProjectSchedule';
+import MainPhase from '../screens/Project/ProjectManagement/MainPhase';
+import AssignTask from '../screens/Project/ProjectManagement/AssignTask';
+import ProcessChart from '../screens/Project/ProjectManagement/ProcessChart/Home';
+//Project : Material management screens
+import Estimation from '../screens/Project/MaterialManagement/Estimation';
+import RequestForPrice from '../screens/Project/MaterialManagement/RequestForPrice';
+import PurchaseOrders from '../screens/Project/MaterialManagement/PurchaseOrders';
+//Project : Files screens
+import Files from '../screens/Project/Files';
+/*************   Project Sub Screens    *************/
 
 const optionalConfigObject = {
   unifiedErrors: false, // use unified error messages (default false)

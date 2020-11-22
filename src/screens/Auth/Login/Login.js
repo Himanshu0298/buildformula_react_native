@@ -8,21 +8,21 @@ import {
   Keyboard,
 } from 'react-native';
 import {withTheme, Headline, Subheading, Button} from 'react-native-paper';
-import {theme} from '../../../styles/theme';
-import banner from './../../../assets/images/banner.png';
-import image from './../../../assets/images/buildings.png';
-import BaseText from '../../../components/BaseText';
+import {theme} from 'styles/theme';
+import banner from 'assets/images/banner.png';
+import image from 'assets/images/buildings.png';
+import BaseText from 'components/BaseText';
 import {Formik} from 'formik';
-import CustomInput from '../Components/CustomInput';
-import useUserActions from '../../../redux/actions/userActions';
+import CustomInput from './../Components/CustomInput';
+import useUserActions from 'redux/actions/userActions';
 import {useSelector} from 'react-redux';
 import * as Yup from 'yup';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {useTranslation} from 'react-i18next';
-import Layout from '../../../utils/Layout';
+import Layout from 'utils/Layout';
 import BottomSheet from 'reanimated-bottom-sheet';
-import {useSnackbar} from '../../../components/Snackbar';
-import SheetHeader from '../../../components/SheetHeader';
+import {useSnackbar} from 'components/Snackbar';
+import SheetHeader from 'components/SheetHeader';
 
 function LoginButton({label, onPress}) {
   return (

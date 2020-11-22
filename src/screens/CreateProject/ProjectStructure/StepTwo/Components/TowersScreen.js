@@ -8,13 +8,13 @@ import {
   ScrollView,
 } from 'react-native';
 import {Button, Subheading, TextInput, withTheme} from 'react-native-paper';
-import BaseText from '../../../../../components/BaseText';
-import towerActive from '../../../../../assets/images/tower.png';
-import towerInactive from '../../../../../assets/images/tower_inactive.png';
-import Layout from '../../../../../utils/Layout';
-import {useSnackbar} from '../../../../../components/Snackbar';
-import {getTowerLabel} from '../../../../../utils';
-import {useAlert} from '../../../../../components/Alert';
+import BaseText from 'components/BaseText';
+import towerActive from 'assets/images/tower.png';
+import towerInactive from 'assets/images/tower_inactive.png';
+import Layout from 'utils/Layout';
+import {useSnackbar} from 'components/Snackbar';
+import {getTowerLabel} from 'utils';
+import {useAlert} from 'components/Alert';
 
 function RenderTowers({towerCount, towerValidationById, onPress}) {
   let towersList = [];

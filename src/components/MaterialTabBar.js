@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {TabBar} from 'react-native-tab-view';
-import {theme} from '../styles/theme';
+import {theme} from 'styles/theme';
 import BaseText from './BaseText';
 
 export default function MaterialTabBar(props) {

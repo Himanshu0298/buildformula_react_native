@@ -1,7 +1,12 @@
 module.exports = {
   root: true,
-  extends: '@react-native-community',
-  plugins: ['react', 'react-native'],
+  extends: [
+    '@react-native-community',
+    'eslint:recommended',
+    'plugin:import/errors',
+    'plugin:import/warnings',
+  ],
+  plugins: ['react', 'react-native', 'module-resolver'],
   parserOptions: {
     ecmaFeatures: {
       jsx: true,
@@ -13,5 +18,16 @@ module.exports = {
     'react-native/split-platform-components': 2,
     // 'react-native/no-raw-text': 2,
     'react-native/no-single-element-style-arrays': 2,
+    'import/no-unresolved': [2, {commonjs: true, amd: true}],
+    'import/named': 2,
+    'import/namespace': 2,
+    'import/default': 2,
+    'import/export': 2,
+  },
+  settings: {
+    'import/ignore': ['node_modules'],
+    'import/resolver': {
+      'babel-module': {},
+    },
   },
 };

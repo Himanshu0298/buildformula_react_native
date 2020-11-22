@@ -3,7 +3,7 @@ import {TouchableOpacity} from 'react-native';
 import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
 import {Caption, RadioButton, withTheme} from 'react-native-paper';
-import {secondaryTheme, theme} from '../styles/theme';
+import {secondaryTheme, theme} from 'styles/theme';
 
 const Radio = React.forwardRef((props, ref) => {
   const {value, checked, onChange, label, ...rest} = props;

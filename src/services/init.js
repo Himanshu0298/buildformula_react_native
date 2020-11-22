@@ -1,4 +1,4 @@
-import {BASE_API_URL} from '../utils/constant';
+import {BASE_API_URL} from 'utils/constant';
 import {useSelector} from 'react-redux';
 import {store} from '../redux/store';
 const axios = require('axios');

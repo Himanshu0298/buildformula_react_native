@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, View, TouchableOpacity} from 'react-native';
 import {Title, withTheme, Caption, Subheading} from 'react-native-paper';
-import useUserActions from '../../../redux/actions/userActions';
+import useUserActions from 'redux/actions/userActions';
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {useTranslation} from 'react-i18next';
