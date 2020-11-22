@@ -22,7 +22,7 @@ const RenderDatePicker = React.forwardRef((props, ref) => {
   const togglePicker = () => setOpen((v) => !v);
   const handleConfirm = () => {
     togglePicker();
-    onChange(date);
+    onChange(date || new Date());
   };
 
   const valueFormat = format || mode === 'date' ? 'DD/MM/YYYY' : 'hh:mm A';

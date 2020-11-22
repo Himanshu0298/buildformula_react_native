@@ -15,5 +15,8 @@ export default function useSales() {
     addVisitor: (data) => {
       return instance.post('/visitors/add', data, config());
     },
+    addFollowUp: (data) => {
+      return instance.post('/visitors/addfollowup', data, config());
+    },
   };
 }

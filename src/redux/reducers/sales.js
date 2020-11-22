@@ -5,6 +5,7 @@ import {
   GET_SALES_DATA,
   ADD_VISITOR,
   GET_SELECTED_PROJECT,
+  ADD_FOLLOW_UP,
 } from './../actions/actionTypes';
 
 const initialState = {
@@ -115,18 +116,18 @@ export default (state = initialState, action = {}) => {
         loading: false,
         errorMessage: action.payload,
       };
-    case `${ADD_VISITOR}_PENDING`:
+    case `${ADD_VISITOR || ADD_FOLLOW_UP}_PENDING`:
       return {
         ...state,
         loading: true,
       };
-    case `${ADD_VISITOR}_FULFILLED`: {
+    case `${ADD_VISITOR || ADD_FOLLOW_UP}_FULFILLED`: {
       return {
         ...state,
         loading: false,
       };
     }
-    case `${ADD_VISITOR}_REJECTED`:
+    case `${ADD_VISITOR || ADD_FOLLOW_UP}_REJECTED`:
       return {
         ...state,
         loading: false,

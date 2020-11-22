@@ -70,6 +70,7 @@ export default {
       label_inquiry_for: 'Inquiry for',
       label_for_bhk: 'For BHK',
       label_remark: 'Remark',
+      label_search_visitors: 'Search visitors',
     },
   },
   hi: {
@@ -137,6 +138,7 @@ export default {
       label_inquiry_for: 'किसके लिए पूछताछ',
       label_for_bhk: 'BHK के लिए',
       label_remark: 'टिप्पणी',
+      label_search_visitors: 'जांच करें',
     },
   },
 };

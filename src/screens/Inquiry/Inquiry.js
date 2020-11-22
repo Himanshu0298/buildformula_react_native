@@ -25,12 +25,12 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import {secondaryTheme, theme} from '../../styles/theme';
 import ProjectHeader from '../../components/Layout/ProjectHeader';
 import {PRIORITY_COLORS, TYPE_LABELS} from '../../utils/constant';
-import BaseText from '../../components/BaseText';
 import Modal from 'react-native-modal';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {TabView} from 'react-native-tab-view';
 import Layout from '../../utils/Layout';
 import MaterialTabBar from '../../components/MaterialTabBar';
+import CustomBadge from '../../components/CustomBadge';
 
 function StatsRow({visitorAnalytics}) {
   const {
@@ -104,22 +104,17 @@ function RenderVisitorItem({data, index, toggleSheet}) {
           <Subheading theme={secondaryTheme} style={styles.visitorTitle}>
             {dayjs(follow_up_date).format('DD MMM')}
           </Subheading>
-          <View
-            style={[
-              styles.badge,
-              {backgroundColor: PRIORITY_COLORS[priority]},
-            ]}>
-            <BaseText style={styles.priorityLabel}>{priority}</BaseText>
-          </View>
+          <CustomBadge color={PRIORITY_COLORS[priority]} label={priority} />
         </View>
         <View style={styles.rowItemContainer}>
           <Subheading theme={secondaryTheme} style={styles.visitorTitle}>
             {TYPE_LABELS[inquiry_for]}
           </Subheading>
-          <View
-            style={[styles.badge, {backgroundColor: 'rgba(72,114,244,0.3)'}]}>
-            <BaseText style={styles.statusLabel}>{'NEGOTIATION'}</BaseText>
-          </View>
+          <CustomBadge
+            color="rgba(72,114,244,0.15)"
+            label={'NEGOTIATION'}
+            labelStyles={styles.statusLabel}
+          />
         </View>
       </View>
       <Divider />
@@ -218,16 +213,11 @@ function RenderVisitorDetails({data = {}, handleClose, handleEdit}) {
           <Caption theme={secondaryTheme} style={styles.sheetRowLabel}>
             Priority:
           </Caption>
-          <View
-            style={[
-              styles.badge,
-              {
-                backgroundColor: PRIORITY_COLORS[data.priority],
-                marginLeft: 10,
-              },
-            ]}>
-            <BaseText style={styles.priorityLabel}>{data.priority}</BaseText>
-          </View>
+          <CustomBadge
+            color={PRIORITY_COLORS[data.priority]}
+            style={{marginLeft: 10}}
+            label={data.priority}
+          />
         </View>
         <View style={styles.sheetRow}>
           <Caption theme={secondaryTheme} style={styles.sheetRowLabel}>
@@ -242,13 +232,12 @@ function RenderVisitorDetails({data = {}, handleClose, handleEdit}) {
           <Caption theme={secondaryTheme} style={styles.sheetRowLabel}>
             Status:
           </Caption>
-          <View
-            style={[
-              styles.badge,
-              {backgroundColor: 'rgba(72,114,244,0.3)', marginLeft: 10},
-            ]}>
-            <BaseText style={styles.statusLabel}>{'NEGOTIATION'}</BaseText>
-          </View>
+          <CustomBadge
+            color="rgba(72,114,244,0.15)"
+            label={'NEGOTIATION'}
+            style={{marginLeft: 10}}
+            labelStyles={styles.statusLabel}
+          />
         </View>
         <View style={styles.sheetRow}>
           <Caption theme={secondaryTheme} style={styles.sheetRowLabel}>
@@ -380,7 +369,7 @@ function Inquiry(props) {
           {
             icon: 'arrow-up',
             label: 'Follow up',
-            onPress: () => console.log('Pressed notifications'),
+            onPress: () => navigation.navigate('AddFollowUp'),
           },
         ]}
       />
@@ -441,20 +430,6 @@ const styles = StyleSheet.create({
   },
   name: {
     textTransform: 'capitalize',
-  },
-  badge: {
-    borderRadius: 20,
-    paddingHorizontal: 15,
-    paddingVertical: 2,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  priorityLabel: {
-    color: '#fff',
-    textTransform: 'uppercase',
-    fontSize: 10,
-    borderRadius: 10,
   },
   statusLabel: {
     color: theme.colors.primary,

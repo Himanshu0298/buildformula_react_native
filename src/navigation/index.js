@@ -18,6 +18,7 @@ import RoleSelect from '../screens/Auth/RoleSelect';
 import ProjectDashboard from '../screens/ProjectDashboard';
 import Inquiry from '../screens/Inquiry';
 import AddVisitor from '../screens/AddVisitor';
+import AddFollowUp from '../screens/AddFollowUp';
 import ProjectSchedule from '../screens/ProjectSchedule';
 import BookingChart from '../screens/BookingChart';
 import Payment from '../screens/Payment';
@@ -272,6 +273,11 @@ function NavContainer() {
               <Stack.Screen
                 name="AddVisitor"
                 component={AddVisitor}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="AddFollowUp"
+                component={AddFollowUp}
                 options={{headerShown: false}}
               />
             </Fragment>
