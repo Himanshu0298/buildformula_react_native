@@ -51,21 +51,6 @@ function PersonalTab({
   const {handleChange, setFieldValue, values, handleBlur, errors} = formikProps;
   const {t} = useTranslation();
 
-  useEffect(() => {
-    if (
-      errors.first_name ||
-      errors.last_name ||
-      errors.phone ||
-      errors.occupation ||
-      errors.current_locality
-    ) {
-      setSelectedTab(0);
-    } else if (Object.keys(errors).length > 0) {
-      setSelectedTab(1);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [errors]);
-
   const firstNameRef = React.useRef();
   const lastNameRef = React.useRef();
   const emailRef = React.useRef();
@@ -212,21 +197,6 @@ function InquiryTab({
   } = formikProps;
 
   const {t} = useTranslation();
-
-  useEffect(() => {
-    if (
-      errors.first_name ||
-      errors.last_name ||
-      errors.phone ||
-      errors.occupation ||
-      errors.current_locality
-    ) {
-      setSelectedTab(0);
-    } else if (Object.keys(errors).length > 0) {
-      setSelectedTab(1);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [errors]);
 
   const budgetFromRef = React.useRef();
   const budgetToRef = React.useRef();
@@ -399,6 +369,8 @@ function InquiryTab({
 }
 
 function RenderForm({formikProps, user, ...restProps}) {
+  const {errors} = formikProps;
+
   const [selectedTab, setSelectedTab] = useState(0);
   const [routes] = React.useState([
     {key: 0, title: 'Personal details'},
@@ -424,6 +396,22 @@ function RenderForm({formikProps, user, ...restProps}) {
 
     return data;
   }, [assignOptions, user]);
+
+  useEffect(() => {
+    if (
+      (errors.first_name ||
+        errors.last_name ||
+        errors.phone ||
+        errors.occupation ||
+        errors.current_locality) &&
+      selectedTab === 1
+    ) {
+      setSelectedTab(0);
+    } else if (Object.keys(errors).length > 0 && selectedTab === 0) {
+      setSelectedTab(1);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [errors]);
 
   const renderScene = ({route: {key}}) => {
     switch (key) {

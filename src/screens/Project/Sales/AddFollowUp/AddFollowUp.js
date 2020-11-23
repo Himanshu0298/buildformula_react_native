@@ -240,6 +240,7 @@ function FollowUpTab({
     <Formik
       validateOnBlur={false}
       validateOnChange={false}
+      initialValues={{}}
       validationSchema={schema}
       onSubmit={async (values) => {
         if (isNaN(selectedVisitor)) {
