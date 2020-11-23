@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import {
   SET_INITIAL_STATE,
   GET_VISITORS,
@@ -7,6 +8,7 @@ import {
   GET_SELECTED_PROJECT,
   ADD_FOLLOW_UP,
   GET_PIPELINES,
+  DELETE_PIPELINE,
 } from './../actions/actionTypes';
 
 const initialState = {
@@ -133,6 +135,34 @@ export default (state = initialState, action = {}) => {
       };
     }
     case `${GET_PIPELINES}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+        errorMessage: action.payload,
+      };
+
+    case `${DELETE_PIPELINE}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${DELETE_PIPELINE}_FULFILLED`: {
+      const pipelines = _.cloneDeep(state.pipelines);
+      const index = pipelines.findIndex(
+        (pipeline) => pipeline.id === action.payload,
+      );
+
+      if (index > -1) {
+        pipelines.splice(index, 1);
+      }
+
+      return {
+        ...state,
+        loading: false,
+        pipelines,
+      };
+    }
+    case `${DELETE_PIPELINE}_REJECTED`:
       return {
         ...state,
         loading: false,

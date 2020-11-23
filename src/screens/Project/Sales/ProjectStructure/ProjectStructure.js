@@ -9,6 +9,7 @@ import {COLORS} from 'utils/constant';
 import BaseText from 'components/BaseText';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {Board, BoardRepository} from 'components/Board/components';
+import {useAlert} from 'components/Alert';
 // import {BoardRepository, Board} from 'react-native-draganddrop-board';
 
 function RenderContacts({item}) {
@@ -39,8 +40,9 @@ function RenderContacts({item}) {
   );
 }
 
-function RenderHeader({data = {}}) {
-  const {title, get_visitors = []} = data?.attributes?.data?.pipeline || {};
+function RenderHeader({data = {}, handleDelete}) {
+  const {pipeline = {}, id} = data?.attributes?.data || {};
+  const {id: pipelineId, title, get_visitors = []} = pipeline;
 
   return (
     <>
@@ -54,10 +56,13 @@ function RenderHeader({data = {}}) {
               size={19}
             />
           </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.icon, {backgroundColor: COLORS.deleteLight}]}>
-            <MaterialIcons name={'delete'} color={'#FF5D5D'} size={19} />
-          </TouchableOpacity>
+          {id !== 1 ? (
+            <TouchableOpacity
+              onPress={() => handleDelete(pipelineId, get_visitors.length)}
+              style={[styles.icon, {backgroundColor: COLORS.deleteLight}]}>
+              <MaterialIcons name={'delete'} color={'#FF5D5D'} size={19} />
+            </TouchableOpacity>
+          ) : null}
           <TouchableOpacity
             style={[
               styles.icon,
@@ -80,58 +85,73 @@ function DotIndicator({count, selected}) {
   return (
     <View style={styles.dotContainer}>
       {new Array(count).fill(0).map((_, i) => {
+        const backgroundColor =
+          i === selected ? theme.colors.primary : 'rgba(4,29,54,0.1)';
+
         return (
-          <View
-            key={i}
-            style={[
-              styles.dotIndicator,
-              {
-                backgroundColor:
-                  i === selected ? theme.colors.primary : 'rgba(4,29,54,0.1)',
-              },
-            ]}
-          />
+          <View key={i} style={[styles.dotIndicator, {backgroundColor}]} />
         );
       })}
     </View>
   );
 }
 
-const RenderBoard = React.memo(({pipelines, setSelectedTab}) => {
-  const data = React.useMemo(() => {
-    return pipelines.map((pipeline, i) => ({
-      id: i + 1,
-      name: pipeline.title,
-      rows: pipeline.get_visitors,
-      pipeline,
-    }));
-  }, [pipelines]);
+const RenderBoard = React.memo(
+  ({pipelines, setSelectedTab, deletePipeline}) => {
+    const alert = useAlert();
 
-  const boardRepository = new BoardRepository(data);
+    const onDeletePipeline = (id, visitorCount) => {
+      if (visitorCount > 0) {
+        alert.show({
+          title: 'Error',
+          message: 'Only Empty Cards cn be deleted',
+          dismissable: false,
+        });
+        return;
+      }
 
-  return (
-    <View style={styles.boardContainer}>
-      <Board
-        boardBackground="#fff"
-        boardRepository={boardRepository}
-        renderHeader={(column) => <RenderHeader data={column} />}
-        cardContent={(item) => <RenderContacts item={item} />}
-        onChangeTab={setSelectedTab}
-        open={() => {
-          console.log('-----> open');
-        }}
-        onDragEnd={() => {
-          console.log('-----> onDragEnd');
-        }}
-      />
-    </View>
-  );
-});
+      const formData = new FormData();
+      formData.append('status_id', id);
+      deletePipeline(id, formData);
+    };
+
+    const boardRepository = React.useMemo(() => {
+      const data = pipelines.map((pipeline, i) => ({
+        id: i + 1,
+        name: pipeline.title,
+        rows: pipeline.get_visitors,
+        pipeline,
+      }));
+
+      return new BoardRepository(data);
+    }, [pipelines]);
+
+    return (
+      <View style={styles.boardContainer}>
+        <Board
+          boardBackground="#fff"
+          boardRepository={boardRepository}
+          renderHeader={(column) => (
+            <RenderHeader data={column} handleDelete={onDeletePipeline} />
+          )}
+          cardContent={(item) => <RenderContacts item={item} />}
+          onChangeTab={setSelectedTab}
+          open={() => {
+            console.log('-----> open');
+          }}
+          onDragEnd={() => {
+            console.log('-----> onDragEnd');
+          }}
+        />
+      </View>
+    );
+  },
+);
 
 export default function ProjectStructure(props) {
   const [selectedTab, setSelectedTab] = React.useState(0);
 
-  const {getPipelineData} = useSalesActions();
+  const {getPipelineData, deletePipeline} = useSalesActions();
 
   let {pipelines, loading} = useSelector((state) => state.sales);
   const {selectedProject} = useSelector((state) => state.project);
@@ -150,7 +170,11 @@ export default function ProjectStructure(props) {
         </View>
       ) : (
         <>
-          <RenderBoard pipelines={pipelines} setSelectedTab={setSelectedTab} />
+          <RenderBoard
+            pipelines={pipelines}
+            setSelectedTab={setSelectedTab}
+            deletePipeline={deletePipeline}
+          />
           <DotIndicator count={pipelines.length} selected={selectedTab} />
         </>
       )}
