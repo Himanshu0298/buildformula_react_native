@@ -1,8 +1,23 @@
 import React from 'react';
-import {StyleSheet, View, TouchableOpacity} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  Keyboard,
+  ScrollView,
+} from 'react-native';
 import useSalesActions from 'redux/actions/salesActions';
 import {useSelector} from 'react-redux';
-import {Button, Caption, Subheading, Title} from 'react-native-paper';
+import {
+  Button,
+  Caption,
+  Dialog,
+  Divider,
+  Menu,
+  Portal,
+  Searchbar,
+  Subheading,
+} from 'react-native-paper';
 import {secondaryTheme, theme} from 'styles/theme';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {COLORS} from 'utils/constant';
@@ -12,6 +27,7 @@ import {Board, BoardRepository} from 'components/Board/components';
 import {useAlert} from 'components/Alert';
 import {getShadow} from 'utils';
 import RenderInput from 'components/RenderInput';
+import {useTranslation} from 'react-i18next';
 // import {BoardRepository, Board} from 'react-native-draganddrop-board';
 
 function RenderContacts({item}) {
@@ -42,7 +58,7 @@ function RenderContacts({item}) {
   );
 }
 
-function RenderHeader({data = {}, handleDelete}) {
+function RenderHeader({data = {}, toggleModal, handleDelete}) {
   const {pipeline = {}, id} = data?.attributes?.data || {};
   const {id: pipelineId, title, get_visitors = []} = pipeline;
 
@@ -76,7 +92,7 @@ function RenderHeader({data = {}, handleDelete}) {
           </TouchableOpacity>
         </View>
       </View>
-      <TouchableOpacity style={styles.addNewButton}>
+      <TouchableOpacity onPress={toggleModal} style={styles.addNewButton}>
         <Caption theme={secondaryTheme}>+ Add contact</Caption>
       </TouchableOpacity>
     </>
@@ -129,8 +145,98 @@ function DotIndicator({count, selected}) {
   );
 }
 
+function AddContactDialog({open, t, handleClose}) {
+  const [searchQuery, setSearchQuery] = React.useState();
+  const [selectedVisitor, setSelectedVisitor] = React.useState();
+
+  let {visitorSuggestions} = useSelector((state) => state.sales);
+
+  const filteredVisitors = React.useMemo(() => {
+    if (searchQuery) {
+      return visitorSuggestions.filter((visitor) => {
+        return (
+          visitor.first_name.includes(searchQuery) ||
+          visitor.last_name.includes(searchQuery) ||
+          visitor.phone.includes(searchQuery) ||
+          visitor.email.includes(searchQuery)
+        );
+      });
+    }
+    return visitorSuggestions;
+  }, [searchQuery, visitorSuggestions]);
+
+  return (
+    <View>
+      <Portal>
+        <Dialog
+          visible={open}
+          onDismiss={handleClose}
+          style={{marginBottom: 200}}>
+          <Dialog.Content>
+            <View style={styles.addContactContainer}>
+              <Subheading theme={secondaryTheme}>Add Contact</Subheading>
+              <Searchbar
+                theme={{...secondaryTheme, roundness: 12}}
+                placeholder={t('label_search_visitors')}
+                style={styles.searchBar}
+                value={searchQuery}
+                onChangeText={(v) => {
+                  setSearchQuery(v);
+                  if (!v || (v && selectedVisitor)) {
+                    setSelectedVisitor();
+                  }
+                }}
+              />
+
+              {filteredVisitors.length > 0 ? (
+                <View style={styles.listContainer}>
+                  <ScrollView
+                    contentContainerStyle={{flexGrow: 1}}
+                    keyboardShouldPersistTaps="handled">
+                    {filteredVisitors.map((visitor, index) => {
+                      const label = `${visitor.first_name} ${visitor.last_name}`;
+                      return (
+                        <TouchableOpacity
+                          onPress={() => {
+                            Keyboard.dismiss();
+                            setSearchQuery(label);
+                            setSelectedVisitor(visitor.id);
+                          }}>
+                          <Menu.Item
+                            key={index}
+                            theme={secondaryTheme}
+                            icon="account-question-outline"
+                            title={label}
+                          />
+                          <Divider />
+                        </TouchableOpacity>
+                      );
+                    })}
+                  </ScrollView>
+                </View>
+              ) : null}
+
+              <Button
+                mode="contained"
+                disabled={isNaN(selectedVisitor)}
+                contentStyle={{paddingVertical: 3, paddingHorizontal: 10}}
+                theme={{roundness: 10}}
+                style={{marginTop: 20, width: '100%'}}
+                onPress={() => {
+                  console.log('----->handle button ');
+                }}>
+                <BaseText style={styles.buttonText}>{'Move'}</BaseText>
+              </Button>
+            </View>
+          </Dialog.Content>
+        </Dialog>
+      </Portal>
+    </View>
+  );
+}
+
 const RenderBoard = React.memo(
-  ({pipelines, setSelectedTab, deletePipeline, handleAddNew}) => {
+  ({pipelines, setSelectedTab, deletePipeline, toggleModal, handleAddNew}) => {
     const alert = useAlert();
 
     const onDeletePipeline = (id, visitorCount) => {
@@ -172,7 +278,11 @@ const RenderBoard = React.memo(
           boardBackground="#fff"
           boardRepository={boardRepository}
           renderHeader={(column) => (
-            <RenderHeader data={column} handleDelete={onDeletePipeline} />
+            <RenderHeader
+              data={column}
+              toggleModal={toggleModal}
+              handleDelete={onDeletePipeline}
+            />
           )}
           cardContent={(item) => <RenderContacts item={item} />}
           renderAddNew={() => <RenderAddNew handleAddNew={handleAddNew} />}
@@ -193,7 +303,10 @@ const RenderBoard = React.memo(
 );
 
 export default function ProjectStructure(props) {
+  const {t} = useTranslation();
+
   const [selectedTab, setSelectedTab] = React.useState(0);
+  const [showAddContact, setShowAddContact] = React.useState(false);
 
   const {getPipelineData, addPipeline, deletePipeline} = useSalesActions();
 
@@ -217,6 +330,8 @@ export default function ProjectStructure(props) {
     });
   };
 
+  const toggleModal = () => setShowAddContact((v) => !v);
+
   return (
     <View style={styles.container}>
       <Spinner visible={loading} textContent={''} />
@@ -231,10 +346,12 @@ export default function ProjectStructure(props) {
             setSelectedTab={setSelectedTab}
             deletePipeline={deletePipeline}
             handleAddNew={handleAddNew}
+            toggleModal={toggleModal}
           />
           <DotIndicator count={pipelines.length} selected={selectedTab} />
         </>
       )}
+      <AddContactDialog t={t} open={showAddContact} handleClose={toggleModal} />
     </View>
   );
 }
@@ -317,5 +434,22 @@ const styles = StyleSheet.create({
     width: 8,
     margin: 5,
     borderRadius: 50,
+  },
+  addContactContainer: {
+    alignItems: 'center',
+    paddingBottom: 10,
+  },
+  searchBar: {
+    backgroundColor: 'rgba(4,29,54,0.1)',
+    marginTop: 20,
+    ...getShadow(0),
+  },
+  listContainer: {
+    width: '100%',
+    backgroundColor: '#fff',
+    borderRadius: 5,
+    marginTop: 5,
+    maxHeight: 200,
+    ...getShadow(2),
   },
 });
