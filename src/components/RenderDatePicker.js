@@ -8,7 +8,17 @@ import RenderInput from './RenderInput';
 import DatePicker from 'react-native-date-picker';
 
 const RenderDatePicker = React.forwardRef((props, ref) => {
-  const {error, value, mode, onChange, theme, format, ...rest} = props;
+  const {
+    error,
+    value,
+    mode,
+    onChange,
+    theme,
+    format,
+    min,
+    max,
+    ...rest
+  } = props;
 
   useImperativeHandle(ref, () => ({
     focus: () => {
@@ -54,6 +64,8 @@ const RenderDatePicker = React.forwardRef((props, ref) => {
               date={dayjs(date).toDate()}
               mode={mode}
               onDateChange={setDate}
+              minimumDate={min}
+              maximumDate={max}
             />
           </Dialog.Content>
           <Dialog.Actions>

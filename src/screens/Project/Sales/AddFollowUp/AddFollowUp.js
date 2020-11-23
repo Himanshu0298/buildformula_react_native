@@ -302,6 +302,7 @@ function FollowUpTab({
                 value={values.follow_up_date}
                 placeholder={t('label_follow_up_date')}
                 error={errors.follow_up_date}
+                min={new Date()}
                 onChange={(date) => {
                   setFieldValue('follow_up_date', date);
                   followUpTimeRef && followUpTimeRef.current.focus();
