@@ -2,23 +2,20 @@ import React from 'react';
 import {StyleSheet, View, TouchableOpacity} from 'react-native';
 import useSalesActions from 'redux/actions/salesActions';
 import {useSelector} from 'react-redux';
-import {TabBar, TabView} from 'react-native-tab-view';
-import {Caption, Divider, Subheading} from 'react-native-paper';
-import Layout from 'utils/Layout';
-import {getShadow} from 'utils';
+import {Caption, Subheading} from 'react-native-paper';
 import {secondaryTheme, theme} from 'styles/theme';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {COLORS} from 'utils/constant';
 import BaseText from 'components/BaseText';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import DraggableFlatList from 'react-native-draggable-flatlist';
+import {Board, BoardRepository} from 'components/Board/components';
+// import {BoardRepository, Board} from 'react-native-draganddrop-board';
 
-function RenderContacts(props) {
-  const {item, drag, isActive} = props;
+function RenderContacts({item}) {
+  const {get_user = {}, get_role = {}} = item?.get_role_user || {};
 
-  const {get_user, get_role} = item?.get_role_user || {};
   return (
-    <TouchableOpacity style={styles.contactContainer} onLongPress={drag}>
+    <View style={styles.contactContainer}>
       <View style={styles.leftContainer}>
         <MaterialIcons
           name={'drag-indicator'}
@@ -38,110 +35,111 @@ function RenderContacts(props) {
         </Subheading>
         <Caption theme={secondaryTheme}>{get_role.role_name}</Caption>
       </View>
-    </TouchableOpacity>
-  );
-}
-
-function RenderContent({data = {}}) {
-  const {title, get_visitors} = data;
-
-  return (
-    <View style={styles.contentContainer}>
-      <View style={styles.pipelineContainer}>
-        <View style={styles.headContainer}>
-          <Subheading theme={secondaryTheme}>{title}</Subheading>
-          <View style={styles.iconContainer}>
-            <TouchableOpacity style={styles.icon}>
-              <MaterialIcons
-                name={'search'}
-                color={'rgba(4,29,54,0.6)'}
-                size={19}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.icon, {backgroundColor: COLORS.deleteLight}]}>
-              <MaterialIcons name={'delete'} color={'#FF5D5D'} size={19} />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                styles.icon,
-                {backgroundColor: COLORS.primaryLight, paddingHorizontal: 8},
-              ]}>
-              <BaseText style={{color: theme.colors.primary}}>2</BaseText>
-            </TouchableOpacity>
-          </View>
-        </View>
-        <TouchableOpacity style={styles.addNewButton}>
-          <Caption theme={secondaryTheme}>+ Add contact</Caption>
-        </TouchableOpacity>
-
-        {get_visitors.length > 0 ? (
-          <DraggableFlatList
-            data={get_visitors}
-            activationDistance={10}
-            showsVerticalScrollIndicator={false}
-            renderItem={(props) => <RenderContacts {...props} />}
-            ItemSeparatorComponent={() => <Divider />}
-            keyExtractor={(_, i) => `draggable-item-${i}`}
-            onDragEnd={({data}) => {
-              console.log('----->TODO: handle drag data');
-            }}
-          />
-        ) : null}
-      </View>
     </View>
   );
 }
 
-function DotIndicator(props) {
+function RenderHeader({data = {}}) {
+  const {title, get_visitors = []} = data?.attributes?.data?.pipeline || {};
+
   return (
-    <TabBar
-      {...props}
-      indicatorStyle={{backgroundColor: 'transparent'}}
-      style={{backgroundColor: '#fff', ...getShadow(0)}}
-      contentContainerStyle={{
-        justifyContent: 'center',
-      }}
-      renderTabBarItem={({navigationState, route}) => {
+    <>
+      <View style={styles.headContainer}>
+        <Subheading theme={secondaryTheme}>{title}</Subheading>
+        <View style={styles.iconContainer}>
+          <TouchableOpacity style={styles.icon}>
+            <MaterialIcons
+              name={'search'}
+              color={'rgba(4,29,54,0.6)'}
+              size={19}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.icon, {backgroundColor: COLORS.deleteLight}]}>
+            <MaterialIcons name={'delete'} color={'#FF5D5D'} size={19} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.icon,
+              {backgroundColor: COLORS.primaryLight, paddingHorizontal: 8},
+            ]}>
+            <BaseText style={{color: theme.colors.primary}}>
+              {get_visitors.length}
+            </BaseText>
+          </TouchableOpacity>
+        </View>
+      </View>
+      <TouchableOpacity style={styles.addNewButton}>
+        <Caption theme={secondaryTheme}>+ Add contact</Caption>
+      </TouchableOpacity>
+    </>
+  );
+}
+
+function DotIndicator({count, selected}) {
+  return (
+    <View style={styles.dotContainer}>
+      {new Array(count).fill(0).map((_, i) => {
         return (
           <View
-            key={route.key}
+            key={i}
             style={[
               styles.dotIndicator,
               {
                 backgroundColor:
-                  route.key === navigationState.index
-                    ? theme.colors.primary
-                    : 'rgba(4,29,54,0.1)',
+                  i === selected ? theme.colors.primary : 'rgba(4,29,54,0.1)',
               },
             ]}
           />
         );
-      }}
-    />
+      })}
+    </View>
   );
 }
+
+const RenderBoard = React.memo(({pipelines, setSelectedTab}) => {
+  const data = React.useMemo(() => {
+    return pipelines.map((pipeline, index) => ({
+      id: pipeline.id,
+      name: pipeline.title,
+      rows: pipeline.get_visitors,
+      pipeline,
+    }));
+  }, [pipelines]);
+
+  const boardRepository = new BoardRepository(data);
+
+  return (
+    <View style={styles.boardContainer}>
+      <Board
+        boardBackground="#fff"
+        boardRepository={boardRepository}
+        renderHeader={(column) => <RenderHeader data={column} />}
+        cardContent={(item) => <RenderContacts item={item} />}
+        onChangeTab={setSelectedTab}
+        open={() => {
+          console.log('-----> open');
+        }}
+        onDragEnd={() => {
+          console.log('-----> onDragEnd');
+        }}
+      />
+    </View>
+  );
+});
 
 export default function ProjectStructure(props) {
   const [selectedTab, setSelectedTab] = React.useState(0);
 
   const {getPipelineData} = useSalesActions();
 
-  const {pipelines, loading} = useSelector((state) => state.sales);
+  let {pipelines, loading} = useSelector((state) => state.sales);
   const {selectedProject} = useSelector((state) => state.project);
 
   React.useEffect(() => {
     getPipelineData(selectedProject.id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const routes = React.useMemo(() => {
-    return pipelines.map((_, i) => ({key: i, title: `tab-${i}`}));
-  }, [pipelines]);
-
-  const renderScene = ({route: {key}}) => {
-    return <RenderContent data={pipelines[key]} />;
-  };
 
   return (
     <View style={styles.container}>
@@ -151,14 +149,10 @@ export default function ProjectStructure(props) {
           <Subheading theme={secondaryTheme}>{'No Data Found'}</Subheading>
         </View>
       ) : (
-        <TabView
-          navigationState={{index: selectedTab, routes}}
-          renderScene={renderScene}
-          onIndexChange={setSelectedTab}
-          initialLayout={{width: Layout.window.width}}
-          tabBarPosition="bottom"
-          renderTabBar={(tabBarProps) => <DotIndicator {...tabBarProps} />}
-        />
+        <>
+          <RenderBoard pipelines={pipelines} setSelectedTab={setSelectedTab} />
+          <DotIndicator count={pipelines.length} selected={selectedTab} />
+        </>
       )}
     </View>
   );
@@ -169,20 +163,13 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingBottom: 10,
   },
+  boardContainer: {
+    flexGrow: 1,
+  },
   noResultContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  contentContainer: {
-    padding: 20,
-    flex: 1,
-  },
-  pipelineContainer: {
-    borderRadius: 15,
-    flexGrow: 1,
-    padding: 15,
-    backgroundColor: 'rgba(242,244,245,1)',
   },
   headContainer: {
     flexDirection: 'row',
@@ -212,6 +199,7 @@ const styles = StyleSheet.create({
   contactContainer: {
     width: '100%',
     paddingVertical: 7,
+    paddingRight: 5,
     alignItems: 'center',
     justifyContent: 'space-between',
     flexDirection: 'row',
@@ -225,6 +213,12 @@ const styles = StyleSheet.create({
   },
   rightContainer: {
     alignItems: 'center',
+  },
+  dotContainer: {
+    padding: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   dotIndicator: {
     height: 8,
