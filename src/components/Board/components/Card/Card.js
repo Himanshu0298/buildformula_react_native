@@ -1,5 +1,5 @@
 import React from 'react';
-import {Animated, TouchableOpacity} from 'react-native';
+import {Animated, TouchableWithoutFeedback} from 'react-native';
 import {bool, func, object, shape, string} from 'prop-types';
 
 const Card = ({style, hidden, onPressIn, onPress, cardContent, item}) => {
@@ -9,14 +9,14 @@ const Card = ({style, hidden, onPressIn, onPress, cardContent, item}) => {
   }
 
   return (
-    <TouchableOpacity
+    <TouchableWithoutFeedback
       onPressIn={(evt) => (onPressIn ? onPressIn(evt.nativeEvent.pageY) : {})}
       onPress={onPress}
       collapsable={false}>
       <Animated.View style={styles}>
         {cardContent(item ? item.row() : {})}
       </Animated.View>
-    </TouchableOpacity>
+    </TouchableWithoutFeedback>
   );
 };
 

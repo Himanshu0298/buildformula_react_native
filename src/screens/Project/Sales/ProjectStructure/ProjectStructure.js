@@ -99,8 +99,8 @@ function DotIndicator({count, selected}) {
 
 const RenderBoard = React.memo(({pipelines, setSelectedTab}) => {
   const data = React.useMemo(() => {
-    return pipelines.map((pipeline, index) => ({
-      id: pipeline.id,
+    return pipelines.map((pipeline, i) => ({
+      id: i + 1,
       name: pipeline.title,
       rows: pipeline.get_visitors,
       pipeline,

@@ -12,6 +12,7 @@ import {colors, COLUMN_WIDTH, deviceWidth, ios, isX} from '../../constants';
 import Column from '../Column/Column';
 import Card from '../Card/Card';
 import Carousel from '../Carousel/Carousel';
+import {getShadow} from 'utils';
 
 const MAX_RANGE = 100;
 const MAX_DEG = 30;
@@ -270,6 +271,9 @@ class Board extends React.Component {
       top: startingY,
       left: startingX,
       width: COLUMN_WIDTH - 16,
+      backgroundColor: '#fff',
+      borderRadius: 5,
+      ...getShadow(3),
       transform: [
         {translateX: pan.x},
         {translateY: pan.y},
@@ -304,9 +308,11 @@ class Board extends React.Component {
 
   render() {
     const {movingMode} = this.state;
-    const {boardBackground, boardRepository, onChangeTab, data} = this.props;
+    const {boardBackground, boardRepository, onChangeTab} = this.props;
     return (
-      <View style={styles.boardWrapper} {...this.panResponder.panHandlers}>
+      <Animated.View
+        style={styles.boardWrapper}
+        {...this.panResponder.panHandlers}>
         <View
           style={styles.boardWrapper}
           onLayout={(evt) => this.setBoardPositionY(evt.nativeEvent.layout.y)}
@@ -343,7 +349,7 @@ class Board extends React.Component {
 
           {this.movingTask()}
         </View>
-      </View>
+      </Animated.View>
     );
   }
 }
