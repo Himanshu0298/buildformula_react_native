@@ -316,6 +316,7 @@ class Carousel extends Component {
       pinchGestureEnabled: false,
       scrollsToTop: false,
       renderToHardwareTextureAndroid: true,
+      keyboardShouldPersistTaps: 'handled',
       ...this.props,
       ...this.getComponentStaticProps(),
     };
