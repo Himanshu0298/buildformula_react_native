@@ -9,6 +9,7 @@ import {
   ADD_FOLLOW_UP,
   GET_PIPELINES,
   DELETE_PIPELINE,
+  ADD_PIPELINE,
 } from './../actions/actionTypes';
 
 const initialState = {
@@ -169,23 +170,30 @@ export default (state = initialState, action = {}) => {
         errorMessage: action.payload,
       };
 
-    case `${ADD_VISITOR || ADD_FOLLOW_UP}_PENDING`:
+    case `${ADD_VISITOR}_PENDING`:
+    case `${ADD_FOLLOW_UP}_PENDING`:
+    case `${ADD_PIPELINE}_PENDING`:
       return {
         ...state,
         loading: true,
       };
-    case `${ADD_VISITOR || ADD_FOLLOW_UP}_FULFILLED`: {
+    case `${ADD_VISITOR}_FULFILLED`:
+    case `${ADD_FOLLOW_UP}_FULFILLED`:
+    case `${ADD_PIPELINE}_FULFILLED`: {
       return {
         ...state,
         loading: false,
       };
     }
-    case `${ADD_VISITOR || ADD_FOLLOW_UP}_REJECTED`:
+    case `${ADD_VISITOR}_REJECTED`:
+    case `${ADD_FOLLOW_UP}_REJECTED`:
+    case `${ADD_PIPELINE}_REJECTED`: {
       return {
         ...state,
         loading: false,
         errorMessage: action.payload,
       };
+    }
 
     default:
       return state;

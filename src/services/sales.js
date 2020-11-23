@@ -21,6 +21,9 @@ export default function useSales() {
     addFollowUp: (data) => {
       return instance.post('/visitors/addfollowup', data, config());
     },
+    addPipeline: (data) => {
+      return instance.post('/pipeline/add', data, config());
+    },
     deletePipeline: (data) => {
       return instance.post('inquiry_status/remove', data, config());
     },

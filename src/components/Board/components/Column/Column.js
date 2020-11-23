@@ -141,10 +141,26 @@ class Column extends React.Component {
       column,
       emptyComponent,
       renderHeader,
+      renderAddNew,
       oneColumn,
       movingMode,
       boardRepository,
+      addNew,
     } = this.props;
+
+    if (addNew) {
+      return (
+        <View
+          style={{flexGrow: 1}}
+          ref={this.setColumnRef}
+          collapsable={false}
+          onLayout={this.updateColumnWithLayout}
+          width={oneColumn ? ONE_COLUMN_WIDTH : COLUMN_WIDTH}
+          marginRight={oneColumn ? 0 : 8}>
+          {renderAddNew()}
+        </View>
+      );
+    }
 
     const ColumnComponent = (
       <View

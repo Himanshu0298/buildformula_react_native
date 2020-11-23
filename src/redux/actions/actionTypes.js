@@ -30,4 +30,5 @@ export const GET_FOLLOWUP_LIST = 'GET_FOLLOWUP_LIST';
 export const ADD_VISITOR = 'ADD_VISITOR';
 export const ADD_FOLLOW_UP = 'ADD_FOLLOW_UP';
 export const GET_PIPELINES = 'GET_PIPELINES';
+export const ADD_PIPELINE = 'ADD_PIPELINE';
 export const DELETE_PIPELINE = 'DELETE_PIPELINE';

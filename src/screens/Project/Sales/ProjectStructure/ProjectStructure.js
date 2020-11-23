@@ -2,7 +2,7 @@ import React from 'react';
 import {StyleSheet, View, TouchableOpacity} from 'react-native';
 import useSalesActions from 'redux/actions/salesActions';
 import {useSelector} from 'react-redux';
-import {Caption, Subheading} from 'react-native-paper';
+import {Button, Caption, Subheading, Title} from 'react-native-paper';
 import {secondaryTheme, theme} from 'styles/theme';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {COLORS} from 'utils/constant';
@@ -10,6 +10,8 @@ import BaseText from 'components/BaseText';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {Board, BoardRepository} from 'components/Board/components';
 import {useAlert} from 'components/Alert';
+import {getShadow} from 'utils';
+import RenderInput from 'components/RenderInput';
 // import {BoardRepository, Board} from 'react-native-draganddrop-board';
 
 function RenderContacts({item}) {
@@ -81,10 +83,41 @@ function RenderHeader({data = {}, handleDelete}) {
   );
 }
 
+function RenderAddNew({handleAddNew}) {
+  const [stage, setStage] = React.useState();
+
+  return (
+    <View style={styles.addNewContainer}>
+      <Subheading theme={secondaryTheme}>Add Pipeline stage</Subheading>
+      <View style={styles.pipelineInput}>
+        <RenderInput
+          id="stage"
+          label="Stage"
+          value={stage}
+          onChangeText={setStage}
+        />
+      </View>
+      <Button
+        mode="contained"
+        contentStyle={{paddingVertical: 3, paddingHorizontal: 10}}
+        theme={{roundness: 10}}
+        style={{marginTop: 10}}
+        onPress={() => {
+          if (stage) {
+            setStage();
+            handleAddNew(stage);
+          }
+        }}>
+        <BaseText style={styles.buttonText}>{'Save'}</BaseText>
+      </Button>
+    </View>
+  );
+}
+
 function DotIndicator({count, selected}) {
   return (
     <View style={styles.dotContainer}>
-      {new Array(count).fill(0).map((_, i) => {
+      {new Array(count + 1).fill(0).map((_, i) => {
         const backgroundColor =
           i === selected ? theme.colors.primary : 'rgba(4,29,54,0.1)';
 
@@ -97,7 +130,7 @@ function DotIndicator({count, selected}) {
 }
 
 const RenderBoard = React.memo(
-  ({pipelines, setSelectedTab, deletePipeline}) => {
+  ({pipelines, setSelectedTab, deletePipeline, handleAddNew}) => {
     const alert = useAlert();
 
     const onDeletePipeline = (id, visitorCount) => {
@@ -123,6 +156,13 @@ const RenderBoard = React.memo(
         pipeline,
       }));
 
+      data.push({
+        id: pipelines.length + 1,
+        name: 'Add new',
+        addNew: true,
+        rows: [],
+      });
+
       return new BoardRepository(data);
     }, [pipelines]);
 
@@ -135,12 +175,16 @@ const RenderBoard = React.memo(
             <RenderHeader data={column} handleDelete={onDeletePipeline} />
           )}
           cardContent={(item) => <RenderContacts item={item} />}
+          renderAddNew={() => <RenderAddNew handleAddNew={handleAddNew} />}
           onChangeTab={setSelectedTab}
           open={() => {
             console.log('-----> open');
           }}
-          onDragEnd={() => {
-            console.log('-----> onDragEnd');
+          onDragEnd={(srcColumnId, destColumnId, draggedItem) => {
+            const {row} = draggedItem?.attributes;
+            console.log('-----> srcColumnId', srcColumnId);
+            console.log('-----> destColumnId', destColumnId);
+            console.log('-----> row', row);
           }}
         />
       </View>
@@ -151,15 +195,27 @@ const RenderBoard = React.memo(
 export default function ProjectStructure(props) {
   const [selectedTab, setSelectedTab] = React.useState(0);
 
-  const {getPipelineData, deletePipeline} = useSalesActions();
+  const {getPipelineData, addPipeline, deletePipeline} = useSalesActions();
 
   let {pipelines, loading} = useSelector((state) => state.sales);
   const {selectedProject} = useSelector((state) => state.project);
+  const {user} = useSelector((state) => state.user);
 
   React.useEffect(() => {
     getPipelineData(selectedProject.id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const handleAddNew = (title) => {
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('project_id', selectedProject.id);
+    formData.append('user_id', user.id);
+
+    addPipeline(formData).then(() => {
+      getPipelineData(selectedProject.id);
+    });
+  };
 
   return (
     <View style={styles.container}>
@@ -174,6 +230,7 @@ export default function ProjectStructure(props) {
             pipelines={pipelines}
             setSelectedTab={setSelectedTab}
             deletePipeline={deletePipeline}
+            handleAddNew={handleAddNew}
           />
           <DotIndicator count={pipelines.length} selected={selectedTab} />
         </>
@@ -237,6 +294,17 @@ const styles = StyleSheet.create({
   },
   rightContainer: {
     alignItems: 'center',
+  },
+  addNewContainer: {
+    padding: 20,
+    backgroundColor: '#fff',
+    ...getShadow(3),
+    borderRadius: 20,
+    alignItems: 'center',
+  },
+  pipelineInput: {
+    paddingHorizontal: 25,
+    paddingVertical: 15,
   },
   dotContainer: {
     padding: 10,

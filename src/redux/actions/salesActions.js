@@ -15,6 +15,7 @@ export default function useSalesActions() {
     addVisitor,
     addFollowUp,
     getPipelines,
+    addPipeline,
     deletePipeline,
   } = useSales();
 
@@ -137,6 +138,25 @@ export default function useSalesActions() {
         payload: async () => {
           try {
             let response = processResponse(await addFollowUp(formData));
+            const {data} = response;
+
+            return Promise.resolve(data.data);
+          } catch (error) {
+            let errorMessage = processError(error);
+            snackbar.showMessage({
+              message: errorMessage,
+              variant: 'error',
+            });
+            return Promise.reject(errorMessage);
+          }
+        },
+      }),
+    addPipeline: (formData) =>
+      dispatch({
+        type: types.ADD_PIPELINE,
+        payload: async () => {
+          try {
+            let response = processResponse(await addPipeline(formData));
             const {data} = response;
 
             return Promise.resolve(data.data);

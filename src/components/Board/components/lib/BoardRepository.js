@@ -29,7 +29,10 @@ class BoardRepository {
     });
   };
 
-  notify = (columnId, event) => this.listeners[columnId][event]();
+  notify = (columnId, event) => {
+    //TODO: fix this is listener error comes again
+    return this.listeners?.[columnId]?.[event]?.();
+  };
 
   setScrollOffset = (columnId, scrollOffset) => {
     const column = this.registry.column(columnId);

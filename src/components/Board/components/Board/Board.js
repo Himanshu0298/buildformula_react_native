@@ -333,6 +333,7 @@ class Board extends React.Component {
               <Column
                 {...this.props}
                 key={item.item.data().id.toString()}
+                addNew={item.item.data().addNew}
                 column={item.item}
                 movingMode={movingMode}
                 boardRepository={boardRepository}
