@@ -32,3 +32,4 @@ export const ADD_FOLLOW_UP = 'ADD_FOLLOW_UP';
 export const GET_PIPELINES = 'GET_PIPELINES';
 export const ADD_PIPELINE = 'ADD_PIPELINE';
 export const DELETE_PIPELINE = 'DELETE_PIPELINE';
+export const MOVE_VISITOR = 'MOVE_VISITOR';

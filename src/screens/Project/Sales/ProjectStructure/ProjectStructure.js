@@ -145,7 +145,7 @@ function DotIndicator({count, selected}) {
   );
 }
 
-function AddContactDialog({open, t, handleClose}) {
+function AddContactDialog({open, t, handleClose, moveContact}) {
   const [searchQuery, setSearchQuery] = React.useState();
   const [selectedVisitor, setSelectedVisitor] = React.useState();
 
@@ -197,6 +197,7 @@ function AddContactDialog({open, t, handleClose}) {
                       const label = `${visitor.first_name} ${visitor.last_name}`;
                       return (
                         <TouchableOpacity
+                          key={index}
                           onPress={() => {
                             Keyboard.dismiss();
                             setSearchQuery(label);
@@ -223,7 +224,10 @@ function AddContactDialog({open, t, handleClose}) {
                 theme={{roundness: 10}}
                 style={{marginTop: 20, width: '100%'}}
                 onPress={() => {
-                  console.log('----->handle button ');
+                  moveContact(selectedVisitor);
+                  handleClose();
+                  setSearchQuery();
+                  setSelectedVisitor();
                 }}>
                 <BaseText style={styles.buttonText}>{'Move'}</BaseText>
               </Button>
@@ -292,6 +296,7 @@ const RenderBoard = React.memo(
           }}
           onDragEnd={(srcColumnId, destColumnId, draggedItem) => {
             const {row} = draggedItem?.attributes;
+
             console.log('-----> srcColumnId', srcColumnId);
             console.log('-----> destColumnId', destColumnId);
             console.log('-----> row', row);
@@ -308,7 +313,12 @@ export default function ProjectStructure(props) {
   const [selectedTab, setSelectedTab] = React.useState(0);
   const [showAddContact, setShowAddContact] = React.useState(false);
 
-  const {getPipelineData, addPipeline, deletePipeline} = useSalesActions();
+  const {
+    getPipelineData,
+    addPipeline,
+    deletePipeline,
+    moveVisitor,
+  } = useSalesActions();
 
   let {pipelines, loading} = useSelector((state) => state.sales);
   const {selectedProject} = useSelector((state) => state.project);
@@ -326,6 +336,17 @@ export default function ProjectStructure(props) {
     formData.append('user_id', user.id);
 
     addPipeline(formData).then(() => {
+      getPipelineData(selectedProject.id);
+    });
+  };
+
+  const moveContact = (visitorId) => {
+    const formData = new FormData();
+    formData.append('visitor_id', visitorId);
+    formData.append('project_id', selectedProject.id);
+    formData.append('pureid', pipelines[selectedTab - 1].id);
+
+    moveVisitor(formData).then(() => {
       getPipelineData(selectedProject.id);
     });
   };
@@ -351,7 +372,12 @@ export default function ProjectStructure(props) {
           <DotIndicator count={pipelines.length} selected={selectedTab} />
         </>
       )}
-      <AddContactDialog t={t} open={showAddContact} handleClose={toggleModal} />
+      <AddContactDialog
+        t={t}
+        open={showAddContact}
+        handleClose={toggleModal}
+        moveContact={moveContact}
+      />
     </View>
   );
 }

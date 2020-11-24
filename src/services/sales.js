@@ -24,6 +24,9 @@ export default function useSales() {
     addPipeline: (data) => {
       return instance.post('/pipeline/add', data, config());
     },
+    moveVisitor: (data) => {
+      return instance.post('/pipeline/movecontact', data, config());
+    },
     deletePipeline: (data) => {
       return instance.post('inquiry_status/remove', data, config());
     },

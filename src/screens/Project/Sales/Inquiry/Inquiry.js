@@ -112,7 +112,7 @@ function RenderVisitorItem({data, index, toggleSheet}) {
           </Subheading>
           <CustomBadge
             color="rgba(72,114,244,0.15)"
-            label={'NEGOTIATION'}
+            label={data.title || 'NEW VISITOR'}
             labelStyles={styles.statusLabel}
           />
         </View>
@@ -234,7 +234,7 @@ function RenderVisitorDetails({data = {}, handleClose, handleEdit}) {
           </Caption>
           <CustomBadge
             color="rgba(72,114,244,0.15)"
-            label={'NEGOTIATION'}
+            label={data.title || 'NEW VISITOR'}
             style={{marginLeft: 10}}
             labelStyles={styles.statusLabel}
           />

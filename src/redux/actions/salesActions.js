@@ -17,6 +17,7 @@ export default function useSalesActions() {
     getPipelines,
     addPipeline,
     deletePipeline,
+    moveVisitor,
   } = useSales();
 
   return {
@@ -102,6 +103,7 @@ export default function useSalesActions() {
 
             return Promise.resolve({
               pipelines: data,
+              visitorSuggestions: others.visitors_autosuggestions || [],
             });
           } catch (error) {
             let errorMessage = processError(error);
@@ -157,6 +159,25 @@ export default function useSalesActions() {
         payload: async () => {
           try {
             let response = processResponse(await addPipeline(formData));
+            const {data} = response;
+
+            return Promise.resolve(data.data);
+          } catch (error) {
+            let errorMessage = processError(error);
+            snackbar.showMessage({
+              message: errorMessage,
+              variant: 'error',
+            });
+            return Promise.reject(errorMessage);
+          }
+        },
+      }),
+    moveVisitor: (formData) =>
+      dispatch({
+        type: types.MOVE_VISITOR,
+        payload: async () => {
+          try {
+            let response = processResponse(await moveVisitor(formData));
             const {data} = response;
 
             return Promise.resolve(data.data);

@@ -32,6 +32,7 @@ class Board extends React.Component {
     };
 
     this.varticalOffset = 0;
+    this.transitioning = false;
 
     this.panResponder = PanResponder.create({
       onMoveShouldSetPanResponder: () => this.state.movingMode,
@@ -63,14 +64,26 @@ class Board extends React.Component {
         listener: null,
         useNativeDriver: false,
       })(event, gesture);
-      if (startingX + gesture.dx < -50 && gesture.vx < 0) {
-        this.carousel.snapToPrev();
-      }
-      if (
+
+      const movePrev = startingX + gesture.dx < -50 && gesture.vx < 0;
+      const moveNext =
         startingX + gesture.dx + COLUMN_WIDTH - 50 > deviceWidth &&
-        gesture.vx > 0
-      ) {
-        this.carousel.snapToNext();
+        gesture.vx > 0;
+
+      if (!this.transitioning) {
+        if (movePrev) {
+          this.carousel.snapToPrev();
+          this.transitioning = true;
+          setTimeout(() => {
+            this.transitioning = false;
+          }, 2000);
+        } else if (moveNext) {
+          this.carousel.snapToNext();
+          this.transitioning = true;
+          setTimeout(() => {
+            this.transitioning = false;
+          }, 2000);
+        }
       }
 
       const columnId = this.carousel.currentIndex;

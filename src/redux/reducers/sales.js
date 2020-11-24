@@ -10,6 +10,7 @@ import {
   GET_PIPELINES,
   DELETE_PIPELINE,
   ADD_PIPELINE,
+  MOVE_VISITOR,
 } from './../actions/actionTypes';
 
 const initialState = {
@@ -128,11 +129,12 @@ export default (state = initialState, action = {}) => {
         loading: true,
       };
     case `${GET_PIPELINES}_FULFILLED`: {
-      const {pipelines} = action.payload;
+      const {pipelines, visitorSuggestions} = action.payload;
       return {
         ...state,
         loading: false,
         pipelines,
+        visitorSuggestions,
       };
     }
     case `${GET_PIPELINES}_REJECTED`:
@@ -173,13 +175,16 @@ export default (state = initialState, action = {}) => {
     case `${ADD_VISITOR}_PENDING`:
     case `${ADD_FOLLOW_UP}_PENDING`:
     case `${ADD_PIPELINE}_PENDING`:
+    case `${MOVE_VISITOR}_PENDING`: {
       return {
         ...state,
         loading: true,
       };
+    }
     case `${ADD_VISITOR}_FULFILLED`:
     case `${ADD_FOLLOW_UP}_FULFILLED`:
-    case `${ADD_PIPELINE}_FULFILLED`: {
+    case `${ADD_PIPELINE}_FULFILLED`:
+    case `${MOVE_VISITOR}_FULFILLED`: {
       return {
         ...state,
         loading: false,
@@ -187,7 +192,8 @@ export default (state = initialState, action = {}) => {
     }
     case `${ADD_VISITOR}_REJECTED`:
     case `${ADD_FOLLOW_UP}_REJECTED`:
-    case `${ADD_PIPELINE}_REJECTED`: {
+    case `${ADD_PIPELINE}_REJECTED`:
+    case `${MOVE_VISITOR}_REJECTED`: {
       return {
         ...state,
         loading: false,
