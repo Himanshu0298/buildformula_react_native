@@ -35,7 +35,7 @@ import SearchScreen from '../screens/Search';
 import ProjectDashboard from '../screens/Project/Dashboard';
 //Project : Sales Screens
 import Inquiry from '../screens/Project/Sales/Inquiry';
-import ProjectStructure from '../screens/Project/Sales/ProjectStructure';
+import SalesPipeline from '../screens/Project/Sales/SalesPipeline';
 import BookingChart from '../screens/Project/Sales/BookingChart';
 import Payment from '../screens/Project/Sales/Payment';
 import AddVisitor from '../screens/Project/Sales/AddVisitor';
@@ -149,7 +149,7 @@ function ProjectDrawer() {
       )}>
       <Drawer.Screen name="ProjectDashboard" component={ProjectDashboard} />
       <Drawer.Screen name="Inquiry" component={Inquiry} />
-      <Drawer.Screen name="ProjectStructure" component={ProjectStructure} />
+      <Drawer.Screen name="SalesPipeline" component={SalesPipeline} />
       <Drawer.Screen name="BookingChart" component={BookingChart} />
       <Drawer.Screen name="Payment" component={Payment} />
       <Drawer.Screen name="ProjectSchedule" component={ProjectSchedule} />

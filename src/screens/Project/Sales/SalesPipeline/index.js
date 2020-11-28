@@ -1,11 +1,11 @@
 import React from 'react';
 import ProjectLayout from 'components/Layout/ProjectLayout';
-import ProjectStructure from './ProjectStructure';
+import SalesPipeline from './SalesPipeline';
 
 export default (props) => {
   return (
     <ProjectLayout>
-      <ProjectStructure {...props} />
+      <SalesPipeline {...props} />
     </ProjectLayout>
   );
 };

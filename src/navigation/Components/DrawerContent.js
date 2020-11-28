@@ -33,8 +33,8 @@ const PROJECT_DRAWER_ITEMS = [
         icon: 'account-question-outline',
       },
       {
-        route: 'ProjectStructure',
-        label: 'Project Structure',
+        route: 'SalesPipeline',
+        label: 'Sales Pipeline',
         activeIcon: ({color, size}) => (
           <Image source={StructureActive} style={{height: size, width: size}} />
         ),

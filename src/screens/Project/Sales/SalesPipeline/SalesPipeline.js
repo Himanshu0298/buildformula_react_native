@@ -312,7 +312,7 @@ const RenderBoard = React.memo(
   },
 );
 
-export default function ProjectStructure(props) {
+export default function SalesPipeline(props) {
   const {t} = useTranslation();
 
   const [selectedTab, setSelectedTab] = React.useState(0);
