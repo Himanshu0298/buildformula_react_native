@@ -48,6 +48,7 @@ function RenderContent(props) {
     errors,
     handleSubmit,
     navigation,
+    bottomSheetRef,
   } = props;
 
   const emailRef = React.useRef();
@@ -73,7 +74,10 @@ function RenderContent(props) {
             placeholder={t('msgBlankEmail')}
             autoCapitalize="none"
             returnKeyType={'next'}
-            onSubmitEditing={() => passwordRef && passwordRef.current.focus()}
+            onSubmitEditing={() => {
+              passwordRef && passwordRef.current.focus();
+              bottomSheetRef?.current?.snapTo(1);
+            }}
             error={errors.email}
           />
           <CustomInput
@@ -136,23 +140,6 @@ function Login(props) {
   const {project} = useSelector((state) => state.project);
 
   useEffect(() => {
-    const focusUnsubscribe = navigation.addListener('focus', () => {
-      Keyboard.addListener('keyboardDidShow', _keyboardDidShow);
-      Keyboard.addListener('keyboardDidHide', _keyboardDidHide);
-    });
-    const blurUnsubscribe = navigation.addListener('blir', () => {
-      Keyboard.removeListener('keyboardDidShow', _keyboardDidShow);
-      Keyboard.removeListener('keyboardDidHide', _keyboardDidHide);
-    });
-
-    // cleanup function
-    return () => {
-      blurUnsubscribe();
-      focusUnsubscribe();
-    };
-  }, []);
-
-  useEffect(() => {
     if (loginError) {
       snackbar.showMessage({
         message: loginError,
@@ -160,18 +147,6 @@ function Login(props) {
       });
     }
   }, [loginError]);
-
-  const _keyboardDidShow = () => {
-    if (bottomSheetRef) {
-      bottomSheetRef?.current?.snapTo(0);
-    }
-  };
-
-  const _keyboardDidHide = () => {
-    if (bottomSheetRef) {
-      bottomSheetRef?.current?.snapTo(1);
-    }
-  };
 
   return (
     <Formik
@@ -227,12 +202,13 @@ function Login(props) {
             renderHeader={() => <SheetHeader />}
             renderContent={() => (
               <RenderContent
-                handleChange={handleChange}
+                navigation={navigation}
+                bottomSheetRef={bottomSheetRef}
                 values={values}
+                errors={errors}
+                handleChange={handleChange}
                 handleSubmit={handleSubmit}
                 handleBlur={handleBlur}
-                errors={errors}
-                navigation={navigation}
               />
             )}
           />
