@@ -253,9 +253,10 @@ const RenderBoard = React.memo(
     const onDeletePipeline = (id, visitorCount) => {
       if (visitorCount > 0) {
         alert.show({
-          title: 'Error',
-          message: 'Only Empty Cards cn be deleted',
+          title: 'Alert',
+          message: 'Only empty cards can be deleted',
           dismissable: false,
+          showCancelButton: false,
         });
         return;
       }
