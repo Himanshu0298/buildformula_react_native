@@ -240,7 +240,14 @@ function AddContactDialog({open, t, handleClose, moveContact}) {
 }
 
 const RenderBoard = React.memo(
-  ({pipelines, setSelectedTab, deletePipeline, toggleModal, handleAddNew}) => {
+  ({
+    pipelines,
+    setSelectedTab,
+    deletePipeline,
+    toggleModal,
+    handleAddNew,
+    moveContact,
+  }) => {
     const alert = useAlert();
 
     const onDeletePipeline = (id, visitorCount) => {
@@ -291,15 +298,12 @@ const RenderBoard = React.memo(
           cardContent={(item) => <RenderContacts item={item} />}
           renderAddNew={() => <RenderAddNew handleAddNew={handleAddNew} />}
           onChangeTab={setSelectedTab}
-          open={() => {
-            console.log('-----> open');
-          }}
+          open={() => console.log('-----> open')}
           onDragEnd={(srcColumnId, destColumnId, draggedItem) => {
             const {row} = draggedItem?.attributes;
-
-            console.log('-----> srcColumnId', srcColumnId);
-            console.log('-----> destColumnId', destColumnId);
-            console.log('-----> row', row);
+            if (row?.id && srcColumnId !== destColumnId) {
+              moveContact(row.id);
+            }
           }}
         />
       </View>
@@ -341,13 +345,10 @@ export default function ProjectStructure(props) {
   };
 
   const moveContact = (visitorId) => {
-    const formData = new FormData();
-    formData.append('visitor_id', visitorId);
-    formData.append('project_id', selectedProject.id);
-    formData.append('pureid', pipelines[selectedTab - 1].id);
-
-    moveVisitor(formData).then(() => {
-      getPipelineData(selectedProject.id);
+    moveVisitor({
+      projectId: selectedProject.id,
+      visitorId,
+      pipelineId: pipelines[selectedTab].id,
     });
   };
 
@@ -368,6 +369,7 @@ export default function ProjectStructure(props) {
             deletePipeline={deletePipeline}
             handleAddNew={handleAddNew}
             toggleModal={toggleModal}
+            moveContact={moveContact}
           />
           <DotIndicator count={pipelines.length} selected={selectedTab} />
         </>

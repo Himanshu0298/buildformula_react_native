@@ -172,10 +172,54 @@ export default (state = initialState, action = {}) => {
         errorMessage: action.payload,
       };
 
+    case `${MOVE_VISITOR}_FULFILLED`: {
+      const {visitorId, pipelineId} = action.payload;
+      let pipelines = _.cloneDeep(state.pipelines);
+
+      let movedVisitor = {};
+      let newPipelineIndex = -1;
+
+      //Find old pipeline and remove visitor from the list
+      pipelines = pipelines.map((pipeline, i) => {
+        const {get_visitors} = _.cloneDeep(pipeline);
+
+        if (pipeline.id === pipelineId) {
+          newPipelineIndex = i;
+        }
+
+        const visitorIndex = get_visitors.findIndex(
+          (visitor) => visitor.id === visitorId,
+        );
+        if (visitorIndex > -1) {
+          movedVisitor = get_visitors[visitorIndex];
+          get_visitors.splice(visitorIndex, 1);
+          pipeline.get_visitors = get_visitors;
+        }
+        return pipeline;
+      });
+
+      //Add visitor to the new list
+      if (newPipelineIndex > -1 && movedVisitor.id) {
+        pipelines[newPipelineIndex].get_visitors.push(movedVisitor);
+      }
+
+      return {
+        ...state,
+        pipelines,
+      };
+    }
+
+    case `${MOVE_VISITOR}_REJECTED`: {
+      return {
+        ...state,
+        errorMessage: action.payload,
+        pipelines: _.cloneDeep(state.pipelines),
+      };
+    }
+
     case `${ADD_VISITOR}_PENDING`:
     case `${ADD_FOLLOW_UP}_PENDING`:
-    case `${ADD_PIPELINE}_PENDING`:
-    case `${MOVE_VISITOR}_PENDING`: {
+    case `${ADD_PIPELINE}_PENDING`: {
       return {
         ...state,
         loading: true,
@@ -183,17 +227,16 @@ export default (state = initialState, action = {}) => {
     }
     case `${ADD_VISITOR}_FULFILLED`:
     case `${ADD_FOLLOW_UP}_FULFILLED`:
-    case `${ADD_PIPELINE}_FULFILLED`:
-    case `${MOVE_VISITOR}_FULFILLED`: {
+    case `${ADD_PIPELINE}_FULFILLED`: {
       return {
         ...state,
         loading: false,
       };
     }
+
     case `${ADD_VISITOR}_REJECTED`:
     case `${ADD_FOLLOW_UP}_REJECTED`:
-    case `${ADD_PIPELINE}_REJECTED`:
-    case `${MOVE_VISITOR}_REJECTED`: {
+    case `${ADD_PIPELINE}_REJECTED`: {
       return {
         ...state,
         loading: false,

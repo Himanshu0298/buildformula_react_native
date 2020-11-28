@@ -172,15 +172,21 @@ export default function useSalesActions() {
           }
         },
       }),
-    moveVisitor: (formData) =>
+    moveVisitor: (data) =>
       dispatch({
         type: types.MOVE_VISITOR,
         payload: async () => {
           try {
-            let response = processResponse(await moveVisitor(formData));
-            const {data} = response;
+            const {visitorId, projectId, pipelineId} = data;
+            const formData = new FormData();
 
-            return Promise.resolve(data.data);
+            formData.append('visitor_id', visitorId);
+            formData.append('project_id', projectId);
+            formData.append('pureid', pipelineId);
+
+            let response = processResponse(await moveVisitor(formData));
+
+            return Promise.resolve(data);
           } catch (error) {
             let errorMessage = processError(error);
             snackbar.showMessage({
