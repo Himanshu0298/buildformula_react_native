@@ -5,7 +5,6 @@ import {
   Image,
   View,
   StatusBar,
-  SafeAreaView,
   TouchableOpacity,
   ScrollView,
   RefreshControl,
@@ -27,33 +26,36 @@ import {useAlert} from 'components/Alert';
 import LottieView from 'lottie-react-native';
 import waiting from 'assets/animation/waiting.json';
 import {COLORS} from 'utils/constant';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const TABS = ['Developer', 'Supplier', 'Customer'];
 
 function RenderHeader({theme}) {
   return (
-    <View style={styles.header}>
-      <View style={styles.logoContainer}>
-        <Image source={logo} style={styles.banner} />
+    <SafeAreaView edges={['right', 'top', 'left']}>
+      <View style={styles.header}>
+        <View style={styles.logoContainer}>
+          <Image source={logo} style={styles.banner} />
+        </View>
+        <View style={styles.rightContainer}>
+          <TouchableOpacity style={styles.bellContainer}>
+            <MaterialCommunityIcons name={'bell'} color={'#000'} size={20} />
+            <Badge size={10} style={styles.badge} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.personContainer,
+              {backgroundColor: COLORS.primaryLight},
+            ]}>
+            <MaterialIcons
+              name={'person'}
+              color={theme.colors.primary}
+              size={19}
+            />
+          </TouchableOpacity>
+        </View>
       </View>
-      <View style={styles.rightContainer}>
-        <TouchableOpacity style={styles.bellContainer}>
-          <MaterialCommunityIcons name={'bell'} color={'#000'} size={20} />
-          <Badge size={10} style={styles.badge} />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            styles.personContainer,
-            {backgroundColor: COLORS.primaryLight},
-          ]}>
-          <MaterialIcons
-            name={'person'}
-            color={theme.colors.primary}
-            size={19}
-          />
-        </TouchableOpacity>
-      </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -139,7 +141,7 @@ function Home(props) {
 
   return (
     <>
-      <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
         <Spinner visible={loading} textContent={''} />
         <StatusBar barStyle="light-content" />
         <View style={styles.headerContainer}>
@@ -184,7 +186,7 @@ function Home(props) {
             </Subheading>
           </View>
         )}
-      </SafeAreaView>
+      </View>
       {selectedTab === 0 ? (
         <FAB
           style={[styles.fab, {backgroundColor: theme.colors.primary}]}
@@ -211,7 +213,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingVertical: 10,
     paddingHorizontal: 20,
-    display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
@@ -222,7 +223,6 @@ const styles = StyleSheet.create({
   },
   rightContainer: {
     flexDirection: 'row',
-    display: 'flex',
     alignItems: 'center',
   },
   bellContainer: {

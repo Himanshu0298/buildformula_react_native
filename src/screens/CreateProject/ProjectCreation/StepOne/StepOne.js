@@ -44,7 +44,7 @@ function StepOne(props) {
   const gstRef = React.useRef();
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <>
       <StatusBar
         barStyle="light-content"
         backgroundColor={theme.colors.primary}
@@ -145,7 +145,7 @@ function StepOne(props) {
           )}
         </Formik>
       </ScrollView>
-    </SafeAreaView>
+    </>
   );
 }
 

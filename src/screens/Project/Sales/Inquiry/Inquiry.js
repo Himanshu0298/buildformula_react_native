@@ -3,8 +3,6 @@ import React, {useEffect, useState} from 'react';
 import {
   StyleSheet,
   View,
-  StatusBar,
-  SafeAreaView,
   RefreshControl,
   TouchableOpacity,
   FlatList,
@@ -31,6 +29,7 @@ import {TabView} from 'react-native-tab-view';
 import Layout from 'utils/Layout';
 import MaterialTabBar from 'components/MaterialTabBar';
 import CustomBadge from 'components/CustomBadge';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 function StatsRow({visitorAnalytics}) {
   const {
@@ -130,7 +129,7 @@ function RenderContent({
   toggleSheet,
 }) {
   return (
-    <>
+    <View style={styles.contentContainer}>
       {showAnalyticsRow ? (
         <StatsRow visitorAnalytics={visitorAnalytics} />
       ) : null}
@@ -157,7 +156,7 @@ function RenderContent({
           </View>
         }
       />
-    </>
+    </View>
   );
 }
 
@@ -330,25 +329,22 @@ function Inquiry(props) {
 
   return (
     <>
-      <StatusBar barStyle="light-content" />
-      <SafeAreaView style={styles.container}>
-        <Spinner visible={loading} textContent={''} />
+      <Spinner visible={loading} textContent={''} />
 
-        <TabView
-          navigationState={{index: selectedTab, routes}}
-          renderScene={renderScene}
-          onIndexChange={setSelectedTab}
-          initialLayout={{width: Layout.window.width}}
-          renderTabBar={(tabBarProps) => {
-            return (
-              <View style={styles.headerContainer}>
-                <ProjectHeader />
-                <MaterialTabBar {...tabBarProps} />
-              </View>
-            );
-          }}
-        />
-      </SafeAreaView>
+      <TabView
+        navigationState={{index: selectedTab, routes}}
+        renderScene={renderScene}
+        onIndexChange={setSelectedTab}
+        initialLayout={{width: Layout.window.width}}
+        renderTabBar={(tabBarProps) => {
+          return (
+            <View style={styles.headerContainer}>
+              <ProjectHeader />
+              <MaterialTabBar {...tabBarProps} />
+            </View>
+          );
+        }}
+      />
       <FAB.Group
         open={selectDialog}
         style={styles.fab}
@@ -385,12 +381,13 @@ function Inquiry(props) {
 export default withTheme(Inquiry);
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   headerContainer: {
     ...getShadow(5),
     backgroundColor: '#fff',
+  },
+  contentContainer: {
+    flexGrow: 1,
+    marginTop: 2,
   },
   statsRowMainContainer: {
     paddingVertical: 5,
@@ -398,7 +395,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     display: 'flex',
     alignItems: 'center',
-    ...getShadow(2),
     backgroundColor: '#fff',
   },
   rowMainContainer: {

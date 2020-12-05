@@ -1,11 +1,5 @@
 import React, {useEffect, useState, useMemo} from 'react';
-import {
-  StyleSheet,
-  View,
-  StatusBar,
-  SafeAreaView,
-  ScrollView,
-} from 'react-native';
+import {StyleSheet, View, StatusBar, ScrollView} from 'react-native';
 import {withTheme, Subheading, Button, TextInput} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -26,6 +20,7 @@ import dayjs from 'dayjs';
 import {TabView} from 'react-native-tab-view';
 import Layout from 'utils/Layout';
 import MaterialTabBar from 'components/MaterialTabBar';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const schema = Yup.object().shape({
   first_name: Yup.string('Invalid').required('Required'),
@@ -472,7 +467,9 @@ function AddVisitor(props) {
 
   return (
     <>
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView
+        edges={['right', 'left', 'bottom']}
+        style={styles.container}>
         <Spinner visible={loading} textContent={''} />
         <StatusBar barStyle="light-content" />
         <View style={styles.body}>

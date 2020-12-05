@@ -1,12 +1,5 @@
 import React, {useState, useMemo} from 'react';
-import {
-  StyleSheet,
-  View,
-  StatusBar,
-  SafeAreaView,
-  Keyboard,
-  ScrollView,
-} from 'react-native';
+import {StyleSheet, View, StatusBar, Keyboard, ScrollView} from 'react-native';
 import {
   withTheme,
   Button,
@@ -37,6 +30,7 @@ import MaterialTabBar from 'components/MaterialTabBar';
 import CustomBadge from 'components/CustomBadge';
 import {useAlert} from 'components/Alert';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const schema = Yup.object().shape({
   follow_up_date: Yup.date('Invalid').required('Required'),
@@ -425,7 +419,9 @@ function AddFollowUp(props) {
 
   return (
     <>
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView
+        edges={['bottom', 'right', 'left']}
+        style={styles.container}>
         <Spinner visible={loading} textContent={''} />
         <StatusBar barStyle="light-content" />
         <View style={styles.body}>

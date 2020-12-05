@@ -6,6 +6,7 @@ import {
   Image,
   TouchableOpacity,
   Keyboard,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import {
   withTheme,
@@ -32,6 +33,14 @@ import {PHONE_REGEX} from 'utils/constant';
 import useProjectActions from 'redux/actions/projectActions';
 import useAppActions from 'redux/actions/appActions';
 
+const BANNER_HEIGHT = Layout.window.width * 0.75 * (5 / 12);
+const IMAGE_HEIGHT = Layout.window.width * 0.75 * (15 / 22);
+
+const SNAP_POINTS = [
+  Layout.window.height - BANNER_HEIGHT,
+  Layout.window.height - (BANNER_HEIGHT + IMAGE_HEIGHT),
+];
+
 function SignUpButton({label, onPress}) {
   return (
     <View style={styles.loginButton}>
@@ -52,6 +61,7 @@ function RenderContent(props) {
   const {
     t,
     values,
+    bottomSheetRef,
     handleChange,
     handleBlur,
     errors,
@@ -95,7 +105,10 @@ function RenderContent(props) {
           placeholder={t('label_first_name')}
           autoCapitalize="none"
           returnKeyType={'next'}
-          onSubmitEditing={() => lastRef && lastRef.current.focus()}
+          onSubmitEditing={() => {
+            lastRef && lastRef.current.focus();
+            bottomSheetRef?.current?.snapTo(0);
+          }}
           error={errors.firstName}
         />
         <CustomInput
@@ -349,51 +362,56 @@ function SignUp(props) {
         }
       }}>
       {({handleChange, values, handleSubmit, handleBlur, isValid, errors}) => (
-        <View style={styles.container}>
-          <Spinner visible={loading || updatingAdmin} textContent={''} />
-          <View style={styles.topImageContainer}>
-            <View style={styles.bannerContainer}>
-              <Image source={banner} style={styles.banner} />
-            </View>
-            {!adminSignUp ? (
-              <View style={styles.imageContainer}>
-                <Image source={image} style={styles.image} />
+        <TouchableWithoutFeedback
+          onPress={() => Keyboard.dismiss()}
+          style={styles.container}>
+          <View style={styles.container}>
+            <Spinner visible={loading || updatingAdmin} textContent={''} />
+            <View style={styles.topImageContainer}>
+              <View style={styles.bannerContainer}>
+                <Image source={banner} style={styles.banner} />
               </View>
-            ) : (
-              <View style={styles.noteContainer}>
-                <Text theme={secondaryTheme}>
-                  <Text
-                    theme={secondaryTheme}
-                    style={{color: theme.colors.primary, fontWeight: 'bold'}}>
-                    {'NOTE: '}
+              {!adminSignUp ? (
+                <View style={styles.imageContainer}>
+                  <Image source={image} style={styles.image} />
+                </View>
+              ) : (
+                <View style={styles.noteContainer}>
+                  <Text theme={secondaryTheme}>
+                    <Text
+                      theme={secondaryTheme}
+                      style={{color: theme.colors.primary, fontWeight: 'bold'}}>
+                      {'NOTE: '}
+                    </Text>
+                    Vshwan build Project or site have three main admins so if
+                    anyone admin isn't available your team can be manged without
+                    interruption.
                   </Text>
-                  Vshwan build Project or site have three main admins so if
-                  anyone admin isn't available your team can be manged without
-                  interruption.
-                </Text>
-              </View>
-            )}
+                </View>
+              )}
+            </View>
+            <BottomSheet
+              ref={bottomSheetRef}
+              snapPoints={adminSignUp ? ['85%', '70%'] : SNAP_POINTS}
+              initialSnap={1}
+              renderHeader={renderHeader}
+              renderContent={() => (
+                <RenderContent
+                  t={t}
+                  bottomSheetRef={bottomSheetRef}
+                  adminSignUp={adminSignUp}
+                  adminId={adminId}
+                  values={values}
+                  handleSubmit={handleSubmit}
+                  handleBlur={handleBlur}
+                  handleChange={handleChange}
+                  errors={{...errors, ...validationError}}
+                  navigation={navigation}
+                />
+              )}
+            />
           </View>
-          <BottomSheet
-            ref={bottomSheetRef}
-            snapPoints={adminSignUp ? ['85%', '70%'] : ['85%', '60%']}
-            initialSnap={1}
-            renderHeader={renderHeader}
-            renderContent={() => (
-              <RenderContent
-                t={t}
-                adminSignUp={adminSignUp}
-                adminId={adminId}
-                values={values}
-                handleSubmit={handleSubmit}
-                handleBlur={handleBlur}
-                handleChange={handleChange}
-                errors={{...errors, ...validationError}}
-                navigation={navigation}
-              />
-            )}
-          />
-        </View>
+        </TouchableWithoutFeedback>
       )}
     </Formik>
   );
@@ -413,7 +431,7 @@ const styles = StyleSheet.create({
   },
   banner: {
     width: Layout.window.width * 0.75,
-    height: Layout.window.width * 0.75 * (5 / 12),
+    height: BANNER_HEIGHT,
   },
   imageContainer: {
     display: 'flex',
@@ -423,7 +441,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: Layout.window.width * 0.75,
-    height: Layout.window.width * 0.75 * (15 / 22),
+    height: IMAGE_HEIGHT,
   },
   noteContainer: {
     paddingHorizontal: 20,

@@ -5,6 +5,7 @@ import {
   View,
   Image,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   Keyboard,
 } from 'react-native';
 import {withTheme, Headline, Subheading, Button} from 'react-native-paper';
@@ -23,6 +24,14 @@ import Layout from 'utils/Layout';
 import BottomSheet from 'reanimated-bottom-sheet';
 import {useSnackbar} from 'components/Snackbar';
 import SheetHeader from 'components/SheetHeader';
+
+const BANNER_HEIGHT = Layout.window.width * 0.75 * (5 / 12);
+const IMAGE_HEIGHT = Layout.window.width * 0.75 * (15 / 22);
+
+const SNAP_POINTS = [
+  Layout.window.height - BANNER_HEIGHT,
+  Layout.window.height - (BANNER_HEIGHT + IMAGE_HEIGHT),
+];
 
 function LoginButton({label, onPress}) {
   return (
@@ -76,7 +85,7 @@ function RenderContent(props) {
             returnKeyType={'next'}
             onSubmitEditing={() => {
               passwordRef && passwordRef.current.focus();
-              bottomSheetRef?.current?.snapTo(1);
+              bottomSheetRef?.current?.snapTo(0);
             }}
             error={errors.email}
           />
@@ -152,12 +161,7 @@ function Login(props) {
     <Formik
       validateOnBlur={false}
       validateOnChange={false}
-      initialValues={
-        {
-          // email: 'testuser1@gmail.com',
-          // password: '123456',
-        }
-      }
+      initialValues={{}}
       validationSchema={schema}
       onSubmit={async (values) => {
         let formData = new FormData();
@@ -185,34 +189,38 @@ function Login(props) {
           });
       }}>
       {({handleChange, values, handleSubmit, handleBlur, isValid, errors}) => (
-        <View style={styles.container}>
-          <Spinner visible={loading} textContent={''} />
-          <View style={styles.topImageContainer}>
-            <View style={styles.bannerContainer}>
-              <Image source={banner} style={styles.banner} />
+        <TouchableWithoutFeedback
+          onPress={() => Keyboard.dismiss()}
+          style={styles.container}>
+          <View style={styles.container}>
+            <Spinner visible={loading} textContent={''} />
+            <View style={styles.topImageContainer}>
+              <View style={styles.bannerContainer}>
+                <Image source={banner} style={styles.banner} />
+              </View>
+              <View style={styles.imageContainer}>
+                <Image source={image} style={styles.image} />
+              </View>
             </View>
-            <View style={styles.imageContainer}>
-              <Image source={image} style={styles.image} />
-            </View>
+            <BottomSheet
+              ref={bottomSheetRef}
+              snapPoints={SNAP_POINTS}
+              initialSnap={1}
+              renderHeader={() => <SheetHeader />}
+              renderContent={() => (
+                <RenderContent
+                  navigation={navigation}
+                  bottomSheetRef={bottomSheetRef}
+                  values={values}
+                  errors={errors}
+                  handleChange={handleChange}
+                  handleSubmit={handleSubmit}
+                  handleBlur={handleBlur}
+                />
+              )}
+            />
           </View>
-          <BottomSheet
-            ref={bottomSheetRef}
-            snapPoints={['85%', '60%']}
-            initialSnap={1}
-            renderHeader={() => <SheetHeader />}
-            renderContent={() => (
-              <RenderContent
-                navigation={navigation}
-                bottomSheetRef={bottomSheetRef}
-                values={values}
-                errors={errors}
-                handleChange={handleChange}
-                handleSubmit={handleSubmit}
-                handleBlur={handleBlur}
-              />
-            )}
-          />
-        </View>
+        </TouchableWithoutFeedback>
       )}
     </Formik>
   );
@@ -220,33 +228,28 @@ function Login(props) {
 
 const styles = StyleSheet.create({
   container: {
-    height: '100%',
+    flex: 1,
   },
   topImageContainer: {
-    height: '40%',
+    flexGrow: 1,
   },
   bannerContainer: {
     width: '100%',
-    display: 'flex',
     alignItems: 'center',
   },
   banner: {
     width: Layout.window.width * 0.75,
-    height: Layout.window.width * 0.75 * (5 / 12),
+    height: BANNER_HEIGHT,
   },
   imageContainer: {
-    display: 'flex',
-    marginBottom: -30,
-    right: 10,
     alignItems: 'center',
   },
   image: {
     width: Layout.window.width * 0.75,
-    height: Layout.window.width * 0.75 * (15 / 22),
+    height: IMAGE_HEIGHT,
   },
   contentContainer: {
     backgroundColor: theme.colors.primary,
-    display: 'flex',
     height: '100%',
     justifyContent: 'space-around',
     alignItems: 'center',

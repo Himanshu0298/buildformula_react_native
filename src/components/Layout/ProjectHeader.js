@@ -6,34 +6,37 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useSelector} from 'react-redux';
 import {secondaryTheme} from 'styles/theme';
 import {COLORS} from 'utils/constant';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 function ProjectHeader({theme}) {
   const {selectedProject} = useSelector((state) => state.project);
   return (
-    <View style={styles.header}>
-      <View style={styles.logoContainer}>
-        <Subheading theme={secondaryTheme}>
-          {selectedProject.project_name}
-        </Subheading>
+    <SafeAreaView edges={['right', 'top', 'left']}>
+      <View style={styles.header}>
+        <View style={styles.logoContainer}>
+          <Subheading theme={secondaryTheme}>
+            {selectedProject.project_name}
+          </Subheading>
+        </View>
+        <View style={styles.rightContainer}>
+          <TouchableOpacity style={styles.bellContainer}>
+            <MaterialCommunityIcons name={'bell'} color={'#000'} size={20} />
+            <Badge size={10} style={styles.badge} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.personContainer,
+              {backgroundColor: COLORS.primaryLight},
+            ]}>
+            <MaterialIcons
+              name={'person'}
+              color={theme.colors.primary}
+              size={19}
+            />
+          </TouchableOpacity>
+        </View>
       </View>
-      <View style={styles.rightContainer}>
-        <TouchableOpacity style={styles.bellContainer}>
-          <MaterialCommunityIcons name={'bell'} color={'#000'} size={20} />
-          <Badge size={10} style={styles.badge} />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            styles.personContainer,
-            {backgroundColor: COLORS.primaryLight},
-          ]}>
-          <MaterialIcons
-            name={'person'}
-            color={theme.colors.primary}
-            size={19}
-          />
-        </TouchableOpacity>
-      </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -44,14 +47,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingVertical: 10,
     paddingHorizontal: 20,
-    display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
   logoContainer: {},
   rightContainer: {
     flexDirection: 'row',
-    display: 'flex',
     alignItems: 'center',
   },
   bellContainer: {
