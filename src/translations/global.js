@@ -43,8 +43,8 @@ export default {
       label_project_phone: 'Project Phone',
 
       //Project Structure
-      projectStructure: 'Project Structure',
-      projectStructureSubtitle: 'Select the appropriate option',
+      label_project_structure: 'Project Structure',
+      label_project_structure_structure: 'Select the appropriate option',
       apartment: 'Apartment',
       shop: 'Shop',
       office: 'Office',
@@ -71,6 +71,10 @@ export default {
       label_for_bhk: 'For BHK',
       label_remark: 'Remark',
       label_search_visitors: 'Search visitors',
+
+      //Booking Form
+      label_select_structure: 'Select Structure',
+      label_towers: 'Towers',
     },
   },
   hi: {
@@ -111,8 +115,8 @@ export default {
       gst: 'GST No.',
 
       //Project Structure
-      projectStructure: 'प्रोजेक्ट संरचना',
-      projectStructureSubtitle: 'उपयुक्त विकल्प का चयन करें',
+      label_project_structure: 'प्रोजेक्ट संरचना',
+      label_project_structure_structure: 'उपयुक्त विकल्प का चयन करें',
       apartment: 'अपार्टमेंट',
       shop: 'दुकान',
       office: 'कार्यालय',
@@ -139,6 +143,10 @@ export default {
       label_for_bhk: 'BHK के लिए',
       label_remark: 'टिप्पणी',
       label_search_visitors: 'जांच करें',
+
+      //Booking Form
+      label_select_structure: 'संरचना का चयन करें',
+      label_towers: 'टावरो',
     },
   },
 };

@@ -1,41 +1,17 @@
 import React, {useMemo, useState} from 'react';
-import {
-  View,
-  StyleSheet,
-  ImageBackground,
-  TouchableOpacity,
-  SafeAreaView,
-  ScrollView,
-} from 'react-native';
-import {Button, Subheading, TextInput, withTheme} from 'react-native-paper';
+import {View, StyleSheet, SafeAreaView, ScrollView} from 'react-native';
+import {Button, TextInput, withTheme} from 'react-native-paper';
 import BaseText from 'components/BaseText';
-import towerActive from 'assets/images/tower.png';
-import towerInactive from 'assets/images/tower_inactive.png';
-import Layout from 'utils/Layout';
 import {useSnackbar} from 'components/Snackbar';
 import {getTowerLabel} from 'utils';
 import {useAlert} from 'components/Alert';
+import TowerIcon from 'components/TowerIcon';
 
 function RenderTowers({towerCount, towerValidationById, onPress}) {
   let towersList = [];
   for (let i = 1; i <= towerCount; i += 1) {
     const active = towerValidationById[i];
-    towersList.push(
-      <TouchableOpacity
-        key={i}
-        onPress={() => onPress(i)}
-        style={styles.towerContainer}>
-        <ImageBackground
-          source={active ? towerActive : towerInactive}
-          style={styles.towerImage}>
-          <View style={styles.towerLabelContainer}>
-            <Subheading style={!active && styles.inactiveLabel}>
-              {getTowerLabel(i)}
-            </Subheading>
-          </View>
-        </ImageBackground>
-      </TouchableOpacity>,
-    );
+    towersList.push(<TowerIcon onPress={onPress} key={i} active={active} />);
   }
   return <View style={styles.towersList}>{towersList}</View>;
 }
@@ -212,27 +188,6 @@ const styles = StyleSheet.create({
   towersList: {
     flexWrap: 'wrap',
     flexDirection: 'row',
-  },
-  towerContainer: {
-    width: Layout.window.width * 0.22,
-    height: Layout.window.width * 0.15,
-    position: 'relative',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginVertical: 2,
-  },
-  towerImage: {
-    height: Layout.window.width * 0.133,
-    width: Layout.window.width * 0.17,
-    display: 'flex',
-    alignItems: 'center',
-  },
-  towerLabelContainer: {
-    marginTop: 3,
-  },
-  inactiveLabel: {
-    color: 'gray',
   },
   button: {
     marginTop: 20,

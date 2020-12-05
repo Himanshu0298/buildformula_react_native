@@ -56,3 +56,13 @@ export const COLORS = {
 };
 
 export const APP_BOTTOM_TAB_HEIGHT = 50;
+
+export const BHK_OPTIONS = [
+  {type: 1, color: 'rgba(244,175,72)'},
+  {type: 2, color: 'rgba(134, 134, 134)'},
+  {type: 3, color: 'rgba(72, 161, 244)'},
+  {type: 4, color: 'rgba(149, 100, 100)'},
+  {type: 5, color: 'rgba(168, 72, 244)'},
+  {type: 6, color: 'rgba(0, 205, 205)'},
+  {type: 7, color: 'rgba(99, 149, 104)'},
+];

@@ -594,7 +594,7 @@ function StepTwo(props) {
         renderTitle={() => {
           return (
             <View style={styles.titleContainer}>
-              <Title>{t('projectStructure')} : </Title>
+              <Title>{t('label_project_structure')} : </Title>
               <Menu
                 visible={showModal}
                 onDismiss={toggleMenu}

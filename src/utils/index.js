@@ -137,3 +137,7 @@ export function getInitialAuthScreen(
     }
   }
 }
+
+export function addOpacity(color, opacity) {
+  return color.split(')')[0] + ',' + opacity + ')';
+}

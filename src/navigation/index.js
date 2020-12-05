@@ -36,7 +36,7 @@ import ProjectDashboard from '../screens/Project/Dashboard';
 //Project : Sales Screens
 import Inquiry from '../screens/Project/Sales/Inquiry';
 import SalesPipeline from '../screens/Project/Sales/SalesPipeline';
-import BookingChart from '../screens/Project/Sales/BookingChart';
+import SelectStructure from 'screens/Project/Sales/BookingChart/SelectStructure';
 import Payment from '../screens/Project/Sales/Payment';
 import AddVisitor from '../screens/Project/Sales/AddVisitor';
 import AddFollowUp from '../screens/Project/Sales/AddFollowUp';
@@ -51,6 +51,7 @@ import RequestForPrice from '../screens/Project/MaterialManagement/RequestForPri
 import PurchaseOrders from '../screens/Project/MaterialManagement/PurchaseOrders';
 //Project : Files screens
 import Files from '../screens/Project/Files';
+import SelectFloor from 'screens/Project/Sales/BookingChart/SelectFloor';
 /*************   Project Sub Screens    *************/
 
 const optionalConfigObject = {
@@ -113,6 +114,23 @@ const RouteContext = React.createContext('Dashboard');
 //   );
 // }
 
+function BookingChartStack() {
+  return (
+    <Stack.Navigator initialRouteName={'BC_Step_One'}>
+      <Stack.Screen
+        name="BC_Step_One"
+        component={SelectStructure}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="BC_Step_Two"
+        component={SelectFloor}
+        options={{headerShown: false}}
+      />
+    </Stack.Navigator>
+  );
+}
+
 function GeneralDrawer() {
   return (
     <Drawer.Navigator
@@ -150,7 +168,7 @@ function ProjectDrawer() {
       <Drawer.Screen name="ProjectDashboard" component={ProjectDashboard} />
       <Drawer.Screen name="Inquiry" component={Inquiry} />
       <Drawer.Screen name="SalesPipeline" component={SalesPipeline} />
-      <Drawer.Screen name="BookingChart" component={BookingChart} />
+      <Drawer.Screen name="BookingChartStack" component={BookingChartStack} />
       <Drawer.Screen name="Payment" component={Payment} />
       <Drawer.Screen name="ProjectSchedule" component={ProjectSchedule} />
       <Drawer.Screen name="MainPhase" component={MainPhase} />

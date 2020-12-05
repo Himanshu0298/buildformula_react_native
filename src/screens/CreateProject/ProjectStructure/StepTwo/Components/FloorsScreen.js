@@ -1,21 +1,14 @@
 import React, {useMemo} from 'react';
-import {
-  View,
-  StyleSheet,
-  Image,
-  SafeAreaView,
-  TouchableOpacity,
-  FlatList,
-} from 'react-native';
-import {Badge, Button, TextInput, withTheme} from 'react-native-paper';
+import {View, StyleSheet, SafeAreaView, FlatList} from 'react-native';
+import {Button, TextInput, withTheme} from 'react-native-paper';
 import BaseText from 'components/BaseText';
-import floorSlab from 'assets/images/slab.png';
 import Layout from 'utils/Layout';
 import {getFloorNumber} from 'utils';
 import {theme} from 'styles/theme';
 import {useSnackbar} from 'components/Snackbar';
 import {useBackHandler} from '@react-native-community/hooks';
 import {useAlert} from 'components/Alert';
+import FloorBar from 'components/FloorBar';
 
 const checkUnitBhkValidity = (floors, floorCount) => {
   let result = {};
@@ -56,62 +49,30 @@ function RenderFloor(props) {
     selectedStructureType,
   } = props;
   return (
-    <View style={styles.floorContainer}>
-      <View style={styles.badgeContainer}>
-        <View>
-          <Badge style={styles.badge} visible={selectedFloor === floorId} />
-        </View>
-      </View>
-      <View style={styles.floorContent}>
-        <View style={styles.rowContainer}>
-          <TouchableOpacity
-            style={styles.floorLabelContainer}
-            onPress={() => setSelectedFloor(floorId)}>
-            <BaseText style={styles.floorLabel}>
-              {getFloorNumber(floorId)}
-            </BaseText>
-          </TouchableOpacity>
-          <View style={{flexDirection: 'row'}}>
-            <TextInput
-              dense
-              blurOnSubmit
-              onChangeText={(units) => onChangeUnit(floorId, units)}
-              style={styles.unitsInput}
-              keyboardType="decimal-pad"
-              value={
-                floors[floorId] && floors[floorId].unitCount
-                  ? floors[floorId].unitCount.toString()
-                  : ''
-              }
-              theme={{
-                colors: {
-                  underlineColor: 'transparent',
-                  text: '#000',
-                  accent: theme.colors.primary,
-                },
-              }}
-            />
-            <Button
-              compact
-              disabled={!(floors[floorId] && floors[floorId].unitCount)}
-              color={unitsValidity[floorId] ? theme.colors.primary : '#5B6F7C'}
-              contentStyle={{padding: 1}}
-              mode="contained"
-              uppercase={false}
-              onPress={() => showAllUnits(floorId)}>
-              <BaseText style={styles.allUnitsLabel}>
-                {selectedStructureType === 4 || selectedStructureType === 1
-                  ? unitsValidity[floorId]
-                    ? 'BHK assigned'
-                    : '  Assign BHK  '
-                  : 'View Units'}
-              </BaseText>
-            </Button>
-          </View>
-        </View>
-        <Image source={floorSlab} style={styles.slabImage} />
-      </View>
-    </View>
+    <FloorBar
+      floorId={floorId}
+      badgeActive={selectedFloor === floorId}
+      onPress={setSelectedFloor}
+      inputProps={{
+        onChangeText: (units) => onChangeUnit(floorId, units),
+        value:
+          floors[floorId] && floors[floorId].unitCount
+            ? floors[floorId].unitCount.toString()
+            : '',
+      }}
+      buttonLabel={
+        selectedStructureType === 4 || selectedStructureType === 1
+          ? unitsValidity[floorId]
+            ? 'BHK assigned'
+            : '  Assign BHK  '
+          : 'View Units'
+      }
+      buttonProps={{
+        disabled: !(floors[floorId] && floors[floorId].unitCount),
+        color: unitsValidity[floorId] ? theme.colors.primary : '#5B6F7C',
+        onPress: () => showAllUnits(floorId),
+      }}
+    />
   );
 }
 
@@ -279,9 +240,6 @@ function FloorsScreen(props) {
 }
 
 const styles = StyleSheet.create({
-  scrollView: {
-    flexGrow: 1,
-  },
   container: {
     flex: 1,
     justifyContent: 'space-between',
@@ -305,13 +263,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
   },
-  unitsInput: {
-    width: 45,
-    display: 'flex',
-    marginHorizontal: 10,
-    fontSize: 16,
-    justifyContent: 'center',
-  },
   applyButton: {
     fontSize: 12,
   },
@@ -319,50 +270,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 30,
     flexGrow: 1,
-  },
-  floorsList: {
-    display: 'flex',
-  },
-  floorContainer: {
-    marginBottom: 10,
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    flexDirection: 'row',
-  },
-  badgeContainer: {
-    flex: 0.2,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  badge: {
-    backgroundColor: theme.colors.primary,
-  },
-  floorContent: {
-    flex: 0.8,
-  },
-  rowContainer: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-around',
-    flexDirection: 'row',
-  },
-  floorLabelContainer: {
-    flexGrow: 1,
-    height: '100%',
-    display: 'flex',
-    justifyContent: 'center',
-  },
-  floorLabel: {
-    color: 'grey',
-    fontSize: 12,
-  },
-  allUnitsLabel: {
-    fontSize: 14,
-  },
-  slabImage: {
-    height: Layout.window.width * 0.7 * (20 / 320),
-    width: '100%',
   },
   button: {
     marginTop: 20,

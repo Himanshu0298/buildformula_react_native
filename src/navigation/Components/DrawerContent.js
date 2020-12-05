@@ -43,7 +43,7 @@ const PROJECT_DRAWER_ITEMS = [
         ),
       },
       {
-        route: 'BookingChart',
+        route: 'BookingChartStack',
         label: 'Booking Chart',
         icon: 'chart-line',
       },

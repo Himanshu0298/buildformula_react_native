@@ -11,21 +11,13 @@ import {Button, Subheading, TextInput, withTheme} from 'react-native-paper';
 import BaseText from 'components/BaseText';
 import {useSnackbar} from 'components/Snackbar';
 import {theme} from 'styles/theme';
-import {getFloorNumber, getUnitLabel} from 'utils';
+import {addOpacity, getFloorNumber, getUnitLabel} from 'utils';
 import Layout from 'utils/Layout';
 import bungalowHut from 'assets/images/bungalow_hut.png';
 import plotHut from 'assets/images/plot.png';
 import {useBackHandler} from '@react-native-community/hooks';
-
-const BHK_OPTIONS = [
-  {type: 1, color: 'rgba(244,175,72)'},
-  {type: 2, color: 'rgba(134, 134, 134)'},
-  {type: 3, color: 'rgba(72, 161, 244)'},
-  {type: 4, color: 'rgba(149, 100, 100)'},
-  {type: 5, color: 'rgba(168, 72, 244)'},
-  {type: 6, color: 'rgba(0, 205, 205)'},
-  {type: 7, color: 'rgba(99, 149, 104)'},
-];
+import BhkButton from 'components/BhkButton';
+import {BHK_OPTIONS} from 'utils/constant';
 
 const DEFAULT_UNIT_COLOR = '#5B6F7C';
 
@@ -66,7 +58,7 @@ function RenderUnits({
         <TouchableOpacity
           key={i}
           onPress={() => onPress(i)}
-          style={[styles.imageContainer]}>
+          style={styles.imageContainer}>
           <Image
             source={selectedStructureType === 4 ? bungalowHut : plotHut}
             style={selectedStructureType === 4 ? styles.hut : styles.plot}
@@ -90,37 +82,6 @@ function RenderUnits({
     unitsList.push(unit);
   }
   return <View style={styles.unitsList}>{unitsList}</View>;
-}
-
-function addOpacity(color, opacity) {
-  return color.split(')')[0] + ',' + opacity + ')';
-}
-
-function RenderBhkButton({bhk, onPress, selected}) {
-  return (
-    <View style={styles.bhkContainer}>
-      <TouchableOpacity
-        onPress={() => onPress(bhk.type)}
-        style={[
-          styles.bhkButton,
-          {
-            backgroundColor: selected
-              ? addOpacity(bhk.color, 1)
-              : addOpacity(bhk.color, 0.1),
-          },
-        ]}>
-        <BaseText
-          style={[
-            styles.bhkLabel,
-            {
-              color: selected ? '#fff' : addOpacity(bhk.color, 1),
-            },
-          ]}>
-          {bhk.type} BHK
-        </BaseText>
-      </TouchableOpacity>
-    </View>
-  );
 }
 
 function UnitsScreen(props) {
@@ -230,7 +191,7 @@ function UnitsScreen(props) {
                 </View>
                 <View style={styles.bhkListContainer}>
                   {BHK_OPTIONS.map((bhk, index) => (
-                    <RenderBhkButton
+                    <BhkButton
                       key={index}
                       bhk={bhk}
                       selected={selectedBhk === bhk.type}
@@ -331,19 +292,6 @@ const styles = StyleSheet.create({
   bhkListContainer: {
     flexWrap: 'wrap',
     flexDirection: 'row',
-  },
-  bhkContainer: {},
-  bhkButton: {
-    margin: 5,
-    paddingHorizontal: 14,
-    borderRadius: 5,
-    paddingVertical: 10,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  bhkLabel: {
-    fontSize: 13,
   },
   headingContainer: {
     flexDirection: 'row',
