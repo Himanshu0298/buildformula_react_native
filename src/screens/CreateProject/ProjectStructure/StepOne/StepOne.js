@@ -157,7 +157,7 @@ function StepOne(props) {
       />
       <FormTitle
         title={t('label_project_structure')}
-        subTitle={t('label_project_structure_structure')}
+        subTitle={t('label_select_appropriate_option')}
       />
       <Spinner visible={loading} textContent={''} />
       <View style={styles.container}>

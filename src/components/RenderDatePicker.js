@@ -1,5 +1,5 @@
 import React, {useImperativeHandle, useState} from 'react';
-import {TouchableOpacity} from 'react-native';
+import {Keyboard, TouchableOpacity} from 'react-native';
 import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
 import {Button, Dialog, Portal, TextInput, withTheme} from 'react-native-paper';
@@ -29,7 +29,11 @@ const RenderDatePicker = React.forwardRef((props, ref) => {
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState(value);
 
-  const togglePicker = () => setOpen((v) => !v);
+  const togglePicker = () => {
+    setOpen((v) => !v);
+    Keyboard.dismiss();
+  };
+
   const handleConfirm = () => {
     togglePicker();
     onChange(date || new Date());
@@ -42,6 +46,7 @@ const RenderDatePicker = React.forwardRef((props, ref) => {
       <TouchableOpacity onPress={togglePicker}>
         <RenderInput
           ref={ref}
+          pointerEvents="none"
           editable={false}
           {...rest}
           error={error}

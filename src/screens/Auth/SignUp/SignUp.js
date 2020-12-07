@@ -130,6 +130,7 @@ function RenderContent(props) {
           label={t('label_phone')}
           containerStyles={styles.inputStyles}
           ref={phoneRef}
+          maxLength={10}
           value={values.phone}
           keyboardType="number-pad"
           onChangeText={handleChange('phone')}

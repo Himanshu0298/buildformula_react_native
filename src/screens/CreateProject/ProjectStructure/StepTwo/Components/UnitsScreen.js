@@ -16,7 +16,7 @@ import Layout from 'utils/Layout';
 import bungalowHut from 'assets/images/bungalow_hut.png';
 import plotHut from 'assets/images/plot.png';
 import {useBackHandler} from '@react-native-community/hooks';
-import BhkButton from 'components/BhkButton';
+import BhkButton from 'components/Buttons/BhkButton';
 import {BHK_OPTIONS} from 'utils/constant';
 
 const DEFAULT_UNIT_COLOR = '#5B6F7C';

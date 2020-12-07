@@ -1,5 +1,5 @@
 import React, {useImperativeHandle, useMemo} from 'react';
-import {TouchableOpacity, Keyboard} from 'react-native';
+import {TouchableOpacity, Keyboard, View} from 'react-native';
 import PropTypes from 'prop-types';
 import {TextInput} from 'react-native-paper';
 import {secondaryTheme} from 'styles/theme';
@@ -15,6 +15,8 @@ const RenderSelect = React.forwardRef((props, ref) => {
       toggleOptions();
     },
   }));
+
+  console.log('----->options ', options);
 
   let {parsedOptions, withValue} = useMemo(() => {
     if (options[0] && options[0].label) {
@@ -35,6 +37,7 @@ const RenderSelect = React.forwardRef((props, ref) => {
   }, [options, value, withValue]);
 
   const toggleOptions = () => {
+    console.log('-----> toggleOptions');
     Keyboard.dismiss();
 
     showActionSheetWithOptions(
@@ -60,6 +63,8 @@ const RenderSelect = React.forwardRef((props, ref) => {
     <TouchableOpacity onPress={toggleOptions}>
       <RenderInput
         editable={false}
+        pointerEvents="none"
+        keyboardShouldPersistTaps="always"
         ref={ref}
         {...rest}
         value={value}

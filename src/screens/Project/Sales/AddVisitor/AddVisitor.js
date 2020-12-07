@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useMemo} from 'react';
-import {StyleSheet, View, StatusBar, ScrollView} from 'react-native';
+import {StyleSheet, View, StatusBar, ScrollView, Platform} from 'react-native';
 import {withTheme, Subheading, Button, TextInput} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -100,6 +100,7 @@ function PersonalTab({
             label={t('label_phone')}
             ref={phoneRef}
             keyboardType="number-pad"
+            maxLength={10}
             containerStyles={styles.input}
             value={values.phone}
             onChangeText={handleChange('phone')}
@@ -316,7 +317,9 @@ function InquiryTab({
             <RenderSelect
               name="for_bhk"
               label={t('label_for_bhk')}
-              options={bhkOptions?.[values.inquiry_for]}
+              options={bhkOptions?.[values.inquiry_for].map((v) =>
+                v.toString(),
+              )}
               containerStyles={styles.input}
               value={values.for_bhk}
               placeholder={t('label_for_bhk')}
@@ -329,7 +332,8 @@ function InquiryTab({
           <RenderInput
             name="remark"
             multiline
-            numberOfLines={5}
+            numberOfLines={Platform.OS === 'ios' ? null : 5}
+            minHeight={Platform.OS === 'ios' && 4 ? 20 * 6 : null}
             label={t('label_remark')}
             containerStyles={styles.input}
             value={values.remark}

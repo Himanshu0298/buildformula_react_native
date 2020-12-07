@@ -36,10 +36,15 @@ import ProjectDashboard from '../screens/Project/Dashboard';
 //Project : Sales Screens
 import Inquiry from '../screens/Project/Sales/Inquiry';
 import SalesPipeline from '../screens/Project/Sales/SalesPipeline';
-import SelectStructure from 'screens/Project/Sales/BookingChart/SelectStructure';
 import Payment from '../screens/Project/Sales/Payment';
 import AddVisitor from '../screens/Project/Sales/AddVisitor';
 import AddFollowUp from '../screens/Project/Sales/AddFollowUp';
+import SelectStructure from 'screens/Project/Sales/BookingChart/SelectStructure';
+import SelectFloor from 'screens/Project/Sales/BookingChart/SelectFloor';
+import SelectUnit from 'screens/Project/Sales/BookingChart/SelectUnit';
+import BookingDetails from 'screens/Project/Sales/BookingChart/BookingDetails';
+import BookingRates from 'screens/Project/Sales/BookingChart/BookingRates';
+import BookingPayment from 'screens/Project/Sales/BookingChart/BookingPayment';
 //Project : Project management screens
 import ProjectSchedule from '../screens/Project/ProjectManagement/ProjectSchedule';
 import MainPhase from '../screens/Project/ProjectManagement/MainPhase';
@@ -51,7 +56,6 @@ import RequestForPrice from '../screens/Project/MaterialManagement/RequestForPri
 import PurchaseOrders from '../screens/Project/MaterialManagement/PurchaseOrders';
 //Project : Files screens
 import Files from '../screens/Project/Files';
-import SelectFloor from 'screens/Project/Sales/BookingChart/SelectFloor';
 /*************   Project Sub Screens    *************/
 
 const optionalConfigObject = {
@@ -125,6 +129,26 @@ function BookingChartStack() {
       <Stack.Screen
         name="BC_Step_Two"
         component={SelectFloor}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="BC_Step_Three"
+        component={SelectUnit}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="BC_Step_Four"
+        component={BookingDetails}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="BC_Step_Five"
+        component={BookingRates}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="BC_Step_Six"
+        component={BookingPayment}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

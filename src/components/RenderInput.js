@@ -5,18 +5,20 @@ import {TextInput} from 'react-native-paper';
 import {theme} from 'styles/theme';
 
 const RenderInput = React.forwardRef((props, ref) => {
-  const {error, containerStyles, ...rest} = props;
+  let {error, containerStyles, style, value, ...rest} = props;
+
+  value = value ? value.toString() : value;
 
   return (
-    <View style={[containerStyles, styles.container]}>
+    <View style={[styles.container, containerStyles]}>
       <View style={styles.inputContainer}>
         <TextInput
-          {...rest}
           ref={ref}
           dense
           error={error}
           mode="outlined"
-          style={styles.input}
+          value={value}
+          style={[styles.input, style]}
           blurOnSubmit
           theme={{
             roundness: 10,
@@ -26,6 +28,7 @@ const RenderInput = React.forwardRef((props, ref) => {
               accent: theme.colors.primary,
             },
           }}
+          {...rest}
         />
       </View>
       {error && (
@@ -45,6 +48,7 @@ RenderInput.defaultProps = {
 
 RenderInput.prototype = {
   error: PropTypes.string,
+  containerStyles: PropTypes.object,
   ...TextInput.PropTypes,
 };
 

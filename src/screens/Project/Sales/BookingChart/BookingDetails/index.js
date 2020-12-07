@@ -1,11 +1,11 @@
 import React from 'react';
 import ProjectLayout from 'components/Layout/ProjectLayout';
-import SelectFloor from './SelectFloor';
+import BookingDetails from './BookingDetails';
 
 export default (props) => {
   return (
-    <ProjectLayout header={false}>
-      <SelectFloor {...props} />
+    <ProjectLayout>
+      <BookingDetails {...props} />
     </ProjectLayout>
   );
 };

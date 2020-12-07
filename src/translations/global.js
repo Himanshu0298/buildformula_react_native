@@ -44,7 +44,7 @@ export default {
 
       //Project Structure
       label_project_structure: 'Project Structure',
-      label_project_structure_structure: 'Select the appropriate option',
+      label_select_appropriate_option: 'Select the appropriate option',
       apartment: 'Apartment',
       shop: 'Shop',
       office: 'Office',
@@ -74,7 +74,13 @@ export default {
 
       //Booking Form
       label_select_structure: 'Select Structure',
+      label_select_tower: 'Select Tower',
+      label_select_unit: 'Select Unit',
       label_towers: 'Towers',
+      label_rate: 'Rate',
+      label_area: 'Area',
+      label_amount: 'Amount',
+      label_charge: 'Charge',
     },
   },
   hi: {
@@ -116,7 +122,7 @@ export default {
 
       //Project Structure
       label_project_structure: 'प्रोजेक्ट संरचना',
-      label_project_structure_structure: 'उपयुक्त विकल्प का चयन करें',
+      label_select_appropriate_option: 'उपयुक्त विकल्प का चयन करें',
       apartment: 'अपार्टमेंट',
       shop: 'दुकान',
       office: 'कार्यालय',
@@ -146,7 +152,13 @@ export default {
 
       //Booking Form
       label_select_structure: 'संरचना का चयन करें',
+      label_select_tower: 'Select Tower',
+      label_select_unit: 'Select Unit',
       label_towers: 'टावरो',
+      label_rate: 'Rate',
+      label_area: 'Area',
+      label_amount: 'Amount',
+      label_charge: 'Charge',
     },
   },
 };

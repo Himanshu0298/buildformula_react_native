@@ -5,8 +5,8 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useSelector} from 'react-redux';
 import {secondaryTheme} from 'styles/theme';
-import {COLORS} from 'utils/constant';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import OpacityButton from 'components/Buttons/OpacityButton';
 
 function ProjectHeader({theme}) {
   const {selectedProject} = useSelector((state) => state.project);
@@ -23,17 +23,13 @@ function ProjectHeader({theme}) {
             <MaterialCommunityIcons name={'bell'} color={'#000'} size={20} />
             <Badge size={10} style={styles.badge} />
           </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.personContainer,
-              {backgroundColor: COLORS.primaryLight},
-            ]}>
+          <OpacityButton color={theme.colors.primary}>
             <MaterialIcons
               name={'person'}
               color={theme.colors.primary}
               size={19}
             />
-          </TouchableOpacity>
+          </OpacityButton>
         </View>
       </View>
     </SafeAreaView>
@@ -64,10 +60,5 @@ const styles = StyleSheet.create({
     right: 0,
     borderWidth: 1,
     borderColor: '#fff',
-  },
-  personContainer: {
-    marginLeft: 15,
-    padding: 5,
-    borderRadius: 20,
   },
 });

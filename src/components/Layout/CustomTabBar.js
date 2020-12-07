@@ -4,6 +4,7 @@ import {View, StyleSheet} from 'react-native';
 import {withTheme, Button, Appbar} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {getShadow} from 'utils';
+import {APP_BOTTOM_TAB_HEIGHT} from 'utils/constant';
 
 function CustomTabBar() {
   const navigation = useNavigation();
@@ -24,7 +25,7 @@ function CustomTabBar() {
 
   return (
     <View style={styles.container}>
-      <SafeAreaView edges={['right', 'bottom', 'left']} mode="margin">
+      <SafeAreaView edges={['right', 'bottom', 'left']}>
         <View style={styles.contentContainer}>
           <Button
             icon="format-list-bulleted"
@@ -67,6 +68,7 @@ const styles = StyleSheet.create({
     ...getShadow(5),
   },
   contentContainer: {
+    height: APP_BOTTOM_TAB_HEIGHT,
     justifyContent: 'space-between',
     flexDirection: 'row',
     paddingHorizontal: 20,
