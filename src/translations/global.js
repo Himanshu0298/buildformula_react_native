@@ -81,6 +81,7 @@ export default {
       label_area: 'Area',
       label_amount: 'Amount',
       label_charge: 'Charge',
+      label_unit: 'Unit',
     },
   },
   hi: {
@@ -159,6 +160,7 @@ export default {
       label_area: 'Area',
       label_amount: 'Amount',
       label_charge: 'Charge',
+      label_unit: 'Unit',
     },
   },
 };

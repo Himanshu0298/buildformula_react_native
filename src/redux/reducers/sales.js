@@ -11,6 +11,8 @@ import {
   DELETE_PIPELINE,
   ADD_PIPELINE,
   MOVE_VISITOR,
+  GET_BOOKINGS_STATUS,
+  LOCK_UNIT,
 } from './../actions/actionTypes';
 
 const initialState = {
@@ -26,6 +28,7 @@ const initialState = {
   visitorAnalytics: {},
   visitorSuggestions: [],
   pipelines: [],
+  unitBookingStatus: [],
 };
 
 export default (state = initialState, action = {}) => {
@@ -144,6 +147,25 @@ export default (state = initialState, action = {}) => {
         errorMessage: action.payload,
       };
 
+    case `${GET_BOOKINGS_STATUS}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${GET_BOOKINGS_STATUS}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+        unitBookingStatus: action.payload,
+      };
+    }
+    case `${GET_BOOKINGS_STATUS}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+        errorMessage: action.payload,
+      };
+
     case `${DELETE_PIPELINE}_PENDING`:
       return {
         ...state,
@@ -219,6 +241,7 @@ export default (state = initialState, action = {}) => {
 
     case `${ADD_VISITOR}_PENDING`:
     case `${ADD_FOLLOW_UP}_PENDING`:
+    case `${LOCK_UNIT}_PENDING`:
     case `${ADD_PIPELINE}_PENDING`: {
       return {
         ...state,
@@ -227,6 +250,7 @@ export default (state = initialState, action = {}) => {
     }
     case `${ADD_VISITOR}_FULFILLED`:
     case `${ADD_FOLLOW_UP}_FULFILLED`:
+    case `${LOCK_UNIT}_FULFILLED`:
     case `${ADD_PIPELINE}_FULFILLED`: {
       return {
         ...state,
@@ -236,6 +260,7 @@ export default (state = initialState, action = {}) => {
 
     case `${ADD_VISITOR}_REJECTED`:
     case `${ADD_FOLLOW_UP}_REJECTED`:
+    case `${LOCK_UNIT}_REJECTED`:
     case `${ADD_PIPELINE}_REJECTED`: {
       return {
         ...state,

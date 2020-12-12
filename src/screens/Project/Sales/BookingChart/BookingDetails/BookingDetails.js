@@ -255,7 +255,7 @@ function BookingDetails(props) {
     <Formik
       validateOnBlur={false}
       validateOnChange={false}
-      initialValues={{broker: 'yes'}}
+      initialValues={{broker: 'no'}}
       validationSchema={schema}
       onSubmit={async (values) => {
         navigation.navigate('BC_Step_Five');

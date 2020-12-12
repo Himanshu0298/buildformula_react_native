@@ -27,6 +27,7 @@ import * as Yup from 'yup';
 import _ from 'lodash';
 import OpacityButton from 'components/Buttons/OpacityButton';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import RenderSelect from 'components/RenderSelect';
 
 const schema = Yup.object().shape({
   first_name: Yup.string('Invalid').required('Required'),
@@ -51,28 +52,17 @@ function getType(key) {
   return splits.join('_');
 }
 
-function RateRow(props) {
-  const {t, formikProps, label, type: rateType} = props;
+function RatesColumn(props) {
+  const {t, formikProps, label, type: rateType, syncAmounts} = props;
 
   const {values, handleBlur, errors, setFieldValue} = formikProps;
-
-  const syncAmounts = (amount, types) => {
-    types.map((type) => {
-      setFieldValue(`${type}_amount`, amount);
-      const area = values[`${type}_area`];
-      if (area) {
-        const rate = amount / area;
-        setFieldValue(`${type}_rate`, round(rate));
-      }
-    });
-  };
 
   const handleAreaChange = (key, area) => {
     setFieldValue(key, area);
 
     const type = getType(key);
 
-    const amount = values[`${type}_amount`];
+    const amount = values.area_amount;
     if (amount) {
       const rate = amount / area;
       setFieldValue(`${type}_rate`, round(rate));
@@ -85,84 +75,115 @@ function RateRow(props) {
     const type = getType(key);
 
     let area = values[`${type}_area`];
-    let amount = values[`${type}_amount`];
+    let amount = values.area_amount;
     if (area) {
       amount = area * rate;
-      setFieldValue(`${type}_amount`, round(amount));
+      setFieldValue('area_amount', round(amount));
       const otherTypes = TYPES.filter((v) => v !== type);
 
       syncAmounts(amount, otherTypes);
-    } else if (amount) {
-      area = amount / rate;
-      setFieldValue(`${type}_area`, round(area));
     }
+  };
+
+  return (
+    <View style={styles.rateInputContainer}>
+      <Caption style={{color: theme.colors.primary}}>{label}</Caption>
+      <RenderInput
+        name={`${rateType}_area`}
+        label={t('label_area')}
+        keyboardType="number-pad"
+        multiline={true}
+        value={values[`${rateType}_area`]}
+        onChangeText={(value) => handleAreaChange(`${rateType}_area`, value)}
+        onBlur={handleBlur(`${rateType}_area`)}
+        placeholder={t('label_area')}
+        error={errors[`${rateType}_area`]}
+      />
+      <RenderSelect
+        name={`${rateType}_unit`}
+        label={t('label_unit')}
+        options={[
+          {
+            label: 'SQM',
+            value: 1,
+          },
+        ]}
+        containerStyles={styles.rateInput}
+        value={values[`${rateType}_unit`]}
+        placeholder={t('label_unit')}
+        error={errors[`${rateType}_unit`]}
+        onSelect={(value) => {
+          setFieldValue(`${rateType}_unit`, value);
+        }}
+      />
+      <RenderInput
+        name={`${rateType}_rate`}
+        label={t('label_rate')}
+        keyboardType="number-pad"
+        multiline={true}
+        containerStyles={styles.rateInput}
+        value={values[`${rateType}_rate`]}
+        onChangeText={(value) => handleRateChange(`${rateType}_rate`, value)}
+        onBlur={handleBlur(`${rateType}_rate`)}
+        placeholder={t('label_rate')}
+        error={errors[`${rateType}_rate`]}
+      />
+    </View>
+  );
+}
+
+function RenderRates(props) {
+  const {t, formikProps} = props;
+  const {values, handleBlur, errors, setFieldValue} = formikProps;
+
+  const syncAmounts = (amount, types) => {
+    types.map((type) => {
+      const area = values[`${type}_area`];
+      if (area) {
+        const rate = amount / area;
+        setFieldValue(`${type}_rate`, round(rate));
+      }
+    });
   };
 
   const handleAmountChange = (key, amount) => {
     setFieldValue(key, amount);
-
-    const type = getType(key);
-
-    const otherTypes = TYPES.filter((v) => v !== type);
-    syncAmounts(amount, otherTypes);
+    syncAmounts(amount, TYPES);
   };
 
   return (
     <>
-      <View style={styles.subHeadingContainer}>
-        <Caption style={{color: theme.colors.primary}}>{label}</Caption>
+      <View style={styles.ratesContainer}>
+        <RatesColumn
+          {...props}
+          label={'Super Buildup'}
+          type="super_buildup"
+          syncAmounts={syncAmounts}
+        />
+        <RatesColumn
+          {...props}
+          label={'Buildup'}
+          type="buildup"
+          syncAmounts={syncAmounts}
+        />
+        <RatesColumn
+          {...props}
+          label={'Carpet'}
+          type="carpet"
+          syncAmounts={syncAmounts}
+        />
       </View>
-      <View style={styles.rateInputContainer}>
+      <View>
         <RenderInput
-          name={`${rateType}_area`}
-          label={t('label_area')}
-          keyboardType="number-pad"
-          multiline={true}
-          containerStyles={styles.areaInput}
-          value={values[`${rateType}_area`]}
-          onChangeText={(value) => handleAreaChange(`${rateType}_area`, value)}
-          onBlur={handleBlur(`${rateType}_area`)}
-          placeholder={t('label_area')}
-          error={errors[`${rateType}_area`]}
-          right={
-            <TextInput.Affix
-              theme={secondaryTheme}
-              text={
-                <TouchableOpacity>
-                  <Caption style={{fontSize: 15}} theme={secondaryTheme}>
-                    SQM
-                  </Caption>
-                </TouchableOpacity>
-              }
-            />
-          }
-        />
-        <RenderInput
-          name={`${rateType}_rate`}
-          label={t('label_rate')}
-          keyboardType="number-pad"
-          multiline={true}
-          containerStyles={styles.rateInput}
-          value={values[`${rateType}_rate`]}
-          onChangeText={(value) => handleRateChange(`${rateType}_rate`, value)}
-          onBlur={handleBlur(`${rateType}_rate`)}
-          placeholder={t('label_rate')}
-          error={errors[`${rateType}_rate`]}
-        />
-
-        <RenderInput
-          name={`${rateType}_amount`}
+          name={'area_amount'}
           label={t('label_amount')}
           keyboardType="number-pad"
-          multiline={true}
-          containerStyles={styles.amountInput}
-          value={values[`${rateType}_amount`]}
-          onChangeText={(value) =>
-            handleAmountChange(`${rateType}_amount`, value)
-          }
-          onBlur={handleBlur(`${rateType}_amount`)}
+          containerStyles={styles.rateInput}
+          value={values.area_amount}
+          onChangeText={(value) => handleAmountChange('area_amount', value)}
+          onBlur={handleBlur('area_amount')}
           placeholder={t('label_amount')}
-          error={errors[`${rateType}_amount`]}
+          error={errors.area_amount}
           left={<TextInput.Affix theme={secondaryTheme} text="₹" />}
         />
       </View>
@@ -310,24 +331,9 @@ function FormContent(props) {
           <Caption theme={secondaryTheme}>
             Enter all Area first for auto adjustment
           </Caption>
-          <RateRow
-            label="Super Buildup"
-            type="super_buildup"
-            formikProps={formikProps}
-            t={t}
-          />
-          <RateRow
-            label="Carpet"
-            type="carpet"
-            formikProps={formikProps}
-            t={t}
-          />
-          <RateRow
-            label="Buildup"
-            type="buildup"
-            formikProps={formikProps}
-            t={t}
-          />
+
+          <RenderRates formikProps={formikProps} t={t} />
+
           <RenderCharges t={t} formikProps={formikProps} />
           <View style={styles.totalContainer}>
             <Subheading theme={secondaryTheme}>Total other charges</Subheading>
@@ -380,7 +386,7 @@ function BookingDetails(props) {
     <Formik
       validateOnBlur={false}
       validateOnChange={false}
-      initialValues={{charges: [{charge: 'Test'}]}}
+      initialValues={{charges: []}}
       validationSchema={schema}
       onSubmit={async (values) => {}}>
       {(formikProps) => <FormContent {...props} formikProps={formikProps} />}
@@ -394,26 +400,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 10,
   },
-  subHeadingContainer: {
+  ratesContainer: {
     marginTop: 10,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
   },
   rateInputContainer: {
-    flexDirection: 'row',
+    flex: 1,
     alignItems: 'center',
-  },
-  areaInput: {
-    width: '35%',
-    marginRight: 5,
+    paddingHorizontal: 5,
   },
   rateInput: {
-    width: '25%',
-    marginRight: 5,
-  },
-  amountInput: {
-    width: '38%',
+    marginTop: 5,
   },
   chargesButton: {
     borderWidth: StyleSheet.hairlineWidth,

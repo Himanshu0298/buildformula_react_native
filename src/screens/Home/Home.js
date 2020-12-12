@@ -190,7 +190,6 @@ function Home(props) {
       {selectedTab === 0 ? (
         <FAB
           style={[styles.fab, {backgroundColor: theme.colors.primary}]}
-          small
           icon="plus"
           onPress={() => navigation.navigate('ProjectCreationStepOne')}
         />

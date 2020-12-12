@@ -30,5 +30,11 @@ export default function useSales() {
     deletePipeline: (data) => {
       return instance.post('inquiry_status/remove', data, config());
     },
+    getUnitsBookingStatus: (data) => {
+      return instance.post('/get_locked_units', data, config());
+    },
+    lockUnit: (data) => {
+      return instance.post('/set_locked_units', data, config());
+    },
   };
 }

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {TabBar} from 'react-native-tab-view';
 import {theme} from 'styles/theme';
 import BaseText from './BaseText';

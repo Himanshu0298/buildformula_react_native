@@ -18,6 +18,8 @@ export default function useSalesActions() {
     addPipeline,
     deletePipeline,
     moveVisitor,
+    getUnitsBookingStatus,
+    lockUnit,
   } = useSales();
 
   return {
@@ -206,6 +208,48 @@ export default function useSalesActions() {
             const {data} = response;
 
             return Promise.resolve(id);
+          } catch (error) {
+            let errorMessage = processError(error);
+            snackbar.showMessage({
+              message: errorMessage,
+              variant: 'error',
+            });
+            return Promise.reject(errorMessage);
+          }
+        },
+      }),
+
+    getUnitsBookingStatus: (formData) =>
+      dispatch({
+        type: types.GET_BOOKINGS_STATUS,
+        payload: async () => {
+          try {
+            let response = processResponse(
+              await getUnitsBookingStatus(formData),
+            );
+            const {data} = response;
+
+            return Promise.resolve(data);
+          } catch (error) {
+            let errorMessage = processError(error);
+            snackbar.showMessage({
+              message: errorMessage,
+              variant: 'error',
+            });
+            return Promise.reject(errorMessage);
+          }
+        },
+      }),
+
+    lockUnit: (formData) =>
+      dispatch({
+        type: types.LOCK_UNIT,
+        payload: async () => {
+          try {
+            let response = processResponse(await lockUnit(formData));
+            const {data} = response;
+
+            return Promise.resolve(data);
           } catch (error) {
             let errorMessage = processError(error);
             snackbar.showMessage({

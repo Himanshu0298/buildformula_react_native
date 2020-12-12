@@ -6,7 +6,7 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-import {withTheme, Button} from 'react-native-paper';
+import {withTheme} from 'react-native-paper';
 import FormTitle from 'components/FormTitle';
 import {useTranslation} from 'react-i18next';
 import {theme} from 'styles/theme';
