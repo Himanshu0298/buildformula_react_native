@@ -22,10 +22,31 @@ import {
 import {secondaryTheme, theme} from 'styles/theme';
 import * as Yup from 'yup';
 
-const schema = Yup.object().shape({});
+const schema = Yup.object().shape({
+  first_name: Yup.string('Invalid').required('Required'),
+  last_name: Yup.string('Invalid').required('Required'),
+  email: Yup.string('Invalid').email('Invalid').required('Required'),
+  phone: Yup.number('Invalid').required('Required'),
+  broker_first_name: Yup.string('Invalid').when('broker', {
+    is: 'yes',
+    then: Yup.string('Invalid').required('Required'),
+  }),
+  broker_last_name: Yup.string('Invalid').when('broker', {
+    is: 'yes',
+    then: Yup.string('Invalid').required('Required'),
+  }),
+  broker_email: Yup.string('Invalid').when('broker', {
+    is: 'yes',
+    then: Yup.string('Invalid').email('Invalid').required('Required'),
+  }),
+  broker_phone: Yup.number('Invalid').when('broker', {
+    is: 'yes',
+    then: Yup.number('Invalid').required('Required'),
+  }),
+});
 
 function FormContent(props) {
-  const {theme, formikProps, navigation} = props;
+  const {formikProps, navigation} = props;
   const {t} = useTranslation();
 
   const {
