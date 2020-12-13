@@ -6,8 +6,7 @@ import {theme} from 'styles/theme';
 
 const RenderInput = React.forwardRef((props, ref) => {
   let {error, containerStyles, style, value, ...rest} = props;
-
-  value = value ? value.toString() : value;
+  value = value || !isNaN(value) ? value.toString() : value;
 
   return (
     <View style={[styles.container, containerStyles]}>

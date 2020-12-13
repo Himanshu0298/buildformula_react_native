@@ -39,7 +39,7 @@ const RenderDatePicker = React.forwardRef((props, ref) => {
     onChange(date || new Date());
   };
 
-  const valueFormat = format || mode === 'date' ? 'DD/MM/YYYY' : 'hh:mm A';
+  const valueFormat = format || (mode === 'date' ? 'DD/MM/YYYY' : 'hh:mm A');
 
   return (
     <>

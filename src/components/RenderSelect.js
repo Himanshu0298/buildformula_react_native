@@ -1,5 +1,5 @@
 import React, {useImperativeHandle, useMemo} from 'react';
-import {TouchableOpacity, Keyboard, View} from 'react-native';
+import {TouchableOpacity, Keyboard} from 'react-native';
 import PropTypes from 'prop-types';
 import {TextInput} from 'react-native-paper';
 import {secondaryTheme} from 'styles/theme';
@@ -7,7 +7,7 @@ import {useActionSheet} from '@expo/react-native-action-sheet';
 import RenderInput from './RenderInput';
 
 const RenderSelect = React.forwardRef((props, ref) => {
-  let {options, cancelButtonIndex, onSelect, value, ...rest} = props;
+  let {options, destructiveButtonIndex, onSelect, value, ...rest} = props;
   const {showActionSheetWithOptions} = useActionSheet();
 
   useImperativeHandle(ref, () => ({
@@ -15,8 +15,6 @@ const RenderSelect = React.forwardRef((props, ref) => {
       toggleOptions();
     },
   }));
-
-  console.log('----->options ', options);
 
   let {parsedOptions, withValue} = useMemo(() => {
     if (options[0] && options[0].label) {
@@ -37,18 +35,16 @@ const RenderSelect = React.forwardRef((props, ref) => {
   }, [options, value, withValue]);
 
   const toggleOptions = () => {
-    console.log('-----> toggleOptions');
     Keyboard.dismiss();
 
     showActionSheetWithOptions(
       {
-        options: ['Cancel', ...parsedOptions],
-        cancelButtonIndex,
-        destructiveButtonIndex: cancelButtonIndex,
+        options: [...parsedOptions, 'Cancel'],
+        cancelButtonIndex: parsedOptions.length,
+        destructiveButtonIndex,
       },
       (buttonIndex) => {
-        if (buttonIndex > 0) {
-          buttonIndex = buttonIndex - 1;
+        if (buttonIndex < parsedOptions.length) {
           let selectedValue = parsedOptions[buttonIndex];
           if (withValue && options[buttonIndex].value) {
             selectedValue = options[buttonIndex].value;
@@ -82,13 +78,13 @@ const RenderSelect = React.forwardRef((props, ref) => {
 
 RenderSelect.defaultProps = {
   options: [],
-  cancelButtonIndex: 0,
+  destructiveButtonIndex: null,
   onSelect: () => {},
 };
 
 RenderSelect.prototype = {
   options: PropTypes.array,
-  cancelButtonIndex: PropTypes.number,
+  destructiveButtonIndex: PropTypes.number,
   onSelect: PropTypes.func,
 };
 

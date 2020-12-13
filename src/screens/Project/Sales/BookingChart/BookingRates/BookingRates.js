@@ -5,7 +5,6 @@ import {Formik} from 'formik';
 import {useTranslation} from 'react-i18next';
 import {
   Keyboard,
-  Platform,
   StyleSheet,
   TouchableOpacity,
   TouchableWithoutFeedback,
@@ -29,22 +28,23 @@ import OpacityButton from 'components/Buttons/OpacityButton';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import RenderSelect from 'components/RenderSelect';
 
+const TYPES = ['super_buildup', 'buildup', 'carpet'];
+
 const schema = Yup.object().shape({
-  first_name: Yup.string('Invalid').required('Required'),
-  last_name: Yup.string('Invalid').required('Required'),
-  email: Yup.string('Invalid').email('Invalid').required('Required'),
-  phone: Yup.number('Invalid').required('Required'),
-  occupation: Yup.string('Invalid').required('Required'),
-  current_locality: Yup.string('Invalid').required('Required'),
-  budget_from: Yup.number('Invalid').required('Required'),
-  budget_to: Yup.number('Invalid').required('Required'),
-  follow_up_date: Yup.date('Invalid').required('Required'),
-  follow_up_time: Yup.date('Invalid').required('Required'),
-  assign_to: Yup.string('Invalid').required('Required'),
-  inquiry_for: Yup.string('Invalid').required('Required'),
+  area_amount: Yup.number('Invalid').required('Required'),
+  ...getTypesSchema(TYPES),
 });
 
-const TYPES = ['super_buildup', 'buildup', 'carpet'];
+function getTypesSchema(types) {
+  let typesSchema = {};
+
+  types.map((type) => {
+    typesSchema[`${type}_area`] = Yup.number('Invalid').required('Required');
+    typesSchema[`${type}_unit`] = Yup.number('Invalid').required('Required');
+    typesSchema[`${type}_rate`] = Yup.number('Invalid').required('Required');
+  });
+  return typesSchema;
+}
 
 function getType(key) {
   const splits = key.split('_');
@@ -86,7 +86,11 @@ function RatesColumn(props) {
   };
 
   return (
-    <View style={styles.rateInputContainer}>
+    <View
+      style={[
+        styles.rateInputContainer,
+        {paddingHorizontal: rateType === 'buildup' ? 10 : 0},
+      ]}>
       <Caption style={{color: theme.colors.primary}}>{label}</Caption>
       <RenderInput
         name={`${rateType}_area`}
@@ -192,41 +196,51 @@ function RenderRates(props) {
 }
 
 function RenderCharges({formikProps, t}) {
-  const {values, errors, handleBlur, setFieldValue} = formikProps;
+  const {values, setFieldValue} = formikProps;
 
   const [chargeModal, setChargeModal] = useState(false);
-  const [chargeLabel, setChargeLabel] = useState('');
-  const [chargeError, setChargeError] = useState();
+  const [charge, setCharge] = useState({});
+  const [chargeError, setChargeError] = useState({});
 
   const toggleChargeModal = () => {
     setChargeModal((v) => !v);
-    setChargeLabel();
-    setChargeError();
+    setCharge({});
+    setChargeError({});
   };
 
-  const handleAmountChange = (index, amount) => {
-    const charges = _.cloneDeep(values.charges);
-
-    charges[index].amount = amount;
-    setFieldValue('charges', charges);
+  const setValue = (id, value) => {
+    let data = _.cloneDeep(charge);
+    data[id] = value;
+    setCharge(data);
   };
 
   const saveCharge = () => {
     const charges = _.cloneDeep(values.charges);
 
-    let index = charges.findIndex(
-      (charge) => charge.charge.toLowerCase() === chargeLabel.toLowerCase(),
-    );
-
-    if (index > -1) {
-      setChargeError('Charge Already Added');
+    if (!charge?.label?.trim()) {
+      setChargeError({label: 'Required'});
+      return;
+    }
+    if (!charge?.amount) {
+      setChargeError({amount: 'Required'});
       return;
     }
 
-    if (chargeLabel) {
-      charges.push({charge: chargeLabel});
-      setFieldValue('charges', charges);
+    let index = charges.findIndex(
+      (item) => item.label.toLowerCase() === charge.label.toLowerCase(),
+    );
+
+    if (index > -1) {
+      setChargeError({label: 'Charge Already Added'});
+      return;
     }
+
+    charge.label.trim();
+    charge.amount.trim();
+
+    charges.push(charge);
+    setFieldValue('charges', charges);
+
     toggleChargeModal();
   };
 
@@ -242,15 +256,32 @@ function RenderCharges({formikProps, t}) {
         <Dialog visible={chargeModal} onDismiss={toggleChargeModal}>
           <Dialog.Content>
             <Subheading theme={secondaryTheme}>Add a new Charge :</Subheading>
-            <RenderInput
-              name={'charge'}
-              label={t('label_charge')}
-              multiline={true}
-              value={chargeLabel}
-              onChangeText={(value) => setChargeLabel(value)}
-              placeholder={t('label_charge')}
-              error={chargeError}
-            />
+            <View style={styles.chargeInputContainer}>
+              <View style={{flex: 1, paddingHorizontal: 5}}>
+                <RenderInput
+                  name={'label'}
+                  label={t('label_charge')}
+                  multiline={true}
+                  value={charge.label}
+                  contentContainerStyle={{flex: 1}}
+                  onChangeText={(value) => setValue('label', value)}
+                  placeholder={t('label_charge')}
+                  error={chargeError.label}
+                />
+              </View>
+              <View style={{flex: 1, paddingHorizontal: 5}}>
+                <RenderInput
+                  name={'amount'}
+                  label={t('label_amount')}
+                  keyboardType="number-pad"
+                  value={charge.amount}
+                  onChangeText={(value) => setValue('amount', value)}
+                  placeholder={t('label_amount')}
+                  error={chargeError.amount}
+                  left={<TextInput.Affix theme={secondaryTheme} text="₹" />}
+                />
+              </View>
+            </View>
           </Dialog.Content>
           <Dialog.Actions>
             <Button onPress={saveCharge}>Save</Button>
@@ -260,20 +291,14 @@ function RenderCharges({formikProps, t}) {
       <Subheading style={{color: theme.colors.primary, marginTop: 20}}>
         Other Charges
       </Subheading>
-      {values.charges.map((charge, i) => {
+      {values.charges.map((item, i) => {
         return (
-          <View style={styles.chargesContainer}>
+          <View key={i} style={styles.chargesContainer}>
             <RenderInput
-              name={'charge'}
-              label={charge.charge}
-              keyboardType="number-pad"
+              label={item.label}
+              editable={false}
               containerStyles={styles.chargeInput}
-              multiline={true}
-              value={charge.amount}
-              onChangeText={(value) => handleAmountChange(i, value)}
-              onBlur={handleBlur('charge')}
-              placeholder={charge.charge}
-              error={errors.charge}
+              value={item.amount}
               left={<TextInput.Affix theme={secondaryTheme} text="₹" />}
             />
             <OpacityButton
@@ -295,25 +320,24 @@ function RenderCharges({formikProps, t}) {
 }
 
 function FormContent(props) {
-  const {theme, formikProps, navigation} = props;
+  const {formikProps, navigation} = props;
   const {t} = useTranslation();
 
-  const {handleSubmit, values} = formikProps;
-
+  const {handleSubmit, values, errors} = formikProps;
   const handleCancel = () => navigation.goBack();
 
   const totalCharge = useMemo(() => {
-    return values.charges.reduce(
-      (sum, charge) => sum + parseInt(charge.amount, 10) || 0,
-      0,
-    );
+    return values.charges.length > 0
+      ? values.charges.reduce(
+          (sum, charge) => sum + parseInt(charge.amount, 10) || 0,
+          0,
+        )
+      : 0;
   }, [values.charges]);
 
   const totalAmount = useMemo(() => {
-    return (
-      parseInt(totalCharge, 10) + parseInt(values.super_buildup_amount, 10)
-    );
-  }, [totalCharge, values.super_buildup_amount]);
+    return parseInt(totalCharge, 10) + parseInt(values.area_amount, 10);
+  }, [totalCharge, values.area_amount]);
 
   return (
     <TouchableWithoutFeedback
@@ -352,7 +376,7 @@ function FormContent(props) {
             <Subheading theme={secondaryTheme}>Total amount</Subheading>
             <RenderInput
               disabled={true}
-              value={totalAmount}
+              value={totalAmount || 0}
               containerStyles={{width: '50%'}}
               placeholder={'Total amount'}
               left={<TextInput.Affix theme={secondaryTheme} text="₹" />}
@@ -381,14 +405,21 @@ function FormContent(props) {
   );
 }
 
-function BookingDetails(props) {
+function BookingRates(props) {
+  const {
+    navigation,
+    route: {params},
+  } = props;
+
   return (
     <Formik
       validateOnBlur={false}
       validateOnChange={false}
       initialValues={{charges: []}}
       validationSchema={schema}
-      onSubmit={async (values) => {}}>
+      onSubmit={async (values) => {
+        navigation.navigate('BC_Step_Six', {...params, ...values});
+      }}>
       {(formikProps) => <FormContent {...props} formikProps={formikProps} />}
     </Formik>
   );
@@ -409,10 +440,13 @@ const styles = StyleSheet.create({
   rateInputContainer: {
     flex: 1,
     alignItems: 'center',
-    paddingHorizontal: 5,
   },
   rateInput: {
     marginTop: 5,
+  },
+  chargeInputContainer: {
+    flexDirection: 'row',
+    flexGrow: 1,
   },
   chargesButton: {
     borderWidth: StyleSheet.hairlineWidth,
@@ -460,4 +494,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default withTheme(BookingDetails);
+export default withTheme(BookingRates);
