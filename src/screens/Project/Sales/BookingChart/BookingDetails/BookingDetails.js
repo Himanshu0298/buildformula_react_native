@@ -271,7 +271,10 @@ function FormContent(props) {
 }
 
 function BookingDetails(props) {
-  const {navigation} = props;
+  const {
+    navigation,
+    route: {params},
+  } = props;
   return (
     <Formik
       validateOnBlur={false}
@@ -279,7 +282,7 @@ function BookingDetails(props) {
       initialValues={{broker: 'no'}}
       validationSchema={schema}
       onSubmit={async (values) => {
-        navigation.navigate('BC_Step_Five');
+        navigation.navigate('BC_Step_Five', {...values, ...params});
       }}>
       {(formikProps) => <FormContent {...props} formikProps={formikProps} />}
     </Formik>

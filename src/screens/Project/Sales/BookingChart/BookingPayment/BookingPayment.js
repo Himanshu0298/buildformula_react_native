@@ -45,41 +45,71 @@ const PAYMENT_METHODS = [
 ];
 
 const schema = Yup.object().shape({
-  area_amount: Yup.number('Invalid').required('Required'),
+  start_date: Yup.string('Invalid').when('payment_type', {
+    is: 1,
+    then: Yup.string('Invalid').required('Required'),
+  }),
+  end_date: Yup.string('Invalid').when('payment_type', {
+    is: 1,
+    then: Yup.string('Invalid').required('Required'),
+  }),
+  other_charges_date: Yup.string('Invalid').when(
+    'charges',
+    (charges, keySchema) =>
+      charges.length > 0 ? keySchema.required('Required') : keySchema,
+  ),
+  installment_count: Yup.number('Invalid').when('payment_type', {
+    is: 3,
+    then: Yup.number('Invalid').required('Required'),
+  }),
+  installment_start_date: Yup.string('Invalid').when('payment_type', {
+    is: 3,
+    then: Yup.string('Invalid').required('Required'),
+  }),
+  installment_interval_days: Yup.number('Invalid').when('payment_type', {
+    is: 3,
+    then: Yup.number('Invalid').required('Required'),
+  }),
+  first_big_amount_percent: Yup.number('Invalid').when('payment_type', {
+    is: 3,
+    then: Yup.number('Invalid').required('Required'),
+  }),
+  first_big_amount: Yup.number('Invalid').when('payment_type', {
+    is: 3,
+    then: Yup.number('Invalid').required('Required'),
+  }),
+  first_big_amount_start_date: Yup.string('Invalid').when('payment_type', {
+    is: 3,
+    then: Yup.string('Invalid').required('Required'),
+  }),
+  first_big_amount_end_date: Yup.string('Invalid').when('payment_type', {
+    is: 3,
+    then: Yup.string('Invalid').required('Required'),
+  }),
 });
 
 function RenderOneBigInstallmentPaymentForm(props) {
   const {formikProps, t} = props;
   const {values, setFieldValue, handleChange, errors} = formikProps;
 
-  const handleInputChange = (id, value) => {
-    const big_installment = _.cloneDeep(values.big_installment || {});
-    big_installment[id] = value;
-
-    setFieldValue('big_installment', big_installment);
-  };
-
   const handlePercentChange = (percent) => {
-    const big_installment = _.cloneDeep(values.big_installment || {});
-
     percent = parseFloat(percent);
     percent = round(percent > 100 ? 100 : percent);
 
-    big_installment.percent = percent;
-    big_installment.amount = round(values.area_amount * (percent / 100));
+    const amount = round(values.area_amount * (percent / 100));
 
-    setFieldValue('big_installment', big_installment);
+    setFieldValue('first_big_amount_percent', percent);
+    setFieldValue('first_big_amount', amount);
   };
 
   const handleAmountChange = (amount) => {
-    const big_installment = _.cloneDeep(values.big_installment || {});
-
     amount = parseFloat(amount);
     amount = round(amount > values.area_amount ? values.area_amount : amount);
 
-    big_installment.percent = round((amount / values.area_amount) * 100);
-    big_installment.amount = amount;
-    setFieldValue('big_installment', big_installment);
+    const percent = round((amount / values.area_amount) * 100);
+
+    setFieldValue('first_big_amount_percent', percent);
+    setFieldValue('first_big_amount', amount);
   };
 
   const installments = useMemo(() => {
@@ -118,8 +148,6 @@ function RenderOneBigInstallmentPaymentForm(props) {
     values.big_installment,
   ]);
 
-  const {percent, amount, start_date, end_date} = values.big_installment;
-
   return (
     <>
       <Caption
@@ -136,19 +164,24 @@ function RenderOneBigInstallmentPaymentForm(props) {
           <View style={styles.customPaymentRowContainer}>
             <View style={styles.percentInputContainer}>
               <RenderInput
-                name={'percent'}
+                name={'first_big_amount_percent'}
                 label={'%'}
                 keyboardType="number-pad"
-                value={percent}
+                value={values.first_big_amount_percent}
                 onChangeText={(value) => handlePercentChange(value)}
                 placeholder={'%'}
+                error={errors.first_big_amount_percent}
                 left={
                   <TextInput.Icon
                     name="minus"
                     theme={secondaryTheme}
                     color={theme.colors.error}
                     onPress={() => {
-                      handlePercentChange(percent > 0 ? percent - 1 : 0);
+                      handlePercentChange(
+                        values.first_big_amount_percent > 0
+                          ? values.first_big_amount_percent - 1
+                          : 0,
+                      );
                     }}
                   />
                 }
@@ -158,7 +191,9 @@ function RenderOneBigInstallmentPaymentForm(props) {
                     theme={secondaryTheme}
                     color={theme.colors.primary}
                     onPress={() => {
-                      handlePercentChange((percent || 0) + 1);
+                      handlePercentChange(
+                        (values.first_big_amount_percent || 0) + 1,
+                      );
                     }}
                   />
                 }
@@ -166,12 +201,13 @@ function RenderOneBigInstallmentPaymentForm(props) {
             </View>
             <View style={{flex: 1}}>
               <RenderInput
-                name={'amount'}
+                name={'first_big_amount'}
                 label={t('label_amount')}
                 keyboardType="number-pad"
-                value={amount}
+                value={values.first_big_amount}
                 placeholder={t('label_amount')}
                 left={<TextInput.Affix theme={secondaryTheme} text="₹" />}
+                error={errors.first_big_amount}
                 onChangeText={(value) => handleAmountChange(value)}
               />
             </View>
@@ -179,23 +215,25 @@ function RenderOneBigInstallmentPaymentForm(props) {
           <View style={styles.inputRowContainer}>
             <View style={styles.dateInputContainer}>
               <RenderDatePicker
-                name="start_date"
+                name="first_big_amount_start_date"
                 label={t('label_start_date')}
-                value={start_date}
+                value={values.first_big_amount_start_date}
                 placeholder={t('label_start_date')}
+                error={errors.first_big_amount_start_date}
                 onChange={(value) => {
-                  handleInputChange('start_date', value);
+                  setFieldValue('first_big_amount_start_date', value);
                 }}
               />
             </View>
             <View style={{flex: 1}}>
               <RenderDatePicker
-                name="end_date"
+                name="first_big_amount_end_date"
                 label={t('label_end_date')}
-                value={end_date}
+                value={values.first_big_amount_end_date}
                 placeholder={t('label_end_date')}
+                error={errors.first_big_amount_end_date}
                 onChange={(value) => {
-                  handleInputChange('end_date', value);
+                  setFieldValue('first_big_amount_end_date', value);
                 }}
               />
             </View>
@@ -282,7 +320,7 @@ function RenderOneBigInstallmentPaymentForm(props) {
 
 function RenderCustomPaymentForm(props) {
   const {formikProps, t} = props;
-  const {values, setFieldValue} = formikProps;
+  const {values, setFieldValue, errors} = formikProps;
 
   const setValue = (index, id, value) => {
     const custom_payments = _.cloneDeep(values.custom_payments);
@@ -351,6 +389,10 @@ function RenderCustomPaymentForm(props) {
         style={{color: theme.colors.primary, marginTop: 15, fontSize: 14}}>
         Payments
       </Caption>
+
+      {errors.payment ? (
+        <Caption style={{color: theme.colors.error}}>{errors.payment}</Caption>
+      ) : null}
       {values.custom_payments.map(({percent, amount, date, remark}, index) => {
         return (
           <>
@@ -455,7 +497,7 @@ function RenderCustomPaymentForm(props) {
 function RenderPaymentForm(props) {
   const {formikProps, t} = props;
   const {values, errors, handleChange, setFieldValue, handleBlur} = formikProps;
-
+  console.log('-----> errors', errors);
   const totalCharge = useMemo(() => {
     return values.charges.reduce(
       (sum, charge) => sum + parseInt(charge.amount, 10) || 0,
@@ -604,6 +646,7 @@ function FormContent(props) {
             error={errors.payment_type}
             onSelect={(value) => {
               formikProps.setFieldValue('payment_type', value);
+              formikProps.setErrors({});
             }}
           />
           <RenderPaymentForm formikProps={formikProps} t={t} />
@@ -636,14 +679,43 @@ function BookingPayments(props) {
     route: {params},
   } = props;
 
+  const validate = (values) => {
+    const errors = {};
+    if (values.payment_type === 2) {
+      values.custom_payments.map(({percent, amount, date}, index) => {
+        if (!(percent && amount && date)) {
+          if (values.custom_payments.length === 1) {
+            errors.payment = `Missing payment ${
+              !percent ? 'percent' : !amount ? 'amount' : 'date'
+            }`;
+          } else {
+            errors.payment = `Missing payment ${
+              !percent ? 'percent' : !amount ? 'amount' : 'date'
+            } for Installment No. ${index + 1}`;
+          }
+        }
+      });
+
+      const totalPercent = values.custom_payments.reduce(
+        (sum, {percent}) => sum + percent,
+        0,
+      );
+      if (totalPercent !== 100) {
+        errors.payment = 'Sum of all payments does not match Basic amount';
+      }
+    }
+
+    return errors;
+  };
+
   return (
     <Formik
       validateOnBlur={false}
       validateOnChange={false}
+      validate={validate}
       initialValues={{
-        payment_type: 2,
+        payment_type: 3,
         custom_payments: [{}],
-        big_installment: {},
         ...params,
       }}
       validationSchema={schema}
