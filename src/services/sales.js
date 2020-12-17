@@ -36,5 +36,8 @@ export default function useSales() {
     lockUnit: (data) => {
       return instance.post('/set_locked_units', data, config());
     },
+    createBooking: (data) => {
+      return instance.post('/booking/form_save', data, config());
+    },
   };
 }

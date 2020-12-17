@@ -18,6 +18,8 @@ import {
   withTheme,
   Button,
   Caption,
+  Text,
+  Divider,
 } from 'react-native-paper';
 import {secondaryTheme, theme} from 'styles/theme';
 import * as Yup from 'yup';
@@ -28,6 +30,8 @@ import RenderSelect from 'components/RenderSelect';
 import RenderDatePicker from 'components/RenderDatePicker';
 import {round} from 'utils';
 import dayjs from 'dayjs';
+import useSalesActions from 'redux/actions/salesActions';
+import Radio from 'components/Radio';
 
 const PAYMENT_METHODS = [
   {
@@ -86,6 +90,14 @@ const schema = Yup.object().shape({
     is: 3,
     then: Yup.string('Invalid').required('Required'),
   }),
+  loan_bank: Yup.string('Invalid').when('loan', {
+    is: 'yes',
+    then: Yup.string('Invalid').required('Required'),
+  }),
+  loan_amount: Yup.number('Invalid').when('loan', {
+    is: 'yes',
+    then: Yup.number('Invalid').required('Required'),
+  }),
 });
 
 function RenderOneBigInstallmentPaymentForm(props) {
@@ -118,8 +130,9 @@ function RenderOneBigInstallmentPaymentForm(props) {
       installment_start_date,
       installment_interval_days,
       area_amount,
-      big_installment,
+      big_installment_amount,
     } = values;
+
     if (
       installment_count &&
       installment_start_date &&
@@ -133,7 +146,7 @@ function RenderOneBigInstallmentPaymentForm(props) {
             'days',
           ),
           amount: round(
-            (area_amount - (big_installment.amount || 0)) / installment_count,
+            (area_amount - (big_installment_amount || 0)) / installment_count,
           ),
         }));
     }
@@ -294,7 +307,7 @@ function RenderOneBigInstallmentPaymentForm(props) {
           </View>
           {installments.map((installment, index) => {
             return (
-              <View style={styles.installmentRow}>
+              <View key={index} style={styles.installmentRow}>
                 <Subheading theme={secondaryTheme}>{index + 1}</Subheading>
                 <View style={{flex: 0.4}}>
                   <RenderInput
@@ -395,7 +408,7 @@ function RenderCustomPaymentForm(props) {
       ) : null}
       {values.custom_payments.map(({percent, amount, date, remark}, index) => {
         return (
-          <>
+          <View key={index}>
             {values.custom_payments.length > 1 ? (
               <Caption style={{color: theme.colors.primary, marginTop: 10}}>
                 {`Installment No. ${index + 1}`}
@@ -484,7 +497,7 @@ function RenderCustomPaymentForm(props) {
                 </OpacityButton>
               ) : null}
             </View>
-          </>
+          </View>
         );
       })}
       <TouchableOpacity style={styles.chargesButton} onPress={addNewPayment}>
@@ -497,13 +510,7 @@ function RenderCustomPaymentForm(props) {
 function RenderPaymentForm(props) {
   const {formikProps, t} = props;
   const {values, errors, handleChange, setFieldValue, handleBlur} = formikProps;
-  console.log('-----> errors', errors);
-  const totalCharge = useMemo(() => {
-    return values.charges.reduce(
-      (sum, charge) => sum + parseInt(charge.amount, 10) || 0,
-      0,
-    );
-  }, [values.charges]);
+
   return (
     <View style={{marginTop: 10}}>
       <RenderInput
@@ -569,7 +576,7 @@ function RenderPaymentForm(props) {
           <RenderInput
             name={'other_charges_amount'}
             label={t('label_total_other_charges')}
-            value={totalCharge}
+            value={values.other_charges_amount}
             disabled={true}
             placeholder={t('label_total_other_charges')}
             left={<TextInput.Affix theme={secondaryTheme} text="₹" />}
@@ -618,7 +625,13 @@ function FormContent(props) {
   const {formikProps, navigation} = props;
   const {t} = useTranslation();
 
-  const {handleSubmit, values, errors} = formikProps;
+  const {
+    handleSubmit,
+    values,
+    errors,
+    setFieldValue,
+    handleChange,
+  } = formikProps;
 
   const handleCancel = () => navigation.goBack();
 
@@ -635,6 +648,67 @@ function FormContent(props) {
           <Subheading style={{color: theme.colors.primary}}>
             3. Payment Installment
           </Subheading>
+
+          <View style={styles.radioRow}>
+            <Text theme={secondaryTheme}>Do you wish to take a loan?</Text>
+            <View style={styles.radioContainer}>
+              <Radio
+                label={'Yes'}
+                value="yes"
+                checked={values.loan === 'yes'}
+                onChange={(value) => setFieldValue('loan', value)}
+              />
+              <Radio
+                label={'No'}
+                value="no"
+                color={theme.colors.error}
+                checked={values.loan === 'no'}
+                onChange={(value) => setFieldValue('loan', value)}
+              />
+            </View>
+          </View>
+
+          {values.loan === 'yes' ? (
+            <View style={styles.loadInputs}>
+              <View style={styles.otherChargesContainer}>
+                <View style={styles.dateInputContainer}>
+                  <RenderSelect
+                    name={'loan_bank'}
+                    label={t('label_choose_bank')}
+                    options={[]}
+                    value={values.loan_bank}
+                    placeholder={t('label_choose_bank')}
+                    error={errors.loan_bank}
+                    onSelect={(value) => {
+                      formikProps.setFieldValue('loan_bank', value);
+                    }}
+                  />
+                </View>
+                <View style={{flex: 1}}>
+                  <RenderInput
+                    name={'loan_amount'}
+                    label={t('label_amount')}
+                    keyboardType="number-pad"
+                    value={values.loan_amount}
+                    placeholder={t('label_amount')}
+                    left={<TextInput.Affix theme={secondaryTheme} text="₹" />}
+                    onChangeText={handleChange('loan_amount')}
+                  />
+                </View>
+              </View>
+              <View style={{marginTop: 5}}>
+                <RenderInput
+                  name="loan_remark"
+                  multiline
+                  label={t('label_remark')}
+                  value={values.loan_remark}
+                  placeholder={t('label_remark')}
+                  onChangeText={handleChange('loan_remark')}
+                />
+              </View>
+              <Divider style={{marginTop: 25, marginBottom: 20}} />
+            </View>
+          ) : null}
 
           <RenderSelect
             name={'payment_type'}
@@ -679,6 +753,8 @@ function BookingPayments(props) {
     route: {params},
   } = props;
 
+  const {createBooking} = useSalesActions();
+
   const validate = (values) => {
     const errors = {};
     if (values.payment_type === 2) {
@@ -716,10 +792,81 @@ function BookingPayments(props) {
       initialValues={{
         payment_type: 3,
         custom_payments: [{}],
+        loan: 'no',
         ...params,
       }}
       validationSchema={schema}
       onSubmit={async (values) => {
+        console.log('-----> values', values);
+
+        const formData = new FormData();
+
+        formData.append('project_id', values.project_id);
+        formData.append('unit_id', values.unit_id);
+        formData.append('customer_first_name', values.customer_first_name);
+        formData.append('customer_last_name', values.customer_last_name);
+        formData.append('customer_email', values.customer_email);
+        formData.append('customer_phone', values.customer_phone);
+
+        if (values.broker === 'yes') {
+          formData.append('broker_first_name', values.broker_first_name);
+          formData.append('broker_last_name', values.broker_last_name);
+          formData.append('broker_email', values.broker_email);
+          formData.append('broker_phone', values.broker_phone);
+        }
+
+        formData.append('area_amount', values.area_amount);
+        formData.append('buildup_area', values.buildup_area);
+        formData.append('buildup_rate', values.buildup_rate);
+        formData.append('buildup_unit', values.buildup_unit);
+        formData.append('carpet_area', values.carpet_area);
+        formData.append('carpet_rate', values.carpet_rate);
+        formData.append('carpet_unit', values.carpet_unit);
+        formData.append('super_buildup_area', values.super_buildup_area);
+        formData.append('super_buildup_rate', values.super_buildup_rate);
+        formData.append('super_buildup_unit', values.super_buildup_unit);
+        formData.append('other_charges', values.charges);
+        formData.append('other_charges_amount', values.other_charges_amount);
+        formData.append('payment_type', values.payment_type);
+
+        if (values.payment_type === 1) {
+          formData.append('start_date', values.start_date);
+          formData.append('end_date', values.end_date);
+        } else if (values.payment_type === 2) {
+          formData.append('custom_payments', values.custom_payments);
+        } else {
+          formData.append('first_big_amount', values.first_big_amount);
+          formData.append(
+            'first_big_amount_start_date',
+            values.first_big_amount_start_date,
+          );
+          formData.append(
+            'first_big_amount_end_date',
+            values.first_big_amount_end_date,
+          );
+          formData.append(
+            'first_big_amount_percent',
+            values.first_big_amount_percent,
+          );
+          formData.append('installment_count', values.installment_count);
+          formData.append(
+            'installment_start_date',
+            values.installment_start_date,
+          );
+          formData.append(
+            'installment_interval_days',
+            values.installment_interval_days,
+          );
+        }
+
+        if (values.loan === 'yes') {
+          formData.append('loan_bank', values.loan_bank);
+          formData.append('loan_amount', values.loan_amount);
+          formData.append('loan_remark', values.loan_remark);
+        }
+
+        createBooking(formData);
+
         // navigation.navigate('BC_Step_Six', {...params, ...values});
       }}>
       {(formikProps) => <FormContent {...props} formikProps={formikProps} />}
@@ -733,6 +880,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 10,
   },
+  radioRow: {
+    marginVertical: 10,
+  },
+  radioContainer: {
+    flexDirection: 'row',
+    display: 'flex',
+  },
+  loadInputs: {},
   rateInput: {
     marginTop: 5,
   },

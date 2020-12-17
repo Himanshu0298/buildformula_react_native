@@ -1,4 +1,4 @@
-import React, {useMemo, useState} from 'react';
+import React, {useMemo, useState, useEffect} from 'react';
 import BaseText from 'components/BaseText';
 import RenderInput from 'components/RenderInput';
 import {Formik} from 'formik';
@@ -323,21 +323,27 @@ function FormContent(props) {
   const {formikProps, navigation} = props;
   const {t} = useTranslation();
 
-  const {handleSubmit, values, errors} = formikProps;
+  const {handleSubmit, values, setFieldValue} = formikProps;
   const handleCancel = () => navigation.goBack();
 
-  const totalCharge = useMemo(() => {
-    return values.charges.length > 0
-      ? values.charges.reduce(
-          (sum, charge) => sum + parseInt(charge.amount, 10) || 0,
-          0,
-        )
-      : 0;
+  useEffect(() => {
+    let amount = 0;
+    if (values.charges.length > 0) {
+      amount = values.charges.reduce(
+        (sum, charge) => sum + parseInt(charge.amount, 10) || 0,
+        0,
+      );
+    }
+    setFieldValue('other_charges_amount', amount);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [values.charges]);
 
   const totalAmount = useMemo(() => {
-    return parseInt(totalCharge, 10) + parseInt(values.area_amount, 10);
-  }, [totalCharge, values.area_amount]);
+    return (
+      parseInt(values.other_charges_amount, 10) +
+      parseInt(values.area_amount, 10)
+    );
+  }, [values.other_charges_amount, values.area_amount]);
 
   return (
     <TouchableWithoutFeedback
@@ -363,7 +369,7 @@ function FormContent(props) {
             <Subheading theme={secondaryTheme}>Total other charges</Subheading>
             <RenderInput
               disabled={true}
-              value={totalCharge}
+              value={values.other_charges_amount}
               containerStyles={{width: '50%'}}
               placeholder={'Total charges'}
               left={<TextInput.Affix theme={secondaryTheme} text="₹" />}

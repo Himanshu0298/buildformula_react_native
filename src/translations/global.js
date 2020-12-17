@@ -90,6 +90,7 @@ export default {
       label_total_other_charges: 'Total other charges',
       label_no_of_installments: 'No. of Installment',
       label_interval_days: 'Interval Days',
+      label_choose_bank: 'Choose a bank',
     },
   },
   hi: {
@@ -176,6 +177,7 @@ export default {
       label_date: 'Date',
       label_total_other_charges: 'Total other charges',
       label_interval_days: 'Interval Days',
+      label_choose_bank: 'Choose a bank',
     },
   },
 };

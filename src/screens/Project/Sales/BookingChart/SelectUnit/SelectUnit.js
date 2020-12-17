@@ -69,9 +69,11 @@ function RenderUnits({onPress, units, user, selectedFloor}) {
         const unitBhk = BHK_OPTIONS.find((item) => item.type === unit.bhk);
 
         let bookingStyle = BOOKING_STYLES[unit.booking_status] || {};
-
-        let disabled = unit.booking_status && unit.booking_status !== 'filling';
-        // || (unit.booking_status === 'filling' && unit.user_id !== user.id);
+        let disabled =
+          (unit.booking_status && unit.booking_status !== 'filling') ||
+          (unit.booking_status === 'filling' &&
+            unit.fillingUser &&
+            unit.fillingUser !== user.id);
 
         if (
           unit.booking_status &&
@@ -177,9 +179,8 @@ export default function SelectUnit(props) {
     });
 
     navigation.navigate('BC_Step_Four', {
-      selectedStructure,
-      floorId,
-      unitId: index,
+      project_id: selectedProject.id,
+      unit_id: unit.unitId,
     });
   };
 

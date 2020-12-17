@@ -20,6 +20,7 @@ export default function useSalesActions() {
     moveVisitor,
     getUnitsBookingStatus,
     lockUnit,
+    createBooking,
   } = useSales();
 
   return {
@@ -247,6 +248,25 @@ export default function useSalesActions() {
         payload: async () => {
           try {
             let response = processResponse(await lockUnit(formData));
+            const {data} = response;
+
+            return Promise.resolve(data);
+          } catch (error) {
+            let errorMessage = processError(error);
+            snackbar.showMessage({
+              message: errorMessage,
+              variant: 'error',
+            });
+            return Promise.reject(errorMessage);
+          }
+        },
+      }),
+    createBooking: (formData) =>
+      dispatch({
+        type: types.CREATE_BOOKING,
+        payload: async () => {
+          try {
+            let response = processResponse(await createBooking(formData));
             const {data} = response;
 
             return Promise.resolve(data);

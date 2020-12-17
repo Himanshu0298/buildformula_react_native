@@ -23,10 +23,10 @@ import {secondaryTheme, theme} from 'styles/theme';
 import * as Yup from 'yup';
 
 const schema = Yup.object().shape({
-  first_name: Yup.string('Invalid').required('Required'),
-  last_name: Yup.string('Invalid').required('Required'),
-  email: Yup.string('Invalid').email('Invalid').required('Required'),
-  phone: Yup.number('Invalid').required('Required'),
+  customer_first_name: Yup.string('Invalid').required('Required'),
+  customer_last_name: Yup.string('Invalid').required('Required'),
+  customer_email: Yup.string('Invalid').email('Invalid').required('Required'),
+  customer_phone: Yup.number('Invalid').required('Required'),
   broker_first_name: Yup.string('Invalid').when('broker', {
     is: 'yes',
     then: Yup.string('Invalid').required('Required'),
@@ -85,53 +85,53 @@ function FormContent(props) {
             1. Booking Details
           </Subheading>
           <RenderInput
-            name="first_name"
+            name="customer_first_name"
             label={t('label_first_name')}
             ref={firstNameRef}
             containerStyles={styles.input}
-            value={values.first_name}
-            onChangeText={handleChange('first_name')}
-            onBlur={handleBlur('first_name')}
+            value={values.customer_first_name}
+            onChangeText={handleChange('customer_first_name')}
+            onBlur={handleBlur('customer_first_name')}
             placeholder={t('label_first_name')}
-            onSubmitEditing={() => lastNameRef && lastNameRef.current.focus()}
-            error={errors.first_name}
+            onSubmitEditing={() => lastNameRef?.current?.focus()}
+            error={errors.customer_first_name}
           />
           <RenderInput
-            name="last_name"
+            name="customer_last_name"
             label={t('label_last_name')}
             ref={lastNameRef}
             containerStyles={styles.input}
-            value={values.last_name}
-            onChangeText={handleChange('last_name')}
-            onBlur={handleBlur('last_name')}
+            value={values.customer_last_name}
+            onChangeText={handleChange('customer_last_name')}
+            onBlur={handleBlur('customer_last_name')}
             placeholder={t('label_last_name')}
-            onSubmitEditing={() => emailRef && emailRef.current.focus()}
-            error={errors.last_name}
+            onSubmitEditing={() => emailRef?.current?.focus()}
+            error={errors.customer_last_name}
           />
           <RenderInput
-            name="email"
+            name="customer_email"
             label={t('label_email')}
             ref={emailRef}
             containerStyles={styles.input}
-            value={values.email}
-            onChangeText={handleChange('email')}
-            onBlur={handleBlur('email')}
+            value={values.customer_email}
+            onChangeText={handleChange('customer_email')}
+            onBlur={handleBlur('customer_email')}
             placeholder={t('label_email')}
-            onSubmitEditing={() => phoneRef && phoneRef.current.focus()}
-            error={errors.email}
+            onSubmitEditing={() => phoneRef?.current?.focus()}
+            error={errors.customer_email}
           />
           <RenderInput
-            name="phone"
+            name="customer_phone"
             label={t('label_phone')}
             ref={phoneRef}
             keyboardType="number-pad"
             maxLength={10}
             containerStyles={styles.input}
-            value={values.phone}
-            onChangeText={handleChange('phone')}
-            onBlur={handleBlur('phone')}
+            value={values.customer_phone}
+            onChangeText={handleChange('customer_phone')}
+            onBlur={handleBlur('customer_phone')}
             placeholder={t('label_phone')}
-            error={errors.phone}
+            error={errors.customer_phone}
             left={
               <TextInput.Affix
                 text="+91"
@@ -143,7 +143,7 @@ function FormContent(props) {
               />
             }
           />
-          <View style={styles.brokerContainer}>
+          <View style={styles.radioRow}>
             <Text theme={secondaryTheme}>Through broker?</Text>
             <View style={styles.radioContainer}>
               <Radio
@@ -155,6 +155,7 @@ function FormContent(props) {
               <Radio
                 label={'No'}
                 value="no"
+                color={theme.colors.error}
                 checked={values.broker === 'no'}
                 onChange={(value) => setFieldValue('broker', value)}
               />
@@ -298,7 +299,7 @@ const styles = StyleSheet.create({
   input: {
     marginTop: 5,
   },
-  brokerContainer: {
+  radioRow: {
     marginTop: 20,
     marginBottom: 10,
   },
