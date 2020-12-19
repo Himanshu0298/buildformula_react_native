@@ -14,6 +14,7 @@ import {
   GET_BOOKINGS_STATUS,
   LOCK_UNIT,
   CREATE_BOOKING,
+  GET_BANK_LIST,
 } from './../actions/actionTypes';
 
 const initialState = {
@@ -30,6 +31,7 @@ const initialState = {
   visitorSuggestions: [],
   pipelines: [],
   unitBookingStatus: [],
+  bankList: [],
 };
 
 export default (state = initialState, action = {}) => {
@@ -161,6 +163,28 @@ export default (state = initialState, action = {}) => {
       };
     }
     case `${GET_BOOKINGS_STATUS}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+        errorMessage: action.payload,
+      };
+
+    case `${GET_BANK_LIST}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${GET_BANK_LIST}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+        bankList: action.payload.map(({id, title}) => ({
+          label: title,
+          value: id,
+        })),
+      };
+    }
+    case `${GET_BANK_LIST}_REJECTED`:
       return {
         ...state,
         loading: false,

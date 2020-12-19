@@ -21,6 +21,7 @@ export default function useSalesActions() {
     getUnitsBookingStatus,
     lockUnit,
     createBooking,
+    getBankList,
   } = useSales();
 
   return {
@@ -267,6 +268,30 @@ export default function useSalesActions() {
         payload: async () => {
           try {
             let response = processResponse(await createBooking(formData));
+            const {data} = response;
+
+            snackbar.showMessage({
+              message: 'Created Booking successfully',
+              variant: 'success',
+            });
+
+            return Promise.resolve(data);
+          } catch (error) {
+            let errorMessage = processError(error);
+            snackbar.showMessage({
+              message: errorMessage,
+              variant: 'error',
+            });
+            return Promise.reject(errorMessage);
+          }
+        },
+      }),
+    getBankList: () =>
+      dispatch({
+        type: types.GET_BANK_LIST,
+        payload: async () => {
+          try {
+            let response = processResponse(await getBankList());
             const {data} = response;
 
             return Promise.resolve(data);

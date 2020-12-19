@@ -36,3 +36,4 @@ export const MOVE_VISITOR = 'MOVE_VISITOR';
 export const GET_BOOKINGS_STATUS = 'GET_BOOKINGS_STATUS';
 export const LOCK_UNIT = 'LOCK_UNIT';
 export const CREATE_BOOKING = 'CREATE_BOOKING';
+export const GET_BANK_LIST = 'GET_BANK_LIST';

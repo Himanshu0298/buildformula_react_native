@@ -72,8 +72,8 @@ function RenderUnits({onPress, units, user, selectedFloor}) {
         let disabled =
           (unit.booking_status && unit.booking_status !== 'filling') ||
           (unit.booking_status === 'filling' &&
-            unit.fillingUser &&
-            unit.fillingUser !== user.id);
+            unit.booked_unit_user_id &&
+            unit.booked_unit_user_id !== user.id);
 
         if (
           unit.booking_status &&

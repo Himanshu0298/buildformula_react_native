@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import React, {useEffect, useMemo} from 'react';
 import BaseText from 'components/BaseText';
 import RenderInput from 'components/RenderInput';
 import {Formik} from 'formik';
@@ -32,6 +32,7 @@ import {round} from 'utils';
 import dayjs from 'dayjs';
 import useSalesActions from 'redux/actions/salesActions';
 import Radio from 'components/Radio';
+import {useSelector} from 'react-redux';
 
 const PAYMENT_METHODS = [
   {
@@ -622,7 +623,7 @@ function RenderPaymentForm(props) {
 }
 
 function FormContent(props) {
-  const {formikProps, navigation} = props;
+  const {formikProps, bankList, navigation} = props;
   const {t} = useTranslation();
 
   const {
@@ -675,7 +676,7 @@ function FormContent(props) {
                   <RenderSelect
                     name={'loan_bank'}
                     label={t('label_choose_bank')}
-                    options={[]}
+                    options={bankList}
                     value={values.loan_bank}
                     placeholder={t('label_choose_bank')}
                     error={errors.loan_bank}
@@ -753,7 +754,14 @@ function BookingPayments(props) {
     route: {params},
   } = props;
 
-  const {createBooking} = useSalesActions();
+  const {createBooking, getBankList} = useSalesActions();
+
+  const {bankList} = useSelector((state) => state.sales);
+
+  useEffect(() => {
+    getBankList();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const validate = (values) => {
     const errors = {};
@@ -790,15 +798,13 @@ function BookingPayments(props) {
       validateOnChange={false}
       validate={validate}
       initialValues={{
-        payment_type: 3,
+        payment_type: 1,
         custom_payments: [{}],
         loan: 'no',
         ...params,
       }}
       validationSchema={schema}
       onSubmit={async (values) => {
-        console.log('-----> values', values);
-
         const formData = new FormData();
 
         formData.append('project_id', values.project_id);
@@ -830,9 +836,19 @@ function BookingPayments(props) {
         formData.append('payment_type', values.payment_type);
 
         if (values.payment_type === 1) {
-          formData.append('start_date', values.start_date);
-          formData.append('end_date', values.end_date);
+          formData.append(
+            'start_date',
+            dayjs(values.start_date).format('DD/MM/YYYY'),
+          );
+          formData.append(
+            'end_date',
+            dayjs(values.end_date).format('DD/MM/YYYY'),
+          );
         } else if (values.payment_type === 2) {
+          values.custom_payments = values.custom_payments.map((payment) => {
+            payment.date = dayjs(payment.date).format('DD/MM/YYYY');
+            return payment;
+          });
           formData.append('custom_payments', values.custom_payments);
         } else {
           formData.append('first_big_amount', values.first_big_amount);
@@ -865,11 +881,13 @@ function BookingPayments(props) {
           formData.append('loan_remark', values.loan_remark);
         }
 
-        createBooking(formData);
+        createBooking(formData).then(() => navigation.popToTop());
 
         // navigation.navigate('BC_Step_Six', {...params, ...values});
       }}>
-      {(formikProps) => <FormContent {...props} formikProps={formikProps} />}
+      {(formikProps) => (
+        <FormContent {...props} formikProps={formikProps} bankList={bankList} />
+      )}
     </Formik>
   );
 }

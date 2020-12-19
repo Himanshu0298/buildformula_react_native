@@ -39,5 +39,8 @@ export default function useSales() {
     createBooking: (data) => {
       return instance.post('/booking/form_save', data, config());
     },
+    getBankList: (data) => {
+      return instance.get('get_banks', config());
+    },
   };
 }
