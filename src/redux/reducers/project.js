@@ -21,7 +21,8 @@ const initialState = {
 };
 
 export default (state = initialState, action = {}) => {
-  switch (action.type) {
+  const {type, payload} = action;
+  switch (type) {
     case SET_INITIAL_STATE:
       return {
         ...state,
@@ -42,14 +43,14 @@ export default (state = initialState, action = {}) => {
     case `${GET_SELECTED_PROJECT}_FULFILLED`:
       return {
         ...state,
-        selectedProject: action.payload,
+        selectedProject: payload,
         loading: false,
       };
     case `${GET_SELECTED_PROJECT}_REJECTED`:
       return {
         ...state,
         loading: false,
-        errorMessage: action.payload,
+        errorMessage: payload,
       };
 
     case `${GET_PROJECTS}_PENDING`:
@@ -60,14 +61,14 @@ export default (state = initialState, action = {}) => {
     case `${GET_PROJECTS}_FULFILLED`:
       return {
         ...state,
-        projects: action.payload,
+        projects: payload,
         loading: false,
       };
     case `${GET_PROJECTS}_REJECTED`:
       return {
         ...state,
         loading: false,
-        errorMessage: action.payload,
+        errorMessage: payload,
       };
 
     case `${CREATE_PROJECT}_PENDING`:
@@ -76,17 +77,17 @@ export default (state = initialState, action = {}) => {
         loading: true,
       };
     case `${CREATE_PROJECT}_FULFILLED`:
-      console.log('-----> action.payload', action.payload);
+      console.log('-----> payload', payload);
       return {
         ...state,
-        project: action.payload,
+        project: payload,
         loading: false,
       };
     case `${CREATE_PROJECT}_REJECTED`:
       return {
         ...state,
         loading: false,
-        errorMessage: action.payload,
+        errorMessage: payload,
       };
 
     case `${UPDATE_PAYMENT}_PENDING`:
@@ -103,7 +104,7 @@ export default (state = initialState, action = {}) => {
       return {
         ...state,
         loading: false,
-        errorMessage: action.payload,
+        errorMessage: payload,
       };
 
     case `${UPDATE_ADMINS}_PENDING`:
@@ -120,7 +121,7 @@ export default (state = initialState, action = {}) => {
       return {
         ...state,
         loading: false,
-        errorMessage: action.payload,
+        errorMessage: payload,
       };
 
     default:

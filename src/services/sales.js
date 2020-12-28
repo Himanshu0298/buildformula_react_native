@@ -1,6 +1,6 @@
 import {instance, useConfig} from './init';
 
-export default function useSales() {
+export default function useSalesServices() {
   let {config} = useConfig();
   return {
     getVisitorsList: (data) => {

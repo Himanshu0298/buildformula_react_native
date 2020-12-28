@@ -3,6 +3,8 @@ import {useTranslation} from 'react-i18next';
 import {StyleSheet, View} from 'react-native';
 import {Divider, Subheading, Text, withTheme, Button} from 'react-native-paper';
 import {TabBar, TabView} from 'react-native-tab-view';
+import {useSelector} from 'react-redux';
+import useCustomerActions from 'redux/actions/customerActions';
 import {secondaryTheme, theme} from 'styles/theme';
 import {getFloorNumber, getShadow, getTowerLabel, getUnitLabel} from 'utils';
 import {STRUCTURE_TYPE_LABELS} from 'utils/constant';
@@ -18,11 +20,15 @@ function renderDetailText(label, value) {
 }
 
 function CustomerSection(props) {
-  const {route} = props;
-  const {towerId, floorId, project_id, selectedStructure, unit} =
-    route?.params || {};
-  console.log('-----> unit', unit);
+  const {
+    route: {params},
+  } = props;
+  const {towerId, floorId, project_id, selectedStructure, unit} = params || {};
+
   const {t} = useTranslation();
+  const {getCustomerDetails} = useCustomerActions();
+
+  const {user} = useSelector((state) => state.user);
 
   const [selectedTab, setSelectedTab] = React.useState(0);
   const [routes] = React.useState([
@@ -33,6 +39,15 @@ function CustomerSection(props) {
     {key: 4, title: 'MODIFY REQUEST'},
     {key: 5, title: 'FILES'},
   ]);
+
+  React.useEffect(() => {
+    const formData = new FormData();
+    formData.append('user_id', user.id);
+    formData.append('project_id', project_id);
+    formData.append('unit_id', unit.id);
+    getCustomerDetails(formData);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const renderScene = ({route: {key}}) => {
     switch (key) {

@@ -5,11 +5,12 @@ const initialState = {
 };
 
 export default (state = initialState, action = {}) => {
-  switch (action.type) {
+  const {type, payload} = action;
+  switch (type) {
     case `${SET_LANGUAGE}`:
       return {
         ...state,
-        language: action.payload,
+        language: payload,
       };
 
     default:

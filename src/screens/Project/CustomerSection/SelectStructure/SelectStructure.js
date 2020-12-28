@@ -17,8 +17,6 @@ function SelectStructure({navigation}) {
     navigation.navigate('CS_Step_Two', {selectedStructure: value});
   };
 
-  console.log('-----> projectData', projectData);
-
   return (
     <>
       <StatusBar

@@ -22,7 +22,8 @@ const initialState = {
 };
 
 export default (state = initialState, action = {}) => {
-  switch (action.type) {
+  const {type, payload} = action;
+  switch (type) {
     case SET_INITIAL_STATE:
       return {
         ...state,
@@ -36,7 +37,7 @@ export default (state = initialState, action = {}) => {
     case UPDATE_LOCAL_STRUCTURE:
       return {
         ...state,
-        ...action.payload,
+        ...payload,
       };
 
     case `${SAVE_STRUCTURE}_PENDING`:
@@ -53,7 +54,7 @@ export default (state = initialState, action = {}) => {
       return {
         ...state,
         loading: false,
-        errorMessage: action.payload,
+        errorMessage: payload,
       };
 
     default:

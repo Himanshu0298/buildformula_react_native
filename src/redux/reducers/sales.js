@@ -35,7 +35,9 @@ const initialState = {
 };
 
 export default (state = initialState, action = {}) => {
-  switch (action.type) {
+  const {type, payload} = action;
+
+  switch (type) {
     case SET_INITIAL_STATE:
       //TODO:update loading only if true
       return {
@@ -65,7 +67,7 @@ export default (state = initialState, action = {}) => {
         yearly_visitor,
         month_visitor,
         weekly_visitor,
-      } = action.payload;
+      } = payload;
 
       return {
         ...state,
@@ -87,7 +89,7 @@ export default (state = initialState, action = {}) => {
       return {
         ...state,
         loading: false,
-        errorMessage: action.payload,
+        errorMessage: payload,
       };
 
     case `${GET_VISITORS}_PENDING`:
@@ -99,13 +101,13 @@ export default (state = initialState, action = {}) => {
       return {
         ...state,
         loading: false,
-        visitors: action.payload,
+        visitors: payload,
       };
     case `${GET_VISITORS}_REJECTED`:
       return {
         ...state,
         loading: false,
-        errorMessage: action.payload,
+        errorMessage: payload,
       };
 
     case `${GET_FOLLOWUP_LIST}_PENDING`:
@@ -114,7 +116,7 @@ export default (state = initialState, action = {}) => {
         loading: true,
       };
     case `${GET_FOLLOWUP_LIST}_FULFILLED`: {
-      const {followups, todayFollowups} = action.payload;
+      const {followups, todayFollowups} = payload;
       return {
         ...state,
         loading: false,
@@ -126,7 +128,7 @@ export default (state = initialState, action = {}) => {
       return {
         ...state,
         loading: false,
-        errorMessage: action.payload,
+        errorMessage: payload,
       };
 
     case `${GET_PIPELINES}_PENDING`:
@@ -135,7 +137,7 @@ export default (state = initialState, action = {}) => {
         loading: true,
       };
     case `${GET_PIPELINES}_FULFILLED`: {
-      const {pipelines, visitorSuggestions} = action.payload;
+      const {pipelines, visitorSuggestions} = payload;
       return {
         ...state,
         loading: false,
@@ -147,7 +149,7 @@ export default (state = initialState, action = {}) => {
       return {
         ...state,
         loading: false,
-        errorMessage: action.payload,
+        errorMessage: payload,
       };
 
     case `${GET_BOOKINGS_STATUS}_PENDING`:
@@ -159,14 +161,14 @@ export default (state = initialState, action = {}) => {
       return {
         ...state,
         loading: false,
-        unitBookingStatus: action.payload,
+        unitBookingStatus: payload,
       };
     }
     case `${GET_BOOKINGS_STATUS}_REJECTED`:
       return {
         ...state,
         loading: false,
-        errorMessage: action.payload,
+        errorMessage: payload,
       };
 
     case `${GET_BANK_LIST}_PENDING`:
@@ -178,7 +180,7 @@ export default (state = initialState, action = {}) => {
       return {
         ...state,
         loading: false,
-        bankList: action.payload.map(({id, title}) => ({
+        bankList: payload.map(({id, title}) => ({
           label: title,
           value: id,
         })),
@@ -188,7 +190,7 @@ export default (state = initialState, action = {}) => {
       return {
         ...state,
         loading: false,
-        errorMessage: action.payload,
+        errorMessage: payload,
       };
 
     case `${DELETE_PIPELINE}_PENDING`:
@@ -198,9 +200,7 @@ export default (state = initialState, action = {}) => {
       };
     case `${DELETE_PIPELINE}_FULFILLED`: {
       const pipelines = _.cloneDeep(state.pipelines);
-      const index = pipelines.findIndex(
-        (pipeline) => pipeline.id === action.payload,
-      );
+      const index = pipelines.findIndex((pipeline) => pipeline.id === payload);
 
       if (index > -1) {
         pipelines.splice(index, 1);
@@ -216,11 +216,11 @@ export default (state = initialState, action = {}) => {
       return {
         ...state,
         loading: false,
-        errorMessage: action.payload,
+        errorMessage: payload,
       };
 
     case `${MOVE_VISITOR}_FULFILLED`: {
-      const {visitorId, pipelineId} = action.payload;
+      const {visitorId, pipelineId} = payload;
       let pipelines = _.cloneDeep(state.pipelines);
 
       let movedVisitor = {};
@@ -259,7 +259,7 @@ export default (state = initialState, action = {}) => {
     case `${MOVE_VISITOR}_REJECTED`: {
       return {
         ...state,
-        errorMessage: action.payload,
+        errorMessage: payload,
         pipelines: _.cloneDeep(state.pipelines),
       };
     }
@@ -293,7 +293,7 @@ export default (state = initialState, action = {}) => {
       return {
         ...state,
         loading: false,
-        errorMessage: action.payload,
+        errorMessage: payload,
       };
     }
 

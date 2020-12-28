@@ -2,7 +2,7 @@ import * as types from './actionTypes';
 import {useDispatch} from 'react-redux';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import {useResProcessor} from 'utils/responseProcessor';
-import useSales from '../../services/sales';
+import useSalesServices from '../../services/sales';
 
 export default function useSalesActions() {
   const dispatch = useDispatch();
@@ -22,7 +22,7 @@ export default function useSalesActions() {
     lockUnit,
     createBooking,
     getBankList,
-  } = useSales();
+  } = useSalesServices();
 
   return {
     getSalesData: (projectId) =>

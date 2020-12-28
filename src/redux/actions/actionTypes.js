@@ -37,3 +37,6 @@ export const GET_BOOKINGS_STATUS = 'GET_BOOKINGS_STATUS';
 export const LOCK_UNIT = 'LOCK_UNIT';
 export const CREATE_BOOKING = 'CREATE_BOOKING';
 export const GET_BANK_LIST = 'GET_BANK_LIST';
+
+//For Sales
+export const GET_CUSTOMER_DATA = 'GET_CUSTOMER_DATA';

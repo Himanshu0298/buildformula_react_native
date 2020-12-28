@@ -15,8 +15,10 @@ const initialState = {
 };
 
 export default (state = initialState, action = {}) => {
-  console.log('-----> action.type', action.type);
-  switch (action.type) {
+  const {type, payload} = action;
+  console.log('-----> type', type);
+
+  switch (type) {
     case SET_INITIAL_STATE:
       return {
         ...state,
@@ -28,8 +30,8 @@ export default (state = initialState, action = {}) => {
         ...state,
         loading: true,
       };
-    case `${LOGIN}_FULFILLED`:
-      const {user} = action.payload;
+    case `${LOGIN}_FULFILLED`: {
+      const {user} = payload;
       return {
         ...state,
         loading: false,
@@ -37,6 +39,7 @@ export default (state = initialState, action = {}) => {
         token: user.token,
         authenticated: true,
       };
+    }
     case `${LOGIN}_REJECTED`:
       return {
         ...state,
@@ -52,7 +55,7 @@ export default (state = initialState, action = {}) => {
       return {
         ...state,
         loading: false,
-        user: action.payload.user,
+        user: payload.user,
       };
     case `${SIGN_UP}_REJECTED`:
       return {
@@ -87,7 +90,7 @@ export default (state = initialState, action = {}) => {
         loading: false,
         // authenticated: true,
         //TODO: enable this once user data is returned in response
-        // user: action.payload.user,
+        // user: payload.user,
       };
     case `${SELECT_ROLE}_REJECTED`:
       return {
