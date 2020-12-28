@@ -1,14 +1,14 @@
 import React, {useMemo} from 'react';
 import {View, StyleSheet, SafeAreaView, FlatList} from 'react-native';
 import {Button, TextInput, withTheme} from 'react-native-paper';
-import BaseText from 'components/BaseText';
+import BaseText from 'components/Atoms/BaseText';
 import Layout from 'utils/Layout';
 import {getFloorNumber} from 'utils';
 import {theme} from 'styles/theme';
-import {useSnackbar} from 'components/Snackbar';
+import {useSnackbar} from 'components/Atoms/Snackbar';
 import {useBackHandler} from '@react-native-community/hooks';
-import {useAlert} from 'components/Alert';
-import FloorBar from 'components/FloorBar';
+import {useAlert} from 'components/Atoms/Alert';
+import FloorBar from 'components/Atoms/FloorBar';
 
 const checkUnitBhkValidity = (floors, floorCount) => {
   let result = {};

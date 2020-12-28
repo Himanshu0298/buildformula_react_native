@@ -11,24 +11,24 @@ import {
 } from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
-import ProjectHeader from 'components/Layout/ProjectHeader';
-import BaseText from 'components/BaseText';
+import ProjectHeader from 'components/Molecules/Layout/ProjectHeader';
+import BaseText from 'components/Atoms/BaseText';
 import {getShadow} from 'utils';
 import {secondaryTheme, theme} from 'styles/theme';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
-import RenderInput from 'components/RenderInput';
+import RenderInput from 'components/Atoms/RenderInput';
 import {useTranslation} from 'react-i18next';
-import RenderSelect from 'components/RenderSelect';
-import RenderDatePicker from 'components/RenderDatePicker';
-import {PRIORITY_COLORS, TYPE_LABELS} from 'utils/constant';
+import RenderSelect from 'components/Atoms/RenderSelect';
+import RenderDatePicker from 'components/Atoms/RenderDatePicker';
+import {PRIORITY_COLORS, STRUCTURE_TYPE_LABELS} from 'utils/constant';
 import useSalesActions from 'redux/actions/salesActions';
 import dayjs from 'dayjs';
 import {TabView} from 'react-native-tab-view';
 import Layout from 'utils/Layout';
-import MaterialTabBar from 'components/MaterialTabBar';
-import CustomBadge from 'components/CustomBadge';
-import {useAlert} from 'components/Alert';
+import MaterialTabBar from 'components/Atoms/MaterialTabBar';
+import CustomBadge from 'components/Atoms/CustomBadge';
+import {useAlert} from 'components/Atoms/Alert';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
@@ -70,7 +70,7 @@ function RenderVisitorDetails({visitor, occupationOptions, onNext}) {
       <View style={styles.detailRow}>
         <Paragraph theme={secondaryTheme}>Inquiry for</Paragraph>
         <Caption theme={secondaryTheme}>
-          {TYPE_LABELS[visitor.inquiry_for]}
+          {STRUCTURE_TYPE_LABELS[visitor.inquiry_for]}
           {visitor.bhk ? ` - ${visitor.bhk} BHK` : null}
         </Caption>
       </View>

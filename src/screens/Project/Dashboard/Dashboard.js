@@ -7,14 +7,14 @@ import useProjectActions from 'redux/actions/projectActions';
 
 export default function ProjectDashboard(props) {
   const {route} = props;
-  const projectId = route?.params?.projectId;
+  const {project} = route?.params || {};
 
   const {getProjectData} = useProjectActions();
   const {loading} = useSelector((state) => state.project);
 
   useEffect(() => {
-    getProjectData(projectId);
-  }, [projectId]);
+    getProjectData(project.id);
+  }, [project]);
 
   return (
     <View style={styles.container}>

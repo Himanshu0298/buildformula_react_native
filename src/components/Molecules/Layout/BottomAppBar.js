@@ -1,12 +1,12 @@
 import {useNavigation, useRoute} from '@react-navigation/native';
 import React from 'react';
 import {View, StyleSheet} from 'react-native';
-import {withTheme, Button, Appbar} from 'react-native-paper';
+import {withTheme, Button} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {getShadow} from 'utils';
 import {APP_BOTTOM_TAB_HEIGHT} from 'utils/constant';
 
-function CustomTabBar() {
+function BottomAppBar() {
   const navigation = useNavigation();
   const route = useRoute();
 
@@ -75,4 +75,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default withTheme(CustomTabBar);
+export default withTheme(BottomAppBar);

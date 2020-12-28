@@ -91,6 +91,10 @@ export default {
       label_no_of_installments: 'No. of Installment',
       label_interval_days: 'Interval Days',
       label_choose_bank: 'Choose a bank',
+
+      //Customer Section
+      title_customer_section: 'Customer’s Section',
+      subtitle_customer_section: 'Select a customer to see there booking form',
     },
   },
   hi: {
@@ -178,6 +182,10 @@ export default {
       label_total_other_charges: 'Total other charges',
       label_interval_days: 'Interval Days',
       label_choose_bank: 'Choose a bank',
+
+      //Customer Section
+      title_customer_section: 'Customer’s Section',
+      subtitle_customer_section: 'Select a customer to see there booking form',
     },
   },
 };

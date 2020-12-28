@@ -39,12 +39,17 @@ import SalesPipeline from '../screens/Project/Sales/SalesPipeline';
 import Payment from '../screens/Project/Sales/Payment';
 import AddVisitor from '../screens/Project/Sales/AddVisitor';
 import AddFollowUp from '../screens/Project/Sales/AddFollowUp';
-import SelectStructure from 'screens/Project/Sales/BookingChart/SelectStructure';
-import SelectFloor from 'screens/Project/Sales/BookingChart/SelectFloor';
-import SelectUnit from 'screens/Project/Sales/BookingChart/SelectUnit';
+import BC_SelectStructure from 'screens/Project/Sales/BookingChart/SelectStructure';
+import BC_SelectFloor from 'screens/Project/Sales/BookingChart/SelectFloor';
+import BC_SelectUnit from 'screens/Project/Sales/BookingChart/SelectUnit';
 import BookingDetails from 'screens/Project/Sales/BookingChart/BookingDetails';
 import BookingRates from 'screens/Project/Sales/BookingChart/BookingRates';
 import BookingPayment from 'screens/Project/Sales/BookingChart/BookingPayment';
+//Project : Customer Section
+import CS_SelectStructure from 'screens/Project/CustomerSection/SelectStructure';
+import CS_SelectFloor from 'screens/Project/CustomerSection/SelectFloor';
+import CS_SelectUnit from 'screens/Project/CustomerSection/SelectUnit';
+import CustomerSection from 'screens/Project/CustomerSection/CustomerSection';
 //Project : Project management screens
 import ProjectSchedule from '../screens/Project/ProjectManagement/ProjectSchedule';
 import MainPhase from '../screens/Project/ProjectManagement/MainPhase';
@@ -123,17 +128,17 @@ function BookingChartStack() {
     <Stack.Navigator initialRouteName={'BC_Step_One'}>
       <Stack.Screen
         name="BC_Step_One"
-        component={SelectStructure}
+        component={BC_SelectStructure}
         options={{headerShown: false}}
       />
       <Stack.Screen
         name="BC_Step_Two"
-        component={SelectFloor}
+        component={BC_SelectFloor}
         options={{headerShown: false}}
       />
       <Stack.Screen
         name="BC_Step_Three"
-        component={SelectUnit}
+        component={BC_SelectUnit}
         options={{headerShown: false}}
       />
       <Stack.Screen
@@ -149,6 +154,33 @@ function BookingChartStack() {
       <Stack.Screen
         name="BC_Step_Six"
         component={BookingPayment}
+        options={{headerShown: false}}
+      />
+    </Stack.Navigator>
+  );
+}
+
+function CustomerSectionStack() {
+  return (
+    <Stack.Navigator initialRouteName={'BC_Step_One'}>
+      <Stack.Screen
+        name="CS_Step_One"
+        component={CS_SelectStructure}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="CS_Step_Two"
+        component={CS_SelectFloor}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="CS_Step_Three"
+        component={CS_SelectUnit}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="CS_Step_Four"
+        component={CustomerSection}
         options={{headerShown: false}}
       />
     </Stack.Navigator>
@@ -194,6 +226,7 @@ function ProjectDrawer() {
       <Drawer.Screen name="SalesPipeline" component={SalesPipeline} />
       <Drawer.Screen name="BookingChartStack" component={BookingChartStack} />
       <Drawer.Screen name="Payment" component={Payment} />
+      <Drawer.Screen name="CustomerSection" component={CustomerSectionStack} />
       <Drawer.Screen name="ProjectSchedule" component={ProjectSchedule} />
       <Drawer.Screen name="MainPhase" component={MainPhase} />
       <Drawer.Screen name="AssignTask" component={AssignTask} />
@@ -239,7 +272,8 @@ function NavContainer() {
   }, []);
 
   useEffect(() => {
-    if (false) {
+    const useTouchId = false;
+    if (useTouchId) {
       TouchID.isSupported(optionalConfigObject)
         .then((biometryType) => {
           // Success code

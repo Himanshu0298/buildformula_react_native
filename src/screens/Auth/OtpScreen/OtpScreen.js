@@ -17,13 +17,13 @@ import {
   useClearByFocusCell,
 } from 'react-native-confirmation-code-field';
 
-import BaseText from 'components/BaseText';
+import BaseText from 'components/Atoms/BaseText';
 import {theme} from 'styles/theme';
 import {Button, withTheme} from 'react-native-paper';
 import Layout from 'utils/Layout';
 import Spinner from 'react-native-loading-spinner-overlay';
 import useOtpActions from 'redux/actions/otpActions';
-import {useAlert} from 'components/Alert';
+import {useAlert} from 'components/Atoms/Alert';
 
 const CELL_SIZE = 50;
 const CELL_BORDER_RADIUS = 8;
@@ -290,12 +290,6 @@ const styles = StyleSheet.create({
   nextButton: {
     marginTop: 20,
     width: '50%',
-  },
-  nextButtonText: {
-    textAlign: 'center',
-    fontSize: 20,
-    color: '#fff',
-    fontWeight: '700',
   },
 });
 

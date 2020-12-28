@@ -36,7 +36,7 @@ export const DEFAULT_STRUCTURE = {
   },
 };
 
-export const TYPE_LABELS = {
+export const STRUCTURE_TYPE_LABELS = {
   2: 'Shops',
   3: 'Offices',
   1: 'Apartments',

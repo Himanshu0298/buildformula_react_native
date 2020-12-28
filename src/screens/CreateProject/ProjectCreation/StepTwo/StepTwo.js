@@ -7,13 +7,13 @@ import {
   SafeAreaView,
 } from 'react-native';
 import {withTheme, Button, TextInput} from 'react-native-paper';
-import FormTitle from 'components/FormTitle';
+import FormTitle from 'components/Atoms/FormTitle';
 import {Formik} from 'formik';
 import {useTranslation} from 'react-i18next';
 import {theme} from 'styles/theme';
-import RenderInput from 'components/RenderInput';
-import FileInput from 'components/FileInput';
-import BaseText from 'components/BaseText';
+import RenderInput from 'components/Atoms/RenderInput';
+import FileInput from 'components/Atoms/FileInput';
+import BaseText from 'components/Atoms/BaseText';
 import useProjectActions from 'redux/actions/projectActions';
 import * as Yup from 'yup';
 import {PHONE_REGEX} from 'utils/constant';

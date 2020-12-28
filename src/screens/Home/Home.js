@@ -22,7 +22,7 @@ import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {secondaryTheme} from 'styles/theme';
 import Layout from 'utils/Layout';
-import {useAlert} from 'components/Alert';
+import {useAlert} from 'components/Atoms/Alert';
 import LottieView from 'lottie-react-native';
 import waiting from 'assets/animation/waiting.json';
 import {COLORS} from 'utils/constant';
@@ -116,7 +116,7 @@ function Home(props) {
     if (project.project_approved === 'Y') {
       navigation.navigate('ProjectDashboard', {
         screen: 'ProjectDashboard',
-        params: {projectId: project.id},
+        params: {project},
       });
     } else {
       alert.show({

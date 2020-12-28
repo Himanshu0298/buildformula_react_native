@@ -21,12 +21,12 @@ import {
 import {secondaryTheme, theme} from 'styles/theme';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {COLORS} from 'utils/constant';
-import BaseText from 'components/BaseText';
+import BaseText from 'components/Atoms/BaseText';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {Board, BoardRepository} from 'components/Board/components';
-import {useAlert} from 'components/Alert';
+import {Board, BoardRepository} from 'components/Molecules/Board/components';
+import {useAlert} from 'components/Atoms/Alert';
 import {getShadow} from 'utils';
-import RenderInput from 'components/RenderInput';
+import RenderInput from 'components/Atoms/RenderInput';
 import {useTranslation} from 'react-i18next';
 // import {BoardRepository, Board} from 'react-native-draganddrop-board';
 

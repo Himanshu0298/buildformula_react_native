@@ -12,7 +12,7 @@ export default function SelectFloor(props) {
   const {towerCount, towers} = structureData;
 
   const showAllUnits = (towerId, floorId) => {
-    navigation.navigate('BC_Step_Three', {
+    navigation.navigate('CS_Step_Three', {
       selectedStructure,
       towerId: towerId,
       floorId,
@@ -20,6 +20,11 @@ export default function SelectFloor(props) {
   };
 
   return (
-    <FloorSelector {...{towers, towerCount}} onSelectFloor={showAllUnits} />
+    <FloorSelector
+      {...{towers, towerCount}}
+      title="title_customer_section"
+      subtitle="subtitle_customer_section"
+      onSelectFloor={showAllUnits}
+    />
   );
 }

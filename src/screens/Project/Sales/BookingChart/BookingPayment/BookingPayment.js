@@ -1,6 +1,6 @@
 import React, {useEffect, useMemo} from 'react';
-import BaseText from 'components/BaseText';
-import RenderInput from 'components/RenderInput';
+import BaseText from 'components/Atoms/BaseText';
+import RenderInput from 'components/Atoms/RenderInput';
 import {Formik} from 'formik';
 import {useTranslation} from 'react-i18next';
 import {
@@ -24,14 +24,14 @@ import {
 import {secondaryTheme, theme} from 'styles/theme';
 import * as Yup from 'yup';
 import _ from 'lodash';
-import OpacityButton from 'components/Buttons/OpacityButton';
+import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import RenderSelect from 'components/RenderSelect';
-import RenderDatePicker from 'components/RenderDatePicker';
+import RenderSelect from 'components/Atoms/RenderSelect';
+import RenderDatePicker from 'components/Atoms/RenderDatePicker';
 import {round} from 'utils';
 import dayjs from 'dayjs';
 import useSalesActions from 'redux/actions/salesActions';
-import Radio from 'components/Radio';
+import Radio from 'components/Atoms/Radio';
 import {useSelector} from 'react-redux';
 
 const PAYMENT_METHODS = [

@@ -8,15 +8,15 @@ import {
   SafeAreaView,
 } from 'react-native';
 import {Button, Subheading, TextInput, withTheme} from 'react-native-paper';
-import BaseText from 'components/BaseText';
-import {useSnackbar} from 'components/Snackbar';
+import BaseText from 'components/Atoms/BaseText';
+import {useSnackbar} from 'components/Atoms/Snackbar';
 import {theme} from 'styles/theme';
 import {addOpacity, getFloorNumber, getUnitLabel} from 'utils';
 import Layout from 'utils/Layout';
 import bungalowHut from 'assets/images/bungalow_hut.png';
 import plotHut from 'assets/images/plot.png';
 import {useBackHandler} from '@react-native-community/hooks';
-import BhkButton from 'components/Buttons/BhkButton';
+import BhkButton from 'components/Atoms/Buttons/BhkButton';
 import {BHK_OPTIONS} from 'utils/constant';
 
 const DEFAULT_UNIT_COLOR = '#5B6F7C';

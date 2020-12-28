@@ -6,7 +6,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useSelector} from 'react-redux';
 import {secondaryTheme} from 'styles/theme';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import OpacityButton from 'components/Buttons/OpacityButton';
+import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 
 function ProjectHeader({theme}) {
   const {selectedProject} = useSelector((state) => state.project);

@@ -19,7 +19,7 @@ import {
 import {secondaryTheme, theme} from 'styles/theme';
 import banner from 'assets/images/banner.png';
 import image from 'assets/images/buildings.png';
-import BaseText from 'components/BaseText';
+import BaseText from 'components/Atoms/BaseText';
 import {Formik} from 'formik';
 import CustomInput from './../Components/CustomInput';
 import useUserActions from 'redux/actions/userActions';

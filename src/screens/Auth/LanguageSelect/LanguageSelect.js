@@ -3,7 +3,7 @@ import {StyleSheet, StatusBar, View, Image} from 'react-native';
 import {withTheme, Button, Headline} from 'react-native-paper';
 import welcomeImage from 'assets/images/language.png';
 import banner from 'assets/images/banner.png';
-import BaseText from 'components/BaseText';
+import BaseText from 'components/Atoms/BaseText';
 import {useTranslation} from 'react-i18next';
 import Layout from 'utils/Layout';
 import {theme} from 'styles/theme';

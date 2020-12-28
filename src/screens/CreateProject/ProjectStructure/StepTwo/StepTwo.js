@@ -8,26 +8,16 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {Menu, Title, withTheme} from 'react-native-paper';
-import FormTitle from 'components/FormTitle';
+import FormTitle from 'components/Atoms/FormTitle';
 import {useTranslation} from 'react-i18next';
 import {secondaryTheme, theme} from 'styles/theme';
-import {
-  getFloorNumber,
-  getShadow,
-  getTowerLabel,
-  getUnitLabel,
-} from 'utils';
-import {useSnackbar} from 'components/Snackbar';
+import {getFloorNumber, getShadow, getTowerLabel, getUnitLabel} from 'utils';
+import {useSnackbar} from 'components/Atoms/Snackbar';
 import MaterialTabs from 'react-native-material-tabs';
 import TowersScreen from './Components/TowersScreen';
 import FloorsScreen from './Components/FloorsScreen';
 import UnitsScreen from './Components/UnitsScreen';
-import {
-  MAX_TOWERS,
-  MAX_FLOORS,
-  MAX_UNITS,
-  TYPE_LABELS,
-} from 'utils/constant';
+import {MAX_TOWERS, MAX_FLOORS, MAX_UNITS, STRUCTURE_TYPE_LABELS} from 'utils/constant';
 import useStructureActions from 'redux/actions/structureActions';
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -602,7 +592,7 @@ function StepTwo(props) {
                   <TouchableOpacity
                     onPress={toggleMenu}
                     style={styles.titleContainer}>
-                    <Title>{t(TYPE_LABELS[selectedStructureType])}</Title>
+                    <Title>{t(STRUCTURE_TYPE_LABELS[selectedStructureType])}</Title>
                     <AntIcons
                       name="caretdown"
                       color="#fff"
@@ -616,7 +606,7 @@ function StepTwo(props) {
                       <Menu.Item
                         key={option.value}
                         theme={secondaryTheme}
-                        title={t(TYPE_LABELS[option.value])}
+                        title={t(STRUCTURE_TYPE_LABELS[option.value])}
                         onPress={() => {
                           updateStructure({
                             selectedStructureType: option.value,

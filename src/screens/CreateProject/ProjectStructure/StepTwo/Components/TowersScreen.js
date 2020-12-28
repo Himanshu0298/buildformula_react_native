@@ -1,11 +1,11 @@
 import React, {useMemo, useState} from 'react';
 import {View, StyleSheet, SafeAreaView, ScrollView} from 'react-native';
 import {Button, TextInput, withTheme} from 'react-native-paper';
-import BaseText from 'components/BaseText';
-import {useSnackbar} from 'components/Snackbar';
+import BaseText from 'components/Atoms/BaseText';
+import {useSnackbar} from 'components/Atoms/Snackbar';
 import {getTowerLabel} from 'utils';
-import {useAlert} from 'components/Alert';
-import TowerIcon from 'components/TowerIcon';
+import {useAlert} from 'components/Atoms/Alert';
+import TowerIcon from 'components/Atoms/TowerIcon';
 
 function RenderTowers({towerCount, towerValidationById, onPress}) {
   let towersList = [];

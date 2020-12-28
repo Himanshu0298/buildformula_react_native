@@ -21,15 +21,14 @@ import {useSelector} from 'react-redux';
 import dayjs from 'dayjs';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {secondaryTheme, theme} from 'styles/theme';
-import ProjectHeader from 'components/Layout/ProjectHeader';
-import {PRIORITY_COLORS, TYPE_LABELS} from 'utils/constant';
+import ProjectHeader from 'components/Molecules/Layout/ProjectHeader';
+import {PRIORITY_COLORS, STRUCTURE_TYPE_LABELS} from 'utils/constant';
 import Modal from 'react-native-modal';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {TabView} from 'react-native-tab-view';
 import Layout from 'utils/Layout';
-import MaterialTabBar from 'components/MaterialTabBar';
-import CustomBadge from 'components/CustomBadge';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import MaterialTabBar from 'components/Atoms/MaterialTabBar';
+import CustomBadge from 'components/Atoms/CustomBadge';
 
 function StatsRow({visitorAnalytics}) {
   const {
@@ -107,7 +106,7 @@ function RenderVisitorItem({data, index, toggleSheet}) {
         </View>
         <View style={styles.rowItemContainer}>
           <Subheading theme={secondaryTheme} style={styles.visitorTitle}>
-            {TYPE_LABELS[inquiry_for]}
+            {STRUCTURE_TYPE_LABELS[inquiry_for]}
           </Subheading>
           <CustomBadge
             color="rgba(72,114,244,0.15)"
@@ -224,7 +223,7 @@ function RenderVisitorDetails({data = {}, handleClose, handleEdit}) {
           </Caption>
           <Caption theme={secondaryTheme} style={styles.sheetRowValue}>
             {' '}
-            {TYPE_LABELS[data.inquiry_for]} {data.bhk} BHK
+            {STRUCTURE_TYPE_LABELS[data.inquiry_for]} {data.bhk} BHK
           </Caption>
         </View>
         <View style={styles.sheetRow}>

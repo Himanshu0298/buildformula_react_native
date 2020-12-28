@@ -6,7 +6,7 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-import {withTheme, Button} from 'react-native-paper';
+import {withTheme} from 'react-native-paper';
 import FormTitle from 'components/Atoms/FormTitle';
 import {useTranslation} from 'react-i18next';
 import {theme} from 'styles/theme';
@@ -22,11 +22,7 @@ import bungalowInactive from 'assets/images/bungalow_inactive.png';
 import plot from 'assets/images/plot.png';
 import plotInactive from 'assets/images/plot_inactive.png';
 import Layout from 'utils/Layout';
-import {useSnackbar} from 'components/Atoms/Snackbar';
-import useStructureActions from 'redux/actions/structureActions';
-import {useSelector} from 'react-redux';
-import Spinner from 'react-native-loading-spinner-overlay';
-import {DEFAULT_STRUCTURE} from 'utils/constant';
+import PropTypes from 'prop-types';
 
 const getStructureItems = () => {
   return [
@@ -69,16 +65,18 @@ const getStructureItems = () => {
   ];
 };
 
-function ImageRender({
-  title,
-  inactiveSrc,
-  activeSrc,
-  imageStyle,
-  active,
-  onPress,
-  value,
-  style,
-}) {
+function ImageRender(props) {
+  const {
+    title,
+    inactiveSrc,
+    activeSrc,
+    imageStyle,
+    active = true,
+    onPress,
+    value,
+    style,
+  } = props;
+
   return (
     <TouchableOpacity
       style={[styles.box, style, active ? styles.active : {}]}
@@ -89,91 +87,22 @@ function ImageRender({
   );
 }
 
-function StepOne(props) {
-  const {navigation} = props;
-
+function StructureSelector({title, subtitle, onSelectStructure, projectTypes}) {
   const {t} = useTranslation();
-  const snackbar = useSnackbar();
-
-  const {updateStructureTypes, updateStructure} = useStructureActions();
-
-  const {structureTypes, structure} = useSelector((state) => state.structure);
-  const {project} = useSelector((state) => state.project);
-  const {loading} = useSelector((state) => state.structure);
-
-  const updateTypes = (type) => {
-    let types = {...structureTypes};
-    types[type] = !types[type];
-    let selectedStructureType = 1;
-    if (types[2]) {
-      selectedStructureType = 2;
-    } else if (types[3]) {
-      selectedStructureType = 3;
-    }
-
-    updateStructure({structureTypes: types, selectedStructureType});
-  };
-
-  const handleSubmit = () => {
-    const selectedTypes = Object.keys(structureTypes).filter(
-      (key) => structureTypes[key],
-    );
-    if (selectedTypes.length === 0) {
-      snackbar.showMessage({
-        message: 'Please select a type',
-        variant: 'error',
-      });
-    } else {
-      const types = Object.keys(structureTypes)
-        .filter((key) => structureTypes[key])
-        .join();
-
-      let formData = new FormData();
-      formData.append('project_id', project.project_id);
-      formData.append('project_types', types);
-
-      const updatedStructure = {};
-      selectedTypes.map((type) => {
-        if (structure[type]) {
-          updatedStructure[type] = structure[type];
-        } else {
-          updatedStructure[type] = DEFAULT_STRUCTURE[type];
-        }
-      });
-
-      updateStructure({structure: updatedStructure});
-
-      updateStructureTypes(formData).then(() => {
-        navigation.navigate('ProjectStructureStepTwo');
-      });
-    }
-  };
 
   return (
     <>
-      <StatusBar
-        barStyle="light-content"
-        backgroundColor={theme.colors.primary}
-      />
-      <FormTitle
-        title={t('label_project_structure')}
-        subTitle={t('label_select_appropriate_option')}
-      />
-      <Spinner visible={loading} textContent={''} />
+      <FormTitle title={t(title)} subTitle={t(subtitle)} />
       <View style={styles.container}>
-        {getStructureItems().map((item) => {
-          return <ImageRender {...item} onPress={updateTypes} />;
-        })}
-        <View style={styles.button}>
-          <Button
-            style={{width: '50%'}}
-            mode="contained"
-            contentStyle={{padding: 8}}
-            theme={{roundness: 15}}
-            onPress={handleSubmit}>
-            <BaseText style={styles.buttonText}>{'Next'}</BaseText>
-          </Button>
-        </View>
+        {getStructureItems()
+          .filter((structure) => projectTypes.includes(structure.value))
+          .map((item) => (
+            <ImageRender
+              key={item.value}
+              {...item}
+              onPress={onSelectStructure}
+            />
+          ))}
       </View>
     </>
   );
@@ -227,15 +156,19 @@ const styles = StyleSheet.create({
     width: Layout.window.width * 0.3,
     height: Layout.window.width * 0.18,
   },
-  button: {
-    width: '95%',
-    display: 'flex',
-    alignItems: 'flex-end',
-  },
-  buttonText: {
-    fontWeight: 'bold',
-    fontSize: 18,
-  },
 });
 
-export default withTheme(StepOne);
+StructureSelector.defaultProps = {
+  title: 'label_select_structure',
+  subtitle: 'label_select_appropriate_option',
+  onSelectStructure: () => {},
+};
+
+StructureSelector.propTypes = {
+  title: PropTypes.string,
+  subtitle: PropTypes.string,
+  projectTypes: PropTypes.array.isRequired,
+  onSelectStructure: PropTypes.func.isRequired,
+};
+
+export default withTheme(StructureSelector);

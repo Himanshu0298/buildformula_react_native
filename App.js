@@ -16,9 +16,9 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import {initReactI18next} from 'react-i18next';
 import translations from './src/translations/global';
 import * as RNLocalize from 'react-native-localize';
-import {SnackbarProvider} from './src/components/Snackbar';
+import {SnackbarProvider} from './src/components/Atoms/Snackbar';
 import {ActionSheetProvider} from '@expo/react-native-action-sheet';
-import AlertProvider from './src/components/Alert/AlertProvider';
+import AlertProvider from './src/components/Atoms/Alert/AlertProvider';
 
 const languageDetector = {
   type: 'languageDetector',

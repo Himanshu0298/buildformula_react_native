@@ -19,7 +19,7 @@ import EstimationIconActive from 'assets/images/estimation_icon_active.png';
 import EstimationIcon from 'assets/images/estimation_icon.png';
 import OrderIconActive from 'assets/images/order_icon_active.png';
 import OrderIcon from 'assets/images/order_icon.png';
-import BaseText from 'components/BaseText';
+import BaseText from 'components/Atoms/BaseText';
 import useAppActions from '../../redux/actions/appActions';
 import {SITE_URL} from 'utils/constant';
 
@@ -50,6 +50,24 @@ const PROJECT_DRAWER_ITEMS = [
       {
         route: 'Payment',
         label: 'Payment',
+        activeIcon: ({color, size}) => (
+          <Image
+            source={PaymentActive}
+            style={{height: size - 5, width: size + 5}}
+          />
+        ),
+        inactiveIcon: ({color, size}) => (
+          <Image source={Payment} style={{height: size - 5, width: size + 5}} />
+        ),
+      },
+    ],
+  },
+  {
+    title: 'CUSTOMER SECTION',
+    routes: [
+      {
+        route: 'CustomerSection',
+        label: 'Customer Section',
         activeIcon: ({color, size}) => (
           <Image
             source={PaymentActive}

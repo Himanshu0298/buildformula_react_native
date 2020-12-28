@@ -1,5 +1,5 @@
 import React from 'react';
-import ProjectLayout from 'components/Layout/ProjectLayout';
+import ProjectLayout from 'components/Molecules/Layout/ProjectLayout';
 import BookingRates from './BookingRates';
 
 export default (props) => {
