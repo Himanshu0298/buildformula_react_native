@@ -95,6 +95,7 @@ export default {
       //Customer Section
       title_customer_section: 'Customer’s Section',
       subtitle_customer_section: 'Select a customer to see there booking form',
+      title_customer_details: 'Customer’s Details',
     },
   },
   hi: {
@@ -186,6 +187,7 @@ export default {
       //Customer Section
       title_customer_section: 'Customer’s Section',
       subtitle_customer_section: 'Select a customer to see there booking form',
+      title_customer_details: 'Customer’s Details',
     },
   },
 };

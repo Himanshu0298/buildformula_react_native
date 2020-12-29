@@ -5,20 +5,23 @@ import {useSelector} from 'react-redux';
 import {secondaryTheme} from 'styles/theme';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-function RenderCustomer({customer}) {
+function RenderCustomer({customer, navToDetails}) {
+  const {profile_pic, name, role} = customer;
   return (
     <>
-      <TouchableOpacity style={styles.customerContainer}>
+      <TouchableOpacity
+        onPress={() => navToDetails(customer)}
+        style={styles.customerContainer}>
         <View style={styles.leftContainer}>
           <Avatar.Image
             size={50}
             source={{
-              uri: 'https://reactnative.dev/img/tiny_logo.png',
+              uri: profile_pic,
             }}
           />
           <View style={styles.nameContainer}>
-            <Text theme={secondaryTheme}>James Parker</Text>
-            <Caption theme={secondaryTheme}>Main customer</Caption>
+            <Text theme={secondaryTheme}>{name}</Text>
+            <Caption theme={secondaryTheme}>{role}</Caption>
           </View>
         </View>
         <View style={styles.rightContainer}>
@@ -35,14 +38,39 @@ function RenderCustomer({customer}) {
 }
 
 function Details(props) {
-  const {theme} = props;
-  const {customerDetails} = useSelector((state) => state.customer);
+  const {theme, navigation} = props;
+  // const {customerDetails} = useSelector((state) => state.customer);
+  const customerDetails = [
+    {
+      profile_pic: 'https://reactnative.dev/img/tiny_logo.png',
+      name: 'James Parker',
+      role: 'Main customer',
+    },
+    {
+      profile_pic: 'https://reactnative.dev/img/tiny_logo.png',
+      name: 'James Parker',
+      role: 'Main customer',
+    },
+    {
+      profile_pic: 'https://reactnative.dev/img/tiny_logo.png',
+      name: 'James Parker',
+      role: 'Main customer',
+    },
+  ];
+
+  const navToDetails = (customer) => {
+    navigation.push('CustomerDetails', {customer});
+  };
 
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={{flexGrow: 1}}>
-        {[{}, {}, {}].map((customer, index) => (
-          <RenderCustomer key={index} customer={customer} />
+        {customerDetails.map((customer, index) => (
+          <RenderCustomer
+            key={index}
+            customer={customer}
+            navToDetails={navToDetails}
+          />
         ))}
         <View style={styles.addPanel}>
           <TouchableOpacity style={styles.addButton}>

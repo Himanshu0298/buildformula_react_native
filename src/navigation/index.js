@@ -50,6 +50,7 @@ import CS_SelectStructure from 'screens/Project/CustomerSection/SelectStructure'
 import CS_SelectFloor from 'screens/Project/CustomerSection/SelectFloor';
 import CS_SelectUnit from 'screens/Project/CustomerSection/SelectUnit';
 import CustomerSection from 'screens/Project/CustomerSection/CustomerSection';
+import CustomerDetails from 'screens/Project/CustomerSection/CustomerDetails';
 //Project : Project management screens
 import ProjectSchedule from '../screens/Project/ProjectManagement/ProjectSchedule';
 import MainPhase from '../screens/Project/ProjectManagement/MainPhase';
@@ -181,6 +182,11 @@ function CustomerSectionStack() {
       <Stack.Screen
         name="CS_Step_Four"
         component={CustomerSection}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="CustomerDetails"
+        component={CustomerDetails}
         options={{headerShown: false}}
       />
     </Stack.Navigator>
