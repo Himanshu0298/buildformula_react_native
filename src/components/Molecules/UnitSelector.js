@@ -203,7 +203,7 @@ UnitSelector.propTypes = {
   onRefresh: PropTypes.func,
   unitBookingStatus: PropTypes.array,
   units: PropTypes.object,
-  floorId: PropTypes.number.isRequired,
+  floorId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
 };
 
 export default UnitSelector;
