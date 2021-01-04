@@ -838,15 +838,15 @@ function BookingPayments(props) {
         if (values.payment_type === 1) {
           formData.append(
             'start_date',
-            dayjs(values.start_date).format('DD/MM/YYYY'),
+            dayjs(values.start_date).format('YYYY-MM-DD'),
           );
           formData.append(
             'end_date',
-            dayjs(values.end_date).format('DD/MM/YYYY'),
+            dayjs(values.end_date).format('YYYY-MM-DD'),
           );
         } else if (values.payment_type === 2) {
           values.custom_payments = values.custom_payments.map((payment) => {
-            payment.date = dayjs(payment.date).format('DD/MM/YYYY');
+            payment.date = dayjs(payment.date).format('YYYY-MM-DD');
             return payment;
           });
           formData.append('custom_payments', values.custom_payments);
@@ -867,7 +867,7 @@ function BookingPayments(props) {
           formData.append('installment_count', values.installment_count);
           formData.append(
             'installment_start_date',
-            values.installment_start_date,
+            dayjs(values.installment_start_date).format('YYYY-MM-DD'),
           );
           formData.append(
             'installment_interval_days',

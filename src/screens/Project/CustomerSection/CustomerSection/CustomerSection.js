@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {useTranslation} from 'react-i18next';
 import {StyleSheet, View} from 'react-native';
+import {ScrollView} from 'react-native-gesture-handler';
 import {Divider, Subheading, Text, withTheme, Button} from 'react-native-paper';
 import {TabBar, TabView} from 'react-native-tab-view';
 import {useSelector} from 'react-redux';
@@ -16,6 +17,32 @@ function renderDetailText(label, value) {
     <Text theme={secondaryTheme} style={{marginVertical: 4}}>
       {label} : <Text style={{color: theme.colors.primary}}>{value}</Text>
     </Text>
+  );
+}
+
+function RenderTabBar(tabBarProps) {
+  return (
+    <TabBar
+      {...tabBarProps}
+      scrollEnabled
+      style={{backgroundColor: '#fff', ...getShadow(0), width: '100%'}}
+      tabStyle={styles.tab}
+      indicatorStyle={{backgroundColor: 'white'}}
+      renderTabBarItem={({route: item, navigationState, onPress}) => {
+        const active = navigationState.index === item.key;
+        return (
+          <View style={styles.tab} key={item.key}>
+            <Button
+              style={{marginHorizontal: 5}}
+              mode={active ? 'contained' : 'outlined'}
+              theme={{roundness: 20}}
+              onPress={onPress}>
+              {item.title}
+            </Button>
+          </View>
+        );
+      }}
+    />
   );
 }
 
@@ -93,27 +120,7 @@ function CustomerSection(props) {
         renderScene={renderScene}
         onIndexChange={setSelectedTab}
         initialLayout={{width: Layout.window.width}}
-        renderTabBar={(tabBarProps) => (
-          <TabBar
-            {...tabBarProps}
-            scrollEnabled
-            style={{backgroundColor: '#fff', ...getShadow(0)}}
-            indicatorStyle={{backgroundColor: 'white'}}
-            renderTabBarItem={({route: item, navigationState, onPress}) => {
-              const active = navigationState.index === item.key;
-              return (
-                <View key={item.key} style={styles.tabContainer}>
-                  <Button
-                    mode={active ? 'contained' : 'outlined'}
-                    theme={{roundness: 20}}
-                    onPress={onPress}>
-                    {item.title}
-                  </Button>
-                </View>
-              );
-            }}
-          />
-        )}
+        renderTabBar={(tabBarProps) => <RenderTabBar {...tabBarProps} />}
       />
     </>
   );
@@ -130,9 +137,8 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: 15,
   },
-  tabContainer: {
-    padding: 5,
-    minWidth: 150,
+  tab: {
+    width: 180,
   },
 });
 

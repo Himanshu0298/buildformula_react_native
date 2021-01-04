@@ -30,6 +30,10 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 
 const TABS = ['Developer', 'Supplier', 'Customer'];
 
+const PROJECT_CONTAINER_WIDTH = Layout.window.width * 0.44;
+const PROJECT_CONTAINER_MARGIN = Layout.window.width * 0.02;
+const DEVELOPER_IMAGE_WIDTH = PROJECT_CONTAINER_WIDTH * 0.9;
+
 function RenderHeader({theme}) {
   return (
     <SafeAreaView edges={['right', 'top', 'left']}>
@@ -252,13 +256,13 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     flexDirection: 'row',
     paddingTop: 10,
-    paddingHorizontal: Layout.window.width * 0.02,
+    paddingHorizontal: PROJECT_CONTAINER_MARGIN,
   },
   projectContainer: {
     borderWidth: 5,
-    margin: Layout.window.width * 0.02,
+    width: PROJECT_CONTAINER_WIDTH,
+    margin: PROJECT_CONTAINER_MARGIN,
     borderRadius: 10,
-    width: Layout.window.width * 0.44,
     borderColor: '#DEE1E7',
   },
   developerImageContainer: {
@@ -268,8 +272,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   developerImage: {
-    height: 120,
-    width: '90%',
+    width: DEVELOPER_IMAGE_WIDTH,
+    height: DEVELOPER_IMAGE_WIDTH * 0.8,
   },
   supplierImageContainer: {
     padding: 10,

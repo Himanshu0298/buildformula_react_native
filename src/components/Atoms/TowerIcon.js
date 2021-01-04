@@ -12,6 +12,9 @@ import towerInactive from 'assets/images/tower_inactive.png';
 import Layout from 'utils/Layout';
 import PropTypes from 'prop-types';
 
+const ICON_WIDTH = Layout.window.width * 0.22;
+const ICON_HEIGHT = Layout.window.width * 0.15;
+
 function TowerIcon({onPress, index, active}) {
   return (
     <TouchableOpacity
@@ -43,15 +46,15 @@ TowerIcon.defaultProps = {
 
 const styles = StyleSheet.create({
   towerContainer: {
-    width: Layout.window.width * 0.22,
-    height: Layout.window.width * 0.15,
+    width: ICON_WIDTH,
+    height: ICON_HEIGHT,
     alignItems: 'center',
     justifyContent: 'center',
     marginVertical: 2,
   },
   towerImage: {
-    height: Layout.window.width * 0.133,
-    width: Layout.window.width * 0.17,
+    width: ICON_WIDTH * 0.75,
+    height: ICON_WIDTH * 0.75 * 0.81,
     alignItems: 'center',
   },
   towerLabelContainer: {

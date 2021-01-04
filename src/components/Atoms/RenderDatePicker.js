@@ -6,6 +6,7 @@ import {Button, Dialog, Portal, TextInput, withTheme} from 'react-native-paper';
 import {secondaryTheme} from 'styles/theme';
 import RenderInput from './RenderInput';
 import DatePicker from 'react-native-date-picker';
+import Layout from 'utils/Layout';
 
 const RenderDatePicker = React.forwardRef((props, ref) => {
   const {
@@ -66,6 +67,7 @@ const RenderDatePicker = React.forwardRef((props, ref) => {
         <Dialog visible={open} onDismiss={togglePicker}>
           <Dialog.Content>
             <DatePicker
+              style={{width: Layout.window.width * 0.8}}
               date={dayjs(date).toDate()}
               mode={mode}
               onDateChange={setDate}
