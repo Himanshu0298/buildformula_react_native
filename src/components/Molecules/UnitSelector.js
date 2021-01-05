@@ -23,7 +23,7 @@ const BOOKING_STYLES = {
   filling: {
     borderWidth: 3,
     borderColor: '#07CA03',
-    badge: <MaterialCommunityIcons name="minus" color="#fff" />,
+    badge: <MaterialCommunityIcons name="check" color="#fff" />,
   },
   standby: {
     borderWidth: 3,
@@ -69,7 +69,7 @@ function RenderUnits({onSelectUnit, units, selectedFloor, isUnitDisabled}) {
         const disabled = isUnitDisabled(unit);
 
         if (unit?.booking_status === 'filling' && !disabled) {
-          bookingStyle = {};
+          // bookingStyle = {};
         }
 
         return (
@@ -113,7 +113,6 @@ function UnitSelector({
   showBhkFilters,
   refreshing,
   onRefresh,
-  unitBookingStatus,
   units,
   floorId,
   onSelectUnit,
@@ -201,7 +200,6 @@ UnitSelector.propTypes = {
   onSelectUnit: PropTypes.func.isRequired,
   refreshing: PropTypes.bool,
   onRefresh: PropTypes.func,
-  unitBookingStatus: PropTypes.array,
   units: PropTypes.object,
   floorId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
 };

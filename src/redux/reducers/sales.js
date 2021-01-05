@@ -12,14 +12,18 @@ import {
   ADD_PIPELINE,
   MOVE_VISITOR,
   GET_BOOKINGS_STATUS,
-  LOCK_UNIT,
   CREATE_BOOKING,
   GET_BANK_LIST,
+  SET_TIMER,
 } from './../actions/actionTypes';
 
 const initialState = {
   loading: false,
+  loadingUnitStatus: false,
   errorMessage: undefined,
+  timerData: {
+    showTimer: false,
+  },
   visitors: [],
   followups: [],
   todayFollowups: [],
@@ -49,6 +53,15 @@ export default (state = initialState, action = {}) => {
     case `${GET_SELECTED_PROJECT}_PENDING`:
       return {
         ...initialState,
+      };
+
+    case `${SET_TIMER}`:
+      return {
+        ...state,
+        timerData: {
+          showTimer: !state?.timerData?.showTimer,
+          ...payload,
+        },
       };
 
     case `${GET_SALES_DATA}_PENDING`:
@@ -155,19 +168,19 @@ export default (state = initialState, action = {}) => {
     case `${GET_BOOKINGS_STATUS}_PENDING`:
       return {
         ...state,
-        loading: true,
+        loadingUnitStatus: true,
       };
     case `${GET_BOOKINGS_STATUS}_FULFILLED`: {
       return {
         ...state,
-        loading: false,
+        loadingUnitStatus: false,
         unitBookingStatus: payload,
       };
     }
     case `${GET_BOOKINGS_STATUS}_REJECTED`:
       return {
         ...state,
-        loading: false,
+        loadingUnitStatus: false,
         errorMessage: payload,
       };
 
@@ -266,7 +279,6 @@ export default (state = initialState, action = {}) => {
 
     case `${ADD_VISITOR}_PENDING`:
     case `${ADD_FOLLOW_UP}_PENDING`:
-    case `${LOCK_UNIT}_PENDING`:
     case `${CREATE_BOOKING}_PENDING`:
     case `${ADD_PIPELINE}_PENDING`: {
       return {
@@ -276,7 +288,6 @@ export default (state = initialState, action = {}) => {
     }
     case `${ADD_VISITOR}_FULFILLED`:
     case `${ADD_FOLLOW_UP}_FULFILLED`:
-    case `${LOCK_UNIT}_FULFILLED`:
     case `${CREATE_BOOKING}_FULFILLED`:
     case `${ADD_PIPELINE}_FULFILLED`: {
       return {
@@ -287,7 +298,6 @@ export default (state = initialState, action = {}) => {
 
     case `${ADD_VISITOR}_REJECTED`:
     case `${ADD_FOLLOW_UP}_REJECTED`:
-    case `${LOCK_UNIT}_REJECTED`:
     case `${CREATE_BOOKING}_REJECTED`:
     case `${ADD_PIPELINE}_REJECTED`: {
       return {

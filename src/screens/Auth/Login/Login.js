@@ -77,16 +77,14 @@ function RenderContent(props) {
             name="email"
             label={t('label_email')}
             ref={emailRef}
+            onFocus={() => bottomSheetRef?.current?.snapTo(0)}
             value={values.email}
             onChangeText={handleChange('email')}
             onBlur={handleBlur('email')}
             placeholder={t('msgBlankEmail')}
             autoCapitalize="none"
             returnKeyType={'next'}
-            onSubmitEditing={() => {
-              passwordRef && passwordRef.current.focus();
-              bottomSheetRef?.current?.snapTo(0);
-            }}
+            onSubmitEditing={() => passwordRef?.current?.focus()}
             error={errors.email}
           />
           <CustomInput

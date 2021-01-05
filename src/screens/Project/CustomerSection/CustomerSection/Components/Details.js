@@ -62,6 +62,10 @@ function Details(props) {
     navigation.push('CustomerDetails', {customer});
   };
 
+  const navToAdd = (customer) => {
+    navigation.push('AddCustomer');
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={{flexGrow: 1}}>
@@ -73,7 +77,7 @@ function Details(props) {
           />
         ))}
         <View style={styles.addPanel}>
-          <TouchableOpacity style={styles.addButton}>
+          <TouchableOpacity style={styles.addButton} onPress={navToAdd}>
             <Text style={{color: theme.colors.primary}}>+ Add Joint name</Text>
           </TouchableOpacity>
           <Caption theme={secondaryTheme}>

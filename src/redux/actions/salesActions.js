@@ -25,6 +25,11 @@ export default function useSalesActions() {
   } = useSalesServices();
 
   return {
+    toggleTimer: (data) =>
+      dispatch({
+        type: types.SET_TIMER,
+        payload: data,
+      }),
     getSalesData: (projectId) =>
       dispatch({
         type: types.GET_SALES_DATA,

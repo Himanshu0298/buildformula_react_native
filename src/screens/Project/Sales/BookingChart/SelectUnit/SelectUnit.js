@@ -8,10 +8,12 @@ import dayjs from 'dayjs';
 export default function SelectUnit(props) {
   const {navigation, route} = props;
 
-  const {getUnitsBookingStatus, lockUnit} = useSalesActions();
+  const {getUnitsBookingStatus, lockUnit, toggleTimer} = useSalesActions();
 
   const {selectedProject = {}} = useSelector((state) => state.project);
-  const {loading, unitBookingStatus} = useSelector((state) => state.sales);
+  const {loadingUnitStatus, unitBookingStatus} = useSelector(
+    (state) => state.sales,
+  );
   const {user} = useSelector((state) => state.user);
 
   const {selectedStructure, floorId, towerId} = route?.params || {};
@@ -70,13 +72,11 @@ export default function SelectUnit(props) {
     return disabled;
   };
 
-  const handlePress = (index, unit) => {
+  const onSelectUnit = (index, unit) => {
     const formData = new FormData();
     formData.append('unit_id', unit.unitId);
 
-    lockUnit(formData).then(() => {
-      fetchUnitsBookingStatus();
-    });
+    lockUnit(formData).then(() => toggleTimer({showTimer: true, time: 1800}));
 
     navigation.navigate('BC_Step_Four', {
       project_id: selectedProject.id,
@@ -86,11 +86,11 @@ export default function SelectUnit(props) {
 
   return (
     <>
-      <Spinner visible={loading} textContent={''} />
+      <Spinner visible={loadingUnitStatus} textContent={''} />
       <UnitSelector
-        refreshing={unitBookingStatus.length > 0 && loading}
+        refreshing={unitBookingStatus.length > 0 && loadingUnitStatus}
         onRefresh={fetchUnitsBookingStatus}
-        onSelectUnit={handlePress}
+        onSelectUnit={onSelectUnit}
         floorId={floorId}
         units={units}
         isUnitDisabled={checkUnitDisability}

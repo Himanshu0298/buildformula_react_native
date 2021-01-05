@@ -7,9 +7,15 @@ import {useSelector} from 'react-redux';
 import {secondaryTheme} from 'styles/theme';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
+import CountDown from 'react-native-countdown-component';
+import useSalesActions from 'redux/actions/salesActions';
 
 function ProjectHeader({theme}) {
+  const {toggleTimer} = useSalesActions();
   const {selectedProject} = useSelector((state) => state.project);
+  const {timerData} = useSelector((state) => state.sales);
+  const {showTimer, time} = timerData;
+
   return (
     <SafeAreaView edges={['right', 'top', 'left']}>
       <View style={styles.header}>
@@ -19,6 +25,17 @@ function ProjectHeader({theme}) {
           </Subheading>
         </View>
         <View style={styles.rightContainer}>
+          {showTimer ? (
+            <CountDown
+              until={time}
+              onFinish={() => toggleTimer()}
+              size={11}
+              digitStyle={{backgroundColor: theme.colors.primary}}
+              digitTxtStyle={{color: '#fff'}}
+              timeToShow={['M', 'S']}
+              timeLabels={{m: '', s: ''}}
+            />
+          ) : null}
           <TouchableOpacity style={styles.bellContainer}>
             <MaterialCommunityIcons name={'bell'} color={'#000'} size={20} />
             <Badge size={10} style={styles.badge} />
@@ -53,6 +70,7 @@ const styles = StyleSheet.create({
   },
   bellContainer: {
     position: 'relative',
+    marginLeft: 10,
   },
   badge: {
     position: 'absolute',

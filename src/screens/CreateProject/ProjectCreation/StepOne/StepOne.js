@@ -89,7 +89,7 @@ function StepOne(props) {
                 />
                 <FileInput
                   name="company_pan"
-                  label={t('pan')}
+                  label={t('label_pan')}
                   ref={panRef}
                   containerStyles={styles.input}
                   value={values.company_pan}
@@ -97,13 +97,13 @@ function StepOne(props) {
                   onChangeText={handleChange('company_pan')}
                   onChoose={(v) => setFieldValue('pan_image', v)}
                   onBlur={handleBlur('company_pan')}
-                  placeholder={t('pan')}
+                  placeholder={t('label_pan')}
                   onSubmitEditing={() => tanRef && tanRef.current.focus()}
                   error={errors.company_pan || errors.pan_image}
                 />
                 <FileInput
                   name="company_tan"
-                  label={t('tan')}
+                  label={t('label_tan')}
                   ref={tanRef}
                   containerStyles={styles.input}
                   value={values.company_tan}
@@ -111,13 +111,13 @@ function StepOne(props) {
                   onChangeText={handleChange('company_tan')}
                   onChoose={(v) => setFieldValue('tan_image', v)}
                   onBlur={handleBlur('company_tan')}
-                  placeholder={t('tan')}
+                  placeholder={t('label_tan')}
                   onSubmitEditing={() => gstRef && gstRef.current.focus()}
                   error={errors.company_tan || errors.tan_image}
                 />
                 <FileInput
                   name="company_gst"
-                  label={t('gst')}
+                  label={t('label_gst')}
                   ref={gstRef}
                   containerStyles={styles.input}
                   value={values.company_gst}
@@ -125,7 +125,7 @@ function StepOne(props) {
                   onChangeText={handleChange('company_gst')}
                   onChoose={(v) => setFieldValue('gst_image', v)}
                   onBlur={handleBlur('company_gst')}
-                  placeholder={t('gst')}
+                  placeholder={t('label_gst')}
                   returnKeyType={'done'}
                   onSubmitEditing={handleSubmit}
                   error={errors.company_gst || errors.gst_image}
