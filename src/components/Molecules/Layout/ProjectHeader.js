@@ -10,7 +10,7 @@ import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import CountDown from 'react-native-countdown-component';
 import useSalesActions from 'redux/actions/salesActions';
 
-function ProjectHeader({theme}) {
+function ProjectHeader({theme, timer}) {
   const {toggleTimer} = useSalesActions();
   const {selectedProject} = useSelector((state) => state.project);
   const {timerData} = useSelector((state) => state.sales);
@@ -25,7 +25,7 @@ function ProjectHeader({theme}) {
           </Subheading>
         </View>
         <View style={styles.rightContainer}>
-          {showTimer ? (
+          {timer && showTimer ? (
             <CountDown
               until={time}
               onFinish={() => toggleTimer()}

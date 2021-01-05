@@ -4,7 +4,7 @@ import BookingRates from './BookingRates';
 
 export default (props) => {
   return (
-    <ProjectLayout>
+    <ProjectLayout timer={true}>
       <BookingRates {...props} />
     </ProjectLayout>
   );
