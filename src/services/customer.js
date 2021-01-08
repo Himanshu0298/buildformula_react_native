@@ -6,5 +6,8 @@ export default function useCustomerServices() {
     getCustomerDetails: (data) => {
       return instance.post('/customers', data, config());
     },
+    addCustomer: (data) => {
+      return instance.post('/customers/update', data, config());
+    },
   };
 }

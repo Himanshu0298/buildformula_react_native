@@ -8,7 +8,7 @@ export default function useCustomerActions() {
   const dispatch = useDispatch();
   const snackbar = useSnackbar();
   const {processError, processResponse} = useResProcessor();
-  const {getCustomerDetails} = useCustomerServices();
+  const {getCustomerDetails, addCustomer} = useCustomerServices();
 
   return {
     getCustomerDetails: (formData) =>
@@ -17,6 +17,25 @@ export default function useCustomerActions() {
         payload: async () => {
           try {
             let response = processResponse(await getCustomerDetails(formData));
+            const {data} = response;
+
+            return Promise.resolve(data);
+          } catch (error) {
+            let errorMessage = processError(error);
+            snackbar.showMessage({
+              message: errorMessage,
+              variant: 'error',
+            });
+            return Promise.reject(errorMessage);
+          }
+        },
+      }),
+    addCustomer: (formData) =>
+      dispatch({
+        type: types.ADD_CUSTOMER,
+        payload: async () => {
+          try {
+            let response = processResponse(await addCustomer(formData));
             const {data} = response;
 
             return Promise.resolve(data);

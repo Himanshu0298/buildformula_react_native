@@ -7,14 +7,10 @@ import {useSelector} from 'react-redux';
 import {secondaryTheme} from 'styles/theme';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
-import CountDown from 'react-native-countdown-component';
-import useSalesActions from 'redux/actions/salesActions';
+import Timer from 'components/Atoms/Timer';
 
 function ProjectHeader({theme, timer}) {
-  const {toggleTimer} = useSalesActions();
   const {selectedProject} = useSelector((state) => state.project);
-  const {timerData} = useSelector((state) => state.sales);
-  const {showTimer, time} = timerData;
 
   return (
     <SafeAreaView edges={['right', 'top', 'left']}>
@@ -25,17 +21,7 @@ function ProjectHeader({theme, timer}) {
           </Subheading>
         </View>
         <View style={styles.rightContainer}>
-          {timer && showTimer ? (
-            <CountDown
-              until={time}
-              onFinish={() => toggleTimer()}
-              size={11}
-              digitStyle={{backgroundColor: theme.colors.primary}}
-              digitTxtStyle={{color: '#fff'}}
-              timeToShow={['M', 'S']}
-              timeLabels={{m: '', s: ''}}
-            />
-          ) : null}
+          <Timer displayTimer={timer} />
           <TouchableOpacity style={styles.bellContainer}>
             <MaterialCommunityIcons name={'bell'} color={'#000'} size={20} />
             <Badge size={10} style={styles.badge} />

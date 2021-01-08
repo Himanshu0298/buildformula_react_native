@@ -17,6 +17,8 @@ import BaseText from 'components/Atoms/BaseText';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {useSelector} from 'react-redux';
+import useCustomerActions from 'redux/actions/customerActions';
 
 const schema = Yup.object().shape({});
 
@@ -209,9 +211,22 @@ function RenderForm({formikProps, navigation, ...restProps}) {
 }
 
 function AddCustomer(props) {
-  const {navigation} = props;
-
+  const {navigation, route} = props;
+  const {params} = route;
+  const {unit, project_id} = params;
   const {t} = useTranslation();
+
+  const {user} = useSelector((state) => state.user);
+
+  const {getCustomerDetails, addCustomer} = useCustomerActions();
+
+  const getUpdatedCustomers = (unit_id) => {
+    const formData = new FormData();
+    formData.append('user_id', user.id);
+    formData.append('project_id', project_id);
+    formData.append('unit_id', unit.unitId);
+    getCustomerDetails(formData);
+  };
 
   return (
     <View style={styles.container}>
@@ -232,31 +247,29 @@ function AddCustomer(props) {
         <Formik
           validateOnBlur={false}
           validateOnChange={false}
-          initialValues={{priority: 'low'}}
+          initialValues={{}}
           validationSchema={schema}
           onSubmit={async (values) => {
-            // const formData = new FormData();
-            // formData.append(
-            //   'follow_up_date',
-            //   dayjs(values.follow_up_date).format('DD-MM-YYYY'),
-            // );
-            // formData.append(
-            //   'follow_up_time',
-            //   dayjs(values.follow_up_time).format('HH:mm'),
-            // );
-            // delete values.follow_up_date;
-            // delete values.follow_up_time;
-            // Object.keys(values).map((key) => {
-            //   formData.append(key, values[key]);
-            // });
-            // formData.append('project_id', selectedProject.id);
-            // formData.append('user_id', user.id);
-            // addVisitor(formData).then(() => {
-            //   getVisitors(selectedProject.id);
-            //   getFollowUps(selectedProject.id);
-            //   getSalesData(selectedProject.id);
-            //   navigation.goBack();
-            // });
+            const formData = new FormData();
+            formData.append('project_id', project_id);
+            formData.append('unit_id', unit.unit_id);
+            formData.append('user_id', user.id);
+            formData.append('customer_full_name', values.customer_full_name);
+            formData.append('customer_phone', values.customer_phone);
+            formData.append('customer_email', values.customer_email);
+            formData.append('customer_address', values.customer_address);
+            formData.append('customer_age', values.customer_age);
+            formData.append('customer_occupation', values.customer_occupation);
+            formData.append('customer_pan', values.customer_pan);
+            formData.append('customer_aadhar', values.customer_aadhar);
+            formData.append('customer_aadhar', values.customer_aadhar);
+            formData.append('aadhar_image', values.aadhar_image);
+            formData.append('pan_image', values.pan_image);
+
+            addCustomer(formData).then(() => {
+              getUpdatedCustomers(values.unit_id);
+              navigation.goBack();
+            });
           }}>
           {(formikProps) => <RenderForm formikProps={formikProps} {...props} />}
         </Formik>

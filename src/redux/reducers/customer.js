@@ -1,5 +1,9 @@
 import _ from 'lodash';
-import {GET_CUSTOMER_DATA, SET_INITIAL_STATE} from './../actions/actionTypes';
+import {
+  ADD_CUSTOMER,
+  GET_CUSTOMER_DATA,
+  SET_INITIAL_STATE,
+} from './../actions/actionTypes';
 
 const initialState = {
   loading: false,
@@ -30,6 +34,24 @@ export default (state = initialState, action = {}) => {
       };
     }
     case `${GET_CUSTOMER_DATA}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+        errorMessage: action.payload,
+      };
+
+    case `${ADD_CUSTOMER}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${ADD_CUSTOMER}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+      };
+    }
+    case `${ADD_CUSTOMER}_REJECTED`:
       return {
         ...state,
         loading: false,

@@ -41,3 +41,4 @@ export const GET_BANK_LIST = 'GET_BANK_LIST';
 
 //For Sales
 export const GET_CUSTOMER_DATA = 'GET_CUSTOMER_DATA';
+export const ADD_CUSTOMER = 'ADD_CUSTOMER';

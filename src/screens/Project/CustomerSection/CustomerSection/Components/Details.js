@@ -38,7 +38,8 @@ function RenderCustomer({customer, navToDetails}) {
 }
 
 function Details(props) {
-  const {theme, navigation} = props;
+  const {theme, navigation, route} = props;
+  const {params} = route;
   // const {customerDetails} = useSelector((state) => state.customer);
   const customerDetails = [
     {
@@ -62,8 +63,10 @@ function Details(props) {
     navigation.push('CustomerDetails', {customer});
   };
 
+  console.log('----->params ', params);
+
   const navToAdd = (customer) => {
-    navigation.push('AddCustomer');
+    navigation.push('AddCustomer', {...params});
   };
 
   return (

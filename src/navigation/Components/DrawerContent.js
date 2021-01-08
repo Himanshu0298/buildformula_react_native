@@ -225,7 +225,6 @@ export default function DrawerContent(props) {
       showsVerticalScrollIndicator={false}
       contentContainerStyle={styles.scrollView}>
       <Animated.View
-        //@ts-ignore
         style={[
           styles.drawerContent,
           {

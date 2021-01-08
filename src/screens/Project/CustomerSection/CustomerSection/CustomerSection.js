@@ -71,7 +71,7 @@ function CustomerSection(props) {
     const formData = new FormData();
     formData.append('user_id', user.id);
     formData.append('project_id', project_id);
-    formData.append('unit_id', unit.id);
+    formData.append('unit_id', unit.unitId);
     getCustomerDetails(formData);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

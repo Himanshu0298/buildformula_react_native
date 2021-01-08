@@ -5,6 +5,7 @@ export function useResProcessor() {
 
   return {
     processError: (error) => {
+      console.log('-----> error', error);
       const {response} = error;
       let errorMessage;
       if (response) {

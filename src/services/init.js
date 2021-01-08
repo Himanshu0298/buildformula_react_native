@@ -9,9 +9,8 @@ export const useConfig = () => {
 
   return {
     config: ({multipart = true, auth = true} = {}) => {
-      let headers = {
-        'Content-Type': 'application/json',
-      };
+      let headers = {'Content-Type': 'application/json'};
+
       if (multipart) {
         headers['Content-Type'] = 'multipart/form-data';
       }

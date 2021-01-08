@@ -1,27 +1,9 @@
 import React from 'react';
-import {StyleSheet, View, Text, Platform, Keyboard} from 'react-native';
+import {StyleSheet, View, Text} from 'react-native';
 import PropTypes from 'prop-types';
 import {TextInput, Caption, Button, IconButton} from 'react-native-paper';
-import ImagePicker from 'react-native-image-picker';
-import ImageResizer from 'react-native-image-resizer';
-import DocumentPicker from 'react-native-document-picker';
 import {secondaryTheme, theme} from 'styles/theme';
-import {useActionSheet} from '@expo/react-native-action-sheet';
-import RNFS from 'react-native-fs';
-
-const MAX_WIDTH = 1050;
-const MAX_HEIGHT = 1400;
-const QUALITY = 0.9;
-
-const cameraOptions = {
-  title: 'Choose File',
-  mediaType: 'photo',
-  cameraType: 'back',
-  quality: QUALITY,
-  maxWidth: MAX_WIDTH,
-  maxHeight: MAX_HEIGHT,
-  allowsEditing: true,
-};
+import useImagePicker from './useImagePicker';
 
 const FileInput = React.forwardRef((props, ref) => {
   const {
@@ -33,106 +15,10 @@ const FileInput = React.forwardRef((props, ref) => {
     ...rest
   } = props;
 
-  const {showActionSheetWithOptions} = useActionSheet();
+  const {openImagePicker} = useImagePicker();
 
-  const toggleConfirm = () => {
-    Keyboard.dismiss();
-    const sheetOptions = [
-      'Cancel',
-      type === 'file' ? 'Choose File : image | pdf' : 'Choose Image',
-      'Take Picture',
-    ];
-    const destructiveButtonIndex = 0;
-    const cancelButtonIndex = 2;
-
-    showActionSheetWithOptions(
-      {
-        options: sheetOptions,
-        cancelButtonIndex,
-        destructiveButtonIndex,
-      },
-      (buttonIndex) => {
-        if (buttonIndex === 1) {
-          handleFilePicker();
-        } else if (buttonIndex === 2) {
-          handleCamera();
-        }
-      },
-    );
-  };
-
-  const handleCamera = () => {
-    ImagePicker.launchCamera(cameraOptions, (res) => {
-      if (res.error) {
-        console.log('ImagePicker Error: ', res.error);
-      } else {
-        const data = {
-          uri: Platform.OS === 'android' ? `file:///${res.path}` : res.path,
-          type: res.type,
-          name: res.fileName,
-        };
-
-        console.log('-----> data', data);
-        onChoose(data);
-      }
-    });
-  };
-
-  const handleFilePicker = async () => {
-    try {
-      const fileTypes = [DocumentPicker.types.images];
-      if (type === 'file') {
-        fileTypes.push(DocumentPicker.types.pdf);
-      }
-      const res = await DocumentPicker.pick({type: fileTypes});
-      console.log('-----> res', res);
-
-      if (res.type === 'image/jpeg' || res.type === 'image/png') {
-        ImageResizer.createResizedImage(
-          res.uri,
-          MAX_WIDTH,
-          MAX_HEIGHT,
-          'JPEG',
-          QUALITY * 100,
-        )
-          .then((resizedData) => {
-            const data = {
-              uri: resizedData.uri,
-              type: res.type,
-              name: resizedData.name,
-            };
-
-            console.log('-----> data', data);
-
-            onChoose(data);
-          })
-          .catch((err) => {
-            console.log('----->createResizedImage ', err);
-            throw err;
-          });
-      } else {
-        const destPath = `${RNFS.TemporaryDirectoryPath}/${'vshwan'}`;
-        await RNFS.copyFile(res.uri, destPath);
-
-        const stat = await RNFS.stat(destPath);
-
-        const data = {
-          uri: Platform.OS === 'ios' ? stat.path : `file:///${stat.path}`,
-          type: res.type,
-          name: res.name,
-        };
-
-        console.log('-----> data', data);
-
-        onChoose(data);
-      }
-    } catch (err) {
-      if (DocumentPicker.isCancel(err)) {
-        // User cancelled the picker, exit any dialogs or menus and move on
-      } else {
-        throw err;
-      }
-    }
+  const openPicker = () => {
+    openImagePicker({type, onChoose});
   };
 
   return (
@@ -172,7 +58,7 @@ const FileInput = React.forwardRef((props, ref) => {
           style={styles.button}
           uppercase={false}
           // onPress={type === 'file' ? handleFilePicker : handleImagePicker}>
-          onPress={toggleConfirm}>
+          onPress={openPicker}>
           Choose File
         </Button>
       </View>
