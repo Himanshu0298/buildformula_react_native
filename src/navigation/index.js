@@ -303,8 +303,10 @@ function NavContainer() {
   }, []);
 
   const initialScreen = useMemo(() => {
-    return getInitialAuthScreen(authenticated, state);
-
+    if (language) {
+      return getInitialAuthScreen(authenticated, state);
+    }
+    return 'LanguageSelect';
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [language]);
 
