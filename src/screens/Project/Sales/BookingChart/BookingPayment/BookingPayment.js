@@ -835,8 +835,7 @@ function BookingPayments(props) {
         delete data.loan;
         delete data.broker;
 
-        createBooking(data);
-        // .then(() => navigation.popToTop());
+        createBooking(data).then(() => navigation.popToTop());
 
         // navigation.navigate('BC_Step_Six', {...params, ...values});
       }}>
