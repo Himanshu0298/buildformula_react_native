@@ -63,8 +63,7 @@ export default function SelectUnit(props) {
         unit.booked_unit_user_id !== user.id);
 
     if (
-      unit.booking_status &&
-      unit.booking_status === 'filling' &&
+      unit?.booking_status === 'filling' &&
       dayjs(unit.tmp_booking_time_end).isBefore(dayjs())
     ) {
       disabled = false;
@@ -76,7 +75,9 @@ export default function SelectUnit(props) {
     const formData = new FormData();
     formData.append('unit_id', unit.unitId);
 
-    lockUnit(formData).then(() => toggleTimer({showTimer: true, time: 1800}));
+    lockUnit(formData).then(() =>
+      toggleTimer({showTimer: true, startTime: new Date(), time: 1800}),
+    );
 
     navigation.navigate('BC_Step_Four', {
       project_id: selectedProject.id,

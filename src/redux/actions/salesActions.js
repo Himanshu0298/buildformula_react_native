@@ -38,12 +38,12 @@ export default function useSalesActions() {
             const formData = new FormData();
             formData.append('project_id', projectId);
 
-            let response = processResponse(await getSalesData(formData));
+            const response = processResponse(await getSalesData(formData));
             const {data} = response;
 
             return Promise.resolve(data);
           } catch (error) {
-            let errorMessage = processError(error);
+            const errorMessage = processError(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',
@@ -60,12 +60,12 @@ export default function useSalesActions() {
             const formData = new FormData();
             formData.append('project_id', projectId);
 
-            let response = processResponse(await getVisitorsList(formData));
+            const response = processResponse(await getVisitorsList(formData));
             const {data} = response;
 
             return Promise.resolve(data);
           } catch (error) {
-            let errorMessage = processError(error);
+            const errorMessage = processError(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',
@@ -82,7 +82,7 @@ export default function useSalesActions() {
             const formData = new FormData();
             formData.append('project_id', projectId);
 
-            let response = processResponse(await getFollowUpList(formData));
+            const response = processResponse(await getFollowUpList(formData));
             const {data, filter} = response;
 
             return Promise.resolve({
@@ -90,7 +90,7 @@ export default function useSalesActions() {
               todayFollowups: filter.today_followups,
             });
           } catch (error) {
-            let errorMessage = processError(error);
+            const errorMessage = processError(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',
@@ -107,7 +107,7 @@ export default function useSalesActions() {
             const formData = new FormData();
             formData.append('project_id', projectId);
 
-            let response = processResponse(await getPipelines(formData));
+            const response = processResponse(await getPipelines(formData));
             const {data, others} = response;
 
             return Promise.resolve({
@@ -115,7 +115,7 @@ export default function useSalesActions() {
               visitorSuggestions: others.visitors_autosuggestions || [],
             });
           } catch (error) {
-            let errorMessage = processError(error);
+            const errorMessage = processError(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',
@@ -129,12 +129,12 @@ export default function useSalesActions() {
         type: types.ADD_VISITOR,
         payload: async () => {
           try {
-            let response = processResponse(await addVisitor(formData));
+            const response = processResponse(await addVisitor(formData));
             const {data} = response;
 
             return Promise.resolve(data.data);
           } catch (error) {
-            let errorMessage = processError(error);
+            const errorMessage = processError(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',
@@ -148,12 +148,12 @@ export default function useSalesActions() {
         type: types.ADD_FOLLOW_UP,
         payload: async () => {
           try {
-            let response = processResponse(await addFollowUp(formData));
+            const response = processResponse(await addFollowUp(formData));
             const {data} = response;
 
             return Promise.resolve(data.data);
           } catch (error) {
-            let errorMessage = processError(error);
+            const errorMessage = processError(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',
@@ -167,12 +167,12 @@ export default function useSalesActions() {
         type: types.ADD_PIPELINE,
         payload: async () => {
           try {
-            let response = processResponse(await addPipeline(formData));
+            const response = processResponse(await addPipeline(formData));
             const {data} = response;
 
             return Promise.resolve(data.data);
           } catch (error) {
-            let errorMessage = processError(error);
+            const errorMessage = processError(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',
@@ -193,11 +193,11 @@ export default function useSalesActions() {
             formData.append('project_id', projectId);
             formData.append('pureid', pipelineId);
 
-            let response = processResponse(await moveVisitor(formData));
+            const response = processResponse(await moveVisitor(formData));
 
             return Promise.resolve(data);
           } catch (error) {
-            let errorMessage = processError(error);
+            const errorMessage = processError(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',
@@ -211,12 +211,12 @@ export default function useSalesActions() {
         type: types.DELETE_PIPELINE,
         payload: async () => {
           try {
-            let response = processResponse(await deletePipeline(formData));
+            const response = processResponse(await deletePipeline(formData));
             const {data} = response;
 
             return Promise.resolve(id);
           } catch (error) {
-            let errorMessage = processError(error);
+            const errorMessage = processError(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',
@@ -231,14 +231,14 @@ export default function useSalesActions() {
         type: types.GET_BOOKINGS_STATUS,
         payload: async () => {
           try {
-            let response = processResponse(
+            const response = processResponse(
               await getUnitsBookingStatus(formData),
             );
             const {data} = response;
 
             return Promise.resolve(data);
           } catch (error) {
-            let errorMessage = processError(error);
+            const errorMessage = processError(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',
@@ -253,12 +253,12 @@ export default function useSalesActions() {
         type: types.LOCK_UNIT,
         payload: async () => {
           try {
-            let response = processResponse(await lockUnit(formData));
+            const response = processResponse(await lockUnit(formData));
             const {data} = response;
 
             return Promise.resolve(data);
           } catch (error) {
-            let errorMessage = processError(error);
+            const errorMessage = processError(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',
@@ -272,7 +272,7 @@ export default function useSalesActions() {
         type: types.CREATE_BOOKING,
         payload: async () => {
           try {
-            let response = processResponse(await createBooking(formData));
+            const response = processResponse(await createBooking(formData));
             const {data} = response;
 
             snackbar.showMessage({
@@ -282,11 +282,8 @@ export default function useSalesActions() {
 
             return Promise.resolve(data);
           } catch (error) {
-            let errorMessage = processError(error);
-            snackbar.showMessage({
-              message: errorMessage,
-              variant: 'error',
-            });
+            const errorMessage = processError(error);
+            snackbar.showMessage({message: errorMessage, variant: 'error'});
             return Promise.reject(errorMessage);
           }
         },
@@ -296,12 +293,12 @@ export default function useSalesActions() {
         type: types.GET_BANK_LIST,
         payload: async () => {
           try {
-            let response = processResponse(await getBankList());
+            const response = processResponse(await getBankList());
             const {data} = response;
 
             return Promise.resolve(data);
           } catch (error) {
-            let errorMessage = processError(error);
+            const errorMessage = processError(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',

@@ -9,7 +9,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import Timer from 'components/Atoms/Timer';
 
-function ProjectHeader({theme, timer}) {
+function ProjectHeader({theme, showTimer}) {
   const {selectedProject} = useSelector((state) => state.project);
 
   return (
@@ -21,7 +21,7 @@ function ProjectHeader({theme, timer}) {
           </Subheading>
         </View>
         <View style={styles.rightContainer}>
-          <Timer displayTimer={timer} />
+          <Timer displayTimer={showTimer} />
           <TouchableOpacity style={styles.bellContainer}>
             <MaterialCommunityIcons name={'bell'} color={'#000'} size={20} />
             <Badge size={10} style={styles.badge} />

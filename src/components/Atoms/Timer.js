@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useMemo} from 'react';
 import {View} from 'react-native';
 import PropTypes from 'prop-types';
 import CountDown from 'react-native-countdown-component';
@@ -11,20 +11,20 @@ function Timer({displayTimer}) {
   const {toggleTimer} = useSalesActions();
 
   const {timerData} = useSelector((state) => state.sales);
-  let {showTimer, startTime, time} = timerData;
+  const {showTimer, startTime, time} = timerData;
 
-  const [remainingTime, setRemaining] = useState(time);
-
-  useEffect(() => {
+  const remainingTime = useMemo(() => {
     if (time && startTime) {
-      const timeDiff = dayjs(dayjs()).diff(startTime, 'second');
-      if (timeDiff - time > 0) {
-        setRemaining(timeDiff - time);
+      const timeDiff = dayjs(dayjs()).diff(dayjs(startTime), 'second');
+
+      if (timeDiff < time) {
+        return time - timeDiff;
       } else {
         toggleTimer();
       }
     }
 
+    return 0;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [time, startTime]);
 

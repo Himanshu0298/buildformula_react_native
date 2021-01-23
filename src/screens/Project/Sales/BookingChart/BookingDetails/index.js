@@ -4,7 +4,7 @@ import BookingDetails from './BookingDetails';
 
 export default (props) => {
   return (
-    <ProjectLayout timer={true}>
+    <ProjectLayout showTimer={true}>
       <BookingDetails {...props} />
     </ProjectLayout>
   );

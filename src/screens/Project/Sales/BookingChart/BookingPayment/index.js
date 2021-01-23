@@ -4,7 +4,7 @@ import BookingPayment from './BookingPayment';
 
 export default (props) => {
   return (
-    <ProjectLayout timer={true}>
+    <ProjectLayout showTimer={true}>
       <BookingPayment {...props} />
     </ProjectLayout>
   );
