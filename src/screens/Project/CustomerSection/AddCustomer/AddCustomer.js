@@ -19,25 +19,34 @@ import * as Yup from 'yup';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {useSelector} from 'react-redux';
 import useCustomerActions from 'redux/actions/customerActions';
+import useImagePicker from 'components/Atoms/FileInput/useImagePicker';
 
 const schema = Yup.object().shape({});
 
-function ProfileUpload() {
+function ProfileUpload({profilePic, onSelect}) {
   const {t} = useTranslation();
+
+  const {openImagePicker} = useImagePicker();
 
   return (
     <View style={styles.profilePicContainer}>
       <TouchableOpacity
         style={styles.profilePicButton}
-        onPress={() => console.log('Pressed')}>
-        <MaterialCommunityIcons
-          name="camera"
-          color={theme.colors.primary}
-          size={25}
-        />
-        <Caption style={{color: theme.colors.primary}}>
-          {t('text_upload_photo')}
-        </Caption>
+        onPress={() => openImagePicker({type: 'image', onChoose: onSelect})}>
+        {profilePic ? (
+          <Image style={styles.profilePic} source={{uri: profilePic.uri}} />
+        ) : (
+          <>
+            <MaterialCommunityIcons
+              name="camera"
+              color={theme.colors.primary}
+              size={25}
+            />
+            <Caption style={{color: theme.colors.primary}}>
+              {t('text_upload_photo')}
+            </Caption>
+          </>
+        )}
       </TouchableOpacity>
     </View>
   );
@@ -68,7 +77,10 @@ function RenderForm({formikProps, navigation, ...restProps}) {
   return (
     <>
       <View style={styles.inputsContainer}>
-        <ProfileUpload />
+        <ProfileUpload
+          profilePic={values.profile_pic}
+          onSelect={(v) => setFieldValue('profile_pic', v)}
+        />
         <RenderInput
           name="customer_full_name"
           label={t('label_full_name')}
@@ -309,6 +321,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#E5EAFA',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  profilePic: {
+    height: 100,
+    width: 100,
+    borderRadius: 100,
   },
   inputsContainer: {
     width: '100%',

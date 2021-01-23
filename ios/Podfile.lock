@@ -242,15 +242,15 @@ PODS:
     - React-cxxreact (= 0.63.4)
     - React-jsi (= 0.63.4)
   - React-jsinspector (0.63.4)
-  - react-native-date-picker (3.2.5):
+  - react-native-date-picker (3.2.8):
     - React-Core
   - react-native-document-picker (4.2.0):
     - React-Core
   - react-native-flipper (0.69.0):
     - React
-  - react-native-image-picker (2.4.0):
-    - React
-  - react-native-image-resizer (1.4.1):
+  - react-native-image-picker (3.1.4):
+    - React-Core
+  - react-native-image-resizer (1.4.2):
     - React-Core
   - react-native-safe-area-context (3.1.9):
     - React-Core
@@ -330,10 +330,8 @@ PODS:
     - React-Core
   - RNScreens (2.16.1):
     - React-Core
-  - RNSharedElement (0.7.0):
-    - React
-  - RNVectorIcons (7.1.0):
-    - React
+  - RNVectorIcons (8.0.0):
+    - React-Core
   - TouchID (4.4.1):
     - React
   - Yoga (1.14.0)
@@ -404,7 +402,6 @@ DEPENDENCIES:
   - RNLocalize (from `../node_modules/react-native-localize`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
-  - RNSharedElement (from `../node_modules/react-native-shared-element`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - TouchID (from `../node_modules/react-native-touch-id`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
@@ -509,8 +506,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
     :path: "../node_modules/react-native-screens"
-  RNSharedElement:
-    :path: "../node_modules/react-native-shared-element"
   RNVectorIcons:
     :path: "../node_modules/react-native-vector-icons"
   TouchID:
@@ -548,11 +543,11 @@ SPEC CHECKSUMS:
   React-jsi: a0418934cf48f25b485631deb27c64dc40fb4c31
   React-jsiexecutor: 93bd528844ad21dc07aab1c67cb10abae6df6949
   React-jsinspector: 58aef7155bc9a9683f5b60b35eccea8722a4f53a
-  react-native-date-picker: 7b03feaea96db983f1de449e9d6d1dea4fa61010
+  react-native-date-picker: 5ba6666b2cbc0e70c1dcb4d10a391a9271192f83
   react-native-document-picker: 47d2771fc553c60a9f2a7c4c4e6f14ec542b9603
   react-native-flipper: 9d5738fbde235d9e2c922783e0e4657e665fe8ab
-  react-native-image-picker: 3b0cf2eb8e88203b0ff6632afe930c2e4cea4fa1
-  react-native-image-resizer: af7fa48fe7913b7b96fa079d16dd97ada31d6833
+  react-native-image-picker: 248afb60a0c5a24153cb7c7483b257f30541323b
+  react-native-image-resizer: 00e7112ccb46f4dd27e2f0822e65e4389ac39573
   react-native-safe-area-context: 86612d2c9a9e94e288319262d10b5f93f0b395f5
   react-native-splash-screen: 200d11d188e2e78cea3ad319964f6142b6384865
   React-RCTActionSheet: 89a0ca9f4a06c1f93c26067af074ccdce0f40336
@@ -572,8 +567,7 @@ SPEC CHECKSUMS:
   RNLocalize: dcf0fdb332b37b0d24178e876a7ce4dbbc9c838d
   RNReanimated: e03f7425cb7a38dcf1b644d680d1bfc91c3337ad
   RNScreens: 45c457af3d2ee9e08fc01e70da87e653d46b1198
-  RNSharedElement: 591b3be4f03678cee37697acc62702984ea43de4
-  RNVectorIcons: bc69e6a278b14842063605de32bec61f0b251a59
+  RNVectorIcons: f67a1abce2ec73e62fe4606e8110e95a832bc859
   TouchID: ba4c656d849cceabc2e4eef722dea5e55959ecf4
   Yoga: 4bd86afe9883422a7c4028c00e34790f560923d6
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
