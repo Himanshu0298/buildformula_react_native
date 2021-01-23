@@ -5,11 +5,14 @@ const axios = require('axios');
 export const instance = axios.create({baseURL: BASE_API_URL});
 
 export const useConfig = () => {
-  let token = store.getState().user.token;
+  const token = store.getState().user.token;
 
   return {
     config: ({multipart = true, auth = true} = {}) => {
-      let headers = {'Content-Type': 'application/json'};
+      const headers = {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      };
 
       if (multipart) {
         headers['Content-Type'] = 'multipart/form-data';

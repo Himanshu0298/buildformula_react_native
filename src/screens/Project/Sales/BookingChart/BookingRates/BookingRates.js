@@ -36,7 +36,7 @@ const schema = Yup.object().shape({
 });
 
 function getTypesSchema(types) {
-  let typesSchema = {};
+  const typesSchema = {};
 
   types.map((type) => {
     typesSchema[`${type}_area`] = Yup.number('Invalid').required('Required');
@@ -58,7 +58,7 @@ function RatesColumn(props) {
   const {values, handleBlur, errors, setFieldValue} = formikProps;
 
   const handleAreaChange = (key, area) => {
-    setFieldValue(key, area);
+    setFieldValue(key, round(area));
 
     const type = getType(key);
 
@@ -70,11 +70,11 @@ function RatesColumn(props) {
   };
 
   const handleRateChange = (key, rate) => {
-    setFieldValue(key, rate);
+    setFieldValue(key, round(rate));
 
     const type = getType(key);
 
-    let area = values[`${type}_area`];
+    const area = values[`${type}_area`];
     let amount = values.area_amount;
     if (area) {
       amount = area * rate;
@@ -209,13 +209,13 @@ function RenderCharges({formikProps, t}) {
   };
 
   const setValue = (id, value) => {
-    let data = _.cloneDeep(charge);
+    const data = _.cloneDeep(charge);
     data[id] = value;
     setCharge(data);
   };
 
   const saveCharge = () => {
-    const charges = _.cloneDeep(values.charges);
+    const other_charges = _.cloneDeep(values.other_charges);
 
     if (!charge?.label?.trim()) {
       setChargeError({label: 'Required'});
@@ -226,7 +226,7 @@ function RenderCharges({formikProps, t}) {
       return;
     }
 
-    let index = charges.findIndex(
+    const index = other_charges.findIndex(
       (item) => item.label.toLowerCase() === charge.label.toLowerCase(),
     );
 
@@ -238,16 +238,16 @@ function RenderCharges({formikProps, t}) {
     charge.label.trim();
     charge.amount.trim();
 
-    charges.push(charge);
-    setFieldValue('charges', charges);
+    other_charges.push(charge);
+    setFieldValue('other_charges', other_charges);
 
     toggleChargeModal();
   };
 
   const removeCharge = (index) => {
-    const charges = _.cloneDeep(values.charges);
-    charges.splice(index, 1);
-    setFieldValue('charges', charges);
+    const other_charges = _.cloneDeep(values.other_charges);
+    other_charges.splice(index, 1);
+    setFieldValue('other_charges', other_charges);
   };
 
   return (
@@ -291,7 +291,7 @@ function RenderCharges({formikProps, t}) {
       <Subheading style={{color: theme.colors.primary, marginTop: 20}}>
         Other Charges
       </Subheading>
-      {values.charges.map((item, i) => {
+      {values.other_charges.map((item, i) => {
         return (
           <View key={i} style={styles.chargesContainer}>
             <RenderInput
@@ -328,15 +328,15 @@ function FormContent(props) {
 
   useEffect(() => {
     let amount = 0;
-    if (values.charges.length > 0) {
-      amount = values.charges.reduce(
+    if (values.other_charges.length > 0) {
+      amount = values.other_charges.reduce(
         (sum, charge) => sum + parseInt(charge.amount, 10) || 0,
         0,
       );
     }
     setFieldValue('other_charges_amount', amount);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [values.charges]);
+  }, [values.other_charges]);
 
   const totalAmount = useMemo(() => {
     return (
@@ -421,7 +421,7 @@ function BookingRates(props) {
     <Formik
       validateOnBlur={false}
       validateOnChange={false}
-      initialValues={{charges: []}}
+      initialValues={{other_charges: []}}
       validationSchema={schema}
       onSubmit={async (values) => {
         navigation.navigate('BC_Step_Six', {...params, ...values});

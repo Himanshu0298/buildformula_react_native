@@ -63,8 +63,6 @@ function Details(props) {
     navigation.push('CustomerDetails', {customer});
   };
 
-  console.log('----->params ', params);
-
   const navToAdd = (customer) => {
     navigation.push('AddCustomer', {...params});
   };

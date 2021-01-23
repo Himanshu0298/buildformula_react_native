@@ -59,9 +59,9 @@ const schema = Yup.object().shape({
     then: Yup.string('Invalid').required('Required'),
   }),
   other_charges_date: Yup.string('Invalid').when(
-    'charges',
-    (charges, keySchema) =>
-      charges.length > 0 ? keySchema.required('Required') : keySchema,
+    'other_charges',
+    (other_charges, keySchema) =>
+      other_charges.length > 0 ? keySchema.required('Required') : keySchema,
   ),
   installment_count: Yup.number('Invalid').when('payment_type', {
     is: 3,
@@ -805,83 +805,38 @@ function BookingPayments(props) {
       }}
       validationSchema={schema}
       onSubmit={async (values) => {
-        const formData = new FormData();
-
-        formData.append('project_id', values.project_id);
-        formData.append('unit_id', values.unit_id);
-        formData.append('customer_first_name', values.customer_first_name);
-        formData.append('customer_last_name', values.customer_last_name);
-        formData.append('customer_email', values.customer_email);
-        formData.append('customer_phone', values.customer_phone);
-
-        if (values.broker === 'yes') {
-          formData.append('broker_first_name', values.broker_first_name);
-          formData.append('broker_last_name', values.broker_last_name);
-          formData.append('broker_email', values.broker_email);
-          formData.append('broker_phone', values.broker_phone);
-        }
-
-        formData.append('area_amount', values.area_amount);
-        formData.append('buildup_area', values.buildup_area);
-        formData.append('buildup_rate', values.buildup_rate);
-        formData.append('buildup_unit', values.buildup_unit);
-        formData.append('carpet_area', values.carpet_area);
-        formData.append('carpet_rate', values.carpet_rate);
-        formData.append('carpet_unit', values.carpet_unit);
-        formData.append('super_buildup_area', values.super_buildup_area);
-        formData.append('super_buildup_rate', values.super_buildup_rate);
-        formData.append('super_buildup_unit', values.super_buildup_unit);
-        formData.append('other_charges', values.charges);
-        formData.append('other_charges_amount', values.other_charges_amount);
-        formData.append('payment_type', values.payment_type);
+        const data = {...values};
 
         if (values.payment_type === 1) {
-          formData.append(
-            'start_date',
-            dayjs(values.start_date).format('YYYY-MM-DD'),
-          );
-          formData.append(
-            'end_date',
-            dayjs(values.end_date).format('YYYY-MM-DD'),
-          );
+          delete data.custom_payments;
+          data.start_date = dayjs(values.start_date).format('YYYY-MM-DD');
+          data.end_date = dayjs(values.end_date).format('YYYY-MM-DD');
         } else if (values.payment_type === 2) {
           values.custom_payments = values.custom_payments.map((payment) => {
             payment.date = dayjs(payment.date).format('YYYY-MM-DD');
             return payment;
           });
-          formData.append('custom_payments', values.custom_payments);
+          data.custom_payments = values.custom_payments;
         } else {
-          formData.append('first_big_amount', values.first_big_amount);
-          formData.append(
-            'first_big_amount_start_date',
-            values.first_big_amount_start_date,
-          );
-          formData.append(
-            'first_big_amount_end_date',
-            values.first_big_amount_end_date,
-          );
-          formData.append(
-            'first_big_amount_percent',
-            values.first_big_amount_percent,
-          );
-          formData.append('installment_count', values.installment_count);
-          formData.append(
-            'installment_start_date',
-            dayjs(values.installment_start_date).format('YYYY-MM-DD'),
-          );
-          formData.append(
-            'installment_interval_days',
+          delete data.custom_payments;
+          data.first_big_amount = values.first_big_amount;
+          data.first_big_amount_start_date = values.first_big_amount_start_date;
+          data.first_big_amount_end_date = values.first_big_amount_end_date;
+          data.first_big_amount_percent = values.first_big_amount_percent;
+          data.installment_count = values.installment_count;
+          data.installment_start_date = dayjs(
+            values.installment_start_date,
+          ).format('YYYY-MM-DD');
+          data.installment_interval_days = dayjs(
             values.installment_interval_days,
-          );
+          ).format('YYYY-MM-DD');
         }
 
-        if (values.loan === 'yes') {
-          formData.append('loan_bank', values.loan_bank);
-          formData.append('loan_amount', values.loan_amount);
-          formData.append('loan_remark', values.loan_remark);
-        }
+        delete data.loan;
+        delete data.broker;
 
-        createBooking(formData).then(() => navigation.popToTop());
+        createBooking(data);
+        // .then(() => navigation.popToTop());
 
         // navigation.navigate('BC_Step_Six', {...params, ...values});
       }}>

@@ -37,7 +37,11 @@ export default function useSalesServices() {
       return instance.post('/set_locked_units', data, config());
     },
     createBooking: (data) => {
-      return instance.post('/booking/form_save', data, config());
+      return instance.post(
+        '/booking/save_booking',
+        data,
+        config({multipart: false}),
+      );
     },
     getBankList: (data) => {
       return instance.get('get_banks', config());
