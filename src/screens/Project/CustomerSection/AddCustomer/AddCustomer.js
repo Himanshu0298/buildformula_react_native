@@ -214,17 +214,17 @@ function RenderForm({formikProps, navigation, ...restProps}) {
       </View>
       <View style={styles.actionContainer}>
         <Button
-          style={{flex: 1, marginRight: 10}}
-          contentStyle={{padding: 5}}
+          style={{width: '40%'}}
+          contentStyle={{padding: 1}}
           theme={{roundness: 15}}
           onPress={navigation.goBack}>
           <BaseText style={styles.cancelText}>{'Cancel'}</BaseText>
         </Button>
         <Button
-          style={{flex: 1, marginLeft: 10}}
+          style={{width: '40%'}}
           mode="contained"
           disabled={!values.accepted}
-          contentStyle={{padding: 5}}
+          contentStyle={{padding: 1}}
           theme={{roundness: 15}}
           onPress={handleSubmit}>
           <BaseText style={styles.buttonText}>{'Save'}</BaseText>
@@ -359,7 +359,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
   },
   cancelText: {
     fontSize: 18,
