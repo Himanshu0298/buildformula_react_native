@@ -1,4 +1,14 @@
-import {Colors, configureFonts, DefaultTheme} from 'react-native-paper';
+import {
+  DarkTheme as PaperDarkTheme,
+  DefaultTheme as PaperDefaultTheme,
+  Colors,
+  configureFonts,
+} from 'react-native-paper';
+import {
+  DarkTheme as NavigationDarkTheme,
+  DefaultTheme as NavigationDefaultTheme,
+} from '@react-navigation/native';
+import merge from 'deepmerge';
 
 const fontConfig = {
   default: {
@@ -25,12 +35,15 @@ const fontConfig = {
   },
 };
 
+const CombinedDefaultTheme = merge(PaperDefaultTheme, NavigationDefaultTheme);
+const CombinedDarkTheme = merge(PaperDarkTheme, NavigationDarkTheme);
+
 export const theme = {
-  ...DefaultTheme,
+  ...CombinedDefaultTheme,
   dark: false,
   // mode: 'adaptive', //['adaptive','exact']
   colors: {
-    ...DefaultTheme.colors,
+    ...CombinedDefaultTheme.colors,
     primary: '#4872F4',
     accent: '#041D36',
     background: '#fff',
@@ -40,6 +53,10 @@ export const theme = {
     warning: Colors.orange500,
   },
   fonts: configureFonts(fontConfig),
+};
+
+export const darkTheme = {
+  ...CombinedDarkTheme,
 };
 
 export const secondaryTheme = {

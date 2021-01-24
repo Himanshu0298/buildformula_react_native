@@ -40,24 +40,24 @@ function RenderCustomer({customer, navToDetails}) {
 function Details(props) {
   const {theme, navigation, route} = props;
   const {params} = route;
-  // const {customerDetails} = useSelector((state) => state.customer);
-  const customerDetails = [
-    {
-      profile_pic: 'https://reactnative.dev/img/tiny_logo.png',
-      name: 'James Parker',
-      role: 'Main customer',
-    },
-    {
-      profile_pic: 'https://reactnative.dev/img/tiny_logo.png',
-      name: 'James Parker',
-      role: 'Main customer',
-    },
-    {
-      profile_pic: 'https://reactnative.dev/img/tiny_logo.png',
-      name: 'James Parker',
-      role: 'Main customer',
-    },
-  ];
+  const {customerData} = useSelector((state) => state.customer);
+  // const customerDetails = [
+  //   {
+  //     profile_pic: 'https://reactnative.dev/img/tiny_logo.png',
+  //     name: 'James Parker',
+  //     role: 'Main customer',
+  //   },
+  //   {
+  //     profile_pic: 'https://reactnative.dev/img/tiny_logo.png',
+  //     name: 'James Parker',
+  //     role: 'Main customer',
+  //   },
+  //   {
+  //     profile_pic: 'https://reactnative.dev/img/tiny_logo.png',
+  //     name: 'James Parker',
+  //     role: 'Main customer',
+  //   },
+  // ];
 
   const navToDetails = (customer) => {
     navigation.push('CustomerDetails', {customer});
@@ -70,7 +70,7 @@ function Details(props) {
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={{flexGrow: 1}}>
-        {customerDetails.map((customer, index) => (
+        {customerData.map((customer, index) => (
           <RenderCustomer
             key={index}
             customer={customer}

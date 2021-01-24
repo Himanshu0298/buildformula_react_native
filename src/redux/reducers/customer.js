@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import {
   ADD_CUSTOMER,
   GET_CUSTOMER_DATA,

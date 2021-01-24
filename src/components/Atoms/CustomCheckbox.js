@@ -1,27 +1,24 @@
 import React from 'react';
 import {TouchableOpacity} from 'react-native';
 import PropTypes from 'prop-types';
-import {Caption, RadioButton, withTheme} from 'react-native-paper';
+import {Caption, Checkbox, withTheme} from 'react-native-paper';
 import {secondaryTheme, theme} from 'styles/theme';
 
-const Radio = React.forwardRef((props, ref) => {
-  const {value, checked, onChange, label, style, ...rest} = props;
+const CustomCheckbox = React.forwardRef((props, ref) => {
+  const {checked, onChange, label, style, ...rest} = props;
 
   return (
     <TouchableOpacity
-      onPress={() => onChange(value)}
+      onPress={() => onChange()}
       style={{
-        display: 'flex',
         alignItems: 'center',
         flexDirection: 'row',
-        marginRight: 5,
         ...style,
       }}>
-      <RadioButton.Android
+      <Checkbox.Android
         {...rest}
-        value={value}
         status={checked ? 'checked' : 'unchecked'}
-        onPress={() => onChange(value)}
+        onPress={() => onChange()}
       />
       <Caption style={{marginLeft: 5, flexShrink: 1}} theme={secondaryTheme}>
         {label}
@@ -30,17 +27,16 @@ const Radio = React.forwardRef((props, ref) => {
   );
 });
 
-Radio.defaultProps = {
+CustomCheckbox.defaultProps = {
   onChange: () => {},
   checked: false,
   uncheckedColor: '#bcbcbc',
   color: theme.colors.primary,
 };
 
-Radio.propTypes = {
+CustomCheckbox.propTypes = {
   onChange: PropTypes.func.isRequired,
   checked: PropTypes.bool.isRequired,
-  value: PropTypes.string.isRequired,
 };
 
-export default withTheme(Radio);
+export default withTheme(CustomCheckbox);

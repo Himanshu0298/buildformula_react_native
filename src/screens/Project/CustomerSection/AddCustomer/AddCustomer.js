@@ -20,6 +20,7 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {useSelector} from 'react-redux';
 import useCustomerActions from 'redux/actions/customerActions';
 import useImagePicker from 'components/Atoms/FileInput/useImagePicker';
+import CustomCheckbox from 'components/Atoms/CustomCheckbox';
 
 const schema = Yup.object().shape({});
 
@@ -200,6 +201,16 @@ function RenderForm({formikProps, navigation, ...restProps}) {
           onSubmitEditing={handleSubmit}
           error={errors.customer_aadhar || errors.aadhar_image}
         />
+
+        <View style={styles.checkboxContainer}>
+          <CustomCheckbox
+            label="All provided information and uploaded documents are original."
+            checked={values.accepted}
+            onChange={() => {
+              setFieldValue('accepted', !values.accepted);
+            }}
+          />
+        </View>
       </View>
       <View style={styles.actionContainer}>
         <Button
@@ -212,10 +223,11 @@ function RenderForm({formikProps, navigation, ...restProps}) {
         <Button
           style={{flex: 1, marginLeft: 10}}
           mode="contained"
+          disabled={!values.accepted}
           contentStyle={{padding: 5}}
           theme={{roundness: 15}}
           onPress={handleSubmit}>
-          <BaseText style={styles.buttonText}>{'Next'}</BaseText>
+          <BaseText style={styles.buttonText}>{'Save'}</BaseText>
         </Button>
       </View>
     </>
@@ -231,6 +243,8 @@ function AddCustomer(props) {
   const {user} = useSelector((state) => state.user);
 
   const {getCustomerDetails, addCustomer} = useCustomerActions();
+
+  console.log('----->unit.unitId ', unit.unitId);
 
   const getUpdatedCustomers = (unit_id) => {
     const formData = new FormData();
@@ -259,7 +273,7 @@ function AddCustomer(props) {
         <Formik
           validateOnBlur={false}
           validateOnChange={false}
-          initialValues={{}}
+          initialValues={{accepted: false}}
           validationSchema={schema}
           onSubmit={async (values) => {
             const formData = new FormData();
@@ -277,6 +291,7 @@ function AddCustomer(props) {
             formData.append('customer_aadhar', values.customer_aadhar);
             formData.append('aadhar_image', values.aadhar_image);
             formData.append('pan_image', values.pan_image);
+            formData.append('profile_pic', values.profile_pic);
 
             addCustomer(formData).then(() => {
               getUpdatedCustomers(values.unit_id);
@@ -337,6 +352,7 @@ const styles = StyleSheet.create({
   input: {
     paddingVertical: 7,
   },
+  checkboxContainer: {},
   actionContainer: {
     marginTop: 25,
     paddingHorizontal: 10,
