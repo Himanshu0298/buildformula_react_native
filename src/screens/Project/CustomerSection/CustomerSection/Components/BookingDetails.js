@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {StyleSheet, View, TouchableOpacity, ScrollView} from 'react-native';
+import {StyleSheet, View, ScrollView} from 'react-native';
 import {
   Caption,
   Divider,
@@ -118,7 +118,7 @@ function RatesSection({bookingDetails, bookingAreaUnitType, theme}) {
     if (other_charges.length > 0) {
       return new Array(Math.ceil(2))
         .fill()
-        .map((_) => other_charges.splice(0, 2));
+        .map((item) => other_charges.splice(0, 2));
     }
     return [];
   }, [other_charges]);
@@ -447,7 +447,7 @@ function RenderFirstBigPaymentDetails({bookingDetails, theme}) {
 }
 
 function PaymentSection(props) {
-  const {bookingDetails, bookingPaymentTypes, bookingBanks, theme} = props;
+  const {bookingDetails, bookingPaymentTypes, bookingBanks} = props;
   const {
     payment_type,
     bank,
@@ -503,7 +503,6 @@ function PaymentSection(props) {
 }
 
 function BookingDetails(props) {
-  const {theme} = props;
   const {
     bookingDetails,
     bookingAreaUnitType = {},
