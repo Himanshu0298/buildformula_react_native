@@ -294,10 +294,10 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 10,
     flex: 1,
-    paddingBottom: 20,
   },
   scrollView: {
     flexGrow: 1,
+    paddingBottom: 20,
   },
   titleContainer: {
     flexDirection: 'row',
@@ -310,7 +310,8 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   profilePicContainer: {
-    paddingVertical: 10,
+    paddingTop: 30,
+    paddingBottom: 20,
     alignItems: 'center',
     justifyContent: 'center',
   },

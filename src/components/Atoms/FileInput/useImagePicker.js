@@ -24,10 +24,9 @@ const handleCamera = ({type, onChoose}) => {
     if (res.error) {
       console.log('ImagePicker Error: ', res.error);
     } else {
-      const path = res.uri;
-
       const data = {
-        uri: Platform.OS === 'android' ? `file:///${path}` : path,
+        // uri: Platform.OS === 'android' ? `file:///${path}` : path,
+        uri: res.uri,
         type: res.type,
         name: res.fileName,
       };

@@ -41,6 +41,7 @@ function CustomerDetails(props) {
     <View style={styles.container}>
       <ScrollView
         showsVerticalScrollIndicator={false}
+        contentContainerStyle={{paddingBottom: 20}}
         stickyHeaderIndices={[0]}>
         <View>
           <TouchableOpacity
@@ -126,7 +127,6 @@ function CustomerDetails(props) {
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 20,
-    paddingBottom: 20,
   },
   titleContainer: {
     flexDirection: 'row',
