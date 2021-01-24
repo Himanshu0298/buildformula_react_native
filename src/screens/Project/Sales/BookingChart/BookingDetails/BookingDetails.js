@@ -1,12 +1,12 @@
 import BaseText from 'components/Atoms/BaseText';
 import Radio from 'components/Atoms/Radio';
 import RenderInput from 'components/Atoms/RenderInput';
+import RenderTextBox from 'components/Atoms/RenderTextbox';
 import {Formik} from 'formik';
 import React from 'react';
 import {useTranslation} from 'react-i18next';
 import {
   Keyboard,
-  Platform,
   StyleSheet,
   TouchableWithoutFeedback,
   View,
@@ -92,7 +92,6 @@ function FormContent(props) {
             value={values.customer_first_name}
             onChangeText={handleChange('customer_first_name')}
             onBlur={handleBlur('customer_first_name')}
-            placeholder={t('label_first_name')}
             onSubmitEditing={() => lastNameRef?.current?.focus()}
             error={errors.customer_first_name}
           />
@@ -104,7 +103,6 @@ function FormContent(props) {
             value={values.customer_last_name}
             onChangeText={handleChange('customer_last_name')}
             onBlur={handleBlur('customer_last_name')}
-            placeholder={t('label_last_name')}
             onSubmitEditing={() => emailRef?.current?.focus()}
             error={errors.customer_last_name}
           />
@@ -116,7 +114,6 @@ function FormContent(props) {
             value={values.customer_email}
             onChangeText={handleChange('customer_email')}
             onBlur={handleBlur('customer_email')}
-            placeholder={t('label_email')}
             onSubmitEditing={() => phoneRef?.current?.focus()}
             error={errors.customer_email}
           />
@@ -130,7 +127,6 @@ function FormContent(props) {
             value={values.customer_phone}
             onChangeText={handleChange('customer_phone')}
             onBlur={handleBlur('customer_phone')}
-            placeholder={t('label_phone')}
             error={errors.customer_phone}
             left={
               <TextInput.Affix
@@ -174,7 +170,6 @@ function FormContent(props) {
                 value={values.broker_first_name}
                 onChangeText={handleChange('broker_first_name')}
                 onBlur={handleBlur('broker_first_name')}
-                placeholder={t('label_first_name')}
                 error={errors.broker_first_name}
                 onSubmitEditing={() =>
                   brokerLastNameRef && brokerLastNameRef.current.focus()
@@ -188,7 +183,6 @@ function FormContent(props) {
                 value={values.broker_last_name}
                 onChangeText={handleChange('broker_last_name')}
                 onBlur={handleBlur('broker_last_name')}
-                placeholder={t('label_last_name')}
                 onSubmitEditing={() =>
                   brokerEmailRef && brokerEmailRef.current.focus()
                 }
@@ -202,7 +196,6 @@ function FormContent(props) {
                 value={values.broker_email}
                 onChangeText={handleChange('broker_email')}
                 onBlur={handleBlur('broker_email')}
-                placeholder={t('label_email')}
                 onSubmitEditing={() =>
                   brokerPhoneRef && brokerPhoneRef.current.focus()
                 }
@@ -218,7 +211,6 @@ function FormContent(props) {
                 value={values.broker_phone}
                 onChangeText={handleChange('broker_phone')}
                 onBlur={handleBlur('broker_phone')}
-                placeholder={t('label_phone')}
                 error={errors.broker_phone}
                 left={
                   <TextInput.Affix
@@ -231,19 +223,17 @@ function FormContent(props) {
                   />
                 }
               />
-              <RenderInput
+              <RenderTextBox
                 name="remark"
-                multiline
                 blurOnSubmit={false}
-                numberOfLines={Platform.OS === 'ios' ? null : 5}
-                minHeight={Platform.OS === 'ios' && 4 ? 20 * 6 : null}
+                numberOfLines={5}
+                minHeight={120}
                 label={t('label_remark')}
                 containerStyles={styles.input}
                 value={values.remark}
                 onChangeText={handleChange('remark')}
                 onBlur={handleBlur('remark')}
                 onSubmitEditing={handleSubmit}
-                placeholder={t('label_remark')}
                 error={errors.remark}
               />
             </>

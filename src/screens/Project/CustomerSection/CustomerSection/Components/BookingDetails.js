@@ -537,13 +537,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 20,
-    paddingVertical: 5,
   },
   scrollView: {
     flexGrow: 1,
   },
   sectionContainer: {
-    marginVertical: 15,
+    marginVertical: 10,
   },
   sectionBody: {
     marginTop: 10,

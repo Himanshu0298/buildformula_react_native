@@ -3,6 +3,8 @@ import {
   GET_CUSTOMER_DATA,
   GET_BOOKING_DATA,
   SET_INITIAL_STATE,
+  GET_BANK_DETAILS,
+  UPDATE_BANK_DETAILS,
 } from './../actions/actionTypes';
 
 const initialState = {
@@ -13,6 +15,7 @@ const initialState = {
   bookingAreaUnitType: {},
   bookingBanks: {},
   bookingPaymentTypes: {},
+  bankDetails: {},
 };
 
 export default (state = initialState, action = {}) => {
@@ -60,6 +63,47 @@ export default (state = initialState, action = {}) => {
       };
     }
     case `${GET_BOOKING_DATA}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+        errorMessage: action.payload,
+      };
+
+    case `${GET_BANK_DETAILS}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${GET_BANK_DETAILS}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+        bankDetails: payload,
+      };
+    }
+    case `${GET_BANK_DETAILS}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+        errorMessage: action.payload,
+      };
+
+    case `${UPDATE_BANK_DETAILS}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${UPDATE_BANK_DETAILS}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+        bankDetails: {
+          ...state.bankDetails,
+          details: payload,
+        },
+      };
+    }
+    case `${UPDATE_BANK_DETAILS}_REJECTED`:
       return {
         ...state,
         loading: false,

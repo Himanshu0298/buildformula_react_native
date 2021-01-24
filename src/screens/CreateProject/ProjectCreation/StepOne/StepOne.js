@@ -83,7 +83,6 @@ function StepOne(props) {
                   value={values.company_name}
                   onChangeText={handleChange('company_name')}
                   onBlur={handleBlur('company_name')}
-                  placeholder={t('CompanyName')}
                   onSubmitEditing={() => panRef && panRef.current.focus()}
                   error={errors.company_name}
                 />
@@ -97,7 +96,6 @@ function StepOne(props) {
                   onChangeText={handleChange('company_pan')}
                   onChoose={(v) => setFieldValue('pan_image', v)}
                   onBlur={handleBlur('company_pan')}
-                  placeholder={t('label_pan')}
                   onSubmitEditing={() => tanRef && tanRef.current.focus()}
                   error={errors.company_pan || errors.pan_image}
                 />
@@ -111,7 +109,6 @@ function StepOne(props) {
                   onChangeText={handleChange('company_tan')}
                   onChoose={(v) => setFieldValue('tan_image', v)}
                   onBlur={handleBlur('company_tan')}
-                  placeholder={t('label_tan')}
                   onSubmitEditing={() => gstRef && gstRef.current.focus()}
                   error={errors.company_tan || errors.tan_image}
                 />
@@ -125,7 +122,6 @@ function StepOne(props) {
                   onChangeText={handleChange('company_gst')}
                   onChoose={(v) => setFieldValue('gst_image', v)}
                   onBlur={handleBlur('company_gst')}
-                  placeholder={t('label_gst')}
                   returnKeyType={'done'}
                   onSubmitEditing={handleSubmit}
                   error={errors.company_gst || errors.gst_image}

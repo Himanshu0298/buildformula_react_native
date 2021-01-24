@@ -294,7 +294,6 @@ function FollowUpTab({
                 label={t('label_follow_up_date')}
                 containerStyles={styles.input}
                 value={values.follow_up_date}
-                placeholder={t('label_follow_up_date')}
                 error={errors.follow_up_date}
                 min={new Date()}
                 onChange={(date) => {
@@ -309,7 +308,6 @@ function FollowUpTab({
                 label={t('label_follow_up_time')}
                 containerStyles={styles.input}
                 value={values.follow_up_time}
-                placeholder={t('label_follow_up_time')}
                 error={errors.follow_up_time}
                 onChange={(date) => {
                   setFieldValue('follow_up_time', date);
@@ -323,7 +321,6 @@ function FollowUpTab({
                 options={assignOptions}
                 containerStyles={styles.input}
                 value={values.assign_to}
-                placeholder={t('label_assign_to')}
                 error={errors.assign_to}
                 onSelect={(value) => {
                   setFieldValue('assign_to', value);
@@ -340,7 +337,6 @@ function FollowUpTab({
                 onBlur={handleBlur('remarks')}
                 onSubmitEditing={handleSubmit}
                 returnKeyType="done"
-                placeholder={t('label_remark')}
                 error={errors.remark}
               />
             </View>

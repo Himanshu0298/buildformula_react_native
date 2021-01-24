@@ -102,7 +102,6 @@ function RenderContent(props) {
           value={values.firstName}
           onChangeText={handleChange('firstName')}
           onBlur={handleBlur('firstName')}
-          placeholder={t('label_first_name')}
           autoCapitalize="none"
           returnKeyType={'next'}
           onSubmitEditing={() => {
@@ -119,7 +118,6 @@ function RenderContent(props) {
           value={values.lastName}
           onChangeText={handleChange('lastName')}
           onBlur={handleBlur('lastName')}
-          placeholder={t('label_last_name')}
           autoCapitalize="none"
           returnKeyType={'next'}
           onSubmitEditing={() => phoneRef && phoneRef.current.focus()}
@@ -135,7 +133,6 @@ function RenderContent(props) {
           keyboardType="number-pad"
           onChangeText={handleChange('phone')}
           onBlur={handleBlur('phone')}
-          placeholder={t('label_phone')}
           autoCapitalize="none"
           returnKeyType={'next'}
           onSubmitEditing={() => emailRef && emailRef.current.focus()}

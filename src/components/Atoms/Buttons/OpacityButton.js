@@ -34,9 +34,11 @@ OpacityButton.defaultProps = {
 
 const styles = StyleSheet.create({
   button: {
-    marginLeft: 15,
     padding: 5,
-    borderRadius: 20,
+    borderRadius: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 

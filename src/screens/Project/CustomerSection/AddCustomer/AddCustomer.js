@@ -90,7 +90,6 @@ function RenderForm({formikProps, navigation, ...restProps}) {
           value={values.customer_full_name}
           onChangeText={handleChange('customer_full_name')}
           onBlur={handleBlur('customer_full_name')}
-          placeholder={t('label_full_name')}
           onSubmitEditing={() => phoneRef?.current?.focus()}
           error={errors.customer_full_name}
         />
@@ -105,7 +104,6 @@ function RenderForm({formikProps, navigation, ...restProps}) {
           onChangeText={handleChange('customer_phone')}
           onSubmitEditing={() => emailRef?.current?.focus()}
           onBlur={handleBlur('customer_phone')}
-          placeholder={t('label_phone')}
           error={errors.customer_phone}
           left={<TextInput.Affix text="+91" theme={secondaryTheme} />}
         />
@@ -117,7 +115,6 @@ function RenderForm({formikProps, navigation, ...restProps}) {
           value={values.customer_email}
           onChangeText={handleChange('customer_email')}
           onBlur={handleBlur('customer_email')}
-          placeholder={t('label_email')}
           onSubmitEditing={() => addressRef?.current?.focus()}
           error={errors.customer_email}
         />
@@ -129,7 +126,6 @@ function RenderForm({formikProps, navigation, ...restProps}) {
           value={values.customer_address}
           onChangeText={handleChange('customer_address')}
           onBlur={handleBlur('customer_address')}
-          placeholder={t('label_address')}
           onSubmitEditing={() => alternatePhoneRef?.current?.focus()}
           error={errors.customer_address}
         />
@@ -144,7 +140,6 @@ function RenderForm({formikProps, navigation, ...restProps}) {
           onChangeText={handleChange('customer_alternate_contact')}
           onSubmitEditing={() => ageRef?.current?.focus()}
           onBlur={handleBlur('customer_alternate_contact')}
-          placeholder={t('label_alternate_contact')}
           error={errors.customer_alternate_contact}
           left={<TextInput.Affix text="+91" theme={secondaryTheme} />}
         />
@@ -157,7 +152,6 @@ function RenderForm({formikProps, navigation, ...restProps}) {
           value={values.customer_age}
           onChangeText={handleChange('customer_age')}
           onBlur={handleBlur('customer_age')}
-          placeholder={t('label_age')}
           onSubmitEditing={() => occupationRef?.current?.focus()}
           error={errors.customer_age}
         />
@@ -169,7 +163,6 @@ function RenderForm({formikProps, navigation, ...restProps}) {
           value={values.customer_occupation}
           onChangeText={handleChange('customer_occupation')}
           onBlur={handleBlur('customer_occupation')}
-          placeholder={t('label_occupation')}
           onSubmitEditing={() => panRef?.current?.focus()}
           error={errors.customer_occupation}
         />
@@ -183,7 +176,6 @@ function RenderForm({formikProps, navigation, ...restProps}) {
           onChangeText={handleChange('company_pan')}
           onChoose={(v) => setFieldValue('pan_image', v)}
           onBlur={handleBlur('company_pan')}
-          placeholder={t('label_pan')}
           onSubmitEditing={() => aadharRef?.current?.focus()}
           error={errors.company_pan || errors.pan_image}
         />
@@ -197,7 +189,6 @@ function RenderForm({formikProps, navigation, ...restProps}) {
           onChangeText={handleChange('customer_aadhar')}
           onBlur={handleBlur('customer_aadhar')}
           onChoose={(v) => setFieldValue('aadhar_image', v)}
-          placeholder={t('label_aadhaar')}
           onSubmitEditing={handleSubmit}
           error={errors.customer_aadhar || errors.aadhar_image}
         />

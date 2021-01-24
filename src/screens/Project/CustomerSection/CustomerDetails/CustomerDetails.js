@@ -163,9 +163,6 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   editButton: {
-    borderRadius: 5,
-    flexDirection: 'row',
-    alignItems: 'center',
     padding: 10,
   },
 });

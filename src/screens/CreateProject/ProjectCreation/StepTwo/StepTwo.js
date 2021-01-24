@@ -77,7 +77,7 @@ function StepTwo(props) {
           onSubmit={async (values) => {
             Keyboard.dismiss();
 
-            let formData = new FormData();
+            const formData = new FormData();
             formData.append('project_rera', values.project_rera);
             formData.append('project_website', values.project_website);
             formData.append('project_name', values.project_name);
@@ -118,10 +118,7 @@ function StepTwo(props) {
                   value={values.project_name}
                   onChangeText={handleChange('project_name')}
                   onBlur={handleBlur('project_name')}
-                  placeholder={t('projectName')}
-                  onSubmitEditing={() =>
-                    addressRef && addressRef.current.focus()
-                  }
+                  onSubmitEditing={() => addressRef?.current.focus()}
                   error={errors.project_name}
                 />
                 <RenderInput
@@ -134,7 +131,6 @@ function StepTwo(props) {
                   value={values.project_address}
                   onChangeText={handleChange('project_address')}
                   onBlur={handleBlur('project_address')}
-                  placeholder={t('projectAddress')}
                   returnKeyType="none"
                   error={errors.project_address}
                 />
@@ -148,10 +144,7 @@ function StepTwo(props) {
                   onChangeText={handleChange('project_rera')}
                   onChoose={(v) => setFieldValue('rera_image', v)}
                   onBlur={handleBlur('project_rera')}
-                  placeholder={t('projectRera')}
-                  onSubmitEditing={() =>
-                    websiteRef && websiteRef.current.focus()
-                  }
+                  onSubmitEditing={() => websiteRef?.current.focus()}
                   error={errors.project_rera || errors.rera_image}
                 />
                 <RenderInput
@@ -162,8 +155,7 @@ function StepTwo(props) {
                   value={values.project_website}
                   onChangeText={handleChange('project_website')}
                   onBlur={handleBlur('project_website')}
-                  placeholder={t('projectWebsite')}
-                  onSubmitEditing={() => emailRef && emailRef.current.focus()}
+                  onSubmitEditing={() => emailRef?.current.focus()}
                   error={errors.project_website}
                 />
                 <RenderInput
@@ -174,8 +166,7 @@ function StepTwo(props) {
                   value={values.project_email}
                   onChangeText={handleChange('project_email')}
                   onBlur={handleBlur('project_email')}
-                  placeholder={t('projectEmail')}
-                  onSubmitEditing={() => phoneRef && phoneRef.current.focus()}
+                  onSubmitEditing={() => phoneRef?.current.focus()}
                   error={errors.project_email}
                 />
                 <RenderInput
@@ -188,7 +179,6 @@ function StepTwo(props) {
                   onChangeText={handleChange('project_phone')}
                   onBlur={handleBlur('project_phone')}
                   returnKeyType="done"
-                  placeholder={t('label_project_phone')}
                   onSubmitEditing={handleSubmit}
                   error={errors.project_phone}
                   left={

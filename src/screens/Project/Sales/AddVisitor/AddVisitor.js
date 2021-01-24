@@ -21,6 +21,7 @@ import {TabView} from 'react-native-tab-view';
 import Layout from 'utils/Layout';
 import MaterialTabBar from 'components/Atoms/MaterialTabBar';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import RenderTextBox from 'components/Atoms/RenderTextbox';
 
 const schema = Yup.object().shape({
   first_name: Yup.string('Invalid').required('Required'),
@@ -67,7 +68,6 @@ function PersonalTab({
             value={values.first_name}
             onChangeText={handleChange('first_name')}
             onBlur={handleBlur('first_name')}
-            placeholder={t('label_first_name')}
             onSubmitEditing={() => lastNameRef && lastNameRef.current.focus()}
             error={errors.first_name}
           />
@@ -79,7 +79,6 @@ function PersonalTab({
             value={values.last_name}
             onChangeText={handleChange('last_name')}
             onBlur={handleBlur('last_name')}
-            placeholder={t('label_last_name')}
             onSubmitEditing={() => emailRef && emailRef.current.focus()}
             error={errors.last_name}
           />
@@ -91,7 +90,6 @@ function PersonalTab({
             value={values.email}
             onChangeText={handleChange('email')}
             onBlur={handleBlur('email')}
-            placeholder={t('label_email')}
             onSubmitEditing={() => phoneRef && phoneRef.current.focus()}
             error={errors.email}
           />
@@ -108,7 +106,6 @@ function PersonalTab({
               occupationRef && occupationRef.current.focus();
             }}
             onBlur={handleBlur('phone')}
-            placeholder={t('label_phone')}
             error={errors.phone}
             left={
               <TextInput.Affix
@@ -148,7 +145,6 @@ function PersonalTab({
             value={values.current_locality}
             onChangeText={handleChange('current_locality')}
             onBlur={handleBlur('current_locality')}
-            placeholder={t('label_current_locality')}
             onSubmitEditing={() => setSelectedTab(1)}
             error={errors.email}
           />
@@ -215,8 +211,7 @@ function InquiryTab({
             value={values.budget_from}
             onChangeText={handleChange('budget_from')}
             onBlur={handleBlur('budget_from')}
-            placeholder={t('label_budget_from')}
-            onSubmitEditing={() => budgetToRef && budgetToRef.current.focus()}
+            onSubmitEditing={() => budgetToRef?.current.focus()}
             error={errors.budget_from}
           />
           <RenderInput
@@ -227,11 +222,8 @@ function InquiryTab({
             containerStyles={styles.input}
             value={values.budget_to}
             onChangeText={handleChange('budget_to')}
-            onSubmitEditing={() =>
-              followUpDateRef && followUpDateRef.current.focus()
-            }
+            onSubmitEditing={() => followUpDateRef?.current.focus()}
             onBlur={handleBlur('budget_to')}
-            placeholder={t('label_budget_to')}
             error={errors.budget_to}
           />
           <RenderDatePicker
@@ -240,11 +232,10 @@ function InquiryTab({
             label={t('label_follow_up_date')}
             containerStyles={styles.input}
             value={values.follow_up_date}
-            placeholder={t('label_follow_up_date')}
             error={errors.follow_up_date}
             onChange={(date) => {
               setFieldValue('follow_up_date', date);
-              followUpTimeRef && followUpTimeRef.current.focus();
+              followUpTimeRef?.current.focus();
             }}
           />
           <RenderDatePicker
@@ -254,11 +245,10 @@ function InquiryTab({
             label={t('label_follow_up_time')}
             containerStyles={styles.input}
             value={values.follow_up_time}
-            placeholder={t('label_follow_up_time')}
             error={errors.follow_up_time}
             onChange={(date) => {
               setFieldValue('follow_up_time', date);
-              assignToRef && assignToRef.current.focus();
+              assignToRef?.current.focus();
             }}
           />
           <RenderSelect
@@ -268,7 +258,6 @@ function InquiryTab({
             options={assignOptions}
             containerStyles={styles.input}
             value={values.assign_to}
-            placeholder={t('label_assign_to')}
             error={errors.assign_to}
             onSelect={(value) => {
               setFieldValue('assign_to', value);
@@ -306,7 +295,6 @@ function InquiryTab({
             options={inquiryOptions}
             containerStyles={styles.input}
             value={values.inquiry_for}
-            placeholder={t('label_inquiry_for')}
             error={errors.inquiry_for}
             onSelect={(value) => {
               setFieldValue('inquiry_for', value);
@@ -322,18 +310,16 @@ function InquiryTab({
               )}
               containerStyles={styles.input}
               value={values.for_bhk}
-              placeholder={t('label_for_bhk')}
               error={errors.for_bhk}
               onSelect={(value) => {
                 setFieldValue('for_bhk', value);
               }}
             />
           ) : null}
-          <RenderInput
+          <RenderTextBox
             name="remark"
-            multiline
-            numberOfLines={Platform.OS === 'ios' ? null : 5}
-            minHeight={Platform.OS === 'ios' && 4 ? 20 * 6 : null}
+            numberOfLines={5}
+            minHeight={120}
             label={t('label_remark')}
             containerStyles={styles.input}
             value={values.remark}
@@ -341,7 +327,6 @@ function InquiryTab({
             onBlur={handleBlur('remark')}
             onSubmitEditing={handleSubmit}
             returnKeyType="done"
-            placeholder={t('label_remark')}
             error={errors.remark}
           />
         </View>
@@ -376,7 +361,7 @@ function RenderForm({formikProps, user, ...restProps}) {
     {key: 1, title: 'Inquiry details'},
   ]);
 
-  let {
+  const {
     bhkOptions,
     occupationOptions,
     inquiryOptions,
@@ -384,8 +369,8 @@ function RenderForm({formikProps, user, ...restProps}) {
   } = useSelector((state) => state.sales);
 
   const updatedAssignOptions = useMemo(() => {
-    let data = [...assignOptions];
-    let index = data.findIndex((item) => item.value === user.id);
+    const data = [...assignOptions];
+    const index = data.findIndex((item) => item.value === user.id);
     if (index === -1) {
       data.unshift({
         value: user.id,
@@ -460,7 +445,7 @@ function AddVisitor(props) {
 
   const {selectedProject} = useSelector((state) => state.project);
   const {user} = useSelector((state) => state.user);
-  let {loading} = useSelector((state) => state.sales);
+  const {loading} = useSelector((state) => state.sales);
 
   const {
     addVisitor,

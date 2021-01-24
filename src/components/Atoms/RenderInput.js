@@ -5,7 +5,15 @@ import {TextInput} from 'react-native-paper';
 import {theme} from 'styles/theme';
 
 const RenderInput = React.forwardRef((props, ref) => {
-  let {error, containerStyles, style, value, ...rest} = props;
+  let {
+    error,
+    containerStyles,
+    style,
+    value,
+    placeholder,
+    label,
+    ...rest
+  } = props;
   value = value || !isNaN(value) ? value.toString() : value;
 
   return (
@@ -16,7 +24,9 @@ const RenderInput = React.forwardRef((props, ref) => {
           dense
           error={error}
           mode="outlined"
+          label={label}
           value={value}
+          placeholder={placeholder || label}
           style={[styles.input, style]}
           blurOnSubmit
           theme={{

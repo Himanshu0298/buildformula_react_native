@@ -100,21 +100,14 @@ function RatesColumn(props) {
         value={values[`${rateType}_area`]}
         onChangeText={(value) => handleAreaChange(`${rateType}_area`, value)}
         onBlur={handleBlur(`${rateType}_area`)}
-        placeholder={t('label_area')}
         error={errors[`${rateType}_area`]}
       />
       <RenderSelect
         name={`${rateType}_unit`}
         label={t('label_unit')}
-        options={[
-          {
-            label: 'SQM',
-            value: 1,
-          },
-        ]}
+        options={[{label: 'SQM', value: 1}]}
         containerStyles={styles.rateInput}
         value={values[`${rateType}_unit`]}
-        placeholder={t('label_unit')}
         error={errors[`${rateType}_unit`]}
         onSelect={(value) => {
           setFieldValue(`${rateType}_unit`, value);
@@ -129,7 +122,6 @@ function RatesColumn(props) {
         value={values[`${rateType}_rate`]}
         onChangeText={(value) => handleRateChange(`${rateType}_rate`, value)}
         onBlur={handleBlur(`${rateType}_rate`)}
-        placeholder={t('label_rate')}
         error={errors[`${rateType}_rate`]}
       />
     </View>
@@ -186,7 +178,6 @@ function RenderRates(props) {
           value={values.area_amount}
           onChangeText={(value) => handleAmountChange('area_amount', value)}
           onBlur={handleBlur('area_amount')}
-          placeholder={t('label_amount')}
           error={errors.area_amount}
           left={<TextInput.Affix theme={secondaryTheme} text="₹" />}
         />
@@ -265,7 +256,6 @@ function RenderCharges({formikProps, t}) {
                   value={charge.label}
                   contentContainerStyle={{flex: 1}}
                   onChangeText={(value) => setValue('label', value)}
-                  placeholder={t('label_charge')}
                   error={chargeError.label}
                 />
               </View>
@@ -276,7 +266,6 @@ function RenderCharges({formikProps, t}) {
                   keyboardType="number-pad"
                   value={charge.amount}
                   onChangeText={(value) => setValue('amount', value)}
-                  placeholder={t('label_amount')}
                   error={chargeError.amount}
                   left={<TextInput.Affix theme={secondaryTheme} text="₹" />}
                 />
@@ -304,6 +293,7 @@ function RenderCharges({formikProps, t}) {
             <OpacityButton
               color={'#FF5D5D'}
               opacity={0.1}
+              style={{marginLeft: 15, borderRadius: 20}}
               onPress={() => removeCharge(i)}>
               <MaterialIcons name={'close'} color={'#FF5D5D'} size={19} />
             </OpacityButton>

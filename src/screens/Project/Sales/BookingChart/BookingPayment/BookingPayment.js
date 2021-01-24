@@ -5,7 +5,6 @@ import {Formik} from 'formik';
 import {useTranslation} from 'react-i18next';
 import {
   Keyboard,
-  Platform,
   StyleSheet,
   TouchableOpacity,
   TouchableWithoutFeedback,
@@ -33,6 +32,7 @@ import dayjs from 'dayjs';
 import useSalesActions from 'redux/actions/salesActions';
 import Radio from 'components/Atoms/Radio';
 import {useSelector} from 'react-redux';
+import RenderTextBox from 'components/Atoms/RenderTextbox';
 
 const PAYMENT_METHODS = [
   {
@@ -221,7 +221,6 @@ function RenderOneBigInstallmentPaymentForm(props) {
                 keyboardType="number-pad"
                 value={values.first_big_amount_percent}
                 onChangeText={(value) => handlePercentChange(value)}
-                placeholder={'%'}
                 error={errors.first_big_amount_percent}
                 left={
                   <TextInput.Icon
@@ -257,7 +256,6 @@ function RenderOneBigInstallmentPaymentForm(props) {
                 label={t('label_amount')}
                 keyboardType="number-pad"
                 value={values.first_big_amount}
-                placeholder={t('label_amount')}
                 left={<TextInput.Affix theme={secondaryTheme} text="₹" />}
                 error={errors.first_big_amount}
                 onChangeText={(value) => handleAmountChange(value)}
@@ -270,7 +268,6 @@ function RenderOneBigInstallmentPaymentForm(props) {
                 name="first_big_amount_start_date"
                 label={t('label_start_date')}
                 value={values.first_big_amount_start_date}
-                placeholder={t('label_start_date')}
                 error={errors.first_big_amount_start_date}
                 onChange={(value) => {
                   setFieldValue(
@@ -285,7 +282,6 @@ function RenderOneBigInstallmentPaymentForm(props) {
                 name="first_big_amount_end_date"
                 label={t('label_end_date')}
                 value={values.first_big_amount_end_date}
-                placeholder={t('label_end_date')}
                 error={errors.first_big_amount_end_date}
                 onChange={(value) => {
                   setFieldValue(
@@ -307,7 +303,6 @@ function RenderOneBigInstallmentPaymentForm(props) {
         label={t('label_no_of_installments')}
         keyboardType="number-pad"
         value={values.installments_count}
-        placeholder={t('label_no_of_installments')}
         error={errors.installment_count}
         onChangeText={handleChange('installment_count')}
       />
@@ -317,7 +312,6 @@ function RenderOneBigInstallmentPaymentForm(props) {
             name="installment_start_date"
             label={t('label_start_date')}
             value={values.installment_start_date}
-            placeholder={t('label_start_date')}
             error={errors.installment_start_date}
             onChange={(value) => {
               setFieldValue(
@@ -333,7 +327,6 @@ function RenderOneBigInstallmentPaymentForm(props) {
             label={t('label_interval_days')}
             keyboardType="number-pad"
             value={values.installment_interval_days}
-            placeholder={t('label_interval_days')}
             error={errors.installment_interval_days}
             onChangeText={handleChange('installment_interval_days')}
           />
@@ -363,7 +356,7 @@ function RenderCustomPaymentForm(props) {
   };
 
   const handlePercentChange = (index, percent) => {
-    let custom_payments = _.cloneDeep(values.custom_payments);
+    const custom_payments = _.cloneDeep(values.custom_payments);
     custom_payments.splice(index, 1);
     percent = parseFloat(percent);
 
@@ -381,7 +374,7 @@ function RenderCustomPaymentForm(props) {
   };
 
   const handleAmountChange = (index, amount) => {
-    let custom_payments = _.cloneDeep(values.custom_payments);
+    const custom_payments = _.cloneDeep(values.custom_payments);
     custom_payments.splice(index, 1);
 
     const addedAmount = custom_payments.reduce(
@@ -439,7 +432,6 @@ function RenderCustomPaymentForm(props) {
                       onChangeText={(value) =>
                         handlePercentChange(index, value)
                       }
-                      placeholder={'%'}
                       left={
                         <TextInput.Icon
                           name="minus"
@@ -471,7 +463,6 @@ function RenderCustomPaymentForm(props) {
                       label={t('label_amount')}
                       keyboardType="number-pad"
                       value={amount}
-                      placeholder={t('label_amount')}
                       left={<TextInput.Affix theme={secondaryTheme} text="₹" />}
                       onChangeText={(value) => handleAmountChange(index, value)}
                     />
@@ -482,7 +473,6 @@ function RenderCustomPaymentForm(props) {
                     name="date"
                     label={t('label_date')}
                     value={date}
-                    placeholder={t('label_date')}
                     onChange={(value) => {
                       setValue(
                         index,
@@ -498,7 +488,6 @@ function RenderCustomPaymentForm(props) {
                     multiline
                     label={t('label_remark')}
                     value={remark}
-                    placeholder={t('label_remark')}
                     onChangeText={(value) => {
                       setValue(index, 'remark', value);
                     }}
@@ -509,6 +498,7 @@ function RenderCustomPaymentForm(props) {
                 <OpacityButton
                   color={'#FF5D5D'}
                   opacity={0.1}
+                  style={{marginLeft: 15, borderRadius: 20}}
                   onPress={() => removePayment(index)}>
                   <MaterialIcons name={'close'} color={'#FF5D5D'} size={19} />
                 </OpacityButton>
@@ -537,7 +527,6 @@ function RenderPaymentForm(props) {
         value={values.area_amount}
         disabled={true}
         onChangeText={handleChange('basic_amount')}
-        placeholder={t('label_basic_amount')}
         error={errors.basic_amount}
         left={<TextInput.Affix theme={secondaryTheme} text="₹" />}
       />
@@ -548,7 +537,6 @@ function RenderPaymentForm(props) {
               name="start_date"
               label={t('label_start_date')}
               value={values.start_date}
-              placeholder={t('label_start_date')}
               error={errors.start_date}
               onChange={(date) => {
                 setFieldValue('start_date', dayjs(date).format('YYYY-MM-DD'));
@@ -560,7 +548,6 @@ function RenderPaymentForm(props) {
               name="end_date"
               label={t('label_end_date')}
               value={values.end_date}
-              placeholder={t('label_end_date')}
               error={errors.end_date}
               onChange={(date) => {
                 setFieldValue('end_date', dayjs(date).format('YYYY-MM-DD'));
@@ -595,7 +582,6 @@ function RenderPaymentForm(props) {
             label={t('label_total_other_charges')}
             value={values.other_charges_amount}
             disabled={true}
-            placeholder={t('label_total_other_charges')}
             left={<TextInput.Affix theme={secondaryTheme} text="₹" />}
           />
         </View>
@@ -604,7 +590,6 @@ function RenderPaymentForm(props) {
             name="other_charges_date"
             label={t('label_date')}
             value={values.other_charges_date}
-            placeholder={t('label_date')}
             error={errors.other_charges_date}
             onChange={(date) => {
               setFieldValue(
@@ -623,18 +608,16 @@ function RenderPaymentForm(props) {
         }}>
         Remark
       </Caption>
-      <RenderInput
+      <RenderTextBox
         name="payment_remark"
-        multiline
-        numberOfLines={Platform.OS === 'ios' ? null : 5}
-        minHeight={Platform.OS === 'ios' && 4 ? 20 * 6 : null}
+        numberOfLines={5}
+        minHeight={120}
         label={t('label_remark')}
         containerStyles={styles.input}
         value={values.payment_remark}
         onChangeText={handleChange('payment_remark')}
         onBlur={handleBlur('payment_remark')}
         returnKeyType="done"
-        placeholder={t('label_remark')}
         error={errors.payment_remark}
       />
     </View>
@@ -697,7 +680,6 @@ function FormContent(props) {
                     label={t('label_choose_bank')}
                     options={bankList}
                     value={values.loan_bank}
-                    placeholder={t('label_choose_bank')}
                     error={errors.loan_bank}
                     onSelect={(value) => {
                       formikProps.setFieldValue('loan_bank', value);
@@ -710,7 +692,6 @@ function FormContent(props) {
                     label={t('label_amount')}
                     keyboardType="number-pad"
                     value={values.loan_amount}
-                    placeholder={t('label_amount')}
                     left={<TextInput.Affix theme={secondaryTheme} text="₹" />}
                     onChangeText={handleChange('loan_amount')}
                   />
@@ -722,7 +703,6 @@ function FormContent(props) {
                   multiline
                   label={t('label_remark')}
                   value={values.loan_remark}
-                  placeholder={t('label_remark')}
                   onChangeText={handleChange('loan_remark')}
                 />
               </View>
@@ -736,7 +716,6 @@ function FormContent(props) {
             options={PAYMENT_METHODS}
             containerStyles={styles.rateInput}
             value={values.payment_type}
-            placeholder={t('label_payment_method')}
             error={errors.payment_type}
             onSelect={(value) => {
               formikProps.setFieldValue('payment_type', value);

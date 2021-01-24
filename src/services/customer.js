@@ -13,8 +13,22 @@ export default function useCustomerServices() {
         config({multipart: false}),
       );
     },
+    getBankDetails: (data) => {
+      return instance.post(
+        '/customers/bank_details',
+        data,
+        config({multipart: false}),
+      );
+    },
     addCustomer: (data) => {
       return instance.post('/customers/update', data, config());
+    },
+    updateBankDetails: (data) => {
+      return instance.post(
+        '/customers/update_bank_details',
+        data,
+        config({multipart: false}),
+      );
     },
   };
 }

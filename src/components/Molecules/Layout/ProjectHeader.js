@@ -26,7 +26,9 @@ function ProjectHeader({theme, showTimer}) {
             <MaterialCommunityIcons name={'bell'} color={'#000'} size={20} />
             <Badge size={10} style={styles.badge} />
           </TouchableOpacity>
-          <OpacityButton color={theme.colors.primary}>
+          <OpacityButton
+            color={theme.colors.primary}
+            style={{marginLeft: 15, borderRadius: 20}}>
             <MaterialIcons
               name={'person'}
               color={theme.colors.primary}

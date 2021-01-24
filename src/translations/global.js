@@ -102,6 +102,9 @@ export default {
       label_alternate_contact: 'Alternate contact',
       label_age: 'Age',
       label_aadhaar: 'Aadhaar',
+      label_bank_person: 'Bank person',
+      label_bank_name: 'Bank name',
+      label_branch: 'Branch',
     },
   },
   hi: {
@@ -200,6 +203,9 @@ export default {
       label_alternate_contact: 'Alternate contact',
       label_age: 'Age',
       label_aadhaar: 'Aadhaar',
+      label_bank_person: 'Bank person',
+      label_bank_name: 'Bank name',
+      label_branch: 'Branch',
     },
   },
 };

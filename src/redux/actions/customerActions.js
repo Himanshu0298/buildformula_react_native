@@ -12,6 +12,8 @@ export default function useCustomerActions() {
     getCustomerDetails,
     getBookingDetails,
     addCustomer,
+    getBankDetails,
+    updateBankDetails,
   } = useCustomerServices();
 
   return {
@@ -55,6 +57,25 @@ export default function useCustomerActions() {
           }
         },
       }),
+    getBankDetails: (params) =>
+      dispatch({
+        type: types.GET_BANK_DETAILS,
+        payload: async () => {
+          try {
+            const response = processResponse(await getBankDetails(params));
+            const {data} = response;
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const errorMessage = processError(error);
+            snackbar.showMessage({
+              message: errorMessage,
+              variant: 'error',
+            });
+            return Promise.reject(errorMessage);
+          }
+        },
+      }),
     addCustomer: (formData) =>
       dispatch({
         type: types.ADD_CUSTOMER,
@@ -62,6 +83,30 @@ export default function useCustomerActions() {
           try {
             const response = processResponse(await addCustomer(formData));
             const {data} = response;
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const errorMessage = processError(error);
+            snackbar.showMessage({
+              message: errorMessage,
+              variant: 'error',
+            });
+            return Promise.reject(errorMessage);
+          }
+        },
+      }),
+    updateBankDetails: (details) =>
+      dispatch({
+        type: types.UPDATE_BANK_DETAILS,
+        payload: async () => {
+          try {
+            const response = processResponse(await updateBankDetails(details));
+            const {data} = response;
+
+            snackbar.showMessage({
+              message: 'Bank details updated!',
+              variant: 'success',
+            });
 
             return Promise.resolve(data);
           } catch (error) {

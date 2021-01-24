@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {useTranslation} from 'react-i18next';
 import {StyleSheet, View} from 'react-native';
+import Spinner from 'react-native-loading-spinner-overlay';
 import {Divider, Subheading, Text, withTheme, Button} from 'react-native-paper';
 import {TabBar, TabView} from 'react-native-tab-view';
 import {useSelector} from 'react-redux';
@@ -9,8 +10,7 @@ import {secondaryTheme, theme} from 'styles/theme';
 import {getFloorNumber, getShadow, getTowerLabel, getUnitLabel} from 'utils';
 import {STRUCTURE_TYPE_LABELS} from 'utils/constant';
 import Layout from 'utils/Layout';
-import BookingDetails from './Components/BookingDetails';
-import Details from './Components/Details';
+import {BankLoans, BookingDetails, Details} from './Components';
 
 function renderDetailText(label, value) {
   return (
@@ -25,7 +25,12 @@ function RenderTabBar(tabBarProps) {
     <TabBar
       {...tabBarProps}
       scrollEnabled
-      style={{backgroundColor: '#fff', ...getShadow(0), width: '100%'}}
+      style={{
+        backgroundColor: '#fff',
+        ...getShadow(0),
+        width: '100%',
+        marginBottom: 15,
+      }}
       tabStyle={styles.tab}
       indicatorStyle={{backgroundColor: 'white'}}
       renderTabBarItem={({route: item, navigationState, onPress}) => {
@@ -53,11 +58,16 @@ function CustomerSection(props) {
   const {towerId, floorId, project_id, selectedStructure, unit} = params || {};
 
   const {t} = useTranslation();
-  const {getCustomerDetails, getBookingDetails} = useCustomerActions();
+  const {
+    getCustomerDetails,
+    getBookingDetails,
+    getBankDetails,
+  } = useCustomerActions();
 
   const {user} = useSelector((state) => state.user);
+  const {loading} = useSelector((state) => state.customer);
 
-  const [selectedTab, setSelectedTab] = React.useState(1);
+  const [selectedTab, setSelectedTab] = React.useState(2);
   const [routes] = React.useState([
     {key: 0, title: 'DETAILS'},
     {key: 1, title: 'BOOKING FORM'},
@@ -71,6 +81,7 @@ function CustomerSection(props) {
     console.log('-----> unit.unitId', unit.unitId);
     getCustomerDetails({user_id: user.id, project_id, unit_id: unit.unitId});
     getBookingDetails({project_id, unit_id: unit.unitId});
+    getBankDetails({project_id, unit_id: unit.unitId});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -81,7 +92,7 @@ function CustomerSection(props) {
       case 1:
         return <BookingDetails {...props} setSelectedTab={setSelectedTab} />;
       case 2:
-        return <Details {...props} setSelectedTab={setSelectedTab} />;
+        return <BankLoans {...props} setSelectedTab={setSelectedTab} />;
       case 3:
         return <Details {...props} setSelectedTab={setSelectedTab} />;
       case 4:
@@ -93,6 +104,7 @@ function CustomerSection(props) {
 
   return (
     <>
+      <Spinner visible={loading} textContent={''} />
       <View style={styles.container}>
         <Subheading theme={secondaryTheme}>
           {t('title_customer_section')}
