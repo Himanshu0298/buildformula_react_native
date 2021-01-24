@@ -8,7 +8,11 @@ export default function useCustomerActions() {
   const dispatch = useDispatch();
   const snackbar = useSnackbar();
   const {processError, processResponse} = useResProcessor();
-  const {getCustomerDetails, addCustomer} = useCustomerServices();
+  const {
+    getCustomerDetails,
+    getBookingDetails,
+    addCustomer,
+  } = useCustomerServices();
 
   return {
     getCustomerDetails: (formData) =>
@@ -16,12 +20,33 @@ export default function useCustomerActions() {
         type: types.GET_CUSTOMER_DATA,
         payload: async () => {
           try {
-            let response = processResponse(await getCustomerDetails(formData));
+            const response = processResponse(
+              await getCustomerDetails(formData),
+            );
             const {data} = response;
 
             return Promise.resolve(data);
           } catch (error) {
-            let errorMessage = processError(error);
+            const errorMessage = processError(error);
+            snackbar.showMessage({
+              message: errorMessage,
+              variant: 'error',
+            });
+            return Promise.reject(errorMessage);
+          }
+        },
+      }),
+    getBookingDetails: (params) =>
+      dispatch({
+        type: types.GET_BOOKING_DATA,
+        payload: async () => {
+          try {
+            const response = processResponse(await getBookingDetails(params));
+            const {data} = response;
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const errorMessage = processError(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',
@@ -35,12 +60,12 @@ export default function useCustomerActions() {
         type: types.ADD_CUSTOMER,
         payload: async () => {
           try {
-            let response = processResponse(await addCustomer(formData));
+            const response = processResponse(await addCustomer(formData));
             const {data} = response;
 
             return Promise.resolve(data);
           } catch (error) {
-            let errorMessage = processError(error);
+            const errorMessage = processError(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',

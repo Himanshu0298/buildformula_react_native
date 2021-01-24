@@ -1,6 +1,7 @@
 import {
   ADD_CUSTOMER,
   GET_CUSTOMER_DATA,
+  GET_BOOKING_DATA,
   SET_INITIAL_STATE,
 } from './../actions/actionTypes';
 
@@ -8,6 +9,10 @@ const initialState = {
   loading: false,
   errorMessage: undefined,
   customerData: [],
+  bookingDetails: {},
+  bookingAreaUnitType: {},
+  bookingBanks: {},
+  bookingPaymentTypes: {},
 };
 
 export default (state = initialState, action = {}) => {
@@ -33,6 +38,28 @@ export default (state = initialState, action = {}) => {
       };
     }
     case `${GET_CUSTOMER_DATA}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+        errorMessage: action.payload,
+      };
+
+    case `${GET_BOOKING_DATA}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${GET_BOOKING_DATA}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+        bookingDetails: payload.formData,
+        bookingAreaUnitType: payload.unit_type,
+        bookingBanks: payload.banks,
+        bookingPaymentTypes: payload.payment_type,
+      };
+    }
+    case `${GET_BOOKING_DATA}_REJECTED`:
       return {
         ...state,
         loading: false,

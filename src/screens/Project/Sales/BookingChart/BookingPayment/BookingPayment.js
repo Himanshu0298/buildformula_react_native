@@ -101,6 +101,81 @@ const schema = Yup.object().shape({
   }),
 });
 
+export function RenderInstallments(props) {
+  const {
+    installment_count,
+    installment_start_date,
+    installment_interval_days,
+    area_amount,
+    big_installment_amount,
+  } = props;
+
+  const installments = useMemo(() => {
+    if (
+      installment_count &&
+      installment_start_date &&
+      installment_interval_days
+    ) {
+      return new Array(Number(installment_count))
+        .fill(0)
+        .map((item, index) => ({
+          date: dayjs(installment_start_date).add(
+            installment_interval_days * index,
+            'days',
+          ),
+          amount: round(
+            (area_amount - (big_installment_amount || 0)) / installment_count,
+          ),
+        }));
+    }
+
+    return [];
+  }, [
+    installment_count,
+    installment_start_date,
+    installment_interval_days,
+    area_amount,
+    big_installment_amount,
+  ]);
+
+  return (
+    <>
+      <Caption style={{color: theme.colors.primary, marginTop: 15}}>
+        Installments
+      </Caption>
+      <View style={styles.installmentTitleRow}>
+        <Caption style={{color: theme.colors.primary}}>No.</Caption>
+        <Caption style={{color: theme.colors.primary}}>
+          Installment Date
+        </Caption>
+        <Caption style={{color: theme.colors.primary}}>
+          Installment Amount
+        </Caption>
+      </View>
+      {installments.map((installment, index) => {
+        return (
+          <View key={index} style={styles.installmentRow}>
+            <Subheading theme={secondaryTheme}>{index + 1}</Subheading>
+            <View style={{flex: 0.4}}>
+              <RenderInput
+                value={dayjs(installment.date).format('DD/MM/YYYY')}
+                disabled={true}
+              />
+            </View>
+            <View style={{flex: 0.4}}>
+              <RenderInput
+                value={installment.amount}
+                disabled={true}
+                left={<TextInput.Affix theme={secondaryTheme} text="₹" />}
+              />
+            </View>
+          </View>
+        );
+      })}
+    </>
+  );
+}
+
 function RenderOneBigInstallmentPaymentForm(props) {
   const {formikProps, t} = props;
   const {values, setFieldValue, handleChange, errors} = formikProps;
@@ -124,43 +199,6 @@ function RenderOneBigInstallmentPaymentForm(props) {
     setFieldValue('first_big_amount_percent', percent);
     setFieldValue('first_big_amount', amount);
   };
-
-  const installments = useMemo(() => {
-    const {
-      installment_count,
-      installment_start_date,
-      installment_interval_days,
-      area_amount,
-      big_installment_amount,
-    } = values;
-
-    if (
-      installment_count &&
-      installment_start_date &&
-      installment_interval_days
-    ) {
-      return new Array(Number(installment_count))
-        .fill(0)
-        .map((item, index) => ({
-          date: dayjs(installment_start_date).add(
-            installment_interval_days * index,
-            'days',
-          ),
-          amount: round(
-            (area_amount - (big_installment_amount || 0)) / installment_count,
-          ),
-        }));
-    }
-
-    return [];
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    values.installment_count,
-    values.installment_start_date,
-    values.installment_interval_days,
-    values.area_amount,
-    values.big_installment,
-  ]);
 
   return (
     <>
@@ -235,7 +273,10 @@ function RenderOneBigInstallmentPaymentForm(props) {
                 placeholder={t('label_start_date')}
                 error={errors.first_big_amount_start_date}
                 onChange={(value) => {
-                  setFieldValue('first_big_amount_start_date', value);
+                  setFieldValue(
+                    'first_big_amount_start_date',
+                    dayjs(value).format('YYYY-MM-DD'),
+                  );
                 }}
               />
             </View>
@@ -247,7 +288,10 @@ function RenderOneBigInstallmentPaymentForm(props) {
                 placeholder={t('label_end_date')}
                 error={errors.first_big_amount_end_date}
                 onChange={(value) => {
-                  setFieldValue('first_big_amount_end_date', value);
+                  setFieldValue(
+                    'first_big_amount_end_date',
+                    dayjs(value).format('YYYY-MM-DD'),
+                  );
                 }}
               />
             </View>
@@ -276,7 +320,10 @@ function RenderOneBigInstallmentPaymentForm(props) {
             placeholder={t('label_start_date')}
             error={errors.installment_start_date}
             onChange={(value) => {
-              setFieldValue('installment_start_date', value);
+              setFieldValue(
+                'installment_start_date',
+                dayjs(value).format('YYYY-MM-DD'),
+              );
             }}
           />
         </View>
@@ -292,42 +339,7 @@ function RenderOneBigInstallmentPaymentForm(props) {
           />
         </View>
       </View>
-      {installments.length > 0 ? (
-        <>
-          <Caption style={{color: theme.colors.primary, marginTop: 15}}>
-            Installments
-          </Caption>
-          <View style={styles.installmentTitleRow}>
-            <Caption style={{color: theme.colors.primary}}>No.</Caption>
-            <Caption style={{color: theme.colors.primary}}>
-              Installment Date
-            </Caption>
-            <Caption style={{color: theme.colors.primary}}>
-              Installment Amount
-            </Caption>
-          </View>
-          {installments.map((installment, index) => {
-            return (
-              <View key={index} style={styles.installmentRow}>
-                <Subheading theme={secondaryTheme}>{index + 1}</Subheading>
-                <View style={{flex: 0.4}}>
-                  <RenderInput
-                    value={dayjs(installment.date).format('DD/MM/YYYY')}
-                    disabled={true}
-                  />
-                </View>
-                <View style={{flex: 0.4}}>
-                  <RenderInput
-                    value={installment.amount}
-                    disabled={true}
-                    left={<TextInput.Affix theme={secondaryTheme} text="₹" />}
-                  />
-                </View>
-              </View>
-            );
-          })}
-        </>
-      ) : null}
+      <RenderInstallments {...values} />
     </>
   );
 }
@@ -472,7 +484,11 @@ function RenderCustomPaymentForm(props) {
                     value={date}
                     placeholder={t('label_date')}
                     onChange={(value) => {
-                      setValue(index, 'date', value);
+                      setValue(
+                        index,
+                        'date',
+                        dayjs(value).format('YYYY-MM-DD'),
+                      );
                     }}
                   />
                 </View>
@@ -535,7 +551,7 @@ function RenderPaymentForm(props) {
               placeholder={t('label_start_date')}
               error={errors.start_date}
               onChange={(date) => {
-                setFieldValue('start_date', date);
+                setFieldValue('start_date', dayjs(date).format('YYYY-MM-DD'));
               }}
             />
           </View>
@@ -547,7 +563,7 @@ function RenderPaymentForm(props) {
               placeholder={t('label_end_date')}
               error={errors.end_date}
               onChange={(date) => {
-                setFieldValue('end_date', date);
+                setFieldValue('end_date', dayjs(date).format('YYYY-MM-DD'));
               }}
             />
           </View>
@@ -591,7 +607,10 @@ function RenderPaymentForm(props) {
             placeholder={t('label_date')}
             error={errors.other_charges_date}
             onChange={(date) => {
-              setFieldValue('other_charges_date', date);
+              setFieldValue(
+                'other_charges_date',
+                dayjs(date).format('YYYY-MM-DD'),
+              );
             }}
           />
         </View>
@@ -605,18 +624,18 @@ function RenderPaymentForm(props) {
         Remark
       </Caption>
       <RenderInput
-        name="remark"
+        name="payment_remark"
         multiline
         numberOfLines={Platform.OS === 'ios' ? null : 5}
         minHeight={Platform.OS === 'ios' && 4 ? 20 * 6 : null}
         label={t('label_remark')}
         containerStyles={styles.input}
-        value={values.remark}
-        onChangeText={handleChange('remark')}
-        onBlur={handleBlur('remark')}
+        value={values.payment_remark}
+        onChangeText={handleChange('payment_remark')}
+        onBlur={handleBlur('payment_remark')}
         returnKeyType="done"
         placeholder={t('label_remark')}
-        error={errors.remark}
+        error={errors.payment_remark}
       />
     </View>
   );
@@ -807,37 +826,14 @@ function BookingPayments(props) {
       onSubmit={async (values) => {
         const data = {...values};
 
-        if (values.payment_type === 1) {
+        if (values.payment_type !== 2) {
           delete data.custom_payments;
-          data.start_date = dayjs(values.start_date).format('YYYY-MM-DD');
-          data.end_date = dayjs(values.end_date).format('YYYY-MM-DD');
-        } else if (values.payment_type === 2) {
-          values.custom_payments = values.custom_payments.map((payment) => {
-            payment.date = dayjs(payment.date).format('YYYY-MM-DD');
-            return payment;
-          });
-          data.custom_payments = values.custom_payments;
-        } else {
-          delete data.custom_payments;
-          data.first_big_amount = values.first_big_amount;
-          data.first_big_amount_start_date = values.first_big_amount_start_date;
-          data.first_big_amount_end_date = values.first_big_amount_end_date;
-          data.first_big_amount_percent = values.first_big_amount_percent;
-          data.installment_count = values.installment_count;
-          data.installment_start_date = dayjs(
-            values.installment_start_date,
-          ).format('YYYY-MM-DD');
-          data.installment_interval_days = dayjs(
-            values.installment_interval_days,
-          ).format('YYYY-MM-DD');
         }
 
         delete data.loan;
         delete data.broker;
 
         createBooking(data).then(() => navigation.popToTop());
-
-        // navigation.navigate('BC_Step_Six', {...params, ...values});
       }}>
       {(formikProps) => (
         <FormContent {...props} formikProps={formikProps} bankList={bankList} />
