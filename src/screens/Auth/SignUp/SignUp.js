@@ -280,9 +280,7 @@ function SignUp(props) {
   }, []);
 
   const _keyboardDidShow = () => {
-    if (bottomSheetRef) {
-      bottomSheetRef?.current?.snapTo(0);
-    }
+    bottomSheetRef?.current?.snapTo?.(0);
   };
 
   const renderHeader = () => (

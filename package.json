@@ -30,6 +30,7 @@
     "react": "17.0.1",
     "react-i18next": "^11.8.5",
     "react-native": "0.63.4",
+    "react-native-autogrow-textinput": "^5.4.0",
     "react-native-confirmation-code-field": "^6.5.1",
     "react-native-countdown-component": "^2.7.1",
     "react-native-date-picker": "^3.2.8",

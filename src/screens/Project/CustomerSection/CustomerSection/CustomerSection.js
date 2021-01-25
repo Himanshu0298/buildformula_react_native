@@ -93,7 +93,7 @@ function CustomerSection(props) {
       case 1:
         return <BookingDetails {...props} setSelectedTab={setSelectedTab} />;
       case 2:
-        return <BankLoans {...props} setSelectedTab={setSelectedTab} />;
+        return <BankLoans {...props} {...{setSelectedTab}} />;
       case 3:
         return <Details {...props} setSelectedTab={setSelectedTab} />;
       case 4:

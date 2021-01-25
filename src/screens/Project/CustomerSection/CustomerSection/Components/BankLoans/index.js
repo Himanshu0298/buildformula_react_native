@@ -25,6 +25,98 @@ import useCustomerActions from 'redux/actions/customerActions';
 import _ from 'lodash';
 import PdfIcon from 'assets/images/pdf_icon.png';
 import useImagePicker from 'components/Atoms/FileInput/useImagePicker';
+import Modal from 'react-native-modal';
+import dayjs from 'dayjs';
+import InputBar from './Components/InputBar';
+import Timeline from 'components/Atoms/Timeline';
+
+const STATIC = [
+  {
+    name: 'VSHWAN',
+    date: new Date(),
+    msg: 'Please go through the documentation carefully',
+  },
+  {
+    name: 'VSHWAN',
+    date: new Date(),
+    msg: 'Please go through the documentation carefully',
+  },
+  {
+    name: 'VSHWAN',
+    date: new Date(),
+    msg: 'Please go through the documentation carefully',
+  },
+  {
+    name: 'VSHWAN',
+    date: new Date(),
+    msg: 'Please go through the documentation carefully',
+  },
+  {
+    name: 'VSHWAN',
+    date: new Date(),
+    msg: 'Please go through the documentation carefully',
+  },
+  {
+    name: 'VSHWAN',
+    date: new Date(),
+    msg: 'Please go through the documentation carefully',
+  },
+  {
+    name: 'VSHWAN',
+    date: new Date(),
+    msg: 'Please go through the documentation carefully',
+  },
+  {
+    name: 'VSHWAN',
+    date: new Date(),
+    msg: 'Please go through the documentation carefully',
+  },
+  {
+    name: 'VSHWAN',
+    date: new Date(),
+    msg: 'Please go through the documentation carefully',
+  },
+  {
+    name: 'VSHWAN',
+    date: new Date(),
+    msg: 'Please go through the documentation carefully',
+  },
+  {
+    name: 'VSHWAN',
+    date: new Date(),
+    msg: 'Please go through the documentation carefully',
+  },
+  {
+    name: 'VSHWAN',
+    date: new Date(),
+    msg: 'Please go through the documentation carefully',
+  },
+  {
+    name: 'VSHWAN',
+    date: new Date(),
+    msg: 'Please go through the documentation carefully',
+  },
+  {
+    name: 'VSHWAN',
+    date: new Date(),
+    msg: 'Please go through the documentation carefully',
+  },
+  {
+    name: 'VSHWAN',
+    date: new Date(),
+    msg: 'Please go through the documentation carefully',
+  },
+  {
+    name: 'VSHWAN',
+    date: new Date(),
+    msg: 'Please go through the documentation carefully',
+  },
+  {
+    name: 'VSHWAN',
+    date: new Date(),
+    msg: 'Please go through the documentation carefully',
+  },
+];
 
 const schema = Yup.object().shape({
   bank_person: Yup.string().trim().required('Required'),
@@ -306,9 +398,94 @@ function RenderFiles(props) {
   );
 }
 
+function renderDetail(rowData, sectionID, rowID) {
+  const {name, date, msg} = rowData;
+  return (
+    <View style={styles.messageContainer}>
+      <View style={styles.messageTitle}>
+        <Caption theme={secondaryTheme}>{name} commented</Caption>
+        <Caption theme={secondaryTheme}>
+          {dayjs(date).format('DD MMM YYYY, HH:mm A')}
+        </Caption>
+      </View>
+      <View style={{marginTop: 2}}>
+        <Text theme={secondaryTheme}>"{msg}"</Text>
+      </View>
+    </View>
+  );
+}
+
+function ActivityModal({open, handleClose}) {
+  const timelineRef = React.createRef();
+
+  const [message, setMessage] = React.useState('');
+
+  const onSendPressed = () => {
+    console.log('----->onSendPressed ');
+  };
+
+  const onChangeText = (text) => {
+    setMessage(text);
+  };
+
+  const onSizeChange = () => {
+    console.log('----->onSizeChange ');
+    timelineRef?.scrollToEnd?.({animated: false});
+  };
+
+  return (
+    <Modal
+      isVisible={open}
+      backdropOpacity={0.4}
+      onBackButtonPress={handleClose}
+      onBackdropPress={handleClose}
+      style={{justifyContent: 'flex-end', margin: 0}}>
+      <View style={styles.sheetContainer}>
+        <View style={styles.closeContainer}>
+          <IconButton
+            icon="close-circle"
+            size={25}
+            onPress={handleClose}
+            color="grey"
+          />
+        </View>
+        <Subheading
+          style={{
+            color: theme.colors.primary,
+            marginBottom: 10,
+            marginLeft: 10,
+          }}>
+          BANK LOAN ACTIVITY
+        </Subheading>
+        <Timeline
+          options={{ref: timelineRef}}
+          data={STATIC}
+          circleSize={10}
+          lineWidth={1}
+          circleColor={theme.colors.primary}
+          lineColor={theme.colors.primary}
+          timeContainerStyle={{minWidth: 52, marginTop: -5}}
+          renderTime={() => <View />}
+          renderDetail={renderDetail}
+        />
+        <InputBar
+          {...{
+            onSendPressed,
+            onChangeText,
+            onSizeChange,
+            value: message,
+          }}
+        />
+      </View>
+    </Modal>
+  );
+}
+
 function BankLoans(props) {
   const {route} = props;
   const {project_id, unit} = route?.params || {};
+
+  const [activityModal, setActivityModal] = React.useState(true);
 
   const {bankDetails} = useSelector(({customer}) => customer);
 
@@ -328,41 +505,48 @@ function BankLoans(props) {
     return {};
   }, [bankDetails.details]);
 
+  const toggleActivityModal = () => setActivityModal((v) => !v);
+
   return (
-    <View style={styles.container}>
-      <KeyboardAwareScrollView
-        contentContainerStyle={styles.scrollView}
-        showsVerticalScrollIndicator={false}>
-        <View style={styles.headingRow}>
-          <Subheading style={{color: theme.colors.primary, marginBottom: 10}}>
-            BANK DETAILS
-          </Subheading>
-          <Button
-            icon="format-list-bulleted"
-            mode="text"
-            onPress={() => console.log('Pressed')}>
-            Activity
-          </Button>
-        </View>
-        <Formik
-          validateOnBlur={false}
-          validateOnChange={false}
-          initialValues={initialValues}
-          enableReinitialize
-          validationSchema={schema}
-          onSubmit={async (values) => {
-            const data = {...values};
+    <>
+      <ActivityModal open={activityModal} handleClose={toggleActivityModal} />
+      <View style={styles.container}>
+        <KeyboardAwareScrollView
+          contentContainerStyle={styles.scrollView}
+          showsVerticalScrollIndicator={false}>
+          <View style={styles.headingRow}>
+            <Subheading style={{color: theme.colors.primary, marginBottom: 10}}>
+              BANK DETAILS
+            </Subheading>
+            <Button
+              icon="format-list-bulleted"
+              mode="text"
+              onPress={toggleActivityModal}>
+              Activity
+            </Button>
+          </View>
+          <Formik
+            validateOnBlur={false}
+            validateOnChange={false}
+            initialValues={initialValues}
+            enableReinitialize
+            validationSchema={schema}
+            onSubmit={async (values) => {
+              const data = {...values};
 
-            data.project_id = project_id;
-            data.unit_id = unit.unitId;
+              data.project_id = project_id;
+              data.unit_id = unit.unitId;
 
-            updateBankDetails(data);
-          }}>
-          {(formikProps) => <RenderForm formikProps={formikProps} {...props} />}
-        </Formik>
-        <RenderFiles {...props} {...{bankDetails}} />
-      </KeyboardAwareScrollView>
-    </View>
+              updateBankDetails(data);
+            }}>
+            {(formikProps) => (
+              <RenderForm formikProps={formikProps} {...props} />
+            )}
+          </Formik>
+          <RenderFiles {...props} {...{bankDetails}} />
+        </KeyboardAwareScrollView>
+      </View>
+    </>
   );
 }
 
@@ -418,6 +602,28 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  sheetContainer: {
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    minHeight: '90%',
+    paddingTop: 10,
+    borderWidth: 1,
+    paddingRight: 10,
+  },
+  closeContainer: {
+    alignItems: 'flex-end',
+  },
+  messageContainer: {
+    backgroundColor: '#EFEFEF',
+    padding: 5,
+    borderRadius: 5,
+  },
+  messageTitle: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
 });
 
