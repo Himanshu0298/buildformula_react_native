@@ -105,6 +105,8 @@ export default {
       label_bank_person: 'Bank person',
       label_bank_name: 'Bank name',
       label_branch: 'Branch',
+      label_reason: 'Reason',
+      label_name: 'Name',
     },
   },
   hi: {
@@ -206,6 +208,8 @@ export default {
       label_bank_person: 'Bank person',
       label_bank_name: 'Bank name',
       label_branch: 'Branch',
+      label_reason: 'Reason',
+      label_name: 'Name',
     },
   },
 };

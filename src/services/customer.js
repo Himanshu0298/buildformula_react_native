@@ -30,5 +30,15 @@ export default function useCustomerServices() {
         config({multipart: false}),
       );
     },
+    updateBankFiles: (data) => {
+      return instance.post('customers/update_bank_files', data, config());
+    },
+    removeBankFile: (data) => {
+      return instance.post(
+        'customers/delete_bank_files',
+        data,
+        config({multipart: false}),
+      );
+    },
   };
 }

@@ -14,6 +14,8 @@ export default function useCustomerActions() {
     addCustomer,
     getBankDetails,
     updateBankDetails,
+    updateBankFiles,
+    removeBankFile,
   } = useCustomerServices();
 
   return {
@@ -107,6 +109,44 @@ export default function useCustomerActions() {
               message: 'Bank details updated!',
               variant: 'success',
             });
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const errorMessage = processError(error);
+            snackbar.showMessage({
+              message: errorMessage,
+              variant: 'error',
+            });
+            return Promise.reject(errorMessage);
+          }
+        },
+      }),
+    updateBankFiles: (formData) =>
+      dispatch({
+        type: types.UPDATE_BANK_FILES,
+        payload: async () => {
+          try {
+            const response = processResponse(await updateBankFiles(formData));
+            const {data} = response;
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const errorMessage = processError(error);
+            snackbar.showMessage({
+              message: errorMessage,
+              variant: 'error',
+            });
+            return Promise.reject(errorMessage);
+          }
+        },
+      }),
+    removeBankFile: (params) =>
+      dispatch({
+        type: types.UPDATE_BANK_FILES,
+        payload: async () => {
+          try {
+            const response = processResponse(await removeBankFile(params));
+            const {data} = response;
 
             return Promise.resolve(data);
           } catch (error) {

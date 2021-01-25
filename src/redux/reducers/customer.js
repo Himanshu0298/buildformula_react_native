@@ -5,6 +5,7 @@ import {
   SET_INITIAL_STATE,
   GET_BANK_DETAILS,
   UPDATE_BANK_DETAILS,
+  UPDATE_BANK_FILES,
 } from './../actions/actionTypes';
 
 const initialState = {
@@ -111,17 +112,20 @@ export default (state = initialState, action = {}) => {
       };
 
     case `${ADD_CUSTOMER}_PENDING`:
+    case `${UPDATE_BANK_FILES}_PENDING`:
       return {
         ...state,
         loading: true,
       };
-    case `${ADD_CUSTOMER}_FULFILLED`: {
+    case `${ADD_CUSTOMER}_FULFILLED`:
+    case `${UPDATE_BANK_FILES}_FULFILLED`:
       return {
         ...state,
         loading: false,
       };
-    }
+
     case `${ADD_CUSTOMER}_REJECTED`:
+    case `${UPDATE_BANK_FILES}_REJECTED`:
       return {
         ...state,
         loading: false,
