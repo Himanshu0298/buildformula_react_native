@@ -21,6 +21,7 @@ function renderDetailText(label, value) {
 }
 
 function RenderTabBar(tabBarProps) {
+  //TODO: improve tab change animation
   return (
     <TabBar
       {...tabBarProps}
