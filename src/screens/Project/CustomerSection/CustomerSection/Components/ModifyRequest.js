@@ -1,7 +1,14 @@
 import * as React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
-import {Caption, Text, List, withTheme, Subheading} from 'react-native-paper';
+import {
+  Caption,
+  Text,
+  List,
+  withTheme,
+  Subheading,
+  FAB,
+} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import {secondaryTheme} from 'styles/theme';
 
@@ -93,7 +100,7 @@ function ModifyRequest(props) {
   const {params} = route;
 
   const navToAdd = (customer) => {
-    navigation.push('AddCustomer', {...params});
+    navigation.push('AddModifyRequest', {...params});
   };
 
   return (
@@ -108,6 +115,11 @@ function ModifyRequest(props) {
         <RequestsAccordion title="Approved requests" requests={STATIC} />
         <RequestsAccordion title="Rejected requests" requests={STATIC} />
       </ScrollView>
+      <FAB
+        style={[styles.fab, {backgroundColor: theme.colors.primary}]}
+        icon="plus"
+        onPress={navToAdd}
+      />
     </View>
   );
 }
@@ -135,12 +147,18 @@ const styles = StyleSheet.create({
     backgroundColor: '#F2F3F5',
     padding: 10,
     borderRadius: 5,
-    marginVertical: 3,
+    marginVertical: 7,
   },
   requestHeadingRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  fab: {
+    position: 'absolute',
+    margin: 16,
+    right: 10,
+    bottom: 10,
   },
 });
 

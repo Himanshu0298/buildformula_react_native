@@ -52,6 +52,7 @@ import CS_SelectUnit from 'screens/Project/CustomerSection/SelectUnit';
 import CustomerSection from 'screens/Project/CustomerSection/CustomerSection';
 import CustomerDetails from 'screens/Project/CustomerSection/CustomerDetails';
 import AddCustomer from 'screens/Project/CustomerSection/AddCustomer/AddCustomer';
+import AddModifyRequest from 'screens/Project/CustomerSection/AddModifyRequest/AddModifyRequest';
 //Project : Project management screens
 import ProjectSchedule from '../screens/Project/ProjectManagement/ProjectSchedule';
 import MainPhase from '../screens/Project/ProjectManagement/MainPhase';
@@ -90,40 +91,24 @@ const Stack = createStackNavigator();
 const RouteContext = React.createContext('Dashboard');
 
 /**
- * The Whole App navigation is divided into 4 layers
+ * The Whole App navigation is divided into 3 layers
  * 1. The top stack navigator for App and Auth screens
  * 2. The Drawer for App screens
  * 3. The App Tab to achieve bottom tab for all screens
  * 4. All screens
  * <Main Stack>
  *    <App Drawer>
- *      <App Tab Screens>
- *        {...allScreens}
- *      </App Tab Screens>
+ *        Home, Settings... all root level screens
  *    </App Drawer>
+ *    <Project Drawer>
+ *      <Project SubStacks/>
+ *      {...allScreens}
+ *    </Project Drawer>
  *    <>
  *      <Auth Screens/>
  *    </>
  * </Main Stack>
  */
-
-// const renderBackImage = () => <Image style={{ height: 15, width: 22 }} source={backIcon} />;
-
-// function AppScreensStacks() {
-//   return (
-//     <Stack.Navigator
-//       initialRouteName="Dashboard"
-//       screenOptions={{
-//         // headerBackImage: Platform.OS === 'android' ? renderBackImage : undefined,
-//         headerTitleAlign: 'center',
-//         headerTitleStyle: {
-//           fontWeight: 'bold',
-//         },
-//       }}>
-//       <Stack.Screen name="Dashboard" component={Home} options={{ headerShown: false }} />
-//     </Stack.Navigator>
-//   );
-// }
 
 function BookingChartStack() {
   return (
@@ -193,6 +178,11 @@ function CustomerSectionStack() {
       <Stack.Screen
         name="AddCustomer"
         component={AddCustomer}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="AddModifyRequest"
+        component={AddModifyRequest}
         options={{headerShown: false}}
       />
     </Stack.Navigator>
