@@ -10,7 +10,7 @@ import {secondaryTheme, theme} from 'styles/theme';
 import {getFloorNumber, getShadow, getTowerLabel, getUnitLabel} from 'utils';
 import {STRUCTURE_TYPE_LABELS} from 'utils/constant';
 import Layout from 'utils/Layout';
-import {BankLoans, BookingDetails, Details} from './Components';
+import {BankLoans, BookingDetails, Details, ModifyRequest} from './Components';
 
 function renderDetailText(label, value) {
   return (
@@ -68,7 +68,7 @@ function CustomerSection(props) {
   const {user} = useSelector((state) => state.user);
   const {loading} = useSelector((state) => state.customer);
 
-  const [selectedTab, setSelectedTab] = React.useState(2);
+  const [selectedTab, setSelectedTab] = React.useState(4);
   const [routes] = React.useState([
     {key: 0, title: 'DETAILS'},
     {key: 1, title: 'BOOKING FORM'},
@@ -97,7 +97,7 @@ function CustomerSection(props) {
       case 3:
         return <Details {...props} setSelectedTab={setSelectedTab} />;
       case 4:
-        return <Details {...props} setSelectedTab={setSelectedTab} />;
+        return <ModifyRequest {...props} setSelectedTab={setSelectedTab} />;
       case 5:
         return <Details {...props} setSelectedTab={setSelectedTab} />;
     }
