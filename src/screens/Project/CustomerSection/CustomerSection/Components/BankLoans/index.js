@@ -485,7 +485,7 @@ function BankLoans(props) {
   const {route} = props;
   const {project_id, unit} = route?.params || {};
 
-  const [activityModal, setActivityModal] = React.useState(true);
+  const [activityModal, setActivityModal] = React.useState(false);
 
   const {bankDetails} = useSelector(({customer}) => customer);
 
