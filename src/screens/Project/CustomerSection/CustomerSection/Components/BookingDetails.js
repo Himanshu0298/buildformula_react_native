@@ -470,7 +470,7 @@ function PaymentSection(props) {
             },
             {
               label: 'Bank chosen',
-              value: `${bookingBanks[bank].title}`,
+              value: `${bookingBanks?.[bank]?.title}`,
             },
           ]}
         />
