@@ -42,7 +42,7 @@ export default function useUserActions() {
 
             return Promise.resolve({user: userData});
           } catch (error) {
-            const {data: userData = {}} = error?.response?.data;
+            const {data: userData = {}} = error?.response?.data || {};
             const {email} = userData;
             if (email) {
               return Promise.resolve({user: userData});
