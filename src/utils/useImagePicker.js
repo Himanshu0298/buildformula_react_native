@@ -118,7 +118,7 @@ function useImagePicker() {
     );
   };
 
-  return {openImagePicker};
+  return {openImagePicker, openFilePicker: handleFilePicker};
 }
 
 export default useImagePicker;

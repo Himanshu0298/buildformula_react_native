@@ -2,8 +2,8 @@ import React from 'react';
 import {StyleSheet, View, Text} from 'react-native';
 import PropTypes from 'prop-types';
 import {TextInput, Caption, Button, IconButton} from 'react-native-paper';
-import {secondaryTheme, theme} from 'styles/theme';
-import useImagePicker from './useImagePicker';
+import {theme} from 'styles/theme';
+import useImagePicker from '../../../utils/useImagePicker';
 
 const FileInput = React.forwardRef((props, ref) => {
   const {

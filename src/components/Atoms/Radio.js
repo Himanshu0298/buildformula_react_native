@@ -1,11 +1,11 @@
 import React from 'react';
-import {TouchableOpacity} from 'react-native';
+import {StyleSheet, TouchableOpacity} from 'react-native';
 import PropTypes from 'prop-types';
 import {Caption, RadioButton, withTheme} from 'react-native-paper';
-import {secondaryTheme, theme} from 'styles/theme';
+import {theme} from 'styles/theme';
 
 const Radio = React.forwardRef((props, ref) => {
-  const {value, checked, onChange, label, style, ...rest} = props;
+  const {value, checked, onChange, label, style, color, ...rest} = props;
 
   return (
     <TouchableOpacity
@@ -20,10 +20,13 @@ const Radio = React.forwardRef((props, ref) => {
       <RadioButton.Android
         {...rest}
         value={value}
+        color={color}
         status={checked ? 'checked' : 'unchecked'}
         onPress={() => onChange(value)}
       />
-      <Caption style={{marginLeft: 5, flexShrink: 1}}>{label}</Caption>
+      <Caption style={[styles.caption, checked ? {color} : {}]}>
+        {label}
+      </Caption>
     </TouchableOpacity>
   );
 });
@@ -40,5 +43,12 @@ Radio.propTypes = {
   checked: PropTypes.bool.isRequired,
   value: PropTypes.string.isRequired,
 };
+
+const styles = StyleSheet.create({
+  caption: {
+    marginLeft: 5,
+    flexShrink: 1,
+  },
+});
 
 export default withTheme(Radio);
