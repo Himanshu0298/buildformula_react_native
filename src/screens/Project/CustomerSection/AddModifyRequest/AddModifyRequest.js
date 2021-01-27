@@ -4,11 +4,14 @@ import {StyleSheet, View, TouchableOpacity, Image} from 'react-native';
 import {
   Subheading,
   withTheme,
+  Text,
   Caption,
   Button,
   TextInput,
+  Headline,
+  Divider,
 } from 'react-native-paper';
-import {secondaryTheme, theme} from 'styles/theme';
+import {theme} from 'styles/theme';
 import backArrow from 'assets/images/back_arrow.png';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import RenderInput from 'components/Atoms/RenderInput';
@@ -19,209 +22,313 @@ import * as Yup from 'yup';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {useSelector} from 'react-redux';
 import useCustomerActions from 'redux/actions/customerActions';
-import useImagePicker from 'components/Atoms/FileInput/useImagePicker';
+import useImagePicker from 'utils/useImagePicker';
 import CustomCheckbox from 'components/Atoms/CustomCheckbox';
+import dayjs from 'dayjs';
+import RenderTextBox from 'components/Atoms/RenderTextbox';
+import Radio from 'components/Atoms/Radio';
 
 const schema = Yup.object().shape({});
 
-function ProfileUpload({profilePic, onSelect}) {
-  const {t} = useTranslation();
-
-  const {openImagePicker} = useImagePicker();
-
+function renderData(label, value) {
   return (
-    <View style={styles.profilePicContainer}>
-      <TouchableOpacity
-        style={styles.profilePicButton}
-        onPress={() => openImagePicker({type: 'image', onChoose: onSelect})}>
-        {profilePic ? (
-          <Image style={styles.profilePic} source={{uri: profilePic.uri}} />
-        ) : (
-          <>
-            <MaterialCommunityIcons
-              name="camera"
-              color={theme.colors.primary}
-              size={25}
-            />
-            <Caption style={{color: theme.colors.primary}}>
-              {t('text_upload_photo')}
-            </Caption>
-          </>
-        )}
-      </TouchableOpacity>
+    <View style={styles.row}>
+      <Text>{label}: </Text>
+      <Text style={{color: theme.colors.primary}}>{value}</Text>
     </View>
   );
 }
 
-function RenderForm({formikProps, navigation, ...restProps}) {
-  const {
-    handleChange,
-    handleSubmit,
-    values,
-    handleBlur,
-    errors,
-    setFieldValue,
-  } = formikProps;
+function RenderCustomerBox() {
+  return (
+    <View style={styles.customerContainer}>
+      {renderData('Customer name', 'Apartment')}
+      <View style={[styles.row, {paddingTop: 10}]}>
+        {renderData('Mobile', 876455008)}
+        {renderData('Unit', '1204')}
+      </View>
+      <Divider style={{marginVertical: 10}} />
+      <View style={[styles.row, {justifyContent: 'space-between'}]}>
+        <Text style={{color: '#5E6D7C'}}>
+          Date: {dayjs().format('DD-MM-YYYY')}
+        </Text>
+        <Text style={{color: '#5E6D7C'}}>
+          Time: {dayjs().format('HH:mm A')}
+        </Text>
+      </View>
+    </View>
+  );
+}
 
+function RenderCustomerForm({params, navigation}) {
   const {t} = useTranslation();
 
-  const nameRef = React.useRef();
-  const phoneRef = React.useRef();
-  const emailRef = React.useRef();
-  const addressRef = React.useRef();
-  const alternatePhoneRef = React.useRef();
-  const ageRef = React.useRef();
-  const occupationRef = React.useRef();
-  const panRef = React.useRef();
-  const aadharRef = React.useRef();
+  const {openFilePicker} = useImagePicker();
+
+  const titleRef = React.useRef();
+  const descriptionRef = React.useRef();
 
   return (
-    <>
-      <View style={styles.inputsContainer}>
-        <ProfileUpload
-          profilePic={values.profile_pic}
-          onSelect={(v) => setFieldValue('profile_pic', v)}
-        />
-        <RenderInput
-          name="customer_full_name"
-          label={t('label_full_name')}
-          ref={nameRef}
-          containerStyles={styles.input}
-          value={values.customer_full_name}
-          onChangeText={handleChange('customer_full_name')}
-          onBlur={handleBlur('customer_full_name')}
-          onSubmitEditing={() => phoneRef?.current?.focus()}
-          error={errors.customer_full_name}
-        />
-        <RenderInput
-          name="customer_phone"
-          label={t('label_phone')}
-          ref={phoneRef}
-          keyboardType="number-pad"
-          maxLength={10}
-          containerStyles={styles.input}
-          value={values.customer_phone}
-          onChangeText={handleChange('customer_phone')}
-          onSubmitEditing={() => emailRef?.current?.focus()}
-          onBlur={handleBlur('customer_phone')}
-          error={errors.customer_phone}
-          left={<TextInput.Affix text="+91" />}
-        />
-        <RenderInput
-          name="customer_email"
-          label={t('label_email')}
-          ref={emailRef}
-          containerStyles={styles.input}
-          value={values.customer_email}
-          onChangeText={handleChange('customer_email')}
-          onBlur={handleBlur('customer_email')}
-          onSubmitEditing={() => addressRef?.current?.focus()}
-          error={errors.customer_email}
-        />
-        <RenderInput
-          name="customer_address"
-          label={t('label_address')}
-          ref={addressRef}
-          containerStyles={styles.input}
-          value={values.customer_address}
-          onChangeText={handleChange('customer_address')}
-          onBlur={handleBlur('customer_address')}
-          onSubmitEditing={() => alternatePhoneRef?.current?.focus()}
-          error={errors.customer_address}
-        />
-        <RenderInput
-          name="customer_alternate_contact"
-          label={t('label_alternate_contact')}
-          ref={alternatePhoneRef}
-          keyboardType="number-pad"
-          maxLength={10}
-          containerStyles={styles.input}
-          value={values.customer_alternate_contact}
-          onChangeText={handleChange('customer_alternate_contact')}
-          onSubmitEditing={() => ageRef?.current?.focus()}
-          onBlur={handleBlur('customer_alternate_contact')}
-          error={errors.customer_alternate_contact}
-          left={<TextInput.Affix text="+91" />}
-        />
-        <RenderInput
-          name="customer_age"
-          label={t('label_age')}
-          ref={ageRef}
-          keyboardType="number-pad"
-          containerStyles={styles.input}
-          value={values.customer_age}
-          onChangeText={handleChange('customer_age')}
-          onBlur={handleBlur('customer_age')}
-          onSubmitEditing={() => occupationRef?.current?.focus()}
-          error={errors.customer_age}
-        />
-        <RenderInput
-          name="customer_occupation"
-          label={t('label_occupation')}
-          ref={occupationRef}
-          containerStyles={styles.input}
-          value={values.customer_occupation}
-          onChangeText={handleChange('customer_occupation')}
-          onBlur={handleBlur('customer_occupation')}
-          onSubmitEditing={() => panRef?.current?.focus()}
-          error={errors.customer_occupation}
-        />
-        <FileInput
-          name="company_pan"
-          label={t('label_pan')}
-          ref={panRef}
-          containerStyles={styles.input}
-          value={values.company_pan}
-          file={values.pan_image}
-          onChangeText={handleChange('company_pan')}
-          onChoose={(v) => setFieldValue('pan_image', v)}
-          onBlur={handleBlur('company_pan')}
-          onSubmitEditing={() => aadharRef?.current?.focus()}
-          error={errors.company_pan || errors.pan_image}
-        />
-        <FileInput
-          name="customer_aadhar"
-          label={t('label_aadhaar')}
-          ref={panRef}
-          containerStyles={styles.input}
-          value={values.customer_aadhar}
-          file={values.aadhar_image}
-          onChangeText={handleChange('customer_aadhar')}
-          onBlur={handleBlur('customer_aadhar')}
-          onChoose={(v) => setFieldValue('aadhar_image', v)}
-          onSubmitEditing={handleSubmit}
-          error={errors.customer_aadhar || errors.aadhar_image}
-        />
+    <View style={styles.sectionContainer}>
+      <Headline style={styles.headline}>
+        Modify Request (customer form)
+      </Headline>
+      <RenderCustomerBox />
+      <Formik
+        validateOnBlur={false}
+        validateOnChange={false}
+        initialValues={{}}
+        validationSchema={schema}
+        onSubmit={async (values) => {}}>
+        {({
+          values,
+          errors,
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          setFieldValue,
+        }) => (
+          <View style={styles.formContainer}>
+            <RenderInput
+              name="title"
+              label={t('label_title')}
+              ref={titleRef}
+              containerStyles={styles.input}
+              value={values.title}
+              onChangeText={handleChange('title')}
+              onBlur={handleBlur('title')}
+              onSubmitEditing={() => descriptionRef?.current?.focus()}
+              error={errors.title}
+            />
+            <RenderTextBox
+              name="description"
+              label={t('label_modification_description')}
+              ref={descriptionRef}
+              numberOfLines={5}
+              minHeight={120}
+              containerStyles={styles.input}
+              value={values.description}
+              onChangeText={handleChange('description')}
+              onBlur={handleBlur('description')}
+              error={errors.description}
+            />
+            <TouchableOpacity
+              style={styles.attachFilesBox}
+              onPress={() =>
+                openFilePicker({
+                  type: 'file',
+                  onChoose: (v) => {
+                    console.log('-----> v', v);
+                  },
+                })
+              }>
+              <Text>Click here to attach files</Text>
+            </TouchableOpacity>
 
-        <View style={styles.checkboxContainer}>
-          <CustomCheckbox
-            label="All provided information and uploaded documents are original."
-            checked={values.accepted}
-            onChange={() => {
-              setFieldValue('accepted', !values.accepted);
-            }}
-          />
-        </View>
+            <View style={styles.actionContainer}>
+              <Button
+                style={{width: '40%'}}
+                contentStyle={{padding: 1}}
+                theme={{roundness: 15}}
+                onPress={navigation.goBack}>
+                <BaseText style={styles.cancelText}>{'Cancel'}</BaseText>
+              </Button>
+              <Button
+                style={{width: '40%'}}
+                mode="contained"
+                contentStyle={{padding: 1}}
+                theme={{roundness: 15}}
+                onPress={handleSubmit}>
+                <BaseText style={styles.buttonText}>{'Save'}</BaseText>
+              </Button>
+            </View>
+          </View>
+        )}
+      </Formik>
+    </View>
+  );
+}
+
+function RenderEngineerReviewForm({params, navigation}) {
+  const {t} = useTranslation();
+
+  return (
+    <View style={styles.sectionContainer}>
+      <Headline style={styles.headline}>Review (Civil Engineer Form)</Headline>
+      <View style={[styles.row, {justifyContent: 'space-between'}]}>
+        <Text style={{color: '#5E6D7C'}}>
+          Date: {dayjs().format('DD-MM-YYYY')}
+        </Text>
+        <Text style={{color: '#5E6D7C'}}>
+          Time: {dayjs().format('HH:mm A')}
+        </Text>
       </View>
-      <View style={styles.actionContainer}>
-        <Button
-          style={{width: '40%'}}
-          contentStyle={{padding: 1}}
-          theme={{roundness: 15}}
-          onPress={navigation.goBack}>
-          <BaseText style={styles.cancelText}>{'Cancel'}</BaseText>
-        </Button>
-        <Button
-          style={{width: '40%'}}
-          mode="contained"
-          disabled={!values.accepted}
-          contentStyle={{padding: 1}}
-          theme={{roundness: 15}}
-          onPress={handleSubmit}>
-          <BaseText style={styles.buttonText}>{'Save'}</BaseText>
-        </Button>
+      <Formik
+        validateOnBlur={false}
+        validateOnChange={false}
+        initialValues={{type: 'free'}}
+        validationSchema={schema}
+        onSubmit={async (values) => {}}>
+        {({
+          values,
+          errors,
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          setFieldValue,
+        }) => (
+          <View style={styles.formContainer}>
+            <View style={styles.radioRow}>
+              <Text>Modification Type</Text>
+              <View style={styles.radioContainer}>
+                <Radio
+                  label={'Free'}
+                  value={'free'}
+                  checked={values.type === 'free'}
+                  onChange={(value) => setFieldValue('type', value)}
+                />
+                <Radio
+                  label={'Paid'}
+                  value={'paid'}
+                  checked={values.type === 'paid'}
+                  onChange={(value) => setFieldValue('type', value)}
+                />
+              </View>
+            </View>
+
+            <RenderTextBox
+              name="description"
+              label={t('label_review_description')}
+              numberOfLines={5}
+              minHeight={120}
+              containerStyles={styles.input}
+              value={values.review_description}
+              onChangeText={handleChange('review_description')}
+              onBlur={handleBlur('review_description')}
+              error={errors.review_description}
+            />
+            <RenderTextBox
+              name="modification_changes"
+              label={t('label_modification_changes')}
+              numberOfLines={5}
+              minHeight={120}
+              containerStyles={styles.input}
+              value={values.modification_changes}
+              onChangeText={handleChange('modification_changes')}
+              onBlur={handleBlur('modification_changes')}
+              error={errors.modification_changes}
+            />
+
+            <View style={styles.actionContainer}>
+              <Button
+                style={{width: '40%'}}
+                contentStyle={{padding: 1}}
+                theme={{roundness: 15}}
+                onPress={navigation.goBack}>
+                <BaseText style={styles.cancelText}>{'Cancel'}</BaseText>
+              </Button>
+              <Button
+                style={{width: '40%'}}
+                mode="contained"
+                contentStyle={{padding: 1}}
+                theme={{roundness: 15}}
+                onPress={handleSubmit}>
+                <BaseText style={styles.buttonText}>{'Save'}</BaseText>
+              </Button>
+            </View>
+          </View>
+        )}
+      </Formik>
+    </View>
+  );
+}
+
+function RenderApprovalForm({params, navigation}) {
+  const {t} = useTranslation();
+
+  return (
+    <View style={styles.sectionContainer}>
+      <Headline style={styles.headline}>
+        Approval (for GM or partner use only)
+      </Headline>
+      <View style={[styles.row, {justifyContent: 'space-between'}]}>
+        <Text style={{color: '#5E6D7C'}}>
+          Date: {dayjs().format('DD-MM-YYYY')}
+        </Text>
+        <Text style={{color: '#5E6D7C'}}>
+          Time: {dayjs().format('HH:mm A')}
+        </Text>
       </View>
-    </>
+      <Formik
+        validateOnBlur={false}
+        validateOnChange={false}
+        initialValues={{accepted: false}}
+        validationSchema={schema}
+        onSubmit={async (values) => {}}>
+        {({
+          values,
+          errors,
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          setFieldValue,
+        }) => (
+          <View style={styles.formContainer}>
+            <RenderTextBox
+              name="comments"
+              label={t('label_comments_for_staff')}
+              numberOfLines={5}
+              minHeight={120}
+              containerStyles={styles.input}
+              value={values.comments}
+              onChangeText={handleChange('comments')}
+              onBlur={handleBlur('comments')}
+              error={errors.comments}
+            />
+            <RenderTextBox
+              name="signature"
+              label={t('label_signature')}
+              numberOfLines={2}
+              minHeight={40}
+              containerStyles={styles.input}
+              value={values.signature}
+              onChangeText={handleChange('signature')}
+              onBlur={handleBlur('signature')}
+              error={errors.signature}
+            />
+            <View style={styles.input}>
+              <CustomCheckbox
+                label="I confirm this change order by my signature and
+              approve to GEH to make  modifications at that
+              particular stage"
+                checked={values.accepted}
+                onChange={() => {
+                  setFieldValue('accepted', !values.accepted);
+                }}
+              />
+            </View>
+
+            <View style={styles.actionContainer}>
+              <Button
+                style={{width: '40%'}}
+                contentStyle={{padding: 1}}
+                theme={{roundness: 15}}
+                onPress={navigation.goBack}>
+                <BaseText style={styles.cancelText}>{'Cancel'}</BaseText>
+              </Button>
+              <Button
+                style={{width: '40%'}}
+                mode="contained"
+                contentStyle={{padding: 1}}
+                theme={{roundness: 15}}
+                onPress={handleSubmit}>
+                <BaseText style={styles.buttonText}>{'Save'}</BaseText>
+              </Button>
+            </View>
+          </View>
+        )}
+      </Formik>
+    </View>
   );
 }
 
@@ -256,39 +363,12 @@ function AddModifyRequest(props) {
             onPress={() => navigation.goBack()}
             style={styles.titleContainer}>
             <Image source={backArrow} style={styles.backArrow} />
-            <Subheading>{t('title_customer_details')}</Subheading>
+            <Subheading>{t('title_customer_section')}</Subheading>
           </TouchableOpacity>
         </View>
-        <Formik
-          validateOnBlur={false}
-          validateOnChange={false}
-          initialValues={{accepted: false}}
-          validationSchema={schema}
-          onSubmit={async (values) => {
-            const formData = new FormData();
-            formData.append('project_id', project_id);
-            formData.append('unit_id', unit.unit_id);
-            formData.append('user_id', user.id);
-            formData.append('customer_full_name', values.customer_full_name);
-            formData.append('customer_phone', values.customer_phone);
-            formData.append('customer_email', values.customer_email);
-            formData.append('customer_address', values.customer_address);
-            formData.append('customer_age', values.customer_age);
-            formData.append('customer_occupation', values.customer_occupation);
-            formData.append('customer_pan', values.customer_pan);
-            formData.append('customer_aadhar', values.customer_aadhar);
-            formData.append('customer_aadhar', values.customer_aadhar);
-            formData.append('aadhar_image', values.aadhar_image);
-            formData.append('pan_image', values.pan_image);
-            formData.append('profile_pic', values.profile_pic);
-
-            addCustomer(formData).then(() => {
-              getUpdatedCustomers(values.unit_id);
-              navigation.goBack();
-            });
-          }}>
-          {(formikProps) => <RenderForm formikProps={formikProps} {...props} />}
-        </Formik>
+        <RenderCustomerForm {...props} {...{params}} />
+        <RenderEngineerReviewForm {...props} {...{params}} />
+        <RenderApprovalForm {...props} {...{params}} />
       </KeyboardAwareScrollView>
     </View>
   );
@@ -313,35 +393,36 @@ const styles = StyleSheet.create({
     width: 25,
     marginRight: 5,
   },
-  profilePicContainer: {
-    paddingTop: 30,
-    paddingBottom: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
+  sectionContainer: {},
+  headline: {
+    fontSize: 18,
+    fontWeight: 'bold',
   },
-  profilePicButton: {
-    height: 100,
-    width: 100,
-    borderRadius: 100,
-    backgroundColor: '#E5EAFA',
-    alignItems: 'center',
-    justifyContent: 'center',
+  customerContainer: {
+    borderRadius: 15,
+    backgroundColor: '#F2F4F5',
+    padding: 10,
+    marginTop: 10,
   },
-  profilePic: {
-    height: 100,
-    width: 100,
-    borderRadius: 100,
-  },
-  inputsContainer: {
-    width: '100%',
+  row: {
     flex: 1,
-    paddingHorizontal: 20,
-    paddingTop: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
+  formContainer: {},
   input: {
     paddingVertical: 7,
   },
-  checkboxContainer: {},
+  attachFilesBox: {
+    borderWidth: 2,
+    borderColor: 'rgba(4, 29, 54, 0.1)',
+    borderStyle: 'dashed',
+    marginVertical: 7,
+    height: 100,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 1,
+  },
   actionContainer: {
     marginTop: 25,
     paddingHorizontal: 10,
@@ -357,6 +438,14 @@ const styles = StyleSheet.create({
   buttonText: {
     fontWeight: 'bold',
     fontSize: 18,
+  },
+  radioRow: {
+    marginTop: 20,
+    marginBottom: 10,
+  },
+  radioContainer: {
+    flexDirection: 'row',
+    display: 'flex',
   },
 });
 

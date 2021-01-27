@@ -24,7 +24,7 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import useCustomerActions from 'redux/actions/customerActions';
 import _ from 'lodash';
 import PdfIcon from 'assets/images/pdf_icon.png';
-import useImagePicker from 'components/Atoms/FileInput/useImagePicker';
+import useImagePicker from 'utils/useImagePicker';
 import Modal from 'react-native-modal';
 import dayjs from 'dayjs';
 import InputBar from './Components/InputBar';

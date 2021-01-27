@@ -19,7 +19,7 @@ import * as Yup from 'yup';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {useSelector} from 'react-redux';
 import useCustomerActions from 'redux/actions/customerActions';
-import useImagePicker from 'components/Atoms/FileInput/useImagePicker';
+import useImagePicker from 'utils/useImagePicker';
 import CustomCheckbox from 'components/Atoms/CustomCheckbox';
 
 const schema = Yup.object().shape({});

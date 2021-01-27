@@ -1,8 +1,6 @@
 import React from 'react';
-import {StyleSheet, View, Text, Platform} from 'react-native';
+import {Platform} from 'react-native';
 import PropTypes from 'prop-types';
-import {TextInput} from 'react-native-paper';
-import {theme} from 'styles/theme';
 import RenderInput from './RenderInput';
 
 const RenderTextBox = React.forwardRef((props, ref) => {
@@ -16,6 +14,7 @@ const RenderTextBox = React.forwardRef((props, ref) => {
       ref={ref}
       name="payment_remark"
       multiline
+      returnKeyType="none"
       numberOfLines={Platform.OS === 'ios' ? null : numberOfLines}
       minHeight={Platform.OS === 'ios' ? minHeight : null}
     />
@@ -26,10 +25,9 @@ RenderTextBox.defaultProps = {
   numberOfLines: 1,
 };
 
-RenderTextBox.prototype = {
+RenderTextBox.propTypes = {
   numberOfLines: PropTypes.number.isRequired,
   minHeight: PropTypes.number.isRequired,
-  ...RenderInput.PropTypes,
 };
 
 export default RenderTextBox;
