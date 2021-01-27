@@ -93,8 +93,8 @@ const RouteContext = React.createContext('Dashboard');
 /**
  * The Whole App navigation is divided into 3 layers
  * 1. The top stack navigator for App and Auth screens
- * 2. The Drawer for App screens
- * 3. The App Tab to achieve bottom tab for all screens
+ * 2. The General Drawer for Root screens
+ * 3. The Project Drawer for all project screens
  * 4. All screens
  * <Main Stack>
  *    <App Drawer>
