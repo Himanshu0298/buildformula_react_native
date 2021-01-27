@@ -1,7 +1,7 @@
 import {instance, useConfig} from './init';
 
 export default function useAuth() {
-  let {config} = useConfig();
+  const {config} = useConfig();
   return {
     login: (data) => {
       return instance.post('/login', data, config({auth: false}));

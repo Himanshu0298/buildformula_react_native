@@ -23,9 +23,7 @@ const Radio = React.forwardRef((props, ref) => {
         status={checked ? 'checked' : 'unchecked'}
         onPress={() => onChange(value)}
       />
-      <Caption style={{marginLeft: 5, flexShrink: 1}} theme={secondaryTheme}>
-        {label}
-      </Caption>
+      <Caption style={{marginLeft: 5, flexShrink: 1}}>{label}</Caption>
     </TouchableOpacity>
   );
 });

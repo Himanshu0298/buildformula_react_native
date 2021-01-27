@@ -65,7 +65,7 @@ function RenderUnits({onSelectUnit, units, selectedFloor, isUnitDisabled}) {
         const unit = units[unitId];
         const unitBhk = BHK_OPTIONS.find((item) => item.type === unit.bhk);
 
-        let bookingStyle = BOOKING_STYLES[unit.booking_status] || {};
+        const bookingStyle = BOOKING_STYLES[unit.booking_status] || {};
         const disabled = isUnitDisabled(unit);
 
         if (unit?.booking_status === 'filling' && !disabled) {
@@ -99,7 +99,9 @@ function RenderUnits({onSelectUnit, units, selectedFloor, isUnitDisabled}) {
                 {bookingStyle.badge}
               </Badge>
             ) : null}
-            <Subheading>{getUnitLabel(selectedFloor, i)}</Subheading>
+            <Subheading theme={secondaryTheme}>
+              {getUnitLabel(selectedFloor, i)}
+            </Subheading>
           </TouchableOpacity>
         );
       })}
@@ -135,15 +137,11 @@ function UnitSelector({
         <View style={styles.container}>
           {showBhkFilters ? (
             <>
-              <Subheading theme={secondaryTheme} style={{marginTop: 5}}>
-                BHK indication
-              </Subheading>
+              <Subheading style={{marginTop: 5}}>BHK indication</Subheading>
               <BhkList selectedBhk={selectedBhk} onPress={setSelectedBhk} />
             </>
           ) : null}
-          <Subheading theme={secondaryTheme} style={styles.floorTitle}>
-            Units
-          </Subheading>
+          <Subheading style={styles.floorTitle}>Units</Subheading>
           <RenderUnits
             units={units}
             selectedFloor={floorId}

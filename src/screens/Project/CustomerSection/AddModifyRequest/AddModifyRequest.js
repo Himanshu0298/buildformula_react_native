@@ -105,7 +105,7 @@ function RenderForm({formikProps, navigation, ...restProps}) {
           onSubmitEditing={() => emailRef?.current?.focus()}
           onBlur={handleBlur('customer_phone')}
           error={errors.customer_phone}
-          left={<TextInput.Affix text="+91" theme={secondaryTheme} />}
+          left={<TextInput.Affix text="+91" />}
         />
         <RenderInput
           name="customer_email"
@@ -141,7 +141,7 @@ function RenderForm({formikProps, navigation, ...restProps}) {
           onSubmitEditing={() => ageRef?.current?.focus()}
           onBlur={handleBlur('customer_alternate_contact')}
           error={errors.customer_alternate_contact}
-          left={<TextInput.Affix text="+91" theme={secondaryTheme} />}
+          left={<TextInput.Affix text="+91" />}
         />
         <RenderInput
           name="customer_age"
@@ -256,9 +256,7 @@ function AddModifyRequest(props) {
             onPress={() => navigation.goBack()}
             style={styles.titleContainer}>
             <Image source={backArrow} style={styles.backArrow} />
-            <Subheading theme={secondaryTheme}>
-              {t('title_customer_details')}
-            </Subheading>
+            <Subheading>{t('title_customer_details')}</Subheading>
           </TouchableOpacity>
         </View>
         <Formik

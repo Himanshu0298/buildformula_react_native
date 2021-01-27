@@ -28,7 +28,7 @@ function RoleSelect(props) {
   const {selectRole} = useUserActions();
 
   function onSelectPackage(roleId) {
-    let formData = new FormData();
+    const formData = new FormData();
     //TODO: Update translations
     formData.append('user_id', user.id);
     formData.append('default_role_id', roleId);

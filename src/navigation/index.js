@@ -57,7 +57,7 @@ import AddModifyRequest from 'screens/Project/CustomerSection/AddModifyRequest';
 import ProjectSchedule from '../screens/Project/ProjectManagement/ProjectSchedule';
 import MainPhase from '../screens/Project/ProjectManagement/MainPhase';
 import AssignTask from '../screens/Project/ProjectManagement/AssignTask';
-import ProcessChart from '../screens/Project/ProjectManagement/ProcessChart/Home';
+import ProcessChart from '../screens/Project/ProjectManagement/ProcessChart/ProcessChart';
 //Project : Material management screens
 import Estimation from '../screens/Project/MaterialManagement/Estimation';
 import RequestForPrice from '../screens/Project/MaterialManagement/RequestForPrice';

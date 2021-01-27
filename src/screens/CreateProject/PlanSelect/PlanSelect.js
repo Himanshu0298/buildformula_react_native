@@ -44,7 +44,7 @@ function PlanSelect(props) {
   const toggleAlert = () => setShowAlert((v) => !v);
 
   function onSelectPlan(amount) {
-    let formData = new FormData();
+    const formData = new FormData();
     //TODO: Update translations
     formData.append('project_id', project.project_id);
     formData.append('amount', amount);
@@ -98,10 +98,8 @@ function PlanSelect(props) {
               <View style={styles.splashImage}>
                 <LottieView source={splash} autoPlay loop speed={3} />
               </View>
-              <Title theme={secondaryTheme} style={styles.titleText}>
-                Successful!
-              </Title>
-              <Paragraph theme={secondaryTheme} style={styles.subtitleText}>
+              <Title style={styles.titleText}>Successful!</Title>
+              <Paragraph style={styles.subtitleText}>
                 First admin was added successfully! Proceed to add second and
                 third admins
               </Paragraph>

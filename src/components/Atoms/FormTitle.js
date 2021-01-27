@@ -3,6 +3,7 @@ import {View} from 'react-native';
 import PropTypes from 'prop-types';
 import {withTheme, Title, Caption} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {secondaryTheme} from 'styles/theme';
 
 function FormTitle({title, renderTitle, subTitle, theme}) {
   return (
@@ -13,8 +14,10 @@ function FormTitle({title, renderTitle, subTitle, theme}) {
         wight: '100%',
       }}>
       <SafeAreaView edges={['top', 'left', 'right']}>
-        <Title>{title || (renderTitle && renderTitle())}</Title>
-        <Caption>{subTitle}</Caption>
+        <Title theme={secondaryTheme}>
+          {title || (renderTitle && renderTitle())}
+        </Title>
+        <Caption theme={secondaryTheme}>{subTitle}</Caption>
       </SafeAreaView>
     </View>
   );

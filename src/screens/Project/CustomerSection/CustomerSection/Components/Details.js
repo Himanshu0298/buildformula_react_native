@@ -20,8 +20,8 @@ function RenderCustomer({customer, navToDetails}) {
             }}
           />
           <View style={styles.nameContainer}>
-            <Text theme={secondaryTheme}>{name}</Text>
-            <Caption theme={secondaryTheme}>{role}</Caption>
+            <Text>{name}</Text>
+            <Caption>{role}</Caption>
           </View>
         </View>
         <View style={styles.rightContainer}>
@@ -81,9 +81,7 @@ function Details(props) {
           <TouchableOpacity style={styles.addButton} onPress={navToAdd}>
             <Text style={{color: theme.colors.primary}}>+ Add Joint name</Text>
           </TouchableOpacity>
-          <Caption theme={secondaryTheme}>
-            You can add upto 10 joint names for your property
-          </Caption>
+          <Caption>You can add upto 10 joint names for your property</Caption>
         </View>
       </ScrollView>
     </View>

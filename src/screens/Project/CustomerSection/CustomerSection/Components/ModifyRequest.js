@@ -54,7 +54,7 @@ function RenderRequests({requests}) {
   if (requests.length === 0) {
     return (
       <View style={styles.emptyContainer}>
-        <Caption theme={secondaryTheme}>No requests found!</Caption>
+        <Caption>No requests found!</Caption>
       </View>
     );
   }
@@ -64,12 +64,10 @@ function RenderRequests({requests}) {
     return (
       <View key={index} style={styles.requestContainer}>
         <View style={styles.requestHeadingRow}>
-          <Text theme={secondaryTheme}>{title}</Text>
-          <Text theme={secondaryTheme} style={{fontSize: 11}}>
-            {status}
-          </Text>
+          <Text>{title}</Text>
+          <Text style={{fontSize: 11}}>{status}</Text>
         </View>
-        <Caption theme={secondaryTheme}>{description}</Caption>
+        <Caption>{description}</Caption>
       </View>
     );
   });
@@ -85,7 +83,6 @@ function RequestsAccordion({title, requests = []}) {
       <List.Accordion
         titleStyle={{color: '#5E6D7C', fontSize: 14, marginBottom: 5}}
         style={{padding: 0, margin: -8}}
-        theme={secondaryTheme}
         title={`${title} (${requests.length})`}
         expanded={expanded}
         onPress={toggle}
@@ -108,9 +105,7 @@ function ModifyRequest(props) {
       <ScrollView
         contentContainerStyle={styles.scrollView}
         showsVerticalScrollIndicator={false}>
-        <Subheading style={{marginBottom: 10}} theme={secondaryTheme}>
-          All Modify Requests
-        </Subheading>
+        <Subheading style={{marginBottom: 10}}>All Modify Requests</Subheading>
         <RequestsAccordion title="Pending requests" requests={STATIC} />
         <RequestsAccordion title="Approved requests" requests={STATIC} />
         <RequestsAccordion title="Rejected requests" requests={STATIC} />

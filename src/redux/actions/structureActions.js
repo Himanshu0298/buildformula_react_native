@@ -21,7 +21,7 @@ export default function useStructureActions() {
         type: types.SAVE_STRUCTURE,
         payload: async () => {
           try {
-            let response = processResponse(
+            const response = processResponse(
               await structure.updateStructureTypes(formData),
             );
             console.log('-----> response', response);
@@ -30,7 +30,7 @@ export default function useStructureActions() {
             });
             return Promise.resolve();
           } catch (error) {
-            let errorMessage = processError(error);
+            const errorMessage = processError(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',
@@ -76,7 +76,7 @@ export default function useStructureActions() {
             return Promise.resolve();
           } catch (error) {
             console.log('-----> error', error);
-            let errorMessage = processError(error);
+            const errorMessage = processError(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',

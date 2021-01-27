@@ -14,7 +14,7 @@ import {BankLoans, BookingDetails, Details, ModifyRequest} from './Components';
 
 function renderDetailText(label, value) {
   return (
-    <Text theme={secondaryTheme} style={{marginVertical: 4}}>
+    <Text style={{marginVertical: 4}}>
       {label} : <Text style={{color: theme.colors.primary}}>{value}</Text>
     </Text>
   );
@@ -107,9 +107,7 @@ function CustomerSection(props) {
     <>
       <Spinner visible={loading} textContent={''} />
       <View style={styles.container}>
-        <Subheading theme={secondaryTheme}>
-          {t('title_customer_section')}
-        </Subheading>
+        <Subheading>{t('title_customer_section')}</Subheading>
         <View style={styles.detailContainer}>
           <View style={styles.detailSubContainer}>
             {renderDetailText(

@@ -170,7 +170,7 @@ function RenderForm({formikProps}) {
           onSubmitEditing={() => emailRef?.current?.focus()}
           onBlur={handleBlur('phone')}
           error={errors.phone}
-          left={<TextInput.Affix text="+91" theme={secondaryTheme} />}
+          left={<TextInput.Affix text="+91" />}
         />
         <RenderInput
           name="email"
@@ -246,13 +246,9 @@ function RenderFile({file, remove, handleFileRemove}) {
       <Image source={PdfIcon} style={styles.pdfIcon} />
       <View style={styles.fileContentContainer}>
         <View style={{flex: 0.8}}>
-          <Text numberOfLines={1} theme={secondaryTheme}>
-            {file_name || name}
-          </Text>
+          <Text numberOfLines={1}>{file_name || name}</Text>
           {file_reason ? (
-            <Caption style={{lineHeight: 15}} theme={secondaryTheme}>
-              {file_reason}
-            </Caption>
+            <Caption style={{lineHeight: 15}}>{file_reason}</Caption>
           ) : null}
         </View>
         {remove ? (
@@ -403,13 +399,11 @@ function renderDetail(rowData, sectionID, rowID) {
   return (
     <View style={styles.messageContainer}>
       <View style={styles.messageTitle}>
-        <Caption theme={secondaryTheme}>{name} commented</Caption>
-        <Caption theme={secondaryTheme}>
-          {dayjs(date).format('DD MMM YYYY, HH:mm A')}
-        </Caption>
+        <Caption>{name} commented</Caption>
+        <Caption>{dayjs(date).format('DD MMM YYYY, HH:mm A')}</Caption>
       </View>
       <View style={{marginTop: 2}}>
-        <Text theme={secondaryTheme}>"{msg}"</Text>
+        <Text>"{msg}"</Text>
       </View>
     </View>
   );

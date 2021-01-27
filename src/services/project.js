@@ -1,7 +1,7 @@
 import {instance, useConfig} from './init';
 
 export default function useProject() {
-  let {config} = useConfig();
+  const {config} = useConfig();
   return {
     getProjects: (data) => {
       return instance.get('/get_project_structure', config());

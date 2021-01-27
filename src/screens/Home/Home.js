@@ -84,12 +84,10 @@ function RenderProject({project, handleOnPress, tab}) {
         </View>
       ) : null}
       <View style={styles.labelContainer}>
-        <Subheading theme={secondaryTheme} style={styles.projectLabel}>
+        <Subheading style={styles.projectLabel}>
           {project.project_name}
         </Subheading>
-        <Caption theme={secondaryTheme} style={styles.projectLabel}>
-          {project.project_address}
-        </Caption>
+        <Caption style={styles.projectLabel}>{project.project_address}</Caption>
       </View>
     </TouchableOpacity>
   );
@@ -132,7 +130,7 @@ function Home(props) {
             <View style={styles.splashImage}>
               <LottieView source={waiting} autoPlay loop />
             </View>
-            <Subheading theme={secondaryTheme} style={styles.subtitleText}>
+            <Subheading style={styles.subtitleText}>
               Waiting for Project Approval
             </Subheading>
           </View>
@@ -185,9 +183,7 @@ function Home(props) {
           </ScrollView>
         ) : (
           <View style={styles.noResultContainer}>
-            <Subheading theme={secondaryTheme}>
-              {'No Projects Found'}
-            </Subheading>
+            <Subheading>{'No Projects Found'}</Subheading>
           </View>
         )}
       </View>

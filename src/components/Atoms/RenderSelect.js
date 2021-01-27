@@ -16,7 +16,7 @@ const RenderSelect = React.forwardRef((props, ref) => {
     },
   }));
 
-  let {parsedOptions, withValue} = useMemo(() => {
+  const {parsedOptions, withValue} = useMemo(() => {
     if (options[0] && options[0].label) {
       const result = options.map((option) => option.label);
       return {parsedOptions: result, withValue: true};
@@ -26,7 +26,7 @@ const RenderSelect = React.forwardRef((props, ref) => {
 
   value = useMemo(() => {
     if (withValue) {
-      let index = options.findIndex((option) => option.value === value);
+      const index = options.findIndex((option) => option.value === value);
       if (index > -1) {
         return options[index].label;
       }
@@ -64,13 +64,7 @@ const RenderSelect = React.forwardRef((props, ref) => {
         ref={ref}
         {...rest}
         value={value}
-        right={
-          <TextInput.Icon
-            name="menu-down"
-            theme={secondaryTheme}
-            onPress={toggleOptions}
-          />
-        }
+        right={<TextInput.Icon name="menu-down" onPress={toggleOptions} />}
       />
     </TouchableOpacity>
   );

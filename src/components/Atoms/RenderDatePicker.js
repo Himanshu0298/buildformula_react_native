@@ -57,7 +57,6 @@ const RenderDatePicker = React.forwardRef((props, ref) => {
               name={
                 mode === 'date' ? 'calendar-blank' : 'clock-time-three-outline'
               }
-              theme={secondaryTheme}
               onPress={togglePicker}
             />
           }

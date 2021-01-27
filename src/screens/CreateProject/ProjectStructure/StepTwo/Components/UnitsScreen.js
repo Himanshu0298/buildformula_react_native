@@ -29,7 +29,7 @@ function RenderUnits({
   selectedBhk,
   onPress,
 }) {
-  let unitsList = [];
+  const unitsList = [];
   for (let i = 1; i <= unitCount; i += 1) {
     const {bhk} = units[i];
 

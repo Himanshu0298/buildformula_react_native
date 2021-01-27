@@ -155,7 +155,7 @@ export function RenderInstallments(props) {
       {installments.map((installment, index) => {
         return (
           <View key={index} style={styles.installmentRow}>
-            <Subheading theme={secondaryTheme}>{index + 1}</Subheading>
+            <Subheading>{index + 1}</Subheading>
             <View style={{flex: 0.4}}>
               <RenderInput
                 value={dayjs(installment.date).format('DD/MM/YYYY')}
@@ -166,7 +166,7 @@ export function RenderInstallments(props) {
               <RenderInput
                 value={installment.amount}
                 disabled={true}
-                left={<TextInput.Affix theme={secondaryTheme} text="₹" />}
+                left={<TextInput.Affix text="₹" />}
               />
             </View>
           </View>
@@ -225,7 +225,6 @@ function RenderOneBigInstallmentPaymentForm(props) {
                 left={
                   <TextInput.Icon
                     name="minus"
-                    theme={secondaryTheme}
                     color={theme.colors.error}
                     onPress={() => {
                       handlePercentChange(
@@ -239,7 +238,6 @@ function RenderOneBigInstallmentPaymentForm(props) {
                 right={
                   <TextInput.Icon
                     name="plus"
-                    theme={secondaryTheme}
                     color={theme.colors.primary}
                     onPress={() => {
                       handlePercentChange(
@@ -256,7 +254,7 @@ function RenderOneBigInstallmentPaymentForm(props) {
                 label={t('label_amount')}
                 keyboardType="number-pad"
                 value={values.first_big_amount}
-                left={<TextInput.Affix theme={secondaryTheme} text="₹" />}
+                left={<TextInput.Affix text="₹" />}
                 error={errors.first_big_amount}
                 onChangeText={(value) => handleAmountChange(value)}
               />
@@ -435,7 +433,6 @@ function RenderCustomPaymentForm(props) {
                       left={
                         <TextInput.Icon
                           name="minus"
-                          theme={secondaryTheme}
                           color={theme.colors.error}
                           onPress={() => {
                             handlePercentChange(
@@ -448,7 +445,6 @@ function RenderCustomPaymentForm(props) {
                       right={
                         <TextInput.Icon
                           name="plus"
-                          theme={secondaryTheme}
                           color={theme.colors.primary}
                           onPress={() => {
                             handlePercentChange(index, (percent || 0) + 1);
@@ -463,7 +459,7 @@ function RenderCustomPaymentForm(props) {
                       label={t('label_amount')}
                       keyboardType="number-pad"
                       value={amount}
-                      left={<TextInput.Affix theme={secondaryTheme} text="₹" />}
+                      left={<TextInput.Affix text="₹" />}
                       onChangeText={(value) => handleAmountChange(index, value)}
                     />
                   </View>
@@ -528,7 +524,7 @@ function RenderPaymentForm(props) {
         disabled={true}
         onChangeText={handleChange('basic_amount')}
         error={errors.basic_amount}
-        left={<TextInput.Affix theme={secondaryTheme} text="₹" />}
+        left={<TextInput.Affix text="₹" />}
       />
       {values.payment_type === 1 ? (
         <View style={styles.inputRowContainer}>
@@ -582,7 +578,7 @@ function RenderPaymentForm(props) {
             label={t('label_total_other_charges')}
             value={values.other_charges_amount}
             disabled={true}
-            left={<TextInput.Affix theme={secondaryTheme} text="₹" />}
+            left={<TextInput.Affix text="₹" />}
           />
         </View>
         <View style={{flex: 1}}>
@@ -653,7 +649,7 @@ function FormContent(props) {
           </Subheading>
 
           <View style={styles.radioRow}>
-            <Text theme={secondaryTheme}>Do you wish to take a loan?</Text>
+            <Text>Do you wish to take a loan?</Text>
             <View style={styles.radioContainer}>
               <Radio
                 label={'Yes'}
@@ -692,7 +688,7 @@ function FormContent(props) {
                     label={t('label_amount')}
                     keyboardType="number-pad"
                     value={values.loan_amount}
-                    left={<TextInput.Affix theme={secondaryTheme} text="₹" />}
+                    left={<TextInput.Affix text="₹" />}
                     onChangeText={handleChange('loan_amount')}
                   />
                 </View>

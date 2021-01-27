@@ -48,7 +48,7 @@ const FileInput = React.forwardRef((props, ref) => {
             color={selectedFile ? theme.colors.success : theme.colors.primary}
             size={15}
           />
-          <Caption theme={secondaryTheme}>
+          <Caption>
             {selectedFile ? 'File Selected!' : 'No file chosen'}
           </Caption>
         </View>

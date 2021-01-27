@@ -1,7 +1,7 @@
 import {instance, useConfig} from './init';
 
 export default function useSalesServices() {
-  let {config} = useConfig();
+  const {config} = useConfig();
   return {
     getVisitorsList: (data) => {
       return instance.post('/visitors/get_lists', data, config());
