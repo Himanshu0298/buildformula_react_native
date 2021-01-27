@@ -30,10 +30,10 @@ export default function SelectUnit(props) {
   }, []);
 
   const units = useMemo(() => {
-    let data = towers?.[towerId]?.floors?.[floorId]?.units || {};
+    const data = towers?.[towerId]?.floors?.[floorId]?.units || {};
 
     Object.keys(data).map((key) => {
-      let bookingData = unitBookingStatus.find(
+      const bookingData = unitBookingStatus.find(
         (unit) => unit.id === data[key].unitId,
       );
 

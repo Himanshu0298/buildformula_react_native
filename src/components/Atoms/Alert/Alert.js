@@ -24,15 +24,9 @@ const CustomAlert = (props) => {
     <View>
       <Portal>
         <Dialog visible={open} onDismiss={handleClose} {...dialogProps}>
-          {title ? (
-            <Dialog.Title theme={secondaryTheme}>{title}</Dialog.Title>
-          ) : null}
+          {title ? <Dialog.Title>{title}</Dialog.Title> : null}
           <Dialog.Content>
-            {content ? (
-              content
-            ) : (
-              <Paragraph theme={secondaryTheme}>{message}</Paragraph>
-            )}
+            {content ? content : <Paragraph>{message}</Paragraph>}
           </Dialog.Content>
           <Dialog.Actions>
             {showCancelButton ? (

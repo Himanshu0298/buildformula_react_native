@@ -8,8 +8,14 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from 'react-native';
-import {withTheme, Headline, Subheading, Button} from 'react-native-paper';
-import {theme} from 'styles/theme';
+import {
+  withTheme,
+  Headline,
+  Subheading,
+  Button,
+  TextInput,
+} from 'react-native-paper';
+import {secondaryTheme, theme} from 'styles/theme';
 import banner from 'assets/images/banner.png';
 import image from 'assets/images/buildings.png';
 import BaseText from 'components/Atoms/BaseText';
@@ -60,6 +66,8 @@ function RenderContent(props) {
     bottomSheetRef,
   } = props;
 
+  const [showPassword, setShowPassword] = useState(false);
+
   const emailRef = React.useRef();
   const passwordRef = React.useRef();
 
@@ -68,8 +76,10 @@ function RenderContent(props) {
   return (
     <View style={styles.contentContainer}>
       <View style={styles.headlineContainer}>
-        <Headline style={{fontWeight: 'bold'}}>{t('heading')}</Headline>
-        <Subheading>{t('subHeading')}</Subheading>
+        <Headline theme={secondaryTheme} style={{fontWeight: 'bold'}}>
+          {t('heading')}
+        </Headline>
+        <Subheading theme={secondaryTheme}>{t('subHeading')}</Subheading>
       </View>
       <View style={styles.inputMainContainer}>
         <View style={styles.inputsContainer}>
@@ -101,12 +111,13 @@ function RenderContent(props) {
             returnKeyType={'done'}
             onSubmitEditing={handleSubmit}
             error={errors.password}
-            // right={
-            //   <TextInput.Icon
-            //     name={showPassword ? 'eye-off' : 'eye'}
-            //     onPress={() => setShowPassword(show => !show)}
-            //   />
-            // }
+            right={
+              <TextInput.Icon
+                theme={secondaryTheme}
+                name={showPassword ? 'eye-off' : 'eye'}
+                onPress={() => setShowPassword((show) => !show)}
+              />
+            }
           />
           <TouchableOpacity style={styles.forgotContainer}>
             <BaseText>{t('forgotPassword')}</BaseText>
@@ -162,7 +173,7 @@ function Login(props) {
       initialValues={{}}
       validationSchema={schema}
       onSubmit={async (values) => {
-        let formData = new FormData();
+        const formData = new FormData();
         Keyboard.dismiss();
         if (loginError) {
           setLoginError(null);

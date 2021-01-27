@@ -11,7 +11,7 @@ import {useAlert} from 'components/Atoms/Alert';
 import FloorBar from 'components/Atoms/FloorBar';
 
 const checkUnitBhkValidity = (floors, floorCount) => {
-  let result = {};
+  const result = {};
   let error = '';
   let allValid = true;
 

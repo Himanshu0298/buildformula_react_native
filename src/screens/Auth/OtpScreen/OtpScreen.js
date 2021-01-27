@@ -139,7 +139,7 @@ const OtpScreen = (props) => {
   const {verifyOtp} = useOtpActions();
 
   const submit = async () => {
-    let formData = new FormData();
+    const formData = new FormData();
     //TODO: Update translations
     formData.append('mobile_otp', phone);
     formData.append('user_id', user.id);

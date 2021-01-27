@@ -102,7 +102,7 @@ function StepOne(props) {
   const {loading} = useSelector((state) => state.structure);
 
   const updateTypes = (type) => {
-    let types = {...structureTypes};
+    const types = {...structureTypes};
     types[type] = !types[type];
     let selectedStructureType = 1;
     if (types[2]) {
@@ -128,7 +128,7 @@ function StepOne(props) {
         .filter((key) => structureTypes[key])
         .join();
 
-      let formData = new FormData();
+      const formData = new FormData();
       formData.append('project_id', project.project_id);
       formData.append('project_types', types);
 

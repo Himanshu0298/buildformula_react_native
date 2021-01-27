@@ -140,7 +140,7 @@ function FormContent(props) {
             }
           />
           <View style={styles.radioRow}>
-            <Text theme={secondaryTheme}>Through broker?</Text>
+            <Text>Through broker?</Text>
             <View style={styles.radioContainer}>
               <Radio
                 label={'Yes'}

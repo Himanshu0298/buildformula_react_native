@@ -8,7 +8,7 @@ import {useAlert} from 'components/Atoms/Alert';
 import TowerIcon from 'components/Atoms/TowerIcon';
 
 function RenderTowers({towerCount, towerValidationById, onPress}) {
-  let towersList = [];
+  const towersList = [];
   for (let i = 1; i <= towerCount; i += 1) {
     const active = towerValidationById[i];
     towersList.push(<TowerIcon onPress={onPress} key={i} active={active} />);

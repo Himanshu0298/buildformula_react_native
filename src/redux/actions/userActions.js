@@ -16,13 +16,13 @@ export default function useUserActions() {
         type: types.SIGN_UP,
         payload: async () => {
           try {
-            let response = processResponse(await signUp(user));
+            const response = processResponse(await signUp(user));
             const {data: userData} = response;
             console.log('----->signUp response', userData);
 
             return Promise.resolve({user: userData});
           } catch (error) {
-            let errorMessage = processError(error);
+            const errorMessage = processError(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',
@@ -36,7 +36,7 @@ export default function useUserActions() {
         type: types.LOGIN,
         payload: async () => {
           try {
-            let response = processResponse(await login(data));
+            const response = processResponse(await login(data));
             const {data: userData} = response;
             console.log('----->login response', userData);
 
@@ -57,13 +57,13 @@ export default function useUserActions() {
         type: types.SELECT_ROLE,
         payload: async () => {
           try {
-            let response = processResponse(await updateUser(data));
+            const response = processResponse(await updateUser(data));
             const {data: userData} = response;
             console.log('-----> response', userData);
 
             return Promise.resolve({user: userData});
           } catch (error) {
-            let errorMessage = processError(error);
+            const errorMessage = processError(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',

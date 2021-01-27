@@ -264,7 +264,7 @@ function InquiryTab({
             }}
           />
           <View style={styles.priorityContainer}>
-            <Subheading theme={secondaryTheme}>Lead Priority</Subheading>
+            <Subheading>Lead Priority</Subheading>
             <View style={styles.radioContainer}>
               <Radio
                 label={'Low'}

@@ -180,7 +180,7 @@ function DrawerItem(props) {
     ...restProps
   } = props;
 
-  let active = route === currentRoute;
+  const active = route === currentRoute;
   let drawerIcon;
   if (typeof icon === 'string') {
     drawerIcon = ({color, size}) => (

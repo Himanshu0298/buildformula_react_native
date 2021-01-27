@@ -17,7 +17,12 @@ import MaterialTabs from 'react-native-material-tabs';
 import TowersScreen from './Components/TowersScreen';
 import FloorsScreen from './Components/FloorsScreen';
 import UnitsScreen from './Components/UnitsScreen';
-import {MAX_TOWERS, MAX_FLOORS, MAX_UNITS, STRUCTURE_TYPE_LABELS} from 'utils/constant';
+import {
+  MAX_TOWERS,
+  MAX_FLOORS,
+  MAX_UNITS,
+  STRUCTURE_TYPE_LABELS,
+} from 'utils/constant';
 import useStructureActions from 'redux/actions/structureActions';
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -40,7 +45,7 @@ function updateTower({
   towerCount,
   towerData = {},
 }) {
-  let towers = {};
+  const towers = {};
   for (let i = 1; i <= towerCount; i += 1) {
     towers[i] = towerData;
   }
@@ -64,7 +69,7 @@ function updateFloor({
   floorData = {},
 }) {
   const {towers} = currentStructureData;
-  let floors = {};
+  const floors = {};
   for (let i = 0; i <= floorCount; i += 1) {
     floors[i] = floorData;
   }
@@ -94,7 +99,7 @@ function updateUnits({
   unitCount,
   bhk,
 }) {
-  let units = {};
+  const units = {};
   for (let i = 1; i <= unitCount; i += 1) {
     units[i] = {bhk};
   }
@@ -225,7 +230,7 @@ function validateUnits({
 }
 
 function validateTowers(data, selectedStructureType) {
-  let result = {};
+  const result = {};
   let error = '';
   let allValid = true;
 
@@ -592,7 +597,9 @@ function StepTwo(props) {
                   <TouchableOpacity
                     onPress={toggleMenu}
                     style={styles.titleContainer}>
-                    <Title>{t(STRUCTURE_TYPE_LABELS[selectedStructureType])}</Title>
+                    <Title>
+                      {t(STRUCTURE_TYPE_LABELS[selectedStructureType])}
+                    </Title>
                     <AntIcons
                       name="caretdown"
                       color="#fff"
@@ -605,7 +612,6 @@ function StepTwo(props) {
                     return (
                       <Menu.Item
                         key={option.value}
-                        theme={secondaryTheme}
                         title={t(STRUCTURE_TYPE_LABELS[option.value])}
                         onPress={() => {
                           updateStructure({

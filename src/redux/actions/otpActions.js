@@ -21,10 +21,10 @@ export default function useOtpActions() {
         type: types.VERIFY_OTP,
         payload: async () => {
           try {
-            let response = processResponse(await otpCheck(data));
+            const response = processResponse(await otpCheck(data));
             return Promise.resolve({response});
           } catch (error) {
-            let errorMessage = processError(error);
+            const errorMessage = processError(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',

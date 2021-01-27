@@ -24,8 +24,8 @@ import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 function RenderInfo({label, value}) {
   return (
     <View style={styles.infoContainer}>
-      <Text theme={secondaryTheme}>{label}:</Text>
-      <Caption theme={secondaryTheme}>{value}</Caption>
+      <Text>{label}:</Text>
+      <Caption>{value}</Caption>
     </View>
   );
 }
@@ -48,9 +48,7 @@ function CustomerDetails(props) {
             onPress={() => navigation.goBack()}
             style={styles.titleContainer}>
             <Image source={backArrow} style={styles.backArrow} />
-            <Subheading theme={secondaryTheme}>
-              {t('title_customer_details')}
-            </Subheading>
+            <Subheading>{t('title_customer_details')}</Subheading>
           </TouchableOpacity>
         </View>
         <View style={styles.detailsTopContainer}>
@@ -60,10 +58,8 @@ function CustomerDetails(props) {
               uri: profile_pic,
             }}
           />
-          <Text style={styles.nameText} theme={secondaryTheme}>
-            {name}
-          </Text>
-          <Caption theme={secondaryTheme}>{role}</Caption>
+          <Text style={styles.nameText}>{name}</Text>
+          <Caption>{role}</Caption>
         </View>
         <Divider />
         <View style={styles.bottomDetails}>
@@ -78,9 +74,9 @@ function CustomerDetails(props) {
           <RenderInfo label={'Age'} value={'17 yrs'} />
           <RenderInfo label={'Occupation'} value={'Business'} />
           <View style={styles.infoContainer}>
-            <Text theme={secondaryTheme}>PAN no:</Text>
+            <Text>PAN no:</Text>
             <View style={styles.valueContainer}>
-              <Caption theme={secondaryTheme}>1234567890</Caption>
+              <Caption>1234567890</Caption>
               <TouchableOpacity style={styles.openButton}>
                 <MaterialCommunityIcons
                   name="paperclip"
@@ -93,9 +89,9 @@ function CustomerDetails(props) {
             </View>
           </View>
           <View style={styles.infoContainer}>
-            <Text theme={secondaryTheme}>Aadhaar no:</Text>
+            <Text>Aadhaar no:</Text>
             <View style={styles.valueContainer}>
-              <Caption theme={secondaryTheme}>1234567890</Caption>
+              <Caption>1234567890</Caption>
               <TouchableOpacity style={styles.openButton}>
                 <MaterialCommunityIcons
                   name="paperclip"

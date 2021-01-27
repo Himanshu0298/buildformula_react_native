@@ -48,7 +48,7 @@ export const theme = {
     accent: '#041D36',
     background: '#fff',
     surface: '#fff',
-    text: '#fff',
+    text: '#000',
     success: Colors.green700,
     warning: Colors.orange500,
   },
@@ -61,6 +61,6 @@ export const darkTheme = {
 
 export const secondaryTheme = {
   colors: {
-    text: '#000',
+    text: '#fff',
   },
 };

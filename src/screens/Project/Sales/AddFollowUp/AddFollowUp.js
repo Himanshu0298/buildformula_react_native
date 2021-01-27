@@ -44,49 +44,47 @@ function RenderVisitorDetails({visitor, occupationOptions, onNext}) {
   return (
     <View style={styles.detailsContainer}>
       <View style={styles.detailRow}>
-        <Paragraph theme={secondaryTheme}>Name</Paragraph>
-        <Caption theme={secondaryTheme}>
+        <Paragraph>Name</Paragraph>
+        <Caption>
           {visitor.first_name} {visitor.last_name}
         </Caption>
       </View>
       <View style={styles.detailRow}>
-        <Paragraph theme={secondaryTheme}>Email</Paragraph>
-        <Caption theme={secondaryTheme}>{visitor.email}</Caption>
+        <Paragraph>Email</Paragraph>
+        <Caption>{visitor.email}</Caption>
       </View>
       <View style={styles.detailRow}>
-        <Paragraph theme={secondaryTheme}>Phone no.</Paragraph>
-        <Caption theme={secondaryTheme}>+91 {visitor.phone}</Caption>
+        <Paragraph>Phone no.</Paragraph>
+        <Caption>+91 {visitor.phone}</Caption>
       </View>
       <View style={styles.detailRow}>
-        <Paragraph theme={secondaryTheme}>Occupation</Paragraph>
-        <Caption theme={secondaryTheme}>{occupation.label}</Caption>
+        <Paragraph>Occupation</Paragraph>
+        <Caption>{occupation.label}</Caption>
       </View>
       <View style={styles.detailRow}>
-        <Paragraph theme={secondaryTheme}>Date</Paragraph>
-        <Caption theme={secondaryTheme}>
-          {dayjs(visitor.follow_up_date).format('DD MMM YYYY')}
-        </Caption>
+        <Paragraph>Date</Paragraph>
+        <Caption>{dayjs(visitor.follow_up_date).format('DD MMM YYYY')}</Caption>
       </View>
       <View style={styles.detailRow}>
-        <Paragraph theme={secondaryTheme}>Inquiry for</Paragraph>
-        <Caption theme={secondaryTheme}>
+        <Paragraph>Inquiry for</Paragraph>
+        <Caption>
           {STRUCTURE_TYPE_LABELS[visitor.inquiry_for]}
           {visitor.bhk ? ` - ${visitor.bhk} BHK` : null}
         </Caption>
       </View>
       <View style={styles.detailRow}>
-        <Paragraph theme={secondaryTheme}>Budget Range</Paragraph>
-        <Caption theme={secondaryTheme}>
+        <Paragraph>Budget Range</Paragraph>
+        <Caption>
           {/*TODO: Add amount formatting */}
           Rs. {visitor.budget_from} - Rs.{visitor.budget_to}
         </Caption>
       </View>
       <View style={styles.detailRow}>
-        <Paragraph theme={secondaryTheme}>Current Locality</Paragraph>
-        <Caption theme={secondaryTheme}>{visitor.current_locality}</Caption>
+        <Paragraph>Current Locality</Paragraph>
+        <Caption>{visitor.current_locality}</Caption>
       </View>
       <View style={styles.detailRow}>
-        <Paragraph theme={secondaryTheme}>Priority</Paragraph>
+        <Paragraph>Priority</Paragraph>
         <Caption>
           <CustomBadge
             color={PRIORITY_COLORS[visitor.priority]}
@@ -95,7 +93,7 @@ function RenderVisitorDetails({visitor, occupationOptions, onNext}) {
         </Caption>
       </View>
       <View style={styles.detailRow}>
-        <Paragraph theme={secondaryTheme}>Status</Paragraph>
+        <Paragraph>Status</Paragraph>
         <Caption>
           <CustomBadge
             color="rgba(72,114,244,0.15)"
@@ -127,7 +125,7 @@ function PersonalTab({
   const [searchQuery, setSearchQuery] = useState();
   const [isFocused, setFocused] = useState(false);
 
-  let {visitorSuggestions, visitors, occupationOptions} = useSelector(
+  const {visitorSuggestions, visitors, occupationOptions} = useSelector(
     (state) => state.sales,
   );
 
@@ -187,7 +185,6 @@ function PersonalTab({
                       }}>
                       <Menu.Item
                         key={index}
-                        theme={secondaryTheme}
                         icon="account-question-outline"
                         title={label}
                       />
@@ -373,12 +370,12 @@ function AddFollowUp(props) {
   ]);
 
   const {user} = useSelector((state) => state.user);
-  let {loading} = useSelector((state) => state.sales);
-  let {assignOptions} = useSelector((state) => state.sales);
+  const {loading} = useSelector((state) => state.sales);
+  const {assignOptions} = useSelector((state) => state.sales);
 
   const updatedAssignOptions = useMemo(() => {
-    let data = [...assignOptions];
-    let index = data.findIndex((item) => item.value === user.id);
+    const data = [...assignOptions];
+    const index = data.findIndex((item) => item.value === user.id);
     if (index === -1) {
       data.unshift({
         value: user.id,

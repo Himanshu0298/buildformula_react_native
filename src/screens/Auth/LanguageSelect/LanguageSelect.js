@@ -6,7 +6,7 @@ import banner from 'assets/images/banner.png';
 import BaseText from 'components/Atoms/BaseText';
 import {useTranslation} from 'react-i18next';
 import Layout from 'utils/Layout';
-import {theme} from 'styles/theme';
+import {secondaryTheme, theme} from 'styles/theme';
 import {useSelector} from 'react-redux';
 import useAppActions from 'redux/actions/appActions';
 
@@ -58,7 +58,7 @@ function LanguageSelect(props) {
       </View>
       <View style={styles.contentContainer}>
         <View style={styles.headlineContainer}>
-          <Headline style={{fontWeight: '500', fontSize: 26}}>
+          <Headline theme={secondaryTheme} style={styles.headline}>
             Select Language
           </Headline>
         </View>
@@ -123,6 +123,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  headline: {
+    fontWeight: '500',
+    fontSize: 26,
+  },
   buttonContainer: {
     width: '100%',
     flex: 1.5,
@@ -138,7 +142,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
   },
   buttonText: {
-    color: theme.colors.text,
+    color: '#fff',
     fontWeight: 'bold',
     fontSize: 18,
   },

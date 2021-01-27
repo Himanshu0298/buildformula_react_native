@@ -21,10 +21,8 @@ function RenderRow({row}) {
       {row.map(({label, value}, index) => {
         return (
           <View key={index} style={styles.cell}>
-            <Text theme={secondaryTheme}>{label}:</Text>
-            <Caption style={{flexShrink: 1}} theme={secondaryTheme}>
-              {value}
-            </Caption>
+            <Text>{label}:</Text>
+            <Caption style={{flexShrink: 1}}>{value}</Caption>
           </View>
         );
       })}
@@ -125,9 +123,7 @@ function RatesSection({bookingDetails, bookingAreaUnitType, theme}) {
 
   return (
     <View style={styles.sectionContainer}>
-      <Headline style={{fontSize: 22, marginBottom: 15}} theme={secondaryTheme}>
-        Booking Rate
-      </Headline>
+      <Headline style={{fontSize: 22, marginBottom: 15}}>Booking Rate</Headline>
       <Subheading style={{color: theme.colors.primary}}>
         BASIC AMOUNT
       </Subheading>
@@ -207,14 +203,14 @@ function RatesSection({bookingDetails, bookingAreaUnitType, theme}) {
             <Caption style={{color: theme.colors.primary, marginTop: 10}}>
               Total Basic Amount
             </Caption>
-            <Caption theme={secondaryTheme}>{}</Caption>
+            <Caption>{}</Caption>
           </>
         ) : null}
         <View style={styles.totalContainer}>
           <Text style={{color: theme.colors.primary}}>
             Total amount (Basic amount + Other charges)
           </Text>
-          <Text theme={secondaryTheme}>
+          <Text>
             {round(main_total_amount + Number(total_other_charges))} Rs.
           </Text>
         </View>
@@ -458,9 +454,7 @@ function PaymentSection(props) {
 
   return (
     <View style={styles.sectionContainer}>
-      <Headline style={{fontSize: 22}} theme={secondaryTheme}>
-        Payment Installment
-      </Headline>
+      <Headline style={{fontSize: 22}}>Payment Installment</Headline>
       <View style={styles.sectionBody}>
         <RenderRow
           row={[

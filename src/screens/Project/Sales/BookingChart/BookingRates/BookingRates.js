@@ -179,7 +179,7 @@ function RenderRates(props) {
           onChangeText={(value) => handleAmountChange('area_amount', value)}
           onBlur={handleBlur('area_amount')}
           error={errors.area_amount}
-          left={<TextInput.Affix theme={secondaryTheme} text="₹" />}
+          left={<TextInput.Affix text="₹" />}
         />
       </View>
     </>
@@ -246,7 +246,7 @@ function RenderCharges({formikProps, t}) {
       <Portal>
         <Dialog visible={chargeModal} onDismiss={toggleChargeModal}>
           <Dialog.Content>
-            <Subheading theme={secondaryTheme}>Add a new Charge :</Subheading>
+            <Subheading>Add a new Charge :</Subheading>
             <View style={styles.chargeInputContainer}>
               <View style={{flex: 1, paddingHorizontal: 5}}>
                 <RenderInput
@@ -267,7 +267,7 @@ function RenderCharges({formikProps, t}) {
                   value={charge.amount}
                   onChangeText={(value) => setValue('amount', value)}
                   error={chargeError.amount}
-                  left={<TextInput.Affix theme={secondaryTheme} text="₹" />}
+                  left={<TextInput.Affix text="₹" />}
                 />
               </View>
             </View>
@@ -288,7 +288,7 @@ function RenderCharges({formikProps, t}) {
               editable={false}
               containerStyles={styles.chargeInput}
               value={item.amount}
-              left={<TextInput.Affix theme={secondaryTheme} text="₹" />}
+              left={<TextInput.Affix text="₹" />}
             />
             <OpacityButton
               color={'#FF5D5D'}
@@ -348,34 +348,32 @@ function FormContent(props) {
           <Subheading style={{color: theme.colors.primary}}>
             2. Booking Rate
           </Subheading>
-          <Caption theme={secondaryTheme}>
-            Enter all Area first for auto adjustment
-          </Caption>
+          <Caption>Enter all Area first for auto adjustment</Caption>
 
           <RenderRates formikProps={formikProps} t={t} />
 
           <RenderCharges t={t} formikProps={formikProps} />
           <View style={styles.totalContainer}>
-            <Subheading theme={secondaryTheme}>Total other charges</Subheading>
+            <Subheading>Total other charges</Subheading>
             <RenderInput
               disabled={true}
               value={values.other_charges_amount}
               containerStyles={{width: '50%'}}
               placeholder={'Total charges'}
-              left={<TextInput.Affix theme={secondaryTheme} text="₹" />}
+              left={<TextInput.Affix text="₹" />}
             />
           </View>
           <Subheading style={{color: theme.colors.primary}}>
             Total amount + Other charges
           </Subheading>
           <View style={styles.totalContainer}>
-            <Subheading theme={secondaryTheme}>Total amount</Subheading>
+            <Subheading>Total amount</Subheading>
             <RenderInput
               disabled={true}
               value={totalAmount || 0}
               containerStyles={{width: '50%'}}
               placeholder={'Total amount'}
-              left={<TextInput.Affix theme={secondaryTheme} text="₹" />}
+              left={<TextInput.Affix text="₹" />}
             />
           </View>
         </View>

@@ -6,7 +6,7 @@ import {StyleSheet, View} from 'react-native';
 
 const EmptyColumn = ({emptyText}) => (
   <View style={styles.container}>
-    <Caption theme={secondaryTheme}>{emptyText}</Caption>
+    <Caption>{emptyText}</Caption>
   </View>
 );
 

@@ -53,7 +53,7 @@ function FloorSelector({
     <>
       <FormTitle title={t(title)} subTitle={t(subtitle)} />
       <View style={styles.container}>
-        <Subheading theme={secondaryTheme}>{t('label_towers')}</Subheading>
+        <Subheading>{t('label_towers')}</Subheading>
         <TowersList
           towers={towerCount}
           selectedTower={selectedTower}
@@ -61,9 +61,7 @@ function FloorSelector({
         />
         {selectedTower ? (
           <>
-            <Subheading theme={secondaryTheme} style={styles.floorTitle}>
-              Floors
-            </Subheading>
+            <Subheading style={styles.floorTitle}>Floors</Subheading>
             <FlatList
               data={Object.keys(floors)}
               contentContainerStyle={{flexGrow: 1, paddingBottom: 30}}

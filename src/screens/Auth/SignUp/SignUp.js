@@ -84,10 +84,12 @@ function RenderContent(props) {
     <View style={styles.contentContainer}>
       {!adminSignUp ? (
         <View style={styles.headlineContainer}>
-          <Headline style={{fontWeight: 'bold'}}>
+          <Headline theme={secondaryTheme} style={{fontWeight: 'bold'}}>
             {t('heading_signup')}
           </Headline>
-          <Subheading>{t('subHeading_signUp')}</Subheading>
+          <Subheading theme={secondaryTheme}>
+            {t('subHeading_signUp')}
+          </Subheading>
         </View>
       ) : (
         <Subheading>
@@ -105,7 +107,7 @@ function RenderContent(props) {
           autoCapitalize="none"
           returnKeyType={'next'}
           onSubmitEditing={() => {
-            lastRef && lastRef.current.focus();
+            lastRef?.current.focus();
             bottomSheetRef?.current?.snapTo(0);
           }}
           error={errors.firstName}
@@ -120,7 +122,7 @@ function RenderContent(props) {
           onBlur={handleBlur('lastName')}
           autoCapitalize="none"
           returnKeyType={'next'}
-          onSubmitEditing={() => phoneRef && phoneRef.current.focus()}
+          onSubmitEditing={() => phoneRef?.current.focus()}
           error={errors.lastName}
         />
         <CustomInput
@@ -135,8 +137,14 @@ function RenderContent(props) {
           onBlur={handleBlur('phone')}
           autoCapitalize="none"
           returnKeyType={'next'}
-          onSubmitEditing={() => emailRef && emailRef.current.focus()}
-          left={<TextInput.Affix style={{marginRight: 2}} text="+91" />}
+          onSubmitEditing={() => emailRef?.current.focus()}
+          left={
+            <TextInput.Affix
+              theme={secondaryTheme}
+              style={{marginRight: 2}}
+              text="+91"
+            />
+          }
           error={errors.phone}
         />
         <CustomInput
@@ -150,7 +158,7 @@ function RenderContent(props) {
           placeholder={t('msgBlankEmail')}
           autoCapitalize="none"
           returnKeyType={'next'}
-          onSubmitEditing={() => passwordRef && passwordRef.current.focus()}
+          onSubmitEditing={() => passwordRef?.current.focus()}
           error={errors.email}
         />
         <CustomInput
@@ -165,10 +173,11 @@ function RenderContent(props) {
           autoCapitalize="none"
           returnKeyType={'next'}
           secureTextEntry={!showPass}
-          onSubmitEditing={() => cnfPassRef && cnfPassRef.current.focus()}
+          onSubmitEditing={() => cnfPassRef?.current.focus()}
           error={errors.password}
           right={
             <TextInput.Icon
+              theme={secondaryTheme}
               name={showPass ? 'eye-off' : 'eye'}
               onPress={() => toggleShowPass((v) => !v)}
             />
@@ -189,6 +198,7 @@ function RenderContent(props) {
           secureTextEntry={!showCnfPass}
           right={
             <TextInput.Icon
+              theme={secondaryTheme}
               name={showCnfPass ? 'eye-off' : 'eye'}
               onPress={() => toggleShowCnfPass((v) => !v)}
             />
@@ -306,7 +316,7 @@ function SignUp(props) {
       validationSchema={schema}
       onSubmit={async (values) => {
         if (!adminSignUp) {
-          let formData = new FormData();
+          const formData = new FormData();
 
           formData.append('email', values.email);
           formData.append('phone', values.phone);
@@ -332,7 +342,7 @@ function SignUp(props) {
             adminData: values,
           });
         } else if (adminId === 3) {
-          let formData = new FormData();
+          const formData = new FormData();
 
           formData.append('project_id', project.project_id);
           formData.append('first_name_1', adminData.firstName);
@@ -373,9 +383,8 @@ function SignUp(props) {
                 </View>
               ) : (
                 <View style={styles.noteContainer}>
-                  <Text theme={secondaryTheme}>
+                  <Text>
                     <Text
-                      theme={secondaryTheme}
                       style={{color: theme.colors.primary, fontWeight: 'bold'}}>
                       {'NOTE: '}
                     </Text>

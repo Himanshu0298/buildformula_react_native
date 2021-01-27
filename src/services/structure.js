@@ -1,7 +1,7 @@
 import {instance, useConfig} from './init';
 
 export default function useStructure() {
-  let {config} = useConfig();
+  const {config} = useConfig();
   return {
     updateStructureTypes: (data) => {
       return instance.post('/project/update_types', data, config());

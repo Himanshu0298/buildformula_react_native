@@ -20,7 +20,7 @@ import useSalesActions from 'redux/actions/salesActions';
 import {useSelector} from 'react-redux';
 import dayjs from 'dayjs';
 import Spinner from 'react-native-loading-spinner-overlay';
-import {secondaryTheme, theme} from 'styles/theme';
+import {theme} from 'styles/theme';
 import ProjectHeader from 'components/Molecules/Layout/ProjectHeader';
 import {PRIORITY_COLORS, STRUCTURE_TYPE_LABELS} from 'utils/constant';
 import Modal from 'react-native-modal';
@@ -40,36 +40,20 @@ function StatsRow({visitorAnalytics}) {
   return (
     <View style={styles.statsRowMainContainer}>
       <View style={styles.rowItemContainer}>
-        <Title theme={secondaryTheme} style={styles.rowTitle}>
-          {totalVisitors}
-        </Title>
-        <Caption theme={secondaryTheme} style={styles.rowLabel}>
-          Total
-        </Caption>
+        <Title style={styles.rowTitle}>{totalVisitors}</Title>
+        <Caption style={styles.rowLabel}>Total</Caption>
       </View>
       <View style={styles.rowItemContainer}>
-        <Title theme={secondaryTheme} style={styles.rowTitle}>
-          {weeklyVisitors}
-        </Title>
-        <Caption theme={secondaryTheme} style={styles.rowLabel}>
-          Weekly
-        </Caption>
+        <Title style={styles.rowTitle}>{weeklyVisitors}</Title>
+        <Caption style={styles.rowLabel}>Weekly</Caption>
       </View>
       <View style={styles.rowItemContainer}>
-        <Title theme={secondaryTheme} style={styles.rowTitle}>
-          {monthlyVisitors}
-        </Title>
-        <Caption theme={secondaryTheme} style={styles.rowLabel}>
-          Monthly
-        </Caption>
+        <Title style={styles.rowTitle}>{monthlyVisitors}</Title>
+        <Caption style={styles.rowLabel}>Monthly</Caption>
       </View>
       <View style={styles.rowItemContainer}>
-        <Title theme={secondaryTheme} style={styles.rowTitle}>
-          {yearlyVisitors}
-        </Title>
-        <Caption theme={secondaryTheme} style={styles.rowLabel}>
-          Yearly
-        </Caption>
+        <Title style={styles.rowTitle}>{yearlyVisitors}</Title>
+        <Caption style={styles.rowLabel}>Yearly</Caption>
       </View>
     </View>
   );
@@ -89,23 +73,19 @@ function RenderVisitorItem({data, index, toggleSheet}) {
     <TouchableOpacity onPress={() => toggleSheet(index)}>
       <View style={styles.rowMainContainer}>
         <View style={styles.rowItemContainer}>
-          <Subheading
-            theme={secondaryTheme}
-            style={[styles.visitorTitle, styles.name]}>
+          <Subheading style={[styles.visitorTitle, styles.name]}>
             {first_name} {last_name}
           </Subheading>
-          <Caption theme={secondaryTheme} style={styles.rowLabel}>
-            +91 {phone}
-          </Caption>
+          <Caption style={styles.rowLabel}>+91 {phone}</Caption>
         </View>
         <View style={styles.rowItemContainer}>
-          <Subheading theme={secondaryTheme} style={styles.visitorTitle}>
+          <Subheading style={styles.visitorTitle}>
             {dayjs(follow_up_date).format('DD MMM')}
           </Subheading>
           <CustomBadge color={PRIORITY_COLORS[priority]} label={priority} />
         </View>
         <View style={styles.rowItemContainer}>
-          <Subheading theme={secondaryTheme} style={styles.visitorTitle}>
+          <Subheading style={styles.visitorTitle}>
             {STRUCTURE_TYPE_LABELS[inquiry_for]}
           </Subheading>
           <CustomBadge
@@ -151,7 +131,7 @@ function RenderContent({
         }
         ListEmptyComponent={
           <View style={styles.noResultContainer}>
-            <Subheading theme={secondaryTheme}>{'No Data Found'}</Subheading>
+            <Subheading>{'No Data Found'}</Subheading>
           </View>
         }
       />
@@ -171,46 +151,36 @@ function RenderVisitorDetails({data = {}, handleClose, handleEdit}) {
       style={{justifyContent: 'flex-end', margin: 0}}>
       <View style={styles.sheetContainer}>
         <View style={styles.sheetRow}>
-          <Caption theme={secondaryTheme} style={styles.sheetRowLabel}>
-            Visitor Name:
-          </Caption>
-          <Caption theme={secondaryTheme} style={styles.sheetRowValue}>
+          <Caption style={styles.sheetRowLabel}>Visitor Name:</Caption>
+          <Caption style={styles.sheetRowValue}>
             {' '}
             {data.first_name} {data.last_name}
           </Caption>
         </View>
         <View style={styles.sheetRow}>
-          <Caption theme={secondaryTheme} style={styles.sheetRowLabel}>
-            Visitor Phone:
-          </Caption>
-          <Caption theme={secondaryTheme} style={styles.sheetRowValue}>
+          <Caption style={styles.sheetRowLabel}>Visitor Phone:</Caption>
+          <Caption style={styles.sheetRowValue}>
             {' +91'}
             {data.phone}
           </Caption>
         </View>
         <View style={styles.sheetRow}>
-          <Caption theme={secondaryTheme} style={styles.sheetRowLabel}>
-            Budget Range:
-          </Caption>
-          <Caption theme={secondaryTheme} style={styles.sheetRowValue}>
+          <Caption style={styles.sheetRowLabel}>Budget Range:</Caption>
+          <Caption style={styles.sheetRowValue}>
             {' Rs. '}
             {data.budget_from} {'-'} {' Rs. '}
             {data.budget_to}
           </Caption>
         </View>
         <View style={styles.sheetRow}>
-          <Caption theme={secondaryTheme} style={styles.sheetRowLabel}>
-            Date:
-          </Caption>
-          <Caption theme={secondaryTheme} style={styles.sheetRowValue}>
+          <Caption style={styles.sheetRowLabel}>Date:</Caption>
+          <Caption style={styles.sheetRowValue}>
             {' '}
             {dayjs(data.follow_up_date).format('DD MMM')}
           </Caption>
         </View>
         <View style={styles.sheetRow}>
-          <Caption theme={secondaryTheme} style={styles.sheetRowLabel}>
-            Priority:
-          </Caption>
+          <Caption style={styles.sheetRowLabel}>Priority:</Caption>
           <CustomBadge
             color={PRIORITY_COLORS[data.priority]}
             style={{marginLeft: 10}}
@@ -218,18 +188,14 @@ function RenderVisitorDetails({data = {}, handleClose, handleEdit}) {
           />
         </View>
         <View style={styles.sheetRow}>
-          <Caption theme={secondaryTheme} style={styles.sheetRowLabel}>
-            Inquiry:
-          </Caption>
-          <Caption theme={secondaryTheme} style={styles.sheetRowValue}>
+          <Caption style={styles.sheetRowLabel}>Inquiry:</Caption>
+          <Caption style={styles.sheetRowValue}>
             {' '}
             {STRUCTURE_TYPE_LABELS[data.inquiry_for]} {data.bhk} BHK
           </Caption>
         </View>
         <View style={styles.sheetRow}>
-          <Caption theme={secondaryTheme} style={styles.sheetRowLabel}>
-            Status:
-          </Caption>
+          <Caption style={styles.sheetRowLabel}>Status:</Caption>
           <CustomBadge
             color="rgba(72,114,244,0.15)"
             label={data.title || 'NEW VISITOR'}
@@ -238,13 +204,8 @@ function RenderVisitorDetails({data = {}, handleClose, handleEdit}) {
           />
         </View>
         <View style={styles.sheetRow}>
-          <Caption theme={secondaryTheme} style={styles.sheetRowLabel}>
-            Remarks:
-          </Caption>
-          <Caption theme={secondaryTheme} style={styles.sheetRowValue}>
-            {' '}
-            {data.remarks}
-          </Caption>
+          <Caption style={styles.sheetRowLabel}>Remarks:</Caption>
+          <Caption style={styles.sheetRowValue}> {data.remarks}</Caption>
         </View>
 
         <View style={styles.editButtonContainer}>
@@ -352,7 +313,6 @@ function Inquiry(props) {
         }}
         icon={selectDialog ? 'window-close' : 'plus'}
         small
-        theme={secondaryTheme}
         onPress={toggleSelectDialog}
         onStateChange={onStateChange}
         actions={[

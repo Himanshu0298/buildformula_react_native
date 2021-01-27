@@ -42,17 +42,17 @@ function RenderContacts({item}) {
           size={30}
         />
         <View style={styles.visitorContainer}>
-          <Subheading theme={secondaryTheme}>
+          <Subheading>
             {item.first_name} {item.last_name}
           </Subheading>
-          <Caption theme={secondaryTheme}>+91 {item.phone}</Caption>
+          <Caption>+91 {item.phone}</Caption>
         </View>
       </View>
       <View style={styles.rightContainer}>
-        <Subheading theme={secondaryTheme}>
+        <Subheading>
           {get_user.first_name} {get_user.last_name}
         </Subheading>
-        <Caption theme={secondaryTheme}>{get_role.role_name}</Caption>
+        <Caption>{get_role.role_name}</Caption>
       </View>
     </View>
   );
@@ -65,7 +65,7 @@ function RenderHeader({data = {}, toggleModal, handleDelete}) {
   return (
     <>
       <View style={styles.headContainer}>
-        <Subheading theme={secondaryTheme}>{title}</Subheading>
+        <Subheading>{title}</Subheading>
         <View style={styles.iconContainer}>
           <TouchableOpacity style={styles.icon}>
             <MaterialIcons
@@ -93,7 +93,7 @@ function RenderHeader({data = {}, toggleModal, handleDelete}) {
         </View>
       </View>
       <TouchableOpacity onPress={toggleModal} style={styles.addNewButton}>
-        <Caption theme={secondaryTheme}>+ Add contact</Caption>
+        <Caption>+ Add contact</Caption>
       </TouchableOpacity>
     </>
   );
@@ -104,7 +104,7 @@ function RenderAddNew({handleAddNew}) {
 
   return (
     <View style={styles.addNewContainer}>
-      <Subheading theme={secondaryTheme}>Add Pipeline stage</Subheading>
+      <Subheading>Add Pipeline stage</Subheading>
       <View style={styles.pipelineInput}>
         <RenderInput
           id="stage"
@@ -149,7 +149,7 @@ function AddContactDialog({open, t, handleClose, moveContact}) {
   const [searchQuery, setSearchQuery] = React.useState();
   const [selectedVisitor, setSelectedVisitor] = React.useState();
 
-  let {visitorSuggestions} = useSelector((state) => state.sales);
+  const {visitorSuggestions} = useSelector((state) => state.sales);
 
   const filteredVisitors = React.useMemo(() => {
     if (searchQuery) {
@@ -174,7 +174,7 @@ function AddContactDialog({open, t, handleClose, moveContact}) {
           style={{marginBottom: 200}}>
           <Dialog.Content>
             <View style={styles.addContactContainer}>
-              <Subheading theme={secondaryTheme}>Add Contact</Subheading>
+              <Subheading>Add Contact</Subheading>
               <Searchbar
                 theme={{...secondaryTheme, roundness: 12}}
                 placeholder={t('label_search_visitors')}
@@ -205,7 +205,6 @@ function AddContactDialog({open, t, handleClose, moveContact}) {
                           }}>
                           <Menu.Item
                             key={index}
-                            theme={secondaryTheme}
                             icon="account-question-outline"
                             title={label}
                           />
@@ -325,7 +324,7 @@ export default function SalesPipeline(props) {
     moveVisitor,
   } = useSalesActions();
 
-  let {pipelines, loading} = useSelector((state) => state.sales);
+  const {pipelines, loading} = useSelector((state) => state.sales);
   const {selectedProject} = useSelector((state) => state.project);
   const {user} = useSelector((state) => state.user);
 
@@ -360,7 +359,7 @@ export default function SalesPipeline(props) {
       <Spinner visible={loading} textContent={''} />
       {pipelines.length === 0 ? (
         <View style={styles.noResultContainer}>
-          <Subheading theme={secondaryTheme}>{'No Data Found'}</Subheading>
+          <Subheading>{'No Data Found'}</Subheading>
         </View>
       ) : (
         <>
