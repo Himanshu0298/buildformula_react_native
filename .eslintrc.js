@@ -13,6 +13,7 @@ module.exports = {
     },
   },
   rules: {
+    'linebreak-style': 0,
     'react-native/no-inline-styles': 0,
     'react-native/no-unused-styles': 2,
     'no-unused-vars': 1,
