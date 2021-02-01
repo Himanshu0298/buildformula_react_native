@@ -6,12 +6,13 @@ import {theme} from 'styles/theme';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import ActivityChatModal from './Components/ActivityChat';
 import FileSection from './Components/FileSection';
+import BankDetailsSection from './Components/BankDetailsSection';
 
 function BankLoans(props) {
   const {route} = props;
   const {project_id, unit} = route?.params || {};
 
-  const [activityModal, setActivityModal] = React.useState(true);
+  const [activityModal, setActivityModal] = React.useState(false);
 
   const {bankDetails} = useSelector(({customer}) => customer);
 
@@ -41,6 +42,7 @@ function BankLoans(props) {
               Activity
             </Button>
           </View>
+          <BankDetailsSection {...props} {...{bankDetails}} />
           <FileSection {...props} {...{bankDetails}} />
         </KeyboardAwareScrollView>
       </View>

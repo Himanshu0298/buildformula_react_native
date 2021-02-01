@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 function BaseText({style, variant, children, ...restProps}) {
   const defaultStyles = {
     fontFamily: `Nunito-${variant.charAt(0).toUpperCase() + variant.slice(1)}`,
-    color: '#fff',
+    color: '#000',
   };
 
   return (

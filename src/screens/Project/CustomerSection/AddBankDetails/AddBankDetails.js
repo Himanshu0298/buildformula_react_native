@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {useTranslation} from 'react-i18next';
 import {StyleSheet, View, TouchableOpacity, Image} from 'react-native';
-import {Subheading, withTheme, TextInput, IconButton} from 'react-native-paper';
+import {Subheading, withTheme, IconButton} from 'react-native-paper';
 import {theme} from 'styles/theme';
 import backArrow from 'assets/images/back_arrow.png';
 import RenderInput from 'components/Atoms/RenderInput';
@@ -14,67 +14,37 @@ import useCustomerActions from 'redux/actions/customerActions';
 import _ from 'lodash';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import RenderTextBox from 'components/Atoms/RenderTextbox';
+import FileSelector from 'components/Atoms/FileSelector';
 
 const schema = Yup.object().shape({
-  bank_person: Yup.string().trim().required('Required'),
-  phone: Yup.string().trim().required('Required'),
-  email: Yup.string().email('Invalid').trim().required('Required'),
   bank_name: Yup.string().trim().required('Required'),
   bank_branch: Yup.string().trim().required('Required'),
   bank_address: Yup.string().trim().required('Required'),
+  loan_amount: Yup.number().required('Required'),
+  installment_amount: Yup.number().required('Required'),
 });
 
 function RenderForm({formikProps}) {
-  const {handleChange, handleSubmit, values, handleBlur, errors} = formikProps;
+  const {
+    values,
+    errors,
+    handleChange,
+    handleBlur,
+    handleSubmit,
+    setFieldValue,
+  } = formikProps;
 
   const {t} = useTranslation();
 
-  const bankPersonRef = React.useRef();
-  const phoneRef = React.useRef();
-  const emailRef = React.useRef();
   const bankNameRef = React.useRef();
   const bankBranchRef = React.useRef();
   const addressRef = React.useRef();
+  const installmentAmountRef = React.useRef();
+  const loanAmountRef = React.useRef();
 
   return (
     <>
       <View style={styles.inputsContainer}>
-        <RenderInput
-          name="bank_person"
-          label={t('label_bank_person')}
-          ref={bankPersonRef}
-          containerStyles={styles.input}
-          value={values.bank_person}
-          onChangeText={handleChange('bank_person')}
-          onBlur={handleBlur('bank_person')}
-          onSubmitEditing={() => phoneRef?.current?.focus()}
-          error={errors.bank_person}
-        />
-        <RenderInput
-          name="phone"
-          label={t('label_phone')}
-          ref={phoneRef}
-          keyboardType="number-pad"
-          maxLength={10}
-          containerStyles={styles.input}
-          value={values.phone}
-          onChangeText={handleChange('phone')}
-          onSubmitEditing={() => emailRef?.current?.focus()}
-          onBlur={handleBlur('phone')}
-          error={errors.phone}
-          left={<TextInput.Affix text="+91" />}
-        />
-        <RenderInput
-          name="email"
-          label={t('label_email')}
-          ref={emailRef}
-          containerStyles={styles.input}
-          value={values.email}
-          onChangeText={handleChange('email')}
-          onBlur={handleBlur('email')}
-          onSubmitEditing={() => bankNameRef?.current?.focus()}
-          error={errors.email}
-        />
         <RenderInput
           name="bank_name"
           label={t('label_bank_name')}
@@ -109,6 +79,38 @@ function RenderForm({formikProps}) {
           onBlur={handleBlur('bank_address')}
           onSubmitEditing={handleSubmit}
           error={errors.bank_address}
+        />
+        <FileSelector
+          name="loan_approval_letter"
+          label={t('label_loan_approval_letter')}
+          containerStyles={styles.input}
+          value={values.loan_approval_letter}
+          onChoose={(v) => setFieldValue('loan_approval_letter', v)}
+          onBlur={handleBlur('loan_amount')}
+          onSubmitEditing={() => installmentAmountRef?.current?.focus()}
+          error={errors.loan_amount}
+        />
+        <RenderInput
+          name="loan_amount"
+          label={t('label_loan_amount')}
+          ref={loanAmountRef}
+          containerStyles={styles.input}
+          value={values.loan_amount}
+          onChangeText={handleChange('loan_amount')}
+          onBlur={handleBlur('loan_amount')}
+          onSubmitEditing={() => installmentAmountRef?.current?.focus()}
+          error={errors.loan_amount}
+        />
+        <RenderInput
+          name="installment_amount"
+          label={t('label_installment_amount')}
+          ref={installmentAmountRef}
+          containerStyles={styles.input}
+          value={values.installment_amount}
+          onChangeText={handleChange('installment_amount')}
+          onBlur={handleBlur('installment_amount')}
+          onSubmitEditing={handleSubmit}
+          error={errors.installment_amount}
         />
       </View>
       <View style={styles.actionContainer}>
