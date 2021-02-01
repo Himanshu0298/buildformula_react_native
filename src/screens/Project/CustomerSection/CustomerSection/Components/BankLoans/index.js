@@ -4,7 +4,6 @@ import {
   Button,
   IconButton,
   Subheading,
-  TextInput,
   withTheme,
   Text,
   Caption,
@@ -12,232 +11,23 @@ import {
   Dialog,
 } from 'react-native-paper';
 import {useSelector} from 'react-redux';
-import {secondaryTheme, theme} from 'styles/theme';
+import {theme} from 'styles/theme';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import {useTranslation} from 'react-i18next';
 import RenderInput from 'components/Atoms/RenderInput';
 import BaseText from 'components/Atoms/BaseText';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
-import RenderTextBox from 'components/Atoms/RenderTextbox';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import useCustomerActions from 'redux/actions/customerActions';
-import _ from 'lodash';
 import PdfIcon from 'assets/images/pdf_icon.png';
 import useImagePicker from 'utils/useImagePicker';
-import Modal from 'react-native-modal';
-import dayjs from 'dayjs';
-import InputBar from './Components/InputBar';
-import Timeline from 'components/Atoms/Timeline';
-
-const STATIC = [
-  {
-    name: 'VSHWAN',
-    date: new Date(),
-    msg: 'Please go through the documentation carefully',
-  },
-  {
-    name: 'VSHWAN',
-    date: new Date(),
-    msg: 'Please go through the documentation carefully',
-  },
-  {
-    name: 'VSHWAN',
-    date: new Date(),
-    msg: 'Please go through the documentation carefully',
-  },
-  {
-    name: 'VSHWAN',
-    date: new Date(),
-    msg: 'Please go through the documentation carefully',
-  },
-  {
-    name: 'VSHWAN',
-    date: new Date(),
-    msg: 'Please go through the documentation carefully',
-  },
-  {
-    name: 'VSHWAN',
-    date: new Date(),
-    msg: 'Please go through the documentation carefully',
-  },
-  {
-    name: 'VSHWAN',
-    date: new Date(),
-    msg: 'Please go through the documentation carefully',
-  },
-  {
-    name: 'VSHWAN',
-    date: new Date(),
-    msg: 'Please go through the documentation carefully',
-  },
-  {
-    name: 'VSHWAN',
-    date: new Date(),
-    msg: 'Please go through the documentation carefully',
-  },
-  {
-    name: 'VSHWAN',
-    date: new Date(),
-    msg: 'Please go through the documentation carefully',
-  },
-  {
-    name: 'VSHWAN',
-    date: new Date(),
-    msg: 'Please go through the documentation carefully',
-  },
-  {
-    name: 'VSHWAN',
-    date: new Date(),
-    msg: 'Please go through the documentation carefully',
-  },
-  {
-    name: 'VSHWAN',
-    date: new Date(),
-    msg: 'Please go through the documentation carefully',
-  },
-  {
-    name: 'VSHWAN',
-    date: new Date(),
-    msg: 'Please go through the documentation carefully',
-  },
-  {
-    name: 'VSHWAN',
-    date: new Date(),
-    msg: 'Please go through the documentation carefully',
-  },
-  {
-    name: 'VSHWAN',
-    date: new Date(),
-    msg: 'Please go through the documentation carefully',
-  },
-  {
-    name: 'VSHWAN',
-    date: new Date(),
-    msg: 'Please go through the documentation carefully',
-  },
-];
-
-const schema = Yup.object().shape({
-  bank_person: Yup.string().trim().required('Required'),
-  phone: Yup.string().trim().required('Required'),
-  email: Yup.string().email('Invalid').trim().required('Required'),
-  bank_name: Yup.string().trim().required('Required'),
-  bank_branch: Yup.string().trim().required('Required'),
-  bank_address: Yup.string().trim().required('Required'),
-});
+import ActivityChatModal from './Components/ActivityChat';
 
 const uploadSchema = Yup.object().shape({
   file_reason: Yup.string().trim().required('Required'),
   file_name: Yup.string().trim().required('Required'),
 });
-
-function RenderForm({formikProps}) {
-  const {handleChange, handleSubmit, values, handleBlur, errors} = formikProps;
-
-  const {t} = useTranslation();
-
-  const bankPersonRef = React.useRef();
-  const phoneRef = React.useRef();
-  const emailRef = React.useRef();
-  const bankNameRef = React.useRef();
-  const bankBranchRef = React.useRef();
-  const addressRef = React.useRef();
-
-  return (
-    <>
-      <View style={styles.inputsContainer}>
-        <RenderInput
-          name="bank_person"
-          label={t('label_bank_person')}
-          ref={bankPersonRef}
-          containerStyles={styles.input}
-          value={values.bank_person}
-          onChangeText={handleChange('bank_person')}
-          onBlur={handleBlur('bank_person')}
-          onSubmitEditing={() => phoneRef?.current?.focus()}
-          error={errors.bank_person}
-        />
-        <RenderInput
-          name="phone"
-          label={t('label_phone')}
-          ref={phoneRef}
-          keyboardType="number-pad"
-          maxLength={10}
-          containerStyles={styles.input}
-          value={values.phone}
-          onChangeText={handleChange('phone')}
-          onSubmitEditing={() => emailRef?.current?.focus()}
-          onBlur={handleBlur('phone')}
-          error={errors.phone}
-          left={<TextInput.Affix text="+91" />}
-        />
-        <RenderInput
-          name="email"
-          label={t('label_email')}
-          ref={emailRef}
-          containerStyles={styles.input}
-          value={values.email}
-          onChangeText={handleChange('email')}
-          onBlur={handleBlur('email')}
-          onSubmitEditing={() => bankNameRef?.current?.focus()}
-          error={errors.email}
-        />
-        <RenderInput
-          name="bank_name"
-          label={t('label_bank_name')}
-          ref={bankNameRef}
-          containerStyles={styles.input}
-          value={values.bank_name}
-          onChangeText={handleChange('bank_name')}
-          onBlur={handleBlur('bank_name')}
-          onSubmitEditing={() => bankBranchRef?.current?.focus()}
-          error={errors.bank_name}
-        />
-        <RenderInput
-          name="bank_branch"
-          label={t('label_branch')}
-          ref={bankBranchRef}
-          containerStyles={styles.input}
-          value={values.bank_branch}
-          onChangeText={handleChange('bank_branch')}
-          onBlur={handleBlur('bank_branch')}
-          onSubmitEditing={() => addressRef?.current?.focus()}
-          error={errors.bank_branch}
-        />
-        <RenderTextBox
-          name="bank_address"
-          label={t('label_address')}
-          numberOfLines={5}
-          minHeight={120}
-          ref={addressRef}
-          containerStyles={styles.input}
-          value={values.bank_address}
-          onChangeText={handleChange('bank_address')}
-          onBlur={handleBlur('bank_address')}
-          onSubmitEditing={handleSubmit}
-          error={errors.bank_address}
-        />
-      </View>
-      <View style={styles.actionContainer}>
-        <OpacityButton
-          opacity={0.1}
-          color={theme.colors.primary}
-          style={styles.submitButton}
-          onPress={handleSubmit}>
-          <IconButton
-            icon="share-variant"
-            size={20}
-            color={theme.colors.primary}
-          />
-          <BaseText style={styles.buttonText}>
-            {'Share with bank person'}
-          </BaseText>
-        </OpacityButton>
-      </View>
-    </>
-  );
-}
 
 function RenderFile({file, remove, handleFileRemove}) {
   const {file_name, name, file_reason, id} = file;
@@ -394,123 +184,32 @@ function RenderFiles(props) {
   );
 }
 
-function renderDetail(rowData, sectionID, rowID) {
-  const {name, date, msg} = rowData;
-  return (
-    <View style={styles.messageContainer}>
-      <View style={styles.messageTitle}>
-        <Caption>{name} commented</Caption>
-        <Caption>{dayjs(date).format('DD MMM YYYY, HH:mm A')}</Caption>
-      </View>
-      <View style={{marginTop: 2}}>
-        <Text>"{msg}"</Text>
-      </View>
-    </View>
-  );
-}
-
-function ActivityModal({open, handleClose}) {
-  const timelineRef = React.createRef();
-
-  const [message, setMessage] = React.useState('');
-
-  const onSendPressed = () => {
-    console.log('----->onSendPressed ');
-  };
-
-  const onChangeText = (text) => {
-    setMessage(text);
-  };
-
-  const onSizeChange = () => {
-    console.log('----->onSizeChange ');
-    timelineRef?.scrollToEnd?.({animated: false});
-  };
-
-  return (
-    <Modal
-      isVisible={open}
-      backdropOpacity={0.4}
-      onBackButtonPress={handleClose}
-      onBackdropPress={handleClose}
-      style={{justifyContent: 'flex-end', margin: 0}}>
-      <View style={styles.sheetContainer}>
-        <View style={styles.closeContainer}>
-          <IconButton
-            icon="close-circle"
-            size={25}
-            onPress={handleClose}
-            color="grey"
-          />
-        </View>
-        <Subheading
-          style={{
-            color: theme.colors.primary,
-            marginBottom: 10,
-            marginLeft: 10,
-          }}>
-          BANK LOAN ACTIVITY
-        </Subheading>
-        <Timeline
-          options={{ref: timelineRef}}
-          data={STATIC}
-          circleSize={10}
-          lineWidth={1}
-          circleColor={theme.colors.primary}
-          lineColor={theme.colors.primary}
-          timeContainerStyle={{minWidth: 52, marginTop: -5}}
-          renderTime={() => <View />}
-          renderDetail={renderDetail}
-        />
-        <InputBar
-          {...{
-            onSendPressed,
-            onChangeText,
-            onSizeChange,
-            value: message,
-          }}
-        />
-      </View>
-    </Modal>
-  );
-}
-
 function BankLoans(props) {
   const {route} = props;
   const {project_id, unit} = route?.params || {};
 
-  const [activityModal, setActivityModal] = React.useState(false);
+  const [activityModal, setActivityModal] = React.useState(true);
 
   const {bankDetails} = useSelector(({customer}) => customer);
-
-  const {updateBankDetails} = useCustomerActions();
-
-  const initialValues = React.useMemo(() => {
-    if (bankDetails.details) {
-      return _.pick(bankDetails.details, [
-        'bank_branch',
-        'bank_name',
-        'email',
-        'bank_person',
-        'phone',
-        'bank_address',
-      ]);
-    }
-    return {};
-  }, [bankDetails.details]);
 
   const toggleActivityModal = () => setActivityModal((v) => !v);
 
   return (
     <>
-      <ActivityModal open={activityModal} handleClose={toggleActivityModal} />
+      <ActivityChatModal
+        open={activityModal}
+        handleClose={toggleActivityModal}
+      />
       <View style={styles.container}>
         <KeyboardAwareScrollView
           contentContainerStyle={styles.scrollView}
           showsVerticalScrollIndicator={false}>
           <View style={styles.headingRow}>
-            <Subheading style={{color: theme.colors.primary, marginBottom: 10}}>
-              BANK DETAILS
+            <Subheading
+              style={{
+                color: theme.colors.primary,
+              }}>
+              FINALIZED BANK DETAILS
             </Subheading>
             <Button
               icon="format-list-bulleted"
@@ -519,24 +218,6 @@ function BankLoans(props) {
               Activity
             </Button>
           </View>
-          <Formik
-            validateOnBlur={false}
-            validateOnChange={false}
-            initialValues={initialValues}
-            enableReinitialize
-            validationSchema={schema}
-            onSubmit={async (values) => {
-              const data = {...values};
-
-              data.project_id = project_id;
-              data.unit_id = unit.unitId;
-
-              updateBankDetails(data);
-            }}>
-            {(formikProps) => (
-              <RenderForm formikProps={formikProps} {...props} />
-            )}
-          </Formik>
           <RenderFiles {...props} {...{bankDetails}} />
         </KeyboardAwareScrollView>
       </View>
@@ -557,10 +238,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-  },
-  inputsContainer: {
-    width: '100%',
-    flex: 1,
   },
   input: {
     paddingVertical: 7,
@@ -596,28 +273,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-  },
-  sheetContainer: {
-    backgroundColor: '#fff',
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-    minHeight: '90%',
-    paddingTop: 10,
-    borderWidth: 1,
-    paddingRight: 10,
-  },
-  closeContainer: {
-    alignItems: 'flex-end',
-  },
-  messageContainer: {
-    backgroundColor: '#EFEFEF',
-    padding: 5,
-    borderRadius: 5,
-  },
-  messageTitle: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
   },
 });
 
