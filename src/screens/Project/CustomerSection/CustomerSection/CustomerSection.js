@@ -68,7 +68,7 @@ function CustomerSection(props) {
   const {user} = useSelector((state) => state.user);
   const {loading} = useSelector((state) => state.customer);
 
-  const [selectedTab, setSelectedTab] = React.useState(4);
+  const [selectedTab, setSelectedTab] = React.useState(2);
   const [routes] = React.useState([
     {key: 0, title: 'DETAILS'},
     {key: 1, title: 'BOOKING FORM'},

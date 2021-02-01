@@ -202,6 +202,7 @@ export default {
 
       //Customer Section
       title_customer_section: 'Customer’s Section',
+      title_finalized_bank_details: 'Finalized bank details',
       subtitle_customer_section: 'Select a customer to see there booking form',
       title_customer_details: 'Customer’s Details',
       text_upload_photo: 'Upload Photo',
