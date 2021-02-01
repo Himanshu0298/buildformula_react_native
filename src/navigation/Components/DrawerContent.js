@@ -94,8 +94,8 @@ const PROJECT_DRAWER_ITEMS = [
         icon: 'clock-outline',
       },
       {
-        route: 'AssignTask',
-        label: 'Assign Task',
+        route: 'Lineup',
+        label: 'Lineup',
         activeIcon: ({color, size}) => (
           <Image
             source={AssignTaskActive}

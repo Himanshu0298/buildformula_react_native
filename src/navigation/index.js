@@ -57,7 +57,7 @@ import AddBankDetails from 'screens/Project/CustomerSection/AddBankDetails';
 //Project : Project management screens
 import ProjectSchedule from '../screens/Project/ProjectManagement/ProjectSchedule';
 import MainPhase from '../screens/Project/ProjectManagement/MainPhase';
-import AssignTask from '../screens/Project/ProjectManagement/AssignTask';
+import Lineup from '../screens/Project/ProjectManagement/LineUp';
 import ProcessChart from '../screens/Project/ProjectManagement/ProcessChart/ProcessChart';
 //Project : Material management screens
 import Estimation from '../screens/Project/MaterialManagement/Estimation';
@@ -237,7 +237,7 @@ function ProjectDrawer() {
       <Drawer.Screen name="CustomerSection" component={CustomerSectionStack} />
       <Drawer.Screen name="ProjectSchedule" component={ProjectSchedule} />
       <Drawer.Screen name="MainPhase" component={MainPhase} />
-      <Drawer.Screen name="AssignTask" component={AssignTask} />
+      <Drawer.Screen name="Lineup" component={Lineup} />
       <Drawer.Screen name="ProcessChart" component={ProcessChart} />
       <Drawer.Screen name="Estimation" component={Estimation} />
       <Drawer.Screen name="RequestForPrice" component={RequestForPrice} />

@@ -19,7 +19,7 @@ import {
   Text,
   Button,
 } from 'react-native-paper';
-import {secondaryTheme, theme} from 'styles/theme';
+import {theme} from 'styles/theme';
 import * as Yup from 'yup';
 
 const schema = Yup.object().shape({
