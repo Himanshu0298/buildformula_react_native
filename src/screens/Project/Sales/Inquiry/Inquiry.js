@@ -82,7 +82,11 @@ function RenderVisitorItem({data, index, toggleSheet}) {
           <Subheading style={styles.visitorTitle}>
             {dayjs(follow_up_date).format('DD MMM')}
           </Subheading>
-          <CustomBadge color={PRIORITY_COLORS[priority]} label={priority} />
+          <CustomBadge
+            color={PRIORITY_COLORS[priority]}
+            label={priority}
+            style={styles.badge}
+          />
         </View>
         <View style={styles.rowItemContainer}>
           <Subheading style={styles.visitorTitle}>
@@ -92,6 +96,7 @@ function RenderVisitorItem({data, index, toggleSheet}) {
             color="rgba(72,114,244,0.15)"
             label={data.title || 'NEW VISITOR'}
             labelStyles={styles.statusLabel}
+            style={styles.badge}
           />
         </View>
       </View>
@@ -183,7 +188,7 @@ function RenderVisitorDetails({data = {}, handleClose, handleEdit}) {
           <Caption style={styles.sheetRowLabel}>Priority:</Caption>
           <CustomBadge
             color={PRIORITY_COLORS[data.priority]}
-            style={{marginLeft: 10}}
+            style={[styles.badge, {marginLeft: 10}]}
             label={data.priority}
           />
         </View>
@@ -199,7 +204,7 @@ function RenderVisitorDetails({data = {}, handleClose, handleEdit}) {
           <CustomBadge
             color="rgba(72,114,244,0.15)"
             label={data.title || 'NEW VISITOR'}
-            style={{marginLeft: 10}}
+            style={[styles.badge, {marginLeft: 10}]}
             labelStyles={styles.statusLabel}
           />
         </View>
@@ -382,6 +387,11 @@ const styles = StyleSheet.create({
     fontFamily: 'Nunito-SemiBold',
     fontSize: 14,
   },
+  badge: {
+    borderRadius: 20,
+    paddingHorizontal: 15,
+    paddingVertical: 2,
+  },
   name: {
     textTransform: 'capitalize',
   },
@@ -393,7 +403,6 @@ const styles = StyleSheet.create({
   fab: {
     position: 'absolute',
     right: 0,
-    bottom: 50,
   },
   scrollView: {
     flexGrow: 1,

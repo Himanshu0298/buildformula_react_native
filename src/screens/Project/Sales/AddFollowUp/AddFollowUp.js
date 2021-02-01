@@ -89,6 +89,7 @@ function RenderVisitorDetails({visitor, occupationOptions, onNext}) {
           <CustomBadge
             color={PRIORITY_COLORS[visitor.priority]}
             label={visitor.priority}
+            style={styles.badge}
           />
         </Caption>
       </View>
@@ -467,6 +468,11 @@ const styles = StyleSheet.create({
   detailRow: {
     flexShrink: 1,
     marginBottom: 5,
+  },
+  badge: {
+    borderRadius: 20,
+    paddingHorizontal: 15,
+    paddingVertical: 2,
   },
   body: {
     flex: 1,

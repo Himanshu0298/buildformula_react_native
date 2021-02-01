@@ -117,6 +117,8 @@ export default {
       label_loan_amount: 'Loan Amount',
       label_installment_amount: 'Installment Amount',
       label_loan_approval_letter: 'Loan approval letter',
+      label_work: 'Work',
+      label_milestone: 'Milestone',
     },
   },
   hi: {
@@ -230,6 +232,8 @@ export default {
       label_loan_amount: 'Loan Amount',
       label_installment_amount: 'Installment Amount',
       label_loan_approval_letter: 'Loan approval letter',
+      label_work: 'Work',
+      label_milestone: 'Milestone',
     },
   },
 };

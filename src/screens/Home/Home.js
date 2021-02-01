@@ -20,7 +20,6 @@ import {getShadow} from 'utils';
 import useProjectActions from '../../redux/actions/projectActions';
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
-import {secondaryTheme} from 'styles/theme';
 import Layout from 'utils/Layout';
 import {useAlert} from 'components/Atoms/Alert';
 import LottieView from 'lottie-react-native';
@@ -29,6 +28,11 @@ import {COLORS} from 'utils/constant';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 const TABS = ['Developer', 'Supplier', 'Customer'];
+const IMAGES = {
+  Developer: developerImage,
+  Supplier: supplierImage,
+  Customer: developerImage,
+};
 
 const PROJECT_CONTAINER_WIDTH = Layout.window.width * 0.44;
 const PROJECT_CONTAINER_MARGIN = Layout.window.width * 0.02;
@@ -66,23 +70,23 @@ function RenderHeader({theme}) {
 function RenderProject({project, handleOnPress, tab}) {
   return (
     <TouchableOpacity
+      // activeOpacity={0.9}
       onPress={() => handleOnPress(project)}
       style={styles.projectContainer}>
-      {tab === 'Developer' ? (
-        <View style={styles.developerImageContainer}>
-          <Image source={developerImage} style={styles.developerImage} />
-        </View>
-      ) : null}
-      {tab === 'Supplier' ? (
-        <View style={styles.supplierImageContainer}>
-          <Image source={supplierImage} style={styles.supplierImage} />
-        </View>
-      ) : null}
-      {tab === 'Customer' ? (
-        <View style={styles.developerImageContainer}>
-          <Image source={developerImage} style={styles.developerImage} />
-        </View>
-      ) : null}
+      <View
+        style={
+          tab === 'Supplier'
+            ? styles.supplierImageContainer
+            : styles.developerImageContainer
+        }>
+        <Image
+          source={IMAGES[tab]}
+          style={
+            tab === 'Supplier' ? styles.supplierImage : styles.developerImage
+          }
+        />
+      </View>
+
       <View style={styles.labelContainer}>
         <Subheading style={styles.projectLabel}>
           {project.project_name}
