@@ -22,9 +22,6 @@ function Lineup(props) {
         return <WorkCategory />;
       case 1:
         return <Milestone />;
-
-      default:
-        return <WorkCategory />;
     }
   };
 

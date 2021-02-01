@@ -1,17 +1,14 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
+import {theme} from 'styles/theme';
 import BaseText from './BaseText';
+import PropTypes from 'prop-types';
 
-export default function CustomBadge({color, style, label, labelStyles}) {
+function CustomBadge(props) {
+  const {color: backgroundColor, style, label, labelStyles} = props;
+
   return (
-    <View
-      style={[
-        styles.badge,
-        {
-          backgroundColor: color,
-        },
-        style,
-      ]}>
+    <View style={[styles.badge, {backgroundColor}, style]}>
       {label ? (
         <BaseText style={[styles.badgeLabel, labelStyles]}>{label}</BaseText>
       ) : null}
@@ -19,11 +16,18 @@ export default function CustomBadge({color, style, label, labelStyles}) {
   );
 }
 
+CustomBadge.defaultProps = {
+  color: theme.colors.primary,
+};
+
+CustomBadge.propTypes = {
+  color: PropTypes.string.isRequired,
+  label: PropTypes.string,
+};
+
 const styles = StyleSheet.create({
   badge: {
-    borderRadius: 20,
-    paddingHorizontal: 15,
-    paddingVertical: 2,
+    paddingHorizontal: 5,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -34,3 +38,5 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
 });
+
+export default CustomBadge;

@@ -22,6 +22,7 @@ import useCustomerActions from 'redux/actions/customerActions';
 import useImagePicker from 'utils/useImagePicker';
 import CustomCheckbox from 'components/Atoms/CustomCheckbox';
 
+//TODO: Add schema for customer
 const schema = Yup.object().shape({});
 
 function ProfileUpload({profilePic, onSelect}) {
