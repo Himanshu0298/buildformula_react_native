@@ -3,23 +3,15 @@ import {StyleSheet, View} from 'react-native';
 import {IconButton, Subheading} from 'react-native-paper';
 import {theme} from 'styles/theme';
 import Modal from 'react-native-modal';
-import dayjs from 'dayjs';
 import {
   Avatar,
   Bubble,
   MessageText,
   GiftedChat,
   Send,
+  InputToolbar,
 } from 'react-native-gifted-chat';
 import DefaultAvatar from 'assets/images/chat_avatar.png';
-
-function renderSend(props) {
-  return (
-    <Send {...props}>
-      <IconButton icon="send" color="#5E6D7C" />
-    </Send>
-  );
-}
 
 function renderBubble(props) {
   return (
@@ -58,6 +50,26 @@ function renderAvatar(props) {
 function renderMessageText(props) {
   return (
     <MessageText {...props} customTextStyle={{fontSize: 13, lineHeight: 13}} />
+  );
+}
+
+const renderInputToolbar = (props) => (
+  <InputToolbar
+    {...props}
+    containerStyle={{
+      borderWidth: 2,
+      borderTopWidth: 2,
+      borderTopColor: 'rgba(4, 29, 54, 0.1)',
+      borderColor: 'rgba(4, 29, 54, 0.1)',
+    }}
+  />
+);
+
+function renderSend(props) {
+  return (
+    <Send {...props} containerStyle={{borderWidth: 0}}>
+      <IconButton icon="send" color="#5E6D7C" />
+    </Send>
   );
 }
 
@@ -123,6 +135,8 @@ function ActivityChatModal({open, handleClose}) {
           renderBubble={renderBubble}
           renderAvatar={renderAvatar}
           renderMessageText={renderMessageText}
+          renderInputToolbar={renderInputToolbar}
+          renderChatFooter={() => <View style={{height: 10}} />}
           user={{_id: 1}}
         />
       </View>
