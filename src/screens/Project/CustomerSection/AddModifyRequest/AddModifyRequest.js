@@ -5,17 +5,13 @@ import {
   Subheading,
   withTheme,
   Text,
-  Caption,
   Button,
-  TextInput,
   Headline,
   Divider,
 } from 'react-native-paper';
 import {theme} from 'styles/theme';
 import backArrow from 'assets/images/back_arrow.png';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import RenderInput from 'components/Atoms/RenderInput';
-import FileInput from 'components/Atoms/FileInput';
 import BaseText from 'components/Atoms/BaseText';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
@@ -338,19 +334,7 @@ function AddModifyRequest(props) {
   const {unit, project_id} = params;
   const {t} = useTranslation();
 
-  const {user} = useSelector((state) => state.user);
-
-  const {getCustomerDetails, addCustomer} = useCustomerActions();
-
   console.log('----->unit.unitId ', unit.unitId);
-
-  const getUpdatedCustomers = (unit_id) => {
-    const formData = new FormData();
-    formData.append('user_id', user.id);
-    formData.append('project_id', project_id);
-    formData.append('unit_id', unit.unitId);
-    getCustomerDetails(formData);
-  };
 
   return (
     <View style={styles.container}>
