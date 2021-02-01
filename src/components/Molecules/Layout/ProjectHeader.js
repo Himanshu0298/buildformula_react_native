@@ -16,7 +16,9 @@ function ProjectHeader({theme, showTimer}) {
     <SafeAreaView edges={['right', 'top', 'left']}>
       <View style={styles.header}>
         <View style={styles.logoContainer}>
-          <Subheading>{selectedProject.project_name}</Subheading>
+          <Subheading style={{fontSize: 14}}>
+            {selectedProject.project_name}
+          </Subheading>
         </View>
         <View style={styles.rightContainer}>
           <Timer displayTimer={showTimer} />

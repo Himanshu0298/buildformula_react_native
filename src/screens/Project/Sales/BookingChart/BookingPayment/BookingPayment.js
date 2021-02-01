@@ -743,10 +743,9 @@ function FormContent(props) {
 }
 
 function BookingPayments(props) {
-  const {
-    navigation,
-    route: {params},
-  } = props;
+  const {navigation, route = {}} = props;
+  const {params = {}} = route;
+  const {project_id, unit_id} = params;
 
   const {createBooking, getBankList} = useSalesActions();
 
@@ -799,7 +798,9 @@ function BookingPayments(props) {
       }}
       validationSchema={schema}
       onSubmit={async (values) => {
-        const data = {...values};
+        console.log('-----> unit_id', unit_id);
+        console.log('-----> project_id', project_id);
+        const data = {...values, project_id, unit_id};
 
         if (values.payment_type !== 2) {
           delete data.custom_payments;
