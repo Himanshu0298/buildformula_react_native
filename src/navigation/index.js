@@ -195,6 +195,23 @@ function CustomerSectionStack() {
   );
 }
 
+function FilesStack() {
+  return (
+    <Stack.Navigator initialRouteName={'FilesHome'}>
+      <Stack.Screen
+        name="FilesHome"
+        component={Files}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="FolderDetails"
+        component={Files}
+        options={{headerShown: false}}
+      />
+    </Stack.Navigator>
+  );
+}
+
 function GeneralDrawer() {
   return (
     <Drawer.Navigator
@@ -242,7 +259,7 @@ function ProjectDrawer() {
       <Drawer.Screen name="Estimation" component={Estimation} />
       <Drawer.Screen name="RequestForPrice" component={RequestForPrice} />
       <Drawer.Screen name="PurchaseOrders" component={PurchaseOrders} />
-      <Drawer.Screen name="Files" component={Files} />
+      <Drawer.Screen name="Files" component={FilesStack} />
     </Drawer.Navigator>
   );
 }
