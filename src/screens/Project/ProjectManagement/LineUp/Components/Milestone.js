@@ -87,7 +87,7 @@ function RenderMilestone(props) {
           size={24}
           color="rgba(4, 29, 54, 0.15)"
         />
-        <CustomBadge label="1" style={styles.badge} />
+        <CustomBadge label={index + 1} style={styles.badge} />
         <Text>{item.title}</Text>
       </View>
       <Menu
