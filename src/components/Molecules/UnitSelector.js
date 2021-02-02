@@ -18,6 +18,10 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import PropTypes from 'prop-types';
 
+const UNIT_MARGIN = Layout.window.width * 0.015;
+const BODY_WIDTH = Layout.window.width - 40;
+const UNIT_WIDTH = BODY_WIDTH / 5 - 2 * UNIT_MARGIN;
+
 const DEFAULT_UNIT_COLOR = '#5B6F7C';
 const BOOKING_STYLES = {
   filling: {
@@ -73,36 +77,38 @@ function RenderUnits({onSelectUnit, units, selectedFloor, isUnitDisabled}) {
         }
 
         return (
-          <TouchableOpacity
-            key={i}
-            disabled={disabled}
-            onPress={() => onSelectUnit(i, unit)}
-            style={[
-              styles.unitContainer,
-              {
-                borderRadius: 10,
-                position: 'relative',
-                ...bookingStyle,
-                backgroundColor:
-                  (unitBhk && addOpacity(unitBhk.color, 1)) ||
-                  DEFAULT_UNIT_COLOR,
-              },
-            ]}>
-            {bookingStyle.badge ? (
-              <Badge
-                style={[
-                  styles.statusBadge,
-                  {
-                    backgroundColor: bookingStyle.borderColor,
-                  },
-                ]}>
-                {bookingStyle.badge}
-              </Badge>
-            ) : null}
-            <Subheading theme={secondaryTheme}>
-              {getUnitLabel(selectedFloor, i)}
-            </Subheading>
-          </TouchableOpacity>
+          <View style={styles.unitContainer}>
+            <TouchableOpacity
+              key={i}
+              disabled={disabled}
+              onPress={() => onSelectUnit(i, unit)}
+              style={[
+                styles.unitButton,
+                {
+                  borderRadius: 10,
+                  position: 'relative',
+                  ...bookingStyle,
+                  backgroundColor:
+                    (unitBhk && addOpacity(unitBhk.color, 1)) ||
+                    DEFAULT_UNIT_COLOR,
+                },
+              ]}>
+              {bookingStyle.badge ? (
+                <Badge
+                  style={[
+                    styles.statusBadge,
+                    {
+                      backgroundColor: bookingStyle.borderColor,
+                    },
+                  ]}>
+                  {bookingStyle.badge}
+                </Badge>
+              ) : null}
+              <Subheading theme={secondaryTheme}>
+                {getUnitLabel(selectedFloor, unitId)}
+              </Subheading>
+            </TouchableOpacity>
+          </View>
         );
       })}
     </View>
@@ -170,13 +176,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   unitContainer: {
-    width: Layout.window.width * 0.15,
-    margin: Layout.window.width * 0.015,
-    height: Layout.window.width * 0.15,
-    display: 'flex',
+    width: UNIT_WIDTH,
+    margin: UNIT_MARGIN,
+    height: UNIT_WIDTH,
     alignItems: 'center',
     justifyContent: 'center',
   },
+  unitButton: {
+    flex: 1,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
   statusBadge: {
     position: 'absolute',
     top: -10,
