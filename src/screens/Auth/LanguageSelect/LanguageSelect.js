@@ -71,7 +71,7 @@ function LanguageSelect(props) {
             onPress={selectLanguage}
           />
           <LanguageButton
-            color={colors.text}
+            color={'#fff'}
             mode="outlined"
             label="हिन्दी"
             language="hi"

@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import {
   withTheme,
+  Text,
   Headline,
   Subheading,
   Button,
@@ -18,7 +19,6 @@ import {
 import {secondaryTheme, theme} from 'styles/theme';
 import banner from 'assets/images/banner.png';
 import image from 'assets/images/buildings.png';
-import BaseText from 'components/Atoms/BaseText';
 import {Formik} from 'formik';
 import CustomInput from './../Components/CustomInput';
 import useUserActions from 'redux/actions/userActions';
@@ -49,7 +49,7 @@ function LoginButton({label, onPress}) {
         contentStyle={{padding: 8}}
         theme={{roundness: 15}}
         onPress={onPress}>
-        <BaseText style={styles.buttonText}>{label}</BaseText>
+        {label}
       </Button>
     </View>
   );
@@ -120,14 +120,14 @@ function RenderContent(props) {
             }
           />
           <TouchableOpacity style={styles.forgotContainer}>
-            <BaseText>{t('forgotPassword')}</BaseText>
+            <Text theme={secondaryTheme}>{t('forgotPassword')}</Text>
           </TouchableOpacity>
         </View>
         <LoginButton label={t('log in')} onPress={handleSubmit} />
         <TouchableOpacity
           onPress={() => navigation.navigate('SignUp')}
           style={styles.registerContainer}>
-          <BaseText>{t('registerLink')}</BaseText>
+          <Text theme={secondaryTheme}>{t('registerLink')}</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -288,10 +288,6 @@ const styles = StyleSheet.create({
     width: '100%',
     display: 'flex',
     alignItems: 'center',
-  },
-  buttonText: {
-    fontWeight: 'bold',
-    fontSize: 18,
   },
   registerContainer: {
     display: 'flex',
