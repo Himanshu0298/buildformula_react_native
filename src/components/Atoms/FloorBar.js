@@ -58,7 +58,7 @@ function FloorBar(props) {
               mode="contained"
               uppercase={false}
               {...buttonProps}>
-              <BaseText style={styles.allUnitsLabel}>{buttonLabel}</BaseText>
+              {buttonLabel}
             </Button>
           </View>
         </View>
@@ -124,9 +124,6 @@ const styles = StyleSheet.create({
   floorLabel: {
     color: 'grey',
     fontSize: 12,
-  },
-  allUnitsLabel: {
-    fontSize: 14,
   },
   slabImage: {
     height: Layout.window.width * 0.7 * (20 / 320),

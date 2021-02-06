@@ -2,10 +2,17 @@ import {
   UPDATE_LOCAL_STRUCTURE,
   SAVE_STRUCTURE,
   RESET_STRUCTURE,
-  SET_INITIAL_STATE,
 } from './../actions/actionTypes';
 import _ from 'lodash';
+import AsyncStorage from '@react-native-community/async-storage';
+import {persistReducer} from 'redux-persist';
 import {DEFAULT_STRUCTURE} from 'utils/constant';
+
+const persistConfig = {
+  key: 'structure',
+  storage: AsyncStorage,
+  blacklist: ['loading', 'errorMessage'],
+};
 
 const initialState = {
   loading: false,
@@ -21,14 +28,9 @@ const initialState = {
   structure: _.cloneDeep(DEFAULT_STRUCTURE),
 };
 
-export default (state = initialState, action = {}) => {
+const reducer = (state = initialState, action = {}) => {
   const {type, payload} = action;
   switch (type) {
-    case SET_INITIAL_STATE:
-      return {
-        ...state,
-        loading: false,
-      };
     case RESET_STRUCTURE:
       return {
         ...initialState,
@@ -61,3 +63,5 @@ export default (state = initialState, action = {}) => {
       return state;
   }
 };
+
+export default persistReducer(persistConfig, reducer);

@@ -1,12 +1,19 @@
+import AsyncStorage from '@react-native-community/async-storage';
+import {persistReducer} from 'redux-persist';
 import {
   CREATE_PROJECT,
   UPDATE_PAYMENT,
   UPDATE_ADMINS,
-  SET_INITIAL_STATE,
   GET_PROJECTS,
   RESET_STRUCTURE,
   GET_SELECTED_PROJECT,
 } from './../actions/actionTypes';
+
+const persistConfig = {
+  key: 'project',
+  storage: AsyncStorage,
+  blacklist: ['loading', 'errorMessage'],
+};
 
 const initialState = {
   loading: false,
@@ -20,15 +27,9 @@ const initialState = {
   },
 };
 
-export default (state = initialState, action = {}) => {
+const reducer = (state = initialState, action = {}) => {
   const {type, payload} = action;
   switch (type) {
-    case SET_INITIAL_STATE:
-      return {
-        ...state,
-        loading: false,
-      };
-
     case RESET_STRUCTURE:
       return {
         ...state,
@@ -128,3 +129,5 @@ export default (state = initialState, action = {}) => {
       return state;
   }
 };
+
+export default persistReducer(persistConfig, reducer);

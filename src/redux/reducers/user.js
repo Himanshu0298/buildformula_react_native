@@ -1,10 +1,17 @@
+import AsyncStorage from '@react-native-community/async-storage';
+import {persistReducer} from 'redux-persist';
 import {
   SELECT_ROLE,
   SIGN_UP,
   LOGIN,
   VERIFY_OTP,
-  SET_INITIAL_STATE,
 } from './../actions/actionTypes';
+
+const persistConfig = {
+  key: 'user',
+  storage: AsyncStorage,
+  blacklist: ['loading', 'errorMessage'],
+};
 
 const initialState = {
   user: undefined,
@@ -14,17 +21,11 @@ const initialState = {
   selectedLanguage: 'en',
 };
 
-export default (state = initialState, action = {}) => {
+const reducer = (state = initialState, action = {}) => {
   const {type, payload} = action;
   console.log('-----> type', type);
 
   switch (type) {
-    case SET_INITIAL_STATE:
-      return {
-        ...state,
-        loading: false,
-      };
-
     case `${LOGIN}_PENDING`:
       return {
         ...state,
@@ -102,3 +103,5 @@ export default (state = initialState, action = {}) => {
       return state;
   }
 };
+
+export default persistReducer(persistConfig, reducer);

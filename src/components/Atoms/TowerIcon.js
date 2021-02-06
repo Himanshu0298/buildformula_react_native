@@ -11,6 +11,7 @@ import towerActive from 'assets/images/tower.png';
 import towerInactive from 'assets/images/tower_inactive.png';
 import Layout from 'utils/Layout';
 import PropTypes from 'prop-types';
+import {secondaryTheme} from 'styles/theme';
 
 const ICON_WIDTH = Layout.window.width * 0.22;
 const ICON_HEIGHT = Layout.window.width * 0.15;
@@ -25,7 +26,9 @@ function TowerIcon({onPress, index, active}) {
         source={active ? towerActive : towerInactive}
         style={styles.towerImage}>
         <View style={styles.towerLabelContainer}>
-          <Subheading style={!active && styles.inactiveLabel}>
+          <Subheading
+            theme={secondaryTheme}
+            style={!active && styles.inactiveLabel}>
             {getTowerLabel(index)}
           </Subheading>
         </View>

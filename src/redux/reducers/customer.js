@@ -1,12 +1,19 @@
+import AsyncStorage from '@react-native-community/async-storage';
+import {persistReducer} from 'redux-persist';
 import {
   ADD_CUSTOMER,
   GET_CUSTOMER_DATA,
   GET_BOOKING_DATA,
-  SET_INITIAL_STATE,
   GET_BANK_DETAILS,
   UPDATE_BANK_DETAILS,
   UPDATE_BANK_FILES,
 } from './../actions/actionTypes';
+
+const persistConfig = {
+  key: 'customer',
+  storage: AsyncStorage,
+  blacklist: ['loading', 'errorMessage'],
+};
 
 const initialState = {
   loading: false,
@@ -19,16 +26,9 @@ const initialState = {
   bankDetails: {},
 };
 
-export default (state = initialState, action = {}) => {
+const reducer = (state = initialState, action = {}) => {
   const {type, payload} = action;
   switch (type) {
-    case SET_INITIAL_STATE:
-      //TODO:update loading only if true
-      return {
-        ...state,
-        loading: false,
-      };
-
     case `${GET_CUSTOMER_DATA}_PENDING`:
       return {
         ...state,
@@ -136,3 +136,5 @@ export default (state = initialState, action = {}) => {
       return state;
   }
 };
+
+export default persistReducer(persistConfig, reducer);
