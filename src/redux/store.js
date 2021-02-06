@@ -28,15 +28,8 @@ const rootReducer = (state, action) => {
   return appReducer(state, action);
 };
 
-const persistConfig = {
-  key: 'root',
-  storage: AsyncStorage,
-};
-
-const persistedReducer = persistReducer(persistConfig, rootReducer);
-
 const store = createStore(
-  persistedReducer,
+  rootReducer,
   compose(middleware, Reactotron.createEnhancer()),
   // applyMiddleware(...allMiddleware),
 );
