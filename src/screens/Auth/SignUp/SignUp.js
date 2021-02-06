@@ -51,7 +51,7 @@ function SignUpButton({label, onPress}) {
         contentStyle={{padding: 8}}
         theme={{roundness: 15}}
         onPress={onPress}>
-        <BaseText style={styles.buttonText}>{label}</BaseText>
+        {label}
       </Button>
     </View>
   );
@@ -217,9 +217,9 @@ function RenderContent(props) {
       />
       {!adminSignUp ? (
         <TouchableOpacity
-          onPress={() => navigation.goBack()}
+          onPress={navigation.goBack}
           style={styles.registerContainer}>
-          <BaseText>{t('loginLink')}</BaseText>
+          <Text theme={secondaryTheme}>{t('loginLink')}</Text>
         </TouchableOpacity>
       ) : null}
     </View>
@@ -495,13 +495,9 @@ const styles = StyleSheet.create({
     display: 'flex',
     alignItems: 'center',
   },
-  buttonText: {
-    fontWeight: 'bold',
-    fontSize: 18,
-  },
   registerContainer: {
     display: 'flex',
-    marginTop: 20,
+    marginVertical: 10,
     padding: 3,
     width: '100%',
     alignItems: 'center',

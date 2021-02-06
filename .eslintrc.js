@@ -24,6 +24,12 @@ module.exports = {
     'import/namespace': 2,
     'import/default': 2,
     'import/export': 2,
+    'prettier/prettier': [
+      'warn',
+      {
+        endOfLine: 'auto',
+      },
+    ],
     'prefer-const': [
       'warn',
       {
