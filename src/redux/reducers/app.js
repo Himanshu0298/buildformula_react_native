@@ -4,7 +4,7 @@ const initialState = {
   language: undefined,
 };
 
-export default (state = initialState, action = {}) => {
+const reducer = (state = initialState, action = {}) => {
   const {type, payload} = action;
   switch (type) {
     case `${SET_LANGUAGE}`:
@@ -17,3 +17,5 @@ export default (state = initialState, action = {}) => {
       return state;
   }
 };
+
+export default reducer;

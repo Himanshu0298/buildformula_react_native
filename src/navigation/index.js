@@ -286,13 +286,10 @@ function NavContainer() {
   const routeNameRef = React.useRef();
   const navigationRef = React.useRef();
 
-  const {setInitialState} = useAppActions();
-
   useEffect(() => {
     const navState = navigationRef.current.getRootState();
     // Save the initial route name
     routeNameRef.current = getActiveRouteName(navState);
-    setInitialState();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

@@ -152,6 +152,7 @@ function Home(props) {
         <StatusBar barStyle="light-content" />
         <View style={styles.headerContainer}>
           <RenderHeader theme={theme} />
+          {/* TODO: update tab implementation */}
           <MaterialTabs
             items={TABS}
             selectedIndex={selectedTab}
@@ -247,7 +248,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     margin: 16,
     right: 20,
-    bottom: 50,
+    bottom: 20,
   },
   scrollView: {
     flexGrow: 1,

@@ -77,9 +77,8 @@ function RenderUnits({onSelectUnit, units, selectedFloor, isUnitDisabled}) {
         }
 
         return (
-          <View style={styles.unitContainer}>
+          <View key={i} style={styles.unitContainer}>
             <TouchableOpacity
-              key={i}
               disabled={disabled}
               onPress={() => onSelectUnit(i, unit)}
               style={[

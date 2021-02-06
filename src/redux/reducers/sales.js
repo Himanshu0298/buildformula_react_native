@@ -1,6 +1,7 @@
 import _ from 'lodash';
+import AsyncStorage from '@react-native-community/async-storage';
+import {persistReducer} from 'redux-persist';
 import {
-  SET_INITIAL_STATE,
   GET_VISITORS,
   GET_FOLLOWUP_LIST,
   GET_SALES_DATA,
@@ -16,6 +17,12 @@ import {
   GET_BANK_LIST,
   SET_TIMER,
 } from './../actions/actionTypes';
+
+const persistConfig = {
+  key: 'sales',
+  storage: AsyncStorage,
+  blacklist: ['loading', 'errorMessage'],
+};
 
 const initialState = {
   loading: false,
@@ -38,17 +45,10 @@ const initialState = {
   bankList: [],
 };
 
-export default (state = initialState, action = {}) => {
+const reducer = (state = initialState, action = {}) => {
   const {type, payload} = action;
 
   switch (type) {
-    case SET_INITIAL_STATE:
-      //TODO:update loading only if true
-      return {
-        ...state,
-        loading: false,
-      };
-
     //RESET sales data on project change
     case `${GET_SELECTED_PROJECT}_PENDING`:
       return {
@@ -311,3 +311,5 @@ export default (state = initialState, action = {}) => {
       return state;
   }
 };
+
+export default persistReducer(persistConfig, reducer);
