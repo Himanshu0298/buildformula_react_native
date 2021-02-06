@@ -14,7 +14,6 @@ import {Formik} from 'formik';
 import * as Yup from 'yup';
 import {useTranslation} from 'react-i18next';
 import RenderInput from 'components/Atoms/RenderInput';
-import BaseText from 'components/Atoms/BaseText';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import useCustomerActions from 'redux/actions/customerActions';
 import PdfIcon from 'assets/images/pdf_icon.png';
@@ -103,7 +102,7 @@ function FileUploadModal(props) {
 }
 
 function FileSection(props) {
-  const {bankDetails, route} = props;
+  const {bankDetails, route, toggleShareModal} = props;
   const {project_id, unit} = route?.params || {};
   const {files} = bankDetails || {};
 
@@ -134,6 +133,7 @@ function FileSection(props) {
       getBankDetails({project_id, unit_id: unit.unitId});
     });
   };
+
   const handleFileRemove = (file_id) => {
     removeBankFile({file_id, project_id, unit_id: unit.unitId}).then(() => {
       getBankDetails({project_id, unit_id: unit.unitId});
@@ -153,9 +153,18 @@ function FileSection(props) {
         toggleDialog={toggleDialog}
         handleFileUpload={handleFileUpload}
       />
-      <Subheading style={{color: theme.colors.primary}}>
-        BANK REQUIRED FILES
-      </Subheading>
+      <View style={styles.headingContainer}>
+        <Subheading style={{color: theme.colors.primary}}>
+          BANK REQUIRED FILES
+        </Subheading>
+        <IconButton
+          icon="share-variant"
+          size={18}
+          onPress={toggleShareModal}
+          color={theme.colors.primary}
+        />
+      </View>
+
       <View style={styles.filesContainer}>
         {files &&
           files.map((file, index) => (
@@ -173,7 +182,7 @@ function FileSection(props) {
           style={styles.submitButton}
           onPress={() => openImagePicker({type: 'file', onChoose})}>
           <IconButton icon="upload" size={20} color={theme.colors.primary} />
-          <BaseText style={styles.buttonText}>{'Upload'}</BaseText>
+          <Text style={styles.buttonText}>{'Upload'}</Text>
         </OpacityButton>
       </View>
     </View>
@@ -199,6 +208,11 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 10,
   },
+  headingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
   filesContainer: {},
   fileContainer: {
     flexDirection: 'row',
@@ -210,7 +224,7 @@ const styles = StyleSheet.create({
   },
   fileContentContainer: {
     flexGrow: 1,
-    paddingLeft: 5,
+    paddingLeft: 10,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',

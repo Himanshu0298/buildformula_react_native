@@ -97,12 +97,12 @@ export default function useCustomerActions() {
           }
         },
       }),
-    updateBankDetails: (details) =>
+    updateBankDetails: (formData) =>
       dispatch({
         type: types.UPDATE_BANK_DETAILS,
         payload: async () => {
           try {
-            const response = processResponse(await updateBankDetails(details));
+            const response = processResponse(await updateBankDetails(formData));
             const {data} = response;
 
             snackbar.showMessage({

@@ -6,11 +6,18 @@ import {Divider, Subheading, Text, withTheme, Button} from 'react-native-paper';
 import {TabBar, TabView} from 'react-native-tab-view';
 import {useSelector} from 'react-redux';
 import useCustomerActions from 'redux/actions/customerActions';
-import {secondaryTheme, theme} from 'styles/theme';
+import {theme} from 'styles/theme';
 import {getFloorNumber, getShadow, getTowerLabel, getUnitLabel} from 'utils';
 import {STRUCTURE_TYPE_LABELS} from 'utils/constant';
 import Layout from 'utils/Layout';
-import {BankLoans, BookingDetails, Details, ModifyRequest} from './Components';
+import {
+  Account,
+  BankLoans,
+  BookingDetails,
+  Details,
+  Files,
+  ModifyRequest,
+} from './Components';
 
 function renderDetailText(label, value) {
   return (
@@ -95,11 +102,11 @@ function CustomerSection(props) {
       case 2:
         return <BankLoans {...props} {...{setSelectedTab}} />;
       case 3:
-        return <Details {...props} setSelectedTab={setSelectedTab} />;
+        return <Account {...props} setSelectedTab={setSelectedTab} />;
       case 4:
         return <ModifyRequest {...props} setSelectedTab={setSelectedTab} />;
       case 5:
-        return <Details {...props} setSelectedTab={setSelectedTab} />;
+        return <Files {...props} setSelectedTab={setSelectedTab} />;
     }
   };
 

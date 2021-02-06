@@ -1,30 +1,36 @@
 import * as React from 'react';
 import {useTranslation} from 'react-i18next';
 import {StyleSheet, View, TouchableOpacity, Image} from 'react-native';
-import {Subheading, withTheme, IconButton} from 'react-native-paper';
-import {theme} from 'styles/theme';
+import {
+  Subheading,
+  withTheme,
+  Button,
+  TextInput,
+  Text,
+} from 'react-native-paper';
 import backArrow from 'assets/images/back_arrow.png';
 import RenderInput from 'components/Atoms/RenderInput';
-import BaseText from 'components/Atoms/BaseText';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {useSelector} from 'react-redux';
 import useCustomerActions from 'redux/actions/customerActions';
 import _ from 'lodash';
-import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import RenderTextBox from 'components/Atoms/RenderTextbox';
 import FileSelector from 'components/Atoms/FileSelector';
+import {theme} from 'styles/theme';
 
 const schema = Yup.object().shape({
   bank_name: Yup.string().trim().required('Required'),
   bank_branch: Yup.string().trim().required('Required'),
   bank_address: Yup.string().trim().required('Required'),
-  loan_amount: Yup.number().required('Required'),
-  installment_amount: Yup.number().required('Required'),
+  loan_approval_letter: Yup.object().required('Required'),
+  loan_amount: Yup.string().required('Required'),
+  number_of_installment: Yup.string().required('Required'),
+  installment_amount: Yup.string().required('Required'),
 });
 
-function RenderForm({formikProps}) {
+function RenderForm({navigation, formikProps}) {
   const {
     values,
     errors,
@@ -39,6 +45,7 @@ function RenderForm({formikProps}) {
   const bankNameRef = React.useRef();
   const bankBranchRef = React.useRef();
   const addressRef = React.useRef();
+  const installmentCountRef = React.useRef();
   const installmentAmountRef = React.useRef();
   const loanAmountRef = React.useRef();
 
@@ -86,25 +93,40 @@ function RenderForm({formikProps}) {
           containerStyles={styles.input}
           value={values.loan_approval_letter}
           onChoose={(v) => setFieldValue('loan_approval_letter', v)}
-          onBlur={handleBlur('loan_amount')}
-          onSubmitEditing={() => installmentAmountRef?.current?.focus()}
-          error={errors.loan_amount}
+          error={errors.loan_approval_letter}
         />
         <RenderInput
           name="loan_amount"
           label={t('label_loan_amount')}
           ref={loanAmountRef}
+          keyboardType="decimal-pad"
+          left={<TextInput.Affix text="₹" />}
           containerStyles={styles.input}
           value={values.loan_amount}
           onChangeText={handleChange('loan_amount')}
           onBlur={handleBlur('loan_amount')}
-          onSubmitEditing={() => installmentAmountRef?.current?.focus()}
+          onSubmitEditing={() => installmentCountRef?.current?.focus()}
           error={errors.loan_amount}
+        />
+        <Text style={styles.installmentHeading}>Installment</Text>
+        <RenderInput
+          name="number_of_installment"
+          label={t('label_number_of_installments')}
+          keyboardType="decimal-pad"
+          ref={installmentCountRef}
+          containerStyles={styles.input}
+          value={values.number_of_installment}
+          onChangeText={handleChange('number_of_installment')}
+          onBlur={handleBlur('number_of_installment')}
+          onSubmitEditing={() => installmentAmountRef?.current?.focus()}
+          error={errors.number_of_installment}
         />
         <RenderInput
           name="installment_amount"
           label={t('label_installment_amount')}
+          keyboardType="decimal-pad"
           ref={installmentAmountRef}
+          left={<TextInput.Affix text="₹" />}
           containerStyles={styles.input}
           value={values.installment_amount}
           onChangeText={handleChange('installment_amount')}
@@ -114,20 +136,21 @@ function RenderForm({formikProps}) {
         />
       </View>
       <View style={styles.actionContainer}>
-        <OpacityButton
-          opacity={0.1}
-          color={theme.colors.primary}
-          style={styles.submitButton}
+        <Button
+          style={{width: '40%'}}
+          contentStyle={{padding: 1}}
+          theme={{roundness: 15}}
+          onPress={navigation.goBack}>
+          {'Cancel'}
+        </Button>
+        <Button
+          style={{width: '40%'}}
+          mode="contained"
+          contentStyle={{padding: 1}}
+          theme={{roundness: 15}}
           onPress={handleSubmit}>
-          <IconButton
-            icon="share-variant"
-            size={20}
-            color={theme.colors.primary}
-          />
-          <BaseText style={styles.buttonText}>
-            {'Share with bank person'}
-          </BaseText>
-        </OpacityButton>
+          Save
+        </Button>
       </View>
     </>
   );
@@ -140,18 +163,11 @@ function AddBankDetails(props) {
 
   const {bankDetails} = useSelector(({customer}) => customer);
 
-  const {updateBankDetails} = useCustomerActions();
+  const {updateBankDetails, getBankDetails} = useCustomerActions();
 
   const initialValues = React.useMemo(() => {
     if (bankDetails.details) {
-      return _.pick(bankDetails.details, [
-        'bank_branch',
-        'bank_name',
-        'email',
-        'bank_person',
-        'phone',
-        'bank_address',
-      ]);
+      return _.pickBy(bankDetails.details, _.identity);
     }
     return {};
   }, [bankDetails.details]);
@@ -160,11 +176,10 @@ function AddBankDetails(props) {
     <View style={styles.container}>
       <KeyboardAwareScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollView}
-        stickyHeaderIndices={[0]}>
+        contentContainerStyle={styles.scrollView}>
         <View>
           <TouchableOpacity
-            onPress={() => navigation.goBack()}
+            onPress={navigation.goBack}
             style={styles.titleContainer}>
             <Image source={backArrow} style={styles.backArrow} />
             <Subheading>{t('title_finalized_bank_details')}</Subheading>
@@ -177,12 +192,28 @@ function AddBankDetails(props) {
           enableReinitialize
           validationSchema={schema}
           onSubmit={async (values) => {
-            const data = {...values};
+            const formData = new FormData();
 
-            data.project_id = project_id;
-            data.unit_id = unit.unitId;
+            formData.append('project_id', project_id);
+            formData.append('unit_id', unit.unitId);
+            formData.append('bank_name', values.bank_name);
+            formData.append('bank_branch', values.bank_branch);
+            formData.append('bank_address', values.bank_address);
+            formData.append('loan_amount', values.loan_amount);
+            formData.append(
+              'loan_approval_letter',
+              values.loan_approval_letter,
+            );
+            formData.append(
+              'number_of_installment',
+              values.number_of_installment,
+            );
+            formData.append('installment_amount', values.installment_amount);
 
-            updateBankDetails(data);
+            updateBankDetails(formData).then(() => {
+              getBankDetails({project_id, unit_id: unit.unitId});
+              navigation.goBack();
+            });
           }}>
           {(formikProps) => <RenderForm formikProps={formikProps} {...props} />}
         </Formik>
@@ -218,16 +249,16 @@ const styles = StyleSheet.create({
   input: {
     paddingVertical: 7,
   },
+  installmentHeading: {
+    color: theme.colors.primary,
+    marginTop: 15,
+    marginBottom: 5,
+  },
   actionContainer: {
     marginTop: 15,
-  },
-  submitButton: {
-    width: '100%',
-    borderRadius: 8,
-  },
-  buttonText: {
-    fontSize: 16,
-    color: theme.colors.primary,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
   },
 });
 
