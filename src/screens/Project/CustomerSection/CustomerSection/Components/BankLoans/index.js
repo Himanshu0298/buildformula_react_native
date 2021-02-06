@@ -7,16 +7,19 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import ActivityChatModal from './Components/ActivityChat';
 import FileSection from './Components/FileSection';
 import BankDetailsSection from './Components/BankDetailsSection';
+import ShareFiles from './Components/ShareFiles';
 
 function BankLoans(props) {
   const {route} = props;
   const {project_id, unit} = route?.params || {};
 
   const [activityModal, setActivityModal] = React.useState(false);
+  const [shareModal, setShareModal] = React.useState(false);
 
   const {bankDetails} = useSelector(({customer}) => customer);
 
   const toggleActivityModal = () => setActivityModal((v) => !v);
+  const toggleShareModal = () => setShareModal((v) => !v);
 
   return (
     <>
@@ -24,6 +27,7 @@ function BankLoans(props) {
         open={activityModal}
         handleClose={toggleActivityModal}
       />
+      <ShareFiles open={shareModal} handleClose={toggleShareModal} />
       <View style={styles.container}>
         <KeyboardAwareScrollView
           contentContainerStyle={styles.scrollView}
@@ -31,9 +35,10 @@ function BankLoans(props) {
           <View style={styles.headingRow}>
             <Subheading
               style={{
+                fontSize: 14,
                 color: theme.colors.primary,
               }}>
-              FINALIZED BANK DETAILS
+              BANK DETAILS
             </Subheading>
             <Button
               icon="format-list-bulleted"
@@ -43,7 +48,7 @@ function BankLoans(props) {
             </Button>
           </View>
           <BankDetailsSection {...props} {...{bankDetails}} />
-          <FileSection {...props} {...{bankDetails}} />
+          <FileSection {...props} {...{bankDetails, toggleShareModal}} />
         </KeyboardAwareScrollView>
       </View>
     </>

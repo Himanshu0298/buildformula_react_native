@@ -99,7 +99,6 @@ function ActivityChatModal({open, handleClose}) {
     );
   }, []);
 
-  console.log('-----> messages', messages);
   return (
     <Modal
       isVisible={open}

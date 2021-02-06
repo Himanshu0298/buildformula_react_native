@@ -8,7 +8,7 @@ import useImagePicker from '../../utils/useImagePicker';
 const FileSelector = React.forwardRef((props, ref) => {
   const {
     error,
-    file: selectedFile,
+    value: selectedFile,
     containerStyles,
     onChoose,
     type = 'file',

@@ -14,10 +14,10 @@ function RenderDetail({label, value}) {
 }
 
 function BankDetailsSection(props) {
-  const {bankDetails, navigation, route} = props;
+  const {bankDetails = {}, navigation, route} = props;
   const {project_id, unit} = route?.params || {};
 
-  const {bank_name, bank_branch, bank_address} = bankDetails.details;
+  const {bank_name, bank_branch, bank_address} = bankDetails.details || {};
 
   return (
     <View style={styles.container}>
@@ -57,6 +57,7 @@ const styles = StyleSheet.create({
   modifyButton: {
     borderRadius: 10,
     paddingRight: 20,
+    padding: 0,
   },
 });
 

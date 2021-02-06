@@ -119,6 +119,8 @@ export default {
       label_loan_approval_letter: 'Loan approval letter',
       label_work: 'Work',
       label_milestone: 'Milestone',
+      label_number_of_installments: 'No of Installments',
+      label_person_email: 'Person Email Id',
     },
   },
   hi: {
@@ -234,6 +236,8 @@ export default {
       label_loan_approval_letter: 'Loan approval letter',
       label_work: 'Work',
       label_milestone: 'Milestone',
+      label_number_of_installments: 'No of Installments',
+      label_person_email: 'Person Email Id',
     },
   },
 };
