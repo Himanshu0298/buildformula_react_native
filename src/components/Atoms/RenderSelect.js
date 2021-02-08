@@ -2,7 +2,6 @@ import React, {useImperativeHandle, useMemo} from 'react';
 import {TouchableOpacity, Keyboard} from 'react-native';
 import PropTypes from 'prop-types';
 import {TextInput} from 'react-native-paper';
-import {secondaryTheme} from 'styles/theme';
 import {useActionSheet} from '@expo/react-native-action-sheet';
 import RenderInput from './RenderInput';
 
