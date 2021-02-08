@@ -9,13 +9,7 @@ export default function useProjectActions() {
   const snackbar = useSnackbar();
   const {processError, processResponse} = useResProcessor();
 
-  const {
-    getProjects,
-    getProjectData,
-    createProject,
-    updatePayment,
-    updateAdmins,
-  } = useProject();
+  const {getProjects, getProjectData} = useProject();
 
   return {
     getProjectData: (projectId) =>
@@ -48,69 +42,6 @@ export default function useProjectActions() {
           try {
             const response = processResponse(await getProjects(formData));
             const {data} = response;
-
-            return Promise.resolve(data);
-          } catch (error) {
-            const errorMessage = processError(error);
-            snackbar.showMessage({
-              message: errorMessage,
-              variant: 'error',
-            });
-            return Promise.reject(errorMessage);
-          }
-        },
-      }),
-
-    createProject: (formData) =>
-      dispatch({
-        type: types.CREATE_PROJECT,
-        payload: async () => {
-          try {
-            const response = processResponse(await createProject(formData));
-            const {data} = response;
-            console.log('-----> data', data);
-
-            return Promise.resolve(data);
-          } catch (error) {
-            const errorMessage = processError(error);
-            snackbar.showMessage({
-              message: errorMessage,
-              variant: 'error',
-            });
-            return Promise.reject(errorMessage);
-          }
-        },
-      }),
-
-    selectPlan: (formData) =>
-      dispatch({
-        type: types.UPDATE_PAYMENT,
-        payload: async () => {
-          try {
-            const response = processResponse(await updatePayment(formData));
-            const {data} = response;
-
-            return Promise.resolve(data);
-          } catch (error) {
-            const errorMessage = processError(error);
-            snackbar.showMessage({
-              message: errorMessage,
-              variant: 'error',
-            });
-            return Promise.reject(errorMessage);
-          }
-        },
-      }),
-
-    updateAdmins: (formData) =>
-      dispatch({
-        type: types.UPDATE_ADMINS,
-        payload: async () => {
-          try {
-            const response = processResponse(await updateAdmins(formData));
-            const {data} = response;
-
-            snackbar.showMessage({message: 'Updated Admins Successfully!'});
 
             return Promise.resolve(data);
           } catch (error) {

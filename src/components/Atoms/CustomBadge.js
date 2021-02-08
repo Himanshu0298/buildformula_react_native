@@ -1,8 +1,8 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
-import {theme} from 'styles/theme';
-import BaseText from './BaseText';
+import {secondaryTheme, theme} from 'styles/theme';
 import PropTypes from 'prop-types';
+import {Text} from 'react-native-paper';
 
 function CustomBadge(props) {
   const {color: backgroundColor, style, label, labelStyles} = props;
@@ -10,7 +10,9 @@ function CustomBadge(props) {
   return (
     <View style={[styles.badge, {backgroundColor}, style]}>
       {label ? (
-        <BaseText style={[styles.badgeLabel, labelStyles]}>{label}</BaseText>
+        <Text theme={secondaryTheme} style={[styles.badgeLabel, labelStyles]}>
+          {label}
+        </Text>
       ) : null}
     </View>
   );

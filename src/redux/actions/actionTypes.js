@@ -14,13 +14,13 @@ export const SELECT_ROLE = 'SELECT_ROLE';
 //For Project
 export const GET_SELECTED_PROJECT = 'GET_SELECTED_PROJECT';
 export const GET_PROJECTS = 'GET_PROJECTS';
-export const CREATE_PROJECT = 'CREATE_PROJECT';
-export const UPDATE_PAYMENT = 'UPDATE_PAYMENT';
-export const UPDATE_ADMINS = 'UPDATE_ADMINS';
 
-//For Project Structure
+//For Add Project
+export const CREATE_PROJECT = 'CREATE_PROJECT';
 export const UPDATE_LOCAL_STRUCTURE = 'UPDATE_LOCAL_STRUCTURE';
 export const SAVE_STRUCTURE = 'SAVE_STRUCTURE';
+export const UPDATE_PAYMENT = 'UPDATE_PAYMENT';
+export const UPDATE_ADMINS = 'UPDATE_ADMINS';
 export const RESET_STRUCTURE = 'RESET_STRUCTURE';
 
 //For Sales

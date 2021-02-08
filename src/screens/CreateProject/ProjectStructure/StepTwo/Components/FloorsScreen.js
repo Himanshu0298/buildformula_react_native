@@ -48,9 +48,11 @@ function RenderFloor(props) {
     showAllUnits,
     selectedStructureType,
   } = props;
+
   return (
     <FloorBar
       floorId={floorId}
+      showBadge={true}
       badgeActive={selectedFloor === floorId}
       onPress={setSelectedFloor}
       inputProps={{
@@ -200,9 +202,7 @@ function FloorsScreen(props) {
               contentStyle={{paddingVertical: 2, paddingHorizontal: 6}}
               theme={{roundness: 10}}
               onPress={assignToAll}>
-              <BaseText style={styles.applyButton}>
-                {'Apply for all floors'}
-              </BaseText>
+              {'Apply for all floors'}
             </Button>
           </View>
           <View style={styles.floorsListContainer}>
@@ -226,12 +226,12 @@ function FloorsScreen(props) {
         <View style={styles.button}>
           <Button
             style={{width: '50%'}}
-            compact
             mode="contained"
-            contentStyle={{padding: 5}}
+            contentStyle={{padding: 3}}
             theme={{roundness: 15}}
+            //done like to avoid passing button event object
             onPress={() => validateFloors()}>
-            <BaseText style={styles.nextButtonLabel}>{'Back'}</BaseText>
+            {'Back'}
           </Button>
         </View>
       </View>
@@ -263,9 +263,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
   },
-  applyButton: {
-    fontSize: 12,
-  },
   floorsListContainer: {
     marginTop: 20,
     marginBottom: 30,
@@ -276,10 +273,6 @@ const styles = StyleSheet.create({
     width: '95%',
     display: 'flex',
     alignItems: 'flex-end',
-  },
-  nextButtonLabel: {
-    fontWeight: 'bold',
-    fontSize: 18,
   },
 });
 

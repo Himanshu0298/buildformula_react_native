@@ -14,7 +14,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import ProjectHeader from 'components/Molecules/Layout/ProjectHeader';
 import BaseText from 'components/Atoms/BaseText';
 import {getShadow} from 'utils';
-import {secondaryTheme, theme} from 'styles/theme';
+import {theme} from 'styles/theme';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import RenderInput from 'components/Atoms/RenderInput';
@@ -155,7 +155,7 @@ function PersonalTab({
       <View style={styles.container}>
         <View style={styles.personalContainer}>
           <Searchbar
-            theme={{...secondaryTheme, roundness: 12}}
+            theme={{roundness: 12}}
             placeholder={t('label_search_visitors')}
             onFocus={() => setFocused(true)}
             style={{backgroundColor: 'rgba(4,29,54,0.1)', ...getShadow(0)}}
@@ -340,19 +340,19 @@ function FollowUpTab({
             </View>
             <View style={styles.actionContainer}>
               <Button
-                style={{flex: 1}}
+                style={{flex: 1, marginHorizontal: 5}}
                 contentStyle={{padding: 3}}
                 theme={{roundness: 15}}
                 onPress={() => setSelectedTab(0)}>
-                <BaseText style={styles.cancelText}>{'Cancel'}</BaseText>
+                {'Cancel'}
               </Button>
               <Button
-                style={{flex: 1}}
+                style={{flex: 1, marginHorizontal: 5}}
                 mode="contained"
                 contentStyle={{padding: 3}}
                 theme={{roundness: 15}}
                 onPress={handleSubmit}>
-                <BaseText style={styles.buttonText}>{'Save'}</BaseText>
+                {'Save'}
               </Button>
             </View>
           </View>
@@ -497,10 +497,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-  },
-  cancelText: {
-    fontSize: 18,
-    color: theme.colors.primary,
   },
   buttonText: {
     fontWeight: 'bold',

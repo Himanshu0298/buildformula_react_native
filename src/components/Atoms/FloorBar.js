@@ -32,7 +32,7 @@ function FloorBar(props) {
         <View style={styles.rowContainer}>
           <TouchableOpacity
             style={styles.floorLabelContainer}
-            onPress={onPress}>
+            onPress={() => onPress(floorId)}>
             <BaseText style={styles.floorLabel}>
               {getFloorNumber(floorId)}
             </BaseText>

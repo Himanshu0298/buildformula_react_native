@@ -23,11 +23,11 @@ import {
   MAX_UNITS,
   STRUCTURE_TYPE_LABELS,
 } from 'utils/constant';
-import useStructureActions from 'redux/actions/structureActions';
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
 import AntIcons from 'react-native-vector-icons/AntDesign';
 import {useBackHandler} from '@react-native-community/hooks';
+import useAddProjectActions from 'redux/actions/addProjectActions';
 
 const STRUCTURE_TYPES = [2, 3, 1, 4, 5];
 
@@ -309,9 +309,9 @@ function StepTwo(props) {
   const snackbar = useSnackbar();
 
   let {structure, structureTypes, selectedStructureType, loading} = useSelector(
-    (state) => state.structure,
+    (state) => state.addProject,
   );
-  const {project} = useSelector((state) => state.project);
+  const {project} = useSelector((state) => state.addProject);
   const {user} = useSelector((state) => state.user);
 
   const [showModal, setShowModal] = useState(false);
@@ -321,10 +321,9 @@ function StepTwo(props) {
   const [selectedTower, setSelectedTower] = useState();
   const [selectedFloor, setSelectedFloor] = useState();
 
-  const {updateStructure, saveStructure} = useStructureActions();
+  const {updateStructure, saveStructure} = useAddProjectActions();
 
   selectedStructureType = parseInt(selectedStructureType, 10);
-
   const currentStructureData = structure[selectedStructureType];
 
   const toggleMenu = () => setShowModal((v) => !v);
@@ -589,15 +588,17 @@ function StepTwo(props) {
         renderTitle={() => {
           return (
             <View style={styles.titleContainer}>
-              <Title>{t('label_project_structure')} : </Title>
+              <Title theme={secondaryTheme}>
+                {t('label_project_structure')}
+              </Title>
               <Menu
                 visible={showModal}
                 onDismiss={toggleMenu}
                 anchor={
                   <TouchableOpacity
                     onPress={toggleMenu}
-                    style={styles.titleContainer}>
-                    <Title>
+                    style={styles.structureTitle}>
+                    <Title theme={secondaryTheme}>
                       {t(STRUCTURE_TYPE_LABELS[selectedStructureType])}
                     </Title>
                     <AntIcons
@@ -614,10 +615,11 @@ function StepTwo(props) {
                         key={option.value}
                         title={t(STRUCTURE_TYPE_LABELS[option.value])}
                         onPress={() => {
+                          toggleMenu();
+                          setSelectedTab(0);
                           updateStructure({
                             selectedStructureType: option.value,
                           });
-                          toggleMenu();
                         }}
                       />
                     );
@@ -704,6 +706,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   titleContainer: {
+    flexDirection: 'row',
+    display: 'flex',
+    alignItems: 'center',
+  },
+  structureTitle: {
+    marginLeft: 10,
     flexDirection: 'row',
     display: 'flex',
     alignItems: 'center',

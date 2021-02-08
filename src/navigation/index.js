@@ -8,7 +8,6 @@ import TouchID from 'react-native-touch-id';
 import DrawerContent from './Components/DrawerContent';
 import {useSelector} from 'react-redux';
 import {getInitialAuthScreen} from 'utils';
-import useAppActions from '../redux/actions/appActions';
 
 //Auth Screens
 import LanguageSelect from '../screens/Auth/LanguageSelect';
@@ -110,6 +109,28 @@ const RouteContext = React.createContext('Dashboard');
  *    </>
  * </Main Stack>
  */
+
+function InquiryStack() {
+  return (
+    <Stack.Navigator initialRouteName={'InquiryHome'}>
+      <Stack.Screen
+        name="InquiryHome"
+        component={Inquiry}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="AddVisitor"
+        component={AddVisitor}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="AddFollowUp"
+        component={AddFollowUp}
+        options={{headerShown: false}}
+      />
+    </Stack.Navigator>
+  );
+}
 
 function BookingChartStack() {
   return (
@@ -247,7 +268,7 @@ function ProjectDrawer() {
         </RouteContext.Consumer>
       )}>
       <Drawer.Screen name="ProjectDashboard" component={ProjectDashboard} />
-      <Drawer.Screen name="Inquiry" component={Inquiry} />
+      <Drawer.Screen name="Inquiry" component={InquiryStack} />
       <Drawer.Screen name="SalesPipeline" component={SalesPipeline} />
       <Drawer.Screen name="BookingChartStack" component={BookingChartStack} />
       <Drawer.Screen name="Payment" component={Payment} />
@@ -383,16 +404,6 @@ function NavContainer() {
               <Stack.Screen
                 name="AdminCreation"
                 component={SignUp}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="AddVisitor"
-                component={AddVisitor}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="AddFollowUp"
-                component={AddFollowUp}
                 options={{headerShown: false}}
               />
             </Fragment>

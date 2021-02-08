@@ -10,7 +10,7 @@ function SelectStructure(props) {
   const {navigation} = props;
 
   const {selectedProject} = useSelector((state) => state.project);
-  const {loading} = useSelector((state) => state.structure);
+  const {loading} = useSelector((state) => state.sales);
 
   const {projectData} = selectedProject;
   const projectTypes = Object.keys(projectData).map((v) => Number(v));

@@ -1,14 +1,21 @@
 import * as types from './actionTypes';
 import {useDispatch} from 'react-redux';
-import useStructure from '../../services/structure';
+import useAddProject from '../../services/addProject';
 import {useResProcessor} from 'utils/responseProcessor';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 
-export default function useStructureActions() {
+export default function useAddProjectActions() {
   const dispatch = useDispatch();
-  const structure = useStructure();
   const snackbar = useSnackbar();
   const {processError, processResponse} = useResProcessor();
+
+  const {
+    updateStructureTypes,
+    saveTowers,
+    createProject,
+    updatePayment,
+    updateAdmins,
+  } = useAddProject();
 
   return {
     updateStructure: (data) =>
@@ -16,13 +23,36 @@ export default function useStructureActions() {
         type: types.UPDATE_LOCAL_STRUCTURE,
         payload: data,
       }),
+
+    resetStructure: () => dispatch({type: types.RESET_STRUCTURE}),
+
+    createProject: (formData) =>
+      dispatch({
+        type: types.CREATE_PROJECT,
+        payload: async () => {
+          try {
+            const response = processResponse(await createProject(formData));
+            const {data} = response;
+            console.log('-----> data', data);
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const errorMessage = processError(error);
+            snackbar.showMessage({
+              message: errorMessage,
+              variant: 'error',
+            });
+            return Promise.reject(errorMessage);
+          }
+        },
+      }),
     updateStructureTypes: (formData) =>
       dispatch({
         type: types.SAVE_STRUCTURE,
         payload: async () => {
           try {
             const response = processResponse(
-              await structure.updateStructureTypes(formData),
+              await updateStructureTypes(formData),
             );
             console.log('-----> response', response);
             snackbar.showMessage({
@@ -58,7 +88,7 @@ export default function useStructureActions() {
                       towerId,
                       towerData: towers[towerId],
                     };
-                    await structure.saveTowers(JSON.stringify(payload));
+                    await saveTowers(JSON.stringify(payload));
                   });
                 } else {
                   const payload = {
@@ -68,7 +98,7 @@ export default function useStructureActions() {
                     towerId: 1,
                     towerData: structureData[typeId],
                   };
-                  await structure.saveTowers(JSON.stringify(payload));
+                  await saveTowers(JSON.stringify(payload));
                 }
               }),
             );
@@ -76,6 +106,48 @@ export default function useStructureActions() {
             return Promise.resolve();
           } catch (error) {
             console.log('-----> error', error);
+            const errorMessage = processError(error);
+            snackbar.showMessage({
+              message: errorMessage,
+              variant: 'error',
+            });
+            return Promise.reject(errorMessage);
+          }
+        },
+      }),
+
+    selectPlan: (formData) =>
+      dispatch({
+        type: types.UPDATE_PAYMENT,
+        payload: async () => {
+          try {
+            const response = processResponse(await updatePayment(formData));
+            const {data} = response;
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const errorMessage = processError(error);
+            snackbar.showMessage({
+              message: errorMessage,
+              variant: 'error',
+            });
+            return Promise.reject(errorMessage);
+          }
+        },
+      }),
+
+    updateAdmins: (formData) =>
+      dispatch({
+        type: types.UPDATE_ADMINS,
+        payload: async () => {
+          try {
+            const response = processResponse(await updateAdmins(formData));
+            const {data} = response;
+
+            snackbar.showMessage({message: 'Updated Admins Successfully!'});
+
+            return Promise.resolve(data);
+          } catch (error) {
             const errorMessage = processError(error);
             snackbar.showMessage({
               message: errorMessage,

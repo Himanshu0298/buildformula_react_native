@@ -1,12 +1,10 @@
 import React, {useEffect, useState, useMemo} from 'react';
-import {StyleSheet, View, StatusBar, ScrollView, Platform} from 'react-native';
+import {StyleSheet, View, StatusBar, ScrollView} from 'react-native';
 import {withTheme, Subheading, Button, TextInput} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
 import ProjectHeader from 'components/Molecules/Layout/ProjectHeader';
-import BaseText from 'components/Atoms/BaseText';
 import {getShadow} from 'utils';
-import {secondaryTheme, theme} from 'styles/theme';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import RenderInput from 'components/Atoms/RenderInput';
@@ -151,19 +149,19 @@ function PersonalTab({
         </View>
         <View style={styles.actionContainer}>
           <Button
-            style={{flex: 1}}
-            contentStyle={{padding: 5}}
+            style={{flex: 1, marginHorizontal: 5}}
+            contentStyle={{padding: 3}}
             theme={{roundness: 15}}
             onPress={navigation.goBack}>
-            <BaseText style={styles.cancelText}>{'Cancel'}</BaseText>
+            {'Cancel'}
           </Button>
           <Button
-            style={{flex: 1}}
+            style={{flex: 1, marginHorizontal: 5}}
             mode="contained"
-            contentStyle={{padding: 5}}
+            contentStyle={{padding: 3}}
             theme={{roundness: 15}}
             onPress={() => setSelectedTab(1)}>
-            <BaseText style={styles.buttonText}>{'Next'}</BaseText>
+            {'Next'}
           </Button>
         </View>
       </View>
@@ -332,19 +330,19 @@ function InquiryTab({
         </View>
         <View style={styles.actionContainer}>
           <Button
-            style={{flex: 1}}
-            contentStyle={{padding: 5}}
+            style={{flex: 1, marginHorizontal: 5}}
+            contentStyle={{padding: 3}}
             theme={{roundness: 15}}
             onPress={() => setSelectedTab(0)}>
-            <BaseText style={styles.cancelText}>{'Back'}</BaseText>
+            {'Back'}
           </Button>
           <Button
-            style={{flex: 1}}
+            style={{flex: 1, marginHorizontal: 5}}
             mode="contained"
-            contentStyle={{padding: 5}}
+            contentStyle={{padding: 3}}
             theme={{roundness: 15}}
             onPress={handleSubmit}>
-            <BaseText style={styles.buttonText}>{'Save'}</BaseText>
+            {'Save'}
           </Button>
         </View>
       </View>
@@ -539,14 +537,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-  },
-  cancelText: {
-    fontSize: 18,
-    color: theme.colors.primary,
-  },
-  buttonText: {
-    fontWeight: 'bold',
-    fontSize: 18,
   },
   priorityContainer: {
     marginVertical: 5,

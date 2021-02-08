@@ -10,7 +10,7 @@ import {
 import {Button, Subheading, TextInput, withTheme} from 'react-native-paper';
 import BaseText from 'components/Atoms/BaseText';
 import {useSnackbar} from 'components/Atoms/Snackbar';
-import {theme} from 'styles/theme';
+import {secondaryTheme, theme} from 'styles/theme';
 import {addOpacity, getFloorNumber, getUnitLabel} from 'utils';
 import Layout from 'utils/Layout';
 import bungalowHut from 'assets/images/bungalow_hut.png';
@@ -50,7 +50,9 @@ function RenderUnits({
                 (unitBhk && addOpacity(unitBhk.color, 1)) || DEFAULT_UNIT_COLOR,
             },
           ]}>
-          <Subheading>{getUnitLabel(selectedFloor, i)}</Subheading>
+          <Subheading theme={secondaryTheme}>
+            {getUnitLabel(selectedFloor, i)}
+          </Subheading>
         </TouchableOpacity>
       );
     } else {
@@ -232,16 +234,13 @@ function UnitsScreen(props) {
               )}
               {selectedStructureType === 4 || selectedStructureType === 1 ? (
                 <Button
-                  compact
                   mode="contained"
                   uppercase={false}
                   disabled={!selectedBhk}
                   contentStyle={{paddingHorizontal: 6}}
                   theme={{roundness: 10}}
                   onPress={assignToAll}>
-                  <BaseText style={styles.applyButton}>
-                    {'Apply for all'}
-                  </BaseText>
+                  {'Apply for all'}
                 </Button>
               ) : null}
             </View>
@@ -262,14 +261,11 @@ function UnitsScreen(props) {
           <View style={styles.button}>
             <Button
               style={{width: '50%'}}
-              compact
               mode="contained"
-              contentStyle={{padding: 5}}
+              contentStyle={{padding: 3}}
               theme={{roundness: 15}}
-              onPress={handleButtonPress}>
-              <BaseText style={styles.nextButtonLabel}>
-                {selectedStructureType < 4 ? 'Back' : 'Next'}
-              </BaseText>
+              onPress={() => handleButtonPress()}>
+              {selectedStructureType < 4 ? 'Back' : 'Next'}
             </Button>
           </View>
         </View>
@@ -359,10 +355,6 @@ const styles = StyleSheet.create({
     width: '95%',
     display: 'flex',
     alignItems: 'flex-end',
-  },
-  nextButtonLabel: {
-    fontWeight: 'bold',
-    fontSize: 18,
   },
 });
 

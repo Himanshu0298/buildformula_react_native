@@ -8,6 +8,7 @@ import {
   withTheme,
   Subheading,
   FAB,
+  Button,
 } from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import {secondaryTheme} from 'styles/theme';
@@ -15,40 +16,50 @@ import {secondaryTheme} from 'styles/theme';
 const STATIC = [
   {
     title: 'Modify Request 1',
-    status: 'PENDING APPROVAL',
+    status: 1,
     description: 'This is the description of the modify request 1.',
   },
   {
     title: 'Modify Request 1',
-    status: 'PENDING APPROVAL',
+    status: 1,
     description: 'This is the description of the modify request 1.',
   },
   {
-    title: 'Modify Request 1',
-    status: 'PENDING APPROVAL',
+    title: 'Modify Request 2',
+    status: 2,
     description: 'This is the description of the modify request 1.',
   },
   {
-    title: 'Modify Request 1',
-    status: 'PENDING APPROVAL',
+    title: 'Modify Request 2',
+    status: 3,
     description: 'This is the description of the modify request 1.',
   },
   {
-    title: 'Modify Request 1',
-    status: 'PENDING APPROVAL',
+    title: 'Modify Request 2',
+    status: 3,
     description: 'This is the description of the modify request 1.',
   },
   {
-    title: 'Modify Request 1',
-    status: 'PENDING APPROVAL',
-    description: 'This is the description of the modify request 1.',
-  },
-  {
-    title: 'Modify Request 1',
-    status: 'PENDING APPROVAL',
+    title: 'Modify Request 2',
+    status: 3,
     description: 'This is the description of the modify request 1.',
   },
 ];
+
+const STATUS_LIST = {
+  1: {
+    label: 'PENDING APPROVAL',
+    color: '#F4AF48',
+  },
+  2: {
+    label: 'APPROVED',
+    color: '#07CA03',
+  },
+  3: {
+    label: 'REJECTED',
+    color: '#FF5D5D',
+  },
+};
 
 function RenderRequests({requests}) {
   if (requests.length === 0) {
@@ -65,9 +76,31 @@ function RenderRequests({requests}) {
       <View key={index} style={styles.requestContainer}>
         <View style={styles.requestHeadingRow}>
           <Text>{title}</Text>
-          <Text style={{fontSize: 11}}>{status}</Text>
+          <Text style={{fontSize: 11, color: STATUS_LIST[status].color}}>
+            {STATUS_LIST[status].label}
+          </Text>
         </View>
         <Caption>{description}</Caption>
+        {status === 2 ? (
+          <View style={styles.actionContainer}>
+            <Button
+              // compact
+              contentStyle={{paddingHorizontal: 1}}
+              theme={{roundness: 15}}
+              style={{marginRight: 10}}
+              onPress={() => console.log('-----> cancel')}>
+              {'Cancel'}
+            </Button>
+            <Button
+              // compact
+              mode="contained"
+              contentStyle={{paddingHorizontal: 1}}
+              theme={{roundness: 15}}
+              onPress={() => console.log('-----> confirm')}>
+              {'Confirm'}
+            </Button>
+          </View>
+        ) : null}
       </View>
     );
   });
@@ -100,15 +133,33 @@ function ModifyRequest(props) {
     navigation.push('AddModifyRequest', {...params});
   };
 
+  const requests = React.useMemo(() => {
+    const pendingRequests = STATIC.filter((v) => v.status === 1);
+    const approvedRequests = STATIC.filter((v) => v.status === 2);
+    const rejectedRequests = STATIC.filter((v) => v.status === 3);
+
+    return {pendingRequests, approvedRequests, rejectedRequests};
+  }, []);
+
+  const {pendingRequests, approvedRequests, rejectedRequests} = requests;
   return (
     <View style={styles.container}>
       <ScrollView
         contentContainerStyle={styles.scrollView}
         showsVerticalScrollIndicator={false}>
         <Subheading style={{marginBottom: 10}}>All Modify Requests</Subheading>
-        <RequestsAccordion title="Pending requests" requests={STATIC} />
-        <RequestsAccordion title="Approved requests" requests={STATIC} />
-        <RequestsAccordion title="Rejected requests" requests={STATIC} />
+        <RequestsAccordion
+          title="Pending requests"
+          requests={pendingRequests}
+        />
+        <RequestsAccordion
+          title="Approved requests"
+          requests={approvedRequests}
+        />
+        <RequestsAccordion
+          title="Rejected requests"
+          requests={rejectedRequests}
+        />
       </ScrollView>
       <FAB
         style={[styles.fab, {backgroundColor: theme.colors.primary}]}
@@ -154,6 +205,14 @@ const styles = StyleSheet.create({
     margin: 16,
     right: 10,
     bottom: 10,
+  },
+  actionContainer: {
+    marginTop: 25,
+    paddingHorizontal: 10,
+    flexDirection: 'row',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
   },
 });
 

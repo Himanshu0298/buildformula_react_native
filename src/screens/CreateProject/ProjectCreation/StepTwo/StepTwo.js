@@ -13,8 +13,7 @@ import {useTranslation} from 'react-i18next';
 import {theme} from 'styles/theme';
 import RenderInput from 'components/Atoms/RenderInput';
 import FileInput from 'components/Atoms/FileInput';
-import BaseText from 'components/Atoms/BaseText';
-import useProjectActions from 'redux/actions/projectActions';
+import useAddProjectActions from 'redux/actions/addProjectActions';
 import * as Yup from 'yup';
 import {PHONE_REGEX} from 'utils/constant';
 import {ScrollView} from 'react-native-gesture-handler';
@@ -41,15 +40,13 @@ const schema = Yup.object().shape({
 
 function StepTwo(props) {
   const {navigation, route} = props;
-
   const {stepOneData} = route.params;
 
   const {t} = useTranslation();
-
-  const {createProject} = useProjectActions();
+  const {createProject} = useAddProjectActions();
 
   const {user} = useSelector((state) => state.user);
-  const {loading} = useSelector((state) => state.project);
+  const {loading} = useSelector((state) => state.addProject);
 
   const nameRef = React.useRef();
   const addressRef = React.useRef();
@@ -195,12 +192,12 @@ function StepTwo(props) {
               </View>
               <View style={styles.button}>
                 <Button
-                  style={{width: '50%'}}
                   mode="contained"
-                  contentStyle={{padding: 8}}
+                  style={{width: '40%'}}
+                  contentStyle={{padding: 3}}
                   theme={{roundness: 15}}
                   onPress={handleSubmit}>
-                  <BaseText style={styles.buttonText}>{'Save'}</BaseText>
+                  {'Save'}
                 </Button>
               </View>
             </View>
@@ -233,10 +230,6 @@ const styles = StyleSheet.create({
     width: '95%',
     display: 'flex',
     alignItems: 'flex-end',
-  },
-  buttonText: {
-    fontWeight: 'bold',
-    fontSize: 18,
   },
 });
 
