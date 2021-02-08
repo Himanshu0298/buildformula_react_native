@@ -87,7 +87,7 @@ function RenderMilestone(props) {
           size={24}
           color="rgba(4, 29, 54, 0.15)"
         />
-        <CustomBadge label={index + 1} style={styles.badge} />
+        <CustomBadge label={(index + 1).toString()} style={styles.badge} />
         <Text>{item.title}</Text>
       </View>
       <Menu
@@ -106,7 +106,7 @@ function RenderMilestone(props) {
 }
 
 function Milestone(props) {
-  const {navigation, theme} = props;
+  const {theme} = props;
 
   const [work] = useState([
     {title: 'Work1'},
@@ -116,7 +116,7 @@ function Milestone(props) {
     {title: 'Work5'},
   ]);
   const [menuIndex, setMenuIndex] = React.useState(false);
-  const [showDialog, setShowDialog] = React.useState(true);
+  const [showDialog, setShowDialog] = React.useState(false);
 
   const toggleMenu = (v) => setMenuIndex(v);
   const toggleDialog = () => setShowDialog((v) => !v);

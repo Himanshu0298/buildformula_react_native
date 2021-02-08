@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
 });
 
 UnitSelector.defaultProps = {
-  title: 'label_select_unit',
+  title: 'title_select_unit',
   subtitle: 'label_select_appropriate_option',
   showBhkFilters: true,
   onSelectUnit: () => {},

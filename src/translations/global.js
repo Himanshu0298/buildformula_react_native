@@ -75,7 +75,7 @@ export default {
       //Booking Form
       label_select_structure: 'Select Structure',
       label_select_tower: 'Select Tower',
-      label_select_unit: 'Select Unit',
+      title_select_unit: 'Select Unit',
       label_towers: 'Towers',
       label_rate: 'Rate',
       label_area: 'Area',
@@ -117,10 +117,14 @@ export default {
       label_loan_amount: 'Loan Amount',
       label_installment_amount: 'Installment Amount',
       label_loan_approval_letter: 'Loan approval letter',
-      label_work: 'Work',
-      label_milestone: 'Milestone',
       label_number_of_installments: 'No of Installments',
       label_person_email: 'Person Email Id',
+
+      //Lineup
+      label_select_unit: 'Select unit',
+      label_work: 'Work',
+      label_milestone: 'Milestone',
+      label_activity_name: 'Activity name',
     },
   },
   hi: {
@@ -193,7 +197,7 @@ export default {
       //Booking Form
       label_select_structure: 'संरचना का चयन करें',
       label_select_tower: 'Select Tower',
-      label_select_unit: 'Select Unit',
+      title_select_unit: 'Select Unit',
       label_towers: 'टावरो',
       label_rate: 'Rate',
       label_area: 'Area',
@@ -234,10 +238,14 @@ export default {
       label_loan_amount: 'Loan Amount',
       label_installment_amount: 'Installment Amount',
       label_loan_approval_letter: 'Loan approval letter',
-      label_work: 'Work',
-      label_milestone: 'Milestone',
       label_number_of_installments: 'No of Installments',
       label_person_email: 'Person Email Id',
+
+      //Lineup
+      label_select_unit: 'Select unit',
+      label_work: 'Work',
+      label_milestone: 'Milestone',
+      label_activity_name: 'Activity name',
     },
   },
 };
