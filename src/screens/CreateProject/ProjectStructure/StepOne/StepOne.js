@@ -23,10 +23,11 @@ import plot from 'assets/images/plot.png';
 import plotInactive from 'assets/images/plot_inactive.png';
 import Layout from 'utils/Layout';
 import {useSnackbar} from 'components/Atoms/Snackbar';
-import useStructureActions from 'redux/actions/structureActions';
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {DEFAULT_STRUCTURE} from 'utils/constant';
+import _ from 'lodash';
+import useAddProjectActions from 'redux/actions/addProjectActions';
 
 const getStructureItems = () => {
   return [
@@ -69,16 +70,8 @@ const getStructureItems = () => {
   ];
 };
 
-function ImageRender({
-  title,
-  inactiveSrc,
-  activeSrc,
-  imageStyle,
-  active,
-  onPress,
-  value,
-  style,
-}) {
+function ImageRender({item, active, onPress}) {
+  const {title, inactiveSrc, activeSrc, imageStyle, value, style} = item;
   return (
     <TouchableOpacity
       style={[styles.box, style, active ? styles.active : {}]}
@@ -95,14 +88,16 @@ function StepOne(props) {
   const {t} = useTranslation();
   const snackbar = useSnackbar();
 
-  const {updateStructureTypes, updateStructure} = useStructureActions();
+  const {updateStructureTypes, updateStructure} = useAddProjectActions();
 
-  const {structureTypes, structure} = useSelector((state) => state.structure);
-  const {project} = useSelector((state) => state.project);
-  const {loading} = useSelector((state) => state.structure);
+  const {structureTypes, structure, project, loading} = useSelector(
+    (state) => state.addProject,
+  );
+
+  console.log('-----> structureTypes', structureTypes);
 
   const updateTypes = (type) => {
-    const types = {...structureTypes};
+    const types = _.cloneDeep(structureTypes);
     types[type] = !types[type];
     let selectedStructureType = 1;
     if (types[2]) {
@@ -161,17 +156,24 @@ function StepOne(props) {
       />
       <Spinner visible={loading} textContent={''} />
       <View style={styles.container}>
-        {getStructureItems().map((item) => {
-          return <ImageRender {...item} onPress={updateTypes} />;
+        {getStructureItems().map((item, index) => {
+          return (
+            <ImageRender
+              key={index}
+              item={item}
+              active={structureTypes[item.value]}
+              onPress={updateTypes}
+            />
+          );
         })}
         <View style={styles.button}>
           <Button
-            style={{width: '50%'}}
             mode="contained"
-            contentStyle={{padding: 8}}
+            style={{width: '40%'}}
+            contentStyle={{padding: 3}}
             theme={{roundness: 15}}
             onPress={handleSubmit}>
-            <BaseText style={styles.buttonText}>{'Next'}</BaseText>
+            {'Next'}
           </Button>
         </View>
       </View>
@@ -231,10 +233,6 @@ const styles = StyleSheet.create({
     width: '95%',
     display: 'flex',
     alignItems: 'flex-end',
-  },
-  buttonText: {
-    fontWeight: 'bold',
-    fontSize: 18,
   },
 });
 

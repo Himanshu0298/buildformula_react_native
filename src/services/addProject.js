@@ -1,8 +1,11 @@
 import {instance, useConfig} from './init';
 
-export default function useStructure() {
+export default function useAddProject() {
   const {config} = useConfig();
   return {
+    createProject: (data) => {
+      return instance.post('/project/create', data, config());
+    },
     updateStructureTypes: (data) => {
       return instance.post('/project/update_types', data, config());
     },
@@ -18,6 +21,12 @@ export default function useStructure() {
     },
     saveUnits: (data) => {
       return instance.post('/project/update_project_units', data, config());
+    },
+    updatePayment: (data) => {
+      return instance.post('/project/update_project_payment', data, config());
+    },
+    updateAdmins: (data) => {
+      return instance.post('/project/update_project_admins', data, config());
     },
   };
 }

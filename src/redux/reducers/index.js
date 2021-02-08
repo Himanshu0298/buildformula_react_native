@@ -1,6 +1,6 @@
 import app from './app';
 import user from './user';
-import structure from './structure';
+import addProject from './addProject';
 import project from './project';
 import sales from './sales';
 import customer from './customer';
@@ -8,7 +8,7 @@ import customer from './customer';
 const reducers = {
   app,
   user,
-  structure,
+  addProject,
   project,
   sales,
   customer,

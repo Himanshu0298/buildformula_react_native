@@ -4,7 +4,6 @@ import {View, TouchableOpacity, StyleSheet} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useSelector} from 'react-redux';
-import {secondaryTheme} from 'styles/theme';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import Timer from 'components/Atoms/Timer';

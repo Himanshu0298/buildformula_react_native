@@ -8,7 +8,7 @@ import StructureSelector from 'components/Molecules/StructureSelector';
 
 function SelectStructure({navigation}) {
   const {selectedProject} = useSelector((state) => state.project);
-  const {loading} = useSelector((state) => state.structure);
+  const {loading} = useSelector((state) => state.customer);
 
   const {projectData} = selectedProject;
   const projectTypes = Object.keys(projectData).map((v) => Number(v));

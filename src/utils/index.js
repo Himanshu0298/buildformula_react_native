@@ -116,7 +116,7 @@ export const getUnitLabel = (floor, unit) => {
 
 export function getInitialAuthScreen(
   authenticated,
-  {user: {user = {}}, project: {project = {}}},
+  {user: {user = {}}, addProject: {project = {}}},
 ) {
   const {id, otp_verified, email_verified, default_role_id} = user;
   if (authenticated) {

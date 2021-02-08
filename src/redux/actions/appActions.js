@@ -10,10 +10,6 @@ export default function useAppActions() {
         type: types.SET_LANGUAGE,
         payload: language,
       }),
-    resetStructure: () =>
-      dispatch({
-        type: types.RESET_STRUCTURE,
-      }),
     logout: () =>
       dispatch({
         type: types.LOGOUT,

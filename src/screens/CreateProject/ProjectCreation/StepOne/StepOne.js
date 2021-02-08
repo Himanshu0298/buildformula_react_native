@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  View,
-  StatusBar,
-  StyleSheet,
-  SafeAreaView,
-  ScrollView,
-} from 'react-native';
+import {View, StatusBar, StyleSheet, ScrollView} from 'react-native';
 import {withTheme, Button} from 'react-native-paper';
 import FormTitle from 'components/Atoms/FormTitle';
 import {Formik} from 'formik';
@@ -13,7 +7,6 @@ import {useTranslation} from 'react-i18next';
 import {theme} from 'styles/theme';
 import RenderInput from 'components/Atoms/RenderInput';
 import FileInput from 'components/Atoms/FileInput';
-import BaseText from 'components/Atoms/BaseText';
 import * as Yup from 'yup';
 import {PAN_REGEX, GST_REGEX} from 'utils/constant';
 
@@ -129,12 +122,12 @@ function StepOne(props) {
               </View>
               <View style={styles.button}>
                 <Button
-                  style={{width: '50%'}}
                   mode="contained"
-                  contentStyle={{padding: 8}}
+                  style={{width: '40%'}}
+                  contentStyle={{padding: 3}}
                   theme={{roundness: 15}}
                   onPress={handleSubmit}>
-                  <BaseText style={styles.buttonText}>{'Continue'}</BaseText>
+                  {'Continue'}
                 </Button>
               </View>
             </View>
@@ -167,10 +160,6 @@ const styles = StyleSheet.create({
     width: '95%',
     display: 'flex',
     alignItems: 'flex-end',
-  },
-  buttonText: {
-    fontWeight: 'bold',
-    fontSize: 18,
   },
 });
 

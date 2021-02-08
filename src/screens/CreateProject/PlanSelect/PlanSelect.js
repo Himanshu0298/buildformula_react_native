@@ -12,12 +12,11 @@ import {
 } from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
-import {useTranslation} from 'react-i18next';
 import LinearGradient from 'react-native-linear-gradient';
-import useProjectActions from 'redux/actions/projectActions';
-import {secondaryTheme} from 'styles/theme';
 import splash from 'assets/animation/splash.json';
 import LottieView from 'lottie-react-native';
+import useAddProjectActions from 'redux/actions/addProjectActions';
+import {secondaryTheme} from 'styles/theme';
 
 function RoleBox({title, onSelectPlan, amount, colors}) {
   return (
@@ -29,7 +28,7 @@ function RoleBox({title, onSelectPlan, amount, colors}) {
         end={{x: 1, y: 0}}
         colors={colors}
         style={styles.roleBox}>
-        <Subheading>{title}</Subheading>
+        <Subheading theme={secondaryTheme}>{title}</Subheading>
       </LinearGradient>
     </TouchableOpacity>
   );
@@ -38,8 +37,8 @@ function RoleBox({title, onSelectPlan, amount, colors}) {
 function PlanSelect(props) {
   const {navigation} = props;
   const [showAlert, setShowAlert] = useState(false);
-  const {project, loading} = useSelector((state) => state.project);
-  const {selectPlan} = useProjectActions();
+  const {project, loading} = useSelector((state) => state.addProject);
+  const {selectPlan} = useAddProjectActions();
 
   const toggleAlert = () => setShowAlert((v) => !v);
 

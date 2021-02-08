@@ -1,5 +1,4 @@
 import React, {useMemo, useState, useEffect} from 'react';
-import BaseText from 'components/Atoms/BaseText';
 import RenderInput from 'components/Atoms/RenderInput';
 import {Formik} from 'formik';
 import {useTranslation} from 'react-i18next';
@@ -20,7 +19,7 @@ import {
   Portal,
   Dialog,
 } from 'react-native-paper';
-import {secondaryTheme, theme} from 'styles/theme';
+import {theme} from 'styles/theme';
 import {round} from 'utils';
 import * as Yup from 'yup';
 import _ from 'lodash';
@@ -379,19 +378,19 @@ function FormContent(props) {
         </View>
         <View style={styles.actionContainer}>
           <Button
-            style={styles.button}
-            contentStyle={{padding: 5}}
+            style={{flex: 1, marginHorizontal: 5}}
+            contentStyle={{padding: 3}}
             theme={{roundness: 15}}
             onPress={handleCancel}>
-            <BaseText style={styles.cancelText}>{'Back'}</BaseText>
+            {'Back'}
           </Button>
           <Button
-            style={{flex: 1}}
+            style={{flex: 1, marginHorizontal: 5}}
             mode="contained"
-            contentStyle={{padding: 5}}
+            contentStyle={{padding: 3}}
             theme={{roundness: 15}}
             onPress={handleSubmit}>
-            <BaseText style={styles.buttonText}>{'Next'}</BaseText>
+            {'Next'}
           </Button>
         </View>
       </KeyboardAwareScrollView>
@@ -473,18 +472,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-  },
-  button: {
-    flex: 1,
-    marginHorizontal: 10,
-  },
-  cancelText: {
-    fontSize: 18,
-    color: theme.colors.primary,
-  },
-  buttonText: {
-    fontWeight: 'bold',
-    fontSize: 18,
   },
 });
 

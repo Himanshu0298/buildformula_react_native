@@ -155,7 +155,7 @@ function Login(props) {
   const snackbar = useSnackbar();
 
   const {loading} = useSelector((state) => state.user);
-  const {project} = useSelector((state) => state.project);
+  const {project} = useSelector((state) => state.addProject);
 
   useEffect(() => {
     if (loginError) {

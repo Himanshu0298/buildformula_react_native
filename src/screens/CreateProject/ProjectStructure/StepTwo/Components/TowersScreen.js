@@ -11,7 +11,9 @@ function RenderTowers({towerCount, towerValidationById, onPress}) {
   const towersList = [];
   for (let i = 1; i <= towerCount; i += 1) {
     const active = towerValidationById[i];
-    towersList.push(<TowerIcon onPress={onPress} key={i} active={active} />);
+    towersList.push(
+      <TowerIcon onPress={onPress} key={i} index={i} active={active} />,
+    );
   }
   return <View style={styles.towersList}>{towersList}</View>;
 }
@@ -95,11 +97,7 @@ function TowersScreen(props) {
                 contentStyle={{paddingVertical: 2, paddingHorizontal: 6}}
                 theme={{roundness: 10}}
                 onPress={() => setApplyToAll((v) => !v)}>
-                <BaseText style={styles.applyButton}>
-                  {applyToAll
-                    ? '  Cancel Apply All   '
-                    : 'Apply for all towers'}
-                </BaseText>
+                {applyToAll ? '  Cancel Apply All   ' : 'Apply for all towers'}
               </Button>
             </View>
             {applyToAll ? (
@@ -122,9 +120,8 @@ function TowersScreen(props) {
           <View style={styles.button}>
             <Button
               style={{width: '50%'}}
-              compact
               mode="contained"
-              contentStyle={{padding: 5}}
+              contentStyle={{padding: 3}}
               theme={{roundness: 15}}
               onPress={() => {
                 if (!allTowersValid) {
@@ -136,7 +133,7 @@ function TowersScreen(props) {
                   saveStructureType();
                 }
               }}>
-              <BaseText style={styles.nextButtonLabel}>{'Next'}</BaseText>
+              {'Next'}
             </Button>
           </View>
         </View>
@@ -172,9 +169,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
   },
-  applyButton: {
-    fontSize: 12,
-  },
   selectTowerHeadingContainer: {
     marginTop: 15,
   },
@@ -194,10 +188,6 @@ const styles = StyleSheet.create({
     width: '95%',
     display: 'flex',
     alignItems: 'flex-end',
-  },
-  nextButtonLabel: {
-    fontWeight: 'bold',
-    fontSize: 18,
   },
 });
 

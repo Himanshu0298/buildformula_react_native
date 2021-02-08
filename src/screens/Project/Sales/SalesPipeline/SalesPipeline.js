@@ -18,7 +18,7 @@ import {
   Searchbar,
   Subheading,
 } from 'react-native-paper';
-import {secondaryTheme, theme} from 'styles/theme';
+import {theme} from 'styles/theme';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {COLORS} from 'utils/constant';
 import BaseText from 'components/Atoms/BaseText';
@@ -117,14 +117,13 @@ function RenderAddNew({handleAddNew}) {
         mode="contained"
         contentStyle={{paddingVertical: 3, paddingHorizontal: 10}}
         theme={{roundness: 10}}
-        style={{marginTop: 10}}
         onPress={() => {
           if (stage) {
             setStage();
             handleAddNew(stage);
           }
         }}>
-        <BaseText style={styles.buttonText}>{'Save'}</BaseText>
+        {'Save'}
       </Button>
     </View>
   );
@@ -176,7 +175,7 @@ function AddContactDialog({open, t, handleClose, moveContact}) {
             <View style={styles.addContactContainer}>
               <Subheading>Add Contact</Subheading>
               <Searchbar
-                theme={{...secondaryTheme, roundness: 12}}
+                theme={{roundness: 12}}
                 placeholder={t('label_search_visitors')}
                 style={styles.searchBar}
                 value={searchQuery}
@@ -228,7 +227,7 @@ function AddContactDialog({open, t, handleClose, moveContact}) {
                   setSearchQuery();
                   setSelectedVisitor();
                 }}>
-                <BaseText style={styles.buttonText}>{'Move'}</BaseText>
+                {'Move'}
               </Button>
             </View>
           </Dialog.Content>
@@ -450,6 +449,7 @@ const styles = StyleSheet.create({
   pipelineInput: {
     paddingHorizontal: 25,
     paddingVertical: 15,
+    marginBottom: 10,
   },
   dotContainer: {
     padding: 10,

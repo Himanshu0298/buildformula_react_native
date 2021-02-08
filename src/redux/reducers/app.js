@@ -1,4 +1,11 @@
+import AsyncStorage from '@react-native-community/async-storage';
+import persistReducer from 'redux-persist/es/persistReducer';
 import {SET_LANGUAGE} from './../actions/actionTypes';
+
+const persistConfig = {
+  key: 'app',
+  storage: AsyncStorage,
+};
 
 const initialState = {
   language: undefined,
@@ -18,4 +25,4 @@ const reducer = (state = initialState, action = {}) => {
   }
 };
 
-export default reducer;
+export default persistReducer(persistConfig, reducer);

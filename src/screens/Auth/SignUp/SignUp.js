@@ -19,7 +19,6 @@ import {
 import {secondaryTheme, theme} from 'styles/theme';
 import banner from 'assets/images/banner.png';
 import image from 'assets/images/buildings.png';
-import BaseText from 'components/Atoms/BaseText';
 import {Formik} from 'formik';
 import CustomInput from './../Components/CustomInput';
 import useUserActions from 'redux/actions/userActions';
@@ -30,8 +29,7 @@ import {useTranslation} from 'react-i18next';
 import Layout from 'utils/Layout';
 import BottomSheet from 'reanimated-bottom-sheet';
 import {PHONE_REGEX} from 'utils/constant';
-import useProjectActions from 'redux/actions/projectActions';
-import useAppActions from 'redux/actions/appActions';
+import useAddProjectActions from 'redux/actions/addProjectActions';
 
 const BANNER_HEIGHT = Layout.window.width * 0.75 * (5 / 12);
 const IMAGE_HEIGHT = Layout.window.width * 0.75 * (15 / 22);
@@ -92,7 +90,7 @@ function RenderContent(props) {
           </Subheading>
         </View>
       ) : (
-        <Subheading>
+        <Subheading theme={secondaryTheme}>
           {t(adminId === 2 ? 'admin_title_2nd' : 'admin_title_3rd')}
         </Subheading>
       )}
@@ -262,8 +260,8 @@ function SignUp(props) {
 
   const [validationError, setValidationError] = React.useState({});
   const {signUp} = useUserActions();
-  const {updateAdmins} = useProjectActions();
-  const {resetStructure} = useAppActions();
+  const {updateAdmins} = useAddProjectActions();
+  const {resetStructure} = useAddProjectActions();
 
   const bottomSheetRef = React.createRef();
 
@@ -271,7 +269,7 @@ function SignUp(props) {
 
   const {loading} = useSelector((state) => state.user);
   const {loading: updatingAdmin, project} = useSelector(
-    (state) => state.project,
+    (state) => state.addProject,
   );
 
   React.useEffect(() => {
