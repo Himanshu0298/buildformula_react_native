@@ -1,8 +1,4 @@
-import {
-  GET_FOLDERS,
-  SET_INITIAL_STATE,
-  CREATE_FOLDER,
-} from './../actions/actionTypes';
+import {GET_FOLDERS, CREATE_FOLDER} from './../actions/actionTypes';
 
 const initialState = {
   loading: false,
@@ -13,13 +9,6 @@ const initialState = {
 export default (state = initialState, action = {}) => {
   const {type, payload} = action;
   switch (type) {
-    case SET_INITIAL_STATE:
-      //TODO:update loading only if true
-      return {
-        ...state,
-        loading: false,
-      };
-
     case `${GET_FOLDERS}_PENDING`:
       return {
         ...state,
