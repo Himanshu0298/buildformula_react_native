@@ -23,7 +23,7 @@ export default function useProjectActions() {
         type: types.GET_SELECTED_PROJECT,
         payload: async () => {
           try {
-            let response = processResponse(await getProjectData(projectId));
+            const response = processResponse(await getProjectData(projectId));
             const {data} = response;
 
             if (data?.projectData?.towerCount) {
@@ -32,7 +32,7 @@ export default function useProjectActions() {
 
             return Promise.resolve(data);
           } catch (error) {
-            let errorMessage = processError(error);
+            const errorMessage = processError(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',
@@ -46,12 +46,12 @@ export default function useProjectActions() {
         type: types.GET_PROJECTS,
         payload: async () => {
           try {
-            let response = processResponse(await getProjects(formData));
+            const response = processResponse(await getProjects(formData));
             const {data} = response;
 
             return Promise.resolve(data);
           } catch (error) {
-            let errorMessage = processError(error);
+            const errorMessage = processError(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',
@@ -66,13 +66,13 @@ export default function useProjectActions() {
         type: types.CREATE_PROJECT,
         payload: async () => {
           try {
-            let response = processResponse(await createProject(formData));
+            const response = processResponse(await createProject(formData));
             const {data} = response;
             console.log('-----> data', data);
 
             return Promise.resolve(data);
           } catch (error) {
-            let errorMessage = processError(error);
+            const errorMessage = processError(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',
@@ -87,12 +87,12 @@ export default function useProjectActions() {
         type: types.UPDATE_PAYMENT,
         payload: async () => {
           try {
-            let response = processResponse(await updatePayment(formData));
+            const response = processResponse(await updatePayment(formData));
             const {data} = response;
 
             return Promise.resolve(data);
           } catch (error) {
-            let errorMessage = processError(error);
+            const errorMessage = processError(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',
@@ -107,14 +107,14 @@ export default function useProjectActions() {
         type: types.UPDATE_ADMINS,
         payload: async () => {
           try {
-            let response = processResponse(await updateAdmins(formData));
+            const response = processResponse(await updateAdmins(formData));
             const {data} = response;
 
             snackbar.showMessage({message: 'Updated Admins Successfully!'});
 
             return Promise.resolve(data);
           } catch (error) {
-            let errorMessage = processError(error);
+            const errorMessage = processError(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',

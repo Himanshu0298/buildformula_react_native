@@ -1,4 +1,4 @@
-import React from 'react';
+iimport React from 'react';
 import {StyleSheet, View, Image, Alert} from 'react-native';
 import {secondaryTheme, theme} from 'styles/theme';
 import useFileActions from 'redux/actions/fileActions';
@@ -190,7 +190,7 @@ function RenderFile({file, toggleMenu, menuId}) {
   );
 }
 
-export default function Files(props) {
+export default function FolderView(props) {
   const files = [
     {file_name: 'firstfile', date: new Date()},
     {file_name: 'secondfile', date: new Date()},
@@ -204,36 +204,22 @@ export default function Files(props) {
   const {selectedProject} = useSelector((state) => state.project);
   const {getFolders, createFolder} = useFileActions();
 
-  const [state, setState] = React.useState({open: false});
   const [RecentMenuId, setRecentMenuId] = React.useState(false);
-  const [menuId, setMenuId] = React.useState(false);
-
   const toggleRecentMenu = (currentMenuId) => setRecentMenuId(currentMenuId);
+  const [menuId, setMenuId] = React.useState(false);
   const toggleMenu = (currentMenuId) => setMenuId(currentMenuId);
+  const [state, setState] = React.useState({open: false});
   const onStateChange = ({open}) => setState({open});
   const {open} = state;
 
   React.useEffect(() => {
-    getFolders({project_id: selectedProject.id, index_of: 0});
+    getFolders({project_id: selectedProject.id});
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <View style={styles.container}>
-      <Subheading style={styles.Subheading}>Recent Files</Subheading>
-      <ScrollView style={styles.scrollView}>
-        <View>
-          {files.map((file, index) => (
-            <RecentFile
-              file={file}
-              key={index}
-              RecentMenuId={RecentMenuId}
-              toggleRecentMenu={toggleRecentMenu}
-            />
-          ))}
-        </View>
-      </ScrollView>
       <Subheading style={styles.Subheading}>Folders</Subheading>
       <ScrollView style={styles.scrollView}>
         <View>

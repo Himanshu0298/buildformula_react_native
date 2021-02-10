@@ -4,6 +4,7 @@ import structure from './structure';
 import project from './project';
 import sales from './sales';
 import customer from './customer';
+import files from './files';
 
 const reducers = {
   app,
@@ -12,6 +13,7 @@ const reducers = {
   project,
   sales,
   customer,
+  files,
 };
 
 export default reducers;

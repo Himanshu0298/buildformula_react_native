@@ -46,3 +46,8 @@ export const ADD_CUSTOMER = 'ADD_CUSTOMER';
 export const GET_BANK_DETAILS = 'GET_BANK_DETAILS';
 export const UPDATE_BANK_DETAILS = 'UPDATE_BANK_DETAILS';
 export const UPDATE_BANK_FILES = 'UPDATE_BANK_FILES';
+
+//For Files
+
+export const GET_FOLDERS = 'GET_FOLDERS';
+export const CREATE_FOLDER = 'CREATE_FOLDER';
