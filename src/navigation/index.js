@@ -56,7 +56,8 @@ import AddBankDetails from 'screens/Project/CustomerSection/AddBankDetails';
 //Project : Project management screens
 import ProjectSchedule from '../screens/Project/ProjectManagement/ProjectSchedule';
 import MainPhase from '../screens/Project/ProjectManagement/MainPhase';
-import Lineup from '../screens/Project/ProjectManagement/LineUp';
+import Lineup from '../screens/Project/ProjectManagement/Lineup';
+import Planning from 'screens/Project/ProjectManagement/Planning';
 import ProcessChart from '../screens/Project/ProjectManagement/ProcessChart/ProcessChart';
 //Project : Material management screens
 import Estimation from '../screens/Project/MaterialManagement/Estimation';
@@ -216,6 +217,23 @@ function CustomerSectionStack() {
   );
 }
 
+function PlanningStack() {
+  return (
+    <Stack.Navigator initialRouteName={'PlanningHome'}>
+      <Stack.Screen
+        name="PlanningHome"
+        component={Planning}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="FolderDetails"
+        component={Files}
+        options={{headerShown: false}}
+      />
+    </Stack.Navigator>
+  );
+}
+
 function FilesStack() {
   return (
     <Stack.Navigator initialRouteName={'FilesHome'}>
@@ -276,6 +294,7 @@ function ProjectDrawer() {
       <Drawer.Screen name="ProjectSchedule" component={ProjectSchedule} />
       <Drawer.Screen name="MainPhase" component={MainPhase} />
       <Drawer.Screen name="Lineup" component={Lineup} />
+      <Drawer.Screen name="Planning" component={PlanningStack} />
       <Drawer.Screen name="ProcessChart" component={ProcessChart} />
       <Drawer.Screen name="Estimation" component={Estimation} />
       <Drawer.Screen name="RequestForPrice" component={RequestForPrice} />

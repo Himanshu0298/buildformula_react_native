@@ -1,7 +1,7 @@
 import MaterialTabBar from 'components/Atoms/MaterialTabBar';
 import ProjectHeader from 'components/Molecules/Layout/ProjectHeader';
 import React, {useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {Subheading} from 'react-native-paper';
 import {TabView} from 'react-native-tab-view';
 import {getShadow} from 'utils';
