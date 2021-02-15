@@ -1,11 +1,11 @@
 import React from 'react';
 import ProjectLayout from 'components/Molecules/Layout/ProjectLayout';
-import Planning from './Planning';
+import SubPhases from './SubPhases';
 
 export default (props) => {
   return (
     <ProjectLayout>
-      <Planning {...props} />
+      <SubPhases {...props} />
     </ProjectLayout>
   );
 };

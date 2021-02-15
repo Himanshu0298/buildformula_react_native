@@ -54,10 +54,12 @@ import AddCustomer from 'screens/Project/CustomerSection/AddCustomer';
 import AddModifyRequest from 'screens/Project/CustomerSection/AddModifyRequest';
 import AddBankDetails from 'screens/Project/CustomerSection/AddBankDetails';
 //Project : Project management screens
+import Lineup from '../screens/Project/ProjectManagement/Lineup';
+import Phases from 'screens/Project/ProjectManagement/Planning/Phases';
+import SubPhases from 'screens/Project/ProjectManagement/Planning/SubPhases';
+import SubPhaseActivity from 'screens/Project/ProjectManagement/Planning/SubPhaseActivity';
 import ProjectSchedule from '../screens/Project/ProjectManagement/ProjectSchedule';
 import MainPhase from '../screens/Project/ProjectManagement/MainPhase';
-import Lineup from '../screens/Project/ProjectManagement/Lineup';
-import Planning from 'screens/Project/ProjectManagement/Planning';
 import ProcessChart from '../screens/Project/ProjectManagement/ProcessChart/ProcessChart';
 //Project : Material management screens
 import Estimation from '../screens/Project/MaterialManagement/Estimation';
@@ -219,15 +221,20 @@ function CustomerSectionStack() {
 
 function PlanningStack() {
   return (
-    <Stack.Navigator initialRouteName={'PlanningHome'}>
+    <Stack.Navigator initialRouteName={'Phases'}>
       <Stack.Screen
-        name="PlanningHome"
-        component={Planning}
+        name="Phases"
+        component={Phases}
         options={{headerShown: false}}
       />
       <Stack.Screen
-        name="FolderDetails"
-        component={Files}
+        name="SubPhases"
+        component={SubPhases}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="SubPhaseActivity"
+        component={SubPhaseActivity}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

@@ -8,17 +8,22 @@ const hex2rgba = (hex, alpha = 1) => {
   return `rgba(${r},${g},${b},${alpha})`;
 };
 
-function OpacityButton({style, color, opacity, children, ...restProps}) {
+function OpacityButton(props) {
+  const {style, color, onPress, opacity, children, ...restProps} = props;
+
+  const Container = onPress ? TouchableOpacity : View;
+
   return (
-    <TouchableOpacity
+    <Container
       style={[
         styles.button,
         {backgroundColor: hex2rgba(color, opacity)},
         style,
       ]}
+      onPress={onPress}
       {...restProps}>
       {children}
-    </TouchableOpacity>
+    </Container>
   );
 }
 
