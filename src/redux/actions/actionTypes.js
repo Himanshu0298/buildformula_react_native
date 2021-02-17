@@ -45,3 +45,6 @@ export const ADD_CUSTOMER = 'ADD_CUSTOMER';
 export const GET_BANK_DETAILS = 'GET_BANK_DETAILS';
 export const UPDATE_BANK_DETAILS = 'UPDATE_BANK_DETAILS';
 export const UPDATE_BANK_FILES = 'UPDATE_BANK_FILES';
+
+//For Project Management
+export const GET_WORKS = 'GET_WORKS';
