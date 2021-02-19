@@ -4,7 +4,11 @@ export default function useFiles() {
   const {config} = useConfig();
   return {
     createFolder: (data) => {
-      return instance.post('/files/create_folder', data, config());
+      return instance.post(
+        '/files/create_folder',
+        data,
+        config({multipart: false}),
+      );
     },
     renameFolder: (data) => {
       return instance.post('/files/rename_folder', data, config());
@@ -20,7 +24,11 @@ export default function useFiles() {
       return instance.post('/files/upload_file', data, config());
     },
     getFiles: (data) => {
-      return instance.post('/files/get_files', data, config());
+      return instance.post(
+        '/files/get_files',
+        data,
+        config({multipart: false}),
+      );
     },
   };
 }

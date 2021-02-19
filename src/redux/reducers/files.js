@@ -1,9 +1,10 @@
-import {GET_FOLDERS, CREATE_FOLDER} from './../actions/actionTypes';
+import {GET_FOLDERS, CREATE_FOLDER, GET_FILES} from './../actions/actionTypes';
 
 const initialState = {
   loading: false,
   errorMessage: undefined,
-  filesData: {},
+  folders: {},
+  files: {},
 };
 
 export default (state = initialState, action = {}) => {
@@ -18,7 +19,7 @@ export default (state = initialState, action = {}) => {
       return {
         ...state,
         loading: false,
-        filesData: payload,
+        folders: {...state.folders, [payload.index_of]: payload.data},
       };
     }
     case `${GET_FOLDERS}_REJECTED`:
@@ -36,7 +37,6 @@ export default (state = initialState, action = {}) => {
       return {
         ...state,
         loading: false,
-        filesData: payload,
       };
     }
     case `${CREATE_FOLDER}_REJECTED`:
@@ -45,7 +45,24 @@ export default (state = initialState, action = {}) => {
         loading: false,
         errorMessage: action.payload,
       };
-
+    case `${GET_FILES}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${GET_FILES}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+        files: {...state.files, [payload.folder_id]: payload.data},
+      };
+    }
+    case `${GET_FILES}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+        errorMessage: action.payload,
+      };
     default:
       return state;
   }

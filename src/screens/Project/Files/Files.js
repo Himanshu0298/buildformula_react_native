@@ -1,12 +1,13 @@
 import React from 'react';
-import {StyleSheet, View, Image, Alert} from 'react-native';
+import {StyleSheet, View, Image} from 'react-native';
 import {
   IconButton,
   Subheading,
   Text,
+  FAB,
   Menu,
   Divider,
-  FAB,
+  Button,
 } from 'react-native-paper';
 import useFileActions from 'redux/actions/fileActions';
 import Modal from 'react-native-modal';
@@ -26,29 +27,72 @@ function ActivityModal() {
     </View>
   );
 }
-
-function VersionModal() {
+function VersionModal(props) {
+  const {versions} = props;
   return (
     <View>
-      <Text>HELLO</Text>
+      <View style={styles.backNavigation}>
+        <Text>Versions</Text>
+        <Button
+          color="#4872F4"
+          style={styles.button}
+          onPress={() => console.log('Pressed')}>
+          Add New Version
+        </Button>
+      </View>
+      <View>
+        {versions?.map((version, index) => (
+          <VersionFile version={version} key={index} />
+        ))}
+      </View>
     </View>
   );
 }
-function VersionActivityModal({versionModal}) {
+
+function VersionFile() {
+  const [versionMenu, setVersionMenu] = React.useState(false);
+
+  const toggleVersionMenu = () => setVersionMenu(!versionMenu);
   return (
-    <View>
-      {versionModal === 'Version' ? <VersionModal /> : <ActivityModal />}
+    <View style={styles.recentFiles}>
+      <View style={styles.sectionContainer}>
+        <Image source={PdfIcon} style={styles.PdfIcon} />
+        <View>
+          <Text numberOfLines={1} style={styles.text}>
+            First File Version
+          </Text>
+        </View>
+      </View>
+      <View style={styles.sectionContainer}>
+        <View>
+          <Text style={styles.date}>
+            {dayjs(new Date()).format('DD MMM YYYY')}
+          </Text>
+        </View>
+        <View>
+          <Menu
+            visible={versionMenu}
+            onDismiss={toggleVersionMenu}
+            anchor={
+              <IconButton icon="dots-vertical" onPress={toggleVersionMenu} />
+            }>
+            <Menu.Item icon="download" onPress={() => {}} title="Download" />
+            <Divider />
+            <Menu.Item icon="delete" onPress={() => {}} title="Delete" />
+          </Menu>
+        </View>
+      </View>
     </View>
   );
 }
 
-function MenuModal({toggleModelState, modalView, folder_name, modalType}) {
+function MenuModal({setModalContentType, modalContent}) {
   return (
     <View>
-      <View style={styles.spaceBetween}>
-        <Image source={modalType} style={styles.PdfIcon} />
+      <View style={styles.viewDirection}>
+        <Image source={FolderIcon} style={styles.PdfIcon} />
         <Subheading style={{marginHorizontal: 10, marginVertical: 5}}>
-          {folder_name || 'First File Name'}
+          {modalContent?.file_name || modalContent?.folder_name}
         </Subheading>
       </View>
       <View style={styles.viewDirection}>
@@ -72,10 +116,7 @@ function MenuModal({toggleModelState, modalView, folder_name, modalType}) {
       <View style={styles.viewDirection}>
         <IconButton
           icon="file-multiple"
-          onPress={() => {
-            toggleModelState(true);
-            modalView('Version');
-          }}
+          onPress={() => setModalContentType('version')}
         />
         <Text style={styles.ModalText}>Manage version</Text>
       </View>
@@ -90,10 +131,7 @@ function MenuModal({toggleModelState, modalView, folder_name, modalType}) {
       <View style={styles.viewDirection}>
         <IconButton
           icon="information"
-          onPress={() => {
-            toggleModelState(true);
-            modalView('Activity');
-          }}
+          onPress={() => setModalContentType('version')}
         />
         <Text style={styles.ModalText}>Activity</Text>
       </View>
@@ -106,19 +144,29 @@ function MenuModal({toggleModelState, modalView, folder_name, modalType}) {
 }
 
 function RenderFolder(props) {
-  const {folder, toggleMenu, navigation, modelTypeChange} = props;
-  const {folder_name, type} = folder;
+  const {
+    folder,
+    toggleMenu,
+    navigation,
+    setModalContentType,
+    folderIndex,
+    setModalContent,
+  } = props;
+  const {folder_name} = folder;
 
   return (
     <View style={styles.sectionContainer}>
       <TouchableOpacity
         onPress={() => {
-          navigation.push('FilesHome', {folder_name});
+          navigation.push('FilesHome', {
+            folder_name,
+            index_of: folder.id,
+          });
         }}>
         <View style={styles.sectionContainer}>
           <Image source={FolderIcon} style={styles.PdfIcon} />
           <View>
-            <Text numberOfLines={1} style={styles.text}>
+            <Text numberOfLines={2} style={styles.text}>
               {folder_name}
             </Text>
           </View>
@@ -128,8 +176,9 @@ function RenderFolder(props) {
         <IconButton
           icon="dots-vertical"
           onPress={() => {
-            toggleMenu(true);
-            modelTypeChange(FolderIcon);
+            toggleMenu(folderIndex);
+            setModalContentType('menu');
+            setModalContent(folder);
           }}
         />
       </View>
@@ -137,36 +186,42 @@ function RenderFolder(props) {
   );
 }
 
-function RenderFile({file, toggleMenu, menuId, modelTypeChange}) {
-  const {file_name, date} = file;
+function RenderFile({
+  file,
+  toggleMenu,
+  menuId,
+  setModalContentType,
+  fileIndex,
+  setModalContent,
+}) {
+  const {file_name, created} = file;
 
   return (
     <View style={styles.recentFiles}>
+      <TouchableOpacity onPress={() => {}}>
+        <View style={styles.sectionContainer}>
+          <Image source={PdfIcon} style={styles.PdfIcon} />
+          <View>
+            <Text style={(styles.verticalFlex, styles.text)} numberOfLines={2}>
+              {file_name}
+            </Text>
+          </View>
+        </View>
+      </TouchableOpacity>
       <View style={styles.sectionContainer}>
-        <Image source={PdfIcon} style={styles.PdfIcon} />
         <View>
-          <Text numberOfLines={1} style={styles.text}>
-            {file_name}
+          <Text style={styles.date}>
+            {dayjs(created).format('DD MMM YYYY')}
           </Text>
         </View>
-      </View>
-      <View style={styles.sectionContainer}>
         <View>
-          <Text style={styles.date}>{dayjs(date).format('DD MMM YYYY')}</Text>
-        </View>
-        <View>
-          <Menu
-            visible={menuId === file_name}
-            onDismiss={toggleMenu}
-            anchor={
-              <IconButton
-                icon="dots-vertical"
-                onPress={() => {
-                  toggleMenu(true);
-                  modelTypeChange(PdfIcon);
-                }}
-              />
-            }
+          <IconButton
+            icon="dots-vertical"
+            onPress={() => {
+              toggleMenu(fileIndex);
+              setModalContentType('menu');
+              setModalContent(file);
+            }}
           />
         </View>
       </View>
@@ -176,57 +231,52 @@ function RenderFile({file, toggleMenu, menuId, modelTypeChange}) {
 
 export default function Files(props) {
   const {route, navigation} = props;
-  const {folder_name} = route?.params || {};
+  const {folder_name, index_of: folderDepth = 0} = route?.params || {};
 
-  const files = [
-    {file_name: 'firstfile', date: new Date(), type: 'file'},
-    {file_name: 'secondfile', date: new Date(), type: 'file'},
-    {file_name: 'thirdfile', date: new Date(), type: 'file'},
-  ];
-  const folders = [
-    {folder_name: 'firstfile', date: new Date(), type: 'folder'},
-    {folder_name: 'secondfile', date: new Date(), type: 'folder'},
-    {folder_name: 'thirdfile', date: new Date(), type: 'folder'},
-  ];
-
-  // const {folders} = useSelector((state) => state.files);
+  const {folders, files} = useSelector((state) => state.files);
   const {selectedProject} = useSelector((state) => state.project);
-  const {getFolders, createFolder} = useFileActions();
 
-  const [state, setState] = React.useState(false);
-  const [menuId, setMenuId] = React.useState(false);
-  const [versionState, setVersionState] = React.useState(false);
-  const [versionModal, setVersionModal] = React.useState('Activity');
-  const [modalType, setModalType] = React.useState({FolderIcon});
+  const {user} = useSelector((state) => state.user);
+  const {getFolders, createFolder, getFiles} = useFileActions();
 
-  const onStateChange = ({open}) => setState({open});
-  const {open} = state;
-  const toggleMenu = (model) => setMenuId(model);
-  const toggleModelState = (version) => setVersionState(version);
-  const modalView = (view) => setVersionModal(view);
-  const modelTypeChange = (type) => setModalType(type);
+  const [fab, setFab] = React.useState(false);
+  const [menuId, setMenuId] = React.useState(null);
+  const [modelContentType, setModalContentType] = React.useState('menu');
+  const [modalContent, setModalContent] = React.useState({});
+
+  const filteredFolders = folders?.[folderDepth];
+  const filteredFiles = files?.[folderDepth];
 
   React.useEffect(() => {
     getFolders({
       project_id: selectedProject.id,
-      index_of: 0,
+      index_of: folderDepth,
     });
-
+    getFiles({project_id: selectedProject.id, folder_id: folderDepth});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const hideFolderView = () => {
-    if (folder_name) {
-      return true;
-    }
-    return false;
+  const toggleFab = () => setFab((v) => !v);
+  const toggleMenu = (folderIndex) => setMenuId(folderIndex);
+
+  const createFolderHandler = () => {
+    createFolder({
+      project_id: selectedProject.id,
+      index_of: folderDepth,
+      folder_name: 'FolderTest2 ',
+      user_id: user?.id,
+    });
+    getFolders({
+      project_id: selectedProject.id,
+      index_of: folderDepth,
+    });
   };
 
   return (
     <View style={styles.container}>
       <ScrollView>
-        {hideFolderView() ? (
+        {folder_name ? (
           <View style={styles.backNavigation}>
-            <View style={styles.spaceBetween}>
+            <View style={styles.viewDirection}>
               <IconButton
                 icon="arrow-left"
                 onPress={() => navigation.goBack()}
@@ -238,69 +288,75 @@ export default function Files(props) {
             <IconButton
               icon="information"
               onPress={() => {
-                toggleModelState(true);
-                modalView('Activity');
+                setModalContentType('parentActivity');
+                toggleMenu(folderDepth);
               }}
             />
           </View>
         ) : (
           <View />
         )}
-        <Subheading style={styles.Subheading}>Folders</Subheading>
+        {filteredFolders ? (
+          <Subheading style={styles.Subheading}>Folders</Subheading>
+        ) : null}
         <View>
-          {folders.map((folder, index) => (
+          {filteredFolders?.map((folder, index) => (
             <RenderFolder
               {...props}
               folder={folder}
               key={index}
               menuId={menuId}
               toggleMenu={toggleMenu}
-              modelTypeChange={modelTypeChange}
+              setModalContentType={setModalContentType}
+              folderDepth={folderDepth}
+              folderIndex={filteredFolders.indexOf(folder)}
+              setModalContent={setModalContent}
             />
           ))}
         </View>
-        <Subheading style={styles.Subheading}>Files</Subheading>
+        {filteredFiles?.length != 0 ? (
+          <Subheading style={styles.Subheading}>Files</Subheading>
+        ) : null}
         <View>
-          {files.map((file, index) => (
+          {filteredFiles?.map((file, index) => (
             <RenderFile
               file={file}
               key={index}
               menuId={menuId}
               toggleMenu={toggleMenu}
-              modelTypeChange={modelTypeChange}
+              setModalContentType={setModalContentType}
+              fileIndex={filteredFiles?.indexOf(file)}
+              setModalContent={setModalContent}
             />
           ))}
         </View>
       </ScrollView>
       <FAB.Group
-        open={open}
+        open={fab}
         style={styles.fab}
         fabStyle={{
-          backgroundColor: open ? '#fff' : theme.colors.primary,
+          backgroundColor: fab ? '#fff' : theme.colors.primary,
         }}
-        icon={open ? 'window-close' : 'plus'}
+        icon={fab ? 'window-close' : 'plus'}
         small
-        onPress={() => {
-          if (open) {
-            console.log('in here');
-          }
-        }}
-        onStateChange={onStateChange}
+        onPress={toggleFab}
+        onStateChange={() => {}}
         actions={[
           {
             icon: FolderIcon,
             color: theme.colors.primary,
             label: 'Create new folder',
             onPress: () => {
-              console.log('in Create new folder');
+              createFolderHandler();
             },
           },
+
           {
             icon: FolderIcon,
             color: theme.colors.primary,
             label: 'Upload folder',
             onPress: () => {
-              console.log('in Create upload folder');
+              console.log('in Create upload files');
             },
           },
           {
@@ -314,7 +370,7 @@ export default function Files(props) {
         ]}
       />
       <Modal
-        isVisible={menuId || versionState}
+        isVisible={!isNaN(menuId)}
         backdropOpacity={0.4}
         onBackButtonPress={toggleMenu}
         onBackdropPress={toggleMenu}
@@ -325,22 +381,24 @@ export default function Files(props) {
               icon="close-circle"
               size={25}
               onPress={() => {
-                versionState ? toggleModelState(false) : toggleMenu(false);
+                if (['parentActivity', 'menu'].includes(modelContentType)) {
+                  toggleMenu();
+                } else {
+                  setModalContentType('menu');
+                }
               }}
               color="grey"
             />
           </View>
-
-          {versionState ? (
-            <VersionActivityModal versionModal={versionModal} />
-          ) : (
+          {modelContentType === 'menu' ? (
             <MenuModal
-              toggleModelState={toggleModelState}
-              modalView={modalView}
-              folder_name={folder_name}
-              modalType={modalType}
+              setModalContentType={setModalContentType}
+              modalContent={modalContent}
             />
-          )}
+          ) : null}
+          {modelContentType === 'parentActivity' ? <ActivityModal /> : null}
+          {modelContentType === 'version' ? <VersionModal /> : null}
+          {}
         </View>
       </Modal>
     </View>
@@ -360,17 +418,18 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
   },
   PdfIcon: {
-    width: 36,
-    height: 36,
+    width: 38,
+    height: 38,
     paddingLeft: 10,
     marginLeft: 10,
     marginBottom: 10,
   },
   text: {
     color: '#080707',
-    paddingLeft: 10,
+    paddingHorizontal: 10,
     fontSize: 14,
     alignItems: 'center',
+    maxWidth: 170,
   },
   date: {
     color: '#080707',
@@ -411,11 +470,14 @@ const styles = StyleSheet.create({
   Subheadings: {
     fontSize: 30,
   },
-  spaceBetween: {
-    flexDirection: 'row',
-  },
   ModalText: {
     alignItems: 'center',
     paddingVertical: 15,
+  },
+  button: {
+    backgroundColor: '#DBE9F6',
+  },
+  verticalFlex: {
+    flexDirection: 'column',
   },
 });

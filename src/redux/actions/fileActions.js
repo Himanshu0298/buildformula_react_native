@@ -6,17 +6,35 @@ import useFiles from 'services/files';
 
 export default function useFileActions() {
   const dispatch = useDispatch();
-  const {getFolders, createFolder} = useFiles();
+  const {getFolders, createFolder, getFiles} = useFiles();
   const {processError, processResponse} = useResProcessor();
   const snackbar = useSnackbar();
 
   return {
-    getFolders: (formData) =>
+    getFolders: (params) =>
       dispatch({
         type: types.GET_FOLDERS,
         payload: async () => {
           try {
-            const {data: res} = processResponse(await getFolders(formData));
+            const res = processResponse(await getFolders(params));
+
+            return Promise.resolve({data: res.data, index_of: params.index_of});
+          } catch (error) {
+            const errorMessage = processError(error);
+            snackbar.showMessage({
+              message: errorMessage,
+              variant: 'error',
+            });
+            return Promise.reject(errorMessage);
+          }
+        },
+      }),
+    createFolder: (params) =>
+      dispatch({
+        type: types.CREATE_FOLDER,
+        payload: async () => {
+          try {
+            const res = processResponse(await createFolder(params));
 
             return Promise.resolve(res.data);
           } catch (error) {
@@ -29,14 +47,16 @@ export default function useFileActions() {
           }
         },
       }),
-    createFolder: (formData) =>
+    getFiles: (params) =>
       dispatch({
-        type: types.CREATE_FOLDER,
+        type: types.GET_FILES,
         payload: async () => {
           try {
-            const {data: res} = processResponse(await createFolder(formData));
-
-            return Promise.resolve(res.data);
+            const res = processResponse(await getFiles(params));
+            return Promise.resolve({
+              data: res.data,
+              folder_id: params.folder_id,
+            });
           } catch (error) {
             const errorMessage = processError(error);
             snackbar.showMessage({
