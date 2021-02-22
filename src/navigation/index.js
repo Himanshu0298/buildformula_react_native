@@ -54,9 +54,12 @@ import AddCustomer from 'screens/Project/CustomerSection/AddCustomer';
 import AddModifyRequest from 'screens/Project/CustomerSection/AddModifyRequest';
 import AddBankDetails from 'screens/Project/CustomerSection/AddBankDetails';
 //Project : Project management screens
+import Lineup from '../screens/Project/ProjectManagement/Lineup';
+import Phases from 'screens/Project/ProjectManagement/Planning/Phases';
+import SubPhases from 'screens/Project/ProjectManagement/Planning/SubPhases';
+import SubPhaseActivity from 'screens/Project/ProjectManagement/Planning/SubPhaseActivity';
 import ProjectSchedule from '../screens/Project/ProjectManagement/ProjectSchedule';
 import MainPhase from '../screens/Project/ProjectManagement/MainPhase';
-import Lineup from '../screens/Project/ProjectManagement/LineUp';
 import ProcessChart from '../screens/Project/ProjectManagement/ProcessChart/ProcessChart';
 //Project : Material management screens
 import Estimation from '../screens/Project/MaterialManagement/Estimation';
@@ -216,6 +219,28 @@ function CustomerSectionStack() {
   );
 }
 
+function PlanningStack() {
+  return (
+    <Stack.Navigator initialRouteName={'Phases'}>
+      <Stack.Screen
+        name="Phases"
+        component={Phases}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="SubPhases"
+        component={SubPhases}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="SubPhaseActivity"
+        component={SubPhaseActivity}
+        options={{headerShown: false}}
+      />
+    </Stack.Navigator>
+  );
+}
+
 function FilesStack() {
   return (
     <Stack.Navigator initialRouteName={'FilesHome'}>
@@ -276,6 +301,7 @@ function ProjectDrawer() {
       <Drawer.Screen name="ProjectSchedule" component={ProjectSchedule} />
       <Drawer.Screen name="MainPhase" component={MainPhase} />
       <Drawer.Screen name="Lineup" component={Lineup} />
+      <Drawer.Screen name="Planning" component={PlanningStack} />
       <Drawer.Screen name="ProcessChart" component={ProcessChart} />
       <Drawer.Screen name="Estimation" component={Estimation} />
       <Drawer.Screen name="RequestForPrice" component={RequestForPrice} />

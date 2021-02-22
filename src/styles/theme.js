@@ -51,6 +51,7 @@ export const theme = {
     text: '#000',
     success: Colors.green700,
     warning: Colors.orange500,
+    red: '#FF5D5D',
   },
   fonts: configureFonts(fontConfig),
 };

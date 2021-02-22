@@ -5,6 +5,7 @@ import project from './project';
 import sales from './sales';
 import customer from './customer';
 import files from './files';
+import projectManagement from './projectManagement';
 
 const reducers = {
   app,
@@ -14,6 +15,7 @@ const reducers = {
   sales,
   customer,
   files,
+  projectManagement,
 };
 
 export default reducers;
