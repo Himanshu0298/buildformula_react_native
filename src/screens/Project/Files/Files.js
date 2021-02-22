@@ -23,7 +23,30 @@ import {useSelector} from 'react-redux';
 function ActivityModal() {
   return (
     <View>
-      <Text>info</Text>
+      <ScrollView>
+        <View>
+          <View>
+            <Text>10 June</Text>
+          </View>
+          <View style={styles.activityContainer}>
+            <View style={styles.viewDirection}>
+              <Image source={FolderIcon} style={styles.activityUserImage} />
+              <View>
+                <Text>Ashish Patel</Text>
+                <Text>Update 5 times</Text>
+              </View>
+            </View>
+            <View style={styles.upperAlignment}>
+              <Text>5 min ago</Text>
+            </View>
+          </View>
+
+          <View style={styles.userActivityPadding}>
+            <Image source={PdfIcon} style={styles.activityImage} />
+            <Text>Project Schedule For Dharti Saket Icon</Text>
+          </View>
+        </View>
+      </ScrollView>
     </View>
   );
 }
@@ -131,7 +154,7 @@ function MenuModal({setModalContentType, modalContent}) {
       <View style={styles.viewDirection}>
         <IconButton
           icon="information"
-          onPress={() => setModalContentType('version')}
+          onPress={() => setModalContentType('activity')}
         />
         <Text style={styles.ModalText}>Activity</Text>
       </View>
@@ -397,6 +420,7 @@ export default function Files(props) {
             />
           ) : null}
           {modelContentType === 'parentActivity' ? <ActivityModal /> : null}
+          {modelContentType === 'activity' ? <ActivityModal /> : null}
           {modelContentType === 'version' ? <VersionModal /> : null}
           {}
         </View>
@@ -479,5 +503,30 @@ const styles = StyleSheet.create({
   },
   verticalFlex: {
     flexDirection: 'column',
+  },
+  activityUserImage: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    marginRight: 20,
+  },
+  activityImage: {
+    width: 30,
+    height: 30,
+    marginRight: 10,
+  },
+  upperAlignment: {
+    alignItems: 'baseline',
+    paddingBottom: 20,
+  },
+  activityContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginVertical: 5,
+  },
+  userActivityPadding: {
+    marginVertical: 10,
+    flexDirection: 'row',
   },
 });
