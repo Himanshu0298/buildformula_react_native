@@ -1,9 +1,17 @@
+import {useAlert} from 'components/Atoms/Alert';
+import NoResult from 'components/Atoms/NoResult';
 import RenderDropDown from 'components/Atoms/RenderDropDown';
 import RenderInput from 'components/Atoms/RenderInput';
 import {Formik} from 'formik';
-import React, {useState} from 'react';
+import React, {useMemo, useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import {FlatList, StyleSheet, View, TouchableOpacity} from 'react-native';
+import {
+  FlatList,
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  RefreshControl,
+} from 'react-native';
 import {
   Button,
   Caption,
@@ -16,31 +24,26 @@ import {
   Text,
   withTheme,
 } from 'react-native-paper';
+import {useSelector} from 'react-redux';
+import useProjectManagementActions from 'redux/actions/projectManagementActions';
 import {secondaryTheme} from 'styles/theme';
 import * as Yup from 'yup';
-
-const WORK = [
-  {title: 'work1'},
-  {title: 'work1'},
-  {title: 'work1'},
-  {title: 'work1'},
-  {title: 'work1'},
-  {title: 'work1'},
-];
-
-const ACTIVITY = [
-  {title: 'Activity Name here', description: 'description'},
-  {title: 'Activity Name here', description: 'description'},
-  {title: 'Activity Name here', description: 'description'},
-  {title: 'Activity Name here', description: 'description'},
-];
 
 const schema = Yup.object().shape({
   work: Yup.string().trim().required('Required'),
 });
 
-function AddWorkDialog(props) {
-  const {visible, toggleDialog} = props;
+const workActivitySchema = Yup.object().shape({
+  activity: Yup.string().trim().required('Required'),
+  unit: Yup.number().required('Required'),
+});
+
+function getUnitLabel(units, id) {
+  return units.find(({value}) => value === id).label;
+}
+
+function AddWorkCategoryDialog(props) {
+  const {visible, toggleDialog, onSubmit} = props;
 
   const {t} = useTranslation();
 
@@ -53,9 +56,9 @@ function AddWorkDialog(props) {
         <Formik
           validateOnBlur={false}
           validateOnChange={false}
-          initialValues={{accepted: false}}
+          initialValues={{}}
           validationSchema={schema}
-          onSubmit={async (values) => {}}>
+          onSubmit={async (values) => onSubmit(values)}>
           {({values, errors, handleChange, handleBlur, handleSubmit}) => {
             return (
               <View style={styles.dialogContentContainer}>
@@ -88,8 +91,8 @@ function AddWorkDialog(props) {
   );
 }
 
-function AddActivityDialog(props) {
-  const {visible, toggleDialog} = props;
+function AddWorkDialog(props) {
+  const {visible, unitOptions, toggleDialog, onSubmit} = props;
 
   const {t} = useTranslation();
 
@@ -102,9 +105,9 @@ function AddActivityDialog(props) {
         <Formik
           validateOnBlur={false}
           validateOnChange={false}
-          initialValues={{accepted: false}}
-          validationSchema={schema}
-          onSubmit={async (values) => {}}>
+          initialValues={{}}
+          validationSchema={workActivitySchema}
+          onSubmit={(values) => onSubmit(values)}>
           {({
             values,
             errors,
@@ -128,11 +131,7 @@ function AddActivityDialog(props) {
                 <RenderDropDown
                   name="unit"
                   label={t('label_select_unit')}
-                  options={[
-                    {label: 'sqft', value: 'sqft'},
-                    {label: 'mt', value: 'mt'},
-                    {label: 'km', value: 'km'},
-                  ]}
+                  options={unitOptions}
                   containerStyles={styles.input}
                   value={values.unit}
                   error={errors.unit}
@@ -160,7 +159,7 @@ function AddActivityDialog(props) {
 }
 
 function RenderActivity(props) {
-  const {item, index, menuIndex, toggleMenu} = props;
+  const {item, index, unitOptions, menuIndex, toggleMenu, onDelete} = props;
 
   return (
     <View style={styles.activityContainer}>
@@ -168,7 +167,7 @@ function RenderActivity(props) {
         <Text>
           {index + 1}. {item.title}
         </Text>
-        <Caption>{item.description}</Caption>
+        <Caption>{getUnitLabel(unitOptions, item.unit_id)}</Caption>
       </View>
       <Menu
         visible={index === menuIndex}
@@ -179,14 +178,18 @@ function RenderActivity(props) {
         }>
         <Menu.Item icon="pencil" onPress={() => {}} title="Edit" />
         <Divider />
-        <Menu.Item icon="delete" onPress={() => {}} title="Delete" />
+        <Menu.Item
+          icon="delete"
+          onPress={() => onDelete(item.id)}
+          title="Delete"
+        />
       </Menu>
     </View>
   );
 }
 
 function RenderWork(props) {
-  const {item, index, menuIndex, toggleMenu, onPress} = props;
+  const {item, index, menuIndex, toggleMenu, onPress, onDelete} = props;
 
   return (
     <TouchableOpacity
@@ -204,30 +207,78 @@ function RenderWork(props) {
         }>
         <Menu.Item icon="pencil" onPress={() => {}} title="Edit" />
         <Divider />
-        <Menu.Item icon="delete" onPress={() => {}} title="Delete" />
+        <Menu.Item
+          icon="delete"
+          onPress={() => onDelete(item.id)}
+          title="Delete"
+        />
       </Menu>
     </TouchableOpacity>
   );
 }
 
-function RenderWorks(props) {
-  const {theme, setSelectedWork} = props;
+function RenderWorkCategories(props) {
+  const {theme, selectedProject, data, getCategories, selectWork} = props;
+
+  const alert = useAlert();
 
   const [menuIndex, setMenuIndex] = React.useState(false);
   const [addWorkDialog, setAddWorkDialog] = React.useState(false);
 
+  const {
+    createLineupEntity,
+    deleteLineupEntity,
+  } = useProjectManagementActions();
+
   const toggleMenu = (v) => setMenuIndex(v);
   const toggleDialog = () => setAddWorkDialog((v) => !v);
 
+  const createCategory = ({work}) => {
+    createLineupEntity({
+      title: work,
+      type: 'workcategory',
+      project_id: selectedProject.id,
+    }).then(() => {
+      toggleDialog();
+      getCategories();
+    });
+  };
+
+  const handleDelete = (id) => {
+    toggleMenu();
+    alert.show({
+      title: 'Confirm',
+      message: 'Are you sure you want to delete?',
+      confirmText: 'Delete',
+      onConfirm: () => {
+        deleteLineupEntity({id, type: 'workcategory'}).then(() => {
+          getCategories();
+        });
+      },
+    });
+  };
+
   return (
     <>
-      <AddWorkDialog visible={addWorkDialog} toggleDialog={toggleDialog} />
+      <AddWorkCategoryDialog
+        visible={addWorkDialog}
+        toggleDialog={toggleDialog}
+        onSubmit={createCategory}
+      />
       <View style={styles.container}>
         <FlatList
-          data={WORK}
-          extraData={WORK}
+          data={data}
+          extraData={data}
           keyExtractor={(_, i) => i.toString()}
+          contentContainerStyle={{flexGrow: 1}}
           ItemSeparatorComponent={() => <Divider />}
+          ListEmptyComponent={<NoResult />}
+          refreshControl={
+            <RefreshControl
+              refreshing={false}
+              onRefresh={() => getCategories()}
+            />
+          }
           renderItem={({item, index}) => (
             <RenderWork
               {...{
@@ -235,7 +286,8 @@ function RenderWorks(props) {
                 index,
                 toggleMenu,
                 menuIndex,
-                onPress: setSelectedWork,
+                onPress: selectWork,
+                onDelete: handleDelete,
               }}
             />
           )}
@@ -250,20 +302,69 @@ function RenderWorks(props) {
   );
 }
 
-function RenderWorkActivities(props) {
-  const {theme, selectedWork, setSelectedWork} = props;
+function RenderWorks(props) {
+  const {
+    theme,
+    selectedProject,
+    data,
+    selectedWork,
+    setSelectedWork,
+    getWorkActivities,
+  } = props;
+
+  const alert = useAlert();
+
+  const {commonData} = useSelector((state) => state.project);
+
+  const unitOptions = useMemo(() => {
+    return commonData.units.map(({id, title}) => ({label: title, value: id}));
+  }, [commonData]);
 
   const [menuIndex, setMenuIndex] = React.useState(false);
   const [addActivityDialog, setAddActivityDialog] = React.useState(false);
 
+  const {
+    createLineupEntity,
+    deleteLineupEntity,
+  } = useProjectManagementActions();
+
   const toggleMenu = (v) => setMenuIndex(v);
   const toggleDialog = () => setAddActivityDialog((v) => !v);
 
+  const createWorkActivity = ({activity, unit}) => {
+    createLineupEntity({
+      title: activity,
+      unit_id: unit,
+      type: 'work',
+      category_id: selectedWork.id,
+      project_id: selectedProject.id,
+    }).then(() => {
+      toggleDialog();
+      getWorkActivities(selectedWork.id);
+    });
+  };
+
+  const handleDelete = (id) => {
+    toggleMenu();
+    alert.show({
+      title: 'Confirm',
+      message: 'Are you sure you want to delete?',
+      confirmText: 'Delete',
+      onConfirm: () => {
+        deleteLineupEntity({id, type: 'work'}).then(() => {
+          getWorkActivities(selectedWork.id);
+        });
+      },
+    });
+  };
+
   return (
     <>
-      <AddActivityDialog
+      <AddWorkDialog
         visible={addActivityDialog}
+        unitOptions={unitOptions}
         toggleDialog={toggleDialog}
+        onSubmit={createWorkActivity}
       />
 
       <View style={styles.workHeadingContainer}>
@@ -278,12 +379,23 @@ function RenderWorkActivities(props) {
       </View>
       <View style={styles.container}>
         <FlatList
-          data={ACTIVITY}
-          extraData={ACTIVITY}
+          data={data}
+          extraData={data}
           keyExtractor={(_, i) => i.toString()}
+          contentContainerStyle={{flexGrow: 1}}
           ItemSeparatorComponent={() => <Divider />}
+          ListEmptyComponent={<NoResult title="No work activities found!" />}
           renderItem={({item, index}) => (
-            <RenderActivity {...{item, index, toggleMenu, menuIndex}} />
+            <RenderActivity
+              {...{
+                item,
+                index,
+                toggleMenu,
+                unitOptions,
+                menuIndex,
+                onDelete: handleDelete,
+              }}
+            />
           )}
         />
         <FAB
@@ -297,15 +409,46 @@ function RenderWorkActivities(props) {
 }
 
 function WorkCategory(props) {
+  const {selectedProject, getCategories} = props;
+
   const [selectedWork, setSelectedWork] = useState();
+
+  const {workCategories, works} = useSelector(
+    (state) => state.projectManagement,
+  );
+
+  const {getWorks} = useProjectManagementActions();
+
+  const getWorkActivities = (category_id) => {
+    getWorks({
+      type: 'work',
+      category_id,
+      project_id: selectedProject.id,
+    });
+  };
+
+  const selectWork = (work) => {
+    getWorkActivities(work.id);
+    setSelectedWork(work);
+  };
 
   if (selectedWork) {
     return (
-      <RenderWorkActivities {...props} {...{selectedWork, setSelectedWork}} />
+      <RenderWorks
+        {...props}
+        {...{data: works, selectedWork, setSelectedWork, getWorkActivities}}
+      />
     );
   }
 
-  return <RenderWorks {...props} setSelectedWork={setSelectedWork} />;
+  return (
+    <RenderWorkCategories
+      {...props}
+      data={workCategories}
+      selectWork={selectWork}
+      getCategories={getCategories}
+    />
+  );
 }
 
 const styles = StyleSheet.create({

@@ -1,6 +1,10 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import {persistReducer} from 'redux-persist';
-import {GET_PROJECTS, GET_SELECTED_PROJECT} from './../actions/actionTypes';
+import {
+  GET_PROJECTS,
+  GET_PROJECT_COMMON_DATA,
+  GET_SELECTED_PROJECT,
+} from './../actions/actionTypes';
 
 const persistConfig = {
   key: 'project',
@@ -13,6 +17,7 @@ const initialState = {
   errorMessage: undefined,
   selectedProject: {},
   projects: [],
+  commonData: {},
 };
 
 const reducer = (state = initialState, action = {}) => {
@@ -48,6 +53,24 @@ const reducer = (state = initialState, action = {}) => {
         loading: false,
       };
     case `${GET_PROJECTS}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+        errorMessage: payload,
+      };
+
+    case `${GET_PROJECT_COMMON_DATA}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${GET_PROJECT_COMMON_DATA}_FULFILLED`:
+      return {
+        ...state,
+        loading: false,
+        commonData: payload,
+      };
+    case `${GET_PROJECT_COMMON_DATA}_REJECTED`:
       return {
         ...state,
         loading: false,

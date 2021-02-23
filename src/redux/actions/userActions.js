@@ -7,7 +7,7 @@ import {useSnackbar} from 'components/Atoms/Snackbar';
 export default function useUserActions() {
   const dispatch = useDispatch();
   const {login, signUp, updateUser} = useAuth();
-  const {processError, processResponse} = useResProcessor();
+  const {_err, _res} = useResProcessor();
   const snackbar = useSnackbar();
 
   return {
@@ -16,13 +16,13 @@ export default function useUserActions() {
         type: types.SIGN_UP,
         payload: async () => {
           try {
-            const response = processResponse(await signUp(user));
+            const response = _res(await signUp(user));
             const {data: userData} = response;
             console.log('----->signUp response', userData);
 
             return Promise.resolve({user: userData});
           } catch (error) {
-            const errorMessage = processError(error);
+            const errorMessage = _err(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',
@@ -36,7 +36,7 @@ export default function useUserActions() {
         type: types.LOGIN,
         payload: async () => {
           try {
-            const response = processResponse(await login(data));
+            const response = _res(await login(data));
             const {data: userData} = response;
             console.log('----->login response', userData);
 
@@ -57,13 +57,13 @@ export default function useUserActions() {
         type: types.SELECT_ROLE,
         payload: async () => {
           try {
-            const response = processResponse(await updateUser(data));
+            const response = _res(await updateUser(data));
             const {data: userData} = response;
             console.log('-----> response', userData);
 
             return Promise.resolve({user: userData});
           } catch (error) {
-            const errorMessage = processError(error);
+            const errorMessage = _err(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',

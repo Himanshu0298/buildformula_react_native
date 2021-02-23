@@ -7,9 +7,9 @@ import {useResProcessor} from 'utils/responseProcessor';
 export default function useProjectActions() {
   const dispatch = useDispatch();
   const snackbar = useSnackbar();
-  const {processError, processResponse} = useResProcessor();
+  const {_err, _res} = useResProcessor();
 
-  const {getProjects, getProjectData} = useProject();
+  const {getProjects, getProjectData, getProjectCommonData} = useProject();
 
   return {
     getProjectData: (projectId) =>
@@ -17,7 +17,7 @@ export default function useProjectActions() {
         type: types.GET_SELECTED_PROJECT,
         payload: async () => {
           try {
-            const response = processResponse(await getProjectData(projectId));
+            const response = _res(await getProjectData(projectId));
             const {data} = response;
 
             if (data?.projectData?.towerCount) {
@@ -26,7 +26,25 @@ export default function useProjectActions() {
 
             return Promise.resolve(data);
           } catch (error) {
-            const errorMessage = processError(error);
+            const errorMessage = _err(error);
+            snackbar.showMessage({
+              message: errorMessage,
+              variant: 'error',
+            });
+            return Promise.reject(errorMessage);
+          }
+        },
+      }),
+    getProjectCommonData: (project_id) =>
+      dispatch({
+        type: types.GET_PROJECT_COMMON_DATA,
+        payload: async () => {
+          try {
+            const res = _res(await getProjectCommonData({project_id}));
+
+            return Promise.resolve(res.data);
+          } catch (error) {
+            const errorMessage = _err(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',
@@ -40,12 +58,12 @@ export default function useProjectActions() {
         type: types.GET_PROJECTS,
         payload: async () => {
           try {
-            const response = processResponse(await getProjects(formData));
+            const response = _res(await getProjects(formData));
             const {data} = response;
 
             return Promise.resolve(data);
           } catch (error) {
-            const errorMessage = processError(error);
+            const errorMessage = _err(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',

@@ -2,6 +2,7 @@ import MaterialTabBar from 'components/Atoms/MaterialTabBar';
 import ProjectHeader from 'components/Molecules/Layout/ProjectHeader';
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
+import Spinner from 'react-native-loading-spinner-overlay';
 import {Subheading} from 'react-native-paper';
 import {TabView} from 'react-native-tab-view';
 import {useSelector} from 'react-redux';
@@ -13,7 +14,8 @@ import WorkCategory from './Components/WorkCategory';
 
 function Lineup(props) {
   const {selectedProject} = useSelector((state) => state.project);
-  const {getWorks} = useProjectManagementActions();
+  const {loading} = useSelector((state) => state.projectManagement);
+  const {getWorkCategories, getMilestones} = useProjectManagementActions();
 
   const [selectedTab, setSelectedTab] = useState(0);
   const [routes] = React.useState([
@@ -22,24 +24,37 @@ function Lineup(props) {
   ]);
 
   useEffect(() => {
-    getWorks({
+    getCategories();
+    getMilestoneData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedProject.id]);
+
+  const getCategories = () => {
+    getWorkCategories({
+      project_id: selectedProject.id,
+      type: 'workcategory',
+    });
+  };
+
+  const getMilestoneData = () => {
+    getMilestones({
       project_id: selectedProject.id,
       type: 'milestone',
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedProject.id]);
+  };
 
   const renderScene = ({route: {key}}) => {
     switch (key) {
       case 0:
-        return <WorkCategory />;
+        return <WorkCategory {...{selectedProject, getCategories}} />;
       case 1:
-        return <Milestone />;
+        return <Milestone {...{selectedProject, getMilestoneData}} />;
     }
   };
 
   return (
     <View style={styles.container}>
+      <Spinner visible={loading} textContent={''} />
       <TabView
         navigationState={{index: selectedTab, routes}}
         renderScene={renderScene}

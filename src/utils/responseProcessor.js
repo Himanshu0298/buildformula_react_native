@@ -4,7 +4,7 @@ export function useResProcessor() {
   const {logout} = useAppActions();
 
   return {
-    processError: (error) => {
+    _err: (error) => {
       console.log('-----> error', error);
       const {response} = error;
       let errorMessage;
@@ -28,7 +28,7 @@ export function useResProcessor() {
       return errorMessage;
     },
 
-    processResponse: (response) => {
+    _res: (response) => {
       const {data} = response;
 
       if (data.status) {
