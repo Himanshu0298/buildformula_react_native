@@ -43,7 +43,7 @@ function getUnitLabel(units, id) {
 }
 
 function AddWorkCategoryDialog(props) {
-  const {visible, toggleDialog, onSubmit} = props;
+  const {visible, selectedCategory, toggleDialog, onSubmit} = props;
 
   const {t} = useTranslation();
 
@@ -56,7 +56,7 @@ function AddWorkCategoryDialog(props) {
         <Formik
           validateOnBlur={false}
           validateOnChange={false}
-          initialValues={{}}
+          initialValues={{work: selectedCategory?.title}}
           validationSchema={schema}
           onSubmit={async (values) => onSubmit(values)}>
           {({values, errors, handleChange, handleBlur, handleSubmit}) => {
@@ -79,7 +79,9 @@ function AddWorkCategoryDialog(props) {
                     contentStyle={{padding: 1}}
                     theme={{roundness: 15}}
                     onPress={handleSubmit}>
-                    <Text theme={secondaryTheme}>{'Save'}</Text>
+                    <Text theme={secondaryTheme}>
+                      {selectedCategory ? 'Update' : 'Save'}
+                    </Text>
                   </Button>
                 </View>
               </View>
@@ -92,7 +94,13 @@ function AddWorkCategoryDialog(props) {
 }
 
 function AddWorkDialog(props) {
-  const {visible, unitOptions, toggleDialog, onSubmit} = props;
+  const {
+    visible,
+    selectedActivity,
+    unitOptions,
+    toggleDialog,
+    onSubmit,
+  } = props;
 
   const {t} = useTranslation();
 
@@ -105,7 +113,10 @@ function AddWorkDialog(props) {
         <Formik
           validateOnBlur={false}
           validateOnChange={false}
-          initialValues={{}}
+          initialValues={{
+            activity: selectedActivity?.title,
+            unit: selectedActivity?.unit_id,
+          }}
           validationSchema={workActivitySchema}
           onSubmit={(values) => onSubmit(values)}>
           {({
@@ -146,7 +157,9 @@ function AddWorkDialog(props) {
                     contentStyle={{padding: 1}}
                     theme={{roundness: 15}}
                     onPress={handleSubmit}>
-                    <Text theme={secondaryTheme}>{'Save'}</Text>
+                    <Text theme={secondaryTheme}>
+                      {selectedActivity ? 'Update' : 'Save'}
+                    </Text>
                   </Button>
                 </View>
               </View>
@@ -159,7 +172,15 @@ function AddWorkDialog(props) {
 }
 
 function RenderActivity(props) {
-  const {item, index, unitOptions, menuIndex, toggleMenu, onDelete} = props;
+  const {
+    item,
+    index,
+    unitOptions,
+    menuIndex,
+    toggleMenu,
+    onDelete,
+    onUpdate,
+  } = props;
 
   return (
     <View style={styles.activityContainer}>
@@ -176,7 +197,7 @@ function RenderActivity(props) {
         anchor={
           <IconButton icon="dots-vertical" onPress={() => toggleMenu(index)} />
         }>
-        <Menu.Item icon="pencil" onPress={() => {}} title="Edit" />
+        <Menu.Item icon="pencil" onPress={() => onUpdate(item)} title="Edit" />
         <Divider />
         <Menu.Item
           icon="delete"
@@ -189,7 +210,15 @@ function RenderActivity(props) {
 }
 
 function RenderWork(props) {
-  const {item, index, menuIndex, toggleMenu, onPress, onDelete} = props;
+  const {
+    item,
+    index,
+    menuIndex,
+    toggleMenu,
+    onPress,
+    onDelete,
+    onUpdate,
+  } = props;
 
   return (
     <TouchableOpacity
@@ -205,7 +234,7 @@ function RenderWork(props) {
         anchor={
           <IconButton icon="dots-vertical" onPress={() => toggleMenu(index)} />
         }>
-        <Menu.Item icon="pencil" onPress={() => {}} title="Edit" />
+        <Menu.Item icon="pencil" onPress={() => onUpdate(item)} title="Edit" />
         <Divider />
         <Menu.Item
           icon="delete"
@@ -224,24 +253,40 @@ function RenderWorkCategories(props) {
 
   const [menuIndex, setMenuIndex] = React.useState(false);
   const [addWorkDialog, setAddWorkDialog] = React.useState(false);
+  const [selectedCategory, setSelectedCategory] = React.useState();
 
   const {
     createLineupEntity,
+    updateLineupEntity,
     deleteLineupEntity,
   } = useProjectManagementActions();
 
   const toggleMenu = (v) => setMenuIndex(v);
   const toggleDialog = () => setAddWorkDialog((v) => !v);
 
-  const createCategory = ({work}) => {
-    createLineupEntity({
-      title: work,
-      type: 'workcategory',
-      project_id: selectedProject.id,
-    }).then(() => {
-      toggleDialog();
-      getCategories();
-    });
+  const handleSubmit = ({work}) => {
+    if (selectedCategory) {
+      updateLineupEntity({
+        title: work,
+        id: selectedCategory.id,
+        type: 'workcategory',
+        project_id: selectedProject.id,
+      }).then(() => {
+        setSelectedCategory();
+        toggleDialog();
+        getCategories();
+      });
+    } else {
+      createLineupEntity({
+        title: work,
+        type: 'workcategory',
+        project_id: selectedProject.id,
+      }).then(() => {
+        setSelectedCategory();
+        toggleDialog();
+        getCategories();
+      });
+    }
   };
 
   const handleDelete = (id) => {
@@ -258,12 +303,19 @@ function RenderWorkCategories(props) {
     });
   };
 
+  const handleUpdate = (category) => {
+    toggleMenu();
+    toggleDialog();
+    setSelectedCategory(category);
+  };
+
   return (
     <>
       <AddWorkCategoryDialog
         visible={addWorkDialog}
+        selectedCategory={selectedCategory}
         toggleDialog={toggleDialog}
-        onSubmit={createCategory}
+        onSubmit={handleSubmit}
       />
       <View style={styles.container}>
         <FlatList
@@ -288,6 +340,7 @@ function RenderWorkCategories(props) {
                 menuIndex,
                 onPress: selectWork,
                 onDelete: handleDelete,
+                onUpdate: handleUpdate,
               }}
             />
           )}
@@ -322,9 +375,11 @@ function RenderWorks(props) {
 
   const [menuIndex, setMenuIndex] = React.useState(false);
   const [addActivityDialog, setAddActivityDialog] = React.useState(false);
+  const [selectedActivity, setSelectedActivity] = React.useState();
 
   const {
     createLineupEntity,
+    updateLineupEntity,
     deleteLineupEntity,
   } = useProjectManagementActions();
 
@@ -332,16 +387,30 @@ function RenderWorks(props) {
   const toggleDialog = () => setAddActivityDialog((v) => !v);
 
   const createWorkActivity = ({activity, unit}) => {
-    createLineupEntity({
-      title: activity,
-      unit_id: unit,
-      type: 'work',
-      category_id: selectedWork.id,
-      project_id: selectedProject.id,
-    }).then(() => {
-      toggleDialog();
-      getWorkActivities(selectedWork.id);
-    });
+    if (selectedActivity) {
+      updateLineupEntity({
+        id: selectedActivity.id,
+        title: activity,
+        unit_id: unit,
+        type: 'work',
+        category_id: selectedWork.id,
+        project_id: selectedProject.id,
+      }).then(() => {
+        toggleDialog();
+        getWorkActivities(selectedWork.id);
+      });
+    } else {
+      createLineupEntity({
+        title: activity,
+        unit_id: unit,
+        type: 'work',
+        category_id: selectedWork.id,
+        project_id: selectedProject.id,
+      }).then(() => {
+        toggleDialog();
+        getWorkActivities(selectedWork.id);
+      });
+    }
   };
 
   const handleDelete = (id) => {
@@ -358,11 +427,18 @@ function RenderWorks(props) {
     });
   };
 
+  const handleUpdate = (activity) => {
+    toggleMenu();
+    toggleDialog();
+    setSelectedActivity(activity);
+  };
+
   return (
     <>
       <AddWorkDialog
         visible={addActivityDialog}
         unitOptions={unitOptions}
+        selectedActivity={selectedActivity}
         toggleDialog={toggleDialog}
         onSubmit={createWorkActivity}
       />
@@ -394,6 +470,7 @@ function RenderWorks(props) {
                 unitOptions,
                 menuIndex,
                 onDelete: handleDelete,
+                onUpdate: handleUpdate,
               }}
             />
           )}

@@ -32,7 +32,7 @@ const schema = Yup.object().shape({
 });
 
 function AddMilestoneDialog(props) {
-  const {visible, toggleDialog, onSubmit} = props;
+  const {visible, selectedMilestone, toggleDialog, onSubmit} = props;
 
   const {t} = useTranslation();
 
@@ -45,7 +45,9 @@ function AddMilestoneDialog(props) {
         <Formik
           validateOnBlur={false}
           validateOnChange={false}
-          initialValues={{}}
+          initialValues={{
+            milestone: selectedMilestone?.title,
+          }}
           validationSchema={schema}
           onSubmit={(values) => onSubmit(values)}>
           {({values, errors, handleChange, handleBlur, handleSubmit}) => {
@@ -68,7 +70,9 @@ function AddMilestoneDialog(props) {
                     contentStyle={{padding: 1}}
                     theme={{roundness: 15}}
                     onPress={handleSubmit}>
-                    <Text theme={secondaryTheme}>{'Save'}</Text>
+                    <Text theme={secondaryTheme}>
+                      {selectedMilestone ? 'Update' : 'Save'}
+                    </Text>
                   </Button>
                 </View>
               </View>
@@ -81,7 +85,7 @@ function AddMilestoneDialog(props) {
 }
 
 function RenderMilestone(props) {
-  const {item, index, menuIndex, toggleMenu, onDelete} = props;
+  const {item, index, menuIndex, toggleMenu, onDelete, onUpdate} = props;
 
   return (
     <View style={styles.workContainer}>
@@ -101,7 +105,7 @@ function RenderMilestone(props) {
         anchor={
           <IconButton icon="dots-vertical" onPress={() => toggleMenu(index)} />
         }>
-        <Menu.Item icon="pencil" onPress={() => {}} title="Edit" />
+        <Menu.Item icon="pencil" onPress={() => onUpdate(item)} title="Edit" />
         <Divider />
         <Menu.Item
           icon="delete"
@@ -122,9 +126,11 @@ function Milestone(props) {
 
   const [menuIndex, setMenuIndex] = React.useState(false);
   const [showDialog, setShowDialog] = React.useState(false);
+  const [selectedMilestone, setSelectedMilestone] = React.useState();
 
   const {
     createLineupEntity,
+    updateLineupEntity,
     updateMilestoneOrder,
     deleteLineupEntity,
   } = useProjectManagementActions();
@@ -132,15 +138,29 @@ function Milestone(props) {
   const toggleMenu = (v) => setMenuIndex(v);
   const toggleDialog = () => setShowDialog((v) => !v);
 
-  const createMilestone = ({milestone}) => {
-    createLineupEntity({
-      title: milestone,
-      type: 'milestone',
-      project_id: selectedProject.id,
-    }).then(() => {
-      toggleDialog();
-      getMilestoneData();
-    });
+  const handleSubmit = ({milestone}) => {
+    if (selectedMilestone) {
+      updateLineupEntity({
+        id: selectedMilestone.id,
+        title: milestone,
+        type: 'milestone',
+        project_id: selectedProject.id,
+      }).then(() => {
+        toggleDialog();
+        setSelectedMilestone();
+        getMilestoneData();
+      });
+    } else {
+      createLineupEntity({
+        title: milestone,
+        type: 'milestone',
+        project_id: selectedProject.id,
+      }).then(() => {
+        toggleDialog();
+        setSelectedMilestone();
+        getMilestoneData();
+      });
+    }
   };
 
   const handleDragEnd = (fromIndex, toIndex) => {
@@ -167,12 +187,19 @@ function Milestone(props) {
     });
   };
 
+  const handleUpdate = (milestone) => {
+    toggleMenu();
+    toggleDialog();
+    setSelectedMilestone(milestone);
+  };
+
   return (
     <>
       <AddMilestoneDialog
         visible={showDialog}
+        selectedMilestone={selectedMilestone}
         toggleDialog={toggleDialog}
-        onSubmit={createMilestone}
+        onSubmit={handleSubmit}
       />
       <View style={styles.container}>
         {milestones.length ? (
@@ -191,6 +218,7 @@ function Milestone(props) {
                   menuIndex,
                   toggleMenu,
                   onDelete: handleDelete,
+                  onUpdate: handleUpdate,
                 }}
               />
             )}
