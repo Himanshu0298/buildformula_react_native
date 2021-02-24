@@ -7,7 +7,6 @@ function Files() {
     <View
       style={{
         height: '100%',
-        borderWidth: 1,
         justifyContent: 'center',
         alignItems: 'center',
       }}>

@@ -2,13 +2,11 @@ import * as React from 'react';
 import {useTranslation} from 'react-i18next';
 import {StyleSheet, View} from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
-import {Divider, Subheading, Text, withTheme, Button} from 'react-native-paper';
+import {Divider, Subheading, withTheme, Button} from 'react-native-paper';
 import {TabBar, TabView} from 'react-native-tab-view';
 import {useSelector} from 'react-redux';
 import useCustomerActions from 'redux/actions/customerActions';
-import {theme} from 'styles/theme';
-import {getFloorNumber, getShadow, getTowerLabel, getUnitLabel} from 'utils';
-import {STRUCTURE_TYPE_LABELS} from 'utils/constant';
+import {getShadow} from 'utils';
 import Layout from 'utils/Layout';
 import {
   Account,
@@ -18,14 +16,7 @@ import {
   Files,
   ModifyRequest,
 } from './Components';
-
-function renderDetailText(label, value) {
-  return (
-    <Text style={{marginVertical: 4}}>
-      {label} : <Text style={{color: theme.colors.primary}}>{value}</Text>
-    </Text>
-  );
-}
+import DetailsHeader from './Components/DetailsHeader';
 
 function RenderTabBar(tabBarProps) {
   //TODO: improve tab change animation
@@ -60,10 +51,8 @@ function RenderTabBar(tabBarProps) {
 }
 
 function CustomerSection(props) {
-  const {
-    route: {params},
-  } = props;
-  const {towerId, floorId, project_id, selectedStructure, unit} = params || {};
+  const {route} = props;
+  const {project_id, unit} = route?.params || {};
 
   const {t} = useTranslation();
   const {
@@ -75,7 +64,7 @@ function CustomerSection(props) {
   const {user} = useSelector((state) => state.user);
   const {loading} = useSelector((state) => state.customer);
 
-  const [selectedTab, setSelectedTab] = React.useState(2);
+  const [selectedTab, setSelectedTab] = React.useState(4);
   const [routes] = React.useState([
     {key: 0, title: 'DETAILS'},
     {key: 1, title: 'BOOKING FORM'},
@@ -115,20 +104,8 @@ function CustomerSection(props) {
       <Spinner visible={loading} textContent={''} />
       <View style={styles.container}>
         <Subheading>{t('title_customer_section')}</Subheading>
-        <View style={styles.detailContainer}>
-          <View style={styles.detailSubContainer}>
-            {renderDetailText(
-              'Project type',
-              STRUCTURE_TYPE_LABELS[selectedStructure],
-            )}
-            {renderDetailText('Floor type', getFloorNumber(floorId))}
-          </View>
-          <View style={styles.detailSubContainer}>
-            {renderDetailText('Tower', getTowerLabel(towerId))}
-            {renderDetailText('Unit number', getUnitLabel(floorId, unit.index))}
-          </View>
-        </View>
-        <Divider style={{marginVertical: 10}} />
+        <DetailsHeader {...route?.params} />
+        <Divider style={styles.divider} />
       </View>
 
       <TabView
@@ -146,12 +123,11 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 20,
   },
-  detailContainer: {
-    flexDirection: 'row',
-  },
-  detailSubContainer: {
-    flex: 1,
-    marginTop: 15,
+  divider: {
+    marginTop: 8,
+    marginBottom: 15,
+    borderWidth: 0.2,
+    borderColor: 'rgba(139, 149, 159, 0.25)',
   },
   tab: {
     width: 180,
