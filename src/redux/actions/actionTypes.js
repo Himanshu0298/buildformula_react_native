@@ -51,5 +51,6 @@ export const UPDATE_BANK_FILES = 'UPDATE_BANK_FILES';
 export const GET_FOLDERS = 'GET_FOLDERS';
 export const CREATE_FOLDER = 'CREATE_FOLDER';
 export const GET_FILES = 'GET_FILES';
+export const RENAME_FOLDER = 'RENAME_FOLDER';
 //For Project Management
 export const GET_WORKS = 'GET_WORKS';

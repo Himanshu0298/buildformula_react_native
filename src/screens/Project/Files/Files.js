@@ -1,4 +1,6 @@
 import React from 'react';
+import RenderInput from 'components/Atoms/RenderInput';
+import {Formik} from 'formik';
 import {StyleSheet, View, Image} from 'react-native';
 import {
   IconButton,
@@ -6,19 +8,153 @@ import {
   Text,
   FAB,
   Menu,
+  Dialog,
   Divider,
   Button,
+  Portal,
 } from 'react-native-paper';
 import useFileActions from 'redux/actions/fileActions';
 import Modal from 'react-native-modal';
 import PdfIcon from 'assets/images/pdf_icon.png';
 import FolderIcon from 'assets/images/folder_icon.png';
 import UploadFileIcon from 'assets/images/upload_files.png';
-
-import {theme} from 'styles/theme';
+import {theme, secondaryTheme} from 'styles/theme';
 import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
 import dayjs from 'dayjs';
 import {useSelector} from 'react-redux';
+import * as Yup from 'yup';
+import {useTranslation} from 'react-i18next';
+
+const schema = Yup.object().shape({
+  folder_name: Yup.string().trim().required('Required'),
+});
+
+function RenameDialogue(props) {
+  const {visible, toggleDialoge, dialogueContent, renameFolderHandler} = props;
+  const renaNameRef = React.useRef();
+  return (
+    <Portal>
+      <Dialog visible={visible} onDismiss={toggleDialoge} style={{top: -100}}>
+        <View style={styles.dialogTitleContainer}>
+          <Text style={{color: '#000'}}>
+            {dialogueContent?.file_name || dialogueContent?.folder_name}
+          </Text>
+        </View>
+        <Formik
+          validateOnBlur={false}
+          validateOnChange={false}
+          initialValues={{rename_file: ''}}
+          validationSchema={Yup.object().shape({
+            rename_file: Yup.string().trim().required('Required'),
+          })}
+          onSubmit={async (values) => {
+            if (dialogueContent?.folder_name) {
+              renameFolderHandler(values.rename_file, dialogueContent?.id);
+            }
+          }}>
+          {({values, errors, handleChange, handleBlur, handleSubmit}) => {
+            return (
+              <View style={styles.dialogContentContainer}>
+                <RenderInput
+                  name="rename_file"
+                  label={'file name'}
+                  containerStyles={styles.input}
+                  value={values.rename_file}
+                  onChangeText={handleChange('rename_file')}
+                  onBlur={handleBlur('rename_file')}
+                  ref={renaNameRef}
+                  onSubmitEditing={handleSubmit}
+                  error={errors.rename_file}
+                />
+
+                <View style={styles.dialogActionContainer}>
+                  <Button
+                    style={{width: '40%', marginHorizontal: 5}}
+                    mode="contained"
+                    contentStyle={{padding: 1}}
+                    theme={{roundness: 15}}
+                    onPress={handleSubmit}>
+                    <Text theme={secondaryTheme}>{'save'}</Text>
+                  </Button>
+                  <Button
+                    style={{width: '40%', marginHorizontal: 5}}
+                    contentStyle={{padding: 2}}
+                    theme={{roundness: 15}}
+                    mode="contained"
+                    onPress={toggleDialoge}>
+                    <Text theme={secondaryTheme}>{'cancel'}</Text>
+                  </Button>
+                </View>
+              </View>
+            );
+          }}
+        </Formik>
+      </Dialog>
+    </Portal>
+  );
+}
+
+function CreateFolder(props) {
+  const {visible, toggleDialog, createFolderHandler} = props;
+  const folderNameRef = React.useRef();
+
+  return (
+    <Portal>
+      <Dialog visible={visible} onDismiss={toggleDialog} style={{top: -100}}>
+        <View style={styles.dialogTitleContainer}>
+          <Text style={{color: '#000'}}>Create New Folder</Text>
+        </View>
+        <Formik
+          validateOnBlur={false}
+          validateOnChange={false}
+          initialValues={{folderName: ''}}
+          validationSchema={Yup.object().shape({
+            folder_name: Yup.string().trim().required('Required'),
+          })}
+          onSubmit={async (values) => {
+            createFolderHandler(values.folder_name);
+          }}>
+          {({values, errors, handleChange, handleBlur, handleSubmit}) => {
+            return (
+              <View style={styles.dialogContentContainer}>
+                <RenderInput
+                  name="folder_name"
+                  label={'Folder name'}
+                  containerStyles={styles.input}
+                  value={values.folder_name}
+                  onChangeText={handleChange('folder_name')}
+                  onBlur={handleBlur('folder_name')}
+                  ref={folderNameRef}
+                  onSubmitEditing={handleSubmit}
+                  error={errors.folder_name}
+                />
+
+                <View style={styles.dialogActionContainer}>
+                  <Button
+                    style={{width: '40%', marginHorizontal: 5}}
+                    mode="contained"
+                    contentStyle={{padding: 1}}
+                    theme={{roundness: 15}}
+                    onPress={handleSubmit}>
+                    <Text theme={secondaryTheme}>{'save'}</Text>
+                  </Button>
+                  <Button
+                    style={{width: '40%', marginHorizontal: 5}}
+                    contentStyle={{padding: 2}}
+                    theme={{roundness: 15}}
+                    mode="contained"
+                    onPress={toggleDialog}>
+                    <Text theme={secondaryTheme}>{'cancel'}</Text>
+                  </Button>
+                </View>
+              </View>
+            );
+          }}
+        </Formik>
+      </Dialog>
+    </Portal>
+  );
+}
 
 function ActivityModal() {
   return (
@@ -109,7 +245,13 @@ function VersionFile() {
   );
 }
 
-function MenuModal({setModalContentType, modalContent}) {
+function MenuModal(props) {
+  const {
+    setModalContentType,
+    modalContent,
+    toggleCreateDialogue,
+    toggleMenu,
+  } = props;
   return (
     <View>
       <View style={styles.viewDirection}>
@@ -144,7 +286,13 @@ function MenuModal({setModalContentType, modalContent}) {
         <Text style={styles.ModalText}>Manage version</Text>
       </View>
       <View style={styles.viewDirection}>
-        <IconButton icon="pencil" onPress={() => {}} />
+        <IconButton
+          icon="pencil"
+          onPress={() => {
+            toggleCreateDialogue('renameFile');
+            toggleMenu();
+          }}
+        />
         <Text style={styles.ModalText}>Rename</Text>
       </View>
       <View style={styles.viewDirection}>
@@ -260,12 +408,13 @@ export default function Files(props) {
   const {selectedProject} = useSelector((state) => state.project);
 
   const {user} = useSelector((state) => state.user);
-  const {getFolders, createFolder, getFiles} = useFileActions();
+  const {getFolders, createFolder, getFiles, renameFolder} = useFileActions();
 
   const [fab, setFab] = React.useState(false);
   const [menuId, setMenuId] = React.useState(null);
   const [modelContentType, setModalContentType] = React.useState('menu');
   const [modalContent, setModalContent] = React.useState({});
+  const [createDialogueView, setCreateDialogueView] = React.useState(false);
 
   const filteredFolders = folders?.[folderDepth];
   const filteredFiles = files?.[folderDepth];
@@ -278,20 +427,43 @@ export default function Files(props) {
     getFiles({project_id: selectedProject.id, folder_id: folderDepth});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   const toggleFab = () => setFab((v) => !v);
   const toggleMenu = (folderIndex) => setMenuId(folderIndex);
 
-  const createFolderHandler = () => {
+  const toggleCreateDialogue = (dialogueType) => {
+    setCreateDialogueView(dialogueType);
+  };
+
+  const createFolderHandler = (folderName) => {
     createFolder({
       project_id: selectedProject.id,
       index_of: folderDepth,
-      folder_name: 'FolderTest2 ',
+      folder_name: folderName,
       user_id: user?.id,
-    });
-    getFolders({
-      project_id: selectedProject.id,
-      index_of: folderDepth,
-    });
+    })
+      .then((res) =>
+        getFolders({
+          project_id: selectedProject.id,
+          index_of: folderDepth,
+        }),
+      )
+      .then((res) => setCreateDialogueView());
+  };
+  const renameFolderHandler = (folderName, FolderId) => {
+    renameFolder({
+      folder_name: folderName,
+      folder_id: FolderId,
+      user_id: user?.id,
+      project_id: selectedProject?.id,
+    })
+      .then((res) =>
+        getFolders({
+          project_id: selectedProject.id,
+          index_of: folderDepth,
+        }),
+      )
+      .then((res) => setCreateDialogueView());
   };
 
   return (
@@ -337,7 +509,7 @@ export default function Files(props) {
             />
           ))}
         </View>
-        {filteredFiles?.length != 0 ? (
+        {filteredFiles ? (
           <Subheading style={styles.Subheading}>Files</Subheading>
         ) : null}
         <View>
@@ -370,7 +542,8 @@ export default function Files(props) {
             color: theme.colors.primary,
             label: 'Create new folder',
             onPress: () => {
-              createFolderHandler();
+              toggleFab();
+              toggleCreateDialogue('createFolder');
             },
           },
 
@@ -417,6 +590,8 @@ export default function Files(props) {
             <MenuModal
               setModalContentType={setModalContentType}
               modalContent={modalContent}
+              toggleCreateDialogue={toggleCreateDialogue}
+              toggleMenu={toggleMenu}
             />
           ) : null}
           {modelContentType === 'parentActivity' ? <ActivityModal /> : null}
@@ -425,6 +600,17 @@ export default function Files(props) {
           {}
         </View>
       </Modal>
+      <CreateFolder
+        visible={createDialogueView === 'createFolder'}
+        toggleDialog={toggleCreateDialogue}
+        createFolderHandler={createFolderHandler}
+      />
+      <RenameDialogue
+        visible={createDialogueView === 'renameFile'}
+        toggleDialoge={toggleCreateDialogue}
+        dialogueContent={modalContent}
+        renameFolderHandler={renameFolderHandler}
+      />
     </View>
   );
 }
@@ -529,4 +715,20 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     flexDirection: 'row',
   },
+  dialogTitleContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 10,
+  },
+  dialogContentContainer: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+  },
+  dialogActionContainer: {
+    marginTop: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  input: {marginVertical: 5},
 });

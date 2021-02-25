@@ -1,4 +1,9 @@
-import {GET_FOLDERS, CREATE_FOLDER, GET_FILES} from './../actions/actionTypes';
+import {
+  GET_FOLDERS,
+  CREATE_FOLDER,
+  GET_FILES,
+  RENAME_FOLDER,
+} from './../actions/actionTypes';
 
 const initialState = {
   loading: false,
@@ -58,6 +63,23 @@ export default (state = initialState, action = {}) => {
       };
     }
     case `${GET_FILES}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+        errorMessage: action.payload,
+      };
+    case `${RENAME_FOLDER}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${RENAME_FOLDER}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+      };
+    }
+    case `${RENAME_FOLDER}_REJECTED`:
       return {
         ...state,
         loading: false,

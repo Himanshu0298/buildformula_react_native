@@ -11,7 +11,11 @@ export default function useFiles() {
       );
     },
     renameFolder: (data) => {
-      return instance.post('/files/rename_folder', data, config());
+      return instance.post(
+        '/files/rename_folder',
+        data,
+        config({multipart: false}),
+      );
     },
     getFolders: (data) => {
       return instance.post(

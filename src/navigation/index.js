@@ -54,7 +54,7 @@ import AddCustomer from 'screens/Project/CustomerSection/AddCustomer';
 import AddModifyRequest from 'screens/Project/CustomerSection/AddModifyRequest';
 import AddBankDetails from 'screens/Project/CustomerSection/AddBankDetails';
 //Project : Project management screens
-import Lineup from '../screens/Project/ProjectManagement/Lineup';
+import Lineup from '../screens/Project/ProjectManagement/LineUp';
 import Phases from 'screens/Project/ProjectManagement/Planning/Phases';
 import SubPhases from 'screens/Project/ProjectManagement/Planning/SubPhases';
 import SubPhaseActivity from 'screens/Project/ProjectManagement/Planning/SubPhaseActivity';

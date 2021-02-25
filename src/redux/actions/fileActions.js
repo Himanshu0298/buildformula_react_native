@@ -6,7 +6,7 @@ import useFiles from 'services/files';
 
 export default function useFileActions() {
   const dispatch = useDispatch();
-  const {getFolders, createFolder, getFiles} = useFiles();
+  const {getFolders, createFolder, getFiles, renameFolder} = useFiles();
   const {processError, processResponse} = useResProcessor();
   const snackbar = useSnackbar();
 
@@ -56,6 +56,25 @@ export default function useFileActions() {
             return Promise.resolve({
               data: res.data,
               folder_id: params.folder_id,
+            });
+          } catch (error) {
+            const errorMessage = processError(error);
+            snackbar.showMessage({
+              message: errorMessage,
+              variant: 'error',
+            });
+            return Promise.reject(errorMessage);
+          }
+        },
+      }),
+    renameFolder: (params) =>
+      dispatch({
+        type: types.RENAME_FOLDER,
+        payload: async () => {
+          try {
+            const res = processResponse(await renameFolder(params));
+            return Promise.resolve({
+              data: res.data,
             });
           } catch (error) {
             const errorMessage = processError(error);

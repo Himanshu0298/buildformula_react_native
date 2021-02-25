@@ -20,6 +20,7 @@ export const useConfig = () => {
       if (auth) {
         headers.Authorization = 'Bearer ' + token;
       }
+
       return {headers};
     },
   };
