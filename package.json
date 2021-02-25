@@ -57,6 +57,7 @@
     "react-native-signature-capture": "^0.4.11",
     "react-native-splash-screen": "^3.2.0",
     "react-native-tab-view": "^2.15.2",
+    "react-native-table-component": "^1.2.1",
     "react-native-touch-id": "^4.4.1",
     "react-native-vector-icons": "^8.0.0",
     "react-redux": "^7.2.2",

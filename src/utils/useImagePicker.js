@@ -37,52 +37,61 @@ const handleCamera = ({type, onChoose}) => {
   });
 };
 
-const handleFilePicker = async ({type, onChoose}) => {
+async function processFiles(res) {
+  try {
+    const {type, uri, name} = res;
+
+    if (type === 'image/jpeg' || type === 'image/png') {
+      const resizedData = await ImageResizer.createResizedImage(
+        uri,
+        MAX_WIDTH,
+        MAX_HEIGHT,
+        'JPEG',
+        QUALITY * 100,
+      );
+
+      const data = {uri: resizedData.uri, type, name: resizedData.name};
+      return data;
+    } else {
+      const DEST_PATH = `${RNFS.TemporaryDirectoryPath}/${'vshwan'}`;
+      await RNFS.copyFile(res.uri, DEST_PATH);
+
+      const stat = await RNFS.stat(DEST_PATH);
+
+      const data = {
+        uri: Platform.OS === 'ios' ? stat.path : `file:///${stat.path}`,
+        type,
+        name,
+      };
+
+      return data;
+    }
+  } catch (error) {
+    console.log('-----> error', error);
+  }
+}
+
+const handleFilePicker = async ({type, multiple, onChoose}) => {
   try {
     const fileTypes = [DocumentPicker.types.images];
     if (type === 'file') {
       fileTypes.push(DocumentPicker.types.pdf);
     }
-    const res = await DocumentPicker.pick({type: fileTypes});
-    console.log('-----> res', res);
 
-    if (res.type === 'image/jpeg' || res.type === 'image/png') {
-      ImageResizer.createResizedImage(
-        res.uri,
-        MAX_WIDTH,
-        MAX_HEIGHT,
-        'JPEG',
-        QUALITY * 100,
-      )
-        .then((resizedData) => {
-          const data = {
-            uri: resizedData.uri,
-            type: res.type,
-            name: resizedData.name,
-          };
-
-          console.log('-----> data', data);
-
-          onChoose(data);
-        })
-        .catch((err) => {
-          console.log('----->createResizedImage ', err);
-          throw err;
-        });
-    } else {
-      const destPath = `${RNFS.TemporaryDirectoryPath}/${'vshwan'}`;
-      await RNFS.copyFile(res.uri, destPath);
-
-      const stat = await RNFS.stat(destPath);
-
-      const data = {
-        uri: Platform.OS === 'ios' ? stat.path : `file:///${stat.path}`,
-        type: res.type,
-        name: res.name,
-      };
+    if (multiple) {
+      const res = await DocumentPicker.pickMultiple({type: fileTypes});
+      console.log('-----> res', res);
+      const data = await Promise.all(
+        res.map(async (item) => await processFiles(item)),
+      );
 
       console.log('-----> data', data);
+      onChoose(data);
+    } else {
+      const res = await DocumentPicker.pick({type: fileTypes});
+      const data = await processFiles(res);
 
+      console.log('-----> data', data);
       onChoose(data);
     }
   } catch (err) {

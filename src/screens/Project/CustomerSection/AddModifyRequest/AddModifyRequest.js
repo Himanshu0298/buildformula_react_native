@@ -9,16 +9,14 @@ import {
   Headline,
   Divider,
   Caption,
+  IconButton,
 } from 'react-native-paper';
 import {theme} from 'styles/theme';
 import backArrow from 'assets/images/back_arrow.png';
 import RenderInput from 'components/Atoms/RenderInput';
-import BaseText from 'components/Atoms/BaseText';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {useSelector} from 'react-redux';
-import useCustomerActions from 'redux/actions/customerActions';
 import useImagePicker from 'utils/useImagePicker';
 import CustomCheckbox from 'components/Atoms/CustomCheckbox';
 import dayjs from 'dayjs';
@@ -26,8 +24,21 @@ import RenderTextBox from 'components/Atoms/RenderTextbox';
 import Radio from 'components/Atoms/Radio';
 import DetailsHeader from '../CustomerSection/Components/DetailsHeader';
 import SignaturePanel from 'components/Atoms/SignaturePanel';
+import {Table, Row, TableWrapper, Cell} from 'react-native-table-component';
 
 const schema = Yup.object().shape({});
+
+const TABLE_HEAD = ['Description', 'Quantity', 'Unit Price', 'Amount', 'Del'];
+const TABLE_DATA = [
+  [
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+    100,
+    6,
+    '₹600',
+    1,
+  ],
+  ['Lorem', 100, 6, '₹600', 1],
+];
 
 function renderData(label, value) {
   return (
@@ -69,9 +80,7 @@ function RenderCustomerForm({params, navigation}) {
 
   return (
     <View style={styles.sectionContainer}>
-      <Subheading style={styles.headline}>
-        1. Modify Request (customer form)
-      </Subheading>
+      <Subheading style={styles.headline}>1. Modify Request</Subheading>
       <RenderCustomerBox />
       <Formik
         validateOnBlur={false}
@@ -116,6 +125,7 @@ function RenderCustomerForm({params, navigation}) {
               onPress={() =>
                 openFilePicker({
                   type: 'file',
+                  multiple: true,
                   onChoose: (v) => {
                     console.log('-----> v', v);
                   },
@@ -148,14 +158,26 @@ function RenderCustomerForm({params, navigation}) {
   );
 }
 
+function RenderClose(props) {
+  const {index, handleRemove} = props;
+  return (
+    <View style={{flex: 0.5}}>
+      <IconButton
+        icon="close-circle"
+        size={20}
+        color={'#FF5D5D'}
+        onPress={() => handleRemove(index)}
+      />
+    </View>
+  );
+}
+
 function RenderEngineerReviewForm({params, navigation}) {
   const {t} = useTranslation();
 
   return (
     <View style={styles.sectionContainer}>
-      <Headline style={styles.headline}>
-        2. Review (Civil Engineer Form)
-      </Headline>
+      <Headline style={styles.headline}>2. Review</Headline>
       <View style={[styles.row, {justifyContent: 'space-between'}]}>
         <Caption>Date: {dayjs().format('DD-MM-YYYY')}</Caption>
         <Caption>Time: {dayjs().format('HH:mm A')}</Caption>
@@ -192,7 +214,6 @@ function RenderEngineerReviewForm({params, navigation}) {
                 />
               </View>
             </View>
-
             <RenderTextBox
               name="description"
               label={t('label_review_description')}
@@ -204,17 +225,43 @@ function RenderEngineerReviewForm({params, navigation}) {
               onBlur={handleBlur('review_description')}
               error={errors.review_description}
             />
-            <RenderTextBox
-              name="modification_changes"
-              label={t('label_modification_changes')}
-              numberOfLines={5}
-              minHeight={120}
-              containerStyles={styles.input}
-              value={values.modification_changes}
-              onChangeText={handleChange('modification_changes')}
-              onBlur={handleBlur('modification_changes')}
-              error={errors.modification_changes}
-            />
+            <Table>
+              <Row
+                data={TABLE_HEAD}
+                flexArr={[2.5, 1, 1, 1, 0.5]}
+                style={styles.tableHead}
+                textStyle={styles.tableHeadText}
+              />
+              {TABLE_DATA.map((rowData, index) => (
+                <TableWrapper key={index} style={styles.tableRow}>
+                  {rowData.map((cellData, cellIndex) => (
+                    <Cell
+                      key={cellIndex}
+                      flex={[2.5, 1, 1, 1, 0.5][cellIndex]}
+                      textStyle={styles.tableText}
+                      style={[
+                        styles.tableCell,
+                        cellIndex && {
+                          alignItems: 'center',
+                        },
+                      ]}
+                      data={
+                        cellIndex === 4 ? (
+                          <RenderClose
+                            index={index}
+                            handleRemove={() => {
+                              console.log('----->handleRemove ');
+                            }}
+                          />
+                        ) : (
+                          cellData
+                        )
+                      }
+                    />
+                  ))}
+                </TableWrapper>
+              ))}
+            </Table>
 
             <View style={styles.actionContainer}>
               <Button
@@ -250,7 +297,7 @@ function RenderApprovalForm({params, navigation}) {
   return (
     <>
       <View style={styles.sectionContainer}>
-        <Headline style={styles.headline}>3. Approval (for Manager)</Headline>
+        <Headline style={styles.headline}>3. Approval</Headline>
         <View
           style={[
             styles.row,
@@ -339,7 +386,7 @@ function AddModifyRequest(props) {
 
   console.log('----->unit.unitId ', unit.unitId);
 
-  const USER_TYPE = 3;
+  const USER_TYPE = 1;
 
   return (
     <View style={styles.container}>
@@ -422,7 +469,7 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(4, 29, 54, 0.1)',
     borderStyle: 'dashed',
     marginVertical: 7,
-    height: 100,
+    height: 70,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 1,
@@ -442,6 +489,25 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     display: 'flex',
     marginTop: 5,
+  },
+  tableRow: {
+    flexDirection: 'row',
+  },
+  tableHead: {
+    height: 40,
+  },
+  tableHeadText: {
+    marginHorizontal: 3,
+    textAlign: 'center',
+  },
+  tableCell: {
+    marginHorizontal: 3,
+    justifyContent: 'center',
+    marginVertical: 5,
+  },
+  tableText: {
+    fontSize: 13,
+    color: '#5E6D7C',
   },
 });
 
