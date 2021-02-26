@@ -50,10 +50,11 @@ async function processFiles(res) {
         QUALITY * 100,
       );
 
-      const data = {uri: resizedData.uri, type, name: resizedData.name};
+      const data = {uri: resizedData.uri, type, name};
+
       return data;
     } else {
-      const DEST_PATH = `${RNFS.TemporaryDirectoryPath}/${'vshwan'}`;
+      const DEST_PATH = `${RNFS.TemporaryDirectoryPath}/${name}`;
       await RNFS.copyFile(res.uri, DEST_PATH);
 
       const stat = await RNFS.stat(DEST_PATH);

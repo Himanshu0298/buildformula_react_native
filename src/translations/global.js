@@ -119,6 +119,9 @@ export default {
       label_loan_approval_letter: 'Loan approval letter',
       label_number_of_installments: 'No of Installments',
       label_person_email: 'Person Email Id',
+      label_description: 'Description',
+      label_quantity: 'Quantity',
+      label_unit_price: 'Price',
 
       //Lineup
       label_select_unit: 'Select unit',
@@ -240,6 +243,9 @@ export default {
       label_loan_approval_letter: 'Loan approval letter',
       label_number_of_installments: 'No of Installments',
       label_person_email: 'Person Email Id',
+      label_description: 'Description',
+      label_quantity: 'Quantity',
+      label_unit_price: 'Price',
 
       //Lineup
       label_select_unit: 'Select unit',
