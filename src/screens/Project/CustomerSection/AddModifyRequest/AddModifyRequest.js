@@ -1,26 +1,53 @@
 import * as React from 'react';
 import {useTranslation} from 'react-i18next';
-import {StyleSheet, View, TouchableOpacity, Image} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  Image,
+  RefreshControl,
+} from 'react-native';
 import {Subheading, withTheme, Divider} from 'react-native-paper';
 import backArrow from 'assets/images/back_arrow.png';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import DetailsHeader from '../CustomerSection/Components/DetailsHeader';
 import {CustomerSection, EngineerSection, ManagerSection} from './Components';
+import useCustomerActions from 'redux/actions/customerActions';
 
 function AddModifyRequest(props) {
   const {navigation, route} = props;
   const {params} = route;
   const {unit, project_id} = params;
+
   const {t} = useTranslation();
 
-  const USER_TYPE = 2;
-  const STATUS = 'submitted';
+  const {addModifyRequest, getModifyRequests} = useCustomerActions();
+
+  const USER_TYPE = 1;
+  const STATUS = '';
+
+  const handleRefresh = () => getModifyRequests({project_id});
+
+  const handleCreation = (values) => {
+    const {title, description, files} = values;
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('description', description);
+    formData.append('files', files);
+    formData.append('project_id', project_id);
+    formData.append('unit_id', unit.unitId);
+
+    addModifyRequest(formData).then(() => handleRefresh());
+  };
 
   return (
     <View style={styles.container}>
       <KeyboardAwareScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollView}>
+        contentContainerStyle={styles.scrollView}
+        refreshControl={
+          <RefreshControl refreshing={false} onRefresh={handleRefresh} />
+        }>
         <TouchableOpacity
           onPress={navigation.goBack}
           style={styles.titleContainer}>
@@ -29,10 +56,11 @@ function AddModifyRequest(props) {
         </TouchableOpacity>
         <DetailsHeader {...route?.params} />
         <Divider style={styles.divider} />
-
         <CustomerSection
           {...props}
-          {...{params, submitted: STATUS === 'submitted'}}
+          params={params}
+          submitted={STATUS === 'submitted'}
+          onSubmit={handleCreation}
         />
         {[2, 3].includes(USER_TYPE) ? (
           <EngineerSection

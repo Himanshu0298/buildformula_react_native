@@ -19,7 +19,10 @@ import fileIcon from 'assets/images/file_icon.png';
 import {theme} from 'styles/theme';
 import * as Yup from 'yup';
 
-const schema = Yup.object().shape({});
+const schema = Yup.object().shape({
+  title: Yup.string().required('Required'),
+  description: Yup.string().required('Required'),
+});
 
 function renderData(label, value) {
   return (
@@ -90,7 +93,7 @@ function RenderFiles({files = [], submitted, onRemove}) {
 }
 
 function CustomerForm(props) {
-  const {navigation} = props;
+  const {navigation, onSubmit} = props;
   const {t} = useTranslation();
 
   const {openFilePicker} = useImagePicker();
@@ -104,7 +107,7 @@ function CustomerForm(props) {
       validateOnChange={false}
       initialValues={{}}
       validationSchema={schema}
-      onSubmit={async (values) => {}}>
+      onSubmit={async (values) => onSubmit(values)}>
       {({
         values,
         errors,
@@ -205,6 +208,7 @@ function CustomerDetails(props) {
 
 function CustomerSection(props) {
   const {params, submitted, navigation} = props;
+
   return (
     <View style={styles.sectionContainer}>
       <Subheading style={styles.headline}>1. Modify Request</Subheading>

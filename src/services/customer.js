@@ -36,5 +36,15 @@ export default function useCustomerServices() {
         config({multipart: false}),
       );
     },
+    getModifyRequests: (data) => {
+      return instance.post(
+        '/modify/request/lists',
+        data,
+        config({multipart: false}),
+      );
+    },
+    addModifyRequest: (data) => {
+      return instance.post('/modify/request/add', data, config());
+    },
   };
 }

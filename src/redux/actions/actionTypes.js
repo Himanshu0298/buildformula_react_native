@@ -39,13 +39,15 @@ export const LOCK_UNIT = 'LOCK_UNIT';
 export const CREATE_BOOKING = 'CREATE_BOOKING';
 export const GET_BANK_LIST = 'GET_BANK_LIST';
 
-//For Sales
+//For  Customer Section
 export const GET_CUSTOMER_DATA = 'GET_CUSTOMER_DATA';
 export const GET_BOOKING_DATA = 'GET_BOOKING_DATA';
 export const ADD_CUSTOMER = 'ADD_CUSTOMER';
 export const GET_BANK_DETAILS = 'GET_BANK_DETAILS';
 export const UPDATE_BANK_DETAILS = 'UPDATE_BANK_DETAILS';
 export const UPDATE_BANK_FILES = 'UPDATE_BANK_FILES';
+export const GET_MODIFY_REQUESTS = 'GET_MODIFY_REQUESTS';
+export const ADD_MODIFY_REQUEST = 'ADD_MODIFY_REQUEST';
 
 //For Project Management
 export const GET_WORKS = 'GET_WORKS';

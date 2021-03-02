@@ -16,6 +16,8 @@ export default function useCustomerActions() {
     updateBankDetails,
     updateBankFiles,
     removeBankFile,
+    getModifyRequests,
+    addModifyRequest,
   } = useCustomerServices();
 
   return {
@@ -24,9 +26,7 @@ export default function useCustomerActions() {
         type: types.GET_CUSTOMER_DATA,
         payload: async () => {
           try {
-            const response = _res(
-              await getCustomerDetails(formData),
-            );
+            const response = _res(await getCustomerDetails(formData));
             const {data} = response;
 
             return Promise.resolve(data);
@@ -147,6 +147,42 @@ export default function useCustomerActions() {
           try {
             const response = _res(await removeBankFile(params));
             const {data} = response;
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const errorMessage = _err(error);
+            snackbar.showMessage({
+              message: errorMessage,
+              variant: 'error',
+            });
+            return Promise.reject(errorMessage);
+          }
+        },
+      }),
+    getModifyRequests: (params) =>
+      dispatch({
+        type: types.GET_MODIFY_REQUESTS,
+        payload: async () => {
+          try {
+            const {data} = _res(await getModifyRequests(params));
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const errorMessage = _err(error);
+            snackbar.showMessage({
+              message: errorMessage,
+              variant: 'error',
+            });
+            return Promise.reject(errorMessage);
+          }
+        },
+      }),
+    addModifyRequest: (params) =>
+      dispatch({
+        type: types.ADD_MODIFY_REQUEST,
+        payload: async () => {
+          try {
+            const {data} = _res(await addModifyRequest(params));
 
             return Promise.resolve(data);
           } catch (error) {

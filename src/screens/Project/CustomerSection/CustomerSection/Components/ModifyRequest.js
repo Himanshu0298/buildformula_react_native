@@ -11,40 +11,6 @@ import {
   Button,
 } from 'react-native-paper';
 import {useSelector} from 'react-redux';
-import {secondaryTheme} from 'styles/theme';
-
-const STATIC = [
-  {
-    title: 'Modify Request 1',
-    status: 1,
-    description: 'This is the description of the modify request 1.',
-  },
-  {
-    title: 'Modify Request 1',
-    status: 1,
-    description: 'This is the description of the modify request 1.',
-  },
-  {
-    title: 'Modify Request 2',
-    status: 2,
-    description: 'This is the description of the modify request 1.',
-  },
-  {
-    title: 'Modify Request 2',
-    status: 3,
-    description: 'This is the description of the modify request 1.',
-  },
-  {
-    title: 'Modify Request 2',
-    status: 3,
-    description: 'This is the description of the modify request 1.',
-  },
-  {
-    title: 'Modify Request 2',
-    status: 3,
-    description: 'This is the description of the modify request 1.',
-  },
-];
 
 const STATUS_LIST = {
   1: {
@@ -75,7 +41,9 @@ function RenderRequests({requests}) {
     return (
       <View key={index} style={styles.requestContainer}>
         <View style={styles.requestHeadingRow}>
-          <Text>{title}</Text>
+          <View style={styles.title}>
+            <Subheading numberOfLines={1}>{title}</Subheading>
+          </View>
           <Text style={{fontSize: 11, color: STATUS_LIST[status].color}}>
             {STATUS_LIST[status].label}
           </Text>
@@ -107,7 +75,7 @@ function RenderRequests({requests}) {
 }
 
 function RequestsAccordion({title, requests = []}) {
-  const [expanded, setExpanded] = React.useState(true);
+  const [expanded, setExpanded] = React.useState(Boolean(requests.length));
 
   const toggle = () => setExpanded((v) => !v);
 
@@ -129,19 +97,29 @@ function ModifyRequest(props) {
   const {theme, navigation, route} = props;
   const {params} = route;
 
-  const navToAdd = (customer) => {
-    navigation.push('AddModifyRequest', {...params});
-  };
+  const {modifyRequests} = useSelector((state) => state.customer);
+  const {user} = useSelector((state) => state.user);
 
   const requests = React.useMemo(() => {
-    const pendingRequests = STATIC.filter((v) => v.status === 1);
-    const approvedRequests = STATIC.filter((v) => v.status === 2);
-    const rejectedRequests = STATIC.filter((v) => v.status === 3);
+    const pendingRequests = modifyRequests.filter(
+      (v) => v.request_status === 'pending',
+    );
+    const approvedRequests = modifyRequests.filter((v) => v.status === 2);
+    const rejectedRequests = modifyRequests.filter((v) => v.status === 3);
 
     return {pendingRequests, approvedRequests, rejectedRequests};
-  }, []);
+  }, [modifyRequests]);
 
   const {pendingRequests, approvedRequests, rejectedRequests} = requests;
+
+  const navToAdd = (customer) => {
+    navigation.navigate('AddModifyRequest', {...params});
+  };
+
+  const checkRole = () => {
+    return user.role === 2;
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView
@@ -151,6 +129,7 @@ function ModifyRequest(props) {
         <RequestsAccordion
           title="Pending requests"
           requests={pendingRequests}
+          showActions={checkRole}
         />
         <RequestsAccordion
           title="Approved requests"
@@ -199,6 +178,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  title: {
+    flexShrink: 1,
+    marginRight: 10,
   },
   fab: {
     position: 'absolute',
