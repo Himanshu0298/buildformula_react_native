@@ -1,7 +1,14 @@
 import React from 'react';
 import RenderInput from 'components/Atoms/RenderInput';
 import {Formik} from 'formik';
-import {StyleSheet, View, Image} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
+
 import {
   IconButton,
   Subheading,
@@ -12,6 +19,7 @@ import {
   Divider,
   Button,
   Portal,
+  Provider,
 } from 'react-native-paper';
 import useFileActions from 'redux/actions/fileActions';
 import Modal from 'react-native-modal';
@@ -19,22 +27,114 @@ import PdfIcon from 'assets/images/pdf_icon.png';
 import FolderIcon from 'assets/images/folder_icon.png';
 import UploadFileIcon from 'assets/images/upload_files.png';
 import {theme, secondaryTheme} from 'styles/theme';
-import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
 import dayjs from 'dayjs';
 import {useSelector} from 'react-redux';
 import * as Yup from 'yup';
+import useImagePicker from 'utils/useImagePicker';
 import {useTranslation} from 'react-i18next';
 
 const schema = Yup.object().shape({
   folder_name: Yup.string().trim().required('Required'),
 });
 
+function DeleteFileFolder(props) {
+  const {visible, toggleDialogue, dialogueContent, deleteFileHandler} = props;
+  const fileType = dialogueContent.folder_name ? 'folder' : 'file';
+  return (
+    <Portal>
+      <Dialog visible={visible} onDismiss={toggleDialogue} style={{top: -100}}>
+        <Dialog.Content>
+          <>
+            <View style={{alignItems: 'center'}}>
+              <Text style={{fontSize: 16}}>
+                Are you sure you want to delete
+              </Text>
+              <Text>
+                {dialogueContent.folder_name || dialogueContent.file_name}
+              </Text>
+            </View>
+          </>
+        </Dialog.Content>
+        <Dialog.Actions>
+          <Button color={theme.colors.error} onPress={toggleDialogue}>
+            Cancel
+          </Button>
+          <Button
+            style={{minWidth: 80}}
+            onPress={() => {
+              console.log('--->dial', dialogueContent);
+              deleteFileHandler(
+                dialogueContent.id,
+                fileType,
+                dialogueContent.file_type,
+              );
+            }}>
+            Delete
+          </Button>
+        </Dialog.Actions>
+      </Dialog>
+    </Portal>
+  );
+}
+
+function UploadFile(props) {
+  const {
+    visible,
+    selectedUploadFile = {},
+    toggleDialogue,
+    handleFileUpload,
+  } = props;
+  const {t} = useTranslation();
+
+  return (
+    <Formik
+      validateOnBlur={false}
+      validateOnChange={false}
+      initialValues={{file: selectedUploadFile}}
+      enableReinitialize
+      validationSchema={Yup.object().shape({
+        file_name: Yup.string().trim().required('Required'),
+      })}
+      onSubmit={async (values) => handleFileUpload(values)}>
+      {({values, handleChange, errors, handleSubmit}) => (
+        <Portal>
+          <Dialog
+            visible={visible}
+            onDismiss={toggleDialogue}
+            style={{top: -100}}>
+            <Dialog.Content>
+              <>
+                <RenderInput
+                  name="file_name"
+                  label={t('label_name')}
+                  containerStyles={styles.input}
+                  value={values.file_name}
+                  onChangeText={handleChange('file_name')}
+                  error={errors.file_name}
+                />
+              </>
+            </Dialog.Content>
+            <Dialog.Actions>
+              <Button color={theme.colors.error} onPress={toggleDialogue}>
+                Cancel
+              </Button>
+              <Button style={{minWidth: 80}} onPress={handleSubmit}>
+                Confirm
+              </Button>
+            </Dialog.Actions>
+          </Dialog>
+        </Portal>
+      )}
+    </Formik>
+  );
+}
 function RenameDialogue(props) {
-  const {visible, toggleDialoge, dialogueContent, renameFolderHandler} = props;
+  const {visible, toggleDialogue, dialogueContent, renameFolderHandler} = props;
+  const fileType = dialogueContent.folder_name ? 'folder' : 'file';
   const renaNameRef = React.useRef();
   return (
     <Portal>
-      <Dialog visible={visible} onDismiss={toggleDialoge} style={{top: -100}}>
+      <Dialog visible={visible} onDismiss={toggleDialogue} style={{top: -100}}>
         <View style={styles.dialogTitleContainer}>
           <Text style={{color: '#000'}}>
             {dialogueContent?.file_name || dialogueContent?.folder_name}
@@ -48,9 +148,11 @@ function RenameDialogue(props) {
             rename_file: Yup.string().trim().required('Required'),
           })}
           onSubmit={async (values) => {
-            if (dialogueContent?.folder_name) {
-              renameFolderHandler(values.rename_file, dialogueContent?.id);
-            }
+            renameFolderHandler(
+              values.rename_file,
+              dialogueContent?.id,
+              fileType,
+            );
           }}>
           {({values, errors, handleChange, handleBlur, handleSubmit}) => {
             return (
@@ -81,7 +183,7 @@ function RenameDialogue(props) {
                     contentStyle={{padding: 2}}
                     theme={{roundness: 15}}
                     mode="contained"
-                    onPress={toggleDialoge}>
+                    onPress={toggleDialogue}>
                     <Text theme={secondaryTheme}>{'cancel'}</Text>
                   </Button>
                 </View>
@@ -95,12 +197,12 @@ function RenameDialogue(props) {
 }
 
 function CreateFolder(props) {
-  const {visible, toggleDialog, createFolderHandler} = props;
+  const {visible, toggleDialogue, createFolderHandler} = props;
   const folderNameRef = React.useRef();
 
   return (
     <Portal>
-      <Dialog visible={visible} onDismiss={toggleDialog} style={{top: -100}}>
+      <Dialog visible={visible} onDismiss={toggleDialogue} style={{top: -100}}>
         <View style={styles.dialogTitleContainer}>
           <Text style={{color: '#000'}}>Create New Folder</Text>
         </View>
@@ -143,7 +245,7 @@ function CreateFolder(props) {
                     contentStyle={{padding: 2}}
                     theme={{roundness: 15}}
                     mode="contained"
-                    onPress={toggleDialog}>
+                    onPress={toggleDialogue}>
                     <Text theme={secondaryTheme}>{'cancel'}</Text>
                   </Button>
                 </View>
@@ -187,11 +289,18 @@ function ActivityModal() {
   );
 }
 function VersionModal(props) {
-  const {versions} = props;
+  const {versionData} = props;
+
+  const filteredVersion = [versionData?.current];
+  console.log('--->', filteredVersion);
+  versionData?.lists?.map((list) => {
+    filteredVersion?.push(list);
+  });
+
   return (
     <View>
-      <View style={styles.backNavigation}>
-        <Text>Versions</Text>
+      <View style={styles.versionHeading}>
+        <Text style={{color: '#4872F4', fontSize: 18}}>Versions</Text>
         <Button
           color="#4872F4"
           style={styles.button}
@@ -199,48 +308,64 @@ function VersionModal(props) {
           Add New Version
         </Button>
       </View>
+
       <View>
-        {versions?.map((version, index) => (
-          <VersionFile version={version} key={index} />
+        {filteredVersion?.map((version, index) => (
+          <VersionFile version={version} key={index} countVersion={index} />
         ))}
       </View>
     </View>
   );
 }
 
-function VersionFile() {
+function VersionFile(props) {
+  const {version, countVersion} = props;
   const [versionMenu, setVersionMenu] = React.useState(false);
 
-  const toggleVersionMenu = () => setVersionMenu(!versionMenu);
+  const toggleVersionMenu = () => setVersionMenu((v) => !v);
   return (
-    <View style={styles.recentFiles}>
-      <View style={styles.sectionContainer}>
-        <Image source={PdfIcon} style={styles.PdfIcon} />
-        <View>
-          <Text numberOfLines={1} style={styles.text}>
-            First File Version
-          </Text>
+    <View>
+      <View style={styles.versionFiles}>
+        <View style={styles.sectionContainer}>
+          <Image source={PdfIcon} style={styles.PdfIcon} />
+          <View>
+            {countVersion === 0 ? (
+              <Text style={styles.text}>Current Version</Text>
+            ) : (
+              <Text style={styles.text}>Version {countVersion}</Text>
+            )}
+            <Text numberOfLines={1} style={styles.text}>
+              By {version?.first_name} {version?.last_name}
+            </Text>
+          </View>
+        </View>
+        <View style={styles.sectionContainer}>
+          <View>
+            <Text style={styles.date}>
+              {dayjs(version?.created).format('DD MMM YYYY')}
+            </Text>
+          </View>
+          <View>
+            <Menu
+              visible={true}
+              onDismiss={toggleVersionMenu}
+              anchor={
+                <IconButton icon="dots-vertical" onPress={toggleVersionMenu} />
+              }>
+              <Menu.Item
+                icon="download"
+                onPress={() => {
+                  console.log('--->download');
+                }}
+                title="Download"
+              />
+              <Divider />
+              <Menu.Item icon="delete" onPress={() => {}} title="Delete" />
+            </Menu>
+          </View>
         </View>
       </View>
-      <View style={styles.sectionContainer}>
-        <View>
-          <Text style={styles.date}>
-            {dayjs(new Date()).format('DD MMM YYYY')}
-          </Text>
-        </View>
-        <View>
-          <Menu
-            visible={versionMenu}
-            onDismiss={toggleVersionMenu}
-            anchor={
-              <IconButton icon="dots-vertical" onPress={toggleVersionMenu} />
-            }>
-            <Menu.Item icon="download" onPress={() => {}} title="Download" />
-            <Divider />
-            <Menu.Item icon="delete" onPress={() => {}} title="Delete" />
-          </Menu>
-        </View>
-      </View>
+      <Divider />
     </View>
   );
 }
@@ -251,6 +376,7 @@ function MenuModal(props) {
     modalContent,
     toggleCreateDialogue,
     toggleMenu,
+    versionDataHandler,
   } = props;
   return (
     <View>
@@ -260,56 +386,84 @@ function MenuModal(props) {
           {modalContent?.file_name || modalContent?.folder_name}
         </Subheading>
       </View>
-      <View style={styles.viewDirection}>
-        <IconButton
-          style={styles.ModalText}
-          icon="account-plus"
-          onPress={() => {}}
-        />
-        <View>
-          <Text style={styles.ModalText}>Share</Text>
+
+      <TouchableOpacity
+        onPress={() => {
+          console.log('--->in share');
+        }}>
+        <View style={styles.viewDirection}>
+          <IconButton
+            style={styles.ModalText}
+            icon="account-plus"
+            onPress={() => {}}
+          />
+          <View>
+            <Text style={styles.ModalText}>Share</Text>
+          </View>
         </View>
-      </View>
-      <View style={styles.viewDirection}>
-        <IconButton icon="share-variant" onPress={() => {}} />
-        <Text style={styles.ModalText}>Share Copy</Text>
-      </View>
-      <View style={styles.viewDirection}>
-        <IconButton icon="download" onPress={() => {}} />
-        <Text style={styles.ModalText}> Download</Text>
-      </View>
-      <View style={styles.viewDirection}>
-        <IconButton
-          icon="file-multiple"
-          onPress={() => setModalContentType('version')}
-        />
-        <Text style={styles.ModalText}>Manage version</Text>
-      </View>
-      <View style={styles.viewDirection}>
-        <IconButton
-          icon="pencil"
-          onPress={() => {
-            toggleCreateDialogue('renameFile');
-            toggleMenu();
-          }}
-        />
-        <Text style={styles.ModalText}>Rename</Text>
-      </View>
-      <View style={styles.viewDirection}>
-        <IconButton icon="printer" onPress={() => {}} />
-        <Text style={styles.ModalText}>Print</Text>
-      </View>
-      <View style={styles.viewDirection}>
-        <IconButton
-          icon="information"
-          onPress={() => setModalContentType('activity')}
-        />
-        <Text style={styles.ModalText}>Activity</Text>
-      </View>
-      <View style={styles.viewDirection}>
-        <IconButton icon="delete" onPress={() => {}} />
-        <Text style={styles.ModalText}>Delete</Text>
-      </View>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={() => {}}>
+        <View style={styles.viewDirection}>
+          <IconButton icon="share-variant" />
+          <Text style={styles.ModalText}>Share Copy</Text>
+        </View>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => {}}>
+        <View style={styles.viewDirection}>
+          <IconButton icon="download" />
+          <Text style={styles.ModalText}> Download</Text>
+        </View>
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => {
+          versionDataHandler(modalContent.id);
+          setModalContentType('version');
+        }}>
+        <View style={styles.viewDirection}>
+          <IconButton icon="file-multiple" onPress={() => {}} />
+          <Text style={styles.ModalText}>Manage version</Text>
+        </View>
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => {
+          toggleCreateDialogue('renameFile');
+          toggleMenu();
+        }}>
+        <View style={styles.viewDirection}>
+          <IconButton icon="pencil" onPress={() => {}} />
+          <Text style={styles.ModalText}>Rename</Text>
+        </View>
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => {
+          console.log('inPrint');
+        }}>
+        <View style={styles.viewDirection}>
+          <IconButton icon="printer" />
+          <Text style={styles.ModalText}>Print</Text>
+        </View>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        onPress={() => {
+          setModalContentType('activity');
+        }}>
+        <View style={styles.viewDirection}>
+          <IconButton icon="information" onPress={() => {}} />
+          <Text style={styles.ModalText}>Activity</Text>
+        </View>
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => {
+          toggleCreateDialogue('deleteFileFolder');
+          toggleMenu();
+        }}>
+        <View style={styles.viewDirection}>
+          <IconButton icon="delete" onPress={() => {}} />
+          <Text style={styles.ModalText}>Delete</Text>
+        </View>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -404,17 +558,29 @@ export default function Files(props) {
   const {route, navigation} = props;
   const {folder_name, index_of: folderDepth = 0} = route?.params || {};
 
-  const {folders, files} = useSelector((state) => state.files);
+  const {folders, files, versionData} = useSelector((state) => state.files);
   const {selectedProject} = useSelector((state) => state.project);
 
   const {user} = useSelector((state) => state.user);
-  const {getFolders, createFolder, getFiles, renameFolder} = useFileActions();
+  const {
+    getFolders,
+    createFolder,
+    renameFolder,
+    deleteFolder,
+    getFiles,
+    renameFile,
+    uploadFile,
+    deleteFile,
+    getVersion,
+  } = useFileActions();
+  const {openImagePicker} = useImagePicker();
 
   const [fab, setFab] = React.useState(false);
-  const [menuId, setMenuId] = React.useState(null);
+  const [menuId, setMenuId] = React.useState();
   const [modelContentType, setModalContentType] = React.useState('menu');
   const [modalContent, setModalContent] = React.useState({});
   const [createDialogueView, setCreateDialogueView] = React.useState(false);
+  const [selectedUploadFile, setSelectedUploadFile] = React.useState();
 
   const filteredFolders = folders?.[folderDepth];
   const filteredFiles = files?.[folderDepth];
@@ -450,20 +616,76 @@ export default function Files(props) {
       )
       .then((res) => setCreateDialogueView());
   };
-  const renameFolderHandler = (folderName, FolderId) => {
-    renameFolder({
-      folder_name: folderName,
-      folder_id: FolderId,
-      user_id: user?.id,
-      project_id: selectedProject?.id,
-    })
-      .then((res) =>
-        getFolders({
-          project_id: selectedProject.id,
-          index_of: folderDepth,
-        }),
-      )
-      .then((res) => setCreateDialogueView());
+  const renameFolderHandler = (name, id, type) => {
+    if (type === 'folder') {
+      renameFolder({
+        folder_name: name,
+        folder_id: id,
+        user_id: user?.id,
+        project_id: selectedProject?.id,
+      })
+        .then((res) =>
+          getFolders({
+            project_id: selectedProject.id,
+            index_of: folderDepth,
+          }),
+        )
+        .then((res) => setCreateDialogueView());
+    } else {
+      console.log('--->');
+      renameFile({
+        file_id: id,
+        project_id: selectedProject.id,
+        new_file_name: name,
+      }).then((res) =>
+        getFiles({project_id: selectedProject.id, folder_id: folderDepth}),
+      );
+    }
+  };
+
+  const deleteFileHandler = (id, fileFolder, type) => {
+    if (fileFolder === 'folder') {
+      deleteFolder({
+        folder_id: id,
+        project_id: selectedProject?.id,
+      })
+        .then((res) =>
+          getFolders({
+            project_id: selectedProject.id,
+            index_of: folderDepth,
+          }),
+        )
+        .then((res) => setCreateDialogueView());
+    } else {
+      deleteFile({
+        file_id: id,
+        type: type,
+      });
+    }
+  };
+
+  const onChoose = (v) => {
+    setSelectedUploadFile(v);
+    toggleCreateDialogue('uploadFile');
+  };
+
+  const handleFileUpload = (values) => {
+    const formData = new FormData();
+    values.file.name = values.file_name;
+    formData.append('folder_id', folderDepth);
+    formData.append('myfile[]', values.file);
+    formData.append('project_id', selectedProject.id);
+
+    uploadFile(formData).then((res) =>
+      getFiles({project_id: selectedProject.id, folder_id: folderDepth}),
+    );
+  };
+
+  const versionDataHandler = (fileId) => {
+    getVersion({
+      project_id: selectedProject.id,
+      file_id: fileId,
+    });
   };
 
   return (
@@ -476,9 +698,9 @@ export default function Files(props) {
                 icon="arrow-left"
                 onPress={() => navigation.goBack()}
               />
-              <Text style={styles.Subheadings}>
+              <Subheading style={styles.backNavHeading} numberOfLines={1}>
                 {folder_name || 'FOLDERNAME'}
-              </Text>
+              </Subheading>
             </View>
             <IconButton
               icon="information"
@@ -560,11 +782,13 @@ export default function Files(props) {
             color: theme.colors.primary,
             label: 'Upload files',
             onPress: () => {
-              console.log('in Create upload files');
+              toggleFab();
+              openImagePicker({type: 'file', onChoose});
             },
           },
         ]}
       />
+      {console.log('--->!isNaN(menuId)', !isNaN(menuId))}
       <Modal
         isVisible={!isNaN(menuId)}
         backdropOpacity={0.4}
@@ -592,24 +816,39 @@ export default function Files(props) {
               modalContent={modalContent}
               toggleCreateDialogue={toggleCreateDialogue}
               toggleMenu={toggleMenu}
+              versionDataHandler={versionDataHandler}
             />
           ) : null}
           {modelContentType === 'parentActivity' ? <ActivityModal /> : null}
           {modelContentType === 'activity' ? <ActivityModal /> : null}
-          {modelContentType === 'version' ? <VersionModal /> : null}
+          {modelContentType === 'version' ? (
+            <VersionModal versionData={versionData} />
+          ) : null}
           {}
         </View>
       </Modal>
       <CreateFolder
         visible={createDialogueView === 'createFolder'}
-        toggleDialog={toggleCreateDialogue}
+        toggleDialogue={toggleCreateDialogue}
         createFolderHandler={createFolderHandler}
       />
       <RenameDialogue
         visible={createDialogueView === 'renameFile'}
-        toggleDialoge={toggleCreateDialogue}
+        toggleDialogue={toggleCreateDialogue}
         dialogueContent={modalContent}
         renameFolderHandler={renameFolderHandler}
+      />
+      <UploadFile
+        visible={createDialogueView === 'uploadFile'}
+        toggleDialogue={toggleCreateDialogue}
+        selectedUploadFile={selectedUploadFile}
+        handleFileUpload={handleFileUpload}
+      />
+      <DeleteFileFolder
+        visible={createDialogueView === 'deleteFileFolder'}
+        toggleDialogue={toggleCreateDialogue}
+        dialogueContent={modalContent}
+        deleteFileHandler={deleteFileHandler}
       />
     </View>
   );
@@ -621,7 +860,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
   },
   Subheading: {
-    fontSize: 24,
+    fontSize: 20,
     color: '#080707',
     alignItems: 'center',
     paddingHorizontal: 10,
@@ -664,7 +903,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 30,
     paddingHorizontal: 15,
     paddingBottom: 20,
-    flex: 0.65,
+    flex: 0.7,
   },
   closeContainer: {
     alignItems: 'flex-end',
@@ -677,8 +916,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  Subheadings: {
-    fontSize: 30,
+  backNavHeading: {
+    fontSize: 22,
+    color: '#080707',
+    maxWidth: 200,
+    paddingHorizontal: 10,
+    paddingVertical: 15,
   },
   ModalText: {
     alignItems: 'center',
@@ -731,4 +974,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   input: {marginVertical: 5},
+  versionFiles: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 10,
+  },
+  versionHeading: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingBottom: 15,
+  },
 });

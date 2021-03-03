@@ -1,8 +1,13 @@
 import {
   GET_FOLDERS,
   CREATE_FOLDER,
-  GET_FILES,
   RENAME_FOLDER,
+  DELETE_FOLDER,
+  GET_FILES,
+  UPLOAD_FILE,
+  RENAME_FILE,
+  DELETE_FILE,
+  GET_VERSION,
 } from './../actions/actionTypes';
 
 const initialState = {
@@ -10,6 +15,7 @@ const initialState = {
   errorMessage: undefined,
   folders: {},
   files: {},
+  versionData: [],
 };
 
 export default (state = initialState, action = {}) => {
@@ -68,6 +74,41 @@ export default (state = initialState, action = {}) => {
         loading: false,
         errorMessage: action.payload,
       };
+    case `${RENAME_FILE}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${RENAME_FILE}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+      };
+    }
+    case `${RENAME_FILE}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+        errorMessage: action.payload,
+      };
+    case `${UPLOAD_FILE}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${UPLOAD_FILE}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+      };
+    }
+    case `${UPLOAD_FILE}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+        errorMessage: action.payload,
+      };
+
     case `${RENAME_FOLDER}_PENDING`:
       return {
         ...state,
@@ -80,6 +121,58 @@ export default (state = initialState, action = {}) => {
       };
     }
     case `${RENAME_FOLDER}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+        errorMessage: action.payload,
+      };
+    case `${DELETE_FOLDER}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${DELETE_FOLDER}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+      };
+    }
+    case `${DELETE_FOLDER}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+        errorMessage: action.payload,
+      };
+    case `${DELETE_FILE}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${DELETE_FILE}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+      };
+    }
+    case `${DELETE_FILE}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+        errorMessage: action.payload,
+      };
+    case `${GET_VERSION}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${GET_VERSION}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+        versionData: payload.data,
+      };
+    }
+    case `${GET_VERSION}_REJECTED`:
       return {
         ...state,
         loading: false,

@@ -6,7 +6,17 @@ import useFiles from 'services/files';
 
 export default function useFileActions() {
   const dispatch = useDispatch();
-  const {getFolders, createFolder, getFiles, renameFolder} = useFiles();
+  const {
+    getFolders,
+    createFolder,
+    renameFolder,
+    deleteFolder,
+    getFiles,
+    renameFile,
+    uploadFile,
+    deleteFile,
+    getVersion,
+  } = useFiles();
   const {processError, processResponse} = useResProcessor();
   const snackbar = useSnackbar();
 
@@ -47,6 +57,43 @@ export default function useFileActions() {
           }
         },
       }),
+    renameFolder: (params) =>
+      dispatch({
+        type: types.RENAME_FOLDER,
+        payload: async () => {
+          try {
+            const res = processResponse(await renameFolder(params));
+            return Promise.resolve({
+              data: res.data,
+            });
+          } catch (error) {
+            const errorMessage = processError(error);
+            snackbar.showMessage({
+              message: errorMessage,
+              variant: 'error',
+            });
+            return Promise.reject(errorMessage);
+          }
+        },
+      }),
+    deleteFolder: (params) =>
+      dispatch({
+        type: types.DELETE_FOLDER,
+        payload: async () => {
+          try {
+            const res = processResponse(await deleteFolder(params));
+            console.log('--->delete', res);
+            return Promise.resolve(res);
+          } catch (error) {
+            const errorMessage = processError(error);
+            snackbar.showMessage({
+              message: errorMessage,
+              variant: 'error',
+            });
+            return Promise.reject(errorMessage);
+          }
+        },
+      }),
     getFiles: (params) =>
       dispatch({
         type: types.GET_FILES,
@@ -67,12 +114,71 @@ export default function useFileActions() {
           }
         },
       }),
-    renameFolder: (params) =>
+    renameFile: (params) =>
       dispatch({
-        type: types.RENAME_FOLDER,
+        type: types.RENAME_FILE,
         payload: async () => {
           try {
-            const res = processResponse(await renameFolder(params));
+            const res = processResponse(await renameFile(params));
+            return Promise.resolve({
+              data: res,
+            });
+          } catch (error) {
+            const errorMessage = processError(error);
+            snackbar.showMessage({
+              message: errorMessage,
+              variant: 'error',
+            });
+            return Promise.reject(errorMessage);
+          }
+        },
+      }),
+
+    uploadFile: (params) =>
+      dispatch({
+        type: types.UPLOAD_FILE,
+        payload: async () => {
+          try {
+            const res = processResponse(await uploadFile(params));
+            return Promise.resolve({
+              data: res.data,
+            });
+          } catch (error) {
+            const errorMessage = processError(error);
+            snackbar.showMessage({
+              message: errorMessage,
+              variant: 'error',
+            });
+            return Promise.reject(errorMessage);
+          }
+        },
+      }),
+    deleteFile: (params) =>
+      dispatch({
+        type: types.DELETE_FILE,
+        payload: async () => {
+          try {
+            const res = processResponse(await deleteFile(params));
+            return Promise.resolve({
+              data: res.data,
+            });
+          } catch (error) {
+            const errorMessage = processError(error);
+            snackbar.showMessage({
+              message: errorMessage,
+              variant: 'error',
+            });
+            return Promise.reject(errorMessage);
+          }
+        },
+      }),
+    getVersion: (params) =>
+      dispatch({
+        type: types.GET_VERSION,
+        payload: async () => {
+          try {
+            const res = processResponse(await getVersion(params));
+            console.log('--->version', res);
             return Promise.resolve({
               data: res.data,
             });
