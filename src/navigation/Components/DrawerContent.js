@@ -26,11 +26,13 @@ function DrawerItem(props) {
     ...restProps
   } = props;
 
+  //TODO: handle active for substack routes
   const active = route === currentRoute;
+
   let drawerIcon;
   if (typeof icon === 'string') {
     drawerIcon = ({color, size}) => (
-      <MaterialCommunityIcons name={icon} color={color} size={size} />
+      <MaterialCommunityIcons {...{name: icon, color, size}} />
     );
   } else if (icon) {
     drawerIcon = icon;
@@ -45,7 +47,10 @@ function DrawerItem(props) {
       {...restProps}
       label={label}
       theme={{
-        colors: {text: '#000', primary: active ? '#fff' : theme.primary},
+        colors: {
+          text: '#000',
+          primary: active ? '#fff' : theme.primary,
+        },
       }}
       onPress={onPress}
       style={active ? styles.activeDrawerItem : {}}

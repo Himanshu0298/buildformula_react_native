@@ -8,7 +8,7 @@ export default function useOtpActions() {
   const dispatch = useDispatch();
   const snackbar = useSnackbar();
   const {otpCheck} = useAuth();
-  const {processError, processResponse} = useResProcessor();
+  const {_err, _res} = useResProcessor();
 
   return {
     sentOtp: (phone) =>
@@ -21,10 +21,10 @@ export default function useOtpActions() {
         type: types.VERIFY_OTP,
         payload: async () => {
           try {
-            const response = processResponse(await otpCheck(data));
+            const response = _res(await otpCheck(data));
             return Promise.resolve({response});
           } catch (error) {
-            const errorMessage = processError(error);
+            const errorMessage = _err(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',

@@ -5,6 +5,7 @@ import {
   Badge,
   Caption,
   Divider,
+  FAB,
   IconButton,
   Menu,
   Subheading,
@@ -61,93 +62,95 @@ function RenderPhase(props) {
           </>
         )}
       </View>
-      <TouchableRipple
-        rippleColor="rgba(0, 0, 0, .1)"
-        onPress={() => navToSubPhases('Lead Procurement')}
-        style={styles.detailsContainer}>
-        <>
-          <View style={styles.detailsTop}>
-            <View style={styles.rowBetween}>
-              <Text style={{fontSize: 15}}>Lead Procurement</Text>
-              <Menu
-                visible={index === menuIndex}
-                contentStyle={{borderRadius: 10}}
-                onDismiss={toggleMenu}
-                anchor={
-                  <IconButton
-                    icon="dots-vertical"
-                    size={18}
-                    onPress={() => toggleMenu(index)}
+      <View style={styles.detailsContainer}>
+        <TouchableRipple
+          disabled={sortable}
+          rippleColor="rgba(0, 0, 0, .1)"
+          onPress={() => navToSubPhases('Lead Procurement')}>
+          <>
+            <View style={styles.detailsTop}>
+              <View style={styles.rowBetween}>
+                <Text style={{fontSize: 15}}>Lead Procurement</Text>
+                <Menu
+                  visible={index === menuIndex}
+                  contentStyle={{borderRadius: 10}}
+                  onDismiss={toggleMenu}
+                  anchor={
+                    <IconButton
+                      icon="dots-vertical"
+                      size={18}
+                      onPress={() => toggleMenu(index)}
+                    />
+                  }>
+                  <Menu.Item
+                    style={styles.menuItem}
+                    icon="pencil"
+                    onPress={() => {}}
+                    title="Rename"
                   />
-                }>
-                <Menu.Item
-                  style={styles.menuItem}
-                  icon="pencil"
-                  onPress={() => {}}
-                  title="Rename"
-                />
-                <Divider />
-                <Menu.Item
-                  style={styles.menuItem}
-                  icon="delete"
-                  onPress={() => {}}
-                  title="Delete"
-                />
-                <Divider />
-                <Menu.Item
-                  style={styles.menuItem}
-                  icon="drag-vertical"
-                  onPress={toggleSortable}
-                  title="Arrange"
-                />
-              </Menu>
-            </View>
-            <View style={styles.rowBetween}>
-              <View style={styles.row}>
-                <Caption>Duration: </Caption>
-                <Text style={styles.value}>20 Days</Text>
+                  <Divider />
+                  <Menu.Item
+                    style={styles.menuItem}
+                    icon="delete"
+                    onPress={() => {}}
+                    title="Delete"
+                  />
+                  <Divider />
+                  <Menu.Item
+                    style={styles.menuItem}
+                    icon="drag-vertical"
+                    onPress={toggleSortable}
+                    title="Arrange"
+                  />
+                </Menu>
               </View>
-              <View style={styles.row}>
-                <Text style={styles.value}>NORMAL</Text>
+              <View style={styles.rowBetween}>
+                <View style={styles.row}>
+                  <Caption>Duration: </Caption>
+                  <Text style={styles.value}>20 Days</Text>
+                </View>
+                <View style={styles.row}>
+                  <Text style={styles.value}>NORMAL</Text>
+                </View>
               </View>
-            </View>
-            <View style={styles.rowBetween}>
-              <View style={styles.row}>
-                <Caption>Start: </Caption>
-                <Text style={styles.value}>
-                  {dayjs().format('DD MMM YYYY')}
-                </Text>
-              </View>
-              <View style={styles.row}>
-                <Caption>Finish: </Caption>
-                <Text style={styles.value}>
-                  {dayjs().format('DD MMM YYYY')}
-                </Text>
+              <View style={styles.rowBetween}>
+                <View style={styles.row}>
+                  <Caption>Start: </Caption>
+                  <Text style={styles.value}>
+                    {dayjs().format('DD MMM YYYY')}
+                  </Text>
+                </View>
+                <View style={styles.row}>
+                  <Caption>Finish: </Caption>
+                  <Text style={styles.value}>
+                    {dayjs().format('DD MMM YYYY')}
+                  </Text>
+                </View>
               </View>
             </View>
-          </View>
-          <Divider />
-          <View style={styles.detailsBottom}>
-            <Caption>Notification:</Caption>
-            <View style={{width: '97%'}}>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                <Chip>
-                  <Caption>Activity title</Caption>
-                </Chip>
-                <Chip>
-                  <Caption>Activity title</Caption>
-                </Chip>
-                <Chip>
-                  <Caption>Activity title</Caption>
-                </Chip>
-                <Chip>
-                  <Caption>Activity title</Caption>
-                </Chip>
-              </ScrollView>
+            <Divider />
+            <View style={styles.detailsBottom}>
+              <Caption>Notification:</Caption>
+              <View style={{width: '97%'}}>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                  <Chip>
+                    <Caption>Activity title</Caption>
+                  </Chip>
+                  <Chip>
+                    <Caption>Activity title</Caption>
+                  </Chip>
+                  <Chip>
+                    <Caption>Activity title</Caption>
+                  </Chip>
+                  <Chip>
+                    <Caption>Activity title</Caption>
+                  </Chip>
+                </ScrollView>
+              </View>
             </View>
-          </View>
-        </>
-      </TouchableRipple>
+          </>
+        </TouchableRipple>
+      </View>
     </View>
   );
 }
@@ -156,17 +159,20 @@ export default function Phases(props) {
   const {navigation} = props;
 
   const [menuIndex, setMenuIndex] = React.useState(false);
-  const [showDialog, setShowDialog] = React.useState(false);
+  const [addDialog, setAddDialog] = React.useState(false);
   const [sortable, setSortable] = React.useState(false);
-
-  const toggleMenu = (v) => setMenuIndex(v);
-  const toggleDialog = () => setShowDialog((v) => !v);
-  const toggleSortable = () => setSortable((v) => !v);
+  const [selectDialog, setSelectDialog] = React.useState(false);
 
   const sortedPhases = useMemo(() => {
     return PHASES;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sortable]);
+
+  const toggleMenu = (v) => setMenuIndex(v);
+  const toggleSortable = () => setSortable((v) => !v);
+  const toggleSelectDialog = () => setSelectDialog((v) => !v);
+  const toggleAddDialog = (v) => setAddDialog(v);
+  const onStateChange = ({open}) => setSelectDialog(open);
 
   const saveSort = () => {
     toggleSortable();
@@ -257,6 +263,28 @@ export default function Phases(props) {
           )}
         />
       )}
+      <FAB.Group
+        open={selectDialog}
+        style={styles.fab}
+        fabStyle={{
+          backgroundColor: selectDialog ? '#fff' : theme.colors.primary,
+        }}
+        icon={selectDialog ? 'window-close' : 'plus'}
+        onPress={toggleSelectDialog}
+        onStateChange={onStateChange}
+        actions={[
+          {
+            label: 'Normal Type',
+            icon: 'plus',
+            onPress: () => toggleAddDialog('normal'),
+          },
+          {
+            label: 'Construction Type',
+            icon: 'star',
+            onPress: () => toggleAddDialog('construction'),
+          },
+        ]}
+      />
     </View>
   );
 }
@@ -293,7 +321,7 @@ const styles = StyleSheet.create({
   },
   detailsContainer: {
     backgroundColor: '#F2F4F5',
-    borderRadius: 6,
+    borderRadius: 10,
     flexGrow: 1,
     margin: 5,
   },
@@ -325,5 +353,9 @@ const styles = StyleSheet.create({
   },
   menuItem: {
     height: 35,
+  },
+  fab: {
+    position: 'absolute',
+    right: 0,
   },
 });

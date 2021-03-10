@@ -1,5 +1,5 @@
 import React, {forwardRef, useEffect, useState} from 'react';
-import {View, ScrollView, TouchableOpacity} from 'react-native';
+import {View, ScrollView, TouchableOpacity, Keyboard} from 'react-native';
 import {Menu, useTheme, TextInput, withTheme} from 'react-native-paper';
 import RenderInput from './RenderInput';
 
@@ -23,7 +23,10 @@ const DropDown = forwardRef((props, ref) => {
   });
   const [showDropDown, setShowDropDown] = useState(false);
 
-  const toggleDropDOwn = () => setShowDropDown((v) => !v);
+  const toggleDropDOwn = () => {
+    Keyboard.dismiss();
+    setShowDropDown((v) => !v);
+  };
 
   const onLayout = (event: LayoutChangeEvent) => {
     setInputLayout(event.nativeEvent.layout);

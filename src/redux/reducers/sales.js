@@ -1,6 +1,4 @@
 import _ from 'lodash';
-import AsyncStorage from '@react-native-community/async-storage';
-import {persistReducer} from 'redux-persist';
 import {
   GET_VISITORS,
   GET_FOLLOWUP_LIST,
@@ -17,12 +15,6 @@ import {
   GET_BANK_LIST,
   SET_TIMER,
 } from './../actions/actionTypes';
-
-const persistConfig = {
-  key: 'sales',
-  storage: AsyncStorage,
-  blacklist: ['loading', 'errorMessage'],
-};
 
 const initialState = {
   loading: false,
@@ -312,4 +304,4 @@ const reducer = (state = initialState, action = {}) => {
   }
 };
 
-export default persistReducer(persistConfig, reducer);
+export default reducer;

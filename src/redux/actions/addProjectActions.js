@@ -7,7 +7,7 @@ import {useSnackbar} from 'components/Atoms/Snackbar';
 export default function useAddProjectActions() {
   const dispatch = useDispatch();
   const snackbar = useSnackbar();
-  const {processError, processResponse} = useResProcessor();
+  const {_err, _res} = useResProcessor();
 
   const {
     updateStructureTypes,
@@ -31,13 +31,13 @@ export default function useAddProjectActions() {
         type: types.CREATE_PROJECT,
         payload: async () => {
           try {
-            const response = processResponse(await createProject(formData));
+            const response = _res(await createProject(formData));
             const {data} = response;
             console.log('-----> data', data);
 
             return Promise.resolve(data);
           } catch (error) {
-            const errorMessage = processError(error);
+            const errorMessage = _err(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',
@@ -51,7 +51,7 @@ export default function useAddProjectActions() {
         type: types.SAVE_STRUCTURE,
         payload: async () => {
           try {
-            const response = processResponse(
+            const response = _res(
               await updateStructureTypes(formData),
             );
             console.log('-----> response', response);
@@ -60,7 +60,7 @@ export default function useAddProjectActions() {
             });
             return Promise.resolve();
           } catch (error) {
-            const errorMessage = processError(error);
+            const errorMessage = _err(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',
@@ -106,7 +106,7 @@ export default function useAddProjectActions() {
             return Promise.resolve();
           } catch (error) {
             console.log('-----> error', error);
-            const errorMessage = processError(error);
+            const errorMessage = _err(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',
@@ -121,12 +121,12 @@ export default function useAddProjectActions() {
         type: types.UPDATE_PAYMENT,
         payload: async () => {
           try {
-            const response = processResponse(await updatePayment(formData));
+            const response = _res(await updatePayment(formData));
             const {data} = response;
 
             return Promise.resolve(data);
           } catch (error) {
-            const errorMessage = processError(error);
+            const errorMessage = _err(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',
@@ -141,14 +141,14 @@ export default function useAddProjectActions() {
         type: types.UPDATE_ADMINS,
         payload: async () => {
           try {
-            const response = processResponse(await updateAdmins(formData));
+            const response = _res(await updateAdmins(formData));
             const {data} = response;
 
             snackbar.showMessage({message: 'Updated Admins Successfully!'});
 
             return Promise.resolve(data);
           } catch (error) {
-            const errorMessage = processError(error);
+            const errorMessage = _err(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',

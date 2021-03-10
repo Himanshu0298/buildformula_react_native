@@ -3,8 +3,7 @@ import thunk from 'redux-thunk';
 import promise from 'redux-promise-middleware';
 import * as types from './actions/actionTypes';
 import reducer from './reducers';
-import {persistStore, persistReducer} from 'redux-persist';
-import AsyncStorage from '@react-native-community/async-storage';
+import {persistStore} from 'redux-persist';
 import Reactotron from '../../ReactotronConfig';
 
 const appReducer = combineReducers(reducer);

@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
   },
   //Errors
   errorContainer: {
-    marginLeft: 25,
+    marginLeft: 15,
   },
   errorStyles: {
     color: 'red',

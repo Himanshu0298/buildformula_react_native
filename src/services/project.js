@@ -12,5 +12,9 @@ export default function useProject() {
     getProjectData: (id) => {
       return instance.get(`/get_project/${id}`, config());
     },
+    getProjectCommonData: (data) => {
+      const params = config({multipart: false});
+      return instance.post('/get_common_info', data, params);
+    },
   };
 }

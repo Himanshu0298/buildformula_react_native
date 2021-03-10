@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {AutoDragSortableView} from 'react-native-drag-sort';
 import {
@@ -20,6 +20,10 @@ import * as Yup from 'yup';
 import {useTranslation} from 'react-i18next';
 import {Formik} from 'formik';
 import RenderInput from 'components/Atoms/RenderInput';
+import {useSelector} from 'react-redux';
+import NoResult from 'components/Atoms/NoResult';
+import useProjectManagementActions from 'redux/actions/projectManagementActions';
+import {useAlert} from 'components/Atoms/Alert';
 
 const ROW_HEIGHT = 50;
 
@@ -28,7 +32,7 @@ const schema = Yup.object().shape({
 });
 
 function AddMilestoneDialog(props) {
-  const {visible, toggleDialog} = props;
+  const {visible, selectedMilestone, toggleDialog, onSubmit} = props;
 
   const {t} = useTranslation();
 
@@ -41,9 +45,11 @@ function AddMilestoneDialog(props) {
         <Formik
           validateOnBlur={false}
           validateOnChange={false}
-          initialValues={{accepted: false}}
+          initialValues={{
+            milestone: selectedMilestone?.title,
+          }}
           validationSchema={schema}
-          onSubmit={async (values) => {}}>
+          onSubmit={(values) => onSubmit(values)}>
           {({values, errors, handleChange, handleBlur, handleSubmit}) => {
             return (
               <View style={styles.dialogContentContainer}>
@@ -64,7 +70,9 @@ function AddMilestoneDialog(props) {
                     contentStyle={{padding: 1}}
                     theme={{roundness: 15}}
                     onPress={handleSubmit}>
-                    <Text theme={secondaryTheme}>{'Save'}</Text>
+                    <Text theme={secondaryTheme}>
+                      {selectedMilestone ? 'Update' : 'Save'}
+                    </Text>
                   </Button>
                 </View>
               </View>
@@ -77,7 +85,7 @@ function AddMilestoneDialog(props) {
 }
 
 function RenderMilestone(props) {
-  const {item, index, menuIndex, toggleMenu} = props;
+  const {item, index, menuIndex, toggleMenu, onDelete, onUpdate} = props;
 
   return (
     <View style={styles.workContainer}>
@@ -97,48 +105,131 @@ function RenderMilestone(props) {
         anchor={
           <IconButton icon="dots-vertical" onPress={() => toggleMenu(index)} />
         }>
-        <Menu.Item icon="pencil" onPress={() => {}} title="Edit" />
+        <Menu.Item icon="pencil" onPress={() => onUpdate(item)} title="Edit" />
         <Divider />
-        <Menu.Item icon="delete" onPress={() => {}} title="Delete" />
+        <Menu.Item
+          icon="delete"
+          onPress={() => onDelete(item.id)}
+          title="Delete"
+        />
       </Menu>
     </View>
   );
 }
 
 function Milestone(props) {
-  const {theme} = props;
+  const {theme, selectedProject, getMilestoneData} = props;
 
-  const [work] = useState([
-    {title: 'Work1'},
-    {title: 'Work2'},
-    {title: 'Work3'},
-    {title: 'Work4'},
-    {title: 'Work5'},
-  ]);
+  const alert = useAlert();
+
+  const {milestones} = useSelector((state) => state.projectManagement);
+
   const [menuIndex, setMenuIndex] = React.useState(false);
   const [showDialog, setShowDialog] = React.useState(false);
+  const [selectedMilestone, setSelectedMilestone] = React.useState();
+
+  const {
+    createLineupEntity,
+    updateLineupEntity,
+    updateMilestoneOrder,
+    deleteLineupEntity,
+  } = useProjectManagementActions();
 
   const toggleMenu = (v) => setMenuIndex(v);
   const toggleDialog = () => setShowDialog((v) => !v);
 
+  const handleSubmit = ({milestone}) => {
+    if (selectedMilestone) {
+      updateLineupEntity({
+        id: selectedMilestone.id,
+        title: milestone,
+        type: 'milestone',
+        project_id: selectedProject.id,
+      }).then(() => {
+        toggleDialog();
+        setSelectedMilestone();
+        getMilestoneData();
+      });
+    } else {
+      createLineupEntity({
+        title: milestone,
+        type: 'milestone',
+        project_id: selectedProject.id,
+      }).then(() => {
+        toggleDialog();
+        setSelectedMilestone();
+        getMilestoneData();
+      });
+    }
+  };
+
+  const handleDragEnd = (fromIndex, toIndex) => {
+    // TODO: update ordering request based on changes in api by nilesh
+    updateMilestoneOrder({
+      id: milestones[fromIndex].id,
+      order_by: toIndex,
+    }).then(() => {
+      getMilestoneData();
+    });
+  };
+
+  const handleDelete = (id) => {
+    toggleMenu();
+    alert.show({
+      title: 'Confirm',
+      message: 'Are you sure you want to delete?',
+      confirmText: 'Delete',
+      onConfirm: () => {
+        deleteLineupEntity({id, type: 'milestone'}).then(() => {
+          getMilestoneData();
+        });
+      },
+    });
+  };
+
+  const handleUpdate = (milestone) => {
+    toggleMenu();
+    toggleDialog();
+    setSelectedMilestone(milestone);
+  };
+
   return (
     <>
-      <AddMilestoneDialog visible={showDialog} toggleDialog={toggleDialog} />
+      <AddMilestoneDialog
+        visible={showDialog}
+        selectedMilestone={selectedMilestone}
+        toggleDialog={toggleDialog}
+        onSubmit={handleSubmit}
+      />
       <View style={styles.container}>
-        <AutoDragSortableView
-          dataSource={work}
-          maxScale={1.03}
-          style={{width: '100%'}}
-          childrenWidth={Layout.window.width}
-          childrenHeight={ROW_HEIGHT}
-          keyExtractor={(_, i) => i.toString()}
-          renderItem={(item, index) => (
-            <RenderMilestone {...{item, index, menuIndex, toggleMenu}} />
-          )}
-          onDataChange={(data) => {
-            console.log('-----> onDataChange', data);
-          }}
-        />
+        {milestones.length ? (
+          <AutoDragSortableView
+            dataSource={milestones}
+            maxScale={1.03}
+            style={{width: '100%'}}
+            childrenWidth={Layout.window.width}
+            childrenHeight={ROW_HEIGHT}
+            keyExtractor={(_, i) => i.toString()}
+            renderItem={(item, index) => (
+              <RenderMilestone
+                {...{
+                  item,
+                  index,
+                  menuIndex,
+                  toggleMenu,
+                  onDelete: handleDelete,
+                  onUpdate: handleUpdate,
+                }}
+              />
+            )}
+            onDataChange={(data) => {
+              console.log('-----> onDataChange', data);
+            }}
+            onDragEnd={handleDragEnd}
+          />
+        ) : (
+          <NoResult />
+        )}
       </View>
       <FAB
         style={[styles.fab, {backgroundColor: theme.colors.primary}]}

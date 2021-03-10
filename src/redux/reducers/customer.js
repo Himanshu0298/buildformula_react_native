@@ -7,6 +7,8 @@ import {
   GET_BANK_DETAILS,
   UPDATE_BANK_DETAILS,
   UPDATE_BANK_FILES,
+  GET_MODIFY_REQUESTS,
+  ADD_MODIFY_REQUEST,
 } from './../actions/actionTypes';
 
 const persistConfig = {
@@ -24,6 +26,7 @@ const initialState = {
   bookingBanks: {},
   bookingPaymentTypes: {},
   bankDetails: {},
+  modifyRequests: [],
 };
 
 const reducer = (state = initialState, action = {}) => {
@@ -89,6 +92,25 @@ const reducer = (state = initialState, action = {}) => {
         errorMessage: action.payload,
       };
 
+    case `${GET_MODIFY_REQUESTS}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${GET_MODIFY_REQUESTS}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+        modifyRequests: payload.lists,
+      };
+    }
+    case `${GET_MODIFY_REQUESTS}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+        errorMessage: action.payload,
+      };
+
     case `${UPDATE_BANK_DETAILS}_PENDING`:
       return {
         ...state,
@@ -113,12 +135,14 @@ const reducer = (state = initialState, action = {}) => {
 
     case `${ADD_CUSTOMER}_PENDING`:
     case `${UPDATE_BANK_FILES}_PENDING`:
+    case `${ADD_MODIFY_REQUEST}_PENDING`:
       return {
         ...state,
         loading: true,
       };
     case `${ADD_CUSTOMER}_FULFILLED`:
     case `${UPDATE_BANK_FILES}_FULFILLED`:
+    case `${ADD_MODIFY_REQUEST}_FULFILLED`:
       return {
         ...state,
         loading: false,
@@ -126,6 +150,7 @@ const reducer = (state = initialState, action = {}) => {
 
     case `${ADD_CUSTOMER}_REJECTED`:
     case `${UPDATE_BANK_FILES}_REJECTED`:
+    case `${ADD_MODIFY_REQUEST}_REJECTED`:
       return {
         ...state,
         loading: false,

@@ -7,7 +7,7 @@ import useCustomerServices from 'services/customer';
 export default function useCustomerActions() {
   const dispatch = useDispatch();
   const snackbar = useSnackbar();
-  const {processError, processResponse} = useResProcessor();
+  const {_err, _res} = useResProcessor();
   const {
     getCustomerDetails,
     getBookingDetails,
@@ -16,6 +16,8 @@ export default function useCustomerActions() {
     updateBankDetails,
     updateBankFiles,
     removeBankFile,
+    getModifyRequests,
+    addModifyRequest,
   } = useCustomerServices();
 
   return {
@@ -24,14 +26,12 @@ export default function useCustomerActions() {
         type: types.GET_CUSTOMER_DATA,
         payload: async () => {
           try {
-            const response = processResponse(
-              await getCustomerDetails(formData),
-            );
+            const response = _res(await getCustomerDetails(formData));
             const {data} = response;
 
             return Promise.resolve(data);
           } catch (error) {
-            const errorMessage = processError(error);
+            const errorMessage = _err(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',
@@ -45,12 +45,12 @@ export default function useCustomerActions() {
         type: types.GET_BOOKING_DATA,
         payload: async () => {
           try {
-            const response = processResponse(await getBookingDetails(params));
+            const response = _res(await getBookingDetails(params));
             const {data} = response;
 
             return Promise.resolve(data);
           } catch (error) {
-            const errorMessage = processError(error);
+            const errorMessage = _err(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',
@@ -64,12 +64,12 @@ export default function useCustomerActions() {
         type: types.GET_BANK_DETAILS,
         payload: async () => {
           try {
-            const response = processResponse(await getBankDetails(params));
+            const response = _res(await getBankDetails(params));
             const {data} = response;
 
             return Promise.resolve(data);
           } catch (error) {
-            const errorMessage = processError(error);
+            const errorMessage = _err(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',
@@ -83,12 +83,12 @@ export default function useCustomerActions() {
         type: types.ADD_CUSTOMER,
         payload: async () => {
           try {
-            const response = processResponse(await addCustomer(formData));
+            const response = _res(await addCustomer(formData));
             const {data} = response;
 
             return Promise.resolve(data);
           } catch (error) {
-            const errorMessage = processError(error);
+            const errorMessage = _err(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',
@@ -102,7 +102,7 @@ export default function useCustomerActions() {
         type: types.UPDATE_BANK_DETAILS,
         payload: async () => {
           try {
-            const response = processResponse(await updateBankDetails(formData));
+            const response = _res(await updateBankDetails(formData));
             const {data} = response;
 
             snackbar.showMessage({
@@ -112,7 +112,7 @@ export default function useCustomerActions() {
 
             return Promise.resolve(data);
           } catch (error) {
-            const errorMessage = processError(error);
+            const errorMessage = _err(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',
@@ -126,12 +126,12 @@ export default function useCustomerActions() {
         type: types.UPDATE_BANK_FILES,
         payload: async () => {
           try {
-            const response = processResponse(await updateBankFiles(formData));
+            const response = _res(await updateBankFiles(formData));
             const {data} = response;
 
             return Promise.resolve(data);
           } catch (error) {
-            const errorMessage = processError(error);
+            const errorMessage = _err(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',
@@ -145,12 +145,48 @@ export default function useCustomerActions() {
         type: types.UPDATE_BANK_FILES,
         payload: async () => {
           try {
-            const response = processResponse(await removeBankFile(params));
+            const response = _res(await removeBankFile(params));
             const {data} = response;
 
             return Promise.resolve(data);
           } catch (error) {
-            const errorMessage = processError(error);
+            const errorMessage = _err(error);
+            snackbar.showMessage({
+              message: errorMessage,
+              variant: 'error',
+            });
+            return Promise.reject(errorMessage);
+          }
+        },
+      }),
+    getModifyRequests: (params) =>
+      dispatch({
+        type: types.GET_MODIFY_REQUESTS,
+        payload: async () => {
+          try {
+            const {data} = _res(await getModifyRequests(params));
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const errorMessage = _err(error);
+            snackbar.showMessage({
+              message: errorMessage,
+              variant: 'error',
+            });
+            return Promise.reject(errorMessage);
+          }
+        },
+      }),
+    addModifyRequest: (params) =>
+      dispatch({
+        type: types.ADD_MODIFY_REQUEST,
+        payload: async () => {
+          try {
+            const {data} = _res(await addModifyRequest(params));
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const errorMessage = _err(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',

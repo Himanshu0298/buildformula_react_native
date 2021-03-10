@@ -9,11 +9,12 @@ export default function ProjectDashboard(props) {
   const {route} = props;
   const {project} = route?.params || {};
 
-  const {getProjectData} = useProjectActions();
+  const {getProjectData, getProjectCommonData} = useProjectActions();
   const {loading} = useSelector((state) => state.project);
 
   useEffect(() => {
     getProjectData(project.id);
+    getProjectCommonData(project.id);
   }, [project]);
 
   return (
