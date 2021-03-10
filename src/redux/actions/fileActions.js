@@ -17,7 +17,7 @@ export default function useFileActions() {
     deleteFile,
     getVersion,
   } = useFiles();
-  const {processError, processResponse} = useResProcessor();
+  const {_err, _res} = useResProcessor();
   const snackbar = useSnackbar();
 
   return {
@@ -26,11 +26,11 @@ export default function useFileActions() {
         type: types.GET_FOLDERS,
         payload: async () => {
           try {
-            const res = processResponse(await getFolders(params));
+            const res = _res(await getFolders(params));
 
             return Promise.resolve({data: res.data, index_of: params.index_of});
           } catch (error) {
-            const errorMessage = processError(error);
+            const errorMessage = _err(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',
@@ -44,11 +44,11 @@ export default function useFileActions() {
         type: types.CREATE_FOLDER,
         payload: async () => {
           try {
-            const res = processResponse(await createFolder(params));
+            const res = _res(await createFolder(params));
 
             return Promise.resolve(res.data);
           } catch (error) {
-            const errorMessage = processError(error);
+            const errorMessage = _err(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',
@@ -62,12 +62,12 @@ export default function useFileActions() {
         type: types.RENAME_FOLDER,
         payload: async () => {
           try {
-            const res = processResponse(await renameFolder(params));
+            const res = _res(await renameFolder(params));
             return Promise.resolve({
               data: res.data,
             });
           } catch (error) {
-            const errorMessage = processError(error);
+            const errorMessage = _err(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',
@@ -81,11 +81,11 @@ export default function useFileActions() {
         type: types.DELETE_FOLDER,
         payload: async () => {
           try {
-            const res = processResponse(await deleteFolder(params));
+            const res = _res(await deleteFolder(params));
             console.log('--->delete', res);
             return Promise.resolve(res);
           } catch (error) {
-            const errorMessage = processError(error);
+            const errorMessage = _err(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',
@@ -99,13 +99,13 @@ export default function useFileActions() {
         type: types.GET_FILES,
         payload: async () => {
           try {
-            const res = processResponse(await getFiles(params));
+            const res = _res(await getFiles(params));
             return Promise.resolve({
               data: res.data,
               folder_id: params.folder_id,
             });
           } catch (error) {
-            const errorMessage = processError(error);
+            const errorMessage = _err(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',
@@ -119,12 +119,12 @@ export default function useFileActions() {
         type: types.RENAME_FILE,
         payload: async () => {
           try {
-            const res = processResponse(await renameFile(params));
+            const res = _res(await renameFile(params));
             return Promise.resolve({
               data: res,
             });
           } catch (error) {
-            const errorMessage = processError(error);
+            const errorMessage = _err(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',
@@ -139,12 +139,12 @@ export default function useFileActions() {
         type: types.UPLOAD_FILE,
         payload: async () => {
           try {
-            const res = processResponse(await uploadFile(params));
+            const res = _res(await uploadFile(params));
             return Promise.resolve({
               data: res.data,
             });
           } catch (error) {
-            const errorMessage = processError(error);
+            const errorMessage = _err(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',
@@ -158,12 +158,12 @@ export default function useFileActions() {
         type: types.DELETE_FILE,
         payload: async () => {
           try {
-            const res = processResponse(await deleteFile(params));
+            const res = _res(await deleteFile(params));
             return Promise.resolve({
               data: res.data,
             });
           } catch (error) {
-            const errorMessage = processError(error);
+            const errorMessage = _err(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',
@@ -177,13 +177,13 @@ export default function useFileActions() {
         type: types.GET_VERSION,
         payload: async () => {
           try {
-            const res = processResponse(await getVersion(params));
+            const res = _res(await getVersion(params));
             console.log('--->version', res);
             return Promise.resolve({
               data: res.data,
             });
           } catch (error) {
-            const errorMessage = processError(error);
+            const errorMessage = _err(error);
             snackbar.showMessage({
               message: errorMessage,
               variant: 'error',

@@ -19,7 +19,6 @@ import {
   Divider,
   Button,
   Portal,
-  Provider,
 } from 'react-native-paper';
 import useFileActions from 'redux/actions/fileActions';
 import Modal from 'react-native-modal';
@@ -482,11 +481,9 @@ function RenderFolder(props) {
   return (
     <View style={styles.sectionContainer}>
       <TouchableOpacity
+        style={{flexGrow: 1}}
         onPress={() => {
-          navigation.push('FilesHome', {
-            folder_name,
-            index_of: folder.id,
-          });
+          navigation.push('FilesHome', {folder_name, index_of: folder.id});
         }}>
         <View style={styles.sectionContainer}>
           <Image source={FolderIcon} style={styles.PdfIcon} />
@@ -497,16 +494,14 @@ function RenderFolder(props) {
           </View>
         </View>
       </TouchableOpacity>
-      <View>
-        <IconButton
-          icon="dots-vertical"
-          onPress={() => {
-            toggleMenu(folderIndex);
-            setModalContentType('menu');
-            setModalContent(folder);
-          }}
-        />
-      </View>
+      <IconButton
+        icon="dots-vertical"
+        onPress={() => {
+          toggleMenu(folderIndex);
+          setModalContentType('menu');
+          setModalContent(folder);
+        }}
+      />
     </View>
   );
 }
@@ -523,16 +518,14 @@ function RenderFile({
 
   return (
     <View style={styles.recentFiles}>
-      <TouchableOpacity onPress={() => {}}>
-        <View style={styles.sectionContainer}>
-          <Image source={PdfIcon} style={styles.PdfIcon} />
-          <View>
-            <Text style={(styles.verticalFlex, styles.text)} numberOfLines={2}>
-              {file_name}
-            </Text>
-          </View>
+      <View style={styles.sectionContainer}>
+        <Image source={PdfIcon} style={styles.PdfIcon} />
+        <View>
+          <Text style={(styles.verticalFlex, styles.text)} numberOfLines={2}>
+            {file_name}
+          </Text>
         </View>
-      </TouchableOpacity>
+      </View>
       <View style={styles.sectionContainer}>
         <View>
           <Text style={styles.date}>
@@ -886,7 +879,6 @@ const styles = StyleSheet.create({
   sectionContainer: {
     alignItems: 'center',
     flexDirection: 'row',
-    justifyContent: 'space-between',
   },
   recentFiles: {
     flexDirection: 'row',
