@@ -159,10 +159,7 @@ function Login(props) {
 
   useEffect(() => {
     if (loginError) {
-      snackbar.showMessage({
-        message: loginError,
-        variant: 'error',
-      });
+      snackbar.showMessage({message: loginError, variant: 'error'});
     }
   }, [loginError]);
 

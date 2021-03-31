@@ -14,26 +14,11 @@ export const MAX_FLOORS = 100;
 export const MAX_UNITS = 50;
 
 export const DEFAULT_STRUCTURE = {
-  1: {
-    towerCount: undefined,
-    towers: {},
-  },
-  2: {
-    towerCount: undefined,
-    towers: {},
-  },
-  3: {
-    towerCount: undefined,
-    towers: {},
-  },
-  4: {
-    unitCount: undefined,
-    units: {},
-  },
-  5: {
-    unitCount: undefined,
-    units: {},
-  },
+  1: {towerCount: undefined, towers: {}},
+  2: {towerCount: undefined, towers: {}},
+  3: {towerCount: undefined, towers: {}},
+  4: {unitCount: undefined, units: {}},
+  5: {unitCount: undefined, units: {}},
 };
 
 export const STRUCTURE_TYPE_LABELS = {
