@@ -49,6 +49,18 @@ export const UPDATE_BANK_FILES = 'UPDATE_BANK_FILES';
 export const GET_MODIFY_REQUESTS = 'GET_MODIFY_REQUESTS';
 export const ADD_MODIFY_REQUEST = 'ADD_MODIFY_REQUEST';
 
+//For Files
+
+export const GET_FOLDERS = 'GET_FOLDERS';
+export const CREATE_FOLDER = 'CREATE_FOLDER';
+export const RENAME_FOLDER = 'RENAME_FOLDER';
+export const DELETE_FOLDER = 'DELETE_FOLDER';
+export const GET_FILES = 'GET_FILES';
+export const UPLOAD_FILE = 'UPLOAD_FILE';
+export const DELETE_FILE = 'DELETE_FILE';
+export const GET_VERSION = 'GET_VERSION';
+export const RENAME_FILE = 'RENAME_FILE';
+
 //For Project Management
 export const GET_WORKS = 'GET_WORKS';
 export const GET_WORK_CATEGORIES = 'GET_WORK_CATEGORIES';

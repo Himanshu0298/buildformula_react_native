@@ -102,7 +102,7 @@ function RenderContent(props) {
             label={t('passwordLabel')}
             ref={passwordRef}
             containerStyles={{marginTop: 20}}
-            secureTextEntry={true}
+            secureTextEntry={!showPassword}
             value={values.password}
             onChangeText={handleChange('password')}
             onBlur={handleBlur('password')}
@@ -159,10 +159,7 @@ function Login(props) {
 
   useEffect(() => {
     if (loginError) {
-      snackbar.showMessage({
-        message: loginError,
-        variant: 'error',
-      });
+      snackbar.showMessage({message: loginError, variant: 'error'});
     }
   }, [loginError]);
 

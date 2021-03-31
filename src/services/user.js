@@ -13,7 +13,7 @@ export default function useAuth() {
       return instance.post('/otp_check', data, config({auth: false}));
     },
     updateUser: (data) => {
-      return instance.post('/user_common', data, config({multipart: true}));
+      return instance.post('/user_common', data, config());
     },
   };
 }
