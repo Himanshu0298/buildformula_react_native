@@ -34,7 +34,11 @@ export default function useSalesServices() {
       return instance.post('/get_locked_units', data, config());
     },
     lockUnit: (data) => {
-      return instance.post('/set_locked_units', data, config());
+      return instance.post(
+        '/set_locked_units',
+        data,
+        config({multipart: false}),
+      );
     },
     createBooking: (data) => {
       return instance.post(

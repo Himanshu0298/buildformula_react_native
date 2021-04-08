@@ -19,6 +19,7 @@ import {
   Divider,
   Button,
   Portal,
+  Caption,
 } from 'react-native-paper';
 import useFileActions from 'redux/actions/fileActions';
 import Modal from 'react-native-modal';
@@ -547,6 +548,14 @@ function RenderFile({
   );
 }
 
+function NoResult({title}) {
+  return (
+    <View style={styles.noResultContainer}>
+      <Caption>{title}</Caption>
+    </View>
+  );
+}
+
 export default function Files(props) {
   const {route, navigation} = props;
   const {folder_name, index_of: folderDepth = 0} = route?.params || {};
@@ -575,8 +584,8 @@ export default function Files(props) {
   const [createDialogueView, setCreateDialogueView] = React.useState(false);
   const [selectedUploadFile, setSelectedUploadFile] = React.useState();
 
-  const filteredFolders = folders?.[folderDepth];
-  const filteredFiles = files?.[folderDepth];
+  const filteredFolders = folders?.[folderDepth] || [];
+  const filteredFiles = files?.[folderDepth] || [];
 
   React.useEffect(() => {
     getFolders({
@@ -609,6 +618,7 @@ export default function Files(props) {
       )
       .then((res) => setCreateDialogueView());
   };
+
   const renameFolderHandler = (name, id, type) => {
     if (type === 'folder') {
       renameFolder({
@@ -625,7 +635,6 @@ export default function Files(props) {
         )
         .then((res) => setCreateDialogueView());
     } else {
-      console.log('--->');
       renameFile({
         file_id: id,
         project_id: selectedProject.id,
@@ -706,8 +715,9 @@ export default function Files(props) {
         ) : (
           <View />
         )}
-        {filteredFolders ? (
-          <Subheading style={styles.Subheading}>Folders</Subheading>
+        <Subheading style={styles.Subheading}>Folders</Subheading>
+        {filteredFolders?.length === 0 ? (
+          <NoResult title="No Folders Found" />
         ) : null}
         <View>
           {filteredFolders?.map((folder, index) => (
@@ -724,8 +734,9 @@ export default function Files(props) {
             />
           ))}
         </View>
-        {filteredFiles ? (
-          <Subheading style={styles.Subheading}>Files</Subheading>
+        <Subheading style={styles.Subheading}>Files</Subheading>
+        {filteredFolders?.length === 0 ? (
+          <NoResult title="No Files Found" />
         ) : null}
         <View>
           {filteredFiles?.map((file, index) => (
@@ -781,7 +792,6 @@ export default function Files(props) {
           },
         ]}
       />
-      {console.log('--->!isNaN(menuId)', !isNaN(menuId))}
       <Modal
         isVisible={!isNaN(menuId)}
         backdropOpacity={0.4}
@@ -976,5 +986,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingBottom: 15,
+  },
+  noResultContainer: {
+    alignItems: 'center',
+    height: 100,
   },
 });

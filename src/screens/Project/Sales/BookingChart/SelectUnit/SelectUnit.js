@@ -72,10 +72,7 @@ export default function SelectUnit(props) {
   };
 
   const onSelectUnit = (index, unit) => {
-    const formData = new FormData();
-    formData.append('unit_id', unit.unitId);
-
-    lockUnit(formData).then(() =>
+    lockUnit({unit_id: unit.unitId, project_id: selectedProject.id}).then(() =>
       toggleTimer({showTimer: true, startTime: new Date(), time: 1800}),
     );
 
