@@ -26,6 +26,9 @@ export default function useAddProjectActions() {
 
     resetStructure: () => dispatch({type: types.RESET_STRUCTURE}),
 
+    setProjectData: (payload) =>
+      dispatch({type: types.SET_PROJECT_DATA, payload}),
+
     createProject: (formData) =>
       dispatch({
         type: types.CREATE_PROJECT,
@@ -51,9 +54,7 @@ export default function useAddProjectActions() {
         type: types.SAVE_STRUCTURE,
         payload: async () => {
           try {
-            const response = _res(
-              await updateStructureTypes(formData),
-            );
+            const response = _res(await updateStructureTypes(formData));
             console.log('-----> response', response);
             snackbar.showMessage({
               message: 'Updated Project Structure!',

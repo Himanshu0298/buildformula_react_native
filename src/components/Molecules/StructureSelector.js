@@ -131,11 +131,11 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   apartment: {
-    width: Layout.window.width * 0.2,
-    height: Layout.window.width * 0.33,
+    width: Layout.window.width * 0.28,
+    height: Layout.window.width * 0.28,
   },
   shop: {
-    width: Layout.window.width * 0.25,
+    width: Layout.window.width * 0.28,
     height: Layout.window.width * 0.25,
   },
   office: {
@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
   },
   plot: {
-    width: Layout.window.width * 0.3,
+    width: Layout.window.width * 0.22,
     height: Layout.window.width * 0.18,
   },
 });

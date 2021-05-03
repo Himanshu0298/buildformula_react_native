@@ -27,6 +27,10 @@ const schema = Yup.object().shape({
   email: Yup.string('Invalid').email('Invalid').required('Required'),
   phone: Yup.number('Invalid').required('Required'),
   occupation: Yup.string('Invalid').required('Required'),
+  occupation_input: Yup.string('Invalid').when('occupation', {
+    is: 'Other',
+    then: Yup.string('Invalid').required('Required'),
+  }),
   current_locality: Yup.string('Invalid').required('Required'),
   budget_from: Yup.number('Invalid').required('Required'),
   budget_to: Yup.number('Invalid').required('Required'),
@@ -50,6 +54,7 @@ function PersonalTab({
   const emailRef = React.useRef();
   const phoneRef = React.useRef();
   const occupationRef = React.useRef();
+  const occupationInputRef = React.useRef();
   const localityRef = React.useRef();
 
   return (
@@ -131,9 +136,25 @@ function PersonalTab({
             error={errors.occupation}
             onSelect={(value) => {
               setFieldValue('occupation', value);
-              localityRef && localityRef.current.focus();
+              if (value === 'Other') {
+                occupationInputRef?.current?.focus();
+              } else {
+                localityRef?.current?.focus();
+              }
             }}
           />
+          {values.occupation === 'Other' ? (
+            <RenderInput
+              ref={occupationInputRef}
+              name="occupation_input"
+              label={t('label_other_occupation')}
+              containerStyles={styles.input}
+              value={values.occupation_input}
+              onChangeText={handleChange('occupation_input')}
+              onBlur={handleBlur('occupation_input')}
+              error={errors.occupation_input}
+            />
+          ) : null}
           <RenderInput
             ref={localityRef}
             returnKeyType="done"
@@ -385,6 +406,7 @@ function RenderForm({formikProps, user, ...restProps}) {
         errors.last_name ||
         errors.phone ||
         errors.occupation ||
+        errors.occupation_input ||
         errors.current_locality) &&
       selectedTab === 1
     ) {
@@ -476,9 +498,17 @@ function AddVisitor(props) {
                 'follow_up_time',
                 dayjs(values.follow_up_time).format('HH:mm'),
               );
+              formData.append(
+                'occupation',
+                values.occupation === 'Other'
+                  ? values.occupation_input
+                  : values.occupation,
+              );
 
               delete values.follow_up_date;
               delete values.follow_up_time;
+              delete values.occupation;
+              delete values.occupation_input;
 
               Object.keys(values).map((key) => {
                 formData.append(key, values[key]);

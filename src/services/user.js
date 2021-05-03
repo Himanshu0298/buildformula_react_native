@@ -7,7 +7,11 @@ export default function useAuth() {
       return instance.post('/login', data, config({auth: false}));
     },
     signUp: (data) => {
-      return instance.post('/register', data, config({auth: false}));
+      return instance.post(
+        '/register',
+        data,
+        config({auth: false, multipart: false}),
+      );
     },
     otpCheck: (data) => {
       return instance.post('/otp_check', data, config({auth: false}));

@@ -30,9 +30,11 @@ function LanguageSelect(props) {
   const {i18n} = useTranslation();
   const {setAppLanguage} = useAppActions();
 
-  const {language} = useSelector((state) => state.app);
+  const {language = 'en'} = useSelector((state) => state.app);
 
   useEffect(() => {
+    //TODO: Remove this when language screen is to be enabled agaian
+    selectLanguage('en');
     if (language) {
       i18n.changeLanguage(language);
     }

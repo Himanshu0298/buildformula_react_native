@@ -5,6 +5,7 @@ import {
   CREATE_PROJECT,
   UPDATE_ADMINS,
   UPDATE_PAYMENT,
+  SET_PROJECT_DATA,
 } from '../actions/actionTypes';
 import _ from 'lodash';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -42,6 +43,12 @@ const reducer = (state = initialState, action = {}) => {
     case RESET_STRUCTURE:
       return {
         ...initialState,
+      };
+
+    case SET_PROJECT_DATA:
+      return {
+        ...state,
+        project: payload,
       };
 
     case UPDATE_LOCAL_STRUCTURE:

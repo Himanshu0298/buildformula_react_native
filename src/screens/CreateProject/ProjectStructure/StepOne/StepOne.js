@@ -94,8 +94,6 @@ function StepOne(props) {
     (state) => state.addProject,
   );
 
-  console.log('-----> structureTypes', structureTypes);
-
   const updateTypes = (type) => {
     const types = _.cloneDeep(structureTypes);
     types[type] = !types[type];
@@ -123,9 +121,7 @@ function StepOne(props) {
         .filter((key) => structureTypes[key])
         .join();
 
-      const formData = new FormData();
-      formData.append('project_id', project.project_id);
-      formData.append('project_types', types);
+      const data = {project_id: project.id, project_types: types};
 
       const updatedStructure = {};
       selectedTypes.map((type) => {
@@ -138,7 +134,7 @@ function StepOne(props) {
 
       updateStructure({structure: updatedStructure});
 
-      updateStructureTypes(formData).then(() => {
+      updateStructureTypes(data).then(() => {
         navigation.navigate('ProjectStructureStepTwo');
       });
     }
@@ -210,11 +206,11 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   apartment: {
-    width: Layout.window.width * 0.2,
-    height: Layout.window.width * 0.33,
+    width: Layout.window.width * 0.28,
+    height: Layout.window.width * 0.28,
   },
   shop: {
-    width: Layout.window.width * 0.25,
+    width: Layout.window.width * 0.28,
     height: Layout.window.width * 0.25,
   },
   office: {
@@ -226,7 +222,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
   },
   plot: {
-    width: Layout.window.width * 0.3,
+    width: Layout.window.width * 0.22,
     height: Layout.window.width * 0.18,
   },
   button: {

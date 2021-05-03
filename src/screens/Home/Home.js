@@ -26,6 +26,7 @@ import LottieView from 'lottie-react-native';
 import waiting from 'assets/animation/waiting.json';
 import {COLORS} from 'utils/constant';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import useAddProjectActions from 'redux/actions/addProjectActions';
 
 const TABS = ['Developer', 'Supplier', 'Customer'];
 const IMAGES = {
@@ -105,20 +106,27 @@ function Home(props) {
   const [selectedTab, setSelectedTab] = useState(0);
 
   const {loading, projects} = useSelector((state) => state.project);
+  const {developers, suppliers, customers} = projects;
 
   const {getProjects} = useProjectActions();
+  const {setProjectData} = useAddProjectActions();
 
   useEffect(() => {
     getProjects().then(({value}) => {
-      if (value.length === 0) {
+      if (value.developers.length === 0) {
         navigation.navigate('ProjectCreationStepOne');
       }
     });
   }, []);
 
-  const projectsData = [projects, [], []];
+  const projectsData = [developers, suppliers, customers];
 
   const handleOnPress = (project) => {
+    if (project.is_completed === 'N') {
+      setProjectData(project);
+      navigation.navigate('ProjectStructureStepOne');
+      return;
+    }
     if (project.project_approved === 'Y') {
       navigation.navigate('ProjectDashboard', {
         screen: 'ProjectDashboard',
@@ -153,19 +161,21 @@ function Home(props) {
         <View style={styles.headerContainer}>
           <RenderHeader theme={theme} />
           {/* TODO: update tab implementation */}
-          <MaterialTabs
-            items={TABS}
-            selectedIndex={selectedTab}
-            onChange={setSelectedTab}
-            barColor="#fff"
-            indicatorColor={theme.colors.primary}
-            inactiveTextColor={'#919191'}
-            activeTextColor={theme.colors.primary}
-            uppercase={false}
-            textStyle={{
-              fontFamily: 'Nunito-Regular',
-            }}
-          />
+          {projects?.suppliers?.length || projects?.customers?.length ? (
+            <MaterialTabs
+              items={TABS}
+              selectedIndex={selectedTab}
+              onChange={setSelectedTab}
+              barColor="#fff"
+              indicatorColor={theme.colors.primary}
+              inactiveTextColor={'#919191'}
+              activeTextColor={theme.colors.primary}
+              uppercase={false}
+              textStyle={{
+                fontFamily: 'Nunito-Regular',
+              }}
+            />
+          ) : null}
         </View>
         {projectsData[selectedTab].length > 0 ? (
           <ScrollView

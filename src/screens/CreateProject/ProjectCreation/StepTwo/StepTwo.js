@@ -36,6 +36,9 @@ const schema = Yup.object().shape({
     .matches(PHONE_REGEX, 'phone is not valid')
     .min(10, 'to short')
     .max(10, 'to long'),
+  project_state: Yup.string().required('state is required'),
+  project_city: Yup.string().required('city is required'),
+  project_pin: Yup.string().required('pin is required'),
 });
 
 function StepTwo(props) {
@@ -54,6 +57,9 @@ function StepTwo(props) {
   const websiteRef = React.useRef();
   const emailRef = React.useRef();
   const phoneRef = React.useRef();
+  const stateRef = React.useRef();
+  const cityRef = React.useRef();
+  const pinRef = React.useRef();
 
   return (
     <SafeAreaView style={{flex: 1}}>
@@ -81,6 +87,9 @@ function StepTwo(props) {
             formData.append('project_email', values.project_email);
             formData.append('project_phone', values.project_phone);
             formData.append('project_address', values.project_address);
+            formData.append('project_state', values.project_state);
+            formData.append('project_city', values.project_city);
+            formData.append('project_pin', values.project_pin);
             formData.append('rera_image', values.rera_image);
             formData.append('company_gst', stepOneData.company_gst);
             formData.append('company_name', stepOneData.company_name);
@@ -115,21 +124,8 @@ function StepTwo(props) {
                   value={values.project_name}
                   onChangeText={handleChange('project_name')}
                   onBlur={handleBlur('project_name')}
-                  onSubmitEditing={() => addressRef?.current.focus()}
+                  onSubmitEditing={() => reraRef?.current.focus()}
                   error={errors.project_name}
-                />
-                <RenderInput
-                  name="project_address"
-                  label={t('projectAddress')}
-                  numberOfLines={4}
-                  multiline
-                  ref={addressRef}
-                  containerStyles={styles.input}
-                  value={values.project_address}
-                  onChangeText={handleChange('project_address')}
-                  onBlur={handleBlur('project_address')}
-                  returnKeyType="none"
-                  error={errors.project_address}
                 />
                 <FileInput
                   name="project_rera"
@@ -152,19 +148,8 @@ function StepTwo(props) {
                   value={values.project_website}
                   onChangeText={handleChange('project_website')}
                   onBlur={handleBlur('project_website')}
-                  onSubmitEditing={() => emailRef?.current.focus()}
-                  error={errors.project_website}
-                />
-                <RenderInput
-                  name="project_email"
-                  label={t('projectEmail')}
-                  ref={emailRef}
-                  containerStyles={styles.input}
-                  value={values.project_email}
-                  onChangeText={handleChange('project_email')}
-                  onBlur={handleBlur('project_email')}
                   onSubmitEditing={() => phoneRef?.current.focus()}
-                  error={errors.project_email}
+                  error={errors.project_website}
                 />
                 <RenderInput
                   name="project_phone"
@@ -175,8 +160,7 @@ function StepTwo(props) {
                   value={values.project_phone}
                   onChangeText={handleChange('project_phone')}
                   onBlur={handleBlur('project_phone')}
-                  returnKeyType="done"
-                  onSubmitEditing={handleSubmit}
+                  onSubmitEditing={() => emailRef?.current.focus()}
                   error={errors.project_phone}
                   left={
                     <TextInput.Affix
@@ -188,6 +172,65 @@ function StepTwo(props) {
                       }}
                     />
                   }
+                />
+                <RenderInput
+                  name="project_email"
+                  label={t('projectEmail')}
+                  ref={emailRef}
+                  containerStyles={styles.input}
+                  value={values.project_email}
+                  onChangeText={handleChange('project_email')}
+                  onBlur={handleBlur('project_email')}
+                  onSubmitEditing={() => addressRef?.current.focus()}
+                  error={errors.project_email}
+                />
+                <RenderInput
+                  name="project_address"
+                  label={t('projectAddress')}
+                  numberOfLines={4}
+                  multiline
+                  ref={addressRef}
+                  containerStyles={styles.input}
+                  value={values.project_address}
+                  onChangeText={handleChange('project_address')}
+                  onBlur={handleBlur('project_address')}
+                  returnKeyType="none"
+                  error={errors.project_address}
+                />
+                <RenderInput
+                  name="project_state"
+                  label={t('label_project_state')}
+                  ref={stateRef}
+                  containerStyles={styles.input}
+                  value={values.project_state}
+                  onChangeText={handleChange('project_state')}
+                  onBlur={handleBlur('project_state')}
+                  onSubmitEditing={() => cityRef?.current.focus()}
+                  error={errors.project_state}
+                />
+                <RenderInput
+                  name="project_city"
+                  label={t('label_project_city')}
+                  ref={cityRef}
+                  containerStyles={styles.input}
+                  value={values.project_city}
+                  onChangeText={handleChange('project_city')}
+                  onBlur={handleBlur('project_city')}
+                  onSubmitEditing={() => pinRef?.current.focus()}
+                  error={errors.project_city}
+                />
+                <RenderInput
+                  name="project_pin"
+                  label={t('label_project_pin')}
+                  ref={pinRef}
+                  keyboardType="number-pad"
+                  containerStyles={styles.input}
+                  value={values.project_pin}
+                  onChangeText={handleChange('project_pin')}
+                  onBlur={handleBlur('project_pin')}
+                  returnKeyType="done"
+                  onSubmitEditing={handleSubmit}
+                  error={errors.project_pin}
                 />
               </View>
               <View style={styles.button}>

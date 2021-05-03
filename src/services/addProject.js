@@ -7,7 +7,11 @@ export default function useAddProject() {
       return instance.post('/project/create', data, config());
     },
     updateStructureTypes: (data) => {
-      return instance.post('/project/update_types', data, config());
+      return instance.post(
+        '/project/update_types',
+        data,
+        config({multipart: false}),
+      );
     },
     saveTowers: (data) => {
       return instance.post(
@@ -26,7 +30,11 @@ export default function useAddProject() {
       return instance.post('/project/update_project_payment', data, config());
     },
     updateAdmins: (data) => {
-      return instance.post('/project/update_project_admins', data, config());
+      return instance.post(
+        '/project/update_project_admins',
+        data,
+        config({multipart: false}),
+      );
     },
   };
 }

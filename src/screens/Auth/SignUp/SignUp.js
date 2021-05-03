@@ -159,49 +159,53 @@ function RenderContent(props) {
           onSubmitEditing={() => passwordRef?.current.focus()}
           error={errors.email}
         />
-        <CustomInput
-          name="password"
-          label={t('passwordLabel')}
-          containerStyles={styles.inputStyles}
-          ref={passwordRef}
-          value={values.password}
-          onChangeText={handleChange('password')}
-          onBlur={handleBlur('password')}
-          placeholder={t('msgBlankPassword')}
-          autoCapitalize="none"
-          returnKeyType={'next'}
-          secureTextEntry={!showPass}
-          onSubmitEditing={() => cnfPassRef?.current.focus()}
-          error={errors.password}
-          right={
-            <TextInput.Icon
-              theme={secondaryTheme}
-              name={showPass ? 'eye-off' : 'eye'}
-              onPress={() => toggleShowPass((v) => !v)}
+        {!adminSignUp ? (
+          <>
+            <CustomInput
+              name="password"
+              label={t('passwordLabel')}
+              containerStyles={styles.inputStyles}
+              ref={passwordRef}
+              value={values.password}
+              onChangeText={handleChange('password')}
+              onBlur={handleBlur('password')}
+              placeholder={t('msgBlankPassword')}
+              autoCapitalize="none"
+              returnKeyType={'next'}
+              secureTextEntry={!showPass}
+              onSubmitEditing={() => cnfPassRef?.current.focus()}
+              error={errors.password}
+              right={
+                <TextInput.Icon
+                  theme={secondaryTheme}
+                  name={showPass ? 'eye-off' : 'eye'}
+                  onPress={() => toggleShowPass((v) => !v)}
+                />
+              }
             />
-          }
-        />
-        <CustomInput
-          name="confirmPassword"
-          label={t('cnfPasswordLabel')}
-          containerStyles={styles.inputStyles}
-          ref={cnfPassRef}
-          value={values.confirmPassword}
-          onChangeText={handleChange('confirmPassword')}
-          onBlur={handleBlur('confirmPassword')}
-          placeholder={t('msgBlankCnfPassword')}
-          autoCapitalize="none"
-          returnKeyType={'done'}
-          error={errors.confirmPassword}
-          secureTextEntry={!showCnfPass}
-          right={
-            <TextInput.Icon
-              theme={secondaryTheme}
-              name={showCnfPass ? 'eye-off' : 'eye'}
-              onPress={() => toggleShowCnfPass((v) => !v)}
+            <CustomInput
+              name="confirmPassword"
+              label={t('cnfPasswordLabel')}
+              containerStyles={styles.inputStyles}
+              ref={cnfPassRef}
+              value={values.confirmPassword}
+              onChangeText={handleChange('confirmPassword')}
+              onBlur={handleBlur('confirmPassword')}
+              placeholder={t('msgBlankCnfPassword')}
+              autoCapitalize="none"
+              returnKeyType={'done'}
+              error={errors.confirmPassword}
+              secureTextEntry={!showCnfPass}
+              right={
+                <TextInput.Icon
+                  theme={secondaryTheme}
+                  name={showCnfPass ? 'eye-off' : 'eye'}
+                  onPress={() => toggleShowCnfPass((v) => !v)}
+                />
+              }
             />
-          }
-        />
+          </>
+        ) : null}
       </View>
       <SignUpButton
         onPress={handleSubmit}
@@ -224,7 +228,7 @@ function RenderContent(props) {
   );
 }
 
-const schema = Yup.object().shape({
+const USER_SCHEMA = {
   firstName: Yup.string()
     .label('firstName')
     .required('required')
@@ -243,6 +247,10 @@ const schema = Yup.object().shape({
     .email('Please enter a valid email')
     .label('email')
     .required('invalid email'),
+};
+
+const signUpSchema = Yup.object().shape({
+  ...USER_SCHEMA,
   password: Yup.string()
     .label('Password')
     .required('Please enter a valid password')
@@ -252,6 +260,8 @@ const schema = Yup.object().shape({
     'Passwords must match',
   ),
 });
+
+const adminSchema = Yup.object().shape(USER_SCHEMA);
 
 function SignUp(props) {
   const {navigation, route} = props;
@@ -303,27 +313,20 @@ function SignUp(props) {
     <Formik
       validateOnBlur={false}
       validateOnChange={false}
-      initialValues={{
-        firstName: 'test',
-        lastName: 'user',
-        phone: '1234567894',
-        email: 'testuser1@gmail.com',
-        password: '123456',
-        confirmPassword: '123456',
-      }}
-      validationSchema={schema}
+      initialValues={{}}
+      validationSchema={adminSignUp ? adminSchema : signUpSchema}
       onSubmit={async (values) => {
         if (!adminSignUp) {
-          const formData = new FormData();
+          const userData = {
+            email: values.email,
+            phone: values.phone,
+            first_name: values.firstName,
+            last_name: values.lastName,
+            password: values.password,
+            confirm_password: values.confirmPassword,
+          };
 
-          formData.append('email', values.email);
-          formData.append('phone', values.phone);
-          formData.append('password', values.password);
-          formData.append('first_name', values.firstName);
-          formData.append('last_name', values.lastName);
-          formData.append('confirm_password', values.confirmPassword);
-
-          signUp(formData)
+          signUp(userData)
             .then((data) => {
               const {email} = data.value.user;
               if (email) {
@@ -340,23 +343,19 @@ function SignUp(props) {
             adminData: values,
           });
         } else if (adminId === 3) {
-          const formData = new FormData();
+          const data = {
+            project_id: project.project_id,
+            first_name_1: adminData.firstName,
+            last_name_1: adminData.lastName,
+            email_1: adminData.email,
+            phone_1: adminData.phone,
+            first_name_2: values.firstName,
+            last_name_2: values.lastName,
+            email_2: values.email,
+            phone_2: values.phone,
+          };
 
-          formData.append('project_id', project.project_id);
-          formData.append('first_name_1', adminData.firstName);
-          formData.append('last_name_1', adminData.lastName);
-          formData.append('email_1', adminData.email);
-          formData.append('phone_1', adminData.phone);
-          formData.append('password_1', adminData.password);
-          formData.append('confirm_password_1', adminData.confirmPassword);
-          formData.append('first_name_2', values.firstName);
-          formData.append('last_name_2', values.lastName);
-          formData.append('email_2', values.email);
-          formData.append('phone_2', values.phone);
-          formData.append('password_2', values.password);
-          formData.append('confirm_password_2', values.confirmPassword);
-
-          updateAdmins(formData).then(() => {
+          updateAdmins(data).then(() => {
             resetStructure();
             navigation.reset({
               index: 0,

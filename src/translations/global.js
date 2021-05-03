@@ -40,7 +40,10 @@ export default {
       projectRera: 'RERA No.',
       projectWebsite: 'Project Website',
       projectEmail: 'Project Email',
-      label_project_phone: 'Project Phone',
+      label_project_phone: 'Project Contact no.',
+      label_project_state: 'State',
+      label_project_city: 'City',
+      label_project_pin: 'Pin',
 
       //Project Structure
       label_project_structure: 'Project Structure',
@@ -60,6 +63,7 @@ export default {
 
       //Add Visitor
       label_occupation: 'Occupation',
+      label_other_occupation: 'Other occupation',
       placeholder_occupation: 'Select Occupation',
       label_current_locality: 'Current Locality',
       label_budget_from: 'Budget From',
@@ -166,6 +170,15 @@ export default {
       label_pan: 'PAN',
       label_tan: 'TAN',
       label_gst: 'GST No.',
+      projectName: 'Project name',
+      projectAddress: 'Project address',
+      projectRera: 'RERA No.',
+      projectWebsite: 'Project Website',
+      projectEmail: 'Project Email',
+      label_project_phone: 'Project Contact no.',
+      label_project_state: 'State',
+      label_project_city: 'City',
+      label_project_pin: 'Pin',
 
       //Project Structure
       label_project_structure: 'प्रोजेक्ट संरचना',
@@ -185,6 +198,7 @@ export default {
 
       //Add Visitor
       label_occupation: 'व्यवसाय',
+      label_other_occupation: 'Other occupation',
       placeholder_occupation: 'व्यवसाय का चयन करें',
       label_current_locality: 'वर्तमान इलाके',
       label_budget_from: 'बजट शुरू',
