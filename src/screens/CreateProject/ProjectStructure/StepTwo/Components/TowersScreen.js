@@ -52,9 +52,7 @@ function TowersScreen(props) {
 
   const toggleDuplicateDialog = () => setDuplicateDialog((v) => !v);
 
-  const onTowerPress = (towerId) => {
-    showAllFloors(towerId);
-  };
+  const onTowerPress = (towerId) => showAllFloors(towerId);
 
   return (
     <SafeAreaView style={{flex: 1}}>

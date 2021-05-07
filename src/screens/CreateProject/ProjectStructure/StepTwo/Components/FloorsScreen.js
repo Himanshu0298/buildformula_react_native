@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import React, {useMemo, useState} from 'react';
 import {View, StyleSheet, SafeAreaView, FlatList} from 'react-native';
 import {Button, TextInput, withTheme} from 'react-native-paper';
 import BaseText from 'components/Atoms/BaseText';
@@ -7,8 +7,8 @@ import {getFloorNumber} from 'utils';
 import {theme} from 'styles/theme';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import {useBackHandler} from '@react-native-community/hooks';
-import {useAlert} from 'components/Atoms/Alert';
 import FloorBar from 'components/Atoms/FloorBar';
+import DuplicateDialog from './DuplicateDialog';
 
 const checkUnitBhkValidity = (floors, floorCount) => {
   const result = {};
@@ -41,7 +41,6 @@ function RenderFloor(props) {
   const {
     floorId,
     floors,
-    selectedFloor,
     setSelectedFloor,
     onChangeUnit,
     unitsValidity,
@@ -53,7 +52,7 @@ function RenderFloor(props) {
     <FloorBar
       floorId={floorId}
       showBadge={true}
-      badgeActive={selectedFloor === floorId}
+      badgeActive={false}
       onPress={setSelectedFloor}
       inputProps={{
         onChangeText: (units) => onChangeUnit(floorId, units),
@@ -82,16 +81,16 @@ function FloorsScreen(props) {
   const {
     floors = {},
     floorCount,
-    selectedFloor,
     setSelectedFloor,
     onChangeFloors,
-    assignToAllFloors,
+    duplicateFloors,
     selectedStructureType,
     goBack,
   } = props;
 
   const snackbar = useSnackbar();
-  const alert = useAlert();
+
+  const [duplicateDialog, setDuplicateDialog] = useState(false);
 
   useBackHandler(() => {
     validateFloors();
@@ -109,6 +108,15 @@ function FloorsScreen(props) {
     }
     return {};
   }, [floors, floorCount, selectedStructureType]);
+
+  const floorOptions = useMemo(() => {
+    return Object.keys(floors).map((key) => ({
+      label: getFloorNumber(key),
+      value: key,
+    }));
+  }, [floors]);
+
+  const toggleDuplicateDialog = () => setDuplicateDialog((v) => !v);
 
   //check floors data is valid for all floors
   const validateFloors = (floorId) => {
@@ -146,34 +154,15 @@ function FloorsScreen(props) {
     return goBack();
   };
 
-  const assignToAll = () => {
-    if (!isNaN(selectedFloor)) {
-      const validationResult = validateFloors(selectedFloor);
-      if (!validationResult.valid) {
-        return snackbar.showMessage({
-          variant: 'warning',
-          message: validationResult.error,
-        });
-      }
-      alert.show({
-        title: 'Confirm',
-        message: `Are you sure you want to assign all the floors with ${getFloorNumber(
-          selectedFloor,
-        )}'s Data`,
-        confirmText: 'Confirm',
-        dismissable: false,
-        onConfirm: () => assignToAllFloors(floorCount, floors[selectedFloor]),
-      });
-    } else {
-      snackbar.showMessage({
-        variant: 'warning',
-        message: 'Select a floor by clicking on floor label',
-      });
-    }
-  };
-
   return (
     <SafeAreaView style={{flex: 1}}>
+      <DuplicateDialog
+        open={duplicateDialog}
+        title="Duplicate Floors"
+        options={floorOptions}
+        handleClose={toggleDuplicateDialog}
+        handleSubmit={duplicateFloors}
+      />
       <View style={styles.container}>
         <View style={{flex: 1}}>
           <View style={styles.headingContainer}>
@@ -199,17 +188,18 @@ function FloorsScreen(props) {
               compact={true}
               mode="contained"
               uppercase={false}
+              disabled={!floorCount}
               contentStyle={{paddingVertical: 2, paddingHorizontal: 6}}
               theme={{roundness: 10}}
-              onPress={assignToAll}>
-              {'Apply for all floors'}
+              onPress={toggleDuplicateDialog}>
+              {'Duplicate Floors'}
             </Button>
           </View>
           <View style={styles.floorsListContainer}>
             <FlatList
               data={Object.keys(floors)}
               contentContainerStyle={{flexGrow: 1, paddingBottom: 30}}
-              extraData={{...floors, selectedFloor}}
+              extraData={{...floors}}
               showsVerticalScrollIndicator={false}
               keyboardShouldPersistTaps="handled"
               keyExtractor={(item) => item.toString()}

@@ -479,17 +479,33 @@ function StepTwo(props) {
     });
   };
 
-  const assignToAllFloors = (floorCount, floorData) => {
-    updateStructure(
-      updateFloor({
-        structure,
-        currentStructureData,
-        selectedStructureType,
-        selectedTower,
-        floorCount,
-        floorData,
-      }),
-    );
+  const duplicateFloors = (from, duplicateTo) => {
+    const {towers} = currentStructureData;
+
+    const {floors, floorCount} = towers[selectedTower];
+
+    const fromFloor = floors[from];
+
+    const _floors = cloneDeep(floors);
+    duplicateTo.map((key) => {
+      _floors[key] = fromFloor;
+    });
+
+    updateStructure({
+      structure: {
+        ...structure,
+        [selectedStructureType]: {
+          ...currentStructureData,
+          towers: {
+            ...towers,
+            [selectedTower]: {
+              floorCount,
+              floors: _floors,
+            },
+          },
+        },
+      },
+    });
   };
 
   const assignToAllUnits = (unitCount, bhk) => {
@@ -675,9 +691,8 @@ function StepTwo(props) {
           floors={currentStructureData?.towers?.[selectedTower]?.floors}
           floorCount={currentStructureData?.towers?.[selectedTower]?.floorCount}
           selectedStructureType={selectedStructureType}
-          selectedFloor={selectedFloor}
           setSelectedFloor={setSelectedFloor}
-          assignToAllFloors={assignToAllFloors}
+          duplicateFloors={duplicateFloors}
           showAllUnits={showAllUnits}
           onChangeFloors={updateFloors}
           onChangeUnit={onChangeUnit}
