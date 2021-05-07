@@ -4,8 +4,8 @@ import {Button, TextInput, withTheme} from 'react-native-paper';
 import BaseText from 'components/Atoms/BaseText';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import {getTowerLabel} from 'utils';
-import {useAlert} from 'components/Atoms/Alert';
 import TowerIcon from 'components/Atoms/TowerIcon';
+import DuplicateDialog from './DuplicateDialog';
 
 function RenderTowers({towerCount, towerValidationById, onPress}) {
   const towersList = [];
@@ -26,16 +26,15 @@ function TowersScreen(props) {
     towerCount = '',
     selectedStructureType,
     showAllFloors,
-    assignToAllTowers,
+    duplicateTowers,
     onChangeTowers,
     saveStructureType,
     validateTowers,
   } = props;
 
   const snackbar = useSnackbar();
-  const alert = useAlert();
 
-  const [applyToAll, setApplyToAll] = useState(false);
+  const [duplicateDialog, setDuplicateDialog] = useState(false);
 
   //check towers data is valid for all floors
   const {towerValidationById, allTowersValid, errorMessage} = useMemo(
@@ -44,28 +43,28 @@ function TowersScreen(props) {
     [currentStructureData],
   );
 
-  const handleTowerSelect = (towerId) => {
-    if (!applyToAll) {
-      showAllFloors(towerId);
-    } else {
-      alert.show({
-        title: 'Confirm',
-        message: `Are you sure you want to assign all the towers with Tower ${getTowerLabel(
-          towerId,
-        )}'s Data`,
-        confirmText: 'Confirm',
-        dismissable: false,
-        onCancel: () => setApplyToAll(false),
-        onConfirm: () => {
-          setApplyToAll(false);
-          assignToAllTowers(towerCount, towers[towerId]);
-        },
-      });
-    }
+  const towerOptions = useMemo(() => {
+    return Object.keys(towers).map((key) => ({
+      label: getTowerLabel(key),
+      value: key,
+    }));
+  }, [towers]);
+
+  const toggleDuplicateDialog = () => setDuplicateDialog((v) => !v);
+
+  const onTowerPress = (towerId) => {
+    showAllFloors(towerId);
   };
 
   return (
     <SafeAreaView style={{flex: 1}}>
+      <DuplicateDialog
+        open={duplicateDialog}
+        title="Duplicate Towers"
+        options={towerOptions}
+        handleClose={toggleDuplicateDialog}
+        handleSubmit={duplicateTowers}
+      />
       <ScrollView
         contentContainerStyle={styles.scrollView}
         keyboardShouldPersistTaps="handled">
@@ -94,24 +93,19 @@ function TowersScreen(props) {
                 compact={true}
                 mode="contained"
                 uppercase={false}
+                disabled={!towerCount}
                 contentStyle={{paddingVertical: 2, paddingHorizontal: 6}}
                 theme={{roundness: 10}}
-                onPress={() => setApplyToAll((v) => !v)}>
-                {applyToAll ? '  Cancel Apply All   ' : 'Apply for all towers'}
+                onPress={toggleDuplicateDialog}>
+                Duplicate towers
               </Button>
             </View>
-            {applyToAll ? (
-              <View style={styles.selectTowerHeadingContainer}>
-                <BaseText style={styles.selectTowerHeading}>
-                  Select the Base Tower for the assignment
-                </BaseText>
-              </View>
-            ) : null}
+
             {towerCount && towerCount > 0 ? (
               <View style={styles.towersListContainer}>
                 <RenderTowers
                   towerValidationById={towerValidationById}
-                  onPress={handleTowerSelect}
+                  onPress={onTowerPress}
                   towerCount={towerCount}
                 />
               </View>
@@ -168,13 +162,6 @@ const styles = StyleSheet.create({
     marginTop: -7,
     display: 'flex',
     justifyContent: 'center',
-  },
-  selectTowerHeadingContainer: {
-    marginTop: 15,
-  },
-  selectTowerHeading: {
-    fontSize: 14,
-    color: '#000',
   },
   towersListContainer: {
     marginTop: 20,

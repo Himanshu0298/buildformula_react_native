@@ -28,6 +28,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import AntIcons from 'react-native-vector-icons/AntDesign';
 import {useBackHandler} from '@react-native-community/hooks';
 import useAddProjectActions from 'redux/actions/addProjectActions';
+import {cloneDeep} from 'lodash';
 
 const STRUCTURE_TYPES = [2, 3, 1, 4, 5];
 
@@ -460,15 +461,22 @@ function StepTwo(props) {
     );
   };
 
-  const assignToAllTowers = (towerCount, towerData) => {
-    updateStructure(
-      updateTower({
-        structure,
-        selectedStructureType,
-        towerCount,
-        towerData,
-      }),
-    );
+  const duplicateTowers = (from, duplicateTo) => {
+    const {towers, towerCount} = structure[selectedStructureType];
+
+    const fromTower = towers[from];
+
+    const _towers = cloneDeep(towers);
+    duplicateTo.map((key) => {
+      _towers[key] = fromTower;
+    });
+
+    updateStructure({
+      structure: {
+        ...structure,
+        [selectedStructureType]: {towerCount, towers: _towers},
+      },
+    });
   };
 
   const assignToAllFloors = (floorCount, floorData) => {
@@ -654,7 +662,7 @@ function StepTwo(props) {
           selectedTower={selectedTower}
           currentStructureData={currentStructureData}
           selectedStructureType={selectedStructureType}
-          assignToAllTowers={assignToAllTowers}
+          duplicateTowers={duplicateTowers}
           setSelectedTower={setSelectedTower}
           showAllFloors={showAllFloors}
           onChangeTowers={updateTowers}

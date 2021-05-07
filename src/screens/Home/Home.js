@@ -177,7 +177,7 @@ function Home(props) {
             />
           ) : null}
         </View>
-        {projectsData[selectedTab].length > 0 ? (
+        {projectsData?.[selectedTab]?.length > 0 ? (
           <ScrollView
             style={styles.scrollView}
             showsVerticalScrollIndicator={false}

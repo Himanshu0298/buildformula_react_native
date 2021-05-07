@@ -55,6 +55,7 @@ export default {
       plot: 'Plot',
       project_structure_subtitle_towers: 'Fill in the number of towers',
       project_structure_subtitle_floors: 'Fill in the number of floors',
+      label_duplicate_from: 'Duplicate from',
       project_structure_subtitle_units: 'Verify units',
       project_structure_subtitle_units_bhk:
         'Select and assign BHK type to individual unit',
@@ -191,6 +192,7 @@ export default {
       project_structure_subtitle_towers: 'टावरों की संख्या में भरें',
       project_structure_subtitle_floors: 'मंजिलों की संख्या में भरें',
       project_structure_subtitle_units: 'इकाइयों की पुष्टि करें',
+      label_duplicate_from: 'Duplicate from',
       project_structure_subtitle_units_bhk:
         'BHK प्रकार को अलग-अलग इकाई के लिए चुनें और असाइन करें',
       projectStructureSubtitleBungalows: 'बंगलों की संख्या भरें',

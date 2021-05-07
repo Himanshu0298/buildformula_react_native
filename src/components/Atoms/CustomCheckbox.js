@@ -1,23 +1,18 @@
 import React from 'react';
 import {StyleSheet, TouchableOpacity} from 'react-native';
 import PropTypes from 'prop-types';
-import {Caption, Text, Checkbox, withTheme} from 'react-native-paper';
+import {Text, Checkbox, withTheme} from 'react-native-paper';
 import {theme} from 'styles/theme';
 
 const CustomCheckbox = React.forwardRef((props, ref) => {
   const {checked, onChange, label, style, ...rest} = props;
 
   return (
-    <TouchableOpacity
-      onPress={() => onChange()}
-      style={{
-        flexDirection: 'row',
-        ...style,
-      }}>
+    <TouchableOpacity onPress={onChange} style={[styles.container, style]}>
       <Checkbox.Android
         {...rest}
+        ref={ref}
         status={checked ? 'checked' : 'unchecked'}
-        onPress={() => onChange()}
       />
       <Text style={styles.caption}>{label}</Text>
     </TouchableOpacity>
@@ -37,6 +32,10 @@ CustomCheckbox.propTypes = {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   caption: {
     marginLeft: 5,
     flexShrink: 1,
