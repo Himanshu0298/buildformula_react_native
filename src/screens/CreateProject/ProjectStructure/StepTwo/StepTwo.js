@@ -561,7 +561,7 @@ function StepTwo(props) {
       } else {
         saveStructure({
           structureData: structure,
-          projectId: project.project_id,
+          projectId: project.id,
           userId: user.id,
         }).then(() => {
           navigation.navigate('PlanSelect');
@@ -640,7 +640,7 @@ function StepTwo(props) {
                         title={t(STRUCTURE_TYPE_LABELS[option.value])}
                         onPress={() => {
                           toggleMenu();
-                          setSelectedTab(0);
+                          setSelectedTab(option.value < 4 ? 0 : 2);
                           updateStructure({
                             selectedStructureType: option.value,
                           });

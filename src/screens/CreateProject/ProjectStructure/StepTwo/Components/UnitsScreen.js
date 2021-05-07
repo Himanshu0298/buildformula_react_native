@@ -66,12 +66,12 @@ function RenderUnits({
             style={selectedStructureType === 4 ? styles.hut : styles.plot}
           />
           <View
-            style={{
-              paddingHorizontal: 6,
-              marginTop: 3,
-              borderRadius: 20,
-              backgroundColor: unitBhk ? addOpacity(unitBhk.color, 1) : null,
-            }}>
+            style={[
+              styles.labelContainer,
+              {
+                backgroundColor: unitBhk ? addOpacity(unitBhk.color, 1) : null,
+              },
+            ]}>
             <BaseText
               style={[styles.hutLabel, {color: unitBhk ? '#fff' : '#000'}]}>
               {i}
@@ -343,12 +343,17 @@ const styles = StyleSheet.create({
     width: Layout.window.width * 0.15,
   },
   plot: {
-    height: Layout.window.width * 0.11,
-    width: Layout.window.width * 0.18,
+    height: Layout.window.width * 0.12,
+    width: Layout.window.width * 0.12,
   },
   hutLabel: {
     fontSize: 14,
     color: '#000',
+  },
+  labelContainer: {
+    paddingHorizontal: 6,
+    marginTop: 3,
+    borderRadius: 20,
   },
   button: {
     marginTop: 20,
