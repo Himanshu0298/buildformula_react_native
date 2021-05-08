@@ -43,12 +43,7 @@ function PlanSelect(props) {
   const toggleAlert = () => setShowAlert((v) => !v);
 
   function onSelectPlan(amount) {
-    const formData = new FormData();
-    //TODO: Update translations
-    formData.append('project_id', project.project_id);
-    formData.append('amount', amount);
-
-    selectPlan(formData)
+    selectPlan({project_id: project.id, amount})
       .then((data) => {
         toggleAlert();
       })
@@ -59,7 +54,7 @@ function PlanSelect(props) {
 
   const handleNext = () => {
     toggleAlert();
-    navigation.navigate('AdminCreation', {adminSignUp: true, adminId: 2});
+    navigation.push('AdminCreation', {adminSignUp: true, adminId: 2});
   };
 
   return (

@@ -120,11 +120,10 @@ export function getInitialAuthScreen(
 ) {
   const {id, otp_verified, email_verified, default_role_id} = user;
   if (authenticated) {
-    if (project.project_id) {
+    if (project.id) {
       return 'ProjectStructureStepOne';
-    } else if (!project.project_id) {
-      return 'GeneralDashboard';
     }
+    return 'GeneralDashboard';
   } else {
     if (id) {
       if (otp_verified === 'N' || email_verified === 'N') {

@@ -27,7 +27,11 @@ export default function useAddProject() {
       return instance.post('/project/update_project_units', data, config());
     },
     updatePayment: (data) => {
-      return instance.post('/project/update_project_payment', data, config());
+      return instance.post(
+        '/project/update_project_payment',
+        data,
+        config({multipart: false}),
+      );
     },
     updateAdmins: (data) => {
       return instance.post(
@@ -35,6 +39,9 @@ export default function useAddProject() {
         data,
         config({multipart: false}),
       );
+    },
+    getStates: () => {
+      return instance.get('/getStates', config({multipart: false}));
     },
   };
 }

@@ -256,7 +256,7 @@ function validateTowers(data, selectedStructureType) {
       } else {
         Object.keys(floors).map((floorId) => {
           //check if all floors has 0 or more units
-          if (isNaN(floors[floorId].unitCount)) {
+          if (isNaN(floors?.[floorId]?.unitCount)) {
             result[towerId] = false;
             allValid = false;
             if (!error) {
@@ -267,8 +267,8 @@ function validateTowers(data, selectedStructureType) {
           } else {
             const unitResult = validateUnits({
               selectedStructureType,
-              units: floors[floorId].units,
-              unitCount: floors[floorId].unitCount,
+              units: floors?.[floorId]?.units,
+              unitCount: floors?.[floorId]?.unitCount,
               selectedFloor: floorId,
             });
             result[towerId] = unitResult.allValid;

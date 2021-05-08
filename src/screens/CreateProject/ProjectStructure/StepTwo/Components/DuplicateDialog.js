@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Subheading, withTheme} from 'react-native-paper';
 import Modal from 'react-native-modal';
@@ -9,6 +9,7 @@ import {useTranslation} from 'react-i18next';
 import CustomCheckbox from 'components/Atoms/CustomCheckbox';
 import {ActionSheetProvider} from '@expo/react-native-action-sheet';
 import {cloneDeep} from 'lodash';
+import {RenderError} from 'components/Atoms/RenderInput';
 
 function RenderCheckbox(props) {
   return (
@@ -25,6 +26,14 @@ function DuplicateDialog(props) {
 
   const [duplicateFrom, setDuplicateFrom] = useState();
   const [duplicateTo, setDuplicateTo] = useState([]);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (error) {
+      setError('');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
 
   const addToDuplicateList = (option) => {
     const _duplicateTo = cloneDeep(duplicateTo);
@@ -36,6 +45,20 @@ function DuplicateDialog(props) {
     }
 
     setDuplicateTo(_duplicateTo);
+  };
+
+  const submitForm = () => {
+    if (!duplicateFrom) {
+      setError('Select Duplicate from option');
+      return;
+    }
+    if (!duplicateTo.length) {
+      setError('Select Duplicate to option');
+      return;
+    }
+
+    handleSubmit(duplicateFrom, duplicateTo);
+    handleClose();
   };
 
   const checkedAll = options.length === duplicateTo.length;
@@ -60,10 +83,7 @@ function DuplicateDialog(props) {
                 opacity={0.1}
                 color={theme.colors.primary}
                 style={{borderRadius: 50, marginRight: 10}}
-                onPress={() => {
-                  handleSubmit(duplicateFrom, duplicateTo);
-                  handleClose();
-                }}>
+                onPress={submitForm}>
                 <MaterialIcon
                   name="check"
                   color={theme.colors.primary}
@@ -85,6 +105,11 @@ function DuplicateDialog(props) {
           </View>
 
           <View style={styles.contentContainer}>
+            {error ? (
+              <View style={styles.errorContainer}>
+                <RenderError error={error} />
+              </View>
+            ) : null}
             <RenderSelect
               name="duplicateFrom"
               label={t('label_duplicate_from')}
@@ -134,6 +159,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  errorContainer: {
+    marginBottom: 10,
   },
   titleContainer: {},
   actionContainer: {

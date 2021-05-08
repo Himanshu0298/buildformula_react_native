@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {View, StatusBar, StyleSheet, ScrollView} from 'react-native';
 import {withTheme, Button} from 'react-native-paper';
 import FormTitle from 'components/Atoms/FormTitle';
@@ -9,6 +9,7 @@ import RenderInput from 'components/Atoms/RenderInput';
 import FileInput from 'components/Atoms/FileInput';
 import * as Yup from 'yup';
 import {PAN_REGEX, GST_REGEX} from 'utils/constant';
+import useAddProjectActions from 'redux/actions/addProjectActions';
 
 // TODO: enable regex validation
 
@@ -35,6 +36,12 @@ function StepOne(props) {
   const panRef = React.useRef();
   const tanRef = React.useRef();
   const gstRef = React.useRef();
+
+  const {getStates} = useAddProjectActions();
+
+  useEffect(() => {
+    getStates();
+  });
 
   return (
     <>

@@ -337,14 +337,14 @@ function SignUp(props) {
               setValidationError(error);
             });
         } else if (adminId === 2) {
-          navigation.navigate('AdminCreation', {
+          navigation.push('AdminCreation', {
             adminSignUp: true,
             adminId: 3,
             adminData: values,
           });
         } else if (adminId === 3) {
           const data = {
-            project_id: project.project_id,
+            project_id: project.id,
             first_name_1: adminData.firstName,
             last_name_1: adminData.lastName,
             email_1: adminData.email,

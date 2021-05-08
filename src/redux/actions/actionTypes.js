@@ -24,6 +24,8 @@ export const UPDATE_PAYMENT = 'UPDATE_PAYMENT';
 export const UPDATE_ADMINS = 'UPDATE_ADMINS';
 export const RESET_STRUCTURE = 'RESET_STRUCTURE';
 export const SET_PROJECT_DATA = 'SET_PROJECT_DATA';
+export const GET_STATES = 'GET_STATES';
+export const GET_CITIES = 'GET_CITIES';
 
 //For Sales
 export const GET_SALES_DATA = 'GET_SALES_DATA';

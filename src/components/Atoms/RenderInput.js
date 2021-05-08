@@ -4,6 +4,14 @@ import PropTypes from 'prop-types';
 import {TextInput} from 'react-native-paper';
 import {theme} from 'styles/theme';
 
+export const RenderError = ({error}) => {
+  return (
+    <View style={styles.errorContainer}>
+      <Text style={styles.errorStyles}>{error}</Text>
+    </View>
+  );
+};
+
 const RenderInput = React.forwardRef((props, ref) => {
   let {
     error,
@@ -41,11 +49,7 @@ const RenderInput = React.forwardRef((props, ref) => {
           {...rest}
         />
       </View>
-      {error && (
-        <View style={styles.errorContainer}>
-          <Text style={styles.errorStyles}>{error}</Text>
-        </View>
-      )}
+      {error && <RenderError error={error} />}
     </View>
   );
 });

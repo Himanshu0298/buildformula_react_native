@@ -15,6 +15,7 @@ export default function useAddProjectActions() {
     createProject,
     updatePayment,
     updateAdmins,
+    getStates,
   } = useAddProject();
 
   return {
@@ -146,6 +147,25 @@ export default function useAddProjectActions() {
             const {data} = response;
 
             snackbar.showMessage({message: 'Updated Admins Successfully!'});
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const errorMessage = _err(error);
+            snackbar.showMessage({
+              message: errorMessage,
+              variant: 'error',
+            });
+            return Promise.reject(errorMessage);
+          }
+        },
+      }),
+    getStates: () =>
+      dispatch({
+        type: types.GET_STATES,
+        payload: async () => {
+          try {
+            const response = _res(await getStates());
+            const {data} = response;
 
             return Promise.resolve(data);
           } catch (error) {

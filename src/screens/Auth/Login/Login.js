@@ -186,7 +186,7 @@ function Login(props) {
               navigation.navigate('Otp');
             } else if (default_role_id === 0) {
               navigation.navigate('RoleSelect');
-            } else if (project.project_id) {
+            } else if (project.id) {
               navigation.navigate('ProjectStructureStepOne');
             }
           })

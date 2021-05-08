@@ -56,10 +56,7 @@ function RenderFloor(props) {
       onPress={setSelectedFloor}
       inputProps={{
         onChangeText: (units) => onChangeUnit(floorId, units),
-        value:
-          floors[floorId] && floors[floorId].unitCount
-            ? floors[floorId].unitCount.toString()
-            : '',
+        value: floors?.[floorId]?.unitCount?.toString() || '',
       }}
       buttonLabel={
         selectedStructureType === 4 || selectedStructureType === 1
@@ -69,7 +66,7 @@ function RenderFloor(props) {
           : 'View Units'
       }
       buttonProps={{
-        disabled: !(floors[floorId] && floors[floorId].unitCount),
+        disabled: !floors?.[floorId]?.unitCount,
         color: unitsValidity[floorId] ? theme.colors.primary : '#5B6F7C',
         onPress: () => showAllUnits(floorId),
       }}
