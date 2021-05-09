@@ -30,15 +30,12 @@ export default function useSalesActions() {
         type: types.SET_TIMER,
         payload: data,
       }),
-    getSalesData: (projectId) =>
+    getSalesData: (project_id) =>
       dispatch({
         type: types.GET_SALES_DATA,
         payload: async () => {
           try {
-            const formData = new FormData();
-            formData.append('project_id', projectId);
-
-            const response = _res(await getSalesData(formData));
+            const response = _res(await getSalesData({project_id}));
             const {data} = response;
 
             return Promise.resolve(data);
@@ -231,9 +228,7 @@ export default function useSalesActions() {
         type: types.GET_BOOKINGS_STATUS,
         payload: async () => {
           try {
-            const response = _res(
-              await getUnitsBookingStatus(formData),
-            );
+            const response = _res(await getUnitsBookingStatus(formData));
             const {data} = response;
 
             return Promise.resolve(data);

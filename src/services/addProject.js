@@ -41,7 +41,10 @@ export default function useAddProject() {
       );
     },
     getStates: () => {
-      return instance.get('/getStates', config({multipart: false}));
+      return instance.get('/get_states', config({multipart: false}));
+    },
+    getCities: (query) => {
+      return instance.post('/get_cities', query, config({multipart: false}));
     },
   };
 }

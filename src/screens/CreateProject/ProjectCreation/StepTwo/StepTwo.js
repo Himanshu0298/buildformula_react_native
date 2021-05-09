@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import {
   View,
   StatusBar,
@@ -19,6 +19,7 @@ import {PHONE_REGEX} from 'utils/constant';
 import {ScrollView} from 'react-native-gesture-handler';
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
+import RenderSelect from 'components/Atoms/RenderSelect';
 
 const schema = Yup.object().shape({
   project_name: Yup.string().required('name is required'),
@@ -46,10 +47,26 @@ function StepTwo(props) {
   const {stepOneData} = route.params;
 
   const {t} = useTranslation();
-  const {createProject} = useAddProjectActions();
+  const {createProject, getCities} = useAddProjectActions();
 
   const {user} = useSelector((state) => state.user);
-  const {loading} = useSelector((state) => state.addProject);
+  const {loading, statesData, citiesData} = useSelector(
+    (state) => state.addProject,
+  );
+
+  const stateOptions = useMemo(() => {
+    return statesData
+      .filter((i) => i.status)
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .map((i) => ({label: i.name, value: i.id}));
+  }, [statesData]);
+
+  const cityOptions = useMemo(() => {
+    return citiesData
+      .filter((i) => i.status)
+      .sort((a, b) => a?.city_name?.localeCompare(b?.city_name))
+      .map((i) => ({label: i.city_name, value: i.id}));
+  }, [citiesData]);
 
   const nameRef = React.useRef();
   const addressRef = React.useRef();
@@ -197,25 +214,27 @@ function StepTwo(props) {
                   returnKeyType="none"
                   error={errors.project_address}
                 />
-                <RenderInput
+                <RenderSelect
                   name="project_state"
                   label={t('label_project_state')}
                   ref={stateRef}
                   containerStyles={styles.input}
                   value={values.project_state}
-                  onChangeText={handleChange('project_state')}
-                  onBlur={handleBlur('project_state')}
-                  onSubmitEditing={() => cityRef?.current.focus()}
+                  options={stateOptions}
+                  onSelect={(value) => {
+                    setFieldValue('project_state', value);
+                    getCities({state_id: value});
+                  }}
                   error={errors.project_state}
                 />
-                <RenderInput
+                <RenderSelect
                   name="project_city"
                   label={t('label_project_city')}
                   ref={cityRef}
+                  options={cityOptions}
                   containerStyles={styles.input}
                   value={values.project_city}
-                  onChangeText={handleChange('project_city')}
-                  onBlur={handleBlur('project_city')}
+                  onSelect={(value) => setFieldValue('project_city', value)}
                   onSubmitEditing={() => pinRef?.current.focus()}
                   error={errors.project_city}
                 />

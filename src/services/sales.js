@@ -10,7 +10,11 @@ export default function useSalesServices() {
       return instance.post('/followup/get_lists', data, config());
     },
     getSalesData: (data) => {
-      return instance.post('/followup/other_info', data, config());
+      return instance.post(
+        '/followup/other_info',
+        data,
+        config({multipart: false}),
+      );
     },
     getPipelines: (data) => {
       return instance.post('/pipeline/get_lists', data, config());

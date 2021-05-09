@@ -6,6 +6,8 @@ import {
   UPDATE_ADMINS,
   UPDATE_PAYMENT,
   SET_PROJECT_DATA,
+  GET_STATES,
+  GET_CITIES,
 } from '../actions/actionTypes';
 import _ from 'lodash';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -30,6 +32,8 @@ const initialState = {
   },
   selectedStructureType: 2,
   structure: _.cloneDeep(DEFAULT_STRUCTURE),
+  statesData: [],
+  citiesData: [],
   project: {
     // project_id: 21,
     // enc_key:
@@ -70,6 +74,42 @@ const reducer = (state = initialState, action = {}) => {
         loading: false,
       };
     case `${CREATE_PROJECT}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+        errorMessage: payload,
+      };
+
+    case `${GET_STATES}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${GET_STATES}_FULFILLED`:
+      return {
+        ...state,
+        statesData: payload,
+        loading: false,
+      };
+    case `${GET_STATES}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+        errorMessage: payload,
+      };
+
+    case `${GET_CITIES}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${GET_CITIES}_FULFILLED`:
+      return {
+        ...state,
+        loading: false,
+        citiesData: payload,
+      };
+    case `${GET_CITIES}_REJECTED`:
       return {
         ...state,
         loading: false,

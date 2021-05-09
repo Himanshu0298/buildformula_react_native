@@ -16,6 +16,7 @@ export default function useAddProjectActions() {
     updatePayment,
     updateAdmins,
     getStates,
+    getCities,
   } = useAddProject();
 
   return {
@@ -159,6 +160,7 @@ export default function useAddProjectActions() {
           }
         },
       }),
+
     getStates: () =>
       dispatch({
         type: types.GET_STATES,
@@ -168,6 +170,26 @@ export default function useAddProjectActions() {
             const {data} = response;
 
             return Promise.resolve(data);
+          } catch (error) {
+            const errorMessage = _err(error);
+            snackbar.showMessage({
+              message: errorMessage,
+              variant: 'error',
+            });
+            return Promise.reject(errorMessage);
+          }
+        },
+      }),
+
+    getCities: (params) =>
+      dispatch({
+        type: types.GET_CITIES,
+        payload: async () => {
+          try {
+            const response = _res(await getCities(params));
+            const {data} = response;
+
+            return Promise.resolve(data[0]);
           } catch (error) {
             const errorMessage = _err(error);
             snackbar.showMessage({
