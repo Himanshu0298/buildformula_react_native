@@ -25,12 +25,9 @@ export default function useProjectManagementActions() {
             const response = _res(await getLineupData(data));
             return Promise.resolve(response.data);
           } catch (error) {
-            const errorMessage = _err(error);
-            snackbar.showMessage({
-              message: errorMessage,
-              variant: 'error',
-            });
-            return Promise.reject(errorMessage);
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
           }
         },
       }),
@@ -42,12 +39,9 @@ export default function useProjectManagementActions() {
             const response = _res(await getLineupData(data));
             return Promise.resolve(response.data);
           } catch (error) {
-            const errorMessage = _err(error);
-            snackbar.showMessage({
-              message: errorMessage,
-              variant: 'error',
-            });
-            return Promise.reject(errorMessage);
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
           }
         },
       }),
@@ -59,12 +53,9 @@ export default function useProjectManagementActions() {
             const response = _res(await getLineupData(data));
             return Promise.resolve(response.data);
           } catch (error) {
-            const errorMessage = _err(error);
-            snackbar.showMessage({
-              message: errorMessage,
-              variant: 'error',
-            });
-            return Promise.reject(errorMessage);
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
           }
         },
       }),
@@ -76,12 +67,9 @@ export default function useProjectManagementActions() {
             const response = _res(await createLineupEntity(data));
             return Promise.resolve(response.data);
           } catch (error) {
-            const errorMessage = _err(error);
-            snackbar.showMessage({
-              message: errorMessage,
-              variant: 'error',
-            });
-            return Promise.reject(errorMessage);
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
           }
         },
       }),
@@ -93,12 +81,9 @@ export default function useProjectManagementActions() {
             const response = _res(await updateLineupEntity(data));
             return Promise.resolve(response.data);
           } catch (error) {
-            const errorMessage = _err(error);
-            snackbar.showMessage({
-              message: errorMessage,
-              variant: 'error',
-            });
-            return Promise.reject(errorMessage);
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
           }
         },
       }),
@@ -110,12 +95,9 @@ export default function useProjectManagementActions() {
             const response = _res(await deleteLineupEntity(data));
             return Promise.resolve(response.data);
           } catch (error) {
-            const errorMessage = _err(error);
-            snackbar.showMessage({
-              message: errorMessage,
-              variant: 'error',
-            });
-            return Promise.reject(errorMessage);
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
           }
         },
       }),
@@ -127,12 +109,9 @@ export default function useProjectManagementActions() {
             const response = _res(await updateMilestoneOrder(data));
             return Promise.resolve(response.data);
           } catch (error) {
-            const errorMessage = _err(error);
-            snackbar.showMessage({
-              message: errorMessage,
-              variant: 'error',
-            });
-            return Promise.reject(errorMessage);
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
           }
         },
       }),

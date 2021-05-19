@@ -30,12 +30,9 @@ export default function useFileActions() {
 
             return Promise.resolve({data: res.data, index_of: params.index_of});
           } catch (error) {
-            const errorMessage = _err(error);
-            snackbar.showMessage({
-              message: errorMessage,
-              variant: 'error',
-            });
-            return Promise.reject(errorMessage);
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
           }
         },
       }),
@@ -48,12 +45,9 @@ export default function useFileActions() {
 
             return Promise.resolve(res.data);
           } catch (error) {
-            const errorMessage = _err(error);
-            snackbar.showMessage({
-              message: errorMessage,
-              variant: 'error',
-            });
-            return Promise.reject(errorMessage);
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
           }
         },
       }),
@@ -67,12 +61,9 @@ export default function useFileActions() {
               data: res.data,
             });
           } catch (error) {
-            const errorMessage = _err(error);
-            snackbar.showMessage({
-              message: errorMessage,
-              variant: 'error',
-            });
-            return Promise.reject(errorMessage);
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
           }
         },
       }),
@@ -85,12 +76,9 @@ export default function useFileActions() {
             console.log('--->delete', res);
             return Promise.resolve(res);
           } catch (error) {
-            const errorMessage = _err(error);
-            snackbar.showMessage({
-              message: errorMessage,
-              variant: 'error',
-            });
-            return Promise.reject(errorMessage);
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
           }
         },
       }),
@@ -105,12 +93,9 @@ export default function useFileActions() {
               folder_id: params.folder_id,
             });
           } catch (error) {
-            const errorMessage = _err(error);
-            snackbar.showMessage({
-              message: errorMessage,
-              variant: 'error',
-            });
-            return Promise.reject(errorMessage);
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
           }
         },
       }),
@@ -124,12 +109,9 @@ export default function useFileActions() {
               data: res,
             });
           } catch (error) {
-            const errorMessage = _err(error);
-            snackbar.showMessage({
-              message: errorMessage,
-              variant: 'error',
-            });
-            return Promise.reject(errorMessage);
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
           }
         },
       }),
@@ -144,12 +126,9 @@ export default function useFileActions() {
               data: res.data,
             });
           } catch (error) {
-            const errorMessage = _err(error);
-            snackbar.showMessage({
-              message: errorMessage,
-              variant: 'error',
-            });
-            return Promise.reject(errorMessage);
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
           }
         },
       }),
@@ -163,12 +142,9 @@ export default function useFileActions() {
               data: res.data,
             });
           } catch (error) {
-            const errorMessage = _err(error);
-            snackbar.showMessage({
-              message: errorMessage,
-              variant: 'error',
-            });
-            return Promise.reject(errorMessage);
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
           }
         },
       }),
@@ -183,12 +159,9 @@ export default function useFileActions() {
               data: res.data,
             });
           } catch (error) {
-            const errorMessage = _err(error);
-            snackbar.showMessage({
-              message: errorMessage,
-              variant: 'error',
-            });
-            return Promise.reject(errorMessage);
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
           }
         },
       }),

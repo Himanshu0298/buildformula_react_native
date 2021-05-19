@@ -14,6 +14,7 @@ import {
   CREATE_BOOKING,
   GET_BANK_LIST,
   SET_TIMER,
+  GET_VISITOR,
 } from './../actions/actionTypes';
 
 const initialState = {
@@ -28,6 +29,7 @@ const initialState = {
   todayFollowups: [],
   bhkOptions: {},
   occupationOptions: [],
+  sourceTypeOptions: [],
   inquiryOptions: [],
   assignOptions: [],
   visitorAnalytics: {},
@@ -35,6 +37,8 @@ const initialState = {
   pipelines: [],
   unitBookingStatus: [],
   bankList: [],
+  visitor: {},
+  visitorFollowUp: {},
 };
 
 const reducer = (state = initialState, action = {}) => {
@@ -72,12 +76,14 @@ const reducer = (state = initialState, action = {}) => {
         yearly_visitor,
         month_visitor,
         weekly_visitor,
+        source_types,
       } = payload;
 
       return {
         ...state,
         loading: false,
         occupationOptions: occupations,
+        sourceTypeOptions: source_types,
         inquiryOptions: inquiry_for,
         bhkOptions: project_bhk,
         visitorSuggestions: visitors_autosuggestions,
@@ -109,6 +115,25 @@ const reducer = (state = initialState, action = {}) => {
         visitors: payload,
       };
     case `${GET_VISITORS}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+        errorMessage: payload,
+      };
+
+    case `${GET_VISITOR}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${GET_VISITOR}_FULFILLED`:
+      return {
+        ...state,
+        loading: false,
+        visitor: payload.visitors,
+        visitorFollowUp: payload.followup_lists,
+      };
+    case `${GET_VISITOR}_REJECTED`:
       return {
         ...state,
         loading: false,

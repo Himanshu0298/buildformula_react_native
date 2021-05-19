@@ -39,23 +39,7 @@ export default (state = initialState, action = {}) => {
         loading: false,
         errorMessage: action.payload,
       };
-    case `${CREATE_FOLDER}_PENDING`:
-      return {
-        ...state,
-        loading: true,
-      };
-    case `${CREATE_FOLDER}_FULFILLED`: {
-      return {
-        ...state,
-        loading: false,
-      };
-    }
-    case `${CREATE_FOLDER}_REJECTED`:
-      return {
-        ...state,
-        loading: false,
-        errorMessage: action.payload,
-      };
+
     case `${GET_FILES}_PENDING`:
       return {
         ...state,
@@ -74,92 +58,7 @@ export default (state = initialState, action = {}) => {
         loading: false,
         errorMessage: action.payload,
       };
-    case `${RENAME_FILE}_PENDING`:
-      return {
-        ...state,
-        loading: true,
-      };
-    case `${RENAME_FILE}_FULFILLED`: {
-      return {
-        ...state,
-        loading: false,
-      };
-    }
-    case `${RENAME_FILE}_REJECTED`:
-      return {
-        ...state,
-        loading: false,
-        errorMessage: action.payload,
-      };
-    case `${UPLOAD_FILE}_PENDING`:
-      return {
-        ...state,
-        loading: true,
-      };
-    case `${UPLOAD_FILE}_FULFILLED`: {
-      return {
-        ...state,
-        loading: false,
-      };
-    }
-    case `${UPLOAD_FILE}_REJECTED`:
-      return {
-        ...state,
-        loading: false,
-        errorMessage: action.payload,
-      };
 
-    case `${RENAME_FOLDER}_PENDING`:
-      return {
-        ...state,
-        loading: true,
-      };
-    case `${RENAME_FOLDER}_FULFILLED`: {
-      return {
-        ...state,
-        loading: false,
-      };
-    }
-    case `${RENAME_FOLDER}_REJECTED`:
-      return {
-        ...state,
-        loading: false,
-        errorMessage: action.payload,
-      };
-    case `${DELETE_FOLDER}_PENDING`:
-      return {
-        ...state,
-        loading: true,
-      };
-    case `${DELETE_FOLDER}_FULFILLED`: {
-      return {
-        ...state,
-        loading: false,
-      };
-    }
-    case `${DELETE_FOLDER}_REJECTED`:
-      return {
-        ...state,
-        loading: false,
-        errorMessage: action.payload,
-      };
-    case `${DELETE_FILE}_PENDING`:
-      return {
-        ...state,
-        loading: true,
-      };
-    case `${DELETE_FILE}_FULFILLED`: {
-      return {
-        ...state,
-        loading: false,
-      };
-    }
-    case `${DELETE_FILE}_REJECTED`:
-      return {
-        ...state,
-        loading: false,
-        errorMessage: action.payload,
-      };
     case `${GET_VERSION}_PENDING`:
       return {
         ...state,
@@ -173,6 +72,39 @@ export default (state = initialState, action = {}) => {
       };
     }
     case `${GET_VERSION}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+        errorMessage: action.payload,
+      };
+
+    case `${RENAME_FOLDER}_PENDING`:
+    case `${CREATE_FOLDER}_PENDING`:
+    case `${RENAME_FILE}_PENDING`:
+    case `${UPLOAD_FILE}_PENDING`:
+    case `${DELETE_FOLDER}_PENDING`:
+    case `${DELETE_FILE}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${CREATE_FOLDER}_FULFILLED`:
+    case `${RENAME_FOLDER}_FULFILLED`:
+    case `${RENAME_FILE}_FULFILLED`:
+    case `${UPLOAD_FILE}_FULFILLED`:
+    case `${DELETE_FOLDER}_FULFILLED`:
+    case `${DELETE_FILE}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+      };
+    }
+    case `${CREATE_FOLDER}_REJECTED`:
+    case `${RENAME_FOLDER}_REJECTED`:
+    case `${RENAME_FILE}_REJECTED`:
+    case `${UPLOAD_FILE}_REJECTED`:
+    case `${DELETE_FILE}_REJECTED`:
+    case `${DELETE_FOLDER}_REJECTED`:
       return {
         ...state,
         loading: false,

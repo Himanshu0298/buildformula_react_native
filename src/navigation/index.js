@@ -34,6 +34,7 @@ import SearchScreen from '../screens/Search';
 import ProjectDashboard from '../screens/Project/Dashboard';
 //Project : Sales Screens
 import Inquiry from '../screens/Project/Sales/Inquiry';
+import VisitorDetails from '../screens/Project/Sales/VisitorDetails';
 import SalesPipeline from '../screens/Project/Sales/SalesPipeline';
 import Payment from '../screens/Project/Sales/Payment';
 import AddVisitor from '../screens/Project/Sales/AddVisitor';
@@ -119,6 +120,11 @@ function InquiryStack() {
       <Stack.Screen
         name="InquiryHome"
         component={Inquiry}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="VisitorDetails"
+        component={VisitorDetails}
         options={{headerShown: false}}
       />
       <Stack.Screen

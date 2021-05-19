@@ -6,6 +6,13 @@ export default function useSalesServices() {
     getVisitorsList: data => {
       return instance.post('/visitors/get_lists', data, config());
     },
+    getVisitor: data => {
+      return instance.post(
+        '/visitors/details',
+        data,
+        config({multipart: false}),
+      );
+    },
     getFollowUpList: data => {
       return instance.post('/followup/get_lists', data, config());
     },

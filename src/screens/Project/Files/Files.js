@@ -32,6 +32,7 @@ import {useSelector} from 'react-redux';
 import * as Yup from 'yup';
 import useImagePicker from 'utils/useImagePicker';
 import {useTranslation} from 'react-i18next';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const schema = Yup.object().shape({
   folder_name: Yup.string().trim().required('Required'),
@@ -172,19 +173,19 @@ function RenameDialogue(props) {
                 <View style={styles.dialogActionContainer}>
                   <Button
                     style={{width: '40%', marginHorizontal: 5}}
-                    mode="contained"
-                    contentStyle={{padding: 1}}
-                    theme={{roundness: 15}}
-                    onPress={handleSubmit}>
-                    <Text theme={secondaryTheme}>{'save'}</Text>
-                  </Button>
-                  <Button
-                    style={{width: '40%', marginHorizontal: 5}}
                     contentStyle={{padding: 2}}
                     theme={{roundness: 15}}
                     mode="contained"
                     onPress={toggleDialogue}>
                     <Text theme={secondaryTheme}>{'cancel'}</Text>
+                  </Button>
+                  <Button
+                    style={{width: '40%', marginHorizontal: 5}}
+                    mode="contained"
+                    contentStyle={{padding: 1}}
+                    theme={{roundness: 15}}
+                    onPress={handleSubmit}>
+                    <Text theme={secondaryTheme}>{'save'}</Text>
                   </Button>
                 </View>
               </View>
@@ -234,19 +235,19 @@ function CreateFolder(props) {
                 <View style={styles.dialogActionContainer}>
                   <Button
                     style={{width: '40%', marginHorizontal: 5}}
-                    mode="contained"
-                    contentStyle={{padding: 1}}
-                    theme={{roundness: 15}}
-                    onPress={handleSubmit}>
-                    <Text theme={secondaryTheme}>{'save'}</Text>
-                  </Button>
-                  <Button
-                    style={{width: '40%', marginHorizontal: 5}}
                     contentStyle={{padding: 2}}
                     theme={{roundness: 15}}
                     mode="contained"
                     onPress={toggleDialogue}>
                     <Text theme={secondaryTheme}>{'cancel'}</Text>
+                  </Button>
+                  <Button
+                    style={{width: '40%', marginHorizontal: 5}}
+                    mode="contained"
+                    contentStyle={{padding: 1}}
+                    theme={{roundness: 15}}
+                    onPress={handleSubmit}>
+                    <Text theme={secondaryTheme}>{'save'}</Text>
                   </Button>
                 </View>
               </View>
@@ -392,11 +393,7 @@ function MenuModal(props) {
           console.log('--->in share');
         }}>
         <View style={styles.viewDirection}>
-          <IconButton
-            style={styles.ModalText}
-            icon="account-plus"
-            onPress={() => {}}
-          />
+          <IconButton icon="account-plus" />
           <View>
             <Text style={styles.ModalText}>Share</Text>
           </View>
@@ -560,7 +557,9 @@ export default function Files(props) {
   const {route, navigation} = props;
   const {folder_name, index_of: folderDepth = 0} = route?.params || {};
 
-  const {folders, files, versionData} = useSelector(state => state.files);
+  const {loading, folders, files, versionData} = useSelector(
+    state => state.files,
+  );
   const {selectedProject} = useSelector(state => state.project);
 
   const {user} = useSelector(state => state.user);
@@ -588,20 +587,14 @@ export default function Files(props) {
   const filteredFiles = files?.[folderDepth] || [];
 
   React.useEffect(() => {
-    getFolders({
-      project_id: selectedProject.id,
-      index_of: folderDepth,
-    });
+    getFolders({project_id: selectedProject.id, index_of: folderDepth});
     getFiles({project_id: selectedProject.id, folder_id: folderDepth});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const toggleFab = () => setFab(v => !v);
   const toggleMenu = folderIndex => setMenuId(folderIndex);
-
-  const toggleCreateDialogue = dialogueType => {
-    setCreateDialogueView(dialogueType);
-  };
+  const toggleCreateDialogue = v => setCreateDialogueView(v);
 
   const createFolderHandler = folderName => {
     createFolder({
@@ -610,12 +603,9 @@ export default function Files(props) {
       folder_name: folderName,
       user_id: user?.id,
     })
-      .then(res =>
-        getFolders({
-          project_id: selectedProject.id,
-          index_of: folderDepth,
-        }),
-      )
+      .then(res => {
+        getFolders({project_id: selectedProject.id, index_of: folderDepth});
+      })
       .then(res => setCreateDialogueView());
   };
 
@@ -692,6 +682,7 @@ export default function Files(props) {
 
   return (
     <View style={styles.container}>
+      <Spinner visible={loading} textContent="" />
       <ScrollView>
         {folder_name ? (
           <View style={styles.backNavigation}>
@@ -777,9 +768,7 @@ export default function Files(props) {
             icon: FolderIcon,
             color: theme.colors.primary,
             label: 'Upload folder',
-            onPress: () => {
-              console.log('in Create upload files');
-            },
+            onPress: () => console.log('in Create upload files'),
           },
           {
             icon: UploadFileIcon,

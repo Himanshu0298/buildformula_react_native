@@ -40,7 +40,7 @@ const schema = Yup.object().shape({
 });
 
 function RenderVisitorDetails({visitor, occupationOptions, onNext}) {
-  const occupation = occupationOptions.find(v => (v.id = visitor.occupation));
+  const occupation = occupationOptions.find(v => v.id === visitor.occupation);
   return (
     <View style={styles.detailsContainer}>
       <View style={styles.detailRow}>

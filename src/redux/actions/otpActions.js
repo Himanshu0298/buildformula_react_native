@@ -24,12 +24,9 @@ export default function useOtpActions() {
             const response = _res(await otpCheck(data));
             return Promise.resolve({response});
           } catch (error) {
-            const errorMessage = _err(error);
-            snackbar.showMessage({
-              message: errorMessage,
-              variant: 'error',
-            });
-            return Promise.reject(errorMessage);
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
           }
         },
       }),

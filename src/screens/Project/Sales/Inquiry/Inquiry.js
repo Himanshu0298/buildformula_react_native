@@ -23,8 +23,6 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import {theme} from 'styles/theme';
 import ProjectHeader from 'components/Molecules/Layout/ProjectHeader';
 import {PRIORITY_COLORS, STRUCTURE_TYPE_LABELS} from 'utils/constant';
-import Modal from 'react-native-modal';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {TabView} from 'react-native-tab-view';
 import Layout from 'utils/Layout';
 import MaterialTabBar from 'components/Atoms/MaterialTabBar';
@@ -59,8 +57,9 @@ function StatsRow({visitorAnalytics}) {
   );
 }
 
-function RenderVisitorItem({data, index, toggleSheet}) {
+function RenderVisitorItem({data, index, navToDetails}) {
   const {
+    id,
     first_name,
     last_name,
     phone,
@@ -70,7 +69,7 @@ function RenderVisitorItem({data, index, toggleSheet}) {
   } = data;
 
   return (
-    <TouchableOpacity onPress={() => toggleSheet(index)}>
+    <TouchableOpacity onPress={() => navToDetails(id)}>
       <View style={styles.rowMainContainer}>
         <View style={styles.rowItemContainer}>
           <Subheading style={[styles.visitorTitle, styles.name]}>
@@ -110,7 +109,7 @@ function RenderContent({
   onRefresh,
   showAnalyticsRow,
   visitorAnalytics,
-  toggleSheet,
+  navToDetails,
 }) {
   return (
     <View style={styles.contentContainer}>
@@ -128,7 +127,7 @@ function RenderContent({
           <RenderVisitorItem
             data={item}
             index={index}
-            toggleSheet={toggleSheet}
+            navToDetails={navToDetails}
           />
         )}
         refreshControl={
@@ -144,85 +143,6 @@ function RenderContent({
   );
 }
 
-function RenderVisitorDetails({data = {}, handleClose, handleEdit}) {
-  return (
-    <Modal
-      isVisible={Boolean(data.user_id)}
-      swipeDirection="down"
-      backdropOpacity={0.4}
-      onSwipeComplete={handleClose}
-      onBackButtonPress={handleClose}
-      onBackdropPress={handleClose}
-      style={{justifyContent: 'flex-end', margin: 0}}>
-      <View style={styles.sheetContainer}>
-        <View style={styles.sheetRow}>
-          <Caption style={styles.sheetRowLabel}>Visitor Name:</Caption>
-          <Caption style={styles.sheetRowValue}>
-            {' '}
-            {data.first_name} {data.last_name}
-          </Caption>
-        </View>
-        <View style={styles.sheetRow}>
-          <Caption style={styles.sheetRowLabel}>Visitor Phone:</Caption>
-          <Caption style={styles.sheetRowValue}>
-            {' +91'}
-            {data.phone}
-          </Caption>
-        </View>
-        <View style={styles.sheetRow}>
-          <Caption style={styles.sheetRowLabel}>Budget Range:</Caption>
-          <Caption style={styles.sheetRowValue}>
-            {' Rs. '}
-            {data.budget_from} {'-'} {' Rs. '}
-            {data.budget_to}
-          </Caption>
-        </View>
-        <View style={styles.sheetRow}>
-          <Caption style={styles.sheetRowLabel}>Date:</Caption>
-          <Caption style={styles.sheetRowValue}>
-            {' '}
-            {dayjs(data.follow_up_date).format('DD MMM')}
-          </Caption>
-        </View>
-        <View style={styles.sheetRow}>
-          <Caption style={styles.sheetRowLabel}>Priority:</Caption>
-          <CustomBadge
-            color={PRIORITY_COLORS[data.priority]}
-            style={[styles.badge, {marginLeft: 10}]}
-            label={data.priority}
-          />
-        </View>
-        <View style={styles.sheetRow}>
-          <Caption style={styles.sheetRowLabel}>Inquiry:</Caption>
-          <Caption style={styles.sheetRowValue}>
-            {' '}
-            {STRUCTURE_TYPE_LABELS[data.inquiry_for]} {data.bhk} BHK
-          </Caption>
-        </View>
-        <View style={styles.sheetRow}>
-          <Caption style={styles.sheetRowLabel}>Status:</Caption>
-          <CustomBadge
-            color="rgba(72,114,244,0.15)"
-            label={data.title || 'NEW VISITOR'}
-            style={[styles.badge, {marginLeft: 10}]}
-            labelStyles={styles.statusLabel}
-          />
-        </View>
-        <View style={styles.sheetRow}>
-          <Caption style={styles.sheetRowLabel}>Remarks:</Caption>
-          <Caption style={styles.sheetRowValue}> {data.remarks}</Caption>
-        </View>
-
-        <View style={styles.editButtonContainer}>
-          <TouchableOpacity style={styles.editButton}>
-            <MaterialIcons name={'edit'} color={'#fff'} size={19} />
-          </TouchableOpacity>
-        </View>
-      </View>
-    </Modal>
-  );
-}
-
 function Inquiry(props) {
   const {navigation} = props;
 
@@ -233,7 +153,6 @@ function Inquiry(props) {
     {key: 2, title: "Today's list"},
   ]);
   const [selectDialog, setSelectDialog] = useState(false);
-  const [sheetData, setSheetData] = useState();
 
   const {selectedProject} = useSelector(state => state.project);
   const {
@@ -269,15 +188,8 @@ function Inquiry(props) {
 
   const onStateChange = ({open}) => setSelectDialog(open);
 
-  const toggleSheet = index => {
-    if (!isNaN(index)) {
-      return setSheetData(tabData[selectedTab][index]);
-    }
-    return setSheetData();
-  };
-
-  const handleEdit = index => {
-    console.log('----->handleEdit ');
+  const navToDetails = id => {
+    navigation.navigate('VisitorDetails', {visitorId: id});
   };
 
   const renderScene = ({route: {key}}) => {
@@ -287,7 +199,7 @@ function Inquiry(props) {
         onRefresh={onRefresh}
         showAnalyticsRow={key === 0}
         visitorAnalytics={visitorAnalytics}
-        toggleSheet={toggleSheet}
+        navToDetails={navToDetails}
       />
     );
   };
@@ -332,11 +244,6 @@ function Inquiry(props) {
             onPress: () => navigation.navigate('AddFollowUp'),
           },
         ]}
-      />
-      <RenderVisitorDetails
-        data={sheetData}
-        handleClose={toggleSheet}
-        handleEdit={handleEdit}
       />
     </>
   );
@@ -411,40 +318,5 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  sheetContainer: {
-    backgroundColor: '#fff',
-    display: 'flex',
-    borderTopLeftRadius: 50,
-    borderTopRightRadius: 50,
-    paddingLeft: 30,
-    paddingRight: 40,
-    paddingVertical: 40,
-  },
-  sheetRow: {
-    display: 'flex',
-    flexDirection: 'row',
-    marginTop: 5,
-  },
-  sheetRowLabel: {
-    fontWeight: 'bold',
-  },
-  sheetRowValue: {
-    textTransform: 'capitalize',
-    flexWrap: 'wrap',
-  },
-  editButtonContainer: {
-    marginTop: 20,
-    display: 'flex',
-    alignItems: 'flex-end',
-  },
-  editButton: {
-    borderRadius: 100,
-    height: 50,
-    width: 50,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: theme.colors.primary,
   },
 });

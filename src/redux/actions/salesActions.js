@@ -22,6 +22,7 @@ export default function useSalesActions() {
     lockUnit,
     createBooking,
     getBankList,
+    getVisitor,
   } = useSalesServices();
 
   return {
@@ -40,12 +41,9 @@ export default function useSalesActions() {
 
             return Promise.resolve(data);
           } catch (error) {
-            const errorMessage = _err(error);
-            snackbar.showMessage({
-              message: errorMessage,
-              variant: 'error',
-            });
-            return Promise.reject(errorMessage);
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
           }
         },
       }),
@@ -62,12 +60,25 @@ export default function useSalesActions() {
 
             return Promise.resolve(data);
           } catch (error) {
-            const errorMessage = _err(error);
-            snackbar.showMessage({
-              message: errorMessage,
-              variant: 'error',
-            });
-            return Promise.reject(errorMessage);
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    getVisitor: params =>
+      dispatch({
+        type: types.GET_VISITOR,
+        payload: async () => {
+          try {
+            const response = _res(await getVisitor(params));
+            const {data} = response;
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
           }
         },
       }),
@@ -87,12 +98,9 @@ export default function useSalesActions() {
               todayFollowups: filter.today_followups,
             });
           } catch (error) {
-            const errorMessage = _err(error);
-            snackbar.showMessage({
-              message: errorMessage,
-              variant: 'error',
-            });
-            return Promise.reject(errorMessage);
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
           }
         },
       }),
@@ -112,12 +120,9 @@ export default function useSalesActions() {
               visitorSuggestions: others.visitors_autosuggestions || [],
             });
           } catch (error) {
-            const errorMessage = _err(error);
-            snackbar.showMessage({
-              message: errorMessage,
-              variant: 'error',
-            });
-            return Promise.reject(errorMessage);
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
           }
         },
       }),
@@ -131,12 +136,9 @@ export default function useSalesActions() {
 
             return Promise.resolve(data.data);
           } catch (error) {
-            const errorMessage = _err(error);
-            snackbar.showMessage({
-              message: errorMessage,
-              variant: 'error',
-            });
-            return Promise.reject(errorMessage);
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
           }
         },
       }),
@@ -150,12 +152,9 @@ export default function useSalesActions() {
 
             return Promise.resolve(data.data);
           } catch (error) {
-            const errorMessage = _err(error);
-            snackbar.showMessage({
-              message: errorMessage,
-              variant: 'error',
-            });
-            return Promise.reject(errorMessage);
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
           }
         },
       }),
@@ -169,12 +168,9 @@ export default function useSalesActions() {
 
             return Promise.resolve(data.data);
           } catch (error) {
-            const errorMessage = _err(error);
-            snackbar.showMessage({
-              message: errorMessage,
-              variant: 'error',
-            });
-            return Promise.reject(errorMessage);
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
           }
         },
       }),
@@ -194,12 +190,9 @@ export default function useSalesActions() {
 
             return Promise.resolve(data);
           } catch (error) {
-            const errorMessage = _err(error);
-            snackbar.showMessage({
-              message: errorMessage,
-              variant: 'error',
-            });
-            return Promise.reject(errorMessage);
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
           }
         },
       }),
@@ -213,12 +206,9 @@ export default function useSalesActions() {
 
             return Promise.resolve(id);
           } catch (error) {
-            const errorMessage = _err(error);
-            snackbar.showMessage({
-              message: errorMessage,
-              variant: 'error',
-            });
-            return Promise.reject(errorMessage);
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
           }
         },
       }),
@@ -233,12 +223,9 @@ export default function useSalesActions() {
 
             return Promise.resolve(data);
           } catch (error) {
-            const errorMessage = _err(error);
-            snackbar.showMessage({
-              message: errorMessage,
-              variant: 'error',
-            });
-            return Promise.reject(errorMessage);
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
           }
         },
       }),
@@ -253,12 +240,9 @@ export default function useSalesActions() {
 
             return Promise.resolve(data);
           } catch (error) {
-            const errorMessage = _err(error);
-            snackbar.showMessage({
-              message: errorMessage,
-              variant: 'error',
-            });
-            return Promise.reject(errorMessage);
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
           }
         },
       }),
@@ -293,12 +277,9 @@ export default function useSalesActions() {
 
             return Promise.resolve(data);
           } catch (error) {
-            const errorMessage = _err(error);
-            snackbar.showMessage({
-              message: errorMessage,
-              variant: 'error',
-            });
-            return Promise.reject(errorMessage);
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
           }
         },
       }),
