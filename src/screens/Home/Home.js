@@ -35,7 +35,7 @@ const IMAGES = {
   Customer: developerImage,
 };
 
-const PROJECT_CONTAINER_WIDTH = Layout.window.width * 0.44;
+const PROJECT_CONTAINER_WIDTH = Layout.window.width * 0.43;
 const PROJECT_CONTAINER_MARGIN = Layout.window.width * 0.02;
 const DEVELOPER_IMAGE_WIDTH = PROJECT_CONTAINER_WIDTH * 0.9;
 
@@ -92,7 +92,9 @@ function RenderProject({project, handleOnPress, tab}) {
         <Subheading style={styles.projectLabel}>
           {project.project_name}
         </Subheading>
-        <Caption style={styles.projectLabel}>{project.project_address}</Caption>
+        <Caption numberOfLines={1} style={styles.projectLabel}>
+          {project.project_address}
+        </Caption>
       </View>
     </TouchableOpacity>
   );
