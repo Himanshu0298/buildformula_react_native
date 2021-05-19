@@ -31,7 +31,7 @@ const RenderDatePicker = React.forwardRef((props, ref) => {
   const [date, setDate] = useState(value);
 
   const togglePicker = () => {
-    setOpen((v) => !v);
+    setOpen(v => !v);
     Keyboard.dismiss();
   };
 

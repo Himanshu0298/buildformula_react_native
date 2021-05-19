@@ -4,7 +4,7 @@ export function useResProcessor() {
   const {logout} = useAppActions();
 
   return {
-    _err: (error) => {
+    _err: error => {
       console.log('-----> error', error);
       const {response} = error;
       let errorMessage;
@@ -28,7 +28,7 @@ export function useResProcessor() {
       return errorMessage;
     },
 
-    _res: (response) => {
+    _res: response => {
       const {data} = response;
 
       // TODO: revert this temp fix

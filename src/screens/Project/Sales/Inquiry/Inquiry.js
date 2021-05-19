@@ -235,14 +235,14 @@ function Inquiry(props) {
   const [selectDialog, setSelectDialog] = useState(false);
   const [sheetData, setSheetData] = useState();
 
-  const {selectedProject} = useSelector((state) => state.project);
+  const {selectedProject} = useSelector(state => state.project);
   const {
     loading,
     visitors,
     followups,
     todayFollowups,
     visitorAnalytics,
-  } = useSelector((state) => state.sales);
+  } = useSelector(state => state.sales);
 
   const {getVisitors, getFollowUps, getSalesData} = useSalesActions();
 
@@ -265,18 +265,18 @@ function Inquiry(props) {
     }
   };
 
-  const toggleSelectDialog = () => setSelectDialog((v) => !v);
+  const toggleSelectDialog = () => setSelectDialog(v => !v);
 
   const onStateChange = ({open}) => setSelectDialog(open);
 
-  const toggleSheet = (index) => {
+  const toggleSheet = index => {
     if (!isNaN(index)) {
       return setSheetData(tabData[selectedTab][index]);
     }
     return setSheetData();
   };
 
-  const handleEdit = (index) => {
+  const handleEdit = index => {
     console.log('----->handleEdit ');
   };
 
@@ -301,7 +301,7 @@ function Inquiry(props) {
         renderScene={renderScene}
         onIndexChange={setSelectedTab}
         initialLayout={{width: Layout.window.width}}
-        renderTabBar={(tabBarProps) => {
+        renderTabBar={tabBarProps => {
           return (
             <View style={styles.headerContainer}>
               <ProjectHeader />

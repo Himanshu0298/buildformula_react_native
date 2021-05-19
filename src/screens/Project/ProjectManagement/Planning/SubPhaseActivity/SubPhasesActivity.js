@@ -139,8 +139,8 @@ export default function SubPhasesActivity(props) {
   const [menuIndex, setMenuIndex] = React.useState(false);
   const [showDialog, setShowDialog] = React.useState(false);
 
-  const toggleMenu = (v) => setMenuIndex(v);
-  const toggleDialog = () => setShowDialog((v) => !v);
+  const toggleMenu = v => setMenuIndex(v);
+  const toggleDialog = () => setShowDialog(v => !v);
 
   const sortedPhases = useMemo(() => {
     return PHASES;

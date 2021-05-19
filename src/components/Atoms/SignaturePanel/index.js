@@ -11,7 +11,7 @@ function SignaturePanel(props) {
   const saveSign = () => signatureRef.current.saveImage();
   const resetSign = () => signatureRef.current.resetImage();
 
-  const _onSaveEvent = (result) => {
+  const _onSaveEvent = result => {
     console.log('-----> result', result);
     onSave(result);
   };

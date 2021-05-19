@@ -16,11 +16,11 @@ class BoardRepository {
   }
   columns = () => this.registry.columns();
 
-  column = (columnId) => this.registry.column(columnId);
+  column = columnId => this.registry.column(columnId);
 
-  items = (columnId) => this.registry.items(columnId);
+  items = columnId => this.registry.items(columnId);
 
-  visibleItems = (columnId) => this.registry.visibleItems(columnId);
+  visibleItems = columnId => this.registry.visibleItems(columnId);
 
   addListener = (columnId, event, callback) => {
     const forColumn = this.listeners[columnId];
@@ -58,11 +58,11 @@ class BoardRepository {
     item.measureAndSaveLayout(previousItem);
   };
 
-  updateLayoutAfterVisibilityChanged = (columnId) => {
+  updateLayoutAfterVisibilityChanged = columnId => {
     const items = this.items(columnId);
     const rangeArr = range(items.length);
 
-    rangeArr.forEach((i) => {
+    rangeArr.forEach(i => {
       this.updateItemWithLayout(columnId, items[i], items[i - 1]);
     });
   };
@@ -74,7 +74,7 @@ class BoardRepository {
     this.updateLayoutAfterVisibilityChanged(columnId);
 
     return items.forEach(
-      (item) => visibleItems && item.setVisible(visibleItems[item.index()]),
+      item => visibleItems && item.setVisible(visibleItems[item.index()]),
     );
   };
 
@@ -84,7 +84,7 @@ class BoardRepository {
     return column && column.setRef(ref);
   };
 
-  updateColumnWithLayout = (columnId) => {
+  updateColumnWithLayout = columnId => {
     const column = this.registry.column(columnId);
 
     return column && column.measureAndSaveLayout();
@@ -97,7 +97,7 @@ class BoardRepository {
   updateColumnsLayoutAfterVisibilityChanged = () => {
     const columns = this.columns();
 
-    return columns.forEach((column) => {
+    return columns.forEach(column => {
       const columnId = column.id();
       this.updateColumnWithLayout(columnId);
       this.updateLayoutAfterVisibilityChanged(columnId);
@@ -114,10 +114,10 @@ class BoardRepository {
 
   showAll = () => {
     const columns = this.columns();
-    columns.forEach((column) => {
+    columns.forEach(column => {
       const items = this.items(column.id());
 
-      return items.forEach((item) => this.show(column.id(), item));
+      return items.forEach(item => this.show(column.id(), item));
     });
   };
 

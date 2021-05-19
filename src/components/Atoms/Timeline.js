@@ -217,7 +217,7 @@ export default class Timeline extends PureComponent {
           this.props.eventContainerStyle,
           rowData.eventContainerStyle,
         ]}
-        onLayout={(evt) => {
+        onLayout={evt => {
           if (!this.state.x && !this.state.width) {
             const {x, width} = evt.nativeEvent.layout;
             this.setState({x, width});

@@ -10,7 +10,7 @@ export default function ProjectDashboard(props) {
   const {project} = route?.params || {};
 
   const {getProjectData, getProjectCommonData} = useProjectActions();
-  const {loading} = useSelector((state) => state.project);
+  const {loading} = useSelector(state => state.project);
 
   useEffect(() => {
     getProjectData(project.id);

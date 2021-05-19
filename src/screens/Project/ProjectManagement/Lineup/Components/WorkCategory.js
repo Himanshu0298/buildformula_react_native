@@ -58,7 +58,7 @@ function AddWorkCategoryDialog(props) {
           validateOnChange={false}
           initialValues={{work: selectedCategory?.title}}
           validationSchema={schema}
-          onSubmit={async (values) => onSubmit(values)}>
+          onSubmit={async values => onSubmit(values)}>
           {({values, errors, handleChange, handleBlur, handleSubmit}) => {
             return (
               <View style={styles.dialogContentContainer}>
@@ -118,7 +118,7 @@ function AddWorkDialog(props) {
             unit: selectedActivity?.unit_id,
           }}
           validationSchema={workActivitySchema}
-          onSubmit={(values) => onSubmit(values)}>
+          onSubmit={values => onSubmit(values)}>
           {({
             values,
             errors,
@@ -146,7 +146,7 @@ function AddWorkDialog(props) {
                   containerStyles={styles.input}
                   value={values.unit}
                   error={errors.unit}
-                  onChange={(value) => {
+                  onChange={value => {
                     setFieldValue('unit', value);
                   }}
                 />
@@ -261,8 +261,8 @@ function RenderWorkCategories(props) {
     deleteLineupEntity,
   } = useProjectManagementActions();
 
-  const toggleMenu = (v) => setMenuIndex(v);
-  const toggleDialog = () => setAddWorkDialog((v) => !v);
+  const toggleMenu = v => setMenuIndex(v);
+  const toggleDialog = () => setAddWorkDialog(v => !v);
 
   const handleSubmit = ({work}) => {
     if (selectedCategory) {
@@ -289,7 +289,7 @@ function RenderWorkCategories(props) {
     }
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = id => {
     toggleMenu();
     alert.show({
       title: 'Confirm',
@@ -303,7 +303,7 @@ function RenderWorkCategories(props) {
     });
   };
 
-  const handleUpdate = (category) => {
+  const handleUpdate = category => {
     toggleMenu();
     toggleDialog();
     setSelectedCategory(category);
@@ -367,7 +367,7 @@ function RenderWorks(props) {
 
   const alert = useAlert();
 
-  const {commonData} = useSelector((state) => state.project);
+  const {commonData} = useSelector(state => state.project);
 
   const unitOptions = useMemo(() => {
     return commonData.units.map(({id, title}) => ({label: title, value: id}));
@@ -383,8 +383,8 @@ function RenderWorks(props) {
     deleteLineupEntity,
   } = useProjectManagementActions();
 
-  const toggleMenu = (v) => setMenuIndex(v);
-  const toggleDialog = () => setAddActivityDialog((v) => !v);
+  const toggleMenu = v => setMenuIndex(v);
+  const toggleDialog = () => setAddActivityDialog(v => !v);
 
   const createWorkActivity = ({activity, unit}) => {
     if (selectedActivity) {
@@ -413,7 +413,7 @@ function RenderWorks(props) {
     }
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = id => {
     toggleMenu();
     alert.show({
       title: 'Confirm',
@@ -427,7 +427,7 @@ function RenderWorks(props) {
     });
   };
 
-  const handleUpdate = (activity) => {
+  const handleUpdate = activity => {
     toggleMenu();
     toggleDialog();
     setSelectedActivity(activity);
@@ -490,13 +490,11 @@ function WorkCategory(props) {
 
   const [selectedWork, setSelectedWork] = useState();
 
-  const {workCategories, works} = useSelector(
-    (state) => state.projectManagement,
-  );
+  const {workCategories, works} = useSelector(state => state.projectManagement);
 
   const {getWorks} = useProjectManagementActions();
 
-  const getWorkActivities = (category_id) => {
+  const getWorkActivities = category_id => {
     getWorks({
       type: 'work',
       category_id,
@@ -504,7 +502,7 @@ function WorkCategory(props) {
     });
   };
 
-  const selectWork = (work) => {
+  const selectWork = work => {
     getWorkActivities(work.id);
     setSelectedWork(work);
   };

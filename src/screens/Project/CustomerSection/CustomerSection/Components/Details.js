@@ -40,7 +40,7 @@ function RenderCustomer({customer, navToDetails}) {
 function Details(props) {
   const {theme, navigation, route} = props;
   const {params} = route;
-  const {customerData} = useSelector((state) => state.customer);
+  const {customerData} = useSelector(state => state.customer);
   // const customerDetails = [
   //   {
   //     profile_pic: 'https://reactnative.dev/img/tiny_logo.png',
@@ -59,11 +59,11 @@ function Details(props) {
   //   },
   // ];
 
-  const navToDetails = (customer) => {
+  const navToDetails = customer => {
     navigation.push('CustomerDetails', {customer});
   };
 
-  const navToAdd = (customer) => {
+  const navToAdd = customer => {
     navigation.push('AddCustomer', {...params});
   };
 

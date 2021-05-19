@@ -11,7 +11,7 @@ export default function useUserActions() {
   const snackbar = useSnackbar();
 
   return {
-    signUp: (user) =>
+    signUp: user =>
       dispatch({
         type: types.SIGN_UP,
         payload: async () => {
@@ -31,7 +31,7 @@ export default function useUserActions() {
           }
         },
       }),
-    login: (data) =>
+    login: data =>
       dispatch({
         type: types.LOGIN,
         payload: async () => {
@@ -52,7 +52,7 @@ export default function useUserActions() {
           }
         },
       }),
-    selectRole: (data) =>
+    selectRole: data =>
       dispatch({
         type: types.SELECT_ROLE,
         payload: async () => {

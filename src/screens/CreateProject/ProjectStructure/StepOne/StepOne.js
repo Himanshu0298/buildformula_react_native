@@ -91,10 +91,10 @@ function StepOne(props) {
   const {updateStructureTypes, updateStructure} = useAddProjectActions();
 
   const {structureTypes, structure, project, loading} = useSelector(
-    (state) => state.addProject,
+    state => state.addProject,
   );
 
-  const updateTypes = (type) => {
+  const updateTypes = type => {
     const types = _.cloneDeep(structureTypes);
     types[type] = !types[type];
     let selectedStructureType = 1;
@@ -109,7 +109,7 @@ function StepOne(props) {
 
   const handleSubmit = () => {
     const selectedTypes = Object.keys(structureTypes).filter(
-      (key) => structureTypes[key],
+      key => structureTypes[key],
     );
     if (selectedTypes.length === 0) {
       snackbar.showMessage({
@@ -118,13 +118,13 @@ function StepOne(props) {
       });
     } else {
       const types = Object.keys(structureTypes)
-        .filter((key) => structureTypes[key])
+        .filter(key => structureTypes[key])
         .join();
 
       const data = {project_id: project.id, project_types: types};
 
       const updatedStructure = {};
-      selectedTypes.map((type) => {
+      selectedTypes.map(type => {
         if (structure[type]) {
           updatedStructure[type] = structure[type];
         } else {

@@ -3,20 +3,20 @@ import {instance, useConfig} from './init';
 export default function useAuth() {
   const {config} = useConfig();
   return {
-    login: (data) => {
+    login: data => {
       return instance.post('/login', data, config({auth: false}));
     },
-    signUp: (data) => {
+    signUp: data => {
       return instance.post(
         '/register',
         data,
         config({auth: false, multipart: false}),
       );
     },
-    otpCheck: (data) => {
+    otpCheck: data => {
       return instance.post('/otp_check', data, config({auth: false}));
     },
-    updateUser: (data) => {
+    updateUser: data => {
       return instance.post('/user_common', data, config());
     },
   };

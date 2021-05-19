@@ -7,7 +7,7 @@ import {
   SafeAreaProvider,
   initialWindowSafeAreaInsets,
 } from 'react-native-safe-area-context';
-import SplashScreen from 'react-native-splash-screen';
+import RNBootSplash from 'react-native-bootsplash';
 import {theme} from './src/styles/theme';
 import {store, persistor} from './src/redux/store';
 import NavContainer from './src/navigation';
@@ -23,7 +23,7 @@ import AlertProvider from './src/components/Atoms/Alert/AlertProvider';
 const languageDetector = {
   type: 'languageDetector',
   async: true,
-  detect: (cb) => {
+  detect: cb => {
     const languages = Object.keys(translations);
     const {languageTag} = RNLocalize.findBestAvailableLanguage(languages) || {
       languageTag: 'en',
@@ -46,7 +46,7 @@ const Loader = () => {
 
 const App = () => {
   useEffect(() => {
-    SplashScreen.hide();
+    RNBootSplash.hide({fade: true});
   }, []);
 
   // TODO: figure out action sheet (ActionSheetProvider) is only required for file Input or the whole app

@@ -53,7 +53,7 @@ function renderMessageText(props) {
   );
 }
 
-const renderInputToolbar = (props) => (
+const renderInputToolbar = props => (
   <InputToolbar
     {...props}
     containerStyle={{
@@ -94,9 +94,7 @@ function ActivityChatModal({open, handleClose}) {
   }, []);
 
   const onSend = React.useCallback((msgs = []) => {
-    setMessages((previousMessages) =>
-      GiftedChat.append(previousMessages, msgs),
-    );
+    setMessages(previousMessages => GiftedChat.append(previousMessages, msgs));
   }, []);
 
   return (

@@ -168,10 +168,10 @@ export default function Phases(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sortable]);
 
-  const toggleMenu = (v) => setMenuIndex(v);
-  const toggleSortable = () => setSortable((v) => !v);
-  const toggleSelectDialog = () => setSelectDialog((v) => !v);
-  const toggleAddDialog = (v) => setAddDialog(v);
+  const toggleMenu = v => setMenuIndex(v);
+  const toggleSortable = () => setSortable(v => !v);
+  const toggleSelectDialog = () => setSelectDialog(v => !v);
+  const toggleAddDialog = v => setAddDialog(v);
   const onStateChange = ({open}) => setSelectDialog(open);
 
   const saveSort = () => {
@@ -238,7 +238,7 @@ export default function Phases(props) {
               navToSubPhases={navToSubPhases}
             />
           )}
-          onDataChange={(data) => {
+          onDataChange={data => {
             console.log('-----> onDataChange', data);
           }}
         />

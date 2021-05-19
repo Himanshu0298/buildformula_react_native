@@ -62,8 +62,8 @@ function CustomerSection(props) {
     getModifyRequests,
   } = useCustomerActions();
 
-  const {user} = useSelector((state) => state.user);
-  const {loading} = useSelector((state) => state.customer);
+  const {user} = useSelector(state => state.user);
+  const {loading} = useSelector(state => state.customer);
 
   const [selectedTab, setSelectedTab] = React.useState(0);
   const [routes] = React.useState([
@@ -115,7 +115,7 @@ function CustomerSection(props) {
         renderScene={renderScene}
         onIndexChange={setSelectedTab}
         initialLayout={{width: Layout.window.width}}
-        renderTabBar={(tabBarProps) => <RenderTabBar {...tabBarProps} />}
+        renderTabBar={tabBarProps => <RenderTabBar {...tabBarProps} />}
       />
     </>
   );

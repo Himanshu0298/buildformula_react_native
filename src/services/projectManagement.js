@@ -3,23 +3,23 @@ import {instance, useConfig} from './init';
 export default function useProjectManagement() {
   const {config} = useConfig();
   return {
-    getLineupData: (data) => {
+    getLineupData: data => {
       const params = config({multipart: false});
       return instance.post('/lineup/get_lists', data, params);
     },
-    createLineupEntity: (data) => {
+    createLineupEntity: data => {
       const params = config({multipart: false});
       return instance.post('/lineup/addnew', data, params);
     },
-    updateLineupEntity: (data) => {
+    updateLineupEntity: data => {
       const params = config({multipart: false});
       return instance.post('/lineup/update', data, params);
     },
-    deleteLineupEntity: (data) => {
+    deleteLineupEntity: data => {
       const params = config({multipart: false});
       return instance.post('/lineup/delete', data, params);
     },
-    updateMilestoneOrder: (data) => {
+    updateMilestoneOrder: data => {
       const params = config({multipart: false});
       return instance.post('/lineup/updatemilestoneorder', data, params);
     },

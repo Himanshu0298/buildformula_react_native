@@ -261,9 +261,9 @@ function FilesStack() {
 function GeneralDrawer() {
   return (
     <Drawer.Navigator
-      drawerContent={(props) => (
+      drawerContent={props => (
         <RouteContext.Consumer>
-          {(currentScreen) => (
+          {currentScreen => (
             <DrawerContent
               {...props}
               currentScreen={currentScreen}
@@ -281,9 +281,9 @@ function GeneralDrawer() {
 function ProjectDrawer() {
   return (
     <Drawer.Navigator
-      drawerContent={(props) => (
+      drawerContent={props => (
         <RouteContext.Consumer>
-          {(currentScreen) => (
+          {currentScreen => (
             <DrawerContent
               {...props}
               currentScreen={currentScreen}
@@ -312,7 +312,7 @@ function ProjectDrawer() {
 }
 
 // Gets the current screen from navigation state
-const getActiveRouteName = (state) => {
+const getActiveRouteName = state => {
   const route = state.routes[state.index];
 
   if (route.state) {
@@ -324,9 +324,9 @@ const getActiveRouteName = (state) => {
 };
 
 function NavContainer() {
-  const {authenticated} = useSelector((state) => state.user);
-  const {language} = useSelector((state) => state.app);
-  const state = useSelector((root) => root);
+  const {authenticated} = useSelector(state => state.user);
+  const {language} = useSelector(state => state.app);
+  const state = useSelector(root => root);
   const [currentScreen, setCurrentScreen] = useState(
     authenticated ? 'Home' : 'LanguageSelect',
   );
@@ -344,15 +344,15 @@ function NavContainer() {
     const useTouchId = false;
     if (useTouchId) {
       TouchID.isSupported(optionalConfigObject)
-        .then((biometryType) => {
+        .then(biometryType => {
           // Success code
           TouchID.authenticate('', authObject)
-            .then((success) => {})
-            .catch(async (error) => {
+            .then(success => {})
+            .catch(async error => {
               await BackHandler.exitApp();
             });
         })
-        .catch((error) => {
+        .catch(error => {
           // Failure code
           console.log('----->error ', error);
         });
@@ -371,7 +371,7 @@ function NavContainer() {
     <NavigationContainer
       theme={theme}
       ref={navigationRef}
-      onStateChange={(navState) => {
+      onStateChange={navState => {
         const previousRouteName = routeNameRef.current;
         const currentRouteName = getActiveRouteName(navState);
         if (previousRouteName !== currentRouteName) {

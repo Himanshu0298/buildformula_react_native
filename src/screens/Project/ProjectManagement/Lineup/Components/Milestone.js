@@ -49,7 +49,7 @@ function AddMilestoneDialog(props) {
             milestone: selectedMilestone?.title,
           }}
           validationSchema={schema}
-          onSubmit={(values) => onSubmit(values)}>
+          onSubmit={values => onSubmit(values)}>
           {({values, errors, handleChange, handleBlur, handleSubmit}) => {
             return (
               <View style={styles.dialogContentContainer}>
@@ -122,7 +122,7 @@ function Milestone(props) {
 
   const alert = useAlert();
 
-  const {milestones} = useSelector((state) => state.projectManagement);
+  const {milestones} = useSelector(state => state.projectManagement);
 
   const [menuIndex, setMenuIndex] = React.useState(false);
   const [showDialog, setShowDialog] = React.useState(false);
@@ -135,8 +135,8 @@ function Milestone(props) {
     deleteLineupEntity,
   } = useProjectManagementActions();
 
-  const toggleMenu = (v) => setMenuIndex(v);
-  const toggleDialog = () => setShowDialog((v) => !v);
+  const toggleMenu = v => setMenuIndex(v);
+  const toggleDialog = () => setShowDialog(v => !v);
 
   const handleSubmit = ({milestone}) => {
     if (selectedMilestone) {
@@ -173,7 +173,7 @@ function Milestone(props) {
     });
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = id => {
     toggleMenu();
     alert.show({
       title: 'Confirm',
@@ -187,7 +187,7 @@ function Milestone(props) {
     });
   };
 
-  const handleUpdate = (milestone) => {
+  const handleUpdate = milestone => {
     toggleMenu();
     toggleDialog();
     setSelectedMilestone(milestone);
@@ -222,7 +222,7 @@ function Milestone(props) {
                 }}
               />
             )}
-            onDataChange={(data) => {
+            onDataChange={data => {
               console.log('-----> onDataChange', data);
             }}
             onDragEnd={handleDragEnd}

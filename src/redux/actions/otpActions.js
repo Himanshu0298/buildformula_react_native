@@ -11,12 +11,12 @@ export default function useOtpActions() {
   const {_err, _res} = useResProcessor();
 
   return {
-    sentOtp: (phone) =>
+    sentOtp: phone =>
       dispatch({
         type: types.SEND_OTP,
         payload: async () => {},
       }),
-    verifyOtp: (data) =>
+    verifyOtp: data =>
       dispatch({
         type: types.VERIFY_OTP,
         payload: async () => {

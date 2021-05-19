@@ -5,7 +5,7 @@ export default function useAppActions() {
   const dispatch = useDispatch();
 
   return {
-    setAppLanguage: (language) =>
+    setAppLanguage: language =>
       dispatch({
         type: types.SET_LANGUAGE,
         payload: language,

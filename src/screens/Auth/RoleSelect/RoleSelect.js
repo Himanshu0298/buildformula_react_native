@@ -24,7 +24,7 @@ function RoleBox({title, onSelectPackage, roleId, colors}) {
 }
 
 function RoleSelect(props) {
-  const {user, loading} = useSelector((state) => state.user);
+  const {user, loading} = useSelector(state => state.user);
   const {selectRole} = useUserActions();
 
   function onSelectPackage(roleId) {
@@ -34,10 +34,10 @@ function RoleSelect(props) {
     formData.append('default_role_id', roleId);
 
     selectRole(formData)
-      .then((data) => {
+      .then(data => {
         props.navigation.navigate('ProjectCreationStepOne');
       })
-      .catch((error) => {
+      .catch(error => {
         console.log('-----> error', error);
       });
   }

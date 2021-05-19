@@ -107,7 +107,7 @@ function CustomerForm(props) {
       validateOnChange={false}
       initialValues={{}}
       validationSchema={schema}
-      onSubmit={async (values) => onSubmit(values)}>
+      onSubmit={async values => onSubmit(values)}>
       {({
         values,
         errors,
@@ -142,7 +142,7 @@ function CustomerForm(props) {
           />
           <RenderFiles
             files={values.files}
-            onRemove={(index) => {
+            onRemove={index => {
               const {files} = cloneDeep(values);
               files.splice(index, 1);
               setFieldValue('files', files);
@@ -154,9 +154,9 @@ function CustomerForm(props) {
               openFilePicker({
                 type: 'file',
                 multiple: true,
-                onChoose: (v) => {
+                onChoose: v => {
                   const files = [...(values.files || []), ...v];
-                  const filteredFiles = uniqBy(files, (e) => e.name);
+                  const filteredFiles = uniqBy(files, e => e.name);
                   setFieldValue('files', filteredFiles);
                 },
               })

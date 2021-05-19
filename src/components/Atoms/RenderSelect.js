@@ -17,7 +17,7 @@ const RenderSelect = React.forwardRef((props, ref) => {
 
   const {parsedOptions, withValue} = useMemo(() => {
     if (options[0] && options[0].label) {
-      const result = options.map((option) => option.label);
+      const result = options.map(option => option.label);
       return {parsedOptions: result, withValue: true};
     }
     return {parsedOptions: options, withValue: false};
@@ -25,7 +25,7 @@ const RenderSelect = React.forwardRef((props, ref) => {
 
   value = useMemo(() => {
     if (withValue) {
-      const index = options.findIndex((option) => option.value === value);
+      const index = options.findIndex(option => option.value === value);
       if (index > -1) {
         return options[index].label;
       }
@@ -42,7 +42,7 @@ const RenderSelect = React.forwardRef((props, ref) => {
         cancelButtonIndex: parsedOptions.length,
         destructiveButtonIndex,
       },
-      (buttonIndex) => {
+      buttonIndex => {
         if (buttonIndex < parsedOptions.length) {
           let selectedValue = parsedOptions[buttonIndex];
           if (withValue && options[buttonIndex].value) {

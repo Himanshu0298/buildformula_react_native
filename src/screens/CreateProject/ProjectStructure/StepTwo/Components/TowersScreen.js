@@ -44,15 +44,15 @@ function TowersScreen(props) {
   );
 
   const towerOptions = useMemo(() => {
-    return Object.keys(towers).map((key) => ({
+    return Object.keys(towers).map(key => ({
       label: getTowerLabel(key),
       value: key,
     }));
   }, [towers]);
 
-  const toggleDuplicateDialog = () => setDuplicateDialog((v) => !v);
+  const toggleDuplicateDialog = () => setDuplicateDialog(v => !v);
 
-  const onTowerPress = (towerId) => showAllFloors(towerId);
+  const onTowerPress = towerId => showAllFloors(towerId);
 
   return (
     <SafeAreaView style={{flex: 1}}>

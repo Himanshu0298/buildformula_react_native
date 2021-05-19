@@ -2,8 +2,7 @@ package com.vshwan;
 
 import android.os.Bundle;
 import com.facebook.react.ReactActivity;
-import org.devio.rn.splashscreen.SplashScreen; 
-
+import com.zoontek.rnbootsplash.RNBootSplash;
 
 public class MainActivity extends ReactActivity {
 
@@ -12,8 +11,8 @@ public class MainActivity extends ReactActivity {
    */
   @Override
   protected void onCreate(Bundle savedInstanceState) {
-      SplashScreen.show(this, R.style.SplashScreenTheme); 
       super.onCreate(savedInstanceState);
+      RNBootSplash.init(R.drawable.bootsplash, MainActivity.this);
   }
 
   /**

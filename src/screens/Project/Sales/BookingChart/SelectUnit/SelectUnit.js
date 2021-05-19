@@ -10,11 +10,11 @@ export default function SelectUnit(props) {
 
   const {getUnitsBookingStatus, lockUnit, toggleTimer} = useSalesActions();
 
-  const {selectedProject = {}} = useSelector((state) => state.project);
+  const {selectedProject = {}} = useSelector(state => state.project);
   const {loadingUnitStatus, unitBookingStatus} = useSelector(
-    (state) => state.sales,
+    state => state.sales,
   );
-  const {user} = useSelector((state) => state.user);
+  const {user} = useSelector(state => state.user);
 
   const {selectedStructure, floorId, towerId} = route?.params || {};
   const structureData = selectedProject.projectData?.[selectedStructure] || {};
@@ -32,9 +32,9 @@ export default function SelectUnit(props) {
   const units = useMemo(() => {
     const data = towers?.[towerId]?.floors?.[floorId]?.units || {};
 
-    Object.keys(data).map((key) => {
+    Object.keys(data).map(key => {
       const bookingData = unitBookingStatus.find(
-        (unit) => unit.id === data[key].unitId,
+        unit => unit.id === data[key].unitId,
       );
 
       if (bookingData) {
@@ -55,7 +55,7 @@ export default function SelectUnit(props) {
     getUnitsBookingStatus(formData);
   };
 
-  const checkUnitDisability = (unit) => {
+  const checkUnitDisability = unit => {
     let disabled =
       (unit.booking_status && unit.booking_status !== 'filling') ||
       (unit.booking_status === 'filling' &&

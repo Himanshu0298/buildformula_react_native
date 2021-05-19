@@ -116,7 +116,7 @@ function RatesSection({bookingDetails, bookingAreaUnitType, theme}) {
     if (other_charges.length > 0) {
       return new Array(Math.ceil(2))
         .fill()
-        .map((item) => other_charges.splice(0, 2));
+        .map(item => other_charges.splice(0, 2));
     }
     return [];
   }, [other_charges]);
@@ -190,7 +190,7 @@ function RatesSection({bookingDetails, bookingAreaUnitType, theme}) {
             <Subheading style={{color: theme.colors.primary}}>
               OTHER CHARGES
             </Subheading>
-            {otherChargePairs.map((pair) => {
+            {otherChargePairs.map(pair => {
               return (
                 <RenderRow
                   row={pair.map(({label, amount}) => ({

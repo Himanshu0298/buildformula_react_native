@@ -37,7 +37,7 @@ const schema = Yup.object().shape({
 function getTypesSchema(types) {
   const typesSchema = {};
 
-  types.map((type) => {
+  types.map(type => {
     typesSchema[`${type}_area`] = Yup.number('Invalid').required('Required');
     typesSchema[`${type}_unit`] = Yup.number('Invalid').required('Required');
     typesSchema[`${type}_rate`] = Yup.number('Invalid').required('Required');
@@ -78,7 +78,7 @@ function RatesColumn(props) {
     if (area) {
       amount = area * rate;
       setFieldValue('area_amount', round(amount));
-      const otherTypes = TYPES.filter((v) => v !== type);
+      const otherTypes = TYPES.filter(v => v !== type);
 
       syncAmounts(amount, otherTypes);
     }
@@ -97,7 +97,7 @@ function RatesColumn(props) {
         keyboardType="number-pad"
         multiline={true}
         value={values[`${rateType}_area`]}
-        onChangeText={(value) => handleAreaChange(`${rateType}_area`, value)}
+        onChangeText={value => handleAreaChange(`${rateType}_area`, value)}
         onBlur={handleBlur(`${rateType}_area`)}
         error={errors[`${rateType}_area`]}
       />
@@ -108,7 +108,7 @@ function RatesColumn(props) {
         containerStyles={styles.rateInput}
         value={values[`${rateType}_unit`]}
         error={errors[`${rateType}_unit`]}
-        onSelect={(value) => {
+        onSelect={value => {
           setFieldValue(`${rateType}_unit`, value);
         }}
       />
@@ -119,7 +119,7 @@ function RatesColumn(props) {
         multiline={true}
         containerStyles={styles.rateInput}
         value={values[`${rateType}_rate`]}
-        onChangeText={(value) => handleRateChange(`${rateType}_rate`, value)}
+        onChangeText={value => handleRateChange(`${rateType}_rate`, value)}
         onBlur={handleBlur(`${rateType}_rate`)}
         error={errors[`${rateType}_rate`]}
       />
@@ -132,7 +132,7 @@ function RenderRates(props) {
   const {values, handleBlur, errors, setFieldValue} = formikProps;
 
   const syncAmounts = (amount, types) => {
-    types.map((type) => {
+    types.map(type => {
       const area = values[`${type}_area`];
       if (area) {
         const rate = amount / area;
@@ -175,7 +175,7 @@ function RenderRates(props) {
           keyboardType="number-pad"
           containerStyles={styles.rateInput}
           value={values.area_amount}
-          onChangeText={(value) => handleAmountChange('area_amount', value)}
+          onChangeText={value => handleAmountChange('area_amount', value)}
           onBlur={handleBlur('area_amount')}
           error={errors.area_amount}
           left={<TextInput.Affix text="₹" />}
@@ -193,7 +193,7 @@ function RenderCharges({formikProps, t}) {
   const [chargeError, setChargeError] = useState({});
 
   const toggleChargeModal = () => {
-    setChargeModal((v) => !v);
+    setChargeModal(v => !v);
     setCharge({});
     setChargeError({});
   };
@@ -217,7 +217,7 @@ function RenderCharges({formikProps, t}) {
     }
 
     const index = other_charges.findIndex(
-      (item) => item.label.toLowerCase() === charge.label.toLowerCase(),
+      item => item.label.toLowerCase() === charge.label.toLowerCase(),
     );
 
     if (index > -1) {
@@ -234,7 +234,7 @@ function RenderCharges({formikProps, t}) {
     toggleChargeModal();
   };
 
-  const removeCharge = (index) => {
+  const removeCharge = index => {
     const other_charges = _.cloneDeep(values.other_charges);
     other_charges.splice(index, 1);
     setFieldValue('other_charges', other_charges);
@@ -254,7 +254,7 @@ function RenderCharges({formikProps, t}) {
                   multiline={true}
                   value={charge.label}
                   contentContainerStyle={{flex: 1}}
-                  onChangeText={(value) => setValue('label', value)}
+                  onChangeText={value => setValue('label', value)}
                   error={chargeError.label}
                 />
               </View>
@@ -264,7 +264,7 @@ function RenderCharges({formikProps, t}) {
                   label={t('label_amount')}
                   keyboardType="number-pad"
                   value={charge.amount}
-                  onChangeText={(value) => setValue('amount', value)}
+                  onChangeText={value => setValue('amount', value)}
                   error={chargeError.amount}
                   left={<TextInput.Affix text="₹" />}
                 />
@@ -410,10 +410,10 @@ function BookingRates(props) {
       validateOnChange={false}
       initialValues={{other_charges: []}}
       validationSchema={schema}
-      onSubmit={async (values) => {
+      onSubmit={async values => {
         navigation.navigate('BC_Step_Six', {...params, ...values});
       }}>
-      {(formikProps) => <FormContent {...props} formikProps={formikProps} />}
+      {formikProps => <FormContent {...props} formikProps={formikProps} />}
     </Formik>
   );
 }

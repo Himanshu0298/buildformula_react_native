@@ -20,7 +20,7 @@ export default function useAddProjectActions() {
   } = useAddProject();
 
   return {
-    updateStructure: (data) =>
+    updateStructure: data =>
       dispatch({
         type: types.UPDATE_LOCAL_STRUCTURE,
         payload: data,
@@ -28,10 +28,10 @@ export default function useAddProjectActions() {
 
     resetStructure: () => dispatch({type: types.RESET_STRUCTURE}),
 
-    setProjectData: (payload) =>
+    setProjectData: payload =>
       dispatch({type: types.SET_PROJECT_DATA, payload}),
 
-    createProject: (formData) =>
+    createProject: formData =>
       dispatch({
         type: types.CREATE_PROJECT,
         payload: async () => {
@@ -51,7 +51,7 @@ export default function useAddProjectActions() {
           }
         },
       }),
-    updateStructureTypes: (formData) =>
+    updateStructureTypes: formData =>
       dispatch({
         type: types.SAVE_STRUCTURE,
         payload: async () => {
@@ -72,18 +72,18 @@ export default function useAddProjectActions() {
           }
         },
       }),
-    saveStructure: (data) =>
+    saveStructure: data =>
       dispatch({
         type: types.SAVE_STRUCTURE,
         payload: async () => {
           try {
             const {structureData, projectId, userId} = data;
             await Promise.all(
-              Object.keys(structureData).map(async (typeId) => {
+              Object.keys(structureData).map(async typeId => {
                 const {towers} = structureData[typeId];
 
                 if (towers) {
-                  Object.keys(towers).map(async (towerId) => {
+                  Object.keys(towers).map(async towerId => {
                     const payload = {
                       typeId,
                       projectId,
@@ -119,7 +119,7 @@ export default function useAddProjectActions() {
         },
       }),
 
-    selectPlan: (formData) =>
+    selectPlan: formData =>
       dispatch({
         type: types.UPDATE_PAYMENT,
         payload: async () => {
@@ -139,7 +139,7 @@ export default function useAddProjectActions() {
         },
       }),
 
-    updateAdmins: (formData) =>
+    updateAdmins: formData =>
       dispatch({
         type: types.UPDATE_ADMINS,
         payload: async () => {
@@ -181,7 +181,7 @@ export default function useAddProjectActions() {
         },
       }),
 
-    getCities: (params) =>
+    getCities: params =>
       dispatch({
         type: types.GET_CITIES,
         payload: async () => {

@@ -58,7 +58,7 @@ function StepOne(props) {
           validateOnChange={false}
           initialValues={{}}
           validationSchema={schema}
-          onSubmit={async (values) => {
+          onSubmit={async values => {
             navigation.navigate('ProjectCreationStepTwo', {
               stepOneData: values,
             });
@@ -94,7 +94,7 @@ function StepOne(props) {
                   value={values.company_pan}
                   file={values.pan_image}
                   onChangeText={handleChange('company_pan')}
-                  onChoose={(v) => setFieldValue('pan_image', v)}
+                  onChoose={v => setFieldValue('pan_image', v)}
                   onBlur={handleBlur('company_pan')}
                   onSubmitEditing={() => tanRef && tanRef.current.focus()}
                   error={errors.company_pan || errors.pan_image}
@@ -107,7 +107,7 @@ function StepOne(props) {
                   value={values.company_tan}
                   file={values.tan_image}
                   onChangeText={handleChange('company_tan')}
-                  onChoose={(v) => setFieldValue('tan_image', v)}
+                  onChoose={v => setFieldValue('tan_image', v)}
                   onBlur={handleBlur('company_tan')}
                   onSubmitEditing={() => gstRef && gstRef.current.focus()}
                   error={errors.company_tan || errors.tan_image}
@@ -120,7 +120,7 @@ function StepOne(props) {
                   value={values.company_gst}
                   file={values.gst_image}
                   onChangeText={handleChange('company_gst')}
-                  onChoose={(v) => setFieldValue('gst_image', v)}
+                  onChoose={v => setFieldValue('gst_image', v)}
                   onBlur={handleBlur('company_gst')}
                   returnKeyType={'done'}
                   onSubmitEditing={handleSubmit}

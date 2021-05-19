@@ -3,16 +3,16 @@ import {instance, useConfig} from './init';
 export default function useProject() {
   const {config} = useConfig();
   return {
-    getProjects: (data) => {
+    getProjects: data => {
       return instance.get('/get_project', config());
     },
-    getProject: (id) => {
+    getProject: id => {
       return instance.get(`/get_project/${id}`, config());
     },
-    getProjectData: (id) => {
+    getProjectData: id => {
       return instance.get(`/get_project_structure/${id}`, config());
     },
-    getProjectCommonData: (data) => {
+    getProjectCommonData: data => {
       return instance.post(
         '/get_common_info',
         data,

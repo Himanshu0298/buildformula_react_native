@@ -95,7 +95,7 @@ function UploadFile(props) {
       validationSchema={Yup.object().shape({
         file_name: Yup.string().trim().required('Required'),
       })}
-      onSubmit={async (values) => handleFileUpload(values)}>
+      onSubmit={async values => handleFileUpload(values)}>
       {({values, handleChange, errors, handleSubmit}) => (
         <Portal>
           <Dialog
@@ -147,7 +147,7 @@ function RenameDialogue(props) {
           validationSchema={Yup.object().shape({
             rename_file: Yup.string().trim().required('Required'),
           })}
-          onSubmit={async (values) => {
+          onSubmit={async values => {
             renameFolderHandler(
               values.rename_file,
               dialogueContent?.id,
@@ -213,7 +213,7 @@ function CreateFolder(props) {
           validationSchema={Yup.object().shape({
             folder_name: Yup.string().trim().required('Required'),
           })}
-          onSubmit={async (values) => {
+          onSubmit={async values => {
             createFolderHandler(values.folder_name);
           }}>
           {({values, errors, handleChange, handleBlur, handleSubmit}) => {
@@ -293,7 +293,7 @@ function VersionModal(props) {
 
   const filteredVersion = [versionData?.current];
   console.log('--->', filteredVersion);
-  versionData?.lists?.map((list) => {
+  versionData?.lists?.map(list => {
     filteredVersion?.push(list);
   });
 
@@ -322,7 +322,7 @@ function VersionFile(props) {
   const {version, countVersion} = props;
   const [versionMenu, setVersionMenu] = React.useState(false);
 
-  const toggleVersionMenu = () => setVersionMenu((v) => !v);
+  const toggleVersionMenu = () => setVersionMenu(v => !v);
   return (
     <View>
       <View style={styles.versionFiles}>
@@ -560,10 +560,10 @@ export default function Files(props) {
   const {route, navigation} = props;
   const {folder_name, index_of: folderDepth = 0} = route?.params || {};
 
-  const {folders, files, versionData} = useSelector((state) => state.files);
-  const {selectedProject} = useSelector((state) => state.project);
+  const {folders, files, versionData} = useSelector(state => state.files);
+  const {selectedProject} = useSelector(state => state.project);
 
-  const {user} = useSelector((state) => state.user);
+  const {user} = useSelector(state => state.user);
   const {
     getFolders,
     createFolder,
@@ -596,27 +596,27 @@ export default function Files(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const toggleFab = () => setFab((v) => !v);
-  const toggleMenu = (folderIndex) => setMenuId(folderIndex);
+  const toggleFab = () => setFab(v => !v);
+  const toggleMenu = folderIndex => setMenuId(folderIndex);
 
-  const toggleCreateDialogue = (dialogueType) => {
+  const toggleCreateDialogue = dialogueType => {
     setCreateDialogueView(dialogueType);
   };
 
-  const createFolderHandler = (folderName) => {
+  const createFolderHandler = folderName => {
     createFolder({
       project_id: selectedProject.id,
       index_of: folderDepth,
       folder_name: folderName,
       user_id: user?.id,
     })
-      .then((res) =>
+      .then(res =>
         getFolders({
           project_id: selectedProject.id,
           index_of: folderDepth,
         }),
       )
-      .then((res) => setCreateDialogueView());
+      .then(res => setCreateDialogueView());
   };
 
   const renameFolderHandler = (name, id, type) => {
@@ -627,19 +627,19 @@ export default function Files(props) {
         user_id: user?.id,
         project_id: selectedProject?.id,
       })
-        .then((res) =>
+        .then(res =>
           getFolders({
             project_id: selectedProject.id,
             index_of: folderDepth,
           }),
         )
-        .then((res) => setCreateDialogueView());
+        .then(res => setCreateDialogueView());
     } else {
       renameFile({
         file_id: id,
         project_id: selectedProject.id,
         new_file_name: name,
-      }).then((res) =>
+      }).then(res =>
         getFiles({project_id: selectedProject.id, folder_id: folderDepth}),
       );
     }
@@ -651,13 +651,13 @@ export default function Files(props) {
         folder_id: id,
         project_id: selectedProject?.id,
       })
-        .then((res) =>
+        .then(res =>
           getFolders({
             project_id: selectedProject.id,
             index_of: folderDepth,
           }),
         )
-        .then((res) => setCreateDialogueView());
+        .then(res => setCreateDialogueView());
     } else {
       deleteFile({
         file_id: id,
@@ -666,24 +666,24 @@ export default function Files(props) {
     }
   };
 
-  const onChoose = (v) => {
+  const onChoose = v => {
     setSelectedUploadFile(v);
     toggleCreateDialogue('uploadFile');
   };
 
-  const handleFileUpload = (values) => {
+  const handleFileUpload = values => {
     const formData = new FormData();
     values.file.name = values.file_name;
     formData.append('folder_id', folderDepth);
     formData.append('myfile[]', values.file);
     formData.append('project_id', selectedProject.id);
 
-    uploadFile(formData).then((res) =>
+    uploadFile(formData).then(res =>
       getFiles({project_id: selectedProject.id, folder_id: folderDepth}),
     );
   };
 
-  const versionDataHandler = (fileId) => {
+  const versionDataHandler = fileId => {
     getVersion({
       project_id: selectedProject.id,
       file_id: fileId,

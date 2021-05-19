@@ -8,7 +8,7 @@ class ColumnItem {
 
   attributes = () => this.attributes;
 
-  item = (itemId) => this.attributes.items[itemId];
+  item = itemId => this.attributes.items[itemId];
 
   data = () => this.attributes.data;
 
@@ -24,11 +24,11 @@ class ColumnItem {
       visible: false,
     });
 
-    return sortBy(items, (item) => item.index()).concat([fake]);
+    return sortBy(items, item => item.index()).concat([fake]);
   };
 
-  visibleItems = (columnId) =>
-    filter(this.items(columnId), (item) => item.isVisible());
+  visibleItems = columnId =>
+    filter(this.items(columnId), item => item.isVisible());
 
   scrollOffset = () => this.attributes.scrollOffset;
 
@@ -44,17 +44,17 @@ class ColumnItem {
 
   listView = () => this.attributes.listView;
 
-  setListView = (listView) => (this.attributes.listView = listView);
+  setListView = listView => (this.attributes.listView = listView);
 
-  setScrollOffset = (scrollOffset) =>
+  setScrollOffset = scrollOffset =>
     (this.attributes.scrollOffset = scrollOffset);
 
-  setContentHeight = (contentHeight) =>
+  setContentHeight = contentHeight =>
     (this.attributes.contentHeight = contentHeight);
 
-  setRef = (ref) => (this.attributes.ref = ref);
+  setRef = ref => (this.attributes.ref = ref);
 
-  setLayout = (layout) => (this.attributes.layout = layout);
+  setLayout = layout => (this.attributes.layout = layout);
 
   measureAndSaveLayout = () => {
     const ref = this.ref();
@@ -69,12 +69,12 @@ class ColumnItem {
     return measure;
   };
 
-  setItem = (item) => {
+  setItem = item => {
     this.attributes.items[item.id()] = item;
     item.setColumnId(this.id());
   };
 
-  removeItem = (item) =>
+  removeItem = item =>
     (this.attributes.items = omit(this.attributes.items, item.id()));
 
   updateLastItemVisibility = () => {

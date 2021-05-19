@@ -9,7 +9,7 @@ import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import Timer from 'components/Atoms/Timer';
 
 function ProjectHeader({theme, showTimer}) {
-  const {selectedProject} = useSelector((state) => state.project);
+  const {selectedProject} = useSelector(state => state.project);
 
   return (
     <SafeAreaView edges={['right', 'top', 'left']}>

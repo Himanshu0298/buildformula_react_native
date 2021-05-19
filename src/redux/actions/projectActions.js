@@ -12,7 +12,7 @@ export default function useProjectActions() {
   const {getProjects, getProjectData, getProjectCommonData} = useProject();
 
   return {
-    getProjectData: (projectId) =>
+    getProjectData: projectId =>
       dispatch({
         type: types.GET_SELECTED_PROJECT,
         payload: async () => {
@@ -35,7 +35,7 @@ export default function useProjectActions() {
           }
         },
       }),
-    getProjectCommonData: (project_id) =>
+    getProjectCommonData: project_id =>
       dispatch({
         type: types.GET_PROJECT_COMMON_DATA,
         payload: async () => {
@@ -53,7 +53,7 @@ export default function useProjectActions() {
           }
         },
       }),
-    getProjects: (formData) =>
+    getProjects: formData =>
       dispatch({
         type: types.GET_PROJECTS,
         payload: async () => {

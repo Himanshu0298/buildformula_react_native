@@ -92,7 +92,7 @@ function RenderForm({navigation, formikProps}) {
           label={t('label_loan_approval_letter')}
           containerStyles={styles.input}
           value={values.loan_approval_letter}
-          onChoose={(v) => setFieldValue('loan_approval_letter', v)}
+          onChoose={v => setFieldValue('loan_approval_letter', v)}
           error={errors.loan_approval_letter}
         />
         <RenderInput
@@ -191,7 +191,7 @@ function AddBankDetails(props) {
           initialValues={initialValues}
           enableReinitialize
           validationSchema={schema}
-          onSubmit={async (values) => {
+          onSubmit={async values => {
             const formData = new FormData();
 
             formData.append('project_id', project_id);
@@ -215,7 +215,7 @@ function AddBankDetails(props) {
               navigation.goBack();
             });
           }}>
-          {(formikProps) => <RenderForm formikProps={formikProps} {...props} />}
+          {formikProps => <RenderForm formikProps={formikProps} {...props} />}
         </Formik>
       </KeyboardAwareScrollView>
     </View>

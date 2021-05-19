@@ -40,7 +40,7 @@ function CustomSnackbar({
     Keyboard.removeListener('keyboardDidHide', _keyboardDidHide);
   };
 
-  const _keyboardDidShow = (e) => {
+  const _keyboardDidShow = e => {
     setMargin(e.endCoordinates.height + 30);
   };
 

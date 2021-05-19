@@ -40,7 +40,7 @@ const schema = Yup.object().shape({
 });
 
 function RenderVisitorDetails({visitor, occupationOptions, onNext}) {
-  const occupation = occupationOptions.find((v) => (v.id = visitor.occupation));
+  const occupation = occupationOptions.find(v => (v.id = visitor.occupation));
   return (
     <View style={styles.detailsContainer}>
       <View style={styles.detailRow}>
@@ -127,12 +127,12 @@ function PersonalTab({
   const [isFocused, setFocused] = useState(false);
 
   const {visitorSuggestions, visitors, occupationOptions} = useSelector(
-    (state) => state.sales,
+    state => state.sales,
   );
 
   const filteredVisitors = useMemo(() => {
     if (searchQuery) {
-      return visitorSuggestions.filter((visitor) => {
+      return visitorSuggestions.filter(visitor => {
         return (
           visitor.first_name.includes(searchQuery) ||
           visitor.last_name.includes(searchQuery) ||
@@ -145,7 +145,7 @@ function PersonalTab({
   }, [searchQuery, visitorSuggestions]);
 
   const visitorDetails = useMemo(() => {
-    return visitors.find((visitor) => visitor.id === selectedVisitor);
+    return visitors.find(visitor => visitor.id === selectedVisitor);
   }, [selectedVisitor, visitors]);
 
   return (
@@ -160,7 +160,7 @@ function PersonalTab({
             onFocus={() => setFocused(true)}
             style={{backgroundColor: 'rgba(4,29,54,0.1)', ...getShadow(0)}}
             value={searchQuery}
-            onChangeText={(v) => {
+            onChangeText={v => {
               setSearchQuery(v);
               if (!v || (v && selectedVisitor)) {
                 setSelectedVisitor();
@@ -224,7 +224,7 @@ function FollowUpTab({
   const followUpTimeRef = React.useRef();
   const assignToRef = React.useRef();
 
-  const {selectedProject} = useSelector((state) => state.project);
+  const {selectedProject} = useSelector(state => state.project);
 
   const {addFollowUp, getFollowUps, getSalesData} = useSalesActions();
 
@@ -234,7 +234,7 @@ function FollowUpTab({
       validateOnChange={false}
       initialValues={{}}
       validationSchema={schema}
-      onSubmit={async (values) => {
+      onSubmit={async values => {
         if (isNaN(selectedVisitor)) {
           alert.show({
             title: 'Error',
@@ -261,7 +261,7 @@ function FollowUpTab({
         delete values.follow_up_date;
         delete values.follow_up_time;
 
-        Object.keys(values).map((key) => {
+        Object.keys(values).map(key => {
           formData.append(key, values[key]);
         });
 
@@ -294,7 +294,7 @@ function FollowUpTab({
                 value={values.follow_up_date}
                 error={errors.follow_up_date}
                 min={new Date()}
-                onChange={(date) => {
+                onChange={date => {
                   setFieldValue('follow_up_date', date);
                   followUpTimeRef && followUpTimeRef.current.focus();
                 }}
@@ -307,7 +307,7 @@ function FollowUpTab({
                 containerStyles={styles.input}
                 value={values.follow_up_time}
                 error={errors.follow_up_time}
-                onChange={(date) => {
+                onChange={date => {
                   setFieldValue('follow_up_time', date);
                   assignToRef && assignToRef.current.focus();
                 }}
@@ -320,7 +320,7 @@ function FollowUpTab({
                 containerStyles={styles.input}
                 value={values.assign_to}
                 error={errors.assign_to}
-                onSelect={(value) => {
+                onSelect={value => {
                   setFieldValue('assign_to', value);
                 }}
               />
@@ -370,13 +370,13 @@ function AddFollowUp(props) {
     {key: 1, title: 'Follow up details'},
   ]);
 
-  const {user} = useSelector((state) => state.user);
-  const {loading} = useSelector((state) => state.sales);
-  const {assignOptions} = useSelector((state) => state.sales);
+  const {user} = useSelector(state => state.user);
+  const {loading} = useSelector(state => state.sales);
+  const {assignOptions} = useSelector(state => state.sales);
 
   const updatedAssignOptions = useMemo(() => {
     const data = [...assignOptions];
-    const index = data.findIndex((item) => item.value === user.id);
+    const index = data.findIndex(item => item.value === user.id);
     if (index === -1) {
       data.unshift({
         value: user.id,
@@ -424,7 +424,7 @@ function AddFollowUp(props) {
             renderScene={renderScene}
             onIndexChange={setSelectedTab}
             initialLayout={{width: Layout.window.width}}
-            renderTabBar={(tabBarProps) => {
+            renderTabBar={tabBarProps => {
               return (
                 <View style={styles.headerContainer}>
                   <ProjectHeader />

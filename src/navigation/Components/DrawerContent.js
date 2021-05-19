@@ -139,7 +139,7 @@ export default function DrawerContent(props) {
                 <Feather name={'home'} color={color} size={size} />
               )}
             />
-            {PROJECT_DRAWER_ITEMS.map((section) => {
+            {PROJECT_DRAWER_ITEMS.map(section => {
               return (
                 <Drawer.Section
                   key={section.title}
@@ -151,7 +151,7 @@ export default function DrawerContent(props) {
                     }}>
                     {section.title}
                   </Paragraph>
-                  {section.routes.map((route) => {
+                  {section.routes.map(route => {
                     return (
                       <DrawerItem
                         key={route.route}

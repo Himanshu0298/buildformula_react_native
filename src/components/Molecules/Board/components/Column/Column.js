@@ -25,7 +25,7 @@ class Column extends React.Component {
     onPressIn(column.id(), item, y);
   };
 
-  onPress = (item) => {
+  onPress = item => {
     const {column, onPress} = this.props;
 
     return onPress(column.id(), item);
@@ -37,12 +37,12 @@ class Column extends React.Component {
     boardRepository.updateColumnsLayoutAfterVisibilityChanged();
   };
 
-  updateItemWithLayout = (item) => () => {
+  updateItemWithLayout = item => () => {
     const {column, boardRepository} = this.props;
     boardRepository.updateItemWithLayout(column.id(), item);
   };
 
-  setColumnRef = (ref) => {
+  setColumnRef = ref => {
     const {column, boardRepository} = this.props;
     boardRepository.setColumnRef(column.id(), ref);
   };
@@ -53,17 +53,17 @@ class Column extends React.Component {
     boardRepository.updateColumnWithLayout(column.id());
   };
 
-  renderWrapperRow = (item) => {
+  renderWrapperRow = item => {
     const {renderWrapperRow} = this.props;
     const props = {
-      onPressIn: (y) => this.onPressIn(item, y),
+      onPressIn: y => this.onPressIn(item, y),
       onPress: this.onPress(item),
       hidden: item.isHidden(),
       item,
     };
     return (
       <View
-        ref={(ref) => this.setItemRef(item, ref)}
+        ref={ref => this.setItemRef(item, ref)}
         collapsable={false}
         onLayout={this.updateItemWithLayout(item)}
         key={item.id.toString()}>
@@ -72,7 +72,7 @@ class Column extends React.Component {
     );
   };
 
-  handleScroll = (event) => {
+  handleScroll = event => {
     const {
       column,
       onScrollingStarted,
@@ -90,7 +90,7 @@ class Column extends React.Component {
     this.scrollingDown = liveOffset > col.scrollOffset();
   };
 
-  endScrolling = (event) => {
+  endScrolling = event => {
     const {column, onScrollingEnded, boardRepository} = this.props;
 
     const currentOffset = event.nativeEvent.contentOffset.y;
@@ -107,11 +107,11 @@ class Column extends React.Component {
     }
   };
 
-  onScrollEndDrag = (event) => {
+  onScrollEndDrag = event => {
     this.endScrolling(event);
   };
 
-  onMomentumScrollEnd = (event) => {
+  onMomentumScrollEnd = event => {
     const {onScrollingEnded} = this.props;
 
     this.endScrolling(event);
@@ -124,13 +124,13 @@ class Column extends React.Component {
     boardRepository.setContentHeight(column.id(), contentHeight);
   };
 
-  handleChangeVisibleItems = (visibleItems) => {
+  handleChangeVisibleItems = visibleItems => {
     const {column, boardRepository} = this.props;
 
     boardRepository.updateItemsVisibility(column.id(), visibleItems);
   };
 
-  setListView = (ref) => {
+  setListView = ref => {
     const {column, boardRepository} = this.props;
 
     boardRepository.setListView(column.id(), ref);
@@ -187,8 +187,8 @@ class Column extends React.Component {
             onMomentumScrollEnd={this.onMomentumScrollEnd}
             onScrollEndDrag={this.onScrollEndDrag}
             onChangeVisibleRows={this.handleChangeVisibleItems}
-            renderItem={(item) => this.renderWrapperRow(item.item)}
-            keyExtractor={(item) => item.row().id.toString()}
+            renderItem={item => this.renderWrapperRow(item.item)}
+            keyExtractor={item => item.row().id.toString()}
             scrollEnabled={!movingMode}
             onContentSizeChange={this.onContentSizeChange}
             showsVerticalScrollIndicator={false}

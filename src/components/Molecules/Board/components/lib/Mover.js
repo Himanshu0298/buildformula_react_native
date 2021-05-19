@@ -71,12 +71,12 @@ class Mover {
     item.setIndex(-1);
 
     const items = boardRepository.items(toColumnId);
-    items.forEach((i) => i.setIndex(i.index() + 1));
+    items.forEach(i => i.setIndex(i.index() + 1));
 
     const visibleItems = boardRepository.visibleItems(toColumnId);
     const rangeVisibleItems = range(0, visibleItems.length - 1);
 
-    rangeVisibleItems.forEach((i) =>
+    rangeVisibleItems.forEach(i =>
       visibleItems[i].setLayout({...visibleItems[i + 1].layout()}),
     );
 
@@ -99,10 +99,10 @@ class Mover {
 
     let items = boardRepository.visibleItems(toColumnId);
     const draggedItemI = items.findIndex(
-      (item) => item.id() === draggedItem.id(),
+      item => item.id() === draggedItem.id(),
     );
     const itemAtPositionI = items.findIndex(
-      (item) => item.id() === itemAtPosition.id(),
+      item => item.id() === itemAtPosition.id(),
     );
     let itemsRange;
     if (draggedItem.index() < itemAtPosition.index()) {
@@ -111,7 +111,7 @@ class Mover {
       itemsRange = range(itemAtPositionI, draggedItemI);
     }
 
-    itemsRange.forEach((i) => {
+    itemsRange.forEach(i => {
       const firstItem = items[i];
       const secondItem = items[i + 1];
       this.switchItems(toColumnId, firstItem, secondItem);

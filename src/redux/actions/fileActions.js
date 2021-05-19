@@ -21,7 +21,7 @@ export default function useFileActions() {
   const snackbar = useSnackbar();
 
   return {
-    getFolders: (params) =>
+    getFolders: params =>
       dispatch({
         type: types.GET_FOLDERS,
         payload: async () => {
@@ -39,7 +39,7 @@ export default function useFileActions() {
           }
         },
       }),
-    createFolder: (params) =>
+    createFolder: params =>
       dispatch({
         type: types.CREATE_FOLDER,
         payload: async () => {
@@ -57,7 +57,7 @@ export default function useFileActions() {
           }
         },
       }),
-    renameFolder: (params) =>
+    renameFolder: params =>
       dispatch({
         type: types.RENAME_FOLDER,
         payload: async () => {
@@ -76,7 +76,7 @@ export default function useFileActions() {
           }
         },
       }),
-    deleteFolder: (params) =>
+    deleteFolder: params =>
       dispatch({
         type: types.DELETE_FOLDER,
         payload: async () => {
@@ -94,7 +94,7 @@ export default function useFileActions() {
           }
         },
       }),
-    getFiles: (params) =>
+    getFiles: params =>
       dispatch({
         type: types.GET_FILES,
         payload: async () => {
@@ -114,7 +114,7 @@ export default function useFileActions() {
           }
         },
       }),
-    renameFile: (params) =>
+    renameFile: params =>
       dispatch({
         type: types.RENAME_FILE,
         payload: async () => {
@@ -134,7 +134,7 @@ export default function useFileActions() {
         },
       }),
 
-    uploadFile: (params) =>
+    uploadFile: params =>
       dispatch({
         type: types.UPLOAD_FILE,
         payload: async () => {
@@ -153,7 +153,7 @@ export default function useFileActions() {
           }
         },
       }),
-    deleteFile: (params) =>
+    deleteFile: params =>
       dispatch({
         type: types.DELETE_FILE,
         payload: async () => {
@@ -172,7 +172,7 @@ export default function useFileActions() {
           }
         },
       }),
-    getVersion: (params) =>
+    getVersion: params =>
       dispatch({
         type: types.GET_VERSION,
         payload: async () => {

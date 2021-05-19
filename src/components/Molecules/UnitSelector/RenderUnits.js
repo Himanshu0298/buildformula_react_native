@@ -44,7 +44,7 @@ function RenderUnits({onSelectUnit, units, selectedFloor, isUnitDisabled}) {
     <View style={styles.unitsList}>
       {Object.keys(units).map((unitId, i) => {
         const unit = units[unitId];
-        const unitBhk = BHK_OPTIONS.find((item) => item.type === unit.bhk);
+        const unitBhk = BHK_OPTIONS.find(item => item.type === unit.bhk);
 
         const bookingStyle = BOOKING_STYLES[unit.booking_status] || {};
         const disabled = checkDisabled(isUnitDisabled, unit);

@@ -35,9 +35,9 @@ function DuplicateDialog(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
-  const addToDuplicateList = (option) => {
+  const addToDuplicateList = option => {
     const _duplicateTo = cloneDeep(duplicateTo);
-    const index = _duplicateTo.findIndex((v) => v === option);
+    const index = _duplicateTo.findIndex(v => v === option);
     if (index > -1) {
       _duplicateTo.splice(index, 1);
     } else {
@@ -125,7 +125,7 @@ function DuplicateDialog(props) {
                 label="All"
                 checked={checkedAll}
                 onChange={() =>
-                  setDuplicateTo(checkedAll ? [] : options.map((i) => i.value))
+                  setDuplicateTo(checkedAll ? [] : options.map(i => i.value))
                 }
               />
             </View>

@@ -9,8 +9,8 @@ export default function SelectUnit(props) {
 
   const {getUnitsBookingStatus} = useSalesActions();
 
-  const {selectedProject = {}} = useSelector((state) => state.project);
-  const {loading, unitBookingStatus} = useSelector((state) => state.sales);
+  const {selectedProject = {}} = useSelector(state => state.project);
+  const {loading, unitBookingStatus} = useSelector(state => state.sales);
 
   const {selectedStructure, floorId, towerId} = route?.params || {};
   const structureData = selectedProject.projectData?.[selectedStructure] || {};
@@ -28,9 +28,9 @@ export default function SelectUnit(props) {
   const units = useMemo(() => {
     const data = towers?.[towerId]?.floors?.[floorId]?.units || {};
 
-    Object.keys(data).map((key) => {
+    Object.keys(data).map(key => {
       const bookingData = unitBookingStatus.find(
-        (unit) => unit.id === data[key].unitId,
+        unit => unit.id === data[key].unitId,
       );
 
       if (bookingData) {

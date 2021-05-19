@@ -37,17 +37,17 @@ function RoleBox({title, onSelectPlan, amount, colors}) {
 function PlanSelect(props) {
   const {navigation} = props;
   const [showAlert, setShowAlert] = useState(false);
-  const {project, loading} = useSelector((state) => state.addProject);
+  const {project, loading} = useSelector(state => state.addProject);
   const {selectPlan} = useAddProjectActions();
 
-  const toggleAlert = () => setShowAlert((v) => !v);
+  const toggleAlert = () => setShowAlert(v => !v);
 
   function onSelectPlan(amount) {
     selectPlan({project_id: project.id, amount})
-      .then((data) => {
+      .then(data => {
         toggleAlert();
       })
-      .catch((error) => {
+      .catch(error => {
         console.log('-----> error', error);
       });
   }

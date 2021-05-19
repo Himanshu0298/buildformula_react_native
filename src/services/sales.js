@@ -3,55 +3,55 @@ import {instance, useConfig} from './init';
 export default function useSalesServices() {
   const {config} = useConfig();
   return {
-    getVisitorsList: (data) => {
+    getVisitorsList: data => {
       return instance.post('/visitors/get_lists', data, config());
     },
-    getFollowUpList: (data) => {
+    getFollowUpList: data => {
       return instance.post('/followup/get_lists', data, config());
     },
-    getSalesData: (data) => {
+    getSalesData: data => {
       return instance.post(
         '/followup/other_info',
         data,
         config({multipart: false}),
       );
     },
-    getPipelines: (data) => {
+    getPipelines: data => {
       return instance.post('/pipeline/get_lists', data, config());
     },
-    addVisitor: (data) => {
+    addVisitor: data => {
       return instance.post('/visitors/add', data, config());
     },
-    addFollowUp: (data) => {
+    addFollowUp: data => {
       return instance.post('/visitors/addfollowup', data, config());
     },
-    addPipeline: (data) => {
+    addPipeline: data => {
       return instance.post('/pipeline/add', data, config());
     },
-    moveVisitor: (data) => {
+    moveVisitor: data => {
       return instance.post('/pipeline/movecontact', data, config());
     },
-    deletePipeline: (data) => {
+    deletePipeline: data => {
       return instance.post('inquiry_status/remove', data, config());
     },
-    getUnitsBookingStatus: (data) => {
+    getUnitsBookingStatus: data => {
       return instance.post('/get_locked_units', data, config());
     },
-    lockUnit: (data) => {
+    lockUnit: data => {
       return instance.post(
         '/set_locked_units',
         data,
         config({multipart: false}),
       );
     },
-    createBooking: (data) => {
+    createBooking: data => {
       return instance.post(
         '/booking/save_booking',
         data,
         config({multipart: false}),
       );
     },
-    getBankList: (data) => {
+    getBankList: data => {
       return instance.get('get_banks', config());
     },
   };

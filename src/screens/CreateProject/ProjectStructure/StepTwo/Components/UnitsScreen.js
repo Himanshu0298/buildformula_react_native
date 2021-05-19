@@ -33,7 +33,7 @@ function RenderUnits({
   for (let i = 1; i <= unitCount; i += 1) {
     const {bhk} = units[i];
 
-    const unitBhk = BHK_OPTIONS.find((item) => item.type === bhk);
+    const unitBhk = BHK_OPTIONS.find(item => item.type === bhk);
 
     let unit;
 
@@ -126,7 +126,7 @@ function UnitsScreen(props) {
     return false;
   });
 
-  const toggleSelectedBhk = (value) => {
+  const toggleSelectedBhk = value => {
     if (selectedBhk === value) {
       setSelectedBhk(undefined);
     } else {
@@ -134,7 +134,7 @@ function UnitsScreen(props) {
     }
   };
 
-  const assignBhk = (unit) => {
+  const assignBhk = unit => {
     if (selectedBhk) {
       assignBhkToUnit(unit, selectedBhk);
     } else if (selectedStructureType === 4 || selectedStructureType === 1) {
@@ -145,7 +145,7 @@ function UnitsScreen(props) {
     }
   };
 
-  const assignToAll = (bhk) => {
+  const assignToAll = bhk => {
     if (selectedBhk) {
       assignToAllUnits(unitCount, selectedBhk);
     } else if (selectedStructureType === 4 || selectedStructureType === 1) {

@@ -17,7 +17,7 @@ export default function useProjectManagementActions() {
   } = useProjectManagement();
 
   return {
-    getWorkCategories: (data) =>
+    getWorkCategories: data =>
       dispatch({
         type: types.GET_WORK_CATEGORIES,
         payload: async () => {
@@ -34,7 +34,7 @@ export default function useProjectManagementActions() {
           }
         },
       }),
-    getMilestones: (data) =>
+    getMilestones: data =>
       dispatch({
         type: types.GET_MILESTONES,
         payload: async () => {
@@ -51,7 +51,7 @@ export default function useProjectManagementActions() {
           }
         },
       }),
-    getWorks: (data) =>
+    getWorks: data =>
       dispatch({
         type: types.GET_WORKS,
         payload: async () => {
@@ -68,7 +68,7 @@ export default function useProjectManagementActions() {
           }
         },
       }),
-    createLineupEntity: (data) =>
+    createLineupEntity: data =>
       dispatch({
         type: types.CREATE_LINEUP_ENTITY,
         payload: async () => {
@@ -85,7 +85,7 @@ export default function useProjectManagementActions() {
           }
         },
       }),
-    updateLineupEntity: (data) =>
+    updateLineupEntity: data =>
       dispatch({
         type: types.UPDATE_LINEUP_ENTITY,
         payload: async () => {
@@ -102,7 +102,7 @@ export default function useProjectManagementActions() {
           }
         },
       }),
-    deleteLineupEntity: (data) =>
+    deleteLineupEntity: data =>
       dispatch({
         type: types.DELETE_LINEUP_ENTITY,
         payload: async () => {
@@ -119,7 +119,7 @@ export default function useProjectManagementActions() {
           }
         },
       }),
-    updateMilestoneOrder: (data) =>
+    updateMilestoneOrder: data =>
       dispatch({
         type: types.UPDATE_MILESTONE_ORDER,
         payload: async () => {

@@ -84,9 +84,9 @@ const shadowsArray = {
   },
 };
 
-export const getShadow = (elevation) => shadowsArray[elevation][Platform.OS];
+export const getShadow = elevation => shadowsArray[elevation][Platform.OS];
 
-export const getTowerLabel = (i) => String.fromCharCode(64 + parseInt(i, 10));
+export const getTowerLabel = i => String.fromCharCode(64 + parseInt(i, 10));
 
 export function getFloorNumber(i) {
   i = parseInt(i, 10);

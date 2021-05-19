@@ -60,7 +60,7 @@ function FileUploadModal(props) {
       initialValues={{file: selectedFile}}
       enableReinitialize
       validationSchema={uploadSchema}
-      onSubmit={async (values) => handleFileUpload(values)}>
+      onSubmit={async values => handleFileUpload(values)}>
       {({values, handleChange, errors, handleSubmit}) => (
         <Portal>
           <Dialog visible={open} onDismiss={toggleDialog} style={{top: -100}}>
@@ -116,9 +116,9 @@ function FileSection(props) {
     removeBankFile,
   } = useCustomerActions();
 
-  const toggleDialog = () => setUploadDialog((v) => !v);
+  const toggleDialog = () => setUploadDialog(v => !v);
 
-  const handleFileUpload = (values) => {
+  const handleFileUpload = values => {
     toggleDialog();
 
     const formData = new FormData();
@@ -134,13 +134,13 @@ function FileSection(props) {
     });
   };
 
-  const handleFileRemove = (file_id) => {
+  const handleFileRemove = file_id => {
     removeBankFile({file_id, project_id, unit_id: unit.unitId}).then(() => {
       getBankDetails({project_id, unit_id: unit.unitId});
     });
   };
 
-  const onChoose = (v) => {
+  const onChoose = v => {
     setSelectedFile(v);
     toggleDialog();
   };

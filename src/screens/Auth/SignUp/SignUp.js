@@ -179,7 +179,7 @@ function RenderContent(props) {
                 <TextInput.Icon
                   theme={secondaryTheme}
                   name={showPass ? 'eye-off' : 'eye'}
-                  onPress={() => toggleShowPass((v) => !v)}
+                  onPress={() => toggleShowPass(v => !v)}
                 />
               }
             />
@@ -200,7 +200,7 @@ function RenderContent(props) {
                 <TextInput.Icon
                   theme={secondaryTheme}
                   name={showCnfPass ? 'eye-off' : 'eye'}
-                  onPress={() => toggleShowCnfPass((v) => !v)}
+                  onPress={() => toggleShowCnfPass(v => !v)}
                 />
               }
             />
@@ -277,9 +277,9 @@ function SignUp(props) {
 
   const {t} = useTranslation();
 
-  const {loading} = useSelector((state) => state.user);
+  const {loading} = useSelector(state => state.user);
   const {loading: updatingAdmin, project} = useSelector(
-    (state) => state.addProject,
+    state => state.addProject,
   );
 
   React.useEffect(() => {
@@ -315,7 +315,7 @@ function SignUp(props) {
       validateOnChange={false}
       initialValues={{}}
       validationSchema={adminSignUp ? adminSchema : signUpSchema}
-      onSubmit={async (values) => {
+      onSubmit={async values => {
         if (!adminSignUp) {
           const userData = {
             email: values.email,
@@ -327,13 +327,13 @@ function SignUp(props) {
           };
 
           signUp(userData)
-            .then((data) => {
+            .then(data => {
               const {email} = data.value.user;
               if (email) {
                 navigation.navigate('Otp');
               }
             })
-            .catch((error) => {
+            .catch(error => {
               setValidationError(error);
             });
         } else if (adminId === 2) {

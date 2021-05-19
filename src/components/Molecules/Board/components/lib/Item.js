@@ -23,19 +23,19 @@ class Item {
 
   isLocked = () => this.attributes.locked;
 
-  setHidden = (hidden) => (this.attributes.hidden = hidden);
+  setHidden = hidden => (this.attributes.hidden = hidden);
 
-  setRef = (ref) => (this.attributes.ref = ref);
+  setRef = ref => (this.attributes.ref = ref);
 
-  setLayout = (layout) => (this.attributes.layout = layout);
+  setLayout = layout => (this.attributes.layout = layout);
 
-  setVisible = (visible) => (this.attributes.visible = visible);
+  setVisible = visible => (this.attributes.visible = visible);
 
-  setColumnId = (columnId) => (this.attributes.columnId = columnId);
+  setColumnId = columnId => (this.attributes.columnId = columnId);
 
-  setIndex = (index) => (this.attributes.index = index);
+  setIndex = index => (this.attributes.index = index);
 
-  measureAndSaveLayout = (previousItem) => {
+  measureAndSaveLayout = previousItem => {
     const ref = this.attributes.ref;
     const measure =
       ref &&

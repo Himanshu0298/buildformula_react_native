@@ -179,7 +179,7 @@ function RenderOneBigInstallmentPaymentForm(props) {
   const {formikProps, t} = props;
   const {values, setFieldValue, handleChange, errors} = formikProps;
 
-  const handlePercentChange = (percent) => {
+  const handlePercentChange = percent => {
     percent = parseFloat(percent);
     percent = round(percent > 100 ? 100 : percent);
 
@@ -189,7 +189,7 @@ function RenderOneBigInstallmentPaymentForm(props) {
     setFieldValue('first_big_amount', amount);
   };
 
-  const handleAmountChange = (amount) => {
+  const handleAmountChange = amount => {
     amount = parseFloat(amount);
     amount = round(amount > values.area_amount ? values.area_amount : amount);
 
@@ -219,7 +219,7 @@ function RenderOneBigInstallmentPaymentForm(props) {
                 label={'%'}
                 keyboardType="number-pad"
                 value={values.first_big_amount_percent}
-                onChangeText={(value) => handlePercentChange(value)}
+                onChangeText={value => handlePercentChange(value)}
                 error={errors.first_big_amount_percent}
                 left={
                   <TextInput.Icon
@@ -255,7 +255,7 @@ function RenderOneBigInstallmentPaymentForm(props) {
                 value={values.first_big_amount}
                 left={<TextInput.Affix text="₹" />}
                 error={errors.first_big_amount}
-                onChangeText={(value) => handleAmountChange(value)}
+                onChangeText={value => handleAmountChange(value)}
               />
             </View>
           </View>
@@ -266,7 +266,7 @@ function RenderOneBigInstallmentPaymentForm(props) {
                 label={t('label_start_date')}
                 value={values.first_big_amount_start_date}
                 error={errors.first_big_amount_start_date}
-                onChange={(value) => {
+                onChange={value => {
                   setFieldValue(
                     'first_big_amount_start_date',
                     dayjs(value).format('YYYY-MM-DD'),
@@ -280,7 +280,7 @@ function RenderOneBigInstallmentPaymentForm(props) {
                 label={t('label_end_date')}
                 value={values.first_big_amount_end_date}
                 error={errors.first_big_amount_end_date}
-                onChange={(value) => {
+                onChange={value => {
                   setFieldValue(
                     'first_big_amount_end_date',
                     dayjs(value).format('YYYY-MM-DD'),
@@ -310,7 +310,7 @@ function RenderOneBigInstallmentPaymentForm(props) {
             label={t('label_start_date')}
             value={values.installment_start_date}
             error={errors.installment_start_date}
-            onChange={(value) => {
+            onChange={value => {
               setFieldValue(
                 'installment_start_date',
                 dayjs(value).format('YYYY-MM-DD'),
@@ -393,7 +393,7 @@ function RenderCustomPaymentForm(props) {
     setFieldValue('custom_payments', custom_payments);
   };
 
-  const removePayment = (index) => {
+  const removePayment = index => {
     const custom_payments = _.cloneDeep(values.custom_payments);
     custom_payments.splice(index, 1);
     setFieldValue('custom_payments', custom_payments);
@@ -426,9 +426,7 @@ function RenderCustomPaymentForm(props) {
                       label={'%'}
                       keyboardType="number-pad"
                       value={percent}
-                      onChangeText={(value) =>
-                        handlePercentChange(index, value)
-                      }
+                      onChangeText={value => handlePercentChange(index, value)}
                       left={
                         <TextInput.Icon
                           name="minus"
@@ -459,7 +457,7 @@ function RenderCustomPaymentForm(props) {
                       keyboardType="number-pad"
                       value={amount}
                       left={<TextInput.Affix text="₹" />}
-                      onChangeText={(value) => handleAmountChange(index, value)}
+                      onChangeText={value => handleAmountChange(index, value)}
                     />
                   </View>
                 </View>
@@ -468,7 +466,7 @@ function RenderCustomPaymentForm(props) {
                     name="date"
                     label={t('label_date')}
                     value={date}
-                    onChange={(value) => {
+                    onChange={value => {
                       setValue(
                         index,
                         'date',
@@ -483,7 +481,7 @@ function RenderCustomPaymentForm(props) {
                     multiline
                     label={t('label_remark')}
                     value={remark}
-                    onChangeText={(value) => {
+                    onChangeText={value => {
                       setValue(index, 'remark', value);
                     }}
                   />
@@ -533,7 +531,7 @@ function RenderPaymentForm(props) {
               label={t('label_start_date')}
               value={values.start_date}
               error={errors.start_date}
-              onChange={(date) => {
+              onChange={date => {
                 setFieldValue('start_date', dayjs(date).format('YYYY-MM-DD'));
               }}
             />
@@ -544,7 +542,7 @@ function RenderPaymentForm(props) {
               label={t('label_end_date')}
               value={values.end_date}
               error={errors.end_date}
-              onChange={(date) => {
+              onChange={date => {
                 setFieldValue('end_date', dayjs(date).format('YYYY-MM-DD'));
               }}
             />
@@ -586,7 +584,7 @@ function RenderPaymentForm(props) {
             label={t('label_date')}
             value={values.other_charges_date}
             error={errors.other_charges_date}
-            onChange={(date) => {
+            onChange={date => {
               setFieldValue(
                 'other_charges_date',
                 dayjs(date).format('YYYY-MM-DD'),
@@ -654,14 +652,14 @@ function FormContent(props) {
                 label={'Yes'}
                 value="yes"
                 checked={values.loan === 'yes'}
-                onChange={(value) => setFieldValue('loan', value)}
+                onChange={value => setFieldValue('loan', value)}
               />
               <Radio
                 label={'No'}
                 value="no"
                 color={theme.colors.error}
                 checked={values.loan === 'no'}
-                onChange={(value) => setFieldValue('loan', value)}
+                onChange={value => setFieldValue('loan', value)}
               />
             </View>
           </View>
@@ -676,7 +674,7 @@ function FormContent(props) {
                     options={bankList}
                     value={values.loan_bank}
                     error={errors.loan_bank}
-                    onSelect={(value) => {
+                    onSelect={value => {
                       formikProps.setFieldValue('loan_bank', value);
                     }}
                   />
@@ -712,7 +710,7 @@ function FormContent(props) {
             containerStyles={styles.rateInput}
             value={values.payment_type}
             error={errors.payment_type}
-            onSelect={(value) => {
+            onSelect={value => {
               formikProps.setFieldValue('payment_type', value);
               formikProps.setErrors({});
             }}
@@ -748,14 +746,14 @@ function BookingPayments(props) {
 
   const {createBooking, getBankList} = useSalesActions();
 
-  const {bankList} = useSelector((state) => state.sales);
+  const {bankList} = useSelector(state => state.sales);
 
   useEffect(() => {
     getBankList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const validate = (values) => {
+  const validate = values => {
     const errors = {};
     if (values.payment_type === 2) {
       values.custom_payments.map(({percent, amount, date}, index) => {
@@ -796,7 +794,7 @@ function BookingPayments(props) {
         ...params,
       }}
       validationSchema={schema}
-      onSubmit={async (values) => {
+      onSubmit={async values => {
         console.log('-----> unit_id', unit_id);
         console.log('-----> project_id', project_id);
         const data = {...values, project_id, unit_id};
@@ -810,7 +808,7 @@ function BookingPayments(props) {
 
         createBooking(data).then(() => navigation.popToTop());
       }}>
-      {(formikProps) => (
+      {formikProps => (
         <FormContent {...props} formikProps={formikProps} bankList={bankList} />
       )}
     </Formik>

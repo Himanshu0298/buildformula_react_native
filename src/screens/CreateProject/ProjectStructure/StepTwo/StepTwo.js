@@ -241,7 +241,7 @@ function validateTowers(data, selectedStructureType) {
       allValid = false;
       error = 'Minimum one tower is required';
     }
-    Object.keys(towers).map((towerId) => {
+    Object.keys(towers).map(towerId => {
       result[towerId] = true;
       const {floors = {}, floorCount} = towers[towerId] || {};
       if (isNaN(floorCount)) {
@@ -254,7 +254,7 @@ function validateTowers(data, selectedStructureType) {
           )}`;
         }
       } else {
-        Object.keys(floors).map((floorId) => {
+        Object.keys(floors).map(floorId => {
           //check if all floors has 0 or more units
           if (isNaN(floors?.[floorId]?.unitCount)) {
             result[towerId] = false;
@@ -310,10 +310,10 @@ function StepTwo(props) {
   const snackbar = useSnackbar();
 
   let {structure, structureTypes, selectedStructureType, loading} = useSelector(
-    (state) => state.addProject,
+    state => state.addProject,
   );
-  const {project} = useSelector((state) => state.addProject);
-  const {user} = useSelector((state) => state.user);
+  const {project} = useSelector(state => state.addProject);
+  const {user} = useSelector(state => state.user);
 
   const [showModal, setShowModal] = useState(false);
   const [selectedTab, setSelectedTab] = useState(
@@ -327,10 +327,10 @@ function StepTwo(props) {
   selectedStructureType = parseInt(selectedStructureType, 10);
   const currentStructureData = structure[selectedStructureType];
 
-  const toggleMenu = () => setShowModal((v) => !v);
+  const toggleMenu = () => setShowModal(v => !v);
 
   const handleBack = () => {
-    const selectedTypes = STRUCTURE_TYPES.filter((key) => structureTypes[key]);
+    const selectedTypes = STRUCTURE_TYPES.filter(key => structureTypes[key]);
     const selectedTypeIndex = selectedTypes.indexOf(selectedStructureType);
 
     if (selectedTypeIndex > 0) {
@@ -351,19 +351,19 @@ function StepTwo(props) {
   //Handle back press
   useBackHandler(handleBack);
 
-  const showAllFloors = (towerId) => {
+  const showAllFloors = towerId => {
     Keyboard.dismiss();
     setSelectedTower(towerId);
     setSelectedTab(1);
   };
 
-  const showAllUnits = (floorId) => {
+  const showAllUnits = floorId => {
     Keyboard.dismiss();
     setSelectedFloor(floorId);
     setSelectedTab(2);
   };
 
-  const updateTowers = (towerCount) => {
+  const updateTowers = towerCount => {
     if (towerCount === '') {
       towerCount = undefined;
     }
@@ -382,7 +382,7 @@ function StepTwo(props) {
     }
   };
 
-  const updateFloors = (floorCount) => {
+  const updateFloors = floorCount => {
     setSelectedFloor();
     if (floorCount === '') {
       floorCount = undefined;
@@ -467,7 +467,7 @@ function StepTwo(props) {
     const fromTower = towers[from];
 
     const _towers = cloneDeep(towers);
-    duplicateTo.map((key) => {
+    duplicateTo.map(key => {
       _towers[key] = fromTower;
     });
 
@@ -487,7 +487,7 @@ function StepTwo(props) {
     const fromFloor = floors[from];
 
     const _floors = cloneDeep(floors);
-    duplicateTo.map((key) => {
+    duplicateTo.map(key => {
       _floors[key] = fromFloor;
     });
 
@@ -522,11 +522,11 @@ function StepTwo(props) {
     );
   };
 
-  const updateBungalows = (unitCount) => onChangeUnit(null, unitCount);
+  const updateBungalows = unitCount => onChangeUnit(null, unitCount);
 
   const saveStructureType = async () => {
     //Validate all the previous types data is valid or not
-    const selectedTypes = STRUCTURE_TYPES.filter((key) => structureTypes[key]);
+    const selectedTypes = STRUCTURE_TYPES.filter(key => structureTypes[key]);
     const selectedTypeIndex = selectedTypes.indexOf(selectedStructureType);
 
     let allTypeValid = true;
@@ -632,7 +632,7 @@ function StepTwo(props) {
                     />
                   </TouchableOpacity>
                 }>
-                {MENU_OPTIONS.map((option) => {
+                {MENU_OPTIONS.map(option => {
                   if (structureTypes[option.value]) {
                     return (
                       <Menu.Item

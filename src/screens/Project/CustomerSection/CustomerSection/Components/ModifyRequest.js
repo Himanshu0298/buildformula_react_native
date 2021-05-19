@@ -77,7 +77,7 @@ function RenderRequests({requests}) {
 function RequestsAccordion({title, requests = []}) {
   const [expanded, setExpanded] = React.useState(Boolean(requests.length));
 
-  const toggle = () => setExpanded((v) => !v);
+  const toggle = () => setExpanded(v => !v);
 
   return (
     <View style={styles.sectionContainer}>
@@ -97,22 +97,22 @@ function ModifyRequest(props) {
   const {theme, navigation, route} = props;
   const {params} = route;
 
-  const {modifyRequests} = useSelector((state) => state.customer);
-  const {user} = useSelector((state) => state.user);
+  const {modifyRequests} = useSelector(state => state.customer);
+  const {user} = useSelector(state => state.user);
 
   const requests = React.useMemo(() => {
     const pendingRequests = modifyRequests.filter(
-      (v) => v.request_status === 'pending',
+      v => v.request_status === 'pending',
     );
-    const approvedRequests = modifyRequests.filter((v) => v.status === 2);
-    const rejectedRequests = modifyRequests.filter((v) => v.status === 3);
+    const approvedRequests = modifyRequests.filter(v => v.status === 2);
+    const rejectedRequests = modifyRequests.filter(v => v.status === 3);
 
     return {pendingRequests, approvedRequests, rejectedRequests};
   }, [modifyRequests]);
 
   const {pendingRequests, approvedRequests, rejectedRequests} = requests;
 
-  const navToAdd = (customer) => {
+  const navToAdd = customer => {
     navigation.navigate('AddModifyRequest', {...params});
   };
 

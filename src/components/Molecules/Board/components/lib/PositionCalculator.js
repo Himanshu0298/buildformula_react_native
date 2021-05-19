@@ -45,7 +45,7 @@ class PositionCalculator {
   };
 
   itemAtPosition = (items, columnId, y, draggedItem) => {
-    let item = items.find((i) => this.selectItem(y, draggedItem, i));
+    let item = items.find(i => this.selectItem(y, draggedItem, i));
 
     const firstItem = items[0];
     if (!item && firstItem && firstItem.layout() && y <= firstItem.layout().y) {

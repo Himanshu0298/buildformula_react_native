@@ -10,7 +10,7 @@ const Card = ({style, hidden, onPressIn, onPress, cardContent, item}) => {
 
   return (
     <TouchableWithoutFeedback
-      onPressIn={(evt) => (onPressIn ? onPressIn(evt.nativeEvent.pageY) : {})}
+      onPressIn={evt => (onPressIn ? onPressIn(evt.nativeEvent.pageY) : {})}
       onPress={onPress}
       collapsable={false}>
       <Animated.View style={styles}>

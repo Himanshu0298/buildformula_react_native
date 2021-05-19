@@ -105,7 +105,7 @@ function Home(props) {
 
   const [selectedTab, setSelectedTab] = useState(0);
 
-  const {loading, projects} = useSelector((state) => state.project);
+  const {loading, projects} = useSelector(state => state.project);
   const {developers, suppliers, customers} = projects;
 
   const {getProjects} = useProjectActions();
@@ -121,7 +121,7 @@ function Home(props) {
 
   const projectsData = [developers, suppliers, customers];
 
-  const handleOnPress = (project) => {
+  const handleOnPress = project => {
     if (project.is_completed === 'N') {
       setProjectData(project);
       navigation.navigate('ProjectStructureStepOne');

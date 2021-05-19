@@ -45,7 +45,7 @@ class Board extends React.Component {
   componentDidMount() {
     this.val = {x: 0, y: 0};
     // eslint-disable-next-line no-return-assign
-    this.state.pan.addListener((value) => (this.val = value));
+    this.state.pan.addListener(value => (this.val = value));
   }
 
   componentWillUnmount() {
@@ -175,7 +175,7 @@ class Board extends React.Component {
     }
   };
 
-  rotate = (toValue) => {
+  rotate = toValue => {
     const {rotate} = this.state;
     Animated.spring(rotate, {
       toValue,
@@ -271,7 +271,7 @@ class Board extends React.Component {
     boardRepository.updateColumnsLayoutAfterVisibilityChanged();
   };
 
-  movingStyle = (zIndex) => {
+  movingStyle = zIndex => {
     const {pan, rotate, startingX, startingY} = this.state;
     const interpolatedRotateAnimation = rotate.interpolate({
       inputRange: [-MAX_RANGE, 0, MAX_RANGE],
@@ -307,15 +307,15 @@ class Board extends React.Component {
     return this.renderWrapperRow(data);
   };
 
-  renderWrapperRow = (data) => (
+  renderWrapperRow = data => (
     <Card {...data} {...this.props} width={COLUMN_WIDTH} />
   );
 
-  setScrollViewRef = (element) => {
+  setScrollViewRef = element => {
     this.scrollViewRef = element;
   };
 
-  setBoardPositionY = (y) => {
+  setBoardPositionY = y => {
     this.setState({boardPositionY: y});
   };
 
@@ -328,10 +328,10 @@ class Board extends React.Component {
         {...this.panResponder.panHandlers}>
         <View
           style={styles.boardWrapper}
-          onLayout={(evt) => this.setBoardPositionY(evt.nativeEvent.layout.y)}
+          onLayout={evt => this.setBoardPositionY(evt.nativeEvent.layout.y)}
           backgroundColor={boardBackground}>
           <Carousel
-            ref={(c) => {
+            ref={c => {
               this.carousel = c;
             }}
             data={boardRepository.columns()}
@@ -342,7 +342,7 @@ class Board extends React.Component {
             sliderWidth={deviceWidth}
             itemWidth={COLUMN_WIDTH}
             oneColumn={boardRepository.columns().length === 1}
-            renderItem={(item) => (
+            renderItem={item => (
               <Column
                 {...this.props}
                 key={item.item.data().id.toString()}

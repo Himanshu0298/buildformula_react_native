@@ -145,14 +145,14 @@ function FormContent(props) {
                 label={'Yes'}
                 value="yes"
                 checked={values.broker === 'yes'}
-                onChange={(value) => setFieldValue('broker', value)}
+                onChange={value => setFieldValue('broker', value)}
               />
               <Radio
                 label={'No'}
                 value="no"
                 color={theme.colors.error}
                 checked={values.broker === 'no'}
-                onChange={(value) => setFieldValue('broker', value)}
+                onChange={value => setFieldValue('broker', value)}
               />
             </View>
           </View>
@@ -271,10 +271,10 @@ function BookingDetails(props) {
       validateOnChange={false}
       initialValues={{broker: 'no'}}
       validationSchema={schema}
-      onSubmit={async (values) => {
+      onSubmit={async values => {
         navigation.navigate('BC_Step_Five', {...values, ...params});
       }}>
-      {(formikProps) => <FormContent {...props} formikProps={formikProps} />}
+      {formikProps => <FormContent {...props} formikProps={formikProps} />}
     </Formik>
   );
 }

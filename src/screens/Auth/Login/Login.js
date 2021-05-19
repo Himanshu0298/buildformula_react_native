@@ -115,7 +115,7 @@ function RenderContent(props) {
               <TextInput.Icon
                 theme={secondaryTheme}
                 name={showPassword ? 'eye-off' : 'eye'}
-                onPress={() => setShowPassword((show) => !show)}
+                onPress={() => setShowPassword(show => !show)}
               />
             }
           />
@@ -154,8 +154,8 @@ function Login(props) {
   const bottomSheetRef = React.createRef();
   const snackbar = useSnackbar();
 
-  const {loading} = useSelector((state) => state.user);
-  const {project} = useSelector((state) => state.addProject);
+  const {loading} = useSelector(state => state.user);
+  const {project} = useSelector(state => state.addProject);
 
   useEffect(() => {
     if (loginError) {
@@ -169,7 +169,7 @@ function Login(props) {
       validateOnChange={false}
       initialValues={{}}
       validationSchema={schema}
-      onSubmit={async (values) => {
+      onSubmit={async values => {
         const formData = new FormData();
         Keyboard.dismiss();
         if (loginError) {
@@ -190,7 +190,7 @@ function Login(props) {
               navigation.navigate('ProjectStructureStepOne');
             }
           })
-          .catch((error) => {
+          .catch(error => {
             setLoginError(error);
           });
       }}>

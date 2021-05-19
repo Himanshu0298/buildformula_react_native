@@ -126,7 +126,7 @@ function RenderAddForm({toggleAddForm}) {
         initialValues={{}}
         enableReinitialize
         validationSchema={schema}
-        onSubmit={async (values) => {}}>
+        onSubmit={async values => {}}>
         {({
           values,
           errors,
@@ -176,7 +176,7 @@ function ShareFiles(props) {
   const {open} = props;
   const [showAdd, setShowAdd] = React.useState(false);
 
-  const toggleAddForm = () => setShowAdd((v) => !v);
+  const toggleAddForm = () => setShowAdd(v => !v);
 
   const handleClose = () => {
     if (showAdd) {

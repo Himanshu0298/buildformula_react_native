@@ -13,8 +13,8 @@ import Milestone from './Components/Milestone';
 import WorkCategory from './Components/WorkCategory';
 
 function Lineup(props) {
-  const {selectedProject} = useSelector((state) => state.project);
-  const {loading} = useSelector((state) => state.projectManagement);
+  const {selectedProject} = useSelector(state => state.project);
+  const {loading} = useSelector(state => state.projectManagement);
   const {getWorkCategories, getMilestones} = useProjectManagementActions();
 
   const [selectedTab, setSelectedTab] = useState(0);
@@ -60,7 +60,7 @@ function Lineup(props) {
         renderScene={renderScene}
         onIndexChange={setSelectedTab}
         initialLayout={{width: Layout.window.width}}
-        renderTabBar={(tabBarProps) => {
+        renderTabBar={tabBarProps => {
           return (
             <View style={styles.headerContainer}>
               <ProjectHeader />

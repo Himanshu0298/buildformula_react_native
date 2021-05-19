@@ -4,7 +4,7 @@ import Home from './Home';
 import {StatusBar} from 'react-native';
 import {theme} from 'styles/theme';
 
-export default (props) => {
+export default props => {
   return (
     <BaseLayout>
       <StatusBar

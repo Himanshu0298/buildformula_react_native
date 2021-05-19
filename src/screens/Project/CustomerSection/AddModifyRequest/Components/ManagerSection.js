@@ -19,7 +19,7 @@ function ManagerSection(props) {
 
   const [showPanel, setShowPanel] = React.useState(false);
 
-  const toggleSignature = () => setShowPanel((v) => !v);
+  const toggleSignature = () => setShowPanel(v => !v);
 
   return (
     <>
@@ -38,7 +38,7 @@ function ManagerSection(props) {
           validateOnChange={false}
           initialValues={{accepted: false}}
           validationSchema={schema}
-          onSubmit={async (values) => {}}>
+          onSubmit={async values => {}}>
           {({
             values,
             errors,
@@ -51,7 +51,7 @@ function ManagerSection(props) {
               <SignaturePanel
                 visible={showPanel}
                 toggleDialog={toggleSignature}
-                onSave={(v) => {
+                onSave={v => {
                   console.log('----->onSave ');
                 }}
               />

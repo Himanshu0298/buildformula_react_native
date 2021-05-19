@@ -21,7 +21,7 @@ export default function useCustomerActions() {
   } = useCustomerServices();
 
   return {
-    getCustomerDetails: (formData) =>
+    getCustomerDetails: formData =>
       dispatch({
         type: types.GET_CUSTOMER_DATA,
         payload: async () => {
@@ -40,7 +40,7 @@ export default function useCustomerActions() {
           }
         },
       }),
-    getBookingDetails: (params) =>
+    getBookingDetails: params =>
       dispatch({
         type: types.GET_BOOKING_DATA,
         payload: async () => {
@@ -59,7 +59,7 @@ export default function useCustomerActions() {
           }
         },
       }),
-    getBankDetails: (params) =>
+    getBankDetails: params =>
       dispatch({
         type: types.GET_BANK_DETAILS,
         payload: async () => {
@@ -78,7 +78,7 @@ export default function useCustomerActions() {
           }
         },
       }),
-    addCustomer: (formData) =>
+    addCustomer: formData =>
       dispatch({
         type: types.ADD_CUSTOMER,
         payload: async () => {
@@ -97,7 +97,7 @@ export default function useCustomerActions() {
           }
         },
       }),
-    updateBankDetails: (formData) =>
+    updateBankDetails: formData =>
       dispatch({
         type: types.UPDATE_BANK_DETAILS,
         payload: async () => {
@@ -121,7 +121,7 @@ export default function useCustomerActions() {
           }
         },
       }),
-    updateBankFiles: (formData) =>
+    updateBankFiles: formData =>
       dispatch({
         type: types.UPDATE_BANK_FILES,
         payload: async () => {
@@ -140,7 +140,7 @@ export default function useCustomerActions() {
           }
         },
       }),
-    removeBankFile: (params) =>
+    removeBankFile: params =>
       dispatch({
         type: types.UPDATE_BANK_FILES,
         payload: async () => {
@@ -159,7 +159,7 @@ export default function useCustomerActions() {
           }
         },
       }),
-    getModifyRequests: (params) =>
+    getModifyRequests: params =>
       dispatch({
         type: types.GET_MODIFY_REQUESTS,
         payload: async () => {
@@ -177,7 +177,7 @@ export default function useCustomerActions() {
           }
         },
       }),
-    addModifyRequest: (params) =>
+    addModifyRequest: params =>
       dispatch({
         type: types.ADD_MODIFY_REQUEST,
         payload: async () => {

@@ -10,11 +10,6 @@ const appReducer = combineReducers(reducer);
 
 const allMiddleware = [thunk, promise];
 
-if (__DEV__) {
-  const createDebugger = require('redux-flipper').default;
-  allMiddleware.push(createDebugger());
-}
-
 const middleware = applyMiddleware(...allMiddleware);
 
 const rootReducer = (state, action) => {

@@ -9,13 +9,13 @@ import StructureSelector from 'components/Molecules/StructureSelector';
 function SelectStructure(props) {
   const {navigation} = props;
 
-  const {selectedProject} = useSelector((state) => state.project);
-  const {loading} = useSelector((state) => state.sales);
+  const {selectedProject} = useSelector(state => state.project);
+  const {loading} = useSelector(state => state.sales);
 
   const {projectData} = selectedProject;
-  const projectTypes = Object.keys(projectData).map((v) => Number(v));
+  const projectTypes = Object.keys(projectData).map(v => Number(v));
 
-  const handlePress = (value) => {
+  const handlePress = value => {
     navigation.navigate('BC_Step_Two', {selectedStructure: value});
   };
 

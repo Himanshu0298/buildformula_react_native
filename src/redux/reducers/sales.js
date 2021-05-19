@@ -205,7 +205,7 @@ const reducer = (state = initialState, action = {}) => {
       };
     case `${DELETE_PIPELINE}_FULFILLED`: {
       const pipelines = _.cloneDeep(state.pipelines);
-      const index = pipelines.findIndex((pipeline) => pipeline.id === payload);
+      const index = pipelines.findIndex(pipeline => pipeline.id === payload);
 
       if (index > -1) {
         pipelines.splice(index, 1);
@@ -240,7 +240,7 @@ const reducer = (state = initialState, action = {}) => {
         }
 
         const visitorIndex = get_visitors.findIndex(
-          (visitor) => visitor.id === visitorId,
+          visitor => visitor.id === visitorId,
         );
         if (visitorIndex > -1) {
           movedVisitor = get_visitors[visitorIndex];

@@ -30,7 +30,7 @@ function LanguageSelect(props) {
   const {i18n} = useTranslation();
   const {setAppLanguage} = useAppActions();
 
-  const {language = 'en'} = useSelector((state) => state.app);
+  const {language = 'en'} = useSelector(state => state.app);
 
   useEffect(() => {
     //TODO: Remove this when language screen is to be enabled agaian
@@ -41,7 +41,7 @@ function LanguageSelect(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const selectLanguage = (selectedLanguage) => {
+  const selectLanguage = selectedLanguage => {
     setAppLanguage(selectedLanguage);
     i18n.changeLanguage(selectedLanguage);
     navigation.navigate('Login');

@@ -21,7 +21,7 @@ export default class AlertProvider extends PureComponent {
    * @param {any} [customParameters] custom parameters that will be passed to the alert renderer
    * @public
    */
-  show = (props) => {
+  show = props => {
     this.setState({open: true, ...props});
   };
 

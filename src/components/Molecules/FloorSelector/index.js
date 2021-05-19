@@ -68,7 +68,7 @@ function FloorSelector({
               extraData={{...floors}}
               showsVerticalScrollIndicator={false}
               keyboardShouldPersistTaps="handled"
-              keyExtractor={(item) => item.toString()}
+              keyExtractor={item => item.toString()}
               renderItem={({item: floorId}) => (
                 <FloorBar
                   floorId={floorId}

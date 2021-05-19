@@ -89,8 +89,8 @@ function StructureSelector({title, subtitle, onSelectStructure, projectTypes}) {
       <FormTitle title={t(title)} subTitle={t(subtitle)} />
       <View style={styles.container}>
         {getStructureItems()
-          .filter((structure) => projectTypes.includes(structure.value))
-          .map((item) => (
+          .filter(structure => projectTypes.includes(structure.value))
+          .map(item => (
             <ImageRender
               key={item.value}
               {...item}

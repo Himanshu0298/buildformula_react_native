@@ -10,7 +10,7 @@ class Registry {
     }
   }
 
-  existingColumnAttributes = (columnId) => {
+  existingColumnAttributes = columnId => {
     const column = this.column(columnId);
 
     return column && column.attributes();
@@ -48,7 +48,7 @@ class Registry {
   };
 
   buildItemsMap = (columnId, rows, existingItems) => {
-    const items = range(rows.length).map((index) => {
+    const items = range(rows.length).map(index => {
       const row = rows[index];
       const {id} = row;
       const existingItemAttributes =
@@ -74,15 +74,15 @@ class Registry {
     return itemsMap;
   };
 
-  updateData = (data) => {
+  updateData = data => {
     this.map = {};
-    const columns = range(data.length).map((columnIndex) => {
+    const columns = range(data.length).map(columnIndex => {
       const columnData = data[columnIndex];
 
       return this.buildColumn(columnIndex, columnData);
     });
 
-    columns.forEach((column) => {
+    columns.forEach(column => {
       this.map[column.id()] = column;
     });
   };
@@ -97,18 +97,18 @@ class Registry {
 
   columns = () => {
     const columns = values(this.map);
-    return sortBy(columns, (column) => column.index());
+    return sortBy(columns, column => column.index());
   };
 
-  column = (columnId) => this.map[columnId];
+  column = columnId => this.map[columnId];
 
-  items = (columnId) => {
+  items = columnId => {
     const column = this.column(columnId);
 
     return (column && column.items()) || [];
   };
 
-  visibleItems = (columnId) => {
+  visibleItems = columnId => {
     const column = this.column(columnId);
 
     return (column && column.visibleItems()) || [];

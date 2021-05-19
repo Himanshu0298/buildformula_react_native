@@ -25,7 +25,7 @@ const DropDown = forwardRef((props, ref) => {
 
   const toggleDropDOwn = () => {
     Keyboard.dismiss();
-    setShowDropDown((v) => !v);
+    setShowDropDown(v => !v);
   };
 
   const onLayout = (event: LayoutChangeEvent) => {
@@ -33,7 +33,7 @@ const DropDown = forwardRef((props, ref) => {
   };
 
   useEffect(() => {
-    const _label = list.find((_) => _.value === value)?.label;
+    const _label = list.find(_ => _.value === value)?.label;
     if (_label) {
       setDisplayValue(_label);
     }

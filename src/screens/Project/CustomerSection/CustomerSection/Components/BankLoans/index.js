@@ -18,8 +18,8 @@ function BankLoans(props) {
 
   const {bankDetails} = useSelector(({customer}) => customer);
 
-  const toggleActivityModal = () => setActivityModal((v) => !v);
-  const toggleShareModal = () => setShareModal((v) => !v);
+  const toggleActivityModal = () => setActivityModal(v => !v);
+  const toggleShareModal = () => setShareModal(v => !v);
 
   return (
     <>

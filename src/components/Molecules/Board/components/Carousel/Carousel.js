@@ -26,7 +26,7 @@ class Carousel extends Component {
     this.initPositions(this.props);
   }
 
-  UNSAFE_componentWillUpdate = (nextProps) => {
+  UNSAFE_componentWillUpdate = nextProps => {
     this.initPositions(nextProps);
   };
 
@@ -59,7 +59,7 @@ class Carousel extends Component {
     return this.activeItem;
   }
 
-  getDataIndex = (index) => {
+  getDataIndex = index => {
     const {data} = this.props;
     const dataLength = data && data.length;
 
@@ -91,20 +91,20 @@ class Carousel extends Component {
 
   getKeyExtractor = (item, index) => `scrollview-item-${index}`;
 
-  getScrollOffset = (event) =>
+  getScrollOffset = event =>
     (event &&
       event.nativeEvent &&
       event.nativeEvent.contentOffset &&
       event.nativeEvent.contentOffset.x) ||
     0;
 
-  getCenter = (offset) => {
+  getCenter = offset => {
     const {itemWidth, sliderWidth} = this.props;
 
     return offset + sliderWidth / 2 - (sliderWidth - itemWidth) / 2;
   };
 
-  getActiveItem = (offset) => {
+  getActiveItem = offset => {
     const center = this.getCenter(offset);
     const centerOffset = 20;
 
@@ -144,13 +144,13 @@ class Carousel extends Component {
     });
   };
 
-  scrollTo = (offset) => {
+  scrollTo = offset => {
     const wrappedRef = this.getWrappedRef();
 
     wrappedRef.scrollTo({x: offset, y: 0, animated: true});
   };
 
-  onScroll = (event) => {
+  onScroll = event => {
     const {onScroll} = this.props;
     const scrollOffset = this.getScrollOffset(event);
     const nextActiveItem = this.getActiveItem(scrollOffset);
@@ -171,12 +171,12 @@ class Carousel extends Component {
     return onScroll && onScroll();
   };
 
-  onScrollBeginDrag = (event) => {
+  onScrollBeginDrag = event => {
     this.scrollStartOffset = this.getScrollOffset(event);
     this.scrollStartActive = this.getActiveItem(this.scrollStartOffset);
   };
 
-  onScrollEndDrag = (event) => {
+  onScrollEndDrag = event => {
     const {onScrollEndDrag} = this.props;
 
     if (this.carouselRef) {
@@ -202,7 +202,7 @@ class Carousel extends Component {
     }
   };
 
-  snapScroll = (delta) => {
+  snapScroll = delta => {
     if (!this.scrollEndActive && this.scrollEndActive !== 0 && ios) {
       this.scrollEndActive = this.scrollStartActive;
     }
@@ -218,7 +218,7 @@ class Carousel extends Component {
     }
   };
 
-  snapToItem = (index) => {
+  snapToItem = index => {
     const {onChangeTab} = this.props;
     onChangeTab && onChangeTab(index);
 
@@ -293,7 +293,7 @@ class Carousel extends Component {
 
     return {
       // eslint-disable-next-line no-return-assign
-      ref: (c) => (this.carouselRef = c),
+      ref: c => (this.carouselRef = c),
       data,
       style: containerStyle,
       contentContainerStyle,

@@ -3,47 +3,47 @@ import {instance, useConfig} from './init';
 export default function useCustomerServices() {
   const {config} = useConfig();
   return {
-    getCustomerDetails: (data) => {
+    getCustomerDetails: data => {
       return instance.post('/customers', data, config({multipart: false}));
     },
-    getBookingDetails: (data) => {
+    getBookingDetails: data => {
       return instance.post(
         '/customers/booking_details',
         data,
         config({multipart: false}),
       );
     },
-    getBankDetails: (data) => {
+    getBankDetails: data => {
       return instance.post(
         '/customers/bank_details',
         data,
         config({multipart: false}),
       );
     },
-    addCustomer: (data) => {
+    addCustomer: data => {
       return instance.post('/customers/update', data, config());
     },
-    updateBankDetails: (data) => {
+    updateBankDetails: data => {
       return instance.post('/customers/update_bank_details', data, config());
     },
-    updateBankFiles: (data) => {
+    updateBankFiles: data => {
       return instance.post('customers/update_bank_files', data, config());
     },
-    removeBankFile: (data) => {
+    removeBankFile: data => {
       return instance.post(
         'customers/delete_bank_files',
         data,
         config({multipart: false}),
       );
     },
-    getModifyRequests: (data) => {
+    getModifyRequests: data => {
       return instance.post(
         '/modify/request/lists',
         data,
         config({multipart: false}),
       );
     },
-    addModifyRequest: (data) => {
+    addModifyRequest: data => {
       return instance.post('/modify/request/add', data, config());
     },
   };

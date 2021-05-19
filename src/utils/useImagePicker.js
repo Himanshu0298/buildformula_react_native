@@ -20,7 +20,7 @@ const cameraOptions = {
 };
 
 const handleCamera = ({type, onChoose}) => {
-  launchCamera(cameraOptions, (res) => {
+  launchCamera(cameraOptions, res => {
     if (res.error) {
       console.log('ImagePicker Error: ', res.error);
     } else {
@@ -83,7 +83,7 @@ const handleFilePicker = async ({type, multiple, onChoose}) => {
       const res = await DocumentPicker.pickMultiple({type: fileTypes});
       console.log('-----> res', res);
       const data = await Promise.all(
-        res.map(async (item) => await processFiles(item)),
+        res.map(async item => await processFiles(item)),
       );
 
       console.log('-----> data', data);
@@ -116,16 +116,13 @@ function useImagePicker() {
       'Cancel',
     ];
 
-    showActionSheetWithOptions(
-      {options, cancelButtonIndex: 2},
-      (buttonIndex) => {
-        if (buttonIndex === 0) {
-          handleFilePicker({type, onChoose});
-        } else if (buttonIndex === 1) {
-          handleCamera({type, onChoose});
-        }
-      },
-    );
+    showActionSheetWithOptions({options, cancelButtonIndex: 2}, buttonIndex => {
+      if (buttonIndex === 0) {
+        handleFilePicker({type, onChoose});
+      } else if (buttonIndex === 1) {
+        handleCamera({type, onChoose});
+      }
+    });
   };
 
   return {openImagePicker, openFilePicker: handleFilePicker};

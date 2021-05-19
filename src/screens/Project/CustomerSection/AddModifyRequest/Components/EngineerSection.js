@@ -66,7 +66,7 @@ function AddModificationDialog(props) {
               validateOnChange={false}
               initialValues={{type: 'free'}}
               validationSchema={addSchema}
-              onSubmit={async (values) => onSubmit(values)}>
+              onSubmit={async values => onSubmit(values)}>
               {({
                 values,
                 errors,
@@ -159,7 +159,7 @@ function ReviewForm(props) {
 
   const [addDialog, setAddDialog] = React.useState(false);
 
-  const toggleAddDialog = () => setAddDialog((v) => !v);
+  const toggleAddDialog = () => setAddDialog(v => !v);
 
   return (
     <Formik
@@ -167,7 +167,7 @@ function ReviewForm(props) {
       validateOnChange={false}
       initialValues={{type: 'free'}}
       validationSchema={schema}
-      onSubmit={async (values) => {}}>
+      onSubmit={async values => {}}>
       {({
         values,
         errors,
@@ -180,7 +180,7 @@ function ReviewForm(props) {
           <AddModificationDialog
             open={addDialog}
             toggleDialog={toggleAddDialog}
-            onSubmit={(v) => {
+            onSubmit={v => {
               const {modifications = []} = values;
               modifications.push(v);
               setFieldValue('modifications', modifications);
@@ -194,13 +194,13 @@ function ReviewForm(props) {
                 label={'Free'}
                 value={'free'}
                 checked={values.type === 'free'}
-                onChange={(value) => setFieldValue('type', value)}
+                onChange={value => setFieldValue('type', value)}
               />
               <Radio
                 label={'Paid'}
                 value={'paid'}
                 checked={values.type === 'paid'}
-                onChange={(value) => setFieldValue('type', value)}
+                onChange={value => setFieldValue('type', value)}
               />
             </View>
           </View>
@@ -256,7 +256,7 @@ function ReviewForm(props) {
                             cellIndex === 4 ? (
                               <RenderClose
                                 index={index}
-                                handleRemove={(removeIndex) => {
+                                handleRemove={removeIndex => {
                                   const {modifications} = values;
                                   modifications.splice(removeIndex, 1);
                                   setFieldValue('modifications', modifications);

@@ -81,7 +81,7 @@ function RenderForm({formikProps, navigation, ...restProps}) {
       <View style={styles.inputsContainer}>
         <ProfileUpload
           profilePic={values.profile_pic}
-          onSelect={(v) => setFieldValue('profile_pic', v)}
+          onSelect={v => setFieldValue('profile_pic', v)}
         />
         <RenderInput
           name="customer_full_name"
@@ -175,7 +175,7 @@ function RenderForm({formikProps, navigation, ...restProps}) {
           value={values.company_pan}
           file={values.pan_image}
           onChangeText={handleChange('company_pan')}
-          onChoose={(v) => setFieldValue('pan_image', v)}
+          onChoose={v => setFieldValue('pan_image', v)}
           onBlur={handleBlur('company_pan')}
           onSubmitEditing={() => aadharRef?.current?.focus()}
           error={errors.company_pan || errors.pan_image}
@@ -189,7 +189,7 @@ function RenderForm({formikProps, navigation, ...restProps}) {
           file={values.aadhar_image}
           onChangeText={handleChange('customer_aadhar')}
           onBlur={handleBlur('customer_aadhar')}
-          onChoose={(v) => setFieldValue('aadhar_image', v)}
+          onChoose={v => setFieldValue('aadhar_image', v)}
           onSubmitEditing={handleSubmit}
           error={errors.customer_aadhar || errors.aadhar_image}
         />
@@ -232,13 +232,13 @@ function AddCustomer(props) {
   const {unit, project_id} = params;
   const {t} = useTranslation();
 
-  const {user} = useSelector((state) => state.user);
+  const {user} = useSelector(state => state.user);
 
   const {getCustomerDetails, addCustomer} = useCustomerActions();
 
   console.log('----->unit.unitId ', unit.unitId);
 
-  const getUpdatedCustomers = (unit_id) => {
+  const getUpdatedCustomers = unit_id => {
     const formData = new FormData();
     formData.append('user_id', user.id);
     formData.append('project_id', project_id);
@@ -265,7 +265,7 @@ function AddCustomer(props) {
           validateOnChange={false}
           initialValues={{accepted: false}}
           validationSchema={schema}
-          onSubmit={async (values) => {
+          onSubmit={async values => {
             const formData = new FormData();
             formData.append('project_id', project_id);
             formData.append('unit_id', unit.unit_id);
@@ -288,7 +288,7 @@ function AddCustomer(props) {
               navigation.goBack();
             });
           }}>
-          {(formikProps) => <RenderForm formikProps={formikProps} {...props} />}
+          {formikProps => <RenderForm formikProps={formikProps} {...props} />}
         </Formik>
       </KeyboardAwareScrollView>
     </View>

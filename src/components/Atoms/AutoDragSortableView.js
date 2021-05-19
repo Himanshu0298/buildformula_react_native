@@ -639,7 +639,7 @@ export default class AutoDragSortableView extends Component {
     this.scrollRef && this.scrollRef.scrollTo({x: 0, y: height, animated});
   };
 
-  onScrollListener = (event) => {
+  onScrollListener = event => {
     const nativeEvent = event.nativeEvent;
     this.curScrollData = {
       totalHeight: nativeEvent.contentSize.height,
@@ -662,7 +662,7 @@ export default class AutoDragSortableView extends Component {
         bounces={false}
         scrollEventThrottle={1}
         scrollIndicatorInsets={this.props.scrollIndicatorInsets}
-        ref={(scrollRef) => {
+        ref={scrollRef => {
           if (this.props.onScrollRef) {
             this.props.onScrollRef(scrollRef);
           }
@@ -691,7 +691,7 @@ export default class AutoDragSortableView extends Component {
     );
   }
 
-  _getKey = (index) => {
+  _getKey = index => {
     const item = this.state.dataSource[index];
     return this.props.keyExtractor
       ? this.props.keyExtractor(item.data, index)
@@ -711,7 +711,7 @@ export default class AutoDragSortableView extends Component {
       return (
         <Animated.View
           key={key}
-          ref={(ref) => this.sortRefs.set(key, ref)}
+          ref={ref => this.sortRefs.set(key, ref)}
           {...this._panResponder.panHandlers}
           style={[
             styles.item,

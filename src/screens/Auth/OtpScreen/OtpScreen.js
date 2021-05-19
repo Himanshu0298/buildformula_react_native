@@ -127,7 +127,7 @@ const OtpInput = ({value, setValue, colors}) => {
   );
 };
 
-const OtpScreen = (props) => {
+const OtpScreen = props => {
   const {navigation} = props;
   const alert = useAlert();
 
@@ -135,7 +135,7 @@ const OtpScreen = (props) => {
   const [email, setEmail] = useState('');
 
   const {colors} = props.theme;
-  const {user, loading} = useSelector((state) => state.user);
+  const {user, loading} = useSelector(state => state.user);
   const {verifyOtp} = useOtpActions();
 
   const submit = async () => {
@@ -146,10 +146,10 @@ const OtpScreen = (props) => {
     formData.append('email_otp', email);
 
     verifyOtp(formData)
-      .then((data) => {
+      .then(data => {
         navigation.navigate('RoleSelect');
       })
-      .catch((error) => {
+      .catch(error => {
         console.log('-----> error', error);
         alert.show({
           title: 'Alert',

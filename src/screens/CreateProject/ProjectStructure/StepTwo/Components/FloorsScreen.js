@@ -55,7 +55,7 @@ function RenderFloor(props) {
       badgeActive={false}
       onPress={setSelectedFloor}
       inputProps={{
-        onChangeText: (units) => onChangeUnit(floorId, units),
+        onChangeText: units => onChangeUnit(floorId, units),
         value: floors?.[floorId]?.unitCount?.toString() || '',
       }}
       buttonLabel={
@@ -107,16 +107,16 @@ function FloorsScreen(props) {
   }, [floors, floorCount, selectedStructureType]);
 
   const floorOptions = useMemo(() => {
-    return Object.keys(floors).map((key) => ({
+    return Object.keys(floors).map(key => ({
       label: getFloorNumber(key),
       value: key,
     }));
   }, [floors]);
 
-  const toggleDuplicateDialog = () => setDuplicateDialog((v) => !v);
+  const toggleDuplicateDialog = () => setDuplicateDialog(v => !v);
 
   //check floors data is valid for all floors
-  const validateFloors = (floorId) => {
+  const validateFloors = floorId => {
     let allValid = true;
     let error = '';
 
@@ -199,7 +199,7 @@ function FloorsScreen(props) {
               extraData={{...floors}}
               showsVerticalScrollIndicator={false}
               keyboardShouldPersistTaps="handled"
-              keyExtractor={(item) => item.toString()}
+              keyExtractor={item => item.toString()}
               renderItem={({item}) => (
                 <RenderFloor
                   floorId={item}

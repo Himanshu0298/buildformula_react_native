@@ -25,12 +25,12 @@ export default function useSalesActions() {
   } = useSalesServices();
 
   return {
-    toggleTimer: (data) =>
+    toggleTimer: data =>
       dispatch({
         type: types.SET_TIMER,
         payload: data,
       }),
-    getSalesData: (project_id) =>
+    getSalesData: project_id =>
       dispatch({
         type: types.GET_SALES_DATA,
         payload: async () => {
@@ -49,7 +49,7 @@ export default function useSalesActions() {
           }
         },
       }),
-    getVisitors: (projectId) =>
+    getVisitors: projectId =>
       dispatch({
         type: types.GET_VISITORS,
         payload: async () => {
@@ -71,7 +71,7 @@ export default function useSalesActions() {
           }
         },
       }),
-    getFollowUps: (projectId) =>
+    getFollowUps: projectId =>
       dispatch({
         type: types.GET_FOLLOWUP_LIST,
         payload: async () => {
@@ -96,7 +96,7 @@ export default function useSalesActions() {
           }
         },
       }),
-    getPipelineData: (projectId) =>
+    getPipelineData: projectId =>
       dispatch({
         type: types.GET_PIPELINES,
         payload: async () => {
@@ -121,7 +121,7 @@ export default function useSalesActions() {
           }
         },
       }),
-    addVisitor: (formData) =>
+    addVisitor: formData =>
       dispatch({
         type: types.ADD_VISITOR,
         payload: async () => {
@@ -140,7 +140,7 @@ export default function useSalesActions() {
           }
         },
       }),
-    addFollowUp: (formData) =>
+    addFollowUp: formData =>
       dispatch({
         type: types.ADD_FOLLOW_UP,
         payload: async () => {
@@ -159,7 +159,7 @@ export default function useSalesActions() {
           }
         },
       }),
-    addPipeline: (formData) =>
+    addPipeline: formData =>
       dispatch({
         type: types.ADD_PIPELINE,
         payload: async () => {
@@ -178,7 +178,7 @@ export default function useSalesActions() {
           }
         },
       }),
-    moveVisitor: (data) =>
+    moveVisitor: data =>
       dispatch({
         type: types.MOVE_VISITOR,
         payload: async () => {
@@ -223,7 +223,7 @@ export default function useSalesActions() {
         },
       }),
 
-    getUnitsBookingStatus: (formData) =>
+    getUnitsBookingStatus: formData =>
       dispatch({
         type: types.GET_BOOKINGS_STATUS,
         payload: async () => {
@@ -243,7 +243,7 @@ export default function useSalesActions() {
         },
       }),
 
-    lockUnit: (formData) =>
+    lockUnit: formData =>
       dispatch({
         type: types.LOCK_UNIT,
         payload: async () => {
@@ -262,7 +262,7 @@ export default function useSalesActions() {
           }
         },
       }),
-    createBooking: (formData) =>
+    createBooking: formData =>
       dispatch({
         type: types.CREATE_BOOKING,
         payload: async () => {

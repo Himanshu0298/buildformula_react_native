@@ -49,23 +49,23 @@ function StepTwo(props) {
   const {t} = useTranslation();
   const {createProject, getCities} = useAddProjectActions();
 
-  const {user} = useSelector((state) => state.user);
+  const {user} = useSelector(state => state.user);
   const {loading, statesData, citiesData} = useSelector(
-    (state) => state.addProject,
+    state => state.addProject,
   );
 
   const stateOptions = useMemo(() => {
     return statesData
-      .filter((i) => i.status)
+      .filter(i => i.status)
       .sort((a, b) => a.name.localeCompare(b.name))
-      .map((i) => ({label: i.name, value: i.id}));
+      .map(i => ({label: i.name, value: i.id}));
   }, [statesData]);
 
   const cityOptions = useMemo(() => {
     return citiesData
-      .filter((i) => i.status)
+      .filter(i => i.status)
       .sort((a, b) => a?.city_name?.localeCompare(b?.city_name))
-      .map((i) => ({label: i.city_name, value: i.id}));
+      .map(i => ({label: i.city_name, value: i.id}));
   }, [citiesData]);
 
   const nameRef = React.useRef();
@@ -94,7 +94,7 @@ function StepTwo(props) {
           validateOnChange={false}
           initialValues={{}}
           validationSchema={schema}
-          onSubmit={async (values) => {
+          onSubmit={async values => {
             Keyboard.dismiss();
 
             const formData = new FormData();
@@ -152,7 +152,7 @@ function StepTwo(props) {
                   value={values.project_rera}
                   file={values.rera_image}
                   onChangeText={handleChange('project_rera')}
-                  onChoose={(v) => setFieldValue('rera_image', v)}
+                  onChoose={v => setFieldValue('rera_image', v)}
                   onBlur={handleBlur('project_rera')}
                   onSubmitEditing={() => websiteRef?.current.focus()}
                   error={errors.project_rera || errors.rera_image}
@@ -221,7 +221,7 @@ function StepTwo(props) {
                   containerStyles={styles.input}
                   value={values.project_state}
                   options={stateOptions}
-                  onSelect={(value) => {
+                  onSelect={value => {
                     setFieldValue('project_state', value);
                     getCities({state_id: value});
                   }}
@@ -234,7 +234,7 @@ function StepTwo(props) {
                   options={cityOptions}
                   containerStyles={styles.input}
                   value={values.project_city}
-                  onSelect={(value) => setFieldValue('project_city', value)}
+                  onSelect={value => setFieldValue('project_city', value)}
                   onSubmitEditing={() => pinRef?.current.focus()}
                   error={errors.project_city}
                 />

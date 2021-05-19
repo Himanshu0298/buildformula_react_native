@@ -148,11 +148,11 @@ function AddContactDialog({open, t, handleClose, moveContact}) {
   const [searchQuery, setSearchQuery] = React.useState();
   const [selectedVisitor, setSelectedVisitor] = React.useState();
 
-  const {visitorSuggestions} = useSelector((state) => state.sales);
+  const {visitorSuggestions} = useSelector(state => state.sales);
 
   const filteredVisitors = React.useMemo(() => {
     if (searchQuery) {
-      return visitorSuggestions.filter((visitor) => {
+      return visitorSuggestions.filter(visitor => {
         return (
           visitor.first_name.includes(searchQuery) ||
           visitor.last_name.includes(searchQuery) ||
@@ -179,7 +179,7 @@ function AddContactDialog({open, t, handleClose, moveContact}) {
                 placeholder={t('label_search_visitors')}
                 style={styles.searchBar}
                 value={searchQuery}
-                onChangeText={(v) => {
+                onChangeText={v => {
                   setSearchQuery(v);
                   if (!v || (v && selectedVisitor)) {
                     setSelectedVisitor();
@@ -287,14 +287,14 @@ const RenderBoard = React.memo(
         <Board
           boardBackground="#fff"
           boardRepository={boardRepository}
-          renderHeader={(column) => (
+          renderHeader={column => (
             <RenderHeader
               data={column}
               toggleModal={toggleModal}
               handleDelete={onDeletePipeline}
             />
           )}
-          cardContent={(item) => <RenderContacts item={item} />}
+          cardContent={item => <RenderContacts item={item} />}
           renderAddNew={() => <RenderAddNew handleAddNew={handleAddNew} />}
           onChangeTab={setSelectedTab}
           open={() => console.log('-----> open')}
@@ -323,16 +323,16 @@ export default function SalesPipeline(props) {
     moveVisitor,
   } = useSalesActions();
 
-  const {pipelines, loading} = useSelector((state) => state.sales);
-  const {selectedProject} = useSelector((state) => state.project);
-  const {user} = useSelector((state) => state.user);
+  const {pipelines, loading} = useSelector(state => state.sales);
+  const {selectedProject} = useSelector(state => state.project);
+  const {user} = useSelector(state => state.user);
 
   React.useEffect(() => {
     getPipelineData(selectedProject.id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleAddNew = (title) => {
+  const handleAddNew = title => {
     const formData = new FormData();
     formData.append('title', title);
     formData.append('project_id', selectedProject.id);
@@ -343,7 +343,7 @@ export default function SalesPipeline(props) {
     });
   };
 
-  const moveContact = (visitorId) => {
+  const moveContact = visitorId => {
     moveVisitor({
       projectId: selectedProject.id,
       visitorId,
@@ -351,7 +351,7 @@ export default function SalesPipeline(props) {
     });
   };
 
-  const toggleModal = () => setShowAddContact((v) => !v);
+  const toggleModal = () => setShowAddContact(v => !v);
 
   return (
     <View style={styles.container}>

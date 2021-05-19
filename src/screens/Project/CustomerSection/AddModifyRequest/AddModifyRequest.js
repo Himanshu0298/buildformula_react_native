@@ -28,7 +28,7 @@ function AddModifyRequest(props) {
 
   const handleRefresh = () => getModifyRequests({project_id});
 
-  const handleCreation = (values) => {
+  const handleCreation = values => {
     const {title, description, files} = values;
     const formData = new FormData();
     formData.append('title', title);

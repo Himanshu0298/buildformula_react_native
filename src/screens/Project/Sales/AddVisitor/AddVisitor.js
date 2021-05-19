@@ -134,7 +134,7 @@ function PersonalTab({
             value={values.occupation}
             placeholder={t('placeholder_occupation')}
             error={errors.occupation}
-            onSelect={(value) => {
+            onSelect={value => {
               setFieldValue('occupation', value);
               if (value === 'Other') {
                 occupationInputRef?.current?.focus();
@@ -252,7 +252,7 @@ function InquiryTab({
             containerStyles={styles.input}
             value={values.follow_up_date}
             error={errors.follow_up_date}
-            onChange={(date) => {
+            onChange={date => {
               setFieldValue('follow_up_date', date);
               followUpTimeRef?.current.focus();
             }}
@@ -265,7 +265,7 @@ function InquiryTab({
             containerStyles={styles.input}
             value={values.follow_up_time}
             error={errors.follow_up_time}
-            onChange={(date) => {
+            onChange={date => {
               setFieldValue('follow_up_time', date);
               assignToRef?.current.focus();
             }}
@@ -278,7 +278,7 @@ function InquiryTab({
             containerStyles={styles.input}
             value={values.assign_to}
             error={errors.assign_to}
-            onSelect={(value) => {
+            onSelect={value => {
               setFieldValue('assign_to', value);
             }}
           />
@@ -290,21 +290,21 @@ function InquiryTab({
                 value="low"
                 color={PRIORITY_COLORS.low}
                 checked={values.priority === 'low'}
-                onChange={(value) => setFieldValue('priority', value)}
+                onChange={value => setFieldValue('priority', value)}
               />
               <Radio
                 label={'Medium'}
                 value="medium"
                 color={PRIORITY_COLORS.medium}
                 checked={values.priority === 'medium'}
-                onChange={(value) => setFieldValue('priority', value)}
+                onChange={value => setFieldValue('priority', value)}
               />
               <Radio
                 label={'High'}
                 value="high"
                 color={PRIORITY_COLORS.high}
                 checked={values.priority === 'high'}
-                onChange={(value) => setFieldValue('priority', value)}
+                onChange={value => setFieldValue('priority', value)}
               />
             </View>
           </View>
@@ -315,7 +315,7 @@ function InquiryTab({
             containerStyles={styles.input}
             value={values.inquiry_for}
             error={errors.inquiry_for}
-            onSelect={(value) => {
+            onSelect={value => {
               setFieldValue('inquiry_for', value);
             }}
           />
@@ -324,13 +324,11 @@ function InquiryTab({
             <RenderSelect
               name="for_bhk"
               label={t('label_for_bhk')}
-              options={bhkOptions?.[values.inquiry_for].map((v) =>
-                v.toString(),
-              )}
+              options={bhkOptions?.[values.inquiry_for].map(v => v.toString())}
               containerStyles={styles.input}
               value={values.for_bhk}
               error={errors.for_bhk}
-              onSelect={(value) => {
+              onSelect={value => {
                 setFieldValue('for_bhk', value);
               }}
             />
@@ -385,11 +383,11 @@ function RenderForm({formikProps, user, ...restProps}) {
     occupationOptions,
     inquiryOptions,
     assignOptions,
-  } = useSelector((state) => state.sales);
+  } = useSelector(state => state.sales);
 
   const updatedAssignOptions = useMemo(() => {
     const data = [...assignOptions];
-    const index = data.findIndex((item) => item.value === user.id);
+    const index = data.findIndex(item => item.value === user.id);
     if (index === -1) {
       data.unshift({
         value: user.id,
@@ -448,7 +446,7 @@ function RenderForm({formikProps, user, ...restProps}) {
       renderScene={renderScene}
       onIndexChange={setSelectedTab}
       initialLayout={{width: Layout.window.width}}
-      renderTabBar={(tabBarProps) => {
+      renderTabBar={tabBarProps => {
         return (
           <View style={styles.headerContainer}>
             <ProjectHeader />
@@ -463,9 +461,9 @@ function RenderForm({formikProps, user, ...restProps}) {
 function AddVisitor(props) {
   const {navigation} = props;
 
-  const {selectedProject} = useSelector((state) => state.project);
-  const {user} = useSelector((state) => state.user);
-  const {loading} = useSelector((state) => state.sales);
+  const {selectedProject} = useSelector(state => state.project);
+  const {user} = useSelector(state => state.user);
+  const {loading} = useSelector(state => state.sales);
 
   const {
     addVisitor,
@@ -487,7 +485,7 @@ function AddVisitor(props) {
             validateOnChange={false}
             initialValues={{priority: 'low'}}
             validationSchema={schema}
-            onSubmit={async (values) => {
+            onSubmit={async values => {
               const formData = new FormData();
 
               formData.append(
@@ -510,7 +508,7 @@ function AddVisitor(props) {
               delete values.occupation;
               delete values.occupation_input;
 
-              Object.keys(values).map((key) => {
+              Object.keys(values).map(key => {
                 formData.append(key, values[key]);
               });
 
@@ -524,7 +522,7 @@ function AddVisitor(props) {
                 navigation.goBack();
               });
             }}>
-            {(formikProps) => (
+            {formikProps => (
               <RenderForm formikProps={formikProps} user={user} {...props} />
             )}
           </Formik>

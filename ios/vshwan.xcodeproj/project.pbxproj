@@ -16,7 +16,7 @@
 		42E94F3DD28345B7B5DCDD32 /* Nunito-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CF9C7B4E30014AB7A3BF3C1C /* Nunito-Regular.ttf */; };
 		45CEBF8370B948BB87533614 /* Nunito-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5090BC9249EB44DD981D0F71 /* Nunito-ExtraLight.ttf */; };
 		98517B59257B011600ED1C94 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 98517B58257B011600ED1C94 /* LaunchScreen.storyboard */; };
-		98517B63257B03BA00ED1C94 /* launch_screen.png in Resources */ = {isa = PBXBuildFile; fileRef = 98517B62257B03BA00ED1C94 /* launch_screen.png */; };
+		98517B63257B03BA00ED1C94 /* bootsplash.png in Resources */ = {isa = PBXBuildFile; fileRef = 98517B62257B03BA00ED1C94 /* bootsplash.png */; };
 		98517BDF257B05CB00ED1C94 /* Void.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98517BDE257B05CB00ED1C94 /* Void.swift */; };
 		D9C478F163114DEE877882D8 /* Nunito-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 944959DA24BF4E4FA0D0659B /* Nunito-Light.ttf */; };
 /* End PBXBuildFile section */
@@ -47,7 +47,7 @@
 		90B151A42AFC4F8B906C534D /* Poppins-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Bold.otf"; path = "../src/assets/fonts/Poppins-Bold.otf"; sourceTree = "<group>"; };
 		944959DA24BF4E4FA0D0659B /* Nunito-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Nunito-Light.ttf"; path = "../src/assets/fonts/Nunito-Light.ttf"; sourceTree = "<group>"; };
 		98517B58257B011600ED1C94 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = vshwan/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		98517B62257B03BA00ED1C94 /* launch_screen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = launch_screen.png; path = ../android/app/src/main/res/drawable/launch_screen.png; sourceTree = "<group>"; };
+		98517B62257B03BA00ED1C94 /* bootsplash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = bootsplash.png; path = ../android/app/src/main/res/drawable/bootsplash.png; sourceTree = "<group>"; };
 		98517BDD257B05CA00ED1C94 /* vshwan-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "vshwan-Bridging-Header.h"; sourceTree = "<group>"; };
 		98517BDE257B05CB00ED1C94 /* Void.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Void.swift; sourceTree = "<group>"; };
 		A47605BC749F4516B568A0CF /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
@@ -95,7 +95,7 @@
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				98517B58257B011600ED1C94 /* LaunchScreen.storyboard */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
-				98517B62257B03BA00ED1C94 /* launch_screen.png */,
+				98517B62257B03BA00ED1C94 /* bootsplash.png */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB71A68108700A75B9A /* main.m */,
 			);
@@ -246,7 +246,7 @@
 				D9C478F163114DEE877882D8 /* Nunito-Light.ttf in Resources */,
 				98517B59257B011600ED1C94 /* LaunchScreen.storyboard in Resources */,
 				42E94F3DD28345B7B5DCDD32 /* Nunito-Regular.ttf in Resources */,
-				98517B63257B03BA00ED1C94 /* launch_screen.png in Resources */,
+				98517B63257B03BA00ED1C94 /* bootsplash.png in Resources */,
 				01884B612FBE4CBDAD48BD26 /* Nunito-SemiBold.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -454,6 +454,7 @@
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -507,6 +508,7 @@
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
