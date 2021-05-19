@@ -35,7 +35,7 @@ const IMAGES = {
   Customer: developerImage,
 };
 
-const PROJECT_CONTAINER_WIDTH = Layout.window.width * 0.43;
+const PROJECT_CONTAINER_WIDTH = Layout.window.width * 0.435;
 const PROJECT_CONTAINER_MARGIN = Layout.window.width * 0.02;
 const DEVELOPER_IMAGE_WIDTH = PROJECT_CONTAINER_WIDTH * 0.9;
 

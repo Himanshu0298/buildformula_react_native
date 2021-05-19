@@ -217,6 +217,8 @@ PODS:
     - React-Core
   - react-native-image-resizer (1.4.4):
     - React-Core
+  - react-native-pager-view (5.1.9):
+    - React-Core
   - react-native-safe-area-context (3.2.0):
     - React-Core
   - react-native-signature-capture (0.4.11):
@@ -334,6 +336,7 @@ DEPENDENCIES:
   - react-native-document-picker (from `../node_modules/react-native-document-picker`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - react-native-image-resizer (from `../node_modules/react-native-image-resizer`)
+  - react-native-pager-view (from `../node_modules/react-native-pager-view`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-signature-capture (from `../node_modules/react-native-signature-capture`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
@@ -410,6 +413,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-image-picker"
   react-native-image-resizer:
     :path: "../node_modules/react-native-image-resizer"
+  react-native-pager-view:
+    :path: "../node_modules/react-native-pager-view"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-signature-capture:
@@ -487,6 +492,7 @@ SPEC CHECKSUMS:
   react-native-document-picker: 1a7518132d4a06b67f459be9bb1464a567d2b3b4
   react-native-image-picker: 5bb3325530fd4dc3053a77a73d4f65b6649de820
   react-native-image-resizer: 13ac4af788f88af36d0353a1324401ebabd04fe4
+  react-native-pager-view: 14653de580178af7e65aa7e3fa08b4f243c86d4d
   react-native-safe-area-context: f0906bf8bc9835ac9a9d3f97e8bde2a997d8da79
   react-native-signature-capture: 96ee159945aa595a57a5aeeb344218b342640a23
   React-perflogger: aad6d4b4a267936b3667260d1f649b6f6069a675

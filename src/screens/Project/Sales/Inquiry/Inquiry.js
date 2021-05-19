@@ -122,7 +122,7 @@ function RenderContent({
         extraData={data}
         keyExtractor={(item, index) => index.toString()}
         style={styles.scrollView}
-        contentContainerStyle={{flexGrow: 1}}
+        contentContainerStyle={{flexGrow: 1, paddingBottom: 60}}
         showsVerticalScrollIndicator={false}
         renderItem={({item, index}) => (
           <RenderVisitorItem
