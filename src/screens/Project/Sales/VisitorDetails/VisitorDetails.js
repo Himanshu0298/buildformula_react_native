@@ -132,7 +132,7 @@ function RenderFollowupList({visitorFollowUp}) {
     <View style={styles.followupBody}>
       {visitorFollowUp?.length ? (
         <ScrollView showsVerticalScrollIndicator={false}>
-          {visitorFollowUp.map((followup, i) => {
+          {visitorFollowUp?.map((followup, i) => {
             const {
               created,
               assign_to,
@@ -147,27 +147,21 @@ function RenderFollowupList({visitorFollowUp}) {
                 <View style={styles.followupRow}>
                   <View>
                     <Caption>Created on</Caption>
-                    <Caption style={{color: '#000', lineHeight: 12}}>
+                    <Caption style={styles.followupValue}>
                       {dayjs(created).format('DD MMMM YYYY, hh:mm A')}
                     </Caption>
                   </View>
                   <View>
                     <Caption>Assign To</Caption>
                     <Caption
-                      style={{
-                        textAlign: 'right',
-                        color: '#000',
-                        lineHeight: 12,
-                      }}>
+                      style={[{textAlign: 'right'}, styles.followupValue]}>
                       {assign_to}
                     </Caption>
                   </View>
                 </View>
 
                 <Caption>Notes:</Caption>
-                <Caption style={{color: '#000', lineHeight: 12}}>
-                  {remarks}
-                </Caption>
+                <Caption style={styles.followupValue}>{remarks}</Caption>
 
                 <Divider style={{marginVertical: 10}} />
 
@@ -175,7 +169,7 @@ function RenderFollowupList({visitorFollowUp}) {
 
                 <View style={{marginVertical: 15}}>
                   <Caption>Follow up on:</Caption>
-                  <Caption style={{color: '#000', lineHeight: 12}}>
+                  <Caption style={styles.followupValue}>
                     {dayjs(`${followup_date} ${followup_time}`).format(
                       'DD MMMM YYYY, hh:mm A',
                     )}
@@ -208,7 +202,7 @@ function VisitorDetails(props) {
 
   const {getVisitor} = useSalesActions();
 
-  const [selectedTab, setSelectedTab] = useState(1);
+  const [selectedTab, setSelectedTab] = useState(0);
   const [routes] = React.useState([
     {key: 0, title: 'Visitor details'},
     {key: 1, title: 'Follow up list'},
@@ -288,7 +282,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   value: {
-    lineHeight: 13,
+    lineHeight: 14,
   },
   badge: {
     borderRadius: 20,
@@ -306,13 +300,16 @@ const styles = StyleSheet.create({
     paddingBottom: 30,
     marginBottom: 10,
   },
-
   followupRow: {
     marginTop: 15,
     marginBottom: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  followupValue: {
+    color: '#000',
+    lineHeight: 14,
   },
 });
 
