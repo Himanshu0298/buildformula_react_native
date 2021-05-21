@@ -601,7 +601,12 @@ function StepTwo(props) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Spinner visible={loading} textContent={''} />
+      <Spinner
+        visible={loading}
+        textContent={
+          'We are digitally constructing your project. This may take a minute or two'
+        }
+      />
       <StatusBar
         barStyle="light-content"
         backgroundColor={theme.colors.primary}

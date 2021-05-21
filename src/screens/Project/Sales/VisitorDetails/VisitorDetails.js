@@ -44,7 +44,7 @@ function RenderVisitorDetails({
   } = visitor;
 
   const occupation = occupationOptions.find(v => v.id === visitor.occupation);
-  const source = sourceTypeOptions.find(v => v.id === visitor.occupation);
+  const source = sourceTypeOptions.find(v => v.id === visitor.source_type);
 
   return (
     <View style={styles.detailsContainer}>

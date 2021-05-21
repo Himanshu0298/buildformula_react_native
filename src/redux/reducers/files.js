@@ -8,6 +8,7 @@ import {
   RENAME_FILE,
   DELETE_FILE,
   GET_VERSION,
+  GET_SELECTED_PROJECT,
 } from './../actions/actionTypes';
 
 const initialState = {
@@ -21,6 +22,12 @@ const initialState = {
 export default (state = initialState, action = {}) => {
   const {type, payload} = action;
   switch (type) {
+    //RESET data on project change
+    case `${GET_SELECTED_PROJECT}_PENDING`:
+      return {
+        ...initialState,
+      };
+
     case `${GET_FOLDERS}_PENDING`:
       return {
         ...state,

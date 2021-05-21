@@ -45,11 +45,9 @@ const reducer = (state = initialState, action = {}) => {
   const {type, payload} = action;
 
   switch (type) {
-    //RESET sales data on project change
+    //RESET data on project change
     case `${GET_SELECTED_PROJECT}_PENDING`:
-      return {
-        ...initialState,
-      };
+      return {...initialState};
 
     case `${SET_TIMER}`:
       return {

@@ -67,11 +67,10 @@ const reducer = (state = initialState, action = {}) => {
         loading: true,
       };
     case `${CREATE_PROJECT}_FULFILLED`:
-      console.log('-----> payload', payload);
       return {
         ...state,
-        project: payload,
         loading: false,
+        project: payload,
       };
     case `${CREATE_PROJECT}_REJECTED`:
       return {

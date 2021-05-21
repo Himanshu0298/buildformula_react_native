@@ -38,8 +38,6 @@ export default function useAddProjectActions() {
           try {
             const response = _res(await createProject(formData));
             const {data} = response;
-            console.log('-----> data', data);
-
             return Promise.resolve(data);
           } catch (error) {
             const message = _err(error);

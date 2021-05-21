@@ -2,6 +2,7 @@ import {
   CREATE_LINEUP_ENTITY,
   DELETE_LINEUP_ENTITY,
   GET_MILESTONES,
+  GET_SELECTED_PROJECT,
   GET_WORKS,
   GET_WORK_CATEGORIES,
   UPDATE_LINEUP_ENTITY,
@@ -19,6 +20,12 @@ const initialState = {
 const reducer = (state = initialState, action = {}) => {
   const {type, payload} = action;
   switch (type) {
+    //RESET data on project change
+    case `${GET_SELECTED_PROJECT}_PENDING`:
+      return {
+        ...initialState,
+      };
+
     case `${GET_WORK_CATEGORIES}_PENDING`:
       return {
         ...state,

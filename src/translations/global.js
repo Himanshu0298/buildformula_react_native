@@ -66,6 +66,7 @@ export default {
       label_occupation: 'Occupation',
       label_other_occupation: 'Other occupation',
       placeholder_occupation: 'Select Occupation',
+      label_source: 'Select Source',
       label_current_locality: 'Current Locality',
       label_budget_from: 'Budget From',
       label_budget_to: 'Budget To',

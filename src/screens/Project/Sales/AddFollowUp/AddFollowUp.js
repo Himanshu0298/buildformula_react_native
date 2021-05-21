@@ -12,7 +12,6 @@ import {
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
 import ProjectHeader from 'components/Molecules/Layout/ProjectHeader';
-import BaseText from 'components/Atoms/BaseText';
 import {getShadow} from 'utils';
 import {theme} from 'styles/theme';
 import {Formik} from 'formik';
@@ -39,8 +38,12 @@ const schema = Yup.object().shape({
   remarks: Yup.string('Invalid').required('Required'),
 });
 
-function RenderVisitorDetails({visitor, occupationOptions, onNext}) {
+function RenderVisitorDetails(props) {
+  const {visitor, occupationOptions, sourceTypeOptions, onNext} = props;
+
   const occupation = occupationOptions.find(v => v.id === visitor.occupation);
+  const source = sourceTypeOptions.find(v => v.id === visitor.source_type);
+
   return (
     <View style={styles.detailsContainer}>
       <View style={styles.detailRow}>
@@ -59,7 +62,7 @@ function RenderVisitorDetails({visitor, occupationOptions, onNext}) {
       </View>
       <View style={styles.detailRow}>
         <Paragraph>Occupation</Paragraph>
-        <Caption>{occupation.label}</Caption>
+        <Caption>{occupation?.label || 'NA'}</Caption>
       </View>
       <View style={styles.detailRow}>
         <Paragraph>Date</Paragraph>
@@ -82,6 +85,10 @@ function RenderVisitorDetails({visitor, occupationOptions, onNext}) {
       <View style={styles.detailRow}>
         <Paragraph>Current Locality</Paragraph>
         <Caption>{visitor.current_locality}</Caption>
+      </View>
+      <View style={styles.detailRow}>
+        <Paragraph>Source type</Paragraph>
+        <Caption style={styles.value}>{source || 'NA'}</Caption>
       </View>
       <View style={styles.detailRow}>
         <Paragraph>Priority</Paragraph>
@@ -109,7 +116,7 @@ function RenderVisitorDetails({visitor, occupationOptions, onNext}) {
         contentStyle={{paddingHorizontal: 20, paddingVertical: 2}}
         theme={{roundness: 15}}
         onPress={onNext}>
-        <BaseText style={styles.buttonText}>{'Next'}</BaseText>
+        Next
       </Button>
     </View>
   );
@@ -126,9 +133,12 @@ function PersonalTab({
   const [searchQuery, setSearchQuery] = useState();
   const [isFocused, setFocused] = useState(false);
 
-  const {visitorSuggestions, visitors, occupationOptions} = useSelector(
-    state => state.sales,
-  );
+  const {
+    visitorSuggestions,
+    visitors,
+    occupationOptions,
+    sourceTypeOptions,
+  } = useSelector(state => state.sales);
 
   const filteredVisitors = useMemo(() => {
     if (searchQuery) {
@@ -179,13 +189,13 @@ function PersonalTab({
                   const label = `${visitor.first_name} ${visitor.last_name}`;
                   return (
                     <TouchableOpacity
+                      key={index}
                       onPress={() => {
                         Keyboard.dismiss();
                         setSearchQuery(label);
                         setSelectedVisitor(visitor.id);
                       }}>
                       <Menu.Item
-                        key={index}
                         icon="account-question-outline"
                         title={label}
                       />
@@ -202,6 +212,7 @@ function PersonalTab({
               onNext={() => setSelectedTab(1)}
               visitor={visitorDetails}
               occupationOptions={occupationOptions}
+              sourceTypeOptions={sourceTypeOptions}
             />
           ) : null}
         </View>
@@ -497,9 +508,5 @@ const styles = StyleSheet.create({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-  },
-  buttonText: {
-    fontWeight: 'bold',
-    fontSize: 18,
   },
 });

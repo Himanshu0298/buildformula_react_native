@@ -9,6 +9,7 @@ import {
   UPDATE_BANK_FILES,
   GET_MODIFY_REQUESTS,
   ADD_MODIFY_REQUEST,
+  GET_SELECTED_PROJECT,
 } from './../actions/actionTypes';
 
 const persistConfig = {
@@ -32,6 +33,12 @@ const initialState = {
 const reducer = (state = initialState, action = {}) => {
   const {type, payload} = action;
   switch (type) {
+    //RESET data on project change
+    case `${GET_SELECTED_PROJECT}_PENDING`:
+      return {
+        ...initialState,
+      };
+
     case `${GET_CUSTOMER_DATA}_PENDING`:
       return {
         ...state,

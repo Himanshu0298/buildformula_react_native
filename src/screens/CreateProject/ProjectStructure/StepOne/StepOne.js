@@ -121,7 +121,10 @@ function StepOne(props) {
         .filter(key => structureTypes[key])
         .join();
 
-      const data = {project_id: project.id, project_types: types};
+      const data = {
+        project_id: project.id || project.project_id,
+        project_types: types,
+      };
 
       const updatedStructure = {};
       selectedTypes.map(type => {

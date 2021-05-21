@@ -40,12 +40,14 @@ const schema = Yup.object().shape({
   inquiry_for: Yup.string('Invalid').required('Required'),
 });
 
-function PersonalTab({
-  navigation,
-  formikProps,
-  occupationOptions,
-  setSelectedTab,
-}) {
+function PersonalTab(props) {
+  const {
+    navigation,
+    formikProps,
+    occupationOptions,
+    sourceTypeOptions,
+    setSelectedTab,
+  } = props;
   const {handleChange, setFieldValue, values, handleBlur, errors} = formikProps;
   const {t} = useTranslation();
 
@@ -56,6 +58,7 @@ function PersonalTab({
   const occupationRef = React.useRef();
   const occupationInputRef = React.useRef();
   const localityRef = React.useRef();
+  const sourceTypeRef = React.useRef();
 
   return (
     <ScrollView
@@ -167,6 +170,16 @@ function PersonalTab({
             onSubmitEditing={() => setSelectedTab(1)}
             error={errors.email}
           />
+          <RenderSelect
+            name="source_type"
+            ref={sourceTypeRef}
+            label={t('label_source')}
+            options={sourceTypeOptions}
+            containerStyles={styles.input}
+            value={values.source_type}
+            error={errors.source_type}
+            onSelect={value => setFieldValue('source_type', value)}
+          />
         </View>
         <View style={styles.actionContainer}>
           <Button
@@ -241,7 +254,6 @@ function InquiryTab({
             containerStyles={styles.input}
             value={values.budget_to}
             onChangeText={handleChange('budget_to')}
-            onSubmitEditing={() => followUpDateRef?.current.focus()}
             onBlur={handleBlur('budget_to')}
             error={errors.budget_to}
           />
@@ -254,7 +266,6 @@ function InquiryTab({
             error={errors.follow_up_date}
             onChange={date => {
               setFieldValue('follow_up_date', date);
-              followUpTimeRef?.current.focus();
             }}
           />
           <RenderDatePicker
@@ -267,7 +278,6 @@ function InquiryTab({
             error={errors.follow_up_time}
             onChange={date => {
               setFieldValue('follow_up_time', date);
-              assignToRef?.current.focus();
             }}
           />
           <RenderSelect
@@ -383,6 +393,7 @@ function RenderForm({formikProps, user, ...restProps}) {
     occupationOptions,
     inquiryOptions,
     assignOptions,
+    sourceTypeOptions,
   } = useSelector(state => state.sales);
 
   const updatedAssignOptions = useMemo(() => {
@@ -423,6 +434,7 @@ function RenderForm({formikProps, user, ...restProps}) {
             {...restProps}
             setSelectedTab={setSelectedTab}
             occupationOptions={occupationOptions}
+            sourceTypeOptions={sourceTypeOptions}
             formikProps={formikProps}
           />
         );
