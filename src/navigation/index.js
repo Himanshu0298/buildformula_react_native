@@ -7,7 +7,7 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 import TouchID from 'react-native-touch-id';
 import DrawerContent from './Components/DrawerContent';
 import {useSelector} from 'react-redux';
-import {getInitialAuthScreen} from 'utils';
+import {getInitialScreen} from 'utils';
 
 //Auth Screens
 import LanguageSelect from '../screens/Auth/LanguageSelect';
@@ -330,9 +330,9 @@ const getActiveRouteName = state => {
 };
 
 function NavContainer() {
-  const {authenticated} = useSelector(state => state.user);
+  const {authenticated, user} = useSelector(state => state.user);
   const {language} = useSelector(state => state.app);
-  const state = useSelector(root => root);
+
   const [currentScreen, setCurrentScreen] = useState(
     authenticated ? 'Home' : 'LanguageSelect',
   );
@@ -343,7 +343,6 @@ function NavContainer() {
     const navState = navigationRef.current.getRootState();
     // Save the initial route name
     routeNameRef.current = getActiveRouteName(navState);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -367,9 +366,10 @@ function NavContainer() {
 
   const initialScreen = useMemo(() => {
     if (language) {
-      return getInitialAuthScreen(authenticated, state);
+      return getInitialScreen(authenticated, user);
     }
-    return 'LanguageSelect';
+    // return 'LanguageSelect';
+    return 'Login';
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [language]);
 

@@ -114,15 +114,12 @@ export const getUnitLabel = (floor, unit) => {
   return `${floor}${unit.toString().padStart(2, '0')}`;
 };
 
-export function getInitialAuthScreen(
-  authenticated,
-  {user: {user = {}}, addProject: {project = {}}},
-) {
+export function getInitialScreen(authenticated, user = {}) {
   const {id, otp_verified, email_verified, default_role_id} = user;
   if (authenticated) {
-    if (project.id) {
-      return 'ProjectStructureStepOne';
-    }
+    // if (project.id) {
+    //   return 'ProjectStructureStepOne';
+    // }
     return 'GeneralDashboard';
   } else {
     if (id) {
