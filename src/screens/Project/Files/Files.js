@@ -629,9 +629,10 @@ export default function Files(props) {
         file_id: id,
         project_id: selectedProject.id,
         new_file_name: name,
-      }).then(res =>
-        getFiles({project_id: selectedProject.id, folder_id: folderDepth}),
-      );
+      }).then(res => {
+        toggleCreateDialogue();
+        getFiles({project_id: selectedProject.id, folder_id: folderDepth});
+      });
     }
   };
 
