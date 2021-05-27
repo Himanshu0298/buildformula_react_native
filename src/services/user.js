@@ -4,7 +4,11 @@ export default function useAuth() {
   const {config} = useConfig();
   return {
     login: data => {
-      return instance.post('/login', data, config({auth: false}));
+      return instance.post(
+        '/login',
+        data,
+        config({auth: false, multipart: false}),
+      );
     },
     signUp: data => {
       return instance.post(

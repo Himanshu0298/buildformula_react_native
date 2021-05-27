@@ -121,16 +121,14 @@ export function getInitialScreen(authenticated, user = {}) {
     //   return 'ProjectStructureStepOne';
     // }
     return 'GeneralDashboard';
-  } else {
-    if (id) {
-      if (otp_verified === 'N' || email_verified === 'N') {
-        return 'Otp';
-      } else if (default_role_id === 0) {
-        return 'RoleSelect';
-      }
-    } else {
-      return 'Login';
+  } else if (id) {
+    if (otp_verified === 'N' || email_verified === 'N') {
+      return 'Otp';
+    } else if (default_role_id === 0) {
+      return 'RoleSelect';
     }
+  } else {
+    return 'Login';
   }
 }
 

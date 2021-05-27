@@ -170,15 +170,13 @@ function Login(props) {
       initialValues={{}}
       validationSchema={schema}
       onSubmit={async values => {
-        const formData = new FormData();
         Keyboard.dismiss();
         if (loginError) {
           setLoginError(null);
         }
-        formData.append('email', values.email);
-        formData.append('password', values.password);
+        const data = {email: values.email, password: values.password};
 
-        login(formData)
+        login(data)
           .then(({value}) => {
             const {otp_verified, email_verified, default_role_id} = value.user;
 

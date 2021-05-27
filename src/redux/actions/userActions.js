@@ -3,6 +3,22 @@ import {useDispatch} from 'react-redux';
 import useAuth from '../../services/user';
 import {useResProcessor} from 'utils/responseProcessor';
 import {useSnackbar} from 'components/Atoms/Snackbar';
+import messaging from '@react-native-firebase/messaging';
+
+async function getFcmToken() {
+  try {
+    const authStatus = await messaging().requestPermission();
+    const enabled =
+      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+    if (enabled) {
+      return messaging().getToken();
+    }
+  } catch (error) {
+    console.log('-----> error', error);
+  }
+}
 
 export default function useUserActions() {
   const dispatch = useDispatch();
@@ -33,9 +49,10 @@ export default function useUserActions() {
         type: types.LOGIN,
         payload: async () => {
           try {
-            const response = _res(await login(data));
+            const fcm_token = await getFcmToken();
+
+            const response = _res(await login({...data, fcm_token}));
             const {data: userData} = response;
-            console.log('----->login response', userData);
 
             return Promise.resolve({user: userData});
           } catch (error) {

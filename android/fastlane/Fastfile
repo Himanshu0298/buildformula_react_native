@@ -48,8 +48,8 @@ platform :android do
     gradle(task: 'assemble', build_type: 'Release') # build_android_app is a built-in fastlane action.
 
     firebase_app_distribution(
-        app: "1:329626313976:android:9d2065130178ba02a1c70d",
-        groups: "testers"
+        app: "1:525501768411:android:7b6f39a29fd28111ed62fe",
+        groups: "vshwan-team"
     )
   end
 end
