@@ -115,7 +115,7 @@ function Home(props) {
 
   useEffect(() => {
     getProjects().then(({value}) => {
-      if (value.developers.length === 0) {
+      if (!value?.developers?.length) {
         navigation.navigate('ProjectCreationStepOne');
       }
     });

@@ -18,6 +18,7 @@ import {
   Caption,
   Portal,
   Dialog,
+  Divider,
 } from 'react-native-paper';
 import {theme} from 'styles/theme';
 import {round} from 'utils';
@@ -31,6 +32,7 @@ const TYPES = ['super_buildup', 'buildup', 'carpet'];
 
 const schema = Yup.object().shape({
   area_amount: Yup.number('Invalid').required('Required'),
+  unit: Yup.string('Invalid').required('Required'),
   ...getTypesSchema(TYPES),
 });
 
@@ -39,7 +41,6 @@ function getTypesSchema(types) {
 
   types.map(type => {
     typesSchema[`${type}_area`] = Yup.number('Invalid').required('Required');
-    typesSchema[`${type}_unit`] = Yup.number('Invalid').required('Required');
     typesSchema[`${type}_rate`] = Yup.number('Invalid').required('Required');
   });
   return typesSchema;
@@ -101,17 +102,6 @@ function RatesColumn(props) {
         onBlur={handleBlur(`${rateType}_area`)}
         error={errors[`${rateType}_area`]}
       />
-      <RenderSelect
-        name={`${rateType}_unit`}
-        label={t('label_unit')}
-        options={[{label: 'SQM', value: 1}]}
-        containerStyles={styles.rateInput}
-        value={values[`${rateType}_unit`]}
-        error={errors[`${rateType}_unit`]}
-        onSelect={value => {
-          setFieldValue(`${rateType}_unit`, value);
-        }}
-      />
       <RenderInput
         name={`${rateType}_rate`}
         label={t('label_rate')}
@@ -169,6 +159,17 @@ function RenderRates(props) {
         />
       </View>
       <View>
+        <RenderSelect
+          name={'unit'}
+          label={t('label_unit')}
+          options={[{label: 'SQM', value: 1}]}
+          containerStyles={styles.rateInput}
+          value={values.unit}
+          error={errors.unit}
+          onSelect={value => {
+            setFieldValue('unit', value);
+          }}
+        />
         <RenderInput
           name={'area_amount'}
           label={t('label_amount')}
@@ -312,7 +313,7 @@ function FormContent(props) {
   const {formikProps, navigation} = props;
   const {t} = useTranslation();
 
-  const {handleSubmit, values, setFieldValue} = formikProps;
+  const {handleChange, handleSubmit, values, setFieldValue} = formikProps;
   const handleCancel = () => navigation.goBack();
 
   useEffect(() => {
@@ -348,9 +349,7 @@ function FormContent(props) {
             2. Booking Rate
           </Subheading>
           <Caption>Enter all Area first for auto adjustment</Caption>
-
           <RenderRates formikProps={formikProps} t={t} />
-
           <RenderCharges t={t} formikProps={formikProps} />
           <View style={styles.totalContainer}>
             <Subheading>Total other charges</Subheading>
@@ -372,6 +371,51 @@ function FormContent(props) {
               value={totalAmount || 0}
               containerStyles={{width: '50%'}}
               placeholder={'Total amount'}
+              left={<TextInput.Affix text="₹" />}
+            />
+          </View>
+
+          <Divider style={{marginBottom: 15}} />
+
+          <RenderInput
+            value={values.discount_amount}
+            keyboardType="number-pad"
+            onChangeText={handleChange('discount_amount')}
+            label={'Discount amount'}
+            left={<TextInput.Affix text="₹" />}
+          />
+          <View style={{marginTop: 10}}>
+            <Subheading style={{marginLeft: 5}}>
+              Documentation charges
+            </Subheading>
+            <View style={styles.documentationInputContainer}>
+              <RenderInput
+                value={values.document_start}
+                containerStyles={{width: '45%'}}
+                keyboardType="number-pad"
+                placeholder="Start"
+                onChangeText={handleChange('document_start')}
+                left={<TextInput.Affix text="₹" />}
+              />
+              <View style={styles.dot} />
+              <RenderInput
+                value={values.document_end}
+                containerStyles={{width: '45%'}}
+                keyboardType="number-pad"
+                placeholder="End"
+                onChangeText={handleChange('document_end')}
+                left={<TextInput.Affix text="₹" />}
+              />
+            </View>
+          </View>
+
+          <View style={[styles.totalContainer, {marginTop: 20}]}>
+            <Subheading>Final amount</Subheading>
+            <RenderInput
+              disabled={true}
+              value={totalAmount || 0}
+              containerStyles={{width: '50%'}}
+              placeholder={'Final amount'}
               left={<TextInput.Affix text="₹" />}
             />
           </View>
@@ -464,6 +508,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginVertical: 15,
     justifyContent: 'space-between',
+  },
+  documentationInputContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'flex-end',
+  },
+  dot: {
+    borderRadius: 50,
+    height: 5,
+    width: 5,
+    backgroundColor: '#000',
+    marginBottom: 3,
   },
   actionContainer: {
     marginTop: 25,

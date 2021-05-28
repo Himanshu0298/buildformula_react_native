@@ -31,12 +31,73 @@ import {useAlert} from 'components/Atoms/Alert';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
+const TABS = [
+  {key: 0, title: 'Personal details'},
+  {key: 1, title: 'Follow up details'},
+];
+
 const schema = Yup.object().shape({
   follow_up_date: Yup.date('Invalid').required('Required'),
   follow_up_time: Yup.date('Invalid').required('Required'),
   assign_to: Yup.string('Invalid').required('Required'),
   remarks: Yup.string('Invalid').required('Required'),
 });
+
+export function VisitorSelector(props) {
+  const {
+    visitors,
+    searchQuery,
+    selectedVisitor,
+    onSelectVisitor,
+    onChangeText,
+  } = props;
+
+  const {t} = useTranslation();
+
+  const [isFocused, setFocused] = useState(false);
+
+  return (
+    <>
+      <Searchbar
+        theme={{roundness: 12}}
+        placeholder={t('label_search_visitors')}
+        onFocus={() => setFocused(true)}
+        style={{backgroundColor: 'rgba(4,29,54,0.1)', ...getShadow(0)}}
+        value={searchQuery}
+        onChangeText={v => {
+          onChangeText(v);
+          if (!v || (v && selectedVisitor)) {
+            onSelectVisitor();
+          }
+        }}
+      />
+
+      {isNaN(selectedVisitor) && isFocused && visitors?.length > 0 ? (
+        <View style={styles.listContainer}>
+          <ScrollView
+            contentContainerStyle={{flexGrow: 1}}
+            keyboardShouldPersistTaps="handled">
+            {visitors.map((visitor, index) => {
+              const label = `${visitor.first_name} ${visitor.last_name}`;
+              return (
+                <TouchableOpacity
+                  key={index}
+                  onPress={() => {
+                    Keyboard.dismiss();
+                    onChangeText(label);
+                    onSelectVisitor(visitor.id);
+                  }}>
+                  <Menu.Item icon="account-question-outline" title={label} />
+                  <Divider />
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
+        </View>
+      ) : null}
+    </>
+  );
+}
 
 function RenderVisitorDetails(props) {
   const {visitor, occupationOptions, sourceTypeOptions, onNext} = props;
@@ -122,16 +183,10 @@ function RenderVisitorDetails(props) {
   );
 }
 
-function PersonalTab({
-  navigation,
-  selectedVisitor,
-  setSelectedVisitor,
-  setSelectedTab,
-}) {
-  const {t} = useTranslation();
+function PersonalTab(props) {
+  const {selectedVisitor, setSelectedVisitor, setSelectedTab} = props;
 
   const [searchQuery, setSearchQuery] = useState();
-  const [isFocused, setFocused] = useState(false);
 
   const {
     visitorSuggestions,
@@ -143,11 +198,12 @@ function PersonalTab({
   const filteredVisitors = useMemo(() => {
     if (searchQuery) {
       return visitorSuggestions.filter(visitor => {
+        const {first_name, last_name, phone, email} = visitor;
         return (
-          visitor.first_name.includes(searchQuery) ||
-          visitor.last_name.includes(searchQuery) ||
-          visitor.phone.includes(searchQuery) ||
-          visitor.email.includes(searchQuery)
+          first_name.includes(searchQuery) ||
+          last_name.includes(searchQuery) ||
+          phone.includes(searchQuery) ||
+          email.includes(searchQuery)
         );
       });
     }
@@ -164,48 +220,13 @@ function PersonalTab({
       keyboardShouldPersistTaps="handled">
       <View style={styles.container}>
         <View style={styles.personalContainer}>
-          <Searchbar
-            theme={{roundness: 12}}
-            placeholder={t('label_search_visitors')}
-            onFocus={() => setFocused(true)}
-            style={{backgroundColor: 'rgba(4,29,54,0.1)', ...getShadow(0)}}
-            value={searchQuery}
-            onChangeText={v => {
-              setSearchQuery(v);
-              if (!v || (v && selectedVisitor)) {
-                setSelectedVisitor();
-              }
-            }}
+          <VisitorSelector
+            visitors={filteredVisitors}
+            searchQuery={searchQuery}
+            selectedVisitor={selectedVisitor}
+            onSelectVisitor={setSelectedVisitor}
+            onChangeText={setSearchQuery}
           />
-
-          {isNaN(selectedVisitor) &&
-          isFocused &&
-          filteredVisitors.length > 0 ? (
-            <View style={styles.listContainer}>
-              <ScrollView
-                contentContainerStyle={{flexGrow: 1}}
-                keyboardShouldPersistTaps="handled">
-                {filteredVisitors.map((visitor, index) => {
-                  const label = `${visitor.first_name} ${visitor.last_name}`;
-                  return (
-                    <TouchableOpacity
-                      key={index}
-                      onPress={() => {
-                        Keyboard.dismiss();
-                        setSearchQuery(label);
-                        setSelectedVisitor(visitor.id);
-                      }}>
-                      <Menu.Item
-                        icon="account-question-outline"
-                        title={label}
-                      />
-                      <Divider />
-                    </TouchableOpacity>
-                  );
-                })}
-              </ScrollView>
-            </View>
-          ) : null}
 
           {visitorDetails ? (
             <RenderVisitorDetails
@@ -307,7 +328,7 @@ function FollowUpTab({
                 min={new Date()}
                 onChange={date => {
                   setFieldValue('follow_up_date', date);
-                  followUpTimeRef && followUpTimeRef.current.focus();
+                  followUpTimeRef?.current?.focus?.();
                 }}
               />
               <RenderDatePicker
@@ -320,7 +341,7 @@ function FollowUpTab({
                 error={errors.follow_up_time}
                 onChange={date => {
                   setFieldValue('follow_up_time', date);
-                  assignToRef && assignToRef.current.focus();
+                  assignToRef?.current?.focus?.();
                 }}
               />
               <RenderSelect
@@ -376,10 +397,7 @@ function FollowUpTab({
 function AddFollowUp(props) {
   const [selectedTab, setSelectedTab] = useState(0);
   const [selectedVisitor, setSelectedVisitor] = useState();
-  const [routes] = React.useState([
-    {key: 0, title: 'Personal details'},
-    {key: 1, title: 'Follow up details'},
-  ]);
+  const [routes] = React.useState(TABS);
 
   const {user} = useSelector(state => state.user);
   const {loading} = useSelector(state => state.sales);

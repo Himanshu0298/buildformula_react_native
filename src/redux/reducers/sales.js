@@ -15,6 +15,7 @@ import {
   GET_BANK_LIST,
   SET_TIMER,
   GET_VISITOR,
+  GET_PROJECT_COMMON_DATA,
 } from './../actions/actionTypes';
 
 const initialState = {
@@ -58,6 +59,28 @@ const reducer = (state = initialState, action = {}) => {
         },
       };
 
+    case `${GET_PROJECT_COMMON_DATA}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${GET_PROJECT_COMMON_DATA}_FULFILLED`: {
+      const sourceTypeOptions = payload.source_types
+        .filter(i => i.status)
+        .map(i => ({label: i.source_title, v: i.id}));
+      return {
+        ...state,
+        loading: false,
+        sourceTypeOptions,
+      };
+    }
+    case `${GET_PROJECT_COMMON_DATA}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+        errorMessage: payload,
+      };
+
     case `${GET_SALES_DATA}_PENDING`:
       return {
         ...state,
@@ -74,14 +97,12 @@ const reducer = (state = initialState, action = {}) => {
         yearly_visitor,
         month_visitor,
         weekly_visitor,
-        source_types,
       } = payload;
 
       return {
         ...state,
         loading: false,
         occupationOptions: occupations,
-        sourceTypeOptions: source_types,
         inquiryOptions: inquiry_for,
         bhkOptions: project_bhk,
         visitorSuggestions: visitors_autosuggestions,
