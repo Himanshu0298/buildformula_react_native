@@ -31,12 +31,11 @@ export function useResProcessor() {
     _res: response => {
       const {data} = response;
 
-      // TODO: revert this temp fix
-      // if (data.status) {
-      return data;
-      // } else {
-      //   throw {response};
-      // }
+      if (data.status) {
+        return data;
+      } else {
+        throw {response};
+      }
     },
   };
 }

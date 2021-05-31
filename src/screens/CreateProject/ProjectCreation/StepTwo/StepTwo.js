@@ -20,6 +20,7 @@ import {ScrollView} from 'react-native-gesture-handler';
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
 import RenderSelect from 'components/Atoms/RenderSelect';
+import {handleDebounce} from 'utils';
 
 const schema = Yup.object().shape({
   project_name: Yup.string().required('name is required'),
@@ -170,6 +171,7 @@ function StepTwo(props) {
                   name="project_phone"
                   label={t('label_project_phone')}
                   ref={phoneRef}
+                  maxLength={10}
                   keyboardType="number-pad"
                   containerStyles={styles.input}
                   value={values.project_phone}
@@ -177,16 +179,7 @@ function StepTwo(props) {
                   onBlur={handleBlur('project_phone')}
                   onSubmitEditing={() => emailRef?.current.focus()}
                   error={errors.project_phone}
-                  left={
-                    <TextInput.Affix
-                      text="+91"
-                      theme={{
-                        colors: {
-                          text: '#000',
-                        },
-                      }}
-                    />
-                  }
+                  left={<TextInput.Affix text="+91" />}
                 />
                 <RenderInput
                   name="project_email"
@@ -256,7 +249,7 @@ function StepTwo(props) {
                   style={{width: '40%'}}
                   contentStyle={{padding: 3}}
                   theme={{roundness: 15}}
-                  onPress={handleSubmit}>
+                  onPress={handleDebounce(handleSubmit)}>
                   {'Save'}
                 </Button>
               </View>

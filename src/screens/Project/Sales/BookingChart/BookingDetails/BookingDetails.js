@@ -20,16 +20,27 @@ import {
   Caption,
 } from 'react-native-paper';
 import {useSelector} from 'react-redux';
-import useSalesActions from 'redux/actions/salesActions';
 import {theme} from 'styles/theme';
 import * as Yup from 'yup';
 import {VisitorSelector} from '../../AddFollowUp/AddFollowUp';
 
 const schema = Yup.object().shape({
-  customer_first_name: Yup.string('Invalid').required('Required'),
-  customer_last_name: Yup.string('Invalid').required('Required'),
-  customer_email: Yup.string('Invalid').email('Invalid').required('Required'),
-  customer_phone: Yup.number('Invalid').required('Required'),
+  customer_first_name: Yup.string('Invalid').when('userType', {
+    is: 'new',
+    then: Yup.string('Invalid').required('Required'),
+  }),
+  customer_last_name: Yup.string('Invalid').when('userType', {
+    is: 'new',
+    then: Yup.string('Invalid').required('Required'),
+  }),
+  customer_email: Yup.string('Invalid').when('userType', {
+    is: 'new',
+    then: Yup.string('Invalid').email('Invalid').required('Required'),
+  }),
+  customer_phone: Yup.number('Invalid').when('userType', {
+    is: 'new',
+    then: Yup.string('Invalid').required('Required'),
+  }),
   broker_first_name: Yup.string('Invalid').when('broker', {
     is: 'yes',
     then: Yup.string('Invalid').required('Required'),
@@ -81,11 +92,11 @@ function FormContent(props) {
 
   const [searchQuery, setSearchQuery] = useState();
 
-  const {visitorSuggestions, visitors} = useSelector(state => state.sales);
+  const {visitors} = useSelector(state => state.project);
 
   const filteredVisitors = useMemo(() => {
     if (searchQuery) {
-      return visitorSuggestions.filter(visitor => {
+      return visitors.filter(visitor => {
         const {first_name, last_name, phone, email} = visitor;
         return (
           first_name.includes(searchQuery) ||
@@ -95,8 +106,8 @@ function FormContent(props) {
         );
       });
     }
-    return visitorSuggestions;
-  }, [searchQuery, visitorSuggestions]);
+    return visitors;
+  }, [searchQuery, visitors]);
 
   const visitorDetails = useMemo(() => {
     return visitors.find(visitor => visitor.id === values.selectedVisitor);
@@ -112,6 +123,7 @@ function FormContent(props) {
       onPress={() => Keyboard.dismiss()}>
       <KeyboardAwareScrollView
         keyboardShouldPersistTaps="handled"
+        nestedScrollEnabled
         extraScrollHeight={30}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{flexGrow: 1, paddingVertical: 10}}>
@@ -193,12 +205,7 @@ function FormContent(props) {
                 onChangeText={handleChange('customer_phone')}
                 onBlur={handleBlur('customer_phone')}
                 error={errors.customer_phone}
-                left={
-                  <TextInput.Affix
-                    text="+91"
-                    theme={{colors: {text: '#000'}}}
-                  />
-                }
+                left={<TextInput.Affix text="+91" />}
               />
             </>
           ) : (
@@ -282,12 +289,7 @@ function FormContent(props) {
                 onChangeText={handleChange('broker_phone')}
                 onBlur={handleBlur('broker_phone')}
                 error={errors.broker_phone}
-                left={
-                  <TextInput.Affix
-                    text="+91"
-                    theme={{colors: {text: '#000'}}}
-                  />
-                }
+                left={<TextInput.Affix text="+91" />}
               />
               <RenderTextBox
                 name="remark"
@@ -330,15 +332,6 @@ function FormContent(props) {
 function BookingDetails(props) {
   const {navigation, route} = props;
   const {params = {}} = route;
-
-  const {getSalesData} = useSalesActions();
-
-  const {selectedProject} = useSelector(state => state.project);
-
-  useEffect(() => {
-    // getSalesData(selectedProject.id);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedProject.id]);
 
   return (
     <Formik

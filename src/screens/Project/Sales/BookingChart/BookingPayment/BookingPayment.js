@@ -34,18 +34,9 @@ import {useSelector} from 'react-redux';
 import RenderTextBox from 'components/Atoms/RenderTextbox';
 
 const PAYMENT_METHODS = [
-  {
-    label: 'Full payment',
-    value: 1,
-  },
-  {
-    label: 'Custom payment',
-    value: 2,
-  },
-  {
-    label: '1st Big Amount and Installment',
-    value: 3,
-  },
+  {label: 'Full payment', value: 1},
+  {label: 'Custom payment', value: 2},
+  {label: 'Downpayment and Installment', value: 3},
 ];
 
 const schema = Yup.object().shape({
@@ -137,42 +128,46 @@ export function RenderInstallments(props) {
     big_installment_amount,
   ]);
 
-  return (
-    <>
-      <Caption style={{color: theme.colors.primary, marginTop: 15}}>
-        Installments
-      </Caption>
-      <View style={styles.installmentTitleRow}>
-        <Caption style={{color: theme.colors.primary}}>No.</Caption>
-        <Caption style={{color: theme.colors.primary}}>
-          Installment Date
+  if (installments.length) {
+    return (
+      <>
+        <Caption style={{color: theme.colors.primary, marginTop: 15}}>
+          Installments
         </Caption>
-        <Caption style={{color: theme.colors.primary}}>
-          Installment Amount
-        </Caption>
-      </View>
-      {installments.map((installment, index) => {
-        return (
-          <View key={index} style={styles.installmentRow}>
-            <Subheading>{index + 1}</Subheading>
-            <View style={{flex: 0.4}}>
-              <RenderInput
-                value={dayjs(installment.date).format('DD/MM/YYYY')}
-                disabled={true}
-              />
+        <View style={styles.installmentTitleRow}>
+          <Caption style={{color: theme.colors.primary}}>No.</Caption>
+          <Caption style={{color: theme.colors.primary}}>
+            Installment Date
+          </Caption>
+          <Caption style={{color: theme.colors.primary}}>
+            Installment Amount
+          </Caption>
+        </View>
+        {installments.map((installment, index) => {
+          return (
+            <View key={index} style={styles.installmentRow}>
+              <Subheading>{index + 1}</Subheading>
+              <View style={{flex: 0.4}}>
+                <RenderInput
+                  value={dayjs(installment.date).format('DD/MM/YYYY')}
+                  disabled={true}
+                />
+              </View>
+              <View style={{flex: 0.4}}>
+                <RenderInput
+                  value={installment.amount}
+                  disabled={true}
+                  left={<TextInput.Affix text="₹" />}
+                />
+              </View>
             </View>
-            <View style={{flex: 0.4}}>
-              <RenderInput
-                value={installment.amount}
-                disabled={true}
-                left={<TextInput.Affix text="₹" />}
-              />
-            </View>
-          </View>
-        );
-      })}
-    </>
-  );
+          );
+        })}
+      </>
+    );
+  }
+
+  return <View />;
 }
 
 function RenderOneBigInstallmentPaymentForm(props) {
@@ -507,19 +502,58 @@ function RenderCustomPaymentForm(props) {
   );
 }
 
+function RenderDocumentChargesPayment(props) {
+  const {formikProps, t} = props;
+  const {values, setFieldValue, errors} = formikProps;
+
+  return (
+    <View style={styles.docChargesSection}>
+      <RenderInput
+        name={'documentation_charges'}
+        label={t('label_documentation_charges')}
+        value={'2000000'}
+        editable={false}
+        left={<TextInput.Affix text="₹" />}
+      />
+      <View style={styles.inputRowContainer}>
+        <View style={styles.dateInputContainer}>
+          <RenderDatePicker
+            name="start_date"
+            label={t('label_start_date')}
+            value={values.start_date}
+            error={errors.start_date}
+            onChange={date => {
+              setFieldValue('start_date', dayjs(date).format('YYYY-MM-DD'));
+            }}
+          />
+        </View>
+        <View style={{flex: 1}}>
+          <RenderDatePicker
+            name="end_date"
+            label={t('label_end_date')}
+            value={values.end_date}
+            error={errors.end_date}
+            onChange={date => {
+              setFieldValue('end_date', dayjs(date).format('YYYY-MM-DD'));
+            }}
+          />
+        </View>
+      </View>
+    </View>
+  );
+}
+
 function RenderPaymentForm(props) {
   const {formikProps, t} = props;
   const {values, errors, handleChange, setFieldValue, handleBlur} = formikProps;
 
   return (
     <View style={{marginTop: 10}}>
+      <RenderDocumentChargesPayment {...props} />
       <RenderInput
-        name={'basic_amount'}
         label={t('label_basic_amount')}
-        keyboardType="number-pad"
         value={values.area_amount}
-        disabled={true}
-        onChangeText={handleChange('basic_amount')}
+        editable={false}
         error={errors.basic_amount}
         left={<TextInput.Affix text="₹" />}
       />
@@ -559,12 +593,7 @@ function RenderPaymentForm(props) {
       ) : null}
 
       <Caption
-        style={{
-          color: theme.colors.primary,
-          marginTop: 15,
-          marginBottom: 5,
-          fontSize: 14,
-        }}>
+        style={[styles.otherChargesLabel, {color: theme.colors.primary}]}>
         Other Charges payment
       </Caption>
 
@@ -828,9 +857,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     display: 'flex',
   },
+  docChargesSection: {
+    marginBottom: 10,
+    padding: 15,
+    backgroundColor: 'rgba(255, 92, 22, 0.1)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 92, 22, 1)',
+    borderRadius: 10,
+  },
   loadInputs: {},
   rateInput: {
     marginTop: 5,
+  },
+  otherChargesLabel: {
+    marginTop: 15,
+    marginBottom: 5,
+    fontSize: 14,
   },
   chargesButton: {
     borderWidth: StyleSheet.hairlineWidth,

@@ -18,7 +18,7 @@ import {
   Caption,
   Portal,
   Dialog,
-  Divider,
+  Text,
 } from 'react-native-paper';
 import {theme} from 'styles/theme';
 import {round} from 'utils';
@@ -27,6 +27,7 @@ import _ from 'lodash';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import RenderSelect from 'components/Atoms/RenderSelect';
+import {useSelector} from 'react-redux';
 
 const TYPES = ['super_buildup', 'buildup', 'carpet'];
 
@@ -118,7 +119,7 @@ function RatesColumn(props) {
 }
 
 function RenderRates(props) {
-  const {t, formikProps} = props;
+  const {t, formikProps, unitOptions} = props;
   const {values, handleBlur, errors, setFieldValue} = formikProps;
 
   const syncAmounts = (amount, types) => {
@@ -162,7 +163,7 @@ function RenderRates(props) {
         <RenderSelect
           name={'unit'}
           label={t('label_unit')}
-          options={[{label: 'SQM', value: 1}]}
+          options={unitOptions}
           containerStyles={styles.rateInput}
           value={values.unit}
           error={errors.unit}
@@ -311,10 +312,11 @@ function RenderCharges({formikProps, t}) {
 
 function FormContent(props) {
   const {formikProps, navigation} = props;
+  const {handleChange, handleSubmit, values, setFieldValue} = formikProps;
+
   const {t} = useTranslation();
 
-  const {handleChange, handleSubmit, values, setFieldValue} = formikProps;
-  const handleCancel = () => navigation.goBack();
+  const {unitOptions} = useSelector(state => state.project);
 
   useEffect(() => {
     let amount = 0;
@@ -335,6 +337,12 @@ function FormContent(props) {
     );
   }, [values.other_charges_amount, values.area_amount]);
 
+  const finalAmount = useMemo(() => {
+    return totalAmount - parseInt(values.discount_amount || 0, 10);
+  }, [totalAmount, values.discount_amount]);
+
+  const handleCancel = () => navigation.goBack();
+
   return (
     <TouchableWithoutFeedback
       style={{flexGrow: 1}}
@@ -349,7 +357,7 @@ function FormContent(props) {
             2. Booking Rate
           </Subheading>
           <Caption>Enter all Area first for auto adjustment</Caption>
-          <RenderRates formikProps={formikProps} t={t} />
+          <RenderRates {...{t, formikProps, unitOptions}} />
           <RenderCharges t={t} formikProps={formikProps} />
           <View style={styles.totalContainer}>
             <Subheading>Total other charges</Subheading>
@@ -361,11 +369,12 @@ function FormContent(props) {
               left={<TextInput.Affix text="₹" />}
             />
           </View>
-          <Subheading style={{color: theme.colors.primary}}>
-            Total amount + Other charges
-          </Subheading>
           <View style={styles.totalContainer}>
-            <Subheading>Total amount</Subheading>
+            <View>
+              <Subheading>Total amount</Subheading>
+              <Caption style={{lineHeight: 13}}>Amount + Other charges</Caption>
+            </View>
+
             <RenderInput
               disabled={true}
               value={totalAmount || 0}
@@ -375,45 +384,60 @@ function FormContent(props) {
             />
           </View>
 
-          <Divider style={{marginBottom: 15}} />
+          <View style={styles.discountSection}>
+            <RenderInput
+              value={values.discount_amount}
+              keyboardType="number-pad"
+              onChangeText={v => {
+                setFieldValue('discount_amount', v);
 
-          <RenderInput
-            value={values.discount_amount}
-            keyboardType="number-pad"
-            onChangeText={handleChange('discount_amount')}
-            label={'Discount amount'}
-            left={<TextInput.Affix text="₹" />}
-          />
-          <View style={{marginTop: 10}}>
-            <Subheading style={{marginLeft: 5}}>
-              Documentation charges
-            </Subheading>
-            <View style={styles.documentationInputContainer}>
-              <RenderInput
-                value={values.document_start}
-                containerStyles={{width: '45%'}}
-                keyboardType="number-pad"
-                placeholder="Start"
-                onChangeText={handleChange('document_start')}
-                left={<TextInput.Affix text="₹" />}
-              />
-              <View style={styles.dot} />
-              <RenderInput
-                value={values.document_end}
-                containerStyles={{width: '45%'}}
-                keyboardType="number-pad"
-                placeholder="End"
-                onChangeText={handleChange('document_end')}
-                left={<TextInput.Affix text="₹" />}
-              />
+                const value = v.toString();
+                let documentStart = 0;
+                let documentEnd = 0;
+
+                if (value) {
+                  documentStart = value.slice(0, 5);
+                  documentEnd = value.slice(-5);
+                }
+
+                console.log('-----> documentStart', documentStart, documentEnd);
+                setFieldValue('document_start', documentStart);
+                setFieldValue('document_end', documentEnd);
+              }}
+              label={'Discount amount'}
+              left={<TextInput.Affix text="₹" />}
+            />
+            <View style={{marginTop: 10}}>
+              <Subheading style={{marginLeft: 5}}>
+                Documentation charges
+              </Subheading>
+              <View style={styles.documentationInputContainer}>
+                <RenderInput
+                  value={values.document_start}
+                  containerStyles={{width: '45%'}}
+                  keyboardType="number-pad"
+                  placeholder="Start"
+                  onChangeText={handleChange('document_start')}
+                  left={<TextInput.Affix text="₹" />}
+                />
+                <View style={styles.dot} />
+                <RenderInput
+                  value={values.document_end}
+                  containerStyles={{width: '45%'}}
+                  keyboardType="number-pad"
+                  placeholder="End"
+                  onChangeText={handleChange('document_end')}
+                  left={<TextInput.Affix text="₹" />}
+                />
+              </View>
             </View>
           </View>
 
           <View style={[styles.totalContainer, {marginTop: 20}]}>
-            <Subheading>Final amount</Subheading>
+            <Text>Property Final amount</Text>
             <RenderInput
               disabled={true}
-              value={totalAmount || 0}
+              value={finalAmount || 0}
               containerStyles={{width: '50%'}}
               placeholder={'Final amount'}
               left={<TextInput.Affix text="₹" />}
@@ -443,10 +467,8 @@ function FormContent(props) {
 }
 
 function BookingRates(props) {
-  const {
-    navigation,
-    route: {params},
-  } = props;
+  const {navigation, route} = props;
+  const {params} = route || {};
 
   return (
     <Formik
@@ -508,6 +530,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginVertical: 15,
     justifyContent: 'space-between',
+  },
+  discountSection: {
+    padding: 15,
+    backgroundColor: 'rgba(255, 92, 22, 0.1)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 92, 22, 1)',
+    borderRadius: 10,
   },
   documentationInputContainer: {
     flexDirection: 'row',

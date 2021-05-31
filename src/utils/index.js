@@ -1,3 +1,4 @@
+import {debounce} from 'lodash';
 import {Platform} from 'react-native';
 
 const shadowsArray = {
@@ -141,4 +142,8 @@ export function round(num, decimalPlaces = 2) {
   num = Math.round(num + 'e' + decimalPlaces);
   const result = Number(num + 'e' + -decimalPlaces);
   return result;
+}
+
+export function handleDebounce(func) {
+  return debounce(func, 2000, {leading: true, trailing: false});
 }

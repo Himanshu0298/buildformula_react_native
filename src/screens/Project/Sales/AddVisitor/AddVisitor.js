@@ -113,16 +113,7 @@ function PersonalTab(props) {
             }}
             onBlur={handleBlur('phone')}
             error={errors.phone}
-            left={
-              <TextInput.Affix
-                text="+91"
-                theme={{
-                  colors: {
-                    text: '#000',
-                  },
-                }}
-              />
-            }
+            left={<TextInput.Affix text="+91" />}
           />
           <RenderSelect
             name="occupation"

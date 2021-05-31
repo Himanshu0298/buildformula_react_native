@@ -18,6 +18,8 @@ const initialState = {
   selectedProject: {},
   projects: [],
   commonData: {},
+  visitors: [],
+  unitOptions: [],
 };
 
 const reducer = (state = initialState, action = {}) => {
@@ -64,12 +66,16 @@ const reducer = (state = initialState, action = {}) => {
         ...state,
         loading: true,
       };
-    case `${GET_PROJECT_COMMON_DATA}_FULFILLED`:
+    case `${GET_PROJECT_COMMON_DATA}_FULFILLED`: {
+      const {visitors_lists, units} = payload;
       return {
         ...state,
         loading: false,
         commonData: payload,
+        visitors: visitors_lists,
+        unitOptions: units.map(i => ({label: i.title, value: i.id})),
       };
+    }
     case `${GET_PROJECT_COMMON_DATA}_REJECTED`:
       return {
         ...state,

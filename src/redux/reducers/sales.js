@@ -22,9 +22,7 @@ const initialState = {
   loading: false,
   loadingUnitStatus: false,
   errorMessage: undefined,
-  timerData: {
-    showTimer: false,
-  },
+  timerData: {showTimer: false},
   visitors: [],
   followups: [],
   todayFollowups: [],

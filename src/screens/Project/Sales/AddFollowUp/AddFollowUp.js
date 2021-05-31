@@ -75,6 +75,7 @@ export function VisitorSelector(props) {
       {isNaN(selectedVisitor) && isFocused && visitors?.length > 0 ? (
         <View style={styles.listContainer}>
           <ScrollView
+            nestedScrollEnabled
             contentContainerStyle={{flexGrow: 1}}
             keyboardShouldPersistTaps="handled">
             {visitors.map((visitor, index) => {
