@@ -76,6 +76,8 @@ export default {
       label_inquiry_for: 'Inquiry for',
       label_for_bhk: 'For BHK',
       label_remark: 'Remark',
+      label_status: 'Status',
+      label_customer_response: 'Customer response',
       label_search_visitors: 'Search visitors',
 
       //Booking Form
@@ -213,6 +215,8 @@ export default {
       label_inquiry_for: 'किसके लिए पूछताछ',
       label_for_bhk: 'BHK के लिए',
       label_remark: 'टिप्पणी',
+      label_status: 'Status',
+      label_customer_response: 'Customer response',
       label_search_visitors: 'जांच करें',
 
       //Booking Form

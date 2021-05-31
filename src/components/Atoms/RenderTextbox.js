@@ -27,7 +27,7 @@ RenderTextBox.defaultProps = {
 
 RenderTextBox.propTypes = {
   numberOfLines: PropTypes.number.isRequired,
-  minHeight: PropTypes.number.isRequired,
+  minHeight: PropTypes.number,
 };
 
 export default RenderTextBox;

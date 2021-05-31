@@ -65,7 +65,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${GET_PROJECT_COMMON_DATA}_FULFILLED`: {
       const sourceTypeOptions = payload.source_types
         .filter(i => i.status)
-        .map(i => ({label: i.source_title, v: i.id}));
+        .map(i => ({label: i.source_title, value: i.id}));
       return {
         ...state,
         loading: false,
@@ -142,6 +142,7 @@ const reducer = (state = initialState, action = {}) => {
       return {
         ...state,
         loading: true,
+        visitor: {},
       };
     case `${GET_VISITOR}_FULFILLED`:
       return {

@@ -22,13 +22,11 @@ import Layout from 'utils/Layout';
 import MaterialTabBar from 'components/Atoms/MaterialTabBar';
 import CustomBadge from 'components/Atoms/CustomBadge';
 import NoResult from 'components/Atoms/NoResult';
+import AddResponseDialog from './AddResponseDialog';
 
-function RenderVisitorDetails({
-  visitor,
-  occupationOptions,
-  sourceTypeOptions,
-  onEdit,
-}) {
+function RenderVisitorDetails(props) {
+  const {visitor, occupationOptions, sourceTypeOptions, onEdit} = props;
+
   const {
     first_name,
     last_name,
@@ -44,7 +42,7 @@ function RenderVisitorDetails({
   } = visitor;
 
   const occupation = occupationOptions.find(v => v.id === visitor.occupation);
-  const source = sourceTypeOptions.find(v => v.id === visitor.source_type);
+  const source = sourceTypeOptions.find(v => v.value === visitor.source_type);
 
   return (
     <View style={styles.detailsContainer}>
@@ -128,8 +126,17 @@ function RenderVisitorDetails({
 }
 
 function RenderFollowupList({visitorFollowUp}) {
+  const [responseDialog, setResponseDialog] = useState(false);
+
+  const toggleResponseDialog = () => setResponseDialog(v => !v);
+
   return (
     <View style={styles.followupBody}>
+      <AddResponseDialog
+        open={responseDialog}
+        handleClose={toggleResponseDialog}
+        handleSubmit={() => {}}
+      />
       {visitorFollowUp?.length ? (
         <ScrollView showsVerticalScrollIndicator={false}>
           {visitorFollowUp?.map((followup, i) => {
@@ -181,6 +188,7 @@ function RenderFollowupList({visitorFollowUp}) {
                     mode="contained"
                     uppercase={false}
                     compact
+                    onPress={toggleResponseDialog}
                     style={{width: '70%'}}>
                     Add customer response
                   </Button>
