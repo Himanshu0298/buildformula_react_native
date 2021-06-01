@@ -1,7 +1,24 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {StyleSheet, View, Image, TouchableOpacity} from 'react-native';
-import {IconButton, Subheading, Text} from 'react-native-paper';
+import {Button, IconButton, Subheading, Text} from 'react-native-paper';
 import FolderIcon from 'assets/images/folder_icon.png';
+import RNBackgroundDownloader from 'react-native-background-downloader';
+import RNFS, {DownloadDirectoryPath} from 'react-native-fs';
+import FileViewer from 'react-native-file-viewer';
+
+async function checkDuplicate(destination, count = 0) {
+  const updatedDestination = count
+    ? `${destination}_${count + 1}`
+    : destination;
+  try {
+    const existingFile = await RNFS.stat(updatedDestination);
+    if (existingFile) {
+      return checkDuplicate(destination, count + 1);
+    }
+  } catch (error) {
+    return updatedDestination;
+  }
+}
 
 function MenuDialog(props) {
   const {
@@ -11,6 +28,40 @@ function MenuDialog(props) {
     toggleMenu,
     versionDataHandler,
   } = props;
+
+  const [downloaded, setDownloaded] = useState(false);
+
+  async function handleDownload() {
+    const {id, file_name, file_url, file_type} = modalContent;
+
+    let destination = `${DownloadDirectoryPath}/${file_name}`;
+
+    destination = await checkDuplicate(destination, 0);
+
+    const finalDestination = `${destination}.${file_type}`;
+
+    const task = RNBackgroundDownloader.download({
+      id: `${file_name}_${id}`,
+      url: file_url,
+      destination: finalDestination,
+    })
+      .begin(expectedBytes => {
+        console.log(`Going to download ${expectedBytes} bytes!`);
+      })
+      .progress(percent => {
+        console.log(`Downloaded: ${percent * 100}%`);
+      })
+      .done(() => {
+        setDownloaded(finalDestination);
+        console.log('Download is done!');
+      })
+      .error(error => {
+        console.log('Download canceled due to error: ', error);
+      });
+  }
+
+  const openFile = () => FileViewer.open(downloaded);
+
   return (
     <View>
       <View style={styles.viewDirection}>
@@ -38,10 +89,17 @@ function MenuDialog(props) {
           <Text style={styles.ModalText}>Share Copy</Text>
         </View>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => {}}>
+      <TouchableOpacity onPress={handleDownload}>
         <View style={styles.viewDirection}>
           <IconButton icon="download" />
-          <Text style={styles.ModalText}> Download</Text>
+          <View style={styles.downloadLabel}>
+            <Text style={styles.ModalText}> Download</Text>
+            {downloaded ? (
+              <Button compact onPress={openFile}>
+                Open
+              </Button>
+            ) : null}
+          </View>
         </View>
       </TouchableOpacity>
       <TouchableOpacity
@@ -111,6 +169,12 @@ const styles = StyleSheet.create({
   ModalText: {
     alignItems: 'center',
     paddingVertical: 15,
+  },
+  downloadLabel: {
+    flexGrow: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
 });
 

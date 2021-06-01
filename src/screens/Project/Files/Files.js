@@ -95,14 +95,15 @@ function RenderFolder(props) {
   );
 }
 
-function RenderFile({
-  file,
-  toggleMenu,
-  menuId,
-  setModalContentType,
-  fileIndex,
-  setModalContent,
-}) {
+function RenderFile(props) {
+  const {
+    file,
+    toggleMenu,
+    setModalContentType,
+    fileIndex,
+    setModalContent,
+  } = props;
+
   const {file_name, created} = file;
 
   return (
@@ -141,6 +142,65 @@ function NoResult({title}) {
     <View style={styles.noResultContainer}>
       <Caption>{title}</Caption>
     </View>
+  );
+}
+
+function RenderMenuModal(props) {
+  const {
+    menuId,
+    modelContentType,
+    modalContent,
+    versionData,
+    toggleMenu,
+    setModalContentType,
+    toggleCreateDialogue,
+    handleDownload,
+    versionDataHandler,
+  } = props;
+
+  return (
+    <Modal
+      isVisible={!isNaN(menuId)}
+      backdropOpacity={0.4}
+      onBackButtonPress={toggleMenu}
+      onBackdropPress={toggleMenu}
+      style={{justifyContent: 'flex-end', margin: 0}}>
+      <View style={styles.sheetContainer}>
+        <View style={styles.closeContainer}>
+          <IconButton
+            icon="close-circle"
+            size={25}
+            onPress={() => {
+              if (['parentActivity', 'menu'].includes(modelContentType)) {
+                toggleMenu();
+              } else {
+                setModalContentType('menu');
+              }
+            }}
+            color="grey"
+          />
+        </View>
+        {modelContentType === 'menu' ? (
+          <MenuDialog
+            setModalContentType={setModalContentType}
+            modalContent={modalContent}
+            toggleCreateDialogue={toggleCreateDialogue}
+            toggleMenu={toggleMenu}
+            handleDownload={handleDownload}
+            versionDataHandler={versionDataHandler}
+          />
+        ) : null}
+        {modelContentType === 'parentActivity' ? <ActivityModal /> : null}
+        {modelContentType === 'activity' ? <ActivityModal /> : null}
+        {modelContentType === 'version' ? (
+          <VersionDialog
+            versionData={versionData}
+            handleDownload={handleDownload}
+          />
+        ) : null}
+        {}
+      </View>
+    </Modal>
   );
 }
 
@@ -264,40 +324,19 @@ export default function Files(props) {
 
   const handleFileUpload = async values => {
     const formData = new FormData();
-    values.file.name = values.file_name;
+
     formData.append('folder_id', folderDepth);
     formData.append('myfile[]', values.file);
     formData.append('project_id', selectedProject.id);
 
     await uploadFile(formData);
+    toggleCreateDialogue();
     await getFiles({project_id: selectedProject.id, folder_id: folderDepth});
   };
 
   const versionDataHandler = fileId => {
     getVersion({project_id: selectedProject.id, file_id: fileId});
   };
-
-  function handleDownload(params) {
-    const {id, url, name} = params;
-
-    const task = RNBackgroundDownloader.download({
-      id,
-      url,
-      destination: `${RNBackgroundDownloader.directories.documents}/${name}`,
-    })
-      .begin(expectedBytes => {
-        console.log(`Going to download ${expectedBytes} bytes!`);
-      })
-      .progress(percent => {
-        console.log(`Downloaded: ${percent * 100}%`);
-      })
-      .done(() => {
-        console.log('Download is done!');
-      })
-      .error(error => {
-        console.log('Download canceled due to error: ', error);
-      });
-  }
 
   return (
     <View style={styles.container}>
@@ -374,48 +413,20 @@ export default function Files(props) {
         onStateChange={() => {}}
         actions={FAB_ACTIONS}
       />
-      <Modal
-        isVisible={!isNaN(menuId)}
-        backdropOpacity={0.4}
-        onBackButtonPress={toggleMenu}
-        onBackdropPress={toggleMenu}
-        style={{justifyContent: 'flex-end', margin: 0}}>
-        <View style={styles.sheetContainer}>
-          <View style={styles.closeContainer}>
-            <IconButton
-              icon="close-circle"
-              size={25}
-              onPress={() => {
-                if (['parentActivity', 'menu'].includes(modelContentType)) {
-                  toggleMenu();
-                } else {
-                  setModalContentType('menu');
-                }
-              }}
-              color="grey"
-            />
-          </View>
-          {modelContentType === 'menu' ? (
-            <MenuDialog
-              setModalContentType={setModalContentType}
-              modalContent={modalContent}
-              toggleCreateDialogue={toggleCreateDialogue}
-              toggleMenu={toggleMenu}
-              handleDownload={handleDownload}
-              versionDataHandler={versionDataHandler}
-            />
-          ) : null}
-          {modelContentType === 'parentActivity' ? <ActivityModal /> : null}
-          {modelContentType === 'activity' ? <ActivityModal /> : null}
-          {modelContentType === 'version' ? (
-            <VersionDialog
-              versionData={versionData}
-              handleDownload={handleDownload}
-            />
-          ) : null}
-          {}
-        </View>
-      </Modal>
+
+      <RenderMenuModal
+        {...{
+          menuId,
+          modelContentType,
+          modalContent,
+          versionData,
+          toggleMenu,
+          setModalContentType,
+          toggleCreateDialogue,
+          versionDataHandler,
+        }}
+      />
+
       <CreateFolderDialogue
         visible={createDialogueView === 'createFolder'}
         toggleDialogue={toggleCreateDialogue}
