@@ -6,6 +6,7 @@
 
 #import <Firebase.h>
 #import "RNBootSplash.h"
+#import <RNBackgroundDownloader.h>
 
 #ifdef FB_SONARKIT_ENABLED
 #import <FlipperKit/FlipperClient.h>
@@ -58,6 +59,11 @@ static void InitializeFlipper(UIApplication *application) {
   [RNBootSplash initWithStoryboard:@"LaunchScreen" rootView:rootView];
   
   return YES;
+}
+
+- (void)application:(UIApplication *)application handleEventsForBackgroundURLSession:(NSString *)identifier completionHandler:(void (^)(void))completionHandler
+{
+  [RNBackgroundDownloader setCompletionHandlerWithIdentifier:identifier completionHandler:completionHandler];
 }
 
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
