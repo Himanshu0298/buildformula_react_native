@@ -11,11 +11,64 @@ PODS:
     - React-Core (= 0.64.1)
     - React-jsi (= 0.64.1)
     - ReactCommon/turbomodule/core (= 0.64.1)
+  - Firebase/CoreOnly (8.0.0):
+    - FirebaseCore (= 8.0.0)
+  - Firebase/Messaging (8.0.0):
+    - Firebase/CoreOnly
+    - FirebaseMessaging (~> 8.0.0)
+  - FirebaseCore (8.0.0):
+    - FirebaseCoreDiagnostics (~> 8.0)
+    - GoogleUtilities/Environment (~> 7.4)
+    - GoogleUtilities/Logger (~> 7.4)
+  - FirebaseCoreDiagnostics (8.1.0):
+    - GoogleDataTransport (~> 9.0)
+    - GoogleUtilities/Environment (~> 7.4)
+    - GoogleUtilities/Logger (~> 7.4)
+    - nanopb (~> 2.30908.0)
+  - FirebaseInstallations (8.1.0):
+    - FirebaseCore (~> 8.0)
+    - GoogleUtilities/Environment (~> 7.4)
+    - GoogleUtilities/UserDefaults (~> 7.4)
+    - PromisesObjC (~> 1.2)
+  - FirebaseMessaging (8.0.0):
+    - FirebaseCore (~> 8.0)
+    - FirebaseInstallations (~> 8.0)
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.4)
+    - GoogleUtilities/Environment (~> 7.4)
+    - GoogleUtilities/Reachability (~> 7.4)
+    - GoogleUtilities/UserDefaults (~> 7.4)
   - glog (0.3.5)
+  - GoogleDataTransport (9.0.0):
+    - GoogleUtilities/Environment (~> 7.2)
+    - nanopb (~> 2.30908.0)
+    - PromisesObjC (~> 1.2)
+  - GoogleUtilities/AppDelegateSwizzler (7.4.1):
+    - GoogleUtilities/Environment
+    - GoogleUtilities/Logger
+    - GoogleUtilities/Network
+  - GoogleUtilities/Environment (7.4.1):
+    - PromisesObjC (~> 1.2)
+  - GoogleUtilities/Logger (7.4.1):
+    - GoogleUtilities/Environment
+  - GoogleUtilities/Network (7.4.1):
+    - GoogleUtilities/Logger
+    - "GoogleUtilities/NSData+zlib"
+    - GoogleUtilities/Reachability
+  - "GoogleUtilities/NSData+zlib (7.4.1)"
+  - GoogleUtilities/Reachability (7.4.1):
+    - GoogleUtilities/Logger
+  - GoogleUtilities/UserDefaults (7.4.1):
+    - GoogleUtilities/Logger
   - lottie-ios (3.1.8)
   - lottie-react-native (4.0.2):
     - lottie-ios (~> 3.1.8)
     - React-Core
+  - nanopb (2.30908.0):
+    - nanopb/decode (= 2.30908.0)
+    - nanopb/encode (= 2.30908.0)
+  - nanopb/decode (2.30908.0)
+  - nanopb/encode (2.30908.0)
+  - PromisesObjC (1.2.12)
   - RCT-Folly (2020.01.13.00):
     - boost-for-react-native
     - DoubleConversion
@@ -209,15 +262,17 @@ PODS:
     - React-jsi (= 0.64.1)
     - React-perflogger (= 0.64.1)
   - React-jsinspector (0.64.1)
-  - react-native-date-picker (3.3.0):
+  - react-native-background-downloader (2.3.4):
+    - React
+  - react-native-date-picker (3.3.1):
     - React-Core
   - react-native-document-picker (5.0.4):
     - React-Core
-  - react-native-image-picker (3.6.0):
+  - react-native-image-picker (4.0.3):
     - React-Core
   - react-native-image-resizer (1.4.4):
     - React-Core
-  - react-native-pager-view (5.1.9):
+  - react-native-pager-view (5.1.10):
     - React-Core
   - react-native-safe-area-context (3.2.0):
     - React-Core
@@ -295,16 +350,26 @@ PODS:
     - React-Core
   - RNCMaskedView (0.1.11):
     - React
+  - RNFBApp (12.0.0):
+    - Firebase/CoreOnly (= 8.0.0)
+    - React-Core
+  - RNFBMessaging (12.0.0):
+    - Firebase/Messaging (= 8.0.0)
+    - React-Core
+    - RNFBApp
+  - RNFileViewer (2.1.4):
+    - React-Core
   - RNFS (2.18.0):
     - React
   - RNGestureHandler (1.10.3):
     - React-Core
-  - RNLocalize (2.0.3):
+  - RNLocalize (2.1.0):
     - React-Core
   - RNReanimated (1.13.3):
     - React-Core
-  - RNScreens (3.2.0):
+  - RNScreens (3.3.0):
     - React-Core
+    - React-RCTImage
   - RNVectorIcons (8.1.0):
     - React-Core
   - TouchID (4.4.1):
@@ -332,6 +397,7 @@ DEPENDENCIES:
   - React-jsi (from `../node_modules/react-native/ReactCommon/jsi`)
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
+  - react-native-background-downloader (from `../node_modules/react-native-background-downloader`)
   - react-native-date-picker (from `../node_modules/react-native-date-picker`)
   - react-native-document-picker (from `../node_modules/react-native-document-picker`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
@@ -355,6 +421,9 @@ DEPENDENCIES:
   - RNBootSplash (from `../node_modules/react-native-bootsplash`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-community/async-storage`)"
   - "RNCMaskedView (from `../node_modules/@react-native-community/masked-view`)"
+  - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
+  - "RNFBMessaging (from `../node_modules/@react-native-firebase/messaging`)"
+  - RNFileViewer (from `../node_modules/react-native-file-viewer`)
   - RNFS (from `../node_modules/react-native-fs`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNLocalize (from `../node_modules/react-native-localize`)
@@ -367,6 +436,15 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - boost-for-react-native
+    - Firebase
+    - FirebaseCore
+    - FirebaseCoreDiagnostics
+    - FirebaseInstallations
+    - FirebaseMessaging
+    - GoogleDataTransport
+    - GoogleUtilities
+    - nanopb
+    - PromisesObjC
 
 EXTERNAL SOURCES:
   BVLinearGradient:
@@ -405,6 +483,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsiexecutor"
   React-jsinspector:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
+  react-native-background-downloader:
+    :path: "../node_modules/react-native-background-downloader"
   react-native-date-picker:
     :path: "../node_modules/react-native-date-picker"
   react-native-document-picker:
@@ -451,6 +531,12 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/async-storage"
   RNCMaskedView:
     :path: "../node_modules/@react-native-community/masked-view"
+  RNFBApp:
+    :path: "../node_modules/@react-native-firebase/app"
+  RNFBMessaging:
+    :path: "../node_modules/@react-native-firebase/messaging"
+  RNFileViewer:
+    :path: "../node_modules/react-native-file-viewer"
   RNFS:
     :path: "../node_modules/react-native-fs"
   RNGestureHandler:
@@ -474,9 +560,18 @@ SPEC CHECKSUMS:
   DoubleConversion: cf9b38bf0b2d048436d9a82ad2abe1404f11e7de
   FBLazyVector: 7b423f9e248eae65987838148c36eec1dbfe0b53
   FBReactNativeSpec: 2512151a4e65859789519096b9f86148f9b68dde
+  Firebase: 73c3e3b216ec1ecbc54d2ffdd4670c65c749edb1
+  FirebaseCore: 3f09591d51292843e2a46f18358d60bf4e996255
+  FirebaseCoreDiagnostics: 3e249cee3de5c5f9cfd6cc2a19997231286fec11
+  FirebaseInstallations: 7f31798a8198c354eadcb87176d2090b62edc187
+  FirebaseMessaging: 1a33b4af3c8042ed6ddacb6c031894af2064bfab
   glog: 73c2498ac6884b13ede40eda8228cb1eee9d9d62
+  GoogleDataTransport: 11e3a5f2c190327df1a4a5d7e7ae3d4d5b9c9e4c
+  GoogleUtilities: f8a43108b38a68eebe8b3540e1f4f2d28843ce20
   lottie-ios: 48fac6be217c76937e36e340e2d09cf7b10b7f5f
   lottie-react-native: 4dff8fe8d10ddef9e7880e770080f4a56121397e
+  nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
+  PromisesObjC: 3113f7f76903778cf4a0586bd1ab89329a0b7b97
   RCT-Folly: ec7a233ccc97cc556cf7237f0db1ff65b986f27c
   RCTRequired: ec2ebc96b7bfba3ca5c32740f5a0c6a014a274d2
   RCTTypeSafety: 22567f31e67c3e088c7ac23ea46ab6d4779c0ea5
@@ -488,11 +583,12 @@ SPEC CHECKSUMS:
   React-jsi: 5de8204706bd872b78ea646aee5d2561ca1214b6
   React-jsiexecutor: 124e8f99992490d0d13e0649d950d3e1aae06fe9
   React-jsinspector: 500a59626037be5b3b3d89c5151bc3baa9abf1a9
-  react-native-date-picker: 76fc79be2f3cad8ff1b2850fc5601e5f8107979d
+  react-native-background-downloader: 4a034cf39a3b00fac57364984e360a4f180a5efb
+  react-native-date-picker: 2dfef0fcb6c36d078bc62f5de3ca79eff7f42486
   react-native-document-picker: 1a7518132d4a06b67f459be9bb1464a567d2b3b4
-  react-native-image-picker: 5bb3325530fd4dc3053a77a73d4f65b6649de820
+  react-native-image-picker: 474cf2c33c2b6671da53d293a16c97995f0aec15
   react-native-image-resizer: 13ac4af788f88af36d0353a1324401ebabd04fe4
-  react-native-pager-view: 14653de580178af7e65aa7e3fa08b4f243c86d4d
+  react-native-pager-view: 967d50ce0f1b72e434a2d9f3b739ddbf7d5bbf83
   react-native-safe-area-context: f0906bf8bc9835ac9a9d3f97e8bde2a997d8da79
   react-native-signature-capture: 96ee159945aa595a57a5aeeb344218b342640a23
   React-perflogger: aad6d4b4a267936b3667260d1f649b6f6069a675
@@ -511,11 +607,14 @@ SPEC CHECKSUMS:
   RNBootSplash: 8ef5ffa03dadd35f66510b42960ce40f397c98bf
   RNCAsyncStorage: b03032fdbdb725bea0bd9e5ec5a7272865ae7398
   RNCMaskedView: 0e1bc4bfa8365eba5fbbb71e07fbdc0555249489
+  RNFBApp: cc2ff3f925840c53f0117d92e0f5e269b356d0f7
+  RNFBMessaging: ba11538f4d76a5ef89dc8c97dad04fbf2fa6ebef
+  RNFileViewer: 83cc066ad795b1f986791d03b56fe0ee14b6a69f
   RNFS: 3ab21fa6c56d65566d1fb26c2228e2b6132e5e32
   RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
-  RNLocalize: 99e59cad311ca1b6872b1764514009416ccba03d
+  RNLocalize: 7e199e96411dce0611e07e0496b049afa882c31d
   RNReanimated: 514a11da3a2bcc6c3dfd9de32b38e2b9bf101926
-  RNScreens: c277bfc4b5bb7c2fe977d19635df6f974f95dfd6
+  RNScreens: bf59f17fbf001f1025243eeed5f19419d3c11ef2
   RNVectorIcons: 31cebfcf94e8cf8686eb5303ae0357da64d7a5a4
   TouchID: ba4c656d849cceabc2e4eef722dea5e55959ecf4
   Yoga: a7de31c64fe738607e7a3803e3f591a4b1df7393

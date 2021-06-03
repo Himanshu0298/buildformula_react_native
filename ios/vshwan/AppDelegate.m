@@ -31,6 +31,8 @@ static void InitializeFlipper(UIApplication *application) {
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
 
+  // TODO: finish ios firebase setup : https://rnfirebase.io/messaging/usage/ios-setup#linking-apns-with-fcm-ios
+
   #ifdef FB_SONARKIT_ENABLED
   InitializeFlipper(application);
   #endif
