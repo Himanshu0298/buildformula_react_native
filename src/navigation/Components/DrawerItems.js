@@ -1,17 +1,5 @@
 import React from 'react';
-import {Image} from 'react-native';
-import StructureActive from 'assets/images/structure_icon_active.png';
-import Structure from 'assets/images/structure_icon.png';
-import PaymentActive from 'assets/images/payment_icon_active.png';
-import Payment from 'assets/images/payment_icon.png';
-import AssignTaskActive from 'assets/images/task_icon_active.png';
-import AssignTask from 'assets/images/task_icon.png';
-import ProcessIconActive from 'assets/images/process_icon_active.png';
-import ProcessIcon from 'assets/images/process_icon.png';
-import EstimationIconActive from 'assets/images/estimation_icon_active.png';
-import EstimationIcon from 'assets/images/estimation_icon.png';
-import OrderIconActive from 'assets/images/order_icon_active.png';
-import OrderIcon from 'assets/images/order_icon.png';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 export const PROJECT_DRAWER_ITEMS = [
   {
@@ -20,34 +8,20 @@ export const PROJECT_DRAWER_ITEMS = [
       {
         route: 'Inquiry',
         label: 'Inquiry',
-        icon: 'account-question-outline',
+        icon: 'badge-account-horizontal-outline',
       },
       {
         route: 'SalesPipeline',
         label: 'Sales Pipeline',
-        activeIcon: ({color, size}) => (
-          <Image source={StructureActive} style={{height: size, width: size}} />
-        ),
-        inactiveIcon: ({color, size}) => (
-          <Image source={Structure} style={{height: size, width: size}} />
+        icon: ({color, size}) => (
+          <MaterialIcons name={'filter-list'} {...{color, size}} />
         ),
       },
       {
         route: 'BookingChartStack',
         label: 'Booking Chart',
-        icon: 'chart-line',
-      },
-      {
-        route: 'Payment',
-        label: 'Payment',
-        activeIcon: ({color, size}) => (
-          <Image
-            source={PaymentActive}
-            style={{height: size - 5, width: size + 5}}
-          />
-        ),
-        inactiveIcon: ({color, size}) => (
-          <Image source={Payment} style={{height: size - 5, width: size + 5}} />
+        icon: ({color, size}) => (
+          <MaterialIcons name={'library-books'} {...{color, size}} />
         ),
       },
     ],
@@ -58,14 +32,8 @@ export const PROJECT_DRAWER_ITEMS = [
       {
         route: 'CustomerSection',
         label: 'Customer Section',
-        activeIcon: ({color, size}) => (
-          <Image
-            source={PaymentActive}
-            style={{height: size - 5, width: size + 5}}
-          />
-        ),
-        inactiveIcon: ({color, size}) => (
-          <Image source={Payment} style={{height: size - 5, width: size + 5}} />
+        icon: ({color, size}) => (
+          <MaterialIcons name={'recent-actors'} {...{color, size}} />
         ),
       },
     ],
@@ -156,7 +124,9 @@ export const PROJECT_DRAWER_ITEMS = [
       {
         route: 'Files',
         label: 'Files',
-        icon: 'folder-open-outline',
+        icon: ({color, size}) => (
+          <MaterialIcons name={'description'} {...{color, size}} />
+        ),
       },
     ],
   },

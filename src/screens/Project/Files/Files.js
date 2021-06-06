@@ -72,7 +72,7 @@ function RenderFolder(props) {
       <TouchableOpacity
         style={{flexGrow: 1}}
         onPress={() => {
-          navigation.push('FilesHome', {folder_name, index_of: folder.id});
+          navigation.push('Files', {folder_name, index_of: folder.id});
         }}>
         <View style={styles.sectionContainer}>
           <Image source={FolderIcon} style={styles.PdfIcon} />

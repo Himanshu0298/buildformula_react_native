@@ -1,20 +1,18 @@
 import React from 'react';
-import {StyleSheet, View, Image, Linking} from 'react-native';
+import {StyleSheet, View, Linking} from 'react-native';
 import {DrawerContentScrollView} from '@react-navigation/drawer';
-import {useTheme, Paragraph, Drawer, TouchableRipple} from 'react-native-paper';
+import {useTheme, Paragraph, Drawer, Button} from 'react-native-paper';
 import Animated from 'react-native-reanimated';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Feather from 'react-native-vector-icons/Feather';
 import {theme} from 'styles/theme';
-import Arrow from 'assets/images/arrow_icon.png';
-import BaseText from 'components/Atoms/BaseText';
 import useAppActions from '../../redux/actions/appActions';
 import {SITE_URL} from 'utils/constant';
 import {PROJECT_DRAWER_ITEMS} from './DrawerItems';
 
-function DrawerItem(props) {
+const DrawerItem = React.memo(props => {
   const {
-    currentRoute,
+    routeData,
     route,
     navigation,
     label,
@@ -26,8 +24,7 @@ function DrawerItem(props) {
     ...restProps
   } = props;
 
-  //TODO: handle active for substack routes
-  const active = route === currentRoute;
+  const active = [routeData.currenRoute, routeData.parentRoute].includes(route);
 
   let drawerIcon;
   if (typeof icon === 'string') {
@@ -58,10 +55,10 @@ function DrawerItem(props) {
       icon={drawerIcon}
     />
   );
-}
+});
 
-export default function DrawerContent(props) {
-  const {navigation, currentScreen, type} = props;
+function DrawerContent(props) {
+  const {navigation, routeData, type} = props;
   const paperTheme = useTheme();
   const {logout} = useAppActions();
 
@@ -84,17 +81,12 @@ export default function DrawerContent(props) {
           },
         ]}>
         <View style={styles.backContainer}>
-          <TouchableRipple
+          <Button
+            icon="arrow-expand-left"
             onPress={() => navigation.toggleDrawer()}
-            rippleColor="rgba(0, 0, 0, .32)"
-            style={{width: 100}}>
-            <View style={styles.backButton}>
-              <BaseText variant="semiBold" style={styles.backText}>
-                Back
-              </BaseText>
-              <Image source={Arrow} style={{height: 12, width: 18}} />
-            </View>
-          </TouchableRipple>
+            style={{width: 100, marginBottom: 5}}>
+            Back
+          </Button>
         </View>
         {type === 'general' ? (
           <>
@@ -102,7 +94,7 @@ export default function DrawerContent(props) {
               label={'Home'}
               route="Home"
               navigation={navigation}
-              currentRoute={currentScreen}
+              routeData={routeData}
               icon={({color, size}) => (
                 <Feather name={'home'} color={color} size={size} />
               )}
@@ -111,19 +103,19 @@ export default function DrawerContent(props) {
               label={'Settings'}
               route="Settings"
               navigation={navigation}
-              currentRoute={currentScreen}
+              routeData={routeData}
               icon={'cog-outline'}
             />
             <DrawerItem
               label={'Help'}
               route="help"
               onPress={() => Linking.openURL(SITE_URL)}
-              currentRoute={currentScreen}
+              routeData={routeData}
               icon={'help-box'}
             />
             <DrawerItem
               label={'Logout'}
-              currentRoute={currentScreen}
+              routeData={routeData}
               onPress={logout}
               icon={'logout'}
             />
@@ -134,9 +126,13 @@ export default function DrawerContent(props) {
               label={'Dashboard'}
               route="ProjectDashboard"
               navigation={navigation}
-              currentRoute={currentScreen}
+              routeData={routeData}
               icon={({color, size}) => (
-                <Feather name={'home'} color={color} size={size} />
+                <MaterialCommunityIcons
+                  name={'view-dashboard-outline'}
+                  color={color}
+                  size={size}
+                />
               )}
             />
             {PROJECT_DRAWER_ITEMS.map(section => {
@@ -157,7 +153,7 @@ export default function DrawerContent(props) {
                         key={route.route}
                         {...route}
                         navigation={navigation}
-                        currentRoute={currentScreen}
+                        routeData={routeData}
                       />
                     );
                   })}
@@ -187,19 +183,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
   },
-  backButton: {
-    flexDirection: 'row',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-  },
-  backText: {
-    color: '#000',
-    fontSize: 16,
-    marginRight: 5,
-  },
   drawerSection: {
     marginTop: 5,
   },
@@ -212,3 +195,5 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.primary,
   },
 });
+
+export default React.memo(DrawerContent);

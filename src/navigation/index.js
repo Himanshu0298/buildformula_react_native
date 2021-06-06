@@ -146,6 +146,18 @@ function InquiryStack() {
   );
 }
 
+function PipelineStack() {
+  return (
+    <Stack.Navigator initialRouteName={'PipelineHome'}>
+      <Stack.Screen
+        name="PipelineHome"
+        component={SalesPipeline}
+        options={{headerShown: false}}
+      />
+    </Stack.Navigator>
+  );
+}
+
 function BookingChartStack() {
   return (
     <Stack.Navigator initialRouteName={'BC_Step_One'}>
@@ -264,9 +276,9 @@ function PlanningStack() {
 
 function FilesStack() {
   return (
-    <Stack.Navigator initialRouteName={'FilesHome'}>
+    <Stack.Navigator initialRouteName={'Files'}>
       <Stack.Screen
-        name="FilesHome"
+        name="Files"
         component={Files}
         options={{headerShown: false}}
       />
@@ -284,12 +296,8 @@ function GeneralDrawer() {
     <Drawer.Navigator
       drawerContent={props => (
         <RouteContext.Consumer>
-          {currentScreen => (
-            <DrawerContent
-              {...props}
-              currentScreen={currentScreen}
-              type="general"
-            />
+          {routeData => (
+            <DrawerContent {...props} routeData={routeData} type="general" />
           )}
         </RouteContext.Consumer>
       )}>
@@ -304,18 +312,14 @@ function ProjectDrawer() {
     <Drawer.Navigator
       drawerContent={props => (
         <RouteContext.Consumer>
-          {currentScreen => (
-            <DrawerContent
-              {...props}
-              currentScreen={currentScreen}
-              type="project"
-            />
+          {routeData => (
+            <DrawerContent {...props} routeData={routeData} type="project" />
           )}
         </RouteContext.Consumer>
       )}>
       <Drawer.Screen name="ProjectDashboard" component={ProjectDashboard} />
       <Drawer.Screen name="Inquiry" component={InquiryStack} />
-      <Drawer.Screen name="SalesPipeline" component={SalesPipeline} />
+      <Drawer.Screen name="SalesPipeline" component={PipelineStack} />
       <Drawer.Screen name="BookingChartStack" component={BookingChartStack} />
       <Drawer.Screen name="Payment" component={Payment} />
       <Drawer.Screen name="CustomerSection" component={CustomerSectionStack} />
@@ -333,24 +337,24 @@ function ProjectDrawer() {
 }
 
 // Gets the current screen from navigation state
-const getActiveRouteName = state => {
+const getActiveRouteName = (state, parentRoute) => {
   const route = state.routes[state.index];
 
   if (route.state) {
     // Dive into nested navigators
-    return getActiveRouteName(route.state);
+    return getActiveRouteName(route.state, route.name);
   }
 
-  return route.name;
+  return {parentRoute: parentRoute || route.name, currentRoute: route.name};
 };
 
 function NavContainer() {
   const {authenticated, user} = useSelector(state => state.user);
   const {language} = useSelector(state => state.app);
 
-  const [currentScreen, setCurrentScreen] = useState(
-    authenticated ? 'Home' : 'LanguageSelect',
-  );
+  const [routeData, setRouteData] = useState({
+    currentRoute: authenticated ? 'Home' : 'LanguageSelect',
+  });
   const routeNameRef = React.useRef();
   const navigationRef = React.useRef();
 
@@ -393,17 +397,17 @@ function NavContainer() {
       theme={theme}
       ref={navigationRef}
       onStateChange={navState => {
-        const previousRouteName = routeNameRef.current;
-        const currentRouteName = getActiveRouteName(navState);
-        if (previousRouteName !== currentRouteName) {
-          console.log('----->currentRouteName ', currentRouteName);
-          setCurrentScreen(currentRouteName);
+        const prevData = routeNameRef.current;
+        const currentData = getActiveRouteName(navState);
+        if (prevData.currentRoute !== currentData.currentRoute) {
+          console.log('----->routeData ', currentData);
+          setRouteData(currentData);
         }
 
         // Save the current route name for later comparison
-        routeNameRef.current = currentRouteName;
+        routeNameRef.current = currentData;
       }}>
-      <RouteContext.Provider value={currentScreen}>
+      <RouteContext.Provider value={routeData}>
         <Stack.Navigator initialRouteName={initialScreen}>
           {authenticated ? (
             //App Nav Screens
