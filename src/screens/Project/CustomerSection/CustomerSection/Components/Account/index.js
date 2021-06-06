@@ -11,16 +11,18 @@ import {
 import {BOOKING_STATUS_STYLES} from 'components/Molecules/UnitSelector/RenderUnits';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import ActivityDialog from './Components/ActivityDialog';
 
 function Account(props) {
   const {route, theme, navigation} = props;
   const {project_id, unit} = route?.params || {};
 
-  console.log('-----> unit.booking_status', unit.booking_status);
+  const [activityDialog, setActivityDialog] = React.useState(false);
 
   const bookingStyle = BOOKING_STATUS_STYLES.standby || {};
 
   const toggleStatusDialog = () => {};
+  const toggleActivityDialog = () => setActivityDialog(v => !v);
 
   const navToDetails = type =>
     navigation.navigate('PaymentCollections', {type});
@@ -32,6 +34,10 @@ function Account(props) {
     <ScrollView
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{flexGrow: 1}}>
+      <ActivityDialog
+        open={activityDialog}
+        handleClose={toggleActivityDialog}
+      />
       <View style={styles.container}>
         <Subheading>Booking status</Subheading>
         <View style={styles.statusCard}>
@@ -123,6 +129,7 @@ function Account(props) {
             mode="outlined"
             style={[styles.actionButton, {borderColor: theme.colors.primary}]}
             uppercase={false}
+            onPress={toggleActivityDialog}
             theme={{roundness: 7}}>
             View activity
           </Button>
