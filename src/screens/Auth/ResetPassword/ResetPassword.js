@@ -1,26 +1,17 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {
   StyleSheet,
   View,
   Image,
-  TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
 } from 'react-native';
-import {
-  withTheme,
-  Text,
-  Headline,
-  Subheading,
-  Button,
-  TextInput,
-} from 'react-native-paper';
+import {withTheme, Headline, Button, TextInput} from 'react-native-paper';
 import {secondaryTheme, theme} from 'styles/theme';
 import banner from 'assets/images/banner.png';
 import image from 'assets/images/buildings.png';
 import {Formik} from 'formik';
-import CustomInput from './../Components/CustomInput';
+import CustomInput from '../Components/CustomInput';
 import useUserActions from 'redux/actions/userActions';
 import {useSelector} from 'react-redux';
 import * as Yup from 'yup';
@@ -28,7 +19,6 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import {useTranslation} from 'react-i18next';
 import Layout from 'utils/Layout';
 import BottomSheet from 'reanimated-bottom-sheet';
-import {useSnackbar} from 'components/Atoms/Snackbar';
 import SheetHeader from 'components/Atoms/SheetHeader';
 
 const BANNER_HEIGHT = Layout.window.width * 0.75 * (5 / 12);
@@ -62,13 +52,13 @@ function RenderContent(props) {
     handleBlur,
     errors,
     handleSubmit,
-    navigation,
     bottomSheetRef,
   } = props;
 
   const [showPassword, setShowPassword] = useState(false);
+  const [showCnfPass, toggleShowCnfPass] = useState(null);
 
-  const emailRef = React.useRef();
+  const cnfPassRef = React.useRef();
   const passwordRef = React.useRef();
 
   const {t} = useTranslation();
@@ -77,34 +67,18 @@ function RenderContent(props) {
     <View style={styles.contentContainer}>
       <View style={styles.headlineContainer}>
         <Headline theme={secondaryTheme} style={{fontWeight: 'bold'}}>
-          {t('title_login_heading')}
+          {'Reset Password'}
         </Headline>
-        <Subheading theme={secondaryTheme}>
-          {t('title_login_subHeading')}
-        </Subheading>
       </View>
       <View style={styles.inputMainContainer}>
         <View style={styles.inputsContainer}>
           <CustomInput
-            name="email"
-            label={t('label_email')}
-            ref={emailRef}
-            onFocus={() => bottomSheetRef?.current?.snapTo(0)}
-            value={values.email}
-            onChangeText={handleChange('email')}
-            onBlur={handleBlur('email')}
-            placeholder={t('msgBlankEmail')}
-            autoCapitalize="none"
-            returnKeyType={'next'}
-            onSubmitEditing={() => passwordRef?.current?.focus()}
-            error={errors.email}
-          />
-          <CustomInput
             name="password"
             label={t('passwordLabel')}
             ref={passwordRef}
-            containerStyles={{marginTop: 20}}
+            containerStyles={{marginTop: 10}}
             secureTextEntry={!showPassword}
+            onFocus={() => bottomSheetRef?.current?.snapTo(0)}
             value={values.password}
             onChangeText={handleChange('password')}
             onBlur={handleBlur('password')}
@@ -121,52 +95,55 @@ function RenderContent(props) {
               />
             }
           />
-          <View style={styles.forgotContainer}>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('ForgotPassword')}>
-              <Text theme={secondaryTheme}>{t('forgotPassword')}</Text>
-            </TouchableOpacity>
-          </View>
+          <CustomInput
+            name="confirmPassword"
+            label={t('cnfPasswordLabel')}
+            containerStyles={{marginTop: 10}}
+            ref={cnfPassRef}
+            value={values.confirmPassword}
+            onFocus={() => bottomSheetRef?.current?.snapTo(0)}
+            onChangeText={handleChange('confirmPassword')}
+            onBlur={handleBlur('confirmPassword')}
+            placeholder={t('msgBlankCnfPassword')}
+            autoCapitalize="none"
+            returnKeyType={'done'}
+            error={errors.confirmPassword}
+            secureTextEntry={!showCnfPass}
+            right={
+              <TextInput.Icon
+                theme={secondaryTheme}
+                name={showCnfPass ? 'eye-off' : 'eye'}
+                onPress={() => toggleShowCnfPass(v => !v)}
+              />
+            }
+          />
         </View>
-        <LoginButton label={t('log in')} onPress={handleSubmit} />
-        <TouchableOpacity
-          onPress={() => navigation.navigate('SignUp')}
-          style={styles.registerContainer}>
-          <Text theme={secondaryTheme}>{t('registerLink')}</Text>
-        </TouchableOpacity>
+        <LoginButton label={'Submit'} onPress={handleSubmit} />
       </View>
     </View>
   );
 }
 
 const schema = Yup.object().shape({
-  email: Yup.string()
-    .email('Please enter a valid email')
-    .label('email')
-    .required('Please enter a valid email'),
   password: Yup.string()
     .label('Password')
     .required('Please enter a valid password')
     .min(6, 'Password must have at least 6 characters '),
+  confirmPassword: Yup.string().oneOf(
+    [Yup.ref('password'), null],
+    'Passwords must match',
+  ),
 });
 
-function Login(props) {
-  const {navigation} = props;
-  const [loginError, setLoginError] = useState(null);
+function ResetPassword(props) {
+  const {navigation, route} = props;
+  const {user_id} = route?.params || {};
 
-  const {login} = useUserActions();
+  const {resetPassword} = useUserActions();
 
   const bottomSheetRef = React.createRef();
-  const snackbar = useSnackbar();
 
   const {loading} = useSelector(state => state.user);
-  const {project} = useSelector(state => state.addProject);
-
-  useEffect(() => {
-    if (loginError) {
-      snackbar.showMessage({message: loginError, variant: 'error'});
-    }
-  }, [loginError]);
 
   return (
     <Formik
@@ -176,26 +153,9 @@ function Login(props) {
       validationSchema={schema}
       onSubmit={async values => {
         Keyboard.dismiss();
-        if (loginError) {
-          setLoginError(null);
-        }
-        const data = {email: values.email, password: values.password};
-
-        login(data)
-          .then(({value}) => {
-            const {otp_verified, email_verified, default_role_id} = value.user;
-
-            if (otp_verified === 'N' || email_verified === 'N') {
-              navigation.navigate('Otp');
-            } else if (default_role_id === 0) {
-              navigation.navigate('RoleSelect');
-            } else if (project.id) {
-              navigation.navigate('ProjectStructureStepOne');
-            }
-          })
-          .catch(error => {
-            setLoginError(error);
-          });
+        resetPassword({new_password: values.password, user_id}).then(() => {
+          navigation.popToTop();
+        });
       }}>
       {({handleChange, values, handleSubmit, handleBlur, isValid, errors}) => (
         <TouchableWithoutFeedback
@@ -264,34 +224,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headlineContainer: {
-    height: '5%',
     justifyContent: 'center',
     alignItems: 'center',
   },
   inputMainContainer: {
     width: '100%',
-    height: '80%',
+    height: '90%',
     paddingBottom: 10,
     paddingHorizontal: 25,
   },
   inputsContainer: {
     width: '100%',
   },
-  forgotContainer: {
-    padding: 2,
-    alignItems: 'flex-end',
-  },
   loginButton: {
     marginTop: 25,
     width: '100%',
     alignItems: 'center',
   },
-  registerContainer: {
-    marginTop: 20,
-    padding: 3,
-    width: '100%',
-    alignItems: 'center',
-  },
 });
 
-export default withTheme(Login);
+export default withTheme(ResetPassword);

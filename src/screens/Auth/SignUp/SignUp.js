@@ -39,6 +39,41 @@ const SNAP_POINTS = [
   Layout.window.height - (BANNER_HEIGHT + IMAGE_HEIGHT),
 ];
 
+const USER_SCHEMA = {
+  firstName: Yup.string()
+    .label('firstName')
+    .required('required')
+    .min(3, 'to short'),
+  lastName: Yup.string()
+    .label('firstName')
+    .required('required')
+    .min(3, 'to short'),
+  phone: Yup.string()
+    .label('phone')
+    .required('required')
+    .matches(PHONE_REGEX, 'Phone number is not valid')
+    .min(10, 'to short')
+    .max(10, 'to long'),
+  email: Yup.string()
+    .email('Please enter a valid email')
+    .label('email')
+    .required('invalid email'),
+};
+
+const signUpSchema = Yup.object().shape({
+  ...USER_SCHEMA,
+  password: Yup.string()
+    .label('Password')
+    .required('Please enter a valid password')
+    .min(6, 'Password must have at least 6 characters '),
+  confirmPassword: Yup.string().oneOf(
+    [Yup.ref('password'), null],
+    'Passwords must match',
+  ),
+});
+
+const adminSchema = Yup.object().shape(USER_SCHEMA);
+
 function SignUpButton({label, onPress}) {
   return (
     <View style={styles.loginButton}>
@@ -227,41 +262,6 @@ function RenderContent(props) {
     </View>
   );
 }
-
-const USER_SCHEMA = {
-  firstName: Yup.string()
-    .label('firstName')
-    .required('required')
-    .min(3, 'to short'),
-  lastName: Yup.string()
-    .label('firstName')
-    .required('required')
-    .min(3, 'to short'),
-  phone: Yup.string()
-    .label('phone')
-    .required('required')
-    .matches(PHONE_REGEX, 'Phone number is not valid')
-    .min(10, 'to short')
-    .max(10, 'to long'),
-  email: Yup.string()
-    .email('Please enter a valid email')
-    .label('email')
-    .required('invalid email'),
-};
-
-const signUpSchema = Yup.object().shape({
-  ...USER_SCHEMA,
-  password: Yup.string()
-    .label('Password')
-    .required('Please enter a valid password')
-    .min(6, 'Password must have at least 6 characters '),
-  confirmPassword: Yup.string().oneOf(
-    [Yup.ref('password'), null],
-    'Passwords must match',
-  ),
-});
-
-const adminSchema = Yup.object().shape(USER_SCHEMA);
 
 function SignUp(props) {
   const {navigation, route} = props;

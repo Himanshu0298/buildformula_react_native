@@ -22,7 +22,14 @@ async function getFcmToken() {
 
 export default function useUserActions() {
   const dispatch = useDispatch();
-  const {login, signUp, updateUser} = useAuth();
+  const {
+    login,
+    signUp,
+    updateUser,
+    sendForgetPasswordOtp,
+    verifyForgotPasswordOtp,
+    resetPassword,
+  } = useAuth();
   const {_err, _res} = useResProcessor();
   const snackbar = useSnackbar();
 
@@ -76,6 +83,49 @@ export default function useUserActions() {
             console.log('-----> response', userData);
 
             return Promise.resolve({user: userData});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    sendForgetPasswordOtp: data =>
+      dispatch({
+        type: types.SEND_FORGET_PASSWORD_OTP,
+        payload: async () => {
+          try {
+            const response = _res(await sendForgetPasswordOtp(data));
+            return Promise.resolve(response);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    verifyForgotPasswordOtp: data =>
+      dispatch({
+        type: types.SEND_FORGET_PASSWORD_OTP,
+        payload: async () => {
+          try {
+            const response = _res(await verifyForgotPasswordOtp(data));
+            return Promise.resolve(response);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    resetPassword: data =>
+      dispatch({
+        type: types.SEND_FORGET_PASSWORD_OTP,
+        payload: async () => {
+          try {
+            const res = _res(await resetPassword(data));
+            snackbar.showMessage({message: res.msg});
+            return Promise.resolve(res);
           } catch (error) {
             const message = _err(error);
             snackbar.showMessage({message, variant: 'error'});

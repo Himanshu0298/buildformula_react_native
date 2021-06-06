@@ -2,8 +2,8 @@ export default {
   en: {
     translation: {
       //Login Screen
-      heading: 'Welcome Back',
-      subHeading: 'Sign in to continue',
+      title_login_heading: 'Welcome Back',
+      title_login_subHeading: 'Sign in to continue',
       label_email: 'Email',
       passwordLabel: 'Password',
       msgBlankEmail: 'Enter your email!',
@@ -11,6 +11,10 @@ export default {
       login: 'Login',
       forgotPassword: 'Forgot Password?',
       registerLink: 'Don’t have account? Register as company',
+
+      //Forgot Password Screen
+      title_forgot_password_heading: 'Forgot Password?',
+      title_forgot_password_subHeading: 'Enter your registered email address',
 
       //SignUp
       heading_signup: 'Welcome',
@@ -142,8 +146,8 @@ export default {
   hi: {
     translation: {
       //Login Screen
-      heading: 'वापसी पर स्वागत है',
-      subHeading: 'जारी रखने के लिए साइन इन करें',
+      title_login_heading: 'वापसी पर स्वागत है',
+      title_login_subHeading: 'जारी रखने के लिए साइन इन करें',
       label_email: 'ईमेल',
       passwordLabel: 'पासवर्ड',
       msgBlankEmail: 'कृपया ईमेल दर्ज करें!',
@@ -151,6 +155,10 @@ export default {
       login: 'लॉग इन करें',
       forgotPassword: 'पासवर्ड भूल गए?',
       registerLink: 'क्या आपका खाता नहीं है? कंपनी के रूप में पंजीकरण करें',
+
+      //Forgot Password Screen
+      title_forgot_password_heading: 'Forgot Password?',
+      title_forgot_password_subHeading: 'Enter your registered email address',
 
       //SignUp
       heading_signup: 'स्वागत हे',

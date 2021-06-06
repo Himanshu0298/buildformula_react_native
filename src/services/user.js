@@ -23,5 +23,26 @@ export default function useAuth() {
     updateUser: data => {
       return instance.post('/user_common', data, config());
     },
+    sendForgetPasswordOtp: data => {
+      return instance.post(
+        '/forgot_pwd',
+        data,
+        config({multipart: false, auth: false}),
+      );
+    },
+    verifyForgotPasswordOtp: data => {
+      return instance.post(
+        '/forgot_pwd_otp_update',
+        data,
+        config({multipart: false, auth: false}),
+      );
+    },
+    resetPassword: data => {
+      return instance.post(
+        '/forgot_update_new_pwd',
+        data,
+        config({multipart: false, auth: false}),
+      );
+    },
   };
 }

@@ -15,6 +15,9 @@ import Login from '../screens/Auth/Login';
 import SignUp from '../screens/Auth/SignUp';
 import OtpScreen from '../screens/Auth/OtpScreen';
 import RoleSelect from '../screens/Auth/RoleSelect';
+import ForgotPassword from 'screens/Auth/ForgotPassword';
+import ForgotPasswordOtp from 'screens/Auth/ForgotPasswordOtp';
+import ResetPassword from 'screens/Auth/ResetPassword';
 
 //Project Creation Screens
 import PC_StepOne from '../screens/CreateProject/ProjectCreation/StepOne';
@@ -477,6 +480,21 @@ function NavContainer() {
               <Stack.Screen
                 name="RoleSelect"
                 component={RoleSelect}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="ForgotPassword"
+                component={ForgotPassword}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="ForgotPasswordOtp"
+                component={ForgotPasswordOtp}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="ResetPassword"
+                component={ResetPassword}
                 options={{headerShown: false}}
               />
             </Fragment>

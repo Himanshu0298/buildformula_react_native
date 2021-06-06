@@ -16,7 +16,7 @@ const rootReducer = (state, action) => {
   /**
    * Reset store state on logout action
    */
-  if (action.type === `${types.LOGOUT}`) {
+  if (action.type === `${types.LOGOUT}_FULFILLED`) {
     state = {};
   }
   return appReducer(state, action);

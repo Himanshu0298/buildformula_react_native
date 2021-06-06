@@ -5,6 +5,7 @@ import {
   SIGN_UP,
   LOGIN,
   VERIFY_OTP,
+  SEND_FORGET_PASSWORD_OTP,
 } from './../actions/actionTypes';
 
 const persistConfig = {
@@ -65,16 +66,19 @@ const reducer = (state = initialState, action = {}) => {
       };
 
     case `${VERIFY_OTP}_PENDING`:
+    case `${SEND_FORGET_PASSWORD_OTP}_PENDING`:
       return {
         ...state,
         loading: true,
       };
     case `${VERIFY_OTP}_FULFILLED`:
+    case `${SEND_FORGET_PASSWORD_OTP}_FULFILLED`:
       return {
         ...state,
         loading: false,
       };
     case `${VERIFY_OTP}_REJECTED`:
+    case `${SEND_FORGET_PASSWORD_OTP}_REJECTED`:
       return {
         ...state,
         loading: false,

@@ -4,23 +4,15 @@ import {
   StyleSheet,
   View,
   Image,
-  TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
 } from 'react-native';
-import {
-  withTheme,
-  Text,
-  Headline,
-  Subheading,
-  Button,
-  TextInput,
-} from 'react-native-paper';
+import {withTheme, Headline, Subheading, Button} from 'react-native-paper';
 import {secondaryTheme, theme} from 'styles/theme';
 import banner from 'assets/images/banner.png';
 import image from 'assets/images/buildings.png';
 import {Formik} from 'formik';
-import CustomInput from './../Components/CustomInput';
+import CustomInput from '../Components/CustomInput';
 import useUserActions from 'redux/actions/userActions';
 import {useSelector} from 'react-redux';
 import * as Yup from 'yup';
@@ -38,6 +30,13 @@ const SNAP_POINTS = [
   Layout.window.height - BANNER_HEIGHT,
   Layout.window.height - (BANNER_HEIGHT + IMAGE_HEIGHT),
 ];
+
+const schema = Yup.object().shape({
+  email: Yup.string()
+    .email('Please enter a valid email')
+    .label('email')
+    .required('Please enter a valid email'),
+});
 
 function LoginButton({label, onPress}) {
   return (
@@ -62,14 +61,10 @@ function RenderContent(props) {
     handleBlur,
     errors,
     handleSubmit,
-    navigation,
     bottomSheetRef,
   } = props;
 
-  const [showPassword, setShowPassword] = useState(false);
-
   const emailRef = React.useRef();
-  const passwordRef = React.useRef();
 
   const {t} = useTranslation();
 
@@ -77,10 +72,10 @@ function RenderContent(props) {
     <View style={styles.contentContainer}>
       <View style={styles.headlineContainer}>
         <Headline theme={secondaryTheme} style={{fontWeight: 'bold'}}>
-          {t('title_login_heading')}
+          {t('title_forgot_password_heading')}
         </Headline>
-        <Subheading theme={secondaryTheme}>
-          {t('title_login_subHeading')}
+        <Subheading theme={secondaryTheme} style={{marginTop: 20}}>
+          {t('title_forgot_password_subHeading')}
         </Subheading>
       </View>
       <View style={styles.inputMainContainer}>
@@ -96,75 +91,34 @@ function RenderContent(props) {
             placeholder={t('msgBlankEmail')}
             autoCapitalize="none"
             returnKeyType={'next'}
-            onSubmitEditing={() => passwordRef?.current?.focus()}
+            onSubmitEditing={handleSubmit}
             error={errors.email}
           />
-          <CustomInput
-            name="password"
-            label={t('passwordLabel')}
-            ref={passwordRef}
-            containerStyles={{marginTop: 20}}
-            secureTextEntry={!showPassword}
-            value={values.password}
-            onChangeText={handleChange('password')}
-            onBlur={handleBlur('password')}
-            placeholder={t('msgBlankPassword')}
-            autoCapitalize="none"
-            returnKeyType={'done'}
-            onSubmitEditing={handleSubmit}
-            error={errors.password}
-            right={
-              <TextInput.Icon
-                theme={secondaryTheme}
-                name={showPassword ? 'eye-off' : 'eye'}
-                onPress={() => setShowPassword(show => !show)}
-              />
-            }
-          />
-          <View style={styles.forgotContainer}>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('ForgotPassword')}>
-              <Text theme={secondaryTheme}>{t('forgotPassword')}</Text>
-            </TouchableOpacity>
-          </View>
         </View>
-        <LoginButton label={t('log in')} onPress={handleSubmit} />
-        <TouchableOpacity
-          onPress={() => navigation.navigate('SignUp')}
-          style={styles.registerContainer}>
-          <Text theme={secondaryTheme}>{t('registerLink')}</Text>
-        </TouchableOpacity>
+        <LoginButton label={'Next'} onPress={handleSubmit} />
       </View>
     </View>
   );
 }
 
-const schema = Yup.object().shape({
-  email: Yup.string()
-    .email('Please enter a valid email')
-    .label('email')
-    .required('Please enter a valid email'),
-  password: Yup.string()
-    .label('Password')
-    .required('Please enter a valid password')
-    .min(6, 'Password must have at least 6 characters '),
-});
-
-function Login(props) {
+function ForgotPassword(props) {
   const {navigation} = props;
   const [loginError, setLoginError] = useState(null);
 
-  const {login} = useUserActions();
+  const {sendForgetPasswordOtp} = useUserActions();
 
   const bottomSheetRef = React.createRef();
   const snackbar = useSnackbar();
 
   const {loading} = useSelector(state => state.user);
-  const {project} = useSelector(state => state.addProject);
 
   useEffect(() => {
     if (loginError) {
-      snackbar.showMessage({message: loginError, variant: 'error'});
+      snackbar.showMessage({
+        message: loginError,
+        variant: 'error',
+        autoHideDuration: 4000,
+      });
     }
   }, [loginError]);
 
@@ -175,26 +129,14 @@ function Login(props) {
       initialValues={{}}
       validationSchema={schema}
       onSubmit={async values => {
-        Keyboard.dismiss();
-        if (loginError) {
-          setLoginError(null);
-        }
-        const data = {email: values.email, password: values.password};
-
-        login(data)
-          .then(({value}) => {
-            const {otp_verified, email_verified, default_role_id} = value.user;
-
-            if (otp_verified === 'N' || email_verified === 'N') {
-              navigation.navigate('Otp');
-            } else if (default_role_id === 0) {
-              navigation.navigate('RoleSelect');
-            } else if (project.id) {
-              navigation.navigate('ProjectStructureStepOne');
+        sendForgetPasswordOtp(values)
+          .then(({value}) =>
+            navigation.navigate('ForgotPasswordOtp', {user_id: value.data.id}),
+          )
+          .catch(err => {
+            if (err) {
+              setLoginError("User with this email doesn't exist");
             }
-          })
-          .catch(error => {
-            setLoginError(error);
           });
       }}>
       {({handleChange, values, handleSubmit, handleBlur, isValid, errors}) => (
@@ -264,7 +206,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headlineContainer: {
-    height: '5%',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -277,21 +218,12 @@ const styles = StyleSheet.create({
   inputsContainer: {
     width: '100%',
   },
-  forgotContainer: {
-    padding: 2,
-    alignItems: 'flex-end',
-  },
   loginButton: {
     marginTop: 25,
     width: '100%',
-    alignItems: 'center',
-  },
-  registerContainer: {
-    marginTop: 20,
-    padding: 3,
-    width: '100%',
+    display: 'flex',
     alignItems: 'center',
   },
 });
 
-export default withTheme(Login);
+export default withTheme(ForgotPassword);

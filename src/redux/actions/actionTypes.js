@@ -10,6 +10,7 @@ export const SIGN_UP = 'SIGN_UP';
 export const SEND_OTP = 'SEND_OTP';
 export const VERIFY_OTP = 'VERIFY_OTP';
 export const SELECT_ROLE = 'SELECT_ROLE';
+export const SEND_FORGET_PASSWORD_OTP = 'SEND_FORGET_PASSWORD_OTP';
 
 //For Project
 export const GET_SELECTED_PROJECT = 'GET_SELECTED_PROJECT';
