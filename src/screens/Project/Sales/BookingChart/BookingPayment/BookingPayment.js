@@ -900,6 +900,8 @@ function BookingPayments(props) {
         delete data.documentCharge;
         delete data.document_start;
         delete data.document_end;
+        delete data.document_start_date;
+        delete data.document_end_date;
 
         createBooking(data).then(() => navigation.popToTop());
       }}>

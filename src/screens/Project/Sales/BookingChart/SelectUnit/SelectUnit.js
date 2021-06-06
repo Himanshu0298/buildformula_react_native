@@ -46,13 +46,12 @@ export default function SelectUnit(props) {
   }, [floorId, towerId, towers, unitBookingStatus]);
 
   const fetchUnitsBookingStatus = () => {
-    const formData = new FormData();
-    formData.append('project_id', selectedProject.id);
-    formData.append('project_type', selectedStructure);
-    formData.append('project_tower', towerId);
-    formData.append('project_floor', floorId);
-
-    getUnitsBookingStatus(formData);
+    getUnitsBookingStatus({
+      project_id: selectedProject.id,
+      project_type: selectedStructure,
+      project_tower: towerId,
+      project_floor: floorId,
+    });
   };
 
   const checkUnitDisability = unit => {

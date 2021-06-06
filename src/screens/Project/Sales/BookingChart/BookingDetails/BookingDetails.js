@@ -349,6 +349,7 @@ function BookingDetails(props) {
           delete values.customer_phone;
         }
         delete values.selectedVisitor;
+        delete values.userType;
 
         navigation.navigate('BC_Step_Five', {...values, ...params});
       }}>
