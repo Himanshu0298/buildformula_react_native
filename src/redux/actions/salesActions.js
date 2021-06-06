@@ -213,12 +213,12 @@ export default function useSalesActions() {
         },
       }),
 
-    getUnitsBookingStatus: formData =>
+    getUnitsBookingStatus: params =>
       dispatch({
         type: types.GET_BOOKINGS_STATUS,
         payload: async () => {
           try {
-            const response = _res(await getUnitsBookingStatus(formData));
+            const response = _res(await getUnitsBookingStatus(params));
             const {data} = response;
 
             return Promise.resolve(data);

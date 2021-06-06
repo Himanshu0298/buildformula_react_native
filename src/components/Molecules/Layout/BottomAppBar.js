@@ -12,16 +12,11 @@ function BottomAppBar() {
 
   const onPressSwitch = () => {
     if (route.name !== 'Home') {
-      navigation.reset({
-        index: 0,
-        routes: [{name: 'GeneralDashboard'}],
-      });
+      navigation.reset({index: 0, routes: [{name: 'GeneralDashboard'}]});
     }
   };
 
-  const onPressSearch = () => {
-    navigation.navigate('Search');
-  };
+  const onPressSearch = () => navigation.navigate('Search');
 
   return (
     <View style={styles.container}>

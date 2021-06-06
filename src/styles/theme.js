@@ -52,6 +52,7 @@ export const theme = {
     success: Colors.green700,
     warning: Colors.orange500,
     red: '#FF5D5D',
+    documentation: 'rgba(243, 122, 80, 1)',
   },
   fonts: configureFonts(fontConfig),
 };

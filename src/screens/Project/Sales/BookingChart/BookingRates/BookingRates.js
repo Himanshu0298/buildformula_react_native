@@ -28,12 +28,14 @@ import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import RenderSelect from 'components/Atoms/RenderSelect';
 import {useSelector} from 'react-redux';
+import {useSnackbar} from 'components/Atoms/Snackbar';
 
 const TYPES = ['super_buildup', 'buildup', 'carpet'];
+const DOCUMENT_CHARGE_LIMIT = 20000;
 
 const schema = Yup.object().shape({
   area_amount: Yup.number('Invalid').required('Required'),
-  unit: Yup.string('Invalid').required('Required'),
+  carpet_unit: Yup.string('Invalid').required('Required'),
   ...getTypesSchema(TYPES),
 });
 
@@ -161,14 +163,14 @@ function RenderRates(props) {
       </View>
       <View>
         <RenderSelect
-          name={'unit'}
+          name={'carpet_unit'}
           label={t('label_unit')}
           options={unitOptions}
           containerStyles={styles.rateInput}
-          value={values.unit}
-          error={errors.unit}
+          value={values.carpet_unit}
+          error={errors.carpet_unit}
           onSelect={value => {
-            setFieldValue('unit', value);
+            setFieldValue('carpet_unit', value);
           }}
         />
         <RenderInput
@@ -315,6 +317,7 @@ function FormContent(props) {
   const {handleChange, handleSubmit, values, setFieldValue} = formikProps;
 
   const {t} = useTranslation();
+  const snackbar = useSnackbar();
 
   const {unitOptions} = useSelector(state => state.project);
 
@@ -330,10 +333,30 @@ function FormContent(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [values.other_charges]);
 
+  useEffect(() => {
+    let {document_start = 0, document_end = 0} = values;
+    const documentCharge = Number(`${document_start}.${document_end}`);
+
+    if (documentCharge > DOCUMENT_CHARGE_LIMIT) {
+      snackbar.showMessage({
+        message: 'Document charges cannot be more than ₹20,000',
+        variant: 'warning',
+      });
+
+      document_start = '20000';
+      document_end = '00000';
+
+      setFieldValue('document_start', document_start);
+      setFieldValue('document_end', document_end);
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [values.document_start, values.document_end]);
+
   const totalAmount = useMemo(() => {
     return (
-      parseInt(values.other_charges_amount, 10) +
-      parseInt(values.area_amount, 10)
+      parseInt(values.other_charges_amount || 0, 10) +
+      parseInt(values.area_amount || 0, 10)
     );
   }, [values.other_charges_amount, values.area_amount]);
 
@@ -342,6 +365,38 @@ function FormContent(props) {
   }, [totalAmount, values.discount_amount]);
 
   const handleCancel = () => navigation.goBack();
+
+  const handleDiscount = v => {
+    if (v > totalAmount) {
+      snackbar.showMessage({
+        message: 'Discount amount cannot be more than total amount',
+        variant: 'warning',
+      });
+
+      v = totalAmount;
+    }
+
+    setFieldValue('discount_amount', v);
+
+    const value = v.toString();
+    let documentStart = 0;
+    let documentEnd = 0;
+
+    if (value) {
+      documentStart =
+        value.length > 5 ? value.slice(0, value.length - 5) : '00000';
+      documentEnd = value.slice(-5);
+    }
+
+    const documentCharge = Number(`${documentStart}.${documentEnd}`);
+
+    if (documentCharge > DOCUMENT_CHARGE_LIMIT) {
+      documentStart = '20000';
+      documentEnd = '00000';
+    }
+    setFieldValue('document_start', documentStart);
+    setFieldValue('document_end', documentEnd);
+  };
 
   return (
     <TouchableWithoutFeedback
@@ -388,22 +443,7 @@ function FormContent(props) {
             <RenderInput
               value={values.discount_amount}
               keyboardType="number-pad"
-              onChangeText={v => {
-                setFieldValue('discount_amount', v);
-
-                const value = v.toString();
-                let documentStart = 0;
-                let documentEnd = 0;
-
-                if (value) {
-                  documentStart = value.slice(0, 5);
-                  documentEnd = value.slice(-5);
-                }
-
-                console.log('-----> documentStart', documentStart, documentEnd);
-                setFieldValue('document_start', documentStart);
-                setFieldValue('document_end', documentEnd);
-              }}
+              onChangeText={handleDiscount}
               label={'Discount amount'}
               left={<TextInput.Affix text="₹" />}
             />

@@ -1,5 +1,4 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {
   StyleSheet,
   Image,
@@ -28,7 +27,6 @@ import {COLORS} from 'utils/constant';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import useAddProjectActions from 'redux/actions/addProjectActions';
 
-const TABS = ['Developer', 'Supplier', 'Customer'];
 const IMAGES = {
   Developer: developerImage,
   Supplier: supplierImage,
@@ -108,7 +106,6 @@ function Home(props) {
   const [selectedTab, setSelectedTab] = useState(0);
 
   const {loading, projects} = useSelector(state => state.project);
-  const {developers, suppliers, customers} = projects;
 
   const {getProjects} = useProjectActions();
   const {setProjectData} = useAddProjectActions();
@@ -119,9 +116,25 @@ function Home(props) {
         navigation.navigate('ProjectCreationStepOne');
       }
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const projectsData = [developers, suppliers, customers];
+  const {tabs, projectsData} = useMemo(() => {
+    const {developers, suppliers, customers} = projects;
+
+    const _tabs = ['Developer'];
+    const data = [developers];
+
+    if (projects?.suppliers?.length) {
+      _tabs.push('Supplier');
+      data.push(suppliers);
+    }
+    if (projects?.customers?.length) {
+      _tabs.push('Customer');
+      data.push(customers);
+    }
+    return {tabs: _tabs, projectsData: data};
+  }, [projects]);
 
   const handleOnPress = project => {
     if (project.is_completed === 'N') {
@@ -163,9 +176,9 @@ function Home(props) {
         <View style={styles.headerContainer}>
           <RenderHeader theme={theme} />
           {/* TODO: update tab implementation */}
-          {projects?.suppliers?.length || projects?.customers?.length ? (
+          {tabs.length > 1 ? (
             <MaterialTabs
-              items={TABS}
+              items={tabs}
               selectedIndex={selectedTab}
               onChange={setSelectedTab}
               barColor="#fff"
@@ -192,7 +205,7 @@ function Home(props) {
                   {...props}
                   key={index}
                   project={project}
-                  tab={TABS[selectedTab]}
+                  tab={tabs[selectedTab]}
                   handleOnPress={handleOnPress}
                 />
               ))}

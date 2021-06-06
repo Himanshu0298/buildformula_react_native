@@ -23,7 +23,7 @@ const RenderInput = React.forwardRef((props, ref) => {
     ...rest
   } = props;
 
-  value = value ? (!isNaN(value) ? value.toString() : value) : '';
+  value = (!isNaN(value) ? value.toString() : value) || '';
 
   return (
     <View style={[styles.container, containerStyles]}>

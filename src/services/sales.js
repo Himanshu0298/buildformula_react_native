@@ -42,7 +42,11 @@ export default function useSalesServices() {
       return instance.post('inquiry_status/remove', data, config());
     },
     getUnitsBookingStatus: data => {
-      return instance.post('/get_locked_units', data, config());
+      return instance.post(
+        '/get_locked_units',
+        data,
+        config({multipart: false}),
+      );
     },
     lockUnit: data => {
       return instance.post(

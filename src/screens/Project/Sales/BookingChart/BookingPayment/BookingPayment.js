@@ -89,6 +89,16 @@ const schema = Yup.object().shape({
     is: 'yes',
     then: Yup.number('Invalid').required('Required'),
   }),
+  document_start_date: Yup.string('Invalid').when(
+    'documentCharge',
+    (documentCharge, keySchema) =>
+      documentCharge ? keySchema.required('Required') : keySchema,
+  ),
+  document_end_date: Yup.string('Invalid').when(
+    'documentCharge',
+    (documentCharge, keySchema) =>
+      documentCharge ? keySchema.required('Required') : keySchema,
+  ),
 });
 
 export function RenderInstallments(props) {
@@ -507,39 +517,50 @@ function RenderDocumentChargesPayment(props) {
   const {values, setFieldValue, errors} = formikProps;
 
   return (
-    <View style={styles.docChargesSection}>
-      <RenderInput
-        name={'documentation_charges'}
-        label={t('label_documentation_charges')}
-        value={'2000000'}
-        editable={false}
-        left={<TextInput.Affix text="₹" />}
-      />
-      <View style={styles.inputRowContainer}>
-        <View style={styles.dateInputContainer}>
-          <RenderDatePicker
-            name="start_date"
-            label={t('label_start_date')}
-            value={values.start_date}
-            error={errors.start_date}
-            onChange={date => {
-              setFieldValue('start_date', dayjs(date).format('YYYY-MM-DD'));
-            }}
-          />
-        </View>
-        <View style={{flex: 1}}>
-          <RenderDatePicker
-            name="end_date"
-            label={t('label_end_date')}
-            value={values.end_date}
-            error={errors.end_date}
-            onChange={date => {
-              setFieldValue('end_date', dayjs(date).format('YYYY-MM-DD'));
-            }}
-          />
+    <>
+      <Caption style={[styles.headingLabel, {color: theme.colors.primary}]}>
+        Document Charges payment
+      </Caption>
+      <View style={styles.docChargesSection}>
+        <RenderInput
+          name={'documentation_charges'}
+          label={t('label_documentation_charges')}
+          value={values.documentCharge}
+          editable={false}
+          left={<TextInput.Affix text="₹" />}
+        />
+        <View style={styles.inputRowContainer}>
+          <View style={styles.dateInputContainer}>
+            <RenderDatePicker
+              name="document_start_date"
+              label={t('label_start_date')}
+              value={values.document_start_date}
+              error={errors.document_start_date}
+              onChange={date => {
+                setFieldValue(
+                  'document_start_date',
+                  dayjs(date).format('YYYY-MM-DD'),
+                );
+              }}
+            />
+          </View>
+          <View style={{flex: 1}}>
+            <RenderDatePicker
+              name="document_end_date"
+              label={t('label_end_date')}
+              value={values.document_end_date}
+              error={errors.document_end_date}
+              onChange={date => {
+                setFieldValue(
+                  'document_end_date',
+                  dayjs(date).format('YYYY-MM-DD'),
+                );
+              }}
+            />
+          </View>
         </View>
       </View>
-    </View>
+    </>
   );
 }
 
@@ -549,9 +570,11 @@ function RenderPaymentForm(props) {
 
   return (
     <View style={{marginTop: 10}}>
-      <RenderDocumentChargesPayment {...props} />
+      {values.documentCharge ? (
+        <RenderDocumentChargesPayment {...props} />
+      ) : null}
       <RenderInput
-        label={t('label_basic_amount')}
+        label={t('label_final_amount')}
         value={values.area_amount}
         editable={false}
         error={errors.basic_amount}
@@ -592,42 +615,43 @@ function RenderPaymentForm(props) {
         <RenderOneBigInstallmentPaymentForm {...props} />
       ) : null}
 
+      {values.other_charges_amount ? (
+        <>
+          <Caption
+            style={[styles.otherChargesLabel, {color: theme.colors.primary}]}>
+            Other Charges payment
+          </Caption>
+
+          <View style={styles.otherChargesContainer}>
+            <View style={styles.dateInputContainer}>
+              <RenderInput
+                name={'other_charges_amount'}
+                label={t('label_total_other_charges')}
+                value={values.other_charges_amount}
+                disabled={true}
+                left={<TextInput.Affix text="₹" />}
+              />
+            </View>
+            <View style={{flex: 1}}>
+              <RenderDatePicker
+                name="other_charges_date"
+                label={t('label_date')}
+                value={values.other_charges_date}
+                error={errors.other_charges_date}
+                onChange={date => {
+                  setFieldValue(
+                    'other_charges_date',
+                    dayjs(date).format('YYYY-MM-DD'),
+                  );
+                }}
+              />
+            </View>
+          </View>
+        </>
+      ) : null}
+
       <Caption
         style={[styles.otherChargesLabel, {color: theme.colors.primary}]}>
-        Other Charges payment
-      </Caption>
-
-      <View style={styles.otherChargesContainer}>
-        <View style={styles.dateInputContainer}>
-          <RenderInput
-            name={'other_charges_amount'}
-            label={t('label_total_other_charges')}
-            value={values.other_charges_amount}
-            disabled={true}
-            left={<TextInput.Affix text="₹" />}
-          />
-        </View>
-        <View style={{flex: 1}}>
-          <RenderDatePicker
-            name="other_charges_date"
-            label={t('label_date')}
-            value={values.other_charges_date}
-            error={errors.other_charges_date}
-            onChange={date => {
-              setFieldValue(
-                'other_charges_date',
-                dayjs(date).format('YYYY-MM-DD'),
-              );
-            }}
-          />
-        </View>
-      </View>
-      <Caption
-        style={{
-          color: theme.colors.primary,
-          marginTop: 15,
-          fontSize: 14,
-        }}>
         Remark
       </Caption>
       <RenderTextBox
@@ -782,6 +806,20 @@ function BookingPayments(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const initialValues = useMemo(() => {
+    const documentCharge = Number(
+      `${params.document_start}.${params.document_end}`,
+    );
+
+    return {
+      payment_type: 1,
+      custom_payments: [{}],
+      loan: 'no',
+      documentCharge,
+      ...params,
+    };
+  }, [params]);
+
   const validate = values => {
     const errors = {};
     if (values.payment_type === 2) {
@@ -816,12 +854,7 @@ function BookingPayments(props) {
       validateOnBlur={false}
       validateOnChange={false}
       validate={validate}
-      initialValues={{
-        payment_type: 1,
-        custom_payments: [{}],
-        loan: 'no',
-        ...params,
-      }}
+      initialValues={initialValues}
       validationSchema={schema}
       onSubmit={async values => {
         console.log('-----> unit_id', unit_id);
@@ -832,14 +865,45 @@ function BookingPayments(props) {
           delete data.custom_payments;
         }
 
+        if (data.documentCharge) {
+          data.basic_amount_document_charge_start = data.document_start;
+          data.basic_amount_document_charge_end = data.document_end;
+
+          switch (values.payment_type) {
+            case 1:
+              data.full_payment_documentation_charges = data.documentCharge;
+              data.full_payment_documentation_charges_start_date =
+                data.document_start_date;
+              data.full_payment_documentation_charges_end_date =
+                data.document_end_date;
+              break;
+            case 2:
+              data.custom_payment_documentation_charges = data.documentCharge;
+              data.custom_payment_documentation_charges_start_date =
+                data.document_start_date;
+              data.custom_payment_documentation_charges_end_date =
+                data.document_end_date;
+              break;
+            case 3:
+              data.installment_payment_documentation_charges =
+                data.documentCharge;
+              data.installment_payment_documentation_charges_start_date =
+                data.document_start_date;
+              data.installment_payment_documentation_charges_end_date =
+                data.document_end_date;
+              break;
+          }
+        }
+
         delete data.loan;
         delete data.broker;
+        delete data.documentCharge;
+        delete data.document_start;
+        delete data.document_end;
 
         createBooking(data).then(() => navigation.popToTop());
       }}>
-      {formikProps => (
-        <FormContent {...props} formikProps={formikProps} bankList={bankList} />
-      )}
+      {formikProps => <FormContent {...props} {...{formikProps, bankList}} />}
     </Formik>
   );
 }
@@ -871,6 +935,11 @@ const styles = StyleSheet.create({
   },
   otherChargesLabel: {
     marginTop: 15,
+    marginBottom: 5,
+    fontSize: 14,
+  },
+  headingLabel: {
+    marginTop: 5,
     marginBottom: 5,
     fontSize: 14,
   },
