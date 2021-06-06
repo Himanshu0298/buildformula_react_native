@@ -54,6 +54,7 @@ import CustomerDetails from 'screens/Project/CustomerSection/CustomerDetails';
 import AddCustomer from 'screens/Project/CustomerSection/AddCustomer';
 import AddModifyRequest from 'screens/Project/CustomerSection/AddModifyRequest';
 import AddBankDetails from 'screens/Project/CustomerSection/AddBankDetails';
+import PaymentCollections from 'screens/Project/CustomerSection/PaymentColections';
 //Project : Project management screens
 import Lineup from '../screens/Project/ProjectManagement/Lineup';
 import Phases from 'screens/Project/ProjectManagement/Planning/Phases';
@@ -219,6 +220,11 @@ function CustomerSectionStack() {
       <Stack.Screen
         name="AddBankDetails"
         component={AddBankDetails}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="PaymentCollections"
+        component={PaymentCollections}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

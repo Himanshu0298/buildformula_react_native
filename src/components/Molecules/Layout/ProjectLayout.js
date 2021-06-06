@@ -2,8 +2,9 @@ import React from 'react';
 import {View} from 'react-native';
 import BottomAppBar from './BottomAppBar';
 import ProjectHeader from './ProjectHeader';
+import PropTypes from 'prop-types';
 
-export default function ProjectLayout(props) {
+function ProjectLayout(props) {
   const {header = true, showTimer, tab = true, children} = props;
   return (
     <View style={{flex: 1}}>
@@ -13,3 +14,11 @@ export default function ProjectLayout(props) {
     </View>
   );
 }
+
+ProjectLayout.propTypes = {
+  header: PropTypes.bool,
+  tab: PropTypes.bool,
+  showTimer: PropTypes.bool,
+};
+
+export default React.memo(ProjectLayout);

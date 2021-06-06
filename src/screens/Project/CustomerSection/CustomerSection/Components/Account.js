@@ -7,15 +7,13 @@ import {
   Divider,
   Subheading,
   Text,
-  Title,
 } from 'react-native-paper';
 import {BOOKING_STATUS_STYLES} from 'components/Molecules/UnitSelector/RenderUnits';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {theme} from 'styles/theme';
 
 function Account(props) {
-  const {route, theme} = props;
+  const {route, theme, navigation} = props;
   const {project_id, unit} = route?.params || {};
 
   console.log('-----> unit.booking_status', unit.booking_status);
@@ -23,6 +21,9 @@ function Account(props) {
   const bookingStyle = BOOKING_STATUS_STYLES.standby || {};
 
   const toggleStatusDialog = () => {};
+
+  const navToDetails = type =>
+    navigation.navigate('PaymentCollections', {type});
 
   return (
     <ScrollView
@@ -109,14 +110,14 @@ function Account(props) {
         <View style={styles.actionRow}>
           <Button
             mode="outlined"
-            style={styles.actionButton}
+            style={[styles.actionButton, {borderColor: theme.colors.primary}]}
             uppercase={false}
             theme={{roundness: 7}}>
             Add collection
           </Button>
           <Button
             mode="outlined"
-            style={styles.actionButton}
+            style={[styles.actionButton, {borderColor: theme.colors.primary}]}
             uppercase={false}
             theme={{roundness: 7}}>
             View activity
@@ -151,17 +152,23 @@ function Account(props) {
           </Subheading>
 
           <View style={styles.cardItemsContainer}>
-            <TouchableOpacity style={styles.cardItem}>
+            <TouchableOpacity
+              style={styles.cardItem}
+              onPress={() => navToDetails('document')}>
               <Text style={{color: theme.colors.documentation}}>
                 Documentation charges
               </Text>
             </TouchableOpacity>
             <Divider />
-            <TouchableOpacity style={styles.cardItem}>
+            <TouchableOpacity
+              style={styles.cardItem}
+              onPress={() => navToDetails('property')}>
               <Text>Property Final Amount</Text>
             </TouchableOpacity>
             <Divider />
-            <TouchableOpacity style={styles.cardItem}>
+            <TouchableOpacity
+              style={styles.cardItem}
+              onPress={() => navToDetails('gst')}>
               <Text>GST Amount</Text>
             </TouchableOpacity>
           </View>
@@ -226,7 +233,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
   },
   actionButton: {
-    borderColor: theme.colors.primary,
     width: '40%',
   },
   detailCard: {

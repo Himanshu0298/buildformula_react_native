@@ -8,7 +8,7 @@ import {
   Button,
   TextInput,
 } from 'react-native-paper';
-import {secondaryTheme, theme} from 'styles/theme';
+import {theme} from 'styles/theme';
 import backArrow from 'assets/images/back_arrow.png';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import RenderInput from 'components/Atoms/RenderInput';
@@ -310,8 +310,8 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
   },
   backArrow: {
-    height: 25,
-    width: 25,
+    height: 23,
+    width: 23,
     marginRight: 5,
   },
   profilePicContainer: {

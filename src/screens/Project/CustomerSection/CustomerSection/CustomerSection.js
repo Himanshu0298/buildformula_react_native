@@ -2,7 +2,7 @@ import * as React from 'react';
 import {useTranslation} from 'react-i18next';
 import {StyleSheet, View} from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
-import {Divider, Subheading, withTheme, Button} from 'react-native-paper';
+import {Divider, withTheme, Button, Title} from 'react-native-paper';
 import {TabBar, TabView} from 'react-native-tab-view';
 import {useSelector} from 'react-redux';
 import useCustomerActions from 'redux/actions/customerActions';
@@ -67,7 +67,7 @@ function CustomerSection(props) {
 
   const [selectedTab, setSelectedTab] = React.useState(0);
   const [routes] = React.useState([
-    {key: 0, title: 'DETAILS'},
+    {key: 0, title: 'OWNERSHIP'},
     {key: 1, title: 'BOOKING FORM'},
     {key: 2, title: 'BANK LOANS'},
     {key: 3, title: 'ACCOUNT'},
@@ -105,7 +105,7 @@ function CustomerSection(props) {
     <>
       <Spinner visible={loading} textContent={''} />
       <View style={styles.container}>
-        <Subheading>{t('title_customer_section')}</Subheading>
+        <Title>{t('title_customer_section')}</Title>
         <DetailsHeader {...route?.params} />
         <Divider style={styles.divider} />
       </View>
