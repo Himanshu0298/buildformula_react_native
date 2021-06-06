@@ -210,7 +210,7 @@ function RenderForm({formikProps, navigation, ...restProps}) {
           contentStyle={{padding: 1}}
           theme={{roundness: 15}}
           onPress={navigation.goBack}>
-          <BaseText style={styles.cancelText}>{'Cancel'}</BaseText>
+          Cancel
         </Button>
         <Button
           style={{width: '40%'}}
@@ -219,7 +219,7 @@ function RenderForm({formikProps, navigation, ...restProps}) {
           contentStyle={{padding: 1}}
           theme={{roundness: 15}}
           onPress={handleSubmit}>
-          <BaseText style={styles.buttonText}>{'Save'}</BaseText>
+          Save
         </Button>
       </View>
     </>
@@ -350,14 +350,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-around',
-  },
-  cancelText: {
-    fontSize: 18,
-    color: theme.colors.primary,
-  },
-  buttonText: {
-    fontWeight: 'bold',
-    fontSize: 18,
   },
 });
 

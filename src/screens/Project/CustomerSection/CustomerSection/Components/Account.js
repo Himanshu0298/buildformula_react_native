@@ -25,6 +25,9 @@ function Account(props) {
   const navToDetails = type =>
     navigation.navigate('PaymentCollections', {type});
 
+  const navToAddCollection = type =>
+    navigation.navigate('AddCollection', {...route.params});
+
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
@@ -112,7 +115,8 @@ function Account(props) {
             mode="outlined"
             style={[styles.actionButton, {borderColor: theme.colors.primary}]}
             uppercase={false}
-            theme={{roundness: 7}}>
+            theme={{roundness: 7}}
+            onPress={navToAddCollection}>
             Add collection
           </Button>
           <Button
