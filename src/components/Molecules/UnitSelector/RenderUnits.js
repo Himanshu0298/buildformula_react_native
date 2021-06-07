@@ -56,6 +56,11 @@ function RenderUnits({onSelectUnit, units, selectedFloor, isUnitDisabled}) {
           // bookingStyle = {};
         }
 
+        let backgroundColor = DEFAULT_UNIT_COLOR;
+        if (unitBhk) {
+          backgroundColor = addOpacity(unitBhk.color, 1);
+        }
+
         return (
           <View key={i} style={styles.unitContainer}>
             <TouchableOpacity
@@ -67,9 +72,7 @@ function RenderUnits({onSelectUnit, units, selectedFloor, isUnitDisabled}) {
                   borderRadius: 10,
                   position: 'relative',
                   ...bookingStyle,
-                  backgroundColor:
-                    (unitBhk && addOpacity(unitBhk.color, 1)) ||
-                    DEFAULT_UNIT_COLOR,
+                  backgroundColor,
                 },
               ]}>
               {bookingStyle.badge ? (
@@ -125,4 +128,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RenderUnits;
+export default React.memo(RenderUnits);

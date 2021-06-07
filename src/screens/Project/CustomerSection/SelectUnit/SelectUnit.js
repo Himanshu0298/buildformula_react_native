@@ -10,7 +10,9 @@ export default function SelectUnit(props) {
   const {getUnitsBookingStatus} = useSalesActions();
 
   const {selectedProject = {}} = useSelector(state => state.project);
-  const {loading, unitBookingStatus} = useSelector(state => state.sales);
+  const {loadingUnitStatus, loading, unitBookingStatus} = useSelector(
+    state => state.sales,
+  );
 
   const {selectedStructure, floorId, towerId} = route?.params || {};
   const structureData = selectedProject.projectData?.[selectedStructure] || {};
@@ -42,8 +44,8 @@ export default function SelectUnit(props) {
   }, [floorId, towerId, towers, unitBookingStatus]);
 
   const checkUnitDisability = ({booking_status: status}) => {
-    const disabled = status !== 'Stand by' || status !== 'Booked';
-    return false;
+    return !['standby', 'booked'].includes(status);
+    // return false;
   };
 
   const fetchUnitsBookingStatus = () => {
@@ -65,13 +67,14 @@ export default function SelectUnit(props) {
 
   return (
     <>
-      <Spinner visible={loading} textContent={''} />
+      <Spinner visible={loading || loadingUnitStatus} textContent={''} />
       <UnitSelector
         title="title_customer_section"
         subtitle="subtitle_customer_section"
         refreshing={unitBookingStatus.length > 0 && loading}
         onRefresh={fetchUnitsBookingStatus}
         onSelectUnit={handlePress}
+        showBhkFilters={[1, 4].includes(selectedStructure)}
         floorId={floorId}
         units={units}
         isUnitDisabled={checkUnitDisability}

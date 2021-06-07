@@ -105,4 +105,4 @@ UnitSelector.propTypes = {
   floorId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
 };
 
-export default UnitSelector;
+export default React.memo(UnitSelector);

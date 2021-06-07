@@ -90,6 +90,7 @@ export default function SelectUnit(props) {
         onSelectUnit={onSelectUnit}
         floorId={floorId}
         units={units}
+        showBhkFilters={[1, 4].includes(selectedStructure)}
         isUnitDisabled={checkUnitDisability}
       />
     </>
