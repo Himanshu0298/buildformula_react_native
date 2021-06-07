@@ -3,13 +3,12 @@ import {StyleSheet, View, ScrollView} from 'react-native';
 import {
   Caption,
   Divider,
-  Headline,
   Subheading,
   Text,
+  Title,
   withTheme,
 } from 'react-native-paper';
 import {useSelector} from 'react-redux';
-import {secondaryTheme} from 'styles/theme';
 import _ from 'lodash';
 import {round} from 'utils';
 import dayjs from 'dayjs';
@@ -121,9 +120,11 @@ function RatesSection({bookingDetails, bookingAreaUnitType, theme}) {
     return [];
   }, [other_charges]);
 
+  const unit = bookingAreaUnitType[area_carpet_unit]?.toLowerCase();
+
   return (
     <View style={styles.sectionContainer}>
-      <Headline style={{fontSize: 22, marginBottom: 15}}>Booking Rate</Headline>
+      <Title style={{marginBottom: 15}}>Booking Rate</Title>
       <Subheading style={{color: theme.colors.primary}}>
         BASIC AMOUNT
       </Subheading>
@@ -132,22 +133,10 @@ function RatesSection({bookingDetails, bookingAreaUnitType, theme}) {
           row={[
             {
               label: 'Area for Super Buildup',
-              value: `${area_for_super_buildup} ${bookingAreaUnitType[
-                area_for_super_buildup_unit
-              ]?.toLowerCase()}.`,
+              value: `${area_for_super_buildup} ${unit}.`,
             },
-            {
-              label: 'Area for Buildup',
-              value: `${area_for_buildup} ${bookingAreaUnitType[
-                area_for_buildup_unit
-              ]?.toLowerCase()}.`,
-            },
-            {
-              label: 'Area for Carpet',
-              value: `${area_for_carpet} ${bookingAreaUnitType[
-                area_carpet_unit
-              ]?.toLowerCase()}.`,
-            },
+            {label: 'Area for Buildup', value: `${area_for_buildup} ${unit}.`},
+            {label: 'Area for Carpet', value: `${area_for_carpet} ${unit}.`},
           ]}
         />
         <RenderRow
@@ -156,14 +145,8 @@ function RatesSection({bookingDetails, bookingAreaUnitType, theme}) {
               label: 'Rate for Super Buildup',
               value: `${rate_super_buildup} Rs.`,
             },
-            {
-              label: 'Rate for Buildup',
-              value: `${rate_for_buildup} Rs.`,
-            },
-            {
-              label: 'Rate for Carpet',
-              value: `${rate_for_carpet} Rs.`,
-            },
+            {label: 'Rate for Buildup', value: `${rate_for_buildup} Rs.`},
+            {label: 'Rate for Carpet', value: `${rate_for_carpet} Rs.`},
           ]}
         />
         <Caption style={{color: theme.colors.primary, marginVertical: 10}}>
@@ -171,18 +154,9 @@ function RatesSection({bookingDetails, bookingAreaUnitType, theme}) {
         </Caption>
         <RenderRow
           row={[
-            {
-              label: 'As Super Buildup',
-              value: `${main_total_amount} Rs.`,
-            },
-            {
-              label: 'As Buildup',
-              value: `${main_total_amount} Rs.`,
-            },
-            {
-              label: 'As Carpet',
-              value: `${main_total_amount} Rs.`,
-            },
+            {label: 'As Super Buildup', value: `${main_total_amount} Rs.`},
+            {label: 'As Buildup', value: `${main_total_amount} Rs.`},
+            {label: 'As Carpet', value: `${main_total_amount} Rs.`},
           ]}
         />
         {otherChargePairs.length > 0 ? (
@@ -232,12 +206,7 @@ function RenderFullPaymentDetails({bookingDetails, theme}) {
       <Subheading style={{color: theme.colors.primary}}>FULL AMOUNT</Subheading>
       <View style={styles.sectionBody}>
         <RenderRow
-          row={[
-            {
-              label: 'Basic amount',
-              value: `${main_total_amount} Rs.`,
-            },
-          ]}
+          row={[{label: 'Basic amount', value: `${main_total_amount} Rs.`}]}
         />
         <RenderRow
           row={[
@@ -245,10 +214,7 @@ function RenderFullPaymentDetails({bookingDetails, theme}) {
               label: 'Start date',
               value: dayjs(start_date).format('DD MMM YYYY'),
             },
-            {
-              label: 'End date',
-              value: dayjs(end_date).format('DD MMM YYYY'),
-            },
+            {label: 'End date', value: dayjs(end_date).format('DD MMM YYYY')},
           ]}
         />
         {total_other_charges ? (
@@ -283,12 +249,7 @@ function RenderCustomPaymentDetails({bookingDetails, theme}) {
       </Subheading>
       <View style={styles.sectionBody}>
         <RenderRow
-          row={[
-            {
-              label: 'Total basic amount',
-              value: `${custom_amount} Rs.`,
-            },
-          ]}
+          row={[{label: 'Total basic amount', value: `${custom_amount} Rs.`}]}
         />
         <Divider style={{marginVertical: 10}} />
         {custom_payments.map((payment, index) => {
@@ -297,28 +258,12 @@ function RenderCustomPaymentDetails({bookingDetails, theme}) {
             <>
               <RenderRow
                 row={[
-                  {
-                    label: 'Percent',
-                    value: `${percent} %`,
-                  },
-                  {
-                    label: 'Amount',
-                    value: `${amount} Rs.`,
-                  },
-                  {
-                    label: 'Date',
-                    value: dayjs(date).format('DD MMM YYYY'),
-                  },
+                  {label: 'Percent', value: `${percent} %`},
+                  {label: 'Amount', value: `${amount} Rs.`},
+                  {label: 'Date', value: dayjs(date).format('DD MMM YYYY')},
                 ]}
               />
-              <RenderRow
-                row={[
-                  {
-                    label: 'Remarks',
-                    value: remark,
-                  },
-                ]}
-              />
+              <RenderRow row={[{label: 'Remarks', value: remark}]} />
             </>
           );
         })}
@@ -379,24 +324,14 @@ function RenderFirstBigPaymentDetails({bookingDetails, theme}) {
           ]}
         />
         <RenderRow
-          row={[
-            {
-              label: 'Remarks',
-              value: installment_payment_remarks,
-            },
-          ]}
+          row={[{label: 'Remarks', value: installment_payment_remarks}]}
         />
 
         <Text style={{color: theme.colors.primary, marginVertical: 5}}>
           Installment
         </Text>
         <RenderRow
-          row={[
-            {
-              label: 'No. of installments',
-              value: installment_numbers,
-            },
-          ]}
+          row={[{label: 'No. of installments', value: installment_numbers}]}
         />
         <RenderRow
           row={[
@@ -408,10 +343,7 @@ function RenderFirstBigPaymentDetails({bookingDetails, theme}) {
               label: 'End date',
               value: dayjs(installment_end_date).format('DD MMM YYYY'),
             },
-            {
-              label: 'Interval',
-              value: `${installment_interval_days} Days`,
-            },
+            {label: 'Interval', value: `${installment_interval_days} Days`},
           ]}
         />
 
@@ -454,7 +386,7 @@ function PaymentSection(props) {
 
   return (
     <View style={styles.sectionContainer}>
-      <Headline style={{fontSize: 22}}>Payment Installment</Headline>
+      <Title style={{marginBottom: 15}}>Payment Installment</Title>
       <View style={styles.sectionBody}>
         <RenderRow
           row={[
@@ -470,24 +402,14 @@ function PaymentSection(props) {
         />
         <RenderRow
           row={[
-            {
-              label: 'Loan taken',
-              value: _.startCase(is_loan),
-            },
+            {label: 'Loan taken', value: _.startCase(is_loan)},
             {
               label: 'Loan amount',
               value: loan_amount ? `${loan_amount} Rs.` : 'NA',
             },
           ]}
         />
-        <RenderRow
-          row={[
-            {
-              label: 'Remarks',
-              value: payment_remark,
-            },
-          ]}
-        />
+        <RenderRow row={[{label: 'Remarks', value: payment_remark}]} />
       </View>
       {payment_type === 1 ? <RenderFullPaymentDetails {...props} /> : null}
       {payment_type === 2 ? <RenderCustomPaymentDetails {...props} /> : null}
