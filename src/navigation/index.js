@@ -345,6 +345,7 @@ function ProjectDrawer() {
 function CustomerDashboard() {
   return (
     <Drawer.Navigator
+      initialRouteName={'CustomerHome'}
       drawerContent={props => (
         <RouteContext.Consumer>
           {routeData => (
@@ -353,6 +354,12 @@ function CustomerDashboard() {
         </RouteContext.Consumer>
       )}>
       <Drawer.Screen name="CustomerHome" component={CustomerHome} />
+      <Drawer.Screen name="AddCustomer" component={AddCustomer} />
+      <Drawer.Screen name="CustomerDetails" component={CustomerDetails} />
+      <Drawer.Screen name="AddModifyRequest" component={AddModifyRequest} />
+      <Drawer.Screen name="AddBankDetails" component={AddBankDetails} />
+      <Drawer.Screen name="PaymentCollections" component={PaymentCollections} />
+      <Drawer.Screen name="AddCollection" component={AddCollection} />
     </Drawer.Navigator>
   );
 }

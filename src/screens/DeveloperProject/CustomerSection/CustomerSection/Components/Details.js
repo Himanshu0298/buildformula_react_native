@@ -2,7 +2,6 @@ import * as React from 'react';
 import {StyleSheet, View, TouchableOpacity, ScrollView} from 'react-native';
 import {Avatar, Caption, Divider, Text, withTheme} from 'react-native-paper';
 import {useSelector} from 'react-redux';
-import {secondaryTheme} from 'styles/theme';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 function RenderCustomer({customer, navToDetails}) {
@@ -13,12 +12,7 @@ function RenderCustomer({customer, navToDetails}) {
         onPress={() => navToDetails(customer)}
         style={styles.customerContainer}>
         <View style={styles.leftContainer}>
-          <Avatar.Image
-            size={50}
-            source={{
-              uri: profile_pic,
-            }}
-          />
+          <Avatar.Image size={50} source={{uri: profile_pic}} />
           <View style={styles.nameContainer}>
             <Text>{name}</Text>
             <Caption>{role}</Caption>
@@ -40,31 +34,15 @@ function RenderCustomer({customer, navToDetails}) {
 function Details(props) {
   const {theme, navigation, route} = props;
   const {params} = route;
+
   const {customerData} = useSelector(state => state.customer);
-  // const customerDetails = [
-  //   {
-  //     profile_pic: 'https://reactnative.dev/img/tiny_logo.png',
-  //     name: 'James Parker',
-  //     role: 'Main customer',
-  //   },
-  //   {
-  //     profile_pic: 'https://reactnative.dev/img/tiny_logo.png',
-  //     name: 'James Parker',
-  //     role: 'Main customer',
-  //   },
-  //   {
-  //     profile_pic: 'https://reactnative.dev/img/tiny_logo.png',
-  //     name: 'James Parker',
-  //     role: 'Main customer',
-  //   },
-  // ];
 
   const navToDetails = customer => {
-    navigation.push('CustomerDetails', {customer});
+    navigation.navigate('CustomerDetails', {customer});
   };
 
   const navToAdd = customer => {
-    navigation.push('AddCustomer', {...params});
+    navigation.navigate('AddCustomer', {...params});
   };
 
   return (
