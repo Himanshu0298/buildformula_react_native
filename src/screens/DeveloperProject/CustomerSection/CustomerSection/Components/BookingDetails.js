@@ -12,7 +12,7 @@ import {useSelector} from 'react-redux';
 import _ from 'lodash';
 import {round} from 'utils';
 import dayjs from 'dayjs';
-import {RenderInstallments} from 'screens/Project/Sales/BookingChart/BookingPayment/BookingPayment';
+import {RenderInstallments} from 'screens/DeveloperProject/Sales/BookingChart/BookingPayment/BookingPayment';
 
 function RenderRow({row}) {
   return (

@@ -1,7 +1,7 @@
 import React from 'react';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-export const PROJECT_DRAWER_ITEMS = [
+export const DEVELOPER_DRAWER_ITEMS = [
   {
     title: 'SALES',
     routes: [
@@ -126,6 +126,21 @@ export const PROJECT_DRAWER_ITEMS = [
         label: 'Files',
         icon: ({color, size}) => (
           <MaterialIcons name={'description'} {...{color, size}} />
+        ),
+      },
+    ],
+  },
+];
+
+export const CUSTOMER_DRAWER_ITEMS = [
+  {
+    title: 'CUSTOMER SECTION',
+    routes: [
+      {
+        route: 'CustomerSection',
+        label: 'Customer Section',
+        icon: ({color, size}) => (
+          <MaterialIcons name={'recent-actors'} {...{color, size}} />
         ),
       },
     ],

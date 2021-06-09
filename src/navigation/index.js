@@ -33,47 +33,52 @@ import SettingsScreen from '../screens/Settings';
 //Project Search Screen
 import SearchScreen from '../screens/Search';
 
-/*************   Project Sub Screens    *************/
-import ProjectDashboard from '../screens/Project/Dashboard';
+/************* Customer Project Sub Screens    *************/
+import CustomerHome from 'screens/CustomerProject/CustomerHome';
+
+/************* Customer Project Sub Screens End   *************/
+
+/************* Developer Project Sub Screens    *************/
+import DeveloperDashboard from '../screens/DeveloperProject/Dashboard';
 //Project : Sales Screens
-import Inquiry from '../screens/Project/Sales/Inquiry';
-import VisitorDetails from '../screens/Project/Sales/VisitorDetails';
-import SalesPipeline from '../screens/Project/Sales/SalesPipeline';
-import Payment from '../screens/Project/Sales/Payment';
-import AddVisitor from '../screens/Project/Sales/AddVisitor';
-import AddFollowUp from '../screens/Project/Sales/AddFollowUp';
-import BC_SelectStructure from 'screens/Project/Sales/BookingChart/SelectStructure';
-import BC_SelectFloor from 'screens/Project/Sales/BookingChart/SelectFloor';
-import BC_SelectUnit from 'screens/Project/Sales/BookingChart/SelectUnit';
-import BookingDetails from 'screens/Project/Sales/BookingChart/BookingDetails';
-import BookingRates from 'screens/Project/Sales/BookingChart/BookingRates';
-import BookingPayment from 'screens/Project/Sales/BookingChart/BookingPayment';
+import Inquiry from '../screens/DeveloperProject/Sales/Inquiry';
+import VisitorDetails from '../screens/DeveloperProject/Sales/VisitorDetails';
+import SalesPipeline from '../screens/DeveloperProject/Sales/SalesPipeline';
+import Payment from '../screens/DeveloperProject/Sales/Payment';
+import AddVisitor from '../screens/DeveloperProject/Sales/AddVisitor';
+import AddFollowUp from '../screens/DeveloperProject/Sales/AddFollowUp';
+import BC_SelectStructure from 'screens/DeveloperProject/Sales/BookingChart/SelectStructure';
+import BC_SelectFloor from 'screens/DeveloperProject/Sales/BookingChart/SelectFloor';
+import BC_SelectUnit from 'screens/DeveloperProject/Sales/BookingChart/SelectUnit';
+import BookingDetails from 'screens/DeveloperProject/Sales/BookingChart/BookingDetails';
+import BookingRates from 'screens/DeveloperProject/Sales/BookingChart/BookingRates';
+import BookingPayment from 'screens/DeveloperProject/Sales/BookingChart/BookingPayment';
 //Project : Customer Section
-import CS_SelectStructure from 'screens/Project/CustomerSection/SelectStructure';
-import CS_SelectFloor from 'screens/Project/CustomerSection/SelectFloor';
-import CS_SelectUnit from 'screens/Project/CustomerSection/SelectUnit';
-import CustomerSection from 'screens/Project/CustomerSection/CustomerSection';
-import CustomerDetails from 'screens/Project/CustomerSection/CustomerDetails';
-import AddCustomer from 'screens/Project/CustomerSection/AddCustomer';
-import AddModifyRequest from 'screens/Project/CustomerSection/AddModifyRequest';
-import AddBankDetails from 'screens/Project/CustomerSection/AddBankDetails';
-import PaymentCollections from 'screens/Project/CustomerSection/PaymentColections';
-import AddCollection from 'screens/Project/CustomerSection/AddCollection';
+import CS_SelectStructure from 'screens/DeveloperProject/CustomerSection/SelectStructure';
+import CS_SelectFloor from 'screens/DeveloperProject/CustomerSection/SelectFloor';
+import CS_SelectUnit from 'screens/DeveloperProject/CustomerSection/SelectUnit';
+import CustomerSection from 'screens/DeveloperProject/CustomerSection/CustomerSection';
+import CustomerDetails from 'screens/DeveloperProject/CustomerSection/CustomerDetails';
+import AddCustomer from 'screens/DeveloperProject/CustomerSection/AddCustomer';
+import AddModifyRequest from 'screens/DeveloperProject/CustomerSection/AddModifyRequest';
+import AddBankDetails from 'screens/DeveloperProject/CustomerSection/AddBankDetails';
+import PaymentCollections from 'screens/DeveloperProject/CustomerSection/PaymentColections';
+import AddCollection from 'screens/DeveloperProject/CustomerSection/AddCollection';
 //Project : Project management screens
-import Lineup from '../screens/Project/ProjectManagement/Lineup';
-import Phases from 'screens/Project/ProjectManagement/Planning/Phases';
-import SubPhases from 'screens/Project/ProjectManagement/Planning/SubPhases';
-import SubPhaseActivity from 'screens/Project/ProjectManagement/Planning/SubPhaseActivity';
-import ProjectSchedule from '../screens/Project/ProjectManagement/ProjectSchedule';
-import MainPhase from '../screens/Project/ProjectManagement/MainPhase';
-import ProcessChart from '../screens/Project/ProjectManagement/ProcessChart/ProcessChart';
+import Lineup from '../screens/DeveloperProject/ProjectManagement/Lineup';
+import Phases from 'screens/DeveloperProject/ProjectManagement/Planning/Phases';
+import SubPhases from 'screens/DeveloperProject/ProjectManagement/Planning/SubPhases';
+import SubPhaseActivity from 'screens/DeveloperProject/ProjectManagement/Planning/SubPhaseActivity';
+import ProjectSchedule from '../screens/DeveloperProject/ProjectManagement/ProjectSchedule';
+import MainPhase from '../screens/DeveloperProject/ProjectManagement/MainPhase';
+import ProcessChart from '../screens/DeveloperProject/ProjectManagement/ProcessChart/ProcessChart';
 //Project : Material management screens
-import Estimation from '../screens/Project/MaterialManagement/Estimation';
-import RequestForPrice from '../screens/Project/MaterialManagement/RequestForPrice';
-import PurchaseOrders from '../screens/Project/MaterialManagement/PurchaseOrders';
+import Estimation from '../screens/DeveloperProject/MaterialManagement/Estimation';
+import RequestForPrice from '../screens/DeveloperProject/MaterialManagement/RequestForPrice';
+import PurchaseOrders from '../screens/DeveloperProject/MaterialManagement/PurchaseOrders';
 //Project : Files screens
-import Files from '../screens/Project/Files';
-/*************   Project Sub Screens    *************/
+import Files from '../screens/DeveloperProject/Files';
+/************* Developer Project Sub Screens End   *************/
 
 const optionalConfigObject = {
   unifiedErrors: false, // use unified error messages (default false)
@@ -99,6 +104,7 @@ const Stack = createStackNavigator();
 
 const RouteContext = React.createContext('Dashboard');
 
+// TODO: update this comment
 /**
  * The Whole App navigation is divided into 3 layers
  * 1. The top stack navigator for App and Auth screens
@@ -313,11 +319,11 @@ function ProjectDrawer() {
       drawerContent={props => (
         <RouteContext.Consumer>
           {routeData => (
-            <DrawerContent {...props} routeData={routeData} type="project" />
+            <DrawerContent {...props} routeData={routeData} type="developer" />
           )}
         </RouteContext.Consumer>
       )}>
-      <Drawer.Screen name="ProjectDashboard" component={ProjectDashboard} />
+      <Drawer.Screen name="DeveloperDashboard" component={DeveloperDashboard} />
       <Drawer.Screen name="Inquiry" component={InquiryStack} />
       <Drawer.Screen name="SalesPipeline" component={PipelineStack} />
       <Drawer.Screen name="BookingChartStack" component={BookingChartStack} />
@@ -332,6 +338,21 @@ function ProjectDrawer() {
       <Drawer.Screen name="RequestForPrice" component={RequestForPrice} />
       <Drawer.Screen name="PurchaseOrders" component={PurchaseOrders} />
       <Drawer.Screen name="Files" component={FilesStack} />
+    </Drawer.Navigator>
+  );
+}
+
+function CustomerDashboard() {
+  return (
+    <Drawer.Navigator
+      drawerContent={props => (
+        <RouteContext.Consumer>
+          {routeData => (
+            <DrawerContent {...props} routeData={routeData} type="customer" />
+          )}
+        </RouteContext.Consumer>
+      )}>
+      <Drawer.Screen name="CustomerHome" component={CustomerHome} />
     </Drawer.Navigator>
   );
 }
@@ -418,8 +439,13 @@ function NavContainer() {
                 options={{headerShown: false}}
               />
               <Stack.Screen
-                name="ProjectDashboard"
+                name="DeveloperDashboard"
                 component={ProjectDrawer}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="CustomerDashboard"
+                component={CustomerDashboard}
                 options={{headerShown: false}}
               />
               <Stack.Screen

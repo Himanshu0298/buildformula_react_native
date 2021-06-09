@@ -1,18 +1,18 @@
 import React from 'react';
 import {StyleSheet, View, Linking} from 'react-native';
 import {DrawerContentScrollView} from '@react-navigation/drawer';
-import {useTheme, Paragraph, Drawer, Button} from 'react-native-paper';
+import {Paragraph, Drawer, Button, withTheme} from 'react-native-paper';
 import Animated from 'react-native-reanimated';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Feather from 'react-native-vector-icons/Feather';
-import {theme} from 'styles/theme';
 import useAppActions from '../../redux/actions/appActions';
 import {SITE_URL} from 'utils/constant';
-import {PROJECT_DRAWER_ITEMS} from './DrawerItems';
+import {DEVELOPER_DRAWER_ITEMS, CUSTOMER_DRAWER_ITEMS} from './DrawerItems';
 
 const DrawerItem = React.memo(props => {
   const {
     routeData,
+    theme,
     route,
     navigation,
     label,
@@ -46,21 +46,121 @@ const DrawerItem = React.memo(props => {
       theme={{
         colors: {
           text: '#000',
-          primary: active ? '#fff' : theme.primary,
+          primary: active ? '#fff' : theme.colors.primary,
         },
       }}
       onPress={onPress}
-      style={active ? styles.activeDrawerItem : {}}
+      style={
+        active
+          ? {...styles.activeDrawerItem, backgroundColor: theme.colors.primary}
+          : {}
+      }
       active={active}
       icon={drawerIcon}
     />
   );
 });
 
-function DrawerContent(props) {
-  const {navigation, routeData, type} = props;
-  const paperTheme = useTheme();
+function RenderGeneralDrawerItems(props) {
   const {logout} = useAppActions();
+
+  return (
+    <>
+      <DrawerItem
+        {...props}
+        label={'Home'}
+        route="Home"
+        icon={({color, size}) => (
+          <Feather name={'home'} color={color} size={size} />
+        )}
+      />
+      <DrawerItem
+        {...props}
+        label={'Settings'}
+        route="Settings"
+        icon={'cog-outline'}
+      />
+      <DrawerItem
+        {...props}
+        label={'Help'}
+        route="help"
+        onPress={() => Linking.openURL(SITE_URL)}
+        icon={'help-box'}
+      />
+      <DrawerItem
+        {...props}
+        label={'Logout'}
+        onPress={logout}
+        icon={'logout'}
+      />
+    </>
+  );
+}
+
+function RenderDeveloperDrawerItems(props) {
+  const {theme} = props;
+
+  return (
+    <>
+      <DrawerItem
+        {...props}
+        label={'Dashboard'}
+        route="DeveloperDashboard"
+        icon={({color, size}) => (
+          <MaterialCommunityIcons
+            name={'view-dashboard-outline'}
+            color={color}
+            size={size}
+          />
+        )}
+      />
+      {DEVELOPER_DRAWER_ITEMS.map(section => {
+        return (
+          <Drawer.Section key={section.title} style={styles.drawerSection}>
+            <Paragraph
+              style={styles.title}
+              theme={{
+                colors: {text: theme.colors.primary},
+              }}>
+              {section.title}
+            </Paragraph>
+            {section.routes.map(route => {
+              return <DrawerItem {...props} key={route.route} {...route} />;
+            })}
+          </Drawer.Section>
+        );
+      })}
+    </>
+  );
+}
+
+function RenderCustomerDrawerItems(props) {
+  const {theme} = props;
+
+  return (
+    <>
+      {CUSTOMER_DRAWER_ITEMS.map(section => {
+        return (
+          <Drawer.Section key={section.title} style={styles.drawerSection}>
+            <Paragraph
+              style={styles.title}
+              theme={{
+                colors: {text: theme.colors.primary},
+              }}>
+              {section.title}
+            </Paragraph>
+            {section.routes.map(route => {
+              return <DrawerItem {...props} key={route.route} {...route} />;
+            })}
+          </Drawer.Section>
+        );
+      })}
+    </>
+  );
+}
+
+function DrawerContent(props) {
+  const {navigation, theme, type} = props;
 
   const translateX = Animated.interpolate(props.progress, {
     inputRange: [0, 0.5, 0.7, 0.8, 1],
@@ -76,7 +176,7 @@ function DrawerContent(props) {
         style={[
           styles.drawerContent,
           {
-            backgroundColor: paperTheme.colors.surface,
+            backgroundColor: theme.colors.surface,
             transform: [{translateX}],
           },
         ]}>
@@ -88,80 +188,11 @@ function DrawerContent(props) {
             Back
           </Button>
         </View>
-        {type === 'general' ? (
-          <>
-            <DrawerItem
-              label={'Home'}
-              route="Home"
-              navigation={navigation}
-              routeData={routeData}
-              icon={({color, size}) => (
-                <Feather name={'home'} color={color} size={size} />
-              )}
-            />
-            <DrawerItem
-              label={'Settings'}
-              route="Settings"
-              navigation={navigation}
-              routeData={routeData}
-              icon={'cog-outline'}
-            />
-            <DrawerItem
-              label={'Help'}
-              route="help"
-              onPress={() => Linking.openURL(SITE_URL)}
-              routeData={routeData}
-              icon={'help-box'}
-            />
-            <DrawerItem
-              label={'Logout'}
-              routeData={routeData}
-              onPress={logout}
-              icon={'logout'}
-            />
-          </>
-        ) : (
-          <>
-            <DrawerItem
-              label={'Dashboard'}
-              route="ProjectDashboard"
-              navigation={navigation}
-              routeData={routeData}
-              icon={({color, size}) => (
-                <MaterialCommunityIcons
-                  name={'view-dashboard-outline'}
-                  color={color}
-                  size={size}
-                />
-              )}
-            />
-            {PROJECT_DRAWER_ITEMS.map(section => {
-              return (
-                <Drawer.Section
-                  key={section.title}
-                  style={styles.drawerSection}>
-                  <Paragraph
-                    style={styles.title}
-                    theme={{
-                      colors: {text: paperTheme.colors.primary},
-                    }}>
-                    {section.title}
-                  </Paragraph>
-                  {section.routes.map(route => {
-                    return (
-                      <DrawerItem
-                        key={route.route}
-                        {...route}
-                        navigation={navigation}
-                        routeData={routeData}
-                      />
-                    );
-                  })}
-                </Drawer.Section>
-              );
-            })}
-          </>
-        )}
+        {type === 'general' ? <RenderGeneralDrawerItems {...props} /> : null}
+        {type === 'developer' ? (
+          <RenderDeveloperDrawerItems {...props} />
+        ) : null}
+        {type === 'customer' ? <RenderCustomerDrawerItems {...props} /> : null}
       </Animated.View>
     </DrawerContentScrollView>
   );
@@ -191,9 +222,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     fontSize: 14,
   },
-  activeDrawerItem: {
-    backgroundColor: theme.colors.primary,
-  },
+  activeDrawerItem: {},
 });
 
-export default React.memo(DrawerContent);
+export default withTheme(React.memo(DrawerContent));

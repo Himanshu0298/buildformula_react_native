@@ -143,10 +143,18 @@ function Home(props) {
       return;
     }
     if (project.project_approved === 'Y') {
-      navigation.navigate('ProjectDashboard', {
-        screen: 'ProjectDashboard',
-        params: {project},
-      });
+      if (tabs[selectedTab] === 'Developer') {
+        navigation.navigate('DeveloperDashboard', {
+          screen: 'DeveloperDashboard',
+          params: {project},
+        });
+      }
+      if (tabs[selectedTab] === 'Customer') {
+        navigation.navigate('CustomerDashboard', {
+          screen: 'CustomerHome',
+          params: {project},
+        });
+      }
     } else {
       alert.show({
         dismissable: false,
