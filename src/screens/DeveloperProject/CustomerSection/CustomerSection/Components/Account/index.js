@@ -63,7 +63,7 @@ function Account(props) {
     paymentSchedule,
     paymentCollection,
     activityLog,
-    bookingCurrentStatus,
+    bookingCurrentStatus = 3,
   } = accountDetails;
   const {documentCharges, propertyfinalamount, bankLoanDetail} =
     paymentSchedule || {};
@@ -77,8 +77,14 @@ function Account(props) {
     const {documentcharges = [], propertyfinalamount: property = []} =
       paymentCollection || {};
     return {
-      documentCollected: documentcharges.reduce((sum, i) => sum + i.amount, 0),
-      propertyCollected: property.reduce((sum, i) => sum + i.amount, 0),
+      documentCollected: documentcharges.reduce(
+        (sum, i) => sum + parseFloat(i.amount),
+        0,
+      ),
+      propertyCollected: property.reduce(
+        (sum, i) => sum + parseFloat(i.amount),
+        0,
+      ),
     };
   }, [paymentCollection]);
 
@@ -176,7 +182,7 @@ function Account(props) {
                 {backgroundColor: 'rgba(243, 122, 80, 0.1)'},
               ]}>
               <Subheading style={{fontWeight: 'bold'}}>
-                ₹ {documentCollected}
+                ₹ {parseFloat(documentCollected)}
               </Subheading>
               <Caption style={{fontSize: 16}}>Amount collected</Caption>
             </View>
@@ -193,13 +199,17 @@ function Account(props) {
                 {borderRightWidth: 1, borderColor: 'rgba(222, 225, 231, 1)'},
               ]}>
               <Subheading style={{fontWeight: 'bold'}}>
-                ₹ {parseFloat(propertyfinalamount?.full_basic_amount) || 0}
+                ₹{' '}
+                {parseFloat(
+                  propertyfinalamount?.full_basic_amount ||
+                    propertyfinalamount?.basic_amount,
+                ) || 0}
               </Subheading>
               <Caption style={{fontSize: 16}}>Total amount</Caption>
             </View>
             <View style={styles.section}>
               <Subheading style={{fontWeight: 'bold'}}>
-                ₹ {propertyCollected}
+                ₹ {parseFloat(propertyCollected)}
               </Subheading>
               <Caption style={{fontSize: 16}}>Amount collected</Caption>
             </View>
@@ -263,6 +273,11 @@ function Account(props) {
               <Text style={{color: theme.colors.documentation}}>
                 Documentation charges
               </Text>
+              <Badge
+                style={{backgroundColor: theme.colors.primary}}
+                visible={paymentCollection.documentcharges.length}>
+                {paymentCollection.documentcharges.length}
+              </Badge>
             </TouchableOpacity>
             <Divider />
             <TouchableOpacity
@@ -271,12 +286,22 @@ function Account(props) {
                 navToDetails('property', paymentCollection.propertyfinalamount)
               }>
               <Text>Property Final Amount</Text>
+              <Badge
+                style={{backgroundColor: theme.colors.primary}}
+                visible={paymentCollection.propertyfinalamount.length}>
+                {paymentCollection.propertyfinalamount.length}
+              </Badge>
             </TouchableOpacity>
             <Divider />
             <TouchableOpacity
               style={styles.cardItem}
               onPress={() => navToDetails('gst', paymentCollection.gst)}>
               <Text>GST Amount</Text>
+              <Badge
+                style={{backgroundColor: theme.colors.primary}}
+                visible={paymentCollection.gst.length}>
+                {paymentCollection.gst.length}
+              </Badge>
             </TouchableOpacity>
           </View>
         </View>
@@ -357,6 +382,9 @@ const styles = StyleSheet.create({
   cardItem: {
     paddingHorizontal: 10,
     paddingVertical: 15,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
   },
   statusContainer: {
     flexDirection: 'row',

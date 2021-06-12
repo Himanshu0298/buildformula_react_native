@@ -14,33 +14,55 @@ import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {ActionSheetProvider} from '@expo/react-native-action-sheet';
 import dayjs from 'dayjs';
 
-const RenderCollection = React.memo(props => {
-  const {collection = {}} = props;
-  const {user} = collection;
+const customParseFormat = require('dayjs/plugin/customParseFormat');
+dayjs.extend(customParseFormat);
+
+const RenderCollection = React.memo(({collection}) => {
+  const {
+    first_name,
+    last_name,
+    profile_pic,
+    message,
+    transaction_number,
+    log_time,
+  } = collection;
+
+  const name = `${first_name} ${last_name}`;
+  const initials = name
+    .match(/(\b\S)?/g)
+    .join('')
+    .match(/(^\S|\S$)?/g)
+    .join('')
+    .toUpperCase();
 
   return (
     <View style={styles.collectionContainer}>
-      {user?.profile_pic ? (
-        <Avatar.Image size={40} source={{uri: user.profile_pic}} />
+      {profile_pic ? (
+        <Avatar.Image size={40} source={{uri: profile_pic}} />
       ) : (
-        <Avatar.Text size={40} label="AP" />
+        <Avatar.Text size={40} label={initials} />
       )}
       <View style={styles.collectionDetails}>
-        <Text>Ashish Patel</Text>
+        <Text>{name}</Text>
         <Text>
-          Added <Caption> Added payment collection with transition no </Caption>
-          1271728506
+          {message}{' '}
+          {transaction_number ? (
+            <>
+              <Caption>with transition no </Caption>
+              <Text>{transaction_number}</Text>
+            </>
+          ) : null}
         </Text>
       </View>
       <View>
-        <Caption>10:40am</Caption>
+        <Caption>{dayjs(log_time).format('hh:mm a')}</Caption>
       </View>
     </View>
   );
 });
 
 function ActivityDialog(props) {
-  const {theme, open, data: activities = [], handleClose} = props;
+  const {theme, open, data: activities = {}, handleClose} = props;
 
   return (
     <Modal
@@ -72,17 +94,18 @@ function ActivityDialog(props) {
             </View>
           </View>
 
-          {activities.length ? (
+          {Object.keys(activities).length ? (
             <ScrollView
               showsVerticalScrollIndicator={false}
               contentContainerStyle={{flexGrow: 1}}>
               <View style={styles.contentContainer}>
-                {activities.map((activity, i) => {
-                  const {date, collections} = activity;
+                {Object.keys(activities).map((key, i) => {
+                  const collections = activities[key];
+
                   return (
                     <View key={i} style={styles.groupContainer}>
                       <Caption style={{fontSize: 16}}>
-                        {dayjs(date).format('DD MMM YYYY')}
+                        {dayjs(key, 'DD-MM-YYYY').format('DD MMM YYYY')}
                       </Caption>
                       <View style={styles.collectionsContainer}>
                         {collections.map((collection, index) => (

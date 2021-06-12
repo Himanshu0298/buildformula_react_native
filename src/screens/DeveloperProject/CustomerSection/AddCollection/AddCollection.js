@@ -13,21 +13,22 @@ import RenderInput from 'components/Atoms/RenderInput';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {useSelector} from 'react-redux';
 import RenderDatePicker from 'components/Atoms/RenderDatePicker';
 import Radio from 'components/Atoms/Radio';
 import RenderTextBox from 'components/Atoms/RenderTextbox';
+import useCustomerActions from 'redux/actions/customerActions';
+import dayjs from 'dayjs';
 
 const schema = Yup.object().shape({
   date: Yup.string('Invalid').required('Required'),
   bank_name: Yup.string('Invalid').when('type', (type, keySchema) =>
-    type !== 'document' ? keySchema.required('Required') : keySchema,
+    type !== 'documentcharges' ? keySchema.required('Required') : keySchema,
   ),
   bank_branch: Yup.string('Invalid').when('type', (type, keySchema) =>
-    type !== 'document' ? keySchema.required('Required') : keySchema,
+    type !== 'documentcharges' ? keySchema.required('Required') : keySchema,
   ),
-  cheque_no: Yup.string('Invalid').when('type', (type, keySchema) =>
-    type !== 'document' ? keySchema.required('Required') : keySchema,
+  transaction_number: Yup.string('Invalid').when('type', (type, keySchema) =>
+    type !== 'documentcharges' ? keySchema.required('Required') : keySchema,
   ),
   amount: Yup.number('Invalid').required('Required'),
 });
@@ -59,14 +60,14 @@ function RenderForm({formikProps, navigation, ...restProps}) {
           <View>
             <Radio
               label={'Document charges'}
-              value="document"
-              checked={values.type === 'document'}
+              value="documentcharges"
+              checked={values.type === 'documentcharges'}
               onChange={v => setFieldValue('type', v)}
             />
             <Radio
               label={'Property Final Amount'}
-              value="property"
-              checked={values.type === 'property'}
+              value="propertyfinalamount"
+              checked={values.type === 'propertyfinalamount'}
               onChange={v => setFieldValue('type', v)}
             />
             <Radio
@@ -83,10 +84,10 @@ function RenderForm({formikProps, navigation, ...restProps}) {
           ref={dateRef}
           containerStyles={styles.input}
           value={values.date}
-          onChangeText={v => setFieldValue('date', v)}
+          onChange={v => setFieldValue('date', v)}
           error={errors.date}
         />
-        {values.type !== 'document' ? (
+        {values.type !== 'documentcharges' ? (
           <>
             <RenderInput
               name="bank_name"
@@ -111,14 +112,14 @@ function RenderForm({formikProps, navigation, ...restProps}) {
               error={errors.bank_branch}
             />
             <RenderInput
-              name="cheque_no"
+              name="transaction_number"
               label={'Check no / Transaction no'}
               ref={transRef}
               containerStyles={styles.input}
-              value={values.cheque_no}
-              onChangeText={handleChange('cheque_no')}
-              onBlur={handleBlur('cheque_no')}
-              error={errors.cheque_no}
+              value={values.transaction_number}
+              onChangeText={handleChange('transaction_number')}
+              onBlur={handleBlur('transaction_number')}
+              error={errors.transaction_number}
             />
           </>
         ) : null}
@@ -128,14 +129,14 @@ function RenderForm({formikProps, navigation, ...restProps}) {
             <Radio
               label={'Credit'}
               value="credit"
-              checked={values.collection_type === 'credit'}
-              onChange={v => setFieldValue('collection_type', v)}
+              checked={values.transaction_type === 'credit'}
+              onChange={v => setFieldValue('transaction_type', v)}
             />
             <Radio
               label={'Debit'}
               value="debit"
-              checked={values.collection_type === 'debit'}
-              onChange={v => setFieldValue('collection_type', v)}
+              checked={values.transaction_type === 'debit'}
+              onChange={v => setFieldValue('transaction_type', v)}
             />
           </View>
         </View>
@@ -188,6 +189,8 @@ function AddCollection(props) {
   const {params} = route;
   const {unit, project_id} = params;
 
+  const {addCollection, getAccountDetails} = useCustomerActions();
+
   return (
     <View style={styles.container}>
       <KeyboardAwareScrollView
@@ -202,10 +205,23 @@ function AddCollection(props) {
         <Formik
           validateOnBlur={false}
           validateOnChange={false}
-          initialValues={{type: 'document', collection_type: 'credit'}}
+          initialValues={{type: 'documentcharges', transaction_type: 'credit'}}
           validationSchema={schema}
           onSubmit={async values => {
-            // TODO: Add collection
+            const {type, date, ...restData} = values;
+
+            const data = {
+              project_id,
+              unit_id: unit.unitId,
+              collectiontype: type,
+              transaction_date: dayjs(date).format('DD-MM-YYYY'),
+              ...restData,
+            };
+
+            addCollection(data).then(() => {
+              getAccountDetails({project_id, unit_id: unit.unitId});
+              navigation.goBack();
+            });
           }}>
           {formikProps => <RenderForm formikProps={formikProps} {...props} />}
         </Formik>

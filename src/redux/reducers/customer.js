@@ -12,6 +12,7 @@ import {
   GET_SELECTED_PROJECT,
   GET_ACCOUNT_DETAILS,
   UPDATE_BOOKING_STATUS,
+  ADD_COLLECTION,
 } from './../actions/actionTypes';
 
 const persistConfig = {
@@ -166,6 +167,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${UPDATE_BANK_FILES}_PENDING`:
     case `${ADD_MODIFY_REQUEST}_PENDING`:
     case `${UPDATE_BOOKING_STATUS}_PENDING`:
+    case `${ADD_COLLECTION}_PENDING`:
       return {
         ...state,
         loading: true,
@@ -174,6 +176,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${UPDATE_BANK_FILES}_FULFILLED`:
     case `${ADD_MODIFY_REQUEST}_FULFILLED`:
     case `${UPDATE_BOOKING_STATUS}_FULFILLED`:
+    case `${ADD_COLLECTION}_FULFILLED`:
       return {
         ...state,
         loading: false,
@@ -183,6 +186,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${UPDATE_BANK_FILES}_REJECTED`:
     case `${ADD_MODIFY_REQUEST}_REJECTED`:
     case `${UPDATE_BOOKING_STATUS}_REJECTED`:
+    case `${ADD_COLLECTION}_REJECTED`:
       return {
         ...state,
         loading: false,

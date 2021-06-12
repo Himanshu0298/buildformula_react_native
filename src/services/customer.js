@@ -60,5 +60,12 @@ export default function useCustomerServices() {
         config({multipart: false}),
       );
     },
+    addCollection: data => {
+      return instance.post(
+        '/customers/account_collection_add',
+        data,
+        config({multipart: false}),
+      );
+    },
   };
 }

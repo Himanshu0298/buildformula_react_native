@@ -33,27 +33,48 @@ function Item({label, value}) {
 
 const RenderCharge = React.memo(props => {
   const {charge, type} = props;
+  const {
+    bank_name,
+    branch_name,
+    transaction_number,
+    transaction_date,
+    transaction_type,
+    amount,
+    remark,
+  } = charge;
 
   return (
     <View style={styles.chargeContainer}>
-      <Item label="Date" value={dayjs().format('DD MMM YYYY')} />
+      <Item
+        label="Date"
+        value={dayjs(transaction_date).format('DD MMM YYYY')}
+      />
       {type !== 'document' ? (
         <>
-          <Item label="Bank name &  branch" value={'HDFC bank,Maninagar'} />
-          <Item label="Check no. /  Transection no." value={'006584'} />
+          <Item
+            label="Bank name &  branch"
+            value={`${bank_name}, ${branch_name}`}
+          />
+          <Item
+            label="Check no. /  Transection no."
+            value={transaction_number}
+          />
         </>
       ) : null}
       <View style={styles.itemRow}>
-        <Item label="Credit" value="₹ 10,00,00" />
-        <Item label="Debit" value="-" />
-        <Item label="Balance" value="₹ 10,00,00" />
+        <Item
+          label="Credit"
+          value={
+            transaction_type === 'credit' ? `₹ ${parseFloat(amount)}` : '-'
+          }
+        />
+        <Item
+          label="Debit"
+          value={transaction_type === 'debit' ? `₹ ${parseFloat(amount)}` : '-'}
+        />
+        <Item label="Balance" value={`₹ ${parseFloat(amount)}`} />
       </View>
-      <Item
-        label="Remark"
-        value={
-          'Please call me to discuss about the project in detail at 7:00 PM tommorow'
-        }
-      />
+      <Item label="Remark" value={remark} />
     </View>
   );
 });
@@ -63,7 +84,7 @@ function PaymentCollections(props) {
   const {type, data: charges = []} = route?.params || {};
 
   const amountCollected = React.useMemo(() => {
-    return charges.reduce((sum, i) => sum + i.amount, 0);
+    return charges.reduce((sum, i) => sum + parseFloat(i.amount), 0);
   }, [charges]);
 
   return (

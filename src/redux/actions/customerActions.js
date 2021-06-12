@@ -20,6 +20,7 @@ export default function useCustomerActions() {
     addModifyRequest,
     getAccountDetails,
     updateBookingStatus,
+    addCollection,
   } = useCustomerServices();
 
   return {
@@ -193,6 +194,22 @@ export default function useCustomerActions() {
         payload: async () => {
           try {
             const {data, msg} = _res(await updateBookingStatus(params));
+            snackbar.showMessage({message: msg});
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    addCollection: params =>
+      dispatch({
+        type: types.ADD_COLLECTION,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await addCollection(params));
             snackbar.showMessage({message: msg});
             return Promise.resolve(data);
           } catch (error) {
