@@ -40,12 +40,7 @@ const RenderCollection = React.memo(props => {
 });
 
 function ActivityDialog(props) {
-  const {theme, open, handleClose} = props;
-
-  const activities = [
-    {date: new Date(), collections: [{}, {}]},
-    {date: new Date(), collections: [{}, {}]},
-  ];
+  const {theme, open, data: activities = [], handleClose} = props;
 
   return (
     <Modal
@@ -77,35 +72,38 @@ function ActivityDialog(props) {
             </View>
           </View>
 
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={{flexGrow: 1}}>
-            <View style={styles.contentContainer}>
-              {activities.map((activity, i) => {
-                const {date, collections} = activity;
-                return (
-                  <View key={i} style={styles.groupContainer}>
-                    <Caption style={{fontSize: 16}}>
-                      {dayjs(date).format('DD MMM YYYY')}
-                    </Caption>
-                    <View style={styles.collectionsContainer}>
-                      {collections.map((collection, index) => (
-                        <>
-                          <RenderCollection
-                            key={index}
-                            collection={collection}
-                          />
-                          {index !== collections.length - 1 ? (
-                            <Divider />
-                          ) : null}
-                        </>
-                      ))}
+          {activities.length ? (
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={{flexGrow: 1}}>
+              <View style={styles.contentContainer}>
+                {activities.map((activity, i) => {
+                  const {date, collections} = activity;
+                  return (
+                    <View key={i} style={styles.groupContainer}>
+                      <Caption style={{fontSize: 16}}>
+                        {dayjs(date).format('DD MMM YYYY')}
+                      </Caption>
+                      <View style={styles.collectionsContainer}>
+                        {collections.map((collection, index) => (
+                          <React.Fragment key={index}>
+                            <RenderCollection collection={collection} />
+                            {index !== collections.length - 1 ? (
+                              <Divider />
+                            ) : null}
+                          </React.Fragment>
+                        ))}
+                      </View>
                     </View>
-                  </View>
-                );
-              })}
+                  );
+                })}
+              </View>
+            </ScrollView>
+          ) : (
+            <View style={styles.emptyContainer}>
+              <Text>No Activities found!</Text>
             </View>
-          </ScrollView>
+          )}
         </View>
       </ActionSheetProvider>
     </Modal>
@@ -144,6 +142,11 @@ const styles = StyleSheet.create({
   collectionDetails: {
     marginLeft: 10,
     flex: 1,
+  },
+  emptyContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 50,
   },
 });
 

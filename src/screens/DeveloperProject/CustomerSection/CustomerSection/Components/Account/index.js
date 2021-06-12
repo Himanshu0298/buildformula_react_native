@@ -4,7 +4,9 @@ import {
   Badge,
   Button,
   Caption,
+  Dialog,
   Divider,
+  Portal,
   Subheading,
   Text,
 } from 'react-native-paper';
@@ -12,22 +14,93 @@ import {BOOKING_STATUS_STYLES} from 'components/Molecules/UnitSelector/RenderUni
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ActivityDialog from './Components/ActivityDialog';
+import {useSelector} from 'react-redux';
+import useCustomerActions from 'redux/actions/customerActions';
+
+function StatusDialog(props) {
+  const {open, status, updateStatus, handleClose} = props;
+
+  const [selectedStatus, setSelectedStatus] = React.useState(status);
+
+  return (
+    <Portal>
+      <Dialog visible={open} onDismiss={handleClose}>
+        <Dialog.Content>
+          <View style={styles.statusContainer}>
+            <Button
+              mode={selectedStatus === 3 ? 'contained' : 'text'}
+              style={styles.statusBadge}
+              onPress={() => setSelectedStatus(3)}>
+              Stand By
+            </Button>
+            <Button
+              mode={selectedStatus === 4 ? 'contained' : 'text'}
+              style={styles.statusBadge}
+              onPress={() => setSelectedStatus(4)}>
+              Booked
+            </Button>
+          </View>
+          <Button
+            style={{marginTop: 15, marginHorizontal: 15}}
+            mode="contained"
+            onPress={() => updateStatus(selectedStatus)}>
+            Update
+          </Button>
+        </Dialog.Content>
+      </Dialog>
+    </Portal>
+  );
+}
 
 function Account(props) {
   const {route, theme, navigation} = props;
   const {project_id, unit} = route?.params || {};
 
+  const {updateBookingStatus, getAccountDetails} = useCustomerActions();
+
+  const {accountDetails} = useSelector(state => state.customer);
+  const {
+    paymentSchedule,
+    paymentCollection,
+    activityLog,
+    bookingCurrentStatus,
+  } = accountDetails;
+  const {documentCharges, propertyfinalamount, bankLoanDetail} =
+    paymentSchedule || {};
+
   const [activityDialog, setActivityDialog] = React.useState(false);
+  const [statusDialog, setStatusDialog] = React.useState(false);
 
-  const bookingStyle = BOOKING_STATUS_STYLES.standby || {};
+  const bookingStyle = BOOKING_STATUS_STYLES[bookingCurrentStatus] || {};
 
-  const toggleStatusDialog = () => {};
+  const {documentCollected, propertyCollected} = React.useMemo(() => {
+    const {documentcharges = [], propertyfinalamount: property = []} =
+      paymentCollection || {};
+    return {
+      documentCollected: documentcharges.reduce((sum, i) => sum + i.amount, 0),
+      propertyCollected: property.reduce((sum, i) => sum + i.amount, 0),
+    };
+  }, [paymentCollection]);
+
+  const toggleStatusDialog = () => setStatusDialog(v => !v);
   const toggleActivityDialog = () => setActivityDialog(v => !v);
 
-  const navToDetails = type =>
-    navigation.navigate('PaymentCollections', {type});
+  const updateStatus = status => {
+    updateBookingStatus({
+      project_id,
+      unit_id: unit.unitId,
+      booking_status: status,
+    }).then(() => {
+      toggleStatusDialog();
 
-  const navToAddCollection = type =>
+      getAccountDetails({project_id, unit_id: unit.unitId});
+    });
+  };
+
+  const navToDetails = (type, data) =>
+    navigation.navigate('PaymentCollections', {type, data});
+
+  const navToAddCollection = () =>
     navigation.navigate('AddCollection', {...route.params});
 
   return (
@@ -37,7 +110,16 @@ function Account(props) {
       <ActivityDialog
         open={activityDialog}
         handleClose={toggleActivityDialog}
+        data={activityLog}
       />
+      {statusDialog ? (
+        <StatusDialog
+          open={statusDialog}
+          status={bookingCurrentStatus}
+          handleClose={toggleStatusDialog}
+          updateStatus={updateStatus}
+        />
+      ) : null}
       <View style={styles.container}>
         <Subheading>Booking status</Subheading>
         <View style={styles.statusCard}>
@@ -83,7 +165,9 @@ function Account(props) {
                   backgroundColor: 'rgba(243, 122, 80, 0.1)',
                 },
               ]}>
-              <Subheading style={{fontWeight: 'bold'}}>₹ 10,00,000</Subheading>
+              <Subheading style={{fontWeight: 'bold'}}>
+                ₹ {parseFloat(documentCharges?.document_charge) || 0}
+              </Subheading>
               <Caption style={{fontSize: 16}}>Total amount</Caption>
             </View>
             <View
@@ -91,7 +175,9 @@ function Account(props) {
                 styles.section,
                 {backgroundColor: 'rgba(243, 122, 80, 0.1)'},
               ]}>
-              <Subheading style={{fontWeight: 'bold'}}>₹ 3,00,000</Subheading>
+              <Subheading style={{fontWeight: 'bold'}}>
+                ₹ {documentCollected}
+              </Subheading>
               <Caption style={{fontSize: 16}}>Amount collected</Caption>
             </View>
           </View>
@@ -106,11 +192,15 @@ function Account(props) {
                 styles.section,
                 {borderRightWidth: 1, borderColor: 'rgba(222, 225, 231, 1)'},
               ]}>
-              <Subheading style={{fontWeight: 'bold'}}>₹ 10,00,000</Subheading>
+              <Subheading style={{fontWeight: 'bold'}}>
+                ₹ {parseFloat(propertyfinalamount?.full_basic_amount) || 0}
+              </Subheading>
               <Caption style={{fontSize: 16}}>Total amount</Caption>
             </View>
             <View style={styles.section}>
-              <Subheading style={{fontWeight: 'bold'}}>₹ 3,00,000</Subheading>
+              <Subheading style={{fontWeight: 'bold'}}>
+                ₹ {propertyCollected}
+              </Subheading>
               <Caption style={{fontSize: 16}}>Amount collected</Caption>
             </View>
           </View>
@@ -141,7 +231,9 @@ function Account(props) {
           </Subheading>
 
           <View style={styles.cardItemsContainer}>
-            <TouchableOpacity style={styles.cardItem}>
+            <TouchableOpacity
+              disabled={bankLoanDetail?.takeLoan === 'no'}
+              style={styles.cardItem}>
               <Text>Bank loan details</Text>
             </TouchableOpacity>
             <Divider />
@@ -165,7 +257,9 @@ function Account(props) {
           <View style={styles.cardItemsContainer}>
             <TouchableOpacity
               style={styles.cardItem}
-              onPress={() => navToDetails('document')}>
+              onPress={() =>
+                navToDetails('document', paymentCollection.documentcharges)
+              }>
               <Text style={{color: theme.colors.documentation}}>
                 Documentation charges
               </Text>
@@ -173,13 +267,15 @@ function Account(props) {
             <Divider />
             <TouchableOpacity
               style={styles.cardItem}
-              onPress={() => navToDetails('property')}>
+              onPress={() =>
+                navToDetails('property', paymentCollection.propertyfinalamount)
+              }>
               <Text>Property Final Amount</Text>
             </TouchableOpacity>
             <Divider />
             <TouchableOpacity
               style={styles.cardItem}
-              onPress={() => navToDetails('gst')}>
+              onPress={() => navToDetails('gst', paymentCollection.gst)}>
               <Text>GST Amount</Text>
             </TouchableOpacity>
           </View>
@@ -261,6 +357,14 @@ const styles = StyleSheet.create({
   cardItem: {
     paddingHorizontal: 10,
     paddingVertical: 15,
+  },
+  statusContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+  },
+  statusBadge: {
+    width: '45%',
   },
 });
 

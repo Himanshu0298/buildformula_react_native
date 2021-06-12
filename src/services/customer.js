@@ -43,8 +43,22 @@ export default function useCustomerServices() {
         config({multipart: false}),
       );
     },
+    getAccountDetails: data => {
+      return instance.post(
+        '/customers/account_collection_listing',
+        data,
+        config({multipart: false}),
+      );
+    },
     addModifyRequest: data => {
       return instance.post('/modify/request/add', data, config());
+    },
+    updateBookingStatus: data => {
+      return instance.post(
+        '/customers/bookingstatus',
+        data,
+        config({multipart: false}),
+      );
     },
   };
 }

@@ -60,6 +60,7 @@ function CustomerSection(props) {
     getBookingDetails,
     getBankDetails,
     getModifyRequests,
+    getAccountDetails,
   } = useCustomerActions();
 
   const {user} = useSelector(state => state.user);
@@ -81,6 +82,7 @@ function CustomerSection(props) {
     getBookingDetails({project_id, unit_id: unit.unitId});
     getBankDetails({project_id, unit_id: unit.unitId});
     getModifyRequests({project_id});
+    getAccountDetails({project_id, unit_id: unit.unitId});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

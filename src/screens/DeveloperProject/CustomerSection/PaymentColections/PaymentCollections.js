@@ -10,6 +10,18 @@ import {Caption, Subheading, Text, withTheme} from 'react-native-paper';
 import backArrow from 'assets/images/back_arrow.png';
 import dayjs from 'dayjs';
 
+const TITLE = {
+  document: 'Documentation charges',
+  property: 'Property Final Amount',
+  gst: 'GST Amount',
+};
+
+const SUBTITLE = {
+  document: 'Total document amount collected',
+  property: 'Total property amount collected',
+  gst: 'Total GST amount collected',
+};
+
 function Item({label, value}) {
   return (
     <View style={styles.listItemContainer}>
@@ -48,9 +60,11 @@ const RenderCharge = React.memo(props => {
 
 function PaymentCollections(props) {
   const {navigation, theme, route} = props;
-  const {type} = route?.params || {};
+  const {type, data: charges = []} = route?.params || {};
 
-  const charges = [{}, {}];
+  const amountCollected = React.useMemo(() => {
+    return charges.reduce((sum, i) => sum + i.amount, 0);
+  }, [charges]);
 
   return (
     <ScrollView
@@ -65,14 +79,10 @@ function PaymentCollections(props) {
         </TouchableOpacity>
 
         <View style={styles.contentContainer}>
-          <Text style={{color: theme.colors.documentation}}>
-            Documentation charges
-          </Text>
-          <Caption style={{marginTop: 10}}>
-            Total document amount collected:
-          </Caption>
+          <Text style={{color: theme.colors.documentation}}>{TITLE[type]}</Text>
+          <Caption style={{marginTop: 10}}>{SUBTITLE[type]}:</Caption>
           <Caption style={{color: theme.colors.documentation}}>
-            ₹ 3,00,000
+            ₹ {amountCollected || 0}
           </Caption>
 
           {charges?.map((charge, i) => (

@@ -56,13 +56,13 @@ export default function SelectUnit(props) {
 
   const checkUnitDisability = unit => {
     let disabled =
-      (unit.booking_status && unit.booking_status !== 'filling') ||
-      (unit.booking_status === 'filling' &&
+      (unit.status && unit.status !== 2) ||
+      (unit.status === 2 &&
         unit.booked_unit_user_id &&
         unit.booked_unit_user_id !== user.id);
 
     if (
-      unit?.booking_status === 'filling' &&
+      unit?.status === 2 &&
       dayjs(unit.tmp_booking_time_end).isBefore(dayjs())
     ) {
       disabled = false;

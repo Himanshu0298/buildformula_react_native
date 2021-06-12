@@ -15,19 +15,19 @@ const UNIT_WIDTH = BODY_WIDTH / 5 - 2 * UNIT_MARGIN;
 
 const DEFAULT_UNIT_COLOR = '#5B6F7C';
 export const BOOKING_STATUS_STYLES = {
-  filling: {
+  2: {
     borderWidth: 3,
     borderColor: '#07CA03',
     badge: <MaterialCommunityIcons name="check" color="#fff" />,
     label: 'Filling',
   },
-  standby: {
+  3: {
     borderWidth: 3,
     borderColor: '#041D36',
     badge: <MaterialCommunityIcons name="minus" color="#fff" />,
     label: 'Stand by',
   },
-  booked: {
+  4: {
     borderWidth: 3,
     borderColor: '#FF5D5D',
     badge: <MaterialIcons name="check" color="#fff" />,
@@ -49,10 +49,10 @@ function RenderUnits({onSelectUnit, units, selectedFloor, isUnitDisabled}) {
         const unit = units[unitId];
         const unitBhk = BHK_OPTIONS.find(item => item.type === unit.bhk);
 
-        const bookingStyle = BOOKING_STATUS_STYLES[unit.booking_status] || {};
+        const bookingStyle = BOOKING_STATUS_STYLES[unit.status] || {};
         const disabled = checkDisabled(isUnitDisabled, unit);
 
-        if (unit?.booking_status === 'filling' && !disabled) {
+        if (unit?.status === 1 && !disabled) {
           // bookingStyle = {};
         }
 

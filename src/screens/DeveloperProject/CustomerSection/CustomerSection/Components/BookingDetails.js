@@ -164,9 +164,10 @@ function RatesSection({bookingDetails, bookingAreaUnitType, theme}) {
             <Subheading style={{color: theme.colors.primary}}>
               OTHER CHARGES
             </Subheading>
-            {otherChargePairs.map(pair => {
+            {otherChargePairs.map((pair, index) => {
               return (
                 <RenderRow
+                  key={index}
                   row={pair.map(({label, amount}) => ({
                     label,
                     value: `${amount} Rs.`,

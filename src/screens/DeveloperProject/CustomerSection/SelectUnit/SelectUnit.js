@@ -43,8 +43,8 @@ export default function SelectUnit(props) {
     return data;
   }, [floorId, towerId, towers, unitBookingStatus]);
 
-  const checkUnitDisability = ({booking_status: status}) => {
-    return !['standby', 'booked'].includes(status);
+  const checkUnitDisability = ({status}) => {
+    return ![3, 4].includes(status);
     // return false;
   };
 

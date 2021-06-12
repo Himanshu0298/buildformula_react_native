@@ -18,6 +18,8 @@ export default function useCustomerActions() {
     removeBankFile,
     getModifyRequests,
     addModifyRequest,
+    getAccountDetails,
+    updateBookingStatus,
   } = useCustomerServices();
 
   return {
@@ -160,6 +162,38 @@ export default function useCustomerActions() {
           try {
             const {data} = _res(await addModifyRequest(params));
 
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    getAccountDetails: params =>
+      dispatch({
+        type: types.GET_ACCOUNT_DETAILS,
+        payload: async () => {
+          try {
+            const {data} = _res(await getAccountDetails(params));
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    updateBookingStatus: params =>
+      dispatch({
+        type: types.UPDATE_BOOKING_STATUS,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await updateBookingStatus(params));
+            snackbar.showMessage({message: msg});
             return Promise.resolve(data);
           } catch (error) {
             const message = _err(error);
