@@ -17,6 +17,7 @@ function CustomerHome(props) {
     getBookingDetails,
     getBankDetails,
     getModifyRequests,
+    getAccountDetails,
   } = useCustomerActions();
 
   const {loading} = useSelector(state => state.project);
@@ -35,6 +36,7 @@ function CustomerHome(props) {
     getBookingDetails({project_id, unit_id});
     getBankDetails({project_id, unit_id});
     getModifyRequests({project_id});
+    getAccountDetails({project_id, unit_id});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project]);
 

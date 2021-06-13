@@ -9,6 +9,7 @@ import {
   Portal,
   Subheading,
   Text,
+  withTheme,
 } from 'react-native-paper';
 import {BOOKING_STATUS_STYLES} from 'components/Molecules/UnitSelector/RenderUnits';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
@@ -53,7 +54,7 @@ function StatusDialog(props) {
 }
 
 function Account(props) {
-  const {route, theme, navigation} = props;
+  const {route, theme, navigation, viewOnly} = props;
   const {project_id, unit} = route?.params || {};
 
   const {updateBookingStatus, getAccountDetails} = useCustomerActions();
@@ -139,18 +140,20 @@ function Account(props) {
             </Badge>
             <Text>{bookingStyle.label}</Text>
           </View>
-          <View>
-            <OpacityButton
-              opacity={0.1}
-              style={styles.editIcon}
-              onPress={toggleStatusDialog}>
-              <MaterialIcon
-                name="pencil"
-                color={theme.colors.primary}
-                size={18}
-              />
-            </OpacityButton>
-          </View>
+          {!viewOnly ? (
+            <View>
+              <OpacityButton
+                opacity={0.1}
+                style={styles.editIcon}
+                onPress={toggleStatusDialog}>
+                <MaterialIcon
+                  name="pencil"
+                  color={theme.colors.primary}
+                  size={18}
+                />
+              </OpacityButton>
+            </View>
+          ) : null}
         </View>
         <View style={styles.documentationContainer}>
           <Subheading style={{color: theme.colors.documentation}}>
@@ -217,14 +220,16 @@ function Account(props) {
         </View>
 
         <View style={styles.actionRow}>
-          <Button
-            mode="outlined"
-            style={[styles.actionButton, {borderColor: theme.colors.primary}]}
-            uppercase={false}
-            theme={{roundness: 7}}
-            onPress={navToAddCollection}>
-            Add collection
-          </Button>
+          {!viewOnly ? (
+            <Button
+              mode="outlined"
+              style={[styles.actionButton, {borderColor: theme.colors.primary}]}
+              uppercase={false}
+              theme={{roundness: 7}}
+              onPress={navToAddCollection}>
+              Add collection
+            </Button>
+          ) : null}
           <Button
             mode="outlined"
             style={[styles.actionButton, {borderColor: theme.colors.primary}]}
@@ -396,4 +401,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Account;
+export default withTheme(Account);

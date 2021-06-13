@@ -37,6 +37,7 @@ import SearchScreen from '../screens/Search';
 import CustomerHome from 'screens/CustomerProject/Ownership';
 import CustomerBooking from 'screens/CustomerProject/CustomerBookingDetails';
 import CustomerBankLoan from 'screens/CustomerProject/CustomerBankLoan';
+import CustomerAccount from 'screens/CustomerProject/CustomerAccount';
 
 /************* Customer Project Sub Screens End   *************/
 
@@ -358,6 +359,7 @@ function CustomerDashboard() {
       <Drawer.Screen name="Ownership" component={CustomerHome} />
       <Drawer.Screen name="BookingDetails" component={CustomerBooking} />
       <Drawer.Screen name="LoanDetails" component={CustomerBankLoan} />
+      <Drawer.Screen name="CustomerAccount" component={CustomerAccount} />
       <Drawer.Screen name="AddCustomer" component={AddCustomer} />
       <Drawer.Screen name="CustomerDetails" component={CustomerDetails} />
       <Drawer.Screen name="AddModifyRequest" component={AddModifyRequest} />
