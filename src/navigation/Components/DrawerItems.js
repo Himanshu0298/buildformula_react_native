@@ -164,6 +164,20 @@ export const CUSTOMER_DRAWER_ITEMS = [
           <MaterialIcons name={'recent-actors'} {...{color, size}} />
         ),
       },
+      {
+        route: 'ModifyRequest',
+        label: 'Modify Request',
+        icon: ({color, size}) => (
+          <MaterialIcons name={'recent-actors'} {...{color, size}} />
+        ),
+      },
+      {
+        route: 'CustomerFiles',
+        label: 'Files',
+        icon: ({color, size}) => (
+          <MaterialIcons name={'recent-actors'} {...{color, size}} />
+        ),
+      },
     ],
   },
 ];
