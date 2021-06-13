@@ -112,6 +112,9 @@ export function getFloorNumber(i) {
 }
 
 export const getUnitLabel = (floor, unit) => {
+  if (unit.length === 3) {
+    return unit;
+  }
   return `${floor}${unit.toString().padStart(2, '0')}`;
 };
 

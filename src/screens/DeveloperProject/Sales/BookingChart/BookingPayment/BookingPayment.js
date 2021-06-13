@@ -48,11 +48,11 @@ const schema = Yup.object().shape({
     is: 1,
     then: Yup.string('Invalid').required('Required'),
   }),
-  other_charges_date: Yup.string('Invalid').when(
-    'other_charges',
-    (other_charges, keySchema) =>
-      other_charges.length > 0 ? keySchema.required('Required') : keySchema,
-  ),
+  // other_charges_date: Yup.string('Invalid').when(
+  //   'other_charges',
+  //   (other_charges, keySchema) =>
+  //     other_charges.length > 0 ? keySchema.required('Required') : keySchema,
+  // ),
   installment_count: Yup.number('Invalid').when('payment_type', {
     is: 3,
     then: Yup.number('Invalid').required('Required'),
@@ -90,14 +90,14 @@ const schema = Yup.object().shape({
     then: Yup.number('Invalid').required('Required'),
   }),
   document_start_date: Yup.string('Invalid').when(
-    'documentCharge',
-    (documentCharge, keySchema) =>
-      documentCharge ? keySchema.required('Required') : keySchema,
+    'isDocumentCharge',
+    (isDocumentCharge, keySchema) =>
+      isDocumentCharge ? keySchema.required('Required') : keySchema,
   ),
   document_end_date: Yup.string('Invalid').when(
-    'documentCharge',
-    (documentCharge, keySchema) =>
-      documentCharge ? keySchema.required('Required') : keySchema,
+    'isDocumentCharge',
+    (isDocumentCharge, keySchema) =>
+      isDocumentCharge ? keySchema.required('Required') : keySchema,
   ),
 });
 
@@ -106,7 +106,7 @@ export function RenderInstallments(props) {
     installment_count,
     installment_start_date,
     installment_interval_days,
-    area_amount,
+    finalAmount,
     big_installment_amount,
   } = props;
 
@@ -124,7 +124,7 @@ export function RenderInstallments(props) {
             'days',
           ),
           amount: round(
-            (area_amount - (big_installment_amount || 0)) / installment_count,
+            (finalAmount - (big_installment_amount || 0)) / installment_count,
           ),
         }));
     }
@@ -134,7 +134,7 @@ export function RenderInstallments(props) {
     installment_count,
     installment_start_date,
     installment_interval_days,
-    area_amount,
+    finalAmount,
     big_installment_amount,
   ]);
 
@@ -188,7 +188,7 @@ function RenderOneBigInstallmentPaymentForm(props) {
     percent = parseFloat(percent);
     percent = round(percent > 100 ? 100 : percent);
 
-    const amount = round(values.area_amount * (percent / 100));
+    const amount = round(values.finalAmount * (percent / 100));
 
     setFieldValue('first_big_amount_percent', percent);
     setFieldValue('first_big_amount', amount);
@@ -196,9 +196,9 @@ function RenderOneBigInstallmentPaymentForm(props) {
 
   const handleAmountChange = amount => {
     amount = parseFloat(amount);
-    amount = round(amount > values.area_amount ? values.area_amount : amount);
+    amount = round(amount > values.finalAmount ? values.finalAmount : amount);
 
-    const percent = round((amount / values.area_amount) * 100);
+    const percent = round((amount / values.finalAmount) * 100);
 
     setFieldValue('first_big_amount_percent', percent);
     setFieldValue('first_big_amount', amount);
@@ -370,7 +370,7 @@ function RenderCustomPaymentForm(props) {
     const remainingPercent = 100 - addedPercent;
     percent = percent > remainingPercent ? remainingPercent : percent;
 
-    const amount = values.area_amount * (percent / 100);
+    const amount = values.finalAmount * (percent / 100);
 
     setAmountData(index, {percent: round(percent), amount: round(amount)});
   };
@@ -384,10 +384,10 @@ function RenderCustomPaymentForm(props) {
       0,
     );
 
-    const remainingAmount = values.area_amount - addedAmount;
+    const remainingAmount = values.finalAmount - addedAmount;
     amount = amount > remainingAmount ? remainingAmount : amount;
 
-    const percent = round((amount / values.area_amount) * 100);
+    const percent = round((amount / values.finalAmount) * 100);
 
     setAmountData(index, {percent: round(percent), amount: round(amount)});
   };
@@ -570,14 +570,14 @@ function RenderPaymentForm(props) {
 
   return (
     <View style={{marginTop: 10}}>
-      {values.documentCharge ? (
+      {values.isDocumentCharge ? (
         <RenderDocumentChargesPayment {...props} />
       ) : null}
       <RenderInput
         label={t('label_final_amount')}
-        value={values.area_amount}
+        value={values.finalAmount}
         editable={false}
-        error={errors.basic_amount}
+        error={errors.finalAmount}
         left={<TextInput.Affix text="₹" />}
       />
       {values.payment_type === 1 ? (
@@ -615,7 +615,7 @@ function RenderPaymentForm(props) {
         <RenderOneBigInstallmentPaymentForm {...props} />
       ) : null}
 
-      {values.other_charges_amount ? (
+      {/* {values.other_charges_amount ? (
         <>
           <Caption
             style={[styles.otherChargesLabel, {color: theme.colors.primary}]}>
@@ -648,7 +648,7 @@ function RenderPaymentForm(props) {
             </View>
           </View>
         </>
-      ) : null}
+      ) : null} */}
 
       <Caption
         style={[styles.otherChargesLabel, {color: theme.colors.primary}]}>
@@ -807,15 +807,15 @@ function BookingPayments(props) {
   }, []);
 
   const initialValues = useMemo(() => {
-    const documentCharge = Number(
-      `${params.document_start}.${params.document_end}`,
-    );
+    const documentCharge = `${params.document_start}.${params.document_end}`;
+    const isDocumentCharge = Number(documentCharge);
 
     return {
       payment_type: 1,
       custom_payments: [{}],
       loan: 'no',
       documentCharge,
+      isDocumentCharge,
       ...params,
     };
   }, [params]);
@@ -865,7 +865,7 @@ function BookingPayments(props) {
           delete data.custom_payments;
         }
 
-        if (data.documentCharge) {
+        if (data.isDocumentCharge) {
           data.basic_amount_document_charge_start = data.document_start;
           data.basic_amount_document_charge_end = data.document_end;
 
@@ -898,10 +898,12 @@ function BookingPayments(props) {
         delete data.loan;
         delete data.broker;
         delete data.documentCharge;
+        delete data.isDocumentCharge;
         delete data.document_start;
         delete data.document_end;
         delete data.document_start_date;
         delete data.document_end_date;
+        delete data.finalAmount;
 
         createBooking(data).then(() => navigation.popToTop());
       }}>

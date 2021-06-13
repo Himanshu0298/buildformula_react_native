@@ -360,8 +360,10 @@ function FormContent(props) {
     );
   }, [values.other_charges_amount, values.area_amount]);
 
-  const finalAmount = useMemo(() => {
-    return totalAmount - parseInt(values.discount_amount || 0, 10);
+  useEffect(() => {
+    const finalAmount = totalAmount - parseInt(values.discount_amount || 0, 10);
+    setFieldValue('finalAmount', finalAmount);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [totalAmount, values.discount_amount]);
 
   const handleCancel = () => navigation.goBack();
@@ -477,7 +479,7 @@ function FormContent(props) {
             <Text>Property Final amount</Text>
             <RenderInput
               disabled={true}
-              value={finalAmount || 0}
+              value={values.finalAmount || 0}
               containerStyles={{width: '50%'}}
               placeholder={'Final amount'}
               left={<TextInput.Affix text="₹" />}
