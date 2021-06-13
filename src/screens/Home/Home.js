@@ -151,7 +151,7 @@ function Home(props) {
       }
       if (tabs[selectedTab] === 'Customer') {
         navigation.navigate('CustomerDashboard', {
-          screen: 'CustomerHome',
+          screen: 'Ownership',
           params: {project},
         });
       }

@@ -137,8 +137,22 @@ export const CUSTOMER_DRAWER_ITEMS = [
     title: 'CUSTOMER SECTION',
     routes: [
       {
-        route: 'CustomerSection',
-        label: 'Customer Section',
+        route: 'Ownership',
+        label: 'Ownership',
+        icon: ({color, size}) => (
+          <MaterialIcons name={'recent-actors'} {...{color, size}} />
+        ),
+      },
+      {
+        route: 'BookingDetails',
+        label: 'Booking Details',
+        icon: ({color, size}) => (
+          <MaterialIcons name={'recent-actors'} {...{color, size}} />
+        ),
+      },
+      {
+        route: 'LoanDetails',
+        label: 'Bank Loan',
         icon: ({color, size}) => (
           <MaterialIcons name={'recent-actors'} {...{color, size}} />
         ),

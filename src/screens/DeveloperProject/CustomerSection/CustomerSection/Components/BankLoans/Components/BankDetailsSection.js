@@ -8,7 +8,7 @@ function RenderDetail({label, value}) {
   return (
     <View style={styles.detailContainer}>
       <Text>{label}:</Text>
-      <Caption>{value}</Caption>
+      <Caption>{value || 'NA'}</Caption>
     </View>
   );
 }
@@ -17,16 +17,26 @@ function BankDetailsSection(props) {
   const {bankDetails = {}, navigation, route} = props;
   const {project_id, unit} = route?.params || {};
 
-  const {bank_name, bank_branch, bank_address} = bankDetails.details || {};
+  const {bank_name, bank_branch, bank_address} = bankDetails?.details || {};
+
+  const detailsAvailable = Object.keys(bankDetails?.details || {}).length > 0;
 
   return (
     <View style={styles.container}>
-      <RenderDetail label="Bank name" value={bank_name} />
-      <RenderDetail label="Bank Branch" value={bank_branch} />
-      <RenderDetail label="Bank Address" value={bank_address} />
-      <RenderDetail label="Loan approval letter" />
-      <RenderDetail label="Loan amount" />
-      <RenderDetail label="Installment amount" />
+      {detailsAvailable ? (
+        <>
+          <RenderDetail label="Bank name" value={bank_name} />
+          <RenderDetail label="Bank Branch" value={bank_branch} />
+          <RenderDetail label="Bank Address" value={bank_address} />
+          <RenderDetail label="Loan approval letter" />
+          <RenderDetail label="Loan amount" />
+          <RenderDetail label="Installment amount" />
+        </>
+      ) : (
+        <View style={styles.emptyContainer}>
+          <Text>No Bank Details added yet</Text>
+        </View>
+      )}
       <View style={styles.buttonContainer}>
         <OpacityButton
           opacity={0.2}
@@ -36,7 +46,9 @@ function BankDetailsSection(props) {
             navigation.navigate('AddBankDetails', {...route?.params})
           }>
           <IconButton icon="pencil" size={18} color={theme.colors.primary} />
-          <Text style={{color: theme.colors.primary}}>{'Modify Details'}</Text>
+          <Text style={{color: theme.colors.primary}}>
+            {detailsAvailable ? 'Modify Details' : 'Add Details'}
+          </Text>
         </OpacityButton>
       </View>
     </View>
@@ -58,6 +70,12 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingRight: 20,
     padding: 0,
+  },
+  emptyContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 20,
+    marginBottom: 40,
   },
 });
 
