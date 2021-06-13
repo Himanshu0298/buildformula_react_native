@@ -74,6 +74,7 @@ import Lineup from '../screens/DeveloperProject/ProjectManagement/Lineup';
 import Phases from 'screens/DeveloperProject/ProjectManagement/Planning/Phases';
 import SubPhases from 'screens/DeveloperProject/ProjectManagement/Planning/SubPhases';
 import SubPhaseActivity from 'screens/DeveloperProject/ProjectManagement/Planning/SubPhaseActivity';
+import PlanningDetails from 'screens/DeveloperProject/ProjectManagement/Planning/PlanningDetails';
 import ProjectSchedule from '../screens/DeveloperProject/ProjectManagement/ProjectSchedule';
 import MainPhase from '../screens/DeveloperProject/ProjectManagement/MainPhase';
 import ProcessChart from '../screens/DeveloperProject/ProjectManagement/ProcessChart/ProcessChart';
@@ -265,7 +266,7 @@ function CustomerSectionStack() {
 
 function PlanningStack() {
   return (
-    <Stack.Navigator initialRouteName={'Phases'}>
+    <Stack.Navigator initialRouteName={'PlanningDetails'}>
       <Stack.Screen
         name="Phases"
         component={Phases}
@@ -279,6 +280,11 @@ function PlanningStack() {
       <Stack.Screen
         name="SubPhaseActivity"
         component={SubPhaseActivity}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="PlanningDetails"
+        component={PlanningDetails}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

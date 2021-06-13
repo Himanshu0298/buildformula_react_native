@@ -10,6 +10,7 @@ import {
   Menu,
   Subheading,
   Text,
+  Title,
   TouchableRipple,
 } from 'react-native-paper';
 import {theme} from 'styles/theme';
@@ -187,7 +188,7 @@ export default function Phases(props) {
       <View style={styles.headingContainer}>
         <Subheading>Project planning</Subheading>
         <View style={styles.phasesHeadingContainer}>
-          <Subheading style={{fontSize: 15, marginTop: 10}}>Phases</Subheading>
+          <Title style={{marginTop: 10}}>Phases</Title>
           {sortable ? (
             <View style={styles.row}>
               <OpacityButton

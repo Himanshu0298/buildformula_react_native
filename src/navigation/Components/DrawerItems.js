@@ -38,53 +38,49 @@ export const DEVELOPER_DRAWER_ITEMS = [
       },
     ],
   },
-  // {
-  //   title: 'PROJECT MANAGEMENT',
-  //   routes: [
-  //     {
-  //       route: 'Lineup',
-  //       label: 'Lineup',
-  //       activeIcon: ({color, size}) => (
-  //         <Image
-  //           source={AssignTaskActive}
-  //           style={{height: size, width: size}}
-  //         />
-  //       ),
-  //       inactiveIcon: ({color, size}) => (
-  //         <Image source={AssignTask} style={{height: size, width: size}} />
-  //       ),
-  //     },
-  //     {
-  //       route: 'Planning',
-  //       label: 'Planning',
-  //       icon: 'calendar-clock',
-  //     },
-  //     {
-  //       route: 'ProjectSchedule',
-  //       label: 'Project Schedule',
-  //       icon: 'calendar-month-outline',
-  //     },
-  //     {
-  //       route: 'MainPhase',
-  //       label: 'Main Phase',
-  //       icon: 'clock-outline',
-  //     },
+  {
+    title: 'PROJECT MANAGEMENT',
+    routes: [
+      {
+        route: 'Lineup',
+        label: 'Lineup',
+        icon: ({color, size}) => (
+          <MaterialIcons name={'house-siding'} {...{color, size}} />
+        ),
+      },
+      {
+        route: 'Planning',
+        label: 'Planning',
+        icon: ({color, size}) => (
+          <MaterialIcons name={'toc'} {...{color, size}} />
+        ),
+      },
+      {
+        route: 'Execution',
+        label: 'Execution',
+        icon: 'format-list-checks',
+      },
+      // {
+      //   route: 'MainPhase',
+      //   label: 'Main Phase',
+      //   icon: 'clock-outline',
+      // },
 
-  //     {
-  //       route: 'ProcessChart',
-  //       label: 'Process Chart',
-  //       activeIcon: ({color, size}) => (
-  //         <Image
-  //           source={ProcessIconActive}
-  //           style={{height: size, width: size}}
-  //         />
-  //       ),
-  //       inactiveIcon: ({color, size}) => (
-  //         <Image source={ProcessIcon} style={{height: size, width: size}} />
-  //       ),
-  //     },
-  //   ],
-  // },
+      //     {
+      //       route: 'ProcessChart',
+      //       label: 'Process Chart',
+      //       activeIcon: ({color, size}) => (
+      //         <Image
+      //           source={ProcessIconActive}
+      //           style={{height: size, width: size}}
+      //         />
+      //       ),
+      //       inactiveIcon: ({color, size}) => (
+      //         <Image source={ProcessIcon} style={{height: size, width: size}} />
+      //       ),
+      //     },
+    ],
+  },
   // {
   //   title: 'MATERIAL MANAGEMENT',
   //   routes: [

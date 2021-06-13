@@ -8,12 +8,15 @@ import {
   Menu,
   Subheading,
   Text,
+  Title,
+  withTheme,
 } from 'react-native-paper';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const PHASES = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
 
 function RenderPhase(props) {
-  const {item, index, menuIndex, toggleMenu, navToActivity} = props;
+  const {theme, item, index, menuIndex, toggleMenu, navToActivity} = props;
 
   return (
     <TouchableOpacity
@@ -22,31 +25,42 @@ function RenderPhase(props) {
       <View style={styles.detailsTop}>
         <View style={styles.rowBetween}>
           <Text style={{fontSize: 15}}>Sub Phase Title</Text>
-          <Menu
-            visible={index === menuIndex}
-            contentStyle={{borderRadius: 10}}
-            onDismiss={toggleMenu}
-            anchor={
-              <IconButton
-                icon="dots-vertical"
-                size={18}
-                onPress={() => toggleMenu(index)}
+
+          <View style={styles.row}>
+            <MaterialCommunityIcons
+              name="bell"
+              size={16}
+              color={theme.colors.red}
+            />
+            <Caption style={{marginLeft: 3, color: theme.colors.red}}>
+              2
+            </Caption>
+            <Menu
+              visible={index === menuIndex}
+              contentStyle={{borderRadius: 10}}
+              onDismiss={toggleMenu}
+              anchor={
+                <IconButton
+                  icon="dots-vertical"
+                  size={18}
+                  onPress={() => toggleMenu(index)}
+                />
+              }>
+              <Menu.Item
+                style={styles.menuItem}
+                icon="pencil"
+                onPress={() => {}}
+                title="Rename"
               />
-            }>
-            <Menu.Item
-              style={styles.menuItem}
-              icon="pencil"
-              onPress={() => {}}
-              title="Rename"
-            />
-            <Divider />
-            <Menu.Item
-              style={styles.menuItem}
-              icon="delete"
-              onPress={() => {}}
-              title="Delete"
-            />
-          </Menu>
+              <Divider />
+              <Menu.Item
+                style={styles.menuItem}
+                icon="delete"
+                onPress={() => {}}
+                title="Delete"
+              />
+            </Menu>
+          </View>
         </View>
         <View style={styles.details}>
           <Caption>
@@ -58,7 +72,7 @@ function RenderPhase(props) {
   );
 }
 
-export default function SubPhases(props) {
+function SubPhases(props) {
   const {route, navigation} = props;
   const {phase} = route?.params || {};
 
@@ -81,9 +95,7 @@ export default function SubPhases(props) {
       <View style={styles.headingContainer}>
         <Subheading>{phase}</Subheading>
         <View style={styles.phasesHeadingContainer}>
-          <Subheading style={{fontSize: 15, marginTop: 10}}>
-            Subphases
-          </Subheading>
+          <Title style={{fontSize: 15, marginTop: 10}}>Subphases</Title>
         </View>
       </View>
       <FlatList
@@ -141,4 +153,10 @@ const styles = StyleSheet.create({
   menuItem: {
     height: 35,
   },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
 });
+
+export default withTheme(SubPhases);

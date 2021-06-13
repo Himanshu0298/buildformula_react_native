@@ -24,7 +24,8 @@ const DrawerItem = React.memo(props => {
     ...restProps
   } = props;
 
-  const active = [routeData.currenRoute, routeData.parentRoute].includes(route);
+  const {currentRoute, parentRoute} = routeData;
+  const active = [currentRoute, parentRoute].includes(route);
 
   let drawerIcon;
   if (typeof icon === 'string') {

@@ -9,21 +9,18 @@ import {
   Menu,
   Subheading,
   Text,
+  Title,
+  withTheme,
 } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {theme} from 'styles/theme';
 
 const PHASES = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
 
 function RenderPhase(props) {
-  const {item, index, menuIndex, toggleMenu, navigation} = props;
-
-  const navToSubPhases = () => {
-    navigation.navigate('PhaseActivities');
-  };
+  const {theme, item, index, menuIndex, toggleMenu, navToPlanning} = props;
 
   return (
-    <TouchableOpacity onPress={navToSubPhases} style={styles.detailsContainer}>
+    <TouchableOpacity onPress={navToPlanning} style={styles.detailsContainer}>
       <View style={styles.detailsTop}>
         <View style={styles.rowBetween}>
           <View style={styles.row}>
@@ -72,7 +69,7 @@ function RenderPhase(props) {
             </Menu>
           </View>
         </View>
-        <View style={styles.row}>
+        <View style={styles.dateRow}>
           <MaterialCommunityIcons
             name="calendar-blank"
             size={16}
@@ -84,6 +81,14 @@ function RenderPhase(props) {
           </Caption>
         </View>
         <View style={styles.chipContainer}>
+          <View style={styles.textIcon}>
+            <MaterialCommunityIcons
+              name="text-subject"
+              size={16}
+              color={'#A2AAB1'}
+              style={{marginRight: 5}}
+            />
+          </View>
           <View style={styles.chip}>
             <MaterialCommunityIcons
               name="clipboard-account"
@@ -94,12 +99,6 @@ function RenderPhase(props) {
             <Caption>3</Caption>
           </View>
           <View style={styles.chip}>
-            <MaterialCommunityIcons
-              name="text-subject"
-              size={16}
-              color={'#A2AAB1'}
-              style={{marginRight: 5}}
-            />
             <MaterialCommunityIcons
               name="checkbox-marked"
               size={16}
@@ -132,19 +131,21 @@ function RenderPhase(props) {
   );
 }
 
-export default function SubPhasesActivity(props) {
+function SubPhasesActivity(props) {
   const {route, navigation} = props;
   const {phase, subPhase} = route?.params || {};
 
   const [menuIndex, setMenuIndex] = React.useState(false);
   const [showDialog, setShowDialog] = React.useState(false);
 
-  const toggleMenu = v => setMenuIndex(v);
-  const toggleDialog = () => setShowDialog(v => !v);
-
   const sortedPhases = useMemo(() => {
     return PHASES;
   }, []);
+
+  const toggleMenu = v => setMenuIndex(v);
+  const toggleDialog = () => setShowDialog(v => !v);
+
+  const navToPlanning = () => navigation.navigate('PlanningDetails');
 
   return (
     <View style={styles.container}>
@@ -156,15 +157,9 @@ export default function SubPhasesActivity(props) {
               size={18}
               style={{marginRight: 10}}
             />
-            <Subheading>{phase}</Subheading>
+            <Title>{subPhase}</Title>
           </View>
         </TouchableOpacity>
-
-        <View style={styles.phasesHeadingContainer}>
-          <Subheading style={{fontSize: 15, marginTop: 10}}>
-            {subPhase}
-          </Subheading>
-        </View>
       </View>
       <FlatList
         showsVerticalScrollIndicator={false}
@@ -177,6 +172,7 @@ export default function SubPhasesActivity(props) {
             item={item}
             index={index}
             menuIndex={menuIndex}
+            navToPlanning={navToPlanning}
             toggleMenu={toggleMenu}
           />
         )}
@@ -216,6 +212,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  dateRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 5,
+  },
   menuItem: {
     height: 35,
   },
@@ -231,8 +232,22 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     paddingVertical: 2,
     flex: 1,
-    marginHorizontal: 8,
+    marginHorizontal: 6,
     flexDirection: 'row',
     alignItems: 'center',
   },
+  textIcon: {
+    backgroundColor: '#fff',
+    borderRadius: 4,
+    padding: 5,
+    paddingHorizontal: 2,
+    flex: 0.5,
+    marginLeft: 8,
+    marginRight: 4,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });
+
+export default withTheme(SubPhasesActivity);
