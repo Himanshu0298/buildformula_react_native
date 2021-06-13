@@ -5,7 +5,6 @@ import TowerIcon from 'components/Atoms/TowerIcon';
 import {useTranslation} from 'react-i18next';
 import {FlatList, StyleSheet, View, ScrollView} from 'react-native';
 import {Subheading} from 'react-native-paper';
-import {secondaryTheme} from 'styles/theme';
 import PropTypes from 'prop-types';
 
 function TowersList({onPress, towers, selectedTower}) {
@@ -30,23 +29,22 @@ function TowersList({onPress, towers, selectedTower}) {
   );
 }
 
-function FloorSelector({
-  title,
-  subtitle,
-  selectButtonLabel,
-  towers,
-  towerCount,
-  onSelectFloor,
-}) {
+function FloorSelector(props) {
+  const {
+    title,
+    subtitle,
+    selectButtonLabel,
+    towers,
+    towerCount,
+    onSelectFloor,
+  } = props;
+
   const {t} = useTranslation();
 
   const [selectedTower, setSelectedTower] = React.useState();
 
   const floors = useMemo(() => {
-    if (selectedTower) {
-      return towers[selectedTower].floors;
-    }
-    return {};
+    return towers?.[selectedTower]?.floors || {};
   }, [selectedTower, towers]);
 
   return (

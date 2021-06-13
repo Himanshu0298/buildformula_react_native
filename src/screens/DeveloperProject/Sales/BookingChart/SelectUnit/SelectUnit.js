@@ -55,16 +55,12 @@ export default function SelectUnit(props) {
   };
 
   const checkUnitDisability = unit => {
+    const {status, booked_unit_user_id, tmp_booking_time_end} = unit;
     let disabled =
-      (unit.status && unit.status !== 2) ||
-      (unit.status === 2 &&
-        unit.booked_unit_user_id &&
-        unit.booked_unit_user_id !== user.id);
+      [3, 4].includes(status) ||
+      (status === 2 && booked_unit_user_id && booked_unit_user_id !== user.id);
 
-    if (
-      unit?.status === 2 &&
-      dayjs(unit.tmp_booking_time_end).isBefore(dayjs())
-    ) {
+    if (status === 2 && dayjs(tmp_booking_time_end).isBefore(dayjs())) {
       disabled = false;
     }
     return disabled;
