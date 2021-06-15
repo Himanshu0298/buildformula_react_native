@@ -13,6 +13,7 @@ import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {ActionSheetProvider} from '@expo/react-native-action-sheet';
 import dayjs from 'dayjs';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const customParseFormat = require('dayjs/plugin/customParseFormat');
 dayjs.extend(customParseFormat);
@@ -73,60 +74,62 @@ function ActivityDialog(props) {
       style={{justifyContent: 'flex-end', margin: 0}}>
       <ActionSheetProvider>
         <View style={styles.container}>
-          <View style={styles.headerContainer}>
-            <View style={styles.titleContainer}>
-              <Subheading style={{color: theme.colors.primary}}>
-                Account activity
-              </Subheading>
-            </View>
-            <View style={styles.actionContainer}>
-              <OpacityButton
-                opacity={0.1}
-                color={theme.colors.error}
-                style={{borderRadius: 50}}
-                onPress={handleClose}>
-                <MaterialIcon
-                  name="close"
-                  color={theme.colors.error}
-                  size={18}
-                />
-              </OpacityButton>
-            </View>
-          </View>
-
-          {Object.keys(activities).length ? (
-            <ScrollView
-              showsVerticalScrollIndicator={false}
-              contentContainerStyle={{flexGrow: 1}}>
-              <View style={styles.contentContainer}>
-                {Object.keys(activities).map((key, i) => {
-                  const collections = activities[key];
-
-                  return (
-                    <View key={i} style={styles.groupContainer}>
-                      <Caption style={{fontSize: 16}}>
-                        {dayjs(key, 'DD-MM-YYYY').format('DD MMM YYYY')}
-                      </Caption>
-                      <View style={styles.collectionsContainer}>
-                        {collections.map((collection, index) => (
-                          <React.Fragment key={index}>
-                            <RenderCollection collection={collection} />
-                            {index !== collections.length - 1 ? (
-                              <Divider />
-                            ) : null}
-                          </React.Fragment>
-                        ))}
-                      </View>
-                    </View>
-                  );
-                })}
+          <SafeAreaView>
+            <View style={styles.headerContainer}>
+              <View style={styles.titleContainer}>
+                <Subheading style={{color: theme.colors.primary}}>
+                  Account activity
+                </Subheading>
               </View>
-            </ScrollView>
-          ) : (
-            <View style={styles.emptyContainer}>
-              <Text>No Activities found!</Text>
+              <View style={styles.actionContainer}>
+                <OpacityButton
+                  opacity={0.1}
+                  color={theme.colors.error}
+                  style={{borderRadius: 50}}
+                  onPress={handleClose}>
+                  <MaterialIcon
+                    name="close"
+                    color={theme.colors.error}
+                    size={18}
+                  />
+                </OpacityButton>
+              </View>
             </View>
-          )}
+
+            {Object.keys(activities).length ? (
+              <ScrollView
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{flexGrow: 1}}>
+                <View style={styles.contentContainer}>
+                  {Object.keys(activities).map((key, i) => {
+                    const collections = activities[key];
+
+                    return (
+                      <View key={i} style={styles.groupContainer}>
+                        <Caption style={{fontSize: 16}}>
+                          {dayjs(key, 'DD-MM-YYYY').format('DD MMM YYYY')}
+                        </Caption>
+                        <View style={styles.collectionsContainer}>
+                          {collections.map((collection, index) => (
+                            <React.Fragment key={index}>
+                              <RenderCollection collection={collection} />
+                              {index !== collections.length - 1 ? (
+                                <Divider />
+                              ) : null}
+                            </React.Fragment>
+                          ))}
+                        </View>
+                      </View>
+                    );
+                  })}
+                </View>
+              </ScrollView>
+            ) : (
+              <View style={styles.emptyContainer}>
+                <Text>No Activities found!</Text>
+              </View>
+            )}
+          </SafeAreaView>
         </View>
       </ActionSheetProvider>
     </Modal>

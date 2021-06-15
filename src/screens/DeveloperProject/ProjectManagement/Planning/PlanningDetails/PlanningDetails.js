@@ -44,50 +44,50 @@ function PlanningDetails(props) {
             <Title>Planning</Title>
           </View>
         </TouchableOpacity>
-        <View style={styles.panelContainer}>
-          <View style={styles.panelSection}>
-            <Caption>Created by</Caption>
-            <Caption style={{lineHeight: 13}}>
-              {dayjs().format('DD MMM YYYY, hh:mm A')}
-            </Caption>
-          </View>
-          <View style={styles.panelSection}>
-            <Caption>Last edited on</Caption>
-            <Caption style={{lineHeight: 13}}>
-              {dayjs().format('DD MMM YYYY, hh:mm A')}
-            </Caption>
-          </View>
-        </View>
-
-        <View style={styles.phaseTitle}>
-          <Caption style={{fontSize: 16}}>Phase</Caption>
-          <MaterialCommunityIcons
-            name="label"
-            size={18}
-            color="rgba(4, 29, 54, 0.5)"
-            style={{marginHorizontal: 10}}
-          />
-          <Caption style={{fontSize: 16}}>Subphase</Caption>
-        </View>
-
-        <View style={styles.headingContainer}>
-          <Subheading>Activity Name</Subheading>
-          <IconButton icon="pencil" size={18} />
-        </View>
-
-        <ScrollView
-          contentContainerStyle={{flexGrow: 1}}
-          showsVerticalScrollIndicator={false}>
-          <DescriptionPanel />
-          <AssignPersonPanel />
-          <PlanningDatePanel />
-          <ChecklistPanel />
-          <AttachmentsPanel />
-          <DependencyPanel />
-          <ReviewPanel />
-          <ApprovalPanel />
-        </ScrollView>
       </View>
+      <View style={styles.panelContainer}>
+        <View style={styles.panelSection}>
+          <Caption>Created by</Caption>
+          <Caption style={{lineHeight: 13}}>
+            {dayjs().format('DD MMM YYYY, hh:mm A')}
+          </Caption>
+        </View>
+        <View style={styles.panelSection}>
+          <Caption>Last edited on</Caption>
+          <Caption style={{lineHeight: 13}}>
+            {dayjs().format('DD MMM YYYY, hh:mm A')}
+          </Caption>
+        </View>
+      </View>
+
+      <View style={styles.phaseTitle}>
+        <Caption style={{fontSize: 16}}>Phase</Caption>
+        <MaterialCommunityIcons
+          name="label"
+          size={18}
+          color="rgba(4, 29, 54, 0.5)"
+          style={{marginHorizontal: 10}}
+        />
+        <Caption style={{fontSize: 16}}>Subphase</Caption>
+      </View>
+
+      <View style={styles.headingContainer}>
+        <Subheading>Activity Name</Subheading>
+        <IconButton icon="pencil" size={18} />
+      </View>
+
+      <ScrollView
+        contentContainerStyle={{flexGrow: 1}}
+        showsVerticalScrollIndicator={false}>
+        <DescriptionPanel />
+        <AssignPersonPanel />
+        <PlanningDatePanel />
+        <ChecklistPanel />
+        <AttachmentsPanel />
+        <DependencyPanel />
+        <ReviewPanel />
+        <ApprovalPanel />
+      </ScrollView>
     </View>
   );
 }
@@ -97,9 +97,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 15,
   },
-  titleContainer: {
-    marginBottom: 10,
-  },
+  titleContainer: {},
   row: {
     flexDirection: 'row',
     alignItems: 'center',

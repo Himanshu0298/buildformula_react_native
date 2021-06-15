@@ -10,6 +10,7 @@ import CustomCheckbox from 'components/Atoms/CustomCheckbox';
 import {ActionSheetProvider} from '@expo/react-native-action-sheet';
 import {cloneDeep} from 'lodash';
 import {RenderError} from 'components/Atoms/RenderInput';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 function RenderCheckbox(props) {
   return (
@@ -72,77 +73,81 @@ function DuplicateDialog(props) {
       style={{justifyContent: 'flex-end', margin: 0}}>
       <ActionSheetProvider>
         <View style={styles.container}>
-          <View style={styles.headerContainer}>
-            <View style={styles.titleContainer}>
-              <Subheading style={{color: theme.colors.primary}}>
-                {title}
-              </Subheading>
-            </View>
-            <View style={styles.actionContainer}>
-              <OpacityButton
-                opacity={0.1}
-                color={theme.colors.primary}
-                style={{borderRadius: 50, marginRight: 10}}
-                onPress={submitForm}>
-                <MaterialIcon
-                  name="check"
-                  color={theme.colors.primary}
-                  size={18}
-                />
-              </OpacityButton>
-              <OpacityButton
-                opacity={0.1}
-                color={theme.colors.error}
-                style={{borderRadius: 50}}
-                onPress={handleClose}>
-                <MaterialIcon
-                  name="close"
-                  color={theme.colors.error}
-                  size={18}
-                />
-              </OpacityButton>
-            </View>
-          </View>
-
-          <View style={styles.contentContainer}>
-            {error ? (
-              <View style={styles.errorContainer}>
-                <RenderError error={error} />
+          <SafeAreaView>
+            <View style={styles.headerContainer}>
+              <View style={styles.titleContainer}>
+                <Subheading style={{color: theme.colors.primary}}>
+                  {title}
+                </Subheading>
               </View>
-            ) : null}
-            <RenderSelect
-              name="duplicateFrom"
-              label={t('label_duplicate_from')}
-              options={options}
-              containerStyles={styles.input}
-              value={duplicateFrom}
-              onSelect={setDuplicateFrom}
-            />
-
-            <Subheading style={{marginTop: 20, paddingLeft: 10}}>To</Subheading>
-            <View style={{flexDirection: 'row'}}>
-              <RenderCheckbox
-                label="All"
-                checked={checkedAll}
-                onChange={() =>
-                  setDuplicateTo(checkedAll ? [] : options.map(i => i.value))
-                }
-              />
-            </View>
-
-            <View style={styles.optionsContainer}>
-              {options.map((option, i) => {
-                return (
-                  <RenderCheckbox
-                    key={i}
-                    label={option.label}
-                    checked={duplicateTo.includes(option.value)}
-                    onChange={() => addToDuplicateList(option.value)}
+              <View style={styles.actionContainer}>
+                <OpacityButton
+                  opacity={0.1}
+                  color={theme.colors.primary}
+                  style={{borderRadius: 50, marginRight: 10}}
+                  onPress={submitForm}>
+                  <MaterialIcon
+                    name="check"
+                    color={theme.colors.primary}
+                    size={18}
                   />
-                );
-              })}
+                </OpacityButton>
+                <OpacityButton
+                  opacity={0.1}
+                  color={theme.colors.error}
+                  style={{borderRadius: 50}}
+                  onPress={handleClose}>
+                  <MaterialIcon
+                    name="close"
+                    color={theme.colors.error}
+                    size={18}
+                  />
+                </OpacityButton>
+              </View>
             </View>
-          </View>
+
+            <View style={styles.contentContainer}>
+              {error ? (
+                <View style={styles.errorContainer}>
+                  <RenderError error={error} />
+                </View>
+              ) : null}
+              <RenderSelect
+                name="duplicateFrom"
+                label={t('label_duplicate_from')}
+                options={options}
+                containerStyles={styles.input}
+                value={duplicateFrom}
+                onSelect={setDuplicateFrom}
+              />
+
+              <Subheading style={{marginTop: 20, paddingLeft: 10}}>
+                To
+              </Subheading>
+              <View style={{flexDirection: 'row'}}>
+                <RenderCheckbox
+                  label="All"
+                  checked={checkedAll}
+                  onChange={() =>
+                    setDuplicateTo(checkedAll ? [] : options.map(i => i.value))
+                  }
+                />
+              </View>
+
+              <View style={styles.optionsContainer}>
+                {options.map((option, i) => {
+                  return (
+                    <RenderCheckbox
+                      key={i}
+                      label={option.label}
+                      checked={duplicateTo.includes(option.value)}
+                      onChange={() => addToDuplicateList(option.value)}
+                    />
+                  );
+                })}
+              </View>
+            </View>
+          </SafeAreaView>
         </View>
       </ActionSheetProvider>
     </Modal>

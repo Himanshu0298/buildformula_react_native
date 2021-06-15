@@ -38,7 +38,7 @@ PODS:
     - GoogleUtilities/Reachability (~> 7.4)
     - GoogleUtilities/UserDefaults (~> 7.4)
   - glog (0.3.5)
-  - GoogleDataTransport (9.0.0):
+  - GoogleDataTransport (9.0.1):
     - GoogleUtilities/Environment (~> 7.2)
     - nanopb (~> 2.30908.0)
     - PromisesObjC (~> 1.2)
@@ -268,7 +268,7 @@ PODS:
     - React-Core
   - react-native-document-picker (5.0.4):
     - React-Core
-  - react-native-image-picker (4.0.3):
+  - react-native-image-picker (3.8.1):
     - React-Core
   - react-native-image-resizer (1.4.4):
     - React-Core
@@ -566,7 +566,7 @@ SPEC CHECKSUMS:
   FirebaseInstallations: 7f31798a8198c354eadcb87176d2090b62edc187
   FirebaseMessaging: 1a33b4af3c8042ed6ddacb6c031894af2064bfab
   glog: 73c2498ac6884b13ede40eda8228cb1eee9d9d62
-  GoogleDataTransport: 11e3a5f2c190327df1a4a5d7e7ae3d4d5b9c9e4c
+  GoogleDataTransport: 04c3e9a480bbcaa2ec3f5d27f1cdeb6a92f20c8d
   GoogleUtilities: f8a43108b38a68eebe8b3540e1f4f2d28843ce20
   lottie-ios: 48fac6be217c76937e36e340e2d09cf7b10b7f5f
   lottie-react-native: 4dff8fe8d10ddef9e7880e770080f4a56121397e
@@ -586,7 +586,7 @@ SPEC CHECKSUMS:
   react-native-background-downloader: 4a034cf39a3b00fac57364984e360a4f180a5efb
   react-native-date-picker: 2dfef0fcb6c36d078bc62f5de3ca79eff7f42486
   react-native-document-picker: 1a7518132d4a06b67f459be9bb1464a567d2b3b4
-  react-native-image-picker: 474cf2c33c2b6671da53d293a16c97995f0aec15
+  react-native-image-picker: 31971f6184e7c1dcb4fc1f122e1ba2c3fb11ef1e
   react-native-image-resizer: 13ac4af788f88af36d0353a1324401ebabd04fe4
   react-native-pager-view: 967d50ce0f1b72e434a2d9f3b739ddbf7d5bbf83
   react-native-safe-area-context: f0906bf8bc9835ac9a9d3f97e8bde2a997d8da79
