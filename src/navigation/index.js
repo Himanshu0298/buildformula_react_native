@@ -266,7 +266,7 @@ function CustomerSectionStack() {
 
 function PlanningStack() {
   return (
-    <Stack.Navigator initialRouteName={'PlanningDetails'}>
+    <Stack.Navigator initialRouteName={'Phases'}>
       <Stack.Screen
         name="Phases"
         component={Phases}

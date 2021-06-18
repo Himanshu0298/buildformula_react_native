@@ -39,7 +39,8 @@ const workActivitySchema = Yup.object().shape({
 });
 
 function getUnitLabel(units, id) {
-  return units.find(({value}) => value === id).label;
+  const unit = units.find(({value}) => value === id);
+  return unit?.label;
 }
 
 function AddWorkCategoryDialog(props) {

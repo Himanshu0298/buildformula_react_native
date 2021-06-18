@@ -13,9 +13,10 @@ import Milestone from './Components/Milestone';
 import WorkCategory from './Components/WorkCategory';
 
 function Lineup(props) {
+  const {getWorkCategories, getMilestones} = useProjectManagementActions();
+
   const {selectedProject} = useSelector(state => state.project);
   const {loading} = useSelector(state => state.projectManagement);
-  const {getWorkCategories, getMilestones} = useProjectManagementActions();
 
   const [selectedTab, setSelectedTab] = useState(0);
   const [routes] = React.useState([

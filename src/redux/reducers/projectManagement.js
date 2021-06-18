@@ -2,6 +2,7 @@ import {
   CREATE_LINEUP_ENTITY,
   DELETE_LINEUP_ENTITY,
   GET_MILESTONES,
+  GET_PHASES,
   GET_SELECTED_PROJECT,
   GET_WORKS,
   GET_WORK_CATEGORIES,
@@ -15,6 +16,7 @@ const initialState = {
   milestones: [],
   workCategories: [],
   works: [],
+  phases: [],
 };
 
 const reducer = (state = initialState, action = {}) => {
@@ -73,6 +75,23 @@ const reducer = (state = initialState, action = {}) => {
         milestones: payload,
       };
     case `${GET_MILESTONES}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+      };
+
+    case `${GET_PHASES}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${GET_PHASES}_FULFILLED`:
+      return {
+        ...state,
+        loading: false,
+        phases: payload,
+      };
+    case `${GET_PHASES}_REJECTED`:
       return {
         ...state,
         loading: false,

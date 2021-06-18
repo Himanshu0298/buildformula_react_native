@@ -14,6 +14,7 @@ export default function useProjectManagementActions() {
     updateLineupEntity,
     deleteLineupEntity,
     updateMilestoneOrder,
+    getPhases,
   } = useProjectManagement();
 
   return {
@@ -108,6 +109,21 @@ export default function useProjectManagementActions() {
           try {
             const response = _res(await updateMilestoneOrder(data));
             return Promise.resolve(response.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    getPhases: data =>
+      dispatch({
+        type: types.GET_PHASES,
+        payload: async () => {
+          try {
+            const response = _res(await getPhases(data));
+            return Promise.resolve(response.data.lists);
           } catch (error) {
             const message = _err(error);
             snackbar.showMessage({message, variant: 'error'});

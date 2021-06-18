@@ -1,6 +1,12 @@
 import dayjs from 'dayjs';
-import React, {useMemo} from 'react';
-import {FlatList, ScrollView, StyleSheet, View} from 'react-native';
+import React, {useEffect} from 'react';
+import {
+  FlatList,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
 import {
   Badge,
   Caption,
@@ -18,10 +24,11 @@ import Layout from 'utils/Layout';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import AutoDragSortableView from 'components/Atoms/AutoDragSortableView';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
+import useProjectManagementActions from 'redux/actions/projectManagementActions';
+import {useSelector} from 'react-redux';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const ROW_HEIGHT = 200;
-
-const PHASES = [{}, {}, {}, {}, {}, {}];
 
 function Chip({children}) {
   return <View style={styles.chipContainer}>{children}</View>;
@@ -38,6 +45,15 @@ function RenderPhase(props) {
     toggleSortable,
     navToSubPhases,
   } = props;
+
+  const {
+    phase_title,
+    phase_type_id,
+    start_date,
+    end_date,
+    duration,
+    notifications,
+  } = item;
 
   return (
     <View style={styles.phaseContainer}>
@@ -71,7 +87,9 @@ function RenderPhase(props) {
           <>
             <View style={styles.detailsTop}>
               <View style={styles.rowBetween}>
-                <Text style={{fontSize: 15}}>Lead Procurement</Text>
+                <Text style={{fontSize: 15, textTransform: 'capitalize'}}>
+                  {phase_title}
+                </Text>
                 <Menu
                   visible={index === menuIndex}
                   contentStyle={{borderRadius: 10}}
@@ -108,24 +126,22 @@ function RenderPhase(props) {
               <View style={styles.rowBetween}>
                 <View style={styles.row}>
                   <Caption>Duration: </Caption>
-                  <Text style={styles.value}>20 Days</Text>
+                  <Text style={styles.value}>{duration} Days</Text>
                 </View>
                 <View style={styles.row}>
-                  <Text style={styles.value}>NORMAL</Text>
+                  <Text style={styles.value}>
+                    {phase_type_id === 1 ? 'NORMAL' : 'CONSTRUCTION'}
+                  </Text>
                 </View>
               </View>
               <View style={styles.rowBetween}>
                 <View style={styles.row}>
                   <Caption>Start: </Caption>
-                  <Text style={styles.value}>
-                    {dayjs().format('DD MMM YYYY')}
-                  </Text>
+                  <Text style={styles.value}>{start_date}</Text>
                 </View>
                 <View style={styles.row}>
                   <Caption>Finish: </Caption>
-                  <Text style={styles.value}>
-                    {dayjs().format('DD MMM YYYY')}
-                  </Text>
+                  <Text style={styles.value}>{end_date}</Text>
                 </View>
               </View>
             </View>
@@ -134,18 +150,11 @@ function RenderPhase(props) {
               <Caption>Notification:</Caption>
               <View style={{width: '97%'}}>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                  <Chip>
-                    <Caption>Activity title</Caption>
-                  </Chip>
-                  <Chip>
-                    <Caption>Activity title</Caption>
-                  </Chip>
-                  <Chip>
-                    <Caption>Activity title</Caption>
-                  </Chip>
-                  <Chip>
-                    <Caption>Activity title</Caption>
-                  </Chip>
+                  {notifications.map((notification, i) => (
+                    <Chip key={i}>
+                      <Caption>{notification.title}</Caption>
+                    </Chip>
+                  ))}
                 </ScrollView>
               </View>
             </View>
@@ -159,15 +168,22 @@ function RenderPhase(props) {
 export default function Phases(props) {
   const {navigation} = props;
 
+  const {getPhases} = useProjectManagementActions();
+
+  const {selectedProject} = useSelector(state => state.project);
+  const {loading, phases} = useSelector(state => state.projectManagement);
+
   const [menuIndex, setMenuIndex] = React.useState(false);
   const [addDialog, setAddDialog] = React.useState(false);
   const [sortable, setSortable] = React.useState(false);
   const [selectDialog, setSelectDialog] = React.useState(false);
 
-  const sortedPhases = useMemo(() => {
-    return PHASES;
+  useEffect(() => {
+    getPhaseList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sortable]);
+  }, []);
+
+  const getPhaseList = () => getPhases({project_id: selectedProject.id});
 
   const toggleMenu = v => setMenuIndex(v);
   const toggleSortable = () => setSortable(v => !v);
@@ -185,6 +201,7 @@ export default function Phases(props) {
 
   return (
     <View style={styles.container}>
+      <Spinner visible={loading} textContent="" />
       <View style={styles.headingContainer}>
         <Subheading>Project planning</Subheading>
         <View style={styles.phasesHeadingContainer}>
@@ -219,7 +236,7 @@ export default function Phases(props) {
       </View>
       {sortable ? (
         <AutoDragSortableView
-          dataSource={sortedPhases}
+          dataSource={phases}
           maxScale={1.03}
           style={{width: '100%'}}
           childrenWidth={Layout.window.width}
@@ -229,7 +246,7 @@ export default function Phases(props) {
           renderItem={(item, index) => (
             <RenderPhase
               {...props}
-              items={sortedPhases}
+              items={phases}
               item={item}
               index={index}
               sortable={sortable}
@@ -246,13 +263,19 @@ export default function Phases(props) {
       ) : (
         <FlatList
           showsVerticalScrollIndicator={false}
-          data={sortedPhases}
-          extraData={sortedPhases}
+          data={phases}
+          extraData={phases}
           keyExtractor={(_, i) => i.toString()}
+          refreshControl={
+            <RefreshControl
+              refreshing={phases.length && loading}
+              onRefresh={getPhaseList}
+            />
+          }
           renderItem={({item, index}) => (
             <RenderPhase
               {...props}
-              items={sortedPhases}
+              items={phases}
               item={item}
               index={index}
               sortable={sortable}

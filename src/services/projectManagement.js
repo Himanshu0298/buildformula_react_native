@@ -2,26 +2,26 @@ import {instance, useConfig} from './init';
 
 export default function useProjectManagement() {
   const {config} = useConfig();
+
+  const commonParams = config({multipart: false});
   return {
     getLineupData: data => {
-      const params = config({multipart: false});
-      return instance.post('/lineup/get_lists', data, params);
+      return instance.post('/lineup/get_lists', data, commonParams);
     },
     createLineupEntity: data => {
-      const params = config({multipart: false});
-      return instance.post('/lineup/addnew', data, params);
+      return instance.post('/lineup/addnew', data, commonParams);
     },
     updateLineupEntity: data => {
-      const params = config({multipart: false});
-      return instance.post('/lineup/update', data, params);
+      return instance.post('/lineup/update', data, commonParams);
     },
     deleteLineupEntity: data => {
-      const params = config({multipart: false});
-      return instance.post('/lineup/delete', data, params);
+      return instance.post('/lineup/delete', data, commonParams);
     },
     updateMilestoneOrder: data => {
-      const params = config({multipart: false});
-      return instance.post('/lineup/updatemilestoneorder', data, params);
+      return instance.post('/lineup/updatemilestoneorder', data, commonParams);
+    },
+    getPhases: data => {
+      return instance.post('/projectplaning/phase/lists', data, commonParams);
     },
   };
 }

@@ -48,11 +48,6 @@ const schema = Yup.object().shape({
     is: 1,
     then: Yup.string('Invalid').required('Required'),
   }),
-  // other_charges_date: Yup.string('Invalid').when(
-  //   'other_charges',
-  //   (other_charges, keySchema) =>
-  //     other_charges.length > 0 ? keySchema.required('Required') : keySchema,
-  // ),
   installment_count: Yup.number('Invalid').when('payment_type', {
     is: 3,
     then: Yup.number('Invalid').required('Required'),
@@ -187,7 +182,6 @@ function RenderOneBigInstallmentPaymentForm(props) {
   const handlePercentChange = percent => {
     percent = parseFloat(percent);
     percent = round(percent > 100 ? 100 : percent);
-
     const amount = round(values.finalAmount * (percent / 100));
 
     setFieldValue('first_big_amount_percent', percent);
@@ -224,7 +218,7 @@ function RenderOneBigInstallmentPaymentForm(props) {
                 label={'%'}
                 keyboardType="number-pad"
                 value={values.first_big_amount_percent}
-                onChangeText={value => handlePercentChange(value)}
+                onChangeText={handlePercentChange}
                 error={errors.first_big_amount_percent}
                 left={
                   <TextInput.Icon
@@ -363,7 +357,7 @@ function RenderCustomPaymentForm(props) {
     percent = parseFloat(percent);
 
     const addedPercent = custom_payments.reduce(
-      (sum, item) => sum + item.percent || 0,
+      (sum, i) => sum + i.percent || 0,
       0,
     );
 
@@ -615,41 +609,6 @@ function RenderPaymentForm(props) {
         <RenderOneBigInstallmentPaymentForm {...props} />
       ) : null}
 
-      {/* {values.other_charges_amount ? (
-        <>
-          <Caption
-            style={[styles.otherChargesLabel, {color: theme.colors.primary}]}>
-            Other Charges payment
-          </Caption>
-
-          <View style={styles.otherChargesContainer}>
-            <View style={styles.dateInputContainer}>
-              <RenderInput
-                name={'other_charges_amount'}
-                label={t('label_total_other_charges')}
-                value={values.other_charges_amount}
-                disabled={true}
-                left={<TextInput.Affix text="₹" />}
-              />
-            </View>
-            <View style={{flex: 1}}>
-              <RenderDatePicker
-                name="other_charges_date"
-                label={t('label_date')}
-                value={values.other_charges_date}
-                error={errors.other_charges_date}
-                onChange={date => {
-                  setFieldValue(
-                    'other_charges_date',
-                    dayjs(date).format('YYYY-MM-DD'),
-                  );
-                }}
-              />
-            </View>
-          </View>
-        </>
-      ) : null} */}
-
       <Caption
         style={[styles.otherChargesLabel, {color: theme.colors.primary}]}>
         Remark
@@ -838,9 +797,10 @@ function BookingPayments(props) {
       });
 
       const totalPercent = values.custom_payments.reduce(
-        (sum, {percent}) => sum + percent,
+        (sum, i) => sum + parseFloat(i.percent),
         0,
       );
+
       if (totalPercent !== 100) {
         errors.payment = 'Sum of all payments does not match Basic amount';
       }
@@ -977,7 +937,7 @@ const styles = StyleSheet.create({
     paddingRight: 10,
   },
   percentInputContainer: {
-    flex: 0.6,
+    flex: 1,
     paddingRight: 10,
   },
   otherChargesContainer: {
