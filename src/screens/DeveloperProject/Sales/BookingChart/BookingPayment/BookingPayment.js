@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo} from 'react';
+import React, {useEffect, useMemo, useRef} from 'react';
 import RenderInput from 'components/Atoms/RenderInput';
 import {Formik} from 'formik';
 import {useTranslation} from 'react-i18next';
@@ -179,7 +179,9 @@ function RenderOneBigInstallmentPaymentForm(props) {
   const {formikProps, t} = props;
   const {values, setFieldValue, handleChange, errors} = formikProps;
 
-  const handlePercentChange = percent => {
+  const timeout = useRef();
+
+  const calculateAmount = percent => {
     percent = parseFloat(percent);
     percent = round(percent > 100 ? 100 : percent);
     const amount = round(values.finalAmount * (percent / 100));
@@ -188,7 +190,16 @@ function RenderOneBigInstallmentPaymentForm(props) {
     setFieldValue('first_big_amount', amount);
   };
 
-  const handleAmountChange = amount => {
+  const handlePercentChange = percent => {
+    setFieldValue('first_big_amount_percent', percent);
+
+    if (timeout.current) {
+      clearTimeout(timeout.current);
+    }
+    timeout.current = setTimeout(() => calculateAmount(percent), 1500);
+  };
+
+  const calcPercentage = amount => {
     amount = parseFloat(amount);
     amount = round(amount > values.finalAmount ? values.finalAmount : amount);
 
@@ -196,6 +207,15 @@ function RenderOneBigInstallmentPaymentForm(props) {
 
     setFieldValue('first_big_amount_percent', percent);
     setFieldValue('first_big_amount', amount);
+  };
+
+  const handleAmountChange = amount => {
+    setFieldValue('first_big_amount', amount);
+
+    if (timeout.current) {
+      clearTimeout(timeout.current);
+    }
+    timeout.current = setTimeout(() => calcPercentage(amount), 1500);
   };
 
   return (
@@ -216,7 +236,7 @@ function RenderOneBigInstallmentPaymentForm(props) {
               <RenderInput
                 name={'first_big_amount_percent'}
                 label={'%'}
-                keyboardType="number-pad"
+                keyboardType="decimal-pad"
                 value={values.first_big_amount_percent}
                 onChangeText={handlePercentChange}
                 error={errors.first_big_amount_percent}
@@ -298,7 +318,7 @@ function RenderOneBigInstallmentPaymentForm(props) {
         name={'installment_count'}
         label={t('label_no_of_installments')}
         keyboardType="number-pad"
-        value={values.installments_count}
+        value={values.installment_count}
         error={errors.installment_count}
         onChangeText={handleChange('installment_count')}
       />
@@ -337,6 +357,12 @@ function RenderCustomPaymentForm(props) {
   const {formikProps, t} = props;
   const {values, setFieldValue, errors} = formikProps;
 
+  const timeout = useRef();
+
+  const totalPercent = useMemo(() => {
+    return values.custom_payments.reduce((sum, i) => sum + i.percent || 0, 0);
+  }, [values.custom_payments]);
+
   const setValue = (index, id, value) => {
     const custom_payments = _.cloneDeep(values.custom_payments);
     custom_payments[index] = custom_payments[index] || {};
@@ -351,7 +377,7 @@ function RenderCustomPaymentForm(props) {
     setFieldValue('custom_payments', custom_payments);
   };
 
-  const handlePercentChange = (index, percent) => {
+  const calculateAmount = (index, percent) => {
     const custom_payments = _.cloneDeep(values.custom_payments);
     custom_payments.splice(index, 1);
     percent = parseFloat(percent);
@@ -369,21 +395,33 @@ function RenderCustomPaymentForm(props) {
     setAmountData(index, {percent: round(percent), amount: round(amount)});
   };
 
-  const handleAmountChange = (index, amount) => {
+  const handlePercentChange = (index, percent) => {
+    setAmountData(index, {percent});
+    if (timeout.current) {
+      clearTimeout(timeout.current);
+    }
+    timeout.current = setTimeout(() => calculateAmount(index, percent), 2000);
+  };
+
+  const calcPercentage = (index, amount) => {
     const custom_payments = _.cloneDeep(values.custom_payments);
     custom_payments.splice(index, 1);
 
-    const addedAmount = custom_payments.reduce(
-      (sum, payment) => sum + payment.amount,
-      0,
-    );
+    const addedAmount = custom_payments.reduce((sum, i) => sum + i.amount, 0);
 
     const remainingAmount = values.finalAmount - addedAmount;
     amount = amount > remainingAmount ? remainingAmount : amount;
 
     const percent = round((amount / values.finalAmount) * 100);
-
     setAmountData(index, {percent: round(percent), amount: round(amount)});
+  };
+
+  const handleAmountChange = (index, amount) => {
+    setAmountData(index, {amount: round(amount)});
+    if (timeout.current) {
+      clearTimeout(timeout.current);
+    }
+    timeout.current = setTimeout(() => calcPercentage(index, amount), 1500);
   };
 
   const addNewPayment = () => {
@@ -423,7 +461,7 @@ function RenderCustomPaymentForm(props) {
                     <RenderInput
                       name={'percent'}
                       label={'%'}
-                      keyboardType="number-pad"
+                      keyboardType="decimal-pad"
                       value={percent}
                       onChangeText={value => handlePercentChange(index, value)}
                       left={
@@ -499,9 +537,11 @@ function RenderCustomPaymentForm(props) {
           </View>
         );
       })}
-      <TouchableOpacity style={styles.chargesButton} onPress={addNewPayment}>
-        <Caption style={{color: theme.colors.primary}}>+ Create more</Caption>
-      </TouchableOpacity>
+      {totalPercent !== 100 ? (
+        <TouchableOpacity style={styles.chargesButton} onPress={addNewPayment}>
+          <Caption style={{color: theme.colors.primary}}>+ Create more</Caption>
+        </TouchableOpacity>
+      ) : null}
     </>
   );
 }
