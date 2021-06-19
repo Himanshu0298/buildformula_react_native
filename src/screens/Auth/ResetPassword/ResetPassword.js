@@ -29,6 +29,17 @@ const SNAP_POINTS = [
   Layout.window.height - (BANNER_HEIGHT + IMAGE_HEIGHT),
 ];
 
+const schema = Yup.object().shape({
+  password: Yup.string()
+    .label('Password')
+    .required('Please enter a valid password')
+    .min(6, 'Password must have at least 6 characters '),
+  confirmPassword: Yup.string().oneOf(
+    [Yup.ref('password'), null],
+    'Passwords must match',
+  ),
+});
+
 function LoginButton({label, onPress}) {
   return (
     <View style={styles.loginButton}>
@@ -123,17 +134,6 @@ function RenderContent(props) {
     </View>
   );
 }
-
-const schema = Yup.object().shape({
-  password: Yup.string()
-    .label('Password')
-    .required('Please enter a valid password')
-    .min(6, 'Password must have at least 6 characters '),
-  confirmPassword: Yup.string().oneOf(
-    [Yup.ref('password'), null],
-    'Passwords must match',
-  ),
-});
 
 function ResetPassword(props) {
   const {navigation, route} = props;

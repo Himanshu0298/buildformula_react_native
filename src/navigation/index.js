@@ -29,8 +29,12 @@ import PlanSelect from '../screens/CreateProject/PlanSelect';
 //Home Screen
 import Home from '../screens/Home';
 //Profile Screen
-import Profile from 'screens/Profile';
-import EditProfile from 'screens/EditProfile';
+import Profile from 'screens/UserAccount/Profile';
+import EditProfile from 'screens/UserAccount/EditProfile';
+//Change Password Screen
+import StepOne from 'screens/UserAccount/ChangePassword/StepOne';
+import StepTwo from 'screens/UserAccount/ChangePassword/StepTwo';
+import StepThree from 'screens/UserAccount/ChangePassword/StepThree';
 //Settings Screen
 import SettingsScreen from '../screens/Settings';
 //Project Search Screen
@@ -383,6 +387,28 @@ function CustomerDashboard() {
   );
 }
 
+function ChangePasswordStack() {
+  return (
+    <Stack.Navigator initialRouteName={'ChangePasswordStepTwo'}>
+      <Stack.Screen
+        name="ChangePasswordStepOne"
+        component={StepOne}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="ChangePasswordStepTwo"
+        component={StepTwo}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="ChangePasswordStepThree"
+        component={StepThree}
+        options={{headerShown: false}}
+      />
+    </Stack.Navigator>
+  );
+}
+
 // Gets the current screen from navigation state
 const getActiveRouteName = (state, parentRoute) => {
   const route = state.routes[state.index];
@@ -487,6 +513,11 @@ function NavContainer() {
               <Stack.Screen
                 name="EditProfile"
                 component={EditProfile}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="ChangePassword"
+                component={ChangePasswordStack}
                 options={{headerShown: false}}
               />
               <Stack.Screen

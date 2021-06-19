@@ -14,8 +14,15 @@ import useImagePicker from 'utils/useImagePicker';
 import {Formik} from 'formik';
 import RenderInput from 'components/Atoms/RenderInput';
 import {useTranslation} from 'react-i18next';
+import * as Yup from 'yup';
+import {useSelector} from 'react-redux';
 
-const schema = {};
+const schema = Yup.object().shape({
+  first_name: Yup.string('Invalid').required('First name is required'),
+  last_name: Yup.string('Invalid').required('Last name is required'),
+  email: Yup.string('Invalid').email('Invalid').required('Email is required'),
+  phone: Yup.string('Invalid').required('Phone is required'),
+});
 
 function RenderForm(props) {
   const {formikProps, navigation} = props;
@@ -105,13 +112,16 @@ function EditProfile(props) {
 
   const {openImagePicker} = useImagePicker();
 
+  const {user} = useSelector(state => state.user);
+  const {first_name, last_name, email, phone} = user;
+
   return (
     <View style={styles.container}>
       <SafeAreaView>
         <Formik
           validateOnBlur={false}
           validateOnChange={false}
-          initialValues={{}}
+          initialValues={{first_name, last_name, email, phone}}
           validationSchema={schema}
           onSubmit={async values => {}}>
           {formikProps => (
@@ -176,7 +186,6 @@ const styles = StyleSheet.create({
     marginTop: 25,
     paddingHorizontal: 10,
     flexDirection: 'row',
-    display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-around',
   },

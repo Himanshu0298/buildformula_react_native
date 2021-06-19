@@ -11,11 +11,16 @@ import {
 import {SafeAreaView} from 'react-native-safe-area-context';
 import UserPic from 'assets/images/customer.png';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
+import {useSelector} from 'react-redux';
 
 function Profile(props) {
   const {theme, navigation} = props;
 
+  const {user} = useSelector(state => state.user);
+  const {first_name, last_name, email, phone} = user;
+
   const navToEdit = () => navigation.navigate('EditProfile');
+  const navToChangePassword = () => navigation.navigate('ChangePassword');
 
   return (
     <View style={styles.container}>
@@ -24,9 +29,11 @@ function Profile(props) {
           <Subheading>Profile Details</Subheading>
           <View style={styles.headerContainer}>
             <Avatar.Image size={150} source={UserPic} />
-            <Subheading style={{marginTop: 15}}>James Parker</Subheading>
-            <Caption style={{marginTop: 10}}>jamesp@gmail.com</Caption>
-            <Caption>8545652312 </Caption>
+            <Subheading style={{marginTop: 15}}>
+              {first_name} {last_name}
+            </Subheading>
+            <Caption style={{marginTop: 10}}>{email}</Caption>
+            {phone ? <Caption>+91{phone}</Caption> : null}
           </View>
 
           <View style={styles.actionContainer}>
@@ -41,7 +48,10 @@ function Profile(props) {
               />
               <Text>Edit Profile</Text>
             </OpacityButton>
-            <OpacityButton opacity={0.15} style={styles.buttonContainer}>
+            <OpacityButton
+              opacity={0.15}
+              style={styles.buttonContainer}
+              onPress={navToChangePassword}>
               <IconButton
                 color={theme.colors.primary}
                 icon="refresh"
