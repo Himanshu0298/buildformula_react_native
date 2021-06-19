@@ -1,7 +1,19 @@
 import React from 'react';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export const DEVELOPER_DRAWER_ITEMS = [
+  {
+    route: 'DeveloperDashboard',
+    label: 'Dashboard',
+    icon: ({color, size}) => (
+      <MaterialCommunityIcons
+        name={'view-dashboard-outline'}
+        color={color}
+        size={size}
+      />
+    ),
+  },
   {
     title: 'SALES',
     routes: [
@@ -125,6 +137,11 @@ export const DEVELOPER_DRAWER_ITEMS = [
         ),
       },
     ],
+  },
+  {
+    route: 'Roles',
+    label: 'Roles and Members',
+    icon: 'account-cog-outline',
   },
 ];
 

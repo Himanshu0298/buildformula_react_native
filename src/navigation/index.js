@@ -91,6 +91,7 @@ import RequestForPrice from '../screens/DeveloperProject/MaterialManagement/Requ
 import PurchaseOrders from '../screens/DeveloperProject/MaterialManagement/PurchaseOrders';
 //Project : Files screens
 import Files from '../screens/DeveloperProject/Files';
+import Roles from 'screens/DeveloperProject/UserRoles/Roles';
 /************* Developer Project Sub Screens End   *************/
 
 const optionalConfigObject = {
@@ -315,6 +316,18 @@ function FilesStack() {
   );
 }
 
+function RolesStack() {
+  return (
+    <Stack.Navigator initialRouteName={'RolesListing'}>
+      <Stack.Screen
+        name="RolesListing"
+        component={Roles}
+        options={{headerShown: false}}
+      />
+    </Stack.Navigator>
+  );
+}
+
 function GeneralDrawer() {
   return (
     <Drawer.Navigator
@@ -356,6 +369,7 @@ function ProjectDrawer() {
       <Drawer.Screen name="RequestForPrice" component={RequestForPrice} />
       <Drawer.Screen name="PurchaseOrders" component={PurchaseOrders} />
       <Drawer.Screen name="Files" component={FilesStack} />
+      <Drawer.Screen name="Roles" component={RolesStack} />
     </Drawer.Navigator>
   );
 }

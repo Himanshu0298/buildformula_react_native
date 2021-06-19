@@ -114,38 +114,26 @@ function RenderGeneralDrawerItems(props) {
 function RenderDeveloperDrawerItems(props) {
   const {theme} = props;
 
-  return (
-    <>
-      <DrawerItem
-        {...props}
-        label={'Dashboard'}
-        route="DeveloperDashboard"
-        icon={({color, size}) => (
-          <MaterialCommunityIcons
-            name={'view-dashboard-outline'}
-            color={color}
-            size={size}
-          />
-        )}
-      />
-      {DEVELOPER_DRAWER_ITEMS.map(section => {
-        return (
-          <Drawer.Section key={section.title} style={styles.drawerSection}>
-            <Paragraph
-              style={styles.title}
-              theme={{
-                colors: {text: theme.colors.primary},
-              }}>
-              {section.title}
-            </Paragraph>
-            {section.routes.map(route => {
-              return <DrawerItem {...props} key={route.route} {...route} />;
-            })}
-          </Drawer.Section>
-        );
-      })}
-    </>
-  );
+  return DEVELOPER_DRAWER_ITEMS.map(section => {
+    if (section.title) {
+      return (
+        <Drawer.Section key={section.title} style={styles.drawerSection}>
+          <Paragraph
+            style={styles.title}
+            theme={{
+              colors: {text: theme.colors.primary},
+            }}>
+            {section.title}
+          </Paragraph>
+          {section.routes.map(route => {
+            return <DrawerItem {...props} key={route.route} {...route} />;
+          })}
+        </Drawer.Section>
+      );
+    }
+
+    return <DrawerItem {...props} key={section.route} {...section} />;
+  });
 }
 
 function RenderCustomerDrawerItems(props) {
