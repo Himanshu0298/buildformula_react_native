@@ -4,7 +4,7 @@ import {DrawerContentScrollView} from '@react-navigation/drawer';
 import {Paragraph, Drawer, Button, withTheme} from 'react-native-paper';
 import Animated from 'react-native-reanimated';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import Feather from 'react-native-vector-icons/Feather';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import useAppActions from '../../redux/actions/appActions';
 import {SITE_URL} from 'utils/constant';
 import {DEVELOPER_DRAWER_ITEMS, CUSTOMER_DRAWER_ITEMS} from './DrawerItems';
@@ -34,10 +34,8 @@ const DrawerItem = React.memo(props => {
     );
   } else if (icon) {
     drawerIcon = icon;
-  } else if (active) {
-    drawerIcon = activeIcon;
   } else {
-    drawerIcon = inactiveIcon;
+    drawerIcon = active ? activeIcon : inactiveIcon;
   }
 
   return (
@@ -45,17 +43,10 @@ const DrawerItem = React.memo(props => {
       {...restProps}
       label={label}
       theme={{
-        colors: {
-          text: '#000',
-          primary: active ? '#fff' : theme.colors.primary,
-        },
+        colors: {primary: active ? '#fff' : theme.colors.primary},
       }}
       onPress={onPress}
-      style={
-        active
-          ? {...styles.activeDrawerItem, backgroundColor: theme.colors.primary}
-          : {}
-      }
+      style={active ? {backgroundColor: theme.colors.primary} : {}}
       active={active}
       icon={drawerIcon}
     />
@@ -71,8 +62,20 @@ function RenderGeneralDrawerItems(props) {
         {...props}
         label={'Home'}
         route="Home"
+        icon={'home-variant-outline'}
+      />
+      <DrawerItem
+        {...props}
+        label={'Profile'}
+        route="Profile"
+        icon={'account-box-outline'}
+      />
+      <DrawerItem
+        {...props}
+        label={'Project Purchase'}
+        route="PurchaseDetails"
         icon={({color, size}) => (
-          <Feather name={'home'} color={color} size={size} />
+          <MaterialIcons name={'shop'} color={color} size={size} />
         )}
       />
       <DrawerItem
@@ -83,14 +86,24 @@ function RenderGeneralDrawerItems(props) {
       />
       <DrawerItem
         {...props}
+        label={'Support'}
+        route="Support"
+        onPress={() => Linking.openURL(SITE_URL)}
+        icon={({color, size}) => (
+          <MaterialIcons name={'support'} color={color} size={size} />
+        )}
+      />
+      <DrawerItem
+        {...props}
         label={'Help'}
-        route="help"
+        route="Help"
         onPress={() => Linking.openURL(SITE_URL)}
         icon={'help-box'}
       />
       <DrawerItem
         {...props}
         label={'Logout'}
+        route="Help"
         onPress={logout}
         icon={'logout'}
       />
@@ -223,7 +236,6 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     fontSize: 14,
   },
-  activeDrawerItem: {},
 });
 
 export default withTheme(React.memo(DrawerContent));

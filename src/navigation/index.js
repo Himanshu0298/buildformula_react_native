@@ -28,6 +28,9 @@ import PlanSelect from '../screens/CreateProject/PlanSelect';
 
 //Home Screen
 import Home from '../screens/Home';
+//Profile Screen
+import Profile from 'screens/Profile';
+import EditProfile from 'screens/EditProfile';
 //Settings Screen
 import SettingsScreen from '../screens/Settings';
 //Project Search Screen
@@ -474,6 +477,16 @@ function NavContainer() {
               <Stack.Screen
                 name="Search"
                 component={SearchScreen}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="Profile"
+                component={Profile}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="EditProfile"
+                component={EditProfile}
                 options={{headerShown: false}}
               />
               <Stack.Screen

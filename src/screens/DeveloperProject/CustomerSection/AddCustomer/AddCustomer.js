@@ -208,7 +208,7 @@ function RenderForm({formikProps, navigation, ...restProps}) {
         <Button
           style={{width: '40%'}}
           contentStyle={{padding: 1}}
-          theme={{roundness: 15}}
+          theme={{roundness: 12}}
           onPress={navigation.goBack}>
           Cancel
         </Button>
@@ -217,7 +217,7 @@ function RenderForm({formikProps, navigation, ...restProps}) {
           mode="contained"
           disabled={!values.accepted}
           contentStyle={{padding: 1}}
-          theme={{roundness: 15}}
+          theme={{roundness: 12}}
           onPress={handleSubmit}>
           Save
         </Button>
