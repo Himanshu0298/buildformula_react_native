@@ -99,7 +99,7 @@ function RenderPhase(props) {
         <TouchableRipple
           disabled={sortable}
           rippleColor="rgba(0, 0, 0, .1)"
-          onPress={() => navToSubPhases('Lead Procurement')}>
+          onPress={() => navToSubPhases(item)}>
           <>
             <View style={styles.detailsTop}>
               <View style={styles.rowBetween}>
@@ -191,7 +191,7 @@ function AddDialog(props) {
     <Portal>
       <Dialog visible={open} onDismiss={handleClose} style={{top: -100}}>
         <View style={styles.dialogTitleContainer}>
-          <Text style={{color: '#000'}}>Add new Phase</Text>
+          <Text>{selectedPhase ? 'Update Phase' : 'Add new Phase'}</Text>
         </View>
         <Formik
           validateOnBlur={false}
@@ -239,6 +239,14 @@ function AddDialog(props) {
   );
 }
 
+function EmptyComponent() {
+  return (
+    <View style={{alignItems: 'center', justifyContent: 'center'}}>
+      <Caption>No Phases Found.</Caption>
+    </View>
+  );
+}
+
 function Phases(props) {
   const {theme, navigation} = props;
 
@@ -280,8 +288,8 @@ function Phases(props) {
     toggleSortable();
   };
 
-  const navToSubPhases = () => {
-    navigation.navigate('SubPhases', {phase: 'Lead Procurement'});
+  const navToSubPhases = phase => {
+    navigation.navigate('SubPhases', {phase});
   };
 
   const onAddNewPhase = async ({phase}) => {
@@ -408,7 +416,9 @@ function Phases(props) {
           showsVerticalScrollIndicator={false}
           data={phases}
           extraData={phases}
+          contentContainerStyle={{flexGrow: 1}}
           keyExtractor={(_, i) => i.toString()}
+          ListEmptyComponent={() => <EmptyComponent />}
           refreshControl={
             <RefreshControl
               refreshing={refreshing}

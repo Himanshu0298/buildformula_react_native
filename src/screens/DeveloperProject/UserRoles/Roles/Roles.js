@@ -65,8 +65,10 @@ function RenderUserCard(props) {
       <Divider style={{marginVertical: 10}} />
       <View style={styles.userRoleContainer}>
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-          {roles.map(role => (
-            <Chip style={{marginHorizontal: 5}}>{role}</Chip>
+          {roles.map((role, i) => (
+            <Chip key={i} style={{marginHorizontal: 5}}>
+              {role}
+            </Chip>
           ))}
         </ScrollView>
       </View>
