@@ -120,9 +120,7 @@ function RenderDeveloperDrawerItems(props) {
         <Drawer.Section key={section.title} style={styles.drawerSection}>
           <Paragraph
             style={styles.title}
-            theme={{
-              colors: {text: theme.colors.primary},
-            }}>
+            theme={{colors: {text: theme.colors.primary}}}>
             {section.title}
           </Paragraph>
           {section.routes.map(route => {

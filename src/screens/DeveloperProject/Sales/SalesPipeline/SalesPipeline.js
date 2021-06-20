@@ -78,7 +78,11 @@ function RenderHeader({data = {}, toggleModal, handleDelete}) {
             <TouchableOpacity
               onPress={() => handleDelete(pipelineId, get_visitors.length)}
               style={[styles.icon, {backgroundColor: COLORS.deleteLight}]}>
-              <MaterialIcons name={'delete'} color={'#FF5D5D'} size={19} />
+              <MaterialIcons
+                name={'delete'}
+                color={theme.colors.red}
+                size={19}
+              />
             </TouchableOpacity>
           ) : null}
           <TouchableOpacity

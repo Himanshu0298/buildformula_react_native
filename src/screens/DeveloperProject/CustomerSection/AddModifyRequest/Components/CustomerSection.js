@@ -79,7 +79,7 @@ function RenderFiles({files = [], submitted, onRemove}) {
                   <IconButton
                     icon="delete"
                     size={16}
-                    color={'#FF5D5D'}
+                    color={theme.colors.red}
                     onPress={() => onRemove(index)}
                   />
                 </View>

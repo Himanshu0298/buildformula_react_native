@@ -44,7 +44,7 @@ function RenderClose(props) {
     <IconButton
       icon="close-circle"
       size={20}
-      color={'#FF5D5D'}
+      color={theme.colors.red}
       onPress={() => handleRemove(index)}
     />
   );

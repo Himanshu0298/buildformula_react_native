@@ -526,11 +526,15 @@ function RenderCustomPaymentForm(props) {
               </View>
               {values.custom_payments.length > 1 ? (
                 <OpacityButton
-                  color={'#FF5D5D'}
+                  color={theme.colors.red}
                   opacity={0.1}
                   style={{marginLeft: 15, borderRadius: 20}}
                   onPress={() => removePayment(index)}>
-                  <MaterialIcons name={'close'} color={'#FF5D5D'} size={19} />
+                  <MaterialIcons
+                    name={'close'}
+                    color={theme.colors.red}
+                    size={19}
+                  />
                 </OpacityButton>
               ) : null}
             </View>

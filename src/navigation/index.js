@@ -91,7 +91,9 @@ import RequestForPrice from '../screens/DeveloperProject/MaterialManagement/Requ
 import PurchaseOrders from '../screens/DeveloperProject/MaterialManagement/PurchaseOrders';
 //Project : Files screens
 import Files from '../screens/DeveloperProject/Files';
+//Project : Role screens
 import Roles from 'screens/DeveloperProject/UserRoles/Roles';
+import AddUser from 'screens/DeveloperProject/UserRoles/AddUser';
 /************* Developer Project Sub Screens End   *************/
 
 const optionalConfigObject = {
@@ -322,6 +324,11 @@ function RolesStack() {
       <Stack.Screen
         name="RolesListing"
         component={Roles}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="AddUser"
+        component={AddUser}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

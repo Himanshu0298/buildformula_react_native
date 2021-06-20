@@ -76,7 +76,7 @@ function RenderUser({item}) {
     <View style={styles.userContainer}>
       <View style={styles.row}>
         <Text>{name || 'Not Available'}</Text>
-        <IconButton icon="delete" color="#FF5D5D" size={16} />
+        <IconButton icon="delete" color={theme.colors.red} size={16} />
       </View>
       <View style={styles.row}>
         <Caption>{phone ? `+91 ${phone}` : 'NA'}</Caption>

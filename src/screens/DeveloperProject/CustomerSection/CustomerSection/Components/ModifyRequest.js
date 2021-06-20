@@ -13,18 +13,9 @@ import {
 import {useSelector} from 'react-redux';
 
 const STATUS_LIST = {
-  1: {
-    label: 'PENDING APPROVAL',
-    color: '#F4AF48',
-  },
-  2: {
-    label: 'APPROVED',
-    color: '#07CA03',
-  },
-  3: {
-    label: 'REJECTED',
-    color: '#FF5D5D',
-  },
+  1: {label: 'PENDING APPROVAL', color: '#F4AF48'},
+  2: {label: 'APPROVED', color: '#07CA03'},
+  3: {label: 'REJECTED', color: '#FF5D5D'},
 };
 
 function RenderRequests({requests}) {

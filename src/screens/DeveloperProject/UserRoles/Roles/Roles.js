@@ -11,6 +11,7 @@ import {
   IconButton,
   Caption,
   Chip,
+  FAB,
 } from 'react-native-paper';
 import {TabView} from 'react-native-tab-view';
 import {useSelector} from 'react-redux';
@@ -73,7 +74,9 @@ function RenderUserCard(props) {
   );
 }
 
-function RenderUsers() {
+function RenderUsers(props) {
+  const {navigation, theme} = props;
+
   const [menuIndex, setMenuIndex] = useState(false);
 
   const toggleMenu = index => setMenuIndex(index);
@@ -81,6 +84,8 @@ function RenderUsers() {
   const onUpdate = () => {};
 
   const onDelete = () => {};
+
+  const navToAddRole = () => navigation.navigate('AddUser');
 
   return (
     <View style={styles.contentContainer}>
@@ -93,6 +98,11 @@ function RenderUsers() {
             {...{item, index, menuIndex, toggleMenu, onDelete, onUpdate}}
           />
         )}
+      />
+      <FAB
+        style={[styles.fab, {backgroundColor: theme.colors.primary}]}
+        icon="plus"
+        onPress={navToAddRole}
       />
     </View>
   );
@@ -133,7 +143,9 @@ function RenderRole(props) {
   );
 }
 
-function RenderRoles() {
+function RenderRoles(props) {
+  const {navigation, theme} = props;
+
   const [menuIndex, setMenuIndex] = useState(false);
 
   const toggleMenu = index => setMenuIndex(index);
@@ -141,6 +153,8 @@ function RenderRoles() {
   const onUpdate = () => {};
 
   const onDelete = () => {};
+
+  const navToAddRole = () => navigation.navigate('AddRole');
 
   return (
     <View style={styles.contentContainer}>
@@ -159,11 +173,16 @@ function RenderRoles() {
           </>
         )}
       />
+      <FAB
+        style={[styles.fab, {backgroundColor: theme.colors.primary}]}
+        icon="plus"
+        onPress={navToAddRole}
+      />
     </View>
   );
 }
 
-function Roles() {
+function Roles(props) {
   const {loading} = useSelector(s => s.user);
 
   const [selectedTab, setSelectedTab] = React.useState(0);
@@ -174,9 +193,9 @@ function Roles() {
 
   const renderScene = ({route: {key}}) => {
     if (key) {
-      return <RenderRoles />;
+      return <RenderRoles {...props} />;
     }
-    return <RenderUsers />;
+    return <RenderUsers {...props} />;
   };
 
   return (
@@ -204,6 +223,12 @@ function Roles() {
 const styles = StyleSheet.create({
   contentContainer: {
     flexGrow: 1,
+  },
+  fab: {
+    position: 'absolute',
+    margin: 16,
+    right: 20,
+    bottom: 20,
   },
   userCardContainer: {
     backgroundColor: '#F2F4F5',
