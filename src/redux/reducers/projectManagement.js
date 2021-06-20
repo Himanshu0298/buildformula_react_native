@@ -1,17 +1,22 @@
 import {
+  ADD_PHASE,
   CREATE_LINEUP_ENTITY,
   DELETE_LINEUP_ENTITY,
+  DELETE_PHASE,
   GET_MILESTONES,
   GET_PHASES,
   GET_SELECTED_PROJECT,
   GET_WORKS,
   GET_WORK_CATEGORIES,
+  REFRESH_PHASES,
   UPDATE_LINEUP_ENTITY,
   UPDATE_MILESTONE_ORDER,
+  UPDATE_PHASE,
 } from './../actions/actionTypes';
 
 const initialState = {
   loading: false,
+  refreshing: false,
   errorMessage: undefined,
   milestones: [],
   workCategories: [],
@@ -97,10 +102,30 @@ const reducer = (state = initialState, action = {}) => {
         loading: false,
       };
 
+    case `${REFRESH_PHASES}_PENDING`:
+      return {
+        ...state,
+        refreshing: true,
+      };
+    case `${REFRESH_PHASES}_FULFILLED`:
+      return {
+        ...state,
+        refreshing: false,
+        phases: payload,
+      };
+    case `${REFRESH_PHASES}_REJECTED`:
+      return {
+        ...state,
+        refreshing: false,
+      };
+
     case `${CREATE_LINEUP_ENTITY}_PENDING`:
     case `${UPDATE_MILESTONE_ORDER}_PENDING`:
     case `${UPDATE_LINEUP_ENTITY}_PENDING`:
     case `${DELETE_LINEUP_ENTITY}_PENDING`:
+    case `${ADD_PHASE}_PENDING`:
+    case `${UPDATE_PHASE}_PENDING`:
+    case `${DELETE_PHASE}_PENDING`:
       return {
         ...state,
         loading: true,
@@ -109,6 +134,9 @@ const reducer = (state = initialState, action = {}) => {
     case `${UPDATE_MILESTONE_ORDER}_FULFILLED`:
     case `${UPDATE_LINEUP_ENTITY}_FULFILLED`:
     case `${DELETE_LINEUP_ENTITY}_FULFILLED`:
+    case `${ADD_PHASE}_FULFILLED`:
+    case `${UPDATE_PHASE}_FULFILLED`:
+    case `${DELETE_PHASE}_FULFILLED`:
       return {
         ...state,
         loading: false,
@@ -117,6 +145,9 @@ const reducer = (state = initialState, action = {}) => {
     case `${UPDATE_MILESTONE_ORDER}_REJECTED`:
     case `${UPDATE_LINEUP_ENTITY}_REJECTED`:
     case `${DELETE_LINEUP_ENTITY}_REJECTED`:
+    case `${ADD_PHASE}_REJECTED`:
+    case `${UPDATE_PHASE}_REJECTED`:
+    case `${DELETE_PHASE}_REJECTED`:
       return {
         ...state,
         loading: false,

@@ -9,17 +9,20 @@ import {
 } from 'react-native';
 import {
   Badge,
+  Button,
   Caption,
+  Dialog,
   Divider,
   FAB,
   IconButton,
   Menu,
+  Portal,
   Subheading,
   Text,
   Title,
   TouchableRipple,
+  withTheme,
 } from 'react-native-paper';
-import {theme} from 'styles/theme';
 import Layout from 'utils/Layout';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import AutoDragSortableView from 'components/Atoms/AutoDragSortableView';
@@ -27,8 +30,17 @@ import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import useProjectManagementActions from 'redux/actions/projectManagementActions';
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
+import {useTranslation} from 'react-i18next';
+import {Formik} from 'formik';
+import * as Yup from 'yup';
+import RenderInput from 'components/Atoms/RenderInput';
+import {useAlert} from 'components/Atoms/Alert';
 
 const ROW_HEIGHT = 200;
+
+const schema = Yup.object().shape({
+  phase: Yup.string().trim().required('Required'),
+});
 
 function Chip({children}) {
   return <View style={styles.chipContainer}>{children}</View>;
@@ -36,6 +48,7 @@ function Chip({children}) {
 
 function RenderPhase(props) {
   const {
+    theme,
     items,
     item,
     index,
@@ -44,6 +57,8 @@ function RenderPhase(props) {
     toggleMenu,
     toggleSortable,
     navToSubPhases,
+    onEdit,
+    onDelete,
   } = props;
 
   const {
@@ -71,6 +86,7 @@ function RenderPhase(props) {
                 styles.line,
                 index === 0 && {top: 20},
                 index === items.length - 1 && {height: 20},
+                {backgroundColor: theme.colors.primary},
               ]}
             />
             <Badge style={{backgroundColor: theme.colors.primary}}>
@@ -96,6 +112,7 @@ function RenderPhase(props) {
                   onDismiss={toggleMenu}
                   anchor={
                     <IconButton
+                      disabled={sortable}
                       icon="dots-vertical"
                       size={18}
                       onPress={() => toggleMenu(index)}
@@ -104,14 +121,14 @@ function RenderPhase(props) {
                   <Menu.Item
                     style={styles.menuItem}
                     icon="pencil"
-                    onPress={() => {}}
+                    onPress={onEdit}
                     title="Rename"
                   />
                   <Divider />
                   <Menu.Item
                     style={styles.menuItem}
                     icon="delete"
-                    onPress={() => {}}
+                    onPress={onDelete}
                     title="Delete"
                   />
                   <Divider />
@@ -165,25 +182,93 @@ function RenderPhase(props) {
   );
 }
 
-export default function Phases(props) {
-  const {navigation} = props;
+function AddDialog(props) {
+  const {theme, open, selectedPhase, handleClose, onSave, onUpdate} = props;
 
-  const {getPhases} = useProjectManagementActions();
+  const {t} = useTranslation();
+
+  return (
+    <Portal>
+      <Dialog visible={open} onDismiss={handleClose} style={{top: -100}}>
+        <View style={styles.dialogTitleContainer}>
+          <Text style={{color: '#000'}}>Add new Phase</Text>
+        </View>
+        <Formik
+          validateOnBlur={false}
+          validateOnChange={false}
+          initialValues={{phase: selectedPhase?.phase_title}}
+          validationSchema={schema}
+          onSubmit={selectedPhase ? onUpdate : onSave}>
+          {({values, errors, handleChange, handleBlur, handleSubmit}) => {
+            return (
+              <View style={styles.dialogContentContainer}>
+                <RenderInput
+                  name="phase"
+                  label={t('label_phase')}
+                  containerStyles={styles.input}
+                  value={values.phase}
+                  onChangeText={handleChange('phase')}
+                  onBlur={handleBlur('phase')}
+                  onSubmitEditing={handleSubmit}
+                  error={errors.phase}
+                />
+                <View style={styles.noteContainer}>
+                  <Caption style={{lineHeight: 13}}>
+                    <Text style={{color: theme.colors.primary}}>NOTE:</Text>{' '}
+                    Duration ,Start Date and Finish Date will be calculated
+                    automatically from its Sub Phases and Activitiy Data.
+                  </Caption>
+                </View>
+
+                <View style={styles.dialogActionContainer}>
+                  <Button
+                    style={{width: '40%'}}
+                    mode="contained"
+                    contentStyle={{padding: 1}}
+                    theme={{roundness: 15}}
+                    onPress={handleSubmit}>
+                    {selectedPhase ? 'Update' : 'Save'}
+                  </Button>
+                </View>
+              </View>
+            );
+          }}
+        </Formik>
+      </Dialog>
+    </Portal>
+  );
+}
+
+function Phases(props) {
+  const {theme, navigation} = props;
+
+  const alert = useAlert();
+
+  const {
+    getPhases,
+    addPhase,
+    updatePhase,
+    deletePhase,
+  } = useProjectManagementActions();
 
   const {selectedProject} = useSelector(state => state.project);
-  const {loading, phases} = useSelector(state => state.projectManagement);
+  const {loading, refreshing, phases} = useSelector(
+    state => state.projectManagement,
+  );
 
   const [menuIndex, setMenuIndex] = React.useState(false);
   const [addDialog, setAddDialog] = React.useState(false);
   const [sortable, setSortable] = React.useState(false);
   const [selectDialog, setSelectDialog] = React.useState(false);
+  const [selectedPhase, setSelectedPhase] = React.useState();
 
   useEffect(() => {
     getPhaseList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const getPhaseList = () => getPhases({project_id: selectedProject.id});
+  const getPhaseList = refresh =>
+    getPhases({project_id: selectedProject.id}, refresh);
 
   const toggleMenu = v => setMenuIndex(v);
   const toggleSortable = () => setSortable(v => !v);
@@ -199,8 +284,67 @@ export default function Phases(props) {
     navigation.navigate('SubPhases', {phase: 'Lead Procurement'});
   };
 
+  const onAddNewPhase = async ({phase}) => {
+    await addPhase({
+      phase_title: phase,
+      phase_type_id: addDialog === 'normal' ? 1 : 2,
+      project_id: selectedProject.id,
+    });
+
+    getPhaseList();
+    toggleAddDialog();
+  };
+
+  const onUpdatePhase = async ({phase}) => {
+    await updatePhase({
+      phase_title: phase,
+      id: selectedPhase.id,
+      project_id: selectedProject.id,
+    });
+
+    getPhaseList();
+    setSelectedPhase();
+    toggleAddDialog();
+  };
+
+  const onEditPhase = () => {
+    setSelectedPhase(phases[menuIndex]);
+    toggleMenu();
+    toggleAddDialog(true);
+  };
+
+  const onDeletePhase = () => {
+    const phaseId = phases[menuIndex].id;
+
+    toggleMenu();
+
+    alert.show({
+      title: 'Confirm',
+      message: 'Are you sure you want to delete?',
+      confirmText: 'Delete',
+      onConfirm: () => {
+        deletePhase({
+          id: phaseId,
+          project_id: selectedProject.id,
+        }).then(() => {
+          getPhaseList();
+        });
+      },
+    });
+  };
+
   return (
     <View style={styles.container}>
+      {addDialog ? (
+        <AddDialog
+          {...props}
+          open={Boolean(addDialog)}
+          selectedPhase={selectedPhase}
+          handleClose={toggleAddDialog}
+          onSave={onAddNewPhase}
+          onUpdate={onUpdatePhase}
+        />
+      ) : null}
       <Spinner visible={loading} textContent="" />
       <View style={styles.headingContainer}>
         <Subheading>Project planning</Subheading>
@@ -253,7 +397,6 @@ export default function Phases(props) {
               menuIndex={menuIndex}
               toggleSortable={toggleSortable}
               toggleMenu={toggleMenu}
-              navToSubPhases={navToSubPhases}
             />
           )}
           onDataChange={data => {
@@ -268,8 +411,8 @@ export default function Phases(props) {
           keyExtractor={(_, i) => i.toString()}
           refreshControl={
             <RefreshControl
-              refreshing={phases.length && loading}
-              onRefresh={getPhaseList}
+              refreshing={refreshing}
+              onRefresh={() => getPhaseList(true)}
             />
           }
           renderItem={({item, index}) => (
@@ -283,6 +426,8 @@ export default function Phases(props) {
               toggleSortable={toggleSortable}
               toggleMenu={toggleMenu}
               navToSubPhases={navToSubPhases}
+              onEdit={onEditPhase}
+              onDelete={onDeletePhase}
             />
           )}
         />
@@ -337,7 +482,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   line: {
-    backgroundColor: theme.colors.primary,
     width: 2,
     position: 'absolute',
     top: 0,
@@ -382,4 +526,24 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 0,
   },
+  dialogTitleContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 10,
+  },
+  dialogContentContainer: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+  },
+  dialogActionContainer: {
+    marginTop: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noteContainer: {
+    paddingHorizontal: 10,
+    marginTop: 10,
+  },
 });
+
+export default withTheme(Phases);

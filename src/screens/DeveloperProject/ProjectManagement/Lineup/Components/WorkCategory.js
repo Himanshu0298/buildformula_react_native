@@ -26,7 +26,6 @@ import {
 } from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import useProjectManagementActions from 'redux/actions/projectManagementActions';
-import {secondaryTheme} from 'styles/theme';
 import * as Yup from 'yup';
 
 const schema = Yup.object().shape({
@@ -80,9 +79,7 @@ function AddWorkCategoryDialog(props) {
                     contentStyle={{padding: 1}}
                     theme={{roundness: 15}}
                     onPress={handleSubmit}>
-                    <Text theme={secondaryTheme}>
-                      {selectedCategory ? 'Update' : 'Save'}
-                    </Text>
+                    {selectedCategory ? 'Update' : 'Save'}
                   </Button>
                 </View>
               </View>
@@ -158,9 +155,7 @@ function AddWorkDialog(props) {
                     contentStyle={{padding: 1}}
                     theme={{roundness: 15}}
                     onPress={handleSubmit}>
-                    <Text theme={secondaryTheme}>
-                      {selectedActivity ? 'Update' : 'Save'}
-                    </Text>
+                    {selectedActivity ? 'Update' : 'Save'}
                   </Button>
                 </View>
               </View>

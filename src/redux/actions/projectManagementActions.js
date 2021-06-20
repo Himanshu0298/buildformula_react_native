@@ -15,6 +15,9 @@ export default function useProjectManagementActions() {
     deleteLineupEntity,
     updateMilestoneOrder,
     getPhases,
+    addPhase,
+    updatePhase,
+    deletePhase,
   } = useProjectManagement();
 
   return {
@@ -117,13 +120,61 @@ export default function useProjectManagementActions() {
         },
       }),
 
-    getPhases: data =>
+    getPhases: (data, refreshing) =>
       dispatch({
-        type: types.GET_PHASES,
+        type: refreshing ? types.REFRESH_PHASES : types.GET_PHASES,
         payload: async () => {
           try {
             const response = _res(await getPhases(data));
             return Promise.resolve(response.data.lists);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    addPhase: data =>
+      dispatch({
+        type: types.ADD_PHASE,
+        payload: async () => {
+          try {
+            const res = _res(await addPhase(data));
+            snackbar.showMessage({message: res.msg});
+            return Promise.resolve(res.data.lists);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    updatePhase: data =>
+      dispatch({
+        type: types.DELETE_PHASE,
+        payload: async () => {
+          try {
+            const res = _res(await updatePhase(data));
+            snackbar.showMessage({message: res.msg});
+            return Promise.resolve(res.data.lists);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    deletePhase: data =>
+      dispatch({
+        type: types.DELETE_PHASE,
+        payload: async () => {
+          try {
+            const res = _res(await deletePhase(data));
+            snackbar.showMessage({message: res.msg});
+            return Promise.resolve(res.data.lists);
           } catch (error) {
             const message = _err(error);
             snackbar.showMessage({message, variant: 'error'});

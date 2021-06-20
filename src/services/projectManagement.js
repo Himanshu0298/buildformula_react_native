@@ -23,5 +23,14 @@ export default function useProjectManagement() {
     getPhases: data => {
       return instance.post('/projectplaning/phase/lists', data, commonParams);
     },
+    addPhase: data => {
+      return instance.post('/projectplaning/phase/add', data, commonParams);
+    },
+    updatePhase: data => {
+      return instance.post('/projectplaning/phase/update', data, commonParams);
+    },
+    deletePhase: data => {
+      return instance.post('/projectplaning/phase/delete', data, commonParams);
+    },
   };
 }

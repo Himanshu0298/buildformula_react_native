@@ -15,7 +15,6 @@ import {
 import Layout from 'utils/Layout';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import CustomBadge from 'components/Atoms/CustomBadge';
-import {secondaryTheme} from 'styles/theme';
 import * as Yup from 'yup';
 import {useTranslation} from 'react-i18next';
 import {Formik} from 'formik';
@@ -70,9 +69,7 @@ function AddMilestoneDialog(props) {
                     contentStyle={{padding: 1}}
                     theme={{roundness: 15}}
                     onPress={handleSubmit}>
-                    <Text theme={secondaryTheme}>
-                      {selectedMilestone ? 'Update' : 'Save'}
-                    </Text>
+                    {selectedMilestone ? 'Update' : 'Save'}
                   </Button>
                 </View>
               </View>

@@ -141,6 +141,9 @@ export default {
       label_work: 'Work',
       label_milestone: 'Milestone',
       label_activity_name: 'Activity name',
+
+      //Phases
+      label_phase: 'Phase',
     },
   },
   hi: {
@@ -282,6 +285,9 @@ export default {
       label_work: 'Work',
       label_milestone: 'Milestone',
       label_activity_name: 'Activity name',
+
+      //Phases
+      label_phase: 'Phase',
     },
   },
 };

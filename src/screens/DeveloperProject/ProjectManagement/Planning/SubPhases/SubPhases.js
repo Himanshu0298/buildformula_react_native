@@ -94,9 +94,16 @@ function SubPhases(props) {
     <View style={styles.container}>
       <View style={styles.headingContainer}>
         <Subheading>{phase}</Subheading>
-        <View style={styles.phasesHeadingContainer}>
-          <Title style={{fontSize: 15, marginTop: 10}}>Subphases</Title>
-        </View>
+        <TouchableOpacity
+          onPress={navigation.goBack}
+          style={styles.phasesHeadingContainer}>
+          <MaterialCommunityIcons
+            name="arrow-left"
+            size={18}
+            style={{marginRight: 10}}
+          />
+          <Title>Subphases</Title>
+        </TouchableOpacity>
       </View>
       <FlatList
         showsVerticalScrollIndicator={false}
@@ -129,7 +136,7 @@ const styles = StyleSheet.create({
   phasesHeadingContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    marginTop: 10,
   },
   detailsContainer: {
     backgroundColor: '#F2F4F5',
