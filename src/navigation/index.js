@@ -94,6 +94,7 @@ import Files from '../screens/DeveloperProject/Files';
 //Project : Role screens
 import Roles from 'screens/DeveloperProject/UserRoles/Roles';
 import AddUser from 'screens/DeveloperProject/UserRoles/AddUser';
+import AddRole from 'screens/DeveloperProject/UserRoles/AddRole';
 /************* Developer Project Sub Screens End   *************/
 
 const optionalConfigObject = {
@@ -329,6 +330,11 @@ function RolesStack() {
       <Stack.Screen
         name="AddUser"
         component={AddUser}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="AddRole"
+        component={AddRole}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

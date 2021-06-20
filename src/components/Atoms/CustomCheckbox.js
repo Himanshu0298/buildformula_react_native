@@ -14,7 +14,7 @@ const CustomCheckbox = React.forwardRef((props, ref) => {
         ref={ref}
         status={checked ? 'checked' : 'unchecked'}
       />
-      <Text style={styles.caption}>{label}</Text>
+      {label ? <Text style={styles.caption}>{label}</Text> : null}
     </TouchableOpacity>
   );
 });
