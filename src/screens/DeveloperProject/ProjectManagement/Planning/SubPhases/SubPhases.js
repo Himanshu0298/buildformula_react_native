@@ -44,7 +44,7 @@ function RenderPhase(props) {
     onEdit,
     onDelete,
   } = props;
-  const {subphase, notifications, start_date, end_date} = item;
+  const {subphase, subphase_title, notifications, start_date, end_date} = item;
 
   return (
     <TouchableOpacity
@@ -52,7 +52,7 @@ function RenderPhase(props) {
       style={styles.detailsContainer}>
       <View style={styles.detailsTop}>
         <View style={styles.rowBetween}>
-          <Text style={{fontSize: 15}}>{subphase}</Text>
+          <Text style={{fontSize: 15}}>{subphase || subphase_title}</Text>
 
           <View style={styles.row}>
             {notifications ? (
@@ -118,7 +118,9 @@ function AddDialog(props) {
         <Formik
           validateOnBlur={false}
           validateOnChange={false}
-          initialValues={{subPhase: selectedPhase?.subphase}}
+          initialValues={{
+            subPhase: selectedPhase?.subphase || selectedPhase?.subphase_title,
+          }}
           validationSchema={schema}
           onSubmit={selectedPhase ? onUpdate : onSave}>
           {({values, errors, handleChange, handleBlur, handleSubmit}) => {
