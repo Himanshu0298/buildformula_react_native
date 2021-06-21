@@ -15,11 +15,13 @@ function RenderDetail({label, value}) {
 
 function BankDetailsSection(props) {
   const {bankDetails = {}, navigation, route} = props;
-  const {project_id, unit} = route?.params || {};
 
   const {bank_name, bank_branch, bank_address} = bankDetails?.details || {};
 
   const detailsAvailable = Object.keys(bankDetails?.details || {}).length > 0;
+
+  const navToAddBankDetails = () =>
+    navigation.navigate('AddBankDetails', {...route?.params});
 
   return (
     <View style={styles.container}>
@@ -42,9 +44,7 @@ function BankDetailsSection(props) {
           opacity={0.2}
           color={theme.colors.primary}
           style={styles.modifyButton}
-          onPress={() =>
-            navigation.navigate('AddBankDetails', {...route?.params})
-          }>
+          onPress={navToAddBankDetails}>
           <IconButton icon="pencil" size={18} color={theme.colors.primary} />
           <Text style={{color: theme.colors.primary}}>
             {detailsAvailable ? 'Modify Details' : 'Add Details'}

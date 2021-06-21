@@ -10,9 +10,6 @@ import BankDetailsSection from './Components/BankDetailsSection';
 import ShareFiles from './Components/ShareFiles';
 
 function BankLoans(props) {
-  const {route} = props;
-  const {project_id, unit} = route?.params || {};
-
   const [activityModal, setActivityModal] = React.useState(false);
   const [shareModal, setShareModal] = React.useState(false);
 

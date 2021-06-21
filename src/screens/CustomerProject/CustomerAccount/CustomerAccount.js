@@ -5,8 +5,15 @@ import {useSelector} from 'react-redux';
 import {Account} from 'screens/DeveloperProject/CustomerSection/CustomerSection/Components';
 
 function CustomerAccount(props) {
-  const {loading} = useSelector(state => state.project);
-  const {loading: customerDataLoading} = useSelector(state => state.customer);
+  const {navigation} = props;
+
+  const {loading, selectedUnit} = useSelector(state => state.project);
+  const {loading: customerDataLoading} = useSelector(s => s.customer);
+
+  React.useEffect(() => {
+    navigation.setParams({unit: selectedUnit});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedUnit]);
 
   return (
     <View style={styles.container}>

@@ -12,6 +12,9 @@ export default function useProjectActions() {
   const {getProjects, getProjectData, getProjectCommonData} = useProject();
 
   return {
+    setSelectedUnit: unit =>
+      dispatch({type: types.SET_SELECTED_UNIT, payload: unit}),
+
     getProjectData: projectId =>
       dispatch({
         type: types.GET_SELECTED_PROJECT,

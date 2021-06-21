@@ -52,7 +52,10 @@ function CustomerSection({bookingDetails, theme}) {
         />
         <RenderRow
           row={[
-            {label: 'Phone', value: customer_phone},
+            {
+              label: 'Phone',
+              value: customer_phone ? `+91 ${customer_phone}` : '',
+            },
             {label: 'Through broker', value: _.startCase(through_broker)},
           ]}
         />
@@ -85,7 +88,10 @@ function BrokerSection({bookingDetails, theme}) {
         />
         <RenderRow
           row={[
-            {label: 'Phone', value: broker_phone},
+            {
+              label: 'Phone',
+              value: broker_phone ? `+91 ${broker_phone}` : '',
+            },
             {label: 'Email', value: broker_email},
           ]}
         />
@@ -98,9 +104,7 @@ function BrokerSection({bookingDetails, theme}) {
 function RatesSection({bookingDetails, bookingAreaUnitType, theme}) {
   const {
     area_for_super_buildup,
-    area_for_super_buildup_unit,
     area_for_buildup,
-    area_for_buildup_unit,
     area_for_carpet,
     area_carpet_unit,
     rate_super_buildup,
@@ -178,7 +182,6 @@ function RatesSection({bookingDetails, bookingAreaUnitType, theme}) {
             <Caption style={{color: theme.colors.primary, marginTop: 10}}>
               Total Basic Amount
             </Caption>
-            <Caption>{}</Caption>
           </>
         ) : null}
         <View style={styles.totalContainer}>
@@ -310,14 +313,8 @@ function RenderFirstBigPaymentDetails({bookingDetails, theme}) {
       <View style={styles.sectionBody}>
         <RenderRow
           row={[
-            {
-              label: 'Percent',
-              value: `${first_big_amount_percentage} %`,
-            },
-            {
-              label: 'Amount',
-              value: `${instllment_first_amount} Rs.`,
-            },
+            {label: 'Percent', value: `${first_big_amount_percentage} %`},
+            {label: 'Amount', value: `${instllment_first_amount} Rs.`},
             {
               label: 'Date',
               value: dayjs(installment_date).format('DD MMM YYYY'),
@@ -395,10 +392,7 @@ function PaymentSection(props) {
               label: 'Payment method',
               value: `${bookingPaymentTypes[payment_type]}`,
             },
-            {
-              label: 'Bank chosen',
-              value: `${bookingBanks?.[bank]?.title}`,
-            },
+            {label: 'Bank chosen', value: `${bookingBanks?.[bank]?.title}`},
           ]}
         />
         <RenderRow
@@ -472,6 +466,7 @@ const styles = StyleSheet.create({
   },
   cell: {
     flex: 1,
+    paddingHorizontal: 3,
   },
   totalContainer: {
     padding: 10,

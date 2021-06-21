@@ -19,6 +19,7 @@ import _ from 'lodash';
 import RenderTextBox from 'components/Atoms/RenderTextbox';
 import FileSelector from 'components/Atoms/FileSelector';
 import {theme} from 'styles/theme';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const schema = Yup.object().shape({
   bank_name: Yup.string().trim().required('Required'),
@@ -158,10 +159,11 @@ function RenderForm({navigation, formikProps}) {
 
 function AddBankDetails(props) {
   const {route, navigation} = props;
-  const {project_id, unit} = route?.params || {};
+  const {unit} = route?.params || {};
   const {t} = useTranslation();
 
-  const {bankDetails} = useSelector(({customer}) => customer);
+  const {bankDetails, loading} = useSelector(({customer}) => customer);
+  const {selectedProject} = useSelector(s => s.project);
 
   const {updateBankDetails, getBankDetails} = useCustomerActions();
 
@@ -174,6 +176,7 @@ function AddBankDetails(props) {
 
   return (
     <View style={styles.container}>
+      <Spinner visible={loading} textContent={''} />
       <KeyboardAwareScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollView}>
@@ -194,8 +197,8 @@ function AddBankDetails(props) {
           onSubmit={async values => {
             const formData = new FormData();
 
-            formData.append('project_id', project_id);
-            formData.append('unit_id', unit.unitId);
+            formData.append('project_id', selectedProject.id);
+            formData.append('unit_id', unit.unitId || unit.unit_id);
             formData.append('bank_name', values.bank_name);
             formData.append('bank_branch', values.bank_branch);
             formData.append('bank_address', values.bank_address);
@@ -211,7 +214,10 @@ function AddBankDetails(props) {
             formData.append('installment_amount', values.installment_amount);
 
             updateBankDetails(formData).then(() => {
-              getBankDetails({project_id, unit_id: unit.unitId});
+              getBankDetails({
+                project_id: selectedProject.id,
+                unit_id: unit.unitId || unit.unit_id,
+              });
               navigation.goBack();
             });
           }}>

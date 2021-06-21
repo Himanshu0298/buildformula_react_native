@@ -21,6 +21,7 @@ import {useSelector} from 'react-redux';
 import useCustomerActions from 'redux/actions/customerActions';
 import useImagePicker from 'utils/useImagePicker';
 import CustomCheckbox from 'components/Atoms/CustomCheckbox';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 //TODO: Add schema for customer
 const schema = Yup.object().shape({});
@@ -229,25 +230,26 @@ function RenderForm({formikProps, navigation, ...restProps}) {
 function AddCustomer(props) {
   const {navigation, route} = props;
   const {params} = route;
-  const {unit, project_id} = params;
+  const {unit} = params;
   const {t} = useTranslation();
 
   const {user} = useSelector(state => state.user);
+  const {selectedProject} = useSelector(state => state.project);
+  const {loading} = useSelector(state => state.customer);
 
   const {getCustomerDetails, addCustomer} = useCustomerActions();
-
-  console.log('----->unit.unitId ', unit.unitId);
 
   const getUpdatedCustomers = unit_id => {
     const formData = new FormData();
     formData.append('user_id', user.id);
-    formData.append('project_id', project_id);
+    formData.append('project_id', selectedProject.id);
     formData.append('unit_id', unit.unitId);
     getCustomerDetails(formData);
   };
 
   return (
     <View style={styles.container}>
+      <Spinner visible={loading} textContent={''} />
       <KeyboardAwareScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollView}
@@ -267,7 +269,7 @@ function AddCustomer(props) {
           validationSchema={schema}
           onSubmit={async values => {
             const formData = new FormData();
-            formData.append('project_id', project_id);
+            formData.append('project_id', selectedProject.id);
             formData.append('unit_id', unit.unit_id);
             formData.append('user_id', user.id);
             formData.append('customer_full_name', values.customer_full_name);

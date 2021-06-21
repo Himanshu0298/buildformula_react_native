@@ -4,6 +4,7 @@ import {
   GET_PROJECTS,
   GET_PROJECT_COMMON_DATA,
   GET_SELECTED_PROJECT,
+  SET_SELECTED_UNIT,
 } from './../actions/actionTypes';
 
 const persistConfig = {
@@ -25,6 +26,12 @@ const initialState = {
 const reducer = (state = initialState, action = {}) => {
   const {type, payload} = action;
   switch (type) {
+    case SET_SELECTED_UNIT:
+      return {
+        ...state,
+        selectedUnit: payload,
+      };
+
     case `${GET_SELECTED_PROJECT}_PENDING`:
       return {
         ...state,

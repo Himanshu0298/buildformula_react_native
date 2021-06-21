@@ -1,5 +1,5 @@
 import React from 'react';
-import Ownership from './CustomerHome';
+import Ownership from './Ownership';
 import ProjectLayout from 'components/Molecules/Layout/ProjectLayout';
 
 export default props => {

@@ -6,12 +6,18 @@ import useCustomerActions from 'redux/actions/customerActions';
 import useProjectActions from 'redux/actions/projectActions';
 import {Details} from 'screens/DeveloperProject/CustomerSection/CustomerSection/Components';
 
-function CustomerHome(props) {
+function Ownership(props) {
   const {route, navigation} = props;
   const {project} = route?.params || {};
-  const {id: project_id, unit_id} = project;
+  const {id: project_id, unit_info} = project;
+  unit_info.unit_id = unit_info.id;
+  const {unit_id} = unit_info;
 
-  const {getProjectData, getProjectCommonData} = useProjectActions();
+  const {
+    getProjectData,
+    getProjectCommonData,
+    setSelectedUnit,
+  } = useProjectActions();
   const {
     getCustomerDetails,
     getBookingDetails,
@@ -25,7 +31,8 @@ function CustomerHome(props) {
   const {user} = useSelector(state => state.user);
 
   React.useEffect(() => {
-    navigation.setParams({unit: {unitId: unit_id}});
+    setSelectedUnit(unit_info);
+    navigation.setParams({unit: unit_info});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [unit_id]);
 
@@ -54,4 +61,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CustomerHome;
+export default Ownership;
