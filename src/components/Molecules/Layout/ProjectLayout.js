@@ -8,7 +8,7 @@ function ProjectLayout(props) {
   const {header = true, showTimer, tab = true, children} = props;
   return (
     <View style={{flex: 1}}>
-      {header ? <ProjectHeader showTimer={showTimer} /> : null}
+      {header ? <ProjectHeader {...props} showTimer={showTimer} /> : null}
       <View style={{flex: 1, flexGrow: 1}}>{children}</View>
       {tab ? <BottomAppBar /> : null}
     </View>

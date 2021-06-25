@@ -1,32 +1,52 @@
 import React from 'react';
 import {Subheading, Badge, withTheme} from 'react-native-paper';
-import {View, TouchableOpacity, StyleSheet} from 'react-native';
+import {View, TouchableOpacity, StyleSheet, Image} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useSelector} from 'react-redux';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import Timer from 'components/Atoms/Timer';
+import {useNavigation} from '@react-navigation/native';
+import logo from 'assets/images/logo.png';
 
-function ProjectHeader({theme, showTimer}) {
+function ProjectHeader(props) {
+  const {theme, showTimer, showLogo} = props;
+  const navigation = useNavigation();
+
   const {selectedProject} = useSelector(state => state.project);
+
+  const navToNotification = () => {
+    navigation.navigate('Notification', {showLogo});
+  };
+
+  const navToProfile = () => {
+    navigation.navigate('Profile');
+  };
 
   return (
     <SafeAreaView edges={['right', 'top', 'left']}>
       <View style={styles.header}>
         <View style={styles.logoContainer}>
           <Subheading style={{fontSize: 14}}>
-            {selectedProject.project_name}
+            {showLogo ? (
+              <Image source={logo} style={styles.banner} />
+            ) : (
+              selectedProject?.project_name
+            )}
           </Subheading>
         </View>
         <View style={styles.rightContainer}>
           <Timer displayTimer={showTimer} />
-          <TouchableOpacity style={styles.bellContainer}>
+          <TouchableOpacity
+            style={styles.bellContainer}
+            onPress={navToNotification}>
             <MaterialCommunityIcons name={'bell'} color={'#000'} size={20} />
             <Badge size={10} style={styles.badge} />
           </TouchableOpacity>
           <OpacityButton
             color={theme.colors.primary}
+            onPress={navToProfile}
             style={{marginLeft: 15, borderRadius: 20}}>
             <MaterialIcons
               name={'person'}
@@ -65,5 +85,9 @@ const styles = StyleSheet.create({
     right: 0,
     borderWidth: 1,
     borderColor: '#fff',
+  },
+  banner: {
+    width: 160,
+    height: 20,
   },
 });

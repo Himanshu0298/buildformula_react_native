@@ -8,12 +8,9 @@ import {
   ScrollView,
   RefreshControl,
 } from 'react-native';
-import {Badge, withTheme, Subheading, Caption, FAB} from 'react-native-paper';
-import logo from 'assets/images/logo.png';
+import {withTheme, Subheading, Caption, FAB} from 'react-native-paper';
 import developerImage from 'assets/images/developer_building.png';
 import supplierImage from 'assets/images/supplier_building.png';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialTabs from 'react-native-material-tabs';
 import {getShadow} from 'utils';
 import useProjectActions from '../../redux/actions/projectActions';
@@ -23,9 +20,8 @@ import Layout from 'utils/Layout';
 import {useAlert} from 'components/Atoms/Alert';
 import LottieView from 'lottie-react-native';
 import waiting from 'assets/animation/waiting.json';
-import {COLORS} from 'utils/constant';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import useAddProjectActions from 'redux/actions/addProjectActions';
+import ProjectHeader from 'components/Molecules/Layout/ProjectHeader';
 
 const IMAGES = {
   Developer: developerImage,
@@ -36,35 +32,6 @@ const IMAGES = {
 const PROJECT_CONTAINER_WIDTH = Layout.window.width * 0.435;
 const PROJECT_CONTAINER_MARGIN = Layout.window.width * 0.02;
 const DEVELOPER_IMAGE_WIDTH = PROJECT_CONTAINER_WIDTH * 0.9;
-
-function RenderHeader({theme}) {
-  return (
-    <SafeAreaView edges={['right', 'top', 'left']}>
-      <View style={styles.header}>
-        <View style={styles.logoContainer}>
-          <Image source={logo} style={styles.banner} />
-        </View>
-        <View style={styles.rightContainer}>
-          <TouchableOpacity style={styles.bellContainer}>
-            <MaterialCommunityIcons name={'bell'} color={'#000'} size={20} />
-            <Badge size={10} style={styles.badge} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.personContainer,
-              {backgroundColor: COLORS.primaryLight},
-            ]}>
-            <MaterialIcons
-              name={'person'}
-              color={theme.colors.primary}
-              size={19}
-            />
-          </TouchableOpacity>
-        </View>
-      </View>
-    </SafeAreaView>
-  );
-}
 
 function RenderProject({project, handleOnPress, tab}) {
   return (
@@ -182,7 +149,7 @@ function Home(props) {
         <Spinner visible={loading} textContent={''} />
         <StatusBar barStyle="light-content" />
         <View style={styles.headerContainer}>
-          <RenderHeader theme={theme} />
+          <ProjectHeader showLogo={true} />
           {/* TODO: update tab implementation */}
           {tabs.length > 1 ? (
             <MaterialTabs
@@ -245,37 +212,6 @@ const styles = StyleSheet.create({
   headerContainer: {
     ...getShadow(5),
     backgroundColor: '#fff',
-  },
-  header: {
-    flexDirection: 'row',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  logoContainer: {},
-  banner: {
-    width: 160,
-    height: 20,
-  },
-  rightContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  bellContainer: {
-    position: 'relative',
-  },
-  badge: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    borderWidth: 1,
-    borderColor: '#fff',
-  },
-  personContainer: {
-    marginLeft: 15,
-    padding: 5,
-    borderRadius: 20,
   },
   fab: {
     position: 'absolute',
