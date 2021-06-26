@@ -47,5 +47,14 @@ export default function useProjectManagement() {
     deleteSubPhase: data => {
       return instance.post('/projectplaning/subphase/delete', data, params);
     },
+    getGeneralPhaseActivities: data => {
+      return instance.post('/generalactivity/lists', data, params);
+    },
+    addGeneralPhaseActivity: data => {
+      return instance.post('/generalactivity/add', data, params);
+    },
+    updateGeneralActivity: data => {
+      return instance.post('/generalactivity/update', data, params);
+    },
   };
 }

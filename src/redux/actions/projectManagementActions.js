@@ -23,6 +23,9 @@ export default function useProjectManagementActions() {
     updateSubPhase,
     deleteSubPhase,
     updatePhaseOrder,
+    getGeneralPhaseActivities,
+    addGeneralPhaseActivity,
+    updateGeneralActivity,
   } = useProjectManagement();
 
   return {
@@ -257,6 +260,49 @@ export default function useProjectManagementActions() {
             const res = _res(await deleteSubPhase(data));
             snackbar.showMessage({message: res.msg});
             return Promise.resolve(res.data.lists);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    getGeneralPhaseActivities: data =>
+      dispatch({
+        type: types.GET_PHASE_ACTIVITIES,
+        payload: async () => {
+          try {
+            const res = _res(await getGeneralPhaseActivities(data));
+            return Promise.resolve(res);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    addGeneralPhaseActivity: data =>
+      dispatch({
+        type: types.ADD_PHASE_ACTIVITY,
+        payload: async () => {
+          try {
+            const res = _res(await addGeneralPhaseActivity(data));
+            return Promise.resolve(res);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    updateGeneralActivity: data =>
+      dispatch({
+        type: types.UPDATE_PHASE_ACTIVITY,
+        payload: async () => {
+          try {
+            const res = _res(await updateGeneralActivity(data));
+            return Promise.resolve(res);
           } catch (error) {
             const message = _err(error);
             snackbar.showMessage({message, variant: 'error'});

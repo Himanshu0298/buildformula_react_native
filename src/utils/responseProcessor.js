@@ -31,7 +31,10 @@ export function useResProcessor() {
     _res: response => {
       const {data} = response;
 
-      if (data.status) {
+      if (
+        data.status ||
+        (!data?.data?.length && data?.msg.toLowerCase().includes('no'))
+      ) {
         return data;
       } else {
         throw {response};

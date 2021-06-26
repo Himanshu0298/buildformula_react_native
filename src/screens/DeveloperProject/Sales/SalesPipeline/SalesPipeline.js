@@ -168,6 +168,13 @@ function AddContactDialog({open, t, handleClose, moveContact}) {
     return visitorSuggestions;
   }, [searchQuery, visitorSuggestions]);
 
+  const onSearch = v => {
+    setSearchQuery(v);
+    if (!v || (v && selectedVisitor)) {
+      setSelectedVisitor();
+    }
+  };
+
   return (
     <View>
       <Portal>
@@ -183,12 +190,7 @@ function AddContactDialog({open, t, handleClose, moveContact}) {
                 placeholder={t('label_search_visitors')}
                 style={styles.searchBar}
                 value={searchQuery}
-                onChangeText={v => {
-                  setSearchQuery(v);
-                  if (!v || (v && selectedVisitor)) {
-                    setSelectedVisitor();
-                  }
-                }}
+                onChangeText={onSearch}
               />
 
               {filteredVisitors.length > 0 ? (

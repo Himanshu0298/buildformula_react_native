@@ -1,15 +1,12 @@
 import React, {useState} from 'react';
 import {StyleSheet, View} from 'react-native';
-import {IconButton, Subheading, Text, withTheme} from 'react-native-paper';
-import Modal from 'react-native-modal';
-import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
-import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {IconButton, Text, withTheme} from 'react-native-paper';
 import {RenderError} from 'components/Atoms/RenderInput';
 import RenderTextBox from 'components/Atoms/RenderTextbox';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import CustomDialog from 'components/Atoms/CustomDialog';
 
 function AddDescriptionDialog(props) {
-  const {theme, open, handleClose, handleSubmit} = props;
+  const {handleSubmit} = props;
 
   const [error, setError] = useState('');
   const [description, setDescription] = useState('');
@@ -24,64 +21,23 @@ function AddDescriptionDialog(props) {
   };
 
   return (
-    <Modal
-      isVisible={open}
-      backdropOpacity={0.4}
-      onBackButtonPress={handleClose}
-      onBackdropPress={handleClose}
-      style={{justifyContent: 'flex-end', margin: 0}}>
-      <View style={styles.modalContainer}>
-        <SafeAreaView>
-          <View style={styles.headerContainer}>
-            <View style={styles.titleContainer}>
-              <Subheading style={{color: theme.colors.primary}}>
-                Description
-              </Subheading>
-            </View>
-            <View style={styles.actionContainer}>
-              <OpacityButton
-                opacity={0.1}
-                color={theme.colors.primary}
-                style={{borderRadius: 50, marginRight: 10}}
-                onPress={submitForm}>
-                <MaterialIcon
-                  name="check"
-                  color={theme.colors.primary}
-                  size={18}
-                />
-              </OpacityButton>
-              <OpacityButton
-                opacity={0.1}
-                color={theme.colors.error}
-                style={{borderRadius: 50}}
-                onPress={handleClose}>
-                <MaterialIcon
-                  name="close"
-                  color={theme.colors.error}
-                  size={18}
-                />
-              </OpacityButton>
-            </View>
+    <CustomDialog {...props} title="Description" submitForm={submitForm}>
+      <View style={styles.contentContainer}>
+        {error ? (
+          <View style={styles.errorContainer}>
+            <RenderError error={error} />
           </View>
+        ) : null}
 
-          <View style={styles.contentContainer}>
-            {error ? (
-              <View style={styles.errorContainer}>
-                <RenderError error={error} />
-              </View>
-            ) : null}
-
-            <RenderTextBox
-              name="description"
-              label={'Description'}
-              value={description}
-              onChangeText={setDescription}
-              numberOfLines={6}
-            />
-          </View>
-        </SafeAreaView>
+        <RenderTextBox
+          name="description"
+          label={'Description'}
+          value={description}
+          onChangeText={setDescription}
+          numberOfLines={6}
+        />
       </View>
-    </Modal>
+    </CustomDialog>
   );
 }
 
@@ -125,21 +81,6 @@ const styles = StyleSheet.create({
   },
   plusButton: {
     backgroundColor: '#fff',
-  },
-  headerContainer: {
-    padding: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  titleContainer: {},
-  actionContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  modalContainer: {
-    backgroundColor: '#fff',
-    height: '100%',
   },
   errorContainer: {
     marginBottom: 10,

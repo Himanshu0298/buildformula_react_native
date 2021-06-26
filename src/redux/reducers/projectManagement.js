@@ -1,5 +1,6 @@
 import {
   ADD_PHASE,
+  ADD_PHASE_ACTIVITY,
   ADD_SUB_PHASE,
   CREATE_LINEUP_ENTITY,
   DELETE_LINEUP_ENTITY,
@@ -7,6 +8,7 @@ import {
   DELETE_SUB_PHASE,
   GET_MILESTONES,
   GET_PHASES,
+  GET_PHASE_ACTIVITIES,
   GET_SELECTED_PROJECT,
   GET_SUB_PHASES,
   GET_WORKS,
@@ -16,6 +18,7 @@ import {
   UPDATE_LINEUP_ENTITY,
   UPDATE_MILESTONE_ORDER,
   UPDATE_PHASE,
+  UPDATE_PHASE_ACTIVITY,
   UPDATE_PHASE_ORDER,
   UPDATE_SUB_PHASE,
 } from './../actions/actionTypes';
@@ -29,6 +32,7 @@ const initialState = {
   works: [],
   phases: [],
   subPhases: [],
+  activities: [],
 };
 
 const reducer = (state = initialState, action = {}) => {
@@ -160,6 +164,24 @@ const reducer = (state = initialState, action = {}) => {
         refreshing: false,
       };
 
+    case `${GET_PHASE_ACTIVITIES}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+        activities: [],
+      };
+    case `${GET_PHASE_ACTIVITIES}_FULFILLED`:
+      return {
+        ...state,
+        loading: false,
+        activities: payload.data,
+      };
+    case `${GET_PHASE_ACTIVITIES}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+      };
+
     case `${CREATE_LINEUP_ENTITY}_PENDING`:
     case `${UPDATE_MILESTONE_ORDER}_PENDING`:
     case `${UPDATE_LINEUP_ENTITY}_PENDING`:
@@ -171,6 +193,8 @@ const reducer = (state = initialState, action = {}) => {
     case `${UPDATE_SUB_PHASE}_PENDING`:
     case `${DELETE_SUB_PHASE}_PENDING`:
     case `${UPDATE_PHASE_ORDER}_PENDING`:
+    case `${ADD_PHASE_ACTIVITY}_PENDING`:
+    case `${UPDATE_PHASE_ACTIVITY}_PENDING`:
       return {
         ...state,
         loading: true,
@@ -186,6 +210,8 @@ const reducer = (state = initialState, action = {}) => {
     case `${UPDATE_SUB_PHASE}_FULFILLED`:
     case `${DELETE_SUB_PHASE}_FULFILLED`:
     case `${UPDATE_PHASE_ORDER}_FULFILLED`:
+    case `${ADD_PHASE_ACTIVITY}_FULFILLED`:
+    case `${UPDATE_PHASE_ACTIVITY}_FULFILLED`:
       return {
         ...state,
         loading: false,
@@ -201,6 +227,8 @@ const reducer = (state = initialState, action = {}) => {
     case `${UPDATE_SUB_PHASE}_REJECTED`:
     case `${DELETE_SUB_PHASE}_REJECTED`:
     case `${UPDATE_PHASE_ORDER}_REJECTED`:
+    case `${ADD_PHASE_ACTIVITY}_REJECTED`:
+    case `${UPDATE_PHASE_ACTIVITY}_REJECTED`:
       return {
         ...state,
         loading: false,
