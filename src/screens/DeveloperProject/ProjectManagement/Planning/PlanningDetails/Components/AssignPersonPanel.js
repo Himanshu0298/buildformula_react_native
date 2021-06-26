@@ -57,7 +57,11 @@ function AssignPersonDialog(props) {
   return (
     <CustomDialog {...props} title="Assign Person" submitForm={submitForm}>
       <View style={styles.contentContainer}>
-        <Subheading>Select your bank person</Subheading>
+        <Subheading>
+          {selectedUsers.length
+            ? `${selectedUsers.length} selected`
+            : 'Select your bank person'}
+        </Subheading>
         <Searchbar
           style={styles.searchBar}
           value={searchQuery}
