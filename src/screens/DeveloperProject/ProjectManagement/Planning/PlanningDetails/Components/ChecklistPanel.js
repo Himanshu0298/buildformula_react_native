@@ -6,18 +6,20 @@ import React, {useState} from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
 import {IconButton, Text, withTheme, TextInput} from 'react-native-paper';
 
+const CHECKLIST_DATA = [
+  {
+    title: 'Checklist heading',
+    items: [
+      {title: 'item 1', status: true},
+      {title: 'item 2', status: true},
+    ],
+  },
+];
+
 function AddChecklistDialog(props) {
   const {theme, handleSubmit} = props;
 
-  const [checklists, setChecklists] = useState([
-    {
-      title: 'Checklist heading',
-      items: [
-        {title: 'item 1', status: true},
-        {title: 'item 2', status: true},
-      ],
-    },
-  ]);
+  const [checklists, setChecklists] = useState(CHECKLIST_DATA);
   const [checklistName, setChecklistName] = useState();
   const [itemName, setItemName] = useState();
   const [addItemIndex, setAddItemIndex] = useState();
@@ -28,7 +30,7 @@ function AddChecklistDialog(props) {
   const addChecklist = () => {
     const _checklists = cloneDeep(checklists);
 
-    _checklists.push({title: checklistName});
+    _checklists.push({title: checklistName, items: []});
 
     setChecklists(_checklists);
     setChecklistName();
@@ -67,7 +69,7 @@ function AddChecklistDialog(props) {
   };
 
   return (
-    <CustomDialog {...props} title="Description" submitForm={submitForm}>
+    <CustomDialog {...props} title="Checklist" submitForm={submitForm}>
       <View style={styles.contentContainer}>
         <RenderInput
           id="checklistName"
