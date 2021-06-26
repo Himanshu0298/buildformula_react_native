@@ -6,6 +6,7 @@ import sales from './sales';
 import customer from './customer';
 import files from './files';
 import projectManagement from './projectManagement';
+import role from './role';
 
 const reducers = {
   app,
@@ -16,6 +17,7 @@ const reducers = {
   customer,
   files,
   projectManagement,
+  role,
 };
 
 export default reducers;

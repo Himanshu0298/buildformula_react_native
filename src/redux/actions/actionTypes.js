@@ -89,3 +89,7 @@ export const REFRESH_SUB_PHASES = 'REFRESH_SUB_PHASES';
 export const ADD_SUB_PHASE = 'ADD_SUB_PHASE';
 export const UPDATE_SUB_PHASE = 'UPDATE_SUB_PHASE';
 export const DELETE_SUB_PHASE = 'DELETE_SUB_PHASE';
+
+// For Role and Members
+export const GET_MEMBERS = 'GET_MEMBERS';
+export const GET_ROLES = 'GET_ROLES';

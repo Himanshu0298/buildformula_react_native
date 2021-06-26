@@ -2,7 +2,14 @@ import MaterialTabBar from 'components/Atoms/MaterialTabBar';
 import ProjectHeader from 'components/Molecules/Layout/ProjectHeader';
 import * as React from 'react';
 import {useState} from 'react';
-import {StyleSheet, Text, View, FlatList, ScrollView} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+  ScrollView,
+  RefreshControl,
+} from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {
   withTheme,
@@ -15,25 +22,21 @@ import {
 } from 'react-native-paper';
 import {TabView} from 'react-native-tab-view';
 import {useSelector} from 'react-redux';
+import useRoleActions from 'redux/actions/roleActions';
 import Layout from 'utils/Layout';
-
-const USERS = [
-  {roles: ['Layout']},
-  {roles: ['Layout', 'Layout', 'Layout', 'Layout', 'Layout']},
-  {roles: ['Layout', 'Layout', 'Layout', 'Layout']},
-  {roles: ['Layout', 'Layout', 'Layout']},
-];
 
 const ROLES = ['Layout', 'Layout', 'Layout', 'Layout', 'Layout'];
 
 function RenderUserCard(props) {
   const {item, index, menuIndex, toggleMenu, onDelete, onUpdate} = props;
-  const {roles} = item;
+  const {first_name, last_name, roles = [], phone, email} = item;
 
   return (
     <View style={styles.userCardContainer}>
       <View style={styles.rowBetween}>
-        <Text>Unnat Thamma</Text>
+        <Text>
+          {first_name} {last_name}
+        </Text>
         <Menu
           visible={index === menuIndex}
           contentStyle={{borderRadius: 10}}
@@ -59,25 +62,31 @@ function RenderUserCard(props) {
         </Menu>
       </View>
       <View style={styles.rowBetween}>
-        <Caption>+91 6546 980008</Caption>
-        <Caption>unaattamma@xyz.com</Caption>
+        <Caption>{phone ? `+91 ${phone}` : 'NA'}</Caption>
+        <Caption>{email || 'NA'}</Caption>
       </View>
-      <Divider style={{marginVertical: 10}} />
-      <View style={styles.userRoleContainer}>
-        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-          {roles.map((role, i) => (
-            <Chip key={i} style={{marginHorizontal: 5}}>
-              {role}
-            </Chip>
-          ))}
-        </ScrollView>
-      </View>
+      {roles.length ? (
+        <>
+          <Divider style={{marginVertical: 10}} />
+          <View style={styles.userRoleContainer}>
+            <ScrollView
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}>
+              {roles.map((role, i) => (
+                <Chip key={i} style={{marginHorizontal: 5}}>
+                  {role}
+                </Chip>
+              ))}
+            </ScrollView>
+          </View>
+        </>
+      ) : null}
     </View>
   );
 }
 
 function RenderUsers(props) {
-  const {navigation, theme} = props;
+  const {navigation, theme, members, getMemberData} = props;
 
   const [menuIndex, setMenuIndex] = useState(false);
 
@@ -92,9 +101,12 @@ function RenderUsers(props) {
   return (
     <View style={styles.contentContainer}>
       <FlatList
-        data={USERS}
-        extraData={USERS}
+        data={members}
+        extraData={members}
         keyExtractor={(_, i) => i.toString()}
+        refreshControl={
+          <RefreshControl refreshing={false} onRefresh={getMemberData} />
+        }
         renderItem={({item, index}) => (
           <RenderUserCard
             {...{item, index, menuIndex, toggleMenu, onDelete, onUpdate}}
@@ -112,11 +124,12 @@ function RenderUsers(props) {
 
 function RenderRole(props) {
   const {item, index, menuIndex, toggleMenu, onDelete, onUpdate} = props;
+  const {role_name} = item;
 
   return (
     <View style={styles.rolePanelContainer}>
       <View style={styles.rowBetween}>
-        <Text>General manager</Text>
+        <Text>{role_name}</Text>
         <Menu
           visible={index === menuIndex}
           contentStyle={{borderRadius: 10}}
@@ -146,7 +159,7 @@ function RenderRole(props) {
 }
 
 function RenderRoles(props) {
-  const {navigation, theme} = props;
+  const {navigation, theme, roles, getRoleData} = props;
 
   const [menuIndex, setMenuIndex] = useState(false);
 
@@ -161,9 +174,12 @@ function RenderRoles(props) {
   return (
     <View style={styles.contentContainer}>
       <FlatList
-        data={ROLES}
-        extraData={ROLES}
+        data={roles}
+        extraData={roles}
         keyExtractor={(_, i) => i.toString()}
+        refreshControl={
+          <RefreshControl refreshing={false} onRefresh={getRoleData} />
+        }
         renderItem={({item, index}) => (
           <>
             <RenderRole
@@ -185,7 +201,10 @@ function RenderRoles(props) {
 }
 
 function Roles(props) {
-  const {loading} = useSelector(s => s.user);
+  const {selectedProject} = useSelector(s => s.project);
+  const {members, loading, roles} = useSelector(s => s.role);
+
+  const {getMembers, getRoles} = useRoleActions();
 
   const [selectedTab, setSelectedTab] = React.useState(0);
   const [routes] = React.useState([
@@ -193,11 +212,30 @@ function Roles(props) {
     {key: 1, title: 'Roles'},
   ]);
 
+  React.useEffect(() => {
+    getMemberData();
+    getRoleData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const getMemberData = () => getMembers({project_id: selectedProject.id});
+  const getRoleData = () => getRoles({project_id: selectedProject.id});
+
   const renderScene = ({route: {key}}) => {
-    if (key) {
-      return <RenderRoles {...props} />;
+    switch (key) {
+      case 0:
+        return (
+          <RenderUsers
+            {...props}
+            members={members}
+            getMemberData={getMemberData}
+          />
+        );
+      case 1:
+        return (
+          <RenderRoles {...props} roles={roles} getRoleData={getRoleData} />
+        );
     }
-    return <RenderUsers {...props} />;
   };
 
   return (
