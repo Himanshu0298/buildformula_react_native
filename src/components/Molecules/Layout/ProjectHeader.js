@@ -1,5 +1,5 @@
 import React from 'react';
-import {Subheading, Badge, withTheme} from 'react-native-paper';
+import {Subheading, Badge, withTheme, Avatar} from 'react-native-paper';
 import {View, TouchableOpacity, StyleSheet, Image} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -15,6 +15,7 @@ function ProjectHeader(props) {
   const navigation = useNavigation();
 
   const {selectedProject} = useSelector(state => state.project);
+  const {user} = useSelector(state => state.user);
 
   const navToNotification = () => {
     navigation.navigate('Notification', {showLogo});
@@ -44,16 +45,25 @@ function ProjectHeader(props) {
             <MaterialCommunityIcons name={'bell'} color={'#000'} size={20} />
             <Badge size={10} style={styles.badge} />
           </TouchableOpacity>
-          <OpacityButton
-            color={theme.colors.primary}
-            onPress={navToProfile}
-            style={{marginLeft: 15, borderRadius: 20}}>
-            <MaterialIcons
-              name={'person'}
+
+          {user?.profile_url ? (
+            <TouchableOpacity
+              onPress={navToProfile}
+              style={styles.profileIconContainer}>
+              <Avatar.Image size={23} source={{uri: user.profile_url}} />
+            </TouchableOpacity>
+          ) : (
+            <OpacityButton
               color={theme.colors.primary}
-              size={19}
-            />
-          </OpacityButton>
+              onPress={navToProfile}
+              style={styles.profileIconContainer}>
+              <MaterialIcons
+                name={'person'}
+                color={theme.colors.primary}
+                size={19}
+              />
+            </OpacityButton>
+          )}
         </View>
       </View>
     </SafeAreaView>
@@ -89,5 +99,9 @@ const styles = StyleSheet.create({
   banner: {
     width: 160,
     height: 20,
+  },
+  profileIconContainer: {
+    marginLeft: 15,
+    borderRadius: 20,
   },
 });
