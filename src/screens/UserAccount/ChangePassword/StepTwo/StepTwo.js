@@ -1,12 +1,14 @@
 import OtpInput from 'components/Atoms/OtpInput';
-import RenderInput, {RenderError} from 'components/Atoms/RenderInput';
+import {RenderError} from 'components/Atoms/RenderInput';
 import {Formik} from 'formik';
 import * as React from 'react';
-import {useTranslation} from 'react-i18next';
+import {useEffect} from 'react';
 import {StyleSheet, View} from 'react-native';
+import Spinner from 'react-native-loading-spinner-overlay';
 import {Button, Caption, Subheading, withTheme} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useSelector} from 'react-redux';
+import useUserActions from 'redux/actions/userActions';
 import * as Yup from 'yup';
 
 const schema = Yup.object().shape({
@@ -14,24 +16,36 @@ const schema = Yup.object().shape({
 });
 
 function StepTwo(props) {
-  const {theme, navigation} = props;
+  const {navigation} = props;
 
-  const {t} = useTranslation();
+  const {sendForgetPasswordOtp, verifyForgotPasswordOtp} = useUserActions();
 
-  const {user} = useSelector(state => state.user);
+  const {user, loading} = useSelector(state => state.user);
+
+  useEffect(() => {
+    sendForgetPasswordOtp({email: user.email});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const onSubmit = async (values, {resetForm}) => {
+    verifyForgotPasswordOtp({...values, user_id: user.id})
+      .then(() => {
+        resetForm();
+        navigation.navigate('ChangePasswordStepThree');
+      })
+      .catch(() => resetForm());
+  };
 
   return (
     <View style={styles.container}>
+      <Spinner visible={loading} textContent="" />
       <SafeAreaView>
         <Formik
           validateOnBlur={false}
           validateOnChange={false}
           initialValues={{}}
           validationSchema={schema}
-          onSubmit={async (values, {resetForm}) => {
-            resetForm();
-            navigation.navigate('ChangePasswordStepThree');
-          }}>
+          onSubmit={onSubmit}>
           {({values, errors, handleChange, setFieldValue, handleSubmit}) => (
             <View style={styles.contentContainer}>
               <Subheading>Reset Password</Subheading>

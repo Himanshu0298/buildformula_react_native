@@ -4,6 +4,7 @@ import * as React from 'react';
 import {useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {StyleSheet, View} from 'react-native';
+import Spinner from 'react-native-loading-spinner-overlay';
 import {
   Button,
   Caption,
@@ -12,6 +13,8 @@ import {
   withTheme,
 } from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {useSelector} from 'react-redux';
+import useUserActions from 'redux/actions/userActions';
 import * as Yup from 'yup';
 
 const schema = Yup.object().shape({
@@ -26,9 +29,13 @@ const schema = Yup.object().shape({
 });
 
 function StepThree(props) {
-  const {theme, navigation} = props;
+  const {navigation} = props;
 
   const {t} = useTranslation();
+
+  const {resetPassword} = useUserActions();
+
+  const {loading, user} = useSelector(state => state.user);
 
   const [showPassword, setShowPassword] = useState(false);
   const [showCnfPass, toggleShowCnfPass] = useState(false);
@@ -36,17 +43,25 @@ function StepThree(props) {
   const cnfPassRef = React.useRef();
   const passwordRef = React.useRef();
 
+  const onSubmit = async (values, {resetForm}) => {
+    resetPassword({new_password: values.password, user_id: user.id})
+      .then(() => {
+        navigation.popToTop();
+        navigation.goBack();
+      })
+      .catch(() => resetForm());
+  };
+
   return (
     <View style={styles.container}>
+      <Spinner visible={loading} textContent="" />
       <SafeAreaView>
         <Formik
           validateOnBlur={false}
           validateOnChange={false}
           initialValues={{}}
           validationSchema={schema}
-          onSubmit={async values => {
-            navigation.pop(2);
-          }}>
+          onSubmit={onSubmit}>
           {({values, errors, handleChange, handleBlur, handleSubmit}) => (
             <View style={styles.contentContainer}>
               <Subheading>Reset Password</Subheading>
