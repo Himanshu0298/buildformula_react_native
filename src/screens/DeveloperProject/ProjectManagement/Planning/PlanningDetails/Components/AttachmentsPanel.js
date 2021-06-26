@@ -17,9 +17,10 @@ function AddAttachmentDialog(props) {
     <CustomDialog {...props} title="Attachments" submitForm={submitForm}>
       <View style={styles.contentContainer}>
         <ScrollView>
-          {files.map(file => {
+          {files.map((file, index) => {
             return (
               <View
+                key={index}
                 style={[
                   styles.fileContainer,
                   {borderColor: theme.colors.primary},
@@ -113,7 +114,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   contentContainer: {
-    padding: 10,
+    paddingHorizontal: 15,
     flexGrow: 1,
   },
   addButtonContainer: {

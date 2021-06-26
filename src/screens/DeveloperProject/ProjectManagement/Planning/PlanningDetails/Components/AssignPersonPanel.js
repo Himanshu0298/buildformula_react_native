@@ -145,10 +145,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   errorContainer: {
-    marginBottom: 10,
+    marginVertical: 10,
   },
   contentContainer: {
     padding: 15,
+    flexGrow: 1,
   },
   searchBar: {
     backgroundColor: '#EAECF11A',

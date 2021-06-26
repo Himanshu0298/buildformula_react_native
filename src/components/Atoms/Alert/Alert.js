@@ -21,31 +21,29 @@ const CustomAlert = props => {
     ...dialogProps
   } = props;
   return (
-    <View>
-      <Portal>
-        <Dialog visible={open} onDismiss={handleClose} {...dialogProps}>
-          {title ? <Dialog.Title>{title}</Dialog.Title> : null}
-          <Dialog.Content>
-            {content ? content : <Paragraph>{message}</Paragraph>}
-          </Dialog.Content>
-          <Dialog.Actions>
-            {showCancelButton ? (
-              <Button color={cancelButtonColor} onPress={handleClose}>
-                {cancelText}
-              </Button>
-            ) : null}
-            {showConfirmButton ? (
-              <Button
-                style={{minWidth: 80}}
-                color={confirmButtonColor}
-                onPress={handleConfirm}>
-                {confirmText}
-              </Button>
-            ) : null}
-          </Dialog.Actions>
-        </Dialog>
-      </Portal>
-    </View>
+    <Portal>
+      <Dialog visible={open} onDismiss={handleClose} {...dialogProps}>
+        {title ? <Dialog.Title>{title}</Dialog.Title> : null}
+        <Dialog.Content>
+          {content ? content : <Paragraph>{message}</Paragraph>}
+        </Dialog.Content>
+        <Dialog.Actions>
+          {showCancelButton ? (
+            <Button color={cancelButtonColor} onPress={handleClose}>
+              {cancelText}
+            </Button>
+          ) : null}
+          {showConfirmButton ? (
+            <Button
+              style={{minWidth: 80}}
+              color={confirmButtonColor}
+              onPress={handleConfirm}>
+              {confirmText}
+            </Button>
+          ) : null}
+        </Dialog.Actions>
+      </Dialog>
+    </Portal>
   );
 };
 
