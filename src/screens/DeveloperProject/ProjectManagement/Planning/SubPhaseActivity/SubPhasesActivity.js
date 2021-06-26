@@ -157,7 +157,7 @@ function SubPhasesActivity(props) {
               size={18}
               style={{marginRight: 10}}
             />
-            <Title>{subPhase}</Title>
+            <Title>{subPhase.subphase_title || subPhase.subphase}</Title>
           </View>
         </TouchableOpacity>
       </View>

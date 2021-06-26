@@ -23,6 +23,9 @@ export default function useProjectManagement() {
     getPhases: data => {
       return instance.post('/projectplaning/phase/lists', data, params);
     },
+    updatePhaseOrder: data => {
+      return instance.post('/projectplaning/phase/sorting', data, params);
+    },
     addPhase: data => {
       return instance.post('/projectplaning/phase/add', data, params);
     },

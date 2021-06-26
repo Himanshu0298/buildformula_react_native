@@ -84,6 +84,7 @@ export const REFRESH_PHASES = 'REFRESH_PHASES';
 export const ADD_PHASE = 'ADD_PHASE';
 export const UPDATE_PHASE = 'UPDATE_PHASE';
 export const DELETE_PHASE = 'DELETE_PHASE';
+export const UPDATE_PHASE_ORDER = 'UPDATE_PHASE_ORDER';
 export const GET_SUB_PHASES = 'GET_SUB_PHASES';
 export const REFRESH_SUB_PHASES = 'REFRESH_SUB_PHASES';
 export const ADD_SUB_PHASE = 'ADD_SUB_PHASE';

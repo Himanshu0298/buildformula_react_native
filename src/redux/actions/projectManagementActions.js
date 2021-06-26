@@ -22,6 +22,7 @@ export default function useProjectManagementActions() {
     addSubPhase,
     updateSubPhase,
     deleteSubPhase,
+    updatePhaseOrder,
   } = useProjectManagement();
 
   return {
@@ -130,6 +131,20 @@ export default function useProjectManagementActions() {
         payload: async () => {
           try {
             const response = _res(await getPhases(data));
+            return Promise.resolve(response.data.lists);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    updatePhaseOrder: (data, refreshing) =>
+      dispatch({
+        type: types.UPDATE_PHASE_ORDER,
+        payload: async () => {
+          try {
+            const response = _res(await updatePhaseOrder(data));
             return Promise.resolve(response.data.lists);
           } catch (error) {
             const message = _err(error);

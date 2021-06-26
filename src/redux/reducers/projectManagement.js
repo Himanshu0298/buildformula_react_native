@@ -16,6 +16,7 @@ import {
   UPDATE_LINEUP_ENTITY,
   UPDATE_MILESTONE_ORDER,
   UPDATE_PHASE,
+  UPDATE_PHASE_ORDER,
   UPDATE_SUB_PHASE,
 } from './../actions/actionTypes';
 
@@ -169,6 +170,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${ADD_SUB_PHASE}_PENDING`:
     case `${UPDATE_SUB_PHASE}_PENDING`:
     case `${DELETE_SUB_PHASE}_PENDING`:
+    case `${UPDATE_PHASE_ORDER}_PENDING`:
       return {
         ...state,
         loading: true,
@@ -183,6 +185,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${ADD_SUB_PHASE}_FULFILLED`:
     case `${UPDATE_SUB_PHASE}_FULFILLED`:
     case `${DELETE_SUB_PHASE}_FULFILLED`:
+    case `${UPDATE_PHASE_ORDER}_FULFILLED`:
       return {
         ...state,
         loading: false,
@@ -197,6 +200,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${ADD_SUB_PHASE}_REJECTED`:
     case `${UPDATE_SUB_PHASE}_REJECTED`:
     case `${DELETE_SUB_PHASE}_REJECTED`:
+    case `${UPDATE_PHASE_ORDER}_REJECTED`:
       return {
         ...state,
         loading: false,

@@ -166,7 +166,10 @@ function RenderPhase(props) {
             <View style={styles.detailsBottom}>
               <Caption>Notification:</Caption>
               <View style={{width: '97%'}}>
-                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                <ScrollView
+                  horizontal
+                  contentContainerStyle={{flexGrow: 1}}
+                  showsHorizontalScrollIndicator={false}>
                   {notifications.map((notification, i) => (
                     <Chip key={i}>
                       <Caption>{notification.title}</Caption>
@@ -241,7 +244,7 @@ function AddDialog(props) {
 
 function EmptyComponent() {
   return (
-    <View style={{alignItems: 'center', justifyContent: 'center'}}>
+    <View style={{flexGrow: 1, alignItems: 'center', justifyContent: 'center'}}>
       <Caption>No Phases Found.</Caption>
     </View>
   );
@@ -257,6 +260,7 @@ function Phases(props) {
     addPhase,
     updatePhase,
     deletePhase,
+    updatePhaseOrder,
   } = useProjectManagementActions();
 
   const {selectedProject} = useSelector(state => state.project);
@@ -269,6 +273,7 @@ function Phases(props) {
   const [sortable, setSortable] = React.useState(false);
   const [selectDialog, setSelectDialog] = React.useState(false);
   const [selectedPhase, setSelectedPhase] = React.useState();
+  const [sortedData, setSortedData] = React.useState([]);
 
   useEffect(() => {
     getPhaseList();
@@ -284,8 +289,15 @@ function Phases(props) {
   const toggleAddDialog = v => setAddDialog(v);
   const onStateChange = ({open}) => setSelectDialog(open);
 
-  const saveSort = () => {
+  const saveSort = async () => {
     toggleSortable();
+    const sorting = {};
+    sortedData.map((item, index) => {
+      sorting[item.id] = index;
+    });
+
+    await updatePhaseOrder({sorting, project_id: selectedProject.id});
+    getPhaseList();
   };
 
   const navToSubPhases = phase => {
@@ -407,9 +419,7 @@ function Phases(props) {
               toggleMenu={toggleMenu}
             />
           )}
-          onDataChange={data => {
-            console.log('-----> onDataChange', data);
-          }}
+          onDataChange={setSortedData}
         />
       ) : (
         <FlatList

@@ -158,7 +158,7 @@ function AddDialog(props) {
 
 function EmptyComponent() {
   return (
-    <View style={{alignItems: 'center', justifyContent: 'center'}}>
+    <View style={{flexGrow: 1, alignItems: 'center', justifyContent: 'center'}}>
       <Caption>No Sub Phases Found.</Caption>
     </View>
   );
@@ -288,6 +288,7 @@ function SubPhases(props) {
         showsVerticalScrollIndicator={false}
         data={subPhases}
         extraData={subPhases}
+        contentContainerStyle={{flexGrow: 1}}
         keyExtractor={(_, i) => i.toString()}
         ListEmptyComponent={() => <EmptyComponent />}
         refreshControl={
