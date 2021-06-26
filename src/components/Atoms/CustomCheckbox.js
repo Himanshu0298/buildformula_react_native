@@ -5,13 +5,14 @@ import {Text, Checkbox, withTheme} from 'react-native-paper';
 import {theme} from 'styles/theme';
 
 const CustomCheckbox = React.forwardRef((props, ref) => {
-  const {checked, onChange, label, style, ...rest} = props;
+  const {checked, onChange, label, style, checkboxStyle, ...rest} = props;
 
   return (
     <TouchableOpacity onPress={onChange} style={[styles.container, style]}>
       <Checkbox.Android
         {...rest}
         ref={ref}
+        style={checkboxStyle}
         status={checked ? 'checked' : 'unchecked'}
       />
       {label ? <Text style={styles.caption}>{label}</Text> : null}
@@ -29,6 +30,7 @@ CustomCheckbox.defaultProps = {
 CustomCheckbox.propTypes = {
   onChange: PropTypes.func.isRequired,
   checked: PropTypes.bool.isRequired,
+  label: PropTypes.string,
 };
 
 const styles = StyleSheet.create({

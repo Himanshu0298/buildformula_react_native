@@ -19,7 +19,7 @@ function CustomDialog(props) {
       style={{justifyContent: 'flex-end', margin: 0}}>
       <Portal.Host>
         <View style={styles.modalContainer}>
-          <SafeAreaView>
+          <SafeAreaView style={styles.modalContainer}>
             <View style={styles.headerContainer}>
               <View style={styles.titleContainer}>
                 <Subheading style={{color: theme.colors.primary}}>

@@ -1,8 +1,7 @@
 import React from 'react';
 import {StyleSheet, View, Text} from 'react-native';
 import PropTypes from 'prop-types';
-import {TextInput} from 'react-native-paper';
-import {theme} from 'styles/theme';
+import {TextInput, withTheme} from 'react-native-paper';
 
 export const RenderError = ({error}) => {
   return (
@@ -14,9 +13,11 @@ export const RenderError = ({error}) => {
 
 const RenderInput = React.forwardRef((props, ref) => {
   let {
+    theme,
     error,
     containerStyles,
     style,
+    roundness,
     value,
     placeholder,
     label,
@@ -39,7 +40,7 @@ const RenderInput = React.forwardRef((props, ref) => {
           style={[styles.input, style]}
           blurOnSubmit
           theme={{
-            roundness: 10,
+            roundness,
             colors: {
               underlineColor: 'transparent',
               text: '#000',
@@ -58,6 +59,7 @@ RenderInput.defaultProps = {
   returnKeyType: 'next',
   autoCapitalize: 'none',
   containerStyles: {},
+  roundness: 10,
 };
 
 RenderInput.prototype = {
@@ -87,4 +89,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RenderInput;
+export default withTheme(RenderInput);

@@ -1,15 +1,20 @@
 import CustomDialog from 'components/Atoms/CustomDialog';
 import RenderDatePicker from 'components/Atoms/RenderDatePicker';
+import RenderInput from 'components/Atoms/RenderInput';
+import dayjs from 'dayjs';
 import {Formik} from 'formik';
 import React, {useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {IconButton, Text, withTheme} from 'react-native-paper';
 import * as Yup from 'yup';
 
-const schema = Yup.object().shape({
-  start_date: Yup.string().required('Start date required'),
-  end_date: Yup.string().required('End date required'),
-});
+function getDuration(start, end) {
+  if (start && end) {
+    return `${dayjs(end).diff(dayjs(start), 'd')} days`;
+  }
+}
+
+const schema = Yup.object().shape({});
 
 function AddDatesDialog(props) {
   const {handleSubmit} = props;
@@ -41,16 +46,16 @@ function AddDatesDialog(props) {
               label={'End Date'}
               containerStyles={styles.input}
               value={values.end_date}
+              min={values.start_date}
               onChange={v => setFieldValue('end_date', v)}
               error={errors.end_date}
             />
-            <RenderDatePicker
+            <RenderInput
               name="duration"
               label={'Duration'}
+              editable={false}
               containerStyles={styles.input}
-              value={values.duration}
-              onChange={v => setFieldValue('duration', v)}
-              error={errors.duration}
+              value={getDuration(values.start_date, values.end_date)}
             />
           </View>
         </CustomDialog>
