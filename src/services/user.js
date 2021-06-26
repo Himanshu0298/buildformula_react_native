@@ -20,8 +20,8 @@ export default function useAuth() {
     otpCheck: data => {
       return instance.post('/otp_check', data, config({auth: false}));
     },
-    updateUser: data => {
-      return instance.post('/user_common', data, config());
+    updateUser: (data, multipart) => {
+      return instance.post('/update_profile', data, config({multipart}));
     },
     sendForgetPasswordOtp: data => {
       return instance.post(

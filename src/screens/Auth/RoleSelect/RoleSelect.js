@@ -4,7 +4,6 @@ import {Title, withTheme, Caption, Subheading} from 'react-native-paper';
 import useUserActions from 'redux/actions/userActions';
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
-import {useTranslation} from 'react-i18next';
 import LinearGradient from 'react-native-linear-gradient';
 
 function RoleBox({title, onSelectPackage, roleId, colors}) {
@@ -24,18 +23,17 @@ function RoleBox({title, onSelectPackage, roleId, colors}) {
 }
 
 function RoleSelect(props) {
+  const {navigation} = props;
+
   const {user, loading} = useSelector(state => state.user);
   const {selectRole} = useUserActions();
 
   function onSelectPackage(roleId) {
-    const formData = new FormData();
     //TODO: Update translations
-    formData.append('user_id', user.id);
-    formData.append('default_role_id', roleId);
 
-    selectRole(formData)
+    selectRole({user_id: user.id, default_role_id: roleId})
       .then(data => {
-        props.navigation.navigate('ProjectCreationStepOne');
+        navigation.navigate('ProjectCreationStepOne');
       })
       .catch(error => {
         console.log('-----> error', error);

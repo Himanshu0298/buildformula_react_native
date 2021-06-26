@@ -16,6 +16,9 @@ import RenderInput from 'components/Atoms/RenderInput';
 import {useTranslation} from 'react-i18next';
 import * as Yup from 'yup';
 import {useSelector} from 'react-redux';
+import useUserActions from 'redux/actions/userActions';
+import {pick} from 'lodash';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const schema = Yup.object().shape({
   first_name: Yup.string('Invalid').required('First name is required'),
@@ -111,46 +114,84 @@ function EditProfile(props) {
   const {theme, navigation} = props;
 
   const {openImagePicker} = useImagePicker();
+  const {updateUser} = useUserActions();
 
-  const {user} = useSelector(state => state.user);
-  const {first_name, last_name, email, phone} = user;
+  const {user, loading} = useSelector(state => state.user);
+
+  const initialValues = pick(user, [
+    'first_name',
+    'last_name',
+    'email',
+    'phone',
+    'profile_url',
+  ]);
+
+  const onSubmit = async values => {
+    const {first_name, last_name, email, phone, profile_url} = values;
+
+    const formData = new FormData();
+    formData.append('user_id', user.id);
+    formData.append('first_name', first_name);
+    formData.append('last_name', last_name);
+    formData.append('email', email);
+    formData.append('phone', phone);
+    if (profile_url?.uri) {
+      formData.append('fileupload', profile_url);
+    }
+
+    await updateUser(formData);
+    navigation.goBack();
+  };
 
   return (
     <View style={styles.container}>
+      <Spinner visible={loading} textContent="" />
       <SafeAreaView>
         <Formik
           validateOnBlur={false}
           validateOnChange={false}
-          initialValues={{first_name, last_name, email, phone}}
+          initialValues={initialValues}
           validationSchema={schema}
-          onSubmit={async values => {}}>
-          {formikProps => (
-            <View style={styles.contentContainer}>
-              <Subheading>Edit Profile Details</Subheading>
-              <View style={styles.headerContainer}>
-                <View>
-                  <Avatar.Image size={150} source={UserPic} />
-                  <IconButton
-                    style={[
-                      styles.cameraIcon,
-                      {backgroundColor: theme.colors.primary},
-                    ]}
-                    color="#fff"
-                    icon="camera"
-                    onPress={() =>
-                      openImagePicker({
-                        type: 'image',
-                        onChoose: v =>
-                          formikProps.setFieldValue('profile_pic', v),
-                      })
-                    }
-                  />
-                </View>
-              </View>
+          onSubmit={onSubmit}>
+          {formikProps => {
+            const {profile_url} = formikProps.values;
 
-              <RenderForm {...props} {...{formikProps}} />
-            </View>
-          )}
+            return (
+              <View style={styles.contentContainer}>
+                <Subheading>Edit Profile Details</Subheading>
+                <View style={styles.headerContainer}>
+                  <View>
+                    <Avatar.Image
+                      size={150}
+                      source={
+                        profile_url
+                          ? {uri: profile_url.uri || profile_url}
+                          : UserPic
+                      }
+                    />
+                    <IconButton
+                      style={[
+                        styles.cameraIcon,
+                        {backgroundColor: theme.colors.primary},
+                      ]}
+                      color="#fff"
+                      icon="camera"
+                      onPress={() =>
+                        openImagePicker({
+                          type: 'image',
+                          onChoose: v => {
+                            formikProps.setFieldValue('profile_url', v);
+                          },
+                        })
+                      }
+                    />
+                  </View>
+                </View>
+
+                <RenderForm {...props} {...{formikProps}} />
+              </View>
+            );
+          }}
         </Formik>
       </SafeAreaView>
     </View>

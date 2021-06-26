@@ -54,7 +54,13 @@ async function processFiles(res) {
 
       return data;
     } else {
-      const DEST_PATH = `${RNFS.TemporaryDirectoryPath}/${name}`;
+      const DEST_PATH = `${RNFS.TemporaryDirectoryPath}${name}`;
+      const isExists = await RNFS.exists(DEST_PATH);
+
+      if (isExists) {
+        await RNFS.unlink(DEST_PATH);
+      }
+
       await RNFS.copyFile(res.uri, DEST_PATH);
 
       const stat = await RNFS.stat(DEST_PATH);

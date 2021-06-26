@@ -1,4 +1,4 @@
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {persistReducer} from 'redux-persist';
 import {
   SELECT_ROLE,
@@ -6,6 +6,7 @@ import {
   LOGIN,
   VERIFY_OTP,
   SEND_FORGET_PASSWORD_OTP,
+  UPDATE_USER,
 } from './../actions/actionTypes';
 
 const persistConfig = {
@@ -85,19 +86,20 @@ const reducer = (state = initialState, action = {}) => {
       };
 
     case `${SELECT_ROLE}_PENDING`:
+    case `${UPDATE_USER}_PENDING`:
       return {
         ...state,
         loading: true,
       };
     case `${SELECT_ROLE}_FULFILLED`:
+    case `${UPDATE_USER}_FULFILLED`:
       return {
         ...state,
         loading: false,
-        // authenticated: true,
-        //TODO: enable this once user data is returned in response
-        // user: payload.user,
+        user: payload.data,
       };
     case `${SELECT_ROLE}_REJECTED`:
+    case `${UPDATE_USER}_REJECTED`:
       return {
         ...state,
         loading: false,

@@ -17,7 +17,7 @@ function Profile(props) {
   const {theme, navigation} = props;
 
   const {user} = useSelector(state => state.user);
-  const {first_name, last_name, email, phone} = user;
+  const {first_name, last_name, email, phone, profile_url} = user;
 
   const navToEdit = () => navigation.navigate('EditProfile');
   const navToChangePassword = () => navigation.navigate('ChangePassword');
@@ -28,7 +28,10 @@ function Profile(props) {
         <View style={styles.contentContainer}>
           <Subheading>Profile Details</Subheading>
           <View style={styles.headerContainer}>
-            <Avatar.Image size={150} source={UserPic} />
+            <Avatar.Image
+              size={150}
+              source={profile_url ? {uri: profile_url} : UserPic}
+            />
             <Subheading style={{marginTop: 15}}>
               {first_name} {last_name}
             </Subheading>

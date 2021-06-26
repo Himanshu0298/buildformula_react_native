@@ -73,16 +73,27 @@ export default function useUserActions() {
           }
         },
       }),
+    updateUser: data =>
+      dispatch({
+        type: types.UPDATE_USER,
+        payload: async () => {
+          try {
+            const response = _res(await updateUser(data));
+            return Promise.resolve(response);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
     selectRole: data =>
       dispatch({
         type: types.SELECT_ROLE,
         payload: async () => {
           try {
             const response = _res(await updateUser(data));
-            const {data: userData} = response;
-            console.log('-----> response', userData);
-
-            return Promise.resolve({user: userData});
+            return Promise.resolve(response);
           } catch (error) {
             const message = _err(error);
             snackbar.showMessage({message, variant: 'error'});

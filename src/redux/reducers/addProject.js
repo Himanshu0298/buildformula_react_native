@@ -10,7 +10,7 @@ import {
   GET_CITIES,
 } from '../actions/actionTypes';
 import _ from 'lodash';
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {persistReducer} from 'redux-persist';
 import {DEFAULT_STRUCTURE} from 'utils/constant';
 

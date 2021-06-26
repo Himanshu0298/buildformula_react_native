@@ -3,13 +3,14 @@ export const SET_LANGUAGE = 'SET_LANGUAGE';
 export const LOGOUT = 'LOGOUT';
 export const SET_TIMER = 'SET_TIMER';
 
-//For Auth
+//For Auth/User
 export const LOGIN = 'LOGIN';
 export const SIGN_UP_INIT = 'SIGN_UP_INIT';
 export const SIGN_UP = 'SIGN_UP';
 export const SEND_OTP = 'SEND_OTP';
 export const VERIFY_OTP = 'VERIFY_OTP';
 export const SELECT_ROLE = 'SELECT_ROLE';
+export const UPDATE_USER = 'UPDATE_USER';
 export const SEND_FORGET_PASSWORD_OTP = 'SEND_FORGET_PASSWORD_OTP';
 
 //For Project
