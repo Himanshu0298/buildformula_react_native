@@ -1,0 +1,209 @@
+import React from 'react';
+import {ScrollView, StyleSheet, View} from 'react-native';
+import Layout from 'utils/Layout';
+import {Subheading, Text, withTheme} from 'react-native-paper';
+import {getShadow} from 'utils';
+import {BarChart, LineChart, ProgressChart} from 'react-native-chart-kit';
+
+function RenderProgressChart(props) {
+  const {data, color, width} = props;
+
+  return (
+    <View style={styles.progressBarContainer}>
+      <ProgressChart
+        data={data}
+        width={width}
+        height={120}
+        strokeWidth={14}
+        radius={40}
+        hideLegend={true}
+        chartConfig={{
+          backgroundGradientFrom: '#fff',
+          backgroundGradientTo: '#fff',
+          color: (opacity = 1) => `rgba(${color}, ${opacity})`,
+        }}
+      />
+      <View style={styles.progressLegend}>
+        <Text
+          style={{
+            fontWeight: 'bold',
+            fontSize: 18,
+            color: `rgba(${color}, 1)`,
+          }}>
+          41
+        </Text>
+        <Text style={{color: `rgba(${color}, 1)`}}>/100</Text>
+      </View>
+    </View>
+  );
+}
+
+function Statistics(props) {
+  return (
+    <View style={styles.staticsContainer}>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={styles.sectionContainer}>
+          <Subheading>Sales</Subheading>
+          <LineChart
+            fromZero
+            data={{
+              labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+              datasets: [
+                {
+                  data: [
+                    Math.random() * 100,
+                    Math.random() * 100,
+                    Math.random() * 100,
+                    Math.random() * 100,
+                    Math.random() * 100,
+                    Math.random() * 100,
+                    Math.random() * 100,
+                  ],
+                },
+              ],
+            }}
+            width={Layout.window.width - 30} // from react-native
+            height={200}
+            withDots={false}
+            withHorizontalLines={false}
+            yAxisInterval={1} // optional, defaults to 1
+            chartConfig={{
+              backgroundColor: 'transparent',
+              backgroundGradientFrom: '#fff',
+              backgroundGradientTo: '#fff',
+              decimalPlaces: 0, // optional, defaults to 2dp
+              color: (opacity = 1) => `rgba(72,114,244, ${opacity})`,
+              labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+            }}
+            bezier
+            style={{
+              marginTop: 8,
+              marginLeft: -10,
+            }}
+          />
+        </View>
+        <View style={styles.sectionContainer}>
+          <Subheading>Booking</Subheading>
+          <View style={styles.row}>
+            <RenderProgressChart
+              data={{labels: ['Swim'], data: [0.4]}}
+              color={'72, 161, 244'}
+              width={(Layout.window.width - 40) / 3}
+            />
+            <RenderProgressChart
+              data={{labels: ['Swim'], data: [0.4]}}
+              color="244, 175, 72"
+              width={(Layout.window.width - 40) / 3}
+            />
+            <RenderProgressChart
+              color="0, 205, 205"
+              data={{labels: ['Swim'], data: [0.4]}}
+              width={(Layout.window.width - 40) / 3}
+            />
+          </View>
+          <View style={styles.row}>
+            <RenderProgressChart
+              data={{labels: ['Swim'], data: [0.4]}}
+              color={'7, 202, 3'}
+              width={(Layout.window.width - 40) / 3}
+            />
+            <RenderProgressChart
+              data={{labels: ['Swim'], data: [0.4]}}
+              color="168, 72, 244"
+              width={(Layout.window.width - 40) / 3}
+            />
+          </View>
+        </View>
+        <View style={styles.sectionContainer}>
+          <Subheading>Project phases</Subheading>
+          <BarChart
+            withInnerLines={false}
+            fromZero
+            data={{
+              labels: ['Phase 1', 'Phase 2', 'Phase 3', 'Phase 4'],
+              datasets: [
+                {
+                  data: [20, 45, 28, 80],
+                },
+              ],
+            }}
+            width={Layout.window.width - 40} // from react-native
+            height={200}
+            chartConfig={{
+              backgroundColor: 'transparent',
+              backgroundGradientFrom: '#fff',
+              backgroundGradientTo: '#fff',
+              decimalPlaces: 0, // optional, defaults to 2dp
+              color: (opacity = 1) => `rgba(72,114,244, ${opacity})`,
+              labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+            }}
+            style={{
+              marginTop: 8,
+            }}
+          />
+        </View>
+        <View style={styles.sectionContainer}>
+          <Subheading>Project subphases</Subheading>
+          <BarChart
+            withInnerLines={false}
+            fromZero
+            data={{
+              labels: ['Phase 1', 'Phase 2', 'Phase 3', 'Phase 4'],
+              datasets: [
+                {
+                  data: [20, 45, 28, 80],
+                },
+              ],
+            }}
+            width={Layout.window.width - 40} // from react-native
+            height={200}
+            chartConfig={{
+              backgroundColor: 'transparent',
+              backgroundGradientFrom: '#fff',
+              backgroundGradientTo: '#fff',
+              decimalPlaces: 0, // optional, defaults to 2dp
+              color: (opacity = 1) => `rgba(72,114,244, ${opacity})`,
+              labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+            }}
+            style={{
+              marginTop: 8,
+            }}
+          />
+        </View>
+      </ScrollView>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  staticsContainer: {
+    backgroundColor: '#eaeff1',
+    flexGrow: 1,
+  },
+  sectionContainer: {
+    backgroundColor: '#fff',
+    padding: 10,
+    margin: 12,
+    borderRadius: 5,
+    ...getShadow(2),
+  },
+  progressBarContainer: {
+    position: 'relative',
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+  },
+  progressLegend: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    right: 0,
+    left: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
+
+export default withTheme(Statistics);
