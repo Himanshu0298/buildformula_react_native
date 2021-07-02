@@ -23,6 +23,7 @@ function RenderProgressChart(props) {
           color: (opacity = 1) => `rgba(${color}, ${opacity})`,
         }}
       />
+      <Text>{data.labels[0]}</Text>
       <View style={styles.progressLegend}>
         <Text
           style={{
@@ -30,7 +31,7 @@ function RenderProgressChart(props) {
             fontSize: 18,
             color: `rgba(${color}, 1)`,
           }}>
-          41
+          {data.data[0] * 100}
         </Text>
         <Text style={{color: `rgba(${color}, 1)`}}>/100</Text>
       </View>
@@ -86,29 +87,29 @@ function Statistics(props) {
           <Subheading>Booking</Subheading>
           <View style={styles.row}>
             <RenderProgressChart
-              data={{labels: ['Swim'], data: [0.4]}}
+              data={{labels: ['Apartment'], data: [0.4]}}
               color={'72, 161, 244'}
               width={(Layout.window.width - 40) / 3}
             />
             <RenderProgressChart
-              data={{labels: ['Swim'], data: [0.4]}}
+              data={{labels: ['Shop'], data: [0.4]}}
               color="244, 175, 72"
               width={(Layout.window.width - 40) / 3}
             />
             <RenderProgressChart
               color="0, 205, 205"
-              data={{labels: ['Swim'], data: [0.4]}}
+              data={{labels: ['Office'], data: [0.4]}}
               width={(Layout.window.width - 40) / 3}
             />
           </View>
           <View style={styles.row}>
             <RenderProgressChart
-              data={{labels: ['Swim'], data: [0.4]}}
+              data={{labels: ['Bungalow'], data: [0.4]}}
               color={'7, 202, 3'}
               width={(Layout.window.width - 40) / 3}
             />
             <RenderProgressChart
-              data={{labels: ['Swim'], data: [0.4]}}
+              data={{labels: ['Plot'], data: [0.4]}}
               color="168, 72, 244"
               width={(Layout.window.width - 40) / 3}
             />
@@ -189,6 +190,7 @@ const styles = StyleSheet.create({
   },
   progressBarContainer: {
     position: 'relative',
+    alignItems: 'center',
   },
   row: {
     flexDirection: 'row',
@@ -201,6 +203,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     right: 0,
     left: 0,
+    paddingBottom: 15,
     alignItems: 'center',
     justifyContent: 'center',
   },
