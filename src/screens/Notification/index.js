@@ -7,7 +7,7 @@ export default props => {
   const {showLogo} = route?.params || {};
   return (
     <ProjectLayout showLogo={showLogo}>
-      <Notification {...props} />
+      <Notification isHome={showLogo} {...props} />
     </ProjectLayout>
   );
 };

@@ -22,6 +22,7 @@ import LottieView from 'lottie-react-native';
 import waiting from 'assets/animation/waiting.json';
 import useAddProjectActions from 'redux/actions/addProjectActions';
 import ProjectHeader from 'components/Molecules/Layout/ProjectHeader';
+import useNotificationActions from 'redux/actions/notificationActions';
 
 const IMAGES = {
   Developer: developerImage,
@@ -76,8 +77,10 @@ function Home(props) {
 
   const {getProjects} = useProjectActions();
   const {setProjectData} = useAddProjectActions();
+  const {getAllNotifications} = useNotificationActions();
 
   useEffect(() => {
+    getAllNotifications();
     getProjects().then(({value}) => {
       if (!value?.developers?.length) {
         navigation.navigate('ProjectCreationStepOne');

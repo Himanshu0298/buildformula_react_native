@@ -5,11 +5,17 @@ import {Title, Text, withTheme, Caption} from 'react-native-paper';
 import {getShadow} from 'utils';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import dayjs from 'dayjs';
-
-const NOTIFICATIONS = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
+import {useSelector} from 'react-redux';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 function RenderNotification(props) {
-  const {item} = props;
+  const {item, isHome} = props;
+  const {
+    project_name,
+    notifications_text,
+    notifications,
+    receive_datetime,
+  } = item;
 
   return (
     <View style={styles.notificationContainer}>
@@ -20,13 +26,19 @@ function RenderNotification(props) {
       </View>
 
       <View style={styles.notificationBody}>
-        <Text>Nilesh joshi just updated booking status for Mohit pala</Text>
-        <Caption>{dayjs().format('DD MMM YYYY, hh:mm A')}</Caption>
+        <Text>{isHome ? project_name : notifications_text}</Text>
+        <Caption>
+          {isHome
+            ? `You have ${notifications} unread notifications`
+            : dayjs(receive_datetime).format('DD MMM YYYY, hh:mm A')}
+        </Caption>
       </View>
 
-      <TouchableOpacity style={styles.closeIconContainer}>
-        <MaterialIcons name="close-circle-outline" size={20} />
-      </TouchableOpacity>
+      {!isHome ? (
+        <TouchableOpacity style={styles.closeIconContainer}>
+          <MaterialIcons name="close-circle-outline" size={20} />
+        </TouchableOpacity>
+      ) : null}
     </View>
   );
 }
@@ -39,17 +51,23 @@ function EmptyComponent() {
   );
 }
 
-function Notification() {
+function Notification(props) {
+  const {isHome} = props;
+
+  const {allNotifications, projectNotifications, loading} = useSelector(
+    s => s.notification,
+  );
+
   return (
     <View style={styles.container}>
       <Title>Notifications</Title>
-
+      <Spinner visible={loading} textContent="" />
       <FlatList
-        data={NOTIFICATIONS}
-        extraData={NOTIFICATIONS}
+        data={isHome ? allNotifications : projectNotifications}
+        extraData={isHome ? allNotifications : projectNotifications}
         contentContainerStyle={{flexGrow: 1}}
         keyExtractor={(_, i) => i.toString()}
-        renderItem={({item}) => <RenderNotification item={item} />}
+        renderItem={({item}) => <RenderNotification {...{item, isHome}} />}
         ListEmptyComponent={() => <EmptyComponent />}
       />
     </View>

@@ -10,12 +10,14 @@ import Layout from 'utils/Layout';
 import {Subheading} from 'react-native-paper';
 import Statistics from './Components/Statistics';
 import Activity from './Components/Activity';
+import useNotificationActions from 'redux/actions/notificationActions';
 
 export default function DeveloperDashboard(props) {
   const {route} = props;
   const {project} = route?.params || {};
 
   const {getProjectData, getProjectCommonData} = useProjectActions();
+  const {getProjectNotifications} = useNotificationActions();
 
   const {loading} = useSelector(state => state.project);
 
@@ -28,6 +30,7 @@ export default function DeveloperDashboard(props) {
   useEffect(() => {
     getProjectData(project.id);
     getProjectCommonData(project.id);
+    getProjectNotifications({project_id: project.id});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project]);
 
