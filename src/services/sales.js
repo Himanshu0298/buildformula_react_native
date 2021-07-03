@@ -27,10 +27,14 @@ export default function useSalesServices() {
       return instance.post('/pipeline/get_lists', data, config());
     },
     addVisitor: data => {
-      return instance.post('/visitors/add', data, config());
+      return instance.post('/visitors/add', data, config({multipart: false}));
     },
     addFollowUp: data => {
-      return instance.post('/visitors/addfollowup', data, config());
+      return instance.post(
+        '/visitors/addfollowup',
+        data,
+        config({multipart: false}),
+      );
     },
     addPipeline: data => {
       return instance.post('/pipeline/add', data, config());

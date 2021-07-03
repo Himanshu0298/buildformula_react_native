@@ -260,51 +260,47 @@ function FollowUpTab({
 
   const {addFollowUp, getFollowUps, getSalesData} = useSalesActions();
 
+  const onSubmit = async values => {
+    if (isNaN(selectedVisitor)) {
+      alert.show({
+        title: 'Error',
+        message: 'Select a visitor from the previous screen first!',
+        dismissable: false,
+        onConfirm: () => setSelectedTab(0),
+      });
+      return;
+    }
+
+    let data = {
+      hdn_followup_id: selectedVisitor,
+      datepicker_followup: dayjs(values.follow_up_date).format('DD-MM-YYYY'),
+      timepicker_followup: dayjs(values.follow_up_time).format('HH:mm'),
+    };
+
+    delete values.follow_up_date;
+    delete values.follow_up_time;
+
+    data = {
+      ...data,
+      ...values,
+      project_id: selectedProject.id,
+      user_id: user.id,
+    };
+
+    addFollowUp(data).then(() => {
+      getFollowUps(selectedProject.id);
+      getSalesData(selectedProject.id);
+      navigation.goBack();
+    });
+  };
+
   return (
     <Formik
       validateOnBlur={false}
       validateOnChange={false}
       initialValues={{}}
       validationSchema={schema}
-      onSubmit={async values => {
-        if (isNaN(selectedVisitor)) {
-          alert.show({
-            title: 'Error',
-            message: 'Select a visitor from the previous screen first!',
-            dismissable: false,
-            onConfirm: () => setSelectedTab(0),
-          });
-          return;
-        }
-
-        const formData = new FormData();
-
-        formData.append('hdn_followup_id', selectedVisitor);
-
-        formData.append(
-          'datepicker_followup',
-          dayjs(values.follow_up_date).format('DD-MM-YYYY'),
-        );
-        formData.append(
-          'timepicker_followup',
-          dayjs(values.follow_up_time).format('HH:mm'),
-        );
-
-        delete values.follow_up_date;
-        delete values.follow_up_time;
-
-        Object.keys(values).map(key => {
-          formData.append(key, values[key]);
-        });
-
-        formData.append('user_id', user.id);
-
-        addFollowUp(formData).then(() => {
-          getFollowUps(selectedProject.id);
-          getSalesData(selectedProject.id);
-          navigation.goBack();
-        });
-      }}>
+      onSubmit={onSubmit}>
       {({
         handleChange,
         setFieldValue,

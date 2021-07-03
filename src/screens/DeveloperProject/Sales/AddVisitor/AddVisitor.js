@@ -37,6 +37,10 @@ const schema = Yup.object().shape({
   follow_up_time: Yup.date('Invalid').required('Required'),
   assign_to: Yup.string('Invalid').required('Required'),
   inquiry_for: Yup.string('Invalid').required('Required'),
+  for_bhk: Yup.string('Invalid').when('for_bhk_required', {
+    is: true,
+    then: Yup.string('Invalid').required('Required'),
+  }),
 });
 
 function PersonalTab(props) {
@@ -218,6 +222,18 @@ function InquiryTab({
   const followUpTimeRef = React.useRef();
   const assignToRef = React.useRef();
 
+  useEffect(() => {
+    if (
+      (values.inquiry_for === 1 || values.inquiry_for === 4) &&
+      bhkOptions[values.inquiry_for].length
+    ) {
+      setFieldValue('for_bhk_required', true);
+    } else {
+      setFieldValue('for_bhk_required', false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [values.inquiry_for, bhkOptions]);
+
   return (
     <ScrollView
       contentContainerStyle={styles.scrollView}
@@ -319,8 +335,7 @@ function InquiryTab({
               setFieldValue('inquiry_for', value);
             }}
           />
-          {(values.inquiry_for === 1 || values.inquiry_for === 4) &&
-          bhkOptions[values.inquiry_for] ? (
+          {values.for_bhk_required ? (
             <RenderSelect
               name="for_bhk"
               label={t('label_for_bhk')}
@@ -474,6 +489,37 @@ function AddVisitor(props) {
     getSalesData,
   } = useSalesActions();
 
+  const onSubmit = async values => {
+    let data = {
+      follow_up_date: dayjs(values.follow_up_date).format('DD-MM-YYYY'),
+      follow_up_time: dayjs(values.follow_up_time).format('HH:mm'),
+      occupation:
+        values.occupation === 'Other'
+          ? values.occupation_input
+          : values.occupation,
+    };
+
+    delete values.follow_up_date;
+    delete values.follow_up_time;
+    delete values.occupation;
+    delete values.occupation_input;
+    delete values.for_bhk_required;
+
+    data = {
+      ...data,
+      ...values,
+      project_id: selectedProject.id,
+      user_id: user.id,
+    };
+
+    addVisitor(data).then(() => {
+      getVisitors(selectedProject.id);
+      getFollowUps(selectedProject.id);
+      getSalesData(selectedProject.id);
+      navigation.goBack();
+    });
+  };
+
   return (
     <>
       <View style={styles.container}>
@@ -485,43 +531,7 @@ function AddVisitor(props) {
             validateOnChange={false}
             initialValues={{priority: 'low'}}
             validationSchema={schema}
-            onSubmit={async values => {
-              const formData = new FormData();
-
-              formData.append(
-                'follow_up_date',
-                dayjs(values.follow_up_date).format('DD-MM-YYYY'),
-              );
-              formData.append(
-                'follow_up_time',
-                dayjs(values.follow_up_time).format('HH:mm'),
-              );
-              formData.append(
-                'occupation',
-                values.occupation === 'Other'
-                  ? values.occupation_input
-                  : values.occupation,
-              );
-
-              delete values.follow_up_date;
-              delete values.follow_up_time;
-              delete values.occupation;
-              delete values.occupation_input;
-
-              Object.keys(values).map(key => {
-                formData.append(key, values[key]);
-              });
-
-              formData.append('project_id', selectedProject.id);
-              formData.append('user_id', user.id);
-
-              addVisitor(formData).then(() => {
-                getVisitors(selectedProject.id);
-                getFollowUps(selectedProject.id);
-                getSalesData(selectedProject.id);
-                navigation.goBack();
-              });
-            }}>
+            onSubmit={onSubmit}>
             {formikProps => (
               <RenderForm formikProps={formikProps} user={user} {...props} />
             )}
