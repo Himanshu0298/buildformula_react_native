@@ -8,7 +8,6 @@ import {
   Text,
   withTheme,
 } from 'react-native-paper';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import UserPic from 'assets/images/customer.png';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import {useSelector} from 'react-redux';
@@ -24,47 +23,37 @@ function Profile(props) {
 
   return (
     <View style={styles.container}>
-      <SafeAreaView>
-        <View style={styles.contentContainer}>
-          <Subheading>Profile Details</Subheading>
-          <View style={styles.headerContainer}>
-            <Avatar.Image
-              size={150}
-              source={profile_url ? {uri: profile_url} : UserPic}
-            />
-            <Subheading style={{marginTop: 15}}>
-              {first_name} {last_name}
-            </Subheading>
-            <Caption style={{marginTop: 10}}>{email}</Caption>
-            {phone ? <Caption>+91{phone}</Caption> : null}
-          </View>
-
-          <View style={styles.actionContainer}>
-            <OpacityButton
-              onPress={navToEdit}
-              opacity={0.15}
-              style={styles.buttonContainer}>
-              <IconButton
-                color={theme.colors.primary}
-                icon="pencil"
-                size={20}
-              />
-              <Text>Edit Profile</Text>
-            </OpacityButton>
-            <OpacityButton
-              opacity={0.15}
-              style={styles.buttonContainer}
-              onPress={navToChangePassword}>
-              <IconButton
-                color={theme.colors.primary}
-                icon="refresh"
-                size={20}
-              />
-              <Text>Reset Password</Text>
-            </OpacityButton>
-          </View>
+      <View style={styles.contentContainer}>
+        <Subheading>Profile Details</Subheading>
+        <View style={styles.headerContainer}>
+          <Avatar.Image
+            size={150}
+            source={profile_url ? {uri: profile_url} : UserPic}
+          />
+          <Subheading style={{marginTop: 15}}>
+            {first_name} {last_name}
+          </Subheading>
+          <Caption style={{marginTop: 10}}>{email}</Caption>
+          {phone ? <Caption>+91{phone}</Caption> : null}
         </View>
-      </SafeAreaView>
+
+        <View style={styles.actionContainer}>
+          <OpacityButton
+            onPress={navToEdit}
+            opacity={0.15}
+            style={styles.buttonContainer}>
+            <IconButton color={theme.colors.primary} icon="pencil" size={20} />
+            <Text>Edit Profile</Text>
+          </OpacityButton>
+          <OpacityButton
+            opacity={0.15}
+            style={styles.buttonContainer}
+            onPress={navToChangePassword}>
+            <IconButton color={theme.colors.primary} icon="refresh" size={20} />
+            <Text>Reset Password</Text>
+          </OpacityButton>
+        </View>
+      </View>
     </View>
   );
 }

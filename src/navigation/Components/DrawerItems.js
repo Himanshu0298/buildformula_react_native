@@ -18,8 +18,8 @@ export const DEVELOPER_DRAWER_ITEMS = [
     title: 'SALES',
     routes: [
       {
-        route: 'Inquiry',
-        label: 'Inquiry',
+        route: 'Visitors',
+        label: 'Visitors',
         icon: 'badge-account-horizontal-outline',
       },
       {

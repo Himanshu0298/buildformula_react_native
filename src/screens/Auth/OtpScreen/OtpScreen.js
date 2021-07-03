@@ -1,11 +1,5 @@
 import React, {useState} from 'react';
-import {
-  SafeAreaView,
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-} from 'react-native';
+import {View, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import {useSelector} from 'react-redux';
 import image from 'assets/images/otp.png';
 import BaseText from 'components/Atoms/BaseText';
@@ -59,7 +53,7 @@ const OtpScreen = props => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <Spinner visible={loading} textContent={''} />
       <View style={styles.root}>
         <View style={styles.imageContainer}>
@@ -102,7 +96,7 @@ const OtpScreen = props => {
           CONFIRM
         </Button>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 

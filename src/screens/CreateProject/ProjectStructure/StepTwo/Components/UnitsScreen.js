@@ -5,7 +5,6 @@ import {
   TouchableOpacity,
   ScrollView,
   Image,
-  SafeAreaView,
 } from 'react-native';
 import {Button, Subheading, TextInput, withTheme} from 'react-native-paper';
 import BaseText from 'components/Atoms/BaseText';
@@ -178,7 +177,7 @@ function UnitsScreen(props) {
   };
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <View style={{flex: 1}}>
       <ScrollView
         contentContainerStyle={styles.scrollView}
         keyboardShouldPersistTaps="handled">
@@ -270,7 +269,7 @@ function UnitsScreen(props) {
           </View>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 

@@ -1,11 +1,11 @@
 import React from 'react';
 import ProjectLayout from 'components/Molecules/Layout/ProjectLayout';
-import Inquiry from './Inquiry';
+import Visitors from './Visitors';
 
 export default props => {
   return (
     <ProjectLayout header={false}>
-      <Inquiry {...props} />
+      <Visitors {...props} />
     </ProjectLayout>
   );
 };

@@ -18,7 +18,6 @@ import dayjs from 'dayjs';
 import {TabView} from 'react-native-tab-view';
 import Layout from 'utils/Layout';
 import MaterialTabBar from 'components/Atoms/MaterialTabBar';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import RenderTextBox from 'components/Atoms/RenderTextbox';
 
 const schema = Yup.object().shape({
@@ -477,9 +476,7 @@ function AddVisitor(props) {
 
   return (
     <>
-      <SafeAreaView
-        edges={['right', 'left', 'bottom']}
-        style={styles.container}>
+      <View style={styles.container}>
         <Spinner visible={loading} textContent={''} />
         <StatusBar barStyle="light-content" />
         <View style={styles.body}>
@@ -530,7 +527,7 @@ function AddVisitor(props) {
             )}
           </Formik>
         </View>
-      </SafeAreaView>
+      </View>
     </>
   );
 }

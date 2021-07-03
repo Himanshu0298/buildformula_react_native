@@ -95,6 +95,7 @@ const styles = StyleSheet.create({
   },
   notificationBody: {
     flex: 1,
+    marginRight: 10,
   },
   closeIconContainer: {
     height: '100%',

@@ -55,7 +55,7 @@ import CustomerFiles from 'screens/CustomerProject/CustomerFiles';
 /************* Developer Project Sub Screens    *************/
 import DeveloperDashboard from '../screens/DeveloperProject/Dashboard';
 //Project : Sales Screens
-import Inquiry from '../screens/DeveloperProject/Sales/Inquiry';
+import Visitors from '../screens/DeveloperProject/Sales/Visitors';
 import VisitorDetails from '../screens/DeveloperProject/Sales/VisitorDetails';
 import SalesPipeline from '../screens/DeveloperProject/Sales/SalesPipeline';
 import Payment from '../screens/DeveloperProject/Sales/Payment';
@@ -144,12 +144,12 @@ const RouteContext = React.createContext('Dashboard');
  * </Main Stack>
  */
 
-function InquiryStack() {
+function VisitorsStack() {
   return (
-    <Stack.Navigator initialRouteName={'InquiryHome'}>
+    <Stack.Navigator initialRouteName={'VisitorsHome'}>
       <Stack.Screen
-        name="InquiryHome"
-        component={Inquiry}
+        name="VisitorsHome"
+        component={Visitors}
         options={{headerShown: false}}
       />
       <Stack.Screen
@@ -370,7 +370,7 @@ function ProjectDrawer() {
         </RouteContext.Consumer>
       )}>
       <Drawer.Screen name="DeveloperDashboard" component={DeveloperDashboard} />
-      <Drawer.Screen name="Inquiry" component={InquiryStack} />
+      <Drawer.Screen name="Visitors" component={VisitorsStack} />
       <Drawer.Screen name="SalesPipeline" component={PipelineStack} />
       <Drawer.Screen name="BookingChartStack" component={BookingChartStack} />
       <Drawer.Screen name="Payment" component={Payment} />

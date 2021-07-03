@@ -12,7 +12,6 @@ import {
   TextInput,
   withTheme,
 } from 'react-native-paper';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import {useSelector} from 'react-redux';
 import useUserActions from 'redux/actions/userActions';
 import * as Yup from 'yup';
@@ -55,76 +54,74 @@ function StepThree(props) {
   return (
     <View style={styles.container}>
       <Spinner visible={loading} textContent="" />
-      <SafeAreaView>
-        <Formik
-          validateOnBlur={false}
-          validateOnChange={false}
-          initialValues={{}}
-          validationSchema={schema}
-          onSubmit={onSubmit}>
-          {({values, errors, handleChange, handleBlur, handleSubmit}) => (
-            <View style={styles.contentContainer}>
-              <Subheading>Reset Password</Subheading>
-              <Caption>Set new password</Caption>
+      <Formik
+        validateOnBlur={false}
+        validateOnChange={false}
+        initialValues={{}}
+        validationSchema={schema}
+        onSubmit={onSubmit}>
+        {({values, errors, handleChange, handleBlur, handleSubmit}) => (
+          <View style={styles.contentContainer}>
+            <Subheading>Reset Password</Subheading>
+            <Caption>Set new password</Caption>
 
-              <View style={styles.inputsContainer}>
-                <RenderInput
-                  name="password"
-                  label={t('passwordLabel')}
-                  ref={passwordRef}
-                  containerStyles={{marginTop: 10}}
-                  secureTextEntry={!showPassword}
-                  value={values.password}
-                  onChangeText={handleChange('password')}
-                  onBlur={handleBlur('password')}
-                  placeholder={t('msgBlankPassword')}
-                  autoCapitalize="none"
-                  returnKeyType={'done'}
-                  onSubmitEditing={handleSubmit}
-                  error={errors.password}
-                  right={
-                    <TextInput.Icon
-                      name={showPassword ? 'eye-off' : 'eye'}
-                      onPress={() => setShowPassword(show => !show)}
-                    />
-                  }
-                />
-                <RenderInput
-                  name="confirmPassword"
-                  label={t('cnfPasswordLabel')}
-                  containerStyles={{marginTop: 10}}
-                  ref={cnfPassRef}
-                  value={values.confirmPassword}
-                  onChangeText={handleChange('confirmPassword')}
-                  onBlur={handleBlur('confirmPassword')}
-                  placeholder={t('msgBlankCnfPassword')}
-                  autoCapitalize="none"
-                  returnKeyType={'done'}
-                  error={errors.confirmPassword}
-                  secureTextEntry={!showCnfPass}
-                  right={
-                    <TextInput.Icon
-                      name={showCnfPass ? 'eye-off' : 'eye'}
-                      onPress={() => toggleShowCnfPass(v => !v)}
-                    />
-                  }
-                />
-              </View>
-
-              <View style={styles.actionContainer}>
-                <Button
-                  style={{width: '50%'}}
-                  mode="contained"
-                  contentStyle={{padding: 1}}
-                  theme={{roundness: 12}}
-                  onPress={handleSubmit}>
-                  Submit
-                </Button>
-              </View>
+            <View style={styles.inputsContainer}>
+              <RenderInput
+                name="password"
+                label={t('passwordLabel')}
+                ref={passwordRef}
+                containerStyles={{marginTop: 10}}
+                secureTextEntry={!showPassword}
+                value={values.password}
+                onChangeText={handleChange('password')}
+                onBlur={handleBlur('password')}
+                placeholder={t('msgBlankPassword')}
+                autoCapitalize="none"
+                returnKeyType={'done'}
+                onSubmitEditing={handleSubmit}
+                error={errors.password}
+                right={
+                  <TextInput.Icon
+                    name={showPassword ? 'eye-off' : 'eye'}
+                    onPress={() => setShowPassword(show => !show)}
+                  />
+                }
+              />
+              <RenderInput
+                name="confirmPassword"
+                label={t('cnfPasswordLabel')}
+                containerStyles={{marginTop: 10}}
+                ref={cnfPassRef}
+                value={values.confirmPassword}
+                onChangeText={handleChange('confirmPassword')}
+                onBlur={handleBlur('confirmPassword')}
+                placeholder={t('msgBlankCnfPassword')}
+                autoCapitalize="none"
+                returnKeyType={'done'}
+                error={errors.confirmPassword}
+                secureTextEntry={!showCnfPass}
+                right={
+                  <TextInput.Icon
+                    name={showCnfPass ? 'eye-off' : 'eye'}
+                    onPress={() => toggleShowCnfPass(v => !v)}
+                  />
+                }
+              />
             </View>
-          )}
-        </Formik>
-      </SafeAreaView>
+
+            <View style={styles.actionContainer}>
+              <Button
+                style={{width: '50%'}}
+                mode="contained"
+                contentStyle={{padding: 1}}
+                theme={{roundness: 12}}
+                onPress={handleSubmit}>
+                Submit
+              </Button>
+            </View>
+          </View>
+        )}
+      </Formik>
     </View>
   );
 }

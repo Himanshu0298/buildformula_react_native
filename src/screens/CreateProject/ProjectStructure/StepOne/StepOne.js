@@ -145,10 +145,6 @@ function StepOne(props) {
 
   return (
     <>
-      <StatusBar
-        barStyle="light-content"
-        backgroundColor={theme.colors.primary}
-      />
       <FormTitle
         title={t('label_project_structure')}
         subTitle={t('label_select_appropriate_option')}

@@ -143,7 +143,7 @@ function RenderContent({
   );
 }
 
-function Inquiry(props) {
+function Visitors(props) {
   const {navigation} = props;
 
   const [selectedTab, setSelectedTab] = useState(0);
@@ -249,7 +249,7 @@ function Inquiry(props) {
   );
 }
 
-export default withTheme(Inquiry);
+export default withTheme(Visitors);
 
 const styles = StyleSheet.create({
   headerContainer: {

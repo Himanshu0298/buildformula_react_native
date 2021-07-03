@@ -1,16 +1,9 @@
-import React, {useMemo} from 'react';
-import {
-  View,
-  StatusBar,
-  StyleSheet,
-  Keyboard,
-  SafeAreaView,
-} from 'react-native';
+import React, {useMemo, useState} from 'react';
+import {View, StyleSheet, Keyboard} from 'react-native';
 import {withTheme, Button, TextInput} from 'react-native-paper';
 import FormTitle from 'components/Atoms/FormTitle';
 import {Formik} from 'formik';
 import {useTranslation} from 'react-i18next';
-import {theme} from 'styles/theme';
 import RenderInput from 'components/Atoms/RenderInput';
 import FileInput from 'components/Atoms/FileInput';
 import useAddProjectActions from 'redux/actions/addProjectActions';
@@ -20,7 +13,9 @@ import {ScrollView} from 'react-native-gesture-handler';
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
 import RenderSelect from 'components/Atoms/RenderSelect';
+import {useSnackbar} from 'components/Atoms/Snackbar';
 import {handleDebounce} from 'utils';
+import RenderTextBox from 'components/Atoms/RenderTextbox';
 
 const schema = Yup.object().shape({
   project_name: Yup.string().required('name is required'),
@@ -47,7 +42,18 @@ function StepTwo(props) {
   const {navigation, route} = props;
   const {stepOneData} = route.params;
 
+  const nameRef = React.useRef();
+  const addressRef = React.useRef();
+  const reraRef = React.useRef();
+  const websiteRef = React.useRef();
+  const emailRef = React.useRef();
+  const phoneRef = React.useRef();
+  const stateRef = React.useRef();
+  const cityRef = React.useRef();
+  const pinRef = React.useRef();
+
   const {t} = useTranslation();
+  const snackbar = useSnackbar();
   const {createProject, getCities} = useAddProjectActions();
 
   const {user} = useSelector(state => state.user);
@@ -67,22 +73,43 @@ function StepTwo(props) {
       .map(i => ({label: i.city_name, value: i.id}));
   }, [citiesData]);
 
-  const nameRef = React.useRef();
-  const addressRef = React.useRef();
-  const reraRef = React.useRef();
-  const websiteRef = React.useRef();
-  const emailRef = React.useRef();
-  const phoneRef = React.useRef();
-  const stateRef = React.useRef();
-  const cityRef = React.useRef();
-  const pinRef = React.useRef();
+  const onSubmit = async values => {
+    Keyboard.dismiss();
+
+    snackbar.showMessage({
+      message: "This may take a while, please don't close the app",
+      variant: 'warning',
+      duration: 6000,
+    });
+
+    const formData = new FormData();
+    formData.append('project_rera', values.project_rera);
+    formData.append('project_website', values.project_website);
+    formData.append('project_name', values.project_name);
+    formData.append('project_email', values.project_email);
+    formData.append('project_phone', values.project_phone);
+    formData.append('project_address', values.project_address);
+    formData.append('project_state', values.project_state);
+    formData.append('project_city', values.project_city);
+    formData.append('project_pin', values.project_pin);
+    formData.append('rera_image', values.rera_image);
+    formData.append('company_gst', stepOneData.company_gst);
+    formData.append('company_name', stepOneData.company_name);
+    formData.append('company_pan', stepOneData.company_pan);
+    formData.append('company_tan', stepOneData.company_tan);
+    formData.append('pan_image', stepOneData.pan_image);
+    formData.append('tan_image', stepOneData.tan_image);
+    formData.append('gst_image', stepOneData.gst_image);
+    formData.append('user_id', user.id);
+    formData.append('terms', 1);
+
+    createProject(formData).then(() => {
+      navigation.navigate('ProjectStructureStepOne');
+    });
+  };
 
   return (
-    <SafeAreaView style={{flex: 1}}>
-      <StatusBar
-        barStyle="light-content"
-        backgroundColor={theme.colors.primary}
-      />
+    <>
       <FormTitle title={t('StepOneTitle')} subTitle={t('StepOneSubTitle')} />
       <Spinner visible={loading} textContent={''} />
       <ScrollView
@@ -93,34 +120,7 @@ function StepTwo(props) {
           validateOnChange={false}
           initialValues={{}}
           validationSchema={schema}
-          onSubmit={async values => {
-            Keyboard.dismiss();
-
-            const formData = new FormData();
-            formData.append('project_rera', values.project_rera);
-            formData.append('project_website', values.project_website);
-            formData.append('project_name', values.project_name);
-            formData.append('project_email', values.project_email);
-            formData.append('project_phone', values.project_phone);
-            formData.append('project_address', values.project_address);
-            formData.append('project_state', values.project_state);
-            formData.append('project_city', values.project_city);
-            formData.append('project_pin', values.project_pin);
-            formData.append('rera_image', values.rera_image);
-            formData.append('company_gst', stepOneData.company_gst);
-            formData.append('company_name', stepOneData.company_name);
-            formData.append('company_pan', stepOneData.company_pan);
-            formData.append('company_tan', stepOneData.company_tan);
-            formData.append('pan_image', stepOneData.pan_image);
-            formData.append('tan_image', stepOneData.tan_image);
-            formData.append('gst_image', stepOneData.gst_image);
-            formData.append('user_id', user.id);
-            formData.append('terms', 1);
-
-            createProject(formData).then(() => {
-              navigation.navigate('ProjectStructureStepOne');
-            });
-          }}>
+          onSubmit={onSubmit}>
           {({
             handleChange,
             setFieldValue,
@@ -192,17 +192,15 @@ function StepTwo(props) {
                   onSubmitEditing={() => addressRef?.current.focus()}
                   error={errors.project_email}
                 />
-                <RenderInput
+                <RenderTextBox
                   name="project_address"
                   label={t('projectAddress')}
-                  numberOfLines={4}
-                  multiline
+                  numberOfLines={5}
                   ref={addressRef}
                   containerStyles={styles.input}
                   value={values.project_address}
                   onChangeText={handleChange('project_address')}
                   onBlur={handleBlur('project_address')}
-                  returnKeyType="none"
                   error={errors.project_address}
                 />
                 <RenderSelect
@@ -257,7 +255,7 @@ function StepTwo(props) {
           )}
         </Formik>
       </ScrollView>
-    </SafeAreaView>
+    </>
   );
 }
 

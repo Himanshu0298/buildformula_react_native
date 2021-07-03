@@ -29,7 +29,6 @@ import MaterialTabBar from 'components/Atoms/MaterialTabBar';
 import CustomBadge from 'components/Atoms/CustomBadge';
 import {useAlert} from 'components/Atoms/Alert';
 import {TouchableOpacity} from 'react-native-gesture-handler';
-import {SafeAreaView} from 'react-native-safe-area-context';
 
 const TABS = [
   {key: 0, title: 'Personal details'},
@@ -442,30 +441,26 @@ function AddFollowUp(props) {
   };
 
   return (
-    <>
-      <SafeAreaView
-        edges={['bottom', 'right', 'left']}
-        style={styles.container}>
-        <Spinner visible={loading} textContent={''} />
-        <StatusBar barStyle="light-content" />
-        <View style={styles.body}>
-          <TabView
-            navigationState={{index: selectedTab, routes}}
-            renderScene={renderScene}
-            onIndexChange={setSelectedTab}
-            initialLayout={{width: Layout.window.width}}
-            renderTabBar={tabBarProps => {
-              return (
-                <View style={styles.headerContainer}>
-                  <ProjectHeader />
-                  <MaterialTabBar {...tabBarProps} />
-                </View>
-              );
-            }}
-          />
-        </View>
-      </SafeAreaView>
-    </>
+    <View style={styles.container}>
+      <Spinner visible={loading} textContent={''} />
+      <StatusBar barStyle="light-content" />
+      <View style={styles.body}>
+        <TabView
+          navigationState={{index: selectedTab, routes}}
+          renderScene={renderScene}
+          onIndexChange={setSelectedTab}
+          initialLayout={{width: Layout.window.width}}
+          renderTabBar={tabBarProps => {
+            return (
+              <View style={styles.headerContainer}>
+                <ProjectHeader />
+                <MaterialTabBar {...tabBarProps} />
+              </View>
+            );
+          }}
+        />
+      </View>
+    </View>
   );
 }
 

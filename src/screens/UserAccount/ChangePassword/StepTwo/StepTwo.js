@@ -6,7 +6,6 @@ import {useEffect} from 'react';
 import {StyleSheet, View} from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {Button, Caption, Subheading, withTheme} from 'react-native-paper';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import {useSelector} from 'react-redux';
 import useUserActions from 'redux/actions/userActions';
 import * as Yup from 'yup';
@@ -39,40 +38,38 @@ function StepTwo(props) {
   return (
     <View style={styles.container}>
       <Spinner visible={loading} textContent="" />
-      <SafeAreaView>
-        <Formik
-          validateOnBlur={false}
-          validateOnChange={false}
-          initialValues={{}}
-          validationSchema={schema}
-          onSubmit={onSubmit}>
-          {({values, errors, handleChange, setFieldValue, handleSubmit}) => (
-            <View style={styles.contentContainer}>
-              <Subheading>Reset Password</Subheading>
-              <Caption>Enter OTP you received on {user.email}</Caption>
+      <Formik
+        validateOnBlur={false}
+        validateOnChange={false}
+        initialValues={{}}
+        validationSchema={schema}
+        onSubmit={onSubmit}>
+        {({values, errors, handleChange, setFieldValue, handleSubmit}) => (
+          <View style={styles.contentContainer}>
+            <Subheading>Reset Password</Subheading>
+            <Caption>Enter OTP you received on {user.email}</Caption>
 
-              <View style={styles.otpContainer}>
-                <OtpInput
-                  value={values.otp}
-                  setValue={v => setFieldValue('otp', v)}
-                />
-              </View>
-              {errors.otp ? <RenderError error={errors.otp} /> : null}
-
-              <View style={styles.actionContainer}>
-                <Button
-                  style={{width: '50%'}}
-                  mode="contained"
-                  contentStyle={{padding: 1}}
-                  theme={{roundness: 12}}
-                  onPress={handleSubmit}>
-                  Next
-                </Button>
-              </View>
+            <View style={styles.otpContainer}>
+              <OtpInput
+                value={values.otp}
+                setValue={v => setFieldValue('otp', v)}
+              />
             </View>
-          )}
-        </Formik>
-      </SafeAreaView>
+            {errors.otp ? <RenderError error={errors.otp} /> : null}
+
+            <View style={styles.actionContainer}>
+              <Button
+                style={{width: '50%'}}
+                mode="contained"
+                contentStyle={{padding: 1}}
+                theme={{roundness: 12}}
+                onPress={handleSubmit}>
+                Next
+              </Button>
+            </View>
+          </View>
+        )}
+      </Formik>
     </View>
   );
 }

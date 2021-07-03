@@ -8,7 +8,6 @@ import {
   TextInput,
   withTheme,
 } from 'react-native-paper';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import UserPic from 'assets/images/customer.png';
 import useImagePicker from 'utils/useImagePicker';
 import {Formik} from 'formik';
@@ -146,54 +145,52 @@ function EditProfile(props) {
   return (
     <View style={styles.container}>
       <Spinner visible={loading} textContent="" />
-      <SafeAreaView>
-        <Formik
-          validateOnBlur={false}
-          validateOnChange={false}
-          initialValues={initialValues}
-          validationSchema={schema}
-          onSubmit={onSubmit}>
-          {formikProps => {
-            const {profile_url} = formikProps.values;
+      <Formik
+        validateOnBlur={false}
+        validateOnChange={false}
+        initialValues={initialValues}
+        validationSchema={schema}
+        onSubmit={onSubmit}>
+        {formikProps => {
+          const {profile_url} = formikProps.values;
 
-            return (
-              <View style={styles.contentContainer}>
-                <Subheading>Edit Profile Details</Subheading>
-                <View style={styles.headerContainer}>
-                  <View>
-                    <Avatar.Image
-                      size={150}
-                      source={
-                        profile_url
-                          ? {uri: profile_url.uri || profile_url}
-                          : UserPic
-                      }
-                    />
-                    <IconButton
-                      style={[
-                        styles.cameraIcon,
-                        {backgroundColor: theme.colors.primary},
-                      ]}
-                      color="#fff"
-                      icon="camera"
-                      onPress={() =>
-                        openImagePicker({
-                          type: 'image',
-                          onChoose: v => {
-                            formikProps.setFieldValue('profile_url', v);
-                          },
-                        })
-                      }
-                    />
-                  </View>
+          return (
+            <View style={styles.contentContainer}>
+              <Subheading>Edit Profile Details</Subheading>
+              <View style={styles.headerContainer}>
+                <View>
+                  <Avatar.Image
+                    size={150}
+                    source={
+                      profile_url
+                        ? {uri: profile_url.uri || profile_url}
+                        : UserPic
+                    }
+                  />
+                  <IconButton
+                    style={[
+                      styles.cameraIcon,
+                      {backgroundColor: theme.colors.primary},
+                    ]}
+                    color="#fff"
+                    icon="camera"
+                    onPress={() =>
+                      openImagePicker({
+                        type: 'image',
+                        onChoose: v => {
+                          formikProps.setFieldValue('profile_url', v);
+                        },
+                      })
+                    }
+                  />
                 </View>
-
-                <RenderForm {...props} {...{formikProps}} />
               </View>
-            );
-          }}
-        </Formik>
-      </SafeAreaView>
+
+              <RenderForm {...props} {...{formikProps}} />
+            </View>
+          );
+        }}
+      </Formik>
     </View>
   );
 }

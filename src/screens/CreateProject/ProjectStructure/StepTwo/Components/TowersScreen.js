@@ -1,5 +1,5 @@
 import React, {useMemo, useState} from 'react';
-import {View, StyleSheet, SafeAreaView, ScrollView} from 'react-native';
+import {View, StyleSheet, ScrollView} from 'react-native';
 import {Button, TextInput, withTheme} from 'react-native-paper';
 import BaseText from 'components/Atoms/BaseText';
 import {useSnackbar} from 'components/Atoms/Snackbar';
@@ -55,7 +55,7 @@ function TowersScreen(props) {
   const onTowerPress = towerId => showAllFloors(towerId);
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <View style={{flex: 1}}>
       <DuplicateDialog
         open={duplicateDialog}
         title="Duplicate Towers"
@@ -130,7 +130,7 @@ function TowersScreen(props) {
           </View>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 

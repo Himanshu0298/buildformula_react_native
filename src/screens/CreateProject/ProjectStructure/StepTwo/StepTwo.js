@@ -3,7 +3,6 @@ import {
   View,
   StatusBar,
   StyleSheet,
-  SafeAreaView,
   Keyboard,
   TouchableOpacity,
 } from 'react-native';
@@ -600,7 +599,7 @@ function StepTwo(props) {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <Spinner
         visible={loading}
         textContent={
@@ -725,7 +724,7 @@ function StepTwo(props) {
           }
         />
       ) : null}
-    </SafeAreaView>
+    </View>
   );
 }
 

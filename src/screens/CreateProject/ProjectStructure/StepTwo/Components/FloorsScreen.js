@@ -1,5 +1,5 @@
 import React, {useMemo, useState} from 'react';
-import {View, StyleSheet, SafeAreaView, FlatList} from 'react-native';
+import {View, StyleSheet, FlatList} from 'react-native';
 import {Button, TextInput, withTheme} from 'react-native-paper';
 import BaseText from 'components/Atoms/BaseText';
 import Layout from 'utils/Layout';
@@ -152,7 +152,7 @@ function FloorsScreen(props) {
   };
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <View style={{flexGrow: 1}}>
       <DuplicateDialog
         open={duplicateDialog}
         title="Duplicate Floors"
@@ -161,7 +161,7 @@ function FloorsScreen(props) {
         handleSubmit={duplicateFloors}
       />
       <View style={styles.container}>
-        <View style={{flex: 1}}>
+        <View style={{flexGrow: 1}}>
           <View style={styles.headingContainer}>
             <BaseText style={styles.title}>Floors</BaseText>
             <TextInput
@@ -222,7 +222,7 @@ function FloorsScreen(props) {
           </Button>
         </View>
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 
