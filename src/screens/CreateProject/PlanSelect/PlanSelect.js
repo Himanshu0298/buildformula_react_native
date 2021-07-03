@@ -36,14 +36,17 @@ function RoleBox({title, onSelectPlan, amount, colors}) {
 
 function PlanSelect(props) {
   const {navigation} = props;
-  const [showAlert, setShowAlert] = useState(false);
-  const {project, loading} = useSelector(state => state.addProject);
+
   const {selectPlan} = useAddProjectActions();
+
+  const {project, loading} = useSelector(s => s.addProject);
+
+  const [showAlert, setShowAlert] = useState(false);
 
   const toggleAlert = () => setShowAlert(v => !v);
 
   function onSelectPlan(amount) {
-    selectPlan({project_id: project.id, amount})
+    selectPlan({project_id: project.id || project.project_id, amount})
       .then(data => {
         toggleAlert();
       })
@@ -115,7 +118,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 20,
-    paddingVertical: 30,
+    paddingVertical: 50,
   },
   roleContainer: {
     flex: 0.22,

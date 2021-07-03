@@ -7,7 +7,7 @@ export default class SnackbarProvider extends PureComponent {
   state = {
     message: null,
     open: false,
-    autoHideDuration: 4000,
+    autoHideDuration: 2500,
   };
 
   constructor(props) {

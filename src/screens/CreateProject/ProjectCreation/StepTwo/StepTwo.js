@@ -79,7 +79,7 @@ function StepTwo(props) {
     snackbar.showMessage({
       message: "This may take a while, please don't close the app",
       variant: 'warning',
-      duration: 6000,
+      autoHideDuration: 6000,
     });
 
     const formData = new FormData();

@@ -263,24 +263,32 @@ function RenderContent(props) {
   );
 }
 
+function RenderHeader() {
+  return (
+    <View style={styles.header}>
+      <View style={styles.panelHeader}>
+        <View style={styles.panelHandle} />
+      </View>
+    </View>
+  );
+}
+
 function SignUp(props) {
   const {navigation, route} = props;
-
   const {adminSignUp = false, adminId, adminData} = route?.params || {};
-
-  const [validationError, setValidationError] = React.useState({});
-  const {signUp} = useUserActions();
-  const {updateAdmins} = useAddProjectActions();
-  const {resetStructure} = useAddProjectActions();
 
   const bottomSheetRef = React.createRef();
 
   const {t} = useTranslation();
 
+  const {signUp} = useUserActions();
+  const {updateAdmins} = useAddProjectActions();
+  const {resetStructure} = useAddProjectActions();
+
   const {loading} = useSelector(state => state.user);
-  const {loading: updatingAdmin, project} = useSelector(
-    state => state.addProject,
-  );
+  const {loading: updatingAdmin, project} = useSelector(s => s.addProject);
+
+  const [validationError, setValidationError] = React.useState({});
 
   React.useEffect(() => {
     const focusUnsubscribe = navigation.addListener('focus', () => {
@@ -297,17 +305,57 @@ function SignUp(props) {
     };
   }, []);
 
-  const _keyboardDidShow = () => {
-    bottomSheetRef?.current?.snapTo?.(0);
-  };
+  const _keyboardDidShow = () => bottomSheetRef?.current?.snapTo?.(0);
 
-  const renderHeader = () => (
-    <View style={styles.header}>
-      <View style={styles.panelHeader}>
-        <View style={styles.panelHandle} />
-      </View>
-    </View>
-  );
+  const onSubmit = async values => {
+    if (!adminSignUp) {
+      const userData = {
+        email: values.email,
+        phone: values.phone,
+        first_name: values.firstName,
+        last_name: values.lastName,
+        password: values.password,
+        confirm_password: values.confirmPassword,
+      };
+
+      signUp(userData)
+        .then(data => {
+          const {email} = data.value.user;
+          if (email) {
+            navigation.navigate('Otp');
+          }
+        })
+        .catch(error => {
+          setValidationError(error);
+        });
+    } else if (adminId === 2) {
+      navigation.push('AdminCreation', {
+        adminSignUp: true,
+        adminId: 3,
+        adminData: values,
+      });
+    } else if (adminId === 3) {
+      const data = {
+        project_id: project.id || project.project_id,
+        first_name_1: adminData.firstName,
+        last_name_1: adminData.lastName,
+        email_1: adminData.email,
+        phone_1: adminData.phone,
+        first_name_2: values.firstName,
+        last_name_2: values.lastName,
+        email_2: values.email,
+        phone_2: values.phone,
+      };
+
+      updateAdmins(data).then(() => {
+        resetStructure();
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'GeneralDashboard'}],
+        });
+      });
+    }
+  };
 
   return (
     <Formik
@@ -315,55 +363,7 @@ function SignUp(props) {
       validateOnChange={false}
       initialValues={{}}
       validationSchema={adminSignUp ? adminSchema : signUpSchema}
-      onSubmit={async values => {
-        if (!adminSignUp) {
-          const userData = {
-            email: values.email,
-            phone: values.phone,
-            first_name: values.firstName,
-            last_name: values.lastName,
-            password: values.password,
-            confirm_password: values.confirmPassword,
-          };
-
-          signUp(userData)
-            .then(data => {
-              const {email} = data.value.user;
-              if (email) {
-                navigation.navigate('Otp');
-              }
-            })
-            .catch(error => {
-              setValidationError(error);
-            });
-        } else if (adminId === 2) {
-          navigation.push('AdminCreation', {
-            adminSignUp: true,
-            adminId: 3,
-            adminData: values,
-          });
-        } else if (adminId === 3) {
-          const data = {
-            project_id: project.id,
-            first_name_1: adminData.firstName,
-            last_name_1: adminData.lastName,
-            email_1: adminData.email,
-            phone_1: adminData.phone,
-            first_name_2: values.firstName,
-            last_name_2: values.lastName,
-            email_2: values.email,
-            phone_2: values.phone,
-          };
-
-          updateAdmins(data).then(() => {
-            resetStructure();
-            navigation.reset({
-              index: 0,
-              routes: [{name: 'GeneralDashboard'}],
-            });
-          });
-        }
-      }}>
+      onSubmit={onSubmit}>
       {({handleChange, values, handleSubmit, handleBlur, isValid, errors}) => (
         <TouchableWithoutFeedback
           onPress={() => Keyboard.dismiss()}
@@ -396,7 +396,7 @@ function SignUp(props) {
               ref={bottomSheetRef}
               snapPoints={adminSignUp ? ['85%', '70%'] : SNAP_POINTS}
               initialSnap={1}
-              renderHeader={renderHeader}
+              renderHeader={() => <RenderHeader />}
               renderContent={() => (
                 <RenderContent
                   t={t}

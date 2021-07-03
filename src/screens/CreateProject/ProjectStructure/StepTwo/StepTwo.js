@@ -552,6 +552,7 @@ function StepTwo(props) {
         }
       }),
     );
+    // check if all data is correctly provided
     if (allTypeValid) {
       if (selectedTypeIndex < selectedTypes.length - 1) {
         const nextType = selectedTypes[selectedTypeIndex + 1];
@@ -600,16 +601,7 @@ function StepTwo(props) {
 
   return (
     <View style={styles.container}>
-      <Spinner
-        visible={loading}
-        textContent={
-          'We are digitally constructing your project. This may take a minute or two'
-        }
-      />
-      <StatusBar
-        barStyle="light-content"
-        backgroundColor={theme.colors.primary}
-      />
+      <Spinner visible={loading} textContent="" />
       <FormTitle
         title={false}
         subTitle={getSubtitle()}
