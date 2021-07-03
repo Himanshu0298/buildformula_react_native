@@ -1,11 +1,11 @@
 import React from 'react';
-import BaseLayout from 'components/Molecules/Layout/BaseLayout';
+import ProjectLayout from 'components/Molecules/Layout/ProjectLayout';
 import Search from './Search';
 
 export default props => {
   return (
-    <BaseLayout tabBar={false}>
+    <ProjectLayout showLogo={true} tabBar={false}>
       <Search {...props} />
-    </BaseLayout>
+    </ProjectLayout>
   );
 };

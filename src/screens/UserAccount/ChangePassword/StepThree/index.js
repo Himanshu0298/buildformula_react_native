@@ -1,11 +1,11 @@
 import React from 'react';
-import BaseLayout from 'components/Molecules/Layout/BaseLayout';
+import ProjectLayout from 'components/Molecules/Layout/ProjectLayout';
 import StepThree from './StepThree';
 
 export default props => {
   return (
-    <BaseLayout tabBar={false}>
+    <ProjectLayout showLogo={true} tabBar={false}>
       <StepThree {...props} />
-    </BaseLayout>
+    </ProjectLayout>
   );
 };

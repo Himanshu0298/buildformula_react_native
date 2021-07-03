@@ -1,17 +1,11 @@
 import React from 'react';
-import BaseLayout from 'components/Molecules/Layout/BaseLayout';
+import ProjectLayout from 'components/Molecules/Layout/ProjectLayout';
 import Home from './Home';
-import {StatusBar} from 'react-native';
-import {theme} from 'styles/theme';
 
 export default props => {
   return (
-    <BaseLayout>
-      <StatusBar
-        backgroundColor={theme.colors.primary}
-        barStyle="dark-content"
-      />
+    <ProjectLayout showLogo={true} header={false}>
       <Home {...props} />
-    </BaseLayout>
+    </ProjectLayout>
   );
 };

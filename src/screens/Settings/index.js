@@ -1,11 +1,11 @@
 import React from 'react';
-import BaseLayout from 'components/Molecules/Layout/BaseLayout';
+import ProjectLayout from 'components/Molecules/Layout/ProjectLayout';
 import Settings from './Settings';
 
 export default props => {
   return (
-    <BaseLayout>
+    <ProjectLayout showLogo={true}>
       <Settings {...props} />
-    </BaseLayout>
+    </ProjectLayout>
   );
 };

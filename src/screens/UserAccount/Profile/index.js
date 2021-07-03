@@ -1,11 +1,11 @@
 import React from 'react';
-import BaseLayout from 'components/Molecules/Layout/BaseLayout';
+import ProjectLayout from 'components/Molecules/Layout/ProjectLayout';
 import Profile from './Profile';
 
 export default props => {
   return (
-    <BaseLayout tabBar={false}>
+    <ProjectLayout showLogo={true} tabBar={false}>
       <Profile {...props} />
-    </BaseLayout>
+    </ProjectLayout>
   );
 };

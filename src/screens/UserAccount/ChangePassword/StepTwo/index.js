@@ -1,11 +1,11 @@
 import React from 'react';
-import BaseLayout from 'components/Molecules/Layout/BaseLayout';
+import ProjectLayout from 'components/Molecules/Layout/ProjectLayout';
 import StepTwo from './StepTwo';
 
 export default props => {
   return (
-    <BaseLayout tabBar={false}>
+    <ProjectLayout showLogo={true} tabBar={false}>
       <StepTwo {...props} />
-    </BaseLayout>
+    </ProjectLayout>
   );
 };
