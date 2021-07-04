@@ -13,7 +13,6 @@ import backArrow from 'assets/images/back_arrow.png';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import RenderInput from 'components/Atoms/RenderInput';
 import FileInput from 'components/Atoms/FileInput';
-import BaseText from 'components/Atoms/BaseText';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
@@ -169,17 +168,17 @@ function RenderForm({formikProps, navigation, ...restProps}) {
           error={errors.customer_occupation}
         />
         <FileInput
-          name="company_pan"
+          name="customer_pan"
           label={t('label_pan')}
           ref={panRef}
           containerStyles={styles.input}
           value={values.company_pan}
           file={values.pan_image}
-          onChangeText={handleChange('company_pan')}
+          onChangeText={handleChange('customer_pan')}
           onChoose={v => setFieldValue('pan_image', v)}
-          onBlur={handleBlur('company_pan')}
+          onBlur={handleBlur('customer_pan')}
           onSubmitEditing={() => aadharRef?.current?.focus()}
-          error={errors.company_pan || errors.pan_image}
+          error={errors.customer_pan || errors.pan_image}
         />
         <FileInput
           name="customer_aadhar"
@@ -232,20 +231,11 @@ function AddCustomer(props) {
   const {params} = route;
   const {unit} = params;
   const {t} = useTranslation();
-
   const {user} = useSelector(state => state.user);
   const {selectedProject} = useSelector(state => state.project);
   const {loading} = useSelector(state => state.customer);
 
   const {getCustomerDetails, addCustomer} = useCustomerActions();
-
-  const getUpdatedCustomers = unit_id => {
-    const formData = new FormData();
-    formData.append('user_id', user.id);
-    formData.append('project_id', selectedProject.id);
-    formData.append('unit_id', unit.unitId);
-    getCustomerDetails(formData);
-  };
 
   return (
     <View style={styles.container}>
@@ -270,9 +260,8 @@ function AddCustomer(props) {
           onSubmit={async values => {
             const formData = new FormData();
             formData.append('project_id', selectedProject.id);
-            formData.append('unit_id', unit.unit_id);
-            formData.append('user_id', user.id);
-            formData.append('customer_full_name', values.customer_full_name);
+            formData.append('unit_id', unit.unit_id || unit.unitId);
+            formData.append('customer_first_name', values.customer_full_name);
             formData.append('customer_phone', values.customer_phone);
             formData.append('customer_email', values.customer_email);
             formData.append('customer_address', values.customer_address);
@@ -280,15 +269,17 @@ function AddCustomer(props) {
             formData.append('customer_occupation', values.customer_occupation);
             formData.append('customer_pan', values.customer_pan);
             formData.append('customer_aadhar', values.customer_aadhar);
-            formData.append('customer_aadhar', values.customer_aadhar);
             formData.append('aadhar_image', values.aadhar_image);
             formData.append('pan_image', values.pan_image);
             formData.append('profile_pic', values.profile_pic);
 
-            addCustomer(formData).then(() => {
-              getUpdatedCustomers(values.unit_id);
-              navigation.goBack();
+            await addCustomer(formData);
+            getCustomerDetails({
+              user_id: user.id,
+              project_id: selectedProject.id,
+              unit_id: unit.unitId,
             });
+            navigation.goBack();
           }}>
           {formikProps => <RenderForm formikProps={formikProps} {...props} />}
         </Formik>

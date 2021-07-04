@@ -19,5 +19,12 @@ export default function useProject() {
         config({multipart: false}),
       );
     },
+    getDashboardData: data => {
+      return instance.post(
+        '/dashboard/charts',
+        data,
+        config({multipart: false}),
+      );
+    },
   };
 }

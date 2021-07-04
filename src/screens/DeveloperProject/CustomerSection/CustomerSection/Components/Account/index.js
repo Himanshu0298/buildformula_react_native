@@ -62,7 +62,7 @@ function Account(props) {
   const {accountDetails} = useSelector(state => state.customer);
   const {
     paymentSchedule,
-    paymentCollection,
+    paymentCollection = {},
     activityLog,
     bookingCurrentStatus = 3,
   } = accountDetails;
@@ -75,8 +75,10 @@ function Account(props) {
   const bookingStyle = BOOKING_STATUS_STYLES[bookingCurrentStatus] || {};
 
   const {documentCollected, propertyCollected} = React.useMemo(() => {
-    const {documentcharges = [], propertyfinalamount: property = []} =
-      paymentCollection || {};
+    const {
+      documentcharges = [],
+      propertyfinalamount: property = [],
+    } = paymentCollection;
     return {
       documentCollected: documentcharges.reduce(
         (sum, i) => sum + parseFloat(i.amount),
@@ -273,39 +275,39 @@ function Account(props) {
             <TouchableOpacity
               style={styles.cardItem}
               onPress={() =>
-                navToDetails('document', paymentCollection.documentcharges)
+                navToDetails('document', paymentCollection?.documentcharges)
               }>
               <Text style={{color: theme.colors.documentation}}>
                 Documentation charges
               </Text>
               <Badge
                 style={{backgroundColor: theme.colors.primary}}
-                visible={paymentCollection.documentcharges.length}>
-                {paymentCollection.documentcharges.length}
+                visible={paymentCollection?.documentcharges?.length}>
+                {paymentCollection?.documentcharges?.length}
               </Badge>
             </TouchableOpacity>
             <Divider />
             <TouchableOpacity
               style={styles.cardItem}
               onPress={() =>
-                navToDetails('property', paymentCollection.propertyfinalamount)
+                navToDetails('property', paymentCollection?.propertyfinalamount)
               }>
               <Text>Property Final Amount</Text>
               <Badge
                 style={{backgroundColor: theme.colors.primary}}
-                visible={paymentCollection.propertyfinalamount.length}>
-                {paymentCollection.propertyfinalamount.length}
+                visible={paymentCollection?.propertyfinalamount?.length}>
+                {paymentCollection?.propertyfinalamount?.length}
               </Badge>
             </TouchableOpacity>
             <Divider />
             <TouchableOpacity
               style={styles.cardItem}
-              onPress={() => navToDetails('gst', paymentCollection.gst)}>
+              onPress={() => navToDetails('gst', paymentCollection?.gst)}>
               <Text>GST Amount</Text>
               <Badge
                 style={{backgroundColor: theme.colors.primary}}
-                visible={paymentCollection.gst.length}>
-                {paymentCollection.gst.length}
+                visible={paymentCollection?.gst?.length}>
+                {paymentCollection?.gst?.length}
               </Badge>
             </TouchableOpacity>
           </View>

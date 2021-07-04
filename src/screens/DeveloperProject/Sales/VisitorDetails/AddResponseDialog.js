@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   contentContainer: {
-    paddingVertical: 15,
+    padding: 15,
   },
   responseContainer: {
     marginTop: 15,

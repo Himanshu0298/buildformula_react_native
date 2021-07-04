@@ -16,7 +16,11 @@ export default function DeveloperDashboard(props) {
   const {route} = props;
   const {project} = route?.params || {};
 
-  const {getProjectData, getProjectCommonData} = useProjectActions();
+  const {
+    getProjectData,
+    getProjectCommonData,
+    getDashboardData,
+  } = useProjectActions();
   const {getProjectNotifications} = useNotificationActions();
 
   const {loading} = useSelector(state => state.project);
@@ -28,6 +32,7 @@ export default function DeveloperDashboard(props) {
   ]);
 
   useEffect(() => {
+    getDashboardData(project.id);
     getProjectData(project.id);
     getProjectCommonData(project.id);
     getProjectNotifications({project_id: project.id});

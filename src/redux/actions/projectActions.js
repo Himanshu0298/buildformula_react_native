@@ -9,7 +9,12 @@ export default function useProjectActions() {
   const snackbar = useSnackbar();
   const {_err, _res} = useResProcessor();
 
-  const {getProjects, getProjectData, getProjectCommonData} = useProject();
+  const {
+    getProjects,
+    getProjectData,
+    getProjectCommonData,
+    getDashboardData,
+  } = useProject();
 
   return {
     setSelectedUnit: unit =>
@@ -58,6 +63,21 @@ export default function useProjectActions() {
             const response = _res(await getProjects(formData));
             const {data} = response;
 
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    getDashboardData: projectId =>
+      dispatch({
+        type: types.GET_DASHBOARD_DATA,
+        payload: async () => {
+          try {
+            const res = _res(await getDashboardData({project_id: projectId}));
+            const {data} = res;
             return Promise.resolve(data);
           } catch (error) {
             const message = _err(error);

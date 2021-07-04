@@ -39,7 +39,7 @@ const schema = Yup.object().shape({
   }),
   customer_phone: Yup.number('Invalid').when('userType', {
     is: 'new',
-    then: Yup.string('Invalid').required('Required'),
+    then: Yup.number('Invalid').required('Required'),
   }),
   broker_first_name: Yup.string('Invalid').when('broker', {
     is: 'yes',

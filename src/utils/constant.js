@@ -12,7 +12,8 @@ export const GST_REGEX = /[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[1-9A-Z]{1}
 
 export const MAX_TOWERS = 26;
 export const MAX_FLOORS = 100;
-export const MAX_UNITS = 99;
+export const MAX_UNITS = {1: 99, 2: 99, 3: 99, 4: 1000, 5: 1000};
+export const MAX_BUNGALOW_UNITS = 99;
 
 export const DEFAULT_STRUCTURE = {
   1: {towerCount: undefined, towers: {}},

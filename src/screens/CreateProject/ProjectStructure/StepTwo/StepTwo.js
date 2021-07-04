@@ -1,11 +1,5 @@
 import React, {useState} from 'react';
-import {
-  View,
-  StatusBar,
-  StyleSheet,
-  Keyboard,
-  TouchableOpacity,
-} from 'react-native';
+import {View, StyleSheet, Keyboard, TouchableOpacity} from 'react-native';
 import {Menu, Title, withTheme} from 'react-native-paper';
 import FormTitle from 'components/Atoms/FormTitle';
 import {useTranslation} from 'react-i18next';
@@ -417,10 +411,10 @@ function StepTwo(props) {
     if (unitCount === '') {
       unitCount = undefined;
     }
-    if (unitCount && unitCount > MAX_UNITS) {
+    if (unitCount && unitCount > MAX_UNITS[selectedStructureType]) {
       snackbar.showMessage({
         variant: 'warning',
-        message: `Max ${MAX_UNITS} units are allowed`,
+        message: `Max ${MAX_UNITS[selectedStructureType]} units are allowed`,
       });
       updateStructure(
         updateUnits({
@@ -429,7 +423,7 @@ function StepTwo(props) {
           selectedStructureType,
           selectedTower,
           floorId,
-          unitCount: MAX_FLOORS,
+          unitCount: MAX_UNITS[selectedStructureType],
         }),
       );
     } else {

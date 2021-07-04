@@ -85,7 +85,7 @@ FloorBar.defaultProps = {
 
 const styles = StyleSheet.create({
   unitsInput: {
-    width: 45,
+    width: 55,
     display: 'flex',
     marginHorizontal: 10,
     fontSize: 16,

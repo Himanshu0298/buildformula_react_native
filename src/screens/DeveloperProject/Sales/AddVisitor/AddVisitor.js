@@ -37,8 +37,8 @@ const schema = Yup.object().shape({
   current_locality: Yup.string('Invalid').required('Required'),
   budget_from: Yup.number('Invalid').required('Required'),
   budget_to: Yup.number('Invalid').required('Required'),
-  follow_up_date: Yup.date('Invalid').required('Required'),
-  follow_up_time: Yup.date('Invalid').required('Required'),
+  // follow_up_date: Yup.date('Invalid').required('Required'),
+  // follow_up_time: Yup.date('Invalid').required('Required'),
   assign_to: Yup.string('Invalid').required('Required'),
   inquiry_for: Yup.string('Invalid').required('Required'),
   for_bhk: Yup.string('Invalid').when('for_bhk_required', {
@@ -231,7 +231,7 @@ function InquiryTab(props) {
   useEffect(() => {
     if (
       (values.inquiry_for === 1 || values.inquiry_for === 4) &&
-      bhkOptions[values.inquiry_for].length
+      bhkOptions?.[values.inquiry_for]?.length
     ) {
       setFieldValue('for_bhk_required', true);
     } else {
