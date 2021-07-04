@@ -13,6 +13,7 @@ export default function useSalesActions() {
     getFollowUpList,
     getSalesData,
     addVisitor,
+    updateVisitor,
     addFollowUp,
     getPipelines,
     addPipeline,
@@ -132,6 +133,22 @@ export default function useSalesActions() {
         payload: async () => {
           try {
             const response = _res(await addVisitor(formData));
+            const {data} = response;
+
+            return Promise.resolve(data.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    updateVisitor: formData =>
+      dispatch({
+        type: types.ADD_VISITOR,
+        payload: async () => {
+          try {
+            const response = _res(await updateVisitor(formData));
             const {data} = response;
 
             return Promise.resolve(data.data);

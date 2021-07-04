@@ -41,7 +41,9 @@ function RenderVisitorDetails(props) {
     email,
   } = visitor;
 
-  const occupation = occupationOptions.find(v => v.id === visitor.occupation);
+  const occupation = occupationOptions.find(
+    i => i.value === visitor.occupation,
+  );
   const source = sourceTypeOptions.find(v => v.value === visitor.source_type);
 
   return (
@@ -90,7 +92,7 @@ function RenderVisitorDetails(props) {
       </View>
       <View style={styles.detailRow}>
         <Paragraph>Source type</Paragraph>
-        <Caption style={styles.value}>{source || 'NA'}</Caption>
+        <Caption style={styles.value}>{source?.label || 'NA'}</Caption>
       </View>
       <View style={styles.detailRow}>
         <Paragraph>Priority</Paragraph>
@@ -205,7 +207,7 @@ function RenderFollowupList({visitorFollowUp}) {
 }
 
 function VisitorDetails(props) {
-  const {route} = props;
+  const {route, navigation} = props;
   const {visitorId} = route?.params || {};
 
   const {getVisitor} = useSalesActions();
@@ -229,6 +231,10 @@ function VisitorDetails(props) {
     getVisitor({project_id: selectedProject.id, visitor_id: visitorId});
   }, [visitorId]);
 
+  const onEdit = () => {
+    navigation.navigate('AddVisitor', {visitor});
+  };
+
   const renderScene = ({route: {key}}) => {
     switch (key) {
       case 0:
@@ -238,6 +244,7 @@ function VisitorDetails(props) {
             visitor={visitor}
             occupationOptions={occupationOptions}
             sourceTypeOptions={sourceTypeOptions}
+            onEdit={onEdit}
           />
         );
       case 1:

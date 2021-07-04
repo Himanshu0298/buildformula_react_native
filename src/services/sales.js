@@ -29,6 +29,13 @@ export default function useSalesServices() {
     addVisitor: data => {
       return instance.post('/visitors/add', data, config({multipart: false}));
     },
+    updateVisitor: data => {
+      return instance.post(
+        '/visitors/update',
+        data,
+        config({multipart: false}),
+      );
+    },
     addFollowUp: data => {
       return instance.post(
         '/visitors/addfollowup',

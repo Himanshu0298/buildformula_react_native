@@ -19,6 +19,10 @@ import {TabView} from 'react-native-tab-view';
 import Layout from 'utils/Layout';
 import MaterialTabBar from 'components/Atoms/MaterialTabBar';
 import RenderTextBox from 'components/Atoms/RenderTextbox';
+import {cloneDeep, pickBy} from 'lodash';
+
+const customParseFormat = require('dayjs/plugin/customParseFormat');
+dayjs.extend(customParseFormat);
 
 const schema = Yup.object().shape({
   first_name: Yup.string('Invalid').required('Required'),
@@ -197,14 +201,16 @@ function PersonalTab(props) {
   );
 }
 
-function InquiryTab({
-  navigation,
-  formikProps,
-  setSelectedTab,
-  inquiryOptions,
-  bhkOptions,
-  assignOptions,
-}) {
+function InquiryTab(props) {
+  const {
+    formikProps,
+    setSelectedTab,
+    inquiryOptions,
+    bhkOptions,
+    assignOptions,
+    edit,
+  } = props;
+
   const {
     handleChange,
     setFieldValue,
@@ -376,7 +382,7 @@ function InquiryTab({
             contentStyle={{padding: 3}}
             theme={{roundness: 15}}
             onPress={handleSubmit}>
-            {'Save'}
+            {edit ? 'Update' : 'Save'}
           </Button>
         </View>
       </View>
@@ -384,7 +390,8 @@ function InquiryTab({
   );
 }
 
-function RenderForm({formikProps, user, ...restProps}) {
+function RenderForm(props) {
+  const {formikProps, user, ...restProps} = props;
   const {errors} = formikProps;
 
   const [selectedTab, setSelectedTab] = useState(0);
@@ -476,7 +483,10 @@ function RenderForm({formikProps, user, ...restProps}) {
 }
 
 function AddVisitor(props) {
-  const {navigation} = props;
+  const {navigation, route} = props;
+  const {visitor} = route?.params || {};
+
+  const edit = Boolean(visitor?.id);
 
   const {selectedProject} = useSelector(state => state.project);
   const {user} = useSelector(state => state.user);
@@ -484,40 +494,62 @@ function AddVisitor(props) {
 
   const {
     addVisitor,
+    updateVisitor,
     getVisitors,
     getFollowUps,
     getSalesData,
   } = useSalesActions();
 
+  const initialValues = useMemo(() => {
+    if (edit) {
+      const visitorData = cloneDeep(visitor);
+      delete visitorData.created;
+      delete visitorData.modified;
+      delete visitorData.id;
+      return {
+        ...pickBy(visitorData),
+        follow_up_time: dayjs(visitorData.follow_up_time, 'HH:mm:ss').toDate(),
+        for_bhk: visitorData.bhk,
+      };
+    }
+    return {priority: 'low'};
+  }, [edit, visitor]);
+
   const onSubmit = async values => {
+    const inputs = cloneDeep(values);
+
     let data = {
-      follow_up_date: dayjs(values.follow_up_date).format('DD-MM-YYYY'),
-      follow_up_time: dayjs(values.follow_up_time).format('HH:mm'),
+      follow_up_date: dayjs(inputs.follow_up_date).format('DD-MM-YYYY'),
+      follow_up_time: dayjs(inputs.follow_up_time).format('HH:mm'),
       occupation:
-        values.occupation === 'Other'
-          ? values.occupation_input
-          : values.occupation,
+        inputs.occupation === 'Other'
+          ? inputs.occupation_input
+          : inputs.occupation,
     };
 
-    delete values.follow_up_date;
-    delete values.follow_up_time;
-    delete values.occupation;
-    delete values.occupation_input;
-    delete values.for_bhk_required;
+    delete inputs.follow_up_date;
+    delete inputs.follow_up_time;
+    delete inputs.occupation;
+    delete inputs.occupation_input;
+    delete inputs.for_bhk_required;
 
     data = {
       ...data,
-      ...values,
+      ...inputs,
       project_id: selectedProject.id,
       user_id: user.id,
     };
 
-    addVisitor(data).then(() => {
-      getVisitors(selectedProject.id);
-      getFollowUps(selectedProject.id);
-      getSalesData(selectedProject.id);
-      navigation.goBack();
-    });
+    if (edit) {
+      await updateVisitor({...data, visitor_id: visitor.id});
+    } else {
+      await addVisitor(data);
+    }
+
+    getVisitors(selectedProject.id);
+    getFollowUps(selectedProject.id);
+    getSalesData(selectedProject.id);
+    navigation.goBack();
   };
 
   return (
@@ -529,11 +561,11 @@ function AddVisitor(props) {
           <Formik
             validateOnBlur={false}
             validateOnChange={false}
-            initialValues={{priority: 'low'}}
+            initialValues={initialValues}
             validationSchema={schema}
             onSubmit={onSubmit}>
             {formikProps => (
-              <RenderForm formikProps={formikProps} user={user} {...props} />
+              <RenderForm f {...props} {...{formikProps, user, edit}} />
             )}
           </Formik>
         </View>
