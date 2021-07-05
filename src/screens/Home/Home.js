@@ -247,7 +247,7 @@ const styles = StyleSheet.create({
   developerImageContainer: {
     paddingTop: 10,
     marginBottom: -25,
-    display: 'flex',
+
     alignItems: 'center',
   },
   developerImage: {
@@ -256,7 +256,7 @@ const styles = StyleSheet.create({
   },
   supplierImageContainer: {
     padding: 10,
-    display: 'flex',
+
     alignItems: 'center',
   },
   supplierImage: {
@@ -279,7 +279,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   alertContainer: {
-    display: 'flex',
     alignItems: 'center',
     paddingVertical: 15,
   },

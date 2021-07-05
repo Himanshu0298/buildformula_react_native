@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
   loginButton: {
     marginTop: 25,
     width: '100%',
-    display: 'flex',
+
     alignItems: 'center',
   },
 });

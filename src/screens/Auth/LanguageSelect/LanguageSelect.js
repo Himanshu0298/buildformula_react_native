@@ -90,13 +90,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   topContainer: {
-    display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-around',
   },
   bannerContainer: {
     width: '100%',
-    display: 'flex',
+
     alignItems: 'center',
   },
   banner: {
@@ -104,7 +103,6 @@ const styles = StyleSheet.create({
     height: Layout.window.width * 0.75 * (5 / 12),
   },
   imageContainer: {
-    display: 'flex',
     width: '100%',
     alignItems: 'center',
   },

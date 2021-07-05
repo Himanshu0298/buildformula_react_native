@@ -11,7 +11,6 @@ const Radio = React.forwardRef((props, ref) => {
     <TouchableOpacity
       onPress={() => onChange(value)}
       style={{
-        display: 'flex',
         alignItems: 'center',
         flexDirection: 'row',
         marginRight: 5,

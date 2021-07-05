@@ -44,11 +44,9 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     height: 45,
     marginVertical: 5,
-    display: 'flex',
     alignItems: 'center',
   },
   imageContainer: {
-    display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     padding: 1,

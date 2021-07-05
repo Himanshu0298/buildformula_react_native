@@ -290,7 +290,7 @@ const styles = StyleSheet.create({
   },
   headingContainer: {
     flexDirection: 'row',
-    display: 'flex',
+
     marginLeft: Layout.window.width * 0.015,
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -313,7 +313,7 @@ const styles = StyleSheet.create({
     width: 80,
     marginLeft: 20,
     marginTop: -7,
-    display: 'flex',
+
     justifyContent: 'center',
   },
   unitsListContainer: {},
@@ -325,7 +325,7 @@ const styles = StyleSheet.create({
     width: Layout.window.width * 0.15,
     margin: Layout.window.width * 0.015,
     height: Layout.window.width * 0.15,
-    display: 'flex',
+
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -333,7 +333,7 @@ const styles = StyleSheet.create({
     width: Layout.window.width * 0.15,
     height: Layout.window.width * 0.18,
     marginHorizontal: Layout.window.width * 0.037,
-    display: 'flex',
+
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -357,7 +357,7 @@ const styles = StyleSheet.create({
   button: {
     marginTop: 20,
     width: '95%',
-    display: 'flex',
+
     alignItems: 'flex-end',
   },
 });

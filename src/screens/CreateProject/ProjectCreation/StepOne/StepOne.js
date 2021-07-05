@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {View, StatusBar, StyleSheet, ScrollView} from 'react-native';
+import {View, StatusBar, StyleSheet} from 'react-native';
 import {withTheme, Button} from 'react-native-paper';
 import FormTitle from 'components/Atoms/FormTitle';
 import {Formik} from 'formik';
@@ -10,6 +10,7 @@ import FileInput from 'components/Atoms/FileInput';
 import * as Yup from 'yup';
 import {PAN_REGEX, GST_REGEX} from 'utils/constant';
 import useAddProjectActions from 'redux/actions/addProjectActions';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 // TODO: enable regex validation
 
@@ -50,7 +51,7 @@ function StepOne(props) {
         backgroundColor={theme.colors.primary}
       />
       <FormTitle title={t('StepOneTitle')} subTitle={t('StepOneSubTitle')} />
-      <ScrollView
+      <KeyboardAwareScrollView
         contentContainerStyle={styles.scrollView}
         keyboardShouldPersistTaps="handled">
         <Formik
@@ -75,7 +76,6 @@ function StepOne(props) {
             <View style={styles.container}>
               <View style={styles.inputsContainer}>
                 <RenderInput
-                  autoFocus
                   name="company_name"
                   label={t('CompanyName')}
                   ref={emailRef}
@@ -127,10 +127,17 @@ function StepOne(props) {
                   error={errors.company_gst || errors.gst_image}
                 />
               </View>
-              <View style={styles.button}>
+              <View style={styles.actionContainer}>
                 <Button
+                  style={{flex: 1, marginHorizontal: 5}}
+                  contentStyle={{padding: 3}}
+                  theme={{roundness: 15}}
+                  onPress={navigation.goBack}>
+                  {'Back'}
+                </Button>
+                <Button
+                  style={{flex: 1, marginHorizontal: 5}}
                   mode="contained"
-                  style={{width: '40%'}}
                   contentStyle={{padding: 3}}
                   theme={{roundness: 15}}
                   onPress={handleSubmit}>
@@ -140,7 +147,7 @@ function StepOne(props) {
             </View>
           )}
         </Formik>
-      </ScrollView>
+      </KeyboardAwareScrollView>
     </>
   );
 }
@@ -162,11 +169,11 @@ const styles = StyleSheet.create({
   input: {
     paddingVertical: 7,
   },
-  button: {
-    marginTop: 25,
-    width: '95%',
-    display: 'flex',
-    alignItems: 'flex-end',
+  actionContainer: {
+    paddingHorizontal: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
 });
 

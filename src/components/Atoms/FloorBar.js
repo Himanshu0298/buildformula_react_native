@@ -86,7 +86,6 @@ FloorBar.defaultProps = {
 const styles = StyleSheet.create({
   unitsInput: {
     width: 55,
-    display: 'flex',
     marginHorizontal: 10,
     fontSize: 16,
     justifyContent: 'center',
@@ -110,7 +109,6 @@ const styles = StyleSheet.create({
     flex: 0.8,
   },
   rowContainer: {
-    display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-around',
     flexDirection: 'row',
@@ -118,7 +116,7 @@ const styles = StyleSheet.create({
   floorLabelContainer: {
     flexGrow: 1,
     height: '100%',
-    display: 'flex',
+
     justifyContent: 'center',
   },
   floorLabel: {

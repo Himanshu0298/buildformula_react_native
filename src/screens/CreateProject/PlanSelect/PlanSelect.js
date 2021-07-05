@@ -130,7 +130,6 @@ const styles = StyleSheet.create({
     padding: 12,
   },
   alertContainer: {
-    display: 'flex',
     alignItems: 'center',
     paddingVertical: 15,
   },

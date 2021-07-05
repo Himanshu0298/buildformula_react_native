@@ -267,13 +267,12 @@ const styles = StyleSheet.create({
   },
   radioContainer: {
     flexDirection: 'row',
-    display: 'flex',
   },
   actionContainer: {
     marginTop: 25,
     paddingHorizontal: 10,
     flexDirection: 'row',
-    display: 'flex',
+
     alignItems: 'center',
     justifyContent: 'space-around',
   },

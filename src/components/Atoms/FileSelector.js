@@ -69,12 +69,10 @@ const styles = StyleSheet.create({
   //File
   fileContainer: {
     flexDirection: 'row',
-    display: 'flex',
     justifyContent: 'space-between',
   },
   captionContainer: {
     flexDirection: 'row',
-    display: 'flex',
     alignItems: 'center',
   },
   button: {

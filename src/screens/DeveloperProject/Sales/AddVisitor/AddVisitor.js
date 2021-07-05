@@ -598,7 +598,7 @@ const styles = StyleSheet.create({
     marginTop: 25,
     paddingHorizontal: 10,
     flexDirection: 'row',
-    display: 'flex',
+
     alignItems: 'center',
     justifyContent: 'space-between',
   },
@@ -608,6 +608,5 @@ const styles = StyleSheet.create({
   },
   radioContainer: {
     flexDirection: 'row',
-    display: 'flex',
   },
 });

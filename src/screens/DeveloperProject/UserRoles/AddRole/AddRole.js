@@ -239,7 +239,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     paddingHorizontal: 10,
     flexDirection: 'row',
-    display: 'flex',
+
     alignItems: 'center',
     justifyContent: 'space-around',
   },

@@ -264,7 +264,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     paddingHorizontal: 5,
     flexDirection: 'row',
-    display: 'flex',
+
     alignItems: 'center',
     backgroundColor: '#fff',
   },
@@ -272,7 +272,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     paddingHorizontal: 5,
     flexDirection: 'row',
-    display: 'flex',
+
     alignItems: 'center',
     backgroundColor: '#fff',
   },

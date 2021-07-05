@@ -1,4 +1,4 @@
-import React, {useMemo, useState} from 'react';
+import React, {useMemo} from 'react';
 import {View, StyleSheet, Keyboard} from 'react-native';
 import {withTheme, Button, TextInput} from 'react-native-paper';
 import FormTitle from 'components/Atoms/FormTitle';
@@ -9,13 +9,13 @@ import FileInput from 'components/Atoms/FileInput';
 import useAddProjectActions from 'redux/actions/addProjectActions';
 import * as Yup from 'yup';
 import {PHONE_REGEX} from 'utils/constant';
-import {ScrollView} from 'react-native-gesture-handler';
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
 import RenderSelect from 'components/Atoms/RenderSelect';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import {handleDebounce} from 'utils';
 import RenderTextBox from 'components/Atoms/RenderTextbox';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 const schema = Yup.object().shape({
   project_name: Yup.string().required('name is required'),
@@ -104,7 +104,10 @@ function StepTwo(props) {
     formData.append('terms', 1);
 
     createProject(formData).then(() => {
-      navigation.navigate('ProjectStructureStepOne');
+      navigation.reset({
+        index: 0,
+        routes: [{name: 'GeneralDashboard'}, {name: 'ProjectStructureStepOne'}],
+      });
     });
   };
 
@@ -112,7 +115,7 @@ function StepTwo(props) {
     <>
       <FormTitle title={t('StepOneTitle')} subTitle={t('StepOneSubTitle')} />
       <Spinner visible={loading} textContent={''} />
-      <ScrollView
+      <KeyboardAwareScrollView
         contentContainerStyle={styles.scrollView}
         keyboardShouldPersistTaps="handled">
         <Formik
@@ -231,6 +234,7 @@ function StepTwo(props) {
                   name="project_pin"
                   label={t('label_project_pin')}
                   ref={pinRef}
+                  maxLength={6}
                   keyboardType="number-pad"
                   containerStyles={styles.input}
                   value={values.project_pin}
@@ -241,10 +245,17 @@ function StepTwo(props) {
                   error={errors.project_pin}
                 />
               </View>
-              <View style={styles.button}>
+              <View style={styles.actionContainer}>
                 <Button
+                  style={{flex: 1, marginHorizontal: 5}}
+                  contentStyle={{padding: 3}}
+                  theme={{roundness: 15}}
+                  onPress={navigation.goBack}>
+                  {'Back'}
+                </Button>
+                <Button
+                  style={{flex: 1, marginHorizontal: 5}}
                   mode="contained"
-                  style={{width: '40%'}}
                   contentStyle={{padding: 3}}
                   theme={{roundness: 15}}
                   onPress={handleDebounce(handleSubmit)}>
@@ -254,7 +265,7 @@ function StepTwo(props) {
             </View>
           )}
         </Formik>
-      </ScrollView>
+      </KeyboardAwareScrollView>
     </>
   );
 }
@@ -265,7 +276,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    paddingBottom: 20,
+    paddingBottom: 40,
     justifyContent: 'space-between',
   },
   inputsContainer: {
@@ -276,11 +287,11 @@ const styles = StyleSheet.create({
   input: {
     paddingVertical: 7,
   },
-  button: {
-    marginTop: 25,
-    width: '95%',
-    display: 'flex',
-    alignItems: 'flex-end',
+  actionContainer: {
+    paddingHorizontal: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
 });
 

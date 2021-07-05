@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     flexDirection: 'row',
-    display: 'flex',
+
     alignItems: 'center',
   },
   input: {

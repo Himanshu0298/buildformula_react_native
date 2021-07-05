@@ -111,7 +111,6 @@ const styles = StyleSheet.create({
     paddingTop: 30,
   },
   imageContainer: {
-    display: 'flex',
     alignItems: 'center',
     marginBottom: 20,
   },

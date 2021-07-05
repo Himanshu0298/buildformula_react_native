@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
   },
   headingContainer: {
     flexDirection: 'row',
-    display: 'flex',
+
     justifyContent: 'space-between',
     alignItems: 'center',
     height: 40,
@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
   input: {
     width: 80,
     marginTop: -7,
-    display: 'flex',
+
     justifyContent: 'center',
   },
   towersListContainer: {
@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
   button: {
     marginTop: 20,
     width: '95%',
-    display: 'flex',
+
     alignItems: 'flex-end',
   },
 });

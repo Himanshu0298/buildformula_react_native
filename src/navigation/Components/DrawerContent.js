@@ -209,7 +209,6 @@ const styles = StyleSheet.create({
   backContainer: {
     marginTop: 5,
     marginRight: 5,
-    display: 'flex',
     borderRadius: 10,
     flexDirection: 'row',
     justifyContent: 'flex-end',

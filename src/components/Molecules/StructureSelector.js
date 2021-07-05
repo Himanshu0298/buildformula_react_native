@@ -107,7 +107,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexWrap: 'wrap',
     flexDirection: 'row',
-    display: 'flex',
     paddingHorizontal: Layout.window.width * 0.05,
   },
   box: {
@@ -118,7 +117,6 @@ const styles = StyleSheet.create({
     width: Layout.window.width * 0.35,
     margin: Layout.window.width * 0.05,
     borderRadius: 10,
-    display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
   },

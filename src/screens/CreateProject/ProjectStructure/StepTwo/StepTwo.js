@@ -558,7 +558,10 @@ function StepTwo(props) {
           projectId: project.id,
           userId: user.id,
         }).then(() => {
-          navigation.navigate('PlanSelect');
+          navigation.reset({
+            index: 0,
+            routes: [{name: 'GeneralDashboard'}, {name: 'PlanSelect'}],
+          });
         });
       }
     }
@@ -720,13 +723,13 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     flexDirection: 'row',
-    display: 'flex',
+
     alignItems: 'center',
   },
   structureTitle: {
     marginLeft: 10,
     flexDirection: 'row',
-    display: 'flex',
+
     alignItems: 'center',
   },
   barContainer: {

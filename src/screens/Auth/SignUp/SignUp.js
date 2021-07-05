@@ -428,7 +428,7 @@ const styles = StyleSheet.create({
   },
   bannerContainer: {
     width: '100%',
-    display: 'flex',
+
     alignItems: 'center',
   },
   banner: {
@@ -436,7 +436,6 @@ const styles = StyleSheet.create({
     height: BANNER_HEIGHT,
   },
   imageContainer: {
-    display: 'flex',
     marginBottom: -30,
     right: 10,
     alignItems: 'center',
@@ -467,7 +466,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     backgroundColor: theme.colors.primary,
-    display: 'flex',
+
     height: '100%',
     paddingBottom: 20,
     alignItems: 'center',
@@ -489,11 +488,10 @@ const styles = StyleSheet.create({
     marginTop: 25,
     paddingHorizontal: 20,
     width: '100%',
-    display: 'flex',
+
     alignItems: 'center',
   },
   registerContainer: {
-    display: 'flex',
     marginVertical: 10,
     padding: 3,
     width: '100%',

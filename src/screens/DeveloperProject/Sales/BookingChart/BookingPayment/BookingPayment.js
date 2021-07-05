@@ -927,7 +927,6 @@ const styles = StyleSheet.create({
   },
   radioContainer: {
     flexDirection: 'row',
-    display: 'flex',
   },
   docChargesSection: {
     marginBottom: 10,
@@ -1008,7 +1007,7 @@ const styles = StyleSheet.create({
     marginTop: 25,
     paddingHorizontal: 20,
     flexDirection: 'row',
-    display: 'flex',
+
     alignItems: 'center',
     justifyContent: 'space-between',
   },
