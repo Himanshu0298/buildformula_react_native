@@ -59,7 +59,7 @@ function RenderProject({project, handleOnPress, tab}) {
           {project.project_name}
         </Subheading>
         <Caption numberOfLines={1} style={styles.projectLabel}>
-          {project.project_address}
+          {project.project_id}
         </Caption>
       </View>
     </TouchableOpacity>
@@ -107,9 +107,15 @@ function Home(props) {
   }, [projects]);
 
   const handleOnPress = project => {
-    if (project.is_completed === 'N') {
+    // TODO: reverse this after fixed from backend
+    if (project.project_structure === 'Y') {
       setProjectData(project);
       navigation.navigate('ProjectStructureStepOne');
+      return;
+    }
+    if (project.is_completed === 'N') {
+      setProjectData(project);
+      navigation.navigate('PlanSelect');
       return;
     }
     if (project.project_approved === 'Y') {

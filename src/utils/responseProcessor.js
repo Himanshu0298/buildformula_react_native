@@ -33,7 +33,9 @@ export function useResProcessor() {
 
       if (
         data.status ||
-        (!data?.data?.length && data?.msg.toLowerCase().includes('no'))
+        (!data?.data?.length &&
+          typeof data?.msg === 'string' &&
+          data?.msg.toLowerCase().includes('no'))
       ) {
         return data;
       } else {

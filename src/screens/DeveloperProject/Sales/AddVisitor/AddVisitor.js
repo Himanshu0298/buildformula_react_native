@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useMemo} from 'react';
-import {StyleSheet, View, StatusBar, ScrollView} from 'react-native';
+import {StyleSheet, View, StatusBar} from 'react-native';
 import {withTheme, Subheading, Button, TextInput} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -19,7 +19,8 @@ import {TabView} from 'react-native-tab-view';
 import Layout from 'utils/Layout';
 import MaterialTabBar from 'components/Atoms/MaterialTabBar';
 import RenderTextBox from 'components/Atoms/RenderTextbox';
-import {cloneDeep, pickBy} from 'lodash';
+import _ from 'lodash';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 const customParseFormat = require('dayjs/plugin/customParseFormat');
 dayjs.extend(customParseFormat);
@@ -30,8 +31,8 @@ const schema = Yup.object().shape({
   email: Yup.string('Invalid').email('Invalid').required('Required'),
   phone: Yup.number('Invalid').required('Required'),
   occupation: Yup.string('Invalid').required('Required'),
-  occupation_input: Yup.string('Invalid').when('occupation', {
-    is: 'Other',
+  other_occupation: Yup.string('Invalid').when('occupation', {
+    is: 0,
     then: Yup.string('Invalid').required('Required'),
   }),
   current_locality: Yup.string('Invalid').required('Required'),
@@ -41,10 +42,10 @@ const schema = Yup.object().shape({
   // follow_up_time: Yup.date('Invalid').required('Required'),
   assign_to: Yup.string('Invalid').required('Required'),
   inquiry_for: Yup.string('Invalid').required('Required'),
-  for_bhk: Yup.string('Invalid').when('for_bhk_required', {
-    is: true,
-    then: Yup.string('Invalid').required('Required'),
-  }),
+  // for_bhk: Yup.string('Invalid').when('for_bhk_required', {
+  //   is: true,
+  //   then: Yup.string('Invalid').required('Required'),
+  // }),
 });
 
 function PersonalTab(props) {
@@ -68,7 +69,7 @@ function PersonalTab(props) {
   const sourceTypeRef = React.useRef();
 
   return (
-    <ScrollView
+    <KeyboardAwareScrollView
       contentContainerStyle={styles.scrollView}
       keyboardShouldPersistTaps="handled">
       <View style={styles.container}>
@@ -81,7 +82,7 @@ function PersonalTab(props) {
             value={values.first_name}
             onChangeText={handleChange('first_name')}
             onBlur={handleBlur('first_name')}
-            onSubmitEditing={() => lastNameRef && lastNameRef.current.focus()}
+            onSubmitEditing={() => lastNameRef?.current?.focus()}
             error={errors.first_name}
           />
           <RenderInput
@@ -92,7 +93,7 @@ function PersonalTab(props) {
             value={values.last_name}
             onChangeText={handleChange('last_name')}
             onBlur={handleBlur('last_name')}
-            onSubmitEditing={() => emailRef && emailRef.current.focus()}
+            onSubmitEditing={() => emailRef?.current?.focus()}
             error={errors.last_name}
           />
           <RenderInput
@@ -103,7 +104,7 @@ function PersonalTab(props) {
             value={values.email}
             onChangeText={handleChange('email')}
             onBlur={handleBlur('email')}
-            onSubmitEditing={() => phoneRef && phoneRef.current.focus()}
+            onSubmitEditing={() => phoneRef?.current?.focus()}
             error={errors.email}
           />
           <RenderInput
@@ -115,9 +116,7 @@ function PersonalTab(props) {
             containerStyles={styles.input}
             value={values.phone}
             onChangeText={handleChange('phone')}
-            onSubmitEditing={() => {
-              occupationRef && occupationRef.current.focus();
-            }}
+            onSubmitEditing={() => occupationRef?.current?.focus()}
             onBlur={handleBlur('phone')}
             error={errors.phone}
             left={<TextInput.Affix text="+91" />}
@@ -137,23 +136,23 @@ function PersonalTab(props) {
             error={errors.occupation}
             onSelect={value => {
               setFieldValue('occupation', value);
-              if (value === 'Other') {
+              if (value === 0) {
                 occupationInputRef?.current?.focus();
               } else {
                 localityRef?.current?.focus();
               }
             }}
           />
-          {values.occupation === 'Other' ? (
+          {values.occupation === 0 ? (
             <RenderInput
               ref={occupationInputRef}
-              name="occupation_input"
+              name="other_occupation"
               label={t('label_other_occupation')}
               containerStyles={styles.input}
-              value={values.occupation_input}
-              onChangeText={handleChange('occupation_input')}
-              onBlur={handleBlur('occupation_input')}
-              error={errors.occupation_input}
+              value={values.other_occupation}
+              onChangeText={handleChange('other_occupation')}
+              onBlur={handleBlur('other_occupation')}
+              error={errors.other_occupation}
             />
           ) : null}
           <RenderInput
@@ -197,7 +196,7 @@ function PersonalTab(props) {
           </Button>
         </View>
       </View>
-    </ScrollView>
+    </KeyboardAwareScrollView>
   );
 }
 
@@ -233,15 +232,15 @@ function InquiryTab(props) {
       (values.inquiry_for === 1 || values.inquiry_for === 4) &&
       bhkOptions?.[values.inquiry_for]?.length
     ) {
-      setFieldValue('for_bhk_required', true);
+      setFieldValue('bhk_required', true);
     } else {
-      setFieldValue('for_bhk_required', false);
+      setFieldValue('bhk_required', false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [values.inquiry_for, bhkOptions]);
 
   return (
-    <ScrollView
+    <KeyboardAwareScrollView
       contentContainerStyle={styles.scrollView}
       keyboardShouldPersistTaps="handled">
       <View style={styles.container}>
@@ -341,16 +340,16 @@ function InquiryTab(props) {
               setFieldValue('inquiry_for', value);
             }}
           />
-          {values.for_bhk_required ? (
+          {values.bhk_required ? (
             <RenderSelect
-              name="for_bhk"
+              name="bhk"
               label={t('label_for_bhk')}
               options={bhkOptions?.[values.inquiry_for].map(v => v.toString())}
               containerStyles={styles.input}
-              value={values.for_bhk}
-              error={errors.for_bhk}
+              value={values.bhk}
+              error={errors.bhk}
               onSelect={value => {
-                setFieldValue('for_bhk', value);
+                setFieldValue('bhk', value);
               }}
             />
           ) : null}
@@ -386,7 +385,7 @@ function InquiryTab(props) {
           </Button>
         </View>
       </View>
-    </ScrollView>
+    </KeyboardAwareScrollView>
   );
 }
 
@@ -427,7 +426,7 @@ function RenderForm(props) {
         errors.last_name ||
         errors.phone ||
         errors.occupation ||
-        errors.occupation_input ||
+        errors.other_occupation ||
         errors.current_locality) &&
       selectedTab === 1
     ) {
@@ -502,36 +501,31 @@ function AddVisitor(props) {
 
   const initialValues = useMemo(() => {
     if (edit) {
-      const visitorData = cloneDeep(visitor);
+      const visitorData = _.cloneDeep(visitor);
       delete visitorData.created;
       delete visitorData.modified;
       delete visitorData.id;
+      delete visitorData.inquiry_status_id;
       return {
-        ...pickBy(visitorData),
+        ..._.omitBy(visitorData, _.isNil),
         follow_up_time: dayjs(visitorData.follow_up_time, 'HH:mm:ss').toDate(),
-        for_bhk: visitorData.bhk,
+        bhk: visitorData.bhk,
       };
     }
     return {priority: 'low'};
   }, [edit, visitor]);
 
   const onSubmit = async values => {
-    const inputs = cloneDeep(values);
+    const inputs = _.cloneDeep(values);
 
     let data = {
       follow_up_date: dayjs(inputs.follow_up_date).format('DD-MM-YYYY'),
       follow_up_time: dayjs(inputs.follow_up_time).format('HH:mm'),
-      occupation:
-        inputs.occupation === 'Other'
-          ? inputs.occupation_input
-          : inputs.occupation,
     };
 
     delete inputs.follow_up_date;
     delete inputs.follow_up_time;
-    delete inputs.occupation;
-    delete inputs.occupation_input;
-    delete inputs.for_bhk_required;
+    delete inputs.bhk_required;
 
     data = {
       ...data,
