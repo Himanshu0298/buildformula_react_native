@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   listItemContainer: {
-    marginBottom: 10,
+    marginVertical: 5,
   },
   itemRow: {
     flexDirection: 'row',

@@ -109,6 +109,9 @@ function Account(props) {
   const navToDetails = (type, data) =>
     navigation.navigate('PaymentCollections', {type, data});
 
+  const navToSchedule = () =>
+    navigation.navigate('PaymentSchedule', {data: paymentSchedule});
+
   const navToAddCollection = () =>
     navigation.navigate('AddCollection', {...route.params});
 
@@ -248,20 +251,8 @@ function Account(props) {
           </Subheading>
 
           <View style={styles.cardItemsContainer}>
-            <TouchableOpacity
-              disabled={bankLoanDetail?.takeLoan === 'no'}
-              style={styles.cardItem}>
-              <Text>Bank loan details</Text>
-            </TouchableOpacity>
-            <Divider />
-            <TouchableOpacity style={styles.cardItem}>
-              <Text style={{color: theme.colors.documentation}}>
-                Documentation charges
-              </Text>
-            </TouchableOpacity>
-            <Divider />
-            <TouchableOpacity style={styles.cardItem}>
-              <Text>Property Final Amount</Text>
+            <TouchableOpacity style={styles.cardItem} onPress={navToSchedule}>
+              <Text>View Schedule Details</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -382,7 +373,7 @@ const styles = StyleSheet.create({
   },
   cardItemsContainer: {
     backgroundColor: '#fff',
-    padding: 10,
+    paddingHorizontal: 10,
     borderRadius: 10,
     marginTop: 10,
   },
