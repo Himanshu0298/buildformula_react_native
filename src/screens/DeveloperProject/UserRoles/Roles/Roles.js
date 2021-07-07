@@ -103,6 +103,7 @@ function RenderUsers(props) {
       <FlatList
         data={members}
         extraData={members}
+        showsVerticalScrollIndicator={false}
         keyExtractor={(_, i) => i.toString()}
         refreshControl={
           <RefreshControl refreshing={false} onRefresh={getMemberData} />
@@ -176,6 +177,7 @@ function RenderRoles(props) {
       <FlatList
         data={roles}
         extraData={roles}
+        showsVerticalScrollIndicator={false}
         keyExtractor={(_, i) => i.toString()}
         refreshControl={
           <RefreshControl refreshing={false} onRefresh={getRoleData} />
@@ -263,6 +265,7 @@ function Roles(props) {
 const styles = StyleSheet.create({
   contentContainer: {
     flexGrow: 1,
+    paddingHorizontal: 5,
   },
   fab: {
     position: 'absolute',

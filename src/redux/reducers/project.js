@@ -3,6 +3,7 @@ import {persistReducer} from 'redux-persist';
 import {
   GET_PROJECTS,
   GET_PROJECT_COMMON_DATA,
+  GET_PROJECT_PERMISSIONS,
   GET_SELECTED_PROJECT,
   SET_SELECTED_UNIT,
 } from './../actions/actionTypes';
@@ -21,6 +22,8 @@ const initialState = {
   commonData: {},
   visitors: [],
   unitOptions: [],
+  isProjectAdmin: false,
+  permissions: {},
 };
 
 const reducer = (state = initialState, action = {}) => {
@@ -62,6 +65,25 @@ const reducer = (state = initialState, action = {}) => {
         loading: false,
       };
     case `${GET_PROJECTS}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+        errorMessage: payload,
+      };
+
+    case `${GET_PROJECT_PERMISSIONS}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${GET_PROJECT_PERMISSIONS}_FULFILLED`:
+      return {
+        ...state,
+        isProjectAdmin: payload.isAdmin,
+        permissions: payload.permissions,
+        loading: false,
+      };
+    case `${GET_PROJECT_PERMISSIONS}_REJECTED`:
       return {
         ...state,
         loading: false,

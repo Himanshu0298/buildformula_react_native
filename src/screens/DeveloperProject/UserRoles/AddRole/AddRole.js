@@ -202,7 +202,7 @@ function AddRole(props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 10,
+    paddingHorizontal: 15,
   },
   titleContainer: {
     flexDirection: 'row',

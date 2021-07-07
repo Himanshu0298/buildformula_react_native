@@ -14,6 +14,7 @@ export default function useProjectActions() {
     getProjectData,
     getProjectCommonData,
     getDashboardData,
+    getProjectPermissions,
   } = useProject();
 
   return {
@@ -63,6 +64,22 @@ export default function useProjectActions() {
             const response = _res(await getProjects(formData));
             const {data} = response;
 
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    getProjectPermissions: projectId =>
+      dispatch({
+        type: types.GET_PROJECT_PERMISSIONS,
+        payload: async () => {
+          try {
+            const {data} = _res(
+              await getProjectPermissions({project_id: projectId}),
+            );
             return Promise.resolve(data);
           } catch (error) {
             const message = _err(error);

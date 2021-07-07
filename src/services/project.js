@@ -19,6 +19,13 @@ export default function useProject() {
         config({multipart: false}),
       );
     },
+    getProjectPermissions: data => {
+      return instance.post(
+        '/get_user_permission',
+        data,
+        config({multipart: false}),
+      );
+    },
     getDashboardData: data => {
       return instance.post(
         '/dashboard/charts',
