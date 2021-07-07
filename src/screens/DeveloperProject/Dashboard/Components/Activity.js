@@ -2,16 +2,10 @@ import React from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
 import {Avatar, Caption, Divider, Text, withTheme} from 'react-native-paper';
 import dayjs from 'dayjs';
+import {useSelector} from 'react-redux';
 
 const RenderActivity = React.memo(({collection}) => {
-  const {
-    first_name,
-    last_name,
-    profile_pic,
-    message,
-    transaction_number,
-    log_time,
-  } = collection;
+  const {first_name, last_name, profile_pic, log_time} = collection;
 
   const name = `${first_name} ${last_name}`;
   const initials = name
@@ -41,13 +35,14 @@ const RenderActivity = React.memo(({collection}) => {
 });
 
 function Activity(props) {
-  const activities = [{}, {}];
+  const {dashboardData} = useSelector(state => state.project);
+  const {todayProjectUserNotifications} = dashboardData;
 
   return (
     <View style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        {activities?.length ? (
-          activities.map((collection, index) => (
+        {todayProjectUserNotifications?.length ? (
+          todayProjectUserNotifications.map((collection, index) => (
             <React.Fragment key={index}>
               <RenderActivity collection={collection} />
             </React.Fragment>

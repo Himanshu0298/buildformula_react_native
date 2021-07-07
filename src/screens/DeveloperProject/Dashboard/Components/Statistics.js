@@ -51,7 +51,11 @@ function RenderProgressChart(props) {
 
 function Statistics(props) {
   const {dashboardData} = useSelector(state => state.project);
-  const {salesData, bookingProjectTypeWiseCount: bookingData} = dashboardData;
+  const {
+    salesData,
+    bookingProjectTypeWiseCount: bookingData,
+    projectPhases,
+  } = dashboardData;
   const {data_with_date: weeklySalesData} = salesData?.weekly;
 
   return (
@@ -117,21 +121,18 @@ function Statistics(props) {
             />
           </View>
         </View>
-        <View style={styles.sectionContainer}>
+        <View style={[styles.sectionContainer, {flex: 1}]}>
           <Subheading>Project phases</Subheading>
           <BarChart
             withInnerLines={false}
             fromZero
+            verticalLabelRotation="9"
             data={{
-              labels: ['Phase 1', 'Phase 2', 'Phase 3', 'Phase 4'],
-              datasets: [
-                {
-                  data: [20, 45, 28, 80],
-                },
-              ],
+              labels: projectPhases.labels,
+              datasets: [{data: projectPhases.data}],
             }}
             width={Layout.window.width - 40} // from react-native
-            height={200}
+            height={250}
             chartConfig={{
               backgroundColor: 'transparent',
               backgroundGradientFrom: '#fff',
@@ -139,6 +140,7 @@ function Statistics(props) {
               decimalPlaces: 0, // optional, defaults to 2dp
               color: (opacity = 1) => `rgba(72,114,244, ${opacity})`,
               labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+              propsForHorizontalLabels: {paddingBottom: 30},
             }}
             style={{
               marginTop: 8,
@@ -146,7 +148,7 @@ function Statistics(props) {
           />
         </View>
         <View style={styles.sectionContainer}>
-          <Subheading>Project subphases</Subheading>
+          <Subheading>Project Sub-phases</Subheading>
           <BarChart
             withInnerLines={false}
             fromZero
