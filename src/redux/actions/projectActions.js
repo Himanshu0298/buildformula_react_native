@@ -93,8 +93,9 @@ export default function useProjectActions() {
         type: types.GET_DASHBOARD_DATA,
         payload: async () => {
           try {
-            const res = _res(await getDashboardData({project_id: projectId}));
-            const {data} = res;
+            const {data} = _res(
+              await getDashboardData({project_id: projectId}),
+            );
             return Promise.resolve(data);
           } catch (error) {
             const message = _err(error);

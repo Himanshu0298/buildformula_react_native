@@ -4,14 +4,22 @@ import Layout from 'utils/Layout';
 import {Subheading, Text, withTheme} from 'react-native-paper';
 import {getShadow} from 'utils';
 import {BarChart, LineChart, ProgressChart} from 'react-native-chart-kit';
+import {useSelector} from 'react-redux';
 
 function RenderProgressChart(props) {
-  const {data, color, width} = props;
+  const {params, color, width} = props;
+  const {labels, data} = params;
+  const {totalBookedCount, totalCount} = data;
+
+  const bookingPercentage = totalCount
+    ? (totalBookedCount / totalCount) * 100
+    : 0;
+  const progressData = {labels, data: [bookingPercentage]};
 
   return (
     <View style={styles.progressBarContainer}>
       <ProgressChart
-        data={data}
+        data={progressData}
         width={width}
         height={120}
         strokeWidth={14}
@@ -23,7 +31,7 @@ function RenderProgressChart(props) {
           color: (opacity = 1) => `rgba(${color}, ${opacity})`,
         }}
       />
-      <Text>{data.labels[0]}</Text>
+      <Text>{labels[0]}</Text>
       <View style={styles.progressLegend}>
         <Text
           style={{
@@ -31,15 +39,21 @@ function RenderProgressChart(props) {
             fontSize: 18,
             color: `rgba(${color}, 1)`,
           }}>
-          {data.data[0] * 100}
+          {totalCount ? totalBookedCount : 'NA'}
         </Text>
-        <Text style={{color: `rgba(${color}, 1)`}}>/100</Text>
+        {totalCount ? (
+          <Text style={{color: `rgba(${color}, 1)`}}>/{totalCount}</Text>
+        ) : null}
       </View>
     </View>
   );
 }
 
 function Statistics(props) {
+  const {dashboardData} = useSelector(state => state.project);
+  const {salesData, bookingProjectTypeWiseCount: bookingData} = dashboardData;
+  const {data_with_date: weeklySalesData} = salesData?.weekly;
+
   return (
     <View style={styles.staticsContainer}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -48,20 +62,8 @@ function Statistics(props) {
           <LineChart
             fromZero
             data={{
-              labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-              datasets: [
-                {
-                  data: [
-                    Math.random() * 100,
-                    Math.random() * 100,
-                    Math.random() * 100,
-                    Math.random() * 100,
-                    Math.random() * 100,
-                    Math.random() * 100,
-                    Math.random() * 100,
-                  ],
-                },
-              ],
+              labels: Object.keys(weeklySalesData),
+              datasets: [{data: Object.values(weeklySalesData)}],
             }}
             width={Layout.window.width - 30} // from react-native
             height={200}
@@ -87,29 +89,29 @@ function Statistics(props) {
           <Subheading>Booking</Subheading>
           <View style={styles.row}>
             <RenderProgressChart
-              data={{labels: ['Apartment'], data: [0.4]}}
+              params={{labels: ['Apartment'], data: bookingData.apartment}}
               color={'72, 161, 244'}
               width={(Layout.window.width - 40) / 3}
             />
             <RenderProgressChart
-              data={{labels: ['Shop'], data: [0.4]}}
+              params={{labels: ['Shop'], data: bookingData.shop}}
               color="244, 175, 72"
               width={(Layout.window.width - 40) / 3}
             />
             <RenderProgressChart
               color="0, 205, 205"
-              data={{labels: ['Office'], data: [0.4]}}
+              params={{labels: ['Office'], data: bookingData.office}}
               width={(Layout.window.width - 40) / 3}
             />
           </View>
           <View style={styles.row}>
             <RenderProgressChart
-              data={{labels: ['Bungalow'], data: [0.4]}}
+              params={{labels: ['Bungalow'], data: bookingData.bunglow}}
               color={'7, 202, 3'}
               width={(Layout.window.width - 40) / 3}
             />
             <RenderProgressChart
-              data={{labels: ['Plot'], data: [0.4]}}
+              params={{labels: ['Plot'], data: bookingData.plot}}
               color="168, 72, 244"
               width={(Layout.window.width - 40) / 3}
             />

@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {persistReducer} from 'redux-persist';
 import {
+  GET_DASHBOARD_DATA,
   GET_PROJECTS,
   GET_PROJECT_COMMON_DATA,
   GET_PROJECT_PERMISSIONS,
@@ -24,6 +25,7 @@ const initialState = {
   unitOptions: [],
   isProjectAdmin: false,
   permissions: {},
+  dashboardData: {},
 };
 
 const reducer = (state = initialState, action = {}) => {
@@ -84,6 +86,24 @@ const reducer = (state = initialState, action = {}) => {
         loading: false,
       };
     case `${GET_PROJECT_PERMISSIONS}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+        errorMessage: payload,
+      };
+
+    case `${GET_DASHBOARD_DATA}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${GET_DASHBOARD_DATA}_FULFILLED`:
+      return {
+        ...state,
+        dashboardData: payload,
+        loading: false,
+      };
+    case `${GET_DASHBOARD_DATA}_REJECTED`:
       return {
         ...state,
         loading: false,
