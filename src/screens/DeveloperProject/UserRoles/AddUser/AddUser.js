@@ -1,5 +1,5 @@
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
-import RenderInput from 'components/Atoms/RenderInput';
+import RenderInput, {RenderError} from 'components/Atoms/RenderInput';
 import RenderSelect from 'components/Atoms/RenderSelect';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import {Formik} from 'formik';
@@ -14,13 +14,28 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import {Button, Caption, Title, withTheme} from 'react-native-paper';
+import Spinner from 'react-native-loading-spinner-overlay';
+import {
+  Button,
+  Caption,
+  Chip,
+  TextInput,
+  Title,
+  withTheme,
+} from 'react-native-paper';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import {useSelector} from 'react-redux';
+import useRoleActions from 'redux/actions/roleActions';
 import * as Yup from 'yup';
 
 const schema = Yup.object().shape({
-  email: Yup.string('Invalid').email('Invalid').required('Email is required'),
+  emails: Yup.array()
+    .of(Yup.string('Invalid Email').email('Invalid Email'))
+    .ensure('Email is required')
+    .min(1, 'Email is required'),
+  selectedRoles: Yup.array()
+    .ensure('Role is required')
+    .min(1, 'Role is required'),
 });
 
 function RenderForm(props) {
@@ -37,13 +52,28 @@ function RenderForm(props) {
   const {t} = useTranslation();
   const snackbar = useSnackbar();
 
-  const {roles} = useSelector(s => s.role);
+  const {roles, loading} = useSelector(s => s.role);
 
   const roleOptions = useMemo(() => {
     return roles.map(i => ({label: i.role_name, value: i.id}));
   }, [roles]);
 
   const handleDelete = () => {};
+
+  const addEmail = () => {
+    const {emails = [], email} = values;
+    if (email && !emails.includes(email)) {
+      emails.push(email);
+      setFieldValue('emails', emails);
+      setFieldValue('email', '');
+    }
+  };
+
+  const removeEmail = index => {
+    const {emails = []} = values;
+    emails.splice(index, 1);
+    setFieldValue('emails', emails);
+  };
 
   const addRole = () => {
     setFieldValue('selectedRoles', [...values.selectedRoles, '']);
@@ -71,6 +101,7 @@ function RenderForm(props) {
 
   return (
     <View style={styles.container}>
+      <Spinner visible={loading} textContent="" />
       <View style={styles.titleContainer}>
         <Title>{user ? 'Edit User' : 'Add new User'}</Title>
         {user ? (
@@ -95,15 +126,31 @@ function RenderForm(props) {
           </View>
         </View>
       ) : (
-        <RenderInput
-          name="email"
-          label={t('label_email')}
-          containerStyles={styles.input}
-          value={values.email}
-          onChangeText={handleChange('email')}
-          onBlur={handleBlur('email')}
-          error={errors.email}
-        />
+        <>
+          <RenderInput
+            name="email"
+            label={t('label_email')}
+            containerStyles={styles.input}
+            value={values.email}
+            onChangeText={handleChange('email')}
+            onBlur={handleBlur('email')}
+            error={errors.emails}
+            right={
+              <TextInput.Icon size={20} name={'check'} onPress={addEmail} />
+            }
+          />
+          {values?.emails?.length ? (
+            <View style={styles.emailsContainer}>
+              {values?.emails?.map((email, index) => (
+                <View style={{margin: 5}}>
+                  <Chip mode="outlined" onClose={() => removeEmail(index)}>
+                    {email}
+                  </Chip>
+                </View>
+              ))}
+            </View>
+          ) : null}
+        </>
       )}
 
       <View style={styles.rolesContainer}>
@@ -138,6 +185,9 @@ function RenderForm(props) {
               + Add another role
             </Button>
           </View>
+          {errors.selectedRoles ? (
+            <RenderError style={{marginTop: 10}} error={errors.selectedRoles} />
+          ) : null}
         </ScrollView>
       </View>
 
@@ -163,16 +213,27 @@ function RenderForm(props) {
 }
 
 function AddUser(props) {
-  const {route} = props;
+  const {navigation, route} = props;
   const {user} = route?.params || {};
+
+  const {addUsers, getMembers} = useRoleActions();
+
+  const {selectedProject} = useSelector(s => s.project);
 
   return (
     <Formik
       validateOnBlur={false}
       validateOnChange={false}
-      initialValues={{selectedRoles: []}}
+      initialValues={{selectedRoles: [], emails: []}}
       validationSchema={schema}
-      onSubmit={async values => {}}>
+      onSubmit={async values => {
+        const project_id = selectedProject.id;
+        const {emails, selectedRoles} = values;
+
+        await addUsers({project_id, emails, roles: selectedRoles});
+        getMembers({project_id});
+        navigation.gobBack();
+      }}>
       {formikProps => <RenderForm {...props} {...{formikProps, user}} />}
     </Formik>
   );
@@ -230,6 +291,12 @@ const styles = StyleSheet.create({
 
     alignItems: 'center',
     justifyContent: 'space-around',
+  },
+  emailsContainer: {
+    marginVertical: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexWrap: 'wrap',
   },
 });
 

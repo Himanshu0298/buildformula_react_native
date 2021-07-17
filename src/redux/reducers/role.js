@@ -1,4 +1,5 @@
 import {
+  ADD_USERS,
   GET_MEMBERS,
   GET_ROLES,
   GET_SELECTED_PROJECT,
@@ -50,6 +51,22 @@ const reducer = (state = initialState, action = {}) => {
         roles: payload?.data,
       };
     case `${GET_ROLES}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+      };
+
+    case `${ADD_USERS}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${ADD_USERS}_FULFILLED`:
+      return {
+        ...state,
+        loading: false,
+      };
+    case `${ADD_USERS}_REJECTED`:
       return {
         ...state,
         loading: false,

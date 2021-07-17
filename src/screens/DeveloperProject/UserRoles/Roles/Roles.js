@@ -1,4 +1,5 @@
 import MaterialTabBar from 'components/Atoms/MaterialTabBar';
+import NoResult from 'components/Atoms/NoResult';
 import ProjectHeader from 'components/Molecules/Layout/ProjectHeader';
 import * as React from 'react';
 import {useState} from 'react';
@@ -73,7 +74,7 @@ function RenderUserCard(props) {
               horizontal={true}
               showsHorizontalScrollIndicator={false}>
               {roles.map((role, i) => (
-                <Chip key={i} style={{marginHorizontal: 5}}>
+                <Chip mode="outlined" key={i} style={{marginHorizontal: 5}}>
                   {role}
                 </Chip>
               ))}
@@ -87,8 +88,19 @@ function RenderUserCard(props) {
 
 function RenderUsers(props) {
   const {navigation, theme, members, getMemberData} = props;
+  const {assign_roles, assign_users = {}, admin_users = []} = members;
 
   const [menuIndex, setMenuIndex] = useState(false);
+
+  const users = React.useMemo(() => {
+    const admins = admin_users.map(i => ({...i, roles: ['Admin']}));
+    const otherUsers = Object.values(assign_users).map(i => {
+      const roles = assign_roles[i.user_id];
+      return {...i, roles};
+    });
+
+    return [...admins, ...otherUsers];
+  }, [admin_users, assign_roles, assign_users]);
 
   const toggleMenu = index => setMenuIndex(index);
 
@@ -101,13 +113,15 @@ function RenderUsers(props) {
   return (
     <View style={styles.contentContainer}>
       <FlatList
-        data={members}
-        extraData={members}
+        data={users}
+        extraData={users}
         showsVerticalScrollIndicator={false}
+        contentContainerStyle={{flexGrow: 1}}
         keyExtractor={(_, i) => i.toString()}
         refreshControl={
           <RefreshControl refreshing={false} onRefresh={getMemberData} />
         }
+        ListEmptyComponent={() => <NoResult title="No Users found" />}
         renderItem={({item, index}) => (
           <RenderUserCard
             {...{item, index, menuIndex, toggleMenu, onDelete, onUpdate}}
@@ -226,17 +240,9 @@ function Roles(props) {
   const renderScene = ({route: {key}}) => {
     switch (key) {
       case 0:
-        return (
-          <RenderUsers
-            {...props}
-            members={members}
-            getMemberData={getMemberData}
-          />
-        );
+        return <RenderUsers {...props} {...{members, getMemberData}} />;
       case 1:
-        return (
-          <RenderRoles {...props} roles={roles} getRoleData={getRoleData} />
-        );
+        return <RenderRoles {...props} {...{roles, getRoleData}} />;
     }
   };
 

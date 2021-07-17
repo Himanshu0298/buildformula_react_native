@@ -6,7 +6,7 @@ import useRole from 'services/role';
 
 export default function useRoleActions() {
   const dispatch = useDispatch();
-  const {getMembers, getRoles} = useRole();
+  const {getMembers, getRoles, addUsers} = useRole();
   const {_err, _res} = useResProcessor();
   const snackbar = useSnackbar();
 
@@ -31,6 +31,20 @@ export default function useRoleActions() {
         payload: async () => {
           try {
             const response = _res(await getRoles(data));
+            return Promise.resolve(response);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    addUsers: data =>
+      dispatch({
+        type: types.ADD_USERS,
+        payload: async () => {
+          try {
+            const response = _res(await addUsers(data));
             return Promise.resolve(response);
           } catch (error) {
             const message = _err(error);

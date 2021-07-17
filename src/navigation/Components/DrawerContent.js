@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import {StyleSheet, View, Linking} from 'react-native';
 import {DrawerContentScrollView} from '@react-navigation/drawer';
 import {Paragraph, Drawer, Button, withTheme} from 'react-native-paper';
@@ -8,6 +8,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import useAppActions from '../../redux/actions/appActions';
 import {SITE_URL} from 'utils/constant';
 import {DEVELOPER_DRAWER_ITEMS, CUSTOMER_DRAWER_ITEMS} from './DrawerItems';
+import {useSelector} from 'react-redux';
 
 const DrawerItem = React.memo(props => {
   const {
@@ -114,7 +115,19 @@ function RenderGeneralDrawerItems(props) {
 function RenderDeveloperDrawerItems(props) {
   const {theme} = props;
 
-  return DEVELOPER_DRAWER_ITEMS.map(section => {
+  const {permissions, isProjectAdmin} = useSelector(s => s.project);
+
+  const routes = useMemo(() => {
+    console.log('-----> permissions', permissions);
+    const {admin, approval, editor, view} = permissions;
+
+    if (isProjectAdmin) {
+      return DEVELOPER_DRAWER_ITEMS;
+    }
+    return DEVELOPER_DRAWER_ITEMS;
+  }, [isProjectAdmin, permissions]);
+
+  return routes.map(section => {
     if (section.title) {
       return (
         <Drawer.Section key={section.title} style={styles.drawerSection}>

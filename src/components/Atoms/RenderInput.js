@@ -3,9 +3,9 @@ import {StyleSheet, View, Text} from 'react-native';
 import PropTypes from 'prop-types';
 import {TextInput, withTheme} from 'react-native-paper';
 
-export const RenderError = ({error}) => {
+export const RenderError = ({error, style}) => {
   return (
-    <View style={styles.errorContainer}>
+    <View style={[styles.errorContainer, style]}>
       <Text style={styles.errorStyles}>{error}</Text>
     </View>
   );

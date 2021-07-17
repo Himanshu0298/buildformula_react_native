@@ -3,9 +3,8 @@ import {StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
 
 function NoResult({title, style}) {
-  const containerStyles = style || styles.container;
   return (
-    <View style={containerStyles}>
+    <View style={[styles.container, style]}>
       <Text>{title || 'No data found'}</Text>
     </View>
   );

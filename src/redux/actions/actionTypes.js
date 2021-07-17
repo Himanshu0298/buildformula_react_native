@@ -105,3 +105,4 @@ export const UPDATE_PHASE_ACTIVITY = 'UPDATE_PHASE_ACTIVITY';
 // For Role and Members
 export const GET_MEMBERS = 'GET_MEMBERS';
 export const GET_ROLES = 'GET_ROLES';
+export const ADD_USERS = 'ADD_USERS';
