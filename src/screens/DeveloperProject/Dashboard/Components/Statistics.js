@@ -8,7 +8,7 @@ import {useSelector} from 'react-redux';
 
 function RenderProgressChart(props) {
   const {params, color, width} = props;
-  const {labels, data} = params;
+  const {labels, data = {}} = params;
   const {totalBookedCount, totalCount} = data;
 
   const bookingPercentage = totalCount
@@ -53,10 +53,10 @@ function Statistics(props) {
   const {dashboardData} = useSelector(state => state.project);
   const {
     salesData,
-    bookingProjectTypeWiseCount: bookingData,
-    projectPhases,
-  } = dashboardData;
-  const {data_with_date: weeklySalesData} = salesData?.weekly;
+    bookingProjectTypeWiseCount: bookingData = {},
+    projectPhases = {},
+  } = dashboardData || {};
+  const {data_with_date: weeklySalesData = {}} = salesData?.weekly || {};
 
   return (
     <View style={styles.staticsContainer}>
@@ -128,8 +128,8 @@ function Statistics(props) {
             fromZero
             verticalLabelRotation="9"
             data={{
-              labels: projectPhases.labels,
-              datasets: [{data: projectPhases.data}],
+              labels: projectPhases.labels || [],
+              datasets: [{data: projectPhases.data || []}],
             }}
             width={Layout.window.width - 40} // from react-native
             height={250}
