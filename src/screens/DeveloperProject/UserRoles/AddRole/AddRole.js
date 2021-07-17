@@ -15,25 +15,8 @@ import {
   Button,
 } from 'react-native-paper';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
+import {useSelector} from 'react-redux';
 import * as Yup from 'yup';
-
-const SCREENS = [
-  {
-    title: 'Sales',
-    screens: [
-      {label: 'Sales module screen 1', status: 0, permission: 0},
-      {label: 'Sales module screen 2', status: 0, permission: 0},
-      {label: 'Sales module screen 3', status: 0, permission: 0},
-      {label: 'Sales module screen 4', status: 0, permission: 0},
-      {label: 'Sales module screen 5', status: 0, permission: 0},
-      {label: 'Sales module screen 6', status: 0, permission: 0},
-      {label: 'Sales module screen 7', status: 0, permission: 0},
-      {label: 'Sales module screen 8', status: 0, permission: 0},
-      {label: 'Sales module screen 9', status: 0, permission: 0},
-      {label: 'Sales module screen 10', status: 0, permission: 0},
-    ],
-  },
-];
 
 const PERMISSIONS = [
   {value: 0, icon: 'cancel'},
@@ -67,13 +50,25 @@ function AddRole(props) {
 
   const {t} = useTranslation();
 
-  const [modules, setModules] = React.useState(cloneDeep(SCREENS));
+  const {commonData} = useSelector(s => s.project);
+  const {modules: allModules, submodules} = commonData;
+
+  const modulesList = React.useMemo(() => {
+    return allModules.map(i => {
+      const subModules = submodules
+        .filter(item => item.modules_id === i.id)
+        .map(item => ({...item, status: 0}));
+      return {...i, subModules: subModules};
+    });
+  }, [allModules, submodules]);
+
+  const [modules, setModules] = React.useState(cloneDeep(modulesList));
 
   const handleDelete = () => {};
 
   const updateScreen = (moduleIndex, screenIndex, key, value) => {
     const updatedScreenData = cloneDeep(modules);
-    updatedScreenData[moduleIndex].screens[screenIndex][key] = value;
+    updatedScreenData[moduleIndex].subModules[screenIndex][key] = value;
 
     setModules(updatedScreenData);
   };
@@ -119,32 +114,41 @@ function AddRole(props) {
           <View style={styles.screensContainer}>
             <ScrollView
               showsVerticalScrollIndicator={false}
-              contentContainerStyle={{flexGrow: 1, paddingBottom: 200}}>
+              contentContainerStyle={{flexGrow: 1, paddingBottom: 50}}>
               {modules.map((module, index) => {
-                const {title, screens} = module;
+                const {title, subModules} = module;
                 return (
-                  <View style={styles.moduleContainer}>
+                  <View key={index} style={styles.moduleContainer}>
                     <Subheading style={{color: theme.colors.primary}}>
                       {title} module screen
                     </Subheading>
 
-                    {screens.map((screen, screenIndex) => {
-                      const {label, status, permission} = screen;
+                    {subModules.map((screen, screenIndex) => {
+                      const {
+                        title: subModuleTitle,
+                        status,
+                        permission,
+                      } = screen;
 
                       const onChangeStatus = () => {
                         updateScreen(index, screenIndex, 'status', !status);
                       };
 
                       const onChangePermission = value => {
-                        updateScreen(index, screenIndex, 'permission', value);
+                        updateScreen(
+                          index,
+                          screenIndex,
+                          'permission',
+                          value === permission ? undefined : value,
+                        );
                       };
 
                       return (
                         <View style={styles.screenContainer}>
                           <View style={styles.rowBetween}>
-                            <Text>{label}</Text>
+                            <Text>{subModuleTitle}</Text>
                             <Switch
-                              value={status}
+                              value={Boolean(status)}
                               color={theme.colors.primary}
                               style={{
                                 transform: [{scaleX: 0.6}, {scaleY: 0.6}],
@@ -217,7 +221,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   moduleContainer: {
-    marginTop: 5,
+    marginTop: 15,
   },
   screenContainer: {marginVertical: 5},
   rowBetween: {
