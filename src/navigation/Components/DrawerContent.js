@@ -1,5 +1,5 @@
 import React, {useMemo} from 'react';
-import {StyleSheet, View, Linking} from 'react-native';
+import {StyleSheet, View, Linking, NativeModules} from 'react-native';
 import {DrawerContentScrollView} from '@react-navigation/drawer';
 import {Paragraph, Drawer, Button, withTheme} from 'react-native-paper';
 import Animated from 'react-native-reanimated';
@@ -9,6 +9,26 @@ import useAppActions from '../../redux/actions/appActions';
 import {SITE_URL} from 'utils/constant';
 import {DEVELOPER_DRAWER_ITEMS, CUSTOMER_DRAWER_ITEMS} from './DrawerItems';
 import {useSelector} from 'react-redux';
+
+function filterSidebar(items, permissions) {
+  const filteredItems = [];
+
+  items.map(item => {
+    if (item?.routes) {
+      const filteredSubModules = item?.routes?.filter(i => {
+        return i.id ? permissions?.[i.id] && !permissions?.[i.id]?.none : true;
+      });
+
+      if (filteredSubModules?.length) {
+        filteredItems.push({...item, routes: filteredSubModules});
+      }
+    } else {
+      filteredItems.push(item);
+    }
+  });
+
+  return filteredItems;
+}
 
 const DrawerItem = React.memo(props => {
   const {
@@ -118,13 +138,11 @@ function RenderDeveloperDrawerItems(props) {
   const {permissions, isProjectAdmin} = useSelector(s => s.project);
 
   const routes = useMemo(() => {
-    console.log('-----> permissions', permissions);
-    const {admin, approval, editor, view} = permissions;
-
     if (isProjectAdmin) {
       return DEVELOPER_DRAWER_ITEMS;
+    } else {
+      return filterSidebar(DEVELOPER_DRAWER_ITEMS, permissions);
     }
-    return DEVELOPER_DRAWER_ITEMS;
   }, [isProjectAdmin, permissions]);
 
   return routes.map(section => {

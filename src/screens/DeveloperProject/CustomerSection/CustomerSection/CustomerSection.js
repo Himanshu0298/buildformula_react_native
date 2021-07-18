@@ -1,3 +1,4 @@
+import NoResult from 'components/Atoms/NoResult';
 import * as React from 'react';
 import {useTranslation} from 'react-i18next';
 import {StyleSheet, View} from 'react-native';
@@ -17,6 +18,21 @@ import {
   ModifyRequest,
 } from './Components';
 import DetailsHeader from './Components/DetailsHeader';
+
+const TABS = [
+  {key: 0, title: 'OWNERSHIP', id: 14},
+  {key: 1, title: 'BOOKING FORM', id: 15},
+  {key: 2, title: 'BANK LOANS', id: 16},
+  {key: 3, title: 'ACCOUNT', id: 17},
+  {key: 4, title: 'MODIFY REQUEST', id: 18},
+  {key: 5, title: 'FILES', id: 19},
+];
+
+function filterTabs(tabs, permissions) {
+  return tabs.filter(tab => {
+    return permissions[tab.id] && permissions[tab.id]?.none;
+  });
+}
 
 function RenderTabBar(tabBarProps) {
   //TODO: improve tab change animation
@@ -65,19 +81,18 @@ function CustomerSection(props) {
 
   const {user} = useSelector(state => state.user);
   const {loading} = useSelector(state => state.customer);
+  const {permissions, isProjectAdmin} = useSelector(s => s.project);
 
-  const [selectedTab, setSelectedTab] = React.useState(3);
-  const [routes] = React.useState([
-    {key: 0, title: 'OWNERSHIP'},
-    {key: 1, title: 'BOOKING FORM'},
-    {key: 2, title: 'BANK LOANS'},
-    {key: 3, title: 'ACCOUNT'},
-    {key: 4, title: 'MODIFY REQUEST'},
-    {key: 5, title: 'FILES'},
-  ]);
+  const [selectedTab, setSelectedTab] = React.useState(0);
+  const routes = React.useMemo(() => {
+    if (isProjectAdmin) {
+      return TABS;
+    }
+
+    return filterTabs(TABS, permissions);
+  }, [isProjectAdmin, permissions]);
 
   React.useEffect(() => {
-    console.log('-----> unit.unitId', unit.unitId);
     getCustomerDetails({user_id: user.id, project_id, unit_id: unit.unitId});
     getBookingDetails({project_id, unit_id: unit.unitId});
     getBankDetails({project_id, unit_id: unit.unitId});
@@ -112,13 +127,17 @@ function CustomerSection(props) {
         <Divider style={styles.divider} />
       </View>
 
-      <TabView
-        navigationState={{index: selectedTab, routes}}
-        renderScene={renderScene}
-        onIndexChange={setSelectedTab}
-        initialLayout={{width: Layout.window.width}}
-        renderTabBar={tabBarProps => <RenderTabBar {...tabBarProps} />}
-      />
+      {routes?.length ? (
+        <TabView
+          navigationState={{index: selectedTab, routes}}
+          renderScene={renderScene}
+          onIndexChange={setSelectedTab}
+          initialLayout={{width: Layout.window.width}}
+          renderTabBar={tabBarProps => <RenderTabBar {...tabBarProps} />}
+        />
+      ) : (
+        <NoResult title="You do not permissions to view this page. Contact a project admin for support." />
+      )}
     </>
   );
 }

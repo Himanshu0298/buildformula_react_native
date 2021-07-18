@@ -18,11 +18,13 @@ export const DEVELOPER_DRAWER_ITEMS = [
     title: 'SALES',
     routes: [
       {
+        id: 1,
         route: 'Visitors',
         label: 'Visitors',
         icon: 'badge-account-horizontal-outline',
       },
       {
+        id: 2,
         route: 'SalesPipeline',
         label: 'Sales Pipeline',
         icon: ({color, size}) => (
@@ -30,6 +32,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
         ),
       },
       {
+        id: 3,
         route: 'BookingChartStack',
         label: 'Booking Chart',
         icon: ({color, size}) => (
@@ -61,6 +64,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
         ),
       },
       {
+        id: 5,
         route: 'Planning',
         label: 'Planning',
         icon: ({color, size}) => (
@@ -68,6 +72,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
         ),
       },
       {
+        id: 6,
         route: 'Execution',
         label: 'Execution',
         icon: 'format-list-checks',
@@ -130,6 +135,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
     title: 'FILES',
     routes: [
       {
+        id: 12,
         route: 'Files',
         label: 'Files',
         icon: ({color, size}) => (
@@ -139,9 +145,15 @@ export const DEVELOPER_DRAWER_ITEMS = [
     ],
   },
   {
-    route: 'Roles',
-    label: 'Roles and Members',
-    icon: 'account-cog-outline',
+    title: 'ROLES & SETTINGS',
+    routes: [
+      {
+        id: 13,
+        route: 'Roles',
+        label: 'Roles and Members',
+        icon: 'account-cog-outline',
+      },
+    ],
   },
 ];
 
@@ -150,6 +162,7 @@ export const CUSTOMER_DRAWER_ITEMS = [
     title: 'CUSTOMER SECTION',
     routes: [
       {
+        id: 14,
         route: 'Ownership',
         label: 'Ownership',
         icon: ({color, size}) => (

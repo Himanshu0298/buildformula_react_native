@@ -50,103 +50,109 @@ function RenderProgressChart(props) {
 }
 
 function Statistics(props) {
-  const {dashboardData} = useSelector(state => state.project);
+  const {dashboardData = {}} = useSelector(state => state.project);
   const {
     salesData,
-    bookingProjectTypeWiseCount: bookingData = {},
-    projectPhases = {},
-  } = dashboardData || {};
-  const {data_with_date: weeklySalesData = {}} = salesData?.weekly || {};
+    bookingProjectTypeWiseCount: bookingData,
+    projectPhases,
+  } = dashboardData;
+  const {data_with_date: weeklySalesData} = salesData?.weekly || {};
 
   return (
     <View style={styles.staticsContainer}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={styles.sectionContainer}>
-          <Subheading>Sales</Subheading>
-          <LineChart
-            fromZero
-            data={{
-              labels: Object.keys(weeklySalesData),
-              datasets: [{data: Object.values(weeklySalesData)}],
-            }}
-            width={Layout.window.width - 30} // from react-native
-            height={200}
-            withDots={false}
-            withHorizontalLines={false}
-            yAxisInterval={1} // optional, defaults to 1
-            chartConfig={{
-              backgroundColor: 'transparent',
-              backgroundGradientFrom: '#fff',
-              backgroundGradientTo: '#fff',
-              decimalPlaces: 0, // optional, defaults to 2dp
-              color: (opacity = 1) => `rgba(72,114,244, ${opacity})`,
-              labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-            }}
-            bezier
-            style={{
-              marginTop: 8,
-              marginLeft: -10,
-            }}
-          />
-        </View>
-        <View style={styles.sectionContainer}>
-          <Subheading>Booking</Subheading>
-          <View style={styles.row}>
-            <RenderProgressChart
-              params={{labels: ['Apartment'], data: bookingData.apartment}}
-              color={'72, 161, 244'}
-              width={(Layout.window.width - 40) / 3}
-            />
-            <RenderProgressChart
-              params={{labels: ['Shop'], data: bookingData.shop}}
-              color="244, 175, 72"
-              width={(Layout.window.width - 40) / 3}
-            />
-            <RenderProgressChart
-              color="0, 205, 205"
-              params={{labels: ['Office'], data: bookingData.office}}
-              width={(Layout.window.width - 40) / 3}
+        {weeklySalesData ? (
+          <View style={styles.sectionContainer}>
+            <Subheading>Sales</Subheading>
+            <LineChart
+              fromZero
+              data={{
+                labels: Object.keys(weeklySalesData),
+                datasets: [{data: Object.values(weeklySalesData)}],
+              }}
+              width={Layout.window.width - 30} // from react-native
+              height={200}
+              withDots={false}
+              withHorizontalLines={false}
+              yAxisInterval={1} // optional, defaults to 1
+              chartConfig={{
+                backgroundColor: 'transparent',
+                backgroundGradientFrom: '#fff',
+                backgroundGradientTo: '#fff',
+                decimalPlaces: 0, // optional, defaults to 2dp
+                color: (opacity = 1) => `rgba(72,114,244, ${opacity})`,
+                labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+              }}
+              bezier
+              style={{
+                marginTop: 8,
+                marginLeft: -10,
+              }}
             />
           </View>
-          <View style={styles.row}>
-            <RenderProgressChart
-              params={{labels: ['Bungalow'], data: bookingData.bunglow}}
-              color={'7, 202, 3'}
-              width={(Layout.window.width - 40) / 3}
-            />
-            <RenderProgressChart
-              params={{labels: ['Plot'], data: bookingData.plot}}
-              color="168, 72, 244"
-              width={(Layout.window.width - 40) / 3}
+        ) : null}
+        {bookingData ? (
+          <View style={styles.sectionContainer}>
+            <Subheading>Booking</Subheading>
+            <View style={styles.row}>
+              <RenderProgressChart
+                params={{labels: ['Apartment'], data: bookingData.apartment}}
+                color={'72, 161, 244'}
+                width={(Layout.window.width - 40) / 3}
+              />
+              <RenderProgressChart
+                params={{labels: ['Shop'], data: bookingData.shop}}
+                color="244, 175, 72"
+                width={(Layout.window.width - 40) / 3}
+              />
+              <RenderProgressChart
+                color="0, 205, 205"
+                params={{labels: ['Office'], data: bookingData.office}}
+                width={(Layout.window.width - 40) / 3}
+              />
+            </View>
+            <View style={styles.row}>
+              <RenderProgressChart
+                params={{labels: ['Bungalow'], data: bookingData.bunglow}}
+                color={'7, 202, 3'}
+                width={(Layout.window.width - 40) / 3}
+              />
+              <RenderProgressChart
+                params={{labels: ['Plot'], data: bookingData.plot}}
+                color="168, 72, 244"
+                width={(Layout.window.width - 40) / 3}
+              />
+            </View>
+          </View>
+        ) : null}
+        {projectPhases ? (
+          <View style={[styles.sectionContainer, {flex: 1}]}>
+            <Subheading>Project phases</Subheading>
+            <BarChart
+              withInnerLines={false}
+              fromZero
+              verticalLabelRotation="9"
+              data={{
+                labels: projectPhases.labels || [],
+                datasets: [{data: projectPhases.data || []}],
+              }}
+              width={Layout.window.width - 40} // from react-native
+              height={250}
+              chartConfig={{
+                backgroundColor: 'transparent',
+                backgroundGradientFrom: '#fff',
+                backgroundGradientTo: '#fff',
+                decimalPlaces: 0, // optional, defaults to 2dp
+                color: (opacity = 1) => `rgba(72,114,244, ${opacity})`,
+                labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                propsForHorizontalLabels: {paddingBottom: 30},
+              }}
+              style={{
+                marginTop: 8,
+              }}
             />
           </View>
-        </View>
-        <View style={[styles.sectionContainer, {flex: 1}]}>
-          <Subheading>Project phases</Subheading>
-          <BarChart
-            withInnerLines={false}
-            fromZero
-            verticalLabelRotation="9"
-            data={{
-              labels: projectPhases.labels || [],
-              datasets: [{data: projectPhases.data || []}],
-            }}
-            width={Layout.window.width - 40} // from react-native
-            height={250}
-            chartConfig={{
-              backgroundColor: 'transparent',
-              backgroundGradientFrom: '#fff',
-              backgroundGradientTo: '#fff',
-              decimalPlaces: 0, // optional, defaults to 2dp
-              color: (opacity = 1) => `rgba(72,114,244, ${opacity})`,
-              labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-              propsForHorizontalLabels: {paddingBottom: 30},
-            }}
-            style={{
-              marginTop: 8,
-            }}
-          />
-        </View>
+        ) : null}
         <View style={styles.sectionContainer}>
           <Subheading>Project Sub-phases</Subheading>
           <BarChart
@@ -154,11 +160,7 @@ function Statistics(props) {
             fromZero
             data={{
               labels: ['Phase 1', 'Phase 2', 'Phase 3', 'Phase 4'],
-              datasets: [
-                {
-                  data: [20, 45, 28, 80],
-                },
-              ],
+              datasets: [{data: [20, 45, 28, 80]}],
             }}
             width={Layout.window.width - 40} // from react-native
             height={200}
