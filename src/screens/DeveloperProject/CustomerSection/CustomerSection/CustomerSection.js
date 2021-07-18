@@ -30,7 +30,7 @@ const TABS = [
 
 function filterTabs(tabs, permissions) {
   return tabs.filter(tab => {
-    return permissions[tab.id] && permissions[tab.id]?.none;
+    return permissions[tab.id] && !permissions[tab.id]?.none;
   });
 }
 
