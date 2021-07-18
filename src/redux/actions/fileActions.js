@@ -137,10 +137,8 @@ export default function useFileActions() {
         type: types.DELETE_FILE,
         payload: async () => {
           try {
-            const res = _res(await deleteFile(params));
-            return Promise.resolve({
-              data: res.data,
-            });
+            const {data} = _res(await deleteFile(params));
+            return Promise.resolve({data});
           } catch (error) {
             const message = _err(error);
             snackbar.showMessage({message, variant: 'error'});
