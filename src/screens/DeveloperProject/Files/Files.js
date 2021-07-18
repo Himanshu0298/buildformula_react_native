@@ -223,7 +223,7 @@ export default function Files(props) {
       getFolders({project_id, index_of: folderDepth});
       toggleDialog();
     } else {
-      deleteFile({file_id: id, type, project_id: selectedProject?.id});
+      deleteFile({file_id: id, project_id: selectedProject?.id});
     }
   };
 
@@ -284,6 +284,7 @@ export default function Files(props) {
           {...{menuId, toggleMenu, setModalContent, setModalContentType}}
         />
       </ScrollView>
+
       <FAB.Group
         open={fab}
         style={styles.fab}
@@ -309,7 +310,6 @@ export default function Files(props) {
           versionDataHandler,
         }}
       />
-
       <CreateFolderDialogue
         visible={DialogType === 'createFolder'}
         toggleDialogue={toggleDialog}

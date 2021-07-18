@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import {StyleSheet, View, Image} from 'react-native';
 import {IconButton, Text, Menu, Divider, Button} from 'react-native-paper';
 import PdfIcon from 'assets/images/pdf_icon.png';
@@ -10,6 +10,7 @@ function VersionFile(props) {
   const [versionMenu, setVersionMenu] = React.useState(false);
 
   const toggleVersionMenu = () => setVersionMenu(v => !v);
+
   return (
     <View>
       <View style={styles.versionFiles}>
@@ -58,11 +59,9 @@ function VersionFile(props) {
 function VersionDialog(props) {
   const {versionData, handleDownload} = props;
 
-  const filteredVersion = [versionData?.current];
-  console.log('--->', filteredVersion);
-  versionData?.lists?.map(list => {
-    filteredVersion?.push(list);
-  });
+  const filteredVersion = useMemo(() => {
+    return [versionData?.current, ...(versionData?.lists || [])];
+  }, [versionData]);
 
   return (
     <View>
@@ -71,8 +70,10 @@ function VersionDialog(props) {
           Versions
         </Text>
         <Button
-          color={theme.colors.primary}
-          style={styles.button}
+          uppercase={false}
+          mode="contained"
+          compact
+          labelStyle={{fontSize: 12}}
           onPress={() => console.log('Pressed')}>
           Add New Version
         </Button>
@@ -114,17 +115,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
   },
-  button: {
-    backgroundColor: '#DBE9F6',
-  },
   versionFiles: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingVertical: 10,
   },
   versionHeading: {
-    alignItems: 'center',
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between',
     paddingBottom: 15,
   },

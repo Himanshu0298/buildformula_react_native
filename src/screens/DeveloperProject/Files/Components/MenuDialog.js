@@ -24,7 +24,7 @@ function MenuDialog(props) {
   const {
     setModalContentType,
     modalContent,
-    toggleCreateDialogue,
+    toggleDialog,
     toggleMenu,
     versionDataHandler,
   } = props;
@@ -114,7 +114,7 @@ function MenuDialog(props) {
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() => {
-          toggleCreateDialogue('renameFile');
+          toggleDialog('renameFile');
           toggleMenu();
         }}>
         <View style={styles.viewDirection}>
@@ -143,7 +143,7 @@ function MenuDialog(props) {
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() => {
-          toggleCreateDialogue('deleteFileFolder');
+          toggleDialog('deleteFileFolder');
           toggleMenu();
         }}>
         <View style={styles.viewDirection}>

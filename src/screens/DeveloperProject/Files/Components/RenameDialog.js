@@ -7,46 +7,44 @@ import {secondaryTheme} from 'styles/theme';
 import * as Yup from 'yup';
 
 const schema = Yup.object().shape({
-  rename_file: Yup.string().trim().required('Required'),
+  name: Yup.string().trim().required('Required'),
 });
 
 function RenameDialogue(props) {
   const {visible, toggleDialogue, dialogueContent, renameFolderHandler} = props;
-  const fileType = dialogueContent.folder_name ? 'folder' : 'file';
+  const {file_name, folder_name} = dialogueContent || {};
+
+  const fileType = folder_name ? 'folder' : 'file';
+
   const renaNameRef = React.useRef();
+
   return (
     <Portal>
       <Dialog visible={visible} onDismiss={toggleDialogue} style={{top: -100}}>
         <View style={styles.dialogTitleContainer}>
-          <Text style={{color: '#000'}}>
-            {dialogueContent?.file_name || dialogueContent?.folder_name}
-          </Text>
+          <Text style={{color: '#000'}}>{file_name || folder_name}</Text>
         </View>
         <Formik
           validateOnBlur={false}
           validateOnChange={false}
-          initialValues={{rename_file: ''}}
+          initialValues={{name: file_name || folder_name}}
           validationSchema={schema}
           onSubmit={async values => {
-            renameFolderHandler(
-              values.rename_file,
-              dialogueContent?.id,
-              fileType,
-            );
+            renameFolderHandler(values.name, dialogueContent?.id, fileType);
           }}>
           {({values, errors, handleChange, handleBlur, handleSubmit}) => {
             return (
               <View style={styles.dialogContentContainer}>
                 <RenderInput
-                  name="rename_file"
+                  name="name"
                   label={'file name'}
                   containerStyles={styles.input}
-                  value={values.rename_file}
-                  onChangeText={handleChange('rename_file')}
-                  onBlur={handleBlur('rename_file')}
+                  value={values.name}
+                  onChangeText={handleChange('name')}
+                  onBlur={handleBlur('name')}
                   ref={renaNameRef}
                   onSubmitEditing={handleSubmit}
-                  error={errors.rename_file}
+                  error={errors.name}
                 />
 
                 <View style={styles.dialogActionContainer}>
