@@ -33,20 +33,24 @@ export default function DeveloperDashboard(props) {
   ]);
 
   useEffect(() => {
+    loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [project]);
+
+  const loadData = () => {
     getDashboardData(project.id);
     getProjectPermissions(project.id);
     getProjectData(project.id);
     getProjectCommonData(project.id);
     getProjectNotifications({project_id: project.id});
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [project]);
+  };
 
   const renderScene = ({route: {key}}) => {
     switch (key) {
       case 0:
-        return <Statistics />;
+        return <Statistics onRefresh={loadData} />;
       case 1:
-        return <Activity />;
+        return <Activity onRefresh={loadData} />;
     }
   };
 

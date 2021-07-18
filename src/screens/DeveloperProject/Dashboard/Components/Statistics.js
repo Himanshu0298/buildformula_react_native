@@ -1,5 +1,5 @@
 import React from 'react';
-import {ScrollView, StyleSheet, View} from 'react-native';
+import {RefreshControl, ScrollView, StyleSheet, View} from 'react-native';
 import Layout from 'utils/Layout';
 import {Subheading, Text, withTheme} from 'react-native-paper';
 import {getShadow} from 'utils';
@@ -50,6 +50,8 @@ function RenderProgressChart(props) {
 }
 
 function Statistics(props) {
+  const {onRefresh} = props;
+
   const {dashboardData = {}} = useSelector(state => state.project);
   const {
     salesData,
@@ -60,7 +62,11 @@ function Statistics(props) {
 
   return (
     <View style={styles.staticsContainer}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={false} onRefresh={onRefresh} />
+        }>
         {weeklySalesData ? (
           <View style={styles.sectionContainer}>
             <Subheading>Sales</Subheading>

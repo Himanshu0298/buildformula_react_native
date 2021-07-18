@@ -1,6 +1,6 @@
 import React from 'react';
-import {ScrollView, StyleSheet, View} from 'react-native';
-import {Avatar, Caption, Divider, Text, withTheme} from 'react-native-paper';
+import {RefreshControl, ScrollView, StyleSheet, View} from 'react-native';
+import {Avatar, Caption, Text, withTheme} from 'react-native-paper';
 import dayjs from 'dayjs';
 import {useSelector} from 'react-redux';
 
@@ -35,12 +35,18 @@ const RenderActivity = React.memo(({collection}) => {
 });
 
 function Activity(props) {
+  const {onRefresh} = props;
+
   const {dashboardData} = useSelector(state => state.project);
   const {todayProjectUserNotifications} = dashboardData;
 
   return (
     <View style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={false} onRefresh={onRefresh} />
+        }>
         {todayProjectUserNotifications?.length ? (
           todayProjectUserNotifications.map((collection, index) => (
             <React.Fragment key={index}>
