@@ -7,16 +7,18 @@ import {
   Text,
   Title,
   withTheme,
+  TextInput,
 } from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import _ from 'lodash';
 import {round} from 'utils';
 import dayjs from 'dayjs';
-import {RenderInstallments} from 'screens/DeveloperProject/Sales/BookingChart/BookingPayment/BookingPayment';
+import {useMemo} from 'react';
+import RenderInput from 'components/Atoms/RenderInput';
 
-function RenderRow({row}) {
+function RenderRow({row, style}) {
   return (
-    <View style={styles.row}>
+    <View style={[styles.row, style]}>
       {row.map(({label, value}, index) => {
         return (
           <View key={index} style={styles.cell}>
@@ -290,12 +292,55 @@ function RenderCustomPaymentDetails({bookingDetails, theme}) {
     </View>
   );
 }
-function RenderFirstBigPaymentDetails({bookingDetails, theme}) {
+
+export function RenderInstallments(props) {
+  const {theme, installments} = props;
+
+  if (installments.length) {
+    return (
+      <>
+        <Caption style={{color: theme.colors.primary, marginTop: 15}}>
+          Installments
+        </Caption>
+        <View style={styles.installmentTitleRow}>
+          <Caption style={{color: theme.colors.primary}}>No.</Caption>
+          <Caption style={{color: theme.colors.primary}}>
+            Installment Date
+          </Caption>
+          <Caption style={{color: theme.colors.primary}}>
+            Installment Amount
+          </Caption>
+        </View>
+        {installments.map((installment, index) => {
+          return (
+            <View key={index} style={styles.installmentRow}>
+              <Subheading>{installment.id}</Subheading>
+              <View style={{flex: 0.4}}>
+                <RenderInput value={installment.date} disabled={true} />
+              </View>
+              <View style={{flex: 0.4}}>
+                <RenderInput
+                  value={installment.amount}
+                  disabled={true}
+                  left={<TextInput.Affix text="₹" />}
+                />
+              </View>
+            </View>
+          );
+        })}
+      </>
+    );
+  }
+
+  return <View />;
+}
+
+function RenderFirstBigPaymentDetails(props) {
+  const {bookingDetails, theme} = props;
   const {
-    main_total_amount,
     first_big_amount_percentage,
     instllment_first_amount,
-    installment_date,
+    installment_start_date_all,
     installment_payment_remarks,
     installment_numbers,
     installment_start_date,
@@ -303,7 +348,19 @@ function RenderFirstBigPaymentDetails({bookingDetails, theme}) {
     installment_interval_days,
     total_other_charges,
     full_other_charges_date,
+    installments,
+    installment_date,
+    installment_amount,
   } = bookingDetails;
+
+  const parsedInstallments = useMemo(() => {
+    return installments.map((id, index) => ({
+      id,
+      date: installment_date[index],
+      amount: installment_amount[index],
+    }));
+  }, [installment_amount, installment_date, installments]);
+
   return (
     <View style={styles.sectionContainer}>
       <Subheading style={{color: theme.colors.primary, marginBottom: 10}}>
@@ -317,7 +374,7 @@ function RenderFirstBigPaymentDetails({bookingDetails, theme}) {
             {label: 'Amount', value: `${instllment_first_amount} Rs.`},
             {
               label: 'Date',
-              value: dayjs(installment_date).format('DD MMM YYYY'),
+              value: dayjs(installment_start_date_all).format('DD MMM YYYY'),
             },
           ]}
         />
@@ -345,16 +402,11 @@ function RenderFirstBigPaymentDetails({bookingDetails, theme}) {
           ]}
         />
 
-        <RenderInstallments
-          installment_count={installment_numbers}
-          installment_start_date={installment_start_date}
-          installment_interval_days={installment_interval_days}
-          area_amount={main_total_amount}
-          big_installment_amount={instllment_first_amount}
-        />
+        <RenderInstallments {...props} installments={parsedInstallments} />
 
         {total_other_charges ? (
           <RenderRow
+            style={{marginTop: 20}}
             row={[
               {
                 label: 'Total other charges',
@@ -473,6 +525,19 @@ const styles = StyleSheet.create({
     backgroundColor: '#E5EAFA',
     borderRadius: 5,
     marginTop: 10,
+  },
+  installmentTitleRow: {
+    flexDirection: 'row',
+    marginTop: 5,
+    alignItems: 'center',
+    justifyContent: 'space-around',
+  },
+  installmentRow: {
+    flexDirection: 'row',
+    marginTop: 5,
+    marginLeft: 20,
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
 });
 

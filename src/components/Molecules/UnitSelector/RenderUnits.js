@@ -8,6 +8,7 @@ import Layout from 'utils/Layout';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import PropTypes from 'prop-types';
+import dayjs from 'dayjs';
 
 const UNIT_MARGIN = Layout.window.width * 0.015;
 const BODY_WIDTH = Layout.window.width - 40;
@@ -52,7 +53,10 @@ function RenderUnits({onSelectUnit, units, selectedFloor, isUnitDisabled}) {
         let bookingStyle = BOOKING_STATUS_STYLES[unit.status] || {};
         const disabled = checkDisabled(isUnitDisabled, unit);
 
-        if (unit?.status === 2 && !disabled) {
+        if (
+          unit.status === 2 &&
+          dayjs(unit.tmp_booking_time_end).isBefore(dayjs())
+        ) {
           bookingStyle = {};
         }
 

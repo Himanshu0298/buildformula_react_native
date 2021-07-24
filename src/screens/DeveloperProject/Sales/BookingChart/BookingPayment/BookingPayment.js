@@ -19,7 +19,6 @@ import {
   Text,
   Divider,
 } from 'react-native-paper';
-import {theme} from 'styles/theme';
 import * as Yup from 'yup';
 import _ from 'lodash';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
@@ -98,6 +97,7 @@ const schema = Yup.object().shape({
 
 export function RenderInstallments(props) {
   const {
+    theme,
     installment_count,
     installment_start_date,
     installment_interval_days,
@@ -176,7 +176,7 @@ export function RenderInstallments(props) {
 }
 
 function RenderOneBigInstallmentPaymentForm(props) {
-  const {formikProps, t} = props;
+  const {formikProps, t, theme} = props;
   const {values, setFieldValue, handleChange, errors} = formikProps;
 
   const timeout = useRef();
@@ -354,7 +354,7 @@ function RenderOneBigInstallmentPaymentForm(props) {
 }
 
 function RenderCustomPaymentForm(props) {
-  const {formikProps, t} = props;
+  const {theme, formikProps, t} = props;
   const {values, setFieldValue, errors} = formikProps;
 
   const timeout = useRef();
@@ -542,7 +542,9 @@ function RenderCustomPaymentForm(props) {
         );
       })}
       {totalPercent !== 100 ? (
-        <TouchableOpacity style={styles.chargesButton} onPress={addNewPayment}>
+        <TouchableOpacity
+          style={[styles.chargesButton, {borderColor: theme.colors.primary}]}
+          onPress={addNewPayment}>
           <Caption style={{color: theme.colors.primary}}>+ Create more</Caption>
         </TouchableOpacity>
       ) : null}
@@ -551,7 +553,7 @@ function RenderCustomPaymentForm(props) {
 }
 
 function RenderDocumentChargesPayment(props) {
-  const {formikProps, t} = props;
+  const {theme, formikProps, t} = props;
   const {values, setFieldValue, errors} = formikProps;
 
   return (
@@ -603,7 +605,7 @@ function RenderDocumentChargesPayment(props) {
 }
 
 function RenderPaymentForm(props) {
-  const {formikProps, t} = props;
+  const {theme, formikProps, t} = props;
   const {values, errors, handleChange, setFieldValue, handleBlur} = formikProps;
 
   return (
@@ -674,7 +676,7 @@ function RenderPaymentForm(props) {
 }
 
 function FormContent(props) {
-  const {formikProps, bankList, navigation} = props;
+  const {theme, formikProps, bankList, navigation} = props;
   const {t} = useTranslation();
 
   const {
@@ -771,7 +773,7 @@ function FormContent(props) {
               formikProps.setErrors({});
             }}
           />
-          <RenderPaymentForm formikProps={formikProps} t={t} />
+          <RenderPaymentForm {...props} formikProps={formikProps} t={t} />
         </View>
         <View style={styles.actionContainer}>
           <Button
@@ -952,7 +954,6 @@ const styles = StyleSheet.create({
   },
   chargesButton: {
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: theme.colors.primary,
     paddingVertical: 10,
     marginTop: 15,
     borderRadius: 5,
