@@ -49,11 +49,11 @@ function RenderUnits({onSelectUnit, units, selectedFloor, isUnitDisabled}) {
         const unit = units[unitId];
         const unitBhk = BHK_OPTIONS.find(item => item.type === unit.bhk);
 
-        const bookingStyle = BOOKING_STATUS_STYLES[unit.status] || {};
+        let bookingStyle = BOOKING_STATUS_STYLES[unit.status] || {};
         const disabled = checkDisabled(isUnitDisabled, unit);
 
-        if (unit?.status === 1 && !disabled) {
-          // bookingStyle = {};
+        if (unit?.status === 2 && !disabled) {
+          bookingStyle = {};
         }
 
         let backgroundColor = DEFAULT_UNIT_COLOR;

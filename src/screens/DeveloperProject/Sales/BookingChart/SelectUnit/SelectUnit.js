@@ -66,10 +66,9 @@ export default function SelectUnit(props) {
     return disabled;
   };
 
-  const onSelectUnit = (index, unit) => {
-    lockUnit({unit_id: unit.unitId, project_id: selectedProject.id}).then(() =>
-      toggleTimer({showTimer: true, startTime: new Date(), time: 1800}),
-    );
+  const onSelectUnit = async (index, unit) => {
+    await lockUnit({unit_id: unit.unitId, project_id: selectedProject.id});
+    toggleTimer({showTimer: true, startTime: new Date(), time: 1800});
 
     navigation.navigate('BC_Step_Four', {
       project_id: selectedProject.id,
