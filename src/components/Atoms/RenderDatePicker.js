@@ -18,6 +18,7 @@ const RenderDatePicker = React.forwardRef((props, ref) => {
     format,
     min,
     max,
+    disabled,
     ...rest
   } = props;
 
@@ -44,12 +45,13 @@ const RenderDatePicker = React.forwardRef((props, ref) => {
 
   return (
     <>
-      <TouchableOpacity onPress={togglePicker}>
+      <TouchableOpacity disabled={disabled} onPress={togglePicker}>
         <RenderInput
           ref={ref}
           pointerEvents="none"
           editable={false}
           {...rest}
+          disabled={disabled}
           error={error}
           value={value ? dayjs(value).format(valueFormat) : value}
           right={

@@ -43,6 +43,13 @@ export default function useSalesServices() {
         config({multipart: false}),
       );
     },
+    updateFollowUp: data => {
+      return instance.post(
+        'update/todaysfollowup',
+        data,
+        config({multipart: false}),
+      );
+    },
     addPipeline: data => {
       return instance.post('/pipeline/add', data, config());
     },

@@ -1,5 +1,5 @@
 import {withTheme} from 'react-native-paper';
-import React, {useState} from 'react';
+import React, {useState, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 import {ActionSheetProvider} from '@expo/react-native-action-sheet';
 import {RenderError} from 'components/Atoms/RenderInput';
@@ -7,6 +7,7 @@ import RenderSelect from 'components/Atoms/RenderSelect';
 import RenderTextBox from 'components/Atoms/RenderTextbox';
 import {StyleSheet, View} from 'react-native';
 import CustomDialog from 'components/Atoms/CustomDialog';
+import {useSelector} from 'react-redux';
 
 function AddResponseDialog(props) {
   const {handleClose, handleSubmit} = props;
@@ -17,8 +18,14 @@ function AddResponseDialog(props) {
   const [status, setStatus] = useState('');
   const [response, setResponse] = useState('');
 
+  const {pipelines} = useSelector(s => s.sales);
+
+  const statusOptions = useMemo(() => {
+    return pipelines.map(i => ({label: i.title, value: i.id}));
+  }, [pipelines]);
+
   const submitForm = () => {
-    handleSubmit();
+    handleSubmit({status, response});
     handleClose();
   };
 
@@ -37,7 +44,7 @@ function AddResponseDialog(props) {
           <RenderSelect
             name="status"
             label={t('label_status')}
-            options={[]}
+            options={statusOptions}
             containerStyles={styles.input}
             value={status}
             onSelect={setStatus}
@@ -49,7 +56,7 @@ function AddResponseDialog(props) {
               label={t('label_customer_response')}
               numberOfLines={8}
               value={response}
-              onSelect={setResponse}
+              onChangeText={setResponse}
             />
           </View>
         </View>

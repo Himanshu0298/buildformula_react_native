@@ -1,6 +1,5 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import React, {useEffect, useState} from 'react';
-import {StyleSheet, View, ScrollView} from 'react-native';
+import React, {useEffect, useState, useMemo} from 'react';
+import {StyleSheet, View, FlatList} from 'react-native';
 import {
   withTheme,
   Caption,
@@ -25,7 +24,13 @@ import NoResult from 'components/Atoms/NoResult';
 import AddResponseDialog from './AddResponseDialog';
 
 function RenderVisitorDetails(props) {
-  const {visitor, occupationOptions, sourceTypeOptions, onEdit} = props;
+  const {
+    visitor,
+    pipelines,
+    occupationOptions,
+    sourceTypeOptions,
+    onEdit,
+  } = props;
 
   const {
     first_name,
@@ -39,12 +44,15 @@ function RenderVisitorDetails(props) {
     current_locality,
     bhk,
     email,
+    inquiry_status_id,
   } = visitor;
 
   const occupation = occupationOptions.find(
     i => i.value === visitor.occupation,
   );
   const source = sourceTypeOptions.find(v => v.value === visitor.source_type);
+
+  const inquiryStatus = pipelines.find(i => i.id === inquiry_status_id);
 
   return (
     <View style={styles.detailsContainer}>
@@ -110,7 +118,7 @@ function RenderVisitorDetails(props) {
           <CustomBadge
             style={{paddingHorizontal: 10, paddingVertical: 2}}
             color="rgba(72,114,244,0.15)"
-            label={'NEGOTIATIONS'}
+            label={inquiryStatus?.title}
             labelStyles={{color: theme.colors.primary}}
           />
         </Caption>
@@ -127,78 +135,130 @@ function RenderVisitorDetails(props) {
   );
 }
 
-function RenderFollowupList({visitorFollowUp}) {
-  const [responseDialog, setResponseDialog] = useState(false);
+function RenderFollowupCard(props) {
+  const {followup, toggleResponseDialog} = props;
+  const {
+    id: followUpId,
+    created,
+    assign_to,
+    remarks,
+    followup_date,
+    followup_time,
+    inquiry_status,
+    today_discussion,
+  } = followup;
 
-  const toggleResponseDialog = () => setResponseDialog(v => !v);
+  const {commonData} = useSelector(s => s.project);
+
+  const assignedUser = useMemo(() => {
+    return commonData.all_users_belongs_to_projects.find(
+      i => i.id === assign_to,
+    );
+  }, [assign_to, commonData.all_users_belongs_to_projects]);
+
+  return (
+    <View style={styles.followupContainer}>
+      <Text>Followup request</Text>
+      <View style={styles.followupRow}>
+        <View>
+          <Caption>Created on</Caption>
+          <Caption style={styles.followupValue}>
+            {dayjs(created).format('DD MMMM YYYY, hh:mm A')}
+          </Caption>
+        </View>
+        <View style={{alignItems: 'flex-end'}}>
+          <Caption>Assign To</Caption>
+          <Caption style={[{textAlign: 'right'}, styles.followupValue]}>
+            {assignedUser?.first_name} {assignedUser?.last_name}
+          </Caption>
+        </View>
+      </View>
+
+      <Caption>Notes:</Caption>
+      <Caption style={styles.followupValue}>{remarks}</Caption>
+
+      <Divider
+        style={{
+          marginVertical: 10,
+          borderWidth: 0.3,
+          borderColor: 'rgba(0,0,0,0.2)',
+        }}
+      />
+
+      <Text>Followup responses</Text>
+
+      <View style={styles.rowBetween}>
+        <View style={{marginVertical: 15}}>
+          <Caption>Follow up on:</Caption>
+          <Caption style={styles.followupValue}>
+            {dayjs(`${followup_date} ${followup_time}`).format(
+              'DD MMMM YYYY, hh:mm A',
+            )}
+          </Caption>
+        </View>
+        <View style={{alignItems: 'flex-end'}}>
+          <Caption>Status</Caption>
+          <CustomBadge
+            style={{paddingHorizontal: 10, paddingVertical: 2}}
+            color="rgba(72,114,244,0.15)"
+            label={inquiry_status}
+            labelStyles={{color: theme.colors.primary}}
+          />
+        </View>
+      </View>
+
+      {today_discussion ? (
+        <>
+          <Caption>Customer Response: :</Caption>
+          <Caption style={[styles.followupValue, {marginBottom: 15}]}>
+            {today_discussion}
+          </Caption>
+        </>
+      ) : (
+        <Button
+          mode="contained"
+          uppercase={false}
+          compact
+          onPress={() => toggleResponseDialog(followUpId)}
+          style={{width: '70%'}}>
+          Add customer response
+        </Button>
+      )}
+    </View>
+  );
+}
+
+function RenderFollowupList(props) {
+  const {visitorFollowUp, handleResponseSubmit} = props;
+
+  const [responseFor, setResponseFor] = useState();
+
+  const toggleResponseDialog = v => setResponseFor(!isNaN(v) ? v : undefined);
+
+  const handleSubmit = data => {
+    handleResponseSubmit({...data, followUpId: responseFor});
+  };
 
   return (
     <View style={styles.followupBody}>
       <AddResponseDialog
-        open={responseDialog}
+        open={!isNaN(responseFor)}
         handleClose={toggleResponseDialog}
-        handleSubmit={() => {}}
+        handleSubmit={handleSubmit}
       />
       {visitorFollowUp?.length ? (
-        <ScrollView showsVerticalScrollIndicator={false}>
-          {visitorFollowUp?.map((followup, i) => {
-            const {
-              created,
-              assign_to,
-              remarks,
-              followup_date,
-              followup_time,
-            } = followup;
-
-            return (
-              <View key={i} style={styles.followupContainer}>
-                <Text>Followup request</Text>
-                <View style={styles.followupRow}>
-                  <View>
-                    <Caption>Created on</Caption>
-                    <Caption style={styles.followupValue}>
-                      {dayjs(created).format('DD MMMM YYYY, hh:mm A')}
-                    </Caption>
-                  </View>
-                  <View>
-                    <Caption>Assign To</Caption>
-                    <Caption
-                      style={[{textAlign: 'right'}, styles.followupValue]}>
-                      {assign_to}
-                    </Caption>
-                  </View>
-                </View>
-
-                <Caption>Notes:</Caption>
-                <Caption style={styles.followupValue}>{remarks}</Caption>
-
-                <Divider style={{marginVertical: 10}} />
-
-                <Text>Followup responses</Text>
-
-                <View style={{marginVertical: 15}}>
-                  <Caption>Follow up on:</Caption>
-                  <Caption style={styles.followupValue}>
-                    {dayjs(`${followup_date} ${followup_time}`).format(
-                      'DD MMMM YYYY, hh:mm A',
-                    )}
-                  </Caption>
-                </View>
-
-                <View>
-                  <Button
-                    mode="contained"
-                    uppercase={false}
-                    compact
-                    onPress={toggleResponseDialog}
-                    style={{width: '70%'}}>
-                    Add customer response
-                  </Button>
-                </View>
-              </View>
-            );
-          })}
-        </ScrollView>
+        <FlatList
+          data={visitorFollowUp}
+          extraData={visitorFollowUp}
+          showsVerticalScrollIndicator={false}
+          keyExtractor={item => item.id}
+          renderItem={({item}) => (
+            <RenderFollowupCard
+              followup={item}
+              toggleResponseDialog={toggleResponseDialog}
+            />
+          )}
+        />
       ) : (
         <NoResult title="No follow up found for this visitor" />
       )}
@@ -210,7 +270,7 @@ function VisitorDetails(props) {
   const {route, navigation} = props;
   const {visitorId} = route?.params || {};
 
-  const {getVisitor} = useSalesActions();
+  const {getVisitor, getPipelineData, updateFollowUp} = useSalesActions();
 
   const [selectedTab, setSelectedTab] = useState(0);
   const [routes] = React.useState([
@@ -222,6 +282,7 @@ function VisitorDetails(props) {
   const {
     loading,
     visitor,
+    pipelines,
     visitorFollowUp,
     occupationOptions,
     sourceTypeOptions,
@@ -229,10 +290,21 @@ function VisitorDetails(props) {
 
   useEffect(() => {
     getVisitor({project_id: selectedProject.id, visitor_id: visitorId});
-  }, [visitorId]);
+    getPipelineData(selectedProject.id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedProject.id, visitorId]);
 
   const onEdit = () => {
     navigation.navigate('AddVisitor', {visitor});
+  };
+
+  const handleResponseSubmit = ({status, response, followUpId}) => {
+    updateFollowUp({
+      project_id: selectedProject.id,
+      followup_id: followUpId,
+      followup_status: status,
+      followup_details: response,
+    });
   };
 
   const renderScene = ({route: {key}}) => {
@@ -242,6 +314,7 @@ function VisitorDetails(props) {
           <RenderVisitorDetails
             {...props}
             visitor={visitor}
+            pipelines={pipelines}
             occupationOptions={occupationOptions}
             sourceTypeOptions={sourceTypeOptions}
             onEdit={onEdit}
@@ -249,7 +322,11 @@ function VisitorDetails(props) {
         );
       case 1:
         return (
-          <RenderFollowupList {...props} visitorFollowUp={visitorFollowUp} />
+          <RenderFollowupList
+            {...props}
+            visitorFollowUp={visitorFollowUp}
+            handleResponseSubmit={handleResponseSubmit}
+          />
         );
     }
   };
@@ -318,6 +395,11 @@ const styles = StyleSheet.create({
   followupRow: {
     marginTop: 15,
     marginBottom: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  rowBetween: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',

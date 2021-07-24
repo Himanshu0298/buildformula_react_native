@@ -34,7 +34,7 @@ export const STRUCTURE_TYPE_LABELS = {
 export const PRIORITY_COLORS = {
   low: theme.colors.success,
   medium: theme.colors.warning,
-  high: theme.com,
+  high: theme.colors.red,
 };
 
 export const COLORS = {

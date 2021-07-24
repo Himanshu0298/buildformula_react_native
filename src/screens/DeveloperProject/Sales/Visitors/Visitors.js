@@ -161,7 +161,7 @@ function Visitors(props) {
     followups,
     todayFollowups,
     visitorAnalytics,
-  } = useSelector(state => state.sales);
+  } = useSelector(s => s.sales);
 
   const {getVisitors, getFollowUps, getSalesData} = useSalesActions();
 

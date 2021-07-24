@@ -269,6 +269,7 @@ function InquiryTab(props) {
             error={errors.budget_to}
           />
           <RenderDatePicker
+            disabled={edit}
             name="follow_up_date"
             ref={followUpDateRef}
             label={t('label_follow_up_date')}
@@ -281,6 +282,7 @@ function InquiryTab(props) {
           />
           <RenderDatePicker
             mode="time"
+            disabled={edit}
             ref={followUpTimeRef}
             name="follow_up_time"
             label={t('label_follow_up_time')}

@@ -15,6 +15,7 @@ export default function useSalesActions() {
     addVisitor,
     updateVisitor,
     addFollowUp,
+    updateFollowUp,
     getPipelines,
     addPipeline,
     deletePipeline,
@@ -164,10 +165,22 @@ export default function useSalesActions() {
         type: types.ADD_FOLLOW_UP,
         payload: async () => {
           try {
-            const response = _res(await addFollowUp(formData));
-            const {data} = response;
-
+            const {data} = _res(await addFollowUp(formData));
             return Promise.resolve(data.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    updateFollowUp: params =>
+      dispatch({
+        type: types.UPDATE_FOLLOW_UP,
+        payload: async () => {
+          try {
+            const {data} = _res(await updateFollowUp(params));
+            return Promise.resolve(data);
           } catch (error) {
             const message = _err(error);
             snackbar.showMessage({message, variant: 'error'});

@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import _ from 'lodash';
 import {
   GET_VISITORS,
@@ -16,6 +17,7 @@ import {
   SET_TIMER,
   GET_VISITOR,
   GET_PROJECT_COMMON_DATA,
+  UPDATE_FOLLOW_UP,
 } from './../actions/actionTypes';
 
 const initialState = {
@@ -129,7 +131,10 @@ const reducer = (state = initialState, action = {}) => {
       return {
         ...state,
         loading: false,
-        visitors: payload,
+        visitors: payload.sort(
+          (a, b) =>
+            dayjs(b.follow_up_date).unix() - dayjs(a.follow_up_date).unix(),
+        ),
       };
     case `${GET_VISITORS}_REJECTED`:
       return {
@@ -139,19 +144,22 @@ const reducer = (state = initialState, action = {}) => {
       };
 
     case `${GET_VISITOR}_PENDING`:
+    case `${UPDATE_FOLLOW_UP}_PENDING`:
       return {
         ...state,
         loading: true,
         visitor: {},
       };
     case `${GET_VISITOR}_FULFILLED`:
+    case `${UPDATE_FOLLOW_UP}_FULFILLED`:
       return {
         ...state,
         loading: false,
         visitor: payload.visitors,
-        visitorFollowUp: payload.followup_lists,
+        visitorFollowUp: payload.followup_lists || payload.followup,
       };
     case `${GET_VISITOR}_REJECTED`:
+    case `${UPDATE_FOLLOW_UP}_REJECTED`:
       return {
         ...state,
         loading: false,
@@ -168,8 +176,14 @@ const reducer = (state = initialState, action = {}) => {
       return {
         ...state,
         loading: false,
-        followups: followups,
-        todayFollowups: todayFollowups,
+        followups: followups.sort(
+          (a, b) =>
+            dayjs(b.follow_up_date).unix() - dayjs(a.follow_up_date).unix(),
+        ),
+        todayFollowups: todayFollowups.sort(
+          (a, b) =>
+            dayjs(b.follow_up_date).unix() - dayjs(a.follow_up_date).unix(),
+        ),
       };
     }
     case `${GET_FOLLOWUP_LIST}_REJECTED`:

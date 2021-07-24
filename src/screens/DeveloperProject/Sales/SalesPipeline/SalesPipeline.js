@@ -243,78 +243,78 @@ function AddContactDialog({open, t, handleClose, moveContact}) {
   );
 }
 
-const RenderBoard = React.memo(
-  ({
+const RenderBoard = React.memo(props => {
+  const {
     pipelines,
     setSelectedTab,
     deletePipeline,
     toggleModal,
     handleAddNew,
     moveContact,
-  }) => {
-    const alert = useAlert();
+  } = props;
 
-    const onDeletePipeline = (id, visitorCount) => {
-      if (visitorCount > 0) {
-        alert.show({
-          title: 'Alert',
-          message: 'Only empty cards can be deleted',
-          dismissable: false,
-          showCancelButton: false,
-        });
-        return;
-      }
+  const alert = useAlert();
 
-      const formData = new FormData();
-      formData.append('status_id', id);
-      deletePipeline(id, formData);
-    };
-
-    const boardRepository = React.useMemo(() => {
-      const data = pipelines.map((pipeline, i) => ({
-        id: i + 1,
-        name: pipeline.title,
-        rows: pipeline.get_visitors,
-        pipeline,
-      }));
-
-      data.push({
-        id: pipelines.length + 1,
-        name: 'Add new',
-        addNew: true,
-        rows: [],
+  const onDeletePipeline = (id, visitorCount) => {
+    if (visitorCount > 0) {
+      alert.show({
+        title: 'Alert',
+        message: 'Only empty cards can be deleted',
+        dismissable: false,
+        showCancelButton: false,
       });
+      return;
+    }
 
-      return new BoardRepository(data);
-    }, [pipelines]);
+    const formData = new FormData();
+    formData.append('status_id', id);
+    deletePipeline(id, formData);
+  };
 
-    return (
-      <View style={styles.boardContainer}>
-        <Board
-          boardBackground="#fff"
-          boardRepository={boardRepository}
-          renderHeader={column => (
-            <RenderHeader
-              data={column}
-              toggleModal={toggleModal}
-              handleDelete={onDeletePipeline}
-            />
-          )}
-          cardContent={item => <RenderContacts item={item} />}
-          renderAddNew={() => <RenderAddNew handleAddNew={handleAddNew} />}
-          onChangeTab={setSelectedTab}
-          open={() => console.log('-----> open')}
-          onDragEnd={(srcColumnId, destColumnId, draggedItem) => {
-            const {row} = draggedItem?.attributes;
-            if (row?.id && srcColumnId !== destColumnId) {
-              moveContact(row.id);
-            }
-          }}
-        />
-      </View>
-    );
-  },
-);
+  const boardRepository = React.useMemo(() => {
+    const data = pipelines.map((pipeline, i) => ({
+      id: i + 1,
+      name: pipeline.title,
+      rows: pipeline.get_visitors,
+      pipeline,
+    }));
+
+    data.push({
+      id: pipelines.length + 1,
+      name: 'Add new',
+      addNew: true,
+      rows: [],
+    });
+
+    return new BoardRepository(data);
+  }, [pipelines]);
+
+  return (
+    <View style={styles.boardContainer}>
+      <Board
+        boardBackground="#fff"
+        boardRepository={boardRepository}
+        renderHeader={column => (
+          <RenderHeader
+            data={column}
+            toggleModal={toggleModal}
+            handleDelete={onDeletePipeline}
+          />
+        )}
+        cardContent={item => <RenderContacts item={item} />}
+        renderAddNew={() => <RenderAddNew handleAddNew={handleAddNew} />}
+        onChangeTab={setSelectedTab}
+        open={() => console.log('-----> open')}
+        onDragEnd={(srcColumnId, destColumnId, draggedItem) => {
+          const {row} = draggedItem?.attributes;
+          if (row?.id && srcColumnId !== destColumnId) {
+            moveContact(row.id);
+          }
+        }}
+      />
+    </View>
+  );
+});
 
 export default function SalesPipeline(props) {
   const {t} = useTranslation();

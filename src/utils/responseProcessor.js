@@ -30,14 +30,14 @@ export function useResProcessor() {
 
     _res: response => {
       const {data} = response;
-      const msg = data?.msg.toLowerCase();
+      const msg = data?.msg?.toLowerCase?.();
 
       if (
         data.status ||
         (!data?.data?.length &&
           typeof data?.msg === 'string' &&
-          msg.includes('no')) ||
-        msg.includes('not')
+          msg?.includes('no')) ||
+        msg?.includes('not')
       ) {
         return data;
       } else {
