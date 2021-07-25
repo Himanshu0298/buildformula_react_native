@@ -118,11 +118,13 @@ function RenderForm(props) {
       {user ? (
         <View style={styles.userCardContainer}>
           <View style={styles.rowBetween}>
-            <Text>Unnat Thamma</Text>
+            <Text>
+              {user.first_name} {user.last_name}
+            </Text>
           </View>
           <View style={styles.rowBetween}>
-            <Caption>+91 6546 980008</Caption>
-            <Caption>unaattamma@xyz.com</Caption>
+            <Caption>+91 {user.phone}</Caption>
+            <Caption>{user.email}</Caption>
           </View>
         </View>
       ) : (
@@ -162,16 +164,21 @@ function RenderForm(props) {
               <View style={styles.roleContainer} key={index}>
                 <RenderSelect
                   name="role"
+                  disabled={role === 'Admin'}
                   label={'Role'}
                   options={roleOptions}
                   value={role}
                   onSelect={value => updateRole(index, value)}
                 />
-                <View style={styles.deleteContainer}>
-                  <TouchableOpacity onPress={() => deleteRole(index)}>
-                    <Caption style={{color: theme.colors.red}}>Delete</Caption>
-                  </TouchableOpacity>
-                </View>
+                {role !== 'Admin' ? (
+                  <View style={styles.deleteContainer}>
+                    <TouchableOpacity onPress={() => deleteRole(index)}>
+                      <Caption style={{color: theme.colors.red}}>
+                        Delete
+                      </Caption>
+                    </TouchableOpacity>
+                  </View>
+                ) : null}
               </View>
             );
           })}
@@ -224,7 +231,7 @@ function AddUser(props) {
     <Formik
       validateOnBlur={false}
       validateOnChange={false}
-      initialValues={{selectedRoles: [], emails: []}}
+      initialValues={{selectedRoles: user?.roles || [], emails: []}}
       validationSchema={schema}
       onSubmit={async values => {
         const project_id = selectedProject.id;

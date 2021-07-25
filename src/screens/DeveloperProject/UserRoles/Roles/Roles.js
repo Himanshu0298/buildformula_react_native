@@ -38,7 +38,7 @@ function RenderUserCard(props) {
         <Text>
           {first_name} {last_name}
         </Text>
-        <Menu
+        {/* <Menu
           visible={index === menuIndex}
           contentStyle={{borderRadius: 10}}
           onDismiss={toggleMenu}
@@ -60,7 +60,7 @@ function RenderUserCard(props) {
             onPress={() => onDelete(item.id)}
             title="Delete"
           />
-        </Menu>
+        </Menu> */}
       </View>
       <View style={styles.rowBetween}>
         <Caption>{phone ? `+91 ${phone}` : 'NA'}</Caption>
@@ -104,7 +104,7 @@ function RenderUsers(props) {
 
   const toggleMenu = index => setMenuIndex(index);
 
-  const onUpdate = () => {};
+  const onUpdate = user => navigation.navigate('AddUser', {user});
 
   const onDelete = () => {};
 
@@ -145,7 +145,8 @@ function RenderRole(props) {
     <View style={styles.rolePanelContainer}>
       <View style={styles.rowBetween}>
         <Text>{role_name}</Text>
-        <Menu
+        {/* TODO: reactivate this */}
+        {/* <Menu
           visible={index === menuIndex}
           contentStyle={{borderRadius: 10}}
           onDismiss={toggleMenu}
@@ -167,7 +168,7 @@ function RenderRole(props) {
             onPress={() => onDelete(item.id)}
             title="Delete"
           />
-        </Menu>
+        </Menu> */}
       </View>
     </View>
   );
@@ -287,7 +288,7 @@ const styles = StyleSheet.create({
   },
   rolePanelContainer: {
     paddingHorizontal: 10,
-    marginVertical: 5,
+    marginVertical: 10,
   },
   rowBetween: {
     flexDirection: 'row',

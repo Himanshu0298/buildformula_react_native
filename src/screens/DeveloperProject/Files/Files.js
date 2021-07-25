@@ -211,7 +211,7 @@ export default function Files(props) {
       getFolders({project_id, index_of: folderDepth});
       toggleDialog();
     } else {
-      renameFile({file_id: id, project_id, new_file_name: name});
+      await renameFile({file_id: id, project_id, new_file_name: name});
       toggleDialog();
       getFiles({project_id, folder_id: folderDepth});
     }

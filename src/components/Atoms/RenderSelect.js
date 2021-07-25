@@ -6,7 +6,15 @@ import {useActionSheet} from '@expo/react-native-action-sheet';
 import RenderInput from './RenderInput';
 
 const RenderSelect = React.forwardRef((props, ref) => {
-  let {options, destructiveButtonIndex, onSelect, value, ...rest} = props;
+  let {
+    options,
+    destructiveButtonIndex,
+    onSelect,
+    value,
+    disabled,
+    ...rest
+  } = props;
+
   const {showActionSheetWithOptions} = useActionSheet();
 
   useImperativeHandle(ref, () => ({
@@ -55,9 +63,10 @@ const RenderSelect = React.forwardRef((props, ref) => {
   };
 
   return (
-    <TouchableOpacity onPress={toggleOptions}>
+    <TouchableOpacity disabled={disabled} onPress={toggleOptions}>
       <RenderInput
         editable={false}
+        disabled={disabled}
         pointerEvents="none"
         keyboardShouldPersistTaps="always"
         ref={ref}

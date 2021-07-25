@@ -4,7 +4,7 @@ import Profile from './Profile';
 
 export default props => {
   return (
-    <ProjectLayout showLogo={true} tabBar={false}>
+    <ProjectLayout showLogo={true} tab={false}>
       <Profile {...props} />
     </ProjectLayout>
   );
