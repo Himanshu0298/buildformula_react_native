@@ -271,10 +271,10 @@ function RenderFullPaymentDetails({bookingDetails, theme}) {
 }
 function RenderCustomPaymentDetails({bookingDetails, theme}) {
   const {
-    custom_amount,
+    custom_basic_amount,
     total_other_charges,
     full_other_charges_date,
-    custom_payments = [],
+    custom_payment = [],
     custom_payment_documentation_charges,
     custom_payment_documentation_charges_start_date,
     custom_payment_documentation_charges_end_date,
@@ -315,27 +315,32 @@ function RenderCustomPaymentDetails({bookingDetails, theme}) {
       </View>
       <View style={styles.sectionBody}>
         <RenderRow
-          row={[{label: 'Total basic amount', value: `${custom_amount} Rs.`}]}
+          row={[
+            {label: 'Total basic amount', value: `${custom_basic_amount} Rs.`},
+          ]}
         />
         <Divider style={{marginVertical: 10}} />
-        {custom_payments.map((payment, index) => {
+        {custom_payment.map((payment, index) => {
           const {percent, amount, date, remark} = payment;
           return (
             <>
               <RenderRow
+                style={{marginTop: 5}}
                 row={[
                   {label: 'Percent', value: `${percent} %`},
                   {label: 'Amount', value: `${amount} Rs.`},
-                  {label: 'Date', value: dayjs(date).format('DD MMM YYYY')},
+                  {label: 'Date', value: date},
                 ]}
               />
               <RenderRow row={[{label: 'Remarks', value: remark}]} />
+              <Divider />
             </>
           );
         })}
 
         {total_other_charges ? (
           <RenderRow
+            style={{marginTop: 15}}
             row={[
               {
                 label: 'Total other charges',

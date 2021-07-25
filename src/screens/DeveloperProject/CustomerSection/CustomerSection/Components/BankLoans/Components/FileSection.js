@@ -157,22 +157,22 @@ function FileSection(props) {
         <Subheading style={{color: theme.colors.primary}}>
           BANK REQUIRED FILES
         </Subheading>
-        <IconButton
+        {/* TODO: reactivate this */}
+        {/* <IconButton
           icon="share-variant"
           size={18}
           onPress={toggleShareModal}
           color={theme.colors.primary}
-        />
+        /> */}
       </View>
 
       <View style={styles.filesContainer}>
-        {files &&
-          files.map((file, index) => (
-            <RenderFile
-              key={index}
-              {...{file, index, remove: true, handleFileRemove}}
-            />
-          ))}
+        {files?.map?.((file, index) => (
+          <RenderFile
+            key={index}
+            {...{file, index, remove: true, handleFileRemove}}
+          />
+        ))}
       </View>
 
       <View style={styles.actionContainer}>

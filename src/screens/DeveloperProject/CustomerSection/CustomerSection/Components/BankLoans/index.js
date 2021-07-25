@@ -66,41 +66,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  input: {
-    paddingVertical: 7,
-  },
-  actionContainer: {
-    marginTop: 15,
-  },
-  submitButton: {
-    width: '100%',
-    borderRadius: 8,
-  },
-  buttonText: {
-    fontSize: 16,
-    color: theme.colors.primary,
-  },
-  fileHeading: {
-    marginTop: 20,
-    marginBottom: 10,
-  },
-  filesContainer: {
-    paddingTop: 10,
-  },
-  fileContainer: {
-    flexDirection: 'row',
-  },
-  pdfIcon: {
-    height: 40,
-    width: 40,
-  },
-  fileContentContainer: {
-    flexGrow: 1,
-    paddingLeft: 5,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
 });
 
 export default withTheme(BankLoans);
