@@ -79,6 +79,8 @@ export const UPLOAD_FILE = 'UPLOAD_FILE';
 export const DELETE_FILE = 'DELETE_FILE';
 export const GET_VERSION = 'GET_VERSION';
 export const RENAME_FILE = 'RENAME_FILE';
+export const SHARE_FOLDER_WITH_USERS = 'SHARE_FOLDER_WITH_USERS';
+export const SHARE_FILE_WITH_USERS = 'SHARE_FILE_WITH_USERS';
 
 //For Project Management
 export const GET_WORKS = 'GET_WORKS';

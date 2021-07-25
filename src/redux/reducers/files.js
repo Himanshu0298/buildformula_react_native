@@ -9,6 +9,8 @@ import {
   DELETE_FILE,
   GET_VERSION,
   GET_SELECTED_PROJECT,
+  SHARE_FOLDER_WITH_USERS,
+  SHARE_FILE_WITH_USERS,
 } from './../actions/actionTypes';
 
 const initialState = {
@@ -91,6 +93,8 @@ export default (state = initialState, action = {}) => {
     case `${UPLOAD_FILE}_PENDING`:
     case `${DELETE_FOLDER}_PENDING`:
     case `${DELETE_FILE}_PENDING`:
+    case `${SHARE_FOLDER_WITH_USERS}_PENDING`:
+    case `${SHARE_FILE_WITH_USERS}_PENDING`:
       return {
         ...state,
         loading: true,
@@ -100,18 +104,21 @@ export default (state = initialState, action = {}) => {
     case `${RENAME_FILE}_FULFILLED`:
     case `${UPLOAD_FILE}_FULFILLED`:
     case `${DELETE_FOLDER}_FULFILLED`:
-    case `${DELETE_FILE}_FULFILLED`: {
+    case `${SHARE_FOLDER_WITH_USERS}_FULFILLED`:
+    case `${SHARE_FILE_WITH_USERS}_FULFILLED`:
       return {
         ...state,
         loading: false,
       };
-    }
+
     case `${CREATE_FOLDER}_REJECTED`:
     case `${RENAME_FOLDER}_REJECTED`:
     case `${RENAME_FILE}_REJECTED`:
     case `${UPLOAD_FILE}_REJECTED`:
     case `${DELETE_FILE}_REJECTED`:
     case `${DELETE_FOLDER}_REJECTED`:
+    case `${SHARE_FOLDER_WITH_USERS}_REJECTED`:
+    case `${SHARE_FILE_WITH_USERS}_REJECTED`:
       return {
         ...state,
         loading: false,

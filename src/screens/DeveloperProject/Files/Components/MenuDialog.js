@@ -27,6 +27,7 @@ function MenuDialog(props) {
     toggleDialog,
     toggleMenu,
     versionDataHandler,
+    toggleShareDialog,
   } = props;
 
   const [downloaded, setDownloaded] = useState(false);
@@ -71,10 +72,7 @@ function MenuDialog(props) {
         </Subheading>
       </View>
 
-      <TouchableOpacity
-        onPress={() => {
-          console.log('--->in share');
-        }}>
+      <TouchableOpacity onPress={toggleShareDialog}>
         <View style={styles.viewDirection}>
           <IconButton icon="account-plus" />
           <View>

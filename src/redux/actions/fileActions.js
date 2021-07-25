@@ -15,6 +15,8 @@ export default function useFileActions() {
     renameFile,
     uploadFile,
     deleteFile,
+    shareFolder,
+    shareFile,
     getVersion,
   } = useFiles();
   const {_err, _res} = useResProcessor();
@@ -29,6 +31,23 @@ export default function useFileActions() {
             const res = _res(await getFolders(params));
 
             return Promise.resolve({data: res.data, index_of: params.index_of});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    getVersion: params =>
+      dispatch({
+        type: types.GET_VERSION,
+        payload: async () => {
+          try {
+            const res = _res(await getVersion(params));
+            console.log('--->version', res);
+            return Promise.resolve({
+              data: res.data,
+            });
           } catch (error) {
             const message = _err(error);
             snackbar.showMessage({message, variant: 'error'});
@@ -146,16 +165,30 @@ export default function useFileActions() {
           }
         },
       }),
-    getVersion: params =>
+    shareFolder: params =>
       dispatch({
-        type: types.GET_VERSION,
+        type: types.SHARE_FOLDER_WITH_USERS,
         payload: async () => {
           try {
-            const res = _res(await getVersion(params));
-            console.log('--->version', res);
-            return Promise.resolve({
-              data: res.data,
-            });
+            const {data} = _res(await shareFolder(params));
+            snackbar.showMessage({message: 'Folder Shared Successfully!'});
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    shareFile: params =>
+      dispatch({
+        type: types.SHARE_FILE_WITH_USERS,
+        payload: async () => {
+          try {
+            const {data} = _res(await shareFile(params));
+            snackbar.showMessage({message: 'File Shared Successfully!'});
+
+            return Promise.resolve({data});
           } catch (error) {
             const message = _err(error);
             snackbar.showMessage({message, variant: 'error'});

@@ -58,5 +58,19 @@ export default function useFiles() {
         config({multipart: false}),
       );
     },
+    shareFolder: data => {
+      return instance.post(
+        '/files/share_folder',
+        data,
+        config({multipart: false}),
+      );
+    },
+    shareFile: data => {
+      return instance.post(
+        '/files/share_files',
+        data,
+        config({multipart: false}),
+      );
+    },
   };
 }

@@ -5,14 +5,7 @@ import PropType from 'prop-types';
 
 function SheetHeader({panelColor, color}) {
   return (
-    <View
-      style={[
-        styles.header,
-        {
-          backgroundColor: color,
-          shadowColor: color,
-        },
-      ]}>
+    <View style={[styles.header, {backgroundColor: color, shadowColor: color}]}>
       <View style={styles.panelHeader}>
         <View style={[styles.panelHandle, {backgroundColor: panelColor}]} />
       </View>

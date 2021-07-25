@@ -7,6 +7,7 @@ import {theme} from 'styles/theme';
 function DeleteDialog(props) {
   const {visible, toggleDialogue, dialogueContent, deleteFileHandler} = props;
   const fileType = dialogueContent.folder_name ? 'folder' : 'file';
+
   return (
     <Portal>
       <Dialog visible={visible} onDismiss={toggleDialogue} style={{top: -100}}>

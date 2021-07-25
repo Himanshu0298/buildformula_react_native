@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useRef, useEffect} from 'react';
 import {
   StyleSheet,
   View,
@@ -8,7 +8,6 @@ import {
 } from 'react-native';
 import {IconButton, Subheading, Text, FAB} from 'react-native-paper';
 import useFileActions from 'redux/actions/fileActions';
-import Modal from 'react-native-modal';
 import PdfIcon from 'assets/images/pdf_icon.png';
 import FolderIcon from 'assets/images/folder_icon.png';
 import UploadFileIcon from 'assets/images/upload_files.png';
@@ -24,35 +23,39 @@ import MenuDialog from './Components/MenuDialog';
 import VersionDialog from './Components/VersionDialog';
 import FileSection from './Components/FilesSection';
 import FoldersSection from './Components/FoldersSection';
+import ShareDialogue from './Components/ShareDialogue';
+import BottomSheet from 'reanimated-bottom-sheet';
+import {getShadow} from 'utils';
+import Animated from 'react-native-reanimated';
+
+const SNAP_POINTS = [0, '70%'];
 
 function ActivityModal() {
   return (
-    <View>
-      <ScrollView>
+    <ScrollView>
+      <View>
         <View>
-          <View>
-            <Text>10 June</Text>
-          </View>
-          <View style={styles.activityContainer}>
-            <View style={styles.viewDirection}>
-              <Image source={FolderIcon} style={styles.activityUserImage} />
-              <View>
-                <Text>Ashish Patel</Text>
-                <Text>Update 5 times</Text>
-              </View>
-            </View>
-            <View style={styles.upperAlignment}>
-              <Text>5 min ago</Text>
+          <Text>10 June</Text>
+        </View>
+        <View style={styles.activityContainer}>
+          <View style={styles.viewDirection}>
+            <Image source={FolderIcon} style={styles.activityUserImage} />
+            <View>
+              <Text>Ashish Patel</Text>
+              <Text>Update 5 times</Text>
             </View>
           </View>
-
-          <View style={styles.userActivityPadding}>
-            <Image source={PdfIcon} style={styles.activityImage} />
-            <Text>Project Schedule For Dharti Saket Icon</Text>
+          <View style={styles.upperAlignment}>
+            <Text>5 min ago</Text>
           </View>
         </View>
-      </ScrollView>
-    </View>
+
+        <View style={styles.userActivityPadding}>
+          <Image source={PdfIcon} style={styles.activityImage} />
+          <Text>Project Schedule For Dharti Saket Icon</Text>
+        </View>
+      </View>
+    </ScrollView>
   );
 }
 
@@ -60,58 +63,73 @@ function RenderMenuModal(props) {
   const {
     menuId,
     modelContentType,
-    modalContent,
     versionData,
     toggleMenu,
     setModalContentType,
-    toggleDialog,
     handleDownload,
-    versionDataHandler,
   } = props;
 
+  const bottomSheetRef = useRef();
+  const fall = new Animated.Value(1);
+  const open = !isNaN(menuId);
+
+  useEffect(() => {
+    if (open) {
+      bottomSheetRef?.current?.snapTo(1);
+    } else {
+      bottomSheetRef?.current?.snapTo(0);
+    }
+  }, [open]);
+
+  const onClose = () => {
+    if (['parentActivity', 'menu'].includes(modelContentType)) {
+      toggleMenu();
+    } else {
+      setModalContentType('menu');
+    }
+  };
+
   return (
-    <Modal
-      isVisible={!isNaN(menuId)}
-      backdropOpacity={0.4}
-      onBackButtonPress={toggleMenu}
-      onBackdropPress={toggleMenu}
-      style={{justifyContent: 'flex-end', margin: 0}}>
-      <View style={styles.sheetContainer}>
-        <View style={styles.closeContainer}>
-          <IconButton
-            icon="close-circle"
-            size={25}
-            onPress={() => {
-              if (['parentActivity', 'menu'].includes(modelContentType)) {
-                toggleMenu();
-              } else {
-                setModalContentType('menu');
-              }
-            }}
-            color="grey"
-          />
-        </View>
-        {modelContentType === 'menu' ? (
-          <MenuDialog
-            setModalContentType={setModalContentType}
-            modalContent={modalContent}
-            toggleDialog={toggleDialog}
-            toggleMenu={toggleMenu}
-            handleDownload={handleDownload}
-            versionDataHandler={versionDataHandler}
-          />
-        ) : null}
-        {modelContentType === 'parentActivity' ? <ActivityModal /> : null}
-        {modelContentType === 'activity' ? <ActivityModal /> : null}
-        {modelContentType === 'version' ? (
-          <VersionDialog
-            versionData={versionData}
-            handleDownload={handleDownload}
-          />
-        ) : null}
-        {}
-      </View>
-    </Modal>
+    <>
+      {open ? (
+        <Animated.View
+          style={[
+            styles.backdrop,
+            {opacity: Animated.sub(1, Animated.multiply(fall, 0.9))},
+          ]}
+        />
+      ) : null}
+      <BottomSheet
+        ref={bottomSheetRef}
+        snapPoints={SNAP_POINTS}
+        initialSnap={0}
+        borderRadius={30}
+        callbackNode={fall}
+        renderHeader={() => <View />}
+        onCloseEnd={onClose}
+        renderContent={() => (
+          <View style={styles.sheetContentContainer}>
+            <View style={styles.closeContainer}>
+              <IconButton
+                icon="close-circle"
+                size={25}
+                onPress={onClose}
+                color="grey"
+              />
+            </View>
+            {modelContentType === 'menu' ? <MenuDialog {...props} /> : null}
+            {modelContentType === 'parentActivity' ? <ActivityModal /> : null}
+            {modelContentType === 'activity' ? <ActivityModal /> : null}
+            {modelContentType === 'version' ? (
+              <VersionDialog
+                versionData={versionData}
+                handleDownload={handleDownload}
+              />
+            ) : null}
+          </View>
+        )}
+      />
+    </>
   );
 }
 
@@ -137,6 +155,8 @@ export default function Files(props) {
     uploadFile,
     deleteFile,
     getVersion,
+    shareFolder,
+    shareFile,
   } = useFileActions();
 
   const {openImagePicker} = useImagePicker();
@@ -145,6 +165,7 @@ export default function Files(props) {
   const [menuId, setMenuId] = React.useState();
   const [modelContentType, setModalContentType] = React.useState('menu');
   const [modalContent, setModalContent] = React.useState({});
+  const [shareDialog, setShareDialog] = React.useState(false);
   const [DialogType, setDialogType] = React.useState();
   const [selectedUploadFile, setSelectedUploadFile] = React.useState();
 
@@ -188,6 +209,7 @@ export default function Files(props) {
   const toggleFab = () => setFab(v => !v);
   const toggleMenu = folderIndex => setMenuId(folderIndex);
   const toggleDialog = v => setDialogType(v);
+  const toggleShareDialog = () => setShareDialog(v => !v);
 
   const createFolderHandler = async folder_name => {
     await createFolder({
@@ -248,6 +270,26 @@ export default function Files(props) {
     getVersion({project_id, file_id: fileId});
   };
 
+  const shareItem = async ({fileType, id, users, roles}) => {
+    toggleMenu();
+    if (fileType === 'folder') {
+      await shareFolder({
+        folder_id: id,
+        project_id: selectedProject?.id,
+        access: 'admin',
+        share_user: users,
+        share_roles: roles,
+      });
+    } else {
+      await shareFile({
+        file_id: id,
+        project_id: selectedProject?.id,
+        share_user: users,
+        access: 'admin',
+      });
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Spinner visible={loading} textContent="" />
@@ -284,7 +326,6 @@ export default function Files(props) {
           {...{menuId, toggleMenu, setModalContent, setModalContentType}}
         />
       </ScrollView>
-
       <FAB.Group
         open={fab}
         style={styles.fab}
@@ -297,7 +338,6 @@ export default function Files(props) {
         onStateChange={() => {}}
         actions={FAB_ACTIONS}
       />
-
       <RenderMenuModal
         {...{
           menuId,
@@ -308,8 +348,19 @@ export default function Files(props) {
           setModalContentType,
           toggleDialog,
           versionDataHandler,
+          toggleShareDialog,
         }}
       />
+
+      {shareDialog ? (
+        <ShareDialogue
+          open={shareDialog}
+          selectedItem={modalContent}
+          handleClose={toggleShareDialog}
+          handleSubmit={shareItem}
+        />
+      ) : null}
+
       <CreateFolderDialogue
         visible={DialogType === 'createFolder'}
         toggleDialogue={toggleDialog}
@@ -347,13 +398,23 @@ const styles = StyleSheet.create({
     right: 10,
     bottom: 2,
   },
-  sheetContainer: {
+  backdrop: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.3)',
+  },
+  sheetContentContainer: {
     backgroundColor: '#fff',
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
     paddingHorizontal: 15,
     paddingBottom: 20,
-    flex: 0.7,
+    flexGrow: 1,
+    height: '100%',
+    ...getShadow(2),
   },
   closeContainer: {
     alignItems: 'flex-end',
