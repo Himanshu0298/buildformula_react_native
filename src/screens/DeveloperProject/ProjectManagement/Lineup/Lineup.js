@@ -64,7 +64,7 @@ function Lineup(props) {
         renderTabBar={tabBarProps => {
           return (
             <View style={styles.headerContainer}>
-              <ProjectHeader />
+              <ProjectHeader {...props} />
               <Subheading style={{marginLeft: 20}}>Project Lineup</Subheading>
               <MaterialTabBar {...tabBarProps} />
             </View>

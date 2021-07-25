@@ -1,4 +1,3 @@
-import {useNavigation, useRoute} from '@react-navigation/native';
 import React from 'react';
 import {View, StyleSheet} from 'react-native';
 import {withTheme, Button} from 'react-native-paper';
@@ -6,9 +5,8 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {getShadow} from 'utils';
 import {APP_BOTTOM_TAB_HEIGHT} from 'utils/constant';
 
-function BottomAppBar() {
-  const navigation = useNavigation();
-  const route = useRoute();
+function BottomAppBar(props) {
+  const {navigation, route} = props;
 
   const onPressSwitch = () => {
     if (route.name !== 'Home') {
@@ -70,4 +68,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default withTheme(BottomAppBar);
+export default withTheme(React.memo(BottomAppBar));

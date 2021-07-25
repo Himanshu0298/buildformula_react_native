@@ -4,7 +4,7 @@ import AddCollection from './AddCollection';
 
 export default props => {
   return (
-    <ProjectLayout tab={false}>
+    <ProjectLayout {...props} tab={false}>
       <AddCollection {...props} />
     </ProjectLayout>
   );

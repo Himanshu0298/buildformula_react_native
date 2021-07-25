@@ -4,7 +4,7 @@ import AddBankDetails from './AddBankDetails';
 
 export default props => {
   return (
-    <ProjectLayout>
+    <ProjectLayout {...props}>
       <AddBankDetails {...props} />
     </ProjectLayout>
   );

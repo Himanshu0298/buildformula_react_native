@@ -4,7 +4,7 @@ import React from 'react';
 
 export default props => {
   return (
-    <ProjectLayout header={false}>
+    <ProjectLayout {...props} header={false}>
       <Roles {...props} />
     </ProjectLayout>
   );

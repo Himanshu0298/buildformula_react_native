@@ -4,7 +4,7 @@ import PlanningDetails from './PlanningDetails';
 
 export default props => {
   return (
-    <ProjectLayout>
+    <ProjectLayout {...props}>
       <PlanningDetails {...props} />
     </ProjectLayout>
   );

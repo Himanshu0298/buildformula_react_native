@@ -4,7 +4,7 @@ import StepThree from './StepThree';
 
 export default props => {
   return (
-    <ProjectLayout showLogo={true} tab={false}>
+    <ProjectLayout {...props} showLogo={true} tab={false}>
       <StepThree {...props} />
     </ProjectLayout>
   );

@@ -4,7 +4,7 @@ import PaymentSchedule from './PaymentSchedule';
 
 export default props => {
   return (
-    <ProjectLayout>
+    <ProjectLayout {...props}>
       <PaymentSchedule {...props} />
     </ProjectLayout>
   );

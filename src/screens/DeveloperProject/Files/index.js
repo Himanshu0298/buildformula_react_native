@@ -4,7 +4,7 @@ import React from 'react';
 
 export default props => {
   return (
-    <ProjectLayout>
+    <ProjectLayout {...props}>
       <Files {...props} />
     </ProjectLayout>
   );

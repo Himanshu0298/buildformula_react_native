@@ -4,7 +4,7 @@ import Home from './Home';
 
 export default props => {
   return (
-    <ProjectLayout showLogo={true} header={false}>
+    <ProjectLayout {...props} showLogo={true} header={false}>
       <Home {...props} />
     </ProjectLayout>
   );

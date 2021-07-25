@@ -4,7 +4,7 @@ import Lineup from './Lineup';
 
 export default props => {
   return (
-    <ProjectLayout header={false}>
+    <ProjectLayout {...props} header={false}>
       <Lineup {...props} />
     </ProjectLayout>
   );

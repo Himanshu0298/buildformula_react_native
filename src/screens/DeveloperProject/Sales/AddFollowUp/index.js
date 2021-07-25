@@ -4,7 +4,7 @@ import AddFollowUp from './AddFollowUp';
 
 export default props => {
   return (
-    <ProjectLayout header={false}>
+    <ProjectLayout {...props} header={false}>
       <AddFollowUp {...props} />
     </ProjectLayout>
   );

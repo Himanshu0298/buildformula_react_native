@@ -4,7 +4,7 @@ import SalesPipeline from './SalesPipeline';
 
 export default props => {
   return (
-    <ProjectLayout>
+    <ProjectLayout {...props}>
       <SalesPipeline {...props} />
     </ProjectLayout>
   );

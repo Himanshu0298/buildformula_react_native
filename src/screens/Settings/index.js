@@ -4,7 +4,7 @@ import Settings from './Settings';
 
 export default props => {
   return (
-    <ProjectLayout showLogo={true}>
+    <ProjectLayout {...props} showLogo={true}>
       <Settings {...props} />
     </ProjectLayout>
   );

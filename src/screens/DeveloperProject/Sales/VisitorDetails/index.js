@@ -4,7 +4,7 @@ import VisitorDetails from './VisitorDetails';
 
 export default props => {
   return (
-    <ProjectLayout header={false} tab={false}>
+    <ProjectLayout {...props} header={false} tab={false}>
       <VisitorDetails {...props} />
     </ProjectLayout>
   );

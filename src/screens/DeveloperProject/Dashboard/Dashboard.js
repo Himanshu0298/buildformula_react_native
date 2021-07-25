@@ -65,7 +65,7 @@ export default function DeveloperDashboard(props) {
         renderTabBar={tabBarProps => {
           return (
             <View style={styles.headerContainer}>
-              <ProjectHeader />
+              <ProjectHeader {...props} />
               <View style={styles.titleContainer}>
                 <Subheading>Project Dashboard</Subheading>
               </View>

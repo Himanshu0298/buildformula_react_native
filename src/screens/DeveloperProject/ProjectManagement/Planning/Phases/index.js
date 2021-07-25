@@ -4,7 +4,7 @@ import Phases from './Phases';
 
 export default props => {
   return (
-    <ProjectLayout>
+    <ProjectLayout {...props}>
       <Phases {...props} />
     </ProjectLayout>
   );

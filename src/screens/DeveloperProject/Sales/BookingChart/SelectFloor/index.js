@@ -4,7 +4,7 @@ import SelectFloor from './SelectFloor';
 
 export default props => {
   return (
-    <ProjectLayout header={false}>
+    <ProjectLayout {...props} header={false}>
       <SelectFloor {...props} />
     </ProjectLayout>
   );

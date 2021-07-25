@@ -344,7 +344,7 @@ function VisitorDetails(props) {
           renderTabBar={tabBarProps => {
             return (
               <View style={styles.headerContainer}>
-                <ProjectHeader />
+                <ProjectHeader {...props}/>
                 <MaterialTabBar {...tabBarProps} />
               </View>
             );

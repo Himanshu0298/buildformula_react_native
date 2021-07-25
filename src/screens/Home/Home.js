@@ -158,7 +158,7 @@ function Home(props) {
         <Spinner visible={loading} textContent={''} />
         <StatusBar barStyle="light-content" />
         <View style={styles.headerContainer}>
-          <ProjectHeader showLogo={true} />
+          <ProjectHeader {...props} showLogo={true} />
           {/* TODO: update tab implementation */}
           {tabs.length > 1 ? (
             <MaterialTabs

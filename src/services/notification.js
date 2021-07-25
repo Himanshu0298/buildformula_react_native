@@ -11,5 +11,11 @@ export default function useRole() {
     getProjectNotifications: data => {
       return instance.post('/get_notifications', data, params);
     },
+    removeAllNotifications: data => {
+      return instance.post('/remove_notification', data, params);
+    },
+    removeNotification: (id, data) => {
+      return instance.post(`/remove_notification/${id}`, data, params);
+    },
   };
 }

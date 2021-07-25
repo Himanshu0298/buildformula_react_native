@@ -1,5 +1,5 @@
 import React from 'react';
-import {Subheading, Badge, withTheme, Avatar} from 'react-native-paper';
+import {Subheading, Badge, Avatar, withTheme} from 'react-native-paper';
 import {View, TouchableOpacity, StyleSheet, Image} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -7,22 +7,27 @@ import {useSelector} from 'react-redux';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import Timer from 'components/Atoms/Timer';
-import {useNavigation} from '@react-navigation/native';
 import logo from 'assets/images/logo.png';
 
 function ProjectHeader(props) {
-  const {theme, showTimer, showLogo} = props;
-  const navigation = useNavigation();
+  const {
+    theme,
+    navigation,
+    showTimer,
+    showLogo,
+    showHeaderIcons = true,
+  } = props;
 
   const {selectedProject} = useSelector(state => state.project);
+  const {projectNotifications} = useSelector(s => s.notification);
   const {user} = useSelector(state => state.user);
 
   const navToNotification = () => {
-    navigation.navigate('Notification', {showLogo});
+    navigation.push('Notification', {showLogo});
   };
 
   const navToProfile = () => {
-    navigation.navigate('Profile');
+    navigation.push('Profile');
   };
 
   return (
@@ -37,40 +42,42 @@ function ProjectHeader(props) {
             )}
           </Subheading>
         </View>
-        <View style={styles.rightContainer}>
-          <Timer displayTimer={showTimer} />
-          <TouchableOpacity
-            style={styles.bellContainer}
-            onPress={navToNotification}>
-            <MaterialCommunityIcons name={'bell'} color={'#000'} size={20} />
-            <Badge size={10} style={styles.badge} />
-          </TouchableOpacity>
-
-          {user?.profile_url ? (
+        {showHeaderIcons ? (
+          <View style={styles.rightContainer}>
+            <Timer displayTimer={showTimer} />
             <TouchableOpacity
-              onPress={navToProfile}
-              style={styles.profileIconContainer}>
-              <Avatar.Image size={23} source={{uri: user.profile_url}} />
+              style={styles.bellContainer}
+              onPress={navToNotification}>
+              <MaterialCommunityIcons name={'bell'} color={'#000'} size={20} />
+              {projectNotifications.length ? (
+                <Badge size={10} style={styles.badge} />
+              ) : null}
             </TouchableOpacity>
-          ) : (
-            <OpacityButton
-              color={theme.colors.primary}
-              onPress={navToProfile}
-              style={styles.profileIconContainer}>
-              <MaterialIcons
-                name={'person'}
+
+            {user?.profile_url ? (
+              <TouchableOpacity
+                onPress={navToProfile}
+                style={styles.profileIconContainer}>
+                <Avatar.Image size={23} source={{uri: user.profile_url}} />
+              </TouchableOpacity>
+            ) : (
+              <OpacityButton
                 color={theme.colors.primary}
-                size={19}
-              />
-            </OpacityButton>
-          )}
-        </View>
+                onPress={navToProfile}
+                style={styles.profileIconContainer}>
+                <MaterialIcons
+                  name={'person'}
+                  color={theme.colors.primary}
+                  size={19}
+                />
+              </OpacityButton>
+            )}
+          </View>
+        ) : null}
       </View>
     </SafeAreaView>
   );
 }
-
-export default withTheme(ProjectHeader);
 
 const styles = StyleSheet.create({
   header: {
@@ -105,3 +112,5 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
 });
+
+export default withTheme(React.memo(ProjectHeader));

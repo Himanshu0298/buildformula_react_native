@@ -4,7 +4,7 @@ import Dashboard from './Dashboard';
 
 export default props => {
   return (
-    <ProjectLayout header={false}>
+    <ProjectLayout {...props} header={false}>
       <Dashboard {...props} />
     </ProjectLayout>
   );

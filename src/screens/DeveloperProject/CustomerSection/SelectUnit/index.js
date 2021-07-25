@@ -4,7 +4,7 @@ import SelectUnit from './SelectUnit';
 
 export default props => {
   return (
-    <ProjectLayout header={false}>
+    <ProjectLayout {...props} header={false}>
       <SelectUnit {...props} />
     </ProjectLayout>
   );

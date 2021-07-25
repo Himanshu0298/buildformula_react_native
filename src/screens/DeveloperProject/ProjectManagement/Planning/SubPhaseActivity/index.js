@@ -4,7 +4,7 @@ import SubPhasesActivity from './SubPhasesActivity';
 
 export default props => {
   return (
-    <ProjectLayout>
+    <ProjectLayout {...props}>
       <SubPhasesActivity {...props} />
     </ProjectLayout>
   );

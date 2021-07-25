@@ -4,7 +4,7 @@ import AddModifyRequest from './AddModifyRequest';
 
 export default props => {
   return (
-    <ProjectLayout>
+    <ProjectLayout {...props}>
       <AddModifyRequest {...props} />
     </ProjectLayout>
   );

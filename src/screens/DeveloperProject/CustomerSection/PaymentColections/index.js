@@ -4,7 +4,7 @@ import PaymentCollections from './PaymentCollections';
 
 export default props => {
   return (
-    <ProjectLayout tab={false}>
+    <ProjectLayout {...props} tab={false}>
       <PaymentCollections {...props} />
     </ProjectLayout>
   );

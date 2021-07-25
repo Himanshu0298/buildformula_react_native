@@ -4,7 +4,7 @@ import ProjectLayout from 'components/Molecules/Layout/ProjectLayout';
 
 export default props => {
   return (
-    <ProjectLayout>
+    <ProjectLayout {...props}>
       <CustomerBankLoan {...props} />
     </ProjectLayout>
   );

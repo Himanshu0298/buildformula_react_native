@@ -4,7 +4,7 @@ import StepTwo from './StepTwo';
 
 export default props => {
   return (
-    <ProjectLayout showLogo={true} tab={false}>
+    <ProjectLayout {...props} showLogo={true} tab={false}>
       <StepTwo {...props} />
     </ProjectLayout>
   );

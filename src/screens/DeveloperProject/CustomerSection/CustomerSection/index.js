@@ -4,7 +4,7 @@ import CustomerSection from './CustomerSection';
 
 export default props => {
   return (
-    <ProjectLayout>
+    <ProjectLayout {...props}>
       <CustomerSection {...props} />
     </ProjectLayout>
   );

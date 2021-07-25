@@ -4,7 +4,7 @@ import EditProfile from './EditProfile';
 
 export default props => {
   return (
-    <ProjectLayout showLogo={true} tab={false}>
+    <ProjectLayout {...props} showLogo={true} tab={false}>
       <EditProfile {...props} />
     </ProjectLayout>
   );
