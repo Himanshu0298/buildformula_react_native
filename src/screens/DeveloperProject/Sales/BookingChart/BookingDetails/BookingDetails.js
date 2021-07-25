@@ -99,10 +99,10 @@ function FormContent(props) {
       return visitors.filter(visitor => {
         const {first_name, last_name, phone, email} = visitor;
         return (
-          first_name.includes(searchQuery) ||
-          last_name.includes(searchQuery) ||
-          phone.includes(searchQuery) ||
-          email.includes(searchQuery)
+          first_name?.includes(searchQuery) ||
+          last_name?.includes(searchQuery) ||
+          phone?.includes(searchQuery) ||
+          email?.includes(searchQuery)
         );
       });
     }
