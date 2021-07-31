@@ -34,34 +34,33 @@ function filterTabs(tabs, permissions) {
   });
 }
 
+function RenderTab(props) {
+  const {route: item, navigationState, onPress} = props;
+  const active = navigationState.index === item.key;
+
+  return (
+    <View style={styles.tab} key={item.key}>
+      <Button
+        style={{marginHorizontal: 5}}
+        mode={active ? 'contained' : 'outlined'}
+        theme={{roundness: 20}}
+        onPress={onPress}>
+        {item.title}
+      </Button>
+    </View>
+  );
+}
+
 function RenderTabBar(tabBarProps) {
   //TODO: improve tab change animation
   return (
     <TabBar
       {...tabBarProps}
       scrollEnabled
-      style={{
-        backgroundColor: '#fff',
-        ...getShadow(0),
-        width: '100%',
-        marginBottom: 15,
-      }}
+      style={styles.tabContainer}
       tabStyle={styles.tab}
       indicatorStyle={{backgroundColor: 'white'}}
-      renderTabBarItem={({route: item, navigationState, onPress}) => {
-        const active = navigationState.index === item.key;
-        return (
-          <View style={styles.tab} key={item.key}>
-            <Button
-              style={{marginHorizontal: 5}}
-              mode={active ? 'contained' : 'outlined'}
-              theme={{roundness: 20}}
-              onPress={onPress}>
-              {item.title}
-            </Button>
-          </View>
-        );
-      }}
+      renderTabBarItem={props => <RenderTab {...props} />}
     />
   );
 }
@@ -151,6 +150,12 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     borderWidth: 0.2,
     borderColor: 'rgba(139, 149, 159, 0.25)',
+  },
+  tabContainer: {
+    backgroundColor: '#fff',
+    ...getShadow(0),
+    width: '100%',
+    marginBottom: 15,
   },
   tab: {
     width: 180,

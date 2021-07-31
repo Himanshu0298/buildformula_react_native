@@ -17,6 +17,7 @@ import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ActivityDialog from './Components/ActivityDialog';
 import {useSelector} from 'react-redux';
 import useCustomerActions from 'redux/actions/customerActions';
+import {getPermissions} from 'utils';
 
 function StatusDialog(props) {
   const {open, status, updateStatus, handleClose} = props;
@@ -54,8 +55,10 @@ function StatusDialog(props) {
 }
 
 function Account(props) {
-  const {route, theme, navigation, viewOnly} = props;
+  const {route, theme, navigation, showUpdateStatus = true} = props;
   const {project_id, unit} = route?.params || {};
+
+  const modulePermissions = getPermissions('Account');
 
   const {updateBookingStatus, getAccountDetails} = useCustomerActions();
 
@@ -145,7 +148,8 @@ function Account(props) {
             </Badge>
             <Text>{bookingStyle.label}</Text>
           </View>
-          {!viewOnly ? (
+          {showUpdateStatus &&
+          (modulePermissions?.editor || modulePermissions?.admin) ? (
             <View>
               <OpacityButton
                 opacity={0.1}
@@ -225,7 +229,8 @@ function Account(props) {
         </View>
 
         <View style={styles.actionRow}>
-          {!viewOnly ? (
+          {showUpdateStatus &&
+          (modulePermissions?.editor || modulePermissions?.admin) ? (
             <Button
               mode="outlined"
               style={[styles.actionButton, {borderColor: theme.colors.primary}]}

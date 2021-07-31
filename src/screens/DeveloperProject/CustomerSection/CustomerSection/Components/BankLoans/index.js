@@ -8,12 +8,15 @@ import ActivityChatModal from './Components/ActivityChat';
 import FileSection from './Components/FileSection';
 import BankDetailsSection from './Components/BankDetailsSection';
 import ShareFiles from './Components/ShareFiles';
+import {getPermissions} from 'utils';
 
 function BankLoans(props) {
+  const modulePermissions = getPermissions('Bank Loan');
+
   const [activityModal, setActivityModal] = React.useState(false);
   const [shareModal, setShareModal] = React.useState(false);
 
-  const {bankDetails} = useSelector(({customer}) => customer);
+  const {bankDetails} = useSelector(s => s.customer);
 
   const toggleActivityModal = () => setActivityModal(v => !v);
   const toggleShareModal = () => setShareModal(v => !v);
@@ -44,8 +47,14 @@ function BankLoans(props) {
               Activity
             </Button>
           </View>
-          <BankDetailsSection {...props} {...{bankDetails}} />
-          <FileSection {...props} {...{bankDetails, toggleShareModal}} />
+          <BankDetailsSection
+            {...props}
+            {...{bankDetails, modulePermissions}}
+          />
+          <FileSection
+            {...props}
+            {...{bankDetails, modulePermissions, toggleShareModal}}
+          />
         </KeyboardAwareScrollView>
       </View>
     </>

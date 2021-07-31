@@ -11,6 +11,7 @@ import {
   Button,
 } from 'react-native-paper';
 import {useSelector} from 'react-redux';
+import {getPermissions} from 'utils';
 
 const STATUS_LIST = {
   1: {label: 'PENDING APPROVAL', color: '#F4AF48'},
@@ -88,8 +89,10 @@ function ModifyRequest(props) {
   const {theme, navigation, route} = props;
   const {params} = route;
 
-  const {modifyRequests} = useSelector(state => state.customer);
-  const {user} = useSelector(state => state.user);
+  const modulePermissions = getPermissions('Modify Request');
+
+  const {modifyRequests} = useSelector(s => s.customer);
+  const {user} = useSelector(s => s.user);
 
   const requests = React.useMemo(() => {
     const pendingRequests = modifyRequests.filter(
@@ -131,11 +134,13 @@ function ModifyRequest(props) {
           requests={rejectedRequests}
         />
       </ScrollView>
-      <FAB
-        style={[styles.fab, {backgroundColor: theme.colors.primary}]}
-        icon="plus"
-        onPress={navToAdd}
-      />
+      {modulePermissions.editor || modulePermissions.admin ? (
+        <FAB
+          style={[styles.fab, {backgroundColor: theme.colors.primary}]}
+          icon="plus"
+          onPress={navToAdd}
+        />
+      ) : null}
     </View>
   );
 }

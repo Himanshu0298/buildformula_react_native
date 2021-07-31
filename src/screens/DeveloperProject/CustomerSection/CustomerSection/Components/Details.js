@@ -3,6 +3,7 @@ import {StyleSheet, View, TouchableOpacity, ScrollView} from 'react-native';
 import {Avatar, Caption, Divider, Text, withTheme} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import {getPermissions} from 'utils';
 
 function RenderCustomer({customer, navToDetails}) {
   const {profile_pic, name, role} = customer;
@@ -35,6 +36,8 @@ function Details(props) {
   const {theme, navigation, route} = props;
   const {params} = route;
 
+  const modulePermissions = getPermissions('Ownership');
+
   const {customerData} = useSelector(state => state.customer);
 
   const navToDetails = customer => {
@@ -56,9 +59,14 @@ function Details(props) {
           />
         ))}
         <View style={styles.addPanel}>
-          <TouchableOpacity style={styles.addButton} onPress={navToAdd}>
-            <Text style={{color: theme.colors.primary}}>+ Add Joint name</Text>
-          </TouchableOpacity>
+          {modulePermissions?.editor || modulePermissions?.admin ? (
+            <TouchableOpacity style={styles.addButton} onPress={navToAdd}>
+              <Text style={{color: theme.colors.primary}}>
+                + Add Joint name
+              </Text>
+            </TouchableOpacity>
+          ) : null}
+
           <Caption>You can add upto 10 joint names for your property</Caption>
         </View>
       </ScrollView>

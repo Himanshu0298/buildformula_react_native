@@ -25,7 +25,7 @@ import FileSection from './Components/FilesSection';
 import FoldersSection from './Components/FoldersSection';
 import ShareDialogue from './Components/ShareDialogue';
 import BottomSheet from 'reanimated-bottom-sheet';
-import {getShadow} from 'utils';
+import {getPermissions, getShadow} from 'utils';
 import Animated from 'react-native-reanimated';
 
 const SNAP_POINTS = [0, '70%'];
@@ -131,6 +131,8 @@ export default function Files(props) {
   const {route, navigation} = props;
   const {folder_name: folderName, index_of: folderDepth = 0} =
     route?.params || {};
+
+  const modulePermissions = getPermissions('Files');
 
   const {loading, versionData} = useSelector(s => s.files);
   const {selectedProject} = useSelector(s => s.project);
@@ -338,20 +340,23 @@ export default function Files(props) {
           {...{menuId, toggleMenu, setModalContent, setModalContentType}}
         />
       </ScrollView>
-      <FAB.Group
-        open={fab}
-        style={styles.fab}
-        fabStyle={{
-          backgroundColor: fab ? '#fff' : theme.colors.primary,
-        }}
-        icon={fab ? 'window-close' : 'plus'}
-        small
-        onPress={toggleFab}
-        onStateChange={() => {}}
-        actions={FAB_ACTIONS}
-      />
+      {modulePermissions?.editor || modulePermissions?.admin ? (
+        <FAB.Group
+          open={fab}
+          style={styles.fab}
+          fabStyle={{
+            backgroundColor: fab ? '#fff' : theme.colors.primary,
+          }}
+          icon={fab ? 'window-close' : 'plus'}
+          small
+          onPress={toggleFab}
+          onStateChange={() => {}}
+          actions={FAB_ACTIONS}
+        />
+      ) : null}
       <RenderMenuModal
         {...{
+          modulePermissions,
           menuId,
           modelContentType,
           modalContent,

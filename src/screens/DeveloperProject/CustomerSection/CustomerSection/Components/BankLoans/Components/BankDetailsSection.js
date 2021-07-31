@@ -14,7 +14,7 @@ function RenderDetail({label, value}) {
 }
 
 function BankDetailsSection(props) {
-  const {bankDetails = {}, navigation, route} = props;
+  const {navigation, route, modulePermissions, bankDetails = {}} = props;
 
   const {bank_name, bank_branch, bank_address} = bankDetails?.details || {};
 
@@ -40,16 +40,18 @@ function BankDetailsSection(props) {
         </View>
       )}
       <View style={styles.buttonContainer}>
-        <OpacityButton
-          opacity={0.2}
-          color={theme.colors.primary}
-          style={styles.modifyButton}
-          onPress={navToAddBankDetails}>
-          <IconButton icon="pencil" size={18} color={theme.colors.primary} />
-          <Text style={{color: theme.colors.primary}}>
-            {detailsAvailable ? 'Modify Details' : 'Add Details'}
-          </Text>
-        </OpacityButton>
+        {modulePermissions.editor || modulePermissions.admin ? (
+          <OpacityButton
+            opacity={0.2}
+            color={theme.colors.primary}
+            style={styles.modifyButton}
+            onPress={navToAddBankDetails}>
+            <IconButton icon="pencil" size={18} color={theme.colors.primary} />
+            <Text style={{color: theme.colors.primary}}>
+              {detailsAvailable ? 'Modify Details' : 'Add Details'}
+            </Text>
+          </OpacityButton>
+        ) : null}
       </View>
     </View>
   );

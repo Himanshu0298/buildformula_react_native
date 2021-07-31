@@ -35,6 +35,7 @@ const getFileExtention = fileUrl => {
 
 function MenuDialog(props) {
   const {
+    modulePermissions,
     modalContent,
     toggleDialog,
     toggleMenu,
@@ -152,16 +153,18 @@ function MenuDialog(props) {
           <Text style={styles.ModalText}>Manage version</Text>
         </View>
       </TouchableOpacity>
-      <TouchableOpacity
-        onPress={() => {
-          toggleDialog('renameFile');
-          toggleMenu();
-        }}>
-        <View style={styles.viewDirection}>
-          <IconButton icon="pencil" onPress={() => {}} />
-          <Text style={styles.ModalText}>Rename</Text>
-        </View>
-      </TouchableOpacity>
+      {modulePermissions?.editor || modulePermissions?.admin ? (
+        <TouchableOpacity
+          onPress={() => {
+            toggleDialog('renameFile');
+            toggleMenu();
+          }}>
+          <View style={styles.viewDirection}>
+            <IconButton icon="pencil" onPress={() => {}} />
+            <Text style={styles.ModalText}>Rename</Text>
+          </View>
+        </TouchableOpacity>
+      ) : null}
       <TouchableOpacity
         onPress={() => {
           console.log('inPrint');
@@ -179,16 +182,18 @@ function MenuDialog(props) {
           <Text style={styles.ModalText}>Activity</Text>
         </View>
       </TouchableOpacity>
-      <TouchableOpacity
-        onPress={() => {
-          toggleDialog('deleteFileFolder');
-          toggleMenu();
-        }}>
-        <View style={styles.viewDirection}>
-          <IconButton icon="delete" onPress={() => {}} />
-          <Text style={styles.ModalText}>Delete</Text>
-        </View>
-      </TouchableOpacity>
+      {modulePermissions?.editor || modulePermissions?.admin ? (
+        <TouchableOpacity
+          onPress={() => {
+            toggleDialog('deleteFileFolder');
+            toggleMenu();
+          }}>
+          <View style={styles.viewDirection}>
+            <IconButton icon="delete" onPress={() => {}} />
+            <Text style={styles.ModalText}>Delete</Text>
+          </View>
+        </TouchableOpacity>
+      ) : null}
     </View>
   );
 }

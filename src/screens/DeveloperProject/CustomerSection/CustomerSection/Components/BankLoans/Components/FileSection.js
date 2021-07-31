@@ -102,7 +102,7 @@ function FileUploadModal(props) {
 }
 
 function FileSection(props) {
-  const {bankDetails, route, toggleShareModal} = props;
+  const {route, toggleShareModal, modulePermissions, bankDetails} = props;
   const {project_id, unit} = route?.params || {};
   const {files} = bankDetails || {};
 
@@ -170,21 +170,27 @@ function FileSection(props) {
         {files?.map?.((file, index) => (
           <RenderFile
             key={index}
-            {...{file, index, remove: true, handleFileRemove}}
+            {...{
+              file,
+              index,
+              remove: modulePermissions.editor || modulePermissions.admin,
+              handleFileRemove,
+            }}
           />
         ))}
       </View>
-
-      <View style={styles.actionContainer}>
-        <OpacityButton
-          opacity={0.1}
-          color={theme.colors.primary}
-          style={styles.submitButton}
-          onPress={() => openImagePicker({type: 'file', onChoose})}>
-          <IconButton icon="upload" size={20} color={theme.colors.primary} />
-          <Text style={styles.buttonText}>{'Upload'}</Text>
-        </OpacityButton>
-      </View>
+      {modulePermissions.editor || modulePermissions.admin ? (
+        <View style={styles.actionContainer}>
+          <OpacityButton
+            opacity={0.1}
+            color={theme.colors.primary}
+            style={styles.submitButton}
+            onPress={() => openImagePicker({type: 'file', onChoose})}>
+            <IconButton icon="upload" size={20} color={theme.colors.primary} />
+            <Text style={styles.buttonText}>{'Upload'}</Text>
+          </OpacityButton>
+        </View>
+      ) : null}
     </View>
   );
 }

@@ -6,7 +6,7 @@ import dayjs from 'dayjs';
 import {theme} from 'styles/theme';
 
 function VersionFile(props) {
-  const {version, countVersion, handleDownload} = props;
+  const {modulePermissions, version, countVersion, handleDownload} = props;
   const [versionMenu, setVersionMenu] = React.useState(false);
 
   const toggleVersionMenu = () => setVersionMenu(v => !v);
@@ -45,8 +45,12 @@ function VersionFile(props) {
                 onPress={() => handleDownload()}
                 title="Download"
               />
-              <Divider />
-              <Menu.Item icon="delete" onPress={() => {}} title="Delete" />
+              {modulePermissions?.editor || modulePermissions?.admin ? (
+                <>
+                  <Divider />
+                  <Menu.Item icon="delete" onPress={() => {}} title="Delete" />
+                </>
+              ) : null}
             </Menu>
           </View>
         </View>
@@ -58,9 +62,9 @@ function VersionFile(props) {
 
 function VersionDialog(props) {
   const {
+    modulePermissions,
     modalContent,
     versionData,
-    handleDownload,
     handleNewVersionUpload,
   } = props;
 
@@ -74,20 +78,22 @@ function VersionDialog(props) {
         <Text style={{color: theme.colors.primary, fontSize: 18}}>
           Versions
         </Text>
-        <Button
-          uppercase={false}
-          mode="contained"
-          compact
-          labelStyle={{fontSize: 12}}
-          onPress={() => handleNewVersionUpload(modalContent.id)}>
-          Add New Version
-        </Button>
+        {modulePermissions?.editor || modulePermissions?.admin ? (
+          <Button
+            uppercase={false}
+            mode="contained"
+            compact
+            labelStyle={{fontSize: 12}}
+            onPress={() => handleNewVersionUpload(modalContent.id)}>
+            Add New Version
+          </Button>
+        ) : null}
       </View>
 
       <View>
         {filteredVersion?.map((version, index) => (
           <VersionFile
-            handleDownload={handleDownload}
+            {...props}
             version={version}
             key={index}
             countVersion={index}
