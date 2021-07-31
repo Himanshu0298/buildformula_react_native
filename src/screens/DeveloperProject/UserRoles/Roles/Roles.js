@@ -27,6 +27,10 @@ import useRoleActions from 'redux/actions/roleActions';
 import Layout from 'utils/Layout';
 
 const ROLES = ['Layout', 'Layout', 'Layout', 'Layout', 'Layout'];
+const TABS = [
+  {key: 0, title: 'Members'},
+  {key: 1, title: 'Roles'},
+];
 
 function RenderUserCard(props) {
   const {item, index, menuIndex, toggleMenu, onDelete, onUpdate} = props;
@@ -224,10 +228,7 @@ function Roles(props) {
   const {getMembers, getRoles} = useRoleActions();
 
   const [selectedTab, setSelectedTab] = React.useState(0);
-  const [routes] = React.useState([
-    {key: 0, title: 'Users'},
-    {key: 1, title: 'Roles'},
-  ]);
+  const [routes] = React.useState(TABS);
 
   React.useEffect(() => {
     getMemberData();
@@ -259,7 +260,7 @@ function Roles(props) {
         renderTabBar={tabBarProps => {
           return (
             <View style={styles.headerContainer}>
-              <ProjectHeader {...props}/>
+              <ProjectHeader {...props} />
               <MaterialTabBar {...tabBarProps} />
             </View>
           );

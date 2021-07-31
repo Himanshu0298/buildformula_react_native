@@ -5,7 +5,13 @@ import {Formik} from 'formik';
 import {cloneDeep} from 'lodash';
 import * as React from 'react';
 import {useTranslation} from 'react-i18next';
-import {StyleSheet, Text, View, ScrollView} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  TouchableOpacity,
+} from 'react-native';
 import {
   Switch,
   Subheading,
@@ -19,11 +25,15 @@ import {useSelector} from 'react-redux';
 import * as Yup from 'yup';
 
 const PERMISSIONS = [
-  {value: 0, icon: 'cancel'},
-  {value: 1, icon: 'eye'},
-  {value: 2, icon: 'pencil'},
-  {value: 3, icon: 'check-all'},
-  {value: 4, icon: 'shield-account'},
+  {value: 'view', icon: 'eye'},
+  {value: 'editor', icon: 'pencil'},
+  {value: 'approval', icon: 'check-all'},
+  {value: 'admin', icon: 'shield-account'},
+];
+const SALES_PERMISSIONS = [
+  {value: 'view', icon: 'eye'},
+  {value: 'editor', icon: 'pencil'},
+  {value: 'admin', icon: 'shield-account'},
 ];
 
 const schema = Yup.object().shape({
@@ -38,8 +48,8 @@ function RenderPermission(props) {
         color={theme.colors.primary}
         checked={checked}
         onChange={() => onChange(value)}
+        label={<IconButton size={18} icon={icon} />}
       />
-      <IconButton size={18} icon={icon} />
     </View>
   );
 }
@@ -117,6 +127,9 @@ function AddRole(props) {
               contentContainerStyle={{flexGrow: 1, paddingBottom: 50}}>
               {modules.map((module, index) => {
                 const {title, subModules} = module;
+
+                const AllPermissions =
+                  title === 'Sales' ? SALES_PERMISSIONS : PERMISSIONS;
                 return (
                   <View key={index} style={styles.moduleContainer}>
                     <Subheading style={{color: theme.colors.primary}}>
@@ -145,7 +158,9 @@ function AddRole(props) {
 
                       return (
                         <View style={styles.screenContainer}>
-                          <View style={styles.rowBetween}>
+                          <TouchableOpacity
+                            style={styles.rowBetween}
+                            onPress={onChangeStatus}>
                             <Text>{subModuleTitle}</Text>
                             <Switch
                               value={Boolean(status)}
@@ -155,16 +170,16 @@ function AddRole(props) {
                               }}
                               onValueChange={onChangeStatus}
                             />
-                          </View>
+                          </TouchableOpacity>
                           {status ? (
                             <View style={styles.permissionsContainer}>
-                              {PERMISSIONS.map(({value, icon}) => {
+                              {AllPermissions.map(({value, icon}) => {
                                 return (
                                   <RenderPermission
                                     {...props}
                                     icon={icon}
                                     value={value}
-                                    checked={permission >= value}
+                                    checked={permission === value}
                                     onChange={onChangePermission}
                                   />
                                 );
@@ -232,7 +247,7 @@ const styles = StyleSheet.create({
   permissionsContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
   },
   permissionContainer: {
     flexDirection: 'row',

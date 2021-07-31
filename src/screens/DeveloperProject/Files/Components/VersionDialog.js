@@ -35,7 +35,7 @@ function VersionFile(props) {
           </View>
           <View>
             <Menu
-              visible={true}
+              visible={versionMenu}
               onDismiss={toggleVersionMenu}
               anchor={
                 <IconButton icon="dots-vertical" onPress={toggleVersionMenu} />
@@ -57,14 +57,19 @@ function VersionFile(props) {
 }
 
 function VersionDialog(props) {
-  const {versionData, handleDownload} = props;
+  const {
+    modalContent,
+    versionData,
+    handleDownload,
+    handleNewVersionUpload,
+  } = props;
 
   const filteredVersion = useMemo(() => {
     return [versionData?.current, ...(versionData?.lists || [])];
   }, [versionData]);
 
   return (
-    <View>
+    <View style={styles.container}>
       <View style={styles.versionHeading}>
         <Text style={{color: theme.colors.primary, fontSize: 18}}>
           Versions
@@ -74,7 +79,7 @@ function VersionDialog(props) {
           mode="contained"
           compact
           labelStyle={{fontSize: 12}}
-          onPress={() => console.log('Pressed')}>
+          onPress={() => handleNewVersionUpload(modalContent.id)}>
           Add New Version
         </Button>
       </View>
@@ -94,6 +99,9 @@ function VersionDialog(props) {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flexGrow: 1,
+  },
   PdfIcon: {
     width: 38,
     height: 38,

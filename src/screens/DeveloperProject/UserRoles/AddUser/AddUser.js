@@ -19,6 +19,7 @@ import {
   Button,
   Caption,
   Chip,
+  Subheading,
   TextInput,
   Title,
   withTheme,
@@ -103,7 +104,7 @@ function RenderForm(props) {
     <View style={styles.container}>
       <Spinner visible={loading} textContent="" />
       <View style={styles.titleContainer}>
-        <Title>{user ? 'Edit User' : 'Add new User'}</Title>
+        <Subheading>{user ? 'Edit Member' : 'Add new Member'}</Subheading>
         {user ? (
           <OpacityButton
             opacity={0.1}

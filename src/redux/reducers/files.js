@@ -11,6 +11,8 @@ import {
   GET_SELECTED_PROJECT,
   SHARE_FOLDER_WITH_USERS,
   SHARE_FILE_WITH_USERS,
+  GET_FILE_ACTIVITIES,
+  ADD_NEW_VERSION,
 } from './../actions/actionTypes';
 
 const initialState = {
@@ -19,6 +21,7 @@ const initialState = {
   folders: {},
   files: {},
   versionData: [],
+  activities: [],
 };
 
 export default (state = initialState, action = {}) => {
@@ -72,6 +75,7 @@ export default (state = initialState, action = {}) => {
       return {
         ...state,
         loading: true,
+        versionData: [],
       };
     case `${GET_VERSION}_FULFILLED`: {
       return {
@@ -87,6 +91,25 @@ export default (state = initialState, action = {}) => {
         errorMessage: action.payload,
       };
 
+    case `${GET_FILE_ACTIVITIES}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${GET_FILE_ACTIVITIES}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+        activities: payload.data,
+      };
+    }
+    case `${GET_FILE_ACTIVITIES}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+        errorMessage: action.payload,
+      };
+
     case `${RENAME_FOLDER}_PENDING`:
     case `${CREATE_FOLDER}_PENDING`:
     case `${RENAME_FILE}_PENDING`:
@@ -95,6 +118,7 @@ export default (state = initialState, action = {}) => {
     case `${DELETE_FILE}_PENDING`:
     case `${SHARE_FOLDER_WITH_USERS}_PENDING`:
     case `${SHARE_FILE_WITH_USERS}_PENDING`:
+    case `${ADD_NEW_VERSION}_PENDING`:
       return {
         ...state,
         loading: true,
@@ -104,8 +128,10 @@ export default (state = initialState, action = {}) => {
     case `${RENAME_FILE}_FULFILLED`:
     case `${UPLOAD_FILE}_FULFILLED`:
     case `${DELETE_FOLDER}_FULFILLED`:
+    case `${DELETE_FILE}_FULFILLED`:
     case `${SHARE_FOLDER_WITH_USERS}_FULFILLED`:
     case `${SHARE_FILE_WITH_USERS}_FULFILLED`:
+    case `${ADD_NEW_VERSION}_FULFILLED`:
       return {
         ...state,
         loading: false,
@@ -119,6 +145,7 @@ export default (state = initialState, action = {}) => {
     case `${DELETE_FOLDER}_REJECTED`:
     case `${SHARE_FOLDER_WITH_USERS}_REJECTED`:
     case `${SHARE_FILE_WITH_USERS}_REJECTED`:
+    case `${ADD_NEW_VERSION}_REJECTED`:
       return {
         ...state,
         loading: false,

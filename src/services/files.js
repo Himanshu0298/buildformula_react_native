@@ -49,7 +49,11 @@ export default function useFiles() {
       return instance.post('/files/upload_file', data, config());
     },
     deleteFile: data => {
-      return instance.post('/files/delete', data, config({multipart: false}));
+      return instance.post(
+        '/files/remove_file',
+        data,
+        config({multipart: false}),
+      );
     },
     getVersion: data => {
       return instance.post(
@@ -71,6 +75,19 @@ export default function useFiles() {
         data,
         config({multipart: false}),
       );
+    },
+    fileActivities: data => {
+      return instance.post(
+        '/files/activity_log',
+        data,
+        config({multipart: false}),
+      );
+    },
+    addVersion: data => {
+      return instance.post('/files/add_current_version', data, config());
+    },
+    deleteVersion: data => {
+      return instance.post('/files/delete', data, config());
     },
   };
 }

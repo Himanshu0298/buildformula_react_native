@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, View, Image} from 'react-native';
 import {IconButton, Subheading, Text} from 'react-native-paper';
-import PdfIcon from 'assets/images/pdf_icon.png';
+import FileIcon from 'assets/images/file_icon.png';
 import dayjs from 'dayjs';
 import {useSelector} from 'react-redux';
 import NoResult from 'components/Atoms/NoResult';
@@ -20,7 +20,7 @@ function RenderFile(props) {
   return (
     <View style={styles.recentFiles}>
       <View style={styles.sectionContainer}>
-        <Image source={PdfIcon} style={styles.PdfIcon} />
+        <Image source={FileIcon} style={styles.fileIcon} />
         <View>
           <Text style={(styles.verticalFlex, styles.text)} numberOfLines={2}>
             {file_name}
@@ -97,8 +97,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 15,
   },
-  PdfIcon: {
-    width: 38,
+  fileIcon: {
+    width: 32,
     height: 38,
     paddingLeft: 10,
     marginLeft: 10,

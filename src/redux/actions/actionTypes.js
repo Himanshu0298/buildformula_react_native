@@ -71,7 +71,6 @@ export const UPDATE_BOOKING_STATUS = 'UPDATE_BOOKING_STATUS';
 export const ADD_COLLECTION = 'ADD_COLLECTION';
 
 //For Files
-
 export const GET_FOLDERS = 'GET_FOLDERS';
 export const CREATE_FOLDER = 'CREATE_FOLDER';
 export const RENAME_FOLDER = 'RENAME_FOLDER';
@@ -80,9 +79,12 @@ export const GET_FILES = 'GET_FILES';
 export const UPLOAD_FILE = 'UPLOAD_FILE';
 export const DELETE_FILE = 'DELETE_FILE';
 export const GET_VERSION = 'GET_VERSION';
+export const GET_FILE_ACTIVITIES = 'GET_FILE_ACTIVITIES';
 export const RENAME_FILE = 'RENAME_FILE';
 export const SHARE_FOLDER_WITH_USERS = 'SHARE_FOLDER_WITH_USERS';
 export const SHARE_FILE_WITH_USERS = 'SHARE_FILE_WITH_USERS';
+export const ADD_NEW_VERSION = 'ADD_NEW_VERSION';
+export const DELETE_VERSION = 'DELETE_VERSION';
 
 //For Project Management
 export const GET_WORKS = 'GET_WORKS';

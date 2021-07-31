@@ -18,6 +18,9 @@ export default function useFileActions() {
     shareFolder,
     shareFile,
     getVersion,
+    fileActivities,
+    addVersion,
+    deleteVersion,
   } = useFiles();
   const {_err, _res} = useResProcessor();
   const snackbar = useSnackbar();
@@ -48,6 +51,20 @@ export default function useFileActions() {
             return Promise.resolve({
               data: res.data,
             });
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    getActivities: params =>
+      dispatch({
+        type: types.GET_FILE_ACTIVITIES,
+        payload: async () => {
+          try {
+            const {data} = _res(await fileActivities(params));
+            return Promise.resolve(data);
           } catch (error) {
             const message = _err(error);
             snackbar.showMessage({message, variant: 'error'});
@@ -187,6 +204,38 @@ export default function useFileActions() {
           try {
             const {data} = _res(await shareFile(params));
             snackbar.showMessage({message: 'File Shared Successfully!'});
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    addVersion: params =>
+      dispatch({
+        type: types.ADD_NEW_VERSION,
+        payload: async () => {
+          try {
+            const {data} = _res(await addVersion(params));
+            snackbar.showMessage({message: 'New Version Added Successfully!'});
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    deleteVersion: params =>
+      dispatch({
+        type: types.DELETE_VERSION,
+        payload: async () => {
+          try {
+            const {data} = _res(await deleteVersion(params));
+            snackbar.showMessage({message: 'Version Deleted Successfully!'});
 
             return Promise.resolve({data});
           } catch (error) {

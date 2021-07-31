@@ -60,14 +60,7 @@ function ActivityModal() {
 }
 
 function RenderMenuModal(props) {
-  const {
-    menuId,
-    modelContentType,
-    versionData,
-    toggleMenu,
-    setModalContentType,
-    handleDownload,
-  } = props;
+  const {menuId, modelContentType, toggleMenu, setModalContentType} = props;
 
   const bottomSheetRef = useRef();
   const fall = new Animated.Value(1);
@@ -118,13 +111,14 @@ function RenderMenuModal(props) {
               />
             </View>
             {modelContentType === 'menu' ? <MenuDialog {...props} /> : null}
-            {modelContentType === 'parentActivity' ? <ActivityModal /> : null}
-            {modelContentType === 'activity' ? <ActivityModal /> : null}
+            {modelContentType === 'parentActivity' ? (
+              <ActivityModal {...props} />
+            ) : null}
+            {modelContentType === 'activity' ? (
+              <ActivityModal {...props} />
+            ) : null}
             {modelContentType === 'version' ? (
-              <VersionDialog
-                versionData={versionData}
-                handleDownload={handleDownload}
-              />
+              <VersionDialog {...props} />
             ) : null}
           </View>
         )}
@@ -155,8 +149,10 @@ export default function Files(props) {
     uploadFile,
     deleteFile,
     getVersion,
+    getActivities,
     shareFolder,
     shareFile,
+    addVersion,
   } = useFileActions();
 
   const {openImagePicker} = useImagePicker();
@@ -188,12 +184,6 @@ export default function Files(props) {
         toggleFab();
         toggleDialog('createFolder');
       },
-    },
-    {
-      icon: FolderIcon,
-      color: theme.colors.primary,
-      label: 'Upload folder',
-      onPress: () => console.log('in Create upload files'),
     },
     {
       icon: UploadFileIcon,
@@ -241,11 +231,11 @@ export default function Files(props) {
 
   const deleteFileHandler = async (id, fileFolder, type) => {
     if (fileFolder === 'folder') {
-      await deleteFolder({folder_id: id, project_id: selectedProject?.id});
+      await deleteFolder({folder_id: id, project_id});
       getFolders({project_id, index_of: folderDepth});
       toggleDialog();
     } else {
-      deleteFile({file_id: id, project_id: selectedProject?.id});
+      deleteFile({file_id: id, project_id});
     }
   };
 
@@ -259,7 +249,7 @@ export default function Files(props) {
 
     formData.append('folder_id', folderDepth);
     formData.append('myfile[]', values.file);
-    formData.append('project_id', selectedProject.id);
+    formData.append('project_id', project_id);
 
     await uploadFile(formData);
     toggleDialog();
@@ -267,7 +257,13 @@ export default function Files(props) {
   };
 
   const versionDataHandler = fileId => {
+    setModalContentType('version');
     getVersion({project_id, file_id: fileId});
+  };
+
+  const activityDataHandler = (type, id) => {
+    setModalContentType('activity');
+    getActivities({project_id});
   };
 
   const shareItem = async ({fileType, id, users, roles}) => {
@@ -275,7 +271,7 @@ export default function Files(props) {
     if (fileType === 'folder') {
       await shareFolder({
         folder_id: id,
-        project_id: selectedProject?.id,
+        project_id,
         access: 'admin',
         share_user: users,
         share_roles: roles,
@@ -283,11 +279,27 @@ export default function Files(props) {
     } else {
       await shareFile({
         file_id: id,
-        project_id: selectedProject?.id,
+        project_id,
         share_user: users,
         access: 'admin',
       });
     }
+  };
+
+  const handleNewVersionUpload = file_id => {
+    openImagePicker({
+      type: 'file',
+      onChoose: async v => {
+        const formData = new FormData();
+
+        formData.append('file_id', file_id);
+        formData.append('file_upload', v);
+        formData.append('project_id', project_id);
+
+        await addVersion(formData);
+        getVersion({project_id, file_id});
+      },
+    });
   };
 
   return (
@@ -348,7 +360,9 @@ export default function Files(props) {
           setModalContentType,
           toggleDialog,
           versionDataHandler,
+          activityDataHandler,
           toggleShareDialog,
+          handleNewVersionUpload,
         }}
       />
 
