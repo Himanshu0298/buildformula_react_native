@@ -4,16 +4,20 @@ import useSalesActions from 'redux/actions/salesActions';
 import Spinner from 'react-native-loading-spinner-overlay';
 import UnitSelector from 'components/Molecules/UnitSelector';
 import dayjs from 'dayjs';
+import {getPermissions} from 'utils';
+import {useSnackbar} from 'components/Atoms/Snackbar';
 
 export default function SelectUnit(props) {
   const {navigation, route} = props;
 
+  const modulePermission = getPermissions('Booking Chart');
+
+  const snackbar = useSnackbar();
+
   const {getUnitsBookingStatus, lockUnit, toggleTimer} = useSalesActions();
 
-  const {selectedProject = {}} = useSelector(state => state.project);
-  const {loadingUnitStatus, unitBookingStatus} = useSelector(
-    state => state.sales,
-  );
+  const {selectedProject} = useSelector(state => state.project);
+  const {loadingUnitStatus, unitBookingStatus} = useSelector(s => s.sales);
   const {user} = useSelector(state => state.user);
 
   const {selectedStructure, floorId, towerId} = route?.params || {};
@@ -67,13 +71,21 @@ export default function SelectUnit(props) {
   };
 
   const onSelectUnit = async (index, unit) => {
-    await lockUnit({unit_id: unit.unitId, project_id: selectedProject.id});
-    toggleTimer({showTimer: true, startTime: new Date(), time: 1800});
+    if (modulePermission?.editor || modulePermission?.admin) {
+      await lockUnit({unit_id: unit.unitId, project_id: selectedProject.id});
+      toggleTimer({showTimer: true, startTime: new Date(), time: 1800});
 
-    navigation.navigate('BC_Step_Four', {
-      project_id: selectedProject.id,
-      unit_id: unit.unitId,
-    });
+      navigation.navigate('BC_Step_Four', {
+        project_id: selectedProject.id,
+        unit_id: unit.unitId,
+      });
+    } else {
+      snackbar.showMessage({
+        message:
+          'You do not have permissions to perform this action. Contact project Admin for support',
+        variant: 'warning',
+      });
+    }
   };
 
   return (

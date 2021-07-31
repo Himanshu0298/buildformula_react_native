@@ -1,5 +1,6 @@
 import {debounce} from 'lodash';
 import {Platform} from 'react-native';
+import {store} from 'redux/store';
 
 const shadowsArray = {
   0: {
@@ -149,4 +150,19 @@ export function round(num, decimalPlaces = 2) {
 
 export function handleDebounce(func) {
   return debounce(func, 2000, {leading: true, trailing: false});
+}
+
+export function getPermissions(moduleTitle) {
+  const {permissions, commonData} = store.getState().project;
+  const {submodules} = commonData;
+
+  const moduleData = submodules.find(i => i.title === moduleTitle);
+
+  if (moduleData) {
+    const modulePermissions = permissions[moduleData?.id];
+
+    return modulePermissions;
+  }
+
+  return false;
 }

@@ -15,7 +15,7 @@ import {
   Subheading,
   Divider,
 } from 'react-native-paper';
-import {getShadow} from 'utils';
+import {getPermissions, getShadow} from 'utils';
 import useSalesActions from 'redux/actions/salesActions';
 import {useSelector} from 'react-redux';
 import dayjs from 'dayjs';
@@ -27,6 +27,12 @@ import {TabView} from 'react-native-tab-view';
 import Layout from 'utils/Layout';
 import MaterialTabBar from 'components/Atoms/MaterialTabBar';
 import CustomBadge from 'components/Atoms/CustomBadge';
+
+const TABS = [
+  {key: 0, title: "Visitor's list"},
+  {key: 1, title: 'Follow up list'},
+  {key: 2, title: "Today's list"},
+];
 
 function StatsRow({visitorAnalytics}) {
   const {
@@ -147,14 +153,9 @@ function Visitors(props) {
   const {navigation} = props;
 
   const [selectedTab, setSelectedTab] = useState(0);
-  const [routes] = React.useState([
-    {key: 0, title: "Visitor's list"},
-    {key: 1, title: 'Follow up list'},
-    {key: 2, title: "Today's list"},
-  ]);
   const [selectDialog, setSelectDialog] = useState(false);
 
-  const {selectedProject} = useSelector(state => state.project);
+  const {selectedProject} = useSelector(s => s.project);
   const {
     loading,
     visitors,
@@ -162,6 +163,8 @@ function Visitors(props) {
     todayFollowups,
     visitorAnalytics,
   } = useSelector(s => s.sales);
+
+  const modulePermission = getPermissions('Visitors');
 
   const {getVisitors, getFollowUps, getSalesData} = useSalesActions();
 
@@ -209,7 +212,7 @@ function Visitors(props) {
       <Spinner visible={loading} textContent={''} />
 
       <TabView
-        navigationState={{index: selectedTab, routes}}
+        navigationState={{index: selectedTab, routes: TABS}}
         renderScene={renderScene}
         onIndexChange={setSelectedTab}
         initialLayout={{width: Layout.window.width}}
@@ -222,29 +225,31 @@ function Visitors(props) {
           );
         }}
       />
-      <FAB.Group
-        open={selectDialog}
-        style={styles.fab}
-        fabStyle={{
-          backgroundColor: selectDialog ? '#fff' : theme.colors.primary,
-        }}
-        icon={selectDialog ? 'window-close' : 'plus'}
-        small
-        onPress={toggleSelectDialog}
-        onStateChange={onStateChange}
-        actions={[
-          {
-            icon: 'account-question-outline',
-            label: 'New visitor',
-            onPress: () => navigation.navigate('AddVisitor'),
-          },
-          {
-            icon: 'arrow-up',
-            label: 'Follow up',
-            onPress: () => navigation.navigate('AddFollowUp'),
-          },
-        ]}
-      />
+      {modulePermission.editor || modulePermission.admin ? (
+        <FAB.Group
+          open={selectDialog}
+          style={styles.fab}
+          fabStyle={{
+            backgroundColor: selectDialog ? '#fff' : theme.colors.primary,
+          }}
+          icon={selectDialog ? 'window-close' : 'plus'}
+          small
+          onPress={toggleSelectDialog}
+          onStateChange={onStateChange}
+          actions={[
+            {
+              icon: 'account-question-outline',
+              label: 'New visitor',
+              onPress: () => navigation.navigate('AddVisitor'),
+            },
+            {
+              icon: 'arrow-up',
+              label: 'Follow up',
+              onPress: () => navigation.navigate('AddFollowUp'),
+            },
+          ]}
+        />
+      ) : null}
     </>
   );
 }

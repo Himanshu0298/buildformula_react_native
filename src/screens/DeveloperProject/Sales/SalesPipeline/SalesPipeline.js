@@ -25,7 +25,7 @@ import BaseText from 'components/Atoms/BaseText';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {Board, BoardRepository} from 'components/Molecules/Board/components';
 import {useAlert} from 'components/Atoms/Alert';
-import {getShadow} from 'utils';
+import {getPermissions, getShadow} from 'utils';
 import RenderInput from 'components/Atoms/RenderInput';
 import {useTranslation} from 'react-i18next';
 // import {BoardRepository, Board} from 'react-native-draganddrop-board';
@@ -58,7 +58,8 @@ function RenderContacts({item}) {
   );
 }
 
-function RenderHeader({data = {}, toggleModal, handleDelete}) {
+function RenderHeader(props) {
+  const {data = {}, modulePermission, toggleModal, handleDelete} = props;
   const {pipeline = {}, id} = data?.attributes?.data || {};
   const {id: pipelineId, title, get_visitors = []} = pipeline;
 
@@ -74,7 +75,7 @@ function RenderHeader({data = {}, toggleModal, handleDelete}) {
               size={19}
             />
           </TouchableOpacity>
-          {id !== 1 ? (
+          {id !== 1 && modulePermission?.editor && modulePermission?.admin ? (
             <TouchableOpacity
               onPress={() => handleDelete(pipelineId, get_visitors.length)}
               style={[styles.icon, {backgroundColor: COLORS.deleteLight}]}>
@@ -96,9 +97,11 @@ function RenderHeader({data = {}, toggleModal, handleDelete}) {
           </TouchableOpacity>
         </View>
       </View>
-      <TouchableOpacity onPress={toggleModal} style={styles.addNewButton}>
-        <Caption>+ Add contact</Caption>
-      </TouchableOpacity>
+      {modulePermission?.editor && modulePermission?.admin ? (
+        <TouchableOpacity onPress={toggleModal} style={styles.addNewButton}>
+          <Caption>+ Add contact</Caption>
+        </TouchableOpacity>
+      ) : null}
     </>
   );
 }
@@ -233,7 +236,7 @@ function AddContactDialog({open, t, handleClose, moveContact}) {
                   setSearchQuery();
                   setSelectedVisitor();
                 }}>
-                {'Move'}
+                Move
               </Button>
             </View>
           </Dialog.Content>
@@ -254,6 +257,8 @@ const RenderBoard = React.memo(props => {
   } = props;
 
   const alert = useAlert();
+
+  const modulePermission = getPermissions('Sales Pipeline');
 
   const onDeletePipeline = (id, visitorCount) => {
     if (visitorCount > 0) {
@@ -279,24 +284,28 @@ const RenderBoard = React.memo(props => {
       pipeline,
     }));
 
-    data.push({
-      id: pipelines.length + 1,
-      name: 'Add new',
-      addNew: true,
-      rows: [],
-    });
+    if (modulePermission?.editor || modulePermission?.admin) {
+      data.push({
+        id: pipelines.length + 1,
+        name: 'Add new',
+        addNew: true,
+        rows: [],
+      });
+    }
 
     return new BoardRepository(data);
-  }, [pipelines]);
+  }, [modulePermission, pipelines]);
 
   return (
     <View style={styles.boardContainer}>
       <Board
         boardBackground="#fff"
         boardRepository={boardRepository}
+        dragDisabled={!(modulePermission?.editor || modulePermission?.admin)}
         renderHeader={column => (
           <RenderHeader
             data={column}
+            modulePermission={modulePermission}
             toggleModal={toggleModal}
             handleDelete={onDeletePipeline}
           />

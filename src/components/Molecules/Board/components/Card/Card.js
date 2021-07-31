@@ -2,7 +2,17 @@ import React from 'react';
 import {Animated, TouchableWithoutFeedback} from 'react-native';
 import {bool, func, object, shape, string} from 'prop-types';
 
-const Card = ({style, hidden, onPressIn, onPress, cardContent, item}) => {
+const Card = props => {
+  const {
+    style,
+    hidden,
+    onPressIn,
+    onPress,
+    cardContent,
+    dragDisabled,
+    item,
+  } = props;
+
   const styles = [style];
   if (hidden) {
     styles.push({opacity: 0});
@@ -10,6 +20,7 @@ const Card = ({style, hidden, onPressIn, onPress, cardContent, item}) => {
 
   return (
     <TouchableWithoutFeedback
+      disabled={dragDisabled}
       onPressIn={evt => (onPressIn ? onPressIn(evt.nativeEvent.pageY) : {})}
       onPress={onPress}
       collapsable={false}>

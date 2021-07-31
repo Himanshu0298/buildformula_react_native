@@ -8,7 +8,7 @@ import {
   Button,
   Text,
 } from 'react-native-paper';
-import {getShadow} from 'utils';
+import {getPermissions, getShadow} from 'utils';
 import useSalesActions from 'redux/actions/salesActions';
 import {useSelector} from 'react-redux';
 import dayjs from 'dayjs';
@@ -29,6 +29,7 @@ function RenderVisitorDetails(props) {
     pipelines,
     occupationOptions,
     sourceTypeOptions,
+    modulePermission,
     onEdit,
   } = props;
 
@@ -123,20 +124,22 @@ function RenderVisitorDetails(props) {
           />
         </Caption>
       </View>
-      <Button
-        style={{flex: 1, position: 'absolute', right: 10, bottom: 0}}
-        mode="contained"
-        contentStyle={{paddingHorizontal: 20, paddingVertical: 2}}
-        theme={{roundness: 15}}
-        onPress={onEdit}>
-        Edit
-      </Button>
+      {modulePermission?.editor || modulePermission?.admin ? (
+        <Button
+          style={{flex: 1, position: 'absolute', right: 10, bottom: 0}}
+          mode="contained"
+          contentStyle={{paddingHorizontal: 20, paddingVertical: 2}}
+          theme={{roundness: 15}}
+          onPress={onEdit}>
+          Edit
+        </Button>
+      ) : null}
     </View>
   );
 }
 
 function RenderFollowupCard(props) {
-  const {followup, toggleResponseDialog} = props;
+  const {followup, modulePermission, toggleResponseDialog} = props;
   const {
     id: followUpId,
     created,
@@ -214,7 +217,7 @@ function RenderFollowupCard(props) {
             {today_discussion}
           </Caption>
         </>
-      ) : (
+      ) : modulePermission?.editor || modulePermission?.admin ? (
         <Button
           mode="contained"
           uppercase={false}
@@ -223,7 +226,7 @@ function RenderFollowupCard(props) {
           style={{width: '70%'}}>
           Add customer response
         </Button>
-      )}
+      ) : null}
     </View>
   );
 }
@@ -254,6 +257,7 @@ function RenderFollowupList(props) {
           keyExtractor={item => item.id}
           renderItem={({item}) => (
             <RenderFollowupCard
+              {...props}
               followup={item}
               toggleResponseDialog={toggleResponseDialog}
             />
@@ -269,6 +273,8 @@ function RenderFollowupList(props) {
 function VisitorDetails(props) {
   const {route, navigation} = props;
   const {visitorId} = route?.params || {};
+
+  const modulePermission = getPermissions('Visitors');
 
   const {getVisitor, getPipelineData, updateFollowUp} = useSalesActions();
 
@@ -317,6 +323,7 @@ function VisitorDetails(props) {
             pipelines={pipelines}
             occupationOptions={occupationOptions}
             sourceTypeOptions={sourceTypeOptions}
+            modulePermission={modulePermission}
             onEdit={onEdit}
           />
         );
@@ -325,6 +332,7 @@ function VisitorDetails(props) {
           <RenderFollowupList
             {...props}
             visitorFollowUp={visitorFollowUp}
+            modulePermission={modulePermission}
             handleResponseSubmit={handleResponseSubmit}
           />
         );
@@ -344,7 +352,7 @@ function VisitorDetails(props) {
           renderTabBar={tabBarProps => {
             return (
               <View style={styles.headerContainer}>
-                <ProjectHeader {...props}/>
+                <ProjectHeader {...props} />
                 <MaterialTabBar {...tabBarProps} />
               </View>
             );
