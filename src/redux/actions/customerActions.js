@@ -21,6 +21,8 @@ export default function useCustomerActions() {
     getAccountDetails,
     updateBookingStatus,
     addCollection,
+    updateCollection,
+    deleteCollection,
   } = useCustomerServices();
 
   return {
@@ -210,6 +212,36 @@ export default function useCustomerActions() {
         payload: async () => {
           try {
             const {data, msg} = _res(await addCollection(params));
+            snackbar.showMessage({message: msg});
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    updateCollection: params =>
+      dispatch({
+        type: types.UPDATE_COLLECTION,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await updateCollection(params));
+            snackbar.showMessage({message: msg});
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    deleteCollection: params =>
+      dispatch({
+        type: types.DELETE_COLLECTION,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await deleteCollection(params));
             snackbar.showMessage({message: msg});
             return Promise.resolve(data);
           } catch (error) {

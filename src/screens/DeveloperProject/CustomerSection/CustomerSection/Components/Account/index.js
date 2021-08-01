@@ -110,7 +110,7 @@ function Account(props) {
   };
 
   const navToDetails = (type, data) =>
-    navigation.navigate('PaymentCollections', {type, data});
+    navigation.navigate('PaymentCollections', {...route.params, type, data});
 
   const navToSchedule = () =>
     navigation.navigate('PaymentSchedule', {data: paymentSchedule});
@@ -270,9 +270,7 @@ function Account(props) {
           <View style={styles.cardItemsContainer}>
             <TouchableOpacity
               style={styles.cardItem}
-              onPress={() =>
-                navToDetails('document', paymentCollection?.documentcharges)
-              }>
+              onPress={() => navToDetails('document')}>
               <Text style={{color: theme.colors.documentation}}>
                 Documentation charges
               </Text>
@@ -285,9 +283,7 @@ function Account(props) {
             <Divider />
             <TouchableOpacity
               style={styles.cardItem}
-              onPress={() =>
-                navToDetails('property', paymentCollection?.propertyfinalamount)
-              }>
+              onPress={() => navToDetails('property')}>
               <Text>Property Final Amount</Text>
               <Badge
                 style={{backgroundColor: theme.colors.primary}}
@@ -298,7 +294,7 @@ function Account(props) {
             <Divider />
             <TouchableOpacity
               style={styles.cardItem}
-              onPress={() => navToDetails('gst', paymentCollection?.gst)}>
+              onPress={() => navToDetails('gst')}>
               <Text>GST Amount</Text>
               <Badge
                 style={{backgroundColor: theme.colors.primary}}

@@ -18,6 +18,8 @@ import Radio from 'components/Atoms/Radio';
 import RenderTextBox from 'components/Atoms/RenderTextbox';
 import useCustomerActions from 'redux/actions/customerActions';
 import dayjs from 'dayjs';
+import Spinner from 'react-native-loading-spinner-overlay';
+import {useSelector} from 'react-redux';
 
 const schema = Yup.object().shape({
   date: Yup.string('Invalid').required('Required'),
@@ -33,7 +35,8 @@ const schema = Yup.object().shape({
   amount: Yup.number('Invalid').required('Required'),
 });
 
-function RenderForm({formikProps, navigation, ...restProps}) {
+function RenderForm(props) {
+  const {formikProps, edit, navigation} = props;
   const {
     handleChange,
     handleSubmit,
@@ -111,18 +114,18 @@ function RenderForm({formikProps, navigation, ...restProps}) {
               onSubmitEditing={() => transRef?.current?.focus()}
               error={errors.bank_branch}
             />
-            <RenderInput
-              name="transaction_number"
-              label={'Check no / Transaction no'}
-              ref={transRef}
-              containerStyles={styles.input}
-              value={values.transaction_number}
-              onChangeText={handleChange('transaction_number')}
-              onBlur={handleBlur('transaction_number')}
-              error={errors.transaction_number}
-            />
           </>
         ) : null}
+        <RenderInput
+          name="transaction_number"
+          label={'Check no / Transaction no'}
+          ref={transRef}
+          containerStyles={styles.input}
+          value={values.transaction_number}
+          onChangeText={handleChange('transaction_number')}
+          onBlur={handleBlur('transaction_number')}
+          error={errors.transaction_number}
+        />
         <View style={styles.radioRow}>
           <Text>Collection Type </Text>
           <View style={styles.radioContainer}>
@@ -177,7 +180,7 @@ function RenderForm({formikProps, navigation, ...restProps}) {
           contentStyle={{padding: 1}}
           theme={{roundness: 15}}
           onPress={handleSubmit}>
-          Save
+          {edit ? 'Update' : 'Save'}
         </Button>
       </View>
     </>
@@ -186,13 +189,57 @@ function RenderForm({formikProps, navigation, ...restProps}) {
 
 function AddCollection(props) {
   const {navigation, route} = props;
-  const {params} = route;
-  const {unit, project_id} = params;
+  const {unit, project_id, collection} = route?.params || {};
 
-  const {addCollection, getAccountDetails} = useCustomerActions();
+  const edit = Boolean(collection);
+
+  const {
+    addCollection,
+    updateCollection,
+    getAccountDetails,
+  } = useCustomerActions();
+
+  const {loading} = useSelector(s => s.customer);
+
+  const initialValues = React.useMemo(() => {
+    if (edit) {
+      const {
+        collectiontype,
+        transaction_date,
+        id,
+        user_id,
+        ...restData
+      } = collection;
+
+      return {type: collectiontype, date: transaction_date, ...restData};
+    }
+    return {type: 'documentcharges', transaction_type: 'credit'};
+  }, [edit, collection]);
+
+  const onSubmit = async values => {
+    const {type, date, ...restData} = values;
+
+    const data = {
+      project_id,
+      unit_id: unit.unitId,
+      collectiontype: type,
+      transaction_date: dayjs(date).format('DD-MM-YYYY'),
+      ...restData,
+    };
+
+    if (edit) {
+      await updateCollection({...data, collection_id: collection.id});
+    } else {
+      await addCollection(data);
+    }
+
+    getAccountDetails({project_id, unit_id: unit.unitId});
+    navigation.goBack();
+  };
 
   return (
     <View style={styles.container}>
+      <Spinner visible={loading} textContent="" />
       <KeyboardAwareScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollView}>
@@ -200,30 +247,15 @@ function AddCollection(props) {
           onPress={() => navigation.goBack()}
           style={styles.titleContainer}>
           <Image source={backArrow} style={styles.backArrow} />
-          <Subheading>Add collection</Subheading>
+          <Subheading>{edit ? 'Update' : 'Add'} collection</Subheading>
         </TouchableOpacity>
         <Formik
           validateOnBlur={false}
           validateOnChange={false}
-          initialValues={{type: 'documentcharges', transaction_type: 'credit'}}
+          initialValues={initialValues}
           validationSchema={schema}
-          onSubmit={async values => {
-            const {type, date, ...restData} = values;
-
-            const data = {
-              project_id,
-              unit_id: unit.unitId,
-              collectiontype: type,
-              transaction_date: dayjs(date).format('DD-MM-YYYY'),
-              ...restData,
-            };
-
-            addCollection(data).then(() => {
-              getAccountDetails({project_id, unit_id: unit.unitId});
-              navigation.goBack();
-            });
-          }}>
-          {formikProps => <RenderForm formikProps={formikProps} {...props} />}
+          onSubmit={onSubmit}>
+          {formikProps => <RenderForm {...props} {...{formikProps, edit}} />}
         </Formik>
       </KeyboardAwareScrollView>
     </View>

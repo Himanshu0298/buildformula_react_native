@@ -40,7 +40,7 @@ function BankDetailsSection(props) {
         </View>
       )}
       <View style={styles.buttonContainer}>
-        {modulePermissions.editor || modulePermissions.admin ? (
+        {modulePermissions?.editor || modulePermissions?.admin ? (
           <OpacityButton
             opacity={0.2}
             color={theme.colors.primary}

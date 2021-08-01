@@ -173,13 +173,13 @@ function FileSection(props) {
             {...{
               file,
               index,
-              remove: modulePermissions.editor || modulePermissions.admin,
+              remove: modulePermissions?.editor || modulePermissions?.admin,
               handleFileRemove,
             }}
           />
         ))}
       </View>
-      {modulePermissions.editor || modulePermissions.admin ? (
+      {modulePermissions?.editor || modulePermissions?.admin ? (
         <View style={styles.actionContainer}>
           <OpacityButton
             opacity={0.1}

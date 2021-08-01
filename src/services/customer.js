@@ -67,5 +67,19 @@ export default function useCustomerServices() {
         config({multipart: false}),
       );
     },
+    updateCollection: data => {
+      return instance.post(
+        '/customers/account_collection_update',
+        data,
+        config({multipart: false}),
+      );
+    },
+    deleteCollection: data => {
+      return instance.post(
+        '/customers/account_collection_delete',
+        data,
+        config({multipart: false}),
+      );
+    },
   };
 }

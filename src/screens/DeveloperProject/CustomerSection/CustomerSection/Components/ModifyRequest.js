@@ -134,7 +134,7 @@ function ModifyRequest(props) {
           requests={rejectedRequests}
         />
       </ScrollView>
-      {modulePermissions.editor || modulePermissions.admin ? (
+      {modulePermissions?.editor || modulePermissions?.admin ? (
         <FAB
           style={[styles.fab, {backgroundColor: theme.colors.primary}]}
           icon="plus"
