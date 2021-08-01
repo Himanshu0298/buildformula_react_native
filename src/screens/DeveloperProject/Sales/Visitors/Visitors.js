@@ -225,7 +225,7 @@ function Visitors(props) {
           );
         }}
       />
-      {modulePermission.editor || modulePermission.admin ? (
+      {modulePermission?.editor || modulePermission?.admin ? (
         <FAB.Group
           open={selectDialog}
           style={styles.fab}

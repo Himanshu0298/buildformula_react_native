@@ -151,13 +151,19 @@ const reducer = (state = initialState, action = {}) => {
         visitor: {},
       };
     case `${GET_VISITOR}_FULFILLED`:
-    case `${UPDATE_FOLLOW_UP}_FULFILLED`:
+    case `${UPDATE_FOLLOW_UP}_FULFILLED`: {
+      const data = payload.followup_lists || payload.followup;
+      const visitorFollowUp = data.sort(
+        (a, b) => dayjs(b.created).toDate() - dayjs(a.created).toDate(),
+      );
+
       return {
         ...state,
         loading: false,
         visitor: payload.visitors,
-        visitorFollowUp: payload.followup_lists || payload.followup,
+        visitorFollowUp,
       };
+    }
     case `${GET_VISITOR}_REJECTED`:
     case `${UPDATE_FOLLOW_UP}_REJECTED`:
       return {

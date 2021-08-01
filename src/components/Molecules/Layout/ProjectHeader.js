@@ -104,8 +104,8 @@ const styles = StyleSheet.create({
     borderColor: '#fff',
   },
   banner: {
-    width: 160,
-    height: 20,
+    width: 150,
+    height: 18,
   },
   profileIconContainer: {
     marginLeft: 15,
