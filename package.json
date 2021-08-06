@@ -53,6 +53,7 @@
     "react-native-loading-spinner-overlay": "^2.0.0",
     "react-native-localize": "^2.1.1",
     "react-native-material-tabs": "^4.2.0",
+    "react-native-mime-types": "^2.3.0",
     "react-native-modal": "^12.0.2",
     "react-native-pager-view": "^5.2.1",
     "react-native-paper": "^4.9.2",

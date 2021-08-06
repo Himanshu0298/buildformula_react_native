@@ -17,6 +17,7 @@ import {useSnackbar} from 'components/Atoms/Snackbar';
 import Share from 'react-native-share';
 import {getDownloadUrl} from 'utils';
 import {useSelector} from 'react-redux';
+import * as mime from 'react-native-mime-types';
 
 const {DocumentDir, DownloadDir} = RNFetchBlob.fs.dirs;
 
@@ -84,8 +85,7 @@ function MenuDialog(props) {
 
   const toggleDownloading = () => setDownloading(v => !v);
 
-  const handleDownload = async () => {
-    toggleDownloading();
+  const downloadFile = async () => {
     const FILE_URL = getDownloadUrl(modalContent);
     const path = getFilePath(modalContent);
 
@@ -107,25 +107,35 @@ function MenuDialog(props) {
       await RNFS.unlink(path);
     }
 
-    RNFetchBlob.config(options)
+    return RNFetchBlob.config(options)
       .fetch('GET', FILE_URL, {Authorization})
-      .then(res => {
+      .then(async res => {
         // Alert after successful downloading
         console.log('res -> ', JSON.stringify(res));
 
         const downloadDir = normalizeFilePath(res.data);
-
-        console.log('----->downloadDir ', downloadDir);
-
-        setDownloaded(downloadDir);
-        toggleDownloading();
+        const base64 = await RNFS.readFile(downloadDir, 'base64');
 
         snackbar.showMessage({message: 'File Downloaded Successfully!'});
+
+        const mimeType = mime.lookup(file_name);
+
+        return {
+          base64: `data:${mimeType};base64,${base64}`,
+          dir: downloadDir,
+        };
       })
-      .catch(err => {
-        toggleDownloading();
-        console.log('-----> err', err);
+      .catch(error => {
+        console.log('-----> error', error);
+        throw error;
       });
+  };
+
+  const handleDownload = async () => {
+    toggleDownloading();
+    const {dir} = await downloadFile();
+    setDownloaded(dir);
+    toggleDownloading();
   };
 
   const openFile = filePath => {
@@ -136,8 +146,7 @@ function MenuDialog(props) {
 
   const handleShare = async () => {
     try {
-      const res = await RNFetchBlob.fetch('GET', getDownloadUrl(id));
-      const base64 = res.base64();
+      const {base64} = await downloadFile();
 
       const options = {
         title: 'Share',
@@ -213,7 +222,7 @@ function MenuDialog(props) {
           </View>
         </TouchableOpacity>
       ) : null}
-      <TouchableOpacity
+      {/* <TouchableOpacity
         onPress={() => {
           console.log('inPrint');
         }}>
@@ -221,7 +230,7 @@ function MenuDialog(props) {
           <IconButton icon="printer" />
           <Text style={styles.ModalText}>Print</Text>
         </View>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
       <TouchableOpacity onPress={() => activityDataHandler(fileType, id)}>
         <View style={styles.viewDirection}>
