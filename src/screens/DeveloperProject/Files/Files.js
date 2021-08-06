@@ -98,7 +98,7 @@ function RenderMenuModal(props) {
         borderRadius={30}
         callbackNode={fall}
         renderHeader={() => <View />}
-        onCloseEnd={onClose}
+        onCloseEnd={toggleMenu}
         renderContent={() => (
           <View style={styles.sheetContentContainer}>
             <View style={styles.closeContainer}>
@@ -392,6 +392,7 @@ function Files(props) {
         renameFolderHandler={renameFolderHandler}
       />
       <UploadDialog
+        {...props}
         visible={DialogType === 'uploadFile'}
         toggleDialogue={toggleDialog}
         selectedUploadFile={selectedUploadFile}

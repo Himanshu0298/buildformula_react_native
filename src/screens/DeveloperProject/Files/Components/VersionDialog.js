@@ -1,58 +1,108 @@
 import React, {useMemo} from 'react';
-import {StyleSheet, View, Image} from 'react-native';
+import {StyleSheet, View, Image, ActivityIndicator} from 'react-native';
 import {IconButton, Text, Menu, Divider, Button} from 'react-native-paper';
 import PdfIcon from 'assets/images/pdf_icon.png';
 import dayjs from 'dayjs';
-import {theme} from 'styles/theme';
+import {getDownloadUrl, downloadFile, checkDownloaded} from 'utils/download';
+import {useSnackbar} from 'components/Atoms/Snackbar';
+import FileViewer from 'react-native-file-viewer';
 
 function VersionFile(props) {
-  const {modulePermissions, version, countVersion, handleDownload} = props;
-  const [versionMenu, setVersionMenu] = React.useState(false);
+  const {theme, modulePermissions, version, countVersion} = props;
 
+  const snackbar = useSnackbar();
+
+  const [versionMenu, setVersionMenu] = React.useState(false);
+  const [downloading, setDownloading] = React.useState(false);
+  const [downloaded, setDownloaded] = React.useState(false);
+
+  React.useEffect(() => {
+    if (version?.file_name) {
+      setDownloading(false);
+      checkDownloaded(version).then(result => {
+        setDownloaded(result);
+      });
+    }
+  }, [version]);
+
+  const toggleDownloading = () => setDownloading(v => !v);
   const toggleVersionMenu = () => setVersionMenu(v => !v);
+
+  const handleDownload = async () => {
+    toggleVersionMenu();
+    toggleDownloading();
+    const fileUrl = getDownloadUrl(version, true);
+    const {dir} = await downloadFile(version, fileUrl);
+    snackbar.showMessage({message: 'File Downloaded Successfully!'});
+    setDownloaded(dir);
+    toggleDownloading();
+  };
+
+  const openFile = filePath => {
+    filePath = filePath || downloaded;
+    console.log('-----> open path', filePath);
+    FileViewer.open(filePath);
+  };
 
   return (
     <View>
       <View style={styles.versionFiles}>
         <View style={styles.sectionContainer}>
-          <Image source={PdfIcon} style={styles.PdfIcon} />
-          <View>
-            {countVersion === 0 ? (
-              <Text style={styles.text}>Current Version</Text>
-            ) : (
-              <Text style={styles.text}>Version {countVersion}</Text>
-            )}
+          <View style={styles.iconContainer}>
+            <Image source={PdfIcon} style={styles.pdfIcon} />
+          </View>
+          <View
+            style={{
+              flexGrow: 1,
+              justifyContent: 'space-around',
+            }}>
+            <Text style={styles.text}>
+              {!countVersion ? 'Current Version' : `Version ${countVersion}`}
+            </Text>
             <Text numberOfLines={1} style={styles.text}>
               By {version?.first_name} {version?.last_name}
             </Text>
           </View>
         </View>
         <View style={styles.sectionContainer}>
-          <View>
+          <View
+            style={{
+              flexGrow: 1,
+              justifyContent: 'space-around',
+              alignItems: 'flex-end',
+            }}>
             <Text style={styles.date}>
               {dayjs(version?.created).format('DD MMM YYYY')}
             </Text>
+            {downloading ? (
+              <ActivityIndicator color={theme.colors.primary} />
+            ) : downloaded ? (
+              <Button
+                compact
+                labelStyle={{fontSize: 13, marginVertical: 3}}
+                onPress={() => openFile()}>
+                Open
+              </Button>
+            ) : null}
           </View>
-          <View>
-            <Menu
-              visible={versionMenu}
-              onDismiss={toggleVersionMenu}
-              anchor={
-                <IconButton icon="dots-vertical" onPress={toggleVersionMenu} />
-              }>
-              <Menu.Item
-                icon="download"
-                onPress={() => handleDownload()}
-                title="Download"
-              />
-              {modulePermissions?.editor || modulePermissions?.admin ? (
-                <>
-                  <Divider />
-                  <Menu.Item icon="delete" onPress={() => {}} title="Delete" />
-                </>
-              ) : null}
-            </Menu>
-          </View>
+          <Menu
+            visible={versionMenu}
+            onDismiss={toggleVersionMenu}
+            anchor={
+              <IconButton icon="dots-vertical" onPress={toggleVersionMenu} />
+            }>
+            <Menu.Item
+              icon="download"
+              onPress={() => handleDownload()}
+              title="Download"
+            />
+            {modulePermissions?.editor || modulePermissions?.admin ? (
+              <>
+                <Divider />
+                <Menu.Item icon="delete" onPress={() => {}} title="Delete" />
+              </>
+            ) : null}
+          </Menu>
         </View>
       </View>
       <Divider />
@@ -62,6 +112,7 @@ function VersionFile(props) {
 
 function VersionDialog(props) {
   const {
+    theme,
     modulePermissions,
     modalContent,
     versionData,
@@ -108,12 +159,14 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
   },
-  PdfIcon: {
+  iconContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingLeft: 10,
+  },
+  pdfIcon: {
     width: 38,
     height: 38,
-    paddingLeft: 10,
-    marginLeft: 10,
-    marginBottom: 10,
   },
   text: {
     color: '#080707',
@@ -126,7 +179,6 @@ const styles = StyleSheet.create({
     color: '#080707',
   },
   sectionContainer: {
-    alignItems: 'center',
     flexDirection: 'row',
   },
   versionFiles: {

@@ -33,9 +33,10 @@ function getFilePath(file) {
   return DIR + `/${fileName}.${fileExt}`;
 }
 
-export function checkDownloaded(file) {
+export async function checkDownloaded(file) {
   const path = getFilePath(file);
-  return RNFS.exists(path);
+  const result = await RNFS.exists(path);
+  return result ? path : result;
 }
 
 export function getDownloadUrl(file, version) {
