@@ -167,14 +167,3 @@ export function getPermissions(moduleTitle) {
 
   return false;
 }
-
-export function getDownloadUrl(file, version) {
-  const {id, project_id} = file;
-  let url = `files/downloadversoin/${project_id}/current/${id}`;
-
-  if (version) {
-    url = `files/downloadversoin/${project_id}/version/${id}`;
-  }
-
-  return `${BASE_API_URL}${url}`;
-}

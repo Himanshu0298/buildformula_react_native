@@ -5,47 +5,14 @@ import {
   Image,
   TouchableOpacity,
   ActivityIndicator,
-  Platform,
 } from 'react-native';
 import {Button, IconButton, Subheading, Text} from 'react-native-paper';
 import FolderIcon from 'assets/images/folder_icon.png';
 import FileIcon from 'assets/images/file_icon.png';
-import RNFS from 'react-native-fs';
-import RNFetchBlob from 'rn-fetch-blob';
 import FileViewer from 'react-native-file-viewer';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import Share from 'react-native-share';
-import {getDownloadUrl} from 'utils';
-import {useSelector} from 'react-redux';
-import * as mime from 'react-native-mime-types';
-
-const {DocumentDir, DownloadDir} = RNFetchBlob.fs.dirs;
-
-const DIR = Platform.OS === 'ios' ? DocumentDir : DownloadDir;
-
-const normalizeFilePath = path =>
-  path.startsWith('file://') ? path.slice(7) : path;
-
-const getFileName = name => {
-  const split = name.split('.');
-  return split[0];
-};
-
-const getFileExtension = fileUrl => {
-  // To get the file extension
-  const fileExt = /[.]/.exec(fileUrl) ? /[^.]+$/.exec(fileUrl) : undefined;
-
-  return fileExt[0];
-};
-
-function getFilePath(file) {
-  const {file_name, file_url} = file;
-
-  const fileName = getFileName(file_name);
-  const fileExt = getFileExtension(file_url);
-
-  return DIR + `/${fileName}.${fileExt}`;
-}
+import {checkDownloaded, downloadFile, getDownloadUrl} from 'utils/download';
 
 function MenuDialog(props) {
   const {
@@ -64,76 +31,27 @@ function MenuDialog(props) {
 
   const fileType = folder_name ? 'folder' : 'file';
 
-  const {token} = useSelector(s => s.user);
-
   const [downloading, setDownloading] = useState(false);
   const [downloaded, setDownloaded] = useState(false);
+  const [sharing, setSharing] = useState(false);
 
   useEffect(() => {
-    setDownloading(false);
-    if (file_name) {
-      const path = getFilePath(modalContent);
-      RNFS.exists(path).then(output => {
-        if (output) {
-          setDownloaded(path);
-        } else {
-          setDownloaded(false);
-        }
+    if (modalContent?.file_name) {
+      setDownloading(false);
+      checkDownloaded(modalContent).then(result => {
+        setDownloaded(result);
       });
     }
-  }, [file_name, modalContent]);
+  }, [modalContent]);
 
   const toggleDownloading = () => setDownloading(v => !v);
-
-  const downloadFile = async () => {
-    const FILE_URL = getDownloadUrl(modalContent);
-    const path = getFilePath(modalContent);
-
-    const Authorization = `Bearer ${token}`;
-
-    const options = {
-      fileCache: true,
-      path,
-      addAndroidDownloads: {
-        path,
-        description: 'downloading file...',
-        notification: true,
-        // useDownloadManager works with Android only
-        useDownloadManager: true,
-      },
-    };
-
-    if (downloaded) {
-      await RNFS.unlink(path);
-    }
-
-    return RNFetchBlob.config(options)
-      .fetch('GET', FILE_URL, {Authorization})
-      .then(async res => {
-        // Alert after successful downloading
-        console.log('res -> ', JSON.stringify(res));
-
-        const downloadDir = normalizeFilePath(res.data);
-        const base64 = await RNFS.readFile(downloadDir, 'base64');
-
-        snackbar.showMessage({message: 'File Downloaded Successfully!'});
-
-        const mimeType = mime.lookup(file_name);
-
-        return {
-          base64: `data:${mimeType};base64,${base64}`,
-          dir: downloadDir,
-        };
-      })
-      .catch(error => {
-        console.log('-----> error', error);
-        throw error;
-      });
-  };
+  const toggleSharing = () => setSharing(v => !v);
 
   const handleDownload = async () => {
     toggleDownloading();
-    const {dir} = await downloadFile();
+    const fileUrl = getDownloadUrl(modalContent);
+    const {dir} = await downloadFile(modalContent, fileUrl);
+    snackbar.showMessage({message: 'File Downloaded Successfully!'});
     setDownloaded(dir);
     toggleDownloading();
   };
@@ -146,13 +64,17 @@ function MenuDialog(props) {
 
   const handleShare = async () => {
     try {
-      const {base64} = await downloadFile();
+      toggleSharing();
+      const fileUrl = getDownloadUrl(modalContent);
+      const {base64} = await downloadFile(modalContent, fileUrl);
 
       const options = {
         title: 'Share',
         message: `Share ${file_name || folder_name} :`,
         url: base64,
       };
+
+      toggleSharing();
 
       return Share.open(options);
     } catch (error) {
@@ -184,14 +106,19 @@ function MenuDialog(props) {
       <TouchableOpacity onPress={handleShare}>
         <View style={styles.viewDirection}>
           <IconButton icon="share-variant" />
-          <Text style={styles.ModalText}>Share Copy</Text>
+          <View style={styles.rowBetween}>
+            <Text style={styles.ModalText}>Share Copy</Text>
+            {sharing ? (
+              <ActivityIndicator color={theme.colors.primary} />
+            ) : null}
+          </View>
         </View>
       </TouchableOpacity>
       {fileType === 'file' ? (
         <TouchableOpacity onPress={handleDownload}>
           <View style={styles.viewDirection}>
             <IconButton icon="download" />
-            <View style={styles.downloadLabel}>
+            <View style={styles.rowBetween}>
               <Text style={styles.ModalText}> Download</Text>
               {downloading ? (
                 <ActivityIndicator color={theme.colors.primary} />
@@ -269,7 +196,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 15,
   },
-  downloadLabel: {
+  rowBetween: {
     flexGrow: 1,
     flexDirection: 'row',
     alignItems: 'center',
