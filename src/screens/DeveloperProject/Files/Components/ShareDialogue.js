@@ -145,7 +145,7 @@ function ShareDialog(props) {
                       {USER_ROLES.map((item, i) => (
                         <>
                           <Menu.Item
-                            key={i}
+                            key={`${index}_${i}`}
                             onPress={() => {
                               toggleUser(id, item.id);
                               toggleMenu();

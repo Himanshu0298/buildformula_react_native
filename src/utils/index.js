@@ -1,6 +1,7 @@
 import {debounce} from 'lodash';
 import {Platform} from 'react-native';
 import {store} from 'redux/store';
+import {BASE_API_URL} from './constant';
 
 const shadowsArray = {
   0: {
@@ -165,4 +166,15 @@ export function getPermissions(moduleTitle) {
   }
 
   return false;
+}
+
+export function getDownloadUrl(file, version) {
+  const {id, project_id} = file;
+  let url = `files/downloadversoin/${project_id}/current/${id}`;
+
+  if (version) {
+    url = `files/downloadversoin/${project_id}/version/${id}`;
+  }
+
+  return `${BASE_API_URL}${url}`;
 }

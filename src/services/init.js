@@ -5,7 +5,7 @@ const axios = require('axios');
 export const instance = axios.create({baseURL: BASE_API_URL});
 
 export const useConfig = () => {
-  const token = store.getState().user.token;
+  const {token} = store.getState()?.user || {};
 
   return {
     config: ({multipart = true, auth = true} = {}) => {

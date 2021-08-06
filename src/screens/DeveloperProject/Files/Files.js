@@ -6,12 +6,11 @@ import {
   ScrollView,
   RefreshControl,
 } from 'react-native';
-import {IconButton, Subheading, Text, FAB} from 'react-native-paper';
+import {IconButton, Subheading, Text, FAB, withTheme} from 'react-native-paper';
 import useFileActions from 'redux/actions/fileActions';
 import PdfIcon from 'assets/images/pdf_icon.png';
 import FolderIcon from 'assets/images/folder_icon.png';
 import UploadFileIcon from 'assets/images/upload_files.png';
-import {theme} from 'styles/theme';
 import {useSelector} from 'react-redux';
 import useImagePicker from 'utils/useImagePicker';
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -127,8 +126,8 @@ function RenderMenuModal(props) {
   );
 }
 
-export default function Files(props) {
-  const {route, navigation} = props;
+function Files(props) {
+  const {theme, route, navigation} = props;
   const {folder_name: folderName, index_of: folderDepth = 0} =
     route?.params || {};
 
@@ -355,6 +354,7 @@ export default function Files(props) {
         />
       ) : null}
       <RenderMenuModal
+        {...props}
         {...{
           modulePermissions,
           menuId,
@@ -478,3 +478,5 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
 });
+
+export default withTheme(Files);

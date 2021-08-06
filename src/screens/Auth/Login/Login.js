@@ -168,35 +168,37 @@ function Login(props) {
     }
   }, [loginError]);
 
+  const onSubmit = async values => {
+    Keyboard.dismiss();
+    if (loginError) {
+      setLoginError(null);
+    }
+    const data = {email: values.email, password: values.password};
+
+    login(data)
+      .then(({value}) => {
+        const {otp_verified, email_verified, default_role_id} = value.user;
+
+        if (otp_verified === 'N' || email_verified === 'N') {
+          navigation.navigate('Otp');
+        } else if (default_role_id === 0) {
+          navigation.navigate('RoleSelect');
+        } else if (project.id) {
+          navigation.navigate('ProjectStructureStepOne');
+        }
+      })
+      .catch(error => {
+        setLoginError(error);
+      });
+  };
+
   return (
     <Formik
       validateOnBlur={false}
       validateOnChange={false}
       initialValues={{}}
       validationSchema={schema}
-      onSubmit={async values => {
-        Keyboard.dismiss();
-        if (loginError) {
-          setLoginError(null);
-        }
-        const data = {email: values.email, password: values.password};
-
-        login(data)
-          .then(({value}) => {
-            const {otp_verified, email_verified, default_role_id} = value.user;
-
-            if (otp_verified === 'N' || email_verified === 'N') {
-              navigation.navigate('Otp');
-            } else if (default_role_id === 0) {
-              navigation.navigate('RoleSelect');
-            } else if (project.id) {
-              navigation.navigate('ProjectStructureStepOne');
-            }
-          })
-          .catch(error => {
-            setLoginError(error);
-          });
-      }}>
+      onSubmit={onSubmit}>
       {({handleChange, values, handleSubmit, handleBlur, isValid, errors}) => (
         <TouchableWithoutFeedback
           onPress={() => Keyboard.dismiss()}
@@ -264,7 +266,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headlineContainer: {
-    height: '5%',
     justifyContent: 'center',
     alignItems: 'center',
   },

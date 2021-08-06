@@ -1,40 +1,54 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, View, Image, TouchableOpacity} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Image,
+  TouchableOpacity,
+  ActivityIndicator,
+  Platform,
+} from 'react-native';
 import {Button, IconButton, Subheading, Text} from 'react-native-paper';
 import FolderIcon from 'assets/images/folder_icon.png';
 import FileIcon from 'assets/images/file_icon.png';
-import RNBackgroundDownloader from 'react-native-background-downloader';
 import RNFS from 'react-native-fs';
 import RNFetchBlob from 'rn-fetch-blob';
 import FileViewer from 'react-native-file-viewer';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import Share from 'react-native-share';
+import {getDownloadUrl} from 'utils';
+import {useSelector} from 'react-redux';
 
-const {config, fs} = RNFetchBlob;
+const {DocumentDir, DownloadDir} = RNFetchBlob.fs.dirs;
 
-const DOWNLOAD_DIR = RNFetchBlob.fs.dirs.DownloadDir;
+const DIR = Platform.OS === 'ios' ? DocumentDir : DownloadDir;
 
-async function checkDuplicate(destination, count = 0) {
-  const updatedDestination = count
-    ? `${destination}_${count + 1}`
-    : destination;
-  try {
-    const existingFile = await RNFS.stat(updatedDestination);
-    if (existingFile) {
-      return checkDuplicate(destination, count + 1);
-    }
-  } catch (error) {
-    return updatedDestination;
-  }
-}
+const normalizeFilePath = path =>
+  path.startsWith('file://') ? path.slice(7) : path;
 
-const getFileExtention = fileUrl => {
-  // To get the file extension
-  return /[.]/.exec(fileUrl) ? /[^.]+$/.exec(fileUrl) : undefined;
+const getFileName = name => {
+  const split = name.split('.');
+  return split[0];
 };
+
+const getFileExtension = fileUrl => {
+  // To get the file extension
+  const fileExt = /[.]/.exec(fileUrl) ? /[^.]+$/.exec(fileUrl) : undefined;
+
+  return fileExt[0];
+};
+
+function getFilePath(file) {
+  const {file_name, file_url} = file;
+
+  const fileName = getFileName(file_name);
+  const fileExt = getFileExtension(file_url);
+
+  return DIR + `/${fileName}.${fileExt}`;
+}
 
 function MenuDialog(props) {
   const {
+    theme,
     modulePermissions,
     modalContent,
     toggleDialog,
@@ -43,61 +57,91 @@ function MenuDialog(props) {
     activityDataHandler,
     toggleShareDialog,
   } = props;
-  const {id, file_name, file_url, file_type} = modalContent;
+  const {id, file_name, folder_name} = modalContent;
 
   const snackbar = useSnackbar();
 
-  const fileType = modalContent.folder_name ? 'folder' : 'file';
+  const fileType = folder_name ? 'folder' : 'file';
 
+  const {token} = useSelector(s => s.user);
+
+  const [downloading, setDownloading] = useState(false);
   const [downloaded, setDownloaded] = useState(false);
 
-  const handleDownload = () => {
-    const date = new Date();
-    const FILE_URL = file_url;
-    let file_ext = getFileExtention(FILE_URL);
+  useEffect(() => {
+    setDownloading(false);
+    if (file_name) {
+      const path = getFilePath(modalContent);
+      RNFS.exists(path).then(output => {
+        if (output) {
+          setDownloaded(path);
+        } else {
+          setDownloaded(false);
+        }
+      });
+    }
+  }, [file_name, modalContent]);
 
-    file_ext = '.' + file_ext[0];
+  const toggleDownloading = () => setDownloading(v => !v);
 
-    // config: To get response by passing the downloading related options
-    // fs: Root directory path to download
-    const RootDir = fs.dirs.DocumentDir;
+  const handleDownload = async () => {
+    toggleDownloading();
+    const FILE_URL = getDownloadUrl(modalContent);
+    const path = getFilePath(modalContent);
+
+    const Authorization = `Bearer ${token}`;
+
     const options = {
       fileCache: true,
+      path,
       addAndroidDownloads: {
-        path:
-          RootDir +
-          '/file_' +
-          Math.floor(date.getTime() + date.getSeconds() / 2) +
-          file_ext,
+        path,
         description: 'downloading file...',
         notification: true,
         // useDownloadManager works with Android only
         useDownloadManager: true,
       },
     };
-    config(options)
-      .fetch('GET', FILE_URL)
+
+    if (downloaded) {
+      await RNFS.unlink(path);
+    }
+
+    RNFetchBlob.config(options)
+      .fetch('GET', FILE_URL, {Authorization})
       .then(res => {
         // Alert after successful downloading
         console.log('res -> ', JSON.stringify(res));
 
-        snackbar.showMessage('File Downloaded Successfully!');
-        openFile(res.path());
+        const downloadDir = normalizeFilePath(res.data);
+
+        console.log('----->downloadDir ', downloadDir);
+
+        setDownloaded(downloadDir);
+        toggleDownloading();
+
+        snackbar.showMessage({message: 'File Downloaded Successfully!'});
+      })
+      .catch(err => {
+        toggleDownloading();
+        console.log('-----> err', err);
       });
   };
 
-  const openFile = path => FileViewer.open(path || downloaded);
+  const openFile = filePath => {
+    filePath = filePath || downloaded;
+    console.log('-----> open path', filePath);
+    FileViewer.open(filePath);
+  };
 
   const handleShare = async () => {
     try {
-      const res = await RNFetchBlob.fetch('GET', file_url);
+      const res = await RNFetchBlob.fetch('GET', getDownloadUrl(id));
       const base64 = res.base64();
 
       const options = {
         title: 'Share',
-        message: `Share ${
-          modalContent.file_name || modalContent.folder_name
-        } :`,
+        message: `Share ${file_name || folder_name} :`,
         url: base64,
       };
 
@@ -115,7 +159,7 @@ function MenuDialog(props) {
           style={styles.PdfIcon}
         />
         <Subheading style={{marginHorizontal: 10, marginVertical: 5}}>
-          {modalContent?.file_name || modalContent?.folder_name}
+          {file_name || folder_name}
         </Subheading>
       </View>
 
@@ -134,20 +178,24 @@ function MenuDialog(props) {
           <Text style={styles.ModalText}>Share Copy</Text>
         </View>
       </TouchableOpacity>
-      <TouchableOpacity onPress={handleDownload}>
-        <View style={styles.viewDirection}>
-          <IconButton icon="download" />
-          <View style={styles.downloadLabel}>
-            <Text style={styles.ModalText}> Download</Text>
-            {downloaded ? (
-              <Button compact onPress={openFile}>
-                Open
-              </Button>
-            ) : null}
+      {fileType === 'file' ? (
+        <TouchableOpacity onPress={handleDownload}>
+          <View style={styles.viewDirection}>
+            <IconButton icon="download" />
+            <View style={styles.downloadLabel}>
+              <Text style={styles.ModalText}> Download</Text>
+              {downloading ? (
+                <ActivityIndicator color={theme.colors.primary} />
+              ) : downloaded ? (
+                <Button compact onPress={() => openFile()}>
+                  Open
+                </Button>
+              ) : null}
+            </View>
           </View>
-        </View>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => versionDataHandler(modalContent.id)}>
+        </TouchableOpacity>
+      ) : null}
+      <TouchableOpacity onPress={() => versionDataHandler(id)}>
         <View style={styles.viewDirection}>
           <IconButton icon="file-multiple" onPress={() => {}} />
           <Text style={styles.ModalText}>Manage version</Text>
@@ -175,8 +223,7 @@ function MenuDialog(props) {
         </View>
       </TouchableOpacity>
 
-      <TouchableOpacity
-        onPress={() => activityDataHandler(fileType, modalContent.id)}>
+      <TouchableOpacity onPress={() => activityDataHandler(fileType, id)}>
         <View style={styles.viewDirection}>
           <IconButton icon="information" onPress={() => {}} />
           <Text style={styles.ModalText}>Activity</Text>

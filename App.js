@@ -40,9 +40,7 @@ i18next.use(languageDetector).use(initReactI18next).init({
   resources: translations,
 });
 
-const Loader = () => {
-  return <Spinner visible={true} textContent={''} />;
-};
+const Loader = () => <Spinner visible={true} textContent={''} />;
 
 const App = () => {
   useEffect(() => {
