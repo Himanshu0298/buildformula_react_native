@@ -53,7 +53,7 @@ const App = () => {
     <Fragment>
       <StatusBar barStyle="light-content" />
       <StoreProvider store={store}>
-        <PersistGate loading={<Loader />} persistor={persistor}>
+        <PersistGate loading={null} persistor={persistor}>
           <PaperProvider theme={theme}>
             <SafeAreaProvider
               initialSafeAreaInsets={initialWindowSafeAreaInsets}>
