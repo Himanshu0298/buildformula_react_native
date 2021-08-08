@@ -11,9 +11,10 @@ function RenderProgressChart(props) {
   const {labels, data = {}} = params;
   const {totalBookedCount, totalCount} = data;
 
-  const bookingPercentage = totalCount
-    ? (totalBookedCount / totalCount) * 100
-    : 0;
+  const bookingPercentage =
+    totalCount && totalBookedCount
+      ? ((totalBookedCount / totalCount) * 100).toFixed(0)
+      : 0.0;
   const progressData = {labels, data: [bookingPercentage]};
 
   return (
@@ -137,7 +138,7 @@ function Statistics(props) {
             <BarChart
               withInnerLines={false}
               fromZero
-              verticalLabelRotation="9"
+              verticalLabelRotation="15"
               data={{
                 labels: projectPhases.labels || [],
                 datasets: [{data: projectPhases.data || []}],
@@ -159,7 +160,7 @@ function Statistics(props) {
             />
           </View>
         ) : null}
-        <View style={styles.sectionContainer}>
+        {/* <View style={styles.sectionContainer}>
           <Subheading>Project Sub-phases</Subheading>
           <BarChart
             withInnerLines={false}
@@ -182,7 +183,7 @@ function Statistics(props) {
               marginTop: 8,
             }}
           />
-        </View>
+        </View> */}
       </ScrollView>
     </View>
   );
