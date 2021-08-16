@@ -42,7 +42,7 @@ function RenderUserCard(props) {
         <Text>
           {first_name} {last_name}
         </Text>
-        {/* <Menu
+        <Menu
           visible={index === menuIndex}
           contentStyle={{borderRadius: 10}}
           onDismiss={toggleMenu}
@@ -64,7 +64,7 @@ function RenderUserCard(props) {
             onPress={() => onDelete(item.id)}
             title="Delete"
           />
-        </Menu> */}
+        </Menu>
       </View>
       <View style={styles.rowBetween}>
         <Caption>{phone ? `+91 ${phone}` : 'NA'}</Caption>
@@ -108,7 +108,10 @@ function RenderUsers(props) {
 
   const toggleMenu = index => setMenuIndex(index);
 
-  const onUpdate = user => navigation.navigate('AddUser', {user});
+  const onUpdate = user => {
+    toggleMenu();
+    navigation.navigate('AddUser', {user});
+  };
 
   const onDelete = () => {};
 

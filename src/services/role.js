@@ -14,5 +14,8 @@ export default function useRole() {
     addUsers: data => {
       return instance.post('/roles/new_member_add', data, params);
     },
+    editUser: data => {
+      return instance.post('/roles/member_edit', data, params);
+    },
   };
 }

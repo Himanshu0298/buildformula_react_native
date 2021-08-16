@@ -1,5 +1,6 @@
 import {
   ADD_USERS,
+  EDIT_USERS,
   GET_MEMBERS,
   GET_ROLES,
   GET_SELECTED_PROJECT,
@@ -57,16 +58,19 @@ const reducer = (state = initialState, action = {}) => {
       };
 
     case `${ADD_USERS}_PENDING`:
+    case `${EDIT_USERS}_PENDING`:
       return {
         ...state,
         loading: true,
       };
     case `${ADD_USERS}_FULFILLED`:
+    case `${EDIT_USERS}_FULFILLED`:
       return {
         ...state,
         loading: false,
       };
     case `${ADD_USERS}_REJECTED`:
+    case `${EDIT_USERS}_REJECTED`:
       return {
         ...state,
         loading: false,

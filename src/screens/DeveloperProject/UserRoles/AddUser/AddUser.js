@@ -29,11 +29,16 @@ import {useSelector} from 'react-redux';
 import useRoleActions from 'redux/actions/roleActions';
 import * as Yup from 'yup';
 
-const schema = Yup.object().shape({
+const addSchema = Yup.object().shape({
   emails: Yup.array()
     .of(Yup.string('Invalid Email').email('Invalid Email'))
     .ensure('Email is required')
     .min(1, 'Email is required'),
+  selectedRoles: Yup.array()
+    .ensure('Role is required')
+    .min(1, 'Role is required'),
+});
+const editSchema = Yup.object().shape({
   selectedRoles: Yup.array()
     .ensure('Role is required')
     .min(1, 'Role is required'),
@@ -224,24 +229,36 @@ function AddUser(props) {
   const {navigation, route} = props;
   const {user} = route?.params || {};
 
-  const {addUsers, getMembers} = useRoleActions();
+  const edit = Boolean(user?.id);
+
+  const {addUsers, editUser, getMembers} = useRoleActions();
 
   const {selectedProject} = useSelector(s => s.project);
+
+  const onSubmit = async values => {
+    const project_id = selectedProject.id;
+    const {emails, selectedRoles} = values;
+
+    if (edit) {
+      await editUser({
+        project_id,
+        role_user_user_id: user?.id,
+        roles: selectedRoles,
+      });
+    } else {
+      await addUsers({project_id, emails, roles: selectedRoles});
+    }
+    getMembers({project_id});
+    navigation.goBack();
+  };
 
   return (
     <Formik
       validateOnBlur={false}
       validateOnChange={false}
       initialValues={{selectedRoles: user?.roles || [], emails: []}}
-      validationSchema={schema}
-      onSubmit={async values => {
-        const project_id = selectedProject.id;
-        const {emails, selectedRoles} = values;
-
-        await addUsers({project_id, emails, roles: selectedRoles});
-        getMembers({project_id});
-        navigation.gobBack();
-      }}>
+      validationSchema={edit ? editSchema : addSchema}
+      onSubmit={onSubmit}>
       {formikProps => <RenderForm {...props} {...{formikProps, user}} />}
     </Formik>
   );
