@@ -36,6 +36,8 @@
     "react-native-background-downloader": "^2.3.4",
     "react-native-bootsplash": "^3.2.4",
     "react-native-chart-kit": "^6.11.0",
+    "react-native-code-push": "^7.0.1",
+    "react-native-config": "^1.4.3",
     "react-native-confirmation-code-field": "^7.1.0",
     "react-native-countdown-component": "^2.7.1",
     "react-native-date-picker": "^3.3.2",

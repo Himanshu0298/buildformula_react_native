@@ -56,3 +56,6 @@ buck-out/
 # CocoaPods
 /ios/Pods/
 .eslintcache
+
+# react-native-config codegen
+ios/tmp.xcconfig
