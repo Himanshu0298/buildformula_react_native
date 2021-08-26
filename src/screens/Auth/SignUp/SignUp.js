@@ -30,6 +30,7 @@ import Layout from 'utils/Layout';
 import BottomSheet from 'reanimated-bottom-sheet';
 import {PHONE_REGEX} from 'utils/constant';
 import useAddProjectActions from 'redux/actions/addProjectActions';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 const BANNER_HEIGHT = Layout.window.width * 0.75 * (5 / 12);
 const IMAGE_HEIGHT = Layout.window.width * 0.75 * (15 / 22);
@@ -101,6 +102,7 @@ function RenderContent(props) {
     handleSubmit,
     navigation,
     adminSignUp,
+    marginBottom,
     adminId = 2,
   } = props;
 
@@ -113,152 +115,164 @@ function RenderContent(props) {
   const passwordRef = React.useRef();
   const cnfPassRef = React.useRef();
 
+  console.log('-----> marginBottom', marginBottom);
+
   return (
     <View style={styles.contentContainer}>
-      {!adminSignUp ? (
-        <View style={styles.headlineContainer}>
-          <Headline theme={secondaryTheme} style={{fontWeight: 'bold'}}>
-            {t('heading_signup')}
-          </Headline>
+      <KeyboardAwareScrollView
+        contentContainerStyle={{paddingBottom: marginBottom}}>
+        {!adminSignUp ? (
+          <View style={styles.headlineContainer}>
+            <Headline theme={secondaryTheme} style={{fontWeight: 'bold'}}>
+              {t('heading_signup')}
+            </Headline>
+            <Subheading theme={secondaryTheme}>
+              {t('subHeading_signUp')}
+            </Subheading>
+          </View>
+        ) : (
           <Subheading theme={secondaryTheme}>
-            {t('subHeading_signUp')}
+            {t(adminId === 2 ? 'admin_title_2nd' : 'admin_title_3rd')}
           </Subheading>
+        )}
+        <View style={styles.inputMainContainer}>
+          <View style={styles.row}>
+            <View style={{flex: 1, marginRight: 5}}>
+              <CustomInput
+                name="firstName"
+                label={t('label_first_name')}
+                containerStyles={styles.inputStyles}
+                value={values.firstName}
+                onChangeText={handleChange('firstName')}
+                onBlur={handleBlur('firstName')}
+                autoCapitalize="none"
+                returnKeyType={'next'}
+                onSubmitEditing={() => {
+                  lastRef?.current.focus();
+                  bottomSheetRef?.current?.snapTo(0);
+                }}
+                error={errors.firstName}
+              />
+            </View>
+            <View style={{flex: 1, marginLeft: 5}}>
+              <CustomInput
+                name="lastName"
+                label={t('label_last_name')}
+                containerStyles={styles.inputStyles}
+                ref={lastRef}
+                value={values.lastName}
+                onChangeText={handleChange('lastName')}
+                onBlur={handleBlur('lastName')}
+                autoCapitalize="none"
+                returnKeyType={'next'}
+                onSubmitEditing={() => phoneRef?.current.focus()}
+                error={errors.lastName}
+              />
+            </View>
+          </View>
+
+          <CustomInput
+            name="phone"
+            label={t('label_phone')}
+            containerStyles={styles.inputStyles}
+            ref={phoneRef}
+            maxLength={10}
+            value={values.phone}
+            keyboardType="number-pad"
+            onChangeText={handleChange('phone')}
+            onBlur={handleBlur('phone')}
+            autoCapitalize="none"
+            returnKeyType={'next'}
+            onSubmitEditing={() => emailRef?.current.focus()}
+            left={
+              <TextInput.Affix
+                theme={secondaryTheme}
+                style={{marginRight: 2}}
+                text="+91"
+              />
+            }
+            error={errors.phone}
+          />
+          <CustomInput
+            name="email"
+            label={t('label_email')}
+            containerStyles={styles.inputStyles}
+            ref={emailRef}
+            value={values.email}
+            onChangeText={handleChange('email')}
+            onBlur={handleBlur('email')}
+            placeholder={t('msgBlankEmail')}
+            autoCapitalize="none"
+            returnKeyType={'next'}
+            onSubmitEditing={() => passwordRef?.current.focus()}
+            error={errors.email}
+          />
+          {!adminSignUp ? (
+            <>
+              <CustomInput
+                name="password"
+                label={t('passwordLabel')}
+                containerStyles={styles.inputStyles}
+                ref={passwordRef}
+                value={values.password}
+                onChangeText={handleChange('password')}
+                onBlur={handleBlur('password')}
+                placeholder={t('msgBlankPassword')}
+                autoCapitalize="none"
+                returnKeyType={'next'}
+                secureTextEntry={!showPass}
+                onSubmitEditing={() => cnfPassRef?.current.focus()}
+                error={errors.password}
+                right={
+                  <TextInput.Icon
+                    theme={secondaryTheme}
+                    name={showPass ? 'eye-off' : 'eye'}
+                    onPress={() => toggleShowPass(v => !v)}
+                  />
+                }
+              />
+              <CustomInput
+                name="confirmPassword"
+                label={t('cnfPasswordLabel')}
+                containerStyles={styles.inputStyles}
+                ref={cnfPassRef}
+                value={values.confirmPassword}
+                onChangeText={handleChange('confirmPassword')}
+                onBlur={handleBlur('confirmPassword')}
+                placeholder={t('msgBlankCnfPassword')}
+                autoCapitalize="none"
+                returnKeyType={'done'}
+                error={errors.confirmPassword}
+                secureTextEntry={!showCnfPass}
+                right={
+                  <TextInput.Icon
+                    theme={secondaryTheme}
+                    name={showCnfPass ? 'eye-off' : 'eye'}
+                    onPress={() => toggleShowCnfPass(v => !v)}
+                  />
+                }
+              />
+            </>
+          ) : null}
         </View>
-      ) : (
-        <Subheading theme={secondaryTheme}>
-          {t(adminId === 2 ? 'admin_title_2nd' : 'admin_title_3rd')}
-        </Subheading>
-      )}
-      <View style={styles.inputMainContainer}>
-        <CustomInput
-          name="firstName"
-          label={t('label_first_name')}
-          containerStyles={styles.inputStyles}
-          value={values.firstName}
-          onChangeText={handleChange('firstName')}
-          onBlur={handleBlur('firstName')}
-          autoCapitalize="none"
-          returnKeyType={'next'}
-          onSubmitEditing={() => {
-            lastRef?.current.focus();
-            bottomSheetRef?.current?.snapTo(0);
-          }}
-          error={errors.firstName}
-        />
-        <CustomInput
-          name="lastName"
-          label={t('label_last_name')}
-          containerStyles={styles.inputStyles}
-          ref={lastRef}
-          value={values.lastName}
-          onChangeText={handleChange('lastName')}
-          onBlur={handleBlur('lastName')}
-          autoCapitalize="none"
-          returnKeyType={'next'}
-          onSubmitEditing={() => phoneRef?.current.focus()}
-          error={errors.lastName}
-        />
-        <CustomInput
-          name="phone"
-          label={t('label_phone')}
-          containerStyles={styles.inputStyles}
-          ref={phoneRef}
-          maxLength={10}
-          value={values.phone}
-          keyboardType="number-pad"
-          onChangeText={handleChange('phone')}
-          onBlur={handleBlur('phone')}
-          autoCapitalize="none"
-          returnKeyType={'next'}
-          onSubmitEditing={() => emailRef?.current.focus()}
-          left={
-            <TextInput.Affix
-              theme={secondaryTheme}
-              style={{marginRight: 2}}
-              text="+91"
-            />
-          }
-          error={errors.phone}
-        />
-        <CustomInput
-          name="email"
-          label={t('label_email')}
-          containerStyles={styles.inputStyles}
-          ref={emailRef}
-          value={values.email}
-          onChangeText={handleChange('email')}
-          onBlur={handleBlur('email')}
-          placeholder={t('msgBlankEmail')}
-          autoCapitalize="none"
-          returnKeyType={'next'}
-          onSubmitEditing={() => passwordRef?.current.focus()}
-          error={errors.email}
+        <SignUpButton
+          onPress={handleSubmit}
+          label={t(
+            !adminSignUp
+              ? 'label_signup'
+              : adminId === 2
+              ? 'label_next'
+              : 'label_save',
+          )}
         />
         {!adminSignUp ? (
-          <>
-            <CustomInput
-              name="password"
-              label={t('passwordLabel')}
-              containerStyles={styles.inputStyles}
-              ref={passwordRef}
-              value={values.password}
-              onChangeText={handleChange('password')}
-              onBlur={handleBlur('password')}
-              placeholder={t('msgBlankPassword')}
-              autoCapitalize="none"
-              returnKeyType={'next'}
-              secureTextEntry={!showPass}
-              onSubmitEditing={() => cnfPassRef?.current.focus()}
-              error={errors.password}
-              right={
-                <TextInput.Icon
-                  theme={secondaryTheme}
-                  name={showPass ? 'eye-off' : 'eye'}
-                  onPress={() => toggleShowPass(v => !v)}
-                />
-              }
-            />
-            <CustomInput
-              name="confirmPassword"
-              label={t('cnfPasswordLabel')}
-              containerStyles={styles.inputStyles}
-              ref={cnfPassRef}
-              value={values.confirmPassword}
-              onChangeText={handleChange('confirmPassword')}
-              onBlur={handleBlur('confirmPassword')}
-              placeholder={t('msgBlankCnfPassword')}
-              autoCapitalize="none"
-              returnKeyType={'done'}
-              error={errors.confirmPassword}
-              secureTextEntry={!showCnfPass}
-              right={
-                <TextInput.Icon
-                  theme={secondaryTheme}
-                  name={showCnfPass ? 'eye-off' : 'eye'}
-                  onPress={() => toggleShowCnfPass(v => !v)}
-                />
-              }
-            />
-          </>
+          <TouchableOpacity
+            onPress={navigation.goBack}
+            style={styles.registerContainer}>
+            <Text theme={secondaryTheme}>{t('loginLink')}</Text>
+          </TouchableOpacity>
         ) : null}
-      </View>
-      <SignUpButton
-        onPress={handleSubmit}
-        label={t(
-          !adminSignUp
-            ? 'label_signup'
-            : adminId === 2
-            ? 'label_next'
-            : 'label_save',
-        )}
-      />
-      {!adminSignUp ? (
-        <TouchableOpacity
-          onPress={navigation.goBack}
-          style={styles.registerContainer}>
-          <Text theme={secondaryTheme}>{t('loginLink')}</Text>
-        </TouchableOpacity>
-      ) : null}
+      </KeyboardAwareScrollView>
     </View>
   );
 }
@@ -289,13 +303,16 @@ function SignUp(props) {
   const {loading: updatingAdmin, project} = useSelector(s => s.addProject);
 
   const [validationError, setValidationError] = React.useState({});
+  const [marginBottom, setMarginBottom] = React.useState(0);
 
   React.useEffect(() => {
     const focusUnsubscribe = navigation.addListener('focus', () => {
       Keyboard.addListener('keyboardDidShow', _keyboardDidShow);
+      Keyboard.addListener('keyboardDidHide', _keyboardDidHide);
     });
     const blurUnsubscribe = navigation.addListener('blur', () => {
       Keyboard.removeListener('keyboardDidShow', _keyboardDidShow);
+      Keyboard.removeListener('keyboardDidHide', _keyboardDidHide);
     });
 
     // cleanup function
@@ -305,7 +322,13 @@ function SignUp(props) {
     };
   }, []);
 
-  const _keyboardDidShow = () => bottomSheetRef?.current?.snapTo?.(0);
+  const _keyboardDidShow = () => {
+    bottomSheetRef?.current?.snapTo?.(0);
+    setMarginBottom(300);
+  };
+  const _keyboardDidHide = () => {
+    setMarginBottom(0);
+  };
 
   const onSubmit = async values => {
     if (!adminSignUp) {
@@ -396,11 +419,14 @@ function SignUp(props) {
               ref={bottomSheetRef}
               snapPoints={adminSignUp ? ['85%', '70%'] : SNAP_POINTS}
               initialSnap={1}
+              enabledGestureInteraction={!marginBottom}
               renderHeader={() => <RenderHeader />}
               renderContent={() => (
                 <RenderContent
+                  {...props}
                   t={t}
                   bottomSheetRef={bottomSheetRef}
+                  marginBottom={marginBottom}
                   adminSignUp={adminSignUp}
                   adminId={adminId}
                   values={values}
@@ -408,7 +434,6 @@ function SignUp(props) {
                   handleBlur={handleBlur}
                   handleChange={handleChange}
                   errors={{...errors, ...validationError}}
-                  navigation={navigation}
                 />
               )}
             />
@@ -466,7 +491,6 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     backgroundColor: theme.colors.primary,
-
     height: '100%',
     paddingBottom: 20,
     alignItems: 'center',
@@ -480,6 +504,10 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingBottom: 10,
     paddingHorizontal: 25,
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   inputStyles: {
     marginVertical: 4,

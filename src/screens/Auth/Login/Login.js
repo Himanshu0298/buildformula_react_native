@@ -63,7 +63,6 @@ function RenderContent(props) {
     errors,
     handleSubmit,
     navigation,
-    bottomSheetRef,
   } = props;
 
   const [showPassword, setShowPassword] = useState(false);
@@ -89,7 +88,6 @@ function RenderContent(props) {
             name="email"
             label={t('label_email')}
             ref={emailRef}
-            onFocus={() => bottomSheetRef?.current?.snapTo(0)}
             value={values.email}
             onChangeText={handleChange('email')}
             onBlur={handleBlur('email')}
@@ -162,6 +160,25 @@ function Login(props) {
   const {loading} = useSelector(state => state.user);
   const {project} = useSelector(state => state.addProject);
 
+  React.useEffect(() => {
+    const focusUnsubscribe = navigation.addListener('focus', () => {
+      Keyboard.addListener('keyboardDidShow', _keyboardDidShow);
+    });
+    const blurUnsubscribe = navigation.addListener('blur', () => {
+      Keyboard.removeListener('keyboardDidShow', _keyboardDidShow);
+    });
+
+    // cleanup function
+    return () => {
+      blurUnsubscribe();
+      focusUnsubscribe();
+    };
+  }, []);
+
+  const _keyboardDidShow = () => {
+    bottomSheetRef?.current?.snapTo?.(0);
+  };
+
   useEffect(() => {
     if (loginError) {
       snackbar.showMessage({message: loginError, variant: 'error'});
@@ -221,7 +238,6 @@ function Login(props) {
               renderContent={() => (
                 <RenderContent
                   navigation={navigation}
-                  bottomSheetRef={bottomSheetRef}
                   values={values}
                   errors={errors}
                   handleChange={handleChange}
