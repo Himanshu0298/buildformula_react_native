@@ -34,13 +34,24 @@ const reducer = (state = initialState, action = {}) => {
         loading: true,
       };
     case `${LOGIN}_FULFILLED`: {
-      const {user} = payload;
+      const {user, token} = payload?.data;
+      const {otp_verified, email_verified, default_role_id} = user;
+      let authenticated = true;
+
+      if (
+        otp_verified === 'N' ||
+        email_verified === 'N' ||
+        default_role_id === 0
+      ) {
+        authenticated = false;
+      }
+
       return {
         ...state,
         loading: false,
-        user: user.user,
-        token: user.token,
-        authenticated: true,
+        user,
+        token,
+        authenticated,
       };
     }
     case `${LOGIN}_REJECTED`:

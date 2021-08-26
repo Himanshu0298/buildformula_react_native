@@ -1,5 +1,11 @@
 import React from 'react';
-import {View, StyleSheet, Image, TouchableOpacity} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
 import {withTheme} from 'react-native-paper';
 import FormTitle from 'components/Atoms/FormTitle';
 import {useTranslation} from 'react-i18next';
@@ -81,7 +87,9 @@ function ImageRender(props) {
   );
 }
 
-function StructureSelector({title, subtitle, onSelectStructure, projectTypes}) {
+function StructureSelector(props) {
+  const {title, subtitle, onSelectStructure, projectTypes, activeTypes} = props;
+
   const {t} = useTranslation();
 
   return (
@@ -94,6 +102,7 @@ function StructureSelector({title, subtitle, onSelectStructure, projectTypes}) {
             <ImageRender
               key={item.value}
               {...item}
+              active={activeTypes ? activeTypes.includes(item.value) : true}
               onPress={onSelectStructure}
             />
           ))}

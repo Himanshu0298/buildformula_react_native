@@ -107,8 +107,7 @@ function Home(props) {
   }, [projects]);
 
   const handleOnPress = project => {
-    // TODO: reverse this after fixed from backend
-    if (project.project_structure === 'Y') {
+    if (project.project_structure === 'N') {
       setProjectData(project);
       navigation.navigate('ProjectStructureStepOne');
       return;
@@ -119,16 +118,16 @@ function Home(props) {
       return;
     }
     if (project.project_approved === 'Y') {
+      const params = {project};
       if (tabs[selectedTab] === 'Developer') {
         navigation.navigate('DeveloperDashboard', {
           screen: 'DeveloperDashboard',
-          params: {project},
+          params,
         });
-      }
-      if (tabs[selectedTab] === 'Customer') {
+      } else if (tabs[selectedTab] === 'Customer') {
         navigation.navigate('CustomerDashboard', {
           screen: 'Ownership',
-          params: {project},
+          params,
         });
       }
     } else {

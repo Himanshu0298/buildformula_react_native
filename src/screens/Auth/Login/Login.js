@@ -194,7 +194,11 @@ function Login(props) {
 
     login(data)
       .then(({value}) => {
-        const {otp_verified, email_verified, default_role_id} = value.user;
+        const {
+          otp_verified,
+          email_verified,
+          default_role_id,
+        } = value?.data?.user;
 
         if (otp_verified === 'N' || email_verified === 'N') {
           navigation.navigate('Otp');

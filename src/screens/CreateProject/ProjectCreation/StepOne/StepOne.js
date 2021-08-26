@@ -16,16 +16,12 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 const schema = Yup.object().shape({
   company_name: Yup.string().label('Name').required('Name is required'),
-  company_pan: Yup.string()
-    // .matches(PAN_REGEX, 'PAN number is invalid')
-    .required('PAN number is required'),
-  pan_image: Yup.object().required('PAN image is required'),
-  company_tan: Yup.string().trim().required('TAN number is required'),
-  tan_image: Yup.object().required('TAN image is required'),
-  company_gst: Yup.string()
-    // .matches(GST_REGEX, 'GSTNo. is invalid')
-    .required('GSTNo. is required'),
-  gst_image: Yup.object().required('GST image is required'),
+  company_pan: Yup.string().required('PAN number is required'),
+  pan_image: Yup.object(),
+  company_tan: Yup.string().trim(),
+  tan_image: Yup.object(),
+  company_gst: Yup.string(),
+  gst_image: Yup.object(),
 });
 
 function StepOne(props) {

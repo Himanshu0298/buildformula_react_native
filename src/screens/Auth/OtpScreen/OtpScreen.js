@@ -6,15 +6,15 @@ import BaseText from 'components/Atoms/BaseText';
 import {Button, withTheme} from 'react-native-paper';
 import Layout from 'utils/Layout';
 import Spinner from 'react-native-loading-spinner-overlay';
-import useOtpActions from 'redux/actions/otpActions';
 import {useAlert} from 'components/Atoms/Alert';
 import OtpInput from 'components/Atoms/OtpInput';
+import useUserActions from 'redux/actions/userActions';
 
 const OtpScreen = props => {
   const {navigation, theme} = props;
 
   const alert = useAlert();
-  const {verifyOtp} = useOtpActions();
+  const {verifyOtp} = useUserActions();
 
   const {user, loading} = useSelector(state => state.user);
 
@@ -22,13 +22,7 @@ const OtpScreen = props => {
   const [email, setEmail] = useState('');
 
   const submit = async () => {
-    const formData = new FormData();
-    //TODO: Update translations
-    formData.append('mobile_otp', phone);
-    formData.append('user_id', user.id);
-    formData.append('email_otp', email);
-
-    verifyOtp(formData)
+    verifyOtp({mobile_otp: phone, user_id: user.id, email_otp: email})
       .then(data => {
         navigation.navigate('RoleSelect');
       })
@@ -52,6 +46,7 @@ const OtpScreen = props => {
       });
   };
 
+  //TODO: Update translations
   return (
     <View style={styles.container}>
       <Spinner visible={loading} textContent={''} />
@@ -67,7 +62,7 @@ const OtpScreen = props => {
         <OtpInput value={phone} setValue={setPhone} />
 
         <View style={styles.resendContainer}>
-          <BaseText style={styles.subTitle}>Didn’t receive a code.</BaseText>
+          <BaseText style={styles.subTitle}>Didn’t receive a code. </BaseText>
           <TouchableOpacity onPress={() => console.log('----->resend ')}>
             <BaseText style={[styles.resend, {color: theme.colors.primary}]}>
               Resend
@@ -81,9 +76,11 @@ const OtpScreen = props => {
         </BaseText>
         <OtpInput value={email} setValue={setEmail} />
         <View style={styles.resendContainer}>
-          <BaseText style={styles.subTitle}>Didn’t receive a code.</BaseText>
+          <BaseText style={styles.subTitle}>Didn’t receive a code. </BaseText>
           <TouchableOpacity onPress={() => console.log('----->resend ')}>
-            <BaseText style={styles.resend}> Resend</BaseText>
+            <BaseText style={[styles.resend, {color: theme.colors.primary}]}>
+              Resend
+            </BaseText>
           </TouchableOpacity>
         </View>
         <Button
@@ -108,7 +105,7 @@ const styles = StyleSheet.create({
     padding: 20,
     flex: 1,
     alignItems: 'center',
-    paddingTop: 30,
+    paddingTop: 50,
   },
   imageContainer: {
     alignItems: 'center',

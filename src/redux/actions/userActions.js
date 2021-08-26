@@ -29,6 +29,7 @@ export default function useUserActions() {
     sendForgetPasswordOtp,
     verifyForgotPasswordOtp,
     resetPassword,
+    otpCheck,
   } = useAuth();
   const {_err, _res} = useResProcessor();
   const snackbar = useSnackbar();
@@ -61,12 +62,12 @@ export default function useUserActions() {
             const response = _res(await login({...data, fcm_token}));
             const {data: userData} = response;
 
-            return Promise.resolve({user: userData});
+            return Promise.resolve({data: userData});
           } catch (error) {
             const {data: userData = {}} = error?.response?.data || {};
             const {email} = userData;
             if (email) {
-              return Promise.resolve({user: userData});
+              return Promise.resolve({data: userData});
             } else {
               return Promise.reject('Invalid email or password');
             }
@@ -94,6 +95,20 @@ export default function useUserActions() {
           try {
             const response = _res(await updateUser(data));
             return Promise.resolve(response);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    verifyOtp: data =>
+      dispatch({
+        type: types.VERIFY_OTP,
+        payload: async () => {
+          try {
+            const response = _res(await otpCheck(data));
+            return Promise.resolve({response});
           } catch (error) {
             const message = _err(error);
             snackbar.showMessage({message, variant: 'error'});
