@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  View,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-  ScrollView,
-} from 'react-native';
+import {View, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import {withTheme} from 'react-native-paper';
 import FormTitle from 'components/Atoms/FormTitle';
 import {useTranslation} from 'react-i18next';

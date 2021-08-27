@@ -80,6 +80,8 @@ export default function useUserActions() {
         payload: async () => {
           try {
             const response = _res(await updateUser(data));
+
+            snackbar.showMessage({message: 'Updated user successfully!'});
             return Promise.resolve(response);
           } catch (error) {
             const message = _err(error);

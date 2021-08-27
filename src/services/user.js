@@ -17,6 +17,20 @@ export default function useAuth() {
         config({auth: false, multipart: false}),
       );
     },
+    sendOtpToEmail: data => {
+      return instance.post(
+        '/sendOtpToUserEmail',
+        data,
+        config({multipart: false}),
+      );
+    },
+    sendOtpToPhone: data => {
+      return instance.post(
+        '/sendOtpToUserPhone',
+        data,
+        config({multipart: false}),
+      );
+    },
     otpCheck: data => {
       return instance.post('/otp_check', data, config({multipart: false}));
     },
