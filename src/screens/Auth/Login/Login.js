@@ -201,7 +201,7 @@ function Login(props) {
         } = value?.data?.user;
 
         if (otp_verified === 'N' || email_verified === 'N') {
-          navigation.navigate('Otp');
+          navigation.navigate('Otp', {fromLogin: true});
         } else if (default_role_id === 0) {
           navigation.navigate('RoleSelect');
         } else if (project.id) {

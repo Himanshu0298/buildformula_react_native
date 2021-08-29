@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import {useSelector} from 'react-redux';
 import image from 'assets/images/otp.png';
@@ -101,7 +101,9 @@ function UpdateDialog(props) {
 }
 
 const OtpScreen = props => {
-  const {navigation, theme} = props;
+  const {navigation, theme, route} = props;
+
+  const {fromLogin} = route?.params || {};
 
   const alert = useAlert();
   const snackbar = useSnackbar();
@@ -114,6 +116,14 @@ const OtpScreen = props => {
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    if (fromLogin) {
+      sendOtpToPhone({user_id: user.id});
+      sendOtpToEmail({user_id: user.id});
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fromLogin, user.id]);
 
   const toggleDialog = () => setVisible(v => !v);
 

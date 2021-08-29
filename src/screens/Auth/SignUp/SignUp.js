@@ -115,8 +115,6 @@ function RenderContent(props) {
   const passwordRef = React.useRef();
   const cnfPassRef = React.useRef();
 
-  console.log('-----> marginBottom', marginBottom);
-
   return (
     <View style={styles.contentContainer}>
       <KeyboardAwareScrollView
