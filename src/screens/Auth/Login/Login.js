@@ -186,31 +186,25 @@ function Login(props) {
   }, [loginError]);
 
   const onSubmit = async values => {
-    Keyboard.dismiss();
-    if (loginError) {
-      setLoginError(null);
+    try {
+      Keyboard.dismiss();
+      setLoginError();
+
+      const data = {email: values.email, password: values.password};
+
+      const {value} = await login(data);
+      const {otp_verified, email_verified, default_role_id} = value?.data?.user;
+
+      if (otp_verified === 'N' || email_verified === 'N') {
+        navigation.navigate('Otp', {fromLogin: true});
+      } else if (default_role_id === 0) {
+        navigation.navigate('RoleSelect');
+      } else if (project.id) {
+        navigation.navigate('ProjectStructureStepOne');
+      }
+    } catch (error) {
+      setLoginError(error);
     }
-    const data = {email: values.email, password: values.password};
-
-    login(data)
-      .then(({value}) => {
-        const {
-          otp_verified,
-          email_verified,
-          default_role_id,
-        } = value?.data?.user;
-
-        if (otp_verified === 'N' || email_verified === 'N') {
-          navigation.navigate('Otp', {fromLogin: true});
-        } else if (default_role_id === 0) {
-          navigation.navigate('RoleSelect');
-        } else if (project.id) {
-          navigation.navigate('ProjectStructureStepOne');
-        }
-      })
-      .catch(error => {
-        setLoginError(error);
-      });
   };
 
   return (

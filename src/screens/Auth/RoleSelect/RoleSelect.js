@@ -16,7 +16,7 @@ function RoleBox({title, onSelectPackage, roleId, colors}) {
         end={{x: 1, y: 0}}
         colors={colors}
         style={styles.roleBox}>
-        <Subheading>{title}</Subheading>
+        <Subheading style={{color: '#fff'}}>{title}</Subheading>
       </LinearGradient>
     </TouchableOpacity>
   );
@@ -28,18 +28,24 @@ function RoleSelect(props) {
   const {user, loading} = useSelector(state => state.user);
   const {selectRole} = useUserActions();
 
-  function onSelectPackage(roleId) {
-    //TODO: Update translations
+  const onSelectPackage = async roleId => {
+    try {
+      const formData = new FormData();
+      formData.append('user_id', user.id);
+      formData.append('first_name', user.first_name);
+      formData.append('last_name', user.last_name);
+      formData.append('email', user.email);
+      formData.append('phone', user.phone);
+      formData.append('default_role_id', roleId);
 
-    selectRole({user_id: user.id, default_role_id: roleId})
-      .then(data => {
-        navigation.navigate('ProjectCreationStepOne');
-      })
-      .catch(error => {
-        console.log('-----> error', error);
-      });
-  }
+      await selectRole(formData);
+      navigation.navigate('ProjectCreationStepOne');
+    } catch (error) {
+      console.log('-----> error', error);
+    }
+  };
 
+  //TODO: Update translations
   return (
     <View style={styles.container}>
       <Spinner visible={loading} textContent={''} />

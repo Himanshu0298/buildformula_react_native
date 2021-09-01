@@ -560,36 +560,6 @@ function NavContainer() {
                 component={ChangePasswordStack}
                 options={{headerShown: false}}
               />
-              <Stack.Screen
-                name="ProjectCreationStepOne"
-                component={PC_StepOne}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="ProjectCreationStepTwo"
-                component={PC_StepTwo}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="ProjectStructureStepOne"
-                component={PS_StepOne}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="ProjectStructureStepTwo"
-                component={PS_StepTwo}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="PlanSelect"
-                component={PlanSelect}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="AdminCreation"
-                component={SignUp}
-                options={{headerShown: false}}
-              />
             </Fragment>
           ) : (
             //Auth Nav Screens
@@ -636,6 +606,37 @@ function NavContainer() {
               />
             </Fragment>
           )}
+          {/* Project Creation screens */}
+          <Stack.Screen
+            name="ProjectCreationStepOne"
+            component={PC_StepOne}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="ProjectCreationStepTwo"
+            component={PC_StepTwo}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="ProjectStructureStepOne"
+            component={PS_StepOne}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="ProjectStructureStepTwo"
+            component={PS_StepTwo}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="PlanSelect"
+            component={PlanSelect}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="AdminCreation"
+            component={SignUp}
+            options={{headerShown: false}}
+          />
         </Stack.Navigator>
       </RouteContext.Provider>
     </NavigationContainer>

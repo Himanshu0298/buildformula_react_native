@@ -70,6 +70,7 @@ const reducer = (state = initialState, action = {}) => {
         ...state,
         loading: false,
         user: payload.user,
+        token: payload.token,
       };
     case `${SIGN_UP}_REJECTED`:
       return {

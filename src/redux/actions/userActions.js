@@ -35,16 +35,16 @@ export default function useUserActions() {
   const snackbar = useSnackbar();
 
   return {
-    signUp: user =>
+    signUp: params =>
       dispatch({
         type: types.SIGN_UP,
         payload: async () => {
           try {
-            const response = _res(await signUp(user));
-            const {data: userData} = response;
-            console.log('----->signUp response', userData);
+            const response = _res(await signUp(params));
+            const {data} = response;
+            const {token, ...user} = data;
 
-            return Promise.resolve({user: userData});
+            return Promise.resolve({user, token});
           } catch (error) {
             const message = _err(error);
             snackbar.showMessage({message, variant: 'error'});
@@ -95,7 +95,7 @@ export default function useUserActions() {
         type: types.SELECT_ROLE,
         payload: async () => {
           try {
-            const response = _res(await updateUser(data));
+            const response = _res(await updateUser(data, true));
             return Promise.resolve(response);
           } catch (error) {
             const message = _err(error);
