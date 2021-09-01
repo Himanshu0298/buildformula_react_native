@@ -79,18 +79,32 @@ const reducer = (state = initialState, action = {}) => {
       };
 
     case `${VERIFY_OTP}_PENDING`:
-    case `${SEND_FORGET_PASSWORD_OTP}_PENDING`:
       return {
         ...state,
         loading: true,
       };
     case `${VERIFY_OTP}_FULFILLED`:
+      return {
+        ...state,
+        loading: false,
+        authenticated: true,
+      };
+    case `${VERIFY_OTP}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+      };
+
+    case `${SEND_FORGET_PASSWORD_OTP}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
     case `${SEND_FORGET_PASSWORD_OTP}_FULFILLED`:
       return {
         ...state,
         loading: false,
       };
-    case `${VERIFY_OTP}_REJECTED`:
     case `${SEND_FORGET_PASSWORD_OTP}_REJECTED`:
       return {
         ...state,

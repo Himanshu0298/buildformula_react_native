@@ -193,12 +193,10 @@ function Login(props) {
       const data = {email: values.email, password: values.password};
 
       const {value} = await login(data);
-      const {otp_verified, email_verified, default_role_id} = value?.data?.user;
+      const {otp_verified, email_verified} = value?.data?.user;
 
       if (otp_verified === 'N' || email_verified === 'N') {
         navigation.navigate('Otp', {fromLogin: true});
-      } else if (default_role_id === 0) {
-        navigation.navigate('RoleSelect');
       } else if (project.id) {
         navigation.navigate('ProjectStructureStepOne');
       }

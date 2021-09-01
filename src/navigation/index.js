@@ -584,11 +584,11 @@ function NavContainer() {
                 component={OtpScreen}
                 options={{headerShown: false}}
               />
-              <Stack.Screen
+              {/* <Stack.Screen
                 name="RoleSelect"
                 component={RoleSelect}
                 options={{headerShown: false}}
-              />
+              /> */}
               <Stack.Screen
                 name="ForgotPassword"
                 component={ForgotPassword}

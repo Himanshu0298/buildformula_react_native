@@ -128,26 +128,26 @@ const OtpScreen = props => {
   const toggleDialog = () => setVisible(v => !v);
 
   const submit = async () => {
-    verifyOtp({mobile_otp: phone, user_id: user.id, email_otp: email})
-      .then(data => navigation.navigate('RoleSelect'))
-      .catch(error => {
-        console.log('-----> error', error);
-        alert.show({
-          title: 'Alert',
-          message: error,
-          dismissable: false,
-          onConfirm: () => {
-            if (error === 'Email OTP is invalid') {
-              setEmail('');
-            } else if (error === 'OTP not match') {
-              setPhone('');
-            } else {
-              setEmail('');
-              setPhone('');
-            }
-          },
-        });
+    try {
+      await verifyOtp({mobile_otp: phone, user_id: user.id, email_otp: email});
+    } catch (error) {
+      console.log('-----> error', error);
+      alert.show({
+        title: 'Alert',
+        message: error,
+        dismissable: false,
+        onConfirm: () => {
+          if (error === 'Email OTP is invalid') {
+            setEmail('');
+          } else if (error === 'OTP not match') {
+            setPhone('');
+          } else {
+            setEmail('');
+            setPhone('');
+          }
+        },
       });
+    }
   };
 
   const updateUserDetails = values => {

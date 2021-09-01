@@ -21,7 +21,7 @@ function RoleBox({title, onSelectPackage, roleId, colors}) {
     </TouchableOpacity>
   );
 }
-
+// Deprecated
 function RoleSelect(props) {
   const {navigation} = props;
 
