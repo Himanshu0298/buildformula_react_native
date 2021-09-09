@@ -107,7 +107,7 @@ function Home(props) {
   }, [projects]);
 
   const handleOnPress = project => {
-    if (project.project_structure === 'N') {
+    if (project.is_completed === 'N' && project.project_structure === 'N') {
       setProjectData(project);
       navigation.navigate('ProjectStructureStepOne');
       return;
