@@ -20,11 +20,12 @@ export default function useAddProject() {
         config({multipart: false}),
       );
     },
-    saveFloors: data => {
-      return instance.post('/project/update_project_floors', data, config());
-    },
-    saveUnits: data => {
-      return instance.post('/project/update_project_units', data, config());
+    saveProjectStructure: data => {
+      return instance.post(
+        'project/toggle_project_structure',
+        data,
+        config({multipart: false}),
+      );
     },
     updatePayment: data => {
       return instance.post(

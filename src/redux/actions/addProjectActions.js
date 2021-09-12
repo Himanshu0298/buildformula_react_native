@@ -12,6 +12,7 @@ export default function useAddProjectActions() {
   const {
     updateStructureTypes,
     saveTowers,
+    saveProjectStructure,
     createProject,
     updatePayment,
     updateAdmins,
@@ -97,6 +98,10 @@ export default function useAddProjectActions() {
                 }
               }),
             );
+
+            // Toggles project_structure flag to 'Y' which we are using to check if project's structure is saved
+            // We are using this flag in home screen
+            await saveProjectStructure({project_id: projectId});
 
             return Promise.resolve();
           } catch (error) {
