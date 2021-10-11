@@ -26,7 +26,7 @@ const AddFollowUp = () => {
   return (
     <View style={{flexGrow: 1}}>
       <Title style={{paddingHorizontal: 10, marginTop: 20}}>
-        Create Follow-up tasks
+        Create Follow-up task
       </Title>
       <Formik
         validateOnBlur={false}
