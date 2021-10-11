@@ -1,11 +1,12 @@
 import React, {useEffect, useState, useMemo} from 'react';
-import {StyleSheet, View, FlatList} from 'react-native';
+import {StyleSheet, View, FlatList, ScrollView} from 'react-native';
 import {
   withTheme,
   Caption,
   Divider,
   Paragraph,
   Button,
+  FAB,
   Text,
 } from 'react-native-paper';
 import {getPermissions, getShadow} from 'utils';
@@ -30,6 +31,7 @@ function RenderVisitorDetails(props) {
     occupationOptions,
     sourceTypeOptions,
     modulePermission,
+    navigation,
     onEdit,
   } = props;
 
@@ -55,86 +57,125 @@ function RenderVisitorDetails(props) {
 
   const inquiryStatus = pipelines.find(i => i.id === inquiry_status_id);
 
+  const [selectDialog, setSelectDialog] = useState(false);
+
+  const toggleSelectDialog = () => setSelectDialog(v => !v);
+
+  const onStateChange = ({open}) => setSelectDialog(open);
+
   return (
-    <View style={styles.detailsContainer}>
-      <View style={styles.detailRow}>
-        <Paragraph>Name</Paragraph>
-        <Caption style={styles.value}>
-          {first_name} {last_name}
-        </Caption>
-      </View>
-      <View style={styles.detailRow}>
-        <Paragraph>Email</Paragraph>
-        <Caption style={styles.value}>{email}</Caption>
-      </View>
-      <View style={styles.detailRow}>
-        <Paragraph>Phone no.</Paragraph>
-        <Caption style={styles.value}>+91 {phone}</Caption>
-      </View>
-      <View style={styles.detailRow}>
-        <Paragraph>Occupation</Paragraph>
-        <Caption style={styles.value}>{occupation?.label}</Caption>
-      </View>
-      <View style={styles.detailRow}>
-        <Paragraph>Date</Paragraph>
-        <Caption style={styles.value}>
-          {dayjs(follow_up_date).format('DD MMM YYYY')}
-        </Caption>
-      </View>
-      <View style={styles.detailRow}>
-        <Paragraph>Inquiry for</Paragraph>
-        <Caption style={styles.value}>
-          {STRUCTURE_TYPE_LABELS[inquiry_for]}
-          {bhk ? ` - ${bhk} BHK` : null}
-        </Caption>
-      </View>
-      <View style={styles.detailRow}>
-        <Paragraph>Budget Range</Paragraph>
-        <Caption style={styles.value}>
-          {/*TODO: Add amount formatting */}
-          Rs. {budget_from} - Rs.{budget_to}
-        </Caption>
-      </View>
-      <View style={styles.detailRow}>
-        <Paragraph>Current Locality</Paragraph>
-        <Caption style={styles.value}>{current_locality}</Caption>
-      </View>
-      <View style={styles.detailRow}>
-        <Paragraph>Source type</Paragraph>
-        <Caption style={styles.value}>{source?.label || 'NA'}</Caption>
-      </View>
-      <View style={styles.detailRow}>
-        <Paragraph>Priority</Paragraph>
-        <Caption style={styles.value}>
-          <CustomBadge
-            color={PRIORITY_COLORS[priority]}
-            label={priority}
-            style={styles.badge}
+    <ScrollView>
+      <View style={styles.detailsContainer}>
+        <View style={styles.detailRow}>
+          <Paragraph>Name</Paragraph>
+          <Caption style={styles.value}>
+            {first_name} {last_name}
+          </Caption>
+        </View>
+        <View style={styles.detailRow}>
+          <Paragraph>Email</Paragraph>
+          <Caption style={styles.value}>{email}</Caption>
+        </View>
+        <View style={styles.detailRow}>
+          <Paragraph>Phone no.</Paragraph>
+          <Caption style={styles.value}>+91 {phone}</Caption>
+        </View>
+        <View style={styles.detailRow}>
+          <Paragraph>Occupation</Paragraph>
+          <Caption style={styles.value}>{occupation?.label}</Caption>
+        </View>
+        <View style={styles.detailRow}>
+          <Paragraph>Date</Paragraph>
+          <Caption style={styles.value}>
+            {dayjs(follow_up_date).format('DD MMM YYYY')}
+          </Caption>
+        </View>
+        <View style={styles.detailRow}>
+          <Paragraph>Inquiry for</Paragraph>
+          <Caption style={styles.value}>
+            {STRUCTURE_TYPE_LABELS[inquiry_for]}
+            {bhk ? ` - ${bhk} BHK` : null}
+          </Caption>
+        </View>
+        <View style={styles.detailRow}>
+          <Paragraph>Budget Range</Paragraph>
+          <Caption style={styles.value}>
+            {/*TODO: Add amount formatting */}
+            Rs. {budget_from} - Rs.{budget_to}
+          </Caption>
+        </View>
+        <View style={styles.detailRow}>
+          <Paragraph>Current Locality</Paragraph>
+          <Caption style={styles.value}>{current_locality}</Caption>
+        </View>
+        <View style={styles.detailRow}>
+          <Paragraph>Source type</Paragraph>
+          <Caption style={styles.value}>{source?.label || 'NA'}</Caption>
+        </View>
+        <View style={styles.detailRow}>
+          <Paragraph>Priority</Paragraph>
+          <Caption style={styles.value}>
+            <CustomBadge
+              color={PRIORITY_COLORS[priority]}
+              label={priority}
+              style={styles.badge}
+            />
+          </Caption>
+        </View>
+        <View style={styles.detailRow}>
+          <Paragraph>Status</Paragraph>
+          <Caption>
+            <CustomBadge
+              style={{paddingHorizontal: 10, paddingVertical: 2}}
+              color="rgba(72,114,244,0.15)"
+              label={inquiryStatus?.title}
+              labelStyles={{color: theme.colors.primary}}
+            />
+          </Caption>
+        </View>
+        {modulePermission?.editor || modulePermission?.admin ? (
+          // <Button
+          //   style={{flex: 1, position: 'absolute', right: 10, bottom: 0}}
+          //   mode="contained"
+          //   contentStyle={{paddingHorizontal: 20, paddingVertical: 2}}
+          //   theme={{roundness: 15}}
+          //   onPress={onEdit}>
+          //   Edit
+          // </Button>
+          <FAB.Group
+            open={selectDialog}
+            style={styles.fab}
+            fabStyle={{
+              backgroundColor: selectDialog ? '#fff' : theme.colors.primary,
+            }}
+            icon={selectDialog ? 'window-close' : 'dots-horizontal'}
+            small
+            onPress={toggleSelectDialog}
+            onStateChange={onStateChange}
+            actions={[
+              {
+                icon: 'comment',
+                label: 'Add comment',
+                onPress: () =>
+                  navigation.navigate('AddDetails', {type: 'Comment'}),
+              },
+              {
+                icon: 'phone',
+                label: 'Add Call Logs',
+                onPress: () =>
+                  navigation.navigate('AddDetails', {type: 'Call Log'}),
+              },
+              {
+                icon: 'arrow-up',
+                label: 'Add Follow-Up',
+                onPress: () =>
+                  navigation.navigate('AddDetails', {type: 'Follow-up'}),
+              },
+            ]}
           />
-        </Caption>
+        ) : null}
       </View>
-      <View style={styles.detailRow}>
-        <Paragraph>Status</Paragraph>
-        <Caption>
-          <CustomBadge
-            style={{paddingHorizontal: 10, paddingVertical: 2}}
-            color="rgba(72,114,244,0.15)"
-            label={inquiryStatus?.title}
-            labelStyles={{color: theme.colors.primary}}
-          />
-        </Caption>
-      </View>
-      {modulePermission?.editor || modulePermission?.admin ? (
-        <Button
-          style={{flex: 1, position: 'absolute', right: 10, bottom: 0}}
-          mode="contained"
-          contentStyle={{paddingHorizontal: 20, paddingVertical: 2}}
-          theme={{roundness: 15}}
-          onPress={onEdit}>
-          Edit
-        </Button>
-      ) : null}
-    </View>
+    </ScrollView>
   );
 }
 
@@ -380,6 +421,10 @@ const styles = StyleSheet.create({
   detailRow: {
     flexShrink: 1,
     marginBottom: 10,
+  },
+  fab: {
+    position: 'absolute',
+    right: 0,
   },
   value: {
     lineHeight: 14,

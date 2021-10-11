@@ -10,7 +10,6 @@ export default function useSalesActions() {
   const {_err, _res} = useResProcessor();
   const {
     getVisitorsList,
-    getFollowUpList,
     getSalesData,
     addVisitor,
     updateVisitor,
@@ -84,28 +83,28 @@ export default function useSalesActions() {
           }
         },
       }),
-    getFollowUps: projectId =>
-      dispatch({
-        type: types.GET_FOLLOWUP_LIST,
-        payload: async () => {
-          try {
-            const formData = new FormData();
-            formData.append('project_id', projectId);
+    // getFollowUps: projectId =>
+    //   dispatch({
+    //     type: types.GET_FOLLOWUP_LIST,
+    //     payload: async () => {
+    //       try {
+    //         const formData = new FormData();
+    //         formData.append('project_id', projectId);
 
-            const response = _res(await getFollowUpList(formData));
-            const {data, filter} = response;
+    //         const response = _res(await getFollowUpList(formData));
+    //         const {data, filter} = response;
 
-            return Promise.resolve({
-              followups: data.data,
-              todayFollowups: filter.today_followups,
-            });
-          } catch (error) {
-            const message = _err(error);
-            snackbar.showMessage({message, variant: 'error'});
-            return Promise.reject(message);
-          }
-        },
-      }),
+    //         return Promise.resolve({
+    //           followups: data.data,
+    //           todayFollowups: filter.today_followups,
+    //         });
+    //       } catch (error) {
+    //         const message = _err(error);
+    //         snackbar.showMessage({message, variant: 'error'});
+    //         return Promise.reject(message);
+    //       }
+    //     },
+    //   }),
     getPipelineData: projectId =>
       dispatch({
         type: types.GET_PIPELINES,

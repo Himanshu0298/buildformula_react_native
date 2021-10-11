@@ -60,7 +60,8 @@ import VisitorDetails from '../screens/DeveloperProject/Sales/VisitorDetails';
 import SalesPipeline from '../screens/DeveloperProject/Sales/SalesPipeline';
 import Payment from '../screens/DeveloperProject/Sales/Payment';
 import AddVisitor from '../screens/DeveloperProject/Sales/AddVisitor';
-import AddFollowUp from '../screens/DeveloperProject/Sales/AddFollowUp';
+import AddFollowUp from '../screens/DeveloperProject/Sales/AddDetails/Components/AddFollowUp';
+import AddDetails from '../screens/DeveloperProject/Sales/AddDetails/index';
 import BC_SelectStructure from 'screens/DeveloperProject/Sales/BookingChart/SelectStructure';
 import BC_SelectFloor from 'screens/DeveloperProject/Sales/BookingChart/SelectFloor';
 import BC_SelectUnit from 'screens/DeveloperProject/Sales/BookingChart/SelectUnit';
@@ -166,6 +167,11 @@ function VisitorsStack() {
       <Stack.Screen
         name="AddFollowUp"
         component={AddFollowUp}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="AddDetails"
+        component={AddDetails}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

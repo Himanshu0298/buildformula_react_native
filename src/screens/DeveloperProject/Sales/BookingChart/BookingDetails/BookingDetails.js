@@ -6,7 +6,9 @@ import React, {useEffect, useMemo, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {
   Keyboard,
+  ScrollView,
   StyleSheet,
+  TouchableOpacity,
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
@@ -18,11 +20,14 @@ import {
   Text,
   Button,
   Caption,
+  Searchbar,
+  Menu,
+  Divider,
 } from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import {theme} from 'styles/theme';
+import {getShadow} from 'utils';
 import * as Yup from 'yup';
-import {VisitorSelector} from '../../AddFollowUp/AddFollowUp';
 
 const schema = Yup.object().shape({
   customer_first_name: Yup.string('Invalid').when('userType', {
@@ -58,6 +63,63 @@ const schema = Yup.object().shape({
     then: Yup.number('Invalid').required('Required'),
   }),
 });
+
+function VisitorSelector(props) {
+  const {
+    visitors,
+    searchQuery,
+    selectedVisitor,
+    onSelectVisitor,
+    onChangeText,
+  } = props;
+
+  const {t} = useTranslation();
+
+  const [isFocused, setFocused] = useState(false);
+
+  return (
+    <>
+      <Searchbar
+        theme={{roundness: 12}}
+        placeholder={t('label_search_visitors')}
+        onFocus={() => setFocused(true)}
+        style={{backgroundColor: 'rgba(4,29,54,0.1)', ...getShadow(0)}}
+        value={searchQuery}
+        onChangeText={v => {
+          onChangeText(v);
+          if (!v || (v && selectedVisitor)) {
+            onSelectVisitor();
+          }
+        }}
+      />
+
+      {isNaN(selectedVisitor) && isFocused && visitors?.length > 0 ? (
+        <View style={styles.listContainer}>
+          <ScrollView
+            nestedScrollEnabled
+            contentContainerStyle={{flexGrow: 1}}
+            keyboardShouldPersistTaps="handled">
+            {visitors.map((visitor, index) => {
+              const label = `${visitor.first_name} ${visitor.last_name}`;
+              return (
+                <TouchableOpacity
+                  key={index}
+                  onPress={() => {
+                    Keyboard.dismiss();
+                    onChangeText(label);
+                    onSelectVisitor(visitor.id);
+                  }}>
+                  <Menu.Item icon="account-question-outline" title={label} />
+                  <Divider />
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
+        </View>
+      ) : null}
+    </>
+  );
+}
 
 function RenderItem({label, value}) {
   return (
@@ -387,6 +449,13 @@ const styles = StyleSheet.create({
   },
   itemContainer: {
     marginVertical: 5,
+  },
+  listContainer: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    marginTop: 5,
+    maxHeight: 200,
+    ...getShadow(2),
   },
 });
 

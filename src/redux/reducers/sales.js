@@ -6,7 +6,6 @@ import {
   GET_SALES_DATA,
   ADD_VISITOR,
   GET_SELECTED_PROJECT,
-  ADD_FOLLOW_UP,
   GET_PIPELINES,
   DELETE_PIPELINE,
   ADD_PIPELINE,
@@ -333,7 +332,6 @@ const reducer = (state = initialState, action = {}) => {
     }
 
     case `${ADD_VISITOR}_PENDING`:
-    case `${ADD_FOLLOW_UP}_PENDING`:
     case `${CREATE_BOOKING}_PENDING`:
     case `${ADD_PIPELINE}_PENDING`: {
       return {
@@ -342,7 +340,6 @@ const reducer = (state = initialState, action = {}) => {
       };
     }
     case `${ADD_VISITOR}_FULFILLED`:
-    case `${ADD_FOLLOW_UP}_FULFILLED`:
     case `${CREATE_BOOKING}_FULFILLED`:
     case `${ADD_PIPELINE}_FULFILLED`: {
       return {
@@ -352,7 +349,6 @@ const reducer = (state = initialState, action = {}) => {
     }
 
     case `${ADD_VISITOR}_REJECTED`:
-    case `${ADD_FOLLOW_UP}_REJECTED`:
     case `${CREATE_BOOKING}_REJECTED`:
     case `${ADD_PIPELINE}_REJECTED`: {
       return {

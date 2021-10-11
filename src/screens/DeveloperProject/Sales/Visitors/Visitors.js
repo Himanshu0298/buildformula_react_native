@@ -174,7 +174,7 @@ function Visitors(props) {
 
   useEffect(() => {
     getVisitors(projectId);
-    getFollowUps(projectId);
+    // getFollowUps(projectId);
     getSalesData(projectId);
   }, [projectId]);
 
@@ -182,9 +182,10 @@ function Visitors(props) {
     if (selectedTab === 0) {
       getVisitors(projectId);
       getSalesData(projectId);
-    } else if (selectedTab === 1 || selectedTab === 2) {
-      getFollowUps(projectId);
     }
+    // else if (selectedTab === 1 || selectedTab === 2) {
+    //   getFollowUps(projectId);
+    // }
   };
 
   const toggleSelectDialog = () => setSelectDialog(v => !v);
@@ -210,8 +211,19 @@ function Visitors(props) {
   return (
     <>
       <Spinner visible={loading} textContent={''} />
+      <ProjectHeader />
 
-      <TabView
+      {/* <StatsRow visitorAnalytics={visitorAnalytics} /> */}
+      {/* <renderScene /> */}
+      <RenderContent
+        data={tabData[0]}
+        onRefresh={onRefresh}
+        showAnalyticsRow={0 === 0}
+        visitorAnalytics={visitorAnalytics}
+        navToDetails={navToDetails}
+      />
+
+      {/* <TabView
         navigationState={{index: selectedTab, routes: TABS}}
         renderScene={renderScene}
         onIndexChange={setSelectedTab}
@@ -224,7 +236,7 @@ function Visitors(props) {
             </View>
           );
         }}
-      />
+      /> */}
       {modulePermission?.editor || modulePermission?.admin ? (
         <FAB.Group
           open={selectDialog}
@@ -242,11 +254,11 @@ function Visitors(props) {
               label: 'New visitor',
               onPress: () => navigation.navigate('AddVisitor'),
             },
-            {
-              icon: 'arrow-up',
-              label: 'Follow up',
-              onPress: () => navigation.navigate('AddFollowUp'),
-            },
+            // {
+            //   icon: 'arrow-up',
+            //   label: 'Follow up',
+            //   onPress: () => navigation.navigate('AddFollowUp'),
+            // },
           ]}
         />
       ) : null}
@@ -257,10 +269,10 @@ function Visitors(props) {
 export default withTheme(Visitors);
 
 const styles = StyleSheet.create({
-  headerContainer: {
-    ...getShadow(5),
-    backgroundColor: '#fff',
-  },
+  // headerContainer: {
+  //   ...getShadow(5),
+  //   backgroundColor: '#fff',
+  // },
   contentContainer: {
     flexGrow: 1,
     marginTop: 2,
