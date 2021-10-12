@@ -37,8 +37,6 @@ import EditProfile from 'screens/UserAccount/EditProfile';
 import StepOne from 'screens/UserAccount/ChangePassword/StepOne';
 import StepTwo from 'screens/UserAccount/ChangePassword/StepTwo';
 import StepThree from 'screens/UserAccount/ChangePassword/StepThree';
-//Settings Screen
-import SettingsScreen from '../screens/Settings';
 //Project Search Screen
 import SearchScreen from '../screens/Search';
 
@@ -360,7 +358,6 @@ function GeneralDrawer() {
         </RouteContext.Consumer>
       )}>
       <Drawer.Screen name="Home" component={Home} />
-      <Drawer.Screen name="Settings" component={SettingsScreen} />
     </Drawer.Navigator>
   );
 }
