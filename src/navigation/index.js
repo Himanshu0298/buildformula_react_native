@@ -28,6 +28,9 @@ import PlanSelect from '../screens/CreateProject/PlanSelect';
 
 //Home Screen
 import Home from '../screens/Home';
+// User Purchased PRoject Screens
+import PurchasedProjects from '../screens/PurchaseDetails/PurchasedProjects';
+import ProjectDetails from '../screens/PurchaseDetails/ProjectDetails';
 //Notification Screen
 import Notification from 'screens/Notification';
 //Profile Screen
@@ -545,6 +548,16 @@ function NavContainer() {
               <Stack.Screen
                 name="Profile"
                 component={Profile}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="PurchasedProjects"
+                component={PurchasedProjects}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="ProjectDetails"
+                component={ProjectDetails}
                 options={{headerShown: false}}
               />
               <Stack.Screen
