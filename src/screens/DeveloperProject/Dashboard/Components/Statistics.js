@@ -11,10 +11,12 @@ function RenderProgressChart(props) {
   const {labels, data = {}} = params;
   const {totalBookedCount, totalCount} = data;
 
+  // const bookingPercentage =
+  //   totalCount && totalBookedCount
+  //     ? ((totalBookedCount / totalCount) * 100).toFixed(0)
+  //     : 0.0;
   const bookingPercentage =
-    totalCount && totalBookedCount
-      ? ((totalBookedCount / totalCount) * 100).toFixed(0)
-      : 0.0;
+    totalCount && totalBookedCount ? totalBookedCount / totalCount : 0.0;
   const progressData = {labels, data: [bookingPercentage]};
 
   return (
@@ -138,13 +140,13 @@ function Statistics(props) {
             <BarChart
               withInnerLines={false}
               fromZero
-              verticalLabelRotation="15"
+              verticalLabelRotation="25"
               data={{
                 labels: projectPhases.labels || [],
                 datasets: [{data: projectPhases.data || []}],
               }}
               width={Layout.window.width - 40} // from react-native
-              height={250}
+              height={450}
               chartConfig={{
                 backgroundColor: 'transparent',
                 backgroundGradientFrom: '#fff',
@@ -152,10 +154,11 @@ function Statistics(props) {
                 decimalPlaces: 0, // optional, defaults to 2dp
                 color: (opacity = 1) => `rgba(72,114,244, ${opacity})`,
                 labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                propsForHorizontalLabels: {paddingBottom: 30},
+                propsForHorizontalLabels: {paddingBottom: 100},
               }}
               style={{
                 marginTop: 8,
+                marginLeft: -50,
               }}
             />
           </View>
