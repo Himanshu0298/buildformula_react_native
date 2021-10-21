@@ -94,16 +94,10 @@ function RenderGeneralDrawerItems(props) {
       <DrawerItem
         {...props}
         label={'Project Purchase'}
-        route="PurchaseDetails"
+        route="PurchasedProjects"
         icon={({color, size}) => (
           <MaterialIcons name={'shop'} color={color} size={size} />
         )}
-      />
-      <DrawerItem
-        {...props}
-        label={'Settings'}
-        route="Settings"
-        icon={'cog-outline'}
       />
       <DrawerItem
         {...props}

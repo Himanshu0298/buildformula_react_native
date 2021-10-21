@@ -33,5 +33,11 @@ export default function useProject() {
         config({multipart: false}),
       );
     },
+    getPurchasedProjects: data => {
+      return instance.post('/list_projects', {}, config({multipart: false}));
+    },
+    getPurchaseProjectDetails: data => {
+      return instance.post('/detail_project', data, config({multipart: false}));
+    },
   };
 }

@@ -200,13 +200,13 @@ function Home(props) {
           </View>
         )}
       </View>
-      {selectedTab === 0 ? (
+      {/* {selectedTab === 0 ? (
         <FAB
           style={[styles.fab, {backgroundColor: theme.colors.primary}]}
           icon="plus"
           onPress={() => navigation.navigate('ProjectCreationStepOne')}
         />
-      ) : null}
+      ) : null} */}
     </>
   );
 }
@@ -221,12 +221,12 @@ const styles = StyleSheet.create({
     ...getShadow(5),
     backgroundColor: '#fff',
   },
-  fab: {
-    position: 'absolute',
-    margin: 16,
-    right: 20,
-    bottom: 20,
-  },
+  // fab: {
+  //   position: 'absolute',
+  //   margin: 16,
+  //   right: 20,
+  //   bottom: 20,
+  // },
   scrollView: {
     flexGrow: 1,
   },

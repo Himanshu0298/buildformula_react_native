@@ -15,6 +15,8 @@ export default function useProjectActions() {
     getProjectCommonData,
     getDashboardData,
     getProjectPermissions,
+    getPurchasedProjects,
+    getPurchaseProjectDetails,
   } = useProject();
 
   return {
@@ -96,6 +98,34 @@ export default function useProjectActions() {
             const {data} = _res(
               await getDashboardData({project_id: projectId}),
             );
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    getPurchasedProjects: () =>
+      dispatch({
+        type: types.GET_PURCHASED_PROJECTS,
+        payload: async () => {
+          try {
+            const {data} = _res(await getPurchasedProjects());
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    getPurchaseProjectDetails: project_id =>
+      dispatch({
+        type: types.GET_PURCHASE_PROJECT_DETAILS,
+        payload: async () => {
+          try {
+            const {data} = _res(await getPurchaseProjectDetails({project_id}));
             return Promise.resolve(data);
           } catch (error) {
             const message = _err(error);

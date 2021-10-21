@@ -29,7 +29,7 @@ function BottomAppBar(props) {
             onPress={() => navigation.toggleDrawer()}>
             Menu
           </Button>
-          <Button
+          {/* <Button
             icon="magnify"
             mode="text"
             accessibilityRole="button"
@@ -38,7 +38,7 @@ function BottomAppBar(props) {
             contentStyle={{paddingVertical: 5}}
             onPress={onPressSearch}>
             Search
-          </Button>
+          </Button> */}
           <Button
             icon="apps"
             mode="text"
