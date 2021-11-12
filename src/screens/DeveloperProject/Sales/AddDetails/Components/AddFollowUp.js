@@ -6,21 +6,36 @@ import {withTheme, Button, Title, Subheading} from 'react-native-paper';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import RenderDatePicker from 'components/Atoms/RenderDatePicker';
+// import useSalesActions from 'redux/reducers/salesActions';
+import useSalesActions from 'redux/actions/salesActions';
+import {useSelector} from 'react-redux';
 
 const schema = Yup.object().shape({
-  follow_up_date: Yup.date('Invalid').required('Required'),
-  follow_up_time: Yup.date('Invalid').required('Required'),
-  assign_to: Yup.string('Invalid').required('Required'),
+  followup_date: Yup.date('Invalid').required('Required'),
+  followup_time: Yup.date('Invalid').required('Required'),
+  task_title: Yup.string('Invalid').required('Required'),
   remarks: Yup.string('Invalid').required('Required'),
 });
 
-const AddFollowUp = () => {
+const AddFollowUp = props => {
   const followUpDateRef = React.useRef();
   const followUpTimeRef = React.useRef();
   const assignToRef = React.useRef();
 
-  const onSubmit = () => {
-    console.log('----->call log form Submitted');
+  const {route} = props;
+
+  const {visitorId} = route.params || {};
+
+  const {selectedProject} = useSelector(state => state.project);
+
+  const {addVisitorFollowUp} = useSalesActions();
+
+  const onSubmit = values => {
+    addVisitorFollowUp({
+      ...values,
+      visitor_id: visitorId,
+      project_id: selectedProject.id,
+    });
   };
 
   return (
@@ -47,31 +62,32 @@ const AddFollowUp = () => {
             keyboardShouldPersistTaps="handled">
             <View style={{padding: 10}}>
               <Subheading>Call Outcome</Subheading>
-              <RenderSelect
-                name="assign_to"
-                ref={assignToRef}
-                label="Select Role"
-                // options={assignOptions}
+
+              <RenderInput
+                name="task_title"
+                numberOfLines={8}
+                label="Task Title"
                 containerStyles={styles.input}
-                value={values.assign_to}
-                error={errors.assign_to}
-                onSelect={value => {
-                  setFieldValue('assign_to', value);
-                }}
+                value={values.task_title}
+                onChangeText={handleChange('task_title')}
+                onBlur={handleBlur('task_title')}
+                onSubmitEditing={handleSubmit}
+                returnKeyType="done"
+                error={errors.task_title}
               />
 
               <View style={{flexDirection: 'row'}}>
                 <View style={{flex: 1, marginRight: 10}}>
                   <RenderDatePicker
-                    name="date"
+                    name="followup_date"
                     label="Date"
                     ref={followUpDateRef}
                     containerStyles={styles.input}
-                    value={values.date}
-                    error={errors.follow_up_date}
+                    value={values.followup_date}
+                    error={errors.followup_date}
                     min={new Date()}
                     onChange={date => {
-                      setFieldValue('date', date);
+                      setFieldValue('followup_date', date);
                       followUpTimeRef?.current?.focus?.();
                     }}
                   />
@@ -81,12 +97,12 @@ const AddFollowUp = () => {
                     mode="time"
                     label="Time"
                     ref={followUpTimeRef}
-                    name="time"
+                    name="followup_time"
                     containerStyles={styles.input}
-                    value={values.time}
-                    error={errors.follow_up_time}
+                    value={values.followup_time}
+                    // error={errors.followup_time}
                     onChange={date => {
-                      setFieldValue('time', date);
+                      setFieldValue('followup_time', date);
                       assignToRef?.current?.focus?.();
                     }}
                   />
@@ -94,17 +110,17 @@ const AddFollowUp = () => {
               </View>
               <Subheading style={{marginTop: 20}}>Call Response</Subheading>
               <RenderInput
-                name="response"
+                name="remarks"
                 multiline
                 numberOfLines={8}
                 label="Response"
                 containerStyles={styles.input}
                 value={values.remarks}
-                onChangeText={handleChange('response')}
-                onBlur={handleBlur('response')}
+                onChangeText={handleChange('remarks')}
+                onBlur={handleBlur('remarks')}
                 onSubmitEditing={handleSubmit}
                 returnKeyType="done"
-                error={errors.response}
+                error={errors.remarks}
               />
             </View>
             <View style={styles.actionContainer}>

@@ -1,14 +1,6 @@
-import React, {useEffect, useState, useMemo} from 'react';
-import {StyleSheet, View, FlatList, ScrollView} from 'react-native';
-import {
-  withTheme,
-  Caption,
-  Divider,
-  Paragraph,
-  Button,
-  FAB,
-  Text,
-} from 'react-native-paper';
+import React, {useEffect, useState} from 'react';
+import {StyleSheet, View, ScrollView} from 'react-native';
+import {withTheme, Caption, Paragraph, FAB} from 'react-native-paper';
 import {getPermissions, getShadow} from 'utils';
 import useSalesActions from 'redux/actions/salesActions';
 import {useSelector} from 'react-redux';
@@ -21,21 +13,20 @@ import {TabView} from 'react-native-tab-view';
 import Layout from 'utils/Layout';
 import MaterialTabBar from 'components/Atoms/MaterialTabBar';
 import CustomBadge from 'components/Atoms/CustomBadge';
-import NoResult from 'components/Atoms/NoResult';
-import AddResponseDialog from './AddResponseDialog';
+import RenderActivity from './Components/Activity';
 
 function RenderVisitorDetails(props) {
   const {
-    visitor,
+    visitor = {},
     pipelines,
     occupationOptions,
     sourceTypeOptions,
     modulePermission,
     navigation,
-    onEdit,
   } = props;
 
   const {
+    id: visitorId,
     first_name,
     last_name,
     phone,
@@ -134,14 +125,6 @@ function RenderVisitorDetails(props) {
           </Caption>
         </View>
         {modulePermission?.editor || modulePermission?.admin ? (
-          // <Button
-          //   style={{flex: 1, position: 'absolute', right: 10, bottom: 0}}
-          //   mode="contained"
-          //   contentStyle={{paddingHorizontal: 20, paddingVertical: 2}}
-          //   theme={{roundness: 15}}
-          //   onPress={onEdit}>
-          //   Edit
-          // </Button>
           <FAB.Group
             open={selectDialog}
             style={styles.fab}
@@ -157,19 +140,28 @@ function RenderVisitorDetails(props) {
                 icon: 'comment',
                 label: 'Add comment',
                 onPress: () =>
-                  navigation.navigate('AddDetails', {type: 'Comment'}),
+                  navigation.navigate('AddDetails', {
+                    type: 'Comment',
+                    visitorId,
+                  }),
               },
               {
                 icon: 'phone',
                 label: 'Add Call Logs',
                 onPress: () =>
-                  navigation.navigate('AddDetails', {type: 'Call Log'}),
+                  navigation.navigate('AddDetails', {
+                    type: 'Call Log',
+                    visitorId,
+                  }),
               },
               {
                 icon: 'arrow-up',
                 label: 'Add Follow-Up',
                 onPress: () =>
-                  navigation.navigate('AddDetails', {type: 'Follow-up'}),
+                  navigation.navigate('AddDetails', {
+                    type: 'Follow-up',
+                    visitorId,
+                  }),
               },
             ]}
           />
@@ -179,150 +171,18 @@ function RenderVisitorDetails(props) {
   );
 }
 
-function RenderFollowupCard(props) {
-  const {followup, modulePermission, toggleResponseDialog} = props;
-  const {
-    id: followUpId,
-    created,
-    assign_to,
-    remarks,
-    followup_date,
-    followup_time,
-    inquiry_status,
-    today_discussion,
-  } = followup;
-
-  const {commonData} = useSelector(s => s.project);
-
-  const assignedUser = useMemo(() => {
-    return commonData.all_users_belongs_to_projects.find(
-      i => i.id === assign_to,
-    );
-  }, [assign_to, commonData.all_users_belongs_to_projects]);
-
-  return (
-    <View style={styles.followupContainer}>
-      <Text>Followup request</Text>
-      <View style={styles.followupRow}>
-        <View>
-          <Caption>Created on</Caption>
-          <Caption style={styles.followupValue}>
-            {dayjs(created).format('DD MMMM YYYY, hh:mm A')}
-          </Caption>
-        </View>
-        <View style={{alignItems: 'flex-end'}}>
-          <Caption>Assign To</Caption>
-          <Caption style={[{textAlign: 'right'}, styles.followupValue]}>
-            {assignedUser?.first_name} {assignedUser?.last_name}
-          </Caption>
-        </View>
-      </View>
-
-      <Caption>Notes:</Caption>
-      <Caption style={styles.followupValue}>{remarks}</Caption>
-
-      <Divider
-        style={{
-          marginVertical: 10,
-          borderWidth: 0.3,
-          borderColor: 'rgba(0,0,0,0.2)',
-        }}
-      />
-
-      <Text>Followup responses</Text>
-
-      <View style={styles.rowBetween}>
-        <View style={{marginVertical: 15}}>
-          <Caption>Follow up on:</Caption>
-          <Caption style={styles.followupValue}>
-            {dayjs(`${followup_date} ${followup_time}`).format(
-              'DD MMMM YYYY, hh:mm A',
-            )}
-          </Caption>
-        </View>
-        <View style={{alignItems: 'flex-end'}}>
-          <Caption>Status</Caption>
-          <CustomBadge
-            style={{paddingHorizontal: 10, paddingVertical: 2}}
-            color="rgba(72,114,244,0.15)"
-            label={inquiry_status}
-            labelStyles={{color: theme.colors.primary}}
-          />
-        </View>
-      </View>
-
-      {today_discussion ? (
-        <>
-          <Caption>Customer Response: :</Caption>
-          <Caption style={[styles.followupValue, {marginBottom: 15}]}>
-            {today_discussion}
-          </Caption>
-        </>
-      ) : modulePermission?.editor || modulePermission?.admin ? (
-        <Button
-          mode="contained"
-          uppercase={false}
-          compact
-          onPress={() => toggleResponseDialog(followUpId)}
-          style={{width: '70%'}}>
-          Add customer response
-        </Button>
-      ) : null}
-    </View>
-  );
-}
-
-function RenderFollowupList(props) {
-  const {visitorFollowUp, handleResponseSubmit} = props;
-
-  const [responseFor, setResponseFor] = useState();
-
-  const toggleResponseDialog = v => setResponseFor(!isNaN(v) ? v : undefined);
-
-  const handleSubmit = data => {
-    handleResponseSubmit({...data, followUpId: responseFor});
-  };
-
-  return (
-    <View style={styles.followupBody}>
-      <AddResponseDialog
-        open={!isNaN(responseFor)}
-        handleClose={toggleResponseDialog}
-        handleSubmit={handleSubmit}
-      />
-      {visitorFollowUp?.length ? (
-        <FlatList
-          data={visitorFollowUp}
-          extraData={visitorFollowUp}
-          showsVerticalScrollIndicator={false}
-          keyExtractor={item => item.id}
-          renderItem={({item}) => (
-            <RenderFollowupCard
-              {...props}
-              followup={item}
-              toggleResponseDialog={toggleResponseDialog}
-            />
-          )}
-        />
-      ) : (
-        <NoResult title="No follow up found for this visitor" />
-      )}
-    </View>
-  );
-}
-
 function VisitorDetails(props) {
-  const {route, navigation} = props;
+  const {route} = props;
   const {visitorId} = route?.params || {};
 
   const modulePermission = getPermissions('Visitors');
 
-  const {getVisitor, getPipelineData, updateFollowUp} = useSalesActions();
+  const {getVisitor, getPipelineData, getVisitorActivities} = useSalesActions();
 
   const [selectedTab, setSelectedTab] = useState(0);
   const [routes] = React.useState([
-    {key: 0, title: 'Visitor details'},
-    {key: 1, title: 'Follow up list'},
+    {key: 0, title: 'Visitor Info'},
+    {key: 1, title: 'Activity'},
   ]);
 
   const {selectedProject} = useSelector(state => state.project);
@@ -330,7 +190,6 @@ function VisitorDetails(props) {
     loading,
     visitor,
     pipelines,
-    visitorFollowUp,
     occupationOptions,
     sourceTypeOptions,
   } = useSelector(state => state.sales);
@@ -338,21 +197,13 @@ function VisitorDetails(props) {
   useEffect(() => {
     getVisitor({project_id: selectedProject.id, visitor_id: visitorId});
     getPipelineData(selectedProject.id);
+    getVisitorActivities({
+      project_id: selectedProject.id,
+      visitor_id: visitorId,
+      filter_mode: 'all',
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedProject.id, visitorId]);
-
-  const onEdit = () => {
-    navigation.navigate('AddVisitor', {visitor});
-  };
-
-  const handleResponseSubmit = ({status, response, followUpId}) => {
-    updateFollowUp({
-      project_id: selectedProject.id,
-      followup_id: followUpId,
-      followup_status: status,
-      followup_details: response,
-    });
-  };
 
   const renderScene = ({route: {key}}) => {
     switch (key) {
@@ -365,18 +216,10 @@ function VisitorDetails(props) {
             occupationOptions={occupationOptions}
             sourceTypeOptions={sourceTypeOptions}
             modulePermission={modulePermission}
-            onEdit={onEdit}
           />
         );
       case 1:
-        return (
-          <RenderFollowupList
-            {...props}
-            visitorFollowUp={visitorFollowUp}
-            modulePermission={modulePermission}
-            handleResponseSubmit={handleResponseSubmit}
-          />
-        );
+        return <RenderActivity />;
     }
   };
 
@@ -411,7 +254,6 @@ const styles = StyleSheet.create({
   },
   body: {
     flex: 1,
-    paddingBottom: 20,
   },
   detailsContainer: {
     position: 'relative',
@@ -433,33 +275,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     paddingHorizontal: 15,
     paddingVertical: 2,
-  },
-  followupBody: {
-    padding: 10,
-    flexGrow: 1,
-  },
-  followupContainer: {
-    backgroundColor: '#F2F4F5',
-    borderRadius: 10,
-    padding: 15,
-    paddingBottom: 30,
-    marginBottom: 10,
-  },
-  followupRow: {
-    marginTop: 15,
-    marginBottom: 10,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  rowBetween: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  followupValue: {
-    color: '#000',
-    lineHeight: 14,
   },
 });
 

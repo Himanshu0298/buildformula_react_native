@@ -1,26 +1,47 @@
 import RenderInput from 'components/Atoms/RenderInput';
 import RenderSelect from 'components/Atoms/RenderSelect';
-import React from 'react';
+import React, {useMemo} from 'react';
 import {View, StyleSheet, ScrollView} from 'react-native';
 import {withTheme, Button, Subheading, Title} from 'react-native-paper';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import RenderDatePicker from 'components/Atoms/RenderDatePicker';
+import useSalesActions from 'redux/actions/salesActions';
+import {useSelector} from 'react-redux';
 
 const schema = Yup.object().shape({
-  follow_up_date: Yup.date('Invalid').required('Required'),
-  follow_up_time: Yup.date('Invalid').required('Required'),
-  assign_to: Yup.string('Invalid').required('Required'),
-  response: Yup.string('Invalid').required('Required'),
+  last_date: Yup.date('Invalid').required('Required'),
+  last_time: Yup.date('Invalid').required('Required'),
+  call_outcome: Yup.string('Invalid').required('Required'),
+  remarks: Yup.string('Invalid').required('Required'),
 });
 
-const AddCallLogs = () => {
+const AddCallLogs = props => {
+  const {route} = props;
+  const {visitorId} = route.params || {};
+
   const followUpDateRef = React.useRef();
   const followUpTimeRef = React.useRef();
   const assignToRef = React.useRef();
 
-  const onSubmit = () => {
-    console.log('----->call log form Submitted');
+  const {selectedProject, commonData} = useSelector(state => state.project);
+  const {callLog_call_outcome_values} = commonData;
+
+  const {addVisitorCallLogs} = useSalesActions();
+
+  const outcomeOptions = useMemo(() => {
+    return callLog_call_outcome_values.map(i => ({
+      label: i.title,
+      value: i.id,
+    }));
+  }, [callLog_call_outcome_values]);
+
+  const onSubmit = values => {
+    addVisitorCallLogs({
+      ...values,
+      visitor_id: visitorId,
+      project_id: selectedProject.id,
+    });
   };
 
   return (
@@ -47,15 +68,15 @@ const AddCallLogs = () => {
                   <View style={{flexDirection: 'row'}}>
                     <View style={{flex: 1, marginRight: 10}}>
                       <RenderDatePicker
-                        name="date"
+                        name="last_date"
                         label="Date"
                         ref={followUpDateRef}
                         containerStyles={styles.input}
-                        value={values.date}
-                        error={errors.follow_up_date}
+                        value={values.last_date}
+                        error={errors.last_date}
                         min={new Date()}
                         onChange={date => {
-                          setFieldValue('date', date);
+                          setFieldValue('last_date', date);
                           followUpTimeRef?.current?.focus?.();
                         }}
                       />
@@ -65,13 +86,12 @@ const AddCallLogs = () => {
                         mode="time"
                         label="Time"
                         ref={followUpTimeRef}
-                        name="time"
-                        // label={t('label_follow_up_time')}
+                        name="last_time"
                         containerStyles={styles.input}
-                        value={values.time}
-                        error={errors.follow_up_time}
-                        onChange={date => {
-                          setFieldValue('time', date);
+                        value={values.last_time}
+                        error={errors.last_time}
+                        onChange={time => {
+                          setFieldValue('last_time', time);
                           assignToRef?.current?.focus?.();
                         }}
                       />
@@ -81,28 +101,28 @@ const AddCallLogs = () => {
                     Call outcome
                   </Subheading>
                   <RenderSelect
-                    name="assign_to"
+                    name="call_outcome"
                     ref={assignToRef}
-                    label="Select Role"
+                    label="Select Outcome"
+                    options={outcomeOptions}
                     containerStyles={styles.input}
-                    value={values.assign_to}
-                    error={errors.assign_to}
+                    value={values.call_outcome}
+                    error={errors.call_outcome}
                     onSelect={value => {
-                      setFieldValue('assign_to', value);
+                      setFieldValue('call_outcome', value);
                     }}
                   />
                   <RenderInput
-                    name="response"
+                    name="remarks"
                     multiline
                     numberOfLines={8}
                     label="Response"
                     containerStyles={styles.input}
-                    value={values.response}
-                    onChangeText={handleChange('response')}
-                    onBlur={handleBlur('response')}
-                    onSubmitEditing={handleSubmit}
+                    value={values.remarks}
+                    onChangeText={handleChange('remarks')}
+                    onBlur={handleBlur('remarks')}
                     returnKeyType="done"
-                    error={errors.response}
+                    error={errors.remarks}
                   />
                 </View>
               </ScrollView>

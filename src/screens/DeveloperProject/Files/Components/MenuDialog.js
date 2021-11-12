@@ -48,12 +48,17 @@ function MenuDialog(props) {
   const toggleSharing = () => setSharing(v => !v);
 
   const handleDownload = async () => {
-    toggleDownloading();
-    const fileUrl = getDownloadUrl(modalContent);
-    const {dir} = await downloadFile(modalContent, fileUrl);
-    snackbar.showMessage({message: 'File Downloaded Successfully!'});
-    setDownloaded(dir);
-    toggleDownloading();
+    try {
+      toggleDownloading();
+      const fileUrl = getDownloadUrl(modalContent);
+      const {dir} = await downloadFile(modalContent, fileUrl);
+      snackbar.showMessage({message: 'File Downloaded Successfully!'});
+      setDownloaded(dir);
+      toggleDownloading();
+    } catch (error) {
+      toggleDownloading();
+      console.log('----->erorr', error);
+    }
   };
 
   const openFile = filePath => {
@@ -66,7 +71,7 @@ function MenuDialog(props) {
     try {
       toggleSharing();
       const fileUrl = getDownloadUrl(modalContent);
-      const {base64} = await downloadFile(modalContent, fileUrl);
+      const {base64} = await downloadFile(modalContent, fileUrl, true);
 
       const options = {
         title: 'Share',

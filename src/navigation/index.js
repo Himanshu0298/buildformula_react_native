@@ -31,6 +31,7 @@ import Home from '../screens/Home';
 // User Purchased PRoject Screens
 import PurchasedProjects from '../screens/PurchaseDetails/PurchasedProjects';
 import ProjectDetails from '../screens/PurchaseDetails/ProjectDetails';
+import UpdateBillingInfo from '../screens/PurchaseDetails/UpdateBillingInfo/index';
 //Notification Screen
 import Notification from 'screens/Notification';
 //Profile Screen
@@ -100,6 +101,7 @@ import Files from '../screens/DeveloperProject/Files';
 import Roles from 'screens/DeveloperProject/UserRoles/Roles';
 import AddUser from 'screens/DeveloperProject/UserRoles/AddUser';
 import AddRole from 'screens/DeveloperProject/UserRoles/AddRole';
+import SalesPipelineRearrange from 'screens/DeveloperProject/Sales/SalesPipelineRearrange';
 /************* Developer Project Sub Screens End   *************/
 
 const optionalConfigObject = {
@@ -185,6 +187,11 @@ function PipelineStack() {
       <Stack.Screen
         name="PipelineHome"
         component={SalesPipeline}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="PipelineRearrange"
+        component={SalesPipelineRearrange}
         options={{headerShown: false}}
       />
     </Stack.Navigator>
@@ -367,6 +374,13 @@ function GeneralDrawer() {
         </RouteContext.Consumer>
       )}>
       <Drawer.Screen name="Home" component={Home} />
+      <Drawer.Screen name="Notification" component={Notification} />
+      <Drawer.Screen name="Profile" component={Profile} />
+      <Drawer.Screen name="PurchasedProjects" component={PurchasedProjects} />
+      <Drawer.Screen name="ProjectDetails" component={ProjectDetails} />
+      <Drawer.Screen name="UpdateBillingInfo" component={UpdateBillingInfo} />
+      <Drawer.Screen name="EditProfile" component={EditProfile} />
+      <Drawer.Screen name="ChangePassword" component={ChangePasswordStack} />
     </Drawer.Navigator>
   );
 }
@@ -544,36 +558,6 @@ function NavContainer() {
               <Stack.Screen
                 name="Search"
                 component={SearchScreen}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="Notification"
-                component={Notification}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="Profile"
-                component={Profile}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="PurchasedProjects"
-                component={PurchasedProjects}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="ProjectDetails"
-                component={ProjectDetails}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="EditProfile"
-                component={EditProfile}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="ChangePassword"
-                component={ChangePasswordStack}
                 options={{headerShown: false}}
               />
             </Fragment>

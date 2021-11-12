@@ -5,6 +5,7 @@ import {
   GET_FOLLOWUP_LIST,
   GET_SALES_DATA,
   ADD_VISITOR,
+  ADD_VISITOR_COMMENT,
   GET_SELECTED_PROJECT,
   GET_PIPELINES,
   DELETE_PIPELINE,
@@ -17,6 +18,11 @@ import {
   GET_VISITOR,
   GET_PROJECT_COMMON_DATA,
   UPDATE_FOLLOW_UP,
+  GET_VISITOR_ACTIVITIES,
+  ADD_VISITOR_CALL_LOGS,
+  ADD_VISITOR_FOLLOW_UP,
+  GET_PIPELINES_ORDER_LIST,
+  UPDATE_PIPELINE_ORDER_LIST,
 } from './../actions/actionTypes';
 
 const initialState = {
@@ -39,6 +45,8 @@ const initialState = {
   bankList: [],
   visitor: {},
   visitorFollowUp: {},
+  visitorActivities: [],
+  pipelinesOrderList: [],
 };
 
 const reducer = (state = initialState, action = {}) => {
@@ -260,6 +268,44 @@ const reducer = (state = initialState, action = {}) => {
         errorMessage: payload,
       };
 
+    case `${GET_VISITOR_ACTIVITIES}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${GET_VISITOR_ACTIVITIES}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+        visitorActivities: Object.values(payload.listRecords),
+      };
+    }
+    case `${GET_VISITOR_ACTIVITIES}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+        errorMessage: payload,
+      };
+
+    case `${GET_PIPELINES_ORDER_LIST}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${GET_PIPELINES_ORDER_LIST}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+        pipelinesOrderList: payload,
+      };
+    }
+    case `${GET_PIPELINES_ORDER_LIST}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+        errorMessage: payload,
+      };
+
     case `${DELETE_PIPELINE}_PENDING`:
       return {
         ...state,
@@ -332,7 +378,11 @@ const reducer = (state = initialState, action = {}) => {
     }
 
     case `${ADD_VISITOR}_PENDING`:
+    case `${ADD_VISITOR_COMMENT}_PENDING`:
+    case `${ADD_VISITOR_CALL_LOGS}_PENDING`:
+    case `${ADD_VISITOR_FOLLOW_UP}_PENDING`:
     case `${CREATE_BOOKING}_PENDING`:
+    case `${UPDATE_PIPELINE_ORDER_LIST}_PENDING`:
     case `${ADD_PIPELINE}_PENDING`: {
       return {
         ...state,
@@ -340,6 +390,10 @@ const reducer = (state = initialState, action = {}) => {
       };
     }
     case `${ADD_VISITOR}_FULFILLED`:
+    case `${ADD_VISITOR_COMMENT}_FULFILLED`:
+    case `${ADD_VISITOR_CALL_LOGS}_FULFILLED`:
+    case `${ADD_VISITOR_FOLLOW_UP}_FULFILLED`:
+    case `${UPDATE_PIPELINE_ORDER_LIST}_FULFILLED`:
     case `${CREATE_BOOKING}_FULFILLED`:
     case `${ADD_PIPELINE}_FULFILLED`: {
       return {
@@ -349,6 +403,10 @@ const reducer = (state = initialState, action = {}) => {
     }
 
     case `${ADD_VISITOR}_REJECTED`:
+    case `${ADD_VISITOR_COMMENT}_REJECTED`:
+    case `${ADD_VISITOR_CALL_LOGS}_REJECTED`:
+    case `${ADD_VISITOR_FOLLOW_UP}_REJECTED`:
+    case `${UPDATE_PIPELINE_ORDER_LIST}_REJECTED`:
     case `${CREATE_BOOKING}_REJECTED`:
     case `${ADD_PIPELINE}_REJECTED`: {
       return {

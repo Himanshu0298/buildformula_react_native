@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import CountDown from 'react-native-countdown-component';
 import {useSelector} from 'react-redux';
 import dayjs from 'dayjs';
+// import useSalesActions from 'redux/reducers/salesActions';
 import useSalesActions from 'redux/actions/salesActions';
 import {theme} from 'styles/theme';
 

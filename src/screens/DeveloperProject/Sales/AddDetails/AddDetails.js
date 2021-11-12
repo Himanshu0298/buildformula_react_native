@@ -10,7 +10,6 @@ const AddDetails = props => {
   const {route} = props;
   const {type: selectedType} = route.params || {};
 
-  const {t} = useTranslation();
   const assignToRef = React.useRef();
 
   const [type, setType] = useState(selectedType);
@@ -18,11 +17,11 @@ const AddDetails = props => {
   function renderSwitch() {
     switch (type) {
       case 'Comment':
-        return <AddComments />;
+        return <AddComments {...props} />;
       case 'Call Log':
-        return <AddCallLogs />;
+        return <AddCallLogs {...props} />;
       case 'Follow-up':
-        return <AddFollowUp />;
+        return <AddFollowUp {...props} />;
       default:
         return null;
     }

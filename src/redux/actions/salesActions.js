@@ -24,6 +24,12 @@ export default function useSalesActions() {
     createBooking,
     getBankList,
     getVisitor,
+    getVisitorActivities,
+    addVisitorComment,
+    addVisitorCallLogs,
+    getPipelinesOrderList,
+    addVisitorFollowUp,
+    updatePipelineOrder,
   } = useSalesServices();
 
   return {
@@ -32,6 +38,7 @@ export default function useSalesActions() {
         type: types.SET_TIMER,
         payload: data,
       }),
+
     getSalesData: project_id =>
       dispatch({
         type: types.GET_SALES_DATA,
@@ -48,6 +55,7 @@ export default function useSalesActions() {
           }
         },
       }),
+
     getVisitors: projectId =>
       dispatch({
         type: types.GET_VISITORS,
@@ -67,6 +75,7 @@ export default function useSalesActions() {
           }
         },
       }),
+
     getVisitor: params =>
       dispatch({
         type: types.GET_VISITOR,
@@ -83,28 +92,7 @@ export default function useSalesActions() {
           }
         },
       }),
-    // getFollowUps: projectId =>
-    //   dispatch({
-    //     type: types.GET_FOLLOWUP_LIST,
-    //     payload: async () => {
-    //       try {
-    //         const formData = new FormData();
-    //         formData.append('project_id', projectId);
 
-    //         const response = _res(await getFollowUpList(formData));
-    //         const {data, filter} = response;
-
-    //         return Promise.resolve({
-    //           followups: data.data,
-    //           todayFollowups: filter.today_followups,
-    //         });
-    //       } catch (error) {
-    //         const message = _err(error);
-    //         snackbar.showMessage({message, variant: 'error'});
-    //         return Promise.reject(message);
-    //       }
-    //     },
-    //   }),
     getPipelineData: projectId =>
       dispatch({
         type: types.GET_PIPELINES,
@@ -127,6 +115,7 @@ export default function useSalesActions() {
           }
         },
       }),
+
     addVisitor: formData =>
       dispatch({
         type: types.ADD_VISITOR,
@@ -143,6 +132,58 @@ export default function useSalesActions() {
           }
         },
       }),
+
+    addVisitorComment: params =>
+      dispatch({
+        type: types.ADD_VISITOR_COMMENT,
+        payload: async () => {
+          try {
+            const response = _res(await addVisitorComment(params));
+            const {data} = response;
+
+            return Promise.resolve(data.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    addVisitorCallLogs: params =>
+      dispatch({
+        type: types.ADD_VISITOR_COMMENT,
+        payload: async () => {
+          try {
+            const response = _res(await addVisitorCallLogs(params));
+            const {data} = response;
+
+            return Promise.resolve(data.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    addVisitorFollowUp: params =>
+      dispatch({
+        type: types.ADD_VISITOR_COMMENT,
+        payload: async () => {
+          try {
+            const response = _res(await addVisitorFollowUp(params));
+            const {data} = response;
+
+            return Promise.resolve(data.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
     updateVisitor: formData =>
       dispatch({
         type: types.ADD_VISITOR,
@@ -159,6 +200,7 @@ export default function useSalesActions() {
           }
         },
       }),
+
     addFollowUp: formData =>
       dispatch({
         type: types.ADD_FOLLOW_UP,
@@ -173,6 +215,7 @@ export default function useSalesActions() {
           }
         },
       }),
+
     updateFollowUp: params =>
       dispatch({
         type: types.UPDATE_FOLLOW_UP,
@@ -187,6 +230,25 @@ export default function useSalesActions() {
           }
         },
       }),
+
+    updatePipelineOrderList: list =>
+      dispatch({
+        type: types.UPDATE_PIPELINE_ORDER_LIST,
+        payload: async () => {
+          try {
+            await Promise.all(
+              list.map(async item => await updatePipelineOrder(item)),
+            );
+            console.log('----->Reducer called in pipelineorderLit');
+            return Promise.resolve();
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
     addPipeline: formData =>
       dispatch({
         type: types.ADD_PIPELINE,
@@ -203,6 +265,7 @@ export default function useSalesActions() {
           }
         },
       }),
+
     moveVisitor: data =>
       dispatch({
         type: types.MOVE_VISITOR,
@@ -225,6 +288,7 @@ export default function useSalesActions() {
           }
         },
       }),
+
     deletePipeline: (id, formData) =>
       dispatch({
         type: types.DELETE_PIPELINE,
@@ -275,6 +339,7 @@ export default function useSalesActions() {
           }
         },
       }),
+
     createBooking: formData =>
       dispatch({
         type: types.CREATE_BOOKING,
@@ -296,12 +361,47 @@ export default function useSalesActions() {
           }
         },
       }),
+
     getBankList: () =>
       dispatch({
         type: types.GET_BANK_LIST,
         payload: async () => {
           try {
             const response = _res(await getBankList());
+            const {data} = response;
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    getPipelinesOrderList: params =>
+      dispatch({
+        type: types.GET_PIPELINES_ORDER_LIST,
+        payload: async () => {
+          try {
+            const response = _res(await getPipelinesOrderList(params));
+            const {data} = response;
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    getVisitorActivities: params =>
+      dispatch({
+        type: types.GET_VISITOR_ACTIVITIES,
+        payload: async () => {
+          try {
+            const response = _res(await getVisitorActivities(params));
             const {data} = response;
 
             return Promise.resolve(data);
