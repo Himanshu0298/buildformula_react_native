@@ -50,7 +50,7 @@ export function getDownloadUrl(file, version) {
   return `${BASE_API_URL}${url}`;
 }
 
-export async function downloadFile(file, fileUrl) {
+export async function downloadFile(file, fileUrl, getBase64) {
   const path = getFilePath(file);
 
   const {token} = store.getState().user;
@@ -82,16 +82,16 @@ export async function downloadFile(file, fileUrl) {
       console.log('res -> ', JSON.stringify(res));
 
       const downloadDir = normalizeFilePath(res.data);
-      const base64 = await RNFS.readFile(downloadDir, 'base64');
+      let base64;
+      if (getBase64) {
+        const base64Data = await RNFS.readFile(downloadDir, 'base64');
+        const mimeType = mime.lookup(file.file_name);
+        base64 = `data:${mimeType};base64,${base64Data}`;
+      }
 
-      const mimeType = mime.lookup(file.file_name);
-
-      return {
-        base64: `data:${mimeType};base64,${base64}`,
-        dir: downloadDir,
-      };
+      return {base64, dir: downloadDir};
     })
-    .catch(error => {
+    .catch(async error => {
       console.log('-----> error', error);
       throw error;
     });

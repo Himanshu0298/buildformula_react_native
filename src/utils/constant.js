@@ -1,6 +1,7 @@
 import {theme} from 'styles/theme';
 
-export const SITE_URL = 'https://www.vshwanbuild.com';
+// export const SITE_URL = 'https://www.vshwanbuild.com';
+export const SITE_URL = ' http://34.136.244.125';
 // export const SITE_URL = 'http://35.232.251.130';
 // export const SITE_URL = 'http://vshwanbuild.in';
 export const BASE_API_URL = `${SITE_URL}/api/`;

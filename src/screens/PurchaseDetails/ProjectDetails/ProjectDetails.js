@@ -54,10 +54,13 @@ function InvoiceCard(props) {
 }
 
 const ProjectDetails = props => {
-  const {theme, route} = props;
+  const {theme, route, navigation} = props;
+
   const {id} = route?.params || {};
 
   const {loading, purchaseProjectDetails} = useSelector(s => s.project);
+  console.log('----->purchaseProjectDetails', purchaseProjectDetails);
+  console.log('----->id', id);
 
   const {getPurchaseProjectDetails} = useProjectActions();
 
@@ -66,14 +69,30 @@ const ProjectDetails = props => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // var date1 = new Date();
+
+  // var Difference_In_Time = date2.getTime() - date1.getTime();
+  // var Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
+
   const {
-    expired_date,
     company_name,
     project_name,
     project_id,
     project_address,
+    expired_date,
     status,
   } = purchaseProjectDetails.projectDetails;
+
+  var date2 = new Date(expired_date);
+  var date1 = new Date();
+
+  console.log('----->date2', date2);
+  console.log('----->date1', date1);
+
+  var Difference_In_Time = date2.getTime() - date1.getTime();
+  var Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
+
+  console.log('----->Difference_In_Days', Difference_In_Days);
 
   return (
     <View style={{flexGrow: 1}}>
@@ -134,24 +153,26 @@ const ProjectDetails = props => {
           </View>
         </View>
 
-        <View
-          style={{
-            backgroundColor: '#F2F4F5',
-            borderRadius: 10,
-            marginVertical: 20,
-            padding: 10,
-          }}>
-          <Subheading>Renew Subscription</Subheading>
-          <Text style={{marginVertical: 15}}>Dummy text</Text>
-          <Button
-            mode="contained"
-            uppercase={false}
-            style={{width: '40%', borderRadius: 15}}
-            onPress={() => console.log('Pressed')}
-            color={theme.colors.primary}>
-            Upgrade
-          </Button>
-        </View>
+        {Difference_In_Days < 31 ? (
+          <View
+            style={{
+              backgroundColor: '#F2F4F5',
+              borderRadius: 10,
+              marginVertical: 20,
+              padding: 10,
+            }}>
+            <Subheading>Renew Subscription</Subheading>
+            <Text style={{marginVertical: 15}}>Dummy text</Text>
+            <Button
+              mode="contained"
+              uppercase={false}
+              style={{width: '40%', borderRadius: 15}}
+              onPress={() => console.log('Pressed')}
+              color={theme.colors.primary}>
+              Upgrade
+            </Button>
+          </View>
+        ) : null}
 
         <View
           style={{
@@ -169,8 +190,7 @@ const ProjectDetails = props => {
             color={theme.colors.primary}
             opacity={0.15}
             style={styles.button}
-            // onPress={toggleAddDialog}
-          >
+            onPress={() => navigation.navigate('UpdateBillingInfo', {id})}>
             <Text style={{color: theme.colors.primary}}>
               Update billing information
             </Text>
