@@ -277,7 +277,9 @@ const reducer = (state = initialState, action = {}) => {
       return {
         ...state,
         loading: false,
-        visitorActivities: Object.values(payload.listRecords),
+        visitorActivities: payload.listRecords
+          ? Object.values(payload.listRecords)
+          : [],
       };
     }
     case `${GET_VISITOR_ACTIVITIES}_REJECTED`:
@@ -374,6 +376,13 @@ const reducer = (state = initialState, action = {}) => {
         ...state,
         errorMessage: payload,
         pipelines: _.cloneDeep(state.pipelines),
+      };
+    }
+
+    case 'SET_UPDATED_PIPELINE_DATA': {
+      return {
+        ...state,
+        pipelinesOrderList: payload,
       };
     }
 

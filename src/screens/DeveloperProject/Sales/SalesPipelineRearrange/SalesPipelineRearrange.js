@@ -43,6 +43,7 @@ function SalesPipelineRearrange(props) {
     getPipelinesOrderList,
     updatePipelineOrderList,
     getPipelineData,
+    setUpdatedPipelineOrderList,
   } = useSalesActions();
 
   useEffect(() => {
@@ -56,6 +57,8 @@ function SalesPipelineRearrange(props) {
       record_id: i.id,
       order_by_value: index,
     }));
+
+    console.log('----->pipelinesOrderList', pipelinesOrderList);
 
     await updatePipelineOrderList(updatedData);
     getPipelinesOrderList({project_id: selectedProject.id});
@@ -85,6 +88,7 @@ function SalesPipelineRearrange(props) {
               )}
               onDataChange={data => {
                 console.log('-----> onDataChange', data);
+                setUpdatedPipelineOrderList(data);
               }}
               onDragEnd={handleDragEnd}
             />

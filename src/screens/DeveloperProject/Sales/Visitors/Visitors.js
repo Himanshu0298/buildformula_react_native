@@ -14,25 +14,19 @@ import {
   Title,
   Subheading,
   Divider,
+  IconButton,
+  Colors,
+  Menu,
+  Button,
 } from 'react-native-paper';
-import {getPermissions, getShadow} from 'utils';
+import {getPermissions} from 'utils';
 import useSalesActions from 'redux/actions/salesActions';
 import {useSelector} from 'react-redux';
 import dayjs from 'dayjs';
 import Spinner from 'react-native-loading-spinner-overlay';
-import {theme} from 'styles/theme';
 import ProjectHeader from 'components/Molecules/Layout/ProjectHeader';
 import {PRIORITY_COLORS, STRUCTURE_TYPE_LABELS} from 'utils/constant';
-import {TabView} from 'react-native-tab-view';
-import Layout from 'utils/Layout';
-import MaterialTabBar from 'components/Atoms/MaterialTabBar';
 import CustomBadge from 'components/Atoms/CustomBadge';
-
-const TABS = [
-  {key: 0, title: "Visitor's list"},
-  {key: 1, title: 'Follow up list'},
-  {key: 2, title: "Today's list"},
-];
 
 function StatsRow({visitorAnalytics}) {
   const {
@@ -63,7 +57,8 @@ function StatsRow({visitorAnalytics}) {
   );
 }
 
-function RenderVisitorItem({data, index, navToDetails}) {
+function RenderVisitorItem(props) {
+  const {theme, data, navToDetails} = props;
   const {
     id,
     first_name,
@@ -100,7 +95,7 @@ function RenderVisitorItem({data, index, navToDetails}) {
           <CustomBadge
             color="rgba(72,114,244,0.15)"
             label={data.title || 'NEW VISITOR'}
-            labelStyles={styles.statusLabel}
+            labelStyles={[styles.statusLabel, {color: theme.colors.primary}]}
             style={styles.badge}
           />
         </View>
@@ -110,15 +105,83 @@ function RenderVisitorItem({data, index, navToDetails}) {
   );
 }
 
-function RenderContent({
-  data,
-  onRefresh,
-  showAnalyticsRow,
-  visitorAnalytics,
-  navToDetails,
-}) {
+function RenderVisitors(props) {
+  const {
+    theme,
+    data,
+    filter,
+    onRefresh,
+    showAnalyticsRow,
+    visitorAnalytics,
+    navToDetails,
+    setFilter,
+  } = props;
+
+  const selectedColor = theme.colors.primary;
+
+  const [visible, setVisible] = React.useState(false);
+
+  const toggleMenu = () => setVisible(v => !v);
+
   return (
     <View style={styles.contentContainer}>
+      <View style={{flexDirection: 'row', marginBottom: 40}}>
+        <Button
+          mode="outlined"
+          color={filter === 'name' ? 'white' : null}
+          style={{
+            backgroundColor: filter === 'name' ? selectedColor : null,
+            borderRadius: 20,
+          }}
+          onPress={() => setFilter('name')}>
+          Name
+        </Button>
+        <Button
+          mode="outlined"
+          color={filter === 'recent' ? 'white' : null}
+          style={{
+            backgroundColor: filter === 'recent' ? selectedColor : null,
+            borderRadius: 20,
+          }}
+          onPress={() => setFilter('recent')}>
+          Recent
+        </Button>
+        <Menu
+          visible={visible}
+          onDismiss={toggleMenu}
+          anchor={
+            <IconButton
+              icon="filter-variant"
+              color={Colors.red500}
+              size={20}
+              onPress={toggleMenu}
+              style={{borderWidth: 1}}
+            />
+          }>
+          <Menu.Item
+            onPress={() => {
+              setFilter('less');
+              toggleMenu();
+            }}
+            title="Less Priority"
+          />
+          <Menu.Item
+            onPress={() => {
+              setFilter('medium');
+              toggleMenu();
+            }}
+            title="Medium Priority"
+          />
+          <Divider />
+          <Menu.Item
+            onPress={() => {
+              setFilter('high');
+              toggleMenu();
+            }}
+            title="High Priority"
+          />
+        </Menu>
+      </View>
       {showAnalyticsRow ? (
         <StatsRow visitorAnalytics={visitorAnalytics} />
       ) : null}
@@ -131,8 +194,8 @@ function RenderContent({
         showsVerticalScrollIndicator={false}
         renderItem={({item, index}) => (
           <RenderVisitorItem
+            {...props}
             data={item}
-            index={index}
             navToDetails={navToDetails}
           />
         )}
@@ -150,43 +213,30 @@ function RenderContent({
 }
 
 function Visitors(props) {
-  const {navigation} = props;
+  const {theme, navigation} = props;
 
-  const [selectedTab, setSelectedTab] = useState(0);
   const [selectDialog, setSelectDialog] = useState(false);
 
   const {selectedProject} = useSelector(s => s.project);
-  const {
-    loading,
-    visitors,
-    followups,
-    todayFollowups,
-    visitorAnalytics,
-  } = useSelector(s => s.sales);
+  const {loading, visitors, visitorAnalytics} = useSelector(s => s.sales);
 
   const modulePermission = getPermissions('Visitors');
 
-  const {getVisitors, getFollowUps, getSalesData} = useSalesActions();
+  const {getVisitors, getSalesData} = useSalesActions();
+  const [filter, setFilter] = React.useState('name');
 
   const projectId = selectedProject.id;
 
-  const tabData = [visitors, followups, todayFollowups];
-
   useEffect(() => {
-    getVisitors(projectId);
-    // getFollowUps(projectId);
-    getSalesData(projectId);
-  }, [projectId]);
+    loadData();
+  }, [projectId, filter]);
 
-  const onRefresh = () => {
-    if (selectedTab === 0) {
-      getVisitors(projectId);
-      getSalesData(projectId);
-    }
-    // else if (selectedTab === 1 || selectedTab === 2) {
-    //   getFollowUps(projectId);
-    // }
+  const loadData = () => {
+    getVisitors({project_id: projectId, filter_mode: `${filter}`});
+    getSalesData({project_id: projectId});
   };
+
+  const onRefresh = () => loadData();
 
   const toggleSelectDialog = () => setSelectDialog(v => !v);
 
@@ -196,47 +246,22 @@ function Visitors(props) {
     navigation.navigate('VisitorDetails', {visitorId: id});
   };
 
-  const renderScene = ({route: {key}}) => {
-    return (
-      <RenderContent
-        data={tabData[key]}
-        onRefresh={onRefresh}
-        showAnalyticsRow={key === 0}
-        visitorAnalytics={visitorAnalytics}
-        navToDetails={navToDetails}
-      />
-    );
-  };
-
   return (
     <>
       <Spinner visible={loading} textContent={''} />
       <ProjectHeader />
 
-      {/* <StatsRow visitorAnalytics={visitorAnalytics} /> */}
-      {/* <renderScene /> */}
-      <RenderContent
-        data={tabData[0]}
-        onRefresh={onRefresh}
-        showAnalyticsRow={0 === 0}
+      <RenderVisitors
+        {...props}
+        filter={filter}
+        data={visitors}
+        showAnalyticsRow={true}
         visitorAnalytics={visitorAnalytics}
+        onRefresh={onRefresh}
+        setFilter={setFilter}
         navToDetails={navToDetails}
       />
 
-      {/* <TabView
-        navigationState={{index: selectedTab, routes: TABS}}
-        renderScene={renderScene}
-        onIndexChange={setSelectedTab}
-        initialLayout={{width: Layout.window.width}}
-        renderTabBar={tabBarProps => {
-          return (
-            <View style={styles.headerContainer}>
-              <ProjectHeader />
-              <MaterialTabBar {...tabBarProps} />
-            </View>
-          );
-        }}
-      /> */}
       {modulePermission?.editor || modulePermission?.admin ? (
         <FAB.Group
           open={selectDialog}
@@ -269,10 +294,6 @@ function Visitors(props) {
 export default withTheme(Visitors);
 
 const styles = StyleSheet.create({
-  // headerContainer: {
-  //   ...getShadow(5),
-  //   backgroundColor: '#fff',
-  // },
   contentContainer: {
     flexGrow: 1,
     marginTop: 2,
@@ -320,7 +341,6 @@ const styles = StyleSheet.create({
     textTransform: 'capitalize',
   },
   statusLabel: {
-    color: theme.colors.primary,
     textTransform: 'uppercase',
     fontSize: 10,
   },
@@ -330,6 +350,7 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flexGrow: 1,
+    marginBottom: 15,
   },
   noResultContainer: {
     flex: 1,

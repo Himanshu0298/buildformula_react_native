@@ -25,8 +25,11 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 const customParseFormat = require('dayjs/plugin/customParseFormat');
 dayjs.extend(customParseFormat);
 
+const defaultPriority = ['none'];
+
 const schema = Yup.object().shape({
   first_name: Yup.string('Invalid').required('Required'),
+  priority: Yup.string().notOneOf(defaultPriority, 'Select an option'),
   last_name: Yup.string('Invalid').required('Required'),
   email: Yup.string('Invalid').email('Invalid'),
   phone: Yup.number('Invalid').required('Required'),
@@ -233,6 +236,7 @@ function InquiryTab(props) {
     <KeyboardAwareScrollView
       contentContainerStyle={styles.scrollView}
       keyboardShouldPersistTaps="handled">
+      {console.log('----->values', values)}
       <View style={styles.container}>
         <View style={styles.inputsContainer}>
           <RenderInput
@@ -468,11 +472,12 @@ function AddVisitor(props) {
         bhk: visitorData.bhk,
       };
     }
-    return {priority: 'low'};
+    return {priority: 'none'};
   }, [edit, visitor]);
 
   const onSubmit = async values => {
     const inputs = _.cloneDeep(values);
+    console.log('----->form submited');
 
     let data = {
       follow_up_date: dayjs(inputs.follow_up_date).format('DD-MM-YYYY'),

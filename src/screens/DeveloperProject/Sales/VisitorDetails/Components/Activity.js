@@ -1,10 +1,11 @@
-import React, {useMemo} from 'react';
-import {Divider, Text, withTheme} from 'react-native-paper';
+import React, {useMemo, useState, useEffect} from 'react';
+import {Divider, Text, withTheme, Button} from 'react-native-paper';
 import {StyleSheet, View, ScrollView} from 'react-native';
 import {useSelector} from 'react-redux';
 import dayjs from 'dayjs';
 import Layout from 'utils/Layout';
 import RenderHtml from 'react-native-render-html';
+import useSalesActions from 'redux/actions/salesActions';
 
 const relativeTime = require('dayjs/plugin/relativeTime');
 dayjs.extend(relativeTime);
@@ -79,9 +80,10 @@ function RenderSection(props) {
   return (
     <View style={{marginBottom: 25}}>
       <Heading text={title} />
-      {activities[title].map(activity => (
+      {console.log('----->activities[title]', activities[title])}
+      {activities[title].map((activity, index) => (
         <DetailCard
-          key={activity.id}
+          key={index}
           date={activity.created}
           name={`${user.first_name} ${user.last_name}`}
           comment={activity.remarks}
@@ -94,8 +96,14 @@ function RenderSection(props) {
 }
 
 function RenderActivity(props) {
+  const {theme, activityFilter, setActivityFilter} = props;
+
   const {visitorActivities} = useSelector(s => s.sales);
   const {user} = useSelector(s => s.user);
+
+  const selectedColor = theme.colors.primary;
+
+  // const {getVisitor} = useSalesActions();
 
   const activities = useMemo(() => {
     const data = {};
@@ -113,8 +121,58 @@ function RenderActivity(props) {
   }, [visitorActivities]);
 
   return (
-    <View style={styles.container}>
+    <View>
+      <ScrollView horizontal={true} style={styles.container}>
+        <Button
+          mode="outlined"
+          onPress={() => setActivityFilter('all')}
+          color={activityFilter === 'all' ? 'white' : null}
+          style={{
+            marginHorizontal: 10,
+            borderRadius: 20,
+            backgroundColor: activityFilter === 'all' ? selectedColor : null,
+          }}>
+          All
+        </Button>
+        <Button
+          mode="outlined"
+          onPress={() => setActivityFilter('comment')}
+          color={activityFilter === 'comment' ? 'white' : null}
+          style={{
+            borderRadius: 20,
+            marginHorizontal: 10,
+            backgroundColor:
+              activityFilter === 'comment' ? selectedColor : null,
+          }}>
+          Comment
+        </Button>
+        <Button
+          mode="outlined"
+          color={activityFilter === 'callLog' ? 'white' : null}
+          style={{
+            borderRadius: 20,
+            marginHorizontal: 10,
+            backgroundColor:
+              activityFilter === 'callLog' ? selectedColor : null,
+          }}
+          onPress={() => setActivityFilter('callLog')}>
+          Call Log
+        </Button>
+        <Button
+          mode="outlined"
+          color={activityFilter === 'followUp' ? 'white' : null}
+          style={{
+            borderRadius: 20,
+            marginHorizontal: 10,
+            backgroundColor:
+              activityFilter === 'followUp' ? selectedColor : null,
+          }}
+          onPress={() => setActivityFilter('followUp')}>
+          Follow Up
+        </Button>
+      </ScrollView>
       <ScrollView contentContainerStyle={{padding: 20}}>
+        {console.log('----->Object.keys(activities)', Object.keys(activities))}
         {Object.keys(activities).map(key => (
           <RenderSection
             key={key}
@@ -130,7 +188,7 @@ function RenderActivity(props) {
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
+    marginTop: 10,
   },
   heading: {
     flexDirection: 'row',

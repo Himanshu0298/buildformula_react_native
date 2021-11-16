@@ -4,7 +4,11 @@ export default function useSalesServices() {
   const {config} = useConfig();
   return {
     getVisitorsList: data => {
-      return instance.post('/visitors/get_lists', data, config());
+      return instance.post(
+        '/visitors/get_lists',
+        data,
+        config({multipart: false}),
+      );
     },
     getVisitor: data => {
       return instance.post(

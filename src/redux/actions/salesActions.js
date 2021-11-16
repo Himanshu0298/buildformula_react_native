@@ -39,12 +39,18 @@ export default function useSalesActions() {
         payload: data,
       }),
 
-    getSalesData: project_id =>
+    setUpdatedPipelineOrderList: data =>
+      dispatch({
+        type: types.SET_UPDATED_PIPELINE_DATA,
+        payload: data,
+      }),
+
+    getSalesData: params =>
       dispatch({
         type: types.GET_SALES_DATA,
         payload: async () => {
           try {
-            const response = _res(await getSalesData({project_id}));
+            const response = _res(await getSalesData(params));
             const {data} = response;
 
             return Promise.resolve(data);
@@ -56,15 +62,12 @@ export default function useSalesActions() {
         },
       }),
 
-    getVisitors: projectId =>
+    getVisitors: params =>
       dispatch({
         type: types.GET_VISITORS,
         payload: async () => {
           try {
-            const formData = new FormData();
-            formData.append('project_id', projectId);
-
-            const response = _res(await getVisitorsList(formData));
+            const response = _res(await getVisitorsList(params));
             const {data} = response;
 
             return Promise.resolve(data);
