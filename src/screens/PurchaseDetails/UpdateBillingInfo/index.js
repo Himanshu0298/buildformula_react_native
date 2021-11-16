@@ -1,11 +1,11 @@
 import React from 'react';
 import ProjectLayout from 'components/Molecules/Layout/ProjectLayout';
-import AddFollowUp from './AddFollowUp';
+import UpdateBillingInfo from './UpdateBillingInfo';
 
 export default props => {
   return (
-    <ProjectLayout {...props} header={false}>
-      <AddFollowUp {...props} />
+    <ProjectLayout {...props} showLogo={true} header={true}>
+      <UpdateBillingInfo {...props} />
     </ProjectLayout>
   );
 };

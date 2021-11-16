@@ -9,6 +9,7 @@ import {StyleSheet, View} from 'react-native';
 import CustomDialog from 'components/Atoms/CustomDialog';
 import {useSelector} from 'react-redux';
 
+// TODO: remove this
 function AddResponseDialog(props) {
   const {handleClose, handleSubmit} = props;
 

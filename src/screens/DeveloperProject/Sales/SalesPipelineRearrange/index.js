@@ -1,11 +1,11 @@
 import React from 'react';
 import ProjectLayout from 'components/Molecules/Layout/ProjectLayout';
-import VisitorDetails from './VisitorDetails';
+import SalesPipelineRearrange from './SalesPipelineRearrange';
 
 export default props => {
   return (
-    <ProjectLayout {...props} header={false}>
-      <VisitorDetails {...props} />
+    <ProjectLayout {...props}>
+      <SalesPipelineRearrange {...props} />
     </ProjectLayout>
   );
 };

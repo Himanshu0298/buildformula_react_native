@@ -11,6 +11,8 @@ function ProjectCard(props) {
   const {navigation, theme, project} = props;
   const {company_name, id, project_id} = project;
 
+  console.log('----->id in first scren', id);
+
   const status = useMemo(() => {
     return new Date(project.expired_date) > new Date() ? 'ACTIVE' : 'EXPIRE';
   }, [project.expired_date]);

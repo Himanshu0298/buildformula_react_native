@@ -339,6 +339,11 @@ function Files(props) {
           {...{menuId, toggleMenu, setModalContent, setModalContentType}}
         />
       </ScrollView>
+      {console.log(
+        '----->modulePermissions?.editor',
+        modulePermissions?.editor,
+      )}
+      {console.log('----->modulePermissions?.admin', modulePermissions?.admin)}
       {modulePermissions?.editor || modulePermissions?.admin ? (
         <FAB.Group
           open={fab}
@@ -417,6 +422,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 10,
     bottom: 2,
+    zIndex: 2,
   },
   backdrop: {
     position: 'absolute',

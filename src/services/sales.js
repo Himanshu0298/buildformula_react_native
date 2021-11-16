@@ -4,7 +4,11 @@ export default function useSalesServices() {
   const {config} = useConfig();
   return {
     getVisitorsList: data => {
-      return instance.post('/visitors/get_lists', data, config());
+      return instance.post(
+        '/visitors/get_lists',
+        data,
+        config({multipart: false}),
+      );
     },
     getVisitor: data => {
       return instance.post(
@@ -28,6 +32,27 @@ export default function useSalesServices() {
     },
     addVisitor: data => {
       return instance.post('/visitors/add', data, config({multipart: false}));
+    },
+    addVisitorComment: data => {
+      return instance.post(
+        '/visitors/addcomment',
+        data,
+        config({multipart: false}),
+      );
+    },
+    addVisitorCallLogs: data => {
+      return instance.post(
+        '/visitors/addcomment',
+        data,
+        config({multipart: false}),
+      );
+    },
+    addVisitorFollowUp: data => {
+      return instance.post(
+        '/visitors/addcomment',
+        data,
+        config({multipart: false}),
+      );
     },
     updateVisitor: data => {
       return instance.post(
@@ -76,6 +101,27 @@ export default function useSalesServices() {
     createBooking: data => {
       return instance.post(
         '/booking/save_booking',
+        data,
+        config({multipart: false}),
+      );
+    },
+    getVisitorActivities: data => {
+      return instance.post(
+        '/visitors/listactivities',
+        data,
+        config({multipart: false}),
+      );
+    },
+    getPipelinesOrderList: data => {
+      return instance.post(
+        '/pipeline/listrearrangesalespipeline',
+        data,
+        config({multipart: false}),
+      );
+    },
+    updatePipelineOrder: data => {
+      return instance.post(
+        'pipeline/updaterearrangesalespipeline',
         data,
         config({multipart: false}),
       );

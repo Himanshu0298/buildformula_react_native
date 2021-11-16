@@ -25,22 +25,25 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 const customParseFormat = require('dayjs/plugin/customParseFormat');
 dayjs.extend(customParseFormat);
 
+const defaultPriority = ['none'];
+
 const schema = Yup.object().shape({
   first_name: Yup.string('Invalid').required('Required'),
+  priority: Yup.string().notOneOf(defaultPriority, 'Select an option'),
   last_name: Yup.string('Invalid').required('Required'),
-  email: Yup.string('Invalid').email('Invalid').required('Required'),
+  email: Yup.string('Invalid').email('Invalid'),
   phone: Yup.number('Invalid').required('Required'),
-  occupation: Yup.string('Invalid').required('Required'),
+  occupation: Yup.string('Invalid'),
   other_occupation: Yup.string('Invalid').when('occupation', {
     is: 0,
-    then: Yup.string('Invalid').required('Required'),
+    then: Yup.string('Invalid'),
   }),
-  current_locality: Yup.string('Invalid').required('Required'),
-  budget_from: Yup.number('Invalid').required('Required'),
-  budget_to: Yup.number('Invalid').required('Required'),
+  current_locality: Yup.string('Invalid'),
+  budget_from: Yup.number('Invalid'),
+  budget_to: Yup.number('Invalid'),
   // follow_up_date: Yup.date('Invalid').required('Required'),
   // follow_up_time: Yup.date('Invalid').required('Required'),
-  assign_to: Yup.string('Invalid').required('Required'),
+  assign_to: Yup.string('Invalid'),
   inquiry_for: Yup.string('Invalid').required('Required'),
   // for_bhk: Yup.string('Invalid').when('for_bhk_required', {
   //   is: true,
@@ -201,14 +204,7 @@ function PersonalTab(props) {
 }
 
 function InquiryTab(props) {
-  const {
-    formikProps,
-    setSelectedTab,
-    inquiryOptions,
-    bhkOptions,
-    assignOptions,
-    edit,
-  } = props;
+  const {formikProps, setSelectedTab, inquiryOptions, bhkOptions, edit} = props;
 
   const {
     handleChange,
@@ -223,9 +219,6 @@ function InquiryTab(props) {
 
   const budgetFromRef = React.useRef();
   const budgetToRef = React.useRef();
-  const followUpDateRef = React.useRef();
-  const followUpTimeRef = React.useRef();
-  const assignToRef = React.useRef();
 
   useEffect(() => {
     if (
@@ -243,6 +236,7 @@ function InquiryTab(props) {
     <KeyboardAwareScrollView
       contentContainerStyle={styles.scrollView}
       keyboardShouldPersistTaps="handled">
+      {console.log('----->values', values)}
       <View style={styles.container}>
         <View style={styles.inputsContainer}>
           <RenderInput
@@ -268,43 +262,7 @@ function InquiryTab(props) {
             onBlur={handleBlur('budget_to')}
             error={errors.budget_to}
           />
-          <RenderDatePicker
-            disabled={edit}
-            name="follow_up_date"
-            ref={followUpDateRef}
-            label={t('label_follow_up_date')}
-            containerStyles={styles.input}
-            value={values.follow_up_date}
-            error={errors.follow_up_date}
-            onChange={date => {
-              setFieldValue('follow_up_date', date);
-            }}
-          />
-          <RenderDatePicker
-            mode="time"
-            disabled={edit}
-            ref={followUpTimeRef}
-            name="follow_up_time"
-            label={t('label_follow_up_time')}
-            containerStyles={styles.input}
-            value={values.follow_up_time}
-            error={errors.follow_up_time}
-            onChange={date => {
-              setFieldValue('follow_up_time', date);
-            }}
-          />
-          <RenderSelect
-            name="assign_to"
-            ref={assignToRef}
-            label={t('label_assign_to')}
-            options={assignOptions}
-            containerStyles={styles.input}
-            value={values.assign_to}
-            error={errors.assign_to}
-            onSelect={value => {
-              setFieldValue('assign_to', value);
-            }}
-          />
+
           <View style={styles.priorityContainer}>
             <Subheading>Lead Priority</Subheading>
             <View style={styles.radioContainer}>
@@ -497,7 +455,7 @@ function AddVisitor(props) {
     addVisitor,
     updateVisitor,
     getVisitors,
-    getFollowUps,
+    // getFollowUps,
     getSalesData,
   } = useSalesActions();
 
@@ -514,11 +472,12 @@ function AddVisitor(props) {
         bhk: visitorData.bhk,
       };
     }
-    return {priority: 'low'};
+    return {priority: 'none'};
   }, [edit, visitor]);
 
   const onSubmit = async values => {
     const inputs = _.cloneDeep(values);
+    console.log('----->form submited');
 
     let data = {
       follow_up_date: dayjs(inputs.follow_up_date).format('DD-MM-YYYY'),
@@ -543,7 +502,6 @@ function AddVisitor(props) {
     }
 
     getVisitors(selectedProject.id);
-    getFollowUps(selectedProject.id);
     getSalesData(selectedProject.id);
     navigation.goBack();
   };

@@ -13,10 +13,12 @@ import {
   Caption,
   Dialog,
   Divider,
+  IconButton,
   Menu,
   Portal,
   Searchbar,
   Subheading,
+  Text,
 } from 'react-native-paper';
 import {theme} from 'styles/theme';
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -59,7 +61,13 @@ function RenderContacts({item}) {
 }
 
 function RenderHeader(props) {
-  const {data = {}, modulePermission, toggleModal, handleDelete} = props;
+  const {
+    data = {},
+    modulePermission,
+    toggleModal,
+    handleDelete,
+    navigation,
+  } = props;
   const {pipeline = {}, id} = data?.attributes?.data || {};
   const {id: pipelineId, title, get_visitors = []} = pipeline;
 
@@ -68,6 +76,18 @@ function RenderHeader(props) {
       <View style={styles.headContainer}>
         <Subheading>{title}</Subheading>
         <View style={styles.iconContainer}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('PipelineRearrange')}
+            style={[
+              styles.icon,
+              {backgroundColor: COLORS.primaryLight, paddingHorizontal: 8},
+            ]}>
+            <MaterialIcons
+              name="drag-indicator"
+              color={'rgba(4,29,54,0.6)'}
+              size={19}
+            />
+          </TouchableOpacity>
           <TouchableOpacity style={styles.icon}>
             <MaterialIcons
               name={'search'}
@@ -304,6 +324,7 @@ const RenderBoard = React.memo(props => {
         dragDisabled={!(modulePermission?.editor || modulePermission?.admin)}
         renderHeader={column => (
           <RenderHeader
+            {...props}
             data={column}
             modulePermission={modulePermission}
             toggleModal={toggleModal}
@@ -378,6 +399,7 @@ export default function SalesPipeline(props) {
       ) : (
         <>
           <RenderBoard
+            {...props}
             pipelines={pipelines}
             setSelectedTab={setSelectedTab}
             deletePipeline={deletePipeline}
