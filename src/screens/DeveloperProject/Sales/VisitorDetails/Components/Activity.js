@@ -136,38 +136,38 @@ function RenderActivity(props) {
         </Button>
         <Button
           mode="outlined"
-          onPress={() => setActivityFilter('comment')}
-          color={activityFilter === 'comment' ? 'white' : null}
+          onPress={() => setActivityFilter('visitor_comment')}
+          color={activityFilter === 'visitor_comment' ? 'white' : null}
           style={{
             borderRadius: 20,
             marginHorizontal: 10,
             backgroundColor:
-              activityFilter === 'comment' ? selectedColor : null,
+              activityFilter === 'visitor_comment' ? selectedColor : null,
           }}>
           Comment
         </Button>
         <Button
           mode="outlined"
-          color={activityFilter === 'callLog' ? 'white' : null}
+          color={activityFilter === 'visitor_call_Log' ? 'white' : null}
           style={{
             borderRadius: 20,
             marginHorizontal: 10,
             backgroundColor:
-              activityFilter === 'callLog' ? selectedColor : null,
+              activityFilter === 'visitor_call_Log' ? selectedColor : null,
           }}
-          onPress={() => setActivityFilter('callLog')}>
+          onPress={() => setActivityFilter('visitor_call_Log')}>
           Call Log
         </Button>
         <Button
           mode="outlined"
-          color={activityFilter === 'followUp' ? 'white' : null}
+          color={activityFilter === 'visitor_followup' ? 'white' : null}
           style={{
             borderRadius: 20,
             marginHorizontal: 10,
             backgroundColor:
-              activityFilter === 'followUp' ? selectedColor : null,
+              activityFilter === 'visitor_followup' ? selectedColor : null,
           }}
-          onPress={() => setActivityFilter('followUp')}>
+          onPress={() => setActivityFilter('visitor_followup')}>
           Follow Up
         </Button>
       </ScrollView>

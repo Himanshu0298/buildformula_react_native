@@ -1,5 +1,4 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import React, {useEffect} from 'react';
+import React, {useEffect, useMemo} from 'react';
 import {
   StyleSheet,
   View,
@@ -18,6 +17,7 @@ import {
   IconButton,
   Menu,
   Searchbar,
+  Text,
 } from 'react-native-paper';
 import {getPermissions} from 'utils';
 import useSalesActions from 'redux/actions/salesActions';
@@ -28,6 +28,10 @@ import ProjectHeader from 'components/Molecules/Layout/ProjectHeader';
 import {PRIORITY_COLORS, STRUCTURE_TYPE_LABELS} from 'utils/constant';
 import CustomBadge from 'components/Atoms/CustomBadge';
 import NoDataFound from 'assets/images/NoDataFound.png';
+import {getShadow} from 'utils';
+import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
+import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import FormTitle from 'components/Atoms/FormTitle';
 
 function StatsRow({visitorAnalytics}) {
   const {
@@ -117,14 +121,31 @@ function RenderVisitors(props) {
     setFilter,
   } = props;
 
+  const filterOptions = [
+    {filter: 'name', title: 'Name'},
+    {filter: 'recent', title: 'Recent'},
+    {filter: 'low', title: 'Low Priority'},
+    {filter: 'medium', title: 'Medium Priority'},
+    {filter: 'high', title: 'High Priority'},
+  ];
+
   const [visible, setVisible] = React.useState(false);
   const [searchQuery, setSearchQuery] = React.useState('');
 
   const toggleMenu = () => setVisible(v => !v);
 
-  const onChangeSearch = query => setSearchQuery(query);
+  console.log('----->data', data);
+  const filteredUsers = useMemo(() => {
+    return data.filter(
+      i =>
+        i.first_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        i.last_name.toLowerCase().includes(searchQuery.toLowerCase()),
+    );
+  }, [searchQuery]);
 
-  // const richText = useRef();
+  const onSearch = v => {
+    setSearchQuery(v);
+  };
 
   return (
     <View style={styles.contentContainer}>
@@ -141,65 +162,41 @@ function RenderVisitors(props) {
           visible={visible}
           onDismiss={toggleMenu}
           anchor={
-            <IconButton
-              icon="filter-variant"
+            <OpacityButton
+              opacity={0.1}
               color={theme.colors.primary}
-              size={20}
-              onPress={toggleMenu}
-              style={{borderWidth: 1}}
-            />
+              style={{borderRadius: 50}}
+              onPress={toggleMenu}>
+              <MaterialIcon
+                name="filter-variant"
+                color={theme.colors.primary}
+                size={22}
+              />
+            </OpacityButton>
           }>
-          <Menu.Item
-            onPress={() => {
-              setFilter('name');
-              toggleMenu();
-            }}
-            title="Name"
-          />
-          <Menu.Item
-            onPress={() => {
-              setFilter('recent');
-              toggleMenu();
-            }}
-            title="Recent"
-          />
-          <Menu.Item
-            onPress={() => {
-              setFilter('less');
-              toggleMenu();
-            }}
-            title="Less Priority"
-          />
-          <Menu.Item
-            onPress={() => {
-              setFilter('medium');
-              toggleMenu();
-            }}
-            title="Medium Priority"
-          />
-          <Divider />
-          <Menu.Item
-            onPress={() => {
-              setFilter('high');
-              toggleMenu();
-            }}
-            title="High Priority"
-          />
+          {filterOptions.map(i => {
+            return (
+              <Menu.Item
+                onPress={() => {
+                  setFilter(i.filter);
+                  toggleMenu();
+                }}
+                title={i.title}
+              />
+            );
+          })}
         </Menu>
       </View>
       <Searchbar
-        placeholder="Search"
-        onChangeText={onChangeSearch}
+        style={styles.searchBar}
         value={searchQuery}
-        onIconPress={() => {
-          console.log('----->search button pressed');
-        }}
+        onChangeText={onSearch}
       />
       {showAnalyticsRow ? (
         <StatsRow visitorAnalytics={visitorAnalytics} />
       ) : null}
       <FlatList
-        data={data}
+        data={filteredUsers}
         extraData={data}
         keyExtractor={(item, index) => index.toString()}
         style={styles.scrollView}
@@ -218,7 +215,12 @@ function RenderVisitors(props) {
         ListEmptyComponent={
           <View style={styles.noResultContainer}>
             <Image source={NoDataFound} />
-            <Title style={{color: theme.colors.primary}}>
+            <Title
+              style={{
+                color: theme.colors.primary,
+                fontSize: 22,
+                marginTop: 10,
+              }}>
               Start adding your visitor
             </Title>
           </View>
@@ -350,5 +352,12 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  searchBar: {
+    backgroundColor: '#EAECF11A',
+    borderWidth: 1,
+    borderColor: 'rgba(4, 29, 54, 0.1)',
+    marginHorizontal: 10,
+    ...getShadow(0),
   },
 });
