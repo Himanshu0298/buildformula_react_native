@@ -1,5 +1,4 @@
 import RenderInput from 'components/Atoms/RenderInput';
-import RenderSelect from 'components/Atoms/RenderSelect';
 import React from 'react';
 import {View, StyleSheet, ScrollView} from 'react-native';
 import {withTheme, Button, Title, Subheading} from 'react-native-paper';
@@ -9,6 +8,7 @@ import RenderDatePicker from 'components/Atoms/RenderDatePicker';
 // import useSalesActions from 'redux/reducers/salesActions';
 import useSalesActions from 'redux/actions/salesActions';
 import {useSelector} from 'react-redux';
+import dayjs from 'dayjs';
 
 const schema = Yup.object().shape({
   followup_date: Yup.date('Invalid').required('Required'),
@@ -22,20 +22,27 @@ const AddFollowUp = props => {
   const followUpTimeRef = React.useRef();
   const assignToRef = React.useRef();
 
-  const {route} = props;
+  const {route, navigation} = props;
 
   const {visitorId} = route.params || {};
 
   const {selectedProject} = useSelector(state => state.project);
 
-  const {addVisitorFollowUp} = useSalesActions();
+  const {addVisitorFollowUp, getVisitorActivities} = useSalesActions();
 
-  const onSubmit = values => {
-    addVisitorFollowUp({
+  const onSubmit = async values => {
+    await addVisitorFollowUp({
       ...values,
+      followup_date: dayjs(values.followup_date).format('DD-MM-YYYY'),
+      followup_time: dayjs(values.followup_time).format('hh:mm:ss'),
       visitor_id: visitorId,
       project_id: selectedProject.id,
     });
+    getVisitorActivities({
+      visitor_id: visitorId,
+      project_id: selectedProject.id,
+    });
+    navigation.goBack();
   };
 
   return (

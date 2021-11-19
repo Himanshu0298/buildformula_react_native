@@ -1,11 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {
   StyleSheet,
   View,
   RefreshControl,
   TouchableOpacity,
   FlatList,
+  Image,
 } from 'react-native';
 import {
   withTheme,
@@ -15,9 +16,8 @@ import {
   Subheading,
   Divider,
   IconButton,
-  Colors,
   Menu,
-  Button,
+  Searchbar,
 } from 'react-native-paper';
 import {getPermissions} from 'utils';
 import useSalesActions from 'redux/actions/salesActions';
@@ -27,6 +27,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import ProjectHeader from 'components/Molecules/Layout/ProjectHeader';
 import {PRIORITY_COLORS, STRUCTURE_TYPE_LABELS} from 'utils/constant';
 import CustomBadge from 'components/Atoms/CustomBadge';
+import NoDataFound from 'assets/images/NoDataFound.png';
 
 function StatsRow({visitorAnalytics}) {
   const {
@@ -100,7 +101,7 @@ function RenderVisitorItem(props) {
           />
         </View>
       </View>
-      <Divider />
+      <Divider style={{height: 1}} />
     </TouchableOpacity>
   );
 }
@@ -109,7 +110,6 @@ function RenderVisitors(props) {
   const {
     theme,
     data,
-    filter,
     onRefresh,
     showAnalyticsRow,
     visitorAnalytics,
@@ -117,47 +117,52 @@ function RenderVisitors(props) {
     setFilter,
   } = props;
 
-  const selectedColor = theme.colors.primary;
-
   const [visible, setVisible] = React.useState(false);
+  const [searchQuery, setSearchQuery] = React.useState('');
 
   const toggleMenu = () => setVisible(v => !v);
 
+  const onChangeSearch = query => setSearchQuery(query);
+
+  // const richText = useRef();
+
   return (
     <View style={styles.contentContainer}>
-      <View style={{flexDirection: 'row', marginBottom: 40}}>
-        <Button
-          mode="outlined"
-          color={filter === 'name' ? 'white' : null}
-          style={{
-            backgroundColor: filter === 'name' ? selectedColor : null,
-            borderRadius: 20,
-          }}
-          onPress={() => setFilter('name')}>
-          Name
-        </Button>
-        <Button
-          mode="outlined"
-          color={filter === 'recent' ? 'white' : null}
-          style={{
-            backgroundColor: filter === 'recent' ? selectedColor : null,
-            borderRadius: 20,
-          }}
-          onPress={() => setFilter('recent')}>
-          Recent
-        </Button>
+      <View
+        style={{
+          flexDirection: 'row',
+          marginBottom: 10,
+          justifyContent: 'space-between',
+          marginHorizontal: 20,
+          alignItems: 'center',
+        }}>
+        <Title style={{color: theme.colors.primary}}>Visitor's list</Title>
         <Menu
           visible={visible}
           onDismiss={toggleMenu}
           anchor={
             <IconButton
               icon="filter-variant"
-              color={Colors.red500}
+              color={theme.colors.primary}
               size={20}
               onPress={toggleMenu}
               style={{borderWidth: 1}}
             />
           }>
+          <Menu.Item
+            onPress={() => {
+              setFilter('name');
+              toggleMenu();
+            }}
+            title="Name"
+          />
+          <Menu.Item
+            onPress={() => {
+              setFilter('recent');
+              toggleMenu();
+            }}
+            title="Recent"
+          />
           <Menu.Item
             onPress={() => {
               setFilter('less');
@@ -182,6 +187,14 @@ function RenderVisitors(props) {
           />
         </Menu>
       </View>
+      <Searchbar
+        placeholder="Search"
+        onChangeText={onChangeSearch}
+        value={searchQuery}
+        onIconPress={() => {
+          console.log('----->search button pressed');
+        }}
+      />
       {showAnalyticsRow ? (
         <StatsRow visitorAnalytics={visitorAnalytics} />
       ) : null}
@@ -204,7 +217,10 @@ function RenderVisitors(props) {
         }
         ListEmptyComponent={
           <View style={styles.noResultContainer}>
-            <Subheading>{'No Data Found'}</Subheading>
+            <Image source={NoDataFound} />
+            <Title style={{color: theme.colors.primary}}>
+              Start adding your visitor
+            </Title>
           </View>
         }
       />
@@ -214,8 +230,6 @@ function RenderVisitors(props) {
 
 function Visitors(props) {
   const {theme, navigation} = props;
-
-  const [selectDialog, setSelectDialog] = useState(false);
 
   const {selectedProject} = useSelector(s => s.project);
   const {loading, visitors, visitorAnalytics} = useSelector(s => s.sales);
@@ -238,10 +252,6 @@ function Visitors(props) {
 
   const onRefresh = () => loadData();
 
-  const toggleSelectDialog = () => setSelectDialog(v => !v);
-
-  const onStateChange = ({open}) => setSelectDialog(open);
-
   const navToDetails = id => {
     navigation.navigate('VisitorDetails', {visitorId: id});
   };
@@ -263,28 +273,11 @@ function Visitors(props) {
       />
 
       {modulePermission?.editor || modulePermission?.admin ? (
-        <FAB.Group
-          open={selectDialog}
-          style={styles.fab}
-          fabStyle={{
-            backgroundColor: selectDialog ? '#fff' : theme.colors.primary,
-          }}
-          icon={selectDialog ? 'window-close' : 'plus'}
-          small
-          onPress={toggleSelectDialog}
-          onStateChange={onStateChange}
-          actions={[
-            {
-              icon: 'account-question-outline',
-              label: 'New visitor',
-              onPress: () => navigation.navigate('AddVisitor'),
-            },
-            // {
-            //   icon: 'arrow-up',
-            //   label: 'Follow up',
-            //   onPress: () => navigation.navigate('AddFollowUp'),
-            // },
-          ]}
+        <FAB
+          style={[styles.fab, {backgroundColor: theme.colors.primary}]}
+          large
+          icon="plus"
+          onPress={() => navigation.navigate('AddVisitor')}
         />
       ) : null}
     </>
@@ -346,7 +339,8 @@ const styles = StyleSheet.create({
   },
   fab: {
     position: 'absolute',
-    right: 0,
+    right: 20,
+    bottom: 20,
   },
   scrollView: {
     flexGrow: 1,

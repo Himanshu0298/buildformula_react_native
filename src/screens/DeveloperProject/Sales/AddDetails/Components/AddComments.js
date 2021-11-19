@@ -1,5 +1,5 @@
 import RenderInput from 'components/Atoms/RenderInput';
-import React, {useState} from 'react';
+import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import {Checkbox, Button, Title} from 'react-native-paper';
 import {Formik} from 'formik';
@@ -12,36 +12,35 @@ const schema = Yup.object().shape({
 });
 
 const AddComments = props => {
-  const {route} = props;
+  const {navigation, route} = props;
   const {visitorId} = route.params || {};
 
-  const {addVisitorComment} = useSalesActions();
+  const {addVisitorComment, getVisitorActivities} = useSalesActions();
 
   const {selectedProject} = useSelector(state => state.project);
 
-  const onSubmit = values => {
-    addVisitorComment({
+  const onSubmit = async values => {
+    await addVisitorComment({
       ...values,
+      is_important: values.is_important ? 1 : 0,
       visitor_id: visitorId,
       project_id: selectedProject.id,
     });
+    getVisitorActivities({
+      visitor_id: visitorId,
+      project_id: selectedProject.id,
+    });
+    navigation.goBack();
   };
 
   return (
     <Formik
       validateOnBlur={false}
       validateOnChange={false}
-      initialValues={{is_important: false}}
+      initialValues={{is_important: true}}
       validationSchema={schema}
       onSubmit={onSubmit}>
-      {({
-        handleChange,
-        setFieldValue,
-        values,
-        handleSubmit,
-        handleBlur,
-        errors,
-      }) => (
+      {({handleChange, setFieldValue, values, handleSubmit}) => (
         <View style={{flexGrow: 1, justifyContent: 'space-between'}}>
           <View>
             <Title style={{marginLeft: 10, marginTop: 20}}>Add comment</Title>
@@ -51,7 +50,7 @@ const AddComments = props => {
                 alignItems: 'center',
               }}>
               <Checkbox
-                status={values.is_important}
+                status={values.is_important ? 'checked' : 'unchecked'}
                 onPress={() => {
                   setFieldValue('is_important', !values.is_important);
                 }}

@@ -8,6 +8,7 @@ import * as Yup from 'yup';
 import RenderDatePicker from 'components/Atoms/RenderDatePicker';
 import useSalesActions from 'redux/actions/salesActions';
 import {useSelector} from 'react-redux';
+import dayjs from 'dayjs';
 
 const schema = Yup.object().shape({
   last_date: Yup.date('Invalid').required('Required'),
@@ -17,7 +18,7 @@ const schema = Yup.object().shape({
 });
 
 const AddCallLogs = props => {
-  const {route} = props;
+  const {route, navigation} = props;
   const {visitorId} = route.params || {};
 
   const followUpDateRef = React.useRef();
@@ -27,21 +28,29 @@ const AddCallLogs = props => {
   const {selectedProject, commonData} = useSelector(state => state.project);
   const {callLog_call_outcome_values} = commonData;
 
-  const {addVisitorCallLogs} = useSalesActions();
+  const {addVisitorCallLogs, getVisitorActivities} = useSalesActions();
 
   const outcomeOptions = useMemo(() => {
     return callLog_call_outcome_values.map(i => ({
       label: i.title,
-      value: i.id,
+      value: i.title,
     }));
   }, [callLog_call_outcome_values]);
 
-  const onSubmit = values => {
-    addVisitorCallLogs({
+  const onSubmit = async values => {
+    await addVisitorCallLogs({
       ...values,
+      // last_date:dayjsvalues.last_last_date,
+      last_date: dayjs(values.last_date).format('DD-MM-YYYY'),
+      last_time: dayjs(values.last_time).format('hh:mm:ss'),
       visitor_id: visitorId,
       project_id: selectedProject.id,
     });
+    getVisitorActivities({
+      visitor_id: visitorId,
+      project_id: selectedProject.id,
+    });
+    navigation.goBack();
   };
 
   return (

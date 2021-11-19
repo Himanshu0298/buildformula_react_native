@@ -42,14 +42,14 @@ export default function useSalesServices() {
     },
     addVisitorCallLogs: data => {
       return instance.post(
-        '/visitors/addcomment',
+        '/visitors/addcalllog',
         data,
         config({multipart: false}),
       );
     },
     addVisitorFollowUp: data => {
       return instance.post(
-        '/visitors/addcomment',
+        '/visitors/addfollowup',
         data,
         config({multipart: false}),
       );

@@ -155,7 +155,7 @@ export default function useSalesActions() {
 
     addVisitorCallLogs: params =>
       dispatch({
-        type: types.ADD_VISITOR_COMMENT,
+        type: types.ADD_VISITOR_CALL_LOGS,
         payload: async () => {
           try {
             const response = _res(await addVisitorCallLogs(params));
@@ -172,7 +172,7 @@ export default function useSalesActions() {
 
     addVisitorFollowUp: params =>
       dispatch({
-        type: types.ADD_VISITOR_COMMENT,
+        type: types.ADD_VISITOR_FOLLOW_UP,
         payload: async () => {
           try {
             const response = _res(await addVisitorFollowUp(params));

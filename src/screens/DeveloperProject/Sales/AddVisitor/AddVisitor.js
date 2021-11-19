@@ -10,7 +10,6 @@ import * as Yup from 'yup';
 import RenderInput from 'components/Atoms/RenderInput';
 import {useTranslation} from 'react-i18next';
 import RenderSelect from 'components/Atoms/RenderSelect';
-import RenderDatePicker from 'components/Atoms/RenderDatePicker';
 import {PRIORITY_COLORS} from 'utils/constant';
 import Radio from 'components/Atoms/Radio';
 import useSalesActions from 'redux/actions/salesActions';
@@ -236,7 +235,6 @@ function InquiryTab(props) {
     <KeyboardAwareScrollView
       contentContainerStyle={styles.scrollView}
       keyboardShouldPersistTaps="handled">
-      {console.log('----->values', values)}
       <View style={styles.container}>
         <View style={styles.inputsContainer}>
           <RenderInput
@@ -477,7 +475,6 @@ function AddVisitor(props) {
 
   const onSubmit = async values => {
     const inputs = _.cloneDeep(values);
-    console.log('----->form submited');
 
     let data = {
       follow_up_date: dayjs(inputs.follow_up_date).format('DD-MM-YYYY'),
@@ -501,8 +498,8 @@ function AddVisitor(props) {
       await addVisitor(data);
     }
 
-    getVisitors(selectedProject.id);
-    getSalesData(selectedProject.id);
+    getVisitors({project_id: selectedProject.id});
+    getSalesData({project_id: selectedProject.id});
     navigation.goBack();
   };
 
