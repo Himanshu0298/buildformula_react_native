@@ -10,6 +10,11 @@ import {useSnackbar} from 'components/Atoms/Snackbar';
 export default function SelectUnit(props) {
   const {navigation, route} = props;
 
+  const floorNumber = props.route.params.floorNumber;
+  const floorId = props.route.params.floorId;
+  // const _units = props.route.params.units;
+  const towerId = props.route.params.towerId;
+
   const modulePermission = getPermissions('Booking Chart');
 
   const snackbar = useSnackbar();
@@ -20,7 +25,10 @@ export default function SelectUnit(props) {
   const {loadingUnitStatus, unitBookingStatus} = useSelector(s => s.sales);
   const {user} = useSelector(state => state.user);
 
-  const {selectedStructure, floorId, towerId} = route?.params || {};
+  // const {selectedStructure, floorId, towerId} = route?.params || {};
+  const selectedStructure = 2;
+  // const floorId = 1;
+  // const towerId = 1;
   const structureData = selectedProject.projectData?.[selectedStructure] || {};
   const {towers} = structureData;
 
@@ -48,6 +56,8 @@ export default function SelectUnit(props) {
 
     return data;
   }, [floorId, towerId, towers, unitBookingStatus]);
+
+  console.log('----->units', units);
 
   const fetchUnitsBookingStatus = () => {
     getUnitsBookingStatus({
@@ -96,9 +106,11 @@ export default function SelectUnit(props) {
         onRefresh={fetchUnitsBookingStatus}
         onSelectUnit={onSelectUnit}
         floorId={floorId}
+        floorNumber={floorNumber}
         units={units}
         showBhkFilters={[1, 4].includes(selectedStructure)}
         isUnitDisabled={checkUnitDisability}
+        navigation={navigation}
       />
     </>
   );

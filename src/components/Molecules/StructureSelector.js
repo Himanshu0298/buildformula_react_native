@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, StyleSheet, Image, TouchableOpacity} from 'react-native';
+import {View, StyleSheet, Image, TouchableOpacity, Text} from 'react-native';
 import {withTheme} from 'react-native-paper';
 import FormTitle from 'components/Atoms/FormTitle';
 import {useTranslation} from 'react-i18next';
@@ -11,46 +11,47 @@ import shop from 'assets/images/shop.png';
 import shopInactive from 'assets/images/shop_inactive.png';
 import office from 'assets/images/office.png';
 import officeInactive from 'assets/images/office_inactive.png';
-import bungalow from 'assets/images/bungalow.png';
+// import bungalow from 'assets/images/bungalow.svg';
 import bungalowInactive from 'assets/images/bungalow_inactive.png';
 import plot from 'assets/images/plot.png';
+// import tower from 'assets/images/tower.svg';
 import plotInactive from 'assets/images/plot_inactive.png';
 import Layout from 'utils/Layout';
 import PropTypes from 'prop-types';
+import SvgUri from 'react-native-svg-uri';
 
 const getStructureItems = () => {
   return [
     {
-      title: 'Shops',
-      activeSrc: shop,
-      inactiveSrc: shopInactive,
+      title: 'Towers',
+      activeSrc: <SvgUri source={require('assets/images/tower.svg')} />,
       value: 2,
       imageStyle: styles.shop,
     },
-    {
-      title: 'Offices',
-      activeSrc: office,
-      inactiveSrc: officeInactive,
-      value: 3,
-      imageStyle: styles.office,
-    },
-    {
-      title: 'Apartments',
-      activeSrc: apartment,
-      inactiveSrc: apartmentInactive,
-      value: 1,
-      imageStyle: styles.apartment,
-    },
+    // {
+    //   title: 'Offices',
+    //   activeSrc: office,
+    //   inactiveSrc: officeInactive,
+    //   value: 4,
+    //   imageStyle: styles.office,
+    // },
+    // {
+    //   title: 'Apartments',
+    //   activeSrc: apartment,
+    //   inactiveSrc: apartmentInactive,
+    //   value: 1,
+    //   imageStyle: styles.apartment,
+    // },
     {
       title: 'Bungalows',
-      activeSrc: bungalow,
+      activeSrc: <SvgUri source={require('assets/images/bungalow.svg')} />,
       inactiveSrc: bungalowInactive,
-      value: 4,
+      value: 3,
       imageStyle: styles.shop,
     },
     {
       title: 'Plots',
-      activeSrc: plot,
+      activeSrc: <SvgUri source={require('assets/images/plot_.svg')} />,
       inactiveSrc: plotInactive,
       value: 5,
       style: styles.plotContainer,
@@ -69,14 +70,15 @@ function ImageRender(props) {
     onPress,
     value,
     style,
+    towerType,
   } = props;
 
   return (
     <TouchableOpacity
       style={[styles.box, style, active ? styles.active : {}]}
-      onPress={() => onPress(value)}>
+      onPress={() => onPress(value, towerType, activeSrc)}>
       <BaseText style={styles.title}>{title}</BaseText>
-      <Image source={active ? activeSrc : inactiveSrc} style={imageStyle} />
+      {activeSrc}
     </TouchableOpacity>
   );
 }
@@ -89,6 +91,7 @@ function StructureSelector(props) {
   return (
     <>
       <FormTitle title={t(title)} subTitle={t(subtitle)} />
+
       <View style={styles.container}>
         {getStructureItems()
           .filter(structure => projectTypes.includes(structure.value))
@@ -98,6 +101,7 @@ function StructureSelector(props) {
               {...item}
               active={activeTypes ? activeTypes.includes(item.value) : true}
               onPress={onSelectStructure}
+              towerType={item.title}
             />
           ))}
       </View>
@@ -131,17 +135,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#000',
   },
-  apartment: {
-    width: Layout.window.width * 0.28,
-    height: Layout.window.width * 0.28,
-  },
   shop: {
     width: Layout.window.width * 0.28,
     height: Layout.window.width * 0.25,
-  },
-  office: {
-    width: Layout.window.width * 0.25,
-    height: Layout.window.width * 0.28,
   },
   plotContainer: {
     height: Layout.window.width * 0.35,

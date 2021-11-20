@@ -37,10 +37,15 @@ function UnitSelector({
   onRefresh,
   units,
   floorId,
+  floorNumber,
   onSelectUnit,
   isUnitDisabled,
+  navigation,
 }) {
   const {t} = useTranslation();
+
+  console.log('----->hellooooo');
+  console.log('----->units', units);
 
   const [selectedBhk, setSelectedBhk] = React.useState();
 
@@ -61,12 +66,13 @@ function UnitSelector({
               <BhkList selectedBhk={selectedBhk} onPress={setSelectedBhk} />
             </>
           ) : null}
-          <Subheading style={styles.floorTitle}>Units</Subheading>
+          <Subheading style={styles.floorTitle}>{floorNumber}</Subheading>
           <RenderUnits
             units={units}
             selectedFloor={floorId}
             onSelectUnit={onSelectUnit}
             isUnitDisabled={isUnitDisabled}
+            navigation={navigation}
           />
         </View>
       </ScrollView>

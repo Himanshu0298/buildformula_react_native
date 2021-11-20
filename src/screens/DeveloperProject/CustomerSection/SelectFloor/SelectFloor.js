@@ -1,6 +1,6 @@
 import React from 'react';
 import {useSelector} from 'react-redux';
-import FloorSelector from 'components/Molecules/FloorSelector';
+import FloorSelector from 'components/Molecules/TowerSelector';
 
 export default function SelectFloor(props) {
   const {navigation, route} = props;

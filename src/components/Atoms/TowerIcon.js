@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import {Subheading} from 'react-native-paper';
 import {getTowerLabel} from 'utils';
-import towerActive from 'assets/images/tower.png';
+import towerActive from 'assets/images/tower.svg';
 import towerInactive from 'assets/images/tower_inactive.png';
 import Layout from 'utils/Layout';
 import PropTypes from 'prop-types';

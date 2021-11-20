@@ -1,6 +1,14 @@
-import React from 'react';
-import {StyleSheet, View, TouchableOpacity} from 'react-native';
-import {Badge, Subheading} from 'react-native-paper';
+import React, {useState} from 'react';
+import {StyleSheet, View, Image, Text, TouchableOpacity} from 'react-native';
+import {
+  Badge,
+  Button,
+  Paragraph,
+  Dialog,
+  Portal,
+  Caption,
+  Subheading,
+} from 'react-native-paper';
 import {secondaryTheme} from 'styles/theme';
 import {BHK_OPTIONS} from 'utils/constant';
 import {addOpacity, getUnitLabel} from 'utils';
@@ -9,10 +17,14 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
+import plot from 'assets/images/plot.png';
+import SelectHoldOrBook from '../selectHoldOrBook';
 
-const UNIT_MARGIN = Layout.window.width * 0.015;
-const BODY_WIDTH = Layout.window.width - 40;
-const UNIT_WIDTH = BODY_WIDTH / 5 - 2 * UNIT_MARGIN;
+// import House from 'assets/images/house.svg';
+
+// const UNIT_MARGIN = Layout.window.width * 0.015;
+// const BODY_WIDTH = Layout.window.width - 40;
+// const UNIT_WIDTH = BODY_WIDTH / 5 - 2 * UNIT_MARGIN;
 
 const DEFAULT_UNIT_COLOR = '#5B6F7C';
 export const BOOKING_STATUS_STYLES = {
@@ -43,9 +55,28 @@ function checkDisabled(isUnitDisabled, unit) {
   return false;
 }
 
-function RenderUnits({onSelectUnit, units, selectedFloor, isUnitDisabled}) {
+function RenderUnits({
+  onSelectUnit,
+  navigation,
+  units,
+  selectedFloor,
+  isUnitDisabled,
+}) {
+  const [visible, setVisible] = useState(false);
+
+  console.log('----->visible in render unit', visible);
+  console.log('----->units', units);
+
+  const toggleDialog = () => setVisible(v => !v);
+
   return (
     <View style={styles.unitsList}>
+      <SelectHoldOrBook
+        visible={visible}
+        setVisible={setVisible}
+        toggleDialog={toggleDialog}
+        navigation={navigation}
+      />
       {Object.keys(units).map((unitId, i) => {
         const unit = units[unitId];
         const unitBhk = BHK_OPTIONS.find(item => item.type === unit.bhk);
@@ -69,28 +100,45 @@ function RenderUnits({onSelectUnit, units, selectedFloor, isUnitDisabled}) {
           <View key={i} style={styles.unitContainer}>
             <TouchableOpacity
               disabled={disabled}
-              onPress={() => onSelectUnit(i, unit)}
-              style={[
-                styles.unitButton,
-                {
-                  borderRadius: 10,
-                  position: 'relative',
-                  ...bookingStyle,
-                  backgroundColor,
-                },
-              ]}>
-              {bookingStyle.badge ? (
-                <Badge
-                  style={[
-                    styles.statusBadge,
-                    {backgroundColor: bookingStyle.borderColor},
-                  ]}>
-                  {bookingStyle.badge}
-                </Badge>
-              ) : null}
-              <Subheading theme={secondaryTheme}>
-                {getUnitLabel(selectedFloor, unitId)}
-              </Subheading>
+              onPress={() => {
+                // onSelectUnit(i, unit);
+                toggleDialog(); // () => <SelectHoldOrBook />;
+              }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  margin: 5,
+                  padding: 3,
+                  backgroundColor: '#D3DAEF',
+                  borderRadius: 5,
+                }}>
+                <View
+                  style={{
+                    backgroundColor: 'white',
+                    padding: 3,
+                  }}>
+                  {/* <House /> */}
+                  <Image
+                    source={plot}
+                    style={{
+                      width: 30,
+                      height: 40,
+                    }}
+                  />
+                </View>
+                <View
+                  style={{
+                    height: '100%',
+                  }}>
+                  <View style={{margin: 5}}>
+                    <Text style={{fontSize: 12}}>{unitId}</Text>
+                    <Caption style={{fontSize: 10}}>
+                      50000<Caption style={{fontSize: 10}}>sq</Caption>
+                    </Caption>
+                  </View>
+                </View>
+              </View>
             </TouchableOpacity>
           </View>
         );
@@ -112,24 +160,24 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   unitContainer: {
-    width: UNIT_WIDTH,
-    margin: UNIT_MARGIN,
-    height: UNIT_WIDTH,
+    // width: UNIT_WIDTH,
+    // margin: UNIT_MARGIN,
+    // height: UNIT_WIDTH,
     alignItems: 'center',
     justifyContent: 'center',
+    flexWrap: 'wrap',
   },
-  unitButton: {
-    flex: 1,
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  statusBadge: {
-    position: 'absolute',
-    top: -10,
-    right: -10,
-  },
+  // unitButton: {
+  //   flex: 1,
+  //   width: '100%',
+  //   alignItems: 'center',
+  //   justifyContent: 'center',
+  // },
+  // statusBadge: {
+  //   position: 'absolute',
+  //   top: -10,
+  //   right: -10,
+  // },
 });
 
 export default React.memo(RenderUnits);

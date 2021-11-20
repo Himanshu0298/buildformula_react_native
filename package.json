@@ -72,7 +72,7 @@
     "react-native-share": "^7.0.0",
     "react-native-signature-capture": "^0.4.12",
     "react-native-svg": "^12.1.1",
-    "react-native-svg-transformer": "^0.14.3",
+    "react-native-svg-uri": "^1.2.3",
     "react-native-tab-view": "^2.16.0",
     "react-native-table-component": "^1.2.1",
     "react-native-touch-id": "^4.4.1",

@@ -58,11 +58,10 @@ function SalesPipelineRearrange(props) {
       order_by_value: index,
     }));
 
-    console.log('----->pipelinesOrderList', pipelinesOrderList);
-
     await updatePipelineOrderList(updatedData);
     getPipelinesOrderList({project_id: selectedProject.id});
     getPipelineData(selectedProject.id);
+    navigation.goBack();
   };
 
   const handleDragEnd = (fromIndex, toIndex) => {};
@@ -98,7 +97,7 @@ function SalesPipelineRearrange(props) {
                 contentStyle={{padding: 2}}
                 theme={{roundness: 15}}
                 mode="outlined"
-                onPress={() => navigation.navigate('PipelineHome')}>
+                onPress={() => navigation.goBack()}>
                 <Text>{'cancel'}</Text>
               </Button>
               <Button

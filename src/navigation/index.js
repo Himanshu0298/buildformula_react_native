@@ -66,8 +66,12 @@ import AddFollowUp from '../screens/DeveloperProject/Sales/AddDetails/Components
 import AddDetails from '../screens/DeveloperProject/Sales/AddDetails/index';
 import BC_SelectStructure from 'screens/DeveloperProject/Sales/BookingChart/SelectStructure';
 import BC_SelectFloor from 'screens/DeveloperProject/Sales/BookingChart/SelectFloor';
+import BC_SelectTower from 'screens/DeveloperProject/Sales/BookingChart/SelectTower';
 import BC_SelectUnit from 'screens/DeveloperProject/Sales/BookingChart/SelectUnit';
 import BookingDetails from 'screens/DeveloperProject/Sales/BookingChart/BookingDetails';
+import BookingFormOnHold from 'screens/DeveloperProject/Sales/BookingChart/BookingFormOnHold';
+import HoldPropertyForm from 'screens/DeveloperProject/Sales/BookingChart/BookingFormOnHold/Components/HoldPropertyForm';
+import History from 'screens/DeveloperProject/Sales/BookingChart/BookingFormOnHold/Components/History';
 import BookingRates from 'screens/DeveloperProject/Sales/BookingChart/BookingRates';
 import BookingPayment from 'screens/DeveloperProject/Sales/BookingChart/BookingPayment';
 //Project : Customer Section
@@ -194,6 +198,11 @@ function PipelineStack() {
         component={SalesPipelineRearrange}
         options={{headerShown: false}}
       />
+      <Stack.Screen
+        name="VisitorDetails"
+        component={VisitorDetails}
+        options={{headerShown: false}}
+      />
     </Stack.Navigator>
   );
 }
@@ -208,6 +217,11 @@ function BookingChartStack() {
       />
       <Stack.Screen
         name="BC_Step_Two"
+        component={BC_SelectTower}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="BC_Step_Floor"
         component={BC_SelectFloor}
         options={{headerShown: false}}
       />
@@ -219,6 +233,21 @@ function BookingChartStack() {
       <Stack.Screen
         name="BC_Step_Four"
         component={BookingDetails}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="BookingFormOnHold"
+        component={BookingFormOnHold}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="HoldPropertyForm"
+        component={HoldPropertyForm}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="History"
+        component={History}
         options={{headerShown: false}}
       />
       <Stack.Screen
