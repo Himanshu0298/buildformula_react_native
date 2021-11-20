@@ -11,7 +11,7 @@ function SelectStructure({navigation}) {
   const {loading} = useSelector(state => state.customer);
 
   const {projectData} = selectedProject;
-  const projectTypes = Object.keys(projectData).map(v => Number(v));
+  const projectTypes = Object.keys(projectData)?.map(v => Number(v)) || [];
 
   const handlePress = value => {
     navigation.navigate('CS_Step_Two', {selectedStructure: value});

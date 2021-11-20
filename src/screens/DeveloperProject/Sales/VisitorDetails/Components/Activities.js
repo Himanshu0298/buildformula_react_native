@@ -1,4 +1,4 @@
-import React, {useMemo, useState, useEffect} from 'react';
+import React, {useEffect, useMemo} from 'react';
 import {Divider, Text, withTheme, Button} from 'react-native-paper';
 import {StyleSheet, View, ScrollView} from 'react-native';
 import {useSelector} from 'react-redux';
@@ -15,6 +15,13 @@ const ACTIVITY_LABELS = {
   visitor_comment: 'comment',
   visitor_call_log: 'call logs',
 };
+
+const FILTERS = [
+  {label: 'All', value: 'all'},
+  {label: 'Comment', value: 'visitor_comment'},
+  {label: 'Call Log', value: 'visitor_call_Log'},
+  {label: 'Follow Up', value: 'visitor_followup'},
+];
 
 function Heading(props) {
   const {text} = props;
@@ -80,7 +87,6 @@ function RenderSection(props) {
   return (
     <View style={{marginBottom: 25}}>
       <Heading text={title} />
-      {console.log('----->activities[title]', activities[title])}
       {activities[title].map((activity, index) => (
         <DetailCard
           key={index}
@@ -95,15 +101,34 @@ function RenderSection(props) {
   );
 }
 
-function RenderActivity(props) {
-  const {theme, activityFilter, setActivityFilter} = props;
+function FilterPanel(props) {
+  const {theme, filter, setFilter} = props;
+  const {primary} = theme.colors;
 
+  return (
+    <ScrollView
+      horizontal={true}
+      style={styles.container}
+      showsHorizontalScrollIndicator={false}>
+      {FILTERS.map(i => {
+        const active = filter === i.value;
+        return (
+          <Button
+            mode="outlined"
+            onPress={() => setFilter(i.value)}
+            color={active ? 'white' : null}
+            style={[styles.filter, active ? {backgroundColor: primary} : {}]}>
+            {i.label}
+          </Button>
+        );
+      })}
+    </ScrollView>
+  );
+}
+
+function Activities(props) {
   const {visitorActivities} = useSelector(s => s.sales);
   const {user} = useSelector(s => s.user);
-
-  const selectedColor = theme.colors.primary;
-
-  // const {getVisitor} = useSalesActions();
 
   const activities = useMemo(() => {
     const data = {};
@@ -112,7 +137,6 @@ function RenderActivity(props) {
       .sort((a, b) => dayjs(b.created).toDate() - dayjs(a.created).toDate())
       .map(i => {
         const key = dayjs(i.created).fromNow();
-
         data[key] = data[key] || [];
         data[key].push(i);
       });
@@ -121,58 +145,9 @@ function RenderActivity(props) {
   }, [visitorActivities]);
 
   return (
-    <View>
-      <ScrollView horizontal={true} style={styles.container}>
-        <Button
-          mode="outlined"
-          onPress={() => setActivityFilter('all')}
-          color={activityFilter === 'all' ? 'white' : null}
-          style={{
-            marginHorizontal: 10,
-            borderRadius: 20,
-            backgroundColor: activityFilter === 'all' ? selectedColor : null,
-          }}>
-          All
-        </Button>
-        <Button
-          mode="outlined"
-          onPress={() => setActivityFilter('visitor_comment')}
-          color={activityFilter === 'visitor_comment' ? 'white' : null}
-          style={{
-            borderRadius: 20,
-            marginHorizontal: 10,
-            backgroundColor:
-              activityFilter === 'visitor_comment' ? selectedColor : null,
-          }}>
-          Comment
-        </Button>
-        <Button
-          mode="outlined"
-          color={activityFilter === 'visitor_call_Log' ? 'white' : null}
-          style={{
-            borderRadius: 20,
-            marginHorizontal: 10,
-            backgroundColor:
-              activityFilter === 'visitor_call_Log' ? selectedColor : null,
-          }}
-          onPress={() => setActivityFilter('visitor_call_Log')}>
-          Call Log
-        </Button>
-        <Button
-          mode="outlined"
-          color={activityFilter === 'visitor_followup' ? 'white' : null}
-          style={{
-            borderRadius: 20,
-            marginHorizontal: 10,
-            backgroundColor:
-              activityFilter === 'visitor_followup' ? selectedColor : null,
-          }}
-          onPress={() => setActivityFilter('visitor_followup')}>
-          Follow Up
-        </Button>
-      </ScrollView>
+    <View style={styles.mainContainer}>
+      <FilterPanel {...props} />
       <ScrollView contentContainerStyle={{padding: 20}}>
-        {console.log('----->Object.keys(activities)', Object.keys(activities))}
         {Object.keys(activities).map(key => (
           <RenderSection
             key={key}
@@ -187,6 +162,9 @@ function RenderActivity(props) {
 }
 
 const styles = StyleSheet.create({
+  mainContainer: {
+    flexGrow: 1,
+  },
   container: {
     marginTop: 10,
   },
@@ -214,6 +192,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginTop: 10,
   },
+  filter: {
+    marginHorizontal: 10,
+    borderRadius: 20,
+  },
 });
 
-export default withTheme(RenderActivity);
+export default withTheme(Activities);
