@@ -106,23 +106,25 @@ function FilterPanel(props) {
   const {primary} = theme.colors;
 
   return (
-    <ScrollView
-      horizontal={true}
-      style={styles.container}
-      showsHorizontalScrollIndicator={false}>
-      {FILTERS.map(i => {
-        const active = filter === i.value;
-        return (
-          <Button
-            mode="outlined"
-            onPress={() => setFilter(i.value)}
-            color={active ? 'white' : null}
-            style={[styles.filter, active ? {backgroundColor: primary} : {}]}>
-            {i.label}
-          </Button>
-        );
-      })}
-    </ScrollView>
+    <View>
+      <ScrollView
+        horizontal={true}
+        style={styles.container}
+        showsHorizontalScrollIndicator={false}>
+        {FILTERS.map(i => {
+          const active = filter === i.value;
+          return (
+            <Button
+              mode="outlined"
+              onPress={() => setFilter(i.value)}
+              color={active ? 'white' : null}
+              style={[styles.filter, active ? {backgroundColor: primary} : {}]}>
+              {i.label}
+            </Button>
+          );
+        })}
+      </ScrollView>
+    </View>
   );
 }
 
@@ -148,9 +150,9 @@ function Activities(props) {
     <View style={styles.mainContainer}>
       <FilterPanel {...props} />
       <ScrollView contentContainerStyle={{padding: 20}}>
-        {Object.keys(activities).map(key => (
+        {Object.keys(activities).map((key, index) => (
           <RenderSection
-            key={key}
+            key={index}
             title={key}
             activities={activities}
             user={user}

@@ -139,6 +139,14 @@ const AddCallLogs = props => {
 
             <View style={styles.actionContainer}>
               <Button
+                style={{flex: 1, marginHorizontal: 5}}
+                contentStyle={{padding: 3}}
+                theme={{roundness: 15}}
+                onPress={navigation.goBack}>
+                Back
+              </Button>
+              <Button
+                style={{flex: 1, marginHorizontal: 5}}
                 mode="contained"
                 contentStyle={{padding: 3}}
                 theme={{roundness: 15}}
@@ -173,5 +181,11 @@ const styles = StyleSheet.create({
   },
   formContainer: {
     flexGrow: 1,
+  },
+  actionContainer: {
+    paddingHorizontal: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
 });

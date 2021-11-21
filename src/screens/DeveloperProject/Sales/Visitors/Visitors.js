@@ -249,7 +249,9 @@ function Visitors(props) {
   }, [visitors, searchQuery]);
 
   useEffect(() => {
-    loadData();
+    if (projectId) {
+      loadData();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectId, filter]);
 

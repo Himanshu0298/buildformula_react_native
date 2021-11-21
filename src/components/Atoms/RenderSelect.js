@@ -24,7 +24,7 @@ const RenderSelect = React.forwardRef((props, ref) => {
   }));
 
   const {parsedOptions, withValue} = useMemo(() => {
-    if (options?.[0]?.label) {
+    if (options?.[0]?.value) {
       const result = options.map(option => option.label);
       return {parsedOptions: result, withValue: true};
     }
