@@ -1,5 +1,5 @@
 import React from 'react';
-import {StatusBar, Text} from 'react-native';
+import {StatusBar} from 'react-native';
 import {withTheme} from 'react-native-paper';
 import {theme} from 'styles/theme';
 import {useSelector} from 'react-redux';
@@ -13,8 +13,7 @@ function SelectStructure(props) {
   const {loading} = useSelector(state => state.sales);
 
   const {projectData} = selectedProject;
-  const projectTypes = Object.keys(projectData).map(v => Number(v));
-  console.log('----->projectTypes', projectTypes);
+  const projectTypes = Object.keys(projectData)?.map(v => Number(v)) || [];
 
   const handlePress = (value, towerType, activeSrc) => {
     navigation.navigate('BC_Step_Two', {

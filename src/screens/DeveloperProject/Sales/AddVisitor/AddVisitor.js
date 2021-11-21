@@ -40,14 +40,8 @@ const schema = Yup.object().shape({
   current_locality: Yup.string('Invalid'),
   budget_from: Yup.number('Invalid'),
   budget_to: Yup.number('Invalid'),
-  // follow_up_date: Yup.date('Invalid').required('Required'),
-  // follow_up_time: Yup.date('Invalid').required('Required'),
   assign_to: Yup.string('Invalid'),
   inquiry_for: Yup.string('Invalid').required('Required'),
-  // for_bhk: Yup.string('Invalid').when('for_bhk_required', {
-  //   is: true,
-  //   then: Yup.string('Invalid').required('Required'),
-  // }),
 });
 
 function PersonalTab(props) {
@@ -555,7 +549,6 @@ const styles = StyleSheet.create({
     marginTop: 25,
     paddingHorizontal: 10,
     flexDirection: 'row',
-
     alignItems: 'center',
     justifyContent: 'space-between',
   },

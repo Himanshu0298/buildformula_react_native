@@ -133,11 +133,18 @@ const AddFollowUp = props => {
             <View style={styles.actionContainer}>
               <Button
                 style={{flex: 1, marginHorizontal: 5}}
+                contentStyle={{padding: 3}}
+                theme={{roundness: 15}}
+                onPress={navigation.goBack}>
+                Back
+              </Button>
+              <Button
+                style={{flex: 1, marginHorizontal: 5}}
                 mode="contained"
                 contentStyle={{padding: 3}}
                 theme={{roundness: 15}}
                 onPress={handleSubmit}>
-                {'Save'}
+                Save
               </Button>
             </View>
           </ScrollView>
@@ -155,6 +162,12 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flexGrow: 1,
+    justifyContent: 'space-between',
+  },
+  actionContainer: {
+    paddingHorizontal: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between',
   },
 });

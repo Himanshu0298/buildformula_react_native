@@ -6,6 +6,7 @@ import {Formik} from 'formik';
 import * as Yup from 'yup';
 import useSalesActions from 'redux/actions/salesActions';
 import {useSelector} from 'react-redux';
+import CustomCheckbox from 'components/Atoms/CustomCheckbox';
 
 const schema = Yup.object().shape({
   remarks: Yup.string().required('Please enter a comment'),
@@ -37,26 +38,22 @@ const AddComments = props => {
     <Formik
       validateOnBlur={false}
       validateOnChange={false}
-      initialValues={{is_important: true}}
+      initialValues={{is_important: false}}
       validationSchema={schema}
       onSubmit={onSubmit}>
       {({handleChange, setFieldValue, values, handleSubmit}) => (
         <View style={{flexGrow: 1, justifyContent: 'space-between'}}>
           <View>
             <Title style={{marginLeft: 10, marginTop: 20}}>Add comment</Title>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-              }}>
-              <Checkbox
-                status={values.is_important ? 'checked' : 'unchecked'}
-                onPress={() => {
-                  setFieldValue('is_important', !values.is_important);
-                }}
-              />
-              <Text>Mark as important</Text>
-            </View>
+
+            <CustomCheckbox
+              label="Mark as important"
+              checked={values.is_important}
+              onChange={() =>
+                setFieldValue('is_important', !values.is_important)
+              }
+            />
+
             <RenderInput
               name="remarks"
               multiline
@@ -70,6 +67,14 @@ const AddComments = props => {
           </View>
           <View style={styles.actionContainer}>
             <Button
+              style={{flex: 1, marginHorizontal: 5}}
+              contentStyle={{padding: 3}}
+              theme={{roundness: 15}}
+              onPress={navigation.goBack}>
+              Back
+            </Button>
+            <Button
+              style={{flex: 1, marginHorizontal: 5}}
               mode="contained"
               contentStyle={{padding: 3}}
               theme={{roundness: 15}}
@@ -89,5 +94,11 @@ const styles = StyleSheet.create({
   input: {
     paddingVertical: 7,
     padding: 10,
+  },
+  actionContainer: {
+    paddingHorizontal: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
 });
