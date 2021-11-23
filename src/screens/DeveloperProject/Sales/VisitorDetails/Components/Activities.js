@@ -11,7 +11,7 @@ const relativeTime = require('dayjs/plugin/relativeTime');
 dayjs.extend(relativeTime);
 
 const ACTIVITY_LABELS = {
-  followups: 'follow up',
+  visitor_followup: 'follow up',
   visitor_comment: 'comment',
   visitor_call_log: 'call logs',
 };
@@ -19,7 +19,7 @@ const ACTIVITY_LABELS = {
 const FILTERS = [
   {label: 'All', value: 'all'},
   {label: 'Comment', value: 'visitor_comment'},
-  {label: 'Call Log', value: 'visitor_call_Log'},
+  {label: 'Call Log', value: 'visitor_call_log'},
   {label: 'Follow Up', value: 'visitor_followup'},
 ];
 
@@ -41,9 +41,16 @@ function Heading(props) {
 }
 
 function DetailCard(props) {
-  const {name, comment, type, call_out_come} = props;
-  const date = dayjs(props.date).format('DD-MM-YYYY');
-  const time = dayjs(props.date).format('hh:mm');
+  const {
+    name,
+    comment,
+    // activityFilter,
+    activity,
+    type,
+  } = props;
+  const date = dayjs(activity.created).format('DD-MM-YYYY');
+  const followup_date = dayjs(activity.followup_date).format('DD-MM-YYYY');
+  const followup_time = dayjs(activity.followup_time).format('hh:mm');
 
   const isHtml = comment?.includes('<') && comment?.includes('>');
 
@@ -52,21 +59,24 @@ function DetailCard(props) {
       <Text>{date}</Text>
       <View style={styles.commentDetailText}>
         {type === 'visitor_comment' ? (
-          <View>
-            <Text style={{color: 'blue'}}>Note </Text>
-          </View>
+          activity.is_important ? (
+            <View>
+              <Text style={{color: 'blue'}}>Important </Text>
+            </View>
+          ) : null
         ) : null}
         <Text style={styles.userNameText}>{name}</Text>
         <Text> added {ACTIVITY_LABELS[type]}</Text>
       </View>
       {type === 'visitor_call_log' ? (
         <Text style={{marginTop: 10}}>
-          {call_out_come} at {time} on {date}
+          {activity.call_out_come} at {activity.last_time} on{' '}
+          {activity.last_date}
         </Text>
       ) : null}
-      {type === 'followups' ? (
+      {type === 'visitor_followup' ? (
         <Text style={{marginTop: 10}}>
-          Due at {time} on {date}
+          Due at {followup_time} on {followup_date}
         </Text>
       ) : null}
       {!isHtml ? (
@@ -94,7 +104,7 @@ function RenderSection(props) {
           name={`${user.first_name} ${user.last_name}`}
           comment={activity.remarks}
           type={activity.type}
-          call_out_come={activity.call_out_come}
+          activity={activity}
         />
       ))}
     </View>
@@ -145,6 +155,8 @@ function Activities(props) {
 
     return data;
   }, [visitorActivities]);
+
+  console.log('----->activities', activities);
 
   return (
     <View style={styles.mainContainer}>

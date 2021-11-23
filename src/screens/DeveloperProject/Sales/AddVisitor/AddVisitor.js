@@ -117,6 +117,7 @@ function PersonalTab(props) {
             error={errors.phone}
             left={<TextInput.Affix text="+91" />}
           />
+          {console.log('----->occupationOptions', occupationOptions)}
           <RenderSelect
             name="occupation"
             ref={occupationRef}
@@ -225,6 +226,14 @@ function InquiryTab(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [values.inquiry_for, bhkOptions]);
 
+  console.log('-----> inquiryOptions[0]', inquiryOptions['1']);
+
+  const _inquiryOptions = Object.keys(inquiryOptions).map(value => {
+    return {value: value, label: inquiryOptions[`${value}`]};
+  });
+
+  console.log('----->_inquiryOptions updated', _inquiryOptions);
+
   return (
     <KeyboardAwareScrollView
       contentContainerStyle={styles.scrollView}
@@ -281,10 +290,15 @@ function InquiryTab(props) {
               />
             </View>
           </View>
+          {console.log('----->inquiryOptions', inquiryOptions)}
+          {console.log(
+            '----->Object.keys(inquiryOptions)',
+            Object.keys(inquiryOptions),
+          )}
           <RenderSelect
             name="inquiry_for"
             label={t('label_inquiry_for')}
-            options={inquiryOptions}
+            options={_inquiryOptions}
             containerStyles={styles.input}
             value={values.inquiry_for}
             error={errors.inquiry_for}
