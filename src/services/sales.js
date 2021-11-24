@@ -17,6 +17,9 @@ export default function useSalesServices() {
         config({multipart: false}),
       );
     },
+    getBrokerDetails: data => {
+      return instance.post('/broker_details', data, config({multipart: false}));
+    },
     getFollowUpList: data => {
       return instance.post('/followup/get_lists', data, config());
     },
@@ -111,6 +114,19 @@ export default function useSalesServices() {
         data,
         config({multipart: false}),
       );
+    },
+    getBrokersList: data => {
+      return instance.post('/list_brokers', data, config({multipart: false}));
+    },
+    addBroker: data => {
+      return instance.post('/add_broker', data, config({multipart: false}));
+    },
+    updateBroker: data => {
+      return instance.post('/update_broker', data, config({multipart: false}));
+    },
+    deleteBroker: data => {
+      console.log('----->data in delete api ', data);
+      return instance.post('/delete_broker', data, config());
     },
     getPipelinesOrderList: data => {
       return instance.post(

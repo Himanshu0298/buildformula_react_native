@@ -18,11 +18,16 @@ import {
   GET_VISITOR,
   GET_PROJECT_COMMON_DATA,
   UPDATE_FOLLOW_UP,
+  UPDATE_BROKER,
   GET_VISITOR_ACTIVITIES,
   ADD_VISITOR_CALL_LOGS,
   ADD_VISITOR_FOLLOW_UP,
   GET_PIPELINES_ORDER_LIST,
   UPDATE_PIPELINE_ORDER_LIST,
+  GET_BROKERS_LIST,
+  ADD_BROKER,
+  DELETE_BROKER,
+  GET_BROKER_DETAILS,
 } from './../actions/actionTypes';
 
 const initialState = {
@@ -47,6 +52,8 @@ const initialState = {
   visitorFollowUp: {},
   visitorActivities: [],
   pipelinesOrderList: [],
+  brokersList: [],
+  brokerDetails: {},
 };
 
 const reducer = (state = initialState, action = {}) => {
@@ -110,7 +117,9 @@ const reducer = (state = initialState, action = {}) => {
         ...state,
         loading: false,
         occupationOptions: occupations,
-        inquiryOptions: inquiry_for,
+        inquiryOptions: Object.keys(inquiry_for).map(value => {
+          return {value: Number(value), label: inquiry_for[value]};
+        }),
         bhkOptions: project_bhk,
         visitorSuggestions: visitors_autosuggestions,
         assignOptions: assign_to,
@@ -268,6 +277,44 @@ const reducer = (state = initialState, action = {}) => {
         errorMessage: payload,
       };
 
+    case `${GET_BROKERS_LIST}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${GET_BROKERS_LIST}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+        brokersList: payload.sort((a, b) => (a.id > b.id ? 1 : -1)),
+      };
+    }
+    case `${GET_BROKERS_LIST}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+        errorMessage: payload,
+      };
+
+    case `${GET_BROKER_DETAILS}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${GET_BROKER_DETAILS}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+        brokerDetails: payload,
+      };
+    }
+    case `${GET_BROKER_DETAILS}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+        errorMessage: payload,
+      };
+
     case `${GET_VISITOR_ACTIVITIES}_PENDING`:
       return {
         ...state,
@@ -334,6 +381,24 @@ const reducer = (state = initialState, action = {}) => {
         errorMessage: payload,
       };
 
+    case `${DELETE_BROKER}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${DELETE_BROKER}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+      };
+    }
+    case `${DELETE_BROKER}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+        errorMessage: payload,
+      };
+
     case `${MOVE_VISITOR}_FULFILLED`: {
       const {visitorId, pipelineId} = payload;
       let pipelines = _.cloneDeep(state.pipelines);
@@ -387,10 +452,12 @@ const reducer = (state = initialState, action = {}) => {
     }
 
     case `${ADD_VISITOR}_PENDING`:
+    case `${ADD_BROKER}_PENDING`:
     case `${ADD_VISITOR_COMMENT}_PENDING`:
     case `${ADD_VISITOR_CALL_LOGS}_PENDING`:
     case `${ADD_VISITOR_FOLLOW_UP}_PENDING`:
     case `${CREATE_BOOKING}_PENDING`:
+    case `${UPDATE_BROKER}_PENDING`:
     case `${UPDATE_PIPELINE_ORDER_LIST}_PENDING`:
     case `${ADD_PIPELINE}_PENDING`: {
       return {
@@ -399,10 +466,12 @@ const reducer = (state = initialState, action = {}) => {
       };
     }
     case `${ADD_VISITOR}_FULFILLED`:
+    case `${ADD_BROKER}_FULFILLED`:
     case `${ADD_VISITOR_COMMENT}_FULFILLED`:
     case `${ADD_VISITOR_CALL_LOGS}_FULFILLED`:
     case `${ADD_VISITOR_FOLLOW_UP}_FULFILLED`:
     case `${UPDATE_PIPELINE_ORDER_LIST}_FULFILLED`:
+    case `${UPDATE_BROKER}_FULFILLED`:
     case `${CREATE_BOOKING}_FULFILLED`:
     case `${ADD_PIPELINE}_FULFILLED`: {
       return {
@@ -412,9 +481,11 @@ const reducer = (state = initialState, action = {}) => {
     }
 
     case `${ADD_VISITOR}_REJECTED`:
+    case `${ADD_BROKER}_REJECTED`:
     case `${ADD_VISITOR_COMMENT}_REJECTED`:
     case `${ADD_VISITOR_CALL_LOGS}_REJECTED`:
     case `${ADD_VISITOR_FOLLOW_UP}_REJECTED`:
+    case `${UPDATE_BROKER}_REJECTED`:
     case `${UPDATE_PIPELINE_ORDER_LIST}_REJECTED`:
     case `${CREATE_BOOKING}_REJECTED`:
     case `${ADD_PIPELINE}_REJECTED`: {
