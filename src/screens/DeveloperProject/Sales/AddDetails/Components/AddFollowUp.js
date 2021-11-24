@@ -9,6 +9,8 @@ import RenderDatePicker from 'components/Atoms/RenderDatePicker';
 import useSalesActions from 'redux/actions/salesActions';
 import {useSelector} from 'react-redux';
 import dayjs from 'dayjs';
+import {theme} from 'styles/theme';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const schema = Yup.object().shape({
   followup_date: Yup.date('Invalid').required('Required'),
@@ -46,111 +48,118 @@ const AddFollowUp = props => {
   };
 
   return (
-    <View style={{flexGrow: 1}}>
-      <Title style={{paddingHorizontal: 10, marginTop: 20}}>
-        Create Follow-up task
-      </Title>
-      <Formik
-        validateOnBlur={false}
-        validateOnChange={false}
-        initialValues={{}}
-        validationSchema={schema}
-        onSubmit={onSubmit}>
-        {({
-          handleChange,
-          setFieldValue,
-          values,
-          handleSubmit,
-          handleBlur,
-          errors,
-        }) => (
-          <ScrollView
-            contentContainerStyle={styles.scrollView}
-            keyboardShouldPersistTaps="handled">
-            <View style={{padding: 10}}>
-              <Subheading>Call Outcome</Subheading>
+    <SafeAreaView>
+      <View style={{flexGrow: 1}}>
+        <Title style={{paddingHorizontal: 10, marginTop: 20}}>
+          Create Follow-up task
+        </Title>
+        <Formik
+          validateOnBlur={false}
+          validateOnChange={false}
+          initialValues={{}}
+          validationSchema={schema}
+          onSubmit={onSubmit}>
+          {({
+            handleChange,
+            setFieldValue,
+            values,
+            handleSubmit,
+            handleBlur,
+            errors,
+          }) => (
+            <ScrollView
+              contentContainerStyle={styles.scrollView}
+              keyboardShouldPersistTaps="handled">
+              <View style={{padding: 10}}>
+                <Subheading>Task Title</Subheading>
 
-              <RenderInput
-                name="task_title"
-                numberOfLines={8}
-                label="Task Title"
-                containerStyles={styles.input}
-                value={values.task_title}
-                onChangeText={handleChange('task_title')}
-                onBlur={handleBlur('task_title')}
-                onSubmitEditing={handleSubmit}
-                returnKeyType="done"
-                error={errors.task_title}
-              />
+                <RenderInput
+                  name="task_title"
+                  numberOfLines={8}
+                  label="Task Title"
+                  containerStyles={styles.input}
+                  value={values.task_title}
+                  onChangeText={handleChange('task_title')}
+                  onBlur={handleBlur('task_title')}
+                  onSubmitEditing={handleSubmit}
+                  returnKeyType="done"
+                  error={errors.task_title}
+                />
 
-              <View style={{flexDirection: 'row'}}>
-                <View style={{flex: 1, marginRight: 10}}>
-                  <RenderDatePicker
-                    name="followup_date"
-                    label="Date"
-                    ref={followUpDateRef}
-                    containerStyles={styles.input}
-                    value={values.followup_date}
-                    error={errors.followup_date}
-                    min={new Date()}
-                    onChange={date => {
-                      setFieldValue('followup_date', date);
-                      followUpTimeRef?.current?.focus?.();
-                    }}
-                  />
+                <View style={{flexDirection: 'row'}}>
+                  <View style={{flex: 1, marginRight: 10}}>
+                    <RenderDatePicker
+                      name="followup_date"
+                      label="Date"
+                      ref={followUpDateRef}
+                      containerStyles={styles.input}
+                      value={values.followup_date}
+                      error={errors.followup_date}
+                      min={new Date()}
+                      onChange={date => {
+                        setFieldValue('followup_date', date);
+                        followUpTimeRef?.current?.focus?.();
+                      }}
+                    />
+                  </View>
+                  <View style={{flex: 1}}>
+                    <RenderDatePicker
+                      mode="time"
+                      label="Time"
+                      ref={followUpTimeRef}
+                      name="followup_time"
+                      containerStyles={styles.input}
+                      value={values.followup_time}
+                      // error={errors.followup_time}
+                      onChange={date => {
+                        setFieldValue('followup_time', date);
+                        assignToRef?.current?.focus?.();
+                      }}
+                    />
+                  </View>
                 </View>
-                <View style={{flex: 1}}>
-                  <RenderDatePicker
-                    mode="time"
-                    label="Time"
-                    ref={followUpTimeRef}
-                    name="followup_time"
-                    containerStyles={styles.input}
-                    value={values.followup_time}
-                    // error={errors.followup_time}
-                    onChange={date => {
-                      setFieldValue('followup_time', date);
-                      assignToRef?.current?.focus?.();
-                    }}
-                  />
-                </View>
+                <Subheading style={{marginTop: 20}}>Remark</Subheading>
+                <RenderInput
+                  name="remarks"
+                  multiline
+                  numberOfLines={8}
+                  label="Response"
+                  containerStyles={styles.input}
+                  value={values.remarks}
+                  onChangeText={handleChange('remarks')}
+                  onBlur={handleBlur('remarks')}
+                  onSubmitEditing={handleSubmit}
+                  returnKeyType="done"
+                  error={errors.remarks}
+                />
               </View>
-              <Subheading style={{marginTop: 20}}>Call Response</Subheading>
-              <RenderInput
-                name="remarks"
-                multiline
-                numberOfLines={8}
-                label="Response"
-                containerStyles={styles.input}
-                value={values.remarks}
-                onChangeText={handleChange('remarks')}
-                onBlur={handleBlur('remarks')}
-                onSubmitEditing={handleSubmit}
-                returnKeyType="done"
-                error={errors.remarks}
-              />
-            </View>
-            <View style={styles.actionContainer}>
-              <Button
-                style={{flex: 1, marginHorizontal: 5}}
-                contentStyle={{padding: 3}}
-                theme={{roundness: 15}}
-                onPress={navigation.goBack}>
-                Back
-              </Button>
-              <Button
-                style={{flex: 1, marginHorizontal: 5}}
-                mode="contained"
-                contentStyle={{padding: 3}}
-                theme={{roundness: 15}}
-                onPress={handleSubmit}>
-                Save
-              </Button>
-            </View>
-          </ScrollView>
-        )}
-      </Formik>
-    </View>
+              <View style={styles.actionContainer}>
+                <Button
+                  style={{
+                    flex: 1,
+                    marginHorizontal: 5,
+                    borderWidth: 1,
+                    borderColor: theme.colors.primary,
+                  }}
+                  contentStyle={{padding: 3}}
+                  theme={{roundness: 15}}
+                  onPress={navigation.goBack}>
+                  Back
+                </Button>
+                <Button
+                  style={{flex: 1, marginHorizontal: 5}}
+                  mode="contained"
+                  contentStyle={{padding: 3}}
+                  theme={{roundness: 15}}
+                  onPress={handleSubmit}>
+                  Save
+                </Button>
+              </View>
+            </ScrollView>
+          )}
+        </Formik>
+      </View>
+    </SafeAreaView>
   );
 };
 

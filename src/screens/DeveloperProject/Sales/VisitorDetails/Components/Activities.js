@@ -49,6 +49,7 @@ function DetailCard(props) {
     type,
   } = props;
   const date = dayjs(activity.created).format('DD-MM-YYYY');
+  const time = dayjs(activity.created).format('hh:mm:ss');
   const followup_date = dayjs(activity.followup_date).format('DD-MM-YYYY');
   const followup_time = dayjs(activity.followup_time).format('hh:mm');
 
@@ -56,7 +57,10 @@ function DetailCard(props) {
 
   return (
     <View style={styles.detailCard}>
-      <Text>{date}</Text>
+      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+        <Text>{date}</Text>
+        <Text>{time}</Text>
+      </View>
       <View style={styles.commentDetailText}>
         {type === 'visitor_comment' ? (
           activity.is_important ? (

@@ -16,6 +16,7 @@ import {
   Divider,
   Menu,
   Searchbar,
+  Text,
 } from 'react-native-paper';
 import useSalesActions from 'redux/actions/salesActions';
 import {useSelector} from 'react-redux';
@@ -278,7 +279,6 @@ function Visitors(props) {
         setFilter={setFilter}
         setSearchQuery={setSearchQuery}
       />
-
       <RenderVisitors
         {...props}
         visitors={filteredVisitors}
@@ -306,6 +306,7 @@ const styles = StyleSheet.create({
   contentContainer: {
     flexGrow: 1,
     marginTop: 2,
+    marginBottom: 15,
   },
   statsRowMainContainer: {
     paddingVertical: 5,
