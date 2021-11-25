@@ -1,10 +1,10 @@
 import React, {useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import RenderSelect from 'components/Atoms/RenderSelect';
-import {useTranslation} from 'react-i18next';
 import AddComments from './Components/AddComments';
 import AddCallLogs from './Components/AddCallLogs';
 import AddFollowUp from './Components/AddFollowUp';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const AddDetails = props => {
   const {route} = props;
@@ -28,18 +28,20 @@ const AddDetails = props => {
   }
 
   return (
-    <View style={styles.container}>
-      <RenderSelect
-        name="assign_to"
-        ref={assignToRef}
-        label={'Select'}
-        options={['Comment', 'Call Log', 'Follow-up']}
-        containerStyles={styles.input}
-        value={type}
-        onSelect={v => setType(v)}
-      />
-      {renderSwitch()}
-    </View>
+    <SafeAreaView style={{flexGrow: 1}}>
+      <View style={styles.container}>
+        <RenderSelect
+          name="assign_to"
+          ref={assignToRef}
+          label={'Select'}
+          options={['Comment', 'Call Log', 'Follow-up']}
+          containerStyles={styles.input}
+          value={type}
+          onSelect={v => setType(v)}
+        />
+        {renderSwitch()}
+      </View>
+    </SafeAreaView>
   );
 };
 

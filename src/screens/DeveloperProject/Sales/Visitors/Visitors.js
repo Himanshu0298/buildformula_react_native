@@ -16,7 +16,6 @@ import {
   Divider,
   Menu,
   Searchbar,
-  Text,
 } from 'react-native-paper';
 import useSalesActions from 'redux/actions/salesActions';
 import {useSelector} from 'react-redux';
@@ -134,8 +133,7 @@ function RenderVisitors(props) {
         data={visitors}
         extraData={visitors}
         keyExtractor={(item, index) => index.toString()}
-        style={styles.scrollView}
-        contentContainerStyle={{flexGrow: 1, paddingBottom: 60}}
+        contentContainerStyle={{paddingBottom: 240}}
         showsVerticalScrollIndicator={false}
         renderItem={({item, index}) => (
           <RenderVisitorItem
@@ -279,6 +277,7 @@ function Visitors(props) {
         setFilter={setFilter}
         setSearchQuery={setSearchQuery}
       />
+
       <RenderVisitors
         {...props}
         visitors={filteredVisitors}
@@ -304,7 +303,6 @@ export default withTheme(Visitors);
 
 const styles = StyleSheet.create({
   contentContainer: {
-    flexGrow: 1,
     marginTop: 2,
     marginBottom: 15,
   },
@@ -312,7 +310,6 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     paddingHorizontal: 5,
     flexDirection: 'row',
-
     alignItems: 'center',
     backgroundColor: '#fff',
   },
@@ -358,10 +355,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 20,
     bottom: 20,
-  },
-  scrollView: {
-    flexGrow: 1,
-    marginBottom: 15,
   },
   noResultContainer: {
     flex: 1,
