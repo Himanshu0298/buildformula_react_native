@@ -24,7 +24,7 @@ import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 function RenderBrokerList(props) {
-  const {theme, data, navigation, navToDetails} = props;
+  const {theme, data, navigation, navToDetails, index} = props;
   const {id, first_name, last_name, phone, email, dealsClosed} = data;
 
   return (
@@ -47,7 +47,7 @@ function RenderBrokerList(props) {
               color={theme.colors.primary}
               opacity={0.2}
               style={styles.id}>
-              <Text>{id}</Text>
+              <Text>{index + 1}</Text>
             </OpacityButton>
           </Text>
         </View>
@@ -116,6 +116,7 @@ function RenderBrokers(props) {
         renderItem={({item, index}) => (
           <RenderBrokerList
             {...props}
+            index={index}
             data={item}
             navigation={navigation}
             navToDetails={navToDetails}
@@ -149,10 +150,6 @@ function BrokerList(props) {
   const {loading, visitors, visitorAnalytics, brokersList} = useSelector(
     s => s.sales,
   );
-
-  console.log('----->brokersList', brokersList);
-
-  // const _brokersList = brokersList.sort((a, b) => (a.id > b.id ? 1 : -1));
 
   const modulePermission = getPermissions('Visitors');
 

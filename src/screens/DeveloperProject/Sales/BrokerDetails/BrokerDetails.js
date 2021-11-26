@@ -43,14 +43,21 @@ function BrokerDetails(props) {
   console.log('----->brokerDetails', brokerDetails);
 
   useEffect(() => {
-    getBrokerDetails({project_id: projectId, broker_id: userData.id});
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    (async () => {
+      await getBrokerDetails({project_id: projectId, broker_id: userData.id});
+    })();
   }, [projectId, userData.id]);
 
   const renderScene = ({route: {key}}) => {
     switch (key) {
       case 0:
-        return <BrokerInfo userData={userData} navigation={navigation} />;
+        return (
+          <BrokerInfo
+            brokerInfo={brokerDetails.brokerInfo}
+            userData={userData}
+            navigation={navigation}
+          />
+        );
       case 1:
         return (
           <DealsClosed

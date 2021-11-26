@@ -20,6 +20,7 @@ const RenderPairData = props => {
 
 function BrokerInfo(props) {
   const {first_name, last_name, email, phone, dealsClosed, id} = props.userData;
+  const {brokerInfo} = props;
   const {navigation} = props;
 
   const {selectedProject} = useSelector(s => s.project);
@@ -28,16 +29,14 @@ function BrokerInfo(props) {
   const projectId = selectedProject.id;
 
   const data = [
-    {title: 'First Name', value: first_name},
-    {title: 'Last Name', value: last_name},
-    {title: 'Email', value: email},
-    {title: 'Phone', value: `+91 ${phone}`},
-    {title: 'Deals closed', value: dealsClosed},
+    {title: 'First Name', value: brokerInfo?.first_name},
+    {title: 'Last Name', value: brokerInfo?.last_name},
+    {title: 'Email', value: brokerInfo?.email},
+    {title: 'Phone', value: `+91 ${brokerInfo?.phone}`},
+    {title: 'Deals closed', value: brokerInfo?.dealClosedCount},
   ];
 
   const handleDeleteButton = (_id, project_id) => {
-    console.log('----->project_id', project_id);
-    console.log('----->id', id);
     deleteBroker({project_id: project_id, broker_id: _id});
   };
 
@@ -62,8 +61,7 @@ function BrokerInfo(props) {
           />
           <Text style={{color: theme.colors.primary, fontSize: 20}}>Edit</Text>
         </OpacityButton>
-        {console.log('----->dealsClosed', dealsClosed)}
-        {dealsClosed == 0 ? (
+        {brokerInfo?.dealClosedCount == 0 ? (
           <OpacityButton
             color={theme.colors.error}
             opacity={0.18}

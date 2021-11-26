@@ -52,8 +52,6 @@ function AddBroker(props) {
 
   const edit = Boolean(broker?.id);
 
-  console.log('----->broker in add broker', broker);
-
   const {loading} = useSelector(s => s.sales);
 
   const {selectedProject} = useSelector(s => s.project);
@@ -95,7 +93,7 @@ function AddBroker(props) {
     }
 
     await getBrokersList({project_id: projectId});
-    navigation.goBack();
+    navigation.navigate('BrokerList');
   };
 
   return (
@@ -121,6 +119,7 @@ function AddBroker(props) {
                 autoCapitalize="none"
                 returnKeyType={'next'}
                 error={errors.firstName}
+                style={styles.input}
               />
               <RenderInput
                 name="lastName"
@@ -132,6 +131,7 @@ function AddBroker(props) {
                 autoCapitalize="none"
                 returnKeyType={'next'}
                 error={errors.lastName}
+                style={styles.input}
               />
               <RenderInput
                 name="email"
@@ -143,6 +143,7 @@ function AddBroker(props) {
                 autoCapitalize="none"
                 returnKeyType={'next'}
                 error={errors.email}
+                style={styles.input}
               />
               <RenderInput
                 name="phone"
@@ -154,6 +155,7 @@ function AddBroker(props) {
                 autoCapitalize="none"
                 returnKeyType={'next'}
                 error={errors.phone}
+                style={styles.input}
               />
               <View style={styles.dialogActionContainer}>
                 <Button
@@ -168,32 +170,6 @@ function AddBroker(props) {
                   onPress={handleSubmit}>
                   Save
                 </Button>
-                {/* <OpacityButton
-                  color={'#4872F4'}
-                  opacity={0.18}
-                  style={styles.Button}
-                  onPress={() => console.log('----->Edit button pressed')}>
-                  <MaterialIcons
-                    style={{marginRight: 10}}
-                    name="edit"
-                    color={theme.colors.primary}
-                    size={20}
-                  />
-                  <Text style={{color: theme.colors.primary}}>Edit</Text>
-                </OpacityButton>
-                <OpacityButton
-                  color={theme.colors.error}
-                  opacity={0.18}
-                  style={styles.Button}
-                  onPress={() => console.log('----->Edit button pressed')}>
-                  <MaterialIcons
-                    name="delete"
-                    color={theme.colors.error}
-                    style={{marginRight: 10}}
-                    size={20}
-                  />
-                  <Text style={{color: theme.colors.primary}}>Delete</Text>
-                </OpacityButton> */}
               </View>
             </View>
           );
@@ -215,5 +191,8 @@ const styles = StyleSheet.create({
   Button: {
     margin: 10,
     borderRadius: 15,
+  },
+  input: {
+    marginTop: 10,
   },
 });

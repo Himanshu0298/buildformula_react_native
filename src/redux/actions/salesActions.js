@@ -241,7 +241,7 @@ export default function useSalesActions() {
 
     updateBroker: params =>
       dispatch({
-        type: types.UPDATE_FOLLOW_UP,
+        type: types.UPDATE_BROKER,
         payload: async () => {
           try {
             const {data} = _res(await updateBroker(params));
