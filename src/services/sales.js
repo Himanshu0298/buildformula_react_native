@@ -125,8 +125,7 @@ export default function useSalesServices() {
       return instance.post('/update_broker', data, config({multipart: false}));
     },
     deleteBroker: data => {
-      console.log('----->data in delete api ', data);
-      return instance.post('/delete_broker', data, config());
+      return instance.post('/delete_broker', data, config({multipart: false}));
     },
     getPipelinesOrderList: data => {
       return instance.post(

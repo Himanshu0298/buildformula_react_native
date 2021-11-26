@@ -1,25 +1,14 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, View, ScrollView} from 'react-native';
-import {
-  withTheme,
-  Caption,
-  Paragraph,
-  FAB,
-  IconButton,
-  Text,
-} from 'react-native-paper';
-import {getPermissions, getShadow} from 'utils';
+import {StyleSheet, View} from 'react-native';
+import {withTheme} from 'react-native-paper';
+import {getShadow} from 'utils';
 import useSalesActions from 'redux/actions/salesActions';
 import {useSelector} from 'react-redux';
-import dayjs from 'dayjs';
 import Spinner from 'react-native-loading-spinner-overlay';
-import {theme} from 'styles/theme';
 import ProjectHeader from 'components/Molecules/Layout/ProjectHeader';
-import {PRIORITY_COLORS, STRUCTURE_TYPE_LABELS} from 'utils/constant';
 import {TabView} from 'react-native-tab-view';
 import Layout from 'utils/Layout';
 import MaterialTabBar from 'components/Atoms/MaterialTabBar';
-import CustomBadge from 'components/Atoms/CustomBadge';
 import BrokerInfo from './Components/BrokerInfo';
 import DealsClosed from './Components/DealsClosed';
 
@@ -40,13 +29,14 @@ function BrokerDetails(props) {
     {key: 1, title: 'Deals Closed'},
   ]);
 
-  console.log('----->brokerDetails', brokerDetails);
-
   useEffect(() => {
-    (async () => {
-      await getBrokerDetails({project_id: projectId, broker_id: userData.id});
-    })();
+    loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectId, userData.id]);
+
+  const loadData = async () => {
+    await getBrokerDetails({project_id: projectId, broker_id: userData.id});
+  };
 
   const renderScene = ({route: {key}}) => {
     switch (key) {

@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo} from 'react';
+import React, {useEffect} from 'react';
 import {
   StyleSheet,
   View,
@@ -21,11 +21,10 @@ import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
 import NoDataFound from 'assets/images/NoDataFound.png';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
-import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 function RenderBrokerList(props) {
-  const {theme, data, navigation, navToDetails, index} = props;
-  const {id, first_name, last_name, phone, email, dealsClosed} = data;
+  const {theme, data, navigation, index} = props;
+  const {first_name, last_name, phone, email, dealsClosed} = data;
 
   return (
     <TouchableOpacity
@@ -54,23 +53,11 @@ function RenderBrokerList(props) {
         <View style={{flexGrow: 1}}>
           <View
             style={{
-              justifyContent: 'space-between',
               flexDirection: 'row',
             }}>
             <Text>
               {first_name} {last_name}
             </Text>
-            <OpacityButton
-              color={theme.colors.primary}
-              opacity={0.2}
-              onPress={() => console.log('----->options button pressed')}
-              style={styles.optionIconButton}>
-              <MaterialIcons
-                name={'dots-vertical'}
-                color={theme.colors.primary}
-                size={15}
-              />
-            </OpacityButton>
           </View>
           <View
             style={{
@@ -89,16 +76,7 @@ function RenderBrokerList(props) {
 }
 
 function RenderBrokers(props) {
-  const {
-    theme,
-    data,
-    onRefresh,
-    showAnalyticsRow,
-    visitorAnalytics,
-    navToDetails,
-    setFilter,
-    navigation,
-  } = props;
+  const {theme, data, onRefresh, navToDetails, navigation} = props;
 
   return (
     <View style={styles.contentContainer}>
@@ -160,6 +138,7 @@ function BrokerList(props) {
 
   useEffect(() => {
     getBrokersList({project_id: projectId});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectId]);
 
   const navToDetails = id => {
@@ -200,9 +179,6 @@ const styles = StyleSheet.create({
   scrollView: {
     flexGrow: 1,
     marginBottom: 15,
-  },
-  optionIconButton: {
-    borderRadius: 20,
   },
   id: {
     borderRadius: 20,

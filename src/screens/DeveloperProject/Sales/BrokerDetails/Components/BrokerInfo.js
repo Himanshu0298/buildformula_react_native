@@ -1,11 +1,9 @@
 import React from 'react';
 import {StyleSheet, View, ScrollView} from 'react-native';
-import {withTheme, Text, Subheading} from 'react-native-paper';
+import {withTheme, Button, Subheading} from 'react-native-paper';
 import useSalesActions from 'redux/actions/salesActions';
 import {useSelector} from 'react-redux';
 import {theme} from 'styles/theme';
-import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const RenderPairData = props => {
   const {title, value} = props;
@@ -19,12 +17,10 @@ const RenderPairData = props => {
 };
 
 function BrokerInfo(props) {
-  const {first_name, last_name, email, phone, dealsClosed, id} = props.userData;
-  const {brokerInfo} = props;
-  const {navigation} = props;
+  const {navigation, brokerInfo} = props;
 
   const {selectedProject} = useSelector(s => s.project);
-  const {deleteBroker} = useSalesActions();
+  const {deleteBroker, getBrokersList} = useSalesActions();
 
   const projectId = selectedProject.id;
 
@@ -36,8 +32,10 @@ function BrokerInfo(props) {
     {title: 'Deals closed', value: brokerInfo?.dealClosedCount},
   ];
 
-  const handleDeleteButton = (_id, project_id) => {
-    deleteBroker({project_id: project_id, broker_id: _id});
+  const handleDeleteButton = async () => {
+    await deleteBroker({project_id: projectId, broker_id: brokerInfo.id});
+    await getBrokersList({project_id: projectId});
+    navigation.navigate('BrokerList');
   };
 
   return (
@@ -45,7 +43,33 @@ function BrokerInfo(props) {
       {data.map(i => {
         return <RenderPairData title={i.title} value={i.value} />;
       })}
-      <View style={styles.dialogActionContainer}>
+      <View style={styles.actionContainer}>
+        <Button
+          style={{flex: 1, marginHorizontal: 5}}
+          icon="pencil-outline"
+          mode="contained"
+          contentStyle={{padding: 3}}
+          theme={{roundness: 15}}
+          onPress={() =>
+            navigation.navigate('AddBroker', {broker: props.userData})
+          }>
+          {'Edit'}
+        </Button>
+        {!Number(brokerInfo?.dealClosedCount) ? (
+          <Button
+            style={{flex: 1, marginHorizontal: 5}}
+            icon="delete"
+            mode="contained"
+            color={theme.colors.error}
+            contentStyle={{padding: 3}}
+            theme={{roundness: 15}}
+            onPress={handleDeleteButton}>
+            {'Delete'}
+          </Button>
+        ) : null}
+      </View>
+
+      {/* <View style={styles.dialogActionContainer}>
         <OpacityButton
           color={'#4872F4'}
           opacity={0.18}
@@ -61,6 +85,7 @@ function BrokerInfo(props) {
           />
           <Text style={{color: theme.colors.primary, fontSize: 20}}>Edit</Text>
         </OpacityButton>
+
         {brokerInfo?.dealClosedCount == 0 ? (
           <OpacityButton
             color={theme.colors.error}
@@ -78,22 +103,18 @@ function BrokerInfo(props) {
             </Text>
           </OpacityButton>
         ) : null}
-      </View>
+      </View> */}
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  dialogActionContainer: {
+  actionContainer: {
+    marginTop: 25,
+    paddingHorizontal: 10,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 20,
-  },
-  Button: {
-    width: '50%',
-    margin: 10,
-    padding: 5,
+    justifyContent: 'space-between',
   },
 });
 

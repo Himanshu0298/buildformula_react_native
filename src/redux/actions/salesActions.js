@@ -441,7 +441,6 @@ export default function useSalesActions() {
         type: types.DELETE_BROKER,
         payload: async () => {
           try {
-            console.log('----->params in delete broker', params);
             const response = _res(await deleteBroker(params));
             const {data} = response;
 
