@@ -1,4 +1,3 @@
-import RenderInput from 'components/Atoms/RenderInput';
 import RenderSelect from 'components/Atoms/RenderSelect';
 import React, {useMemo} from 'react';
 import {View, StyleSheet, ScrollView} from 'react-native';
@@ -10,7 +9,7 @@ import useSalesActions from 'redux/actions/salesActions';
 import {useSelector} from 'react-redux';
 import dayjs from 'dayjs';
 import {theme} from 'styles/theme';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import RenderTextBox from 'components/Atoms/RenderTextbox';
 
 const schema = Yup.object().shape({
   last_date: Yup.date('Invalid').required('Required'),
@@ -56,117 +55,113 @@ const AddCallLogs = props => {
   };
 
   return (
-    <SafeAreaView>
-      <View style={{flexGrow: 1}}>
-        <Title style={styles.createCallLogs}>Create call log</Title>
-        <Formik
-          validateOnBlur={false}
-          validateOnChange={false}
-          initialValues={{}}
-          validationSchema={schema}
-          onSubmit={onSubmit}>
-          {({
-            handleChange,
-            setFieldValue,
-            values,
-            handleSubmit,
-            handleBlur,
-            errors,
-          }) => (
-            <View style={styles.contentContainer}>
-              <View style={styles.formContainer}>
-                <ScrollView keyboardShouldPersistTaps="handled">
-                  <View style={{paddingLeft: 10, paddingRight: 10}}>
-                    <View style={{flexDirection: 'row'}}>
-                      <View style={{flex: 1, marginRight: 10}}>
-                        <RenderDatePicker
-                          name="last_date"
-                          label="Date"
-                          ref={followUpDateRef}
-                          containerStyles={styles.input}
-                          value={values.last_date}
-                          error={errors.last_date}
-                          min={new Date()}
-                          onChange={date => {
-                            setFieldValue('last_date', date);
-                            followUpTimeRef?.current?.focus?.();
-                          }}
-                        />
-                      </View>
-                      <View style={{flex: 1}}>
-                        <RenderDatePicker
-                          mode="time"
-                          label="Time"
-                          ref={followUpTimeRef}
-                          name="last_time"
-                          containerStyles={styles.input}
-                          value={values.last_time}
-                          error={errors.last_time}
-                          onChange={time => {
-                            setFieldValue('last_time', time);
-                            assignToRef?.current?.focus?.();
-                          }}
-                        />
-                      </View>
+    <View style={{flexGrow: 1}}>
+      <Title style={styles.createCallLogs}>Create call log</Title>
+      <Formik
+        validateOnBlur={false}
+        validateOnChange={false}
+        initialValues={{}}
+        validationSchema={schema}
+        onSubmit={onSubmit}>
+        {({
+          handleChange,
+          setFieldValue,
+          values,
+          handleSubmit,
+          handleBlur,
+          errors,
+        }) => (
+          <View style={styles.contentContainer}>
+            <View style={styles.formContainer}>
+              <ScrollView keyboardShouldPersistTaps="handled">
+                <View style={{paddingLeft: 10, paddingRight: 10}}>
+                  <View style={{flexDirection: 'row'}}>
+                    <View style={{flex: 1, marginRight: 10}}>
+                      <RenderDatePicker
+                        name="last_date"
+                        label="Date"
+                        ref={followUpDateRef}
+                        containerStyles={styles.input}
+                        value={values.last_date}
+                        error={errors.last_date}
+                        min={new Date()}
+                        onChange={date => {
+                          setFieldValue('last_date', date);
+                          followUpTimeRef?.current?.focus?.();
+                        }}
+                      />
                     </View>
-                    <Subheading style={styles.callOutcomes}>
-                      Call outcome
-                    </Subheading>
-                    <RenderSelect
-                      name="call_outcome"
-                      ref={assignToRef}
-                      label="Select Outcome"
-                      options={outcomeOptions}
-                      containerStyles={styles.input}
-                      value={values.call_outcome}
-                      error={errors.call_outcome}
-                      onSelect={value => {
-                        setFieldValue('call_outcome', value);
-                      }}
-                    />
-                    <RenderInput
-                      name="remarks"
-                      multiline
-                      numberOfLines={8}
-                      label="Response"
-                      containerStyles={styles.input}
-                      value={values.remarks}
-                      onChangeText={handleChange('remarks')}
-                      onBlur={handleBlur('remarks')}
-                      returnKeyType="done"
-                      error={errors.remarks}
-                    />
+                    <View style={{flex: 1}}>
+                      <RenderDatePicker
+                        mode="time"
+                        label="Time"
+                        ref={followUpTimeRef}
+                        name="last_time"
+                        containerStyles={styles.input}
+                        value={values.last_time}
+                        error={errors.last_time}
+                        onChange={time => {
+                          setFieldValue('last_time', time);
+                          assignToRef?.current?.focus?.();
+                        }}
+                      />
+                    </View>
                   </View>
-                </ScrollView>
-              </View>
-
-              <View style={styles.actionContainer}>
-                <Button
-                  style={{
-                    flex: 1,
-                    marginHorizontal: 5,
-                    borderWidth: 1,
-                    borderColor: theme.colors.primary,
-                  }}
-                  contentStyle={{padding: 3}}
-                  theme={{roundness: 15}}
-                  onPress={navigation.goBack}>
-                  Back
-                </Button>
-                <Button
-                  style={{flex: 1, marginHorizontal: 5}}
-                  mode="contained"
-                  contentStyle={{padding: 3}}
-                  theme={{roundness: 15}}
-                  onPress={handleSubmit}>
-                  Save
-                </Button>
-              </View>
+                  <Subheading style={styles.callOutcomes}>
+                    Call outcome
+                  </Subheading>
+                  <RenderSelect
+                    name="call_outcome"
+                    ref={assignToRef}
+                    label="Select Outcome"
+                    options={outcomeOptions}
+                    containerStyles={styles.input}
+                    value={values.call_outcome}
+                    error={errors.call_outcome}
+                    onSelect={value => {
+                      setFieldValue('call_outcome', value);
+                    }}
+                  />
+                  <RenderTextBox
+                    name="remarks"
+                    numberOfLines={8}
+                    label="Response"
+                    containerStyles={styles.input}
+                    value={values.remarks}
+                    onChangeText={handleChange('remarks')}
+                    onBlur={handleBlur('remarks')}
+                    error={errors.remarks}
+                  />
+                </View>
+              </ScrollView>
             </View>
-          )}
-        </Formik>
-      </View>
-    </SafeAreaView>
+
+            <View style={styles.actionContainer}>
+              <Button
+                style={{
+                  flex: 1,
+                  marginHorizontal: 5,
+                  borderWidth: 1,
+                  borderColor: theme.colors.primary,
+                }}
+                contentStyle={{padding: 3}}
+                theme={{roundness: 15}}
+                onPress={navigation.goBack}>
+                Back
+              </Button>
+              <Button
+                style={{flex: 1, marginHorizontal: 5}}
+                mode="contained"
+                contentStyle={{padding: 3}}
+                theme={{roundness: 15}}
+                onPress={handleSubmit}>
+                Save
+              </Button>
+            </View>
+          </View>
+        )}
+      </Formik>
+    </View>
   );
 };
 
