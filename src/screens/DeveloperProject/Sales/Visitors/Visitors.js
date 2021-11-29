@@ -68,6 +68,8 @@ function StatsRow({visitorAnalytics}) {
 
 function RenderVisitorItem(props) {
   const {theme, data, navToDetails} = props;
+
+  console.log('----->data in visitors list', data);
   const {
     id,
     first_name,
@@ -76,6 +78,7 @@ function RenderVisitorItem(props) {
     follow_up_date,
     priority = 'low',
     inquiry_for,
+    created,
   } = data;
 
   return (
@@ -89,7 +92,7 @@ function RenderVisitorItem(props) {
         </View>
         <View style={styles.rowItemContainer}>
           <Subheading style={styles.visitorTitle}>
-            {dayjs(follow_up_date).format('DD MMM')}
+            {dayjs(created).format('DD MMM')}
           </Subheading>
           <CustomBadge
             color={PRIORITY_COLORS[priority]}
@@ -269,7 +272,6 @@ function Visitors(props) {
     <>
       <Spinner visible={loading} textContent={''} />
       <ProjectHeader />
-
       <Header
         {...props}
         filter={filter}

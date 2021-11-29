@@ -1,30 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {StyleSheet, View, ScrollView} from 'react-native';
-import {
-  withTheme,
-  Caption,
-  Paragraph,
-  FAB,
-  IconButton,
-  Text,
-  Button,
-  Subheading,
-} from 'react-native-paper';
-import {getPermissions, getShadow} from 'utils';
+import {withTheme, Text, Button} from 'react-native-paper';
 import useSalesActions from 'redux/actions/salesActions';
 import {useSelector} from 'react-redux';
-import dayjs from 'dayjs';
-import Spinner from 'react-native-loading-spinner-overlay';
 import {theme} from 'styles/theme';
-import ProjectHeader from 'components/Molecules/Layout/ProjectHeader';
-import {PRIORITY_COLORS, STRUCTURE_TYPE_LABELS} from 'utils/constant';
-import {TabView} from 'react-native-tab-view';
-import Layout from 'utils/Layout';
-import MaterialTabBar from 'components/Atoms/MaterialTabBar';
-import CustomBadge from 'components/Atoms/CustomBadge';
-import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {NavigationContainer} from '@react-navigation/native';
+import RichTextEditor from 'components/Atoms/RichTextEditor';
 import RenderInput from 'components/Atoms/RenderInput';
 import * as Yup from 'yup';
 import {Formik} from 'formik';
@@ -37,6 +17,8 @@ function Remark(props) {
   const {navigation, route} = props;
   const {remark} = route?.params || {};
 
+  const isHtml = remark?.includes('<') && remark?.includes('>');
+
   console.log('----->remark', remark);
 
   const {selectedProject} = useSelector(s => s.project);
@@ -48,58 +30,50 @@ function Remark(props) {
     console.log('----->values', values);
   };
 
+  const richText = React.createRef();
+  // || useRef();
+
   return (
     <ScrollView style={{padding: 20}}>
-      {/* <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}> */}
-      <Text style={{color: theme.colors.primary}}>Remark</Text>
-      {/* <View style={{flexDirection: 'row'}}> */}
-      {/* <OpacityButton
-            color={theme.colors.primary}
-            opacity={0.18}
-            style={{borderRadius: 20, marginLeft: 10, marginBottom: 10}}
-            onPress={() => console.log('----->button pressed')}>
-            <MaterialIcons
-              name="check"
-              color={theme.colors.primary}
-              size={15}
-            />
-          </OpacityButton>
-          <OpacityButton
-            color={theme.colors.error}
-            opacity={0.18}
-            style={{borderRadius: 20, marginLeft: 10, marginBottom: 10}}
-            onPress={() => navigation.goBack()}>
-            <MaterialIcons name="edit" color={theme.colors.primary} size={15} />
-          </OpacityButton> */}
-      {/* </View> */}
-      {/* </View> */}
+      ]<Text style={{color: theme.colors.primary}}>Remark</Text>
+      {/* <RichToolbar editor={richText} /> */}
       <Formik
         validateOnBlur={false}
         validateOnChange={false}
         initialValues={{remark: remark}}
         validationSchema={schema}
         onSubmit={onSubmit}>
-        {({values, errors, handleChange, handleBlur, handleSubmit}) => {
+        {({
+          values,
+          errors,
+          setFieldValue,
+          handleChange,
+          handleBlur,
+          handleSubmit,
+        }) => {
           return (
             <View style={styles.dialogContentContainer}>
               {console.log('----->errors', errors)}
-              <RenderInput
+              {/* <RenderInput
                 name="remark"
                 multiline
                 numberOfLines={8}
                 label="Remark"
-                // containerStyles={styles.input}
                 value={values.remark}
                 onChangeText={handleChange('remark')}
                 onBlur={handleBlur('remark')}
                 onSubmitEditing={handleSubmit}
                 returnKeyType="done"
                 error={errors.remark}
+              /> */}
+
+              <RichTextEditor
+                name="remark"
+                placeholder="Remark"
+                value={values.remark}
+                onChangeText={value => {
+                  setFieldValue('remark', value);
+                }}
               />
 
               <View style={styles.actionContainer}>

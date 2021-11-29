@@ -8,6 +8,7 @@ import {useSelector} from 'react-redux';
 import CustomCheckbox from 'components/Atoms/CustomCheckbox';
 import {theme} from 'styles/theme';
 import RenderTextBox from 'components/Atoms/RenderTextbox';
+import RichTextEditor from 'components/Atoms/RichTextEditor';
 
 const schema = Yup.object().shape({
   remarks: Yup.string().required('Please enter a comment'),
@@ -55,13 +56,21 @@ const AddComments = props => {
               }
             />
 
-            <RenderTextBox
+            {/* <RenderTextBox
               name="remarks"
               numberOfLines={8}
               label={'Add Comment'}
               containerStyles={styles.input}
               value={values.remarks}
               onChangeText={handleChange('remarks')}
+            /> */}
+            <RichTextEditor
+              name="remarks"
+              placeholder="Response"
+              value={values.remarks}
+              onChangeText={value => {
+                setFieldValue('remarks', value);
+              }}
             />
           </View>
           <View style={styles.actionContainer}>

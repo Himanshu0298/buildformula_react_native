@@ -48,7 +48,7 @@ const schema = Yup.object().shape({
 function AddBroker(props) {
   const {theme, navigation, route} = props;
   const {broker} = route?.params || {};
-  const {first_name, last_name, id, email, phone} = broker;
+  // const {first_name, last_name, id, email, phone} = broker;
 
   const edit = Boolean(broker?.id);
 
@@ -63,10 +63,10 @@ function AddBroker(props) {
   const initialValues = useMemo(() => {
     if (edit) {
       return {
-        firstName: first_name,
-        lastName: last_name,
-        email: email,
-        phone: phone,
+        firstName: broker.first_name,
+        lastName: broker.last_name,
+        email: broker.email,
+        phone: broker.phone,
       };
     }
     return {firstName: '', lastName: '', email: '', phone: ''};

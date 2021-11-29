@@ -11,6 +11,7 @@ import {useSelector} from 'react-redux';
 import dayjs from 'dayjs';
 import {theme} from 'styles/theme';
 import RenderTextBox from 'components/Atoms/RenderTextbox';
+import RichTextEditor from 'components/Atoms/RichTextEditor';
 
 const schema = Yup.object().shape({
   followup_date: Yup.date('Invalid').required('Required'),
@@ -117,8 +118,8 @@ const AddFollowUp = props => {
                   />
                 </View>
               </View>
-              <Subheading style={{marginTop: 20}}>Remark</Subheading>
-              <RenderTextBox
+              {/* <Subheading style={{marginTop: 20}}>Remark</Subheading> */}
+              {/* <RenderTextBox
                 name="remarks"
                 numberOfLines={8}
                 label="Response"
@@ -128,6 +129,14 @@ const AddFollowUp = props => {
                 onBlur={handleBlur('remarks')}
                 onSubmitEditing={handleSubmit}
                 error={errors.remarks}
+              /> */}
+              <RichTextEditor
+                name="remarks"
+                placeholder="Response"
+                value={values.remarks}
+                onChangeText={value => {
+                  setFieldValue('remarks', value);
+                }}
               />
             </View>
             <View style={styles.actionContainer}>

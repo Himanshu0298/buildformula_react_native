@@ -117,7 +117,6 @@ function PersonalTab(props) {
             error={errors.phone}
             left={<TextInput.Affix text="+91" />}
           />
-          {console.log('----->occupationOptions', occupationOptions)}
           <RenderSelect
             name="occupation"
             ref={occupationRef}
@@ -308,14 +307,14 @@ function InquiryTab(props) {
             />
           ) : null}
           <RenderTextBox
-            name="remark"
+            name="remarks"
             numberOfLines={5}
             minHeight={120}
             label={t('label_remark')}
             containerStyles={styles.input}
-            value={values.remark}
-            onChangeText={handleChange('remark')}
-            onBlur={handleBlur('remark')}
+            value={values.remarks}
+            onChangeText={handleChange('remarks')}
+            onBlur={handleBlur('remarks')}
             onSubmitEditing={handleSubmit}
             returnKeyType="done"
             error={errors.remark}
@@ -458,6 +457,8 @@ function AddVisitor(props) {
     if (edit) {
       const visitorData = _.cloneDeep(visitor);
 
+      console.log('----->visitorData', visitorData);
+
       delete visitorData.created;
       delete visitorData.modified;
       delete visitorData.id;
@@ -467,6 +468,7 @@ function AddVisitor(props) {
         ..._.omitBy(visitorData, _.isNil),
         follow_up_time: dayjs(visitorData.follow_up_time, 'HH:mm:ss').toDate(),
         bhk: visitorData.bhk,
+        remarks: visitorData.remarks,
       };
     }
     return {priority: 'none'};
@@ -474,6 +476,8 @@ function AddVisitor(props) {
 
   const onSubmit = async values => {
     const inputs = _.cloneDeep(values);
+
+    console.log('----->inputs', inputs);
 
     let data = {
       follow_up_date: dayjs(inputs.follow_up_date).format('DD-MM-YYYY'),
@@ -494,12 +498,15 @@ function AddVisitor(props) {
     if (edit) {
       console.log('----->data', data);
       await updateVisitor({...data, visitor_id: visitor.id});
+      await getVisitor({
+        project_id: selectedProject.id,
+        visitor_id: visitor.id,
+      });
     } else {
       await addVisitor(data);
     }
 
-    await getVisitors({project_id: selectedProject.id, visitor_id: visitor.id});
-    await getVisitor({project_id: selectedProject.id, visitor_id: visitor.id});
+    await getVisitors({project_id: selectedProject.id, filter_mode: 'all'});
 
     await getSalesData({project_id: selectedProject.id});
     navigation.goBack();

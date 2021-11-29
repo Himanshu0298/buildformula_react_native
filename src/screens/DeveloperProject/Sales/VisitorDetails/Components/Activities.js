@@ -160,8 +160,6 @@ function Activities(props) {
     return data;
   }, [visitorActivities]);
 
-  console.log('----->activities', activities);
-
   return (
     <View style={styles.mainContainer}>
       <FilterPanel {...props} />

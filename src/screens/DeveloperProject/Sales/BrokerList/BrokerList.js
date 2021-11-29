@@ -112,7 +112,7 @@ function RenderBrokers(props) {
                 fontSize: 22,
                 marginTop: 10,
               }}>
-              Start adding your visitor
+              Start adding your Brokers
             </Title>
           </View>
         }
@@ -146,7 +146,7 @@ function BrokerList(props) {
   };
 
   return (
-    <View style={{padding: 15, position: 'relative'}}>
+    <View style={{padding: 15, flexGrow: 1}}>
       <Spinner visible={loading} textContent={''} />
       <RenderBrokers
         {...props}
@@ -159,12 +159,14 @@ function BrokerList(props) {
         navToDetails={navToDetails}
       />
       {/* {modulePermission?.editor || modulePermission?.admin ? ( */}
-      <FAB
-        style={[styles.fab, {backgroundColor: theme.colors.primary}]}
-        large
-        icon="plus"
-        onPress={() => navigation.navigate('AddBroker')}
-      />
+      {brokersList.length ? (
+        <FAB
+          style={[styles.fab, {backgroundColor: theme.colors.primary}]}
+          large
+          icon="plus"
+          onPress={() => navigation.navigate('AddBroker')}
+        />
+      ) : null}
     </View>
   );
 }

@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
-import {withTheme} from 'react-native-paper';
+import {Text, withTheme, IconButton, Title} from 'react-native-paper';
 import {getShadow} from 'utils';
 import useSalesActions from 'redux/actions/salesActions';
 import {useSelector} from 'react-redux';
@@ -11,6 +11,7 @@ import Layout from 'utils/Layout';
 import MaterialTabBar from 'components/Atoms/MaterialTabBar';
 import BrokerInfo from './Components/BrokerInfo';
 import DealsClosed from './Components/DealsClosed';
+import {theme} from 'styles/theme';
 
 function BrokerDetails(props) {
   const {route, navigation} = props;
@@ -72,6 +73,17 @@ function BrokerDetails(props) {
             return (
               <View style={styles.headerContainer}>
                 <ProjectHeader {...props} />
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <IconButton
+                    icon="keyboard-backspace"
+                    size={30}
+                    color={theme.colors.primary}
+                    onPress={() => navigation.goBack()}
+                  />
+                  <Title style={{color: theme.colors.primary}}>
+                    Broker Details
+                  </Title>
+                </View>
                 <MaterialTabBar {...tabBarProps} />
               </View>
             );

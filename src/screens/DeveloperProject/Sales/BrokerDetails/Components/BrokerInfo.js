@@ -68,42 +68,6 @@ function BrokerInfo(props) {
           </Button>
         ) : null}
       </View>
-
-      {/* <View style={styles.dialogActionContainer}>
-        <OpacityButton
-          color={'#4872F4'}
-          opacity={0.18}
-          style={styles.Button}
-          onPress={() =>
-            navigation.navigate('AddBroker', {broker: props.userData})
-          }>
-          <MaterialIcons
-            style={{marginRight: 10}}
-            name="edit"
-            color={theme.colors.primary}
-            size={24}
-          />
-          <Text style={{color: theme.colors.primary, fontSize: 20}}>Edit</Text>
-        </OpacityButton>
-
-        {brokerInfo?.dealClosedCount == 0 ? (
-          <OpacityButton
-            color={theme.colors.error}
-            opacity={0.18}
-            style={styles.Button}
-            onPress={() => handleDeleteButton(id, projectId)}>
-            <MaterialIcons
-              name="delete"
-              color={theme.colors.error}
-              style={{marginRight: 10}}
-              size={24}
-            />
-            <Text style={{color: theme.colors.error, fontSize: 20}}>
-              Delete
-            </Text>
-          </OpacityButton>
-        ) : null}
-      </View> */}
     </ScrollView>
   );
 }
