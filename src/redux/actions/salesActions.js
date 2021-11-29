@@ -18,6 +18,7 @@ export default function useSalesActions() {
     getPipelines,
     addPipeline,
     deletePipeline,
+    deleteBroker,
     moveVisitor,
     getUnitsBookingStatus,
     lockUnit,
@@ -30,6 +31,10 @@ export default function useSalesActions() {
     getPipelinesOrderList,
     addVisitorFollowUp,
     updatePipelineOrder,
+    getBrokersList,
+    addBroker,
+    updateBroker,
+    getBrokerDetails,
   } = useSalesServices();
 
   return {
@@ -155,7 +160,7 @@ export default function useSalesActions() {
 
     addVisitorCallLogs: params =>
       dispatch({
-        type: types.ADD_VISITOR_COMMENT,
+        type: types.ADD_VISITOR_CALL_LOGS,
         payload: async () => {
           try {
             const response = _res(await addVisitorCallLogs(params));
@@ -172,7 +177,7 @@ export default function useSalesActions() {
 
     addVisitorFollowUp: params =>
       dispatch({
-        type: types.ADD_VISITOR_COMMENT,
+        type: types.ADD_VISITOR_FOLLOW_UP,
         payload: async () => {
           try {
             const response = _res(await addVisitorFollowUp(params));
@@ -225,6 +230,21 @@ export default function useSalesActions() {
         payload: async () => {
           try {
             const {data} = _res(await updateFollowUp(params));
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    updateBroker: params =>
+      dispatch({
+        type: types.UPDATE_BROKER,
+        payload: async () => {
+          try {
+            const {data} = _res(await updateBroker(params));
             return Promise.resolve(data);
           } catch (error) {
             const message = _err(error);
@@ -371,6 +391,75 @@ export default function useSalesActions() {
         payload: async () => {
           try {
             const response = _res(await getBankList());
+            const {data} = response;
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    getBrokersList: params =>
+      dispatch({
+        type: types.GET_BROKERS_LIST,
+        payload: async () => {
+          try {
+            const response = _res(await getBrokersList(params));
+            const {data} = response;
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    addBroker: formData =>
+      dispatch({
+        type: types.ADD_BROKER,
+        payload: async () => {
+          try {
+            const response = _res(await addBroker(formData));
+            const {data} = response;
+
+            return Promise.resolve(data.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    deleteBroker: params =>
+      dispatch({
+        type: types.DELETE_BROKER,
+        payload: async () => {
+          try {
+            const response = _res(await deleteBroker(params));
+            const {data} = response;
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    getBrokerDetails: params =>
+      dispatch({
+        type: types.GET_BROKER_DETAILS,
+        payload: async () => {
+          try {
+            console.log('----->params', params);
+            const response = _res(await getBrokerDetails(params));
             const {data} = response;
 
             return Promise.resolve(data);

@@ -10,7 +10,6 @@ import * as Yup from 'yup';
 import RenderInput from 'components/Atoms/RenderInput';
 import {useTranslation} from 'react-i18next';
 import RenderSelect from 'components/Atoms/RenderSelect';
-import RenderDatePicker from 'components/Atoms/RenderDatePicker';
 import {PRIORITY_COLORS} from 'utils/constant';
 import Radio from 'components/Atoms/Radio';
 import useSalesActions from 'redux/actions/salesActions';
@@ -41,14 +40,8 @@ const schema = Yup.object().shape({
   current_locality: Yup.string('Invalid'),
   budget_from: Yup.number('Invalid'),
   budget_to: Yup.number('Invalid'),
-  // follow_up_date: Yup.date('Invalid').required('Required'),
-  // follow_up_time: Yup.date('Invalid').required('Required'),
   assign_to: Yup.string('Invalid'),
   inquiry_for: Yup.string('Invalid').required('Required'),
-  // for_bhk: Yup.string('Invalid').when('for_bhk_required', {
-  //   is: true,
-  //   then: Yup.string('Invalid').required('Required'),
-  // }),
 });
 
 function PersonalTab(props) {
@@ -236,7 +229,6 @@ function InquiryTab(props) {
     <KeyboardAwareScrollView
       contentContainerStyle={styles.scrollView}
       keyboardShouldPersistTaps="handled">
-      {console.log('----->values', values)}
       <View style={styles.container}>
         <View style={styles.inputsContainer}>
           <RenderInput
@@ -289,6 +281,7 @@ function InquiryTab(props) {
               />
             </View>
           </View>
+
           <RenderSelect
             name="inquiry_for"
             label={t('label_inquiry_for')}
@@ -314,14 +307,14 @@ function InquiryTab(props) {
             />
           ) : null}
           <RenderTextBox
-            name="remark"
+            name="remarks"
             numberOfLines={5}
             minHeight={120}
             label={t('label_remark')}
             containerStyles={styles.input}
-            value={values.remark}
-            onChangeText={handleChange('remark')}
-            onBlur={handleBlur('remark')}
+            value={values.remarks}
+            onChangeText={handleChange('remarks')}
+            onBlur={handleBlur('remarks')}
             onSubmitEditing={handleSubmit}
             returnKeyType="done"
             error={errors.remark}
@@ -455,6 +448,7 @@ function AddVisitor(props) {
     addVisitor,
     updateVisitor,
     getVisitors,
+    getVisitor,
     // getFollowUps,
     getSalesData,
   } = useSalesActions();
@@ -462,14 +456,19 @@ function AddVisitor(props) {
   const initialValues = useMemo(() => {
     if (edit) {
       const visitorData = _.cloneDeep(visitor);
+
+      console.log('----->visitorData', visitorData);
+
       delete visitorData.created;
       delete visitorData.modified;
       delete visitorData.id;
       delete visitorData.inquiry_status_id;
+
       return {
         ..._.omitBy(visitorData, _.isNil),
         follow_up_time: dayjs(visitorData.follow_up_time, 'HH:mm:ss').toDate(),
         bhk: visitorData.bhk,
+        remarks: visitorData.remarks,
       };
     }
     return {priority: 'none'};
@@ -477,7 +476,8 @@ function AddVisitor(props) {
 
   const onSubmit = async values => {
     const inputs = _.cloneDeep(values);
-    console.log('----->form submited');
+
+    console.log('----->inputs', inputs);
 
     let data = {
       follow_up_date: dayjs(inputs.follow_up_date).format('DD-MM-YYYY'),
@@ -496,13 +496,19 @@ function AddVisitor(props) {
     };
 
     if (edit) {
+      console.log('----->data', data);
       await updateVisitor({...data, visitor_id: visitor.id});
+      await getVisitor({
+        project_id: selectedProject.id,
+        visitor_id: visitor.id,
+      });
     } else {
       await addVisitor(data);
     }
 
-    getVisitors(selectedProject.id);
-    getSalesData(selectedProject.id);
+    await getVisitors({project_id: selectedProject.id, filter_mode: 'all'});
+
+    await getSalesData({project_id: selectedProject.id});
     navigation.goBack();
   };
 
@@ -558,7 +564,6 @@ const styles = StyleSheet.create({
     marginTop: 25,
     paddingHorizontal: 10,
     flexDirection: 'row',
-
     alignItems: 'center',
     justifyContent: 'space-between',
   },

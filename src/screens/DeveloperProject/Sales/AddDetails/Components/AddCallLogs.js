@@ -1,13 +1,16 @@
-import RenderInput from 'components/Atoms/RenderInput';
 import RenderSelect from 'components/Atoms/RenderSelect';
 import React, {useMemo} from 'react';
 import {View, StyleSheet, ScrollView} from 'react-native';
-import {withTheme, Button, Subheading, Title} from 'react-native-paper';
+import {withTheme, Button, Subheading, Title, Text} from 'react-native-paper';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import RenderDatePicker from 'components/Atoms/RenderDatePicker';
 import useSalesActions from 'redux/actions/salesActions';
 import {useSelector} from 'react-redux';
+import dayjs from 'dayjs';
+import {theme} from 'styles/theme';
+import RenderTextBox from 'components/Atoms/RenderTextbox';
+import RichTextEditor from 'components/Atoms/RichTextEditor';
 
 const schema = Yup.object().shape({
   last_date: Yup.date('Invalid').required('Required'),
@@ -17,7 +20,7 @@ const schema = Yup.object().shape({
 });
 
 const AddCallLogs = props => {
-  const {route} = props;
+  const {route, navigation} = props;
   const {visitorId} = route.params || {};
 
   const followUpDateRef = React.useRef();
@@ -27,26 +30,35 @@ const AddCallLogs = props => {
   const {selectedProject, commonData} = useSelector(state => state.project);
   const {callLog_call_outcome_values} = commonData;
 
-  const {addVisitorCallLogs} = useSalesActions();
+  const {addVisitorCallLogs, getVisitorActivities} = useSalesActions();
 
   const outcomeOptions = useMemo(() => {
     return callLog_call_outcome_values.map(i => ({
       label: i.title,
-      value: i.id,
+      value: i.title,
     }));
   }, [callLog_call_outcome_values]);
 
-  const onSubmit = values => {
-    addVisitorCallLogs({
+  const onSubmit = async values => {
+    await addVisitorCallLogs({
       ...values,
+      // last_date:dayjsvalues.last_last_date,
+      last_date: dayjs(values.last_date).format('DD-MM-YYYY'),
+      last_time: dayjs(values.last_time).format('hh:mm:ss'),
       visitor_id: visitorId,
       project_id: selectedProject.id,
     });
+    getVisitorActivities({
+      visitor_id: visitorId,
+      project_id: selectedProject.id,
+    });
+    navigation.goBack();
   };
 
   return (
     <View style={{flexGrow: 1}}>
       <Title style={styles.createCallLogs}>Create call log</Title>
+
       <Formik
         validateOnBlur={false}
         validateOnChange={false}
@@ -62,7 +74,8 @@ const AddCallLogs = props => {
           errors,
         }) => (
           <View style={styles.contentContainer}>
-            <View style={styles.formContainer}>
+            {console.log('----->values', values)}
+            <ScrollView style={styles.formContainer}>
               <ScrollView keyboardShouldPersistTaps="handled">
                 <View style={{paddingLeft: 10, paddingRight: 10}}>
                   <View style={{flexDirection: 'row'}}>
@@ -112,24 +125,44 @@ const AddCallLogs = props => {
                       setFieldValue('call_outcome', value);
                     }}
                   />
-                  <RenderInput
+                  {/* <RenderTextBox
                     name="remarks"
-                    multiline
                     numberOfLines={8}
                     label="Response"
                     containerStyles={styles.input}
                     value={values.remarks}
                     onChangeText={handleChange('remarks')}
                     onBlur={handleBlur('remarks')}
-                    returnKeyType="done"
+                    error={errors.remarks}
+                  /> */}
+                  <RichTextEditor
+                    name="remarks"
+                    placeholder="Response"
+                    value={values.remarks}
+                    onChangeText={value => {
+                      setFieldValue('remarks', value);
+                    }}
                     error={errors.remarks}
                   />
                 </View>
               </ScrollView>
-            </View>
+            </ScrollView>
 
             <View style={styles.actionContainer}>
               <Button
+                style={{
+                  flex: 1,
+                  marginHorizontal: 5,
+                  borderWidth: 1,
+                  borderColor: theme.colors.primary,
+                }}
+                contentStyle={{padding: 3}}
+                theme={{roundness: 15}}
+                onPress={navigation.goBack}>
+                Back
+              </Button>
+              <Button
+                style={{flex: 1, marginHorizontal: 5}}
                 mode="contained"
                 contentStyle={{padding: 3}}
                 theme={{roundness: 15}}
@@ -164,5 +197,13 @@ const styles = StyleSheet.create({
   },
   formContainer: {
     flexGrow: 1,
+  },
+  actionContainer: {
+    paddingHorizontal: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    position: 'absolute',
+    bottom: 0,
   },
 });

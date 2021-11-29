@@ -1,152 +1,30 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, View, ScrollView} from 'react-native';
-import {
-  withTheme,
-  Caption,
-  Paragraph,
-  FAB,
-  IconButton,
-} from 'react-native-paper';
+import {StyleSheet, View} from 'react-native';
+import {withTheme, FAB, Text, IconButton, Title} from 'react-native-paper';
 import {getPermissions, getShadow} from 'utils';
 import useSalesActions from 'redux/actions/salesActions';
 import {useSelector} from 'react-redux';
-import dayjs from 'dayjs';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {theme} from 'styles/theme';
 import ProjectHeader from 'components/Molecules/Layout/ProjectHeader';
-import {PRIORITY_COLORS, STRUCTURE_TYPE_LABELS} from 'utils/constant';
 import {TabView} from 'react-native-tab-view';
 import Layout from 'utils/Layout';
 import MaterialTabBar from 'components/Atoms/MaterialTabBar';
-import CustomBadge from 'components/Atoms/CustomBadge';
-import RenderActivity from './Components/Activity';
-
-function RenderVisitorDetails(props) {
-  const {visitor = {}, pipelines, occupationOptions, sourceTypeOptions} = props;
-
-  const {
-    // id: visitorId,
-    first_name,
-    last_name,
-    phone,
-    budget_from,
-    budget_to,
-    follow_up_date,
-    priority,
-    inquiry_for,
-    current_locality,
-    bhk,
-    email,
-    inquiry_status_id,
-  } = visitor;
-
-  const id = visitor.id;
-
-  console.log('----->id', id);
-  console.log('----->visitor', visitor);
-
-  const occupation = occupationOptions.find(
-    i => i.value === visitor.occupation,
-  );
-  const source = sourceTypeOptions.find(v => v.value === visitor.source_type);
-
-  const inquiryStatus = pipelines.find(i => i.id === inquiry_status_id);
-
-  const [selectDialog, setSelectDialog] = useState(false);
-
-  const toggleSelectDialog = () => setSelectDialog(v => !v);
-
-  const onStateChange = ({open}) => setSelectDialog(open);
-
-  return (
-    <ScrollView>
-      <View style={styles.detailsContainer}>
-        <View style={styles.detailRow}>
-          <Paragraph>Name</Paragraph>
-          <Caption style={styles.value}>
-            {first_name} {last_name}
-          </Caption>
-        </View>
-        <View style={styles.detailRow}>
-          <Paragraph>Email</Paragraph>
-          <Caption style={styles.value}>{email}</Caption>
-        </View>
-        <View style={styles.detailRow}>
-          <Paragraph>Phone no.</Paragraph>
-          <Caption style={styles.value}>+91 {phone}</Caption>
-        </View>
-        <View style={styles.detailRow}>
-          <Paragraph>Occupation</Paragraph>
-          <Caption style={styles.value}>{occupation?.label}</Caption>
-        </View>
-        <View style={styles.detailRow}>
-          <Paragraph>Date</Paragraph>
-          <Caption style={styles.value}>
-            {dayjs(follow_up_date).format('DD MMM YYYY')}
-          </Caption>
-        </View>
-        <View style={styles.detailRow}>
-          <Paragraph>Inquiry for</Paragraph>
-          <Caption style={styles.value}>
-            {STRUCTURE_TYPE_LABELS[inquiry_for]}
-            {bhk ? ` - ${bhk} BHK` : null}
-          </Caption>
-        </View>
-        <View style={styles.detailRow}>
-          <Paragraph>Budget Range</Paragraph>
-          <Caption style={styles.value}>
-            {/*TODO: Add amount formatting */}
-            Rs. {budget_from} - Rs.{budget_to}
-          </Caption>
-        </View>
-        <View style={styles.detailRow}>
-          <Paragraph>Current Locality</Paragraph>
-          <Caption style={styles.value}>{current_locality}</Caption>
-        </View>
-        <View style={styles.detailRow}>
-          <Paragraph>Source type</Paragraph>
-          <Caption style={styles.value}>{source?.label || 'NA'}</Caption>
-        </View>
-        <View style={styles.detailRow}>
-          <Paragraph>Priority</Paragraph>
-          <Caption style={styles.value}>
-            <CustomBadge
-              color={PRIORITY_COLORS[priority]}
-              label={priority}
-              style={styles.badge}
-            />
-          </Caption>
-        </View>
-        <View style={styles.detailRow}>
-          <Paragraph>Status</Paragraph>
-          <Caption>
-            <CustomBadge
-              style={{paddingHorizontal: 10, paddingVertical: 2}}
-              color="rgba(72,114,244,0.15)"
-              label={inquiryStatus?.title}
-              labelStyles={{color: theme.colors.primary}}
-            />
-          </Caption>
-        </View>
-      </View>
-    </ScrollView>
-  );
-}
+import Details from './Components/Details';
+import Activities from './Components/Activities';
 
 function VisitorDetails(props) {
-  const {route} = props;
+  const {route, navigation} = props;
   const {visitorId} = route?.params || {};
 
-  const {navigation} = props;
   const [activityFilter, setActivityFilter] = useState('all');
-
   const modulePermission = getPermissions('Visitors');
 
   const {getVisitor, getPipelineData, getVisitorActivities} = useSalesActions();
 
   const [selectedTab, setSelectedTab] = useState(0);
   const [routes] = React.useState([
-    {key: 0, title: 'Visitor Info'},
+    {key: 0, title: 'Basic Info'},
     {key: 1, title: 'Activity'},
   ]);
 
@@ -157,7 +35,7 @@ function VisitorDetails(props) {
     pipelines,
     occupationOptions,
     sourceTypeOptions,
-  } = useSelector(state => state.sales);
+  } = useSelector(s => s.sales);
 
   useEffect(() => {
     getVisitor({project_id: selectedProject.id, visitor_id: visitorId});
@@ -178,7 +56,7 @@ function VisitorDetails(props) {
     switch (key) {
       case 0:
         return (
-          <RenderVisitorDetails
+          <Details
             {...props}
             visitor={visitor}
             pipelines={pipelines}
@@ -189,10 +67,7 @@ function VisitorDetails(props) {
         );
       case 1:
         return (
-          <RenderActivity
-            activityFilter={activityFilter}
-            setActivityFilter={setActivityFilter}
-          />
+          <Activities filter={activityFilter} setFilter={setActivityFilter} />
         );
     }
   };
@@ -217,6 +92,17 @@ function VisitorDetails(props) {
             return (
               <View style={styles.headerContainer}>
                 <ProjectHeader {...props} />
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <IconButton
+                    icon="keyboard-backspace"
+                    size={30}
+                    color={theme.colors.primary}
+                    onPress={() => navigation.goBack()}
+                  />
+                  <Title style={{color: theme.colors.primary}}>
+                    Visitors Details
+                  </Title>
+                </View>
                 <MaterialTabBar {...tabBarProps} />
               </View>
             );
@@ -283,26 +169,9 @@ const styles = StyleSheet.create({
     flex: 1,
     position: 'relative',
   },
-  detailsContainer: {
-    position: 'relative',
-    paddingTop: 20,
-    paddingHorizontal: 10,
-  },
-  detailRow: {
-    flexShrink: 1,
-    marginBottom: 10,
-  },
   fab: {
     position: 'absolute',
     right: 0,
-  },
-  value: {
-    lineHeight: 14,
-  },
-  badge: {
-    borderRadius: 20,
-    paddingHorizontal: 15,
-    paddingVertical: 2,
   },
 });
 

@@ -1,11 +1,11 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo} from 'react';
 import {
   StyleSheet,
   View,
   RefreshControl,
   TouchableOpacity,
   FlatList,
+  Image,
 } from 'react-native';
 import {
   withTheme,
@@ -14,12 +14,9 @@ import {
   Title,
   Subheading,
   Divider,
-  IconButton,
-  Colors,
   Menu,
-  Button,
+  Searchbar,
 } from 'react-native-paper';
-import {getPermissions} from 'utils';
 import useSalesActions from 'redux/actions/salesActions';
 import {useSelector} from 'react-redux';
 import dayjs from 'dayjs';
@@ -27,6 +24,18 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import ProjectHeader from 'components/Molecules/Layout/ProjectHeader';
 import {PRIORITY_COLORS, STRUCTURE_TYPE_LABELS} from 'utils/constant';
 import CustomBadge from 'components/Atoms/CustomBadge';
+import NoDataFound from 'assets/images/NoDataFound.png';
+import {getShadow, getPermissions} from 'utils';
+import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
+import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+
+const FILTERS = [
+  {value: 'name', label: 'Name'},
+  {value: 'recent', label: 'Recent'},
+  {value: 'low', label: 'Low Priority'},
+  {value: 'medium', label: 'Medium Priority'},
+  {value: 'high', label: 'High Priority'},
+];
 
 function StatsRow({visitorAnalytics}) {
   const {
@@ -59,6 +68,8 @@ function StatsRow({visitorAnalytics}) {
 
 function RenderVisitorItem(props) {
   const {theme, data, navToDetails} = props;
+
+  console.log('----->data in visitors list', data);
   const {
     id,
     first_name,
@@ -67,6 +78,7 @@ function RenderVisitorItem(props) {
     follow_up_date,
     priority = 'low',
     inquiry_for,
+    created,
   } = data;
 
   return (
@@ -80,7 +92,7 @@ function RenderVisitorItem(props) {
         </View>
         <View style={styles.rowItemContainer}>
           <Subheading style={styles.visitorTitle}>
-            {dayjs(follow_up_date).format('DD MMM')}
+            {dayjs(created).format('DD MMM')}
           </Subheading>
           <CustomBadge
             color={PRIORITY_COLORS[priority]}
@@ -100,7 +112,7 @@ function RenderVisitorItem(props) {
           />
         </View>
       </View>
-      <Divider />
+      <Divider style={{height: 1}} />
     </TouchableOpacity>
   );
 }
@@ -108,89 +120,23 @@ function RenderVisitorItem(props) {
 function RenderVisitors(props) {
   const {
     theme,
-    data,
-    filter,
+    visitors,
     onRefresh,
     showAnalyticsRow,
     visitorAnalytics,
     navToDetails,
-    setFilter,
   } = props;
-
-  const selectedColor = theme.colors.primary;
-
-  const [visible, setVisible] = React.useState(false);
-
-  const toggleMenu = () => setVisible(v => !v);
 
   return (
     <View style={styles.contentContainer}>
-      <View style={{flexDirection: 'row', marginBottom: 40}}>
-        <Button
-          mode="outlined"
-          color={filter === 'name' ? 'white' : null}
-          style={{
-            backgroundColor: filter === 'name' ? selectedColor : null,
-            borderRadius: 20,
-          }}
-          onPress={() => setFilter('name')}>
-          Name
-        </Button>
-        <Button
-          mode="outlined"
-          color={filter === 'recent' ? 'white' : null}
-          style={{
-            backgroundColor: filter === 'recent' ? selectedColor : null,
-            borderRadius: 20,
-          }}
-          onPress={() => setFilter('recent')}>
-          Recent
-        </Button>
-        <Menu
-          visible={visible}
-          onDismiss={toggleMenu}
-          anchor={
-            <IconButton
-              icon="filter-variant"
-              color={Colors.red500}
-              size={20}
-              onPress={toggleMenu}
-              style={{borderWidth: 1}}
-            />
-          }>
-          <Menu.Item
-            onPress={() => {
-              setFilter('less');
-              toggleMenu();
-            }}
-            title="Less Priority"
-          />
-          <Menu.Item
-            onPress={() => {
-              setFilter('medium');
-              toggleMenu();
-            }}
-            title="Medium Priority"
-          />
-          <Divider />
-          <Menu.Item
-            onPress={() => {
-              setFilter('high');
-              toggleMenu();
-            }}
-            title="High Priority"
-          />
-        </Menu>
-      </View>
       {showAnalyticsRow ? (
         <StatsRow visitorAnalytics={visitorAnalytics} />
       ) : null}
       <FlatList
-        data={data}
-        extraData={data}
+        data={visitors}
+        extraData={visitors}
         keyExtractor={(item, index) => index.toString()}
-        style={styles.scrollView}
-        contentContainerStyle={{flexGrow: 1, paddingBottom: 60}}
+        contentContainerStyle={{paddingBottom: 240}}
         showsVerticalScrollIndicator={false}
         renderItem={({item, index}) => (
           <RenderVisitorItem
@@ -204,7 +150,15 @@ function RenderVisitors(props) {
         }
         ListEmptyComponent={
           <View style={styles.noResultContainer}>
-            <Subheading>{'No Data Found'}</Subheading>
+            <Image source={NoDataFound} />
+            <Title
+              style={{
+                color: theme.colors.primary,
+                fontSize: 22,
+                marginTop: 10,
+              }}>
+              Start adding your visitor
+            </Title>
           </View>
         }
       />
@@ -212,10 +166,70 @@ function RenderVisitors(props) {
   );
 }
 
+function Header(props) {
+  const {theme, filter, searchQuery, setFilter, setSearchQuery} = props;
+
+  const [visible, setVisible] = React.useState(false);
+
+  const toggleMenu = () => setVisible(v => !v);
+
+  const onSearch = v => setSearchQuery(v);
+
+  return (
+    <>
+      <View
+        style={{
+          flexDirection: 'row',
+          marginBottom: 10,
+          justifyContent: 'space-between',
+          marginHorizontal: 20,
+          alignItems: 'center',
+        }}>
+        <Title style={{color: theme.colors.primary}}>Visitor's list</Title>
+        <Menu
+          visible={visible}
+          onDismiss={toggleMenu}
+          anchor={
+            <OpacityButton
+              opacity={0.1}
+              color={theme.colors.primary}
+              style={{borderRadius: 50}}
+              onPress={toggleMenu}>
+              <MaterialIcon
+                name="filter-variant"
+                color={theme.colors.primary}
+                size={22}
+              />
+            </OpacityButton>
+          }>
+          {FILTERS.map((i, index) => {
+            const active = i.value === filter;
+            return (
+              <Menu.Item
+                key={index}
+                title={i.label}
+                style={active ? {backgroundColor: theme.colors.primary} : {}}
+                titleStyle={active ? {color: '#fff'} : {}}
+                onPress={() => {
+                  setFilter(i.value);
+                  toggleMenu();
+                }}
+              />
+            );
+          })}
+        </Menu>
+      </View>
+      <Searchbar
+        style={styles.searchBar}
+        value={searchQuery}
+        onChangeText={onSearch}
+      />
+    </>
+  );
+}
+
 function Visitors(props) {
   const {theme, navigation} = props;
-
-  const [selectDialog, setSelectDialog] = useState(false);
 
   const {selectedProject} = useSelector(s => s.project);
   const {loading, visitors, visitorAnalytics} = useSelector(s => s.sales);
@@ -224,23 +238,31 @@ function Visitors(props) {
 
   const {getVisitors, getSalesData} = useSalesActions();
   const [filter, setFilter] = React.useState('name');
+  const [searchQuery, setSearchQuery] = React.useState('');
 
   const projectId = selectedProject.id;
 
+  const filteredVisitors = useMemo(() => {
+    return visitors.filter(
+      i =>
+        i.first_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        i.last_name.toLowerCase().includes(searchQuery.toLowerCase()),
+    );
+  }, [visitors, searchQuery]);
+
   useEffect(() => {
-    loadData();
+    if (projectId) {
+      loadData();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectId, filter]);
 
   const loadData = () => {
-    getVisitors({project_id: projectId, filter_mode: `${filter}`});
+    getVisitors({project_id: projectId, filter_mode: filter});
     getSalesData({project_id: projectId});
   };
 
   const onRefresh = () => loadData();
-
-  const toggleSelectDialog = () => setSelectDialog(v => !v);
-
-  const onStateChange = ({open}) => setSelectDialog(open);
 
   const navToDetails = id => {
     navigation.navigate('VisitorDetails', {visitorId: id});
@@ -250,41 +272,29 @@ function Visitors(props) {
     <>
       <Spinner visible={loading} textContent={''} />
       <ProjectHeader />
+      <Header
+        {...props}
+        filter={filter}
+        searchQuery={searchQuery}
+        setFilter={setFilter}
+        setSearchQuery={setSearchQuery}
+      />
 
       <RenderVisitors
         {...props}
-        filter={filter}
-        data={visitors}
+        visitors={filteredVisitors}
         showAnalyticsRow={true}
         visitorAnalytics={visitorAnalytics}
         onRefresh={onRefresh}
-        setFilter={setFilter}
         navToDetails={navToDetails}
       />
 
       {modulePermission?.editor || modulePermission?.admin ? (
-        <FAB.Group
-          open={selectDialog}
-          style={styles.fab}
-          fabStyle={{
-            backgroundColor: selectDialog ? '#fff' : theme.colors.primary,
-          }}
-          icon={selectDialog ? 'window-close' : 'plus'}
-          small
-          onPress={toggleSelectDialog}
-          onStateChange={onStateChange}
-          actions={[
-            {
-              icon: 'account-question-outline',
-              label: 'New visitor',
-              onPress: () => navigation.navigate('AddVisitor'),
-            },
-            // {
-            //   icon: 'arrow-up',
-            //   label: 'Follow up',
-            //   onPress: () => navigation.navigate('AddFollowUp'),
-            // },
-          ]}
+        <FAB
+          style={[styles.fab, {backgroundColor: theme.colors.primary}]}
+          large
+          icon="plus"
+          onPress={() => navigation.navigate('AddVisitor')}
         />
       ) : null}
     </>
@@ -295,14 +305,13 @@ export default withTheme(Visitors);
 
 const styles = StyleSheet.create({
   contentContainer: {
-    flexGrow: 1,
     marginTop: 2,
+    marginBottom: 15,
   },
   statsRowMainContainer: {
     paddingVertical: 5,
     paddingHorizontal: 5,
     flexDirection: 'row',
-
     alignItems: 'center',
     backgroundColor: '#fff',
   },
@@ -346,15 +355,19 @@ const styles = StyleSheet.create({
   },
   fab: {
     position: 'absolute',
-    right: 0,
-  },
-  scrollView: {
-    flexGrow: 1,
-    marginBottom: 15,
+    right: 20,
+    bottom: 20,
   },
   noResultContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  searchBar: {
+    backgroundColor: '#EAECF11A',
+    borderWidth: 1,
+    borderColor: 'rgba(4, 29, 54, 0.1)',
+    marginHorizontal: 10,
+    ...getShadow(0),
   },
 });

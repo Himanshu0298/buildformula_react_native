@@ -75,6 +75,7 @@ function RenderHeader(props) {
     <>
       <View style={styles.headContainer}>
         <Subheading>{title}</Subheading>
+        <Subheading>{id}</Subheading>
         <View style={styles.iconContainer}>
           <TouchableOpacity
             onPress={() => navigation.navigate('PipelineRearrange')}
@@ -362,6 +363,10 @@ export default function SalesPipeline(props) {
   const {pipelines, loading} = useSelector(state => state.sales);
   const {selectedProject} = useSelector(state => state.project);
   const {user} = useSelector(state => state.user);
+
+  console.log('----->pipelines', pipelines);
+  const myData = pipelines.sort((a, b) => (a.id > b.id ? 1 : -1));
+  console.log('----->myData', myData);
 
   React.useEffect(() => {
     getPipelineData(selectedProject.id);

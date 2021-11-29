@@ -304,7 +304,6 @@ const styles = StyleSheet.create({
     marginTop: 25,
     paddingHorizontal: 10,
     flexDirection: 'row',
-
     alignItems: 'center',
     justifyContent: 'space-around',
   },

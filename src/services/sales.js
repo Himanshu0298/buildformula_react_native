@@ -17,6 +17,9 @@ export default function useSalesServices() {
         config({multipart: false}),
       );
     },
+    getBrokerDetails: data => {
+      return instance.post('/broker_details', data, config({multipart: false}));
+    },
     getFollowUpList: data => {
       return instance.post('/followup/get_lists', data, config());
     },
@@ -42,14 +45,14 @@ export default function useSalesServices() {
     },
     addVisitorCallLogs: data => {
       return instance.post(
-        '/visitors/addcomment',
+        '/visitors/addcalllog',
         data,
         config({multipart: false}),
       );
     },
     addVisitorFollowUp: data => {
       return instance.post(
-        '/visitors/addcomment',
+        '/visitors/addfollowup',
         data,
         config({multipart: false}),
       );
@@ -111,6 +114,18 @@ export default function useSalesServices() {
         data,
         config({multipart: false}),
       );
+    },
+    getBrokersList: data => {
+      return instance.post('/list_brokers', data, config({multipart: false}));
+    },
+    addBroker: data => {
+      return instance.post('/add_broker', data, config({multipart: false}));
+    },
+    updateBroker: data => {
+      return instance.post('/update_broker', data, config({multipart: false}));
+    },
+    deleteBroker: data => {
+      return instance.post('/delete_broker', data, config({multipart: false}));
     },
     getPipelinesOrderList: data => {
       return instance.post(

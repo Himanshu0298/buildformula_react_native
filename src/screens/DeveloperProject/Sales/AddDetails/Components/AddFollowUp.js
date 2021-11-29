@@ -1,5 +1,4 @@
 import RenderInput from 'components/Atoms/RenderInput';
-import RenderSelect from 'components/Atoms/RenderSelect';
 import React from 'react';
 import {View, StyleSheet, ScrollView} from 'react-native';
 import {withTheme, Button, Title, Subheading} from 'react-native-paper';
@@ -9,6 +8,10 @@ import RenderDatePicker from 'components/Atoms/RenderDatePicker';
 // import useSalesActions from 'redux/reducers/salesActions';
 import useSalesActions from 'redux/actions/salesActions';
 import {useSelector} from 'react-redux';
+import dayjs from 'dayjs';
+import {theme} from 'styles/theme';
+import RenderTextBox from 'components/Atoms/RenderTextbox';
+import RichTextEditor from 'components/Atoms/RichTextEditor';
 
 const schema = Yup.object().shape({
   followup_date: Yup.date('Invalid').required('Required'),
@@ -22,20 +25,27 @@ const AddFollowUp = props => {
   const followUpTimeRef = React.useRef();
   const assignToRef = React.useRef();
 
-  const {route} = props;
+  const {route, navigation} = props;
 
   const {visitorId} = route.params || {};
 
   const {selectedProject} = useSelector(state => state.project);
 
-  const {addVisitorFollowUp} = useSalesActions();
+  const {addVisitorFollowUp, getVisitorActivities} = useSalesActions();
 
-  const onSubmit = values => {
-    addVisitorFollowUp({
+  const onSubmit = async values => {
+    await addVisitorFollowUp({
       ...values,
+      followup_date: dayjs(values.followup_date).format('DD-MM-YYYY'),
+      followup_time: dayjs(values.followup_time).format('hh:mm:ss'),
       visitor_id: visitorId,
       project_id: selectedProject.id,
     });
+    getVisitorActivities({
+      visitor_id: visitorId,
+      project_id: selectedProject.id,
+    });
+    navigation.goBack();
   };
 
   return (
@@ -61,7 +71,7 @@ const AddFollowUp = props => {
             contentContainerStyle={styles.scrollView}
             keyboardShouldPersistTaps="handled">
             <View style={{padding: 10}}>
-              <Subheading>Call Outcome</Subheading>
+              <Subheading>Task Title</Subheading>
 
               <RenderInput
                 name="task_title"
@@ -108,10 +118,9 @@ const AddFollowUp = props => {
                   />
                 </View>
               </View>
-              <Subheading style={{marginTop: 20}}>Call Response</Subheading>
-              <RenderInput
+              {/* <Subheading style={{marginTop: 20}}>Remark</Subheading> */}
+              {/* <RenderTextBox
                 name="remarks"
-                multiline
                 numberOfLines={8}
                 label="Response"
                 containerStyles={styles.input}
@@ -119,18 +128,37 @@ const AddFollowUp = props => {
                 onChangeText={handleChange('remarks')}
                 onBlur={handleBlur('remarks')}
                 onSubmitEditing={handleSubmit}
-                returnKeyType="done"
                 error={errors.remarks}
+              /> */}
+              <RichTextEditor
+                name="remarks"
+                placeholder="Response"
+                value={values.remarks}
+                onChangeText={value => {
+                  setFieldValue('remarks', value);
+                }}
               />
             </View>
             <View style={styles.actionContainer}>
+              <Button
+                style={{
+                  flex: 1,
+                  marginHorizontal: 5,
+                  borderWidth: 1,
+                  borderColor: theme.colors.primary,
+                }}
+                contentStyle={{padding: 3}}
+                theme={{roundness: 15}}
+                onPress={navigation.goBack}>
+                Back
+              </Button>
               <Button
                 style={{flex: 1, marginHorizontal: 5}}
                 mode="contained"
                 contentStyle={{padding: 3}}
                 theme={{roundness: 15}}
                 onPress={handleSubmit}>
-                {'Save'}
+                Save
               </Button>
             </View>
           </ScrollView>
@@ -148,6 +176,12 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flexGrow: 1,
+    justifyContent: 'space-between',
+  },
+  actionContainer: {
+    paddingHorizontal: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between',
   },
 });

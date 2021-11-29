@@ -39,6 +39,14 @@ export const DEVELOPER_DRAWER_ITEMS = [
           <MaterialIcons name={'library-books'} {...{color, size}} />
         ),
       },
+      {
+        id: 3,
+        route: 'BrokerStack',
+        label: 'Broker List',
+        icon: ({color, size}) => (
+          <MaterialIcons name={'library-books'} {...{color, size}} />
+        ),
+      },
     ],
   },
   {
