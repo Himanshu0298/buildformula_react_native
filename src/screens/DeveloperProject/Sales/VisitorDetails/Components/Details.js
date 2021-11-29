@@ -27,6 +27,7 @@ function Details(props) {
     current_locality,
     bhk,
     email,
+    remarks,
     inquiry_status_id,
   } = visitor;
 
@@ -45,6 +46,10 @@ function Details(props) {
           <Caption style={styles.value}>
             {first_name} {last_name}
           </Caption>
+        </View>
+        <View style={styles.detailRow}>
+          <Paragraph>Remark</Paragraph>
+          <Caption style={styles.value}>{remarks}</Caption>
         </View>
         <View style={styles.detailRow}>
           <Paragraph>Email</Paragraph>

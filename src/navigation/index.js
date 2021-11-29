@@ -74,6 +74,7 @@ import HoldPropertyForm from 'screens/DeveloperProject/Sales/BookingChart/Bookin
 import History from 'screens/DeveloperProject/Sales/BookingChart/BookingFormOnHold/Components/History';
 import BookingRates from 'screens/DeveloperProject/Sales/BookingChart/BookingRates';
 import BookingPayment from 'screens/DeveloperProject/Sales/BookingChart/BookingPayment';
+import BrokerList from 'screens/DeveloperProject/Sales/BrokerList';
 //Project : Customer Section
 import CS_SelectStructure from 'screens/DeveloperProject/CustomerSection/SelectStructure';
 import CS_SelectFloor from 'screens/DeveloperProject/CustomerSection/SelectFloor';
@@ -106,6 +107,9 @@ import Roles from 'screens/DeveloperProject/UserRoles/Roles';
 import AddUser from 'screens/DeveloperProject/UserRoles/AddUser';
 import AddRole from 'screens/DeveloperProject/UserRoles/AddRole';
 import SalesPipelineRearrange from 'screens/DeveloperProject/Sales/SalesPipelineRearrange';
+import BrokerDetails from 'screens/DeveloperProject/Sales/BrokerDetails';
+import AddBroker from 'screens/DeveloperProject/Sales/AddBroker';
+import Remark from 'screens/DeveloperProject/Sales/BrokerDetails/Components/Remark';
 /************* Developer Project Sub Screens End   *************/
 
 const optionalConfigObject = {
@@ -370,6 +374,33 @@ function FilesStack() {
   );
 }
 
+function BrokerStack() {
+  return (
+    <Stack.Navigator initialRouteName={'BrokerList'}>
+      <Stack.Screen
+        name="BrokerList"
+        component={BrokerList}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="BrokerDetails"
+        component={BrokerDetails}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="AddBroker"
+        component={AddBroker}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Remark"
+        component={Remark}
+        options={{headerShown: false}}
+      />
+    </Stack.Navigator>
+  );
+}
+
 function RolesStack() {
   return (
     <Stack.Navigator initialRouteName={'RolesListing'}>
@@ -428,6 +459,7 @@ function ProjectDrawer() {
       <Drawer.Screen name="Visitors" component={VisitorsStack} />
       <Drawer.Screen name="SalesPipeline" component={PipelineStack} />
       <Drawer.Screen name="BookingChartStack" component={BookingChartStack} />
+      <Drawer.Screen name="BrokerStack" component={BrokerStack} />
       <Drawer.Screen name="Payment" component={Payment} />
       <Drawer.Screen name="CustomerSection" component={CustomerSectionStack} />
       <Drawer.Screen name="ProjectSchedule" component={ProjectSchedule} />

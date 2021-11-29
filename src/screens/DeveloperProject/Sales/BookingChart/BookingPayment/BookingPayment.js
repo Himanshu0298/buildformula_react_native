@@ -348,7 +348,7 @@ function RenderOneBigInstallmentPaymentForm(props) {
           />
         </View>
       </View>
-      <RenderInstallments {...values} />
+      <RenderInstallments {...props} {...values} />
     </>
   );
 }

@@ -9,6 +9,9 @@ import RenderDatePicker from 'components/Atoms/RenderDatePicker';
 import useSalesActions from 'redux/actions/salesActions';
 import {useSelector} from 'react-redux';
 import dayjs from 'dayjs';
+import {theme} from 'styles/theme';
+import RenderTextBox from 'components/Atoms/RenderTextbox';
+import RichTextEditor from 'components/Atoms/RichTextEditor';
 
 const schema = Yup.object().shape({
   followup_date: Yup.date('Invalid').required('Required'),
@@ -68,7 +71,7 @@ const AddFollowUp = props => {
             contentContainerStyle={styles.scrollView}
             keyboardShouldPersistTaps="handled">
             <View style={{padding: 10}}>
-              <Subheading>Call Outcome</Subheading>
+              <Subheading>Task Title</Subheading>
 
               <RenderInput
                 name="task_title"
@@ -115,10 +118,9 @@ const AddFollowUp = props => {
                   />
                 </View>
               </View>
-              <Subheading style={{marginTop: 20}}>Call Response</Subheading>
-              <RenderInput
+              {/* <Subheading style={{marginTop: 20}}>Remark</Subheading> */}
+              {/* <RenderTextBox
                 name="remarks"
-                multiline
                 numberOfLines={8}
                 label="Response"
                 containerStyles={styles.input}
@@ -126,13 +128,25 @@ const AddFollowUp = props => {
                 onChangeText={handleChange('remarks')}
                 onBlur={handleBlur('remarks')}
                 onSubmitEditing={handleSubmit}
-                returnKeyType="done"
                 error={errors.remarks}
+              /> */}
+              <RichTextEditor
+                name="remarks"
+                placeholder="Response"
+                value={values.remarks}
+                onChangeText={value => {
+                  setFieldValue('remarks', value);
+                }}
               />
             </View>
             <View style={styles.actionContainer}>
               <Button
-                style={{flex: 1, marginHorizontal: 5}}
+                style={{
+                  flex: 1,
+                  marginHorizontal: 5,
+                  borderWidth: 1,
+                  borderColor: theme.colors.primary,
+                }}
                 contentStyle={{padding: 3}}
                 theme={{roundness: 15}}
                 onPress={navigation.goBack}>

@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
-import {withTheme, FAB} from 'react-native-paper';
+import {withTheme, FAB, Text, IconButton, Title} from 'react-native-paper';
 import {getPermissions, getShadow} from 'utils';
 import useSalesActions from 'redux/actions/salesActions';
 import {useSelector} from 'react-redux';
@@ -24,7 +24,7 @@ function VisitorDetails(props) {
 
   const [selectedTab, setSelectedTab] = useState(0);
   const [routes] = React.useState([
-    {key: 0, title: 'Visitor Info'},
+    {key: 0, title: 'Basic Info'},
     {key: 1, title: 'Activity'},
   ]);
 
@@ -92,6 +92,17 @@ function VisitorDetails(props) {
             return (
               <View style={styles.headerContainer}>
                 <ProjectHeader {...props} />
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <IconButton
+                    icon="keyboard-backspace"
+                    size={30}
+                    color={theme.colors.primary}
+                    onPress={() => navigation.goBack()}
+                  />
+                  <Title style={{color: theme.colors.primary}}>
+                    Visitors Details
+                  </Title>
+                </View>
                 <MaterialTabBar {...tabBarProps} />
               </View>
             );

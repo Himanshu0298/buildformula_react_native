@@ -1,14 +1,16 @@
-import RenderInput from 'components/Atoms/RenderInput';
 import RenderSelect from 'components/Atoms/RenderSelect';
 import React, {useMemo} from 'react';
 import {View, StyleSheet, ScrollView} from 'react-native';
-import {withTheme, Button, Subheading, Title} from 'react-native-paper';
+import {withTheme, Button, Subheading, Title, Text} from 'react-native-paper';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import RenderDatePicker from 'components/Atoms/RenderDatePicker';
 import useSalesActions from 'redux/actions/salesActions';
 import {useSelector} from 'react-redux';
 import dayjs from 'dayjs';
+import {theme} from 'styles/theme';
+import RenderTextBox from 'components/Atoms/RenderTextbox';
+import RichTextEditor from 'components/Atoms/RichTextEditor';
 
 const schema = Yup.object().shape({
   last_date: Yup.date('Invalid').required('Required'),
@@ -56,6 +58,7 @@ const AddCallLogs = props => {
   return (
     <View style={{flexGrow: 1}}>
       <Title style={styles.createCallLogs}>Create call log</Title>
+
       <Formik
         validateOnBlur={false}
         validateOnChange={false}
@@ -71,7 +74,8 @@ const AddCallLogs = props => {
           errors,
         }) => (
           <View style={styles.contentContainer}>
-            <View style={styles.formContainer}>
+            {console.log('----->values', values)}
+            <ScrollView style={styles.formContainer}>
               <ScrollView keyboardShouldPersistTaps="handled">
                 <View style={{paddingLeft: 10, paddingRight: 10}}>
                   <View style={{flexDirection: 'row'}}>
@@ -121,25 +125,37 @@ const AddCallLogs = props => {
                       setFieldValue('call_outcome', value);
                     }}
                   />
-                  <RenderInput
+                  {/* <RenderTextBox
                     name="remarks"
-                    multiline
                     numberOfLines={8}
                     label="Response"
                     containerStyles={styles.input}
                     value={values.remarks}
                     onChangeText={handleChange('remarks')}
                     onBlur={handleBlur('remarks')}
-                    returnKeyType="done"
+                    error={errors.remarks}
+                  /> */}
+                  <RichTextEditor
+                    name="remarks"
+                    placeholder="Response"
+                    value={values.remarks}
+                    onChangeText={value => {
+                      setFieldValue('remarks', value);
+                    }}
                     error={errors.remarks}
                   />
                 </View>
               </ScrollView>
-            </View>
+            </ScrollView>
 
             <View style={styles.actionContainer}>
               <Button
-                style={{flex: 1, marginHorizontal: 5}}
+                style={{
+                  flex: 1,
+                  marginHorizontal: 5,
+                  borderWidth: 1,
+                  borderColor: theme.colors.primary,
+                }}
                 contentStyle={{padding: 3}}
                 theme={{roundness: 15}}
                 onPress={navigation.goBack}>
@@ -187,5 +203,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    position: 'absolute',
+    bottom: 0,
   },
 });

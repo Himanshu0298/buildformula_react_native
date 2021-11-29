@@ -68,6 +68,8 @@ function StatsRow({visitorAnalytics}) {
 
 function RenderVisitorItem(props) {
   const {theme, data, navToDetails} = props;
+
+  console.log('----->data in visitors list', data);
   const {
     id,
     first_name,
@@ -76,6 +78,7 @@ function RenderVisitorItem(props) {
     follow_up_date,
     priority = 'low',
     inquiry_for,
+    created,
   } = data;
 
   return (
@@ -89,7 +92,7 @@ function RenderVisitorItem(props) {
         </View>
         <View style={styles.rowItemContainer}>
           <Subheading style={styles.visitorTitle}>
-            {dayjs(follow_up_date).format('DD MMM')}
+            {dayjs(created).format('DD MMM')}
           </Subheading>
           <CustomBadge
             color={PRIORITY_COLORS[priority]}
@@ -133,8 +136,7 @@ function RenderVisitors(props) {
         data={visitors}
         extraData={visitors}
         keyExtractor={(item, index) => index.toString()}
-        style={styles.scrollView}
-        contentContainerStyle={{flexGrow: 1, paddingBottom: 60}}
+        contentContainerStyle={{paddingBottom: 240}}
         showsVerticalScrollIndicator={false}
         renderItem={({item, index}) => (
           <RenderVisitorItem
@@ -270,7 +272,6 @@ function Visitors(props) {
     <>
       <Spinner visible={loading} textContent={''} />
       <ProjectHeader />
-
       <Header
         {...props}
         filter={filter}
@@ -304,14 +305,13 @@ export default withTheme(Visitors);
 
 const styles = StyleSheet.create({
   contentContainer: {
-    flexGrow: 1,
     marginTop: 2,
+    marginBottom: 15,
   },
   statsRowMainContainer: {
     paddingVertical: 5,
     paddingHorizontal: 5,
     flexDirection: 'row',
-
     alignItems: 'center',
     backgroundColor: '#fff',
   },
@@ -357,10 +357,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 20,
     bottom: 20,
-  },
-  scrollView: {
-    flexGrow: 1,
-    marginBottom: 15,
   },
   noResultContainer: {
     flex: 1,

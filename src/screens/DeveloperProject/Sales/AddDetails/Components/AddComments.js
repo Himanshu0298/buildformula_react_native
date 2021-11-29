@@ -1,12 +1,14 @@
-import RenderInput from 'components/Atoms/RenderInput';
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
-import {Checkbox, Button, Title} from 'react-native-paper';
+import {View, StyleSheet} from 'react-native';
+import {Button, Title} from 'react-native-paper';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import useSalesActions from 'redux/actions/salesActions';
 import {useSelector} from 'react-redux';
 import CustomCheckbox from 'components/Atoms/CustomCheckbox';
+import {theme} from 'styles/theme';
+import RenderTextBox from 'components/Atoms/RenderTextbox';
+import RichTextEditor from 'components/Atoms/RichTextEditor';
 
 const schema = Yup.object().shape({
   remarks: Yup.string().required('Please enter a comment'),
@@ -54,20 +56,31 @@ const AddComments = props => {
               }
             />
 
-            <RenderInput
+            {/* <RenderTextBox
               name="remarks"
-              multiline
               numberOfLines={8}
               label={'Add Comment'}
               containerStyles={styles.input}
               value={values.remarks}
               onChangeText={handleChange('remarks')}
-              returnKeyType="done"
+            /> */}
+            <RichTextEditor
+              name="remarks"
+              placeholder="Response"
+              value={values.remarks}
+              onChangeText={value => {
+                setFieldValue('remarks', value);
+              }}
             />
           </View>
           <View style={styles.actionContainer}>
             <Button
-              style={{flex: 1, marginHorizontal: 5}}
+              style={{
+                flex: 1,
+                marginHorizontal: 5,
+                borderWidth: 1,
+                borderColor: theme.colors.primary,
+              }}
               contentStyle={{padding: 3}}
               theme={{roundness: 15}}
               onPress={navigation.goBack}>
