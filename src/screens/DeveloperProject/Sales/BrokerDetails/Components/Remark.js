@@ -35,7 +35,7 @@ function Remark(props) {
 
   return (
     <ScrollView style={{padding: 20}}>
-      ]<Text style={{color: theme.colors.primary}}>Remark</Text>
+      <Text style={{color: theme.colors.primary}}>Remark</Text>
       {/* <RichToolbar editor={richText} /> */}
       <Formik
         validateOnBlur={false}
