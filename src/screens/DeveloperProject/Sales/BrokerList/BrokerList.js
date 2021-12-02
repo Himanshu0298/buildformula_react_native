@@ -159,14 +159,12 @@ function BrokerList(props) {
         navToDetails={navToDetails}
       />
       {/* {modulePermission?.editor || modulePermission?.admin ? ( */}
-      {brokersList.length ? (
-        <FAB
-          style={[styles.fab, {backgroundColor: theme.colors.primary}]}
-          large
-          icon="plus"
-          onPress={() => navigation.navigate('AddBroker')}
-        />
-      ) : null}
+      <FAB
+        style={[styles.fab, {backgroundColor: theme.colors.primary}]}
+        large
+        icon="plus"
+        onPress={() => navigation.navigate('AddBroker')}
+      />
     </View>
   );
 }
