@@ -405,13 +405,9 @@ function GeneralDrawer() {
         </RouteContext.Consumer>
       )}>
       <Drawer.Screen name="Home" component={Home} />
-      <Drawer.Screen name="Notification" component={Notification} />
-      <Drawer.Screen name="Profile" component={Profile} />
       <Drawer.Screen name="PurchasedProjects" component={PurchasedProjects} />
       <Drawer.Screen name="ProjectDetails" component={ProjectDetails} />
       <Drawer.Screen name="UpdateBillingInfo" component={UpdateBillingInfo} />
-      <Drawer.Screen name="EditProfile" component={EditProfile} />
-      <Drawer.Screen name="ChangePassword" component={ChangePasswordStack} />
     </Drawer.Navigator>
   );
 }
@@ -590,6 +586,26 @@ function NavContainer() {
               <Stack.Screen
                 name="Search"
                 component={SearchScreen}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="Notification"
+                component={Notification}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="EditProfile"
+                component={EditProfile}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="ChangePassword"
+                component={ChangePasswordStack}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="Profile"
+                component={Profile}
                 options={{headerShown: false}}
               />
             </Fragment>
