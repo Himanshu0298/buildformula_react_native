@@ -11,9 +11,7 @@ export default function SelectUnit(props) {
   const {navigation, route} = props;
 
   const floorNumber = props.route.params.floorNumber;
-  const floorId = props.route.params.floorId;
   // const _units = props.route.params.units;
-  const towerId = props.route.params.towerId;
 
   const modulePermission = getPermissions('Booking Chart');
 
@@ -25,12 +23,26 @@ export default function SelectUnit(props) {
   const {loadingUnitStatus, unitBookingStatus} = useSelector(s => s.sales);
   const {user} = useSelector(state => state.user);
 
-  // const {selectedStructure, floorId, towerId} = route?.params || {};
-  const selectedStructure = 2;
-  // const floorId = 1;
-  // const towerId = 1;
+  const {selectedStructure} = route?.params || {};
+  const floorId = route?.params?.floorId || {};
+  const towerId = route?.params?.towerId || {};
+  console.log('----->selectedStructure', selectedStructure);
+  console.log('----->floorId', floorId);
+  console.log('----->towerId', towerId);
+
   const structureData = selectedProject.projectData?.[selectedStructure] || {};
-  const {towers} = structureData;
+
+  let units;
+
+  if (selectedStructure === 4 || selectedStructure === 5) {
+    units = structureData.units;
+  }
+
+  if (selectedStructure === 6) {
+    units = structureData.towers?.[towerId]?.floors?.[floorId]?.units || {};
+  }
+
+  console.log('----->units in select unitsssssss', units);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -41,23 +53,23 @@ export default function SelectUnit(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const units = useMemo(() => {
-    const data = towers?.[towerId]?.floors?.[floorId]?.units || {};
+  // const units = useMemo(() => {
+  //   const data = towers?.[towerId]?.floors?.[floorId]?.units || {};
 
-    Object.keys(data).map(key => {
-      const bookingData = unitBookingStatus.find(
-        unit => unit.id === data[key].unitId,
-      );
+  //   Object.keys(data).map(key => {
+  //     const bookingData = unitBookingStatus.find(
+  //       unit => unit.id === data[key].unitId,
+  //     );
 
-      if (bookingData) {
-        data[key] = {...data[key], ...bookingData};
-      }
-    });
+  //     if (bookingData) {
+  //       data[key] = {...data[key], ...bookingData};
+  //     }
+  //   });
 
-    return data;
-  }, [floorId, towerId, towers, unitBookingStatus]);
+  //   return data;
+  // }, [floorId, towerId, towers, unitBookingStatus]);
 
-  console.log('----->units', units);
+  // console.log('----->units', units);
 
   const fetchUnitsBookingStatus = () => {
     getUnitsBookingStatus({
@@ -101,6 +113,7 @@ export default function SelectUnit(props) {
   return (
     <>
       <Spinner visible={loadingUnitStatus} textContent={''} />
+      {console.log('----->units in select unit', units)}
       <UnitSelector
         refreshing={unitBookingStatus.length > 0 && loadingUnitStatus}
         onRefresh={fetchUnitsBookingStatus}

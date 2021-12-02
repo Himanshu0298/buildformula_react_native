@@ -160,24 +160,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   unitContainer: {
-    // width: UNIT_WIDTH,
-    // margin: UNIT_MARGIN,
-    // height: UNIT_WIDTH,
     alignItems: 'center',
     justifyContent: 'center',
     flexWrap: 'wrap',
   },
-  // unitButton: {
-  //   flex: 1,
-  //   width: '100%',
-  //   alignItems: 'center',
-  //   justifyContent: 'center',
-  // },
-  // statusBadge: {
-  //   position: 'absolute',
-  //   top: -10,
-  //   right: -10,
-  // },
 });
 
 export default React.memo(RenderUnits);

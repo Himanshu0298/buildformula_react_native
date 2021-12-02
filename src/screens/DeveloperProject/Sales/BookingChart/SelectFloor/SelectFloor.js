@@ -28,11 +28,7 @@ export default function SelectFloor(props) {
   const towerType = props.route.params.towerType;
   const towerId = props.route.params.towerId;
 
-  console.log('----->floors', floors);
-
-  // const floors = useMemo(() => {
-  //   return towers?.[_selectedTower]?.floors || {};
-  // }, [_selectedTower, towers]);
+  console.log('----->towerId in select floor', towerId);
 
   return (
     <View>
@@ -98,10 +94,11 @@ export default function SelectFloor(props) {
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
         keyExtractor={item => item.toString()}
-        renderItem={({item: floorId}) => (
+        renderItem={({item: floorId, index}) => (
           <FloorBar
             floorId={floorId}
             floorData={floors.floors}
+            index={index}
             towerId={towerId}
             navigation={navigation}
             inputProps={{
@@ -116,11 +113,6 @@ export default function SelectFloor(props) {
           />
         )}
       />
-      <Button
-        mode="contained"
-        onPress={() => navigation.navigate('BC_Step_Three')}>
-        Press me
-      </Button>
     </View>
   );
 }

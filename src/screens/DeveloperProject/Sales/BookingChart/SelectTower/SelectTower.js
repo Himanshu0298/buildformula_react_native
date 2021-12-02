@@ -8,9 +8,9 @@ export default function SelectTower(props) {
   const {selectedProject = {}} = useSelector(state => state.project);
 
   const {selectedStructure, towerType, activeSrc} = route?.params || {};
-  console.log('----->towerType', towerType);
 
   const structureData = selectedProject.projectData?.[selectedStructure] || {};
+  console.log('----->structureData', structureData);
   const {towerCount, towers} = structureData;
 
   const showAllUnits = (towerId, floorId) => {

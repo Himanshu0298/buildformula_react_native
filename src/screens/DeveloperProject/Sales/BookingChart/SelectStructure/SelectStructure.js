@@ -16,11 +16,18 @@ function SelectStructure(props) {
   const projectTypes = Object.keys(projectData)?.map(v => Number(v)) || [];
 
   const handlePress = (value, towerType, activeSrc) => {
-    navigation.navigate('BC_Step_Two', {
-      selectedStructure: value,
-      towerType: towerType,
-      activeSrc: activeSrc,
-    });
+    if (value === 4 || value === 5) {
+      console.log('----->if condition rendered');
+      navigation.navigate('BC_Step_Three', {
+        selectedStructure: value,
+      });
+    } else {
+      navigation.navigate('BC_Step_Two', {
+        selectedStructure: value,
+        towerType: towerType,
+        activeSrc: activeSrc,
+      });
+    }
   };
 
   return (

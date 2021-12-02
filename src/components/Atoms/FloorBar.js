@@ -6,6 +6,7 @@ import {theme} from 'styles/theme';
 import Layout from 'utils/Layout';
 import {Badge, Button, TextInput, IconButton} from 'react-native-paper';
 import {getFloorNumber} from 'utils';
+import {STRUCTURE_TYPE_LABELS} from 'utils/constant';
 import floorSlab from 'assets/images/slab.png';
 import FloorsScreen from 'screens/CreateProject/ProjectStructure/StepTwo/Components/FloorsScreen';
 
@@ -14,6 +15,7 @@ function FloorBar(props) {
     floorId,
     floorData,
     towerId,
+    index,
     navigation,
     badgeActive,
     showBadge,
@@ -23,11 +25,6 @@ function FloorBar(props) {
     buttonLabel,
     buttonProps,
   } = props;
-
-  // console.log('----->floorData', floorData);
-  console.log('----->floorId', floorId);
-  console.log('----->floorData.unitcount', floorData[floorId].units);
-  console.log('----->getFloorNumber(floorId)', getFloorNumber(floorId));
 
   return (
     <View style={styles.floorContainer}>
@@ -47,7 +44,9 @@ function FloorBar(props) {
               {getFloorNumber(floorId)}
             </BaseText>
           </TouchableOpacity>
-          <Text style={styles.unitsInput2}>Apartment</Text>
+          <Text style={styles.unitsInput2}>
+            {STRUCTURE_TYPE_LABELS[floorData[index].structureType]}
+          </Text>
           <View style={{flexDirection: 'row'}}>
             <TextInput
               dense
@@ -74,8 +73,8 @@ function FloorBar(props) {
                 navigation.navigate('BC_Step_Three', {
                   floorNumber: getFloorNumber(floorId),
                   floorId: floorId,
-                  // units: floorData[floorId].units,
                   towerId: towerId,
+                  selectedStructure: 6,
                 })
               }
             />

@@ -44,8 +44,7 @@ function UnitSelector({
 }) {
   const {t} = useTranslation();
 
-  console.log('----->hellooooo');
-  console.log('----->units', units);
+  console.log('----->floorNumber', floorNumber);
 
   const [selectedBhk, setSelectedBhk] = React.useState();
 

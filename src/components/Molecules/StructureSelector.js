@@ -25,7 +25,7 @@ const getStructureItems = () => {
     {
       title: 'Towers',
       activeSrc: <SvgUri source={require('assets/images/tower.svg')} />,
-      value: 2,
+      value: 6,
       imageStyle: styles.shop,
     },
     // {
@@ -46,7 +46,7 @@ const getStructureItems = () => {
       title: 'Bungalows',
       activeSrc: <SvgUri source={require('assets/images/bungalow.svg')} />,
       inactiveSrc: bungalowInactive,
-      value: 3,
+      value: 4,
       imageStyle: styles.shop,
     },
     {

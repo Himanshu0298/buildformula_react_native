@@ -20,11 +20,10 @@ function TowersList({
   console.log('----->towerType in index screen', towerType);
 
   const selectTower = (floors, i) => {
-    // setValue(v - 1);
     navigation.navigate('BC_Step_Floor', {
       floors: floors,
       towerType,
-      towerId: i,
+      towerId: i + 1,
     });
   };
 
@@ -102,7 +101,6 @@ function TowerSelector(props) {
 
   return (
     <>
-      {/* <FormTitle title={t(title)} subTitle={t(subtitle)} /> */}
       <View style={styles.container}>
         <Subheading>{towerType}</Subheading>
         <TowersList

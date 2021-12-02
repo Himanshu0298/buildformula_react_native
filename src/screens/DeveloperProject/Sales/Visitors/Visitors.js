@@ -231,6 +231,7 @@ function Header(props) {
 function Visitors(props) {
   const {theme, navigation} = props;
 
+  
   const {selectedProject} = useSelector(s => s.project);
   const {loading, visitors, visitorAnalytics} = useSelector(s => s.sales);
 
