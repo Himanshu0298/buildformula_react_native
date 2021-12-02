@@ -25,16 +25,22 @@ const RichTextEditor = props => {
             useContainer={false}
             placeholder={placeholder}
             initialContentHTML={value}
-            containerStyle={{minHeight: 100, borderRadius: 10}}
-            editorStyle={{
-              // backgroundColor: 'white',
-              borderColor: 'blue',
-            }}
+            containerStyle={{minHeight: 150, borderRadius: 10}}
+            // editorStyle={{
+            //   // backgroundColor: 'white',
+            //   borderColor: 'blue',
+            // }}
             onChange={onChangeText}
           />
         </KeyboardAvoidingView>
       </ScrollView>
-      <RichToolbar editor={richText} />
+      <RichToolbar
+        editor={richText}
+        selectedButtonStyle={{backgroundColor: 'black'}}
+        // unselectedButtonStyle={{color: 'red'}}
+        selectedIconTint={true}
+        iconTint={true}
+      />
     </View>
   );
 };
