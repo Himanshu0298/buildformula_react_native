@@ -27,7 +27,7 @@ function RenderProgressChart(props) {
         height={120}
         strokeWidth={14}
         radius={40}
-        hideLegend={true}
+        hideLegend
         chartConfig={{
           backgroundGradientFrom: '#fff',
           backgroundGradientTo: '#fff',
@@ -106,7 +106,7 @@ function Statistics(props) {
             <View style={styles.row}>
               <RenderProgressChart
                 params={{labels: ['Apartment'], data: bookingData.apartment}}
-                color={'72, 161, 244'}
+                color="72, 161, 244"
                 width={(Layout.window.width - 40) / 3}
               />
               <RenderProgressChart
@@ -123,7 +123,7 @@ function Statistics(props) {
             <View style={styles.row}>
               <RenderProgressChart
                 params={{labels: ['Bungalow'], data: bookingData.bunglow}}
-                color={'7, 202, 3'}
+                color="7, 202, 3"
                 width={(Layout.window.width - 40) / 3}
               />
               <RenderProgressChart

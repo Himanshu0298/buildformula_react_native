@@ -142,7 +142,7 @@ function RenderForm({navigation, formikProps}) {
           contentStyle={{padding: 1}}
           theme={{roundness: 15}}
           onPress={navigation.goBack}>
-          {'Cancel'}
+          Cancel
         </Button>
         <Button
           style={{width: '40%'}}
@@ -176,7 +176,7 @@ function AddBankDetails(props) {
 
   return (
     <View style={styles.container}>
-      <Spinner visible={loading} textContent={''} />
+      <Spinner visible={loading} textContent="" />
       <KeyboardAwareScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollView}>

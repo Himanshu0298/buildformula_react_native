@@ -62,7 +62,7 @@ function PlanSelect(props) {
 
   return (
     <View style={styles.container}>
-      <Spinner visible={loading} textContent={''} />
+      <Spinner visible={loading} textContent="" />
       <Title style={{color: '#000'}}>Select Your Plan</Title>
       <Caption style={{color: 'rgba(0, 0, 0, 0.5)'}}>
         Choose your desired plan for the project

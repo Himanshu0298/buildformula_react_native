@@ -1,8 +1,8 @@
-import * as types from './actionTypes';
 import {useDispatch} from 'react-redux';
-import useProject from '../../services/project';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import {useResProcessor} from 'utils/responseProcessor';
+import useProject from '../../services/project';
+import * as types from './actionTypes';
 
 export default function useProjectActions() {
   const dispatch = useDispatch();

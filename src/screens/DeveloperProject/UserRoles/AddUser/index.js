@@ -1,6 +1,6 @@
 import ProjectLayout from 'components/Molecules/Layout/ProjectLayout';
-import AddUser from './AddUser';
 import React from 'react';
+import AddUser from './AddUser';
 
 export default props => {
   return (

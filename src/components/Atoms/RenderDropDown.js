@@ -49,12 +49,12 @@ const DropDown = forwardRef((props, ref) => {
           ref={ref}
           onPress={toggleDropDOwn}
           onLayout={onLayout}>
-          <View pointerEvents={'none'}>
+          <View pointerEvents="none">
             <RenderInput
               value={displayValue}
               label={label}
               placeholder={placeholder}
-              pointerEvents={'none'}
+              pointerEvents="none"
               {...inputProps}
             />
           </View>
@@ -96,12 +96,12 @@ function RenderDropDown(props) {
     <View style={containerStyles}>
       <DropDown
         label={label}
-        mode={'outlined'}
+        mode="outlined"
         value={value}
         setValue={onChange}
         list={options}
         inputProps={{
-          right: <TextInput.Icon name={'menu-down'} />,
+          right: <TextInput.Icon name="menu-down" />,
           error,
         }}
       />

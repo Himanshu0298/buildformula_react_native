@@ -20,7 +20,7 @@ const schema = Yup.object().shape({
   remarks: Yup.string('Invalid').required('Required'),
 });
 
-const AddFollowUp = props => {
+function AddFollowUp(props) {
   const followUpDateRef = React.useRef();
   const followUpTimeRef = React.useRef();
   const assignToRef = React.useRef();
@@ -166,7 +166,7 @@ const AddFollowUp = props => {
       </Formik>
     </View>
   );
-};
+}
 
 export default withTheme(AddFollowUp);
 

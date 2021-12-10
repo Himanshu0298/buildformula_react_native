@@ -79,7 +79,7 @@ function Details(props) {
         <View style={styles.detailRow}>
           <Paragraph>Budget Range</Paragraph>
           <Caption style={styles.value}>
-            {/*TODO: Add amount formatting */}
+            {/* TODO: Add amount formatting */}
             Rs. {budget_from} - Rs.{budget_to}
           </Caption>
         </View>

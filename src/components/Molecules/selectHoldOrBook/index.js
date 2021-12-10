@@ -1,11 +1,6 @@
 import React, {useMemo, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {StyleSheet, View, Image, Text, TouchableOpacity} from 'react-native';
-import {} from 'react-native-paper';
-import PropTypes from 'prop-types';
-import book from 'assets/images/book.png';
-import hold from 'assets/images/hold.png';
-import {theme} from 'styles/theme';
 import {
   Button,
   Paragraph,
@@ -18,6 +13,10 @@ import {
   Subheading,
   Divider,
 } from 'react-native-paper';
+import PropTypes from 'prop-types';
+import book from 'assets/images/book.png';
+import hold from 'assets/images/hold.png';
+import {theme} from 'styles/theme';
 import useSalesActions from 'redux/actions/salesActions';
 
 const _data = [

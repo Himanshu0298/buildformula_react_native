@@ -24,9 +24,9 @@ export default function SelectFloor(props) {
     onSelectFloor,
     navigation,
   } = props;
-  const floors = props.route.params.floors;
-  const towerType = props.route.params.towerType;
-  const towerId = props.route.params.towerId;
+  const {floors} = props.route.params;
+  const {towerType} = props.route.params;
+  const {towerId} = props.route.params;
 
   console.log('----->towerId in select floor', towerId);
 

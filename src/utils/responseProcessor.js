@@ -40,9 +40,8 @@ export function useResProcessor() {
         msg?.includes('not')
       ) {
         return data;
-      } else {
-        throw {response};
       }
+      throw {response};
     },
   };
 }

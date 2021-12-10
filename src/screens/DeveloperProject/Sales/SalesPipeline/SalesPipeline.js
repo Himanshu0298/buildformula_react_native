@@ -39,8 +39,8 @@ function RenderContacts({item}) {
     <View style={styles.contactContainer}>
       <View style={styles.leftContainer}>
         <MaterialIcons
-          name={'drag-indicator'}
-          color={'rgba(4,29,54,0.15)'}
+          name="drag-indicator"
+          color="rgba(4,29,54,0.15)"
           size={30}
         />
         <View style={styles.visitorContainer}>
@@ -85,26 +85,18 @@ function RenderHeader(props) {
             ]}>
             <MaterialIcons
               name="drag-indicator"
-              color={'rgba(4,29,54,0.6)'}
+              color="rgba(4,29,54,0.6)"
               size={19}
             />
           </TouchableOpacity>
           <TouchableOpacity style={styles.icon}>
-            <MaterialIcons
-              name={'search'}
-              color={'rgba(4,29,54,0.6)'}
-              size={19}
-            />
+            <MaterialIcons name="search" color="rgba(4,29,54,0.6)" size={19} />
           </TouchableOpacity>
           {id !== 1 && modulePermission?.editor && modulePermission?.admin ? (
             <TouchableOpacity
               onPress={() => handleDelete(pipelineId, get_visitors.length)}
               style={[styles.icon, {backgroundColor: COLORS.deleteLight}]}>
-              <MaterialIcons
-                name={'delete'}
-                color={theme.colors.red}
-                size={19}
-              />
+              <MaterialIcons name="delete" color={theme.colors.red} size={19} />
             </TouchableOpacity>
           ) : null}
           <TouchableOpacity
@@ -151,7 +143,7 @@ function RenderAddNew({handleAddNew}) {
             handleAddNew(stage);
           }
         }}>
-        {'Save'}
+        Save
       </Button>
     </View>
   );
@@ -396,10 +388,10 @@ export default function SalesPipeline(props) {
 
   return (
     <View style={styles.container}>
-      <Spinner visible={loading} textContent={''} />
+      <Spinner visible={loading} textContent="" />
       {pipelines.length === 0 ? (
         <View style={styles.noResultContainer}>
-          <Subheading>{'No Data Found'}</Subheading>
+          <Subheading>No Data Found</Subheading>
         </View>
       ) : (
         <>

@@ -128,7 +128,7 @@ function AddDialog(props) {
               <View style={styles.dialogContentContainer}>
                 <RenderInput
                   name="subPhase"
-                  label={'Sub Phase'}
+                  label="Sub Phase"
                   containerStyles={styles.input}
                   value={values.subPhase}
                   onChangeText={handleChange('subPhase')}

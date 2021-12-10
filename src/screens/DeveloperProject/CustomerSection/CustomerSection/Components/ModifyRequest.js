@@ -49,7 +49,7 @@ function RenderRequests({requests}) {
               theme={{roundness: 15}}
               style={{marginRight: 10}}
               onPress={() => console.log('-----> cancel')}>
-              {'Cancel'}
+              Cancel
             </Button>
             <Button
               // compact
@@ -57,7 +57,7 @@ function RenderRequests({requests}) {
               contentStyle={{paddingHorizontal: 1}}
               theme={{roundness: 15}}
               onPress={() => console.log('-----> confirm')}>
-              {'Confirm'}
+              Confirm
             </Button>
           </View>
         ) : null}

@@ -1,5 +1,6 @@
 import {BASE_API_URL} from 'utils/constant';
 import {store} from '../redux/store';
+
 const axios = require('axios');
 
 export const instance = axios.create({baseURL: BASE_API_URL});
@@ -18,7 +19,7 @@ export const useConfig = () => {
         headers['Content-Type'] = 'multipart/form-data';
       }
       if (auth) {
-        headers.Authorization = 'Bearer ' + token;
+        headers.Authorization = `Bearer ${token}`;
       }
 
       return {headers};

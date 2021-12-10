@@ -55,7 +55,7 @@ function Lineup(props) {
 
   return (
     <View style={styles.container}>
-      <Spinner visible={loading} textContent={''} />
+      <Spinner visible={loading} textContent="" />
       <TabView
         navigationState={{index: selectedTab, routes}}
         renderScene={renderScene}

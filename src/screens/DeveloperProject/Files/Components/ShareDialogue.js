@@ -49,9 +49,8 @@ function ShareDialog(props) {
     if (!selectedUsers.length) {
       setError('Select a User to share!');
       return;
-    } else {
-      setError();
     }
+    setError();
 
     const fileType = selectedItem.folder_name ? 'folder' : 'file';
 
@@ -84,7 +83,7 @@ function ShareDialog(props) {
   };
 
   return (
-    <CustomDialog {...props} title={'Share File'} submitForm={submitForm}>
+    <CustomDialog {...props} title="Share File" submitForm={submitForm}>
       <View style={styles.contentContainer}>
         <Subheading>Select person to share</Subheading>
         <Searchbar

@@ -4,7 +4,7 @@ import SelectTower from './SelectTower';
 
 export default props => {
   return (
-    <ProjectLayout {...props} header={true}>
+    <ProjectLayout {...props} header>
       <SelectTower {...props} />
     </ProjectLayout>
   );

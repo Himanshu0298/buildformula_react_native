@@ -4,7 +4,7 @@ import {
   GET_MEMBERS,
   GET_ROLES,
   GET_SELECTED_PROJECT,
-} from './../actions/actionTypes';
+} from '../actions/actionTypes';
 
 const initialState = {
   loading: false,
@@ -17,7 +17,7 @@ const initialState = {
 const reducer = (state = initialState, action = {}) => {
   const {type, payload} = action;
   switch (type) {
-    //RESET data on project change
+    // RESET data on project change
     case `${GET_SELECTED_PROJECT}_PENDING`:
       return {
         ...initialState,

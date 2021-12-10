@@ -62,7 +62,7 @@ function RenderContent(props) {
           {t('title_forgot_password_heading')}
         </Headline>
         <Subheading theme={secondaryTheme} style={{marginTop: 20}}>
-          {'Enter the OTP sent to  your email id'}
+          Enter the OTP sent to your email id
         </Subheading>
       </View>
       <View style={styles.inputMainContainer}>
@@ -74,7 +74,7 @@ function RenderContent(props) {
           />
         </View>
         {errors.otp ? <RenderError error={errors.otp} /> : null}
-        <LoginButton label={'Next'} onPress={handleSubmit} />
+        <LoginButton label="Next" onPress={handleSubmit} />
       </View>
     </View>
   );
@@ -106,7 +106,7 @@ function ForgotPasswordOtp(props) {
           onPress={() => Keyboard.dismiss()}
           style={styles.container}>
           <View style={styles.container}>
-            <Spinner visible={loading} textContent={''} />
+            <Spinner visible={loading} textContent="" />
             <View style={styles.topImageContainer}>
               <View style={styles.bannerContainer}>
                 <Image source={banner} style={styles.banner} />

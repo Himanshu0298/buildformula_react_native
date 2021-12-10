@@ -5,10 +5,10 @@ import {Paragraph, Drawer, Button, withTheme} from 'react-native-paper';
 import Animated from 'react-native-reanimated';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import useAppActions from '../../redux/actions/appActions';
 import {SITE_URL} from 'utils/constant';
-import {DEVELOPER_DRAWER_ITEMS, CUSTOMER_DRAWER_ITEMS} from './DrawerItems';
 import {useSelector} from 'react-redux';
+import useAppActions from '../../redux/actions/appActions';
+import {DEVELOPER_DRAWER_ITEMS, CUSTOMER_DRAWER_ITEMS} from './DrawerItems';
 
 function filterSidebar(items, permissions) {
   const filteredItems = [];
@@ -50,9 +50,9 @@ const DrawerItem = React.memo(props => {
 
   let drawerIcon;
   if (typeof icon === 'string') {
-    drawerIcon = ({color, size}) => (
-      <MaterialCommunityIcons {...{name: icon, color, size}} />
-    );
+    drawerIcon = function ({color, size}) {
+      return <MaterialCommunityIcons {...{name: icon, color, size}} />;
+    };
   } else if (icon) {
     drawerIcon = icon;
   } else {
@@ -81,46 +81,46 @@ function RenderGeneralDrawerItems(props) {
     <>
       <DrawerItem
         {...props}
-        label={'Home'}
+        label="Home"
         route="Home"
-        icon={'home-variant-outline'}
+        icon="home-variant-outline"
       />
       <DrawerItem
         {...props}
-        label={'Profile'}
+        label="Profile"
         route="Profile"
-        icon={'account-box-outline'}
+        icon="account-box-outline"
       />
       <DrawerItem
         {...props}
-        label={'Project Purchase'}
+        label="Project Purchase"
         route="PurchasedProjects"
         icon={({color, size}) => (
-          <MaterialIcons name={'shop'} color={color} size={size} />
+          <MaterialIcons name="shop" color={color} size={size} />
         )}
       />
       <DrawerItem
         {...props}
-        label={'Support'}
+        label="Support"
         route="Support"
         onPress={() => Linking.openURL(SITE_URL)}
         icon={({color, size}) => (
-          <MaterialIcons name={'support'} color={color} size={size} />
+          <MaterialIcons name="support" color={color} size={size} />
         )}
       />
       <DrawerItem
         {...props}
-        label={'Help'}
+        label="Help"
         route="Help"
         onPress={() => Linking.openURL(SITE_URL)}
-        icon={'help-box'}
+        icon="help-box"
       />
       <DrawerItem
         {...props}
-        label={'Logout'}
+        label="Logout"
         route="Help"
         onPress={logout}
-        icon={'logout'}
+        icon="logout"
       />
     </>
   );
@@ -134,9 +134,8 @@ function RenderDeveloperDrawerItems(props) {
   const routes = useMemo(() => {
     if (isProjectAdmin) {
       return DEVELOPER_DRAWER_ITEMS;
-    } else {
-      return filterSidebar(DEVELOPER_DRAWER_ITEMS, permissions);
     }
+    return filterSidebar(DEVELOPER_DRAWER_ITEMS, permissions);
   }, [isProjectAdmin, permissions]);
 
   return routes.map(section => {

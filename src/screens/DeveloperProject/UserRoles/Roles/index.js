@@ -1,6 +1,6 @@
 import ProjectLayout from 'components/Molecules/Layout/ProjectLayout';
-import Roles from './Roles';
 import React from 'react';
+import Roles from './Roles';
 
 export default props => {
   return (

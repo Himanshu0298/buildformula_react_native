@@ -4,7 +4,7 @@ import Search from './Search';
 
 export default props => {
   return (
-    <ProjectLayout {...props} showLogo={true} tab={false}>
+    <ProjectLayout {...props} showLogo tab={false}>
       <Search {...props} />
     </ProjectLayout>
   );

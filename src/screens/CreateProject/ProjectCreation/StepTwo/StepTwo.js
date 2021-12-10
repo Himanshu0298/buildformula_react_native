@@ -114,7 +114,7 @@ function StepTwo(props) {
   return (
     <>
       <FormTitle title={t('StepOneTitle')} subTitle={t('StepOneSubTitle')} />
-      <Spinner visible={loading} textContent={''} />
+      <Spinner visible={loading} textContent="" />
       <KeyboardAwareScrollView
         contentContainerStyle={styles.scrollView}
         keyboardShouldPersistTaps="handled">
@@ -251,7 +251,7 @@ function StepTwo(props) {
                   contentStyle={{padding: 3}}
                   theme={{roundness: 15}}
                   onPress={navigation.goBack}>
-                  {'Back'}
+                  Back
                 </Button>
                 <Button
                   style={{flex: 1, marginHorizontal: 5}}
@@ -259,7 +259,7 @@ function StepTwo(props) {
                   contentStyle={{padding: 3}}
                   theme={{roundness: 15}}
                   onPress={handleDebounce(handleSubmit)}>
-                  {'Save'}
+                  Save
                 </Button>
               </View>
             </View>

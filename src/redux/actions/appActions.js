@@ -1,6 +1,6 @@
-import * as types from './actionTypes';
 import {useDispatch} from 'react-redux';
 import {persistor} from 'redux/store';
+import * as types from './actionTypes';
 
 export default function useAppActions() {
   const dispatch = useDispatch();

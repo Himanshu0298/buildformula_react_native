@@ -1,6 +1,6 @@
 import React from 'react';
-import CustomerBankLoan from './CustomerBankLoan';
 import ProjectLayout from 'components/Molecules/Layout/ProjectLayout';
+import CustomerBankLoan from './CustomerBankLoan';
 
 export default props => {
   return (

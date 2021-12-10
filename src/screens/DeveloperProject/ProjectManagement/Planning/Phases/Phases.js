@@ -378,7 +378,7 @@ function Phases(props) {
                 style={{borderRadius: 50, marginRight: 10}}
                 onPress={saveSort}>
                 <MaterialIcon
-                  name={'check'}
+                  name="check"
                   color={theme.colors.primary}
                   size={14}
                 />
@@ -389,7 +389,7 @@ function Phases(props) {
                 style={{borderRadius: 50}}
                 onPress={toggleSortable}>
                 <MaterialIcon
-                  name={'close'}
+                  name="close"
                   color={theme.colors.error}
                   size={14}
                 />

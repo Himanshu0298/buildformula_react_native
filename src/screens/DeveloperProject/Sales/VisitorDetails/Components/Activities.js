@@ -8,6 +8,7 @@ import RenderHtml from 'react-native-render-html';
 import useSalesActions from 'redux/actions/salesActions';
 
 const relativeTime = require('dayjs/plugin/relativeTime');
+
 dayjs.extend(relativeTime);
 
 const ACTIVITY_LABELS = {
@@ -25,7 +26,7 @@ const FILTERS = [
 
 function Heading(props) {
   const {text} = props;
-  var _text = text;
+  let _text = text;
 
   if (text === 'a day ago') {
     _text = 'Yesterday';
@@ -122,7 +123,7 @@ function FilterPanel(props) {
   return (
     <View>
       <ScrollView
-        horizontal={true}
+        horizontal
         style={styles.container}
         showsHorizontalScrollIndicator={false}>
         {FILTERS.map(i => {

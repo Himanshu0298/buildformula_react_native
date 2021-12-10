@@ -29,7 +29,7 @@ function SelectStructure(props) {
         barStyle="light-content"
         backgroundColor={theme.colors.primary}
       />
-      <Spinner visible={loading} textContent={''} />
+      <Spinner visible={loading} textContent="" />
       <StructureSelector
         onSelectStructure={handlePress}
         projectTypes={projectTypes}

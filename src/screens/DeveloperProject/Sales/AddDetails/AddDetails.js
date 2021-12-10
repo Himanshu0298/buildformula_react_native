@@ -1,12 +1,12 @@
 import React, {useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import RenderSelect from 'components/Atoms/RenderSelect';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import AddComments from './Components/AddComments';
 import AddCallLogs from './Components/AddCallLogs';
 import AddFollowUp from './Components/AddFollowUp';
-import {SafeAreaView} from 'react-native-safe-area-context';
 
-const AddDetails = props => {
+function AddDetails(props) {
   const {route} = props;
   const {type: selectedType} = route.params || {};
 
@@ -33,7 +33,7 @@ const AddDetails = props => {
         <RenderSelect
           name="assign_to"
           ref={assignToRef}
-          label={'Select'}
+          label="Select"
           options={['Comment', 'Call Log', 'Follow-up']}
           containerStyles={styles.input}
           value={type}
@@ -43,7 +43,7 @@ const AddDetails = props => {
       </View>
     </SafeAreaView>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {

@@ -1,8 +1,8 @@
 import React from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {addOpacity} from 'utils';
-import BaseText from '../BaseText';
 import PropTypes from 'prop-types';
+import BaseText from '../BaseText';
 
 function BhkButton({bhk, onPress, selected}) {
   return (

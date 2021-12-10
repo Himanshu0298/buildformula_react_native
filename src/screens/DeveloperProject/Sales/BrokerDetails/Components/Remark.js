@@ -40,7 +40,7 @@ function Remark(props) {
       <Formik
         validateOnBlur={false}
         validateOnChange={false}
-        initialValues={{remark: remark}}
+        initialValues={{remark}}
         validationSchema={schema}
         onSubmit={onSubmit}>
         {({

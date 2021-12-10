@@ -9,7 +9,7 @@ import {
   GET_PURCHASE_PROJECT_DETAILS,
   GET_SELECTED_PROJECT,
   SET_SELECTED_UNIT,
-} from './../actions/actionTypes';
+} from '../actions/actionTypes';
 
 const persistConfig = {
   key: 'project',

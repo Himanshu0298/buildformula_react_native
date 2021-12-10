@@ -7,17 +7,15 @@ function RenderSingleHistory(props) {
   const {navigation} = props;
 
   return (
-    <>
-      <View>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <Avatar.Image size={50} />
-          <View style={{marginLeft: 10}}>
-            <Text>random Text</Text>
-            <Caption>At 2 june 2021</Caption>
-          </View>
+    <View>
+      <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        <Avatar.Image size={50} />
+        <View style={{marginLeft: 10}}>
+          <Text>random Text</Text>
+          <Caption>At 2 june 2021</Caption>
         </View>
       </View>
-    </>
+    </View>
   );
 }
 
@@ -26,7 +24,7 @@ function History(props) {
   const {params = {}} = route;
 
   return (
-    <ProjectLayout {...props} showTimer={true}>
+    <ProjectLayout {...props} showTimer>
       <View style={{padding: 15}}>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
           <IconButton

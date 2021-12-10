@@ -53,26 +53,25 @@ async function processFiles(res) {
       const data = {uri: resizedData.uri, type, name};
 
       return data;
-    } else {
-      const DEST_PATH = `${RNFS.TemporaryDirectoryPath}${name}`;
-      const isExists = await RNFS.exists(DEST_PATH);
-
-      if (isExists) {
-        await RNFS.unlink(DEST_PATH);
-      }
-
-      await RNFS.copyFile(res.uri, DEST_PATH);
-
-      const stat = await RNFS.stat(DEST_PATH);
-
-      const data = {
-        uri: Platform.OS === 'ios' ? stat.path : `file:///${stat.path}`,
-        type,
-        name,
-      };
-
-      return data;
     }
+    const DEST_PATH = `${RNFS.TemporaryDirectoryPath}${name}`;
+    const isExists = await RNFS.exists(DEST_PATH);
+
+    if (isExists) {
+      await RNFS.unlink(DEST_PATH);
+    }
+
+    await RNFS.copyFile(res.uri, DEST_PATH);
+
+    const stat = await RNFS.stat(DEST_PATH);
+
+    const data = {
+      uri: Platform.OS === 'ios' ? stat.path : `file:///${stat.path}`,
+      type,
+      name,
+    };
+
+    return data;
   } catch (error) {
     console.log('-----> error', error);
   }

@@ -33,7 +33,7 @@ function CreateFolderDialogue(props) {
               <View style={styles.dialogContentContainer}>
                 <RenderInput
                   name="folder_name"
-                  label={'Folder name'}
+                  label="Folder name"
                   containerStyles={styles.input}
                   value={values.folder_name}
                   onChangeText={handleChange('folder_name')}
@@ -50,7 +50,7 @@ function CreateFolderDialogue(props) {
                     theme={{roundness: 15}}
                     mode="contained"
                     onPress={toggleDialogue}>
-                    <Text theme={secondaryTheme}>{'cancel'}</Text>
+                    <Text theme={secondaryTheme}>cancel</Text>
                   </Button>
                   <Button
                     style={{width: '40%', marginHorizontal: 5}}
@@ -58,7 +58,7 @@ function CreateFolderDialogue(props) {
                     contentStyle={{padding: 1}}
                     theme={{roundness: 15}}
                     onPress={handleSubmit}>
-                    <Text theme={secondaryTheme}>{'save'}</Text>
+                    <Text theme={secondaryTheme}>save</Text>
                   </Button>
                 </View>
               </View>

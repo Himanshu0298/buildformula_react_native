@@ -1,8 +1,8 @@
-import * as types from './actionTypes';
 import {useDispatch} from 'react-redux';
 import {useResProcessor} from 'utils/responseProcessor';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import useRole from 'services/role';
+import * as types from './actionTypes';
 
 export default function useRoleActions() {
   const dispatch = useDispatch();

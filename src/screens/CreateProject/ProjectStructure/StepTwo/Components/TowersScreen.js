@@ -36,7 +36,7 @@ function TowersScreen(props) {
 
   const [duplicateDialog, setDuplicateDialog] = useState(false);
 
-  //check towers data is valid for all floors
+  // check towers data is valid for all floors
   const {towerValidationById, allTowersValid, errorMessage} = useMemo(
     () => validateTowers(currentStructureData, selectedStructureType),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -88,7 +88,7 @@ function TowersScreen(props) {
                 }}
               />
               <Button
-                compact={true}
+                compact
                 mode="contained"
                 uppercase={false}
                 disabled={!towerCount}
@@ -125,7 +125,7 @@ function TowersScreen(props) {
                   saveStructureType();
                 }
               }}>
-              {'Next'}
+              Next
             </Button>
           </View>
         </View>

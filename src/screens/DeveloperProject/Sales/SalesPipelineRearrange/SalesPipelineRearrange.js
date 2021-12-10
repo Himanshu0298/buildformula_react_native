@@ -22,8 +22,8 @@ function RenderPipeline(props) {
       <View style={styles.titleContainer}>
         <CustomBadge label={(index + 1).toString()} style={styles.badge} />
         <MaterialIcons
-          name={'drag-indicator'}
-          color={'rgba(4,29,54,0.15)'}
+          name="drag-indicator"
+          color="rgba(4,29,54,0.15)"
           size={30}
           style={{marginRight: 10}}
         />
@@ -69,52 +69,48 @@ function SalesPipelineRearrange(props) {
   console.log('-----pipelinesOrderList', pipelinesOrderList);
 
   return (
-    <>
-      <View style={styles.container}>
-        <Spinner visible={loading} textContent={''} />
+    <View style={styles.container}>
+      <Spinner visible={loading} textContent="" />
 
-        {pipelinesOrderList.length ? (
-          <>
-            <AutoDragSortableView
-              dataSource={pipelinesOrderList}
-              maxScale={1.03}
-              style={{width: '100%'}}
-              childrenWidth={Layout.window.width}
-              childrenHeight={ROW_HEIGHT}
-              keyExtractor={(_, i) => i.toString()}
-              renderItem={(item, index) => (
-                <RenderPipeline {...{item, index}} />
-              )}
-              onDataChange={data => {
-                console.log('-----> onDataChange', data);
-                setUpdatedPipelineOrderList(data);
-              }}
-              onDragEnd={handleDragEnd}
-            />
-            <View style={styles.dialogActionContainer}>
-              <Button
-                style={{width: '40%', marginHorizontal: 5}}
-                contentStyle={{padding: 2}}
-                theme={{roundness: 15}}
-                mode="outlined"
-                onPress={() => navigation.goBack()}>
-                <Text>{'cancel'}</Text>
-              </Button>
-              <Button
-                style={{width: '40%', marginHorizontal: 5}}
-                contentStyle={{padding: 1}}
-                theme={{roundness: 15}}
-                mode="contained"
-                onPress={handleSave}>
-                <Text theme={secondaryTheme}>{'save'}</Text>
-              </Button>
-            </View>
-          </>
-        ) : (
-          <NoResult />
-        )}
-      </View>
-    </>
+      {pipelinesOrderList.length ? (
+        <>
+          <AutoDragSortableView
+            dataSource={pipelinesOrderList}
+            maxScale={1.03}
+            style={{width: '100%'}}
+            childrenWidth={Layout.window.width}
+            childrenHeight={ROW_HEIGHT}
+            keyExtractor={(_, i) => i.toString()}
+            renderItem={(item, index) => <RenderPipeline {...{item, index}} />}
+            onDataChange={data => {
+              console.log('-----> onDataChange', data);
+              setUpdatedPipelineOrderList(data);
+            }}
+            onDragEnd={handleDragEnd}
+          />
+          <View style={styles.dialogActionContainer}>
+            <Button
+              style={{width: '40%', marginHorizontal: 5}}
+              contentStyle={{padding: 2}}
+              theme={{roundness: 15}}
+              mode="outlined"
+              onPress={() => navigation.goBack()}>
+              <Text>cancel</Text>
+            </Button>
+            <Button
+              style={{width: '40%', marginHorizontal: 5}}
+              contentStyle={{padding: 1}}
+              theme={{roundness: 15}}
+              mode="contained"
+              onPress={handleSave}>
+              <Text theme={secondaryTheme}>save</Text>
+            </Button>
+          </View>
+        </>
+      ) : (
+        <NoResult />
+      )}
+    </View>
   );
 }
 

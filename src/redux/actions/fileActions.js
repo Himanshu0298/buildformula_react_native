@@ -1,8 +1,8 @@
-import * as types from './actionTypes';
 import {useDispatch} from 'react-redux';
 import {useResProcessor} from 'utils/responseProcessor';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import useFiles from 'services/files';
+import * as types from './actionTypes';
 
 export default function useFileActions() {
   const dispatch = useDispatch();

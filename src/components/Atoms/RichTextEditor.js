@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import {actions, RichEditor, RichToolbar} from 'react-native-pell-rich-editor';
 
-const RichTextEditor = props => {
+function RichTextEditor(props) {
   const {placeholder, value, onChangeText} = props;
 
   const richText = React.useRef();
@@ -38,11 +38,11 @@ const RichTextEditor = props => {
         editor={richText}
         selectedButtonStyle={{backgroundColor: 'black'}}
         // unselectedButtonStyle={{color: 'red'}}
-        selectedIconTint={true}
-        iconTint={true}
+        selectedIconTint
+        iconTint
       />
     </View>
   );
-};
+}
 
 export default RichTextEditor;

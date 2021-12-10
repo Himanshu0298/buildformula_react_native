@@ -67,7 +67,7 @@ export default function SelectUnit(props) {
 
   return (
     <>
-      <Spinner visible={loading || loadingUnitStatus} textContent={''} />
+      <Spinner visible={loading || loadingUnitStatus} textContent="" />
       <UnitSelector
         title="title_customer_section"
         subtitle="subtitle_customer_section"

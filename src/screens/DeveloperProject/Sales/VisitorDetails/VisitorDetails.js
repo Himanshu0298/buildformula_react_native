@@ -80,7 +80,7 @@ function VisitorDetails(props) {
 
   return (
     <>
-      <Spinner visible={loading} textContent={''} />
+      <Spinner visible={loading} textContent="" />
 
       <View style={styles.body}>
         <TabView

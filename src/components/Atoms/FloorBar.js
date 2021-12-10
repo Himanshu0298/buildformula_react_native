@@ -1,6 +1,5 @@
 import React from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import BaseText from './BaseText';
 import PropTypes from 'prop-types';
 import {theme} from 'styles/theme';
 import Layout from 'utils/Layout';
@@ -9,6 +8,7 @@ import {getFloorNumber} from 'utils';
 import {STRUCTURE_TYPE_LABELS} from 'utils/constant';
 import floorSlab from 'assets/images/slab.png';
 import FloorsScreen from 'screens/CreateProject/ProjectStructure/StepTwo/Components/FloorsScreen';
+import BaseText from './BaseText';
 
 function FloorBar(props) {
   const {
@@ -72,8 +72,8 @@ function FloorBar(props) {
               onPress={() =>
                 navigation.navigate('BC_Step_Three', {
                   floorNumber: getFloorNumber(floorId),
-                  floorId: floorId,
-                  towerId: towerId,
+                  floorId,
+                  towerId,
                   selectedStructure: 6,
                 })
               }

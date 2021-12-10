@@ -1,9 +1,9 @@
-//For App
+// For App
 export const SET_LANGUAGE = 'SET_LANGUAGE';
 export const LOGOUT = 'LOGOUT';
 export const SET_TIMER = 'SET_TIMER';
 
-//For Auth/User
+// For Auth/User
 export const LOGIN = 'LOGIN';
 export const SIGN_UP_INIT = 'SIGN_UP_INIT';
 export const SIGN_UP = 'SIGN_UP';
@@ -13,13 +13,13 @@ export const SELECT_ROLE = 'SELECT_ROLE';
 export const UPDATE_USER = 'UPDATE_USER';
 export const SEND_FORGET_PASSWORD_OTP = 'SEND_FORGET_PASSWORD_OTP';
 
-//For Notifications
+// For Notifications
 export const GET_ALL_NOTIFICATIONS = 'GET_ALL_NOTIFICATIONS';
 export const GET_PROJECT_NOTIFICATIONS = 'GET_PROJECT_NOTIFICATIONS';
 export const REMOVE_ALL_NOTIFICATIONS = 'REMOVE_ALL_NOTIFICATIONS';
 export const REMOVE_NOTIFICATION = 'REMOVE_NOTIFICATION';
 
-//For Project
+// For Project
 export const GET_SELECTED_PROJECT = 'GET_SELECTED_PROJECT';
 export const GET_PROJECT_PERMISSIONS = 'GET_PROJECT_PERMISSIONS';
 export const GET_PROJECTS = 'GET_PROJECTS';
@@ -31,7 +31,7 @@ export const GET_PURCHASE_PROJECT_DETAILS = 'GET_PURCHASE_PROJECT_DETAILS';
 // For Dashboard
 export const GET_DASHBOARD_DATA = 'GET_DASHBOARD_DATA';
 
-//For Add Project
+// For Add Project
 export const CREATE_PROJECT = 'CREATE_PROJECT';
 export const UPDATE_LOCAL_STRUCTURE = 'UPDATE_LOCAL_STRUCTURE';
 export const SAVE_STRUCTURE = 'SAVE_STRUCTURE';
@@ -42,7 +42,7 @@ export const SET_PROJECT_DATA = 'SET_PROJECT_DATA';
 export const GET_STATES = 'GET_STATES';
 export const GET_CITIES = 'GET_CITIES';
 
-//For Sales
+// For Sales
 export const GET_SALES_DATA = 'GET_SALES_DATA';
 export const GET_BROKERS_LIST = 'GET_BROKERS_LIST';
 export const GET_VISITORS = 'GET_VISITORS';
@@ -71,7 +71,7 @@ export const GET_PIPELINES_ORDER_LIST = 'GET_PIPELINES_ORDER_LIST';
 export const UPDATE_PIPELINE_ORDER_LIST = 'UPDATE_PIPELINE_ORDER_LIST';
 export const SET_UPDATED_PIPELINE_DATA = 'SET_UPDATED_PIPELINE_DATA';
 
-//For  Customer Section
+// For  Customer Section
 export const GET_CUSTOMER_DATA = 'GET_CUSTOMER_DATA';
 export const GET_BOOKING_DATA = 'GET_BOOKING_DATA';
 export const ADD_CUSTOMER = 'ADD_CUSTOMER';
@@ -86,7 +86,7 @@ export const ADD_COLLECTION = 'ADD_COLLECTION';
 export const UPDATE_COLLECTION = 'UPDATE_COLLECTION';
 export const DELETE_COLLECTION = 'DELETE_COLLECTION';
 
-//For Files
+// For Files
 export const GET_FOLDERS = 'GET_FOLDERS';
 export const CREATE_FOLDER = 'CREATE_FOLDER';
 export const RENAME_FOLDER = 'RENAME_FOLDER';
@@ -102,7 +102,7 @@ export const SHARE_FILE_WITH_USERS = 'SHARE_FILE_WITH_USERS';
 export const ADD_NEW_VERSION = 'ADD_NEW_VERSION';
 export const DELETE_VERSION = 'DELETE_VERSION';
 
-//For Project Management
+// For Project Management
 export const GET_WORKS = 'GET_WORKS';
 export const GET_WORK_CATEGORIES = 'GET_WORK_CATEGORIES';
 export const GET_MILESTONES = 'GET_MILESTONES';

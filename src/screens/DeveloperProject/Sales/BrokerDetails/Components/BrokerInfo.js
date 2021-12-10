@@ -5,7 +5,7 @@ import useSalesActions from 'redux/actions/salesActions';
 import {useSelector} from 'react-redux';
 import {theme} from 'styles/theme';
 
-const RenderPairData = props => {
+function RenderPairData(props) {
   const {title, value} = props;
 
   return (
@@ -14,7 +14,7 @@ const RenderPairData = props => {
       <Subheading>{value}</Subheading>
     </View>
   );
-};
+}
 
 function BrokerInfo(props) {
   const {navigation, brokerInfo} = props;
@@ -53,7 +53,7 @@ function BrokerInfo(props) {
           onPress={() =>
             navigation.navigate('AddBroker', {broker: props.userData})
           }>
-          {'Edit'}
+          Edit
         </Button>
         {!Number(brokerInfo?.dealClosedCount) ? (
           <Button
@@ -64,7 +64,7 @@ function BrokerInfo(props) {
             contentStyle={{padding: 3}}
             theme={{roundness: 15}}
             onPress={handleDeleteButton}>
-            {'Delete'}
+            Delete
           </Button>
         ) : null}
       </View>

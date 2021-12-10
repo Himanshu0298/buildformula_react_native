@@ -143,9 +143,7 @@ function RenderForm(props) {
             onChangeText={handleChange('email')}
             onBlur={handleBlur('email')}
             error={errors.emails}
-            right={
-              <TextInput.Icon size={20} name={'check'} onPress={addEmail} />
-            }
+            right={<TextInput.Icon size={20} name="check" onPress={addEmail} />}
           />
           {values?.emails?.length ? (
             <View style={styles.emailsContainer}>
@@ -171,7 +169,7 @@ function RenderForm(props) {
                 <RenderSelect
                   name="role"
                   disabled={role === 'Admin'}
-                  label={'Role'}
+                  label="Role"
                   options={roleOptions}
                   value={role}
                   onSelect={value => updateRole(index, value)}

@@ -19,7 +19,7 @@ const schema = Yup.object().shape({
   remarks: Yup.string('Invalid').required('Required'),
 });
 
-const AddCallLogs = props => {
+function AddCallLogs(props) {
   const {route, navigation} = props;
   const {visitorId} = route.params || {};
 
@@ -175,7 +175,7 @@ const AddCallLogs = props => {
       </Formik>
     </View>
   );
-};
+}
 
 export default withTheme(AddCallLogs);
 

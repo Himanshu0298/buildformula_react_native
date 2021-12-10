@@ -78,7 +78,7 @@ function StepOne(props) {
 
   return (
     <SafeAreaView edges={['bottom']} style={{flexGrow: 1}}>
-      <Spinner visible={loading} textContent={''} />
+      <Spinner visible={loading} textContent="" />
       <ScrollView contentContainerStyle={{flexGrow: 1}}>
         <StructureSelector
           title="label_project_structure"
@@ -94,7 +94,7 @@ function StepOne(props) {
             contentStyle={{padding: 3}}
             theme={{roundness: 15}}
             onPress={handleSubmit}>
-            {'Next'}
+            Next
           </Button>
         </View>
       </ScrollView>

@@ -48,7 +48,7 @@ function RenderForm(props) {
 
         <RenderDatePicker
           name="time"
-          label={'Time'}
+          label="Time"
           ref={dateRef}
           containerStyles={styles.input}
           value={values.time}
@@ -82,7 +82,7 @@ function RenderForm(props) {
           contentStyle={{padding: 1}}
           theme={{roundness: 15}}
           onPress={handleSubmit}>
-          {'Save'}
+          Save
         </Button>
       </View>
     </>

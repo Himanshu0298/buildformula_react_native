@@ -62,19 +62,19 @@ function RenderForm(props) {
           <Text>Collection Type </Text>
           <View>
             <Radio
-              label={'Document charges'}
+              label="Document charges"
               value="documentcharges"
               checked={values.type === 'documentcharges'}
               onChange={v => setFieldValue('type', v)}
             />
             <Radio
-              label={'Property Final Amount'}
+              label="Property Final Amount"
               value="propertyfinalamount"
               checked={values.type === 'propertyfinalamount'}
               onChange={v => setFieldValue('type', v)}
             />
             <Radio
-              label={'GST Amount'}
+              label="GST Amount"
               value="gst"
               checked={values.type === 'gst'}
               onChange={v => setFieldValue('type', v)}
@@ -118,7 +118,7 @@ function RenderForm(props) {
         ) : null}
         <RenderInput
           name="transaction_number"
-          label={'Check no / Transaction no'}
+          label="Check no / Transaction no"
           ref={transRef}
           containerStyles={styles.input}
           value={values.transaction_number}
@@ -130,13 +130,13 @@ function RenderForm(props) {
           <Text>Collection Type </Text>
           <View style={styles.radioContainer}>
             <Radio
-              label={'Credit'}
+              label="Credit"
               value="credit"
               checked={values.transaction_type === 'credit'}
               onChange={v => setFieldValue('transaction_type', v)}
             />
             <Radio
-              label={'Debit'}
+              label="Debit"
               value="debit"
               checked={values.transaction_type === 'debit'}
               onChange={v => setFieldValue('transaction_type', v)}

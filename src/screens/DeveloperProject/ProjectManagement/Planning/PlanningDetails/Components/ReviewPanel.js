@@ -56,9 +56,8 @@ function AddReviewerDialog(props) {
     if (_selectedUsers.length > 3) {
       setError('Max 3 reviewers only!');
       return;
-    } else {
-      setError();
     }
+    setError();
 
     setSelectedUsers(_selectedUsers);
   };

@@ -99,7 +99,7 @@ function RatesColumn(props) {
         name={`${rateType}_area`}
         label={t('label_area')}
         keyboardType="number-pad"
-        multiline={true}
+        multiline
         value={values[`${rateType}_area`]}
         onChangeText={value => handleAreaChange(`${rateType}_area`, value)}
         onBlur={handleBlur(`${rateType}_area`)}
@@ -109,7 +109,7 @@ function RatesColumn(props) {
         name={`${rateType}_rate`}
         label={t('label_rate')}
         keyboardType="number-pad"
-        multiline={true}
+        multiline
         containerStyles={styles.rateInput}
         value={values[`${rateType}_rate`]}
         onChangeText={value => handleRateChange(`${rateType}_rate`, value)}
@@ -144,26 +144,26 @@ function RenderRates(props) {
       <View style={styles.ratesContainer}>
         <RatesColumn
           {...props}
-          label={'Super Buildup'}
+          label="Super Buildup"
           type="super_buildup"
           syncAmounts={syncAmounts}
         />
         <RatesColumn
           {...props}
-          label={'Buildup'}
+          label="Buildup"
           type="buildup"
           syncAmounts={syncAmounts}
         />
         <RatesColumn
           {...props}
-          label={'Carpet'}
+          label="Carpet"
           type="carpet"
           syncAmounts={syncAmounts}
         />
       </View>
       <View>
         <RenderSelect
-          name={'carpet_unit'}
+          name="carpet_unit"
           label={t('label_unit')}
           options={unitOptions}
           containerStyles={styles.rateInput}
@@ -174,7 +174,7 @@ function RenderRates(props) {
           }}
         />
         <RenderInput
-          name={'area_amount'}
+          name="area_amount"
           label={t('label_amount')}
           keyboardType="number-pad"
           containerStyles={styles.rateInput}
@@ -253,9 +253,9 @@ function RenderCharges({formikProps, t}) {
             <View style={styles.chargeInputContainer}>
               <View style={{flex: 1, paddingHorizontal: 5}}>
                 <RenderInput
-                  name={'label'}
+                  name="label"
                   label={t('label_charge')}
-                  multiline={true}
+                  multiline
                   value={charge.label}
                   contentContainerStyle={{flex: 1}}
                   onChangeText={value => setValue('label', value)}
@@ -264,7 +264,7 @@ function RenderCharges({formikProps, t}) {
               </View>
               <View style={{flex: 1, paddingHorizontal: 5}}>
                 <RenderInput
-                  name={'amount'}
+                  name="amount"
                   label={t('label_amount')}
                   keyboardType="number-pad"
                   value={charge.amount}
@@ -298,11 +298,7 @@ function RenderCharges({formikProps, t}) {
               opacity={0.1}
               style={{marginLeft: 15, borderRadius: 20}}
               onPress={() => removeCharge(i)}>
-              <MaterialIcons
-                name={'close'}
-                color={theme.colors.red}
-                size={19}
-              />
+              <MaterialIcons name="close" color={theme.colors.red} size={19} />
             </OpacityButton>
           </View>
         );
@@ -423,10 +419,10 @@ function FormContent(props) {
           <View style={styles.totalContainer}>
             <Subheading>Total other charges</Subheading>
             <RenderInput
-              disabled={true}
+              disabled
               value={values.other_charges_amount}
               containerStyles={{width: '50%'}}
-              placeholder={'Total charges'}
+              placeholder="Total charges"
               left={<TextInput.Affix text="₹" />}
             />
           </View>
@@ -437,10 +433,10 @@ function FormContent(props) {
             </View>
 
             <RenderInput
-              disabled={true}
+              disabled
               value={totalAmount || 0}
               containerStyles={{width: '50%'}}
-              placeholder={'Total amount'}
+              placeholder="Total amount"
               left={<TextInput.Affix text="₹" />}
             />
           </View>
@@ -450,7 +446,7 @@ function FormContent(props) {
               value={values.discount_amount}
               keyboardType="number-pad"
               onChangeText={handleDiscount}
-              label={'Discount amount'}
+              label="Discount amount"
               left={<TextInput.Affix text="₹" />}
             />
             <View style={{marginTop: 10}}>
@@ -482,10 +478,10 @@ function FormContent(props) {
           <View style={[styles.totalContainer, {marginTop: 20}]}>
             <Text>Property Final amount</Text>
             <RenderInput
-              disabled={true}
+              disabled
               value={values.finalAmount || 0}
               containerStyles={{width: '50%'}}
-              placeholder={'Final amount'}
+              placeholder="Final amount"
               left={<TextInput.Affix text="₹" />}
             />
           </View>
@@ -496,7 +492,7 @@ function FormContent(props) {
             contentStyle={{padding: 3}}
             theme={{roundness: 15}}
             onPress={handleCancel}>
-            {'Back'}
+            Back
           </Button>
           <Button
             style={{flex: 1, marginHorizontal: 5}}
@@ -504,7 +500,7 @@ function FormContent(props) {
             contentStyle={{padding: 3}}
             theme={{roundness: 15}}
             onPress={handleSubmit}>
-            {'Next'}
+            Next
           </Button>
         </View>
       </KeyboardAwareScrollView>

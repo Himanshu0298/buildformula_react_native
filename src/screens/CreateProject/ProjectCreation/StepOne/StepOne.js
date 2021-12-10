@@ -118,7 +118,7 @@ function StepOne(props) {
                   onChangeText={handleChange('company_gst')}
                   onChoose={v => setFieldValue('gst_image', v)}
                   onBlur={handleBlur('company_gst')}
-                  returnKeyType={'done'}
+                  returnKeyType="done"
                   onSubmitEditing={handleSubmit}
                   error={errors.company_gst || errors.gst_image}
                 />
@@ -129,7 +129,7 @@ function StepOne(props) {
                   contentStyle={{padding: 3}}
                   theme={{roundness: 15}}
                   onPress={navigation.goBack}>
-                  {'Back'}
+                  Back
                 </Button>
                 <Button
                   style={{flex: 1, marginHorizontal: 5}}
@@ -137,7 +137,7 @@ function StepOne(props) {
                   contentStyle={{padding: 3}}
                   theme={{roundness: 15}}
                   onPress={handleSubmit}>
-                  {'Continue'}
+                  Continue
                 </Button>
               </View>
             </View>

@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
   input: {
     width: '100%',
   },
-  //Errors
+  // Errors
   errorContainer: {
     marginLeft: 15,
   },

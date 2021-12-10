@@ -31,7 +31,7 @@ function AddDescriptionDialog(props) {
 
         <RenderTextBox
           name="description"
-          label={'Description'}
+          label="Description"
           value={description}
           onChangeText={setDescription}
           numberOfLines={6}

@@ -28,7 +28,7 @@ import {
   ADD_BROKER,
   DELETE_BROKER,
   GET_BROKER_DETAILS,
-} from './../actions/actionTypes';
+} from '../actions/actionTypes';
 
 const initialState = {
   loading: false,
@@ -60,7 +60,7 @@ const reducer = (state = initialState, action = {}) => {
   const {type, payload} = action;
 
   switch (type) {
-    //RESET data on project change
+    // RESET data on project change
     case `${GET_SELECTED_PROJECT}_PENDING`:
       return {...initialState};
 
@@ -406,7 +406,7 @@ const reducer = (state = initialState, action = {}) => {
       let movedVisitor = {};
       let newPipelineIndex = -1;
 
-      //Find old pipeline and remove visitor from the list
+      // Find old pipeline and remove visitor from the list
       pipelines = pipelines.map((pipeline, i) => {
         const {get_visitors} = _.cloneDeep(pipeline);
 
@@ -425,7 +425,7 @@ const reducer = (state = initialState, action = {}) => {
         return pipeline;
       });
 
-      //Add visitor to the new list
+      // Add visitor to the new list
       if (newPipelineIndex > -1 && movedVisitor.id) {
         pipelines[newPipelineIndex].get_visitors.push(movedVisitor);
       }

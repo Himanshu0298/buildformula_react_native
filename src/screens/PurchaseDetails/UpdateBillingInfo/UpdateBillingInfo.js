@@ -42,7 +42,7 @@ function UpdateBillingInfo(props) {
             <View style={styles.dialogContentContainer}>
               <RenderInput
                 name="name"
-                label={'Name'}
+                label="Name"
                 containerStyles={styles.inputStyles}
                 maxLength={10}
                 value={values.name}
@@ -55,7 +55,7 @@ function UpdateBillingInfo(props) {
 
               <RenderInput
                 name="address"
-                label={'Address'}
+                label="Address"
                 containerStyles={styles.inputStyles}
                 maxLength={10}
                 value={values.address}
@@ -68,7 +68,7 @@ function UpdateBillingInfo(props) {
 
               <RenderInput
                 name="state"
-                label={'State'}
+                label="State"
                 containerStyles={styles.inputStyles}
                 maxLength={10}
                 value={values.state}
@@ -81,7 +81,7 @@ function UpdateBillingInfo(props) {
 
               <RenderInput
                 name="city"
-                label={'City'}
+                label="City"
                 containerStyles={styles.inputStyles}
                 maxLength={10}
                 value={values.city}
@@ -94,7 +94,7 @@ function UpdateBillingInfo(props) {
 
               <RenderInput
                 name="pinCode"
-                label={'Pin Code'}
+                label="Pin Code"
                 containerStyles={styles.inputStyles}
                 maxLength={10}
                 value={values.pinCode}
@@ -108,7 +108,7 @@ function UpdateBillingInfo(props) {
 
               <RenderInput
                 name="gst"
-                label={'GST'}
+                label="GST"
                 containerStyles={styles.inputStyles}
                 maxLength={10}
                 value={values.gst}
@@ -126,7 +126,7 @@ function UpdateBillingInfo(props) {
                   contentStyle={{padding: 1}}
                   theme={{roundness: 15}}
                   onPress={handleSubmit}>
-                  {'Update'}
+                  Update
                 </Button>
               </View>
             </View>

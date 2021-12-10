@@ -10,9 +10,9 @@ import {
 import {Subheading, withTheme, Divider} from 'react-native-paper';
 import backArrow from 'assets/images/back_arrow.png';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import useCustomerActions from 'redux/actions/customerActions';
 import DetailsHeader from '../CustomerSection/Components/DetailsHeader';
 import {CustomerSection, EngineerSection, ManagerSection} from './Components';
-import useCustomerActions from 'redux/actions/customerActions';
 
 function AddModifyRequest(props) {
   const {navigation, route} = props;

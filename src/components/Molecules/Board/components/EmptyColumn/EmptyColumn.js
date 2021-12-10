@@ -4,11 +4,13 @@ import {Caption} from 'react-native-paper';
 import {secondaryTheme} from 'styles/theme';
 import {StyleSheet, View} from 'react-native';
 
-const EmptyColumn = ({emptyText}) => (
-  <View style={styles.container}>
-    <Caption>{emptyText}</Caption>
-  </View>
-);
+function EmptyColumn({emptyText}) {
+  return (
+    <View style={styles.container}>
+      <Caption>{emptyText}</Caption>
+    </View>
+  );
+}
 
 EmptyColumn.defaultProps = {
   emptyText: 'No items',

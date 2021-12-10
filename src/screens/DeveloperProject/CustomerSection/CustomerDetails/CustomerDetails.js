@@ -59,16 +59,16 @@ function CustomerDetails(props) {
         </View>
         <Divider />
         <View style={styles.bottomDetails}>
-          <RenderInfo label={'Full Name'} value={name} />
-          <RenderInfo label={'Phone'} value={'+91 9800 56789'} />
-          <RenderInfo label={'Alternate contact'} value={'+91 9800 56789'} />
-          <RenderInfo label={'Email'} value={'jamesparker@xyz.com'} />
+          <RenderInfo label="Full Name" value={name} />
+          <RenderInfo label="Phone" value="+91 9800 56789" />
+          <RenderInfo label="Alternate contact" value="+91 9800 56789" />
+          <RenderInfo label="Email" value="jamesparker@xyz.com" />
           <RenderInfo
-            label={'Address'}
-            value={'P 137, Pilanji, Sarojini Nagar, xyz lane, New Delhi'}
+            label="Address"
+            value="P 137, Pilanji, Sarojini Nagar, xyz lane, New Delhi"
           />
-          <RenderInfo label={'Age'} value={'17 yrs'} />
-          <RenderInfo label={'Occupation'} value={'Business'} />
+          <RenderInfo label="Age" value="17 yrs" />
+          <RenderInfo label="Occupation" value="Business" />
           <View style={styles.infoContainer}>
             <Text>PAN no:</Text>
             <View style={styles.valueContainer}>

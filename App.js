@@ -8,16 +8,16 @@ import {
   initialWindowSafeAreaInsets,
 } from 'react-native-safe-area-context';
 import RNBootSplash from 'react-native-bootsplash';
-import {theme} from './src/styles/theme';
-import {store, persistor} from './src/redux/store';
-import NavContainer from './src/navigation';
 import i18next from 'i18next';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {initReactI18next} from 'react-i18next';
-import translations from './src/translations/global';
 import * as RNLocalize from 'react-native-localize';
-import {SnackbarProvider} from './src/components/Atoms/Snackbar';
 import {ActionSheetProvider} from '@expo/react-native-action-sheet';
+import {theme} from './src/styles/theme';
+import {store, persistor} from './src/redux/store';
+import NavContainer from './src/navigation';
+import translations from './src/translations/global';
+import {SnackbarProvider} from './src/components/Atoms/Snackbar';
 import AlertProvider from './src/components/Atoms/Alert/AlertProvider';
 
 const languageDetector = {
@@ -40,9 +40,11 @@ i18next.use(languageDetector).use(initReactI18next).init({
   resources: translations,
 });
 
-const Loader = () => <Spinner visible={true} textContent={''} />;
+function Loader() {
+  return <Spinner visible textContent="" />;
+}
 
-const App = () => {
+function App() {
   useEffect(() => {
     RNBootSplash.hide({fade: true});
   }, []);
@@ -50,7 +52,7 @@ const App = () => {
   // TODO: figure out action sheet (ActionSheetProvider) is only required for file Input or the whole app
 
   return (
-    <Fragment>
+    <>
       <StatusBar barStyle="light-content" />
       <StoreProvider store={store}>
         <PersistGate loading={null} persistor={persistor}>
@@ -70,8 +72,8 @@ const App = () => {
           </PaperProvider>
         </PersistGate>
       </StoreProvider>
-    </Fragment>
+    </>
   );
-};
+}
 
 export default App;

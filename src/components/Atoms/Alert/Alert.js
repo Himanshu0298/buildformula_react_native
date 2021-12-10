@@ -4,7 +4,7 @@ import {Button, Paragraph, Dialog, Portal} from 'react-native-paper';
 import {secondaryTheme, theme} from 'styles/theme';
 import PropTypes from 'prop-types';
 
-const CustomAlert = props => {
+function CustomAlert(props) {
   const {
     open,
     handleClose,
@@ -25,7 +25,7 @@ const CustomAlert = props => {
       <Dialog visible={open} onDismiss={handleClose} {...dialogProps}>
         {title ? <Dialog.Title>{title}</Dialog.Title> : null}
         <Dialog.Content>
-          {content ? content : <Paragraph>{message}</Paragraph>}
+          {content || <Paragraph>{message}</Paragraph>}
         </Dialog.Content>
         <Dialog.Actions>
           {showCancelButton ? (
@@ -45,7 +45,7 @@ const CustomAlert = props => {
       </Dialog>
     </Portal>
   );
-};
+}
 
 CustomAlert.propTypes = {
   open: PropTypes.bool,

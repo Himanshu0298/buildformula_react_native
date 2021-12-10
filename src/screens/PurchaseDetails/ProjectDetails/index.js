@@ -4,7 +4,7 @@ import ProjectDetails from './ProjectDetails';
 
 export default props => {
   return (
-    <ProjectLayout {...props} showLogo={true} header={true}>
+    <ProjectLayout {...props} showLogo header>
       <ProjectDetails {...props} />
     </ProjectLayout>
   );

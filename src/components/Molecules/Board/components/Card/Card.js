@@ -2,7 +2,7 @@ import React from 'react';
 import {Animated, TouchableWithoutFeedback} from 'react-native';
 import {bool, func, object, shape, string} from 'prop-types';
 
-const Card = props => {
+function Card(props) {
   const {
     style,
     hidden,
@@ -29,7 +29,7 @@ const Card = props => {
       </Animated.View>
     </TouchableWithoutFeedback>
   );
-};
+}
 
 Card.propTypes = {
   cardContent: func.isRequired,

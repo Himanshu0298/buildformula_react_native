@@ -54,7 +54,7 @@ export default class AlertProvider extends PureComponent {
   }
 }
 
-//TODO:UPDATE alert prop-types
+// TODO:UPDATE alert prop-types
 AlertProvider.propTypes = {
   /**
    * Props to pass through to the action button.

@@ -1,7 +1,7 @@
 import {Dimensions, Platform, StatusBar} from 'react-native';
 
-const width = Dimensions.get('window').width;
-const height = Dimensions.get('window').height;
+const {width} = Dimensions.get('window');
+const {height} = Dimensions.get('window');
 
 const X_WIDTH = 375;
 const X_HEIGHT = 812;

@@ -68,7 +68,7 @@ function AddRole(props) {
       const subModules = submodules
         .filter(item => item.modules_id === i.id)
         .map(item => ({...item, status: 0}));
-      return {...i, subModules: subModules};
+      return {...i, subModules};
     });
   }, [allModules, submodules]);
 

@@ -14,6 +14,9 @@ import UploadFileIcon from 'assets/images/upload_files.png';
 import {useSelector} from 'react-redux';
 import useImagePicker from 'utils/useImagePicker';
 import Spinner from 'react-native-loading-spinner-overlay';
+import BottomSheet from 'reanimated-bottom-sheet';
+import {getPermissions, getShadow} from 'utils';
+import Animated from 'react-native-reanimated';
 import DeleteDialog from './Components/DeleteDialog';
 import UploadDialog from './Components/UploadDialog';
 import RenameDialogue from './Components/RenameDialog';
@@ -23,9 +26,6 @@ import VersionDialog from './Components/VersionDialog';
 import FileSection from './Components/FilesSection';
 import FoldersSection from './Components/FoldersSection';
 import ShareDialogue from './Components/ShareDialogue';
-import BottomSheet from 'reanimated-bottom-sheet';
-import {getPermissions, getShadow} from 'utils';
-import Animated from 'react-native-reanimated';
 
 const SNAP_POINTS = [0, '70%'];
 

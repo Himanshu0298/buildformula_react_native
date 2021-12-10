@@ -1,7 +1,7 @@
-import * as types from './actionTypes';
 import {useDispatch} from 'react-redux';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import {useResProcessor} from 'utils/responseProcessor';
+import * as types from './actionTypes';
 import useSalesServices from '../../services/sales';
 
 export default function useSalesActions() {

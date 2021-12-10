@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 
 const PropTypes = require('prop-types');
+
 const {width, height} = Dimensions.get('window');
 
 const defaultZIndex = 8;
@@ -53,7 +54,7 @@ export default class AutoDragSortableView extends Component {
       return newData;
     });
     this.state = {
-      dataSource: dataSource,
+      dataSource,
       curPropsDataSource: props.dataSource,
       height: Math.ceil(dataSource.length / rowNum) * itemHeight,
       itemWidth,
@@ -121,7 +122,7 @@ export default class AutoDragSortableView extends Component {
         return newData;
       });
       return {
-        dataSource: dataSource,
+        dataSource,
         curPropsDataSource: nextprops.dataSource,
         height: Math.ceil(dataSource.length / rowNum) * itemHeight,
         itemWidth,
@@ -230,8 +231,8 @@ export default class AutoDragSortableView extends Component {
   };
 
   startTouch(touchIndex) {
-    //Prevent drag
-    const fixedItems = this.props.fixedItems;
+    // Prevent drag
+    const {fixedItems} = this.props;
     if (fixedItems.length > 0 && fixedItems.includes(touchIndex)) {
       return;
     }
@@ -276,12 +277,12 @@ export default class AutoDragSortableView extends Component {
   moveTouch(nativeEvent, gestureState) {
     this.isHasMove = true;
 
-    //if (this.isScaleRecovery) clearTimeout(this.isScaleRecovery)
+    // if (this.isScaleRecovery) clearTimeout(this.isScaleRecovery)
 
     if (this.touchCurItem) {
       let {dx, dy, vy} = gestureState;
-      const itemWidth = this.state.itemWidth;
-      const itemHeight = this.state.itemHeight;
+      const {itemWidth} = this.state;
+      const {itemHeight} = this.state;
 
       const rowNum = parseInt(this.props.parentWidth / itemWidth);
       const maxWidth = this.props.parentWidth - itemWidth;
@@ -352,10 +353,10 @@ export default class AutoDragSortableView extends Component {
         // Remember the X axis
         this.autoObj.scrollDx = dx;
         // Correction data 1
-        dy = dy - this.autoObj.hasScrollDy;
+        dy -= this.autoObj.hasScrollDy;
         if (nativeEvent != null) {
           // Correction data 2
-          dy = dy + this.autoObj.scrollDy;
+          dy += this.autoObj.scrollDy;
           // Prevent fingers from sliding when sliding automatically
           if (
             this.autoObj.forceScrollStatus === 1 ||
@@ -407,7 +408,7 @@ export default class AutoDragSortableView extends Component {
       }
 
       if (this.touchCurItem.moveToIndex != moveToIndex) {
-        const fixedItems = this.props.fixedItems;
+        const {fixedItems} = this.props;
         if (fixedItems.length > 0 && fixedItems.includes(moveToIndex)) {
           return;
         }
@@ -453,7 +454,7 @@ export default class AutoDragSortableView extends Component {
     this.isHasMove = false;
 
     this.initTag();
-    //clear
+    // clear
     if (this.touchCurItem) {
       this.setState({
         scrollEnabled: true,
@@ -464,7 +465,7 @@ export default class AutoDragSortableView extends Component {
           this.touchCurItem.moveToIndex,
         );
       }
-      //this.state.dataSource[this.touchCurItem.index].scaleValue.setValue(1)
+      // this.state.dataSource[this.touchCurItem.index].scaleValue.setValue(1)
       Animated.timing(
         this.state.dataSource[this.touchCurItem.index].scaleValue,
         {
@@ -525,12 +526,10 @@ export default class AutoDragSortableView extends Component {
         } else if (endIndex == index) {
           newIndex = startIndex;
         }
-      } else {
-        if (endIndex >= index && index > startIndex) {
-          newIndex = index - 1;
-        } else if (startIndex == index) {
-          newIndex = endIndex;
-        }
+      } else if (endIndex >= index && index > startIndex) {
+        newIndex = index - 1;
+      } else if (startIndex == index) {
+        newIndex = endIndex;
       }
 
       if (newIndex != null) {
@@ -571,8 +570,8 @@ export default class AutoDragSortableView extends Component {
   }
 
   reComplexDataSource(isInit, props) {
-    const itemWidth = this.state.itemWidth;
-    const itemHeight = this.state.itemHeight;
+    const {itemWidth} = this.state;
+    const {itemHeight} = this.state;
     const rowNum = parseInt(props.parentWidth / itemWidth);
     const dataSource = props.dataSource.map((item, index) => {
       const newData = {};
@@ -594,12 +593,12 @@ export default class AutoDragSortableView extends Component {
     if (isInit) {
       this.state = {
         scrollEnabled: true,
-        dataSource: dataSource,
+        dataSource,
         height: Math.ceil(dataSource.length / rowNum) * itemHeight,
       };
     } else {
       this.setState({
-        dataSource: dataSource,
+        dataSource,
         height: Math.ceil(dataSource.length / rowNum) * itemHeight,
       });
     }
@@ -625,22 +624,23 @@ export default class AutoDragSortableView extends Component {
       ) {
         this.autoObj.scrollDy = 0; // Correcting data system deviations
         return;
-      } else if (
+      }
+      if (
         this.autoObj.forceScrollStatus > 0 &&
         this.curScrollData.windowHeight + this.curScrollData.offsetY >=
           this.curScrollData.totalHeight
       ) {
-        this.autoObj.scrollDy = this.curScrollData.offsetY; //Correcting data system deviations
+        this.autoObj.scrollDy = this.curScrollData.offsetY; // Correcting data system deviations
         return;
       }
-      //Barrel effect, the slowest is 1.x1
+      // Barrel effect, the slowest is 1.x1
       this.curScrollData.hasScroll = false;
     }
     this.scrollRef && this.scrollRef.scrollTo({x: 0, y: height, animated});
   };
 
   onScrollListener = event => {
-    const nativeEvent = event.nativeEvent;
+    const {nativeEvent} = event;
     this.curScrollData = {
       totalHeight: nativeEvent.contentSize.height,
       windowHeight: nativeEvent.layoutMeasurement.height,
@@ -674,7 +674,7 @@ export default class AutoDragSortableView extends Component {
         style={styles.container}>
         {this.props.renderHeaderView ? this.props.renderHeaderView : null}
         <View
-          //ref={(ref)=>this.sortParentRef=ref}
+          // ref={(ref)=>this.sortParentRef=ref}
           style={[
             styles.swipe,
             {
@@ -682,7 +682,7 @@ export default class AutoDragSortableView extends Component {
               height: this.state.height,
             },
           ]}
-          //onLayout={()=> {}}
+          // onLayout={()=> {}}
         >
           {this._renderItemView()}
         </View>

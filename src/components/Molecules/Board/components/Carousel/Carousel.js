@@ -26,9 +26,9 @@ class Carousel extends Component {
     this.initPositions(this.props);
   }
 
-  UNSAFE_componentWillUpdate = nextProps => {
+  UNSAFE_componentWillUpdate(nextProps) {
     this.initPositions(nextProps);
-  };
+  }
 
   componentWillUnmount() {
     this.mounted = false;

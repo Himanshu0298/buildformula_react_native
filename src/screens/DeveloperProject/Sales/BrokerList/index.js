@@ -4,7 +4,7 @@ import BrokerList from './BrokerList';
 
 export default props => {
   return (
-    <ProjectLayout {...props} header={true}>
+    <ProjectLayout {...props} header>
       <BrokerList {...props} />
     </ProjectLayout>
   );

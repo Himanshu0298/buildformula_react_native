@@ -1,6 +1,6 @@
 import React from 'react';
-import CustomerBooking from './CustomerBooking';
 import ProjectLayout from 'components/Molecules/Layout/ProjectLayout';
+import CustomerBooking from './CustomerBooking';
 
 export default props => {
   return (

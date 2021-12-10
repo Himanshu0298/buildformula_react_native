@@ -239,7 +239,7 @@ function UnitsScreen(props) {
                   contentStyle={{paddingHorizontal: 6}}
                   theme={{roundness: 10}}
                   onPress={assignToAll}>
-                  {'Apply for all'}
+                  Apply for all
                 </Button>
               ) : null}
             </View>

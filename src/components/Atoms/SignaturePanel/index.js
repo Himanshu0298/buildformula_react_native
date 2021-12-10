@@ -36,7 +36,7 @@ function SignaturePanel(props) {
             strokeColor="#000000"
             minStrokeWidth={4}
             maxStrokeWidth={4}
-            viewMode={'portrait'}
+            viewMode="portrait"
           />
 
           <View style={{flexDirection: 'row'}}>

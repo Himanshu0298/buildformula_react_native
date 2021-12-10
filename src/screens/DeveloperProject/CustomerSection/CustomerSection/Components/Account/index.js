@@ -14,10 +14,10 @@ import {
 import {BOOKING_STATUS_STYLES} from 'components/Molecules/UnitSelector/RenderUnits';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import ActivityDialog from './Components/ActivityDialog';
 import {useSelector} from 'react-redux';
 import useCustomerActions from 'redux/actions/customerActions';
 import {getPermissions} from 'utils';
+import ActivityDialog from './Components/ActivityDialog';
 
 function StatusDialog(props) {
   const {open, status, updateStatus, handleClose} = props;

@@ -53,7 +53,7 @@ function InvoiceCard(props) {
   );
 }
 
-const ProjectDetails = props => {
+function ProjectDetails(props) {
   const {theme, route, navigation} = props;
 
   const {id} = route?.params || {};
@@ -83,14 +83,14 @@ const ProjectDetails = props => {
     status,
   } = purchaseProjectDetails.projectDetails;
 
-  var date2 = new Date(expired_date);
-  var date1 = new Date();
+  const date2 = new Date(expired_date);
+  const date1 = new Date();
 
   console.log('----->date2', date2);
   console.log('----->date1', date1);
 
-  var Difference_In_Time = date2.getTime() - date1.getTime();
-  var Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
+  const Difference_In_Time = date2.getTime() - date1.getTime();
+  const Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
 
   console.log('----->Difference_In_Days', Difference_In_Days);
 
@@ -207,7 +207,7 @@ const ProjectDetails = props => {
       </ScrollView>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   button: {

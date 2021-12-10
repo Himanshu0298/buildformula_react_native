@@ -20,9 +20,8 @@ function Timer({displayTimer}) {
 
       if (timeDiff < time) {
         return time - timeDiff;
-      } else {
-        toggleTimer();
       }
+      toggleTimer();
     }
 
     return 0;

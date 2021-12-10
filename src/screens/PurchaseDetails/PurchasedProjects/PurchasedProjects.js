@@ -54,7 +54,7 @@ function ProjectCard(props) {
   );
 }
 
-const PurchasedProjects = props => {
+function PurchasedProjects(props) {
   const {loading, purchasedProjects} = useSelector(state => state.project);
 
   const {getPurchasedProjects} = useProjectActions();
@@ -66,8 +66,8 @@ const PurchasedProjects = props => {
 
   return (
     <View>
-      <Spinner visible={loading} textContent={''} />
-      <ProjectHeader {...props} showLogo={true} />
+      <Spinner visible={loading} textContent="" />
+      <ProjectHeader {...props} showLogo />
       <View style={{padding: 10}}>
         <Title style={{marginBottom: 15}}>Projects</Title>
         {purchasedProjects.map(project => (
@@ -76,7 +76,7 @@ const PurchasedProjects = props => {
       </View>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   card: {

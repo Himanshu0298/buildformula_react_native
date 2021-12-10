@@ -11,7 +11,6 @@ import {secondaryTheme, theme} from 'styles/theme';
 import banner from 'assets/images/banner.png';
 import image from 'assets/images/buildings.png';
 import {Formik} from 'formik';
-import CustomInput from '../Components/CustomInput';
 import useUserActions from 'redux/actions/userActions';
 import {useSelector} from 'react-redux';
 import * as Yup from 'yup';
@@ -20,6 +19,7 @@ import {useTranslation} from 'react-i18next';
 import Layout from 'utils/Layout';
 import BottomSheet from 'reanimated-bottom-sheet';
 import SheetHeader from 'components/Atoms/SheetHeader';
+import CustomInput from '../Components/CustomInput';
 
 const BANNER_HEIGHT = Layout.window.width * 0.75 * (5 / 12);
 const IMAGE_HEIGHT = Layout.window.width * 0.75 * (15 / 22);
@@ -78,7 +78,7 @@ function RenderContent(props) {
     <View style={styles.contentContainer}>
       <View style={styles.headlineContainer}>
         <Headline theme={secondaryTheme} style={{fontWeight: 'bold'}}>
-          {'Reset Password'}
+          Reset Password
         </Headline>
       </View>
       <View style={styles.inputMainContainer}>
@@ -95,7 +95,7 @@ function RenderContent(props) {
             onBlur={handleBlur('password')}
             placeholder={t('msgBlankPassword')}
             autoCapitalize="none"
-            returnKeyType={'done'}
+            returnKeyType="done"
             onSubmitEditing={handleSubmit}
             error={errors.password}
             right={
@@ -117,7 +117,7 @@ function RenderContent(props) {
             onBlur={handleBlur('confirmPassword')}
             placeholder={t('msgBlankCnfPassword')}
             autoCapitalize="none"
-            returnKeyType={'done'}
+            returnKeyType="done"
             error={errors.confirmPassword}
             secureTextEntry={!showCnfPass}
             right={
@@ -129,7 +129,7 @@ function RenderContent(props) {
             }
           />
         </View>
-        <LoginButton label={'Submit'} onPress={handleSubmit} />
+        <LoginButton label="Submit" onPress={handleSubmit} />
       </View>
     </View>
   );
@@ -162,7 +162,7 @@ function ResetPassword(props) {
           onPress={() => Keyboard.dismiss()}
           style={styles.container}>
           <View style={styles.container}>
-            <Spinner visible={loading} textContent={''} />
+            <Spinner visible={loading} textContent="" />
             <View style={styles.topImageContainer}>
               <View style={styles.bannerContainer}>
                 <Image source={banner} style={styles.banner} />

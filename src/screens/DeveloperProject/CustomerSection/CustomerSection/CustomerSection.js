@@ -52,7 +52,7 @@ function RenderTab(props) {
 }
 
 function RenderTabBar(tabBarProps) {
-  //TODO: improve tab change animation
+  // TODO: improve tab change animation
   return (
     <TabBar
       {...tabBarProps}
@@ -119,7 +119,7 @@ function CustomerSection(props) {
 
   return (
     <>
-      <Spinner visible={loading} textContent={''} />
+      <Spinner visible={loading} textContent="" />
       <View style={styles.container}>
         <Title>{t('title_customer_section')}</Title>
         <DetailsHeader {...route?.params} />

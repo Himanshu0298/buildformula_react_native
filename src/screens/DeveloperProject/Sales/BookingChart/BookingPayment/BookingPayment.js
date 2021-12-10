@@ -155,13 +155,13 @@ export function RenderInstallments(props) {
               <View style={{flex: 0.4}}>
                 <RenderInput
                   value={dayjs(installment.date).format('DD/MM/YYYY')}
-                  disabled={true}
+                  disabled
                 />
               </View>
               <View style={{flex: 0.4}}>
                 <RenderInput
                   value={installment.amount}
-                  disabled={true}
+                  disabled
                   left={<TextInput.Affix text="₹" />}
                 />
               </View>
@@ -234,8 +234,8 @@ function RenderOneBigInstallmentPaymentForm(props) {
           <View style={styles.customPaymentRowContainer}>
             <View style={styles.percentInputContainer}>
               <RenderInput
-                name={'first_big_amount_percent'}
-                label={'%'}
+                name="first_big_amount_percent"
+                label="%"
                 keyboardType="decimal-pad"
                 value={values.first_big_amount_percent}
                 onChangeText={handlePercentChange}
@@ -268,7 +268,7 @@ function RenderOneBigInstallmentPaymentForm(props) {
             </View>
             <View style={{flex: 1}}>
               <RenderInput
-                name={'first_big_amount'}
+                name="first_big_amount"
                 label={t('label_amount')}
                 keyboardType="number-pad"
                 value={values.first_big_amount}
@@ -315,7 +315,7 @@ function RenderOneBigInstallmentPaymentForm(props) {
         Other Installment Details
       </Caption>
       <RenderInput
-        name={'installment_count'}
+        name="installment_count"
         label={t('label_no_of_installments')}
         keyboardType="number-pad"
         value={values.installment_count}
@@ -339,7 +339,7 @@ function RenderOneBigInstallmentPaymentForm(props) {
         </View>
         <View style={{flex: 1}}>
           <RenderInput
-            name={'installment_interval_days'}
+            name="installment_interval_days"
             label={t('label_interval_days')}
             keyboardType="number-pad"
             value={values.installment_interval_days}
@@ -459,8 +459,8 @@ function RenderCustomPaymentForm(props) {
                 <View style={styles.customPaymentRowContainer}>
                   <View style={styles.percentInputContainer}>
                     <RenderInput
-                      name={'percent'}
-                      label={'%'}
+                      name="percent"
+                      label="%"
                       keyboardType="decimal-pad"
                       value={percent}
                       onChangeText={value => handlePercentChange(index, value)}
@@ -489,7 +489,7 @@ function RenderCustomPaymentForm(props) {
                   </View>
                   <View style={{flex: 1}}>
                     <RenderInput
-                      name={'amount'}
+                      name="amount"
                       label={t('label_amount')}
                       keyboardType="number-pad"
                       value={amount}
@@ -531,7 +531,7 @@ function RenderCustomPaymentForm(props) {
                   style={{marginLeft: 15, borderRadius: 20}}
                   onPress={() => removePayment(index)}>
                   <MaterialIcons
-                    name={'close'}
+                    name="close"
                     color={theme.colors.red}
                     size={19}
                   />
@@ -563,7 +563,7 @@ function RenderDocumentChargesPayment(props) {
       </Caption>
       <View style={styles.docChargesSection}>
         <RenderInput
-          name={'documentation_charges'}
+          name="documentation_charges"
           label={t('label_documentation_charges')}
           value={values.documentCharge}
           editable={false}
@@ -707,13 +707,13 @@ function FormContent(props) {
             <Text>Do you wish to take a loan?</Text>
             <View style={styles.radioContainer}>
               <Radio
-                label={'Yes'}
+                label="Yes"
                 value="yes"
                 checked={values.loan === 'yes'}
                 onChange={value => setFieldValue('loan', value)}
               />
               <Radio
-                label={'No'}
+                label="No"
                 value="no"
                 color={theme.colors.error}
                 checked={values.loan === 'no'}
@@ -727,7 +727,7 @@ function FormContent(props) {
               <View style={styles.otherChargesContainer}>
                 <View style={styles.dateInputContainer}>
                   <RenderSelect
-                    name={'loan_bank'}
+                    name="loan_bank"
                     label={t('label_choose_bank')}
                     options={bankList}
                     value={values.loan_bank}
@@ -739,7 +739,7 @@ function FormContent(props) {
                 </View>
                 <View style={{flex: 1}}>
                   <RenderInput
-                    name={'loan_amount'}
+                    name="loan_amount"
                     label={t('label_amount')}
                     keyboardType="number-pad"
                     value={values.loan_amount}
@@ -762,7 +762,7 @@ function FormContent(props) {
           ) : null}
 
           <RenderSelect
-            name={'payment_type'}
+            name="payment_type"
             label={t('label_payment_method')}
             options={PAYMENT_METHODS}
             containerStyles={styles.rateInput}
@@ -781,7 +781,7 @@ function FormContent(props) {
             contentStyle={{padding: 3}}
             theme={{roundness: 15}}
             onPress={handleCancel}>
-            {'Back'}
+            Back
           </Button>
           <Button
             style={{flex: 1, marginHorizontal: 5}}
@@ -789,7 +789,7 @@ function FormContent(props) {
             contentStyle={{padding: 3}}
             theme={{roundness: 15}}
             onPress={handleSubmit}>
-            {'Save'}
+            Save
           </Button>
         </View>
       </KeyboardAwareScrollView>

@@ -93,17 +93,17 @@ export const getTowerLabel = i => String.fromCharCode(64 + parseInt(i, 10));
 
 export function getFloorNumber(i) {
   i = parseInt(i, 10);
-  var j = i % 10,
-    k = i % 100;
+  const j = i % 10;
+  const k = i % 100;
   let floor;
   if (j === 1 && k !== 11) {
-    floor = i + 'st';
+    floor = `${i}st`;
   } else if (j === 2 && k !== 12) {
-    floor = i + 'nd';
+    floor = `${i}nd`;
   } else if (j === 3 && k !== 13) {
-    floor = i + 'rd';
+    floor = `${i}rd`;
   } else {
-    floor = i + 'th';
+    floor = `${i}th`;
   }
 
   if (i === 0) {
@@ -127,7 +127,8 @@ export function getInitialScreen(authenticated, user = {}) {
     //   return 'ProjectStructureStepOne';
     // }
     return 'GeneralDashboard';
-  } else if (id) {
+  }
+  if (id) {
     if (otp_verified === 'N' || email_verified === 'N') {
       return 'Otp';
     }
@@ -136,13 +137,13 @@ export function getInitialScreen(authenticated, user = {}) {
 }
 
 export function addOpacity(color, opacity) {
-  return color.split(')')[0] + ',' + opacity + ')';
+  return `${color.split(')')[0]},${opacity})`;
 }
 
 export function round(num, decimalPlaces = 2) {
   num = parseFloat(num);
-  num = Math.round(num + 'e' + decimalPlaces);
-  const result = Number(num + 'e' + -decimalPlaces);
+  num = Math.round(`${num}e${decimalPlaces}`);
+  const result = Number(`${num}e${-decimalPlaces}`);
   return result;
 }
 

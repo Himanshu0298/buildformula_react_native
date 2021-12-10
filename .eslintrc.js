@@ -1,7 +1,5 @@
 module.exports = {
-  root: true,
   extends: [
-    '@react-native-community',
     'eslint:recommended',
     'plugin:import/errors',
     'plugin:import/warnings',
@@ -18,6 +16,10 @@ module.exports = {
     '@typescript-eslint',
     'prettier',
   ],
+  parser: '@typescript-eslint/parser',
+  env: {
+    'react-native/react-native': true,
+  },
   parserOptions: {
     ecmaFeatures: {
       jsx: true,
@@ -27,11 +29,12 @@ module.exports = {
   },
   rules: {
     'react-native/no-unused-styles': 1,
+    'react/no-array-index-key': 1,
+    'react/no-unused-prop-types': 0,
     'react-native/split-platform-components': 2,
     'react-native/no-inline-styles': 1,
     'react-native/no-color-literals': 1,
     'react-native/no-single-element-style-arrays': 2,
-    'import/no-unresolved': 0,
     camelcase: 0,
     'import/extensions': 0,
     'import/prefer-default-export': 0,
@@ -39,26 +42,16 @@ module.exports = {
     'no-nested-ternary': 0,
     'default-param-last': 0,
     'react/jsx-props-no-spreading': 0,
-    'react/jsx-filename-extension': [1, {extensions: ['.tsx']}],
-    'prettier/prettier': 0,
+    'react/jsx-filename-extension': [1, {extensions: ['.jsx', '.js', '.tsx']}],
     'no-use-before-define': 'off',
     'no-param-reassign': 0,
     'react/prop-types': 0,
     'no-shadow': 'off',
     '@typescript-eslint/no-shadow': ['error'],
     '@typescript-eslint/no-use-before-define': 0,
-    'react/function-component-definition': [
-      2,
-      {
-        namedComponents: 'function-declaration',
-        unnamedComponents: 'function-expression',
-      },
-    ],
+    'react/function-component-definition': 0,
     'linebreak-style': 0,
-    'react-native/no-unused-styles': 2,
     'no-unused-vars': 1,
-    'react-native/split-platform-components': 2,
-    'react-native/no-single-element-style-arrays': 2,
     'import/no-unresolved': [2, {commonjs: true, amd: true}],
     'import/named': 2,
     'import/namespace': 2,

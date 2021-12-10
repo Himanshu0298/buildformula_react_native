@@ -77,7 +77,7 @@ function StepThree(props) {
                 onBlur={handleBlur('password')}
                 placeholder={t('msgBlankPassword')}
                 autoCapitalize="none"
-                returnKeyType={'done'}
+                returnKeyType="done"
                 onSubmitEditing={handleSubmit}
                 error={errors.password}
                 right={
@@ -97,7 +97,7 @@ function StepThree(props) {
                 onBlur={handleBlur('confirmPassword')}
                 placeholder={t('msgBlankCnfPassword')}
                 autoCapitalize="none"
-                returnKeyType={'done'}
+                returnKeyType="done"
                 error={errors.confirmPassword}
                 secureTextEntry={!showCnfPass}
                 right={

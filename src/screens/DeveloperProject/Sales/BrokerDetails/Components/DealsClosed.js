@@ -7,7 +7,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import RenderHtml from 'react-native-render-html';
 import Layout from 'utils/Layout';
 
-const SingleUnit = props => {
+function SingleUnit(props) {
   const {sectionLeft, sectionRight} = props;
   return (
     <View style={{flexDirection: 'row', marginBottom: 10}}>
@@ -27,13 +27,13 @@ const SingleUnit = props => {
       </View>
     </View>
   );
-};
+}
 
 const DealsClosed = props => {
   const {dealsClosed, navigation} = props;
 
   const handleRemarkPress = remark => {
-    navigation.navigate('Remark', {remark: remark});
+    navigation.navigate('Remark', {remark});
   };
 
   return dealsClosed?.map(value => {

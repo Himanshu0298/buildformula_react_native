@@ -14,7 +14,7 @@ const schema = Yup.object().shape({
   remarks: Yup.string().required('Please enter a comment'),
 });
 
-const AddComments = props => {
+function AddComments(props) {
   const {navigation, route} = props;
   const {visitorId} = route.params || {};
 
@@ -99,7 +99,7 @@ const AddComments = props => {
       )}
     </Formik>
   );
-};
+}
 
 export default AddComments;
 

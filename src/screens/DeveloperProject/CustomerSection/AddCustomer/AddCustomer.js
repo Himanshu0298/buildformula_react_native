@@ -22,7 +22,7 @@ import useImagePicker from 'utils/useImagePicker';
 import CustomCheckbox from 'components/Atoms/CustomCheckbox';
 import Spinner from 'react-native-loading-spinner-overlay';
 
-//TODO: Add schema for customer
+// TODO: Add schema for customer
 const schema = Yup.object().shape({});
 
 function ProfileUpload({profilePic, onSelect}) {
@@ -239,7 +239,7 @@ function AddCustomer(props) {
 
   return (
     <View style={styles.container}>
-      <Spinner visible={loading} textContent={''} />
+      <Spinner visible={loading} textContent="" />
       <KeyboardAwareScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollView}

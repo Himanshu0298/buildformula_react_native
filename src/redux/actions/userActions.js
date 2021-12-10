@@ -1,9 +1,9 @@
-import * as types from './actionTypes';
 import {useDispatch} from 'react-redux';
-import useAuth from '../../services/user';
 import {useResProcessor} from 'utils/responseProcessor';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import messaging from '@react-native-firebase/messaging';
+import useAuth from '../../services/user';
+import * as types from './actionTypes';
 
 async function getFcmToken() {
   try {
@@ -68,9 +68,8 @@ export default function useUserActions() {
             const {email} = userData;
             if (email) {
               return Promise.resolve({data: userData});
-            } else {
-              return Promise.reject('Invalid email or password');
             }
+            return Promise.reject('Invalid email or password');
           }
         },
       }),

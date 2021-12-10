@@ -74,9 +74,7 @@ function RenderUserCard(props) {
         <>
           <Divider style={{marginVertical: 10}} />
           <View style={styles.userRoleContainer}>
-            <ScrollView
-              horizontal={true}
-              showsHorizontalScrollIndicator={false}>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               {roles.map((role, i) => (
                 <Chip mode="outlined" key={i} style={{marginHorizontal: 5}}>
                   {role}
@@ -253,7 +251,7 @@ function Roles(props) {
 
   return (
     <>
-      <Spinner visible={loading} textContent={''} />
+      <Spinner visible={loading} textContent="" />
 
       <TabView
         navigationState={{index: selectedTab, routes}}

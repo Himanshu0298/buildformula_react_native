@@ -98,7 +98,7 @@ function AddBroker(props) {
 
   return (
     <View style={{padding: 15}}>
-      <Spinner visible={loading} textContent={''} />
+      <Spinner visible={loading} textContent="" />
       <Text style={{color: theme.colors.primary}}>AddBroker</Text>
       <Formik
         validateOnBlur={false}
@@ -111,49 +111,49 @@ function AddBroker(props) {
             <View style={styles.dialogContentContainer}>
               <RenderInput
                 name="firstName"
-                label={'First Name'}
+                label="First Name"
                 value={values.firstName}
                 onChangeText={handleChange('firstName')}
                 onBlur={handleBlur('firstName')}
-                placeholder={'First Name'}
+                placeholder="First Name"
                 autoCapitalize="none"
-                returnKeyType={'next'}
+                returnKeyType="next"
                 error={errors.firstName}
                 style={styles.input}
               />
               <RenderInput
                 name="lastName"
-                label={'Last Name'}
+                label="Last Name"
                 value={values.lastName}
                 onChangeText={handleChange('lastName')}
                 onBlur={handleBlur('lastName')}
-                placeholder={'Last Name'}
+                placeholder="Last Name"
                 autoCapitalize="none"
-                returnKeyType={'next'}
+                returnKeyType="next"
                 error={errors.lastName}
                 style={styles.input}
               />
               <RenderInput
                 name="email"
-                label={'Email'}
+                label="Email"
                 value={values.email}
                 onChangeText={handleChange('email')}
                 onBlur={handleBlur('email')}
-                placeholder={'Email'}
+                placeholder="Email"
                 autoCapitalize="none"
-                returnKeyType={'next'}
+                returnKeyType="next"
                 error={errors.email}
                 style={styles.input}
               />
               <RenderInput
                 name="phone"
-                label={'phone'}
+                label="phone"
                 value={values.phone}
                 onChangeText={handleChange('phone')}
                 onBlur={handleBlur('phone')}
-                placeholder={'Phone'}
+                placeholder="Phone"
                 autoCapitalize="none"
-                returnKeyType={'next'}
+                returnKeyType="next"
                 error={errors.phone}
                 style={styles.input}
               />

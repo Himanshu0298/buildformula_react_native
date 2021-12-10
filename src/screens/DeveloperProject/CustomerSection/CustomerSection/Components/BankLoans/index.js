@@ -4,11 +4,11 @@ import {Button, Subheading, withTheme} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import {theme} from 'styles/theme';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {getPermissions} from 'utils';
 import ActivityChatModal from './Components/ActivityChat';
 import FileSection from './Components/FileSection';
 import BankDetailsSection from './Components/BankDetailsSection';
 import ShareFiles from './Components/ShareFiles';
-import {getPermissions} from 'utils';
 
 function BankLoans(props) {
   const modulePermissions = getPermissions('Bank Loan');

@@ -231,7 +231,6 @@ function Header(props) {
 function Visitors(props) {
   const {theme, navigation} = props;
 
-  
   const {selectedProject} = useSelector(s => s.project);
   const {loading, visitors, visitorAnalytics} = useSelector(s => s.sales);
 
@@ -271,7 +270,7 @@ function Visitors(props) {
 
   return (
     <>
-      <Spinner visible={loading} textContent={''} />
+      <Spinner visible={loading} textContent="" />
       <ProjectHeader />
       <Header
         {...props}
@@ -284,7 +283,7 @@ function Visitors(props) {
       <RenderVisitors
         {...props}
         visitors={filteredVisitors}
-        showAnalyticsRow={true}
+        showAnalyticsRow
         visitorAnalytics={visitorAnalytics}
         onRefresh={onRefresh}
         navToDetails={navToDetails}

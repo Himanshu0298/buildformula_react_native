@@ -1,9 +1,9 @@
 import {createStore, applyMiddleware, compose, combineReducers} from 'redux';
 import thunk from 'redux-thunk';
 import promise from 'redux-promise-middleware';
+import {persistStore} from 'redux-persist';
 import * as types from './actions/actionTypes';
 import reducer from './reducers';
-import {persistStore} from 'redux-persist';
 import Reactotron from '../../ReactotronConfig';
 
 const appReducer = combineReducers(reducer);

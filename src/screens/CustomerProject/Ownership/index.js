@@ -1,6 +1,6 @@
 import React from 'react';
-import Ownership from './Ownership';
 import ProjectLayout from 'components/Molecules/Layout/ProjectLayout';
+import Ownership from './Ownership';
 
 export default props => {
   return (

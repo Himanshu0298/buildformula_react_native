@@ -79,7 +79,7 @@ function AddChecklistDialog(props) {
           roundness={5}
           onChangeText={setChecklistName}
           right={
-            <TextInput.Icon size={20} name={'check'} onPress={addChecklist} />
+            <TextInput.Icon size={20} name="check" onPress={addChecklist} />
           }
         />
 
@@ -131,14 +131,14 @@ function AddChecklistDialog(props) {
                       right={
                         <TextInput.Icon
                           size={20}
-                          name={'check'}
+                          name="check"
                           onPress={addChecklistItem}
                         />
                       }
                     />
                   ) : (
                     <CustomCheckbox
-                      label={'Add item'}
+                      label="Add item"
                       checked={false}
                       onChange={() => toggleAddItem(index)}
                     />

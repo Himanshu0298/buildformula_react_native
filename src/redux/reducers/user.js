@@ -7,7 +7,7 @@ import {
   VERIFY_OTP,
   SEND_FORGET_PASSWORD_OTP,
   UPDATE_USER,
-} from './../actions/actionTypes';
+} from '../actions/actionTypes';
 
 const persistConfig = {
   key: 'user',

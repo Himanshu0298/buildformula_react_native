@@ -147,12 +147,12 @@ function BrokerList(props) {
 
   return (
     <View style={{padding: 15, flexGrow: 1}}>
-      <Spinner visible={loading} textContent={''} />
+      <Spinner visible={loading} textContent="" />
       <RenderBrokers
         {...props}
         filter={filter}
         data={brokersList}
-        showAnalyticsRow={true}
+        showAnalyticsRow
         visitorAnalytics={visitorAnalytics}
         setFilter={setFilter}
         navigation={navigation}

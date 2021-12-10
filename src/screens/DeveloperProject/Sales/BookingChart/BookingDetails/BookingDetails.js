@@ -426,7 +426,7 @@ const _data = [
   },
 ];
 
-const ProjectInfo = props => {
+function ProjectInfo(props) {
   const {data} = props;
 
   return (
@@ -443,9 +443,9 @@ const ProjectInfo = props => {
       ))}
     </View>
   );
-};
+}
 
-const FormSection = props => {
+function FormSection(props) {
   const {data, id, handleClick} = props;
 
   return (
@@ -483,7 +483,7 @@ const FormSection = props => {
       </View>
     </Card>
   );
-};
+}
 
 function BookingDetails(props) {
   const {navigation, route} = props;

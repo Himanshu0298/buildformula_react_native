@@ -10,7 +10,7 @@ import {useSnackbar} from 'components/Atoms/Snackbar';
 export default function SelectUnit(props) {
   const {navigation, route} = props;
 
-  const floorNumber = props.route.params.floorNumber;
+  const {floorNumber} = props.route.params;
   // const _units = props.route.params.units;
 
   const modulePermission = getPermissions('Booking Chart');
@@ -112,7 +112,7 @@ export default function SelectUnit(props) {
 
   return (
     <>
-      <Spinner visible={loadingUnitStatus} textContent={''} />
+      <Spinner visible={loadingUnitStatus} textContent="" />
       {console.log('----->units in select unit', units)}
       <UnitSelector
         refreshing={unitBookingStatus.length > 0 && loadingUnitStatus}

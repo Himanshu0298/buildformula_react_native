@@ -1,6 +1,6 @@
 import React from 'react';
-import CustomerModifyRequest from './CustomerModifyRequest';
 import ProjectLayout from 'components/Molecules/Layout/ProjectLayout';
+import CustomerModifyRequest from './CustomerModifyRequest';
 
 export default props => {
   return (

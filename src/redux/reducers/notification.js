@@ -1,7 +1,7 @@
 import {
   GET_ALL_NOTIFICATIONS,
   GET_PROJECT_NOTIFICATIONS,
-} from './../actions/actionTypes';
+} from '../actions/actionTypes';
 
 const initialState = {
   loading: false,

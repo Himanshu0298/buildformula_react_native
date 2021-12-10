@@ -23,7 +23,7 @@ function SelectStructure({navigation}) {
         barStyle="light-content"
         backgroundColor={theme.colors.primary}
       />
-      <Spinner visible={loading} textContent={''} />
+      <Spinner visible={loading} textContent="" />
       <StructureSelector
         title="title_customer_section"
         subtitle="subtitle_customer_section"

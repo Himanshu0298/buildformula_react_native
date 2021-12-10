@@ -10,10 +10,12 @@ class BoardRepository {
     this.mover = new Mover(this.positionCalculator);
     this.listeners = {};
   }
+
   updateData(data) {
     this.registry.updateData(data);
     this.updateColumnsLayoutAfterVisibilityChanged();
   }
+
   columns = () => this.registry.columns();
 
   column = columnId => this.registry.column(columnId);
@@ -30,7 +32,7 @@ class BoardRepository {
   };
 
   notify = (columnId, event) => {
-    //TODO: fix this is listener error comes again
+    // TODO: fix this is listener error comes again
     return this.listeners?.[columnId]?.[event]?.();
   };
 

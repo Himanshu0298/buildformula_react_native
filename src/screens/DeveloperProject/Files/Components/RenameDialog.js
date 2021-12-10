@@ -37,7 +37,7 @@ function RenameDialogue(props) {
               <View style={styles.dialogContentContainer}>
                 <RenderInput
                   name="name"
-                  label={'file name'}
+                  label="file name"
                   containerStyles={styles.input}
                   value={values.name}
                   onChangeText={handleChange('name')}
@@ -54,7 +54,7 @@ function RenameDialogue(props) {
                     theme={{roundness: 15}}
                     mode="contained"
                     onPress={toggleDialogue}>
-                    <Text theme={secondaryTheme}>{'cancel'}</Text>
+                    <Text theme={secondaryTheme}>cancel</Text>
                   </Button>
                   <Button
                     style={{width: '40%', marginHorizontal: 5}}
@@ -62,7 +62,7 @@ function RenameDialogue(props) {
                     contentStyle={{padding: 1}}
                     theme={{roundness: 15}}
                     onPress={handleSubmit}>
-                    <Text theme={secondaryTheme}>{'save'}</Text>
+                    <Text theme={secondaryTheme}>save</Text>
                   </Button>
                 </View>
               </View>

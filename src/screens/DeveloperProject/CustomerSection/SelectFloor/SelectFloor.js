@@ -14,7 +14,7 @@ export default function SelectFloor(props) {
   const showAllUnits = (towerId, floorId) => {
     navigation.navigate('CS_Step_Three', {
       selectedStructure,
-      towerId: towerId,
+      towerId,
       floorId,
     });
   };

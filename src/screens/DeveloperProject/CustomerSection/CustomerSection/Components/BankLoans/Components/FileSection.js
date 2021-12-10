@@ -187,7 +187,7 @@ function FileSection(props) {
             style={styles.submitButton}
             onPress={() => openImagePicker({type: 'file', onChoose})}>
             <IconButton icon="upload" size={20} color={theme.colors.primary} />
-            <Text style={styles.buttonText}>{'Upload'}</Text>
+            <Text style={styles.buttonText}>Upload</Text>
           </OpacityButton>
         </View>
       ) : null}

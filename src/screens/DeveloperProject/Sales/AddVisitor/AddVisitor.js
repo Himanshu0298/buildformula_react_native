@@ -22,6 +22,7 @@ import _ from 'lodash';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 const customParseFormat = require('dayjs/plugin/customParseFormat');
+
 dayjs.extend(customParseFormat);
 
 const defaultPriority = ['none'];
@@ -180,7 +181,7 @@ function PersonalTab(props) {
             contentStyle={{padding: 3}}
             theme={{roundness: 15}}
             onPress={navigation.goBack}>
-            {'Cancel'}
+            Cancel
           </Button>
           <Button
             style={{flex: 1, marginHorizontal: 5}}
@@ -188,7 +189,7 @@ function PersonalTab(props) {
             contentStyle={{padding: 3}}
             theme={{roundness: 15}}
             onPress={() => setSelectedTab(1)}>
-            {'Next'}
+            Next
           </Button>
         </View>
       </View>
@@ -259,21 +260,21 @@ function InquiryTab(props) {
             <Subheading>Lead Priority</Subheading>
             <View style={styles.radioContainer}>
               <Radio
-                label={'Low'}
+                label="Low"
                 value="low"
                 color={PRIORITY_COLORS.low}
                 checked={values.priority === 'low'}
                 onChange={value => setFieldValue('priority', value)}
               />
               <Radio
-                label={'Medium'}
+                label="Medium"
                 value="medium"
                 color={PRIORITY_COLORS.medium}
                 checked={values.priority === 'medium'}
                 onChange={value => setFieldValue('priority', value)}
               />
               <Radio
-                label={'High'}
+                label="High"
                 value="high"
                 color={PRIORITY_COLORS.high}
                 checked={values.priority === 'high'}
@@ -326,7 +327,7 @@ function InquiryTab(props) {
             contentStyle={{padding: 3}}
             theme={{roundness: 15}}
             onPress={() => setSelectedTab(0)}>
-            {'Back'}
+            Back
           </Button>
           <Button
             style={{flex: 1, marginHorizontal: 5}}
@@ -513,24 +514,22 @@ function AddVisitor(props) {
   };
 
   return (
-    <>
-      <View style={styles.container}>
-        <Spinner visible={loading} textContent={''} />
-        <StatusBar barStyle="light-content" />
-        <View style={styles.body}>
-          <Formik
-            validateOnBlur={false}
-            validateOnChange={false}
-            initialValues={initialValues}
-            validationSchema={schema}
-            onSubmit={onSubmit}>
-            {formikProps => (
-              <RenderForm f {...props} {...{formikProps, user, edit}} />
-            )}
-          </Formik>
-        </View>
+    <View style={styles.container}>
+      <Spinner visible={loading} textContent="" />
+      <StatusBar barStyle="light-content" />
+      <View style={styles.body}>
+        <Formik
+          validateOnBlur={false}
+          validateOnChange={false}
+          initialValues={initialValues}
+          validationSchema={schema}
+          onSubmit={onSubmit}>
+          {formikProps => (
+            <RenderForm f {...props} {...{formikProps, user, edit}} />
+          )}
+        </Formik>
       </View>
-    </>
+    </View>
   );
 }
 

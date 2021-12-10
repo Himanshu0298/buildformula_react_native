@@ -14,8 +14,8 @@ import {
 } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-const PropertyHoldUserDetails = () => {
-  const Container = props => {
+function PropertyHoldUserDetails() {
+  function Container(props) {
     const {heading, content} = props;
 
     return (
@@ -24,7 +24,7 @@ const PropertyHoldUserDetails = () => {
         <Text>{content}</Text>
       </View>
     );
-  };
+  }
 
   return (
     <View style={{marginTop: 20}}>
@@ -59,9 +59,9 @@ const PropertyHoldUserDetails = () => {
       </View>
     </View>
   );
-};
+}
 
-const ProjectInfo = props => {
+function ProjectInfo(props) {
   const {data} = props;
 
   return (
@@ -78,7 +78,7 @@ const ProjectInfo = props => {
       ))}
     </View>
   );
-};
+}
 
 function BookingFormOnHold(props) {
   const {navigation, route} = props;

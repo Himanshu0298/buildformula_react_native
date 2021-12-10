@@ -49,7 +49,7 @@ function ProjectHeader(props) {
             <TouchableOpacity
               style={styles.bellContainer}
               onPress={navToNotification}>
-              <MaterialCommunityIcons name={'bell'} color={'#000'} size={20} />
+              <MaterialCommunityIcons name="bell" color="#000" size={20} />
               {projectNotifications.length ? (
                 <Badge size={10} style={styles.badge} />
               ) : null}

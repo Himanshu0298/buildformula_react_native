@@ -45,10 +45,10 @@ function RoleSelect(props) {
     }
   };
 
-  //TODO: Update translations
+  // TODO: Update translations
   return (
     <View style={styles.container}>
-      <Spinner visible={loading} textContent={''} />
+      <Spinner visible={loading} textContent="" />
       <Title style={{color: '#000'}}>Select Your Role</Title>
       <Caption style={{color: 'rgba(0, 0, 0, 0.5)'}}>
         Choose your Role for the project

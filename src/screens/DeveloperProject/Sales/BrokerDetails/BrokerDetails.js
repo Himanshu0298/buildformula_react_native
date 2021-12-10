@@ -9,9 +9,9 @@ import ProjectHeader from 'components/Molecules/Layout/ProjectHeader';
 import {TabView} from 'react-native-tab-view';
 import Layout from 'utils/Layout';
 import MaterialTabBar from 'components/Atoms/MaterialTabBar';
+import {theme} from 'styles/theme';
 import BrokerInfo from './Components/BrokerInfo';
 import DealsClosed from './Components/DealsClosed';
-import {theme} from 'styles/theme';
 
 function BrokerDetails(props) {
   const {route, navigation} = props;
@@ -61,7 +61,7 @@ function BrokerDetails(props) {
 
   return (
     <>
-      <Spinner visible={loading} textContent={''} />
+      <Spinner visible={loading} textContent="" />
 
       <View style={styles.body}>
         <TabView

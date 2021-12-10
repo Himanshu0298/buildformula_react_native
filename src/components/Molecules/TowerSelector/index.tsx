@@ -1,10 +1,16 @@
 import React from 'react';
 import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
-import {Subheading, withTheme} from 'react-native-paper';
+import {Subheading} from 'react-native-paper';
 import PropTypes from 'prop-types';
 import TowerIcon from 'assets/images/tower.svg';
 
-function TowersList(props) {
+interface IProps {
+  towerType: string;
+  towerCount: number;
+  onSelectTower: (towerId: number) => void;
+}
+
+function TowersList(props: IProps) {
   const {towerCount, onSelectTower} = props;
 
   return (
@@ -14,18 +20,17 @@ function TowersList(props) {
           {new Array(towerCount).fill(0).map((_, i) => {
             const towerId = i + 1;
             return (
-              <View style={styles.towerContainer}>
+              <TouchableOpacity
+                key={towerId}
+                style={styles.towerContainer}
+                onPress={() => onSelectTower(towerId)}>
                 <View style={styles.iconContainer}>
-                  <TowerIcon height={30} />
+                  <TowerIcon height={20} width={20} />
                 </View>
-                <TouchableOpacity
-                  onPress={() => onSelectTower(towerId)}
-                  style={{height: '100%'}}>
-                  <View style={{margin: 10}}>
-                    <Text>{towerId}</Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
+                <View style={{margin: 10}}>
+                  <Text>{towerId}</Text>
+                </View>
+              </TouchableOpacity>
             );
           })}
         </View>
@@ -34,16 +39,14 @@ function TowersList(props) {
   );
 }
 
-function TowerSelector(props) {
+function TowerSelector(props: IProps) {
   const {towerType} = props;
 
   return (
-    <>
-      <View style={styles.container}>
-        <Subheading>{towerType}</Subheading>
-        <TowersList {...props} />
-      </View>
-    </>
+    <View style={styles.container}>
+      <Subheading>{towerType}</Subheading>
+      <TowersList {...props} />
+    </View>
   );
 }
 
@@ -66,6 +69,10 @@ const styles = StyleSheet.create({
   },
   iconContainer: {
     backgroundColor: '#E6E6E6',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
@@ -73,7 +80,6 @@ TowerSelector.defaultProps = {
   title: 'label_select_tower',
   subtitle: 'label_select_appropriate_option',
   selectButtonLabel: 'Show All Units',
-  onSelectFloor: () => {},
 };
 
 TowerSelector.propTypes = {
@@ -83,4 +89,4 @@ TowerSelector.propTypes = {
   onSelectFloor: PropTypes.func.isRequired,
 };
 
-export default withTheme(TowerSelector);
+export default TowerSelector;

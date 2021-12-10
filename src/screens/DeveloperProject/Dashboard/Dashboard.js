@@ -8,9 +8,9 @@ import {useSelector} from 'react-redux';
 import useProjectActions from 'redux/actions/projectActions';
 import Layout from 'utils/Layout';
 import {Subheading} from 'react-native-paper';
+import useNotificationActions from 'redux/actions/notificationActions';
 import Statistics from './Components/Statistics';
 import Activity from './Components/Activity';
-import useNotificationActions from 'redux/actions/notificationActions';
 
 export default function DeveloperDashboard(props) {
   const {route} = props;
@@ -56,7 +56,7 @@ export default function DeveloperDashboard(props) {
 
   return (
     <View style={styles.container}>
-      <Spinner visible={loading} textContent={''} />
+      <Spinner visible={loading} textContent="" />
       <TabView
         navigationState={{index: selectedTab, routes}}
         renderScene={renderScene}

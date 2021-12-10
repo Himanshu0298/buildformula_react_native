@@ -13,7 +13,7 @@ import {
   SHARE_FILE_WITH_USERS,
   GET_FILE_ACTIVITIES,
   ADD_NEW_VERSION,
-} from './../actions/actionTypes';
+} from '../actions/actionTypes';
 
 const initialState = {
   loading: false,
@@ -27,7 +27,7 @@ const initialState = {
 export default (state = initialState, action = {}) => {
   const {type, payload} = action;
   switch (type) {
-    //RESET data on project change
+    // RESET data on project change
     case `${GET_SELECTED_PROJECT}_PENDING`:
       return {
         ...initialState,

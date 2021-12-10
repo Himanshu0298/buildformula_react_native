@@ -4,13 +4,13 @@ import DefaultPhoneInput from 'react-native-phone-input';
 import PropTypes from 'prop-types';
 
 const PhoneInput = React.forwardRef(({icon, error, value, ...rest}, ref) => (
-  <Fragment>
+  <>
     <View style={styles.inputContainer}>
       <View style={styles.imageContainer}>{icon}</View>
       <DefaultPhoneInput
         ref={ref}
         value={value}
-        autoFormat={true}
+        autoFormat
         textProps={{
           ...rest,
           placeholderTextColor: 'grey',
@@ -24,7 +24,7 @@ const PhoneInput = React.forwardRef(({icon, error, value, ...rest}, ref) => (
         <Text style={styles.errorStyles}>{error}</Text>
       </View>
     )}
-  </Fragment>
+  </>
 ));
 
 PhoneInput.defaultProps = {
@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
     height: 45,
     flex: 1,
   },
-  //Errors
+  // Errors
   errorContainer: {
     marginLeft: 15,
   },

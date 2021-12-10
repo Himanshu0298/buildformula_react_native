@@ -51,7 +51,7 @@ function RenderFloor(props) {
   return (
     <FloorBar
       floorId={floorId}
-      showBadge={true}
+      showBadge
       badgeActive={false}
       onPress={setSelectedFloor}
       inputProps={{
@@ -94,7 +94,7 @@ function FloorsScreen(props) {
     return true;
   });
 
-  //check units data is valid for all floors
+  // check units data is valid for all floors
   const {
     unitsValidityData = {},
     allUnitsValid = true,
@@ -115,7 +115,7 @@ function FloorsScreen(props) {
 
   const toggleDuplicateDialog = () => setDuplicateDialog(v => !v);
 
-  //check floors data is valid for all floors
+  // check floors data is valid for all floors
   const validateFloors = floorId => {
     let allValid = true;
     let error = '';
@@ -131,7 +131,7 @@ function FloorsScreen(props) {
     for (let i = 0; i <= floorCount; i += 1) {
       const {unitCount} = floors[i];
 
-      //check if unitCount is 0 or more than 0
+      // check if unitCount is 0 or more than 0
       if (isNaN(unitCount)) {
         allValid = false;
         if (!error) {
@@ -182,14 +182,14 @@ function FloorsScreen(props) {
               }}
             />
             <Button
-              compact={true}
+              compact
               mode="contained"
               uppercase={false}
               disabled={!floorCount}
               contentStyle={{paddingVertical: 2, paddingHorizontal: 6}}
               theme={{roundness: 10}}
               onPress={toggleDuplicateDialog}>
-              {'Duplicate Floors'}
+              Duplicate Floors
             </Button>
           </View>
           <View style={styles.floorsListContainer}>
@@ -216,9 +216,9 @@ function FloorsScreen(props) {
             mode="contained"
             contentStyle={{padding: 3}}
             theme={{roundness: 15}}
-            //done like to avoid passing button event object
+            // done like to avoid passing button event object
             onPress={() => validateFloors()}>
-            {'Back'}
+            Back
           </Button>
         </View>
       </View>

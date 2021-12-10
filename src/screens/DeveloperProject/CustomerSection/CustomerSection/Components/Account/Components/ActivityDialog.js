@@ -17,6 +17,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import UserAvatar from 'components/Atoms/UserAvatar';
 
 const customParseFormat = require('dayjs/plugin/customParseFormat');
+
 dayjs.extend(customParseFormat);
 
 const RenderCollection = React.memo(({collection}) => {
