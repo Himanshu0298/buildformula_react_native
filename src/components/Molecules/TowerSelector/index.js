@@ -1,31 +1,11 @@
-import React, {useMemo, useState} from 'react';
-import {useTranslation} from 'react-i18next';
-import {StyleSheet, View, Image, Text, TouchableOpacity} from 'react-native';
-import {Subheading} from 'react-native-paper';
+import React from 'react';
+import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
+import {Subheading, withTheme} from 'react-native-paper';
 import PropTypes from 'prop-types';
-import plot from 'assets/images/plot.png';
-import {theme} from 'styles/theme';
+import TowerIcon from 'assets/images/tower.svg';
 
-function TowersList({
-  onPress,
-  navigation,
-  towers,
-  towerCount,
-  heme,
-  activeSrc,
-  selectedTower,
-  towerType,
-}) {
-  const [value, setValue] = useState();
-  console.log('----->towerType in index screen', towerType);
-
-  const selectTower = (floors, i) => {
-    navigation.navigate('BC_Step_Floor', {
-      floors: floors,
-      towerType,
-      towerId: i + 1,
-    });
-  };
+function TowersList(props) {
+  const {towerCount, onSelectTower} = props;
 
   return (
     <View>
@@ -34,40 +14,16 @@ function TowersList({
           {new Array(towerCount).fill(0).map((_, i) => {
             const towerId = i + 1;
             return (
-              <View
-                style={{
-                  flexDirection: 'row',
-                  borderWidth: 1,
-                  alignItems: 'center',
-                  margin: 8,
-                }}>
-                <View
-                  style={{
-                    backgroundColor: 'lightgrey',
-                    padding: 10,
-                  }}>
-                  {/* {activeSrc} */}
-                  <Image
-                    source={plot}
-                    style={{
-                      width: 30,
-                      height: 30,
-                    }}
-                  />
+              <View style={styles.towerContainer}>
+                <View style={styles.iconContainer}>
+                  <TowerIcon height={30} />
                 </View>
                 <TouchableOpacity
-                  onPress={() => selectTower(towers[towerId])}
-                  style={{
-                    backgroundColor: i === value ? theme.colors.primary : null,
-                    height: '100%',
-                  }}>
-                  <TouchableOpacity
-                    style={{margin: 10}}
-                    onPress={() => selectTower(towers[towerId], i)}>
-                    <Text style={{color: i === value ? 'white' : 'black'}}>
-                      {towerId}
-                    </Text>
-                  </TouchableOpacity>
+                  onPress={() => onSelectTower(towerId)}
+                  style={{height: '100%'}}>
+                  <View style={{margin: 10}}>
+                    <Text>{towerId}</Text>
+                  </View>
                 </TouchableOpacity>
               </View>
             );
@@ -79,40 +35,13 @@ function TowersList({
 }
 
 function TowerSelector(props) {
-  const {
-    title,
-    subtitle,
-    selectButtonLabel,
-    towers,
-    towerCount,
-    onSelectFloor,
-    towerType,
-    activeSrc,
-    navigation,
-  } = props;
-
-  const {t} = useTranslation();
-
-  const [selectedTower, setSelectedTower] = React.useState();
-
-  const floors = useMemo(() => {
-    return towers?.[selectedTower]?.floors || {};
-  }, [selectedTower, towers]);
+  const {towerType} = props;
 
   return (
     <>
       <View style={styles.container}>
         <Subheading>{towerType}</Subheading>
-        <TowersList
-          towers={towers}
-          towerCount={towerCount}
-          towerType={towerType}
-          activeSrc={activeSrc}
-          theme={theme}
-          navigation={navigation}
-          selectedTower={selectedTower}
-          onPress={setSelectedTower}
-        />
+        <TowersList {...props} />
       </View>
     </>
   );
@@ -126,6 +55,17 @@ const styles = StyleSheet.create({
   towerList: {
     flexDirection: 'row',
     flexWrap: 'wrap',
+  },
+  towerContainer: {
+    flexDirection: 'row',
+    borderWidth: 1,
+    borderColor: '#5E6D7C',
+    borderRadius: 5,
+    alignItems: 'center',
+    margin: 8,
+  },
+  iconContainer: {
+    backgroundColor: '#E6E6E6',
   },
 });
 
@@ -143,4 +83,4 @@ TowerSelector.propTypes = {
   onSelectFloor: PropTypes.func.isRequired,
 };
 
-export default TowerSelector;
+export default withTheme(TowerSelector);

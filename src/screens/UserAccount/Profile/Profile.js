@@ -8,9 +8,9 @@ import {
   Text,
   withTheme,
 } from 'react-native-paper';
-import UserPic from 'assets/images/customer.png';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import {useSelector} from 'react-redux';
+import UserAvatar from 'components/Atoms/UserAvatar';
 
 function Profile(props) {
   const {theme, navigation} = props;
@@ -26,10 +26,7 @@ function Profile(props) {
       <View style={styles.contentContainer}>
         <Subheading>Profile Details</Subheading>
         <View style={styles.headerContainer}>
-          <Avatar.Image
-            size={150}
-            source={profile_url ? {uri: profile_url} : UserPic}
-          />
+          <UserAvatar size={150} uri={profile_url} />
           <Subheading style={{marginTop: 15}}>
             {first_name} {last_name}
           </Subheading>

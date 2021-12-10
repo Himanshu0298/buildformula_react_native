@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import FloorBar from 'components/Atoms/FloorBar';
 import {Button, IconButton} from 'react-native-paper';
-import plot from 'assets/images/plot.png';
+import plot from 'assets/images/bungalow_hut.png';
 
 export default function SelectFloor(props) {
   const {

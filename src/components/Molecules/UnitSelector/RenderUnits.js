@@ -17,7 +17,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
-import plot from 'assets/images/plot.png';
+import plot from 'assets/images/bungalow_hut.png';
 import SelectHoldOrBook from '../selectHoldOrBook';
 
 // import House from 'assets/images/house.svg';

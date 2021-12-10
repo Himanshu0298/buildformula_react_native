@@ -20,6 +20,7 @@ import backArrow from 'assets/images/back_arrow.png';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
+import UserAvatar from 'components/Atoms/UserAvatar';
 
 function RenderInfo({label, value}) {
   return (
@@ -52,12 +53,7 @@ function CustomerDetails(props) {
           </TouchableOpacity>
         </View>
         <View style={styles.detailsTopContainer}>
-          <Avatar.Image
-            size={100}
-            source={{
-              uri: profile_pic,
-            }}
-          />
+          <UserAvatar size={100} uri={profile_pic} />
           <Text style={styles.nameText}>{name}</Text>
           <Caption>{role}</Caption>
         </View>

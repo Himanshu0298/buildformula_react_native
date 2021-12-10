@@ -25,9 +25,9 @@ export const DEFAULT_STRUCTURE = {
 };
 
 export const STRUCTURE_TYPE_LABELS = {
-  1: 'Shops',
+  2: 'Shops',
   3: 'Offices',
-  2: 'Apartments',
+  1: 'Apartments',
   4: 'Bungalows',
   5: 'Plots',
 };

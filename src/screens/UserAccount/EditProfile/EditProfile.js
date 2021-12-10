@@ -18,6 +18,7 @@ import {useSelector} from 'react-redux';
 import useUserActions from 'redux/actions/userActions';
 import {pick} from 'lodash';
 import Spinner from 'react-native-loading-spinner-overlay';
+import UserAvatar from 'components/Atoms/UserAvatar';
 
 const schema = Yup.object().shape({
   first_name: Yup.string('Invalid').required('First name is required'),
@@ -159,14 +160,11 @@ function EditProfile(props) {
               <Subheading>Edit Profile Details</Subheading>
               <View style={styles.headerContainer}>
                 <View>
-                  <Avatar.Image
+                  <UserAvatar
                     size={150}
-                    source={
-                      profile_url
-                        ? {uri: profile_url.uri || profile_url}
-                        : UserPic
-                    }
+                    uri={profile_url?.uri || profile_url}
                   />
+
                   <IconButton
                     style={[
                       styles.cameraIcon,

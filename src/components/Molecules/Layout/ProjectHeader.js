@@ -8,6 +8,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import Timer from 'components/Atoms/Timer';
 import logo from 'assets/images/logo.png';
+import UserAvatar from 'components/Atoms/UserAvatar';
 
 function ProjectHeader(props) {
   const {
@@ -54,24 +55,11 @@ function ProjectHeader(props) {
               ) : null}
             </TouchableOpacity>
 
-            {user?.profile_url ? (
-              <TouchableOpacity
-                onPress={navToProfile}
-                style={styles.profileIconContainer}>
-                <Avatar.Image size={23} source={{uri: user.profile_url}} />
-              </TouchableOpacity>
-            ) : (
-              <OpacityButton
-                color={theme.colors.primary}
-                onPress={navToProfile}
-                style={styles.profileIconContainer}>
-                <MaterialIcons
-                  name={'person'}
-                  color={theme.colors.primary}
-                  size={19}
-                />
-              </OpacityButton>
-            )}
+            <TouchableOpacity
+              onPress={navToProfile}
+              style={styles.profileIconContainer}>
+              <UserAvatar size={23} uri={user.profile_url} />
+            </TouchableOpacity>
           </View>
         ) : null}
       </View>

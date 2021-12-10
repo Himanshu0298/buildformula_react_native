@@ -13,7 +13,7 @@ import {secondaryTheme, theme} from 'styles/theme';
 import {addOpacity, getFloorNumber, getUnitLabel} from 'utils';
 import Layout from 'utils/Layout';
 import bungalowHut from 'assets/images/bungalow_hut.png';
-import plotHut from 'assets/images/plot.png';
+import plotHut from 'assets/images/bungalow_hut.png';
 import {useBackHandler} from '@react-native-community/hooks';
 import BhkButton from 'components/Atoms/Buttons/BhkButton';
 import {BHK_OPTIONS} from 'utils/constant';
