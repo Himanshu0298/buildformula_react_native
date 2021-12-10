@@ -4,13 +4,7 @@ import {Subheading} from 'react-native-paper';
 import PropTypes from 'prop-types';
 import TowerIcon from 'assets/images/tower.svg';
 
-interface IProps {
-  towerType: string;
-  towerCount: number;
-  onSelectTower: (towerId: number) => void;
-}
-
-function TowersList(props: IProps) {
+function TowersList(props) {
   const {towerCount, onSelectTower} = props;
 
   return (
@@ -39,7 +33,7 @@ function TowersList(props: IProps) {
   );
 }
 
-function TowerSelector(props: IProps) {
+function TowerSelector(props) {
   const {towerType} = props;
 
   return (

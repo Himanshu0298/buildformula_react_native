@@ -5,26 +5,15 @@ module.exports = {
     'plugin:import/warnings',
     'airbnb',
     'airbnb/hooks',
-    'plugin:@typescript-eslint/recommended',
     'prettier',
     'plugin:prettier/recommended',
   ],
-  plugins: [
-    'react',
-    'react-native',
-    'module-resolver',
-    '@typescript-eslint',
-    'prettier',
-  ],
-  parser: '@typescript-eslint/parser',
-  env: {
-    'react-native/react-native': true,
-  },
+  plugins: ['react', 'react-native', 'module-resolver', 'prettier'],
   parserOptions: {
     ecmaFeatures: {
       jsx: true,
     },
-    ecmaVersion: 2018,
+    ecmaVersion: 2021,
     sourceType: 'module',
   },
   rules: {
@@ -47,8 +36,6 @@ module.exports = {
     'no-param-reassign': 0,
     'react/prop-types': 0,
     'no-shadow': 'off',
-    '@typescript-eslint/no-shadow': ['error'],
-    '@typescript-eslint/no-use-before-define': 0,
     'react/function-component-definition': 0,
     'linebreak-style': 0,
     'no-unused-vars': 1,
@@ -57,18 +44,8 @@ module.exports = {
     'import/namespace': 2,
     'import/default': 2,
     'import/export': 2,
-    'prettier/prettier': [
-      'warn',
-      {
-        endOfLine: 'auto',
-      },
-    ],
-    'prefer-const': [
-      'warn',
-      {
-        destructuring: 'all',
-      },
-    ],
+    'prettier/prettier': ['warn', {endOfLine: 'auto'}],
+    'prefer-const': ['warn', {destructuring: 'all'}],
   },
   settings: {
     'import/ignore': ['node_modules'],

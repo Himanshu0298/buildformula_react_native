@@ -1,34 +1,18 @@
-import React, {useMemo, useState} from 'react';
-import {useSelector} from 'react-redux';
-import FloorSelector from 'components/Molecules/TowerSelector';
-import {
-  FlatList,
-  StyleSheet,
-  View,
-  Image,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-} from 'react-native';
+import React from 'react';
+import {FlatList, View, Image, Text} from 'react-native';
 import FloorBar from 'components/Atoms/FloorBar';
 import {Button, IconButton} from 'react-native-paper';
 import plot from 'assets/images/bungalow_hut.png';
 
 export default function SelectFloor(props) {
   const {
-    title,
-    subtitle,
+    route,
+
     selectButtonLabel,
-    towers,
-    towerCount,
-    onSelectFloor,
+
     navigation,
   } = props;
-  const {floors} = props.route.params;
-  const {towerType} = props.route.params;
-  const {towerId} = props.route.params;
-
-  console.log('----->towerId in select floor', towerId);
+  const {floors, towerId, towerType} = route.params || {};
 
   return (
     <View>
