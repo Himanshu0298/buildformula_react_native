@@ -40,20 +40,28 @@ function SelectFloor(props) {
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
         keyExtractor={item => item.toString()}
-        renderItem={({item: floorId, index}) => (
-          <FloorBar
-            {...props}
-            {...{floorId, index, towerId, floorData: floors}}
-            inputProps={{
-              value: floors?.[floorId]?.unitCount?.toString() || '',
-              disabled: true,
-            }}
-            buttonProps={{color: '#5B6F7C'}}
-            onPressNext={() =>
-              navigation.navigate('BC_Step_Four', {floorId, ...route.params})
-            }
-          />
-        )}
+        renderItem={({item: floorId, index}) => {
+          const {structureType} = floors[floorId];
+
+          return (
+            <FloorBar
+              {...props}
+              {...{floorId, index, towerId, floorData: floors}}
+              inputProps={{
+                value: floors?.[floorId]?.unitCount?.toString() || '',
+                disabled: true,
+              }}
+              buttonProps={{color: '#5B6F7C'}}
+              onPressNext={() =>
+                navigation.navigate('BC_Step_Four', {
+                  floorId,
+                  structureType,
+                  ...route.params,
+                })
+              }
+            />
+          );
+        }}
       />
     </View>
   );

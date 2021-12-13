@@ -109,7 +109,10 @@ function SelectUnit(props) {
 
   const handleHold = () => {
     toggleDialog();
-    console.log('----->handleHold ');
+    navigation.navigate('BookingFormOnHold', {
+      ...route?.params,
+      ...selectedUnit,
+    });
   };
 
   return (

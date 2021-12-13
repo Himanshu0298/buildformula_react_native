@@ -1,5 +1,6 @@
+import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import React, {useState} from 'react';
-import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {
   Subheading,
   withTheme,
@@ -12,19 +13,39 @@ import {
   Caption,
   Avatar,
 } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {getFloorNumber, getTowerLabel, getUnitLabel} from 'utils';
+import {STRUCTURE_TYPE_LABELS} from 'utils/constant';
 
-function PropertyHoldUserDetails() {
-  function Container(props) {
-    const {heading, content} = props;
+function RenderRow(props) {
+  const {heading, content} = props;
 
-    return (
-      <View style={{marginTop: 20}}>
-        <Caption>{heading}</Caption>
-        <Text>{content}</Text>
-      </View>
-    );
-  }
+  return (
+    <View style={styles.headingRow}>
+      <Caption>{heading}</Caption>
+      <Text>{content}</Text>
+    </View>
+  );
+}
+
+function InfoRow(props) {
+  const {data} = props;
+
+  return (
+    <View style={styles.rowContainer}>
+      {data.map(({title, value}) => (
+        <View style={styles.rowCell}>
+          <Caption>{title}: </Caption>
+          <Text>{value}</Text>
+        </View>
+      ))}
+    </View>
+  );
+}
+
+function PropertyHoldUserDetails(props) {
+  const {route} = props;
+  const {structureType} = route?.params || {};
 
   return (
     <View style={{marginTop: 20}}>
@@ -37,9 +58,9 @@ function PropertyHoldUserDetails() {
           <Caption>ashishpatel@example.com</Caption>
         </View>
       </View>
-      <Container heading="Date" content="20 Sept, 2020" />
-      <Container heading="Hold Duration" content="15 Days" />
-      <Container
+      <RenderRow heading="Date" content="20 Sept, 2020" />
+      <RenderRow heading="Hold Duration" content="15 Days" />
+      <RenderRow
         heading="Remark"
         content="Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet."
       />
@@ -61,99 +82,68 @@ function PropertyHoldUserDetails() {
   );
 }
 
-function ProjectInfo(props) {
-  const {data} = props;
-
-  return (
-    <View
-      style={{
-        alignItems: 'center',
-        flexDirection: 'row',
-      }}>
-      {data.map(({title, value}) => (
-        <View style={{flex: 1, flexDirection: 'row'}}>
-          <Text style={{color: '#041D36'}}>{title}: </Text>
-          <Text>{value}</Text>
-        </View>
-      ))}
-    </View>
-  );
-}
-
 function BookingFormOnHold(props) {
-  const {navigation, route} = props;
-  const {params = {}} = route;
+  const {navigation, route, theme} = props;
+  const {structureType, towerId, floorId, unitId} = route?.params || {};
 
   const [propertyBooked, setPropertyBooked] = useState(false);
 
-  function handleClick(id) {
-    if (id === 'withRate') {
-      console.log('----->handleclick called', id);
-    } else {
-      console.log('----->else called', id);
-    }
-  }
+  const navToForm = () => {
+    navigation.navigate('HoldPropertyForm', {...route?.params});
+  };
+
+  const navToHistory = () => navigation.navigate('History');
 
   return (
-    <View style={{padding: 10}}>
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-        }}>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <IconButton
-            icon="keyboard-backspace"
-            onPress={() => navigation.goBack()}
-          />
+    <View style={styles.container}>
+      <View style={styles.headerContainer}>
+        <View style={styles.backContainer}>
+          <IconButton icon="keyboard-backspace" onPress={navigation.goBack} />
           <Text>Property On-hold</Text>
         </View>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('History')}
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            backgroundColor: '#EDF1FE',
-            borderRadius: 5,
-            padding: 5,
-          }}>
-          <Icon name="information-outline" style={{marginRight: 10}} />
+        <OpacityButton
+          opacity={0.1}
+          onPress={navToHistory}
+          style={styles.historyButton}>
+          <MaterialCommunityIcons
+            name="information-outline"
+            size={18}
+            color={theme.colors.primary}
+            style={styles.infoIcon}
+          />
           <Text>History</Text>
-        </TouchableOpacity>
+        </OpacityButton>
       </View>
-      <View>
-        <Card elevation={5} style={{padding: 15}}>
-          <Subheading>Property info</Subheading>
-          <Divider style={{height: 1, marginVertical: 5}} />
-          <ProjectInfo
-            data={[
-              {title: 'Project type', value: 'apartment'},
-              {title: 'Tower', value: 'A'},
-            ]}
-          />
-          <ProjectInfo
-            data={[
-              {title: 'Floor', value: '12th Floor'},
-              {title: 'Unit Number', value: '1204'},
-            ]}
-          />
-        </Card>
-        {propertyBooked ? (
-          <PropertyHoldUserDetails />
-        ) : (
-          <Button
-            mode="contained"
-            onPress={() => {
-              console.log('----->BookingFormOnHold button pressed');
-              navigation.navigate('HoldPropertyForm');
-            }}
-            uppercase={false}
-            style={{margin: 15, borderRadius: 10}}>
-            Hold this property
-          </Button>
-        )}
-      </View>
+      <Card elevation={5} style={styles.infoCard}>
+        <Subheading>Property info</Subheading>
+        <Divider style={styles.divider} />
+        <InfoRow
+          data={[
+            {
+              title: 'Project type',
+              value: STRUCTURE_TYPE_LABELS[structureType],
+            },
+            {title: 'Tower', value: getTowerLabel(towerId)},
+          ]}
+        />
+        <InfoRow
+          data={[
+            {title: 'Floor', value: getFloorNumber(floorId)},
+            {title: 'Unit Number', value: getUnitLabel(floorId, unitId)},
+          ]}
+        />
+      </Card>
+      {propertyBooked ? (
+        <PropertyHoldUserDetails {...props} />
+      ) : (
+        <Button
+          mode="contained"
+          onPress={navToForm}
+          uppercase={false}
+          style={styles.holdButton}>
+          Hold this property
+        </Button>
+      )}
     </View>
   );
 }
@@ -163,6 +153,49 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 20,
     paddingVertical: 10,
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  backContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  historyButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 7,
+    padding: 7,
+  },
+  infoIcon: {
+    marginRight: 7,
+  },
+  infoCard: {
+    padding: 15,
+    marginVertical: 15,
+  },
+  rowContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    marginVertical: 3,
+  },
+  holdButton: {
+    margin: 15,
+    borderRadius: 10,
+  },
+  divider: {
+    height: 1,
+    marginBottom: 5,
+  },
+  rowCell: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  headingRow: {
+    marginTop: 20,
   },
 });
 
