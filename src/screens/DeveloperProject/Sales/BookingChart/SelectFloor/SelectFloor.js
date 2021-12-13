@@ -1,102 +1,84 @@
 import React from 'react';
-import {FlatList, View, Image, Text} from 'react-native';
+import {FlatList, View, StyleSheet, TouchableOpacity} from 'react-native';
 import FloorBar from 'components/Atoms/FloorBar';
-import {Button, IconButton} from 'react-native-paper';
-import plot from 'assets/images/bungalow_hut.png';
+import {Button, IconButton, Subheading, withTheme} from 'react-native-paper';
+import {useSelector} from 'react-redux';
+import {RenderTowerBox} from 'components/Molecules/TowerSelector';
 
-export default function SelectFloor(props) {
-  const {
-    route,
+function SelectFloor(props) {
+  const {route, navigation} = props;
+  const {selectedStructure, towerType, towerId} = route.params || {};
 
-    selectButtonLabel,
+  const {selectedProject} = useSelector(state => state.project);
 
-    navigation,
-  } = props;
-  const {floors, towerId, towerType} = route.params || {};
+  const structureData = selectedProject.projectData?.[selectedStructure] || {};
+
+  const {floors} = structureData.towers[towerId];
 
   return (
-    <View>
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          marginRight: 20,
-        }}>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <IconButton
-            icon="keyboard-backspace"
-            onPress={() => navigation.goBack()}
-          />
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              margin: 8,
-              borderWidth: 1,
-            }}>
-            <View
-              style={{
-                backgroundColor: 'lightgrey',
-                padding: 10,
-              }}>
-              <Image
-                source={plot}
-                style={{
-                  width: 30,
-                  height: 30,
-                }}
-              />
-            </View>
-            <View
-              // onPress={() => selectTower(towers[towerId])}
-              style={{
-                backgroundColor: 'white',
-                height: '100%',
-              }}>
-              <View
-                style={{margin: 10}}
-                // onPress={() => selectTower(towers[towerId])}
-              >
-                <Text style={{color: 'black'}}>1</Text>
-              </View>
-            </View>
-          </View>
-        </View>
-        <Button
-          mode="contained"
-          uppercase={false}
-          onPress={() => navigation.goBack()}>
+    <View style={styles.container}>
+      <Subheading>{towerType}</Subheading>
+
+      <View style={styles.headerContainer}>
+        <TouchableOpacity
+          style={styles.titleContainer}
+          onPress={navigation.goBack}>
+          <IconButton icon="keyboard-backspace" />
+          <RenderTowerBox {...props} towerId={towerId} active />
+        </TouchableOpacity>
+        <Button mode="contained" uppercase={false} onPress={navigation.goBack}>
           Change {towerType}
         </Button>
       </View>
 
+      <Subheading style={{marginBottom: 10}}>Floors</Subheading>
+
       <FlatList
-        data={Object.keys(floors.floors)}
-        contentContainerStyle={{flexGrow: 1, paddingBottom: 30}}
+        data={Object.keys(floors)}
+        contentContainerStyle={styles.contentContainerStyle}
         extraData={{...floors}}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
         keyExtractor={item => item.toString()}
         renderItem={({item: floorId, index}) => (
           <FloorBar
-            floorId={floorId}
-            floorData={floors.floors}
-            index={index}
-            towerId={towerId}
-            navigation={navigation}
+            {...props}
+            {...{floorId, index, towerId, floorData: floors}}
             inputProps={{
               value: floors?.[floorId]?.unitCount?.toString() || '',
               disabled: true,
             }}
-            buttonLabel={selectButtonLabel}
-            buttonProps={{
-              color: '#5B6F7C',
-              // onPress: () => onSelectFloor(selectedTower, floorId),
-            }}
+            buttonProps={{color: '#5B6F7C'}}
+            onPressNext={() =>
+              navigation.navigate('BC_Step_Four', {floorId, ...route.params})
+            }
           />
         )}
       />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingHorizontal: 15,
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginLeft: -15,
+  },
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  contentContainerStyle: {
+    flexGrow: 1,
+    paddingBottom: 30,
+    paddingTop: 5,
+  },
+});
+
+export default withTheme(SelectFloor);

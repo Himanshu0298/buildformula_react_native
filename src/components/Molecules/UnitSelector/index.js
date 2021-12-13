@@ -1,7 +1,5 @@
 import React from 'react';
 import BhkButton from 'components/Atoms/Buttons/BhkButton';
-import FormTitle from 'components/Atoms/FormTitle';
-import {useTranslation} from 'react-i18next';
 import {StyleSheet, View, ScrollView, RefreshControl} from 'react-native';
 import {Subheading} from 'react-native-paper';
 import {BHK_OPTIONS} from 'utils/constant';
@@ -29,28 +27,29 @@ function BhkList({onPress, selectedBhk}) {
   );
 }
 
-function UnitSelector({
-  title,
-  subtitle,
-  showBhkFilters,
-  refreshing,
-  onRefresh,
-  units,
-  floorId,
-  floorNumber,
-  onSelectUnit,
-  isUnitDisabled,
-  navigation,
-}) {
-  const {t} = useTranslation();
-
-  console.log('----->floorNumber', floorNumber);
+function UnitSelector(props) {
+  const {
+    showBhkFilters,
+    refreshing,
+    onRefresh,
+    units,
+    floorId,
+    floorNumber,
+    onSelectUnit,
+    isUnitDisabled,
+  } = props;
 
   const [selectedBhk, setSelectedBhk] = React.useState();
 
   return (
-    <>
-      <FormTitle title={t(title)} subTitle={t(subtitle)} />
+    <View style={styles.container}>
+      {showBhkFilters ? (
+        <>
+          <Subheading style={{marginTop: 5}}>BHK indication</Subheading>
+          <BhkList selectedBhk={selectedBhk} onPress={setSelectedBhk} />
+        </>
+      ) : null}
+      <Subheading style={styles.floorTitle}>{floorNumber}</Subheading>
       <ScrollView
         contentContainerStyle={{flexGrow: 1}}
         refreshControl={
@@ -58,31 +57,20 @@ function UnitSelector({
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           ) : null
         }>
-        <View style={styles.container}>
-          {showBhkFilters ? (
-            <>
-              <Subheading style={{marginTop: 5}}>BHK indication</Subheading>
-              <BhkList selectedBhk={selectedBhk} onPress={setSelectedBhk} />
-            </>
-          ) : null}
-          <Subheading style={styles.floorTitle}>{floorNumber}</Subheading>
-          <RenderUnits
-            units={units}
-            selectedFloor={floorId}
-            onSelectUnit={onSelectUnit}
-            isUnitDisabled={isUnitDisabled}
-            navigation={navigation}
-          />
-        </View>
+        <RenderUnits
+          units={units}
+          selectedFloor={floorId}
+          onSelectUnit={onSelectUnit}
+          isUnitDisabled={isUnitDisabled}
+        />
       </ScrollView>
-    </>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 20,
   },
   towerList: {
     flexDirection: 'row',
@@ -96,17 +84,18 @@ UnitSelector.defaultProps = {
   title: 'title_select_unit',
   subtitle: 'label_select_appropriate_option',
   showBhkFilters: true,
+  refreshing: false,
   onSelectUnit: () => {},
+  onRefresh: () => {},
 };
 
 UnitSelector.propTypes = {
   title: PropTypes.string,
   subtitle: PropTypes.string,
   showBhkFilters: PropTypes.bool,
-  onSelectUnit: PropTypes.func.isRequired,
+  onSelectUnit: PropTypes.func,
   refreshing: PropTypes.bool,
   onRefresh: PropTypes.func,
-  units: PropTypes.object,
   floorId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
 };
 

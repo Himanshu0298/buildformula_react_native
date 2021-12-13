@@ -225,18 +225,28 @@ function BookingChartStack() {
         options={{headerShown: false}}
       />
       <Stack.Screen
-        name="BC_Step_Floor"
+        name="BC_Step_Three"
         component={BC_SelectFloor}
         options={{headerShown: false}}
       />
       <Stack.Screen
-        name="BC_Step_Three"
+        name="BC_Step_Four"
         component={BC_SelectUnit}
         options={{headerShown: false}}
       />
       <Stack.Screen
-        name="BC_Step_Four"
+        name="BC_Step_Five"
         component={BookingDetails}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="BC_Step_Six"
+        component={BookingRates}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="BC_Step_Seven"
+        component={BookingPayment}
         options={{headerShown: false}}
       />
       <Stack.Screen
@@ -252,16 +262,6 @@ function BookingChartStack() {
       <Stack.Screen
         name="History"
         component={History}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="BC_Step_Five"
-        component={BookingRates}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="BC_Step_Six"
-        component={BookingPayment}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

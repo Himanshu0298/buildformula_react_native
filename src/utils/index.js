@@ -89,7 +89,20 @@ const shadowsArray = {
 
 export const getShadow = elevation => shadowsArray[elevation][Platform.OS];
 
-export const getTowerLabel = i => String.fromCharCode(64 + parseInt(i, 10));
+export function getTowerLabel(num) {
+  let s = '';
+  let t;
+
+  num += 26;
+
+  while (num > 0) {
+    t = (num - 1) % 26;
+    s = String.fromCharCode(65 + t) + s;
+    // eslint-disable-next-line no-bitwise
+    num = ((num - t) / 26) | 0;
+  }
+  return s || undefined;
+}
 
 export function getFloorNumber(i) {
   i = parseInt(i, 10);

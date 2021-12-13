@@ -18,11 +18,11 @@ module.exports = {
   },
   rules: {
     'react-native/no-unused-styles': 1,
+    'react-native/no-color-literals': 0,
     'react/no-array-index-key': 1,
     'react/no-unused-prop-types': 0,
     'react-native/split-platform-components': 2,
     'react-native/no-inline-styles': 1,
-    'react-native/no-color-literals': 1,
     'react-native/no-single-element-style-arrays': 2,
     camelcase: 0,
     'import/extensions': 0,

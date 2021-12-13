@@ -14,15 +14,13 @@ function BhkButton({bhk, onPress, selected}) {
           {
             backgroundColor: selected
               ? addOpacity(bhk.color, 1)
-              : addOpacity(bhk.color, 0.1),
+              : addOpacity(bhk.color, 0.2),
           },
         ]}>
         <BaseText
           style={[
             styles.bhkLabel,
-            {
-              color: selected ? '#fff' : addOpacity(bhk.color, 1),
-            },
+            {color: selected ? '#fff' : addOpacity(bhk.color, 1)},
           ]}>
           {bhk.type} BHK
         </BaseText>
@@ -38,6 +36,11 @@ BhkButton.propTypes = {
   }).isRequired,
   onPress: PropTypes.func,
   selected: PropTypes.bool,
+};
+
+BhkButton.defaultProps = {
+  onPress: () => {},
+  selected: false,
 };
 
 const styles = StyleSheet.create({

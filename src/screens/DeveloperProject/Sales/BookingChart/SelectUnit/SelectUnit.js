@@ -1,20 +1,20 @@
-import React, {useEffect, useMemo} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {useSelector} from 'react-redux';
 import useSalesActions from 'redux/actions/salesActions';
 import Spinner from 'react-native-loading-spinner-overlay';
 import UnitSelector from 'components/Molecules/UnitSelector';
 import dayjs from 'dayjs';
-import {getPermissions} from 'utils';
+import {getFloorNumber, getPermissions} from 'utils';
 import {useSnackbar} from 'components/Atoms/Snackbar';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {Button, IconButton, Subheading, Text} from 'react-native-paper';
+import SelectHoldOrBook from 'screens/DeveloperProject/Sales/BookingChart/SelectUnit/Components/UnitBookingDialog';
 
-export default function SelectUnit(props) {
+function SelectUnit(props) {
   const {navigation, route} = props;
-
-  const {floorNumber} = props.route.params;
-  // const _units = props.route.params.units;
+  const {floorId, towerId, selectedStructure, towerType} = route?.params || {};
 
   const modulePermission = getPermissions('Booking Chart');
-
   const snackbar = useSnackbar();
 
   const {getUnitsBookingStatus, lockUnit, toggleTimer} = useSalesActions();
@@ -23,26 +23,7 @@ export default function SelectUnit(props) {
   const {loadingUnitStatus, unitBookingStatus} = useSelector(s => s.sales);
   const {user} = useSelector(state => state.user);
 
-  const {selectedStructure} = route?.params || {};
-  const floorId = route?.params?.floorId || {};
-  const towerId = route?.params?.towerId || {};
-  console.log('----->selectedStructure', selectedStructure);
-  console.log('----->floorId', floorId);
-  console.log('----->towerId', towerId);
-
-  const structureData = selectedProject.projectData?.[selectedStructure] || {};
-
-  let units;
-
-  if (selectedStructure === 4 || selectedStructure === 5) {
-    units = structureData.units;
-  }
-
-  if (selectedStructure === 6) {
-    units = structureData.towers?.[towerId]?.floors?.[floorId]?.units || {};
-  }
-
-  console.log('----->units in select unitsssssss', units);
+  const [selectedUnit, setSelectedUnit] = useState();
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -53,23 +34,34 @@ export default function SelectUnit(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // const units = useMemo(() => {
-  //   const data = towers?.[towerId]?.floors?.[floorId]?.units || {};
+  const units = useMemo(() => {
+    const structureData =
+      selectedProject.projectData?.[selectedStructure] || {};
 
-  //   Object.keys(data).map(key => {
-  //     const bookingData = unitBookingStatus.find(
-  //       unit => unit.id === data[key].unitId,
-  //     );
+    if (selectedStructure === 4 || selectedStructure === 5) {
+      return structureData.units;
+    }
 
-  //     if (bookingData) {
-  //       data[key] = {...data[key], ...bookingData};
-  //     }
-  //   });
+    return structureData.towers?.[towerId]?.floors?.[floorId]?.units || {};
+  }, [floorId, selectedProject, selectedStructure, towerId]);
 
-  //   return data;
-  // }, [floorId, towerId, towers, unitBookingStatus]);
+  const processedUnits = useMemo(() => {
+    Object.keys(units).map(key => {
+      const bookingData = unitBookingStatus.find(
+        unit => unit.id === units[key].unitId,
+      );
 
-  // console.log('----->units', units);
+      if (bookingData) {
+        units[key] = {...units[key], ...bookingData};
+      }
+
+      return key;
+    });
+
+    return units;
+  }, [unitBookingStatus, units]);
+
+  const toggleDialog = value => setSelectedUnit(v => (!v ? value : undefined));
 
   const fetchUnitsBookingStatus = () => {
     getUnitsBookingStatus({
@@ -92,14 +84,19 @@ export default function SelectUnit(props) {
     return disabled;
   };
 
-  const onSelectUnit = async (index, unit) => {
+  const handleBook = async () => {
     if (modulePermission?.editor || modulePermission?.admin) {
-      await lockUnit({unit_id: unit.unitId, project_id: selectedProject.id});
+      await lockUnit({
+        unit_id: selectedUnit.unitId,
+        project_id: selectedProject.id,
+      });
       toggleTimer({showTimer: true, startTime: new Date(), time: 1800});
 
-      navigation.navigate('BC_Step_Four', {
-        project_id: selectedProject.id,
-        unit_id: unit.unitId,
+      toggleDialog();
+
+      navigation.navigate('BC_Step_Five', {
+        ...route?.params,
+        unit_id: selectedUnit.unitId,
       });
     } else {
       snackbar.showMessage({
@@ -110,21 +107,66 @@ export default function SelectUnit(props) {
     }
   };
 
+  const handleHold = () => {
+    toggleDialog();
+    console.log('----->handleHold ');
+  };
+
   return (
-    <>
-      <Spinner visible={loadingUnitStatus} textContent="" />
-      {console.log('----->units in select unit', units)}
-      <UnitSelector
-        refreshing={unitBookingStatus.length > 0 && loadingUnitStatus}
-        onRefresh={fetchUnitsBookingStatus}
-        onSelectUnit={onSelectUnit}
-        floorId={floorId}
-        floorNumber={floorNumber}
-        units={units}
-        showBhkFilters={[1, 4].includes(selectedStructure)}
-        isUnitDisabled={checkUnitDisability}
-        navigation={navigation}
+    <View style={styles.container}>
+      <SelectHoldOrBook
+        visible={Boolean(selectedUnit)}
+        setVisible={setSelectedUnit}
+        toggleDialog={toggleDialog}
+        handleBook={handleBook}
+        handleHold={handleHold}
       />
-    </>
+      <Spinner visible={loadingUnitStatus} textContent="" />
+
+      <Subheading>{towerType}</Subheading>
+
+      <View style={styles.headerContainer}>
+        <TouchableOpacity
+          style={styles.titleContainer}
+          onPress={navigation.goBack}>
+          <IconButton icon="keyboard-backspace" />
+          <Text> {getFloorNumber(floorId)}</Text>
+        </TouchableOpacity>
+        <Button mode="contained" uppercase={false} onPress={navigation.goBack}>
+          Change Floor
+        </Button>
+      </View>
+
+      <UnitSelector
+        {...props}
+        refreshing={unitBookingStatus.length > 0 && loadingUnitStatus}
+        floorId={floorId}
+        floorNumber={getFloorNumber(floorId)}
+        units={processedUnits}
+        showBhkFilters
+        isUnitDisabled={checkUnitDisability}
+        onRefresh={fetchUnitsBookingStatus}
+        onSelectUnit={toggleDialog}
+      />
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingHorizontal: 15,
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginLeft: -15,
+  },
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+});
+
+export default SelectUnit;

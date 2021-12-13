@@ -1,8 +1,10 @@
 import React from 'react';
 import {useSelector} from 'react-redux';
 import TowerSelector from 'components/Molecules/TowerSelector';
+import {StyleSheet, View} from 'react-native';
+import {Subheading} from 'react-native-paper';
 
-export default function SelectTower(props) {
+function SelectTower(props) {
   const {navigation, route} = props;
   const {selectedStructure, towerType} = route?.params || {};
 
@@ -13,13 +15,29 @@ export default function SelectTower(props) {
   const {towerCount, towers} = structureData;
 
   const onSelectTower = towerId => {
-    navigation.navigate('BC_Step_Three', {selectedStructure, towerId});
+    navigation.navigate('BC_Step_Three', {
+      selectedStructure,
+      towerType,
+      towerId,
+    });
   };
 
   return (
-    <TowerSelector
-      {...props}
-      {...{towers, towerCount, towerType, onSelectTower}}
-    />
+    <View style={styles.container}>
+      <Subheading>{towerType}</Subheading>
+      <TowerSelector
+        {...props}
+        {...{towers, towerCount, towerType, onSelectTower}}
+      />
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingHorizontal: 20,
+  },
+});
+
+export default SelectTower;

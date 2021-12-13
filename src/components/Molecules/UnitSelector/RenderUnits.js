@@ -1,15 +1,5 @@
-import React, {useState} from 'react';
-import {StyleSheet, View, Image, Text, TouchableOpacity} from 'react-native';
-import {
-  Badge,
-  Button,
-  Paragraph,
-  Dialog,
-  Portal,
-  Caption,
-  Subheading,
-} from 'react-native-paper';
-import {secondaryTheme} from 'styles/theme';
+import React from 'react';
+import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
 import {BHK_OPTIONS} from 'utils/constant';
 import {addOpacity, getUnitLabel} from 'utils';
 import Layout from 'utils/Layout';
@@ -17,14 +7,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
-import plot from 'assets/images/bungalow_hut.png';
-import SelectHoldOrBook from '../selectHoldOrBook';
-
-// import House from 'assets/images/house.svg';
-
-// const UNIT_MARGIN = Layout.window.width * 0.015;
-// const BODY_WIDTH = Layout.window.width - 40;
-// const UNIT_WIDTH = BODY_WIDTH / 5 - 2 * UNIT_MARGIN;
+import UnitIcon from 'assets/images/unit.svg';
 
 const DEFAULT_UNIT_COLOR = '#5B6F7C';
 export const BOOKING_STATUS_STYLES = {
@@ -55,29 +38,12 @@ function checkDisabled(isUnitDisabled, unit) {
   return false;
 }
 
-function RenderUnits({
-  onSelectUnit,
-  navigation,
-  units,
-  selectedFloor,
-  isUnitDisabled,
-}) {
-  const [visible, setVisible] = useState(false);
-
-  console.log('----->visible in render unit', visible);
-  console.log('----->units', units);
-
-  const toggleDialog = () => setVisible(v => !v);
+function RenderUnits(props) {
+  const {onSelectUnit, selectedFloor, units, isUnitDisabled} = props;
 
   return (
     <View style={styles.unitsList}>
-      <SelectHoldOrBook
-        visible={visible}
-        setVisible={setVisible}
-        toggleDialog={toggleDialog}
-        navigation={navigation}
-      />
-      {Object.keys(units).map((unitId, i) => {
+      {Object.keys(units).map(unitId => {
         const unit = units[unitId];
         const unitBhk = BHK_OPTIONS.find(item => item.type === unit.bhk);
 
@@ -97,60 +63,32 @@ function RenderUnits({
         }
 
         return (
-          <View key={i} style={styles.unitContainer}>
-            <TouchableOpacity
-              disabled={disabled}
-              onPress={() => {
-                // onSelectUnit(i, unit);
-                toggleDialog(); // () => <SelectHoldOrBook />;
-              }}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  margin: 5,
-                  padding: 3,
-                  backgroundColor: '#D3DAEF',
-                  borderRadius: 5,
-                }}>
-                <View
-                  style={{
-                    backgroundColor: 'white',
-                    padding: 3,
-                  }}>
-                  {/* <House /> */}
-                  <Image
-                    source={plot}
-                    style={{
-                      width: 30,
-                      height: 40,
-                    }}
-                  />
-                </View>
-                <View
-                  style={{
-                    height: '100%',
-                  }}>
-                  <View style={{margin: 5}}>
-                    <Text style={{fontSize: 12}}>{unitId}</Text>
-                    <Caption style={{fontSize: 10}}>
-                      50000<Caption style={{fontSize: 10}}>sq</Caption>
-                    </Caption>
-                  </View>
-                </View>
+          <TouchableOpacity
+            disabled={disabled}
+            onPress={() => onSelectUnit(unit)}>
+            <View style={styles.unitContainer}>
+              <View style={styles.iconContainer}>
+                <UnitIcon height={30} width={30} />
               </View>
-            </TouchableOpacity>
-          </View>
+              <View style={styles.labelContainer}>
+                <Text>{getUnitLabel(selectedFloor, unitId)}</Text>
+              </View>
+            </View>
+          </TouchableOpacity>
         );
       })}
     </View>
   );
 }
 
+RenderUnits.defaultProps = {
+  isUnitDisabled: () => {},
+  selectedFloor: '',
+};
+
 RenderUnits.propTypes = {
   onSelectUnit: PropTypes.func.isRequired,
   isUnitDisabled: PropTypes.func,
-  units: PropTypes.object,
   selectedFloor: PropTypes.string,
 };
 
@@ -161,8 +99,20 @@ const styles = StyleSheet.create({
   },
   unitContainer: {
     alignItems: 'center',
-    justifyContent: 'center',
-    flexWrap: 'wrap',
+    flexDirection: 'row',
+    backgroundColor: '#D3DAEF',
+    width: Layout.window.width * 0.26,
+    margin: 5,
+    padding: 5,
+    borderRadius: 7,
+  },
+  iconContainer: {
+    backgroundColor: '#fff',
+    padding: 3,
+    borderRadius: 7,
+  },
+  labelContainer: {
+    padding: 5,
   },
 });
 

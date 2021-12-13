@@ -1,30 +1,31 @@
 import React from 'react';
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
 import PropTypes from 'prop-types';
 import {theme} from 'styles/theme';
 import Layout from 'utils/Layout';
-import {Badge, Button, TextInput, IconButton} from 'react-native-paper';
-import {getFloorNumber} from 'utils';
+import {Badge, TextInput} from 'react-native-paper';
+import {getFloorNumber, getShadow} from 'utils';
 import {STRUCTURE_TYPE_LABELS} from 'utils/constant';
 import floorSlab from 'assets/images/slab.png';
-import FloorsScreen from 'screens/CreateProject/ProjectStructure/StepTwo/Components/FloorsScreen';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import BaseText from './BaseText';
+import OpacityButton from './Buttons/OpacityButton';
 
 function FloorBar(props) {
   const {
     floorId,
     floorData,
-    towerId,
     index,
-    navigation,
     badgeActive,
     showBadge,
-    onPress,
     inputProps,
-    unitCount,
-    buttonLabel,
-    buttonProps,
+    onPressLabel,
+    onPressNext,
   } = props;
+
+  const {structureType} = floorData[index];
+
+  const LabelContainer = onPressLabel ? TouchableOpacity : View;
 
   return (
     <View style={styles.floorContainer}>
@@ -37,22 +38,21 @@ function FloorBar(props) {
       ) : null}
       <View style={styles.floorContent}>
         <View style={styles.rowContainer}>
-          <TouchableOpacity
+          <LabelContainer
             style={styles.floorLabelContainer}
-            onPress={() => onPress(floorId)}>
+            onPress={() => onPressLabel?.(floorId)}>
             <BaseText style={styles.floorLabel}>
               {getFloorNumber(floorId)}
             </BaseText>
-          </TouchableOpacity>
-          <Text style={styles.unitsInput2}>
-            {STRUCTURE_TYPE_LABELS[floorData[index].structureType]}
-          </Text>
-          <View style={{flexDirection: 'row'}}>
+          </LabelContainer>
+          <View style={styles.rightSection}>
             <TextInput
               dense
               blurOnSubmit
+              disabled
+              value={STRUCTURE_TYPE_LABELS?.[structureType]?.toString()}
               placeholder=""
-              style={styles.unitsInput}
+              style={styles.structureInput}
               keyboardType="decimal-pad"
               theme={{
                 colors: {
@@ -61,23 +61,31 @@ function FloorBar(props) {
                   accent: theme.colors.primary,
                 },
               }}
-              {...inputProps}
             />
-            <IconButton
-              icon="arrow-right"
-              color="white"
-              size={20}
-              style={{backgroundColor: 'blue'}}
-              // onPress={() => console.log('Pressed')}
-              onPress={() =>
-                navigation.navigate('BC_Step_Three', {
-                  floorNumber: getFloorNumber(floorId),
-                  floorId,
-                  towerId,
-                  selectedStructure: 6,
-                })
-              }
-            />
+            <View style={{flexDirection: 'row'}}>
+              <TextInput
+                dense
+                blurOnSubmit
+                placeholder=""
+                style={styles.unitsInput}
+                keyboardType="decimal-pad"
+                theme={{
+                  colors: {
+                    underlineColor: 'transparent',
+                    text: '#000',
+                    accent: theme.colors.primary,
+                  },
+                }}
+                {...inputProps}
+              />
+            </View>
+            <OpacityButton onPress={onPressNext} style={styles.button}>
+              <MaterialCommunityIcons
+                name="arrow-right"
+                size={20}
+                color="#fff"
+              />
+            </OpacityButton>
           </View>
         </View>
         <Image source={floorSlab} style={styles.slabImage} />
@@ -87,33 +95,34 @@ function FloorBar(props) {
 }
 
 FloorBar.propTypes = {
-  onPress: PropTypes.func,
+  onPressLabel: PropTypes.func,
   floorId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   badgeActive: PropTypes.bool,
   showBadge: PropTypes.bool,
-  inputProps: PropTypes.object,
-  buttonProps: PropTypes.object,
-  buttonLabel: PropTypes.string,
 };
 
 FloorBar.defaultProps = {
   badgeActive: false,
   showBadge: false,
+  onPressLabel: () => {},
+  floorId: '',
 };
 
 const styles = StyleSheet.create({
   unitsInput: {
-    width: 55,
     marginHorizontal: 10,
     fontSize: 16,
     justifyContent: 'center',
+    backgroundColor: '#fff',
+    ...getShadow(3),
   },
-  unitsInput2: {
-    width: 110,
+  structureInput: {
     marginHorizontal: 10,
     fontSize: 16,
     justifyContent: 'center',
-    color: 'grey',
+    color: '#ccc',
+    backgroundColor: '#fff',
+    ...getShadow(3),
   },
   floorContainer: {
     marginBottom: 10,
@@ -135,22 +144,29 @@ const styles = StyleSheet.create({
   },
   rowContainer: {
     alignItems: 'center',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     flexDirection: 'row',
   },
   floorLabelContainer: {
-    flexGrow: 1,
+    width: 120,
     height: '100%',
-
     justifyContent: 'center',
   },
-  floorLabel: {
-    color: 'grey',
-    fontSize: 12,
+  rightSection: {
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    flexDirection: 'row',
+    flexGrow: 1,
   },
   slabImage: {
     height: Layout.window.width * 0.7 * (20 / 320),
     width: '100%',
+  },
+  button: {
+    borderRadius: 50,
+    padding: 0,
+    height: 30,
+    width: 30,
   },
 });
 

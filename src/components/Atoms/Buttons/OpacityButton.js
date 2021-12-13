@@ -28,7 +28,7 @@ function OpacityButton(props) {
 }
 
 OpacityButton.propTypes = {
-  color: PropTypes.string.isRequired,
+  color: PropTypes.string,
   opacity: PropTypes.number,
 };
 
