@@ -99,6 +99,7 @@ function SelectUnit(props) {
         unit_id: selectedUnit.unitId,
       });
     } else {
+      toggleDialog();
       snackbar.showMessage({
         message:
           'You do not have permissions to perform this action. Contact project Admin for support',
