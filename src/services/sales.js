@@ -101,6 +101,27 @@ export default function useSalesServices() {
         config({multipart: false}),
       );
     },
+    getHoldBookingDetails: data => {
+      return instance.post(
+        '/booking/get_booking_unhold_details',
+        data,
+        config({multipart: false}),
+      );
+    },
+    unitHoldBooking: data => {
+      return instance.post(
+        '/booking/hold_booking',
+        data,
+        config({multipart: false}),
+      );
+    },
+    unitUnHoldBooking: data => {
+      return instance.post(
+        '/booking/unhold_booking',
+        data,
+        config({multipart: false}),
+      );
+    },
     createBooking: data => {
       return instance.post(
         '/booking/save_booking',

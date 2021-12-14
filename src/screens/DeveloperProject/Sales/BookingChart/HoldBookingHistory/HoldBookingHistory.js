@@ -3,6 +3,7 @@ import {StyleSheet, View} from 'react-native';
 import {withTheme, Text, IconButton, Avatar, Caption} from 'react-native-paper';
 import ProjectLayout from 'components/Molecules/Layout/ProjectLayout';
 
+// TODO: finish this UI
 function RenderSingleHistory(props) {
   const {navigation} = props;
 
@@ -19,7 +20,7 @@ function RenderSingleHistory(props) {
   );
 }
 
-function History(props) {
+function HoldBookingHistory(props) {
   const {navigation, route} = props;
   const {params = {}} = route;
 
@@ -45,4 +46,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default withTheme(History);
+export default withTheme(HoldBookingHistory);

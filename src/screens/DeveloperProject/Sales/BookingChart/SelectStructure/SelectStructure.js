@@ -12,10 +12,10 @@ function SelectStructure(props) {
   const {selectedProject} = useSelector(state => state.project);
   const {loading} = useSelector(state => state.sales);
 
-  const {projectData} = selectedProject;
+  const {projectData = {}} = selectedProject;
   const projectTypes = Object.keys(projectData)?.map(v => Number(v)) || [];
 
-  const handlePress = (selectedStructure, towerType, activeSrc) => {
+  const handlePress = (selectedStructure, towerType) => {
     if ([4, 5].includes(selectedStructure)) {
       navigation.navigate('BC_Step_Three', {selectedStructure});
     } else {

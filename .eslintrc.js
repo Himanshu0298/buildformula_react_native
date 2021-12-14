@@ -16,6 +16,9 @@ module.exports = {
     ecmaVersion: 2021,
     sourceType: 'module',
   },
+  env: {
+    browser: true,
+  },
   rules: {
     'react-native/no-unused-styles': 1,
     'react-native/no-color-literals': 0,

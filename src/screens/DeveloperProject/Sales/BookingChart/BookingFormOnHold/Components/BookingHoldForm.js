@@ -33,6 +33,7 @@ function RenderForm(props) {
         style={styles.input}
         value={values.date}
         onChange={v => setFieldValue('date', v)}
+        min={new Date()}
         error={errors.date}
       />
 
@@ -62,12 +63,7 @@ function RenderForm(props) {
 }
 
 function BookingHoldForm(props) {
-  const {navigation, route} = props;
-  const {unit_id} = route?.params || {};
-
-  const onSubmit = async values => {
-    console.log('----->form submitted');
-  };
+  const {handleSubmit} = props;
 
   return (
     <Formik
@@ -75,11 +71,11 @@ function BookingHoldForm(props) {
       validateOnChange={false}
       initialValues={{}}
       validationSchema={schema}
-      onSubmit={onSubmit}>
+      onSubmit={handleSubmit}>
       {formikProps => (
         <CustomDialog
           {...props}
-          title="Hold thisProperty"
+          title="Hold this Property"
           submitForm={formikProps.handleSubmit}>
           <RenderForm {...props} {...{formikProps}} />
         </CustomDialog>

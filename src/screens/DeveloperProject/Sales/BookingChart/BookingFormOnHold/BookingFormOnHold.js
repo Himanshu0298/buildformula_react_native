@@ -1,6 +1,9 @@
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
-import React, {useState} from 'react';
-import {StyleSheet, View} from 'react-native';
+import UserAvatar from 'components/Atoms/UserAvatar';
+import dayjs from 'dayjs';
+import React, {useEffect, useMemo, useState} from 'react';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import Spinner from 'react-native-loading-spinner-overlay';
 import {
   Subheading,
   withTheme,
@@ -9,11 +12,11 @@ import {
   Card,
   Divider,
   IconButton,
-  Title,
   Caption,
-  Avatar,
 } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useSelector} from 'react-redux';
+import useSalesActions from 'redux/actions/salesActions';
 import {getFloorNumber, getTowerLabel, getUnitLabel} from 'utils';
 import {STRUCTURE_TYPE_LABELS} from 'utils/constant';
 import BookingHoldForm from './Components/BookingHoldForm';
@@ -45,39 +48,53 @@ function InfoRow(props) {
 }
 
 function PropertyHoldUserDetails(props) {
-  const {route} = props;
-  const {structureType} = route?.params || {};
+  const {bookingDetails, userInfo, handleUnHold} = props;
+
+  const {user} = useSelector(s => s.user);
+
+  const holdTill = dayjs(
+    `${bookingDetails.hold_till_date} ${bookingDetails.hold_till_time}`,
+    'YYYY-MM-DD hh:mm:ss',
+  );
+
+  const holdDate = holdTill.format('DD MMM, YYYY');
+  const days = holdTill.diff(dayjs(), 'd');
 
   return (
-    <View style={{marginTop: 20}}>
-      <Title>Property On Hold</Title>
+    <View style={styles.holdDetailsContainer}>
+      <Subheading>Property On Hold</Subheading>
       <Caption>On-hold by</Caption>
-      <View style={{flexDirection: 'row', alignItems: 'center'}}>
-        <Avatar.Icon size={40} style={{marginRight: 10}} />
+      <View style={styles.userBlock}>
+        <UserAvatar
+          size={40}
+          uri={userInfo.profile_url}
+          style={styles.avatar}
+        />
         <View>
-          <Text>Ashish Patel</Text>
-          <Caption>ashishpatel@example.com</Caption>
+          <Text>
+            {userInfo.first_name} {userInfo.last_name}
+          </Text>
+          <Caption>{userInfo.email}</Caption>
         </View>
       </View>
-      <RenderRow heading="Date" content="20 Sept, 2020" />
-      <RenderRow heading="Hold Duration" content="15 Days" />
-      <RenderRow
-        heading="Remark"
-        content="Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet."
-      />
-      <Button
-        mode="contained"
-        onPress={() => {
-          console.log('----->BookingFormOnHold button pressed');
-          //   navigation.navigate('HoldPropertyForm');
-        }}
-        uppercase={false}
-        style={{margin: 15, borderRadius: 10}}>
-        Unhold this property
-      </Button>
-      <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-        <Caption>This property is on hold till </Caption>
-        <Text>20 Sept, 2020 8:30pm</Text>
+      <RenderRow heading="Date" content={holdDate} />
+      <RenderRow heading="Hold Duration" content={`${days} days`} />
+      <RenderRow heading="Remark" content={bookingDetails.remark} />
+
+      <View style={styles.actionContainer}>
+        {user.id === userInfo.id ? (
+          <Button
+            mode="contained"
+            onPress={handleUnHold}
+            uppercase={false}
+            style={styles.unHoldButton}>
+            Un-hold this property
+          </Button>
+        ) : null}
+        <View style={styles.helperText}>
+          <Caption>This property is on hold till </Caption>
+          <Text>{holdTill.format('DD MMM, YYYY hh:mm a')}</Text>
+        </View>
       </View>
     </View>
   );
@@ -85,25 +102,83 @@ function PropertyHoldUserDetails(props) {
 
 function BookingFormOnHold(props) {
   const {navigation, route, theme} = props;
-  const {structureType, towerId, floorId, unitId} = route?.params || {};
+  const {structureType, towerId, floorId, unitIndex, unitId} =
+    route?.params || {};
+
+  const {loading, bookingHoldDetails} = useSelector(s => s.sales);
+  const {selectedProject} = useSelector(state => state.project);
+  const {holdbyUserInfo, holdHistoryList} = bookingHoldDetails || {};
+
+  const {
+    getHoldBookingDetails,
+    unitHoldBooking,
+    unitUnHoldBooking,
+  } = useSalesActions();
 
   const [visible, setVisible] = useState(false);
-  const [propertyBooked, setPropertyBooked] = useState(false);
+
+  useEffect(() => {
+    loadHoldDetails();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedProject.id, unitId]);
+
+  const loadHoldDetails = () =>
+    getHoldBookingDetails({project_id: selectedProject.id, unit_id: unitId});
 
   const toggleHoldForm = () => setVisible(v => !v);
 
-  const navToHistory = () => navigation.navigate('History');
+  const navToHistory = () => navigation.navigate('HoldBookingHistory');
+
+  const propertyBooked = useMemo(() => {
+    return holdHistoryList?.find(i =>
+      dayjs(
+        `${i.hold_till_date} ${i.hold_till_time}`,
+        'YYYY-MM-DD hh:mm:ss',
+      ).isAfter(dayjs()),
+    );
+  }, [holdHistoryList]);
+
+  const handleHold = async values => {
+    const {date, time, remark} = values;
+    toggleHoldForm();
+    await unitHoldBooking({
+      project_id: selectedProject.id,
+      unit_id: unitId,
+      hold_till_date: dayjs(date).format('DD-MM-YYYY'),
+      hold_till_time: dayjs(time).format('hh:mm'),
+      remark,
+    });
+    loadHoldDetails();
+  };
+
+  const handleUnHold = async () => {
+    toggleHoldForm();
+    await unitUnHoldBooking({
+      project_id: selectedProject.id,
+      unit_id: unitId,
+      units_on_hold_id: propertyBooked.id,
+    });
+    loadHoldDetails();
+  };
 
   return (
     <>
-      <BookingHoldForm {...props} open={visible} handleClose={toggleHoldForm} />
+      <Spinner visible={loading} textContent="" />
+      <BookingHoldForm
+        {...props}
+        open={visible}
+        handleClose={toggleHoldForm}
+        handleSubmit={handleHold}
+      />
 
       <View style={styles.container}>
         <View style={styles.headerContainer}>
-          <View style={styles.backContainer}>
-            <IconButton icon="keyboard-backspace" onPress={navigation.goBack} />
+          <TouchableOpacity
+            style={styles.backContainer}
+            onPress={navigation.goBack}>
+            <IconButton icon="keyboard-backspace" />
             <Text>Property On-hold</Text>
-          </View>
+          </TouchableOpacity>
           <OpacityButton
             opacity={0.1}
             onPress={navToHistory}
@@ -132,12 +207,16 @@ function BookingFormOnHold(props) {
           <InfoRow
             data={[
               {title: 'Floor', value: getFloorNumber(floorId)},
-              {title: 'Unit Number', value: getUnitLabel(floorId, unitId)},
+              {title: 'Unit Number', value: getUnitLabel(floorId, unitIndex)},
             ]}
           />
         </Card>
         {propertyBooked ? (
-          <PropertyHoldUserDetails {...props} />
+          <PropertyHoldUserDetails
+            bookingDetails={propertyBooked}
+            userInfo={holdbyUserInfo}
+            handleUnHold={handleUnHold}
+          />
         ) : (
           <Button
             mode="contained"
@@ -162,6 +241,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    marginLeft: -10,
   },
   backContainer: {
     flexDirection: 'row',
@@ -200,6 +280,29 @@ const styles = StyleSheet.create({
   },
   headingRow: {
     marginTop: 20,
+  },
+  holdDetailsContainer: {
+    marginTop: 20,
+  },
+  userBlock: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  avatar: {
+    marginRight: 10,
+  },
+  actionContainer: {
+    marginTop: 20,
+    margin: 10,
+  },
+  unHoldButton: {
+    borderRadius: 10,
+  },
+  helperText: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

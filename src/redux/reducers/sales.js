@@ -28,6 +28,9 @@ import {
   ADD_BROKER,
   DELETE_BROKER,
   GET_BROKER_DETAILS,
+  HOLD_UNIT_BOOKING,
+  GET_HOLD_BOOKING_DETAILS,
+  UN_HOLD_UNIT_BOOKING,
 } from '../actions/actionTypes';
 
 const initialState = {
@@ -381,18 +384,19 @@ const reducer = (state = initialState, action = {}) => {
         errorMessage: payload,
       };
 
-    case `${DELETE_BROKER}_PENDING`:
+    case `${GET_HOLD_BOOKING_DETAILS}_PENDING`:
       return {
         ...state,
         loading: true,
       };
-    case `${DELETE_BROKER}_FULFILLED`: {
+    case `${GET_HOLD_BOOKING_DETAILS}_FULFILLED`: {
       return {
         ...state,
         loading: false,
+        bookingHoldDetails: payload,
       };
     }
-    case `${DELETE_BROKER}_REJECTED`:
+    case `${GET_HOLD_BOOKING_DETAILS}_REJECTED`:
       return {
         ...state,
         loading: false,
@@ -459,6 +463,9 @@ const reducer = (state = initialState, action = {}) => {
     case `${CREATE_BOOKING}_PENDING`:
     case `${UPDATE_BROKER}_PENDING`:
     case `${UPDATE_PIPELINE_ORDER_LIST}_PENDING`:
+    case `${HOLD_UNIT_BOOKING}_PENDING`:
+    case `${UN_HOLD_UNIT_BOOKING}_PENDING`:
+    case `${DELETE_BROKER}_PENDING`:
     case `${ADD_PIPELINE}_PENDING`: {
       return {
         ...state,
@@ -473,6 +480,9 @@ const reducer = (state = initialState, action = {}) => {
     case `${UPDATE_PIPELINE_ORDER_LIST}_FULFILLED`:
     case `${UPDATE_BROKER}_FULFILLED`:
     case `${CREATE_BOOKING}_FULFILLED`:
+    case `${HOLD_UNIT_BOOKING}_FULFILLED`:
+    case `${UN_HOLD_UNIT_BOOKING}_FULFILLED`:
+    case `${DELETE_BROKER}_FULFILLED`:
     case `${ADD_PIPELINE}_FULFILLED`: {
       return {
         ...state,
@@ -488,6 +498,9 @@ const reducer = (state = initialState, action = {}) => {
     case `${UPDATE_BROKER}_REJECTED`:
     case `${UPDATE_PIPELINE_ORDER_LIST}_REJECTED`:
     case `${CREATE_BOOKING}_REJECTED`:
+    case `${HOLD_UNIT_BOOKING}_REJECTED`:
+    case `${UN_HOLD_UNIT_BOOKING}_REJECTED`:
+    case `${DELETE_BROKER}_REJECTED`:
     case `${ADD_PIPELINE}_REJECTED`: {
       return {
         ...state,

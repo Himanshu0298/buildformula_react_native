@@ -40,7 +40,7 @@ function ImageRender(props) {
   return (
     <TouchableOpacity
       style={[styles.box, style, active ? styles.active : {}]}
-      onPress={() => onPress(value, towerType, src)}>
+      onPress={() => onPress(value, towerType)}>
       <BaseText style={styles.title}>{title}</BaseText>
       {src}
     </TouchableOpacity>
@@ -109,13 +109,11 @@ const styles = StyleSheet.create({
 StructureSelector.defaultProps = {
   title: 'label_select_structure',
   subtitle: 'label_select_appropriate_option',
-  onSelectStructure: () => {},
 };
 
 StructureSelector.propTypes = {
   title: PropTypes.string,
   subtitle: PropTypes.string,
-  projectTypes: PropTypes.array.isRequired,
   onSelectStructure: PropTypes.func.isRequired,
 };
 

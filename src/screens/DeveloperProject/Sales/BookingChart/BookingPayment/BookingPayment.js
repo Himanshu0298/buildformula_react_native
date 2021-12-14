@@ -840,6 +840,7 @@ function BookingPayments(props) {
             } for Installment No. ${index + 1}`;
           }
         }
+        return null;
       });
 
       const totalPercent = values.custom_payments.reduce(
@@ -898,6 +899,7 @@ function BookingPayments(props) {
               data.installment_payment_documentation_charges_end_date =
                 data.document_end_date;
               break;
+            default:
           }
         }
 

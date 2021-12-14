@@ -46,7 +46,7 @@ import BC_SelectTower from 'screens/DeveloperProject/Sales/BookingChart/SelectTo
 import BC_SelectUnit from 'screens/DeveloperProject/Sales/BookingChart/SelectUnit';
 import BookingDetails from 'screens/DeveloperProject/Sales/BookingChart/BookingDetails';
 import BookingFormOnHold from 'screens/DeveloperProject/Sales/BookingChart/BookingFormOnHold';
-import History from 'screens/DeveloperProject/Sales/BookingChart/BookingFormOnHold/Components/History';
+import HoldBookingHistory from 'screens/DeveloperProject/Sales/BookingChart/HoldBookingHistory/HoldBookingHistory';
 import BookingRates from 'screens/DeveloperProject/Sales/BookingChart/BookingRates';
 import BookingPayment from 'screens/DeveloperProject/Sales/BookingChart/BookingPayment';
 import BrokerList from 'screens/DeveloperProject/Sales/BrokerList';
@@ -254,8 +254,8 @@ function BookingChartStack() {
         options={{headerShown: false}}
       />
       <Stack.Screen
-        name="History"
-        component={History}
+        name="HoldBookingHistory"
+        component={HoldBookingHistory}
         options={{headerShown: false}}
       />
     </Stack.Navigator>
