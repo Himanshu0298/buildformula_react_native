@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import RenderInput from './RenderInput';
 
 const RenderTextBox = React.forwardRef((props, ref) => {
-  let {numberOfLines, minHeight, ...rest} = props;
+  let {numberOfLines = 1, minHeight, ...rest} = props;
 
   minHeight = minHeight || numberOfLines * 20;
 
@@ -23,7 +23,7 @@ const RenderTextBox = React.forwardRef((props, ref) => {
 });
 
 RenderTextBox.defaultProps = {
-  numberOfLines: 1,
+  minHeight: undefined,
 };
 
 RenderTextBox.propTypes = {

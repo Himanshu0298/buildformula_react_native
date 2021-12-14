@@ -69,7 +69,6 @@ function StatsRow({visitorAnalytics}) {
 function RenderVisitorItem(props) {
   const {theme, data, navToDetails} = props;
 
-  console.log('----->data in visitors list', data);
   const {
     id,
     first_name,

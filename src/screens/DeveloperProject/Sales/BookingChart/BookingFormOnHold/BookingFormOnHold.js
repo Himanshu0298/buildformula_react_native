@@ -16,6 +16,7 @@ import {
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {getFloorNumber, getTowerLabel, getUnitLabel} from 'utils';
 import {STRUCTURE_TYPE_LABELS} from 'utils/constant';
+import BookingHoldForm from './Components/BookingHoldForm';
 
 function RenderRow(props) {
   const {heading, content} = props;
@@ -34,7 +35,7 @@ function InfoRow(props) {
   return (
     <View style={styles.rowContainer}>
       {data.map(({title, value}) => (
-        <View style={styles.rowCell}>
+        <View key={title} style={styles.rowCell}>
           <Caption>{title}: </Caption>
           <Text>{value}</Text>
         </View>
@@ -86,65 +87,68 @@ function BookingFormOnHold(props) {
   const {navigation, route, theme} = props;
   const {structureType, towerId, floorId, unitId} = route?.params || {};
 
+  const [visible, setVisible] = useState(false);
   const [propertyBooked, setPropertyBooked] = useState(false);
 
-  const navToForm = () => {
-    navigation.navigate('HoldPropertyForm', {...route?.params});
-  };
+  const toggleHoldForm = () => setVisible(v => !v);
 
   const navToHistory = () => navigation.navigate('History');
 
   return (
-    <View style={styles.container}>
-      <View style={styles.headerContainer}>
-        <View style={styles.backContainer}>
-          <IconButton icon="keyboard-backspace" onPress={navigation.goBack} />
-          <Text>Property On-hold</Text>
+    <>
+      <BookingHoldForm {...props} open={visible} handleClose={toggleHoldForm} />
+
+      <View style={styles.container}>
+        <View style={styles.headerContainer}>
+          <View style={styles.backContainer}>
+            <IconButton icon="keyboard-backspace" onPress={navigation.goBack} />
+            <Text>Property On-hold</Text>
+          </View>
+          <OpacityButton
+            opacity={0.1}
+            onPress={navToHistory}
+            style={styles.historyButton}>
+            <MaterialCommunityIcons
+              name="information-outline"
+              size={18}
+              color={theme.colors.primary}
+              style={styles.infoIcon}
+            />
+            <Text>History</Text>
+          </OpacityButton>
         </View>
-        <OpacityButton
-          opacity={0.1}
-          onPress={navToHistory}
-          style={styles.historyButton}>
-          <MaterialCommunityIcons
-            name="information-outline"
-            size={18}
-            color={theme.colors.primary}
-            style={styles.infoIcon}
+        <Card elevation={5} style={styles.infoCard}>
+          <Subheading>Property info</Subheading>
+          <Divider style={styles.divider} />
+          <InfoRow
+            data={[
+              {
+                title: 'Project type',
+                value: STRUCTURE_TYPE_LABELS[structureType],
+              },
+              {title: 'Tower', value: getTowerLabel(towerId)},
+            ]}
           />
-          <Text>History</Text>
-        </OpacityButton>
+          <InfoRow
+            data={[
+              {title: 'Floor', value: getFloorNumber(floorId)},
+              {title: 'Unit Number', value: getUnitLabel(floorId, unitId)},
+            ]}
+          />
+        </Card>
+        {propertyBooked ? (
+          <PropertyHoldUserDetails {...props} />
+        ) : (
+          <Button
+            mode="contained"
+            onPress={toggleHoldForm}
+            uppercase={false}
+            style={styles.holdButton}>
+            Hold this property
+          </Button>
+        )}
       </View>
-      <Card elevation={5} style={styles.infoCard}>
-        <Subheading>Property info</Subheading>
-        <Divider style={styles.divider} />
-        <InfoRow
-          data={[
-            {
-              title: 'Project type',
-              value: STRUCTURE_TYPE_LABELS[structureType],
-            },
-            {title: 'Tower', value: getTowerLabel(towerId)},
-          ]}
-        />
-        <InfoRow
-          data={[
-            {title: 'Floor', value: getFloorNumber(floorId)},
-            {title: 'Unit Number', value: getUnitLabel(floorId, unitId)},
-          ]}
-        />
-      </Card>
-      {propertyBooked ? (
-        <PropertyHoldUserDetails {...props} />
-      ) : (
-        <Button
-          mode="contained"
-          onPress={navToForm}
-          uppercase={false}
-          style={styles.holdButton}>
-          Hold this property
-        </Button>
-      )}
-    </View>
+    </>
   );
 }
 

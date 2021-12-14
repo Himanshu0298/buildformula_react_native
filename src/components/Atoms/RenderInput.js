@@ -24,7 +24,7 @@ const RenderInput = React.forwardRef((props, ref) => {
     ...rest
   } = props;
 
-  value = (!isNaN(value) ? value?.toString() : value) || '';
+  value = (!Number.isNaN(value) ? value?.toString() : value) || '';
 
   return (
     <View style={[styles.container, containerStyles]}>
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   input: {
-    width: '100%',
+    flexGrow: 1,
   },
   // Errors
   errorContainer: {

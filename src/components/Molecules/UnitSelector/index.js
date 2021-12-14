@@ -15,7 +15,7 @@ function BhkList({onPress, selectedBhk}) {
             return (
               <BhkButton
                 bhk={bhk}
-                key={i}
+                key={i.toString()}
                 selected={bhk.type === selectedBhk}
                 onPress={onPress}
               />

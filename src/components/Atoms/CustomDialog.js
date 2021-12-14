@@ -16,7 +16,7 @@ function CustomDialog(props) {
       backdropOpacity={0.4}
       onBackButtonPress={handleClose}
       onBackdropPress={handleClose}
-      style={{justifyContent: 'flex-end', margin: 0}}>
+      style={styles.modal}>
       <Portal.Host>
         <View style={styles.modalContainer}>
           <SafeAreaView style={styles.modalContainer}>
@@ -30,7 +30,7 @@ function CustomDialog(props) {
                 <OpacityButton
                   opacity={0.1}
                   color={theme.colors.primary}
-                  style={{borderRadius: 50, marginRight: 10}}
+                  style={styles.checkButton}
                   onPress={submitForm}>
                   <MaterialIcon
                     name="check"
@@ -41,7 +41,7 @@ function CustomDialog(props) {
                 <OpacityButton
                   opacity={0.1}
                   color={theme.colors.error}
-                  style={{borderRadius: 50}}
+                  style={styles.closeButton}
                   onPress={handleClose}>
                   <MaterialIcon
                     name="close"
@@ -67,6 +67,10 @@ CustomDialog.propTypes = {
 };
 
 const styles = StyleSheet.create({
+  modal: {
+    justifyContent: 'flex-end',
+    margin: 0,
+  },
   headerContainer: {
     padding: 10,
     flexDirection: 'row',
@@ -81,6 +85,13 @@ const styles = StyleSheet.create({
   modalContainer: {
     backgroundColor: '#fff',
     height: '100%',
+  },
+  checkButton: {
+    borderRadius: 50,
+    marginRight: 10,
+  },
+  closeButton: {
+    borderRadius: 50,
   },
 });
 

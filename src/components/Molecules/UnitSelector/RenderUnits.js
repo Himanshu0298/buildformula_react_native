@@ -64,6 +64,7 @@ function RenderUnits(props) {
 
         return (
           <TouchableOpacity
+            key={unitId}
             disabled={disabled}
             onPress={() => onSelectUnit({...unit, unitId})}>
             <View style={styles.unitContainer}>
