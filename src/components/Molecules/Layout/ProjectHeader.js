@@ -58,7 +58,7 @@ function ProjectHeader(props) {
             <TouchableOpacity
               onPress={navToProfile}
               style={styles.profileIconContainer}>
-              <UserAvatar size={23} uri={user.profile_url} />
+              <UserAvatar size={23} uri={user?.profile_url} />
             </TouchableOpacity>
           </View>
         ) : null}

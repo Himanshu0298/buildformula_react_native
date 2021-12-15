@@ -84,19 +84,15 @@ function SelectUnit(props) {
     return disabled;
   };
 
-  const handleBook = async () => {
+  const handleBook = () => {
     if (modulePermission?.editor || modulePermission?.admin) {
-      await lockUnit({
-        unit_id: selectedUnit.unitId,
-        project_id: selectedProject.id,
-      });
+      lockUnit({unit_id: selectedUnit.unitId, project_id: selectedProject.id});
       toggleTimer({showTimer: true, startTime: new Date(), time: 1800});
-
       toggleDialog();
 
       navigation.navigate('BC_Step_Five', {
         ...route?.params,
-        unit_id: selectedUnit.unitId,
+        ...selectedUnit,
       });
     } else {
       toggleDialog();

@@ -168,11 +168,14 @@ export function getPermissions(moduleTitle) {
   const {permissions, commonData} = store.getState().project;
   const {submodules} = commonData;
 
+  if (permissions.admin) {
+    return permissions;
+  }
+
   const moduleData = submodules.find(i => i.title === moduleTitle);
 
   if (moduleData) {
     const modulePermissions = permissions[moduleData?.id];
-
     return modulePermissions;
   }
 

@@ -1,0 +1,155 @@
+import React from 'react';
+import {StyleSheet, View, Image} from 'react-native';
+import {
+  Subheading,
+  withTheme,
+  Text,
+  Button,
+  Card,
+  Divider,
+  Title,
+  IconButton,
+  Caption,
+} from 'react-native-paper';
+import WithRates from 'assets/images/WithRates.png';
+import WithOutRates from 'assets/images/WithoutRates.png';
+import {STRUCTURE_TYPE_LABELS} from 'utils/constant';
+import {getFloorNumber, getTowerLabel, getUnitLabel} from 'utils';
+
+function InfoRow(props) {
+  const {data} = props;
+
+  return (
+    <View style={styles.rowContainer}>
+      {data.map(({title, value}) => (
+        <View key={title} style={styles.rowCell}>
+          <Caption>{title}: </Caption>
+          <Text>{value}</Text>
+        </View>
+      ))}
+    </View>
+  );
+}
+
+function FormSection(props) {
+  const {data, theme, handleClick} = props;
+  const {title, subTitle, image, imageStyle} = data;
+
+  return (
+    <Card elevation={5} style={styles.optionContainer}>
+      <Subheading style={{color: theme.colors.primary}}>{title}</Subheading>
+      <Divider style={styles.divider} />
+      <Caption>{subTitle}</Caption>
+      <View style={styles.actionContainer}>
+        <Button mode="contained" onPress={handleClick}>
+          {data.ButtonText}
+        </Button>
+
+        <Image source={image} style={imageStyle} />
+      </View>
+    </Card>
+  );
+}
+
+function BookingMode(props) {
+  const {navigation, route} = props;
+
+  const {structureType, towerId, floorId, unitIndex} = route?.params || {};
+
+  const navToBookingDetails = withRates => {
+    navigation.navigate('BC_Step_Six', {withRates, ...route?.params});
+  };
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.headingContainer}>
+        <IconButton icon="keyboard-backspace" onPress={navigation.goBack} />
+        <Title>Booking form</Title>
+      </View>
+      <Card elevation={5} style={styles.optionCard}>
+        <Subheading>Property info</Subheading>
+        <Divider style={styles.divider} />
+        <InfoRow
+          data={[
+            {
+              title: 'Project type',
+              value: STRUCTURE_TYPE_LABELS[structureType],
+            },
+            {title: 'Tower', value: getTowerLabel(towerId)},
+          ]}
+        />
+        <InfoRow
+          data={[
+            {title: 'Floor', value: getFloorNumber(floorId)},
+            {title: 'Unit Number', value: getUnitLabel(floorId, unitIndex)},
+          ]}
+        />
+      </Card>
+      <FormSection
+        {...props}
+        handleClick={() => navToBookingDetails(true)}
+        data={{
+          title: 'Form With Rates Section',
+          subTitle:
+            'This booking form has the dedicated section where you can enter rates for different areas, along with basic amounts and other charges fees.',
+          image: WithRates,
+          ButtonText: 'Continue with rates',
+          imageStyle: {width: 70, height: 70},
+        }}
+      />
+      <FormSection
+        {...props}
+        handleClick={() => navToBookingDetails(false)}
+        data={{
+          title: 'Form Without Rates Section',
+          subTitle:
+            'This booking form does not have a dedicated section where you can enter your booking rate details.',
+          image: WithOutRates,
+          ButtonText: 'Continue without rates',
+          imageStyle: {width: 60, height: 60},
+        }}
+      />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 15,
+  },
+  headingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: -10,
+  },
+  optionCard: {
+    padding: 15,
+  },
+  divider: {
+    height: 1,
+    marginTop: 2,
+    marginBottom: 5,
+  },
+  rowContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    paddingVertical: 3,
+  },
+  rowCell: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  optionContainer: {
+    marginTop: 20,
+    padding: 15,
+  },
+  actionContainer: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    justifyContent: 'space-between',
+    marginTop: 15,
+  },
+});
+
+export default withTheme(BookingMode);
