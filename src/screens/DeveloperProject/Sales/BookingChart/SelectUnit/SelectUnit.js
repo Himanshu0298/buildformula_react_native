@@ -12,7 +12,8 @@ import SelectHoldOrBook from 'screens/DeveloperProject/Sales/BookingChart/Select
 
 function SelectUnit(props) {
   const {navigation, route} = props;
-  const {floorId, towerId, selectedStructure, towerType} = route?.params || {};
+  const {project_id, floorId, towerId, selectedStructure, towerType} =
+    route?.params || {};
 
   const modulePermission = getPermissions('Booking Chart');
   const snackbar = useSnackbar();
@@ -65,7 +66,7 @@ function SelectUnit(props) {
 
   const fetchUnitsBookingStatus = () => {
     getUnitsBookingStatus({
-      project_id: selectedProject.id,
+      project_id,
       project_type: selectedStructure,
       project_tower: towerId,
       project_floor: floorId,

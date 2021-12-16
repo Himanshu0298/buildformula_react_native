@@ -124,7 +124,7 @@ export default function useSalesServices() {
     },
     createBooking: data => {
       return instance.post(
-        '/booking/save_booking',
+        '/save_booking_new',
         data,
         config({multipart: false}),
       );

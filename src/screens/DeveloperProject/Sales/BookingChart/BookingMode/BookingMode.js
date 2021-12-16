@@ -11,7 +11,7 @@ import {
   IconButton,
   Caption,
 } from 'react-native-paper';
-import WithRates from 'assets/images/WithRates.png';
+import WithRate from 'assets/images/WithRates.png';
 import WithOutRates from 'assets/images/WithoutRates.png';
 import {STRUCTURE_TYPE_LABELS} from 'utils/constant';
 import {getFloorNumber, getTowerLabel, getUnitLabel} from 'utils';
@@ -56,8 +56,8 @@ function BookingMode(props) {
 
   const {structureType, towerId, floorId, unitIndex} = route?.params || {};
 
-  const navToBookingDetails = withRates => {
-    navigation.navigate('BC_Step_Six', {...route?.params, withRates});
+  const navToBookingDetails = withRate => {
+    navigation.navigate('BC_Step_Six', {...route?.params, withRate});
   };
 
   return (
@@ -92,7 +92,7 @@ function BookingMode(props) {
           title: 'Form With Rates Section',
           subTitle:
             'This booking form has the dedicated section where you can enter rates for different areas, along with basic amounts and other charges fees.',
-          image: WithRates,
+          image: WithRate,
           ButtonText: 'Continue with rates',
           imageStyle: {width: 70, height: 70},
         }}

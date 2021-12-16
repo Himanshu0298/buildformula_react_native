@@ -4,6 +4,7 @@ import {Formik} from 'formik';
 import {useTranslation} from 'react-i18next';
 import {
   Keyboard,
+  ScrollView,
   StyleSheet,
   TouchableOpacity,
   TouchableWithoutFeedback,
@@ -31,6 +32,8 @@ import useSalesActions from 'redux/actions/salesActions';
 import Radio from 'components/Atoms/Radio';
 import {useSelector} from 'react-redux';
 import RenderTextBox from 'components/Atoms/RenderTextbox';
+import RenderHTML from 'react-native-render-html';
+import Layout from 'utils/Layout';
 
 const PAYMENT_METHODS = [
   {label: 'Full payment', value: 1},
@@ -608,6 +611,18 @@ function RenderPaymentForm(props) {
   const {theme, formikProps, t} = props;
   const {values, errors, handleChange, setFieldValue, handleBlur} = formikProps;
 
+  const {commonData} = useSelector(s => s.project);
+
+  const TCOptions = useMemo(() => {
+    return commonData?.booking_TandC?.map(i => ({label: i.title, value: i.id}));
+  }, [commonData?.booking_TandC]);
+
+  const selectedTC = useMemo(() => {
+    return commonData?.booking_TandC?.find(
+      i => i.id === values.termsAndConditions,
+    );
+  }, [commonData?.booking_TandC, values.termsAndConditions]);
+
   return (
     <View style={{marginTop: 10}}>
       {values.isDocumentCharge ? (
@@ -653,6 +668,27 @@ function RenderPaymentForm(props) {
 
       {values.payment_type === 3 ? (
         <RenderOneBigInstallmentPaymentForm {...props} />
+      ) : null}
+
+      <RenderSelect
+        name="termsAndConditions"
+        label="Terms and conditions"
+        options={TCOptions}
+        style={{marginTop: 10}}
+        value={values.termsAndConditions}
+        error={errors.termsAndConditions}
+        onSelect={value => setFieldValue('termsAndConditions', value)}
+      />
+
+      {selectedTC ? (
+        <View style={styles.termsBox}>
+          <ScrollView>
+            <RenderHTML
+              source={{html: selectedTC.description}}
+              contentWidth={Layout.window.width}
+            />
+          </ScrollView>
+        </View>
       ) : null}
 
       <Caption
@@ -800,7 +836,7 @@ function FormContent(props) {
 function BookingPayments(props) {
   const {navigation, route = {}} = props;
   const {params = {}} = route;
-  const {project_id, unit_id} = params;
+  const {project_id, unitId, selectedStructure} = params;
 
   const {createBooking, getBankList} = useSalesActions();
 
@@ -821,7 +857,6 @@ function BookingPayments(props) {
       loan: 'no',
       documentCharge,
       isDocumentCharge,
-      ...params,
     };
   }, [params]);
 
@@ -856,6 +891,63 @@ function BookingPayments(props) {
     return errors;
   };
 
+  const onSubmit = async values => {
+    console.log('-----> unit_id', unitId);
+    console.log('-----> project_id', project_id);
+    const data = {
+      ...values,
+      project_id,
+      unit_id: unitId,
+      project_main_types: selectedStructure,
+    };
+
+    if (values.payment_type !== 2) {
+      delete data.custom_payments;
+    }
+
+    if (data.isDocumentCharge) {
+      data.basic_amount_document_charge_start = data.document_start;
+      data.basic_amount_document_charge_end = data.document_end;
+
+      switch (values.payment_type) {
+        case 1:
+          data.full_payment_documentation_charges = data.documentCharge;
+          data.full_payment_documentation_charges_start_date =
+            data.document_start_date;
+          data.full_payment_documentation_charges_end_date =
+            data.document_end_date;
+          break;
+        case 2:
+          data.custom_payment_documentation_charges = data.documentCharge;
+          data.custom_payment_documentation_charges_start_date =
+            data.document_start_date;
+          data.custom_payment_documentation_charges_end_date =
+            data.document_end_date;
+          break;
+        case 3:
+          data.installment_payment_documentation_charges = data.documentCharge;
+          data.installment_payment_documentation_charges_start_date =
+            data.document_start_date;
+          data.installment_payment_documentation_charges_end_date =
+            data.document_end_date;
+          break;
+        default:
+      }
+    }
+
+    delete data.loan;
+    delete data.broker;
+    delete data.documentCharge;
+    delete data.isDocumentCharge;
+    delete data.document_start;
+    delete data.document_end;
+    delete data.document_start_date;
+    delete data.document_end_date;
+    delete data.finalAmount;
+
+    createBooking(data).then(() => navigation.popToTop());
+  };
+
   return (
     <Formik
       validateOnBlur={false}
@@ -863,58 +955,7 @@ function BookingPayments(props) {
       validate={validate}
       initialValues={initialValues}
       validationSchema={schema}
-      onSubmit={async values => {
-        console.log('-----> unit_id', unit_id);
-        console.log('-----> project_id', project_id);
-        const data = {...values, project_id, unit_id};
-
-        if (values.payment_type !== 2) {
-          delete data.custom_payments;
-        }
-
-        if (data.isDocumentCharge) {
-          data.basic_amount_document_charge_start = data.document_start;
-          data.basic_amount_document_charge_end = data.document_end;
-
-          switch (values.payment_type) {
-            case 1:
-              data.full_payment_documentation_charges = data.documentCharge;
-              data.full_payment_documentation_charges_start_date =
-                data.document_start_date;
-              data.full_payment_documentation_charges_end_date =
-                data.document_end_date;
-              break;
-            case 2:
-              data.custom_payment_documentation_charges = data.documentCharge;
-              data.custom_payment_documentation_charges_start_date =
-                data.document_start_date;
-              data.custom_payment_documentation_charges_end_date =
-                data.document_end_date;
-              break;
-            case 3:
-              data.installment_payment_documentation_charges =
-                data.documentCharge;
-              data.installment_payment_documentation_charges_start_date =
-                data.document_start_date;
-              data.installment_payment_documentation_charges_end_date =
-                data.document_end_date;
-              break;
-            default:
-          }
-        }
-
-        delete data.loan;
-        delete data.broker;
-        delete data.documentCharge;
-        delete data.isDocumentCharge;
-        delete data.document_start;
-        delete data.document_end;
-        delete data.document_start_date;
-        delete data.document_end_date;
-        delete data.finalAmount;
-
-        createBooking(data).then(() => navigation.popToTop());
-      }}>
+      onSubmit={onSubmit}>
       {formikProps => <FormContent {...props} {...{formikProps, bankList}} />}
     </Formik>
   );
@@ -1010,9 +1051,15 @@ const styles = StyleSheet.create({
     marginTop: 25,
     paddingHorizontal: 20,
     flexDirection: 'row',
-
     alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  termsBox: {
+    borderWidth: 1,
+    borderRadius: 10,
+    borderColor: 'rgba(0, 0, 0, 0.3)',
+    paddingHorizontal: 10,
+    marginTop: 10,
   },
 });
 

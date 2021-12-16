@@ -17,9 +17,16 @@ function SelectStructure(props) {
 
   const handlePress = (selectedStructure, towerType) => {
     if ([4, 5].includes(selectedStructure)) {
-      navigation.navigate('BC_Step_Three', {selectedStructure});
+      navigation.navigate('BC_Step_Three', {
+        selectedStructure,
+        project_id: projectData.id,
+      });
     } else {
-      navigation.navigate('BC_Step_Two', {selectedStructure, towerType});
+      navigation.navigate('BC_Step_Two', {
+        selectedStructure,
+        towerType,
+        project_id: projectData.id,
+      });
     }
   };
 

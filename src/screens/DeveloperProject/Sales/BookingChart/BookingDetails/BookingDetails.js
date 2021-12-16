@@ -346,14 +346,12 @@ function BookingDetails(props) {
   const {navigation, route} = props;
   const {params = {}} = route;
 
-  const {selectedProject} = useSelector(s => s.project);
-
   const {getBrokersList} = useSalesActions();
 
   useEffect(() => {
-    getBrokersList({project_id: selectedProject.id});
+    getBrokersList({project_id: params.project_id});
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedProject.id]);
+  }, [params.project_id]);
 
   const onSubmit = async values => {
     const data = {...values};
@@ -368,7 +366,7 @@ function BookingDetails(props) {
     delete data.selectedVisitor;
     delete data.userType;
 
-    const nextStep = params.withRates ? 'BC_Step_Seven' : 'BC_Step_Eight';
+    const nextStep = params.withRate ? 'BC_Step_Seven' : 'BC_Step_Eight';
 
     navigation.navigate(nextStep, {...data, ...params});
   };

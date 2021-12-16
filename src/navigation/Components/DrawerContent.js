@@ -1,5 +1,5 @@
 import React, {useMemo} from 'react';
-import {StyleSheet, View, Linking, NativeModules} from 'react-native';
+import {StyleSheet, View, Linking} from 'react-native';
 import {DrawerContentScrollView} from '@react-navigation/drawer';
 import {Paragraph, Drawer, Button, withTheme} from 'react-native-paper';
 import Animated from 'react-native-reanimated';
@@ -25,10 +25,19 @@ function filterSidebar(items, permissions) {
     } else {
       filteredItems.push(item);
     }
+    return item;
   });
 
   return filteredItems;
 }
+
+const materialCommunityIcon = ({icon, color, size}) => (
+  <MaterialCommunityIcons {...{name: icon, color, size}} />
+);
+
+const materialIcon = ({icon, color, size}) => (
+  <MaterialIcons {...{name: icon, color, size}} />
+);
 
 const DrawerItem = React.memo(props => {
   const {
@@ -50,9 +59,7 @@ const DrawerItem = React.memo(props => {
 
   let drawerIcon;
   if (typeof icon === 'string') {
-    drawerIcon = function ({color, size}) {
-      return <MaterialCommunityIcons {...{name: icon, color, size}} />;
-    };
+    drawerIcon = params => materialCommunityIcon({...params, icon});
   } else if (icon) {
     drawerIcon = icon;
   } else {
@@ -95,18 +102,14 @@ function RenderGeneralDrawerItems(props) {
         {...props}
         label="Project Purchase"
         route="PurchasedProjects"
-        icon={({color, size}) => (
-          <MaterialIcons name="shop" color={color} size={size} />
-        )}
+        icon={params => materialIcon({...params, icon: 'shop'})}
       />
       <DrawerItem
         {...props}
         label="Support"
         route="Support"
         onPress={() => Linking.openURL(SITE_URL)}
-        icon={({color, size}) => (
-          <MaterialIcons name="support" color={color} size={size} />
-        )}
+        icon={params => materialIcon({...params, icon: 'support'})}
       />
       <DrawerItem
         {...props}
@@ -184,9 +187,9 @@ function RenderCustomerDrawerItems(props) {
 }
 
 function DrawerContent(props) {
-  const {navigation, theme, type} = props;
+  const {navigation, theme, type, progress} = props;
 
-  const translateX = Animated.interpolate(props.progress, {
+  const translateX = Animated.interpolateNode(progress, {
     inputRange: [0, 0.5, 0.7, 0.8, 1],
     outputRange: [-100, -85, -70, -45, 0],
   });
@@ -199,10 +202,7 @@ function DrawerContent(props) {
       <Animated.View
         style={[
           styles.drawerContent,
-          {
-            backgroundColor: theme.colors.surface,
-            transform: [{translateX}],
-          },
+          {backgroundColor: theme.colors.surface, transform: [{translateX}]},
         ]}>
         <View style={styles.backContainer}>
           <Button

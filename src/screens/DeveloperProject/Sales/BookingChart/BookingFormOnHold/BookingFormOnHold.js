@@ -102,11 +102,10 @@ function PropertyHoldUserDetails(props) {
 
 function BookingFormOnHold(props) {
   const {navigation, route, theme} = props;
-  const {structureType, towerId, floorId, unitIndex, unitId} =
+  const {project_id, structureType, towerId, floorId, unitIndex, unitId} =
     route?.params || {};
 
   const {loading, bookingHoldDetails} = useSelector(s => s.sales);
-  const {selectedProject} = useSelector(state => state.project);
   const {holdbyUserInfo, holdHistoryList} = bookingHoldDetails || {};
 
   const {
@@ -120,10 +119,10 @@ function BookingFormOnHold(props) {
   useEffect(() => {
     loadHoldDetails();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedProject.id, unitId]);
+  }, [unitId]);
 
   const loadHoldDetails = () =>
-    getHoldBookingDetails({project_id: selectedProject.id, unit_id: unitId});
+    getHoldBookingDetails({project_id, unit_id: unitId});
 
   const toggleHoldForm = () => setVisible(v => !v);
 
@@ -142,7 +141,7 @@ function BookingFormOnHold(props) {
     const {date, time, remark} = values;
     toggleHoldForm();
     await unitHoldBooking({
-      project_id: selectedProject.id,
+      project_id,
       unit_id: unitId,
       hold_till_date: dayjs(date).format('DD-MM-YYYY'),
       hold_till_time: dayjs(time).format('hh:mm'),
@@ -154,7 +153,7 @@ function BookingFormOnHold(props) {
   const handleUnHold = async () => {
     toggleHoldForm();
     await unitUnHoldBooking({
-      project_id: selectedProject.id,
+      project_id,
       unit_id: unitId,
       units_on_hold_id: propertyBooked.id,
     });

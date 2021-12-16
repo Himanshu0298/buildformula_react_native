@@ -11,6 +11,7 @@
           "underscore": "lodash"
         }
       }
-    ]
+    ],
+    "react-native-reanimated/plugin",
   ]
 }

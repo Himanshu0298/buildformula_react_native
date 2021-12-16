@@ -581,7 +581,7 @@ function BookingRates(props) {
       initialValues={{other_charges: []}}
       validationSchema={schema}
       onSubmit={async values => {
-        navigation.navigate('BC_Step_Six', {...params, ...values});
+        navigation.navigate('BC_Step_Eight', {...params, ...values});
       }}>
       {formikProps => <FormContent {...props} formikProps={formikProps} />}
     </Formik>
