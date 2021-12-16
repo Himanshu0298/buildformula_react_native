@@ -7,7 +7,7 @@ import dayjs from 'dayjs';
 import {getFloorNumber, getPermissions} from 'utils';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
-import {Button, IconButton, Subheading, Text} from 'react-native-paper';
+import {IconButton, Subheading, Text} from 'react-native-paper';
 import SelectHoldOrBook from 'screens/DeveloperProject/Sales/BookingChart/SelectUnit/Components/UnitBookingDialog';
 
 function SelectUnit(props) {
@@ -132,9 +132,6 @@ function SelectUnit(props) {
           <IconButton icon="keyboard-backspace" />
           <Text> {getFloorNumber(floorId)}</Text>
         </TouchableOpacity>
-        <Button mode="contained" uppercase={false} onPress={navigation.goBack}>
-          Change Floor
-        </Button>
       </View>
 
       <UnitSelector

@@ -45,6 +45,7 @@ function getTypesSchema(types) {
   types.map(type => {
     typesSchema[`${type}_area`] = Yup.number('Invalid').required('Required');
     typesSchema[`${type}_rate`] = Yup.number('Invalid').required('Required');
+    return type;
   });
   return typesSchema;
 }
@@ -131,6 +132,7 @@ function RenderRates(props) {
         const rate = amount / area;
         setFieldValue(`${type}_rate`, round(rate));
       }
+      return type;
     });
   };
 
@@ -192,9 +194,19 @@ function RenderRates(props) {
 function RenderCharges({formikProps, t}) {
   const {values, setFieldValue} = formikProps;
 
+  const snackbar = useSnackbar();
+
+  const {commonData} = useSelector(s => s.project);
+
   const [chargeModal, setChargeModal] = useState(false);
   const [charge, setCharge] = useState({});
   const [chargeError, setChargeError] = useState({});
+
+  const otherChargeOptions = useMemo(() => {
+    return commonData?.other_charges
+      ?.filter(i => i.items.length)
+      ?.map(i => ({label: i.title, value: i.id}));
+  }, [commonData?.other_charges]);
 
   const toggleChargeModal = () => {
     setChargeModal(v => !v);
@@ -206,6 +218,34 @@ function RenderCharges({formikProps, t}) {
     const data = _.cloneDeep(charge);
     data[id] = value;
     setCharge(data);
+  };
+
+  const onSelectOtherCharge = value => {
+    const selectedCharge = commonData?.other_charges?.find(i => i.id === value);
+    const {items} = selectedCharge;
+
+    const other_charges = _.cloneDeep(values.other_charges);
+
+    const isAdded = items.every(item =>
+      other_charges.find(i => {
+        return i.id === item.id && i.label === item.title;
+      }),
+    );
+
+    if (isAdded) {
+      snackbar.showMessage({
+        message: 'Charge Already Added',
+        variant: 'warning',
+      });
+      return;
+    }
+
+    items.map(i => {
+      other_charges.push({label: i.title, amount: i.amount, id: i.id});
+      return i;
+    });
+
+    setFieldValue('other_charges', other_charges);
   };
 
   const saveCharge = () => {
@@ -283,6 +323,13 @@ function RenderCharges({formikProps, t}) {
       <Subheading style={{color: theme.colors.primary, marginTop: 20}}>
         Other Charges
       </Subheading>
+      <RenderSelect
+        name="other_charges"
+        label="Select Other Charges"
+        options={otherChargeOptions}
+        containerStyles={styles.rateInput}
+        onSelect={onSelectOtherCharge}
+      />
       {values.other_charges.map((item, i) => {
         return (
           <View key={i} style={styles.chargesContainer}>

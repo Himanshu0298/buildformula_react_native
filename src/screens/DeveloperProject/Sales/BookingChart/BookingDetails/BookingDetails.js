@@ -137,14 +137,14 @@ function FormContent(props) {
   }, [values.selectedVisitor, visitors]);
 
   const brokerDetails = useMemo(() => {
-    return brokersList.find(i => i.id === values.selectedBroker);
-  }, [values.selectedBroker, brokersList]);
+    return brokersList.find(i => i.id === values.broker_id);
+  }, [values.broker_id, brokersList]);
 
   const handleCancel = () => navigation.goBack();
 
   const setSelectedVisitor = v => setFieldValue('selectedVisitor', v);
 
-  const setSelectedBroker = v => setFieldValue('selectedBroker', v);
+  const setSelectedBroker = v => setFieldValue('broker_id', v);
 
   return (
     <>

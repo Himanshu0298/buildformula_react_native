@@ -1,7 +1,7 @@
 import React from 'react';
 import {FlatList, View, StyleSheet, TouchableOpacity} from 'react-native';
 import FloorBar from 'components/Atoms/FloorBar';
-import {Button, IconButton, Subheading, withTheme} from 'react-native-paper';
+import {IconButton, Subheading, withTheme} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import {RenderTowerBox} from 'components/Molecules/TowerSelector';
 
@@ -26,9 +26,6 @@ function SelectFloor(props) {
           <IconButton icon="keyboard-backspace" />
           <RenderTowerBox {...props} towerId={towerId} active />
         </TouchableOpacity>
-        <Button mode="contained" uppercase={false} onPress={navigation.goBack}>
-          Change {towerType}
-        </Button>
       </View>
 
       <Subheading style={{marginBottom: 10}}>Floors</Subheading>
