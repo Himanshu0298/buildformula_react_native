@@ -57,7 +57,7 @@ function BookingMode(props) {
   const {structureType, towerId, floorId, unitIndex} = route?.params || {};
 
   const navToBookingDetails = withRates => {
-    navigation.navigate('BC_Step_Six', {withRates, ...route?.params});
+    navigation.navigate('BC_Step_Six', {...route?.params, withRates});
   };
 
   return (

@@ -83,6 +83,7 @@ export default {
       label_status: 'Status',
       label_customer_response: 'Customer response',
       label_search_visitors: 'Search visitors',
+      label_search: 'Search',
 
       // Booking Form
       label_select_structure: 'Select Structure',
@@ -229,6 +230,7 @@ export default {
       label_status: 'Status',
       label_customer_response: 'Customer response',
       label_search_visitors: 'जांच करें',
+      label_search: 'जांच करें',
 
       // Booking Form
       label_select_structure: 'संरचना का चयन करें',
