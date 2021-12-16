@@ -19,8 +19,8 @@ import {
   Portal,
   Dialog,
   Text,
+  Divider,
 } from 'react-native-paper';
-import {theme} from 'styles/theme';
 import {round} from 'utils';
 import * as Yup from 'yup';
 import _ from 'lodash';
@@ -57,7 +57,7 @@ function getType(key) {
 }
 
 function RatesColumn(props) {
-  const {t, formikProps, label, type: rateType, syncAmounts} = props;
+  const {t, formikProps, theme, label, type: rateType, syncAmounts} = props;
 
   const {values, handleBlur, errors, setFieldValue} = formikProps;
 
@@ -191,7 +191,7 @@ function RenderRates(props) {
   );
 }
 
-function RenderCharges({formikProps, t}) {
+function RenderCharges({theme, formikProps, t}) {
   const {values, setFieldValue} = formikProps;
 
   const snackbar = useSnackbar();
@@ -351,7 +351,7 @@ function RenderCharges({formikProps, t}) {
         );
       })}
       <TouchableOpacity
-        style={styles.chargesButton}
+        style={[styles.chargesButton, {borderColor: theme.colors.primary}]}
         onPress={toggleChargeModal}>
         <Caption style={{color: theme.colors.primary}}>+ Create more</Caption>
       </TouchableOpacity>
@@ -359,8 +359,18 @@ function RenderCharges({formikProps, t}) {
   );
 }
 
+function RenderRow(props) {
+  const {label, value, valueStyle} = props;
+  return (
+    <View style={styles.rowBetween}>
+      <Caption>{label}</Caption>
+      <Caption style={[{fontWeight: 'bold'}, valueStyle]}>{value}</Caption>
+    </View>
+  );
+}
+
 function FormContent(props) {
-  const {formikProps, navigation} = props;
+  const {theme, formikProps, navigation} = props;
   const {handleChange, handleSubmit, values, setFieldValue} = formikProps;
 
   const {t} = useTranslation();
@@ -461,32 +471,8 @@ function FormContent(props) {
             2. Booking Rate
           </Subheading>
           <Caption>Enter all Area first for auto adjustment</Caption>
-          <RenderRates {...{t, formikProps, unitOptions}} />
-          <RenderCharges t={t} formikProps={formikProps} />
-          <View style={styles.totalContainer}>
-            <Subheading>Total other charges</Subheading>
-            <RenderInput
-              disabled
-              value={values.other_charges_amount}
-              containerStyles={{width: '50%'}}
-              placeholder="Total charges"
-              left={<TextInput.Affix text="₹" />}
-            />
-          </View>
-          <View style={styles.totalContainer}>
-            <View>
-              <Subheading>Total amount</Subheading>
-              <Caption style={{lineHeight: 13}}>Amount + Other charges</Caption>
-            </View>
-
-            <RenderInput
-              disabled
-              value={totalAmount || 0}
-              containerStyles={{width: '50%'}}
-              placeholder="Total amount"
-              left={<TextInput.Affix text="₹" />}
-            />
-          </View>
+          <RenderRates {...props} {...{t, formikProps, unitOptions}} />
+          <RenderCharges {...props} t={t} {...{t, formikProps}} />
 
           <View style={styles.discountSection}>
             <RenderInput
@@ -519,32 +505,61 @@ function FormContent(props) {
                   left={<TextInput.Affix text="₹" />}
                 />
               </View>
+              <View style={styles.documentHelper}>
+                <Caption>
+                  Note: Documentation charges will be collected first to confirm
+                  your booking
+                </Caption>
+              </View>
             </View>
           </View>
 
           <View style={[styles.totalContainer, {marginTop: 20}]}>
-            <Text>Property Final amount</Text>
-            <RenderInput
-              disabled
-              value={values.finalAmount || 0}
-              containerStyles={{width: '50%'}}
-              placeholder="Final amount"
-              left={<TextInput.Affix text="₹" />}
-            />
+            <Subheading
+              style={{color: theme.colors.primary, fontWeight: '700'}}>
+              Final amount
+            </Subheading>
+
+            <View style={styles.finalAmountBox}>
+              <Text style={{marginBottom: 10}}>Booking Rate</Text>
+              <RenderRow
+                label="Booking Rate"
+                value={`₹ ${values.area_amount || 0} `}
+              />
+              <RenderRow
+                label="Total other charges"
+                value={`₹ ${values.other_charges_amount || 0} `}
+              />
+              <Divider style={styles.divider} />
+              <RenderRow
+                label="Total amount"
+                value={`₹ ${totalAmount || 0} `}
+              />
+              <RenderRow
+                label="Discount"
+                value={`₹ ${values.discount_amount || 0} `}
+              />
+              <Divider style={styles.divider} />
+              <RenderRow
+                label="Property Final amount"
+                value={`₹ ${values.finalAmount || 0} `}
+                valueStyle={{color: theme.colors.primary}}
+              />
+            </View>
           </View>
         </View>
         <View style={styles.actionContainer}>
           <Button
-            style={{flex: 1, marginHorizontal: 5}}
-            contentStyle={{padding: 3}}
+            style={styles.actionButton}
+            contentStyle={styles.buttonLabel}
             theme={{roundness: 15}}
             onPress={handleCancel}>
             Back
           </Button>
           <Button
-            style={{flex: 1, marginHorizontal: 5}}
+            style={styles.actionButton}
             mode="contained"
-            contentStyle={{padding: 3}}
+            contentStyle={styles.buttonLabel}
             theme={{roundness: 15}}
             onPress={handleSubmit}>
             Next
@@ -598,7 +613,6 @@ const styles = StyleSheet.create({
   },
   chargesButton: {
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: theme.colors.primary,
     paddingVertical: 10,
     marginTop: 15,
     borderRadius: 5,
@@ -615,10 +629,7 @@ const styles = StyleSheet.create({
     width: '85%',
   },
   totalContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
     marginVertical: 15,
-    justifyContent: 'space-between',
   },
   discountSection: {
     padding: 15,
@@ -626,6 +637,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(255, 92, 22, 1)',
     borderRadius: 10,
+    marginTop: 30,
   },
   documentationInputContainer: {
     flexDirection: 'row',
@@ -640,12 +652,38 @@ const styles = StyleSheet.create({
     marginBottom: 3,
   },
   actionContainer: {
-    marginTop: 25,
+    marginTop: 15,
     paddingHorizontal: 20,
     flexDirection: 'row',
-
     alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  documentHelper: {
+    marginTop: 10,
+    paddingLeft: 10,
+  },
+  finalAmountBox: {
+    padding: 10,
+    marginTop: 10,
+    borderWidth: 1,
+    borderRadius: 10,
+    borderColor: 'rgba(0, 0, 0, 0.3)',
+  },
+  rowBetween: {
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+  },
+  divider: {
+    height: 1,
+    marginVertical: 7,
+  },
+  actionButton: {
+    flex: 1,
+    marginHorizontal: 5,
+  },
+  buttonLabel: {
+    padding: 3,
   },
 });
 
