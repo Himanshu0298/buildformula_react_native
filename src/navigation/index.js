@@ -47,7 +47,7 @@ import BC_SelectUnit from 'screens/DeveloperProject/Sales/BookingChart/SelectUni
 import BookingMode from 'screens/DeveloperProject/Sales/BookingChart/BookingMode';
 import BookingDetails from 'screens/DeveloperProject/Sales/BookingChart/BookingDetails';
 import BookingFormOnHold from 'screens/DeveloperProject/Sales/BookingChart/BookingFormOnHold';
-import HoldBookingHistory from 'screens/DeveloperProject/Sales/BookingChart/HoldBookingHistory/HoldBookingHistory';
+import HoldBookingHistory from 'screens/DeveloperProject/Sales/BookingChart/HoldBookingHistory';
 import BookingRates from 'screens/DeveloperProject/Sales/BookingChart/BookingRates';
 import BookingPayment from 'screens/DeveloperProject/Sales/BookingChart/BookingPayment';
 import BrokerList from 'screens/DeveloperProject/Sales/BrokerList';

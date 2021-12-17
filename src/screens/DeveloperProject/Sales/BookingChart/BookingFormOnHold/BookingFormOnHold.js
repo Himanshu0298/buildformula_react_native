@@ -126,7 +126,8 @@ function BookingFormOnHold(props) {
 
   const toggleHoldForm = () => setVisible(v => !v);
 
-  const navToHistory = () => navigation.navigate('HoldBookingHistory');
+  const navToHistory = () =>
+    navigation.navigate('HoldBookingHistory', {history: holdHistoryList});
 
   const propertyBooked = useMemo(() => {
     return holdHistoryList?.find(i =>
