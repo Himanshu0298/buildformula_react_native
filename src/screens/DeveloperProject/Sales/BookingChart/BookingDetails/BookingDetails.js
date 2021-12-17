@@ -344,14 +344,14 @@ function FormContent(props) {
 
 function BookingDetails(props) {
   const {navigation, route} = props;
-  const {params = {}} = route;
+  const {project_id, withRate, unitId, selectedStructure} = route?.params || {};
 
   const {getBrokersList} = useSalesActions();
 
   useEffect(() => {
-    getBrokersList({project_id: params.project_id});
+    getBrokersList({project_id});
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params.project_id]);
+  }, [project_id]);
 
   const onSubmit = async values => {
     const data = {...values};
@@ -366,9 +366,16 @@ function BookingDetails(props) {
     delete data.selectedVisitor;
     delete data.userType;
 
-    const nextStep = params.withRate ? 'BC_Step_Seven' : 'BC_Step_Eight';
+    const nextStep = withRate ? 'BC_Step_Seven' : 'BC_Step_Eight';
+    const params = {
+      ...data,
+      project_id,
+      withRate,
+      unit_id: unitId,
+      project_main_types: selectedStructure,
+    };
 
-    navigation.navigate(nextStep, {...data, ...params});
+    navigation.navigate(nextStep, params);
   };
 
   return (

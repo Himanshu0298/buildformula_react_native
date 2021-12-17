@@ -87,14 +87,14 @@ const schema = Yup.object().shape({
     then: Yup.number('Invalid').required('Required'),
   }),
   document_start_date: Yup.string('Invalid').when(
-    'isDocumentCharge',
-    (isDocumentCharge, keySchema) =>
-      isDocumentCharge ? keySchema.required('Required') : keySchema,
+    'documentCharge',
+    (documentCharge, keySchema) =>
+      Number(documentCharge) ? keySchema.required('Required') : keySchema,
   ),
   document_end_date: Yup.string('Invalid').when(
-    'isDocumentCharge',
-    (isDocumentCharge, keySchema) =>
-      isDocumentCharge ? keySchema.required('Required') : keySchema,
+    'documentCharge',
+    (documentCharge, keySchema) =>
+      Number(documentCharge) ? keySchema.required('Required') : keySchema,
   ),
 });
 
@@ -224,12 +224,7 @@ function RenderOneBigInstallmentPaymentForm(props) {
   return (
     <>
       <Caption
-        style={{
-          color: theme.colors.primary,
-          marginTop: 20,
-          marginBottom: -10,
-          fontSize: 14,
-        }}>
+        style={[styles.bigInstallmentTitle, {color: theme.colors.primary}]}>
         1st BIG Installment
       </Caption>
       <View style={styles.customPaymentContainer}>
@@ -556,7 +551,9 @@ function RenderCustomPaymentForm(props) {
 }
 
 function RenderDocumentChargesPayment(props) {
-  const {theme, formikProps, t} = props;
+  const {route, theme, formikProps, t} = props;
+  const {withRate} = route?.params || {};
+
   const {values, setFieldValue, errors} = formikProps;
 
   return (
@@ -569,7 +566,7 @@ function RenderDocumentChargesPayment(props) {
           name="documentation_charges"
           label={t('label_documentation_charges')}
           value={values.documentCharge}
-          editable={false}
+          editable={!withRate}
           left={<TextInput.Affix text="₹" />}
         />
         <View style={styles.inputRowContainer}>
@@ -853,7 +850,7 @@ function FormContent(props) {
 function BookingPayments(props) {
   const {navigation, route = {}} = props;
   const {params = {}} = route;
-  const {project_id, unitId, selectedStructure} = params;
+  const {withRate, document_start, document_end} = params;
 
   const {createBooking, getBankList} = useSalesActions();
 
@@ -865,8 +862,8 @@ function BookingPayments(props) {
   }, []);
 
   const initialValues = useMemo(() => {
-    const documentCharge = `${params.document_start}.${params.document_end}`;
-    const isDocumentCharge = Number(documentCharge);
+    const documentCharge = withRate ? `${document_start}.${document_end}` : '';
+    const isDocumentCharge = withRate ? Number(documentCharge) : true;
 
     return {
       payment_type: 1,
@@ -874,8 +871,9 @@ function BookingPayments(props) {
       loan: 'no',
       documentCharge,
       isDocumentCharge,
+      ...route?.params,
     };
-  }, [params]);
+  }, [document_end, document_start, route?.params, withRate]);
 
   const validate = values => {
     const errors = {};
@@ -909,12 +907,7 @@ function BookingPayments(props) {
   };
 
   const onSubmit = async values => {
-    const data = {
-      ...values,
-      project_id,
-      unit_id: unitId,
-      project_main_types: selectedStructure,
-    };
+    const data = {...values};
 
     if (values.payment_type !== 2) {
       delete data.custom_payments;
@@ -1087,6 +1080,11 @@ const styles = StyleSheet.create({
   loanDivider: {
     marginTop: 25,
     marginBottom: 20,
+  },
+  bigInstallmentTitle: {
+    marginTop: 20,
+    marginBottom: -10,
+    fontSize: 14,
   },
 });
 
