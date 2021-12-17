@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     paddingTop: 5,
     borderColor: '#ccc',
-    height: Layout.window.width * 0.4,
+    height: Layout.window.width * 0.38,
     width: Layout.window.width * 0.35,
     margin: Layout.window.width * 0.05,
     borderRadius: 10,

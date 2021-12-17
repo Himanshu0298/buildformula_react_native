@@ -150,7 +150,7 @@ export function getInitialScreen(authenticated, user = {}) {
 }
 
 export function addOpacity(color, opacity) {
-  return `${color.split(')')[0]},${opacity})`;
+  return color ? `${color?.split(')')[0]},${opacity})` : undefined;
 }
 
 export function round(num, decimalPlaces = 2) {

@@ -9,11 +9,18 @@ import {useSnackbar} from 'components/Atoms/Snackbar';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {IconButton, Subheading, Text} from 'react-native-paper';
 import SelectHoldOrBook from 'screens/DeveloperProject/Sales/BookingChart/SelectUnit/Components/UnitBookingDialog';
+import {STRUCTURE_TYPE_LABELS} from 'utils/constant';
 
 function SelectUnit(props) {
   const {navigation, route} = props;
-  const {project_id, floorId, towerId, selectedStructure, towerType} =
-    route?.params || {};
+  const {
+    project_id,
+    floorId,
+    towerId,
+    structureType,
+    selectedStructure,
+    towerType,
+  } = route?.params || {};
 
   const modulePermission = getPermissions('Booking Chart');
   const snackbar = useSnackbar();
@@ -49,7 +56,7 @@ function SelectUnit(props) {
   const processedUnits = useMemo(() => {
     Object.keys(units).map(key => {
       const bookingData = unitBookingStatus.find(
-        unit => unit.id === units[key].unitId,
+        i => i.id === units[key].unitId || i.project_unit === units[key].unitId,
       );
 
       if (bookingData) {
@@ -67,9 +74,9 @@ function SelectUnit(props) {
   const fetchUnitsBookingStatus = () => {
     getUnitsBookingStatus({
       project_id,
-      project_type: selectedStructure,
-      project_tower: towerId,
-      project_floor: floorId,
+      project_type: structureType || selectedStructure,
+      project_tower: towerId || 0,
+      project_floor: Number(floorId || 0),
     });
   };
 
@@ -113,6 +120,10 @@ function SelectUnit(props) {
     });
   };
 
+  const floor = floorId
+    ? getFloorNumber(floorId)
+    : STRUCTURE_TYPE_LABELS?.[selectedStructure];
+
   return (
     <View style={styles.container}>
       <SelectHoldOrBook
@@ -131,7 +142,7 @@ function SelectUnit(props) {
           style={styles.titleContainer}
           onPress={navigation.goBack}>
           <IconButton icon="keyboard-backspace" />
-          <Text> {getFloorNumber(floorId)}</Text>
+          <Text>{floor}</Text>
         </TouchableOpacity>
       </View>
 
@@ -139,7 +150,7 @@ function SelectUnit(props) {
         {...props}
         refreshing={unitBookingStatus.length > 0 && loadingUnitStatus}
         floorId={floorId}
-        floorNumber={getFloorNumber(floorId)}
+        floorNumber={floor}
         units={processedUnits}
         showBhkFilters
         isUnitDisabled={checkUnitDisability}

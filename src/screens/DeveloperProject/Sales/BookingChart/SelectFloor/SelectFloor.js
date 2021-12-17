@@ -28,7 +28,7 @@ function SelectFloor(props) {
         </TouchableOpacity>
       </View>
 
-      <Subheading style={{marginBottom: 10}}>Floors</Subheading>
+      <Subheading style={{marginVertical: 10}}>Floors</Subheading>
 
       <FlatList
         data={Object.keys(floors)}

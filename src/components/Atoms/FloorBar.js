@@ -23,7 +23,7 @@ function FloorBar(props) {
     onPressNext,
   } = props;
 
-  const {structureType} = floorData[index];
+  const {structureType} = floorData?.[index] || {};
 
   const LabelContainer = onPressLabel ? TouchableOpacity : View;
 

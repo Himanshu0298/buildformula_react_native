@@ -19,7 +19,7 @@ function SelectStructure(props) {
     const project_id = selectedProject.id;
     const params = {selectedStructure, towerType, project_id};
 
-    const nextStep = selectedStructure === 6 ? 'BC_Step_Two' : 'BC_Step_Three';
+    const nextStep = selectedStructure === 6 ? 'BC_Step_Two' : 'BC_Step_Four';
 
     navigation.navigate(nextStep, params);
   };

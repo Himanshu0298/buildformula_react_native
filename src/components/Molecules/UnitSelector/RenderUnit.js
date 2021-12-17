@@ -8,25 +8,35 @@ import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
 import UnitIcon from 'assets/images/unit.svg';
 
-const DEFAULT_UNIT_COLOR = '#5B6F7C';
 export const BOOKING_STATUS_STYLES = {
   2: {
-    borderWidth: 3,
-    borderColor: '#07CA03',
-    badge: <MaterialCommunityIcons name="check" color="#fff" />,
-    label: 'Filling',
+    title: 'Filling',
+    color: '#07CA03',
+    badge: <MaterialCommunityIcons name="pencil" color="#fff" />,
   },
   3: {
-    borderWidth: 3,
-    borderColor: '#041D36',
-    badge: <MaterialCommunityIcons name="minus" color="#fff" />,
-    label: 'Stand by',
+    title: 'On hold',
+    color: '#FF7700',
+    badge: <MaterialIcons name="hourglass-full" color="#fff" />,
   },
   4: {
-    borderWidth: 3,
-    borderColor: '#FF5D5D',
-    badge: <MaterialIcons name="check" color="#fff" />,
-    label: 'Booked',
+    title: 'Booked',
+    color: '#FF5D5D',
+    badge: <MaterialCommunityIcons name="check" color="#fff" />,
+  },
+  5: {
+    title: 'Reserved',
+    color: '#041D36',
+    badge: <MaterialCommunityIcons name="minus" color="#fff" />,
+  },
+  6: {
+    title: 'Resale',
+    color: '#8400FF',
+    badge: <Text style={{color: '#fff'}}>R</Text>,
+  },
+  7: {
+    title: 'Cancelled',
+    color: '#735025',
   },
 };
 
@@ -48,17 +58,16 @@ function RenderUnit(props) {
 
   const unitBhk = BHK_OPTIONS.find(item => item.type === unit.bhk);
 
-  let bookingStyle = BOOKING_STATUS_STYLES[unit.status] || {};
+  let statusStyle = BOOKING_STATUS_STYLES[unit?.status] || {};
   const disabled = checkDisabled(isUnitDisabled, unit);
 
   if (unit.status === 2 && dayjs(unit.tmp_booking_time_end).isBefore(dayjs())) {
-    bookingStyle = {};
+    statusStyle = {};
   }
 
-  let backgroundColor = DEFAULT_UNIT_COLOR;
-  if (unitBhk) {
-    backgroundColor = addOpacity(unitBhk.color, 1);
-  }
+  const bookingStyle = statusStyle?.color
+    ? {borderWidth: 2, borderColor: statusStyle?.color}
+    : {};
 
   return (
     <TouchableOpacity
@@ -66,14 +75,31 @@ function RenderUnit(props) {
       disabled={disabled}
       style={styles.container}
       onPress={() => onSelectUnit({...unit, unitIndex: unitId})}>
-      <View style={styles.unitContainer}>
+      <View style={[styles.unitContainer, bookingStyle]}>
         <View style={styles.iconContainer}>
-          <UnitIcon height={30} width={30} />
+          <UnitIcon
+            height={30}
+            width={30}
+            color={addOpacity(unitBhk?.color, 1) || '#868686'}
+          />
         </View>
         <View style={styles.labelContainer}>
           <Text>{getUnitLabel(selectedFloor, unitId)}</Text>
         </View>
+        {unit?.status === 7 ? (
+          <View
+            style={[
+              styles.diagonalLine,
+              {borderBottomColor: statusStyle?.color},
+            ]}
+          />
+        ) : null}
       </View>
+      {statusStyle?.badge ? (
+        <View style={[styles.badge, {backgroundColor: statusStyle?.color}]}>
+          {statusStyle?.badge}
+        </View>
+      ) : null}
     </TouchableOpacity>
   );
 }
@@ -92,11 +118,13 @@ RenderUnit.propTypes = {
 const styles = StyleSheet.create({
   container: {
     width: '33%',
+    position: 'relative',
   },
   unitContainer: {
+    position: 'relative',
+    backgroundColor: '#D3DAEF',
     alignItems: 'center',
     flexDirection: 'row',
-    backgroundColor: '#D3DAEF',
     margin: 5,
     padding: 5,
     borderRadius: 7,
@@ -108,6 +136,26 @@ const styles = StyleSheet.create({
   },
   labelContainer: {
     padding: 5,
+  },
+  badge: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    borderRadius: 50,
+    height: 18,
+    width: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  diagonalLine: {
+    position: 'absolute',
+    transform: [{rotate: '20deg'}],
+    top: 22,
+    left: -5,
+    right: -5,
+    bottom: 0,
+    height: 1,
+    borderBottomWidth: 1,
   },
 });
 

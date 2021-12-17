@@ -1,8 +1,8 @@
 import React from 'react';
 import {useSelector} from 'react-redux';
 import TowerSelector from 'components/Molecules/TowerSelector';
-import {StyleSheet, View} from 'react-native';
-import {Subheading} from 'react-native-paper';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {IconButton, Text} from 'react-native-paper';
 
 function SelectTower(props) {
   const {navigation, route} = props;
@@ -20,7 +20,12 @@ function SelectTower(props) {
 
   return (
     <View style={styles.container}>
-      <Subheading>{towerType}</Subheading>
+      <TouchableOpacity
+        style={styles.titleContainer}
+        onPress={navigation.goBack}>
+        <IconButton icon="keyboard-backspace" />
+        <Text>{towerType}</Text>
+      </TouchableOpacity>
       <TowerSelector
         {...props}
         {...{towers, towerCount, towerType, onSelectTower}}
@@ -33,6 +38,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 20,
+  },
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: -10,
   },
 });
 
