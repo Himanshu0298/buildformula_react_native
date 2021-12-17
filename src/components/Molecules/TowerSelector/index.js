@@ -1,11 +1,10 @@
 import React from 'react';
-import {StyleSheet, View, TouchableOpacity, ScrollView} from 'react-native';
+import {StyleSheet, View, TouchableOpacity, FlatList} from 'react-native';
 import {withTheme, Text} from 'react-native-paper';
 import PropTypes from 'prop-types';
 import TowerIcon from 'assets/images/tower.svg';
 import {getTowerLabel} from 'utils';
 import {secondaryTheme} from 'styles/theme';
-import Layout from 'utils/Layout';
 
 export function RenderTowerBox(props) {
   const {towerId, onPress, active, theme} = props;
@@ -34,51 +33,58 @@ function TowerSelector(props) {
   const {towerCount, onSelectTower} = props;
 
   return (
-    <ScrollView>
-      <View style={styles.towerList}>
-        {new Array(towerCount).fill(0).map((_, index) => {
-          return (
-            <RenderTowerBox
-              {...props}
-              key={index.toString()}
-              towerId={index + 1}
-              onPress={onSelectTower}
-            />
-          );
-        })}
-      </View>
-    </ScrollView>
+    <View style={styles.towerList}>
+      <FlatList
+        data={new Array(towerCount).fill(0)}
+        numColumns={3}
+        extraData={new Array(towerCount).fill(0)}
+        contentContainerStyle={styles.scrollContainer}
+        renderItem={({index}) => (
+          <RenderTowerBox
+            {...props}
+            key={index.toString()}
+            towerId={index + 1}
+            onPress={onSelectTower}
+          />
+        )}
+      />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   towerList: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
     marginTop: 10,
+    flexGrow: 1,
   },
-  labelContainer: {
-    padding: 10,
-    paddingHorizontal: 15,
+  scrollContainer: {
     flexGrow: 1,
   },
   towerContainer: {
     flexDirection: 'row',
-    borderWidth: 1.5,
+    borderWidth: 1,
     borderColor: 'rgba(94, 109, 124, 0.5)',
     borderRadius: 5,
     alignItems: 'center',
-    margin: 8,
-    width: Layout.window.width * 0.26,
+    margin: 5,
+    width: '30%',
+    backgroundColor: '#E6E6E6',
   },
   iconContainer: {
-    backgroundColor: '#E6E6E6',
     width: 35,
     height: 35,
     paddingHorizontal: 10,
     paddingVertical: 6,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  labelContainer: {
+    padding: 10,
+    flexGrow: 1,
+    backgroundColor: '#fff',
+    minWidth: 50,
+    borderTopRightRadius: 5,
+    borderBottomRightRadius: 5,
   },
 });
 

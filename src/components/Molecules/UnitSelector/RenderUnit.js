@@ -2,7 +2,6 @@ import React from 'react';
 import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
 import {BHK_OPTIONS} from 'utils/constant';
 import {addOpacity, getUnitLabel} from 'utils';
-import Layout from 'utils/Layout';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import PropTypes from 'prop-types';
@@ -38,71 +37,66 @@ function checkDisabled(isUnitDisabled, unit) {
   return false;
 }
 
-function RenderUnits(props) {
-  const {onSelectUnit, selectedFloor, units, isUnitDisabled} = props;
+function RenderUnit(props) {
+  const {
+    unit = {},
+    unitId,
+    onSelectUnit,
+    selectedFloor,
+    isUnitDisabled,
+  } = props;
+
+  const unitBhk = BHK_OPTIONS.find(item => item.type === unit.bhk);
+
+  let bookingStyle = BOOKING_STATUS_STYLES[unit.status] || {};
+  const disabled = checkDisabled(isUnitDisabled, unit);
+
+  if (unit.status === 2 && dayjs(unit.tmp_booking_time_end).isBefore(dayjs())) {
+    bookingStyle = {};
+  }
+
+  let backgroundColor = DEFAULT_UNIT_COLOR;
+  if (unitBhk) {
+    backgroundColor = addOpacity(unitBhk.color, 1);
+  }
 
   return (
-    <View style={styles.unitsList}>
-      {Object.keys(units).map(unitId => {
-        const unit = units[unitId];
-        const unitBhk = BHK_OPTIONS.find(item => item.type === unit.bhk);
-
-        let bookingStyle = BOOKING_STATUS_STYLES[unit.status] || {};
-        const disabled = checkDisabled(isUnitDisabled, unit);
-
-        if (
-          unit.status === 2 &&
-          dayjs(unit.tmp_booking_time_end).isBefore(dayjs())
-        ) {
-          bookingStyle = {};
-        }
-
-        let backgroundColor = DEFAULT_UNIT_COLOR;
-        if (unitBhk) {
-          backgroundColor = addOpacity(unitBhk.color, 1);
-        }
-
-        return (
-          <TouchableOpacity
-            key={unitId}
-            disabled={disabled}
-            onPress={() => onSelectUnit({...unit, unitIndex: unitId})}>
-            <View style={styles.unitContainer}>
-              <View style={styles.iconContainer}>
-                <UnitIcon height={30} width={30} />
-              </View>
-              <View style={styles.labelContainer}>
-                <Text>{getUnitLabel(selectedFloor, unitId)}</Text>
-              </View>
-            </View>
-          </TouchableOpacity>
-        );
-      })}
-    </View>
+    <TouchableOpacity
+      key={unitId}
+      disabled={disabled}
+      style={styles.container}
+      onPress={() => onSelectUnit({...unit, unitIndex: unitId})}>
+      <View style={styles.unitContainer}>
+        <View style={styles.iconContainer}>
+          <UnitIcon height={30} width={30} />
+        </View>
+        <View style={styles.labelContainer}>
+          <Text>{getUnitLabel(selectedFloor, unitId)}</Text>
+        </View>
+      </View>
+    </TouchableOpacity>
   );
 }
 
-RenderUnits.defaultProps = {
+RenderUnit.defaultProps = {
   isUnitDisabled: () => {},
   selectedFloor: '',
 };
 
-RenderUnits.propTypes = {
+RenderUnit.propTypes = {
   onSelectUnit: PropTypes.func.isRequired,
   isUnitDisabled: PropTypes.func,
   selectedFloor: PropTypes.string,
 };
 
 const styles = StyleSheet.create({
-  unitsList: {
-    flexWrap: 'wrap',
-    flexDirection: 'row',
+  container: {
+    width: '33%',
   },
   unitContainer: {
     alignItems: 'center',
     flexDirection: 'row',
     backgroundColor: '#D3DAEF',
-    width: Layout.window.width * 0.26,
     margin: 5,
     padding: 5,
     borderRadius: 7,
@@ -117,4 +111,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default React.memo(RenderUnits);
+export default React.memo(RenderUnit);

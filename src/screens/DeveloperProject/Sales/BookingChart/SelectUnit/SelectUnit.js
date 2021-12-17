@@ -39,7 +39,7 @@ function SelectUnit(props) {
     const structureData =
       selectedProject.projectData?.[selectedStructure] || {};
 
-    if (selectedStructure === 4 || selectedStructure === 5) {
+    if ([4, 5].includes(selectedStructure)) {
       return structureData.units;
     }
 

@@ -3,6 +3,7 @@ import {TouchableOpacity, Keyboard} from 'react-native';
 import PropTypes from 'prop-types';
 import {TextInput} from 'react-native-paper';
 import {useActionSheet} from '@expo/react-native-action-sheet';
+import truncate from 'lodash/truncate';
 import RenderInput from './RenderInput';
 
 const RenderSelect = React.forwardRef((props, ref) => {
@@ -12,6 +13,7 @@ const RenderSelect = React.forwardRef((props, ref) => {
     onSelect,
     value,
     disabled,
+    truncateLength,
     ...rest
   } = props;
 
@@ -53,7 +55,7 @@ const RenderSelect = React.forwardRef((props, ref) => {
       buttonIndex => {
         if (buttonIndex < parsedOptions.length) {
           let selectedValue = parsedOptions[buttonIndex];
-          if (withValue && !isNaN(options?.[buttonIndex]?.value)) {
+          if (withValue && !Number.isNaN(options?.[buttonIndex]?.value)) {
             selectedValue = options[buttonIndex].value;
           }
           onSelect(selectedValue);
@@ -61,6 +63,8 @@ const RenderSelect = React.forwardRef((props, ref) => {
       },
     );
   };
+
+  value = truncateLength ? truncate(value, {length: truncateLength}) : value;
 
   return (
     <TouchableOpacity disabled={disabled} onPress={toggleOptions}>

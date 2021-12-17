@@ -608,10 +608,25 @@ function RenderDocumentChargesPayment(props) {
 }
 
 function RenderPaymentForm(props) {
-  const {theme, formikProps, t} = props;
-  const {values, errors, handleChange, setFieldValue, handleBlur} = formikProps;
+  const {theme, formikProps, route, t} = props;
+  const {withRate} = route?.params || {};
+  const {
+    values,
+    errors,
+    handleChange,
+    setFieldValue,
+    handleBlur,
+    resetForm,
+  } = formikProps;
 
   const {commonData} = useSelector(s => s.project);
+
+  useEffect(() => {
+    resetForm();
+    setFieldValue('finalAmount', values.finalAmount);
+    setFieldValue('payment_type', values.payment_type);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [values.finalAmount]);
 
   const TCOptions = useMemo(() => {
     return commonData?.booking_TandC?.map(i => ({label: i.title, value: i.id}));
@@ -631,8 +646,10 @@ function RenderPaymentForm(props) {
       <RenderInput
         label={t('label_final_amount')}
         value={values.finalAmount}
-        editable={false}
+        editable={!withRate}
         error={errors.finalAmount}
+        onChangeText={handleChange('finalAmount')}
+        onBlur={handleBlur('finalAmount')}
         left={<TextInput.Affix text="₹" />}
       />
       {values.payment_type === 1 ? (
@@ -682,7 +699,7 @@ function RenderPaymentForm(props) {
 
       {selectedTC ? (
         <View style={styles.termsBox}>
-          <ScrollView>
+          <ScrollView nestedScrollEnabled>
             <RenderHTML
               source={{html: selectedTC.description}}
               contentWidth={Layout.window.width}
@@ -767,6 +784,7 @@ function FormContent(props) {
                     label={t('label_choose_bank')}
                     options={bankList}
                     value={values.loan_bank}
+                    truncateLength={15}
                     error={errors.loan_bank}
                     onSelect={value => {
                       formikProps.setFieldValue('loan_bank', value);
@@ -787,13 +805,12 @@ function FormContent(props) {
               <View style={{marginTop: 5}}>
                 <RenderInput
                   name="loan_remark"
-                  multiline
                   label={t('label_remark')}
                   value={values.loan_remark}
                   onChangeText={handleChange('loan_remark')}
                 />
               </View>
-              <Divider style={{marginTop: 25, marginBottom: 20}} />
+              <Divider style={styles.loanDivider} />
             </View>
           ) : null}
 
@@ -809,20 +826,20 @@ function FormContent(props) {
               formikProps.setErrors({});
             }}
           />
-          <RenderPaymentForm {...props} formikProps={formikProps} t={t} />
+          <RenderPaymentForm {...props} {...{formikProps, t}} />
         </View>
         <View style={styles.actionContainer}>
           <Button
-            style={{flex: 1, marginHorizontal: 5}}
-            contentStyle={{padding: 3}}
+            style={styles.actionButton}
+            contentStyle={styles.actionButtonLabel}
             theme={{roundness: 15}}
             onPress={handleCancel}>
             Back
           </Button>
           <Button
-            style={{flex: 1, marginHorizontal: 5}}
+            style={styles.actionButton}
             mode="contained"
-            contentStyle={{padding: 3}}
+            contentStyle={styles.actionButtonLabel}
             theme={{roundness: 15}}
             onPress={handleSubmit}>
             Save
@@ -892,8 +909,6 @@ function BookingPayments(props) {
   };
 
   const onSubmit = async values => {
-    console.log('-----> unit_id', unitId);
-    console.log('-----> project_id', project_id);
     const data = {
       ...values,
       project_id,
@@ -1054,12 +1069,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
+  actionButton: {
+    flex: 1,
+    marginHorizontal: 5,
+  },
+  actionButtonLabel: {
+    padding: 3,
+  },
   termsBox: {
     borderWidth: 1,
     borderRadius: 10,
     borderColor: 'rgba(0, 0, 0, 0.3)',
     paddingHorizontal: 10,
     marginTop: 10,
+    maxHeight: 200,
+  },
+  loanDivider: {
+    marginTop: 25,
+    marginBottom: 20,
   },
 });
 

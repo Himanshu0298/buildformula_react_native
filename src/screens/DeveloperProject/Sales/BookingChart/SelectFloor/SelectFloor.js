@@ -7,7 +7,7 @@ import {RenderTowerBox} from 'components/Molecules/TowerSelector';
 
 function SelectFloor(props) {
   const {route, navigation} = props;
-  const {selectedStructure, towerType, towerId} = route.params || {};
+  const {selectedStructure, towerType, towerId} = route?.params || {};
 
   const {selectedProject} = useSelector(state => state.project);
 

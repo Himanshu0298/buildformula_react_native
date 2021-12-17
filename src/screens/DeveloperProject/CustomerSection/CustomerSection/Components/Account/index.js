@@ -11,7 +11,7 @@ import {
   Text,
   withTheme,
 } from 'react-native-paper';
-import {BOOKING_STATUS_STYLES} from 'components/Molecules/UnitSelector/RenderUnits';
+import {BOOKING_STATUS_STYLES} from 'components/Molecules/UnitSelector/RenderUnit';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector} from 'react-redux';

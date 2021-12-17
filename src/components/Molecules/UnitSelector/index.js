@@ -1,10 +1,16 @@
 import React from 'react';
 import BhkButton from 'components/Atoms/Buttons/BhkButton';
-import {StyleSheet, View, ScrollView, RefreshControl} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  RefreshControl,
+  FlatList,
+} from 'react-native';
 import {Subheading} from 'react-native-paper';
 import {BHK_OPTIONS} from 'utils/constant';
 import PropTypes from 'prop-types';
-import RenderUnits from './RenderUnits';
+import RenderUnits from './RenderUnit';
 
 function BhkList({onPress, selectedBhk}) {
   return (
@@ -45,25 +51,32 @@ function UnitSelector(props) {
     <View style={styles.container}>
       {showBhkFilters ? (
         <>
-          <Subheading style={{marginTop: 5}}>BHK indication</Subheading>
+          <Subheading style={styles.bhkHeading}>BHK indication</Subheading>
           <BhkList selectedBhk={selectedBhk} onPress={setSelectedBhk} />
         </>
       ) : null}
       <Subheading style={styles.floorTitle}>{floorNumber}</Subheading>
-      <ScrollView
-        contentContainerStyle={{flexGrow: 1}}
+      <FlatList
+        data={Object.keys(units)}
+        numColumns={3}
+        extraData={Object.keys(units)}
+        contentContainerStyle={styles.scrollContainer}
         refreshControl={
           onRefresh ? (
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           ) : null
-        }>
-        <RenderUnits
-          units={units}
-          selectedFloor={floorId}
-          onSelectUnit={onSelectUnit}
-          isUnitDisabled={isUnitDisabled}
-        />
-      </ScrollView>
+        }
+        renderItem={({item, index}) => (
+          <RenderUnits
+            key={index.toString()}
+            unitId={item}
+            unit={units[item]}
+            selectedFloor={floorId}
+            onSelectUnit={onSelectUnit}
+            isUnitDisabled={isUnitDisabled}
+          />
+        )}
+      />
     </View>
   );
 }
@@ -71,6 +84,12 @@ function UnitSelector(props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  bhkHeading: {
+    marginTop: 5,
+  },
+  scrollContainer: {
+    flexGrow: 1,
   },
   towerList: {
     flexDirection: 'row',

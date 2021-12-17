@@ -15,11 +15,7 @@ function SelectTower(props) {
   const {towerCount, towers} = structureData;
 
   const onSelectTower = towerId => {
-    navigation.navigate('BC_Step_Three', {
-      selectedStructure,
-      towerType,
-      towerId,
-    });
+    navigation.navigate('BC_Step_Three', {...route?.params, towerId});
   };
 
   return (
