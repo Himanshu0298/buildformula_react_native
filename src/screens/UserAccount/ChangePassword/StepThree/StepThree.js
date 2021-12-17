@@ -34,7 +34,7 @@ function StepThree(props) {
 
   const {resetPassword} = useUserActions();
 
-  const {loading, user} = useSelector(state => state.user);
+  const {loading, user} = useSelector(s => s.user);
 
   const [showPassword, setShowPassword] = useState(false);
   const [showCnfPass, toggleShowCnfPass] = useState(false);

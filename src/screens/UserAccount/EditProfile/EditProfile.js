@@ -116,7 +116,7 @@ function EditProfile(props) {
   const {openImagePicker} = useImagePicker();
   const {updateUser} = useUserActions();
 
-  const {user, loading} = useSelector(state => state.user);
+  const {user, loading} = useSelector(s => s.user);
 
   const initialValues = pick(user, [
     'first_name',

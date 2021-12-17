@@ -538,8 +538,8 @@ const getActiveRouteName = (state, parentRoute) => {
 };
 
 function NavContainer() {
-  const {authenticated, user} = useSelector(state => state.user);
-  const {language} = useSelector(state => state.app);
+  const {authenticated, user} = useSelector(s => s.user);
+  const {language} = useSelector(s => s.app);
 
   const [routeData, setRouteData] = useState({
     currentRoute: authenticated ? 'Home' : 'LanguageSelect',

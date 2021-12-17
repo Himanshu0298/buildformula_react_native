@@ -62,7 +62,7 @@ function Account(props) {
 
   const {updateBookingStatus, getAccountDetails} = useCustomerActions();
 
-  const {accountDetails} = useSelector(state => state.customer);
+  const {accountDetails} = useSelector(s => s.customer);
   const {
     paymentSchedule,
     paymentCollection = {},

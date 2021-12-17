@@ -11,7 +11,7 @@ import {theme} from 'styles/theme';
 function Timer({displayTimer}) {
   const {toggleTimer} = useSalesActions();
 
-  const {timerData} = useSelector(state => state.sales);
+  const {timerData} = useSelector(s => s.sales);
   const {showTimer, startTime, time} = timerData;
 
   const remainingTime = useMemo(() => {

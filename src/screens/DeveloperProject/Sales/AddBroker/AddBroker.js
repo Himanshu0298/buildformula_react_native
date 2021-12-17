@@ -1,37 +1,19 @@
-import React, {useEffect, useMemo} from 'react';
-import {
-  StyleSheet,
-  View,
-  RefreshControl,
-  TouchableOpacity,
-  FlatList,
-  Image,
-} from 'react-native';
-import {
-  withTheme,
-  Caption,
-  FAB,
-  Title,
-  Subheading,
-  Text,
-  Button,
-} from 'react-native-paper';
-import {getPermissions} from 'utils';
+import React, {useMemo} from 'react';
+import {StyleSheet, View} from 'react-native';
+import {withTheme, Text, Button} from 'react-native-paper';
 import useSalesActions from 'redux/actions/salesActions';
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
-import NoDataFound from 'assets/images/NoDataFound.png';
-import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import * as Yup from 'yup';
 import {Formik} from 'formik';
 import RenderInput from 'components/Atoms/RenderInput';
+import {useSalesLoading} from 'redux/selectors';
 
 const schema = Yup.object().shape({
-  firstName: Yup.string()
+  first_name: Yup.string()
     .max(15, 'Must be 15 characters or less')
     .required('Required'),
-  lastName: Yup.string()
+  last_name: Yup.string()
     .max(20, 'Must be 20 characters or less')
     .required('Required'),
   phone: Yup.string()
@@ -48,45 +30,36 @@ const schema = Yup.object().shape({
 function AddBroker(props) {
   const {theme, navigation, route} = props;
   const {broker} = route?.params || {};
-  // const {first_name, last_name, id, email, phone} = broker;
+  const {first_name, last_name, id, email, phone} = broker || {};
 
   const edit = Boolean(broker?.id);
 
-  const {loading} = useSelector(s => s.sales);
+  const loading = useSalesLoading();
 
   const {selectedProject} = useSelector(s => s.project);
-
   const projectId = selectedProject.id;
 
   const {addBroker, getBrokersList, updateBroker} = useSalesActions();
 
   const initialValues = useMemo(() => {
-    if (edit) {
-      return {
-        firstName: broker.first_name,
-        lastName: broker.last_name,
-        email: broker.email,
-        phone: broker.phone,
-      };
-    }
-    return {firstName: '', lastName: '', email: '', phone: ''};
-  }, []);
+    return {first_name, last_name, email, phone};
+  }, [email, first_name, last_name, phone]);
 
   const onSubmit = async values => {
     if (edit) {
       await updateBroker({
         project_id: projectId,
         broker_id: id,
-        first_name: values.firstName,
-        last_name: values.lastName,
+        first_name: values.first_name,
+        last_name: values.last_name,
         email: values.email,
         phone: values.phone,
       });
     } else {
       await addBroker({
         project_id: projectId,
-        first_name: values.firstName,
-        last_name: values.lastName,
+        first_name: values.first_name,
+        last_name: values.last_name,
         email: values.email,
         phone: values.phone,
       });
@@ -110,27 +83,27 @@ function AddBroker(props) {
           return (
             <View style={styles.dialogContentContainer}>
               <RenderInput
-                name="firstName"
+                name="first_name"
                 label="First Name"
-                value={values.firstName}
-                onChangeText={handleChange('firstName')}
-                onBlur={handleBlur('firstName')}
+                value={values.first_name}
+                onChangeText={handleChange('first_name')}
+                onBlur={handleBlur('first_name')}
                 placeholder="First Name"
                 autoCapitalize="none"
                 returnKeyType="next"
-                error={errors.firstName}
+                error={errors.first_name}
                 style={styles.input}
               />
               <RenderInput
-                name="lastName"
+                name="last_name"
                 label="Last Name"
-                value={values.lastName}
-                onChangeText={handleChange('lastName')}
-                onBlur={handleBlur('lastName')}
+                value={values.last_name}
+                onChangeText={handleChange('last_name')}
+                onBlur={handleBlur('last_name')}
                 placeholder="Last Name"
                 autoCapitalize="none"
                 returnKeyType="next"
-                error={errors.lastName}
+                error={errors.last_name}
                 style={styles.input}
               />
               <RenderInput
@@ -161,7 +134,7 @@ function AddBroker(props) {
                 <Button
                   style={styles.Button}
                   mode="text"
-                  onPress={() => console.log('Pressed')}>
+                  onPress={navigation.goBack}>
                   Cancel
                 </Button>
                 <Button

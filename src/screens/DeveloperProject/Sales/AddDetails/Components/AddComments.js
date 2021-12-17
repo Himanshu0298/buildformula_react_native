@@ -20,7 +20,7 @@ function AddComments(props) {
 
   const {addVisitorComment, getVisitorActivities} = useSalesActions();
 
-  const {selectedProject} = useSelector(state => state.project);
+  const {selectedProject} = useSelector(s => s.project);
 
   const onSubmit = async values => {
     await addVisitorComment({

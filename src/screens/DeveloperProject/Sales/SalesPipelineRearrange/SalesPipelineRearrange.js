@@ -36,8 +36,8 @@ function RenderPipeline(props) {
 function SalesPipelineRearrange(props) {
   const {navigation} = props;
 
-  const {pipelinesOrderList, loading} = useSelector(state => state.sales);
-  const {selectedProject} = useSelector(state => state.project);
+  const {pipelinesOrderList, loading} = useSelector(s => s.sales);
+  const {selectedProject} = useSelector(s => s.project);
 
   const {
     getPipelinesOrderList,

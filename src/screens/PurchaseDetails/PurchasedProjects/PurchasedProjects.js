@@ -55,7 +55,7 @@ function ProjectCard(props) {
 }
 
 function PurchasedProjects(props) {
-  const {loading, purchasedProjects} = useSelector(state => state.project);
+  const {loading, purchasedProjects} = useSelector(s => s.project);
 
   const {getPurchasedProjects} = useProjectActions();
 

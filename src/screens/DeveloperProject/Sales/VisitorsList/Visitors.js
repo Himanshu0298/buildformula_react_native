@@ -28,6 +28,7 @@ import NoDataFound from 'assets/images/NoDataFound.png';
 import {getShadow, getPermissions} from 'utils';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useSalesLoading} from 'redux/selectors';
 
 const FILTERS = [
   {value: 'name', label: 'Name'},
@@ -176,14 +177,7 @@ function Header(props) {
 
   return (
     <>
-      <View
-        style={{
-          flexDirection: 'row',
-          marginBottom: 10,
-          justifyContent: 'space-between',
-          marginHorizontal: 20,
-          alignItems: 'center',
-        }}>
+      <View style={styles.headerContainer}>
         <Title style={{color: theme.colors.primary}}>Visitor's list</Title>
         <Menu
           visible={visible}
@@ -231,7 +225,9 @@ function Visitors(props) {
   const {theme, navigation} = props;
 
   const {selectedProject} = useSelector(s => s.project);
-  const {loading, visitors, visitorAnalytics} = useSelector(s => s.sales);
+  const {visitors, visitorAnalytics} = useSelector(s => s.sales);
+
+  const loading = useSalesLoading();
 
   const modulePermission = getPermissions('Visitors');
 
@@ -368,5 +364,12 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(4, 29, 54, 0.1)',
     marginHorizontal: 10,
     ...getShadow(0),
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    marginBottom: 10,
+    justifyContent: 'space-between',
+    marginHorizontal: 20,
+    alignItems: 'center',
   },
 });

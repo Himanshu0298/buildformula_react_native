@@ -28,7 +28,7 @@ const DropDown = forwardRef((props, ref) => {
     setShowDropDown(v => !v);
   };
 
-  const onLayout = (event: LayoutChangeEvent) => {
+  const onLayout = event => {
     setInputLayout(event.nativeEvent.layout);
   };
 

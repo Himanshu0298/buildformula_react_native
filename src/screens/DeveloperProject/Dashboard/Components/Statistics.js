@@ -55,7 +55,7 @@ function RenderProgressChart(props) {
 function Statistics(props) {
   const {onRefresh} = props;
 
-  const {dashboardData = {}} = useSelector(state => state.project);
+  const {dashboardData = {}} = useSelector(s => s.project);
   const {
     salesData,
     bookingProjectTypeWiseCount: bookingData,

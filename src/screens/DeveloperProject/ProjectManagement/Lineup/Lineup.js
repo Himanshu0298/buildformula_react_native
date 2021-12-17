@@ -15,8 +15,8 @@ import WorkCategory from './Components/WorkCategory';
 function Lineup(props) {
   const {getWorkCategories, getMilestones} = useProjectManagementActions();
 
-  const {selectedProject} = useSelector(state => state.project);
-  const {loading} = useSelector(state => state.projectManagement);
+  const {selectedProject} = useSelector(s => s.project);
+  const {loading} = useSelector(s => s.projectManagement);
 
   const [selectedTab, setSelectedTab] = useState(0);
   const [routes] = React.useState([
@@ -50,6 +50,8 @@ function Lineup(props) {
         return <WorkCategory {...{selectedProject, getCategories}} />;
       case 1:
         return <Milestone {...{selectedProject, getMilestoneData}} />;
+      default:
+        return <View />;
     }
   };
 

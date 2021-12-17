@@ -37,7 +37,7 @@ const RenderActivity = React.memo(({collection}) => {
 function Activity(props) {
   const {onRefresh} = props;
 
-  const {dashboardData} = useSelector(state => state.project);
+  const {dashboardData} = useSelector(s => s.project);
   const {todayProjectUserNotifications} = dashboardData;
 
   return (

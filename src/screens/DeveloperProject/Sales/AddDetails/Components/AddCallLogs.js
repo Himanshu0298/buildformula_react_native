@@ -27,7 +27,7 @@ function AddCallLogs(props) {
   const followUpTimeRef = React.useRef();
   const assignToRef = React.useRef();
 
-  const {selectedProject, commonData} = useSelector(state => state.project);
+  const {selectedProject, commonData} = useSelector(s => s.project);
   const {callLog_call_outcome_values} = commonData;
 
   const {addVisitorCallLogs, getVisitorActivities} = useSalesActions();

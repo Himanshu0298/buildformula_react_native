@@ -26,9 +26,9 @@ function Ownership(props) {
     getAccountDetails,
   } = useCustomerActions();
 
-  const {loading} = useSelector(state => state.project);
-  const {loading: customerDataLoading} = useSelector(state => state.customer);
-  const {user} = useSelector(state => state.user);
+  const {loading} = useSelector(s => s.project);
+  const {loading: customerDataLoading} = useSelector(s => s.customer);
+  const {user} = useSelector(s => s.user);
 
   React.useEffect(() => {
     setSelectedUnit(unit_info);

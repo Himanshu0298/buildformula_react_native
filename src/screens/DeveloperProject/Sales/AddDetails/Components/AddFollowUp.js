@@ -29,7 +29,7 @@ function AddFollowUp(props) {
 
   const {visitorId} = route.params || {};
 
-  const {selectedProject} = useSelector(state => state.project);
+  const {selectedProject} = useSelector(s => s.project);
 
   const {addVisitorFollowUp, getVisitorActivities} = useSalesActions();
 

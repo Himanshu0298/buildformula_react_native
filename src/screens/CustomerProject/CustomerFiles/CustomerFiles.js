@@ -5,8 +5,8 @@ import {useSelector} from 'react-redux';
 import {Files} from 'screens/DeveloperProject/CustomerSection/CustomerSection/Components';
 
 function CustomerFiles(props) {
-  const {loading} = useSelector(state => state.project);
-  const {loading: customerDataLoading} = useSelector(state => state.customer);
+  const {loading} = useSelector(s => s.project);
+  const {loading: customerDataLoading} = useSelector(s => s.customer);
 
   return (
     <View style={styles.container}>

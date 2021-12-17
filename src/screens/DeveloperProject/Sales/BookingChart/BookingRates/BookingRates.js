@@ -376,7 +376,7 @@ function FormContent(props) {
   const {t} = useTranslation();
   const snackbar = useSnackbar();
 
-  const {unitOptions} = useSelector(state => state.project);
+  const {unitOptions} = useSelector(s => s.project);
 
   useEffect(() => {
     let amount = 0;

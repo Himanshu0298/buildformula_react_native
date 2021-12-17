@@ -297,7 +297,7 @@ function SignUp(props) {
   const {updateAdmins} = useAddProjectActions();
   const {resetStructure} = useAddProjectActions();
 
-  const {loading} = useSelector(state => state.user);
+  const {loading} = useSelector(s => s.user);
   const {loading: updatingAdmin, project} = useSelector(s => s.addProject);
 
   const [validationError, setValidationError] = React.useState({});

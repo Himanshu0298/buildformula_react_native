@@ -111,7 +111,7 @@ function OtpScreen(props) {
   const {sendOtpToPhone, sendOtpToEmail} = useAuth();
   const {verifyOtp, updateUser} = useUserActions();
 
-  const {user, loading} = useSelector(state => state.user);
+  const {user, loading} = useSelector(s => s.user);
 
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');

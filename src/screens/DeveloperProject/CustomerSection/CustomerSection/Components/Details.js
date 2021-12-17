@@ -39,7 +39,7 @@ function Details(props) {
 
   const modulePermissions = getPermissions('Ownership');
 
-  const {customerData} = useSelector(state => state.customer);
+  const {customerData} = useSelector(s => s.customer);
 
   const navToDetails = customer => {
     navigation.navigate('CustomerDetails', {customer});

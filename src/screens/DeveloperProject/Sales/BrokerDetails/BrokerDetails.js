@@ -20,7 +20,7 @@ function BrokerDetails(props) {
   const {getBrokerDetails} = useSalesActions();
 
   const {selectedProject} = useSelector(s => s.project);
-  const {loading, brokerDetails} = useSelector(state => state.sales);
+  const {loading, brokerDetails} = useSelector(s => s.sales);
 
   const projectId = selectedProject.id;
 
@@ -56,6 +56,8 @@ function BrokerDetails(props) {
             dealsClosed={brokerDetails.dealClosedInfo || []}
           />
         );
+      default:
+        return <View />;
     }
   };
 

@@ -17,6 +17,7 @@ import {
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector} from 'react-redux';
 import useSalesActions from 'redux/actions/salesActions';
+import {useSalesLoading} from 'redux/selectors';
 import {getFloorNumber, getTowerLabel, getUnitLabel} from 'utils';
 import {STRUCTURE_TYPE_LABELS} from 'utils/constant';
 import BookingHoldForm from './Components/BookingHoldForm';
@@ -105,7 +106,8 @@ function BookingFormOnHold(props) {
   const {project_id, structureType, towerId, floorId, unitIndex, unitId} =
     route?.params || {};
 
-  const {loading, bookingHoldDetails} = useSelector(s => s.sales);
+  const {bookingHoldDetails} = useSelector(s => s.sales);
+  const loading = useSalesLoading();
   const {holdbyUserInfo, holdHistoryList} = bookingHoldDetails || {};
 
   const {

@@ -87,7 +87,7 @@ function ForgotPasswordOtp(props) {
   const bottomSheetRef = React.createRef();
   const {verifyForgotPasswordOtp} = useUserActions();
 
-  const {loading} = useSelector(state => state.user);
+  const {loading} = useSelector(s => s.user);
 
   return (
     <Formik

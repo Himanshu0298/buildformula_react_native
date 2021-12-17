@@ -1,11 +1,10 @@
-import React, {useEffect, useMemo} from 'react';
+import React, {useMemo} from 'react';
 import {Divider, Text, withTheme, Button} from 'react-native-paper';
 import {StyleSheet, View, ScrollView} from 'react-native';
 import {useSelector} from 'react-redux';
 import dayjs from 'dayjs';
 import Layout from 'utils/Layout';
 import RenderHtml from 'react-native-render-html';
-import useSalesActions from 'redux/actions/salesActions';
 
 const relativeTime = require('dayjs/plugin/relativeTime');
 
@@ -26,16 +25,16 @@ const FILTERS = [
 
 function Heading(props) {
   const {text} = props;
-  let _text = text;
+  let heading = text;
 
   if (text === 'a day ago') {
-    _text = 'Yesterday';
+    heading = 'Yesterday';
   }
 
   return (
     <View style={styles.heading}>
       <Divider style={styles.divider} />
-      <Text>{_text}</Text>
+      <Text>{heading}</Text>
       <Divider style={styles.divider} />
     </View>
   );
@@ -156,6 +155,7 @@ function Activities(props) {
         const key = dayjs(i.created).fromNow();
         data[key] = data[key] || [];
         data[key].push(i);
+        return i;
       });
 
     return data;

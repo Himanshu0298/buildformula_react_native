@@ -23,6 +23,7 @@ import {
 } from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import useSalesActions from 'redux/actions/salesActions';
+import {useSalesLoading} from 'redux/selectors';
 import {theme} from 'styles/theme';
 import * as Yup from 'yup';
 
@@ -85,8 +86,9 @@ function FormContent(props) {
   const [visitorSearchText, setVisitorSearchText] = useState();
   const [brokerSearchText, setBrokerSearchText] = useState();
 
-  const {visitors} = useSelector(state => state.project);
-  const {loading, brokersList} = useSelector(s => s.sales);
+  const {visitors} = useSelector(s => s.project);
+  const {brokersList} = useSelector(s => s.sales);
+  const loading = useSalesLoading();
 
   const filteredVisitors = useMemo(() => {
     if (visitorSearchText) {

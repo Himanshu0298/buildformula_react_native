@@ -18,7 +18,7 @@ function StepOne(props) {
   const {updateStructureTypes, updateStructure} = useAddProjectActions();
 
   const {structureTypes, structure, project, loading} = useSelector(
-    state => state.addProject,
+    s => s.addProject,
   );
 
   const activeTypes = useMemo(() => {
@@ -66,6 +66,7 @@ function StepOne(props) {
         } else {
           updatedStructure[type] = DEFAULT_STRUCTURE[type];
         }
+        return type;
       });
 
       updateStructure({structure: updatedStructure});

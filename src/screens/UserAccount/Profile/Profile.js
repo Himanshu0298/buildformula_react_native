@@ -15,7 +15,7 @@ import UserAvatar from 'components/Atoms/UserAvatar';
 function Profile(props) {
   const {theme, navigation} = props;
 
-  const {user} = useSelector(state => state.user);
+  const {user} = useSelector(s => s.user);
   const {first_name, last_name, email, phone, profile_url} = user;
 
   const navToEdit = () => navigation.navigate('EditProfile');

@@ -110,7 +110,7 @@ function ForgotPassword(props) {
   const bottomSheetRef = React.createRef();
   const snackbar = useSnackbar();
 
-  const {loading} = useSelector(state => state.user);
+  const {loading} = useSelector(s => s.user);
 
   useEffect(() => {
     if (loginError) {

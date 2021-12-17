@@ -359,7 +359,7 @@ function RenderForm(props) {
     inquiryOptions,
     assignOptions,
     sourceTypeOptions,
-  } = useSelector(state => state.sales);
+  } = useSelector(s => s.sales);
 
   const updatedAssignOptions = useMemo(() => {
     const data = [...assignOptions];
@@ -414,6 +414,8 @@ function RenderForm(props) {
             formikProps={formikProps}
           />
         );
+      default:
+        return <View />;
     }
   };
 
@@ -441,9 +443,9 @@ function AddVisitor(props) {
 
   const edit = Boolean(visitor?.id);
 
-  const {selectedProject} = useSelector(state => state.project);
-  const {user} = useSelector(state => state.user);
-  const {loading} = useSelector(state => state.sales);
+  const {selectedProject} = useSelector(s => s.project);
+  const {user} = useSelector(s => s.user);
+  const {loading} = useSelector(s => s.sales);
 
   const {
     addVisitor,

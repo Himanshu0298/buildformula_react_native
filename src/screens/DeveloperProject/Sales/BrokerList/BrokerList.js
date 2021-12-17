@@ -21,6 +21,7 @@ import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
 import NoDataFound from 'assets/images/NoDataFound.png';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
+import {useSalesLoading} from 'redux/selectors';
 
 function RenderBroker(props) {
   const {theme, data, navigation, index} = props;
@@ -105,8 +106,11 @@ function BrokerList(props) {
   const {theme, navigation} = props;
 
   const {selectedProject} = useSelector(s => s.project);
-  const {loading, visitorAnalytics, brokersList} = useSelector(s => s.sales);
+  const {visitorAnalytics, brokersList} = useSelector(s => s.sales);
 
+  const loading = useSalesLoading();
+
+  // TODO: setup permissions
   const modulePermission = getPermissions('Visitors');
 
   const {getBrokersList} = useSalesActions();

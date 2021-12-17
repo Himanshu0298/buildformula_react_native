@@ -10,6 +10,7 @@ import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {IconButton, Subheading, Text} from 'react-native-paper';
 import SelectHoldOrBook from 'screens/DeveloperProject/Sales/BookingChart/SelectUnit/Components/UnitBookingDialog';
 import {STRUCTURE_TYPE_LABELS} from 'utils/constant';
+import {useSalesLoading} from 'redux/selectors';
 
 function SelectUnit(props) {
   const {navigation, route} = props;
@@ -27,9 +28,11 @@ function SelectUnit(props) {
 
   const {getUnitsBookingStatus, lockUnit, toggleTimer} = useSalesActions();
 
-  const {selectedProject} = useSelector(state => state.project);
-  const {loadingUnitStatus, unitBookingStatus} = useSelector(s => s.sales);
-  const {user} = useSelector(state => state.user);
+  const {selectedProject} = useSelector(s => s.project);
+  const {unitBookingStatus} = useSelector(s => s.sales);
+  const {user} = useSelector(s => s.user);
+
+  const loading = useSalesLoading();
 
   const [selectedUnit, setSelectedUnit] = useState();
 
@@ -133,7 +136,7 @@ function SelectUnit(props) {
         handleBook={handleBook}
         handleHold={handleHold}
       />
-      <Spinner visible={loadingUnitStatus} textContent="" />
+      <Spinner visible={loading} textContent="" />
 
       <Subheading>{towerType}</Subheading>
 
@@ -148,7 +151,7 @@ function SelectUnit(props) {
 
       <UnitSelector
         {...props}
-        refreshing={unitBookingStatus.length > 0 && loadingUnitStatus}
+        refreshing={unitBookingStatus.length > 0 && loading}
         floorId={floorId}
         floorNumber={floor}
         units={processedUnits}

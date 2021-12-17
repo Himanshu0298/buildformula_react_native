@@ -22,6 +22,7 @@ module.exports = {
   rules: {
     'react-native/no-unused-styles': 1,
     'react-native/no-color-literals': 0,
+    'no-underscore-dangle': 0,
     'react/no-array-index-key': 1,
     'react/no-unused-prop-types': 0,
     'react-native/split-platform-components': 2,

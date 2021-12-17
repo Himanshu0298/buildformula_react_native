@@ -19,9 +19,9 @@ function ProjectHeader(props) {
     showHeaderIcons = true,
   } = props;
 
-  const {selectedProject} = useSelector(state => state.project);
+  const {selectedProject} = useSelector(s => s.project);
   const {projectNotifications} = useSelector(s => s.notification);
-  const {user} = useSelector(state => state.user);
+  const {user} = useSelector(s => s.user);
 
   const navToNotification = () => {
     navigation.push('Notification', {showLogo});

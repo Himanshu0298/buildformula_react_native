@@ -24,11 +24,11 @@ export default function DeveloperDashboard(props) {
   } = useProjectActions();
   const {getProjectNotifications} = useNotificationActions();
 
-  const {loading} = useSelector(state => state.project);
+  const {loading} = useSelector(s => s.project);
 
   const [selectedTab, setSelectedTab] = useState(0);
   const [routes] = React.useState([
-    {key: 0, title: 'Stastics'},
+    {key: 0, title: 'Statistics'},
     {key: 1, title: 'Activity'},
   ]);
 
@@ -51,6 +51,8 @@ export default function DeveloperDashboard(props) {
         return <Statistics onRefresh={loadData} />;
       case 1:
         return <Activity onRefresh={loadData} />;
+      default:
+        return <View />;
     }
   };
 

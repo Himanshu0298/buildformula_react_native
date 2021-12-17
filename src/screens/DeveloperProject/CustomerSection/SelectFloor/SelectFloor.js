@@ -5,7 +5,7 @@ import TowerSelector from 'components/Molecules/TowerSelector';
 export default function SelectFloor(props) {
   const {navigation, route} = props;
 
-  const {selectedProject = {}} = useSelector(state => state.project);
+  const {selectedProject = {}} = useSelector(s => s.project);
 
   const {selectedStructure} = route?.params || {};
   const structureData = selectedProject.projectData?.[selectedStructure] || {};

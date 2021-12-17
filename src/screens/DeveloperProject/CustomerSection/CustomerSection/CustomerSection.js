@@ -78,8 +78,8 @@ function CustomerSection(props) {
     getAccountDetails,
   } = useCustomerActions();
 
-  const {user} = useSelector(state => state.user);
-  const {loading} = useSelector(state => state.customer);
+  const {user} = useSelector(s => s.user);
+  const {loading} = useSelector(s => s.customer);
   const {permissions, isProjectAdmin} = useSelector(s => s.project);
 
   const [selectedTab, setSelectedTab] = React.useState(0);
@@ -114,6 +114,8 @@ function CustomerSection(props) {
         return <ModifyRequest {...props} setSelectedTab={setSelectedTab} />;
       case 5:
         return <Files {...props} setSelectedTab={setSelectedTab} />;
+      default:
+        return <View />;
     }
   };
 

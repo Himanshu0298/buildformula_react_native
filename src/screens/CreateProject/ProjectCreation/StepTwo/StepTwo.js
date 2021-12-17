@@ -56,7 +56,7 @@ function StepTwo(props) {
   const snackbar = useSnackbar();
   const {createProject, getCities} = useAddProjectActions();
 
-  const {user} = useSelector(state => state.user);
+  const {user} = useSelector(s => s.user);
   const {loading, statesData, citiesData} = useSelector(s => s.addProject);
 
   const stateOptions = useMemo(() => {

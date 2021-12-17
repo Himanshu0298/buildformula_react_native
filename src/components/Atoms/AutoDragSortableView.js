@@ -1,4 +1,4 @@
-/* eslint-disable radix */
+/* eslint-disable */
 import React, {Component} from 'react';
 import {
   Animated,
@@ -19,7 +19,7 @@ const {width, height} = Dimensions.get('window');
 const defaultZIndex = 8;
 const touchZIndex = 99;
 
-export default class AutoDragSortableView extends Component {
+class AutoDragSortableView extends Component {
   constructor(props) {
     super(props);
 
@@ -839,3 +839,5 @@ const styles = StyleSheet.create({
     zIndex: defaultZIndex,
   },
 });
+
+export default AutoDragSortableView;

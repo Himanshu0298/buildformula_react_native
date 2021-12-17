@@ -168,7 +168,7 @@ function AddContactDialog({open, t, handleClose, moveContact}) {
   const [searchQuery, setSearchQuery] = React.useState();
   const [selectedVisitor, setSelectedVisitor] = React.useState();
 
-  const {visitorSuggestions} = useSelector(state => state.sales);
+  const {visitorSuggestions} = useSelector(s => s.sales);
 
   const filteredVisitors = React.useMemo(() => {
     if (searchQuery) {
@@ -239,7 +239,7 @@ function AddContactDialog({open, t, handleClose, moveContact}) {
 
               <Button
                 mode="contained"
-                disabled={isNaN(selectedVisitor)}
+                disabled={Number.isNaN(selectedVisitor)}
                 contentStyle={{paddingVertical: 3, paddingHorizontal: 10}}
                 theme={{roundness: 10}}
                 style={{marginTop: 20, width: '100%'}}
@@ -309,6 +309,8 @@ const RenderBoard = React.memo(props => {
     return new BoardRepository(data);
   }, [modulePermission, pipelines]);
 
+  const cardContent = item => <RenderContacts item={item} />;
+
   return (
     <View style={styles.boardContainer}>
       <Board
@@ -324,12 +326,12 @@ const RenderBoard = React.memo(props => {
             handleDelete={onDeletePipeline}
           />
         )}
-        cardContent={item => <RenderContacts item={item} />}
+        cardContent={cardContent}
         renderAddNew={() => <RenderAddNew handleAddNew={handleAddNew} />}
         onChangeTab={setSelectedTab}
         open={() => console.log('-----> open')}
         onDragEnd={(srcColumnId, destColumnId, draggedItem) => {
-          const {row} = draggedItem?.attributes;
+          const {row} = draggedItem?.attributes || {};
           if (row?.id && srcColumnId !== destColumnId) {
             moveContact(row.id);
           }
@@ -352,9 +354,9 @@ export default function SalesPipeline(props) {
     moveVisitor,
   } = useSalesActions();
 
-  const {pipelines, loading} = useSelector(state => state.sales);
-  const {selectedProject} = useSelector(state => state.project);
-  const {user} = useSelector(state => state.user);
+  const {pipelines, loading} = useSelector(s => s.sales);
+  const {selectedProject} = useSelector(s => s.project);
+  const {user} = useSelector(s => s.user);
 
   console.log('----->pipelines', pipelines);
   const myData = pipelines.sort((a, b) => (a.id > b.id ? 1 : -1));

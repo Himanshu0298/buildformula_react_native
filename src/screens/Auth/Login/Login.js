@@ -157,8 +157,8 @@ function Login(props) {
   const bottomSheetRef = React.createRef();
   const snackbar = useSnackbar();
 
-  const {loading} = useSelector(state => state.user);
-  const {project} = useSelector(state => state.addProject);
+  const {loading} = useSelector(s => s.user);
+  const {project} = useSelector(s => s.addProject);
 
   React.useEffect(() => {
     const focusUnsubscribe = navigation.addListener('focus', () => {
@@ -193,7 +193,7 @@ function Login(props) {
       const data = {email: values.email, password: values.password};
 
       const {value} = await login(data);
-      const {otp_verified, email_verified} = value?.data?.user;
+      const {otp_verified, email_verified} = value?.data?.user || {};
 
       if (otp_verified === 'N' || email_verified === 'N') {
         navigation.navigate('Otp', {fromLogin: true});

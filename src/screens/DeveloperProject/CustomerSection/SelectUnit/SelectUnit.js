@@ -9,9 +9,9 @@ export default function SelectUnit(props) {
 
   const {getUnitsBookingStatus} = useSalesActions();
 
-  const {selectedProject = {}} = useSelector(state => state.project);
+  const {selectedProject = {}} = useSelector(s => s.project);
   const {loadingUnitStatus, loading, unitBookingStatus} = useSelector(
-    state => state.sales,
+    s => s.sales,
   );
 
   const {selectedStructure, floorId, towerId} = route?.params || {};
@@ -38,6 +38,7 @@ export default function SelectUnit(props) {
       if (bookingData) {
         data[key] = {...data[key], ...bookingData};
       }
+      return key;
     });
 
     return data;

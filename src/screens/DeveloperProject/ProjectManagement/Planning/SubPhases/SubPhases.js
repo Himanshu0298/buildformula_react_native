@@ -178,7 +178,7 @@ function SubPhases(props) {
     deleteSubPhase,
   } = useProjectManagementActions();
 
-  const {selectedProject} = useSelector(state => state.project);
+  const {selectedProject} = useSelector(s => s.project);
   const {loading, refreshing, subPhases} = useSelector(
     s => s.projectManagement,
   );
@@ -257,6 +257,8 @@ function SubPhases(props) {
     });
   };
 
+  const emptyComponent = () => <EmptyComponent />;
+
   return (
     <View style={styles.container}>
       <Spinner visible={loading} textContent="" />
@@ -290,7 +292,7 @@ function SubPhases(props) {
         extraData={subPhases}
         contentContainerStyle={{flexGrow: 1}}
         keyExtractor={(_, i) => i.toString()}
-        ListEmptyComponent={() => <EmptyComponent />}
+        ListEmptyComponent={emptyComponent}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}

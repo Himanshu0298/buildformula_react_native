@@ -227,7 +227,7 @@ function SubPhasesActivity(props) {
     updateGeneralActivity,
   } = useProjectManagementActions();
 
-  const {selectedProject} = useSelector(state => state.project);
+  const {selectedProject} = useSelector(s => s.project);
   const {loading, activities} = useSelector(s => s.projectManagement);
 
   const [menuIndex, setMenuIndex] = React.useState(false);
@@ -300,6 +300,8 @@ function SubPhasesActivity(props) {
     }
   };
 
+  const emptyComponent = () => <EmptyComponent />;
+
   return (
     <View style={styles.container}>
       <Spinner visible={loading} textContent="" />
@@ -333,7 +335,7 @@ function SubPhasesActivity(props) {
         extraData={activities}
         contentContainerStyle={{flexGrow: 1}}
         keyExtractor={(_, i) => i.toString()}
-        ListEmptyComponent={() => <EmptyComponent />}
+        ListEmptyComponent={emptyComponent}
         refreshControl={
           <RefreshControl refreshing={false} onRefresh={() => getList(true)} />
         }

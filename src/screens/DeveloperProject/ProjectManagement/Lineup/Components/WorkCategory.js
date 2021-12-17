@@ -42,6 +42,8 @@ function getUnitLabel(units, id) {
   return unit?.label;
 }
 
+const itemSeparatorComponent = () => <Divider />;
+
 function AddWorkCategoryDialog(props) {
   const {visible, selectedCategory, toggleDialog, onSubmit} = props;
 
@@ -319,7 +321,7 @@ function RenderWorkCategories(props) {
           extraData={data}
           keyExtractor={(_, i) => i.toString()}
           contentContainerStyle={{flexGrow: 1}}
-          ItemSeparatorComponent={() => <Divider />}
+          ItemSeparatorComponent={itemSeparatorComponent}
           ListEmptyComponent={<NoResult />}
           refreshControl={
             <RefreshControl
@@ -363,7 +365,7 @@ function RenderWorks(props) {
 
   const alert = useAlert();
 
-  const {commonData} = useSelector(state => state.project);
+  const {commonData} = useSelector(s => s.project);
 
   const unitOptions = useMemo(() => {
     return commonData.units.map(({id, title}) => ({label: title, value: id}));
@@ -455,7 +457,7 @@ function RenderWorks(props) {
           extraData={data}
           keyExtractor={(_, i) => i.toString()}
           contentContainerStyle={{flexGrow: 1}}
-          ItemSeparatorComponent={() => <Divider />}
+          ItemSeparatorComponent={itemSeparatorComponent}
           ListEmptyComponent={<NoResult title="No work activities found!" />}
           renderItem={({item, index}) => (
             <RenderActivity
@@ -486,7 +488,7 @@ function WorkCategory(props) {
 
   const [selectedWork, setSelectedWork] = useState();
 
-  const {workCategories, works} = useSelector(state => state.projectManagement);
+  const {workCategories, works} = useSelector(s => s.projectManagement);
 
   const {getWorks} = useProjectManagementActions();
 

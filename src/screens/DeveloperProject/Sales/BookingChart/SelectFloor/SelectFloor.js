@@ -9,7 +9,7 @@ function SelectFloor(props) {
   const {route, navigation} = props;
   const {selectedStructure, towerType, towerId} = route?.params || {};
 
-  const {selectedProject} = useSelector(state => state.project);
+  const {selectedProject} = useSelector(s => s.project);
 
   const structureData = selectedProject.projectData?.[selectedStructure] || {};
 

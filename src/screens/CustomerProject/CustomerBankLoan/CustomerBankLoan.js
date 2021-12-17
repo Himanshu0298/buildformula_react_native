@@ -7,7 +7,7 @@ import {BankLoans} from 'screens/DeveloperProject/CustomerSection/CustomerSectio
 function CustomerBankLoan(props) {
   const {navigation} = props;
 
-  const {loading, selectedUnit} = useSelector(state => state.project);
+  const {loading, selectedUnit} = useSelector(s => s.project);
   const {loading: customerDataLoading} = useSelector(s => s.customer);
 
   React.useEffect(() => {

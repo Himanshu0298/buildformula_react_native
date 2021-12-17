@@ -10,6 +10,7 @@ import ProjectHeader from 'components/Molecules/Layout/ProjectHeader';
 import {TabView} from 'react-native-tab-view';
 import Layout from 'utils/Layout';
 import MaterialTabBar from 'components/Atoms/MaterialTabBar';
+import {useSalesLoading} from 'redux/selectors';
 import Details from './Components/Details';
 import Activities from './Components/Activities';
 
@@ -28,14 +29,15 @@ function VisitorDetails(props) {
     {key: 1, title: 'Activity'},
   ]);
 
-  const {selectedProject} = useSelector(state => state.project);
+  const {selectedProject} = useSelector(s => s.project);
   const {
-    loading,
     visitor,
     pipelines,
     occupationOptions,
     sourceTypeOptions,
   } = useSelector(s => s.sales);
+
+  const loading = useSalesLoading();
 
   useEffect(() => {
     getVisitor({project_id: selectedProject.id, visitor_id: visitorId});
@@ -69,6 +71,8 @@ function VisitorDetails(props) {
         return (
           <Activities filter={activityFilter} setFilter={setActivityFilter} />
         );
+      default:
+        return null;
     }
   };
 

@@ -231,9 +231,9 @@ function AddCustomer(props) {
   const {params} = route;
   const {unit} = params;
   const {t} = useTranslation();
-  const {user} = useSelector(state => state.user);
-  const {selectedProject} = useSelector(state => state.project);
-  const {loading} = useSelector(state => state.customer);
+  const {user} = useSelector(s => s.user);
+  const {selectedProject} = useSelector(s => s.project);
+  const {loading} = useSelector(s => s.customer);
 
   const {getCustomerDetails, addCustomer} = useCustomerActions();
 

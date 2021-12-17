@@ -143,7 +143,7 @@ function ResetPassword(props) {
 
   const bottomSheetRef = React.createRef();
 
-  const {loading} = useSelector(state => state.user);
+  const {loading} = useSelector(s => s.user);
 
   return (
     <Formik

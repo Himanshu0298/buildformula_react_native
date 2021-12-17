@@ -204,7 +204,7 @@ function validateUnits({
   let error = '';
   let allValid = true;
   if (selectedStructureType === 1 || selectedStructureType === 4) {
-    for (let i = 1; i <= unitCount; i++) {
+    for (let i = 1; i <= unitCount; i += 1) {
       if (!units[i].bhk) {
         allValid = false;
         error = `Assign BHK to unit ${getUnitLabel(selectedFloor, i)}`;
@@ -235,7 +235,7 @@ function validateTowers(data, selectedStructureType) {
     Object.keys(towers).map(towerId => {
       result[towerId] = true;
       const {floors = {}, floorCount} = towers[towerId] || {};
-      if (isNaN(floorCount)) {
+      if (Number.isNaN(floorCount)) {
         // check if floorCount is null
         result[towerId] = false;
         allValid = false;
@@ -247,7 +247,7 @@ function validateTowers(data, selectedStructureType) {
       } else {
         Object.keys(floors).map(floorId => {
           // check if all floors has 0 or more units
-          if (isNaN(floors?.[floorId]?.unitCount)) {
+          if (Number.isNaN(floors?.[floorId]?.unitCount)) {
             result[towerId] = false;
             allValid = false;
             if (!error) {
@@ -270,8 +270,12 @@ function validateTowers(data, selectedStructureType) {
               )}`;
             }
           }
+
+          return floorId;
         });
       }
+
+      return towerId;
     });
   } else {
     const {units, unitCount} = data;
@@ -301,10 +305,10 @@ function StepTwo(props) {
   const snackbar = useSnackbar();
 
   let {structure, structureTypes, selectedStructureType, loading} = useSelector(
-    state => state.addProject,
+    s => s.addProject,
   );
-  const {project} = useSelector(state => state.addProject);
-  const {user} = useSelector(state => state.user);
+  const {project} = useSelector(s => s.addProject);
+  const {user} = useSelector(s => s.user);
 
   const [showModal, setShowModal] = useState(false);
   const [selectedTab, setSelectedTab] = useState(
@@ -460,6 +464,7 @@ function StepTwo(props) {
     const _towers = cloneDeep(towers);
     duplicateTo.map(key => {
       _towers[key] = fromTower;
+      return key;
     });
 
     updateStructure({
@@ -480,6 +485,7 @@ function StepTwo(props) {
     const _floors = cloneDeep(floors);
     duplicateTo.map(key => {
       _floors[key] = fromFloor;
+      return key;
     });
 
     updateStructure({
@@ -585,12 +591,15 @@ function StepTwo(props) {
           )} : tower ${getTowerLabel(selectedTower)} > ${getFloorNumber(
             selectedFloor,
           )}`;
+
+        default:
       }
     } else if (selectedStructureType === 4) {
       return t('projectStructureSubtitleBungalows');
     } else if (selectedStructureType === 5) {
       return t('projectStructureSubtitlePlots');
     }
+    return '';
   };
 
   return (
@@ -638,6 +647,7 @@ function StepTwo(props) {
                       />
                     );
                   }
+                  return null;
                 })}
               </Menu>
             </View>
@@ -655,9 +665,7 @@ function StepTwo(props) {
             inactiveTextColor="#919191"
             activeTextColor={theme.colors.primary}
             uppercase={false}
-            textStyle={{
-              fontFamily: 'Nunito-Regular',
-            }}
+            textStyle={{fontFamily: 'Nunito-Regular'}}
           />
         ) : null}
       </View>

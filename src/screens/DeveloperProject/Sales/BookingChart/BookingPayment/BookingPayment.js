@@ -854,7 +854,7 @@ function BookingPayments(props) {
 
   const {createBooking, getBankList} = useSalesActions();
 
-  const {bankList} = useSelector(state => state.sales);
+  const {bankList} = useSelector(s => s.sales);
 
   useEffect(() => {
     getBankList();

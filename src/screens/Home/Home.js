@@ -73,7 +73,7 @@ function Home(props) {
 
   const [selectedTab, setSelectedTab] = useState(0);
 
-  const {loading, projects} = useSelector(state => state.project);
+  const {loading, projects} = useSelector(s => s.project);
 
   const {getProjects} = useProjectActions();
   const {setProjectData} = useAddProjectActions();

@@ -63,7 +63,7 @@ function RenderMenuModal(props) {
 
   const bottomSheetRef = useRef();
   const fall = new Animated.Value(1);
-  const open = !isNaN(menuId);
+  const open = !Number.isNaN(menuId);
 
   useEffect(() => {
     if (open) {
@@ -135,7 +135,7 @@ function Files(props) {
 
   const {loading, versionData} = useSelector(s => s.files);
   const {selectedProject} = useSelector(s => s.project);
-  const {user} = useSelector(state => state.user);
+  const {user} = useSelector(s => s.user);
 
   const project_id = selectedProject.id;
   const user_id = user?.id;

@@ -19,7 +19,7 @@ function StepTwo(props) {
 
   const {sendForgetPasswordOtp, verifyForgotPasswordOtp} = useUserActions();
 
-  const {user, loading} = useSelector(state => state.user);
+  const {user, loading} = useSelector(s => s.user);
 
   useEffect(() => {
     sendForgetPasswordOtp({email: user.email});

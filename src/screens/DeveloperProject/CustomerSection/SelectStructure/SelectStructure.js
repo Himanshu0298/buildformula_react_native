@@ -7,8 +7,8 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import StructureSelector from 'components/Molecules/StructureSelector';
 
 function SelectStructure({navigation}) {
-  const {selectedProject} = useSelector(state => state.project);
-  const {loading} = useSelector(state => state.customer);
+  const {selectedProject} = useSelector(s => s.project);
+  const {loading} = useSelector(s => s.customer);
 
   const {projectData} = selectedProject;
   const projectTypes = Object.keys(projectData)?.map(v => Number(v)) || [];
