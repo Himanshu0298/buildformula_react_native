@@ -108,7 +108,8 @@ function BookingFormOnHold(props) {
 
   const {bookingHoldDetails} = useSelector(s => s.sales);
   const loading = useSalesLoading();
-  const {holdbyUserInfo, holdHistoryList} = bookingHoldDetails || {};
+  const {current_Hold_By_User_Details: userInfo, holdHistoryList} =
+    bookingHoldDetails || {};
 
   const {
     getHoldBookingDetails,
@@ -216,7 +217,7 @@ function BookingFormOnHold(props) {
         {propertyBooked ? (
           <PropertyHoldUserDetails
             bookingDetails={propertyBooked}
-            userInfo={holdbyUserInfo}
+            userInfo={userInfo}
             handleUnHold={handleUnHold}
           />
         ) : (

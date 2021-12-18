@@ -10,7 +10,7 @@ import {
 import {Subheading} from 'react-native-paper';
 import {BHK_OPTIONS} from 'utils/constant';
 import PropTypes from 'prop-types';
-import RenderUnits from './RenderUnit';
+import RenderUnit from './RenderUnit';
 
 function BhkList({onPress, selectedBhk}) {
   return (
@@ -67,7 +67,7 @@ function UnitSelector(props) {
           ) : null
         }
         renderItem={({item, index}) => (
-          <RenderUnits
+          <RenderUnit
             key={index.toString()}
             unitId={item}
             unit={units[item]}

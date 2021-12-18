@@ -10,7 +10,7 @@ import * as Yup from 'yup';
 import RenderInput from 'components/Atoms/RenderInput';
 import {useTranslation} from 'react-i18next';
 import RenderSelect from 'components/Atoms/RenderSelect';
-import {PRIORITY_COLORS} from 'utils/constant';
+import {PHONE_REGEX, PRIORITY_COLORS} from 'utils/constant';
 import Radio from 'components/Atoms/Radio';
 import useSalesActions from 'redux/actions/salesActions';
 import dayjs from 'dayjs';
@@ -20,6 +20,7 @@ import MaterialTabBar from 'components/Atoms/MaterialTabBar';
 import RenderTextBox from 'components/Atoms/RenderTextbox';
 import _ from 'lodash';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import ActionButtons from 'components/Atoms/ActionButtons';
 
 const customParseFormat = require('dayjs/plugin/customParseFormat');
 
@@ -32,7 +33,12 @@ const schema = Yup.object().shape({
   priority: Yup.string().notOneOf(defaultPriority, 'Select an option'),
   last_name: Yup.string('Invalid').required('Required'),
   email: Yup.string('Invalid').email('Invalid'),
-  phone: Yup.number('Invalid').required('Required'),
+  phone: Yup.string()
+    .label('phone')
+    .required('required')
+    .matches(PHONE_REGEX, 'Phone number is not valid')
+    .min(10, 'too short')
+    .max(10, 'too long'),
   occupation: Yup.string('Invalid'),
   other_occupation: Yup.string('Invalid').when('occupation', {
     is: 0,
@@ -321,23 +327,12 @@ function InquiryTab(props) {
             error={errors.remark}
           />
         </View>
-        <View style={styles.actionContainer}>
-          <Button
-            style={{flex: 1, marginHorizontal: 5}}
-            contentStyle={{padding: 3}}
-            theme={{roundness: 15}}
-            onPress={() => setSelectedTab(0)}>
-            Back
-          </Button>
-          <Button
-            style={{flex: 1, marginHorizontal: 5}}
-            mode="contained"
-            contentStyle={{padding: 3}}
-            theme={{roundness: 15}}
-            onPress={handleSubmit}>
-            {edit ? 'Update' : 'Save'}
-          </Button>
-        </View>
+        <ActionButtons
+          cancelLabel="Back"
+          submitLabel={edit ? 'Update' : 'Save'}
+          onCancel={() => setSelectedTab(0)}
+          onSubmit={handleSubmit}
+        />
       </View>
     </KeyboardAwareScrollView>
   );
@@ -574,5 +569,12 @@ const styles = StyleSheet.create({
   },
   radioContainer: {
     flexDirection: 'row',
+  },
+  actionButton: {
+    flex: 1,
+    marginHorizontal: 5,
+  },
+  buttonLabel: {
+    padding: 3,
   },
 });

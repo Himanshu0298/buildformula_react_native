@@ -6,12 +6,11 @@ import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import useProjectActions from 'redux/actions/projectActions';
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
+import {useProjectLoading} from 'redux/selectors';
 
 function ProjectCard(props) {
   const {navigation, theme, project} = props;
   const {company_name, id, project_id} = project;
-
-  console.log('----->id in first scren', id);
 
   const status = useMemo(() => {
     return new Date(project.expired_date) > new Date() ? 'ACTIVE' : 'EXPIRE';
@@ -55,7 +54,8 @@ function ProjectCard(props) {
 }
 
 function PurchasedProjects(props) {
-  const {loading, purchasedProjects} = useSelector(s => s.project);
+  const {purchasedProjects} = useSelector(s => s.project);
+  const loading = useProjectLoading();
 
   const {getPurchasedProjects} = useProjectActions();
 

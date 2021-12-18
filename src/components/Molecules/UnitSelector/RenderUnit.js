@@ -15,9 +15,9 @@ export const BOOKING_STATUS_STYLES = {
     badge: <MaterialCommunityIcons name="pencil" color="#fff" />,
   },
   3: {
-    title: 'On hold',
-    color: '#FF7700',
-    badge: <MaterialIcons name="hourglass-full" color="#fff" />,
+    title: 'Reserved',
+    color: '#041D36',
+    badge: <MaterialCommunityIcons name="minus" color="#fff" />,
   },
   4: {
     title: 'Booked',
@@ -25,9 +25,9 @@ export const BOOKING_STATUS_STYLES = {
     badge: <MaterialCommunityIcons name="check" color="#fff" />,
   },
   5: {
-    title: 'Reserved',
-    color: '#041D36',
-    badge: <MaterialCommunityIcons name="minus" color="#fff" />,
+    title: 'On hold',
+    color: '#FF7700',
+    badge: <MaterialIcons name="hourglass-full" color="#fff" />,
   },
   6: {
     title: 'Resale',

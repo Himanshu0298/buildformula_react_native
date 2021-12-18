@@ -2,22 +2,14 @@ import React from 'react';
 import {Subheading, Badge, Avatar, withTheme} from 'react-native-paper';
 import {View, TouchableOpacity, StyleSheet, Image} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useSelector} from 'react-redux';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import Timer from 'components/Atoms/Timer';
 import logo from 'assets/images/logo.png';
 import UserAvatar from 'components/Atoms/UserAvatar';
 
 function ProjectHeader(props) {
-  const {
-    theme,
-    navigation,
-    showTimer,
-    showLogo,
-    showHeaderIcons = true,
-  } = props;
+  const {navigation, showTimer, showLogo, showHeaderIcons = true} = props;
 
   const {selectedProject} = useSelector(s => s.project);
   const {projectNotifications} = useSelector(s => s.notification);

@@ -11,6 +11,7 @@ import useSalesActions from 'redux/actions/salesActions';
 import {getShadow} from 'utils';
 import {secondaryTheme} from 'styles/theme';
 import Spinner from 'react-native-loading-spinner-overlay';
+import {useSalesLoading} from 'redux/selectors';
 
 const ROW_HEIGHT = 50;
 
@@ -36,8 +37,9 @@ function RenderPipeline(props) {
 function SalesPipelineRearrange(props) {
   const {navigation} = props;
 
-  const {pipelinesOrderList, loading} = useSelector(s => s.sales);
+  const {pipelinesOrderList} = useSelector(s => s.sales);
   const {selectedProject} = useSelector(s => s.project);
+  const loading = useSalesLoading();
 
   const {
     getPipelinesOrderList,

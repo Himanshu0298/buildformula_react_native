@@ -5,12 +5,13 @@ import {theme} from 'styles/theme';
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
 import StructureSelector from 'components/Molecules/StructureSelector';
+import {useSalesLoading} from 'redux/selectors';
 
 function SelectStructure(props) {
   const {navigation} = props;
 
   const {selectedProject} = useSelector(s => s.project);
-  const {loading} = useSelector(s => s.sales);
+  const loading = useSalesLoading();
 
   const {projectData = {}} = selectedProject;
   const projectTypes = Object.keys(projectData)?.map(v => Number(v)) || [];

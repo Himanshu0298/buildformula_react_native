@@ -30,6 +30,7 @@ import {useAlert} from 'components/Atoms/Alert';
 import {getPermissions, getShadow} from 'utils';
 import RenderInput from 'components/Atoms/RenderInput';
 import {useTranslation} from 'react-i18next';
+import {useSalesLoading} from 'redux/selectors';
 // import {BoardRepository, Board} from 'react-native-draganddrop-board';
 
 function RenderContacts({item}) {
@@ -354,9 +355,11 @@ export default function SalesPipeline(props) {
     moveVisitor,
   } = useSalesActions();
 
-  const {pipelines, loading} = useSelector(s => s.sales);
+  const {pipelines} = useSelector(s => s.sales);
   const {selectedProject} = useSelector(s => s.project);
   const {user} = useSelector(s => s.user);
+
+  const loading = useSalesLoading();
 
   console.log('----->pipelines', pipelines);
   const myData = pipelines.sort((a, b) => (a.id > b.id ? 1 : -1));

@@ -8,6 +8,7 @@ import * as Yup from 'yup';
 import {Formik} from 'formik';
 import RenderInput from 'components/Atoms/RenderInput';
 import {useSalesLoading} from 'redux/selectors';
+import {PHONE_REGEX} from 'utils/constant';
 
 const schema = Yup.object().shape({
   first_name: Yup.string()
@@ -19,8 +20,9 @@ const schema = Yup.object().shape({
   phone: Yup.string()
     .label('phone')
     .required('required')
-    .min(10, 'to short')
-    .max(10, 'to long'),
+    .matches(PHONE_REGEX, 'Phone number is not valid')
+    .min(10, 'too short')
+    .max(10, 'too long'),
   email: Yup.string()
     .email('Please enter a valid email')
     .label('email')
@@ -132,13 +134,15 @@ function AddBroker(props) {
               />
               <View style={styles.dialogActionContainer}>
                 <Button
-                  style={styles.Button}
+                  style={styles.actionButton}
+                  contentStyle={styles.buttonLabel}
                   mode="text"
                   onPress={navigation.goBack}>
                   Cancel
                 </Button>
                 <Button
-                  style={styles.Button}
+                  style={styles.actionButton}
+                  contentStyle={styles.buttonLabel}
                   mode="contained"
                   onPress={handleSubmit}>
                   Save
@@ -161,11 +165,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: 20,
   },
-  Button: {
-    margin: 10,
-    borderRadius: 15,
-  },
   input: {
     marginTop: 10,
+  },
+  actionButton: {
+    flex: 1,
+    marginHorizontal: 5,
+  },
+  buttonLabel: {
+    padding: 3,
   },
 });

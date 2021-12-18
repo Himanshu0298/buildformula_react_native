@@ -44,17 +44,17 @@ const USER_SCHEMA = {
   firstName: Yup.string()
     .label('firstName')
     .required('required')
-    .min(3, 'to short'),
+    .min(3, 'too short'),
   lastName: Yup.string()
     .label('firstName')
     .required('required')
-    .min(3, 'to short'),
+    .min(3, 'too short'),
   phone: Yup.string()
     .label('phone')
     .required('required')
     .matches(PHONE_REGEX, 'Phone number is not valid')
-    .min(10, 'to short')
-    .max(10, 'to long'),
+    .min(10, 'too short')
+    .max(10, 'too long'),
   email: Yup.string()
     .email('Please enter a valid email')
     .label('email')

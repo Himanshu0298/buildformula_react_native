@@ -9,6 +9,7 @@ import useProjectActions from 'redux/actions/projectActions';
 import Layout from 'utils/Layout';
 import {Subheading} from 'react-native-paper';
 import useNotificationActions from 'redux/actions/notificationActions';
+import {useProjectLoading} from 'redux/selectors';
 import Statistics from './Components/Statistics';
 import Activity from './Components/Activity';
 
@@ -24,7 +25,7 @@ export default function DeveloperDashboard(props) {
   } = useProjectActions();
   const {getProjectNotifications} = useNotificationActions();
 
-  const {loading} = useSelector(s => s.project);
+  const loading = useProjectLoading();
 
   const [selectedTab, setSelectedTab] = useState(0);
   const [routes] = React.useState([

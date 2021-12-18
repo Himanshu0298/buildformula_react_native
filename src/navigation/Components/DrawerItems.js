@@ -44,7 +44,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
         route: 'BrokerStack',
         label: 'Broker List',
         icon: ({color, size}) => (
-          <MaterialIcons name="library-books" {...{color, size}} />
+          <MaterialIcons name="recent-actors" {...{color, size}} />
         ),
       },
     ],
@@ -56,7 +56,10 @@ export const DEVELOPER_DRAWER_ITEMS = [
         route: 'CustomerSection',
         label: 'Customer Section',
         icon: ({color, size}) => (
-          <MaterialIcons name="recent-actors" {...{color, size}} />
+          <MaterialCommunityIcons
+            name="account-multiple-outline"
+            {...{color, size}}
+          />
         ),
       },
     ],

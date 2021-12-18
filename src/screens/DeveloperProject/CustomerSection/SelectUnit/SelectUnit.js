@@ -3,6 +3,7 @@ import {useSelector} from 'react-redux';
 import useSalesActions from 'redux/actions/salesActions';
 import Spinner from 'react-native-loading-spinner-overlay';
 import UnitSelector from 'components/Molecules/UnitSelector';
+import {useSalesLoading} from 'redux/selectors';
 
 export default function SelectUnit(props) {
   const {navigation, route} = props;
@@ -10,9 +11,8 @@ export default function SelectUnit(props) {
   const {getUnitsBookingStatus} = useSalesActions();
 
   const {selectedProject = {}} = useSelector(s => s.project);
-  const {loadingUnitStatus, loading, unitBookingStatus} = useSelector(
-    s => s.sales,
-  );
+  const {unitBookingStatus} = useSelector(s => s.sales);
+  const loading = useSalesLoading();
 
   const {selectedStructure, floorId, towerId} = route?.params || {};
   const structureData = selectedProject.projectData?.[selectedStructure] || {};
@@ -46,7 +46,6 @@ export default function SelectUnit(props) {
 
   const checkUnitDisability = ({status}) => {
     return ![3, 4].includes(status);
-    // return false;
   };
 
   const fetchUnitsBookingStatus = () => {
@@ -68,7 +67,7 @@ export default function SelectUnit(props) {
 
   return (
     <>
-      <Spinner visible={loading || loadingUnitStatus} textContent="" />
+      <Spinner visible={loading} textContent="" />
       <UnitSelector
         title="title_customer_section"
         subtitle="subtitle_customer_section"

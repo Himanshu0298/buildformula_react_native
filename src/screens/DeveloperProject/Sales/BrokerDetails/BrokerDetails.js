@@ -10,6 +10,7 @@ import {TabView} from 'react-native-tab-view';
 import Layout from 'utils/Layout';
 import MaterialTabBar from 'components/Atoms/MaterialTabBar';
 import {theme} from 'styles/theme';
+import {useSalesLoading} from 'redux/selectors';
 import BrokerInfo from './Components/BrokerInfo';
 import DealsClosed from './Components/DealsClosed';
 
@@ -20,7 +21,8 @@ function BrokerDetails(props) {
   const {getBrokerDetails} = useSalesActions();
 
   const {selectedProject} = useSelector(s => s.project);
-  const {loading, brokerDetails} = useSelector(s => s.sales);
+  const {brokerDetails} = useSelector(s => s.sales);
+  const loading = useSalesLoading();
 
   const projectId = selectedProject.id;
 

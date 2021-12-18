@@ -208,7 +208,7 @@ function DrawerContent(props) {
           <Button
             icon="arrow-expand-left"
             onPress={() => navigation.toggleDrawer()}
-            style={{width: 100, marginBottom: 5}}>
+            style={styles.backIcon}>
             Back
           </Button>
         </View>
@@ -244,6 +244,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginLeft: 10,
     fontSize: 14,
+  },
+  backIcon: {
+    width: 100,
+    marginBottom: 5,
   },
 });
 

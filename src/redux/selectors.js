@@ -9,7 +9,7 @@ export function useProjectLoading() {
     loadingPurchaseData,
     loadingPurchaseDetails,
     loadingProjectCommonData,
-  } = useSelector(s => s.sales);
+  } = useSelector(s => s.project);
 
   return (
     loadingProject ||

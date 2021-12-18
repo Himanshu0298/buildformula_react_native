@@ -2,11 +2,12 @@ import * as React from 'react';
 import {StyleSheet, View} from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {useSelector} from 'react-redux';
+import {useProjectLoading} from 'redux/selectors';
 import {Files} from 'screens/DeveloperProject/CustomerSection/CustomerSection/Components';
 
 function CustomerFiles(props) {
-  const {loading} = useSelector(s => s.project);
   const {loading: customerDataLoading} = useSelector(s => s.customer);
+  const loading = useProjectLoading();
 
   return (
     <View style={styles.container}>

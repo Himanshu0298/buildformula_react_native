@@ -14,6 +14,7 @@ import {
   Caption,
   withTheme,
 } from 'react-native-paper';
+import {useProjectLoading} from 'redux/selectors';
 
 function InvoiceCard(props) {
   const {date, number, amount, navigation} = props;
@@ -58,9 +59,8 @@ function ProjectDetails(props) {
 
   const {id} = route?.params || {};
 
-  const {loading, purchaseProjectDetails} = useSelector(s => s.project);
-  console.log('----->purchaseProjectDetails', purchaseProjectDetails);
-  console.log('----->id', id);
+  const {purchaseProjectDetails} = useSelector(s => s.project);
+  const loading = useProjectLoading();
 
   const {getPurchaseProjectDetails} = useProjectActions();
 
@@ -68,11 +68,6 @@ function ProjectDetails(props) {
     getPurchaseProjectDetails(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  // var date1 = new Date();
-
-  // var Difference_In_Time = date2.getTime() - date1.getTime();
-  // var Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
 
   const {
     company_name,
@@ -86,16 +81,12 @@ function ProjectDetails(props) {
   const date2 = new Date(expired_date);
   const date1 = new Date();
 
-  console.log('----->date2', date2);
-  console.log('----->date1', date1);
-
   const Difference_In_Time = date2.getTime() - date1.getTime();
   const Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
 
-  console.log('----->Difference_In_Days', Difference_In_Days);
-
   return (
     <View style={{flexGrow: 1}}>
+      <Spinner visible={loading} textContent="" />
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{padding: 15}}>

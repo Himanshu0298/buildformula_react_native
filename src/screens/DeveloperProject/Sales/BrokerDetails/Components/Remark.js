@@ -13,13 +13,12 @@ const schema = Yup.object().shape({
   remark: Yup.string('Invalid').required('Required'),
 });
 
+// TODO: review this
 function Remark(props) {
   const {navigation, route} = props;
   const {remark} = route?.params || {};
 
   const isHtml = remark?.includes('<') && remark?.includes('>');
-
-  console.log('----->remark', remark);
 
   const {selectedProject} = useSelector(s => s.project);
   const {deleteBroker} = useSalesActions();

@@ -93,10 +93,7 @@ function Statistics(props) {
                 labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
               }}
               bezier
-              style={{
-                marginTop: 8,
-                marginLeft: -10,
-              }}
+              style={{marginTop: 8, marginLeft: -10}}
             />
           </View>
         ) : null}
@@ -156,10 +153,7 @@ function Statistics(props) {
                 labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
                 propsForHorizontalLabels: {paddingBottom: 100},
               }}
-              style={{
-                marginTop: 8,
-                marginLeft: -50,
-              }}
+              style={{marginTop: 8, marginLeft: -50}}
             />
           </View>
         ) : null}
