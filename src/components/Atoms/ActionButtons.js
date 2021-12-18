@@ -1,6 +1,7 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Button} from 'react-native-paper';
+import PropTypes from 'prop-types';
 
 function ActionButtons(props) {
   const {cancelLabel, submitLabel, style, onCancel, onSubmit} = props;
@@ -42,5 +43,17 @@ const styles = StyleSheet.create({
     padding: 3,
   },
 });
+
+ActionButtons.defaultProps = {
+  cancelLabel: 'Cancel',
+  submitLabel: 'Save',
+};
+
+ActionButtons.propTypes = {
+  cancelLabel: PropTypes.string,
+  submitLabel: PropTypes.string,
+  onCancel: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+};
 
 export default ActionButtons;

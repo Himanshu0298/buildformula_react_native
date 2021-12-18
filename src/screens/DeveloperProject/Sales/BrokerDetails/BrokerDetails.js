@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, View} from 'react-native';
-import {Text, withTheme, IconButton, Title} from 'react-native-paper';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {withTheme, IconButton, Subheading} from 'react-native-paper';
 import {getShadow} from 'utils';
 import useSalesActions from 'redux/actions/salesActions';
 import {useSelector} from 'react-redux';
@@ -46,15 +46,15 @@ function BrokerDetails(props) {
       case 0:
         return (
           <BrokerInfo
+            {...props}
             brokerInfo={brokerDetails.brokerInfo}
             userData={userData}
-            navigation={navigation}
           />
         );
       case 1:
         return (
           <DealsClosed
-            navigation={navigation}
+            {...props}
             dealsClosed={brokerDetails.dealClosedInfo || []}
           />
         );
@@ -77,17 +77,18 @@ function BrokerDetails(props) {
             return (
               <View style={styles.headerContainer}>
                 <ProjectHeader {...props} />
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <TouchableOpacity
+                  style={styles.headingContainer}
+                  onPress={navigation.goBack}>
                   <IconButton
                     icon="keyboard-backspace"
                     size={30}
                     color={theme.colors.primary}
-                    onPress={() => navigation.goBack()}
                   />
-                  <Title style={{color: theme.colors.primary}}>
+                  <Subheading style={{color: theme.colors.primary}}>
                     Broker Details
-                  </Title>
-                </View>
+                  </Subheading>
+                </TouchableOpacity>
                 <MaterialTabBar {...tabBarProps} />
               </View>
             );
@@ -106,6 +107,10 @@ const styles = StyleSheet.create({
   body: {
     flex: 1,
     position: 'relative',
+  },
+  headingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 });
 
