@@ -64,51 +64,51 @@ export const DEVELOPER_DRAWER_ITEMS = [
       },
     ],
   },
-  {
-    title: 'PROJECT MANAGEMENT',
-    routes: [
-      {
-        route: 'Lineup',
-        label: 'Lineup',
-        icon: ({color, size}) => (
-          <MaterialIcons name="house-siding" {...{color, size}} />
-        ),
-      },
-      {
-        id: 5,
-        route: 'Planning',
-        label: 'Planning',
-        icon: ({color, size}) => (
-          <MaterialIcons name="toc" {...{color, size}} />
-        ),
-      },
-      {
-        id: 6,
-        route: 'Execution',
-        label: 'Execution',
-        icon: 'format-list-checks',
-      },
-      // {
-      //   route: 'MainPhase',
-      //   label: 'Main Phase',
-      //   icon: 'clock-outline',
-      // },
+  // {
+  //   title: 'PROJECT MANAGEMENT',
+  //   routes: [
+  //     {
+  //       route: 'Lineup',
+  //       label: 'Lineup',
+  //       icon: ({color, size}) => (
+  //         <MaterialIcons name="house-siding" {...{color, size}} />
+  //       ),
+  //     },
+  //     {
+  //       id: 5,
+  //       route: 'Planning',
+  //       label: 'Planning',
+  //       icon: ({color, size}) => (
+  //         <MaterialIcons name="toc" {...{color, size}} />
+  //       ),
+  //     },
+  //     {
+  //       id: 6,
+  //       route: 'Execution',
+  //       label: 'Execution',
+  //       icon: 'format-list-checks',
+  //     },
+  // {
+  //   route: 'MainPhase',
+  //   label: 'Main Phase',
+  //   icon: 'clock-outline',
+  // },
 
-      //     {
-      //       route: 'ProcessChart',
-      //       label: 'Process Chart',
-      //       activeIcon: ({color, size}) => (
-      //         <Image
-      //           source={ProcessIconActive}
-      //           style={{height: size, width: size}}
-      //         />
-      //       ),
-      //       inactiveIcon: ({color, size}) => (
-      //         <Image source={ProcessIcon} style={{height: size, width: size}} />
-      //       ),
-      //     },
-    ],
-  },
+  //     {
+  //       route: 'ProcessChart',
+  //       label: 'Process Chart',
+  //       activeIcon: ({color, size}) => (
+  //         <Image
+  //           source={ProcessIconActive}
+  //           style={{height: size, width: size}}
+  //         />
+  //       ),
+  //       inactiveIcon: ({color, size}) => (
+  //         <Image source={ProcessIcon} style={{height: size, width: size}} />
+  //       ),
+  //     },
+  //   ],
+  // },
   // {
   //   title: 'MATERIAL MANAGEMENT',
   //   routes: [

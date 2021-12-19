@@ -1,11 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, View} from 'react-native';
-import {withTheme, FAB, Text, IconButton, Title} from 'react-native-paper';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {withTheme, FAB, IconButton, Subheading} from 'react-native-paper';
 import {getPermissions, getShadow} from 'utils';
 import useSalesActions from 'redux/actions/salesActions';
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
-import {theme} from 'styles/theme';
 import ProjectHeader from 'components/Molecules/Layout/ProjectHeader';
 import {TabView} from 'react-native-tab-view';
 import Layout from 'utils/Layout';
@@ -15,8 +14,9 @@ import Details from './Components/Details';
 import Activities from './Components/Activities';
 
 function VisitorDetails(props) {
-  const {route, navigation} = props;
+  const {theme, route, navigation} = props;
   const {visitorId} = route?.params || {};
+  const {colors} = theme;
 
   const [activityFilter, setActivityFilter] = useState('all');
   const modulePermission = getPermissions('Visitors');
@@ -96,17 +96,18 @@ function VisitorDetails(props) {
             return (
               <View style={styles.headerContainer}>
                 <ProjectHeader {...props} />
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <TouchableOpacity
+                  style={styles.headingContainer}
+                  onPress={navigation.goBack}>
                   <IconButton
                     icon="keyboard-backspace"
-                    size={30}
-                    color={theme.colors.primary}
-                    onPress={() => navigation.goBack()}
+                    size={25}
+                    color={colors.primary}
                   />
-                  <Title style={{color: theme.colors.primary}}>
+                  <Subheading style={{color: colors.primary}}>
                     Visitors Details
-                  </Title>
-                </View>
+                  </Subheading>
+                </TouchableOpacity>
                 <MaterialTabBar {...tabBarProps} />
               </View>
             );
@@ -117,7 +118,7 @@ function VisitorDetails(props) {
             open={selectDialog}
             style={styles.fab}
             fabStyle={{
-              backgroundColor: selectDialog ? '#fff' : theme.colors.primary,
+              backgroundColor: selectDialog ? colors.white : colors.primary,
             }}
             icon={selectDialog ? 'window-close' : 'dots-horizontal'}
             small
@@ -168,6 +169,10 @@ const styles = StyleSheet.create({
   headerContainer: {
     ...getShadow(5),
     backgroundColor: '#fff',
+  },
+  headingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   body: {
     flex: 1,

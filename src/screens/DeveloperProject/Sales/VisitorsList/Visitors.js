@@ -45,24 +45,22 @@ function StatsRow({visitorAnalytics}) {
     monthlyVisitors = 0,
     yearlyVisitors = 0,
   } = visitorAnalytics;
+
+  const data = [
+    {label: 'Total', value: totalVisitors},
+    {label: 'Weekly', value: weeklyVisitors},
+    {label: 'Monthly', value: monthlyVisitors},
+    {label: 'Yearly', value: yearlyVisitors},
+  ];
+
   return (
     <View style={styles.statsRowMainContainer}>
-      <View style={styles.rowItemContainer}>
-        <Title style={styles.rowTitle}>{totalVisitors}</Title>
-        <Caption style={styles.rowLabel}>Total</Caption>
-      </View>
-      <View style={styles.rowItemContainer}>
-        <Title style={styles.rowTitle}>{weeklyVisitors}</Title>
-        <Caption style={styles.rowLabel}>Weekly</Caption>
-      </View>
-      <View style={styles.rowItemContainer}>
-        <Title style={styles.rowTitle}>{monthlyVisitors}</Title>
-        <Caption style={styles.rowLabel}>Monthly</Caption>
-      </View>
-      <View style={styles.rowItemContainer}>
-        <Title style={styles.rowTitle}>{yearlyVisitors}</Title>
-        <Caption style={styles.rowLabel}>Yearly</Caption>
-      </View>
+      {data.map(i => (
+        <View key={i.label} style={styles.rowItemContainer}>
+          <Title style={styles.rowTitle}>{i.value}</Title>
+          <Caption style={styles.rowLabel}>{i.label}</Caption>
+        </View>
+      ))}
     </View>
   );
 }
@@ -75,7 +73,6 @@ function RenderVisitorItem(props) {
     first_name,
     last_name,
     phone,
-    follow_up_date,
     priority = 'low',
     inquiry_for,
     created,
@@ -112,7 +109,6 @@ function RenderVisitorItem(props) {
           />
         </View>
       </View>
-      <Divider style={{height: 1}} />
     </TouchableOpacity>
   );
 }
@@ -127,47 +123,49 @@ function RenderVisitors(props) {
     navToDetails,
   } = props;
 
+  const renderDivider = () => <Divider style={styles.divider} />;
+
   return (
     <View style={styles.contentContainer}>
       {showAnalyticsRow ? (
         <StatsRow visitorAnalytics={visitorAnalytics} />
       ) : null}
-      <FlatList
-        data={visitors}
-        extraData={visitors}
-        keyExtractor={(item, index) => index.toString()}
-        contentContainerStyle={{paddingBottom: 240}}
-        showsVerticalScrollIndicator={false}
-        renderItem={({item, index}) => (
-          <RenderVisitorItem
-            {...props}
-            data={item}
-            navToDetails={navToDetails}
-          />
-        )}
-        refreshControl={
-          <RefreshControl refreshing={false} onRefresh={onRefresh} />
-        }
-        ListEmptyComponent={
-          <View style={styles.noResultContainer}>
-            <Image source={NoDataFound} />
-            <Title
-              style={{
-                color: theme.colors.primary,
-                fontSize: 22,
-                marginTop: 10,
-              }}>
-              Start adding your visitor
-            </Title>
-          </View>
-        }
-      />
+      <View>
+        <FlatList
+          data={visitors}
+          extraData={visitors}
+          keyExtractor={(item, index) => index.toString()}
+          contentContainerStyle={styles.scrollContainer}
+          showsVerticalScrollIndicator={false}
+          ItemSeparatorComponent={renderDivider}
+          renderItem={({item, index}) => (
+            <RenderVisitorItem
+              {...props}
+              key={index?.toString()}
+              data={item}
+              navToDetails={navToDetails}
+            />
+          )}
+          refreshControl={
+            <RefreshControl refreshing={false} onRefresh={onRefresh} />
+          }
+          ListEmptyComponent={
+            <View style={styles.noResultContainer}>
+              <Image source={NoDataFound} />
+              <Title style={[styles.title, {color: theme.colors.primary}]}>
+                Start adding your visitor
+              </Title>
+            </View>
+          }
+        />
+      </View>
     </View>
   );
 }
 
 function Header(props) {
   const {theme, filter, searchQuery, setFilter, setSearchQuery} = props;
+  const {colors} = theme;
 
   const [visible, setVisible] = React.useState(false);
 
@@ -178,19 +176,19 @@ function Header(props) {
   return (
     <>
       <View style={styles.headerContainer}>
-        <Title style={{color: theme.colors.primary}}>Visitor's list</Title>
+        <Subheading style={{color: colors.primary}}>Visitor's list</Subheading>
         <Menu
           visible={visible}
           onDismiss={toggleMenu}
           anchor={
             <OpacityButton
               opacity={0.1}
-              color={theme.colors.primary}
-              style={{borderRadius: 50}}
+              color={colors.primary}
+              style={styles.filterButton}
               onPress={toggleMenu}>
               <MaterialIcon
                 name="filter-variant"
-                color={theme.colors.primary}
+                color={colors.primary}
                 size={22}
               />
             </OpacityButton>
@@ -199,10 +197,10 @@ function Header(props) {
             const active = i.value === filter;
             return (
               <Menu.Item
-                key={index}
+                key={index?.toString()}
                 title={i.label}
-                style={active ? {backgroundColor: theme.colors.primary} : {}}
-                titleStyle={active ? {color: '#fff'} : {}}
+                style={active ? {backgroundColor: colors.primary} : {}}
+                titleStyle={active ? {color: colors.white} : {}}
                 onPress={() => {
                   setFilter(i.value);
                   toggleMenu();
@@ -264,7 +262,7 @@ function Visitors(props) {
   };
 
   return (
-    <>
+    <View style={styles.container}>
       <Spinner visible={loading} textContent="" />
       <ProjectHeader />
       <Header
@@ -292,14 +290,18 @@ function Visitors(props) {
           onPress={() => navigation.navigate('AddVisitor')}
         />
       ) : null}
-    </>
+    </View>
   );
 }
 
 export default withTheme(Visitors);
 
 const styles = StyleSheet.create({
+  container: {
+    flexGrow: 1,
+  },
   contentContainer: {
+    flexGrow: 1,
     marginTop: 2,
     marginBottom: 15,
   },
@@ -371,5 +373,20 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginHorizontal: 20,
     alignItems: 'center',
+  },
+  scrollContainer: {
+    flexGrow: 1,
+    paddingBottom: 600,
+  },
+  title: {
+    fontSize: 22,
+    marginTop: 10,
+  },
+  divider: {
+    height: 1,
+    marginVertical: 2,
+  },
+  filterButton: {
+    borderRadius: 50,
   },
 });
