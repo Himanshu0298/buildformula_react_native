@@ -190,8 +190,6 @@ function RenderOneBigInstallmentPaymentForm(props) {
   const {formikProps, t, theme} = props;
   const {values, setFieldValue, handleChange, errors} = formikProps;
 
-  const timeout = useRef();
-
   const calculateAmount = percent => {
     percent = parseFloat(percent);
     percent = round(percent > 100 ? 100 : percent);
@@ -203,11 +201,7 @@ function RenderOneBigInstallmentPaymentForm(props) {
 
   const handlePercentChange = percent => {
     setFieldValue('first_big_amount_percent', percent);
-
-    if (timeout.current) {
-      clearTimeout(timeout.current);
-    }
-    timeout.current = setTimeout(() => calculateAmount(percent), 1500);
+    calculateAmount(percent);
   };
 
   const calcPercentage = amount => {
@@ -222,11 +216,7 @@ function RenderOneBigInstallmentPaymentForm(props) {
 
   const handleAmountChange = amount => {
     setFieldValue('first_big_amount', amount);
-
-    if (timeout.current) {
-      clearTimeout(timeout.current);
-    }
-    timeout.current = setTimeout(() => calcPercentage(amount), 1500);
+    calcPercentage(amount);
   };
 
   return (
@@ -363,7 +353,6 @@ function RenderCustomPaymentForm(props) {
   const {theme, formikProps, t} = props;
   const {values, setFieldValue, errors} = formikProps;
   const {colors} = theme;
-  const timeout = useRef();
 
   const totalPercent = useMemo(() => {
     return values.custom_payments.reduce((sum, i) => sum + i.percent || 0, 0);
@@ -403,10 +392,7 @@ function RenderCustomPaymentForm(props) {
 
   const handlePercentChange = (index, percent) => {
     setAmountData(index, {percent});
-    if (timeout.current) {
-      clearTimeout(timeout.current);
-    }
-    timeout.current = setTimeout(() => calculateAmount(index, percent), 2000);
+    calculateAmount(index, percent);
   };
 
   const calcPercentage = (index, amount) => {
@@ -424,10 +410,7 @@ function RenderCustomPaymentForm(props) {
 
   const handleAmountChange = (index, amount) => {
     setAmountData(index, {amount: round(amount)});
-    if (timeout.current) {
-      clearTimeout(timeout.current);
-    }
-    timeout.current = setTimeout(() => calcPercentage(index, amount), 1500);
+    calcPercentage(index, amount);
   };
 
   const addNewPayment = () => {
