@@ -1,17 +1,16 @@
 import RenderInput from 'components/Atoms/RenderInput';
 import React from 'react';
-import {View, StyleSheet, ScrollView} from 'react-native';
-import {withTheme, Button, Title, Subheading} from 'react-native-paper';
+import {View, StyleSheet} from 'react-native';
+import {withTheme, Subheading} from 'react-native-paper';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import RenderDatePicker from 'components/Atoms/RenderDatePicker';
-// import useSalesActions from 'redux/reducers/salesActions';
 import useSalesActions from 'redux/actions/salesActions';
 import {useSelector} from 'react-redux';
 import dayjs from 'dayjs';
-import {theme} from 'styles/theme';
-import RenderTextBox from 'components/Atoms/RenderTextbox';
 import RichTextEditor from 'components/Atoms/RichTextEditor';
+import ActionButtons from 'components/Atoms/ActionButtons';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 const schema = Yup.object().shape({
   followup_date: Yup.date('Invalid').required('Required'),
@@ -49,10 +48,10 @@ function AddFollowUp(props) {
   };
 
   return (
-    <View style={{flexGrow: 1}}>
-      <Title style={{paddingHorizontal: 10, marginTop: 20}}>
-        Create Follow-up task
-      </Title>
+    <View style={styles.container}>
+      <View style={styles.headingContainer}>
+        <Subheading>Create Follow-up task</Subheading>
+      </View>
       <Formik
         validateOnBlur={false}
         validateOnChange={false}
@@ -60,19 +59,17 @@ function AddFollowUp(props) {
         validationSchema={schema}
         onSubmit={onSubmit}>
         {({
+          values,
           handleChange,
           setFieldValue,
-          values,
           handleSubmit,
           handleBlur,
           errors,
         }) => (
-          <ScrollView
+          <KeyboardAwareScrollView
             contentContainerStyle={styles.scrollView}
             keyboardShouldPersistTaps="handled">
-            <View style={{padding: 10}}>
-              <Subheading>Task Title</Subheading>
-
+            <View style={styles.contentContainer}>
               <RenderInput
                 name="task_title"
                 numberOfLines={8}
@@ -86,8 +83,8 @@ function AddFollowUp(props) {
                 error={errors.task_title}
               />
 
-              <View style={{flexDirection: 'row'}}>
-                <View style={{flex: 1, marginRight: 10}}>
+              <View style={styles.row}>
+                <View style={styles.flex}>
                   <RenderDatePicker
                     name="followup_date"
                     label="Date"
@@ -102,7 +99,7 @@ function AddFollowUp(props) {
                     }}
                   />
                 </View>
-                <View style={{flex: 1}}>
+                <View style={styles.flex}>
                   <RenderDatePicker
                     mode="time"
                     label="Time"
@@ -110,7 +107,6 @@ function AddFollowUp(props) {
                     name="followup_time"
                     containerStyles={styles.input}
                     value={values.followup_time}
-                    // error={errors.followup_time}
                     onChange={date => {
                       setFieldValue('followup_time', date);
                       assignToRef?.current?.focus?.();
@@ -118,50 +114,24 @@ function AddFollowUp(props) {
                   />
                 </View>
               </View>
-              {/* <Subheading style={{marginTop: 20}}>Remark</Subheading> */}
-              {/* <RenderTextBox
-                name="remarks"
-                numberOfLines={8}
-                label="Response"
-                containerStyles={styles.input}
-                value={values.remarks}
-                onChangeText={handleChange('remarks')}
-                onBlur={handleBlur('remarks')}
-                onSubmitEditing={handleSubmit}
-                error={errors.remarks}
-              /> */}
               <RichTextEditor
+                style={styles.input}
                 name="remarks"
                 placeholder="Response"
+                height={200}
                 value={values.remarks}
                 onChangeText={value => {
                   setFieldValue('remarks', value);
                 }}
               />
             </View>
-            <View style={styles.actionContainer}>
-              <Button
-                style={{
-                  flex: 1,
-                  marginHorizontal: 5,
-                  borderWidth: 1,
-                  borderColor: theme.colors.primary,
-                }}
-                contentStyle={{padding: 3}}
-                theme={{roundness: 15}}
-                onPress={navigation.goBack}>
-                Back
-              </Button>
-              <Button
-                style={{flex: 1, marginHorizontal: 5}}
-                mode="contained"
-                contentStyle={{padding: 3}}
-                theme={{roundness: 15}}
-                onPress={handleSubmit}>
-                Save
-              </Button>
-            </View>
-          </ScrollView>
+            <ActionButtons
+              cancelLabel="Back"
+              submitLabel="Save"
+              onCancel={navigation.goBack}
+              onSubmit={handleSubmit}
+            />
+          </KeyboardAwareScrollView>
         )}
       </Formik>
     </View>
@@ -171,17 +141,29 @@ function AddFollowUp(props) {
 export default withTheme(AddFollowUp);
 
 const styles = StyleSheet.create({
+  container: {
+    flexGrow: 1,
+  },
+  headingContainer: {
+    paddingHorizontal: 10,
+    marginTop: 20,
+  },
+  contentContainer: {
+    paddingHorizontal: 10,
+  },
+  row: {
+    flexDirection: 'row',
+    marginHorizontal: -10,
+  },
+  flex: {
+    flex: 1,
+    marginHorizontal: 10,
+  },
   input: {
-    paddingVertical: 7,
+    marginVertical: 7,
   },
   scrollView: {
     flexGrow: 1,
-    justifyContent: 'space-between',
-  },
-  actionContainer: {
-    paddingHorizontal: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-between',
   },
 });

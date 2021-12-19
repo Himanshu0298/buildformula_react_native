@@ -277,7 +277,7 @@ function AddCustomer(props) {
             getCustomerDetails({
               user_id: user.id,
               project_id: selectedProject.id,
-              unit_id: unit.unitId,
+              unit_id: unit.unit_id,
             });
             navigation.goBack();
           }}>

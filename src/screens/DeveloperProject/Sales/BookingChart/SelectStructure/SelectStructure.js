@@ -13,14 +13,20 @@ function SelectStructure(props) {
   const {selectedProject} = useSelector(s => s.project);
   const loading = useSalesLoading();
 
-  const {projectData = {}} = selectedProject;
-  const projectTypes = Object.keys(projectData)?.map(v => Number(v)) || [];
+  const {project_structure = {}} = selectedProject;
+  const projectTypes =
+    Object.keys(project_structure)?.map(v => Number(v)) || [];
 
   const handlePress = (selectedStructure, towerType) => {
     const project_id = selectedProject.id;
-    const params = {selectedStructure, towerType, project_id};
+    const params = {selectedStructure, project_id};
 
-    const nextStep = selectedStructure === 6 ? 'BC_Step_Two' : 'BC_Step_Four';
+    let nextStep = 'BC_Step_Four';
+
+    if (selectedStructure === 6) {
+      nextStep = 'BC_Step_Two';
+      params.towerType = towerType;
+    }
 
     navigation.navigate(nextStep, params);
   };

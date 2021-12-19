@@ -48,13 +48,7 @@ function checkDisabled(isUnitDisabled, unit) {
 }
 
 function RenderUnit(props) {
-  const {
-    unit = {},
-    unitId,
-    onSelectUnit,
-    selectedFloor,
-    isUnitDisabled,
-  } = props;
+  const {unit_id, unit = {}, onSelectUnit, isUnitDisabled} = props;
 
   const unitBhk = BHK_OPTIONS.find(item => item.type === unit.bhk);
 
@@ -71,10 +65,10 @@ function RenderUnit(props) {
 
   return (
     <TouchableOpacity
-      key={unitId}
+      key={unit.unitId}
       disabled={disabled}
       style={styles.container}
-      onPress={() => onSelectUnit({...unit, unitIndex: unitId})}>
+      onPress={() => onSelectUnit({...unit, unit_id})}>
       <View style={[styles.unitContainer, bookingStyle]}>
         <View style={styles.iconContainer}>
           <UnitIcon
@@ -84,7 +78,7 @@ function RenderUnit(props) {
           />
         </View>
         <View style={styles.labelContainer}>
-          <Text>{getUnitLabel(selectedFloor, unitId)}</Text>
+          <Text>{unit.unitId}</Text>
         </View>
         {unit?.status === 7 ? (
           <View

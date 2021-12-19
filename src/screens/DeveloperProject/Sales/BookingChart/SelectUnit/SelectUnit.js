@@ -7,7 +7,7 @@ import dayjs from 'dayjs';
 import {getFloorNumber, getPermissions} from 'utils';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
-import {IconButton, Subheading, Text} from 'react-native-paper';
+import {IconButton, Subheading} from 'react-native-paper';
 import SelectHoldOrBook from 'screens/DeveloperProject/Sales/BookingChart/SelectUnit/Components/UnitBookingDialog';
 import {STRUCTURE_TYPE_LABELS} from 'utils/constant';
 import {useSalesLoading} from 'redux/selectors';
@@ -47,7 +47,7 @@ function SelectUnit(props) {
 
   const units = useMemo(() => {
     const structureData =
-      selectedProject.projectData?.[selectedStructure] || {};
+      selectedProject.project_structure?.[selectedStructure] || {};
 
     if ([4, 5].includes(selectedStructure)) {
       return structureData.units;
@@ -59,7 +59,7 @@ function SelectUnit(props) {
   const processedUnits = useMemo(() => {
     Object.keys(units).map(key => {
       const bookingData = unitBookingStatus.find(
-        i => i.id === units[key].unitId || i.project_unit === units[key].unitId,
+        i => Number(i.id) === Number(key),
       );
 
       if (bookingData) {
@@ -97,14 +97,11 @@ function SelectUnit(props) {
 
   const handleBook = () => {
     if (modulePermission?.editor || modulePermission?.admin) {
-      lockUnit({unit_id: selectedUnit.unitId, project_id: selectedProject.id});
+      lockUnit({unit_id: selectedUnit.unit_id, project_id: selectedProject.id});
       toggleTimer({showTimer: true, startTime: new Date(), time: 1800});
       toggleDialog();
 
-      navigation.navigate('BC_Step_Five', {
-        ...route?.params,
-        ...selectedUnit,
-      });
+      navigation.navigate('BC_Step_Five', {...route?.params, ...selectedUnit});
     } else {
       toggleDialog();
       snackbar.showMessage({
@@ -138,21 +135,20 @@ function SelectUnit(props) {
       />
       <Spinner visible={loading} textContent="" />
 
-      <Subheading>{towerType}</Subheading>
+      {towerType ? <Subheading>{towerType}</Subheading> : null}
 
       <View style={styles.headerContainer}>
         <TouchableOpacity
           style={styles.titleContainer}
           onPress={navigation.goBack}>
           <IconButton icon="keyboard-backspace" />
-          <Text>{floor}</Text>
+          <Subheading>{floor}</Subheading>
         </TouchableOpacity>
       </View>
 
       <UnitSelector
         {...props}
         refreshing={unitBookingStatus.length > 0 && loading}
-        floorId={floorId}
         floorNumber={floor}
         units={processedUnits}
         showBhkFilters

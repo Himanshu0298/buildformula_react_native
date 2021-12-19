@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, Image} from 'react-native';
+import {StyleSheet, View, Image, TouchableOpacity} from 'react-native';
 import {
   Subheading,
   withTheme,
@@ -7,14 +7,13 @@ import {
   Button,
   Card,
   Divider,
-  Title,
   IconButton,
   Caption,
 } from 'react-native-paper';
 import WithRate from 'assets/images/WithRates.png';
 import WithOutRates from 'assets/images/WithoutRates.png';
 import {STRUCTURE_TYPE_LABELS} from 'utils/constant';
-import {getFloorNumber, getTowerLabel, getUnitLabel} from 'utils';
+import {getFloorNumber, getTowerLabel} from 'utils';
 
 function InfoRow(props) {
   const {data} = props;
@@ -54,7 +53,7 @@ function FormSection(props) {
 function BookingMode(props) {
   const {navigation, route} = props;
 
-  const {structureType, towerId, floorId, unitIndex} = route?.params || {};
+  const {structureType, towerId, floorId, unitId} = route?.params || {};
 
   const navToBookingDetails = withRate => {
     navigation.navigate('BC_Step_Six', {...route?.params, withRate});
@@ -62,10 +61,12 @@ function BookingMode(props) {
 
   return (
     <View style={styles.container}>
-      <View style={styles.headingContainer}>
-        <IconButton icon="keyboard-backspace" onPress={navigation.goBack} />
-        <Title>Booking form</Title>
-      </View>
+      <TouchableOpacity
+        style={styles.headingContainer}
+        onPress={navigation.goBack}>
+        <IconButton icon="keyboard-backspace" />
+        <Subheading>Booking form</Subheading>
+      </TouchableOpacity>
       <Card elevation={5} style={styles.optionCard}>
         <Subheading>Property info</Subheading>
         <Divider style={styles.divider} />
@@ -81,7 +82,7 @@ function BookingMode(props) {
         <InfoRow
           data={[
             {title: 'Floor', value: getFloorNumber(floorId)},
-            {title: 'Unit Number', value: getUnitLabel(floorId, unitIndex)},
+            {title: 'Unit Number', value: unitId},
           ]}
         />
       </Card>

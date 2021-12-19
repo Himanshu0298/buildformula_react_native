@@ -18,7 +18,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import {useSelector} from 'react-redux';
 import useSalesActions from 'redux/actions/salesActions';
 import {useSalesLoading} from 'redux/selectors';
-import {getFloorNumber, getTowerLabel, getUnitLabel} from 'utils';
+import {getFloorNumber, getTowerLabel} from 'utils';
 import {STRUCTURE_TYPE_LABELS} from 'utils/constant';
 import BookingHoldForm from './Components/BookingHoldForm';
 
@@ -103,7 +103,7 @@ function PropertyHoldUserDetails(props) {
 
 function BookingFormOnHold(props) {
   const {navigation, route, theme} = props;
-  const {project_id, structureType, towerId, floorId, unitIndex, unitId} =
+  const {project_id, structureType, towerId, floorId, unit_id, unitId} =
     route?.params || {};
 
   const {bookingHoldDetails} = useSelector(s => s.sales);
@@ -122,10 +122,9 @@ function BookingFormOnHold(props) {
   useEffect(() => {
     loadHoldDetails();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [unitId]);
+  }, [unit_id]);
 
-  const loadHoldDetails = () =>
-    getHoldBookingDetails({project_id, unit_id: unitId});
+  const loadHoldDetails = () => getHoldBookingDetails({project_id, unit_id});
 
   const toggleHoldForm = () => setVisible(v => !v);
 
@@ -146,7 +145,7 @@ function BookingFormOnHold(props) {
     toggleHoldForm();
     await unitHoldBooking({
       project_id,
-      unit_id: unitId,
+      unit_id,
       hold_till_date: dayjs(date).format('DD-MM-YYYY'),
       hold_till_time: dayjs(time).format('hh:mm'),
       remark,
@@ -158,7 +157,7 @@ function BookingFormOnHold(props) {
     toggleHoldForm();
     await unitUnHoldBooking({
       project_id,
-      unit_id: unitId,
+      unit_id,
       units_on_hold_id: propertyBooked.id,
     });
     loadHoldDetails();
@@ -210,7 +209,7 @@ function BookingFormOnHold(props) {
           <InfoRow
             data={[
               {title: 'Floor', value: getFloorNumber(floorId)},
-              {title: 'Unit Number', value: getUnitLabel(floorId, unitIndex)},
+              {title: 'Unit Number', value: unitId},
             ]}
           />
         </Card>

@@ -35,7 +35,7 @@ function AddModifyRequest(props) {
     formData.append('description', description);
     formData.append('files', files);
     formData.append('project_id', project_id);
-    formData.append('unit_id', unit.unitId);
+    formData.append('unit_id', unit.unit_id);
 
     addModifyRequest(formData).then(() => handleRefresh());
   };

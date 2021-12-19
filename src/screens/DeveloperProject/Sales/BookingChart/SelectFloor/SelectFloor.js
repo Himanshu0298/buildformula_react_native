@@ -11,7 +11,8 @@ function SelectFloor(props) {
 
   const {selectedProject} = useSelector(s => s.project);
 
-  const structureData = selectedProject.projectData?.[selectedStructure] || {};
+  const structureData =
+    selectedProject.project_structure?.[selectedStructure] || {};
 
   const {floors} = structureData.towers[towerId];
 
@@ -28,7 +29,7 @@ function SelectFloor(props) {
         </TouchableOpacity>
       </View>
 
-      <Subheading style={{marginVertical: 10}}>Floors</Subheading>
+      <Subheading style={styles.floorsTitle}>Floors</Subheading>
 
       <FlatList
         data={Object.keys(floors)}
@@ -83,6 +84,9 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingBottom: 30,
     paddingTop: 5,
+  },
+  floorsTitle: {
+    marginVertical: 10,
   },
 });
 

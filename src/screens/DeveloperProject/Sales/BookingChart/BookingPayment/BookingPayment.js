@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useRef} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import RenderInput from 'components/Atoms/RenderInput';
 import {Formik} from 'formik';
 import {useTranslation} from 'react-i18next';
@@ -15,15 +15,16 @@ import {
   Subheading,
   TextInput,
   withTheme,
-  Button,
   Caption,
   Text,
   Divider,
+  IconButton,
 } from 'react-native-paper';
 import * as Yup from 'yup';
 import _ from 'lodash';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import RenderSelect from 'components/Atoms/RenderSelect';
 import RenderDatePicker from 'components/Atoms/RenderDatePicker';
 import {round} from 'utils';
@@ -31,9 +32,11 @@ import dayjs from 'dayjs';
 import useSalesActions from 'redux/actions/salesActions';
 import Radio from 'components/Atoms/Radio';
 import {useSelector} from 'react-redux';
-import RenderTextBox from 'components/Atoms/RenderTextbox';
 import RenderHTML from 'react-native-render-html';
 import Layout from 'utils/Layout';
+import ActionButtons from 'components/Atoms/ActionButtons';
+import CustomDialog from 'components/Atoms/CustomDialog';
+import RichTextEditor from 'components/Atoms/RichTextEditor';
 
 const PAYMENT_METHODS = [
   {label: 'Full payment', value: 1},
@@ -139,7 +142,8 @@ export function RenderInstallments(props) {
   if (installments.length) {
     return (
       <>
-        <Caption style={{color: theme.colors.primary, marginTop: 15}}>
+        <Caption
+          style={[styles.installmentHeading, {color: theme.colors.primary}]}>
           Installments
         </Caption>
         <View style={styles.installmentTitleRow}>
@@ -153,15 +157,15 @@ export function RenderInstallments(props) {
         </View>
         {installments.map((installment, index) => {
           return (
-            <View key={index} style={styles.installmentRow}>
+            <View key={index?.toString()} style={styles.installmentRow}>
               <Subheading>{index + 1}</Subheading>
-              <View style={{flex: 0.4}}>
+              <View style={styles.installmentValue}>
                 <RenderInput
                   value={dayjs(installment.date).format('DD/MM/YYYY')}
                   disabled
                 />
               </View>
-              <View style={{flex: 0.4}}>
+              <View style={styles.installmentValue}>
                 <RenderInput
                   value={installment.amount}
                   disabled
@@ -230,7 +234,7 @@ function RenderOneBigInstallmentPaymentForm(props) {
       <View style={styles.customPaymentContainer}>
         <View style={styles.customInputsContainer}>
           <View style={styles.customPaymentRowContainer}>
-            <View style={styles.percentInputContainer}>
+            <View style={styles.dateInputContainer}>
               <RenderInput
                 name="first_big_amount_percent"
                 label="%"
@@ -264,7 +268,7 @@ function RenderOneBigInstallmentPaymentForm(props) {
                 }
               />
             </View>
-            <View style={{flex: 1}}>
+            <View style={styles.flexInput}>
               <RenderInput
                 name="first_big_amount"
                 label={t('label_amount')}
@@ -291,7 +295,7 @@ function RenderOneBigInstallmentPaymentForm(props) {
                 }}
               />
             </View>
-            <View style={{flex: 1}}>
+            <View style={styles.flexInput}>
               <RenderDatePicker
                 name="first_big_amount_end_date"
                 label={t('label_end_date')}
@@ -309,7 +313,7 @@ function RenderOneBigInstallmentPaymentForm(props) {
         </View>
       </View>
       <Caption
-        style={{color: theme.colors.primary, marginTop: 15, fontSize: 14}}>
+        style={[styles.otherDetailsTitle, {color: theme.colors.primary}]}>
         Other Installment Details
       </Caption>
       <RenderInput
@@ -321,7 +325,7 @@ function RenderOneBigInstallmentPaymentForm(props) {
         onChangeText={handleChange('installment_count')}
       />
       <View style={styles.installmentDetailsRow}>
-        <View style={{flex: 1, paddingRight: 10}}>
+        <View style={styles.dateInputContainer}>
           <RenderDatePicker
             name="installment_start_date"
             label={t('label_start_date')}
@@ -335,7 +339,7 @@ function RenderOneBigInstallmentPaymentForm(props) {
             }}
           />
         </View>
-        <View style={{flex: 1}}>
+        <View style={styles.flexInput}>
           <RenderInput
             name="installment_interval_days"
             label={t('label_interval_days')}
@@ -354,7 +358,7 @@ function RenderOneBigInstallmentPaymentForm(props) {
 function RenderCustomPaymentForm(props) {
   const {theme, formikProps, t} = props;
   const {values, setFieldValue, errors} = formikProps;
-
+  const {colors} = theme;
   const timeout = useRef();
 
   const totalPercent = useMemo(() => {
@@ -436,26 +440,26 @@ function RenderCustomPaymentForm(props) {
 
   return (
     <>
-      <Caption
-        style={{color: theme.colors.primary, marginTop: 15, fontSize: 14}}>
+      <Caption style={[styles.otherDetailsTitle, {color: colors.primary}]}>
         Payments
       </Caption>
 
       {errors.payment ? (
-        <Caption style={{color: theme.colors.error}}>{errors.payment}</Caption>
+        <Caption style={{color: colors.error}}>{errors.payment}</Caption>
       ) : null}
       {values.custom_payments.map(({percent, amount, date, remark}, index) => {
         return (
-          <View key={index}>
+          <View key={index?.toString()}>
             {values.custom_payments.length > 1 ? (
-              <Caption style={{color: theme.colors.primary, marginTop: 10}}>
+              <Caption
+                style={[styles.paymentFormContainer, {color: colors.primary}]}>
                 {`Installment No. ${index + 1}`}
               </Caption>
             ) : null}
-            <View key={index} style={styles.customPaymentContainer}>
+            <View key={index?.toString()} style={styles.customPaymentContainer}>
               <View style={styles.customInputsContainer}>
                 <View style={styles.customPaymentRowContainer}>
-                  <View style={styles.percentInputContainer}>
+                  <View style={styles.dateInputContainer}>
                     <RenderInput
                       name="percent"
                       label="%"
@@ -485,7 +489,7 @@ function RenderCustomPaymentForm(props) {
                       }
                     />
                   </View>
-                  <View style={{flex: 1}}>
+                  <View style={styles.customInputsContainer}>
                     <RenderInput
                       name="amount"
                       label={t('label_amount')}
@@ -496,7 +500,7 @@ function RenderCustomPaymentForm(props) {
                     />
                   </View>
                 </View>
-                <View style={{marginTop: 5}}>
+                <View style={styles.rateInput}>
                   <RenderDatePicker
                     name="date"
                     label={t('label_date')}
@@ -510,7 +514,7 @@ function RenderCustomPaymentForm(props) {
                     }}
                   />
                 </View>
-                <View style={{marginTop: 5, marginBottom: 10}}>
+                <View style={styles.customRemarkContainer}>
                   <RenderInput
                     name="remark"
                     multiline
@@ -526,7 +530,7 @@ function RenderCustomPaymentForm(props) {
                 <OpacityButton
                   color={theme.colors.red}
                   opacity={0.1}
-                  style={{marginLeft: 15, borderRadius: 20}}
+                  style={styles.removePaymentButton}
                   onPress={() => removePayment(index)}>
                   <MaterialIcons
                     name="close"
@@ -584,7 +588,7 @@ function RenderDocumentChargesPayment(props) {
               }}
             />
           </View>
-          <View style={{flex: 1}}>
+          <View style={styles.customInputsContainer}>
             <RenderDatePicker
               name="document_end_date"
               label={t('label_end_date')}
@@ -604,6 +608,27 @@ function RenderDocumentChargesPayment(props) {
   );
 }
 
+function ConditionsDialog(props) {
+  const {title, value, handleSubmit} = props;
+
+  const [text, setText] = useState(value);
+
+  return (
+    <CustomDialog
+      {...props}
+      title={title}
+      submitForm={() => handleSubmit(text)}>
+      <RichTextEditor
+        style={styles.textEditor}
+        height={200}
+        placeholder="Input Test here..."
+        value={text}
+        onChangeText={setText}
+      />
+    </CustomDialog>
+  );
+}
+
 function RenderPaymentForm(props) {
   const {theme, formikProps, route, t} = props;
   const {withRate} = route?.params || {};
@@ -618,6 +643,8 @@ function RenderPaymentForm(props) {
 
   const {commonData} = useSelector(s => s.project);
 
+  const [conditionsDialog, setConditionsDialog] = useState(false);
+
   useEffect(() => {
     resetForm();
     setFieldValue('finalAmount', values.finalAmount);
@@ -629,14 +656,32 @@ function RenderPaymentForm(props) {
     return commonData?.booking_TandC?.map(i => ({label: i.title, value: i.id}));
   }, [commonData?.booking_TandC]);
 
-  const selectedTC = useMemo(() => {
-    return commonData?.booking_TandC?.find(
+  useEffect(() => {
+    const terms = commonData?.booking_TandC?.find(
       i => i.id === values.termsAndConditions,
     );
+    if (terms?.description) {
+      setFieldValue('termsDescription', terms?.description);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [commonData?.booking_TandC, values.termsAndConditions]);
 
+  const toggleConditionsDialog = () => setConditionsDialog(v => !v);
+
   return (
-    <View style={{marginTop: 10}}>
+    <View style={styles.paymentFormContainer}>
+      {conditionsDialog ? (
+        <ConditionsDialog
+          open={conditionsDialog}
+          value={values.termsDescription}
+          title="Update Terms"
+          handleClose={toggleConditionsDialog}
+          handleSubmit={v => {
+            setFieldValue('termsDescription', v);
+            toggleConditionsDialog();
+          }}
+        />
+      ) : null}
       {values.isDocumentCharge ? (
         <RenderDocumentChargesPayment {...props} />
       ) : null}
@@ -662,7 +707,7 @@ function RenderPaymentForm(props) {
               }}
             />
           </View>
-          <View style={{flex: 1}}>
+          <View style={styles.flexInput}>
             <RenderDatePicker
               name="end_date"
               label={t('label_end_date')}
@@ -688,39 +733,33 @@ function RenderPaymentForm(props) {
         name="termsAndConditions"
         label="Terms and conditions"
         options={TCOptions}
-        style={{marginTop: 10}}
+        style={styles.paymentFormContainer}
         value={values.termsAndConditions}
         error={errors.termsAndConditions}
         onSelect={value => setFieldValue('termsAndConditions', value)}
       />
 
-      {selectedTC ? (
+      {values.termsDescription ? (
         <View style={styles.termsBox}>
           <ScrollView nestedScrollEnabled>
             <RenderHTML
-              source={{html: selectedTC.description}}
+              source={{html: values.termsDescription}}
               contentWidth={Layout.window.width}
             />
           </ScrollView>
+          <OpacityButton
+            color={theme.colors.primary}
+            opacity={1}
+            style={styles.conditionsButton}
+            onPress={toggleConditionsDialog}>
+            <MaterialCommunityIcons
+              name="pencil"
+              color={theme.colors.white}
+              size={22}
+            />
+          </OpacityButton>
         </View>
       ) : null}
-
-      <Caption
-        style={[styles.otherChargesLabel, {color: theme.colors.primary}]}>
-        Remark
-      </Caption>
-      <RenderTextBox
-        name="payment_remark"
-        numberOfLines={5}
-        minHeight={120}
-        label={t('label_remark')}
-        containerStyles={styles.input}
-        value={values.payment_remark}
-        onChangeText={handleChange('payment_remark')}
-        onBlur={handleBlur('payment_remark')}
-        returnKeyType="done"
-        error={errors.payment_remark}
-      />
     </View>
   );
 }
@@ -741,17 +780,25 @@ function FormContent(props) {
 
   return (
     <TouchableWithoutFeedback
-      style={{flexGrow: 1}}
+      style={styles.container}
       onPress={() => Keyboard.dismiss()}>
       <KeyboardAwareScrollView
         keyboardShouldPersistTaps="handled"
         extraScrollHeight={30}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{flexGrow: 1, paddingVertical: 10}}>
-        <View style={styles.container}>
-          <Subheading style={{color: theme.colors.primary}}>
-            3. Payment Installment
-          </Subheading>
+        contentContainerStyle={styles.scrollContainer}>
+        <View style={styles.contentContainer}>
+          <TouchableOpacity
+            style={styles.headingContainer}
+            onPress={navigation.goBack}>
+            <IconButton
+              icon="keyboard-backspace"
+              color={theme.colors.primary}
+            />
+            <Subheading style={{color: theme.colors.primary}}>
+              3. Payment Installment
+            </Subheading>
+          </TouchableOpacity>
 
           <View style={styles.radioRow}>
             <Text>Do you wish to take a loan?</Text>
@@ -788,7 +835,7 @@ function FormContent(props) {
                     }}
                   />
                 </View>
-                <View style={{flex: 1}}>
+                <View style={styles.customInputsContainer}>
                   <RenderInput
                     name="loan_amount"
                     label={t('label_amount')}
@@ -799,7 +846,7 @@ function FormContent(props) {
                   />
                 </View>
               </View>
-              <View style={{marginTop: 5}}>
+              <View style={styles.rateInput}>
                 <RenderInput
                   name="loan_remark"
                   label={t('label_remark')}
@@ -825,23 +872,12 @@ function FormContent(props) {
           />
           <RenderPaymentForm {...props} {...{formikProps, t}} />
         </View>
-        <View style={styles.actionContainer}>
-          <Button
-            style={styles.actionButton}
-            contentStyle={styles.actionButtonLabel}
-            theme={{roundness: 15}}
-            onPress={handleCancel}>
-            Back
-          </Button>
-          <Button
-            style={styles.actionButton}
-            mode="contained"
-            contentStyle={styles.actionButtonLabel}
-            theme={{roundness: 15}}
-            onPress={handleSubmit}>
-            Save
-          </Button>
-        </View>
+        <ActionButtons
+          cancelLabel="Back"
+          submitLabel="Save"
+          onCancel={handleCancel}
+          onSubmit={handleSubmit}
+        />
       </KeyboardAwareScrollView>
     </TouchableWithoutFeedback>
   );
@@ -971,9 +1007,23 @@ function BookingPayments(props) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
+  },
+  scrollContainer: {
+    flexGrow: 1,
+    paddingBottom: 10,
+  },
+  contentContainer: {
+    flexGrow: 1,
     paddingHorizontal: 20,
-    paddingVertical: 10,
+  },
+  headingContainer: {
+    marginLeft: -10,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  paymentFormContainer: {
+    marginTop: 10,
   },
   radioRow: {
     marginVertical: 10,
@@ -992,11 +1042,6 @@ const styles = StyleSheet.create({
   loadInputs: {},
   rateInput: {
     marginTop: 5,
-  },
-  otherChargesLabel: {
-    marginTop: 15,
-    marginBottom: 5,
-    fontSize: 14,
   },
   headingLabel: {
     marginTop: 5,
@@ -1031,10 +1076,6 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingRight: 10,
   },
-  percentInputContainer: {
-    flex: 1,
-    paddingRight: 10,
-  },
   otherChargesContainer: {
     flexDirection: 'row',
   },
@@ -1055,21 +1096,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  actionContainer: {
-    marginTop: 25,
-    paddingHorizontal: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  actionButton: {
-    flex: 1,
-    marginHorizontal: 5,
-  },
-  actionButtonLabel: {
-    padding: 3,
-  },
   termsBox: {
+    position: 'relative',
     borderWidth: 1,
     borderRadius: 10,
     borderColor: 'rgba(0, 0, 0, 0.3)',
@@ -1085,6 +1113,37 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: -10,
     fontSize: 14,
+  },
+  conditionsButton: {
+    padding: 10,
+    position: 'absolute',
+    top: 10,
+    right: 10,
+  },
+  textEditor: {
+    flexGrow: 1,
+    margin: 10,
+  },
+  installmentHeading: {
+    marginTop: 15,
+  },
+  installmentValue: {
+    flex: 0.4,
+  },
+  flexInput: {
+    flex: 1,
+  },
+  otherDetailsTitle: {
+    marginTop: 15,
+    fontSize: 14,
+  },
+  removePaymentButton: {
+    marginLeft: 15,
+    borderRadius: 20,
+  },
+  customRemarkContainer: {
+    marginTop: 5,
+    marginBottom: 10,
   },
 });
 

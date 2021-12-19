@@ -39,7 +39,6 @@ function UnitSelector(props) {
     refreshing,
     onRefresh,
     units,
-    floorId,
     floorNumber,
     onSelectUnit,
     isUnitDisabled,
@@ -59,6 +58,7 @@ function UnitSelector(props) {
       <FlatList
         data={Object.keys(units)}
         numColumns={3}
+        showsVerticalScrollIndicator={false}
         extraData={Object.keys(units)}
         contentContainerStyle={styles.scrollContainer}
         refreshControl={
@@ -69,9 +69,8 @@ function UnitSelector(props) {
         renderItem={({item, index}) => (
           <RenderUnit
             key={index.toString()}
-            unitId={item}
+            unit_id={item}
             unit={units[item]}
-            selectedFloor={floorId}
             onSelectUnit={onSelectUnit}
             isUnitDisabled={isUnitDisabled}
           />
@@ -115,7 +114,6 @@ UnitSelector.propTypes = {
   onSelectUnit: PropTypes.func,
   refreshing: PropTypes.bool,
   onRefresh: PropTypes.func,
-  floorId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
 };
 
 export default React.memo(UnitSelector);

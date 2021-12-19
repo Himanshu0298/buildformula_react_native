@@ -24,6 +24,9 @@ function SearchDropdown(props) {
 
   const [isFocused, setFocused] = useState(false);
 
+  const showOptions =
+    !Number.isNaN(selected) && isFocused && options?.length > 0;
+
   return (
     <>
       <Searchbar
@@ -40,7 +43,7 @@ function SearchDropdown(props) {
         }}
       />
 
-      {Number.isNaN(selected) && isFocused && options?.length > 0 ? (
+      {showOptions ? (
         <View style={styles.listContainer}>
           <ScrollView
             nestedScrollEnabled

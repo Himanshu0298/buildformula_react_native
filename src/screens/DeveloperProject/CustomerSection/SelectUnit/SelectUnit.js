@@ -15,7 +15,8 @@ export default function SelectUnit(props) {
   const loading = useSalesLoading();
 
   const {selectedStructure, floorId, towerId} = route?.params || {};
-  const structureData = selectedProject.projectData?.[selectedStructure] || {};
+  const structureData =
+    selectedProject.project_structure?.[selectedStructure] || {};
   const {towers} = structureData;
 
   useEffect(() => {
@@ -32,7 +33,7 @@ export default function SelectUnit(props) {
 
     Object.keys(data).map(key => {
       const bookingData = unitBookingStatus.find(
-        unit => unit.id === data[key].unitId,
+        unit => unit.id === data[key].unit_id,
       );
 
       if (bookingData) {
@@ -75,7 +76,6 @@ export default function SelectUnit(props) {
         onRefresh={fetchUnitsBookingStatus}
         onSelectUnit={handlePress}
         showBhkFilters={[1, 4].includes(selectedStructure)}
-        floorId={floorId}
         units={units}
         isUnitDisabled={checkUnitDisability}
       />

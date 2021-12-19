@@ -100,12 +100,12 @@ function Account(props) {
   const updateStatus = status => {
     updateBookingStatus({
       project_id,
-      unit_id: unit.unitId,
+      unit_id: unit.unit_id,
       booking_status: status,
     }).then(() => {
       toggleStatusDialog();
 
-      getAccountDetails({project_id, unit_id: unit.unitId});
+      getAccountDetails({project_id, unit_id: unit.unit_id});
     });
   };
 

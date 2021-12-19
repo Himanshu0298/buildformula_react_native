@@ -92,11 +92,11 @@ function CustomerSection(props) {
   }, [isProjectAdmin, permissions]);
 
   React.useEffect(() => {
-    getCustomerDetails({user_id: user.id, project_id, unit_id: unit.unitId});
-    getBookingDetails({project_id, unit_id: unit.unitId});
-    getBankDetails({project_id, unit_id: unit.unitId});
+    getCustomerDetails({user_id: user.id, project_id, unit_id: unit.unit_id});
+    getBookingDetails({project_id, unit_id: unit.unit_id});
+    getBankDetails({project_id, unit_id: unit.unit_id});
     getModifyRequests({project_id});
-    getAccountDetails({project_id, unit_id: unit.unitId});
+    getAccountDetails({project_id, unit_id: unit.unit_id});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

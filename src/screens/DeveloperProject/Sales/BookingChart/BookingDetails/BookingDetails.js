@@ -1,3 +1,4 @@
+import ActionButtons from 'components/Atoms/ActionButtons';
 import Radio from 'components/Atoms/Radio';
 import RenderInput, {RenderError} from 'components/Atoms/RenderInput';
 import RenderTextBox from 'components/Atoms/RenderTextbox';
@@ -8,6 +9,7 @@ import {useTranslation} from 'react-i18next';
 import {
   Keyboard,
   StyleSheet,
+  TouchableOpacity,
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
@@ -18,8 +20,8 @@ import {
   TextInput,
   withTheme,
   Text,
-  Button,
   Caption,
+  IconButton,
 } from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import useSalesActions from 'redux/actions/salesActions';
@@ -152,15 +154,26 @@ function FormContent(props) {
     <>
       <Spinner visible={loading} textContent="" />
       <TouchableWithoutFeedback
-        style={{flexGrow: 1}}
+        style={styles.container}
         onPress={Keyboard.dismiss}>
         <KeyboardAwareScrollView
           keyboardShouldPersistTaps="handled"
           nestedScrollEnabled
           extraScrollHeight={30}
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{flexGrow: 1, paddingVertical: 10}}>
-          <View style={styles.container}>
+          contentContainerStyle={styles.scrollContainer}>
+          <View style={styles.contentContainer}>
+            <TouchableOpacity
+              style={styles.headingContainer}
+              onPress={navigation.goBack}>
+              <IconButton
+                icon="keyboard-backspace"
+                color={theme.colors.primary}
+              />
+              <Subheading style={{color: theme.colors.primary}}>
+                1. Booking Details
+              </Subheading>
+            </TouchableOpacity>
             <View style={styles.radioRow}>
               <Text>Select user type</Text>
               <View style={styles.radioContainer}>
@@ -179,7 +192,7 @@ function FormContent(props) {
               </View>
             </View>
             {values.userType === 'visitor' ? (
-              <View style={{marginBottom: 10}}>
+              <View style={styles.searchContainer}>
                 <SearchDropdown
                   placeholder="label_search_visitors"
                   options={visitorOptions}
@@ -251,14 +264,14 @@ function FormContent(props) {
                   ]}
                 />
                 <InfoRow
-                  data={[
-                    {label: 'Email', value: visitorDetails?.email},
-                    {label: 'Phone no.', value: visitorDetails?.phone},
-                  ]}
+                  data={[{label: 'Email', value: visitorDetails?.email}]}
+                />
+                <InfoRow
+                  data={[{label: 'Phone no.', value: visitorDetails?.phone}]}
                 />
               </View>
             )}
-            <View style={styles.radioRow}>
+            <View style={styles.brokerRadioRow}>
               <Text>Through broker?</Text>
               <View style={styles.radioContainer}>
                 <Radio
@@ -278,10 +291,7 @@ function FormContent(props) {
             </View>
             {values.broker === 'yes' ? (
               <>
-                <Subheading style={{color: theme.colors.primary}}>
-                  Broker Details
-                </Subheading>
-                <View style={{marginVertical: 10}}>
+                <View style={{}}>
                   <SearchDropdown
                     options={brokerOptions}
                     searchQuery={brokerSearchText}
@@ -292,6 +302,10 @@ function FormContent(props) {
                 </View>
                 <RenderError error={errors.broker_id} />
 
+                <Subheading style={{color: theme.colors.primary}}>
+                  Broker Details
+                </Subheading>
+
                 <View style={styles.visitorContainer}>
                   <InfoRow
                     data={[
@@ -300,10 +314,10 @@ function FormContent(props) {
                     ]}
                   />
                   <InfoRow
-                    data={[
-                      {label: 'Email', value: brokerDetails?.email},
-                      {label: 'Phone no.', value: brokerDetails?.phone},
-                    ]}
+                    data={[{label: 'Email', value: brokerDetails?.email}]}
+                  />
+                  <InfoRow
+                    data={[{label: 'Phone no.', value: brokerDetails?.phone}]}
                   />
                   <RenderTextBox
                     name="broker_remark"
@@ -321,23 +335,12 @@ function FormContent(props) {
               </>
             ) : null}
           </View>
-          <View style={styles.actionContainer}>
-            <Button
-              style={styles.actionButton}
-              contentStyle={styles.buttonLabel}
-              theme={{roundness: 15}}
-              onPress={handleCancel}>
-              Back
-            </Button>
-            <Button
-              style={styles.actionButton}
-              mode="contained"
-              contentStyle={styles.buttonLabel}
-              theme={{roundness: 15}}
-              onPress={handleSubmit}>
-              Next
-            </Button>
-          </View>
+          <ActionButtons
+            cancelLabel="Back"
+            submitLabel="Next"
+            onCancel={handleCancel}
+            onSubmit={handleSubmit}
+          />
         </KeyboardAwareScrollView>
       </TouchableWithoutFeedback>
     </>
@@ -346,7 +349,8 @@ function FormContent(props) {
 
 function BookingDetails(props) {
   const {navigation, route} = props;
-  const {project_id, withRate, unitId, selectedStructure} = route?.params || {};
+  const {project_id, withRate, unit_id, selectedStructure} =
+    route?.params || {};
 
   const {getBrokersList} = useSalesActions();
 
@@ -373,7 +377,7 @@ function BookingDetails(props) {
       ...data,
       project_id,
       withRate,
-      unit_id: unitId,
+      unit_id,
       project_main_types: selectedStructure,
     };
 
@@ -394,37 +398,36 @@ function BookingDetails(props) {
 
 const styles = StyleSheet.create({
   container: {
+    flexGrow: 1,
+  },
+  scrollContainer: {
+    flexGrow: 1,
+    paddingBottom: 10,
+  },
+  contentContainer: {
     flex: 1,
     paddingHorizontal: 20,
-    paddingVertical: 10,
+  },
+  headingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: -10,
   },
   input: {
     marginTop: 5,
   },
   radioRow: {
-    marginTop: 30,
     marginBottom: 10,
+  },
+  brokerRadioRow: {
+    marginBottom: 10,
+    marginTop: 30,
   },
   radioContainer: {
     flexDirection: 'row',
   },
-  actionContainer: {
-    marginTop: 25,
-    paddingHorizontal: 20,
-    flexDirection: 'row',
-
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
   visitorContainer: {
     marginTop: 10,
-  },
-  actionButton: {
-    flex: 1,
-    marginHorizontal: 5,
-  },
-  buttonLabel: {
-    padding: 3,
   },
   rowContainer: {
     alignItems: 'center',
@@ -435,6 +438,9 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  searchContainer: {
+    marginBottom: 10,
   },
 });
 

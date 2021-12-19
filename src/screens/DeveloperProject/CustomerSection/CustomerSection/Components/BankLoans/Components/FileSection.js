@@ -124,20 +124,19 @@ function FileSection(props) {
     const formData = new FormData();
 
     formData.append('project_id', project_id);
-    formData.append('unit_id', unit.unitId);
+    formData.append('unit_id', unit.unit_id);
     formData.append('file', values.file);
     formData.append('file_name', values.file_name);
     formData.append('file_reason', values.file_reason);
 
     updateBankFiles(formData).then(() => {
-      getBankDetails({project_id, unit_id: unit.unitId});
+      getBankDetails({project_id, unit_id: unit.unit_id});
     });
   };
 
-  const handleFileRemove = file_id => {
-    removeBankFile({file_id, project_id, unit_id: unit.unitId}).then(() => {
-      getBankDetails({project_id, unit_id: unit.unitId});
-    });
+  const handleFileRemove = async file_id => {
+    await removeBankFile({file_id, project_id, unit_id: unit.unit_id});
+    getBankDetails({project_id, unit_id: unit.unit_id});
   };
 
   const onChoose = v => {
@@ -169,7 +168,7 @@ function FileSection(props) {
       <View style={styles.filesContainer}>
         {files?.map?.((file, index) => (
           <RenderFile
-            key={index}
+            key={index?.toString()}
             {...{
               file,
               index,

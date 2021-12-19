@@ -17,7 +17,7 @@ const checkUnitBhkValidity = (floors, floorCount) => {
 
   for (let floorId = 0; floorId <= floorCount; floorId += 1) {
     const {units = {}, unitCount} = floors[floorId];
-    for (let unitId = 1; unitId <= unitCount; unitId++) {
+    for (let unitId = 1; unitId <= unitCount; unitId += 1) {
       if (!units[unitId].bhk) {
         result[floorId] = false;
         allValid = false;
@@ -120,10 +120,10 @@ function FloorsScreen(props) {
     let allValid = true;
     let error = '';
 
-    if (!isNaN(floorId)) {
+    if (!Number.isNaN(floorId)) {
       const {unitCount = ''} = floors[floorId];
       return {
-        valid: !isNaN(unitCount),
+        valid: !Number.isNaN(unitCount),
         error: `Please Provide units for the ${getFloorNumber(floorId)}`,
       };
     }
@@ -132,7 +132,7 @@ function FloorsScreen(props) {
       const {unitCount} = floors[i];
 
       // check if unitCount is 0 or more than 0
-      if (isNaN(unitCount)) {
+      if (Number.isNaN(unitCount)) {
         allValid = false;
         if (!error) {
           error = `Please Provide units for the ${getFloorNumber(i)}`;

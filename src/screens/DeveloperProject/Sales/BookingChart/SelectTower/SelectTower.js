@@ -10,7 +10,8 @@ function SelectTower(props) {
 
   const {selectedProject} = useSelector(s => s.project);
 
-  const structureData = selectedProject.projectData?.[selectedStructure] || {};
+  const structureData =
+    selectedProject.project_structure?.[selectedStructure] || {};
 
   const {towerCount, towers} = structureData;
 

@@ -8,7 +8,8 @@ export default function SelectFloor(props) {
   const {selectedProject = {}} = useSelector(s => s.project);
 
   const {selectedStructure} = route?.params || {};
-  const structureData = selectedProject.projectData?.[selectedStructure] || {};
+  const structureData =
+    selectedProject.project_structure?.[selectedStructure] || {};
   const {towerCount, towers} = structureData;
 
   const showAllUnits = (towerId, floorId) => {

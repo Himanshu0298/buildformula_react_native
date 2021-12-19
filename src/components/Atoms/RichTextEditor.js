@@ -1,48 +1,48 @@
 import React from 'react';
-import {
-  Text,
-  Platform,
-  KeyboardAvoidingView,
-  SafeAreaView,
-  ScrollView,
-  View,
-} from 'react-native';
-import {actions, RichEditor, RichToolbar} from 'react-native-pell-rich-editor';
+import {View, StyleSheet} from 'react-native';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {withTheme} from 'react-native-paper';
+import {RichEditor, RichToolbar} from 'react-native-pell-rich-editor';
 
 function RichTextEditor(props) {
-  const {placeholder, value, onChangeText} = props;
+  const {theme, height, style, placeholder, value, onChangeText} = props;
 
   const richText = React.useRef();
 
   return (
-    <View>
-      <ScrollView style={{flexGrow: 1, borderWidth: 1, borderRadius: 10}}>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={{flex: 1}}>
-          <RichEditor
-            ref={richText}
-            useContainer={false}
-            placeholder={placeholder}
-            initialContentHTML={value}
-            containerStyle={{minHeight: 150, borderRadius: 10}}
-            // editorStyle={{
-            //   // backgroundColor: 'white',
-            //   borderColor: 'blue',
-            // }}
-            onChange={onChangeText}
-          />
-        </KeyboardAvoidingView>
-      </ScrollView>
+    <View style={[styles.container, style, {height}]}>
+      <KeyboardAwareScrollView>
+        <RichEditor
+          ref={richText}
+          useContainer
+          placeholder={placeholder}
+          initialContentHTML={value}
+          containerStyle={styles.editorContainer}
+          onChange={onChangeText}
+        />
+      </KeyboardAwareScrollView>
       <RichToolbar
         editor={richText}
-        selectedButtonStyle={{backgroundColor: 'black'}}
-        // unselectedButtonStyle={{color: 'red'}}
-        selectedIconTint
-        iconTint
+        style={styles.toolbar}
+        selectedButtonStyle={{backgroundColor: theme.colors.primary}}
+        selectedIconTint="#fff"
       />
     </View>
   );
 }
 
-export default RichTextEditor;
+const styles = StyleSheet.create({
+  container: {
+    borderWidth: 1,
+    borderRadius: 10,
+  },
+  editorContainer: {
+    minHeight: 150,
+    borderRadius: 10,
+  },
+  toolbar: {
+    borderRadius: 10,
+  },
+});
+
+export default withTheme(RichTextEditor);

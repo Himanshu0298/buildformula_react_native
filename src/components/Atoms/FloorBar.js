@@ -62,23 +62,21 @@ function FloorBar(props) {
                 },
               }}
             />
-            <View style={{flexDirection: 'row'}}>
-              <TextInput
-                dense
-                blurOnSubmit
-                placeholder=""
-                style={styles.unitsInput}
-                keyboardType="decimal-pad"
-                theme={{
-                  colors: {
-                    underlineColor: 'transparent',
-                    text: '#000',
-                    accent: theme.colors.primary,
-                  },
-                }}
-                {...inputProps}
-              />
-            </View>
+            <TextInput
+              dense
+              blurOnSubmit
+              placeholder=""
+              style={styles.unitsInput}
+              keyboardType="decimal-pad"
+              theme={{
+                colors: {
+                  underlineColor: 'transparent',
+                  text: '#000',
+                  accent: theme.colors.primary,
+                },
+              }}
+              {...inputProps}
+            />
             <OpacityButton onPress={onPressNext} style={styles.button}>
               <MaterialCommunityIcons
                 name="arrow-right"
@@ -121,7 +119,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     justifyContent: 'center',
     color: '#ccc',
+    textAlign: 'center',
     backgroundColor: '#fff',
+    minWidth: 120,
     ...getShadow(3),
   },
   floorContainer: {
