@@ -41,7 +41,7 @@ function VisitorDetails(props) {
 
   useEffect(() => {
     getVisitor({project_id: selectedProject.id, visitor_id: visitorId});
-    getPipelineData(selectedProject.id);
+    getPipelineData({project_id: selectedProject.id});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedProject.id, visitorId]);
 

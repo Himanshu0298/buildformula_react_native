@@ -104,15 +104,12 @@ export default function useSalesActions() {
         },
       }),
 
-    getPipelineData: projectId =>
+    getPipelineData: params =>
       dispatch({
         type: types.GET_PIPELINES,
         payload: async () => {
           try {
-            const formData = new FormData();
-            formData.append('project_id', projectId);
-
-            const response = _res(await getPipelines(formData));
+            const response = _res(await getPipelines(params));
             const {data, others} = response;
 
             return Promise.resolve({
@@ -273,12 +270,12 @@ export default function useSalesActions() {
         },
       }),
 
-    addPipeline: formData =>
+    addPipeline: params =>
       dispatch({
         type: types.ADD_PIPELINE,
         payload: async () => {
           try {
-            const response = _res(await addPipeline(formData));
+            const response = _res(await addPipeline(params));
             const {data} = response;
 
             return Promise.resolve(data.data);

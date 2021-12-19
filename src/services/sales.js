@@ -31,7 +31,11 @@ export default function useSalesServices() {
       );
     },
     getPipelines: data => {
-      return instance.post('/pipeline/get_lists', data, config());
+      return instance.post(
+        '/pipeline/get_lists',
+        data,
+        config({multipart: false}),
+      );
     },
     addVisitor: data => {
       return instance.post('/visitors/add', data, config({multipart: false}));
@@ -79,7 +83,7 @@ export default function useSalesServices() {
       );
     },
     addPipeline: data => {
-      return instance.post('/pipeline/add', data, config());
+      return instance.post('/pipeline/add', data, config({multipart: false}));
     },
     moveVisitor: data => {
       return instance.post('/pipeline/movecontact', data, config());

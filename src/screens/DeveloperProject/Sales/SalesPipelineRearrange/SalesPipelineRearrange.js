@@ -20,15 +20,17 @@ function RenderPipeline(props) {
 
   return (
     <View style={styles.workContainer}>
-      <View style={styles.titleContainer}>
-        <CustomBadge label={(index + 1).toString()} style={styles.badge} />
-        <MaterialIcons
-          name="drag-indicator"
-          color="rgba(4,29,54,0.15)"
-          size={30}
-          style={{marginRight: 10}}
-        />
-        <Text>{item.title}</Text>
+      <View style={styles.shadowContainer}>
+        <View style={styles.titleContainer}>
+          <CustomBadge label={(index + 1).toString()} style={styles.badge} />
+          <MaterialIcons
+            name="drag-indicator"
+            color="rgba(4,29,54,0.15)"
+            size={30}
+            style={styles.arrangeIcon}
+          />
+          <Text>{item.title}</Text>
+        </View>
       </View>
     </View>
   );
@@ -62,11 +64,9 @@ function SalesPipelineRearrange(props) {
 
     await updatePipelineOrderList(updatedData);
     getPipelinesOrderList({project_id: selectedProject.id});
-    getPipelineData(selectedProject.id);
+    getPipelineData({project_id: selectedProject.id});
     navigation.goBack();
   };
-
-  const handleDragEnd = (fromIndex, toIndex) => {};
 
   return (
     <View style={styles.container}>
@@ -77,15 +77,12 @@ function SalesPipelineRearrange(props) {
           <AutoDragSortableView
             dataSource={pipelinesOrderList}
             maxScale={1.03}
-            style={{width: '100%'}}
+            style={styles.listContainer}
             childrenWidth={Layout.window.width}
             childrenHeight={ROW_HEIGHT}
             keyExtractor={(_, i) => i.toString()}
             renderItem={(item, index) => <RenderPipeline {...{item, index}} />}
-            onDataChange={data => {
-              setUpdatedPipelineOrderList(data);
-            }}
-            onDragEnd={handleDragEnd}
+            onDataChange={data => setUpdatedPipelineOrderList(data)}
           />
           <ActionButtons
             cancelLabel="Cancel"
@@ -113,13 +110,15 @@ const styles = StyleSheet.create({
     width: Layout.window.width,
     paddingHorizontal: 20,
   },
+  shadowContainer: {
+    ...getShadow(2),
+    flexGrow: 1,
+    backgroundColor: '#fff',
+  },
   titleContainer: {
     flexGrow: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    ...getShadow(2),
-    backgroundColor: '#fff',
-    borderRadius: 10,
     padding: 5,
   },
   badge: {
@@ -127,6 +126,12 @@ const styles = StyleSheet.create({
     width: 22,
     marginLeft: 10,
     borderRadius: 10,
+  },
+  listContainer: {
+    width: '100%',
+  },
+  arrangeIcon: {
+    marginRight: 10,
   },
 });
 

@@ -38,11 +38,6 @@ export const PRIORITY_COLORS = {
   high: theme.colors.red,
 };
 
-export const COLORS = {
-  primaryLight: 'rgba(72,114,244,0.3)',
-  deleteLight: 'rgba(255,93,93,0.2)',
-};
-
 export const APP_BOTTOM_TAB_HEIGHT = 50;
 
 export const BHK_OPTIONS = [
