@@ -285,9 +285,7 @@ const RenderBoard = React.memo(props => {
       return;
     }
 
-    const formData = new FormData();
-    formData.append('status_id', id);
-    deletePipeline(id, formData);
+    deletePipeline(id);
   };
 
   const boardRepository = React.useMemo(() => {
@@ -345,6 +343,8 @@ const RenderBoard = React.memo(props => {
 export default function SalesPipeline(props) {
   const {t} = useTranslation();
 
+  const alert = useAlert();
+
   const [selectedTab, setSelectedTab] = React.useState(0);
   const [showAddContact, setShowAddContact] = React.useState(false);
 
@@ -361,10 +361,6 @@ export default function SalesPipeline(props) {
 
   const loading = useSalesLoading();
 
-  console.log('----->pipelines', pipelines);
-  const myData = pipelines.sort((a, b) => (a.id > b.id ? 1 : -1));
-  console.log('----->myData', myData);
-
   React.useEffect(() => {
     getPipelineData(selectedProject.id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -378,6 +374,17 @@ export default function SalesPipeline(props) {
 
     addPipeline(formData).then(() => {
       getPipelineData(selectedProject.id);
+    });
+  };
+
+  const handleDelete = id => {
+    alert.show({
+      title: 'Confirm',
+      message: 'Are you sure you want to delete?',
+      confirmText: 'Delete',
+      onConfirm: () => {
+        deletePipeline({status_id: id, project_id: selectedProject.id});
+      },
     });
   };
 
@@ -404,7 +411,7 @@ export default function SalesPipeline(props) {
             {...props}
             pipelines={pipelines}
             setSelectedTab={setSelectedTab}
-            deletePipeline={deletePipeline}
+            deletePipeline={handleDelete}
             handleAddNew={handleAddNew}
             toggleModal={toggleModal}
             moveContact={moveContact}

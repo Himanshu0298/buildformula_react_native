@@ -85,7 +85,11 @@ export default function useSalesServices() {
       return instance.post('/pipeline/movecontact', data, config());
     },
     deletePipeline: data => {
-      return instance.post('inquiry_status/remove', data, config());
+      return instance.post(
+        'inquiry_status/remove',
+        data,
+        config({multipart: false}),
+      );
     },
     getUnitsBookingStatus: data => {
       return instance.post(

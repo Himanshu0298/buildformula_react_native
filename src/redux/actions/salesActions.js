@@ -313,15 +313,15 @@ export default function useSalesActions() {
         },
       }),
 
-    deletePipeline: (id, formData) =>
+    deletePipeline: params =>
       dispatch({
         type: types.DELETE_PIPELINE,
         payload: async () => {
           try {
-            const response = _res(await deletePipeline(formData));
-            const {data} = response;
+            await deletePipeline(params);
+            snackbar.showMessage({message: 'Deleted Pipeline successfully!'});
 
-            return Promise.resolve(id);
+            return Promise.resolve(params.status_id);
           } catch (error) {
             const message = _err(error);
             snackbar.showMessage({message, variant: 'error'});
