@@ -1,7 +1,7 @@
-import React, {useMemo, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {AutoDragSortableView} from 'react-native-drag-sort';
-import {Text, withTheme, Button} from 'react-native-paper';
+import {Text, withTheme} from 'react-native-paper';
 import Layout from 'utils/Layout';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import CustomBadge from 'components/Atoms/CustomBadge';
@@ -9,9 +9,9 @@ import {useSelector} from 'react-redux';
 import NoResult from 'components/Atoms/NoResult';
 import useSalesActions from 'redux/actions/salesActions';
 import {getShadow} from 'utils';
-import {secondaryTheme} from 'styles/theme';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {useSalesLoading} from 'redux/selectors';
+import ActionButtons from 'components/Atoms/ActionButtons';
 
 const ROW_HEIGHT = 50;
 
@@ -68,8 +68,6 @@ function SalesPipelineRearrange(props) {
 
   const handleDragEnd = (fromIndex, toIndex) => {};
 
-  console.log('-----pipelinesOrderList', pipelinesOrderList);
-
   return (
     <View style={styles.container}>
       <Spinner visible={loading} textContent="" />
@@ -85,29 +83,16 @@ function SalesPipelineRearrange(props) {
             keyExtractor={(_, i) => i.toString()}
             renderItem={(item, index) => <RenderPipeline {...{item, index}} />}
             onDataChange={data => {
-              console.log('-----> onDataChange', data);
               setUpdatedPipelineOrderList(data);
             }}
             onDragEnd={handleDragEnd}
           />
-          <View style={styles.dialogActionContainer}>
-            <Button
-              style={{width: '40%', marginHorizontal: 5}}
-              contentStyle={{padding: 2}}
-              theme={{roundness: 15}}
-              mode="outlined"
-              onPress={() => navigation.goBack()}>
-              <Text>cancel</Text>
-            </Button>
-            <Button
-              style={{width: '40%', marginHorizontal: 5}}
-              contentStyle={{padding: 1}}
-              theme={{roundness: 15}}
-              mode="contained"
-              onPress={handleSave}>
-              <Text theme={secondaryTheme}>save</Text>
-            </Button>
-          </View>
+          <ActionButtons
+            cancelLabel="Cancel"
+            submitLabel="Save"
+            onSubmit={handleSave}
+            onCancel={navigation.goBack}
+          />
         </>
       ) : (
         <NoResult />
@@ -119,6 +104,7 @@ function SalesPipelineRearrange(props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginBottom: 10,
   },
   workContainer: {
     flexDirection: 'row',
@@ -141,13 +127,6 @@ const styles = StyleSheet.create({
     width: 22,
     marginLeft: 10,
     borderRadius: 10,
-  },
-  dialogActionContainer: {
-    marginTop: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
-    marginBottom: 20,
   },
 });
 
