@@ -1,5 +1,5 @@
 import React, {useMemo} from 'react';
-import {Divider, Text, withTheme, Button} from 'react-native-paper';
+import {Divider, Text, withTheme, Button, Caption} from 'react-native-paper';
 import {StyleSheet, View, ScrollView} from 'react-native';
 import {useSelector} from 'react-redux';
 import dayjs from 'dayjs';
@@ -41,31 +41,26 @@ function Heading(props) {
 }
 
 function DetailCard(props) {
-  const {
-    name,
-    comment,
-    // activityFilter,
-    activity,
-    type,
-  } = props;
-  const date = dayjs(activity.created).format('DD-MM-YYYY');
-  const time = dayjs(activity.created).format('hh:mm:ss');
-  const followup_date = dayjs(activity.followup_date).format('DD-MM-YYYY');
-  const followup_time = dayjs(activity.followup_time).format('hh:mm');
+  const {theme, name, comment, activity, type} = props;
+  const {created, followup_date, followup_time} = activity;
+
+  const followup = dayjs(`${followup_date} ${followup_time}`).format(
+    'YYYY-MM-DD hh:mm:ss',
+  );
 
   const isHtml = comment?.includes('<') && comment?.includes('>');
 
   return (
     <View style={styles.detailCard}>
-      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-        <Text>{date}</Text>
-        <Text>{time}</Text>
+      <View style={styles.dateTimeLabel}>
+        <Caption>{dayjs(created).format('DD-MM-YYYY')}</Caption>
+        <Caption>{dayjs(created).format('hh:mm a')}</Caption>
       </View>
       <View style={styles.commentDetailText}>
         {type === 'visitor_comment' ? (
           activity.is_important ? (
             <View>
-              <Text style={{color: 'blue'}}>Important </Text>
+              <Text style={{color: theme.color.primary}}>Important </Text>
             </View>
           ) : null
         ) : null}
@@ -73,18 +68,19 @@ function DetailCard(props) {
         <Text> added {ACTIVITY_LABELS[type]}</Text>
       </View>
       {type === 'visitor_call_log' ? (
-        <Text style={{marginTop: 10}}>
+        <Text style={styles.valueContainer}>
           {activity.call_out_come} at {activity.last_time} on{' '}
           {activity.last_date}
         </Text>
       ) : null}
       {type === 'visitor_followup' ? (
-        <Text style={{marginTop: 10}}>
-          Due at {followup_time} on {followup_date}
+        <Text style={styles.valueContainer}>
+          Due at {dayjs(followup).format('hh:mm a')} on{' '}
+          {dayjs(followup).format('DD-MM-YYYY')}
         </Text>
       ) : null}
       {!isHtml ? (
-        <Text style={{marginTop: 10}}>{comment}</Text>
+        <Caption style={styles.valueContainer}>{comment}</Caption>
       ) : (
         <RenderHtml
           source={{html: comment}}
@@ -99,11 +95,12 @@ function RenderSection(props) {
   const {title, activities, user} = props;
 
   return (
-    <View style={{marginBottom: 25}}>
+    <View style={styles.sectionContainer}>
       <Heading text={title} />
       {activities[title].map((activity, index) => (
         <DetailCard
-          key={index}
+          {...props}
+          key={index?.toString()}
           date={activity.created}
           name={`${user.first_name} ${user.last_name}`}
           comment={activity.remarks}
@@ -164,10 +161,11 @@ function Activities(props) {
   return (
     <View style={styles.mainContainer}>
       <FilterPanel {...props} />
-      <ScrollView contentContainerStyle={{padding: 20}}>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
         {Object.keys(activities).map((key, index) => (
           <RenderSection
-            key={index}
+            {...props}
+            key={index?.toString()}
             title={key}
             activities={activities}
             user={user}
@@ -212,6 +210,19 @@ const styles = StyleSheet.create({
   filter: {
     marginHorizontal: 10,
     borderRadius: 20,
+  },
+  valueContainer: {
+    marginTop: 10,
+  },
+  scrollContainer: {
+    padding: 20,
+  },
+  sectionContainer: {
+    marginBottom: 25,
+  },
+  dateTimeLabel: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
 });
 

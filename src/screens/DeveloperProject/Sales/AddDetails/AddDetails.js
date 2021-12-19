@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import RenderSelect from 'components/Atoms/RenderSelect';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import AddComments from './Components/AddComments';
 import AddCallLogs from './Components/AddCallLogs';
 import AddFollowUp from './Components/AddFollowUp';
@@ -28,20 +27,18 @@ function AddDetails(props) {
   }
 
   return (
-    <SafeAreaView style={{flexGrow: 1}}>
-      <View style={styles.container}>
-        <RenderSelect
-          name="assign_to"
-          ref={assignToRef}
-          label="Select"
-          options={['Comment', 'Call Log', 'Follow-up']}
-          containerStyles={styles.input}
-          value={type}
-          onSelect={v => setType(v)}
-        />
-        {renderSwitch()}
-      </View>
-    </SafeAreaView>
+    <View style={styles.container}>
+      <RenderSelect
+        name="assign_to"
+        ref={assignToRef}
+        label="Select"
+        options={['Comment', 'Call Log', 'Follow-up']}
+        containerStyles={styles.input}
+        value={type}
+        onSelect={setType}
+      />
+      {renderSwitch()}
+    </View>
   );
 }
 

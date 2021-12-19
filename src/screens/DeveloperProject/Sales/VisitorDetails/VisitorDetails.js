@@ -126,11 +126,6 @@ function VisitorDetails(props) {
             onStateChange={onStateChange}
             actions={[
               {
-                icon: 'square-edit-outline',
-                label: 'Edit',
-                onPress: () => navigation.navigate('AddVisitor', {visitor}),
-              },
-              {
                 icon: 'comment',
                 label: 'Add comment',
                 onPress: () =>
@@ -156,6 +151,11 @@ function VisitorDetails(props) {
                     type: 'Follow-up',
                     visitorId,
                   }),
+              },
+              {
+                icon: 'square-edit-outline',
+                label: 'Edit Visitor Info ',
+                onPress: () => navigation.navigate('AddVisitor', {visitor}),
               },
             ]}
           />
