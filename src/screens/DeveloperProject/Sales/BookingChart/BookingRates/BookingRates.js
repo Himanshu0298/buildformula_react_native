@@ -29,9 +29,9 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import RenderSelect from 'components/Atoms/RenderSelect';
 import {useSelector} from 'react-redux';
 import {useSnackbar} from 'components/Atoms/Snackbar';
+import {DOCUMENT_CHARGE_LIMIT} from 'utils/constant';
 
 const TYPES = ['super_buildup', 'buildup', 'carpet'];
-const DOCUMENT_CHARGE_LIMIT = 20000;
 
 const schema = Yup.object().shape({
   area_amount: Yup.number('Invalid').required('Required'),

@@ -30,10 +30,11 @@ function SearchDropdown(props) {
   return (
     <>
       <Searchbar
-        theme={{roundness: 8}}
+        theme={{roundness: 5}}
         placeholder={t(placeholder)}
         onFocus={() => setFocused(true)}
         style={styles.searchBar}
+        inputStyle={styles.searchInput}
         value={searchQuery}
         onChangeText={v => {
           onChangeText(v);
@@ -88,6 +89,9 @@ const styles = StyleSheet.create({
   searchBar: {
     backgroundColor: 'rgba(4,29,54,0.1)',
     ...getShadow(0),
+  },
+  searchInput: {
+    fontSize: 17,
   },
 });
 

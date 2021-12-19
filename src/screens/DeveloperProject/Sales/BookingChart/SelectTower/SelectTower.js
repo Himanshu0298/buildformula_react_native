@@ -2,7 +2,7 @@ import React from 'react';
 import {useSelector} from 'react-redux';
 import TowerSelector from 'components/Molecules/TowerSelector';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
-import {IconButton, Text} from 'react-native-paper';
+import {IconButton, Subheading} from 'react-native-paper';
 
 function SelectTower(props) {
   const {navigation, route} = props;
@@ -25,7 +25,7 @@ function SelectTower(props) {
         style={styles.titleContainer}
         onPress={navigation.goBack}>
         <IconButton icon="keyboard-backspace" />
-        <Text>{towerType}</Text>
+        <Subheading>{towerType}</Subheading>
       </TouchableOpacity>
       <TowerSelector
         {...props}

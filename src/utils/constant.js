@@ -54,3 +54,5 @@ export const BHK_OPTIONS = [
   {type: 6, color: 'rgba(0, 205, 205)'},
   {type: 7, color: 'rgba(99, 149, 104)'},
 ];
+
+export const DOCUMENT_CHARGE_LIMIT = 20000;

@@ -37,6 +37,10 @@ import Layout from 'utils/Layout';
 import ActionButtons from 'components/Atoms/ActionButtons';
 import CustomDialog from 'components/Atoms/CustomDialog';
 import RichTextEditor from 'components/Atoms/RichTextEditor';
+import {DOCUMENT_CHARGE_LIMIT} from 'utils/constant';
+import {useSnackbar} from 'components/Atoms/Snackbar';
+import Spinner from 'react-native-loading-spinner-overlay';
+import {useSalesLoading} from 'redux/selectors';
 
 const PAYMENT_METHODS = [
   {label: 'Full payment', value: 1},
@@ -557,18 +561,19 @@ function RenderCustomPaymentForm(props) {
 function RenderDocumentChargesPayment(props) {
   const {route, theme, formikProps, t} = props;
   const {withRate} = route?.params || {};
-
-  const {values, setFieldValue, errors} = formikProps;
+  const {values, errors, setFieldValue, handleChange, handleBlur} = formikProps;
 
   return (
     <>
       <Caption style={[styles.headingLabel, {color: theme.colors.primary}]}>
-        Document Charges payment
+        Document Charges
       </Caption>
       <View style={styles.docChargesSection}>
         <RenderInput
-          name="documentation_charges"
+          name="documentCharge"
           label={t('label_documentation_charges')}
+          onChangeText={handleChange('documentCharge')}
+          onBlur={handleBlur('documentCharge')}
           value={values.documentCharge}
           editable={!withRate}
           left={<TextInput.Affix text="₹" />}
@@ -632,25 +637,11 @@ function ConditionsDialog(props) {
 function RenderPaymentForm(props) {
   const {theme, formikProps, route, t} = props;
   const {withRate} = route?.params || {};
-  const {
-    values,
-    errors,
-    handleChange,
-    setFieldValue,
-    handleBlur,
-    resetForm,
-  } = formikProps;
+  const {values, errors, handleChange, setFieldValue, handleBlur} = formikProps;
 
   const {commonData} = useSelector(s => s.project);
 
   const [conditionsDialog, setConditionsDialog] = useState(false);
-
-  useEffect(() => {
-    resetForm();
-    setFieldValue('finalAmount', values.finalAmount);
-    setFieldValue('payment_type', values.payment_type);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [values.finalAmount]);
 
   const TCOptions = useMemo(() => {
     return commonData?.booking_TandC?.map(i => ({label: i.title, value: i.id}));
@@ -774,9 +765,52 @@ function FormContent(props) {
     errors,
     setFieldValue,
     handleChange,
+    resetForm,
   } = formikProps;
 
   const handleCancel = () => navigation.goBack();
+
+  useEffect(() => {
+    resetForm();
+    setFieldValue('payment_type', values.payment_type);
+    setFieldValue('documentCharge', values.documentCharge);
+    setFieldValue('finalAmount', values.finalAmount);
+    setFieldValue('document_start_date', values.document_start_date);
+    setFieldValue('document_end_date', values.document_end_date);
+    setFieldValue('loan', values.loan);
+    setFieldValue('loan_bank', values.loan_bank);
+    setFieldValue('loan_amount', values.loan_amount);
+    setFieldValue('loan_remark', values.loan_remark);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [values.payment_type]);
+
+  useEffect(() => {
+    resetForm();
+    setFieldValue('finalAmount', values.finalAmount);
+    setFieldValue('payment_type', values.payment_type);
+    setFieldValue('documentCharge', values.documentCharge);
+    setFieldValue('document_start_date', values.document_start_date);
+    setFieldValue('document_end_date', values.document_end_date);
+    setFieldValue('loan', values.loan);
+    setFieldValue('loan_bank', values.loan_bank);
+    setFieldValue('loan_amount', values.loan_amount);
+    setFieldValue('loan_remark', values.loan_remark);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [values.finalAmount]);
+
+  const snackbar = useSnackbar();
+
+  useEffect(() => {
+    if (values.documentCharge > DOCUMENT_CHARGE_LIMIT) {
+      snackbar.showMessage({
+        message: 'Document charges cannot be more than ₹20,000',
+        variant: 'warning',
+      });
+
+      setFieldValue('documentCharge', DOCUMENT_CHARGE_LIMIT);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [values.documentCharge]);
 
   return (
     <TouchableWithoutFeedback
@@ -892,6 +926,8 @@ function BookingPayments(props) {
 
   const {bankList} = useSelector(s => s.sales);
 
+  const loading = useSalesLoading();
+
   useEffect(() => {
     getBankList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -979,6 +1015,14 @@ function BookingPayments(props) {
       }
     }
 
+    if (data.payment_type === 1) {
+      data.full_payment_remark = data.termsDescription;
+    } else if (data.payment_type === 2) {
+      data.custom_payment_remark = data.termsDescription;
+    } else if (data.payment_type === 3) {
+      data.installment_payment_remarks = data.termsDescription;
+    }
+
     delete data.loan;
     delete data.broker;
     delete data.documentCharge;
@@ -988,20 +1032,25 @@ function BookingPayments(props) {
     delete data.document_start_date;
     delete data.document_end_date;
     delete data.finalAmount;
+    delete data.termsDescription;
+    delete data.termsAndConditions;
 
     createBooking(data).then(() => navigation.popToTop());
   };
 
   return (
-    <Formik
-      validateOnBlur={false}
-      validateOnChange={false}
-      validate={validate}
-      initialValues={initialValues}
-      validationSchema={schema}
-      onSubmit={onSubmit}>
-      {formikProps => <FormContent {...props} {...{formikProps, bankList}} />}
-    </Formik>
+    <>
+      <Spinner visible={loading} textContent="" />
+      <Formik
+        validateOnBlur={false}
+        validateOnChange={false}
+        validate={validate}
+        initialValues={initialValues}
+        validationSchema={schema}
+        onSubmit={onSubmit}>
+        {formikProps => <FormContent {...props} {...{formikProps, bankList}} />}
+      </Formik>
+    </>
   );
 }
 
