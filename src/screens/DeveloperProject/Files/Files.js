@@ -17,6 +17,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import BottomSheet from 'reanimated-bottom-sheet';
 import {getPermissions, getShadow} from 'utils';
 import Animated from 'react-native-reanimated';
+import _ from 'lodash';
 import DeleteDialog from './Components/DeleteDialog';
 import UploadDialog from './Components/UploadDialog';
 import RenameDialogue from './Components/RenameDialog';
@@ -63,7 +64,7 @@ function RenderMenuModal(props) {
 
   const bottomSheetRef = useRef();
   const fall = new Animated.Value(1);
-  const open = !Number.isNaN(menuId);
+  const open = _.isFinite(menuId);
 
   useEffect(() => {
     if (open) {
@@ -339,17 +340,12 @@ function Files(props) {
           {...{menuId, toggleMenu, setModalContent, setModalContentType}}
         />
       </ScrollView>
-      {console.log(
-        '----->modulePermissions?.editor',
-        modulePermissions?.editor,
-      )}
-      {console.log('----->modulePermissions?.admin', modulePermissions?.admin)}
       {modulePermissions?.editor || modulePermissions?.admin ? (
         <FAB.Group
           open={fab}
           style={styles.fab}
           fabStyle={{
-            backgroundColor: fab ? '#fff' : theme.colors.primary,
+            backgroundColor: fab ? theme.colors.white : theme.colors.primary,
           }}
           icon={fab ? 'window-close' : 'plus'}
           small

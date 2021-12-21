@@ -8,6 +8,7 @@ import {theme} from 'styles/theme';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import {useBackHandler} from '@react-native-community/hooks';
 import FloorBar from 'components/Atoms/FloorBar';
+import _ from 'lodash';
 import DuplicateDialog from './DuplicateDialog';
 
 const checkUnitBhkValidity = (floors, floorCount) => {
@@ -120,10 +121,10 @@ function FloorsScreen(props) {
     let allValid = true;
     let error = '';
 
-    if (!Number.isNaN(floorId)) {
+    if (_.isFinite(floorId)) {
       const {unitCount = ''} = floors[floorId];
       return {
-        valid: !Number.isNaN(unitCount),
+        valid: _.isFinite(unitCount),
         error: `Please Provide units for the ${getFloorNumber(floorId)}`,
       };
     }
@@ -132,7 +133,7 @@ function FloorsScreen(props) {
       const {unitCount} = floors[i];
 
       // check if unitCount is 0 or more than 0
-      if (Number.isNaN(unitCount)) {
+      if (!_.isFinite(unitCount)) {
         allValid = false;
         if (!error) {
           error = `Please Provide units for the ${getFloorNumber(i)}`;

@@ -2,6 +2,7 @@ import React from 'react';
 import {StyleSheet, View, Text} from 'react-native';
 import PropTypes from 'prop-types';
 import {TextInput, withTheme} from 'react-native-paper';
+import _ from 'lodash';
 
 export const RenderError = ({error, style}) => {
   return (
@@ -24,7 +25,7 @@ const RenderInput = React.forwardRef((props, ref) => {
     ...rest
   } = props;
 
-  value = (!Number.isNaN(value) ? value?.toString() : value) || '';
+  value = (_.isFinite(value) ? value?.toString() : value) || '';
 
   return (
     <View style={[styles.container, containerStyles]}>

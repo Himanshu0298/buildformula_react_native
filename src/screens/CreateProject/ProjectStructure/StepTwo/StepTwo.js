@@ -18,7 +18,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import AntIcons from 'react-native-vector-icons/AntDesign';
 import {useBackHandler} from '@react-native-community/hooks';
 import useAddProjectActions from 'redux/actions/addProjectActions';
-import {cloneDeep} from 'lodash';
+import _, {cloneDeep} from 'lodash';
 import UnitsScreen from './Components/UnitsScreen';
 import FloorsScreen from './Components/FloorsScreen';
 import TowersScreen from './Components/TowersScreen';
@@ -235,7 +235,7 @@ function validateTowers(data, selectedStructureType) {
     Object.keys(towers).map(towerId => {
       result[towerId] = true;
       const {floors = {}, floorCount} = towers[towerId] || {};
-      if (Number.isNaN(floorCount)) {
+      if (!_.isFinite(floorCount)) {
         // check if floorCount is null
         result[towerId] = false;
         allValid = false;
@@ -247,7 +247,7 @@ function validateTowers(data, selectedStructureType) {
       } else {
         Object.keys(floors).map(floorId => {
           // check if all floors has 0 or more units
-          if (Number.isNaN(floors?.[floorId]?.unitCount)) {
+          if (!_.isFinite(floors?.[floorId]?.unitCount)) {
             result[towerId] = false;
             allValid = false;
             if (!error) {

@@ -29,6 +29,7 @@ import RenderInput from 'components/Atoms/RenderInput';
 import {useTranslation} from 'react-i18next';
 import {useSalesLoading} from 'redux/selectors';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
+import _ from 'lodash';
 
 function RenderContacts({item}) {
   const {get_user = {}, get_role = {}} = item?.get_role_user || {};
@@ -238,7 +239,7 @@ function AddContactDialog({open, t, handleClose, moveContact}) {
 
             <Button
               mode="contained"
-              disabled={Number.isNaN(selectedVisitor)}
+              disabled={!_.isFinite(selectedVisitor)}
               contentStyle={{paddingVertical: 3, paddingHorizontal: 10}}
               theme={{roundness: 10}}
               style={{marginTop: 20, width: '100%'}}

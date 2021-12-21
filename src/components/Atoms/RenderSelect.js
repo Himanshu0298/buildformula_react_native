@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import {TextInput} from 'react-native-paper';
 import {useActionSheet} from '@expo/react-native-action-sheet';
 import truncate from 'lodash/truncate';
+import _ from 'lodash';
 import RenderInput from './RenderInput';
 
 const RenderSelect = React.forwardRef((props, ref) => {
@@ -55,7 +56,7 @@ const RenderSelect = React.forwardRef((props, ref) => {
       buttonIndex => {
         if (buttonIndex < parsedOptions.length) {
           let selectedValue = parsedOptions[buttonIndex];
-          if (withValue && !Number.isNaN(options?.[buttonIndex]?.value)) {
+          if (withValue && _.isFinite(options?.[buttonIndex]?.value)) {
             selectedValue = options[buttonIndex].value;
           }
           onSelect(selectedValue);

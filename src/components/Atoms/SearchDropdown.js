@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, {useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {
@@ -24,8 +25,7 @@ function SearchDropdown(props) {
 
   const [isFocused, setFocused] = useState(false);
 
-  const showOptions =
-    !Number.isNaN(selected) && isFocused && options?.length > 0;
+  const showOptions = !_.isFinite(selected) && isFocused && options?.length > 0;
 
   return (
     <>
