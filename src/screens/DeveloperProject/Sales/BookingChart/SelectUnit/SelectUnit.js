@@ -57,19 +57,19 @@ function SelectUnit(props) {
   }, [floorId, selectedProject, selectedStructure, towerId]);
 
   const processedUnits = useMemo(() => {
-    Object.keys(units).map(key => {
+    const updatedUnits = units.map(unit => {
       const bookingData = unitBookingStatus.find(
-        i => Number(i.id) === Number(key),
+        i => Number(i.id) === Number(unit.unit_id),
       );
 
       if (bookingData) {
-        units[key] = {...units[key], ...bookingData};
+        unit = {...unit, ...bookingData};
       }
 
-      return key;
+      return unit;
     });
 
-    return units;
+    return updatedUnits;
   }, [unitBookingStatus, units]);
 
   const toggleDialog = value => setSelectedUnit(v => (!v ? value : undefined));
@@ -120,6 +120,14 @@ function SelectUnit(props) {
     });
   };
 
+  const handleSelectUnit = unit => {
+    if (unit.status === 5) {
+      handleHold();
+    } else {
+      toggleDialog(unit);
+    }
+  };
+
   const floor = floorId
     ? getFloorNumber(floorId)
     : STRUCTURE_TYPE_LABELS?.[selectedStructure];
@@ -154,7 +162,7 @@ function SelectUnit(props) {
         showBhkFilters
         isUnitDisabled={checkUnitDisability}
         onRefresh={fetchUnitsBookingStatus}
-        onSelectUnit={toggleDialog}
+        onSelectUnit={handleSelectUnit}
       />
     </View>
   );

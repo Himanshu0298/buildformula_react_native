@@ -56,21 +56,20 @@ function UnitSelector(props) {
       ) : null}
       <Subheading style={styles.floorTitle}>{floorNumber}</Subheading>
       <FlatList
-        data={Object.keys(units)}
+        data={units}
         numColumns={3}
         showsVerticalScrollIndicator={false}
-        extraData={Object.keys(units)}
+        extraData={units}
         contentContainerStyle={styles.scrollContainer}
         refreshControl={
           onRefresh ? (
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           ) : null
         }
-        renderItem={({item, index}) => (
+        renderItem={({item: unit}) => (
           <RenderUnit
-            key={index.toString()}
-            unit_id={item}
-            unit={units[item]}
+            key={unit?.unit_id}
+            unit={unit}
             onSelectUnit={onSelectUnit}
             isUnitDisabled={isUnitDisabled}
           />

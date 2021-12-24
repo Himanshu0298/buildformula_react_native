@@ -1,6 +1,6 @@
 import RenderTextBox from 'components/Atoms/RenderTextbox';
 import {Formik} from 'formik';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {useTranslation} from 'react-i18next';
 import {StyleSheet, View} from 'react-native';
 import {withTheme} from 'react-native-paper';
@@ -16,49 +16,65 @@ const schema = Yup.object().shape({
 });
 
 function RenderForm(props) {
-  const {formikProps} = props;
-  const {handleChange, values, errors, setFieldValue} = formikProps;
+  const {formikProps, open} = props;
+  const {
+    handleChange,
+    values,
+    errors,
+    setFieldValue,
+    handleReset,
+  } = formikProps;
 
   const {t} = useTranslation();
 
   const dateRef = React.useRef();
   const remarkRef = React.useRef();
 
+  useEffect(() => {
+    handleReset();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
+
   return (
-    <View style={styles.inputsContainer}>
-      <RenderDatePicker
-        name="date"
-        label={t('label_date')}
-        ref={dateRef}
-        style={styles.input}
-        value={values.date}
-        onChange={v => setFieldValue('date', v)}
-        min={new Date()}
-        error={errors.date}
-      />
+    <CustomDialog
+      {...props}
+      title="Hold this Property"
+      submitForm={formikProps.handleSubmit}>
+      <View style={styles.inputsContainer}>
+        <RenderDatePicker
+          name="date"
+          label={t('label_date')}
+          ref={dateRef}
+          style={styles.input}
+          value={values.date}
+          onChange={v => setFieldValue('date', v)}
+          min={new Date()}
+          error={errors.date}
+        />
 
-      <RenderDatePicker
-        name="time"
-        label="Time"
-        ref={dateRef}
-        style={styles.input}
-        value={values.time}
-        onChange={v => setFieldValue('time', v)}
-        error={errors.time}
-        mode="time"
-      />
+        <RenderDatePicker
+          name="time"
+          label="Time"
+          ref={dateRef}
+          style={styles.input}
+          value={values.time}
+          onChange={v => setFieldValue('time', v)}
+          error={errors.time}
+          mode="time"
+        />
 
-      <RenderTextBox
-        name="remark"
-        label={t('label_remark')}
-        ref={remarkRef}
-        style={styles.input}
-        value={values.remark}
-        onChangeText={handleChange('remark')}
-        error={errors.remark}
-        numberOfLines={5}
-      />
-    </View>
+        <RenderTextBox
+          name="remark"
+          label={t('label_remark')}
+          ref={remarkRef}
+          style={styles.input}
+          value={values.remark}
+          onChangeText={handleChange('remark')}
+          error={errors.remark}
+          numberOfLines={5}
+        />
+      </View>
+    </CustomDialog>
   );
 }
 
@@ -72,14 +88,7 @@ function BookingHoldForm(props) {
       initialValues={{}}
       validationSchema={schema}
       onSubmit={handleSubmit}>
-      {formikProps => (
-        <CustomDialog
-          {...props}
-          title="Hold this Property"
-          submitForm={formikProps.handleSubmit}>
-          <RenderForm {...props} {...{formikProps}} />
-        </CustomDialog>
-      )}
+      {formikProps => <RenderForm {...props} {...{formikProps}} />}
     </Formik>
   );
 }

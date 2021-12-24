@@ -103,8 +103,15 @@ function PropertyHoldUserDetails(props) {
 
 function BookingFormOnHold(props) {
   const {navigation, route, theme} = props;
-  const {project_id, structureType, towerId, floorId, unit_id, unitLabel} =
-    route?.params || {};
+  const {
+    project_id,
+    structureType,
+    selectedStructure,
+    towerId,
+    floorId,
+    unit_id,
+    unitLabel,
+  } = route?.params || {};
 
   const {bookingHoldDetails} = useSelector(s => s.sales);
   const loading = useSalesLoading();
@@ -132,12 +139,14 @@ function BookingFormOnHold(props) {
     navigation.navigate('HoldBookingHistory', {history: holdHistoryList});
 
   const propertyBooked = useMemo(() => {
-    return holdHistoryList?.find(i =>
-      dayjs(
-        `${i.hold_till_date} ${i.hold_till_time}`,
-        'YYYY-MM-DD hh:mm:ss',
-      ).isAfter(dayjs()),
-    );
+    return Array.isArray(holdHistoryList)
+      ? holdHistoryList?.find(i =>
+          dayjs(
+            `${i.hold_till_date} ${i.hold_till_time}`,
+            'YYYY-MM-DD hh:mm:ss',
+          ).isAfter(dayjs()),
+        )
+      : false;
   }, [holdHistoryList]);
 
   const handleHold = async values => {
@@ -197,21 +206,40 @@ function BookingFormOnHold(props) {
         <Card elevation={5} style={styles.infoCard}>
           <Subheading>Property info</Subheading>
           <Divider style={styles.divider} />
-          <InfoRow
-            data={[
-              {
-                title: 'Project type',
-                value: STRUCTURE_TYPE_LABELS[structureType],
-              },
-              {title: 'Tower', value: getTowerLabel(towerId)},
-            ]}
-          />
-          <InfoRow
-            data={[
-              {title: 'Floor', value: getFloorNumber(floorId)},
-              {title: 'Unit Number', value: unitLabel},
-            ]}
-          />
+          {towerId ? (
+            <>
+              <InfoRow
+                data={[
+                  {
+                    title: 'Project type',
+                    value:
+                      STRUCTURE_TYPE_LABELS[structureType || selectedStructure],
+                  },
+                  {title: 'Tower', value: getTowerLabel(towerId)},
+                ]}
+              />
+              <InfoRow
+                data={[
+                  {
+                    title: 'Floor',
+                    value: floorId ? getFloorNumber(floorId) : null,
+                  },
+                  {title: 'Unit Number', value: unitLabel},
+                ]}
+              />
+            </>
+          ) : (
+            <InfoRow
+              data={[
+                {
+                  title: 'Project type',
+                  value:
+                    STRUCTURE_TYPE_LABELS[structureType || selectedStructure],
+                },
+                {title: 'Unit Number', value: unitLabel},
+              ]}
+            />
+          )}
         </Card>
         {propertyBooked ? (
           <PropertyHoldUserDetails

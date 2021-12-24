@@ -48,8 +48,8 @@ function checkDisabled(isUnitDisabled, unit) {
 }
 
 function RenderUnit(props) {
-  const {unit_id, unit = {}, onSelectUnit, isUnitDisabled} = props;
-
+  const {unit = {}, onSelectUnit, isUnitDisabled} = props;
+  const {unitLabel, unit_id} = unit;
   const unitBhk = BHK_OPTIONS.find(item => item.type === unit.bhk);
 
   let statusStyle = BOOKING_STATUS_STYLES[unit?.status] || {};
@@ -65,7 +65,7 @@ function RenderUnit(props) {
 
   return (
     <TouchableOpacity
-      key={unit.unitLabel}
+      key={unitLabel}
       disabled={disabled}
       style={styles.container}
       onPress={() => onSelectUnit({...unit, unit_id})}>

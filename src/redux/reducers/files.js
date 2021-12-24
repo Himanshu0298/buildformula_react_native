@@ -100,7 +100,7 @@ export default (state = initialState, action = {}) => {
       return {
         ...state,
         loading: false,
-        activities: payload.data,
+        activities: payload,
       };
     }
     case `${GET_FILE_ACTIVITIES}_REJECTED`:
