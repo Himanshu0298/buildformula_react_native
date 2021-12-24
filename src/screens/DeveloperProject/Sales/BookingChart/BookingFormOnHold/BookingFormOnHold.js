@@ -103,7 +103,7 @@ function PropertyHoldUserDetails(props) {
 
 function BookingFormOnHold(props) {
   const {navigation, route, theme} = props;
-  const {project_id, structureType, towerId, floorId, unit_id, unitId} =
+  const {project_id, structureType, towerId, floorId, unit_id, unitLabel} =
     route?.params || {};
 
   const {bookingHoldDetails} = useSelector(s => s.sales);
@@ -209,7 +209,7 @@ function BookingFormOnHold(props) {
           <InfoRow
             data={[
               {title: 'Floor', value: getFloorNumber(floorId)},
-              {title: 'Unit Number', value: unitId},
+              {title: 'Unit Number', value: unitLabel},
             ]}
           />
         </Card>

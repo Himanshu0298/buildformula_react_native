@@ -49,6 +49,7 @@ const PAYMENT_METHODS = [
 ];
 
 const schema = Yup.object().shape({
+  finalAmount: Yup.number('Invalid').required('Required'),
   start_date: Yup.string('Invalid').when('payment_type', {
     is: 1,
     then: Yup.string('Invalid').required('Required'),
@@ -190,6 +191,8 @@ function RenderOneBigInstallmentPaymentForm(props) {
   const {formikProps, t, theme} = props;
   const {values, setFieldValue, handleChange, errors} = formikProps;
 
+  const snackbar = useSnackbar();
+
   const calculateAmount = percent => {
     percent = parseFloat(percent);
     percent = round(percent > 100 ? 100 : percent);
@@ -200,6 +203,14 @@ function RenderOneBigInstallmentPaymentForm(props) {
   };
 
   const handlePercentChange = percent => {
+    if (!values.finalAmount) {
+      snackbar.showMessage({
+        message: 'Please provide final amount',
+        variant: 'warning',
+      });
+      return;
+    }
+
     setFieldValue('first_big_amount_percent', percent);
     calculateAmount(percent);
   };
@@ -215,6 +226,14 @@ function RenderOneBigInstallmentPaymentForm(props) {
   };
 
   const handleAmountChange = amount => {
+    if (!values.finalAmount) {
+      snackbar.showMessage({
+        message: 'Please provide final amount',
+        variant: 'warning',
+      });
+      return;
+    }
+
     setFieldValue('first_big_amount', amount);
     calcPercentage(amount);
   };
@@ -270,7 +289,7 @@ function RenderOneBigInstallmentPaymentForm(props) {
                 value={values.first_big_amount}
                 left={<TextInput.Affix text="₹" />}
                 error={errors.first_big_amount}
-                onChangeText={value => handleAmountChange(value)}
+                onChangeText={handleAmountChange}
               />
             </View>
           </View>
@@ -354,6 +373,8 @@ function RenderCustomPaymentForm(props) {
   const {values, setFieldValue, errors} = formikProps;
   const {colors} = theme;
 
+  const snackbar = useSnackbar();
+
   const totalPercent = useMemo(() => {
     return values.custom_payments.reduce((sum, i) => sum + i.percent || 0, 0);
   }, [values.custom_payments]);
@@ -391,6 +412,14 @@ function RenderCustomPaymentForm(props) {
   };
 
   const handlePercentChange = (index, percent) => {
+    if (!values.finalAmount) {
+      snackbar.showMessage({
+        message: 'Please provide final amount',
+        variant: 'warning',
+      });
+      return;
+    }
+
     setAmountData(index, {percent});
     calculateAmount(index, percent);
   };
@@ -409,6 +438,14 @@ function RenderCustomPaymentForm(props) {
   };
 
   const handleAmountChange = (index, amount) => {
+    if (!values.finalAmount) {
+      snackbar.showMessage({
+        message: 'Please provide final amount',
+        variant: 'warning',
+      });
+      return;
+    }
+
     setAmountData(index, {amount: round(amount)});
     calcPercentage(index, amount);
   };
@@ -954,7 +991,7 @@ function BookingPayments(props) {
       );
 
       if (totalPercent !== 100) {
-        errors.payment = 'Sum of all payments does not match Basic amount';
+        errors.payment = 'Sum of all payments does not match Final amount';
       }
     }
 
@@ -966,6 +1003,10 @@ function BookingPayments(props) {
 
     if (values.payment_type !== 2) {
       delete data.custom_payments;
+    }
+
+    if (values.payment_type === 1 && !data.withRate) {
+      data.full_basic_amount = data.finalAmount;
     }
 
     if (data.isDocumentCharge) {

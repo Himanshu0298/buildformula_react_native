@@ -8,7 +8,6 @@ export function useProjectLoading() {
     loadingDashboardData,
     loadingPurchaseData,
     loadingPurchaseDetails,
-    loadingProjectCommonData,
   } = useSelector(s => s.project);
 
   return (
@@ -17,8 +16,7 @@ export function useProjectLoading() {
     loadingPermissions ||
     loadingDashboardData ||
     loadingPurchaseData ||
-    loadingPurchaseDetails ||
-    loadingProjectCommonData
+    loadingPurchaseDetails
   );
 }
 

@@ -53,7 +53,7 @@ function FormSection(props) {
 function BookingMode(props) {
   const {navigation, route} = props;
 
-  const {structureType, towerId, floorId, unitId} = route?.params || {};
+  const {structureType, towerId, floorId, unitLabel} = route?.params || {};
 
   const navToBookingDetails = withRate => {
     navigation.navigate('BC_Step_Six', {...route?.params, withRate});
@@ -82,7 +82,7 @@ function BookingMode(props) {
         <InfoRow
           data={[
             {title: 'Floor', value: getFloorNumber(floorId)},
-            {title: 'Unit Number', value: unitId},
+            {title: 'Unit Number', value: unitLabel},
           ]}
         />
       </Card>

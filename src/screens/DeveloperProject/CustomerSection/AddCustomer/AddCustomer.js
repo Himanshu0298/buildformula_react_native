@@ -260,7 +260,7 @@ function AddCustomer(props) {
           onSubmit={async values => {
             const formData = new FormData();
             formData.append('project_id', selectedProject.id);
-            formData.append('unit_id', unit.unit_id || unit.unitId);
+            formData.append('unit_id', unit.unit_id);
             formData.append('customer_first_name', values.customer_full_name);
             formData.append('customer_phone', values.customer_phone);
             formData.append('customer_email', values.customer_email);

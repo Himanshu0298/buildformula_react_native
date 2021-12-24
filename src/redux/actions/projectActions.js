@@ -1,57 +1,8 @@
 import {useDispatch} from 'react-redux';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import {useResProcessor} from 'utils/responseProcessor';
-import cloneDeep from 'lodash/cloneDeep';
 import useProject from '../../services/project';
 import * as types from './actionTypes';
-
-function processStructure(structure) {
-  const _structure = cloneDeep(structure);
-
-  Object.keys(_structure).map(structureType => {
-    const structureData = _structure[structureType];
-    const {towers, units} = structureData;
-    if (towers) {
-      Object.keys(towers)?.map?.(towerId => {
-        const {floors} = towers[towerId];
-
-        const isArray = Array.isArray(floors);
-        const floorsData = isArray ? floors : Object.values(floors);
-
-        _structure[structureType].towers[towerId].floors = floorsData;
-
-        floorsData.map((floor, floorIndex) => {
-          const {units} = floor;
-
-          Object.keys(units).map(unit_id => {
-            const unit = units[unit_id];
-            _structure[structureType].towers[towerId].floors[floorIndex].units[
-              unit_id
-            ] = {...unit, unit_id};
-            return unit_id;
-          });
-
-          return floor;
-        });
-
-        return towerId;
-      });
-    }
-
-    if (units) {
-      Object.keys(units).map(unit_id => {
-        const unit = units[unit_id];
-        _structure[structureType].units[unit_id] = {...unit, unit_id};
-
-        return unit_id;
-      });
-    }
-
-    return structureType;
-  });
-
-  return _structure;
-}
 
 export default function useProjectActions() {
   const dispatch = useDispatch();
@@ -80,9 +31,7 @@ export default function useProjectActions() {
             const response = _res(await getProjectData(projectId));
             const {project_data, project_structure} = response.data;
 
-            const structure = processStructure(project_structure);
-
-            const project = {...project_data, project_structure: structure};
+            const project = {...project_data, project_structure};
 
             return Promise.resolve(project);
           } catch (error) {

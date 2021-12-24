@@ -18,8 +18,8 @@ const checkUnitBhkValidity = (floors, floorCount) => {
 
   for (let floorId = 0; floorId <= floorCount; floorId += 1) {
     const {units = {}, unitCount} = floors[floorId];
-    for (let unitId = 1; unitId <= unitCount; unitId += 1) {
-      if (!units[unitId].bhk) {
+    for (let index = 0; index <= unitCount; index += 1) {
+      if (!units[index].bhk) {
         result[floorId] = false;
         allValid = false;
         if (!error) {
