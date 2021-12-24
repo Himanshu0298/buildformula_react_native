@@ -64,7 +64,7 @@ export default function useFileActions() {
         payload: async () => {
           try {
             const {data} = _res(await fileActivities(params));
-            return Promise.resolve(data);
+            return Promise.resolve(data || []);
           } catch (error) {
             const message = _err(error);
             snackbar.showMessage({message, variant: 'error'});
