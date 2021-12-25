@@ -282,7 +282,7 @@ PODS:
     - React-Core
   - react-native-date-picker (4.1.3):
     - React-Core
-  - react-native-document-picker (7.1.1):
+  - react-native-document-picker (7.1.3):
     - React-Core
   - react-native-image-picker (4.6.0):
     - React-Core
@@ -378,7 +378,7 @@ PODS:
     - Firebase/Messaging (= 8.4.0)
     - React-Core
     - RNFBApp
-  - RNFileViewer (2.1.4):
+  - RNFileViewer (2.1.5):
     - React-Core
   - RNFS (2.18.0):
     - React
@@ -666,7 +666,7 @@ SPEC CHECKSUMS:
   React-logger: 933f80c97c633ee8965d609876848148e3fef438
   react-native-config: 6502b1879f97ed5ac570a029961fc35ea606cd14
   react-native-date-picker: dc87b284b1c94327a00d2d9da1514eed75b2ee85
-  react-native-document-picker: f4cc4df2eff8c9015d862a59bdaef11a153f1292
+  react-native-document-picker: ec07866a30707f23660c0f3ae591d669d3e89096
   react-native-image-picker: 8c83c5c7d137e866bcb9a2db93f1e1ca866fddbf
   react-native-image-resizer: d9fb629a867335bdc13230ac2a58702bb8c8828f
   react-native-pager-view: 3ee7d4c7697fb3ef788346e834a60cca97ed8540
@@ -692,7 +692,7 @@ SPEC CHECKSUMS:
   RNCMaskedView: 0e1bc4bfa8365eba5fbbb71e07fbdc0555249489
   RNFBApp: 97b2da195d4606716b284a7c8a988dd8ed5cec41
   RNFBMessaging: ee81245484ef7e835975d09c2cd4000dfa2ae5e7
-  RNFileViewer: 83cc066ad795b1f986791d03b56fe0ee14b6a69f
+  RNFileViewer: ce7ca3ac370e18554d35d6355cffd7c30437c592
   RNFS: 3ab21fa6c56d65566d1fb26c2228e2b6132e5e32
   RNGestureHandler: e5c7cab5f214503dcefd6b2b0cefb050e1f51c4a
   RNLocalize: 74b82db20cc3895ccc25af992c644879bcec2815

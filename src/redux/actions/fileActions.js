@@ -1,7 +1,7 @@
 import {useDispatch} from 'react-redux';
 import {useResProcessor} from 'utils/responseProcessor';
-import {useSnackbar} from 'components/Atoms/Snackbar';
 import useFiles from 'services/files';
+import {useSnackbar} from 'components/Atoms/Snackbar';
 import * as types from './actionTypes';
 
 export default function useFileActions() {
@@ -173,7 +173,9 @@ export default function useFileActions() {
         type: types.DELETE_FILE,
         payload: async () => {
           try {
-            const {data} = _res(await deleteFile(params));
+            const {data, msg} = _res(await deleteFile(params));
+            snackbar.showMessage({message: msg});
+
             return Promise.resolve({data});
           } catch (error) {
             const message = _err(error);

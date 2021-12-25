@@ -1,8 +1,8 @@
 import CustomCheckbox from 'components/Atoms/CustomCheckbox';
 import CustomDialog from 'components/Atoms/CustomDialog';
 import {RenderError} from 'components/Atoms/RenderInput';
-import React, {useMemo, useState} from 'react';
-import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
+import React, {Fragment, useMemo, useState} from 'react';
+import {StyleSheet, TouchableOpacity, View, FlatList} from 'react-native';
 import {
   Caption,
   Divider,
@@ -22,6 +22,64 @@ const USER_ROLES = [
   {id: 3, title: 'Preview'},
   {id: 4, title: 'None'},
 ];
+
+function RenderUser(props) {
+  const {user, index, selectedUsers, menuIndex, toggleUser, toggleMenu} = props;
+  const {first_name, last_name, email, id} = user;
+
+  const selected = selectedUsers.find(i => i.userId === id);
+
+  const selectedRole = selected
+    ? USER_ROLES.find(i => i.id === selected.roleId)
+    : USER_ROLES[0];
+
+  return (
+    <TouchableOpacity
+      key={index.toString()}
+      style={styles.itemContainer}
+      onPress={() => toggleUser(id)}>
+      <View style={styles.rowBetween}>
+        <View>
+          <View style={styles.row}>
+            <CustomCheckbox
+              onChange={() => toggleUser(id)}
+              checked={Boolean(selected)}
+            />
+            <Text>
+              {first_name} {last_name}
+            </Text>
+          </View>
+          <Caption style={styles.email}>{email}</Caption>
+        </View>
+        <Menu
+          visible={index === menuIndex}
+          contentStyle={styles.menu}
+          onDismiss={toggleMenu}
+          anchor={
+            <TouchableOpacity
+              onPress={() => toggleMenu(index)}
+              style={styles.row}>
+              <Caption>{selectedRole?.title}</Caption>
+              <IconButton size={20} icon="chevron-down" />
+            </TouchableOpacity>
+          }>
+          {USER_ROLES.map((item, itemIndex) => (
+            <Fragment key={itemIndex.toString()}>
+              <Menu.Item
+                onPress={() => {
+                  toggleUser(id, item.id);
+                  toggleMenu();
+                }}
+                title={item.title}
+              />
+              <Divider />
+            </Fragment>
+          ))}
+        </Menu>
+      </View>
+    </TouchableOpacity>
+  );
+}
 
 function ShareDialog(props) {
   const {selectedItem, handleClose, handleSubmit} = props;
@@ -82,6 +140,8 @@ function ShareDialog(props) {
     setSelectedUsers(_selectedUsers);
   };
 
+  const renderDivider = () => <Divider />;
+
   return (
     <CustomDialog {...props} title="Share File" submitForm={submitForm}>
       <View style={styles.contentContainer}>
@@ -98,70 +158,23 @@ function ShareDialog(props) {
           </View>
         ) : null}
 
-        <ScrollView contentContainerStyle={{flexGrow: 1}}>
-          {filteredUsers.map((user, index) => {
-            const {first_name, last_name, email, id} = user;
-
-            const selected = selectedUsers.find(i => i.userId === id);
-
-            const selectedRole = selected
-              ? USER_ROLES.find(i => i.id === selected.roleId)
-              : USER_ROLES[0];
-
-            return (
-              <>
-                <TouchableOpacity
-                  key={index}
-                  style={styles.itemContainer}
-                  onPress={() => toggleUser(id)}>
-                  <View style={styles.rowBetween}>
-                    <View>
-                      <View style={styles.row}>
-                        <CustomCheckbox
-                          onChange={() => toggleUser(id)}
-                          checked={selected}
-                        />
-                        <Text>
-                          {first_name} {last_name}
-                        </Text>
-                      </View>
-                      <Caption style={{marginLeft: 35, lineHeight: 13}}>
-                        {email}
-                      </Caption>
-                    </View>
-                    <Menu
-                      visible={index === menuIndex}
-                      contentStyle={{borderRadius: 10}}
-                      onDismiss={toggleMenu}
-                      anchor={
-                        <TouchableOpacity
-                          onPress={() => toggleMenu(index)}
-                          style={styles.row}>
-                          <Caption>{selectedRole?.title}</Caption>
-                          <IconButton size={20} icon="chevron-down" />
-                        </TouchableOpacity>
-                      }>
-                      {USER_ROLES.map((item, i) => (
-                        <>
-                          <Menu.Item
-                            key={`${index}_${i}`}
-                            onPress={() => {
-                              toggleUser(id, item.id);
-                              toggleMenu();
-                            }}
-                            title={item.title}
-                          />
-                          <Divider />
-                        </>
-                      ))}
-                    </Menu>
-                  </View>
-                </TouchableOpacity>
-                <Divider />
-              </>
-            );
-          })}
-        </ScrollView>
+        <FlatList
+          data={filteredUsers}
+          extraData={filteredUsers}
+          contentContainerStyle={styles.scrollContainer}
+          keyExtractor={(_, index) => index.toString()}
+          ItemSeparatorComponent={renderDivider}
+          renderItem={({item, index}) => (
+            <RenderUser
+              user={item}
+              index={index}
+              menuIndex={menuIndex}
+              selectedUsers={selectedUsers}
+              toggleUser={toggleUser}
+              toggleMenu={toggleMenu}
+            />
+          )}
+        />
       </View>
     </CustomDialog>
   );
@@ -192,6 +205,16 @@ const styles = StyleSheet.create({
   rowBetween: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+  },
+  scrollContainer: {
+    flexGrow: 1,
+  },
+  email: {
+    marginLeft: 35,
+    lineHeight: 13,
+  },
+  menu: {
+    borderRadius: 10,
   },
 });
 

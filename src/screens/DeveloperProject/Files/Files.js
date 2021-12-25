@@ -39,6 +39,7 @@ import FileSection from './Components/FilesSection';
 import FoldersSection from './Components/FoldersSection';
 import ShareDialogue from './Components/ShareDialogue';
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const relativeTime = require('dayjs/plugin/relativeTime');
 
 dayjs.extend(relativeTime);
@@ -130,7 +131,7 @@ function ActivityModal(props) {
         sections={processedActivities}
         extraData={processedActivities}
         showsVerticalScrollIndicator={false}
-        keyExtractor={(_, index) => index?.toString()}
+        keyExtractor={(item, index) => index?.toString()}
         ItemSeparatorComponent={renderSeparator}
         contentContainerStyle={styles.activityScrollContainer}
         stickySectionHeadersEnabled={false}
@@ -316,14 +317,16 @@ function Files(props) {
     }
   };
 
-  const deleteFileHandler = async (id, fileFolder, type) => {
-    if (fileFolder === 'folder') {
+  const deleteFileHandler = async (id, type) => {
+    if (type === 'folder') {
       await deleteFolder({folder_id: id, project_id});
       getFolders({project_id, index_of: folderDepth});
-      toggleDialog();
     } else {
-      deleteFile({file_id: id, project_id});
+      await deleteFile({file_id: id, project_id});
+      getFiles({project_id, folder_id: folderDepth});
     }
+
+    toggleDialog();
   };
 
   const onChoose = v => {
@@ -441,7 +444,6 @@ function Files(props) {
           icon={fab ? 'window-close' : 'plus'}
           small
           onPress={toggleFab}
-          onStateChange={() => {}}
           actions={FAB_ACTIONS}
         />
       ) : null}

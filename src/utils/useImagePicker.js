@@ -74,6 +74,7 @@ async function processFiles(res) {
     return data;
   } catch (error) {
     console.log('-----> error', error);
+    throw error;
   }
 }
 
@@ -82,24 +83,20 @@ const handleFilePicker = async ({type, multiple, onChoose}) => {
     const fileTypes = [DocumentPicker.types.images];
     if (type === 'file') {
       fileTypes.push(DocumentPicker.types.pdf);
+      fileTypes.push(DocumentPicker.types.allFiles);
     }
 
+    let data;
     if (multiple) {
       const res = await DocumentPicker.pickMultiple({type: fileTypes});
-      console.log('-----> res', res);
-      const data = await Promise.all(
-        res.map(async item => await processFiles(item)),
-      );
-
-      console.log('-----> data', data);
-      onChoose(data);
+      data = await Promise.all(res.map(async item => processFiles(item)));
     } else {
       const res = await DocumentPicker.pick({type: fileTypes});
-      const data = await processFiles(res);
-
-      console.log('-----> data', data);
-      onChoose(data);
+      data = await processFiles(res);
     }
+
+    console.log('-----> data', data);
+    onChoose(data);
   } catch (err) {
     if (DocumentPicker.isCancel(err)) {
       // User cancelled the picker, exit any dialogs or menus and move on

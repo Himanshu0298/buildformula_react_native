@@ -3,12 +3,21 @@ module.exports = {
     'eslint:recommended',
     'plugin:import/errors',
     'plugin:import/warnings',
+    'plugin:import/typescript',
+    'plugin:@typescript-eslint/recommended',
     'airbnb',
     'airbnb/hooks',
     'prettier',
     'plugin:prettier/recommended',
   ],
-  plugins: ['react', 'react-native', 'module-resolver', 'prettier'],
+  plugins: [
+    '@typescript-eslint',
+    'react',
+    'react-native',
+    'module-resolver',
+    'prettier',
+  ],
+  parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaFeatures: {
       jsx: true,
@@ -35,7 +44,10 @@ module.exports = {
     'no-nested-ternary': 0,
     'default-param-last': 0,
     'react/jsx-props-no-spreading': 0,
-    'react/jsx-filename-extension': [1, {extensions: ['.jsx', '.js', '.tsx']}],
+    'react/jsx-filename-extension': [
+      1,
+      {extensions: ['.jsx', '.js', '.tsx', '.ts']},
+    ],
     'no-use-before-define': 'off',
     'no-param-reassign': 0,
     'react/prop-types': 0,
@@ -50,11 +62,17 @@ module.exports = {
     'import/export': 2,
     'prettier/prettier': ['warn', {endOfLine: 'auto'}],
     'prefer-const': ['warn', {destructuring: 'all'}],
+    '@typescript-eslint/no-shadow': ['error'],
+    '@typescript-eslint/no-use-before-define': 0,
   },
   settings: {
     'import/ignore': ['node_modules'],
     'import/resolver': {
       'babel-module': {},
+      node: {
+        extensions: ['.js', '.jsx', '.ts', '.tsx'],
+        moduleDirectory: ['node_modules', 'src/'],
+      },
     },
   },
 };
