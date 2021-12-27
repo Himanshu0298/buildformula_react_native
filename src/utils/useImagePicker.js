@@ -1,4 +1,4 @@
-import {launchCamera} from 'react-native-image-picker';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {Platform, Keyboard} from 'react-native';
 import ImageResizer from 'react-native-image-resizer';
 import DocumentPicker from 'react-native-document-picker';
@@ -9,7 +9,7 @@ const MAX_WIDTH = 1050;
 const MAX_HEIGHT = 1400;
 const QUALITY = 0.9;
 
-const cameraOptions = {
+const CAMERA_OPTIONS = {
   title: 'Choose File',
   mediaType: 'photo',
   cameraType: 'back',
@@ -19,8 +19,27 @@ const cameraOptions = {
   allowsEditing: true,
 };
 
+const handleImagePicker = ({type, onChoose}) => {
+  launchImageLibrary(CAMERA_OPTIONS, res => {
+    const {assets} = res;
+    if (!assets.length) {
+      console.log('ImagePicker Error: ', res);
+    } else {
+      const data = {
+        // uri: Platform.OS === 'android' ? `file:///${path}` : path,
+        uri: assets[0].uri,
+        type: assets[0].type,
+        name: assets[0].fileName,
+      };
+
+      console.log('-----> data', data);
+      onChoose(data);
+    }
+  });
+};
+
 const handleCamera = ({type, onChoose}) => {
-  launchCamera(cameraOptions, res => {
+  launchCamera(CAMERA_OPTIONS, res => {
     if (!res.uri || res.error) {
       console.log('ImagePicker Error: ', res);
     } else {
@@ -112,19 +131,29 @@ function useImagePicker() {
   const openImagePicker = ({type, onChoose}) => {
     Keyboard.dismiss();
 
-    const options = [
-      type === 'file' ? 'Choose File : image | pdf' : 'Choose Image',
-      'Take Picture',
-      'Cancel',
-    ];
+    const options = ['Choose Image', 'Take Picture', 'Cancel'];
 
-    showActionSheetWithOptions({options, cancelButtonIndex: 2}, buttonIndex => {
-      if (buttonIndex === 0) {
-        handleFilePicker({type, onChoose});
-      } else if (buttonIndex === 1) {
-        handleCamera({type, onChoose});
-      }
-    });
+    if (type === 'file') {
+      options.splice(2, 0, 'Choose File');
+    }
+
+    showActionSheetWithOptions(
+      {options, cancelButtonIndex: options.length - 1},
+      buttonIndex => {
+        switch (options[buttonIndex]) {
+          case 'Choose File':
+            handleFilePicker({type, onChoose});
+            break;
+          case 'Take Picture':
+            handleCamera({type, onChoose});
+            break;
+          case 'Choose Image':
+            handleImagePicker({type, onChoose});
+            break;
+          default:
+        }
+      },
+    );
   };
 
   return {openImagePicker, openFilePicker: handleFilePicker};
