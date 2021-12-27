@@ -39,5 +39,8 @@ export default function useProject() {
     getPurchaseProjectDetails: data => {
       return instance.post('/detail_project', data, config({multipart: false}));
     },
+    updateBilling: data => {
+      return instance.post('/update_billing', data, config({multipart: false}));
+    },
   };
 }

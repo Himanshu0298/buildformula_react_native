@@ -17,6 +17,7 @@ export default function useProjectActions() {
     getProjectPermissions,
     getPurchasedProjects,
     getPurchaseProjectDetails,
+    updateBilling,
   } = useProject();
 
   return {
@@ -124,6 +125,22 @@ export default function useProjectActions() {
         payload: async () => {
           try {
             const {data} = _res(await getPurchaseProjectDetails({project_id}));
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    updateBilling: params =>
+      dispatch({
+        type: types.UPDATE_BILLING_DETAILS,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await updateBilling(params));
+            snackbar.showMessage({message: msg});
+
             return Promise.resolve(data);
           } catch (error) {
             const message = _err(error);

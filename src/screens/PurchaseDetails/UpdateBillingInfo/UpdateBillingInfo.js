@@ -1,31 +1,48 @@
 import * as React from 'react';
-import {Button, Title} from 'react-native-paper';
-import {Text, View, StyleSheet} from 'react-native';
+import {Title} from 'react-native-paper';
+import {View, StyleSheet} from 'react-native';
 import RenderInput from 'components/Atoms/RenderInput';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
+import ActionButtons from 'components/Atoms/ActionButtons';
+import useProjectActions from 'redux/actions/projectActions';
+import {useSelector} from 'react-redux';
 
 const schema = Yup.object().shape({
-  name: Yup.string()
+  billing_company_name: Yup.string()
     .max(15, 'Must be 15 characters or less')
     .required('Required'),
-  address: Yup.string().required('Required'),
-  pinCode: Yup.number()
+  billing_address: Yup.string().required('Required'),
+  billing_pincode: Yup.number()
     .typeError('you must specify a number')
-    .min(6, 'Min value 6.')
-    .max(6, 'Min value 6.'),
-  state: Yup.string().required('Required'),
-  city: Yup.string().required('Required'),
-  gst: Yup.string().required('Required'),
+    .min(100000, 'Enter valid pin')
+    .max(999999, 'Enter valid pin'),
+  billing_state_id: Yup.string().required('Required'),
+  billing_city: Yup.string().required('Required'),
 });
 
 function UpdateBillingInfo(props) {
-  const {theme, route, navigation} = props;
+  const {route, navigation} = props;
 
-  const {id} = route?.params || {};
+  const {project_id} = route?.params || {};
 
-  const onSubmit = values => {
-    console.log('----->for submitted');
+  const {purchaseProjectDetails} = useSelector(s => s.project);
+  const {
+    billing_company_name,
+    billing_address,
+    billing_state_id,
+    billing_city_id,
+    billing_city,
+    billing_pincode,
+    billing_gst,
+  } = purchaseProjectDetails?.projectDetails || {};
+
+  const {updateBilling, getPurchaseProjectDetails} = useProjectActions();
+
+  const onSubmit = async values => {
+    await updateBilling({project_id, ...values});
+    navigation.goBack();
+    getPurchaseProjectDetails(project_id);
   };
 
   return (
@@ -34,101 +51,105 @@ function UpdateBillingInfo(props) {
       <Formik
         validateOnBlur={false}
         validateOnChange={false}
-        initialValues={{}}
+        initialValues={{
+          billing_company_name,
+          billing_address,
+          billing_state_id,
+          billing_city_id,
+          billing_city,
+          billing_pincode,
+          billing_gst,
+        }}
         validationSchema={schema}
         onSubmit={onSubmit}>
         {({values, errors, handleChange, handleBlur, handleSubmit}) => {
           return (
             <View style={styles.dialogContentContainer}>
               <RenderInput
-                name="name"
+                name="billing_company_name"
                 label="Name"
                 containerStyles={styles.inputStyles}
                 maxLength={10}
-                value={values.name}
-                onChangeText={handleChange('name')}
-                onBlur={handleBlur('name')}
+                value={values.billing_company_name}
+                onChangeText={handleChange('billing_company_name')}
+                onBlur={handleBlur('billing_company_name')}
                 autoCapitalize="none"
                 // returnKeyType={'next'}
-                error={errors.name}
+                error={errors.billing_company_name}
               />
 
               <RenderInput
-                name="address"
+                name="billing_address"
                 label="Address"
                 containerStyles={styles.inputStyles}
                 maxLength={10}
-                value={values.address}
-                onChangeText={handleChange('address')}
-                onBlur={handleBlur('address')}
+                value={values.billing_address}
+                onChangeText={handleChange('billing_address')}
+                onBlur={handleBlur('billing_address')}
                 autoCapitalize="none"
                 // returnKeyType={'next'}
-                error={errors.address}
+                error={errors.billing_address}
               />
 
               <RenderInput
-                name="state"
+                name="billing_state_id"
                 label="State"
                 containerStyles={styles.inputStyles}
                 maxLength={10}
-                value={values.state}
-                onChangeText={handleChange('state')}
-                onBlur={handleBlur('state')}
+                value={values.billing_state_id}
+                onChangeText={handleChange('billing_state_id')}
+                onBlur={handleBlur('billing_state_id')}
                 autoCapitalize="none"
                 // returnKeyType={'next'}
-                error={errors.state}
+                error={errors.billing_state_id}
               />
 
               <RenderInput
-                name="city"
+                name="billing_city"
                 label="City"
                 containerStyles={styles.inputStyles}
                 maxLength={10}
-                value={values.city}
-                onChangeText={handleChange('city')}
-                onBlur={handleBlur('city')}
+                value={values.billing_city}
+                onChangeText={handleChange('billing_city')}
+                onBlur={handleBlur('billing_city')}
                 autoCapitalize="none"
                 // returnKeyType={'next'}
-                error={errors.city}
+                error={errors.billing_city}
               />
 
               <RenderInput
-                name="pinCode"
+                name="billing_pincode"
                 label="Pin Code"
                 containerStyles={styles.inputStyles}
                 maxLength={10}
-                value={values.pinCode}
+                value={values.billing_pincode}
                 keyboardType="number-pad"
-                onChangeText={handleChange('pinCode')}
-                onBlur={handleBlur('pinCode')}
+                onChangeText={handleChange('billing_pincode')}
+                onBlur={handleBlur('billing_pincode')}
                 autoCapitalize="none"
                 // returnKeyType={'next'}
-                error={errors.pinCode}
+                error={errors.billing_pincode}
               />
 
               <RenderInput
-                name="gst"
+                name="billing_gst"
                 label="GST"
                 containerStyles={styles.inputStyles}
                 maxLength={10}
-                value={values.gst}
-                onChangeText={handleChange('gst')}
-                onBlur={handleBlur('gst')}
+                value={values.billing_gst}
+                onChangeText={handleChange('billing_gst')}
+                onBlur={handleBlur('billing_gst')}
                 autoCapitalize="none"
                 // returnKeyType={'next'}
-                error={errors.gst}
+                error={errors.billing_gst}
               />
 
-              <View style={styles.dialogActionContainer}>
-                <Button
-                  style={{width: '40%'}}
-                  mode="contained"
-                  contentStyle={{padding: 1}}
-                  theme={{roundness: 15}}
-                  onPress={handleSubmit}>
-                  Update
-                </Button>
-              </View>
+              <ActionButtons
+                cancelLabel="Back"
+                submitLabel="Update"
+                onCancel={navigation.goBack}
+                onSubmit={handleSubmit}
+              />
             </View>
           );
         }}

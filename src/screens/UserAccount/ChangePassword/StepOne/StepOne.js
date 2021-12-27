@@ -1,3 +1,4 @@
+import ActionButtons from 'components/Atoms/ActionButtons';
 import RenderInput from 'components/Atoms/RenderInput';
 import {Formik} from 'formik';
 import * as React from 'react';
@@ -40,16 +41,12 @@ function StepOne(props) {
               error={errors.email}
             />
 
-            <View style={styles.actionContainer}>
-              <Button
-                style={{width: '50%'}}
-                mode="contained"
-                contentStyle={{padding: 1}}
-                theme={{roundness: 12}}
-                onPress={handleSubmit}>
-                Next
-              </Button>
-            </View>
+            <ActionButtons
+              cancelLabel="Back"
+              submitLabel="Next"
+              onCancel={navigation.goBack}
+              onSubmit={handleSubmit}
+            />
           </View>
         )}
       </Formik>

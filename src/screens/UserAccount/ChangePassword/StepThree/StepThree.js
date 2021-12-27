@@ -1,3 +1,4 @@
+import ActionButtons from 'components/Atoms/ActionButtons';
 import RenderInput from 'components/Atoms/RenderInput';
 import {Formik} from 'formik';
 import * as React from 'react';
@@ -5,13 +6,7 @@ import {useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {StyleSheet, View} from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
-import {
-  Button,
-  Caption,
-  Subheading,
-  TextInput,
-  withTheme,
-} from 'react-native-paper';
+import {Caption, Subheading, TextInput, withTheme} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import useUserActions from 'redux/actions/userActions';
 import * as Yup from 'yup';
@@ -109,16 +104,12 @@ function StepThree(props) {
               />
             </View>
 
-            <View style={styles.actionContainer}>
-              <Button
-                style={{width: '50%'}}
-                mode="contained"
-                contentStyle={{padding: 1}}
-                theme={{roundness: 12}}
-                onPress={handleSubmit}>
-                Submit
-              </Button>
-            </View>
+            <ActionButtons
+              cancelLabel="Back"
+              submitLabel="Submit"
+              onCancel={navigation.goBack}
+              onSubmit={handleSubmit}
+            />
           </View>
         )}
       </Formik>
@@ -135,12 +126,6 @@ const styles = StyleSheet.create({
   },
   inputsContainer: {
     marginVertical: 10,
-  },
-  actionContainer: {
-    marginTop: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 20,
   },
 });
 

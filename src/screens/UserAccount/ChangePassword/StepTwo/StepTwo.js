@@ -1,3 +1,4 @@
+import ActionButtons from 'components/Atoms/ActionButtons';
 import OtpInput from 'components/Atoms/OtpInput';
 import {RenderError} from 'components/Atoms/RenderInput';
 import {Formik} from 'formik';
@@ -5,7 +6,7 @@ import * as React from 'react';
 import {useEffect} from 'react';
 import {StyleSheet, View} from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
-import {Button, Caption, Subheading, withTheme} from 'react-native-paper';
+import {Caption, Subheading, withTheme} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import useUserActions from 'redux/actions/userActions';
 import * as Yup from 'yup';
@@ -57,16 +58,12 @@ function StepTwo(props) {
             </View>
             {errors.otp ? <RenderError error={errors.otp} /> : null}
 
-            <View style={styles.actionContainer}>
-              <Button
-                style={{width: '50%'}}
-                mode="contained"
-                contentStyle={{padding: 1}}
-                theme={{roundness: 12}}
-                onPress={handleSubmit}>
-                Next
-              </Button>
-            </View>
+            <ActionButtons
+              cancelLabel="Back"
+              submitLabel="Next"
+              onCancel={navigation.goBack}
+              onSubmit={handleSubmit}
+            />
           </View>
         )}
       </Formik>
@@ -83,12 +80,6 @@ const styles = StyleSheet.create({
   },
   otpContainer: {
     marginVertical: 20,
-  },
-  actionContainer: {
-    marginTop: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 20,
   },
 });
 

@@ -1,36 +1,39 @@
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
-import React, {useEffect} from 'react';
+import React, {useEffect, useMemo} from 'react';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import useProjectActions from 'redux/actions/projectActions';
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
 
-import {View, Text, ScrollView, StyleSheet} from 'react-native';
 import {
-  Title,
+  View,
+  Text,
+  ScrollView,
+  StyleSheet,
+  RefreshControl,
+  TouchableOpacity,
+} from 'react-native';
+import {
   Button,
   Subheading,
   Divider,
   Caption,
   withTheme,
+  IconButton,
 } from 'react-native-paper';
 import {useProjectLoading} from 'redux/selectors';
+import dayjs from 'dayjs';
 
 function InvoiceCard(props) {
-  const {date, number, amount, navigation} = props;
+  const {date, number, amount} = props;
 
   return (
-    <View style={{marginBottom: 10}}>
-      <Divider style={{height: 1, marginBottom: 10}} />
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          marginBottom: 10,
-        }}>
+    <View style={styles.invoiceCardContainer}>
+      <Divider style={styles.divider} />
+      <View style={styles.invoiceTitle}>
         <View>
           <Caption>Date</Caption>
-          <Text>16 July 2022</Text>
+          <Text>{dayjs(date).format('DD MMMM YYYY')}</Text>
         </View>
         <View>
           <Caption>Tax invoice no</Caption>
@@ -38,7 +41,7 @@ function InvoiceCard(props) {
         </View>
       </View>
       <Caption>Total Amount</Caption>
-      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+      <View style={styles.rowBetween}>
         <View>
           <Text>₹ {amount}</Text>
         </View>
@@ -60,14 +63,17 @@ function ProjectDetails(props) {
   const {id} = route?.params || {};
 
   const {purchaseProjectDetails} = useSelector(s => s.project);
+  const {projectDetails, invoiceList} = purchaseProjectDetails || {};
   const loading = useProjectLoading();
 
   const {getPurchaseProjectDetails} = useProjectActions();
 
   useEffect(() => {
-    getPurchaseProjectDetails(id);
+    loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [id]);
+
+  const loadData = () => getPurchaseProjectDetails(id);
 
   const {
     company_name,
@@ -76,28 +82,29 @@ function ProjectDetails(props) {
     project_address,
     expired_date,
     status,
-  } = purchaseProjectDetails.projectDetails;
+  } = projectDetails || {};
 
-  const date2 = new Date(expired_date);
-  const date1 = new Date();
-
-  const Difference_In_Time = date2.getTime() - date1.getTime();
-  const Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
+  const isExpired = useMemo(() => {
+    return dayjs(expired_date).diff(dayjs(), 'd') < 31;
+  }, [expired_date]);
 
   return (
     <View style={{flexGrow: 1}}>
       <Spinner visible={loading} textContent="" />
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{padding: 15}}>
-        <Title style={{marginBottom: 20}}>{company_name}</Title>
+        contentContainerStyle={{padding: 15}}
+        refreshControl={
+          <RefreshControl refreshing={false} onRefresh={() => loadData()} />
+        }>
+        <TouchableOpacity
+          style={styles.titleContainer}
+          onPress={navigation.goBack}>
+          <IconButton icon="keyboard-backspace" />
+          <Subheading>{company_name}</Subheading>
+        </TouchableOpacity>
         <View style={{padding: 10, backgroundColor: '#F2F4F5'}}>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              marginBottom: 10,
-            }}>
+          <View style={styles.projectDetailsContainer}>
             <View>
               <Caption>Project id</Caption>
               <Text>{project_id}</Text>
@@ -107,23 +114,23 @@ function ProjectDetails(props) {
               <Text>{project_name}</Text>
             </View>
           </View>
-          <Divider style={{height: 1, marginBottom: 10}} />
-          <View style={{marginBottom: 10}}>
+          <Divider style={styles.divider} />
+          <View style={styles.mb10}>
             <Caption>Subscription</Caption>
             <Text style={{color: status ? '#07CA03' : 'red'}}>
               {status ? 'ACTIVE' : 'EXPIRE'}
             </Text>
           </View>
-          <View style={{marginBottom: 10}}>
+          <View style={styles.mb10}>
             <Caption>Subscription Plan</Caption>
             <Text>12 Months</Text>
           </View>
-          <View style={{marginBottom: 10}}>
+          <View style={styles.mb10}>
             <Caption>Subscription Renewal Date</Caption>
             <Text>{expired_date}</Text>
           </View>
           <View style={{flexDirection: 'row', marginVertical: 15}}>
-            <View style={{marginRight: 5}}>
+            <View style={styles.companyLabel}>
               <Button
                 mode="outlined"
                 uppercase={false}
@@ -144,20 +151,14 @@ function ProjectDetails(props) {
           </View>
         </View>
 
-        {Difference_In_Days < 31 ? (
-          <View
-            style={{
-              backgroundColor: '#F2F4F5',
-              borderRadius: 10,
-              marginVertical: 20,
-              padding: 10,
-            }}>
+        {isExpired ? (
+          <View style={styles.subscriptionContainer}>
             <Subheading>Renew Subscription</Subheading>
-            <Text style={{marginVertical: 15}}>Dummy text</Text>
+            <Text style={styles.billingTitle}>Dummy text</Text>
             <Button
               mode="contained"
               uppercase={false}
-              style={{width: '40%', borderRadius: 15}}
+              style={styles.upgradeButton}
               onPress={() => console.log('Pressed')}
               color={theme.colors.primary}>
               Upgrade
@@ -165,36 +166,40 @@ function ProjectDetails(props) {
           </View>
         ) : null}
 
-        <View
-          style={{
-            padding: 10,
-            backgroundColor: '#F2F4F5',
-            borderRadius: 10,
-            marginBottom: 20,
-          }}>
-          <Subheading style={{marginBottom: 15}}>
+        <View style={styles.billingContainer}>
+          <Subheading style={styles.billingTitle}>
             Billing Information
           </Subheading>
-          <Caption style={{marginBottom: 5}}>{company_name}</Caption>
-          <Text style={{marginBottom: 15}}>{project_address}</Text>
+          <Caption style={styles.companyLabel}>{company_name}</Caption>
+          <Text style={styles.billingTitle}>{project_address}</Text>
           <OpacityButton
             color={theme.colors.primary}
             opacity={0.15}
             style={styles.button}
-            onPress={() => navigation.navigate('UpdateBillingInfo', {id})}>
+            onPress={() =>
+              navigation.navigate('UpdateBillingInfo', {project_id: id})
+            }>
             <Text style={{color: theme.colors.primary}}>
               Update billing information
             </Text>
           </OpacityButton>
         </View>
 
-        <View
-          style={{padding: 10, backgroundColor: '#F2F4F5', borderRadius: 10}}>
-          <Subheading style={{marginBottom: 15}}>Invoice</Subheading>
-          <InvoiceCard number="67676767" amount={15000} />
-          <InvoiceCard number="67676767" amount={15000} />
-          <InvoiceCard number="67676767" amount={15000} />
-        </View>
+        {invoiceList?.length ? (
+          <View style={styles.invoices}>
+            <Subheading style={styles.invoicesTitle}>Invoice</Subheading>
+            {invoiceList.map(i => {
+              return (
+                <InvoiceCard
+                  key={i.id}
+                  date={i.created}
+                  number={i.invoice}
+                  amount={i.total}
+                />
+              );
+            })}
+          </View>
+        ) : null}
       </ScrollView>
     </View>
   );
@@ -204,6 +209,66 @@ const styles = StyleSheet.create({
   button: {
     justifyContent: 'center',
     width: '55%',
+  },
+  invoiceCardContainer: {
+    marginBottom: 10,
+  },
+  invoiceTitle: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 10,
+  },
+  divider: {
+    height: 1,
+    marginBottom: 10,
+  },
+  rowBetween: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  invoices: {
+    padding: 10,
+    backgroundColor: '#F2F4F5',
+    borderRadius: 10,
+  },
+  invoicesTitle: {
+    marginBottom: 15,
+  },
+  billingContainer: {
+    padding: 10,
+    backgroundColor: '#F2F4F5',
+    borderRadius: 10,
+    marginBottom: 20,
+  },
+  billingTitle: {
+    marginBottom: 15,
+  },
+  companyLabel: {
+    marginBottom: 5,
+  },
+  subscriptionContainer: {
+    backgroundColor: '#F2F4F5',
+    borderRadius: 10,
+    marginVertical: 20,
+    padding: 10,
+  },
+  upgradeButton: {
+    width: '40%',
+    borderRadius: 15,
+  },
+  projectDetailsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 10,
+  },
+  mb10: {
+    marginBottom: 10,
+  },
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
   },
 });
 

@@ -1,4 +1,4 @@
-const {useSelector} = require('react-redux');
+import {useSelector} from 'react-redux';
 
 export function useProjectLoading() {
   const {
