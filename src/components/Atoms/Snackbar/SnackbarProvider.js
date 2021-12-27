@@ -1,34 +1,19 @@
-import React, {FC, useMemo, useState} from 'react';
+import React, {useCallback, useMemo, useState} from 'react';
 import SnackbarContext from './SnackbarContext';
 import DefaultSnackbar from './Snackbar';
 
-export type VariantTypes = 'success' | 'warning' | 'error';
-
-export type ShowMessageParams = {
-  message: string;
-  variant?: VariantTypes;
-  autoHideDuration?: number;
-  onClose?: () => void;
-};
-
-interface ProviderState extends ShowMessageParams {
-  open: boolean;
-}
-
-export type SnackBarContextType = {
-  showMessage: (params: ShowMessageParams) => void;
-};
-
-const SnackbarProvider: FC = ({children}) => {
-  const [state, setState] = useState<ProviderState>({
+const SnackbarProvider = ({children}) => {
+  const [state, setState] = useState({
     open: false,
     message: '',
     variant: 'success',
     autoHideDuration: 2500,
   });
 
-  const showMessage = (params: ShowMessageParams) =>
-    setState(v => ({...v, ...params, open: true}));
+  const showMessage = useCallback(
+    params => setState(v => ({...v, ...params, open: true})),
+    [],
+  );
 
   const handleClose = () => {
     const {onClose} = state;

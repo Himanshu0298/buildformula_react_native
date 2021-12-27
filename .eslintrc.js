@@ -69,10 +69,6 @@ module.exports = {
     'import/ignore': ['node_modules'],
     'import/resolver': {
       'babel-module': {},
-      node: {
-        extensions: ['.js', '.jsx', '.ts', '.tsx'],
-        moduleDirectory: ['node_modules', 'src/'],
-      },
     },
   },
 };

@@ -17,7 +17,7 @@ import {
 } from 'react-native-paper';
 import useFileActions from 'redux/actions/fileActions';
 import FolderIcon from 'assets/images/folder_icon.png';
-import UploadFileIcon from 'assets/images/upload_files.png';
+import UploadFileIcon from 'assets/images/file_icon.png';
 import {useSelector} from 'react-redux';
 import useImagePicker from 'utils/useImagePicker';
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -444,6 +444,9 @@ function Files(props) {
           icon={fab ? 'window-close' : 'plus'}
           small
           onPress={toggleFab}
+          onStateChange={() => {
+            console.log('-----> onStateChange');
+          }}
           actions={FAB_ACTIONS}
         />
       ) : null}

@@ -438,6 +438,7 @@ function GeneralDrawer() {
       <Drawer.Screen name="PurchasedProjects" component={PurchasedProjects} />
       <Drawer.Screen name="ProjectDetails" component={ProjectDetails} />
       <Drawer.Screen name="UpdateBillingInfo" component={UpdateBillingInfo} />
+      <Drawer.Screen name="Profile" component={Profile} />
     </Drawer.Navigator>
   );
 }
@@ -636,11 +637,6 @@ function NavContainer() {
               <Stack.Screen
                 name="ChangePassword"
                 component={ChangePasswordStack}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="Profile"
-                component={Profile}
                 options={{headerShown: false}}
               />
             </>

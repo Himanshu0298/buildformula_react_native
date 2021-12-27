@@ -1,7 +1,6 @@
 import * as React from 'react';
-import {View} from 'react-native';
 import {Button, Paragraph, Dialog, Portal} from 'react-native-paper';
-import {secondaryTheme, theme} from 'styles/theme';
+import {theme} from 'styles/theme';
 import PropTypes from 'prop-types';
 
 function CustomAlert(props) {
@@ -75,6 +74,12 @@ CustomAlert.defaultProps = {
   confirmText: 'Ok',
   cancelButtonColor: theme.colors.error,
   confirmButtonColor: theme.colors.primary,
+  handleClose: () => {
+    console.log('-----> handleClose');
+  },
+  handleConfirm: () => {
+    console.log('-----> handleConfirm');
+  },
 };
 
 export default CustomAlert;

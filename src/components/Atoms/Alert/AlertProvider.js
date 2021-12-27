@@ -1,28 +1,14 @@
-import React, {FC, useMemo, useState} from 'react';
+import React, {useCallback, useMemo, useState} from 'react';
 import DefaultAlert from './Alert';
 import AlertContext from './AlertContext';
 
-export type ShowMessageParams = {
-  onClose?: () => void;
-  onConfirm?: () => void;
-};
+const AlertProvider = ({children}) => {
+  const [state, setState] = useState({open: false});
 
-interface ProviderState extends ShowMessageParams {
-  open: boolean;
-}
-
-export type AlertContextType = {
-  show: (params: ShowMessageParams) => void;
-};
-
-const AlertProvider: FC = ({children}) => {
-  const [state, setState] = useState<ProviderState>({
-    open: false,
-    onConfirm: () => {},
-  });
-
-  const show = (params: ShowMessageParams) =>
-    setState(v => ({...v, ...params, open: true}));
+  const show = useCallback(
+    params => setState(v => ({...v, ...params, open: true})),
+    [],
+  );
 
   const handleClose = () => {
     const {onClose} = state;
