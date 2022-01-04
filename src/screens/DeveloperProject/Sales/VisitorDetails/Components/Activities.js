@@ -6,6 +6,7 @@ import dayjs from 'dayjs';
 import Layout from 'utils/Layout';
 import RenderHtml from 'react-native-render-html';
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const relativeTime = require('dayjs/plugin/relativeTime');
 
 dayjs.extend(relativeTime);
@@ -60,7 +61,7 @@ function DetailCard(props) {
         {type === 'visitor_comment' ? (
           activity.is_important ? (
             <View>
-              <Text style={{color: theme.color.primary}}>Important </Text>
+              <Text style={{color: theme.colors.primary}}>Important </Text>
             </View>
           ) : null
         ) : null}

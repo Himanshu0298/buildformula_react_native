@@ -114,51 +114,39 @@ function RenderVisitorItem(props) {
 }
 
 function RenderVisitors(props) {
-  const {
-    theme,
-    visitors,
-    onRefresh,
-    showAnalyticsRow,
-    visitorAnalytics,
-    navToDetails,
-  } = props;
+  const {theme, visitors, onRefresh, navToDetails} = props;
 
   const renderDivider = () => <Divider style={styles.divider} />;
 
   return (
     <View style={styles.contentContainer}>
-      {showAnalyticsRow ? (
-        <StatsRow visitorAnalytics={visitorAnalytics} />
-      ) : null}
-      <View>
-        <FlatList
-          data={visitors}
-          extraData={visitors}
-          keyExtractor={(item, index) => index.toString()}
-          contentContainerStyle={styles.scrollContainer}
-          showsVerticalScrollIndicator={false}
-          ItemSeparatorComponent={renderDivider}
-          renderItem={({item, index}) => (
-            <RenderVisitorItem
-              {...props}
-              key={index?.toString()}
-              data={item}
-              navToDetails={navToDetails}
-            />
-          )}
-          refreshControl={
-            <RefreshControl refreshing={false} onRefresh={onRefresh} />
-          }
-          ListEmptyComponent={
-            <View style={styles.noResultContainer}>
-              <Image source={NoDataFound} />
-              <Title style={[styles.title, {color: theme.colors.primary}]}>
-                Start adding your visitor
-              </Title>
-            </View>
-          }
-        />
-      </View>
+      <FlatList
+        data={visitors}
+        extraData={visitors}
+        keyExtractor={(item, index) => index.toString()}
+        contentContainerStyle={styles.scrollContainer}
+        showsVerticalScrollIndicator={false}
+        ItemSeparatorComponent={renderDivider}
+        renderItem={({item, index}) => (
+          <RenderVisitorItem
+            {...props}
+            key={index?.toString()}
+            data={item}
+            navToDetails={navToDetails}
+          />
+        )}
+        refreshControl={
+          <RefreshControl refreshing={false} onRefresh={onRefresh} />
+        }
+        ListEmptyComponent={
+          <View style={styles.noResultContainer}>
+            <Image source={NoDataFound} />
+            <Title style={[styles.title, {color: theme.colors.primary}]}>
+              Start adding your visitor
+            </Title>
+          </View>
+        }
+      />
     </View>
   );
 }
@@ -261,10 +249,11 @@ function Visitors(props) {
     navigation.navigate('VisitorDetails', {visitorId: id});
   };
 
+  const navToAddVisitor = () => navigation.navigate('AddVisitor');
+
   return (
     <View style={styles.container}>
       <Spinner visible={loading} textContent="" />
-      <ProjectHeader />
       <Header
         {...props}
         filter={filter}
@@ -273,21 +262,22 @@ function Visitors(props) {
         setSearchQuery={setSearchQuery}
       />
 
-      <RenderVisitors
-        {...props}
-        visitors={filteredVisitors}
-        showAnalyticsRow
-        visitorAnalytics={visitorAnalytics}
-        onRefresh={onRefresh}
-        navToDetails={navToDetails}
-      />
+      <StatsRow visitorAnalytics={visitorAnalytics} />
 
+      <View style={{flexGrow: 1}}>
+        <RenderVisitors
+          {...props}
+          visitors={filteredVisitors}
+          onRefresh={onRefresh}
+          navToDetails={navToDetails}
+        />
+      </View>
       {modulePermission?.editor || modulePermission?.admin ? (
         <FAB
           style={[styles.fab, {backgroundColor: theme.colors.primary}]}
           large
           icon="plus"
-          onPress={() => navigation.navigate('AddVisitor')}
+          onPress={navToAddVisitor}
         />
       ) : null}
     </View>
@@ -299,11 +289,11 @@ export default withTheme(Visitors);
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
+    position: 'relative',
   },
   contentContainer: {
-    flexGrow: 1,
+    flex: 1,
     marginTop: 2,
-    marginBottom: 15,
   },
   statsRowMainContainer: {
     paddingVertical: 5,
@@ -316,7 +306,6 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     paddingHorizontal: 5,
     flexDirection: 'row',
-
     alignItems: 'center',
     backgroundColor: '#fff',
   },
@@ -376,7 +365,7 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     flexGrow: 1,
-    paddingBottom: 600,
+    paddingBottom: 30,
   },
   title: {
     fontSize: 22,

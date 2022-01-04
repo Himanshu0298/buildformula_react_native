@@ -74,6 +74,7 @@ function SalesPipelineRearrange(props) {
 
       {pipelinesOrderList.length ? (
         <>
+          <Text style={styles.heading}>Rearrange Pipeline</Text>
           <AutoDragSortableView
             dataSource={pipelinesOrderList}
             maxScale={1.03}
@@ -102,6 +103,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginBottom: 10,
+  },
+  heading: {
+    paddingHorizontal: 20,
+    paddingBottom: 20,
   },
   workContainer: {
     flexDirection: 'row',
