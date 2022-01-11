@@ -19,40 +19,33 @@ const CAMERA_OPTIONS = {
   allowsEditing: true,
 };
 
+const processImage = res => {
+  const {assets} = res;
+  if (!assets?.length) {
+    console.log('ImagePicker Error: ', res);
+    return {};
+  }
+  const data = {
+    uri: assets[0].uri,
+    type: assets[0].type,
+    name: assets[0].fileName,
+  };
+  return data;
+};
+
 const handleImagePicker = ({type, onChoose}) => {
   launchImageLibrary(CAMERA_OPTIONS, res => {
-    const {assets} = res;
-    if (!assets.length) {
-      console.log('ImagePicker Error: ', res);
-    } else {
-      const data = {
-        // uri: Platform.OS === 'android' ? `file:///${path}` : path,
-        uri: assets[0].uri,
-        type: assets[0].type,
-        name: assets[0].fileName,
-      };
-
-      console.log('-----> data', data);
-      onChoose(data);
-    }
+    const data = processImage(res);
+    console.log('-----> data', data);
+    onChoose(data);
   });
 };
 
 const handleCamera = ({type, onChoose}) => {
   launchCamera(CAMERA_OPTIONS, res => {
-    if (!res.uri || res.error) {
-      console.log('ImagePicker Error: ', res);
-    } else {
-      const data = {
-        // uri: Platform.OS === 'android' ? `file:///${path}` : path,
-        uri: res.uri,
-        type: res.type,
-        name: res.fileName,
-      };
-
-      console.log('-----> data', data);
-      onChoose(data);
-    }
+    const data = processImage(res);
+    console.log('-----> data', data);
+    onChoose(data);
   });
 };
 
@@ -73,23 +66,21 @@ async function processFiles(res) {
 
       return data;
     }
-    const DEST_PATH = `${RNFS.TemporaryDirectoryPath}${name}`;
-    const isExists = await RNFS.exists(DEST_PATH);
+    // const DEST_PATH = `${RNFS.TemporaryDirectoryPath}${name}`;
+    // const isExists = await RNFS.exists(DEST_PATH);
 
-    if (isExists) {
-      await RNFS.unlink(DEST_PATH);
-    }
+    // if (isExists) {
+    //   await RNFS.unlink(DEST_PATH);
+    // }
 
-    await RNFS.copyFile(res.uri, DEST_PATH);
+    // await RNFS.copyFile(res.uri, DEST_PATH);
 
-    const stat = await RNFS.stat(DEST_PATH);
+    // const stat = await RNFS.stat(DEST_PATH);
 
-    const data = {
-      uri: Platform.OS === 'ios' ? stat.path : `file:///${stat.path}`,
-      type,
-      name,
-    };
+    const processedUri = Platform.OS === 'ios' ? res.uri : `file:///${res.uri}`;
 
+    const data = {uri: processedUri, type, name};
+    console.log('----->data ', data);
     return data;
   } catch (error) {
     console.log('-----> error', error);
@@ -111,12 +102,13 @@ const handleFilePicker = async ({type, multiple, onChoose}) => {
       data = await Promise.all(res.map(async item => processFiles(item)));
     } else {
       const res = await DocumentPicker.pick({type: fileTypes});
-      data = await processFiles(res);
+      console.log('----->res ', res);
+      data = await processFiles(res[0]);
     }
 
-    console.log('-----> data', data);
     onChoose(data);
   } catch (err) {
+    console.log('----->err ', err);
     if (DocumentPicker.isCancel(err)) {
       // User cancelled the picker, exit any dialogs or menus and move on
     } else {

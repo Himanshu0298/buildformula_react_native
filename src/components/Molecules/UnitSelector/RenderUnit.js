@@ -1,12 +1,17 @@
 import React from 'react';
 import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
 import {BHK_OPTIONS} from 'utils/constant';
-import {addOpacity, getUnitLabel} from 'utils';
+import {addOpacity} from 'utils';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
-import UnitIcon from 'assets/images/unit.svg';
+import ShopIcon from 'assets/images/shop.svg';
+import ApartmentIcon from 'assets/images/apartment.svg';
+import OfficeIcon from 'assets/images/office.svg';
+import BungalowIcon from 'assets/images/bungalow.svg';
+import PlatIcon from 'assets/images/plot.svg';
+import {Caption} from 'react-native-paper';
 
 export const BOOKING_STATUS_STYLES = {
   2: {
@@ -40,6 +45,14 @@ export const BOOKING_STATUS_STYLES = {
   },
 };
 
+const UNIT_ICONS = {
+  1: ApartmentIcon,
+  2: ShopIcon,
+  3: OfficeIcon,
+  4: BungalowIcon,
+  5: PlatIcon,
+};
+
 function checkDisabled(isUnitDisabled, unit) {
   if (typeof isUnitDisabled === 'function') {
     return isUnitDisabled(unit);
@@ -48,7 +61,7 @@ function checkDisabled(isUnitDisabled, unit) {
 }
 
 function RenderUnit(props) {
-  const {unit = {}, onSelectUnit, isUnitDisabled} = props;
+  const {unit = {}, onSelectUnit, isUnitDisabled, floorType} = props;
   const {unitLabel, unit_id} = unit;
   const unitBhk = BHK_OPTIONS.find(item => item.type === unit.bhk);
 
@@ -63,18 +76,27 @@ function RenderUnit(props) {
     ? {borderWidth: 2, borderColor: statusStyle?.color}
     : {};
 
+  const UnitIcon = UNIT_ICONS[floorType];
+
   return (
     <TouchableOpacity
       key={unitLabel}
       disabled={disabled}
       style={styles.container}
-      onPress={() => onSelectUnit({...unit, unit_id})}>
+      onPress={() => onSelectUnit({...unit, unit_id})}
+    >
+      <Text
+        style={[styles.captionStyle, {color: `${bookingStyle.borderColor}`}]}
+      >
+        {statusStyle.title}
+      </Text>
       <View style={[styles.unitContainer, bookingStyle]}>
         <View style={styles.iconContainer}>
           <UnitIcon
             height={30}
             width={30}
-            color={addOpacity(unitBhk?.color, 1) || '#868686'}
+            fill={addOpacity(unitBhk?.color, 1) || '#868686'}
+            fillSecondary={addOpacity(unitBhk?.color, 1) || '#868686'}
           />
         </View>
         <View style={styles.labelContainer}>
@@ -99,14 +121,15 @@ function RenderUnit(props) {
 }
 
 RenderUnit.defaultProps = {
-  isUnitDisabled: () => {},
+  floorType: 1,
   selectedFloor: '',
 };
 
 RenderUnit.propTypes = {
   onSelectUnit: PropTypes.func.isRequired,
-  isUnitDisabled: PropTypes.func,
+  isUnitDisabled: PropTypes.func.isRequired,
   selectedFloor: PropTypes.string,
+  floorType: PropTypes.number,
 };
 
 const styles = StyleSheet.create({
@@ -114,12 +137,16 @@ const styles = StyleSheet.create({
     width: '33%',
     position: 'relative',
   },
+  captionStyle: {
+    marginLeft: 19,
+    fontSize: 10,
+  },
   unitContainer: {
     position: 'relative',
     backgroundColor: '#D3DAEF',
     alignItems: 'center',
     flexDirection: 'row',
-    margin: 5,
+    marginHorizontal: 5,
     padding: 5,
     borderRadius: 7,
   },
@@ -133,7 +160,7 @@ const styles = StyleSheet.create({
   },
   badge: {
     position: 'absolute',
-    top: 0,
+    top: 7,
     left: 0,
     borderRadius: 50,
     height: 18,

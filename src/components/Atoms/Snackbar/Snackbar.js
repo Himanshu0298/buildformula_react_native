@@ -19,19 +19,20 @@ function CustomSnackbar(props) {
   const [margin, setMargin] = useState(8);
 
   useEffect(() => {
-    _componentDidMount();
-    return () => _componentWillUnmount();
+    const showSubscription = Keyboard.addListener(
+      'keyboardDidShow',
+      _keyboardDidShow,
+    );
+    const hideSubscription = Keyboard.addListener(
+      'keyboardDidHide',
+      _keyboardDidHide,
+    );
+
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
   });
-
-  const _componentDidMount = () => {
-    Keyboard.addListener('keyboardDidShow', _keyboardDidShow);
-    Keyboard.addListener('keyboardDidHide', _keyboardDidHide);
-  };
-
-  const _componentWillUnmount = () => {
-    Keyboard.removeListener('keyboardDidShow', _keyboardDidShow);
-    Keyboard.removeListener('keyboardDidHide', _keyboardDidHide);
-  };
 
   const _keyboardDidShow = e => setMargin(e.endCoordinates.height + 30);
 
@@ -56,7 +57,8 @@ function CustomSnackbar(props) {
               onPress: () => onClose(),
             }
           : undefined
-      }>
+      }
+    >
       {message}
     </Snackbar>
   );

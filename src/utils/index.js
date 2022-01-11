@@ -1,7 +1,6 @@
 import {debounce} from 'lodash';
 import {Platform} from 'react-native';
 import {store} from 'redux/store';
-import {BASE_API_URL} from './constant';
 
 const shadowsArray = {
   0: {
@@ -89,19 +88,12 @@ const shadowsArray = {
 
 export const getShadow = elevation => shadowsArray[elevation][Platform.OS];
 
-export function getTowerLabel(num) {
-  let s = '';
-  let t;
-
-  num += 26;
-
-  while (num > 0) {
-    t = (num - 1) % 26;
-    s = String.fromCharCode(65 + t) + s;
-    // eslint-disable-next-line no-bitwise
-    num = ((num - t) / 26) | 0;
-  }
-  return s || undefined;
+export function getTowerLabel(i) {
+  i -= 1;
+  return (
+    (i >= 26 ? getTowerLabel(Math.floor(i / 26) - 1) : '') +
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[i % 26]
+  );
 }
 
 export function getFloorNumber(i) {

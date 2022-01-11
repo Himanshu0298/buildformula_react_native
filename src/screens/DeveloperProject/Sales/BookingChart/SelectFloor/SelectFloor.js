@@ -4,6 +4,7 @@ import FloorBar from 'components/Atoms/FloorBar';
 import {IconButton, Subheading, withTheme} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import {RenderTowerBox} from 'components/Molecules/TowerSelector';
+import NoResult from 'components/Atoms/NoResult';
 
 function SelectFloor(props) {
   const {route, navigation} = props;
@@ -14,7 +15,10 @@ function SelectFloor(props) {
   const structureData =
     selectedProject.project_structure?.[selectedStructure] || {};
 
-  const {floors} = structureData.towers[towerId];
+  const {floors = {}} =
+    structureData?.towers.find(i => i.tower_id === towerId) || {};
+
+  const renderNoFloor = () => <NoResult title="No Floors available" />;
 
   return (
     <View style={styles.container}>
@@ -23,7 +27,8 @@ function SelectFloor(props) {
       <View style={styles.headerContainer}>
         <TouchableOpacity
           style={styles.titleContainer}
-          onPress={navigation.goBack}>
+          onPress={navigation.goBack}
+        >
           <IconButton icon="keyboard-backspace" />
           <RenderTowerBox {...props} towerId={towerId} active />
         </TouchableOpacity>
@@ -38,6 +43,7 @@ function SelectFloor(props) {
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
         keyExtractor={item => item.toString()}
+        ListEmptyComponent={renderNoFloor}
         renderItem={({item: floorId, index}) => {
           const {structureType} = floors[floorId];
 

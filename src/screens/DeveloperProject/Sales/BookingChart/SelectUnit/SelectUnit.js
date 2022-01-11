@@ -143,12 +143,18 @@ function SelectUnit(props) {
       />
       <Spinner visible={loading} textContent="" />
 
-      {towerType ? <Subheading>{towerType}</Subheading> : null}
+      {towerType ? (
+        <Subheading>
+          {towerType}
+          {structureType ? ` - ${STRUCTURE_TYPE_LABELS[structureType]}` : ''}
+        </Subheading>
+      ) : null}
 
       <View style={styles.headerContainer}>
         <TouchableOpacity
           style={styles.titleContainer}
-          onPress={navigation.goBack}>
+          onPress={navigation.goBack}
+        >
           <IconButton icon="keyboard-backspace" />
           <Subheading>{floor}</Subheading>
         </TouchableOpacity>
@@ -160,6 +166,7 @@ function SelectUnit(props) {
         floorNumber={floor}
         units={processedUnits}
         showBhkFilters
+        floorType={structureType || selectedStructure}
         isUnitDisabled={checkUnitDisability}
         onRefresh={fetchUnitsBookingStatus}
         onSelectUnit={handleSelectUnit}

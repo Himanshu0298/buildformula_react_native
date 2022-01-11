@@ -6,7 +6,8 @@ import * as types from './actionTypes';
 
 export default function useRoleActions() {
   const dispatch = useDispatch();
-  const {getMembers, getRoles, addUsers, editUser} = useRole();
+  const {getMembers, getRoles, addUsers, editUser, deleteRole, deleteMember} =
+    useRole();
   const {_err, _res} = useResProcessor();
   const snackbar = useSnackbar();
 
@@ -45,6 +46,34 @@ export default function useRoleActions() {
         payload: async () => {
           try {
             const response = _res(await addUsers(data));
+            return Promise.resolve(response);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    deleteRole: data =>
+      dispatch({
+        type: types.DELETE_ROLE,
+        payload: async () => {
+          try {
+            const response = _res(await deleteRole(data));
+            return Promise.resolve(response);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    deleteMember: data =>
+      dispatch({
+        type: types.DELETE_ROLE,
+        payload: async () => {
+          try {
+            const response = _res(await deleteMember(data));
             return Promise.resolve(response);
           } catch (error) {
             const message = _err(error);

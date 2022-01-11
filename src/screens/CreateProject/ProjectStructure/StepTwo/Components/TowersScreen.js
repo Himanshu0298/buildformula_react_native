@@ -4,16 +4,16 @@ import {Button, TextInput, withTheme} from 'react-native-paper';
 import BaseText from 'components/Atoms/BaseText';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import {getTowerLabel} from 'utils';
-import TowerIcon from 'components/Atoms/TowerIcon';
+// import TowerIcon from 'components/Atoms/TowerIcon';
 import DuplicateDialog from './DuplicateDialog';
 
 function RenderTowers({towerCount, towerValidationById, onPress}) {
   const towersList = [];
   for (let i = 1; i <= towerCount; i += 1) {
     const active = towerValidationById[i];
-    towersList.push(
-      <TowerIcon onPress={onPress} key={i} index={i} active={active} />,
-    );
+    // towersList.push(
+    //   <TowerIcon onPress={onPress} key={i} index={i} active={active} />,
+    // );
   }
   return <View style={styles.towersList}>{towersList}</View>;
 }
@@ -65,7 +65,8 @@ function TowersScreen(props) {
       />
       <ScrollView
         contentContainerStyle={styles.scrollView}
-        keyboardShouldPersistTaps="handled">
+        keyboardShouldPersistTaps="handled"
+      >
         <View style={styles.container}>
           <View>
             <View style={styles.headingContainer}>
@@ -94,7 +95,8 @@ function TowersScreen(props) {
                 disabled={!towerCount}
                 contentStyle={{paddingVertical: 2, paddingHorizontal: 6}}
                 theme={{roundness: 10}}
-                onPress={toggleDuplicateDialog}>
+                onPress={toggleDuplicateDialog}
+              >
                 Duplicate towers
               </Button>
             </View>
@@ -124,7 +126,8 @@ function TowersScreen(props) {
                 } else {
                   saveStructureType();
                 }
-              }}>
+              }}
+            >
               Next
             </Button>
           </View>

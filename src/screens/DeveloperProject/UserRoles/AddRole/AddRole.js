@@ -1,3 +1,4 @@
+import ActionButtons from 'components/Atoms/ActionButtons';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import CustomCheckbox from 'components/Atoms/CustomCheckbox';
 import RenderInput from 'components/Atoms/RenderInput';
@@ -18,7 +19,6 @@ import {
   Title,
   withTheme,
   IconButton,
-  Button,
 } from 'react-native-paper';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import {useSelector} from 'react-redux';
@@ -37,7 +37,7 @@ const SALES_PERMISSIONS = [
 ];
 
 const schema = Yup.object().shape({
-  email: Yup.string('Invalid').required('Name is required'),
+  name: Yup.string('Invalid').required('Name is required'),
 });
 
 function RenderPermission(props) {
@@ -74,7 +74,9 @@ function AddRole(props) {
 
   const [modules, setModules] = React.useState(cloneDeep(modulesList));
 
-  const handleDelete = () => {};
+  const handleDelete = () => {
+    console.log('----->delete function called');
+  };
 
   const updateScreen = (moduleIndex, screenIndex, key, value) => {
     const updatedScreenData = cloneDeep(modules);
@@ -83,7 +85,7 @@ function AddRole(props) {
     setModules(updatedScreenData);
   };
 
-  const handleSubmit = () => {};
+  // const handleSubmit = () => {};
 
   return (
     <Formik
@@ -91,8 +93,11 @@ function AddRole(props) {
       validateOnChange={false}
       initialValues={{}}
       validationSchema={schema}
-      onSubmit={async values => {}}>
-      {({values, errors, handleChange, handleBlur}) => (
+      onSubmit={values => {
+        console.log('----->values in on submit', values);
+      }}
+    >
+      {({values, errors, handleChange, handleBlur, handleSubmit}) => (
         <View style={styles.container}>
           <View style={styles.titleContainer}>
             <Title>{role ? 'Edit Role' : 'Add new Role'}</Title>
@@ -101,7 +106,8 @@ function AddRole(props) {
                 opacity={0.1}
                 color={theme.colors.red}
                 style={{borderRadius: 50}}
-                onPress={handleDelete}>
+                onPress={handleDelete}
+              >
                 <MaterialIcon
                   name="delete"
                   color={theme.colors.red}
@@ -124,7 +130,8 @@ function AddRole(props) {
           <View style={styles.screensContainer}>
             <ScrollView
               showsVerticalScrollIndicator={false}
-              contentContainerStyle={{flexGrow: 1, paddingBottom: 50}}>
+              contentContainerStyle={{flexGrow: 1, paddingBottom: 50}}
+            >
               {modules.map((module, index) => {
                 const {title, subModules} = module;
 
@@ -159,8 +166,11 @@ function AddRole(props) {
                       return (
                         <View style={styles.screenContainer}>
                           <TouchableOpacity
+                            name="title"
+                            onChangeText={handleChange('title')}
                             style={styles.rowBetween}
-                            onPress={onChangeStatus}>
+                            onPress={onChangeStatus}
+                          >
                             <Text>{subModuleTitle}</Text>
                             <Switch
                               value={Boolean(status)}
@@ -195,23 +205,13 @@ function AddRole(props) {
             </ScrollView>
           </View>
 
-          <View style={styles.actionContainer}>
-            <Button
-              style={{width: '40%'}}
-              contentStyle={{padding: 1}}
-              theme={{roundness: 12}}
-              onPress={navigation.goBack}>
-              Cancel
-            </Button>
-            <Button
-              style={{width: '40%'}}
-              mode="contained"
-              contentStyle={{padding: 1}}
-              theme={{roundness: 12}}
-              onPress={handleSubmit}>
-              {role ? 'Update' : 'Save'}
-            </Button>
-          </View>
+          <ActionButtons
+            style={styles.actionContainer}
+            cancelLabel="Cancel"
+            submitLabel={role ? 'Update' : 'Save'}
+            onCancel={navigation.goBack}
+            onSubmit={handleSubmit}
+          />
         </View>
       )}
     </Formik>
@@ -254,13 +254,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   actionContainer: {
-    marginTop: 25,
-    marginBottom: 10,
-    paddingHorizontal: 10,
-    flexDirection: 'row',
-
-    alignItems: 'center',
-    justifyContent: 'space-around',
+    marginBottom: 40,
   },
 });
 

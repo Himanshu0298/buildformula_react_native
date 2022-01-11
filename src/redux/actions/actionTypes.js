@@ -134,3 +134,5 @@ export const GET_MEMBERS = 'GET_MEMBERS';
 export const GET_ROLES = 'GET_ROLES';
 export const ADD_USERS = 'ADD_USERS';
 export const EDIT_USERS = 'EDIT_USERS';
+export const DELETE_ROLE = 'DELETE_ROLE';
+export const DELETE_MEMBER = 'DELETE_MEMBER';

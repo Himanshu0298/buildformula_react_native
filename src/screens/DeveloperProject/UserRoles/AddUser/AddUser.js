@@ -1,3 +1,4 @@
+import ActionButtons from 'components/Atoms/ActionButtons';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import RenderInput, {RenderError} from 'components/Atoms/RenderInput';
 import RenderSelect from 'components/Atoms/RenderSelect';
@@ -5,7 +6,7 @@ import {useSnackbar} from 'components/Atoms/Snackbar';
 import {Formik} from 'formik';
 import {cloneDeep} from 'lodash';
 import * as React from 'react';
-import {useMemo} from 'react';
+import {useMemo, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {
   StyleSheet,
@@ -58,13 +59,15 @@ function RenderForm(props) {
   const {t} = useTranslation();
   const snackbar = useSnackbar();
 
+  const canUpdate = values.selectedRoles.includes('Admin')
+    ? values.selectedRoles.length > 1
+    : values.selectedRoles.length >= 1;
+
   const {roles, loading} = useSelector(s => s.role);
 
   const roleOptions = useMemo(() => {
     return roles.map(i => ({label: i.role_name, value: i.id}));
   }, [roles]);
-
-  const handleDelete = () => {};
 
   const addEmail = () => {
     const {emails = [], email} = values;
@@ -110,15 +113,6 @@ function RenderForm(props) {
       <Spinner visible={loading} textContent="" />
       <View style={styles.titleContainer}>
         <Subheading>{user ? 'Edit Member' : 'Add new Member'}</Subheading>
-        {user ? (
-          <OpacityButton
-            opacity={0.1}
-            color={theme.colors.red}
-            style={{borderRadius: 50}}
-            onPress={handleDelete}>
-            <MaterialIcon name="delete" color={theme.colors.red} size={18} />
-          </OpacityButton>
-        ) : null}
       </View>
 
       {user ? (
@@ -158,14 +152,14 @@ function RenderForm(props) {
           ) : null}
         </>
       )}
-
       <View style={styles.rolesContainer}>
         <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{flexGrow: 1, paddingBottom: 200}}>
+          contentContainerStyle={{flexGrow: 1, paddingBottom: 200}}
+        >
           {values.selectedRoles.map((role, index) => {
             return (
-              <View style={styles.roleContainer} key={index}>
+              <View style={styles.roleContainer} key={index?.toString()}>
                 <RenderSelect
                   name="role"
                   disabled={role === 'Admin'}
@@ -192,7 +186,8 @@ function RenderForm(props) {
               style={styles.addButton}
               mode="outlined"
               onPress={addRole}
-              uppercase={false}>
+              uppercase={false}
+            >
               + Add another role
             </Button>
           </View>
@@ -201,24 +196,14 @@ function RenderForm(props) {
           ) : null}
         </ScrollView>
       </View>
-
-      <View style={styles.actionContainer}>
-        <Button
-          style={{width: '40%'}}
-          contentStyle={{padding: 1}}
-          theme={{roundness: 12}}
-          onPress={navigation.goBack}>
-          Cancel
-        </Button>
-        <Button
-          style={{width: '40%'}}
-          mode="contained"
-          contentStyle={{padding: 1}}
-          theme={{roundness: 12}}
-          onPress={handleSubmit}>
-          {user ? 'Update' : 'Save'}
-        </Button>
-      </View>
+      <ActionButtons
+        style={styles.actionContainer}
+        cancelLabel="Cancel"
+        submitLabel={user ? 'Update' : 'Save'}
+        onCancel={navigation.goBack}
+        submitDisabled={!canUpdate}
+        onSubmit={handleSubmit}
+      />
     </View>
   );
 }
@@ -227,7 +212,7 @@ function AddUser(props) {
   const {navigation, route} = props;
   const {user} = route?.params || {};
 
-  const edit = Boolean(user?.id);
+  const edit = Boolean(user?.user_id || user?.id);
 
   const {addUsers, editUser, getMembers} = useRoleActions();
 
@@ -236,15 +221,21 @@ function AddUser(props) {
   const onSubmit = async values => {
     const project_id = selectedProject.id;
     const {emails, selectedRoles} = values;
+    const roles = cloneDeep(selectedRoles);
+
+    const index = selectedRoles.indexOf('Admin');
+    if (index !== -1) {
+      roles.splice(index, 1);
+    }
 
     if (edit) {
       await editUser({
         project_id,
-        role_user_user_id: user?.id,
-        roles: selectedRoles,
+        role_user_user_id: user?.user_id || user?.id,
+        roles,
       });
     } else {
-      await addUsers({project_id, emails, roles: selectedRoles});
+      await addUsers({project_id, emails, roles});
     }
     getMembers({project_id});
     navigation.goBack();
@@ -254,9 +245,13 @@ function AddUser(props) {
     <Formik
       validateOnBlur={false}
       validateOnChange={false}
-      initialValues={{selectedRoles: user?.roles || [], emails: []}}
+      initialValues={{
+        selectedRoles: user?.roles?.map(i => i.value) || [],
+        emails: [],
+      }}
       validationSchema={edit ? editSchema : addSchema}
-      onSubmit={onSubmit}>
+      onSubmit={onSubmit}
+    >
       {formikProps => <RenderForm {...props} {...{formikProps, user}} />}
     </Formik>
   );
@@ -307,13 +302,7 @@ const styles = StyleSheet.create({
     width: '75%',
   },
   actionContainer: {
-    marginTop: 25,
     marginBottom: 10,
-    paddingHorizontal: 10,
-    flexDirection: 'row',
-
-    alignItems: 'center',
-    justifyContent: 'space-around',
   },
   emailsContainer: {
     marginVertical: 5,

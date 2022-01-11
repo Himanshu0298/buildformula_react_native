@@ -91,7 +91,6 @@ const RenderDatePicker = React.forwardRef((props, ref) => {
 
 RenderDatePicker.defaultProps = {
   mode: 'date',
-  onChange: () => {},
 };
 
 RenderDatePicker.prototype = {

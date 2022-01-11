@@ -77,7 +77,13 @@ const RenderSelect = React.forwardRef((props, ref) => {
         ref={ref}
         {...rest}
         value={value}
-        right={<TextInput.Icon name="menu-down" onPress={toggleOptions} />}
+        right={
+          <TextInput.Icon
+            disabled={disabled}
+            name="menu-down"
+            onPress={toggleOptions}
+          />
+        }
       />
     </TouchableOpacity>
   );
@@ -86,7 +92,7 @@ const RenderSelect = React.forwardRef((props, ref) => {
 RenderSelect.defaultProps = {
   options: [],
   destructiveButtonIndex: null,
-  onSelect: () => {},
+  onSelect: undefined,
 };
 
 RenderSelect.prototype = {

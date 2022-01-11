@@ -17,7 +17,7 @@ const getFileName = name => {
   return split[0];
 };
 
-const getFileExtension = fileUrl => {
+export const getFileExtension = fileUrl => {
   // To get the file extension
   const fileExt = /[.]/.exec(fileUrl) ? /[^.]+$/.exec(fileUrl) : undefined;
 

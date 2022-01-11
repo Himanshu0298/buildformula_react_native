@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import BhkButton from 'components/Atoms/Buttons/BhkButton';
 import {
   StyleSheet,
@@ -10,6 +10,7 @@ import {
 import {Subheading} from 'react-native-paper';
 import {BHK_OPTIONS} from 'utils/constant';
 import PropTypes from 'prop-types';
+import NoResult from 'components/Atoms/NoResult';
 import RenderUnit from './RenderUnit';
 
 function BhkList({onPress, selectedBhk}) {
@@ -41,10 +42,20 @@ function UnitSelector(props) {
     units,
     floorNumber,
     onSelectUnit,
+    floorType,
     isUnitDisabled,
   } = props;
 
   const [selectedBhk, setSelectedBhk] = React.useState();
+
+  const filteredUnits = useMemo(() => {
+    if (selectedBhk) {
+      return units.filter(i => i.bhk === selectedBhk);
+    }
+    return units;
+  }, [selectedBhk, units]);
+
+  const renderNoUnits = () => <NoResult title="No Units available" />;
 
   return (
     <View style={styles.container}>
@@ -56,11 +67,12 @@ function UnitSelector(props) {
       ) : null}
       <Subheading style={styles.floorTitle}>{floorNumber}</Subheading>
       <FlatList
-        data={units}
+        data={filteredUnits}
+        extraData={filteredUnits}
         numColumns={3}
         showsVerticalScrollIndicator={false}
-        extraData={units}
         contentContainerStyle={styles.scrollContainer}
+        ListEmptyComponent={renderNoUnits}
         refreshControl={
           onRefresh ? (
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -70,6 +82,7 @@ function UnitSelector(props) {
           <RenderUnit
             key={unit?.unit_id}
             unit={unit}
+            floorType={floorType}
             onSelectUnit={onSelectUnit}
             isUnitDisabled={isUnitDisabled}
           />
@@ -102,17 +115,15 @@ UnitSelector.defaultProps = {
   subtitle: 'label_select_appropriate_option',
   showBhkFilters: true,
   refreshing: false,
-  onSelectUnit: () => {},
-  onRefresh: () => {},
 };
 
 UnitSelector.propTypes = {
   title: PropTypes.string,
   subtitle: PropTypes.string,
   showBhkFilters: PropTypes.bool,
-  onSelectUnit: PropTypes.func,
+  onSelectUnit: PropTypes.func.isRequired,
   refreshing: PropTypes.bool,
-  onRefresh: PropTypes.func,
+  onRefresh: PropTypes.func.isRequired,
 };
 
 export default React.memo(UnitSelector);

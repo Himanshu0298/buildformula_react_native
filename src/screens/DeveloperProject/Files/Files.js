@@ -5,6 +5,7 @@ import {
   ScrollView,
   RefreshControl,
   SectionList,
+  TouchableOpacity,
 } from 'react-native';
 import {
   IconButton,
@@ -29,6 +30,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Feather from 'react-native-vector-icons/Feather';
 import dayjs from 'dayjs';
+import {getFileExtension} from 'utils/download';
 import DeleteDialog from './Components/DeleteDialog';
 import UploadDialog from './Components/UploadDialog';
 import RenameDialogue from './Components/RenameDialog';
@@ -335,10 +337,14 @@ function Files(props) {
   };
 
   const handleFileUpload = async values => {
+    const {file, file_name} = values;
+    const extension = getFileExtension(file.name);
+    file.name = `${file_name}.${extension}`;
+
     const formData = new FormData();
 
     formData.append('folder_id', folderDepth);
-    formData.append('myfile[]', values.file);
+    formData.append('myfile[]', file);
     formData.append('project_id', project_id);
 
     await uploadFile(formData);
@@ -404,18 +410,19 @@ function Files(props) {
       <ScrollView
         refreshControl={
           <RefreshControl refreshing={false} onRefresh={loadData} />
-        }>
+        }
+      >
         {folderName ? (
           <View style={styles.backNavigation}>
-            <View style={styles.viewDirection}>
-              <IconButton
-                icon="arrow-left"
-                onPress={() => navigation.goBack()}
-              />
+            <TouchableOpacity
+              style={styles.viewDirection}
+              onPress={navigation.goBack}
+            >
+              <IconButton icon="arrow-left" onPress={navigation.goBack} />
               <Subheading style={styles.backNavHeading} numberOfLines={1}>
                 {folderName}
               </Subheading>
-            </View>
+            </TouchableOpacity>
             <IconButton
               icon="information"
               onPress={() => {
@@ -541,6 +548,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
+  },
+  viewDirection: {
+    alignItems: 'center',
+    flexDirection: 'row',
   },
   backNavHeading: {
     maxWidth: 200,

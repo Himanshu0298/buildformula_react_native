@@ -16,13 +16,19 @@ export function RenderTowerBox(props) {
   return (
     <Container style={styles.towerContainer} onPress={() => onPress?.(towerId)}>
       <View style={styles.iconContainer}>
-        <TowerIcon height={20} width={20} />
+        <TowerIcon
+          height={20}
+          width={20}
+          fill={theme.colors.accent}
+          fillSecondary={theme.colors.primary}
+        />
       </View>
       <View
         style={[
           styles.labelContainer,
           active ? {backgroundColor: theme.colors.primary} : {},
-        ]}>
+        ]}
+      >
         <Text theme={active ? secondaryTheme : undefined}>{towerLabel}</Text>
       </View>
     </Container>

@@ -3,14 +3,7 @@ import NoResult from 'components/Atoms/NoResult';
 import ProjectHeader from 'components/Molecules/Layout/ProjectHeader';
 import * as React from 'react';
 import {useState} from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  FlatList,
-  ScrollView,
-  RefreshControl,
-} from 'react-native';
+import {StyleSheet, Text, View, FlatList, RefreshControl} from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {
   withTheme,
@@ -26,7 +19,8 @@ import {useSelector} from 'react-redux';
 import useRoleActions from 'redux/actions/roleActions';
 import Layout from 'utils/Layout';
 
-const ROLES = ['Layout', 'Layout', 'Layout', 'Layout', 'Layout'];
+const DEFAULT_ADMIN_LABEL = 'Admin';
+
 const TABS = [
   {key: 0, title: 'Members'},
   {key: 1, title: 'Roles'},
@@ -52,7 +46,8 @@ function RenderUserCard(props) {
               icon="dots-vertical"
               onPress={() => toggleMenu(index)}
             />
-          }>
+          }
+        >
           <Menu.Item
             icon="pencil"
             onPress={() => onUpdate(item)}
@@ -74,13 +69,11 @@ function RenderUserCard(props) {
         <>
           <Divider style={{marginVertical: 10}} />
           <View style={styles.userRoleContainer}>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              {roles.map((role, i) => (
-                <Chip mode="outlined" key={i} style={{marginHorizontal: 5}}>
-                  {role}
-                </Chip>
-              ))}
-            </ScrollView>
+            {roles.map((role, i) => (
+              <Chip mode="outlined" key={i?.toString()} style={{margin: 5}}>
+                {role.label}
+              </Chip>
+            ))}
           </View>
         </>
       ) : null}
@@ -89,20 +82,31 @@ function RenderUserCard(props) {
 }
 
 function RenderUsers(props) {
-  const {navigation, theme, members, getMemberData} = props;
-  const {assign_roles, assign_users = {}, admin_users = []} = members;
+  const {navigation, theme, members, getMemberData, onDeleteMember} = props;
+  const {assign_users_roles_info = {}, admin_users = []} = members;
 
   const [menuIndex, setMenuIndex] = useState(false);
 
   const users = React.useMemo(() => {
-    const admins = admin_users.map(i => ({...i, roles: ['Admin']}));
-    const otherUsers = Object.values(assign_users).map(i => {
-      const roles = assign_roles[i.user_id];
-      return {...i, roles};
+    const admins = admin_users.map(i => ({
+      ...i,
+      roles: [{label: DEFAULT_ADMIN_LABEL, value: DEFAULT_ADMIN_LABEL}],
+    }));
+    const otherUsers = Object.values(assign_users_roles_info).map(userRoles => {
+      let user = {roles: []};
+      userRoles.map(roleData => {
+        const {role_name, role_id, ...userData} = roleData || {};
+        const {roles} = user;
+        roles.push({value: role_id, label: role_name});
+        user = {...user, ...userData, roles};
+        return roleData;
+      });
+
+      return user;
     });
 
     return [...admins, ...otherUsers];
-  }, [admin_users, assign_roles, assign_users]);
+  }, [admin_users, assign_users_roles_info]);
 
   const toggleMenu = index => setMenuIndex(index);
 
@@ -111,9 +115,16 @@ function RenderUsers(props) {
     navigation.navigate('AddUser', {user});
   };
 
-  const onDelete = () => {};
+  const onDelete = id => {
+    toggleMenu();
+    onDeleteMember(id);
+  };
 
   const navToAddRole = () => navigation.navigate('AddUser');
+
+  const renderEmpty = () => {
+    return <NoResult title="No Users found" />;
+  };
 
   return (
     <View style={styles.contentContainer}>
@@ -126,7 +137,7 @@ function RenderUsers(props) {
         refreshControl={
           <RefreshControl refreshing={false} onRefresh={getMemberData} />
         }
-        ListEmptyComponent={() => <NoResult title="No Users found" />}
+        ListEmptyComponent={renderEmpty}
         renderItem={({item, index}) => (
           <RenderUserCard
             {...{item, index, menuIndex, toggleMenu, onDelete, onUpdate}}
@@ -143,15 +154,24 @@ function RenderUsers(props) {
 }
 
 function RenderRole(props) {
-  const {item, index, menuIndex, toggleMenu, onDelete, onUpdate} = props;
+  const {item, index, menuIndex, toggleMenu, onDelete, navToAddRole} = props;
   const {role_name} = item;
+
+  const handleDelete = () => {
+    onDelete(item.id);
+    toggleMenu();
+  };
+
+  const handleDuplicate = () => {
+    navToAddRole();
+    toggleMenu();
+  };
 
   return (
     <View style={styles.rolePanelContainer}>
       <View style={styles.rowBetween}>
         <Text>{role_name}</Text>
-        {/* TODO: reactivate this */}
-        {/* <Menu
+        <Menu
           visible={index === menuIndex}
           contentStyle={{borderRadius: 10}}
           onDismiss={toggleMenu}
@@ -161,34 +181,27 @@ function RenderRole(props) {
               icon="dots-vertical"
               onPress={() => toggleMenu(index)}
             />
-          }>
+          }
+        >
           <Menu.Item
             icon="pencil"
-            onPress={() => onUpdate(item)}
-            title="Edit"
+            onPress={handleDuplicate}
+            title="Duplicate"
           />
           <Divider />
-          <Menu.Item
-            icon="delete"
-            onPress={() => onDelete(item.id)}
-            title="Delete"
-          />
-        </Menu> */}
+          <Menu.Item icon="delete" onPress={handleDelete} title="Delete" />
+        </Menu>
       </View>
     </View>
   );
 }
 
 function RenderRoles(props) {
-  const {navigation, theme, roles, getRoleData} = props;
+  const {navigation, theme, roles, getRoleData, onDelete} = props;
 
   const [menuIndex, setMenuIndex] = useState(false);
 
   const toggleMenu = index => setMenuIndex(index);
-
-  const onUpdate = () => {};
-
-  const onDelete = () => {};
 
   const navToAddRole = () => navigation.navigate('AddRole');
 
@@ -203,14 +216,16 @@ function RenderRoles(props) {
           <RefreshControl refreshing={false} onRefresh={getRoleData} />
         }
         renderItem={({item, index}) => (
-          <>
-            <RenderRole
-              {...{item, index, menuIndex, toggleMenu, onDelete, onUpdate}}
-            />
-            {index !== ROLES.length - 1 ? (
-              <Divider style={{marginVertical: 5}} />
-            ) : null}
-          </>
+          <RenderRole
+            {...{
+              item,
+              index,
+              menuIndex,
+              toggleMenu,
+              onDelete,
+              navToAddRole,
+            }}
+          />
         )}
       />
       <FAB
@@ -225,8 +240,9 @@ function RenderRoles(props) {
 function Roles(props) {
   const {selectedProject} = useSelector(s => s.project);
   const {members, loading, roles} = useSelector(s => s.role);
+  // console.log('----->selectedProject', selectedProject.id);
 
-  const {getMembers, getRoles} = useRoleActions();
+  const {getMembers, getRoles, deleteRole, deleteMember} = useRoleActions();
 
   const [selectedTab, setSelectedTab] = React.useState(0);
   const [routes] = React.useState(TABS);
@@ -240,12 +256,29 @@ function Roles(props) {
   const getMemberData = () => getMembers({project_id: selectedProject.id});
   const getRoleData = () => getRoles({project_id: selectedProject.id});
 
+  const onDelete = async id => {
+    await deleteRole({project_id: selectedProject.id, role_id: id});
+    getRoleData();
+  };
+
+  const onDeleteMember = async id => {
+    await deleteMember({project_id: selectedProject.id, role_user_id: id});
+    getMemberData();
+  };
+
   const renderScene = ({route: {key}}) => {
     switch (key) {
       case 0:
-        return <RenderUsers {...props} {...{members, getMemberData}} />;
+        return (
+          <RenderUsers
+            {...props}
+            {...{members, getMemberData, selectedProject, onDeleteMember}}
+          />
+        );
       case 1:
-        return <RenderRoles {...props} {...{roles, getRoleData}} />;
+        return <RenderRoles {...props} {...{roles, getRoleData, onDelete}} />;
+      default:
+        return null;
     }
   };
 
@@ -297,7 +330,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  userRoleContainer: {},
+  userRoleContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
 });
 
 export default withTheme(Roles);

@@ -15,19 +15,34 @@ const getStructureItems = () => {
   return [
     {
       title: 'Towers',
-      src: <TowerIcon />,
+      src: (
+        <TowerIcon
+          fill={theme.colors.accent}
+          fillSecondary={theme.colors.primary}
+        />
+      ),
       value: 6,
       imageStyle: styles.shop,
     },
     {
       title: 'Bungalows',
-      src: <BungalowIcon />,
+      src: (
+        <BungalowIcon
+          fill={theme.colors.accent}
+          fillSecondary={theme.colors.primary}
+        />
+      ),
       value: 4,
       imageStyle: styles.shop,
     },
     {
       title: 'Plots',
-      src: <PlotIcon />,
+      src: (
+        <PlotIcon
+          fill={theme.colors.accent}
+          fillSecondary={theme.colors.primary}
+        />
+      ),
       value: 5,
       imageStyle: styles.shop,
     },
@@ -40,7 +55,8 @@ function ImageRender(props) {
   return (
     <TouchableOpacity
       style={[styles.box, style, active ? styles.active : {}]}
-      onPress={() => onPress(value, towerType)}>
+      onPress={() => onPress(value, towerType)}
+    >
       <BaseText style={styles.title}>{title}</BaseText>
       {src}
     </TouchableOpacity>

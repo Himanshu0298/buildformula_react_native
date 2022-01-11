@@ -17,5 +17,11 @@ export default function useRole() {
     editUser: data => {
       return instance.post('/roles/member_edit', data, params);
     },
+    deleteRole: data => {
+      return instance.post('/roles/delete_role', data, params);
+    },
+    deleteMember: data => {
+      return instance.post('/roles/member_delete', data, params);
+    },
   };
 }
