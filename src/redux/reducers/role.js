@@ -6,6 +6,7 @@ import {
   GET_SELECTED_PROJECT,
   DELETE_ROLE,
   DELETE_MEMBER,
+  ADD_ROLE,
 } from '../actions/actionTypes';
 
 const initialState = {
@@ -60,6 +61,7 @@ const reducer = (state = initialState, action = {}) => {
       };
 
     case `${ADD_USERS}_PENDING`:
+    case `${ADD_ROLE}_PENDING`:
     case `${DELETE_ROLE}_PENDING`:
     case `${DELETE_MEMBER}_PENDING`:
     case `${EDIT_USERS}_PENDING`:
@@ -68,6 +70,7 @@ const reducer = (state = initialState, action = {}) => {
         loading: true,
       };
     case `${ADD_USERS}_FULFILLED`:
+    case `${ADD_ROLE}_FULFILLED`:
     case `${DELETE_ROLE}_FULFILLED`:
     case `${DELETE_MEMBER}_FULFILLED`:
     case `${EDIT_USERS}_FULFILLED`:
@@ -76,6 +79,7 @@ const reducer = (state = initialState, action = {}) => {
         loading: false,
       };
     case `${ADD_USERS}_REJECTED`:
+    case `${ADD_ROLE}_REJECTED`:
     case `${DELETE_ROLE}_REJECTED`:
     case `${DELETE_MEMBER}_REJECTED`:
     case `${EDIT_USERS}_REJECTED`:

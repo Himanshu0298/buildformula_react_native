@@ -8,15 +8,16 @@ import * as types from './actionTypes';
 async function getFcmToken() {
   try {
     const authStatus = await messaging().requestPermission();
-    const enabled =
-      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+    const {AUTHORIZED, PROVISIONAL} = messaging.AuthorizationStatus;
+    const enabled = [AUTHORIZED, PROVISIONAL].includes(authStatus);
 
     if (enabled) {
       return messaging().getToken();
     }
+    return undefined;
   } catch (error) {
     console.log('-----> error', error);
+    return undefined;
   }
 }
 
@@ -69,6 +70,7 @@ export default function useUserActions() {
             if (email) {
               return Promise.resolve({data: userData});
             }
+            // eslint-disable-next-line prefer-promise-reject-errors
             return Promise.reject('Invalid email or password');
           }
         },

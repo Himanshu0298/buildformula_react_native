@@ -133,6 +133,7 @@ export const UPDATE_PHASE_ACTIVITY = 'UPDATE_PHASE_ACTIVITY';
 export const GET_MEMBERS = 'GET_MEMBERS';
 export const GET_ROLES = 'GET_ROLES';
 export const ADD_USERS = 'ADD_USERS';
+export const ADD_ROLE = 'ADD_ROLE';
 export const EDIT_USERS = 'EDIT_USERS';
 export const DELETE_ROLE = 'DELETE_ROLE';
 export const DELETE_MEMBER = 'DELETE_MEMBER';

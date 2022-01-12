@@ -2,11 +2,10 @@ import React, {useMemo} from 'react';
 import {StyleSheet, View, Linking} from 'react-native';
 import {DrawerContentScrollView} from '@react-navigation/drawer';
 import {Paragraph, Drawer, Button, withTheme} from 'react-native-paper';
-import Animated from 'react-native-reanimated';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {SITE_URL} from 'utils/constant';
 import {useSelector} from 'react-redux';
+import {SITE_URL} from 'utils/constant';
 import useAppActions from '../../redux/actions/appActions';
 import {DEVELOPER_DRAWER_ITEMS, CUSTOMER_DRAWER_ITEMS} from './DrawerItems';
 
@@ -147,7 +146,8 @@ function RenderDeveloperDrawerItems(props) {
         <Drawer.Section key={section.title} style={styles.drawerSection}>
           <Paragraph
             style={styles.title}
-            theme={{colors: {text: theme.colors.primary}}}>
+            theme={{colors: {text: theme.colors.primary}}}
+          >
             {section.title}
           </Paragraph>
           {section.routes.map(route => {
@@ -173,7 +173,8 @@ function RenderCustomerDrawerItems(props) {
               style={styles.title}
               theme={{
                 colors: {text: theme.colors.primary},
-              }}>
+              }}
+            >
               {section.title}
             </Paragraph>
             {section.routes.map(route => {
@@ -187,28 +188,23 @@ function RenderCustomerDrawerItems(props) {
 }
 
 function DrawerContent(props) {
-  const {navigation, theme, type, progress} = props;
-
-  const translateX = Animated.interpolateNode(progress, {
-    inputRange: [0, 0.5, 0.7, 0.8, 1],
-    outputRange: [-100, -85, -70, -45, 0],
-  });
+  const {navigation, theme, type} = props;
 
   return (
     <DrawerContentScrollView
       {...props}
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={styles.scrollView}>
-      <Animated.View
-        style={[
-          styles.drawerContent,
-          {backgroundColor: theme.colors.surface, transform: [{translateX}]},
-        ]}>
+      contentContainerStyle={styles.scrollView}
+    >
+      <View
+        style={[styles.drawerContent, {backgroundColor: theme.colors.surface}]}
+      >
         <View style={styles.backContainer}>
           <Button
             icon="arrow-expand-left"
             onPress={() => navigation.toggleDrawer()}
-            style={styles.backIcon}>
+            style={styles.backIcon}
+          >
             Back
           </Button>
         </View>
@@ -217,7 +213,7 @@ function DrawerContent(props) {
           <RenderDeveloperDrawerItems {...props} />
         ) : null}
         {type === 'customer' ? <RenderCustomerDrawerItems {...props} /> : null}
-      </Animated.View>
+      </View>
     </DrawerContentScrollView>
   );
 }

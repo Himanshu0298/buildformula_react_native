@@ -160,31 +160,13 @@ const RouteContext = React.createContext('Dashboard');
 function VisitorsStack() {
   return (
     <Stack.Navigator initialRouteName="VisitorsHome">
-      <Stack.Screen
-        name="VisitorsHome"
-        component={Visitors}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="VisitorDetails"
-        component={VisitorDetails}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="AddVisitor"
-        component={AddVisitor}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="AddFollowUp"
-        component={AddFollowUp}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="AddDetails"
-        component={AddDetails}
-        options={{headerShown: false}}
-      />
+      <Stack.Group screenOptions={{headerShown: false}}>
+        <Stack.Screen name="VisitorsHome" component={Visitors} />
+        <Stack.Screen name="VisitorDetails" component={VisitorDetails} />
+        <Stack.Screen name="AddVisitor" component={AddVisitor} />
+        <Stack.Screen name="AddFollowUp" component={AddFollowUp} />
+        <Stack.Screen name="AddDetails" component={AddDetails} />
+      </Stack.Group>
     </Stack.Navigator>
   );
 }
@@ -192,21 +174,14 @@ function VisitorsStack() {
 function PipelineStack() {
   return (
     <Stack.Navigator initialRouteName="PipelineHome">
-      <Stack.Screen
-        name="PipelineHome"
-        component={SalesPipeline}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="PipelineRearrange"
-        component={SalesPipelineRearrange}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="VisitorDetails"
-        component={VisitorDetails}
-        options={{headerShown: false}}
-      />
+      <Stack.Group screenOptions={{headerShown: false}}>
+        <Stack.Screen name="PipelineHome" component={SalesPipeline} />
+        <Stack.Screen
+          name="PipelineRearrange"
+          component={SalesPipelineRearrange}
+        />
+        <Stack.Screen name="VisitorDetails" component={VisitorDetails} />
+      </Stack.Group>
     </Stack.Navigator>
   );
 }
@@ -214,56 +189,21 @@ function PipelineStack() {
 function BookingChartStack() {
   return (
     <Stack.Navigator initialRouteName="BC_Step_One">
-      <Stack.Screen
-        name="BC_Step_One"
-        component={BC_SelectStructure}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="BC_Step_Two"
-        component={BC_SelectTower}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="BC_Step_Three"
-        component={BC_SelectFloor}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="BC_Step_Four"
-        component={BC_SelectUnit}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="BC_Step_Five"
-        component={BookingMode}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="BC_Step_Six"
-        component={BookingDetails}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="BC_Step_Seven"
-        component={BookingRates}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="BC_Step_Eight"
-        component={BookingPayment}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="BookingFormOnHold"
-        component={BookingFormOnHold}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="HoldBookingHistory"
-        component={HoldBookingHistory}
-        options={{headerShown: false}}
-      />
+      <Stack.Group screenOptions={{headerShown: false}}>
+        <Stack.Screen name="BC_Step_One" component={BC_SelectStructure} />
+        <Stack.Screen name="BC_Step_Two" component={BC_SelectTower} />
+        <Stack.Screen name="BC_Step_Three" component={BC_SelectFloor} />
+        <Stack.Screen name="BC_Step_Four" component={BC_SelectUnit} />
+        <Stack.Screen name="BC_Step_Five" component={BookingMode} />
+        <Stack.Screen name="BC_Step_Six" component={BookingDetails} />
+        <Stack.Screen name="BC_Step_Seven" component={BookingRates} />
+        <Stack.Screen name="BC_Step_Eight" component={BookingPayment} />
+        <Stack.Screen name="BookingFormOnHold" component={BookingFormOnHold} />
+        <Stack.Screen
+          name="HoldBookingHistory"
+          component={HoldBookingHistory}
+        />
+      </Stack.Group>
     </Stack.Navigator>
   );
 }
@@ -271,61 +211,22 @@ function BookingChartStack() {
 function CustomerSectionStack() {
   return (
     <Stack.Navigator initialRouteName="BC_Step_One">
-      <Stack.Screen
-        name="CS_Step_One"
-        component={CS_SelectStructure}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="CS_Step_Two"
-        component={CS_SelectFloor}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="CS_Step_Three"
-        component={CS_SelectUnit}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="CS_Step_Four"
-        component={CustomerSection}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="CustomerDetails"
-        component={CustomerDetails}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="AddCustomer"
-        component={AddCustomer}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="AddModifyRequest"
-        component={AddModifyRequest}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="AddBankDetails"
-        component={AddBankDetails}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="PaymentCollections"
-        component={PaymentCollections}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="AddCollection"
-        component={AddCollection}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="PaymentSchedule"
-        component={PaymentSchedule}
-        options={{headerShown: false}}
-      />
+      <Stack.Group screenOptions={{headerShown: false}}>
+        <Stack.Screen name="CS_Step_One" component={CS_SelectStructure} />
+        <Stack.Screen name="CS_Step_Two" component={CS_SelectFloor} />
+        <Stack.Screen name="CS_Step_Three" component={CS_SelectUnit} />
+        <Stack.Screen name="CS_Step_Four" component={CustomerSection} />
+        <Stack.Screen name="CustomerDetails" component={CustomerDetails} />
+        <Stack.Screen name="AddCustomer" component={AddCustomer} />
+        <Stack.Screen name="AddModifyRequest" component={AddModifyRequest} />
+        <Stack.Screen name="AddBankDetails" component={AddBankDetails} />
+        <Stack.Screen
+          name="PaymentCollections"
+          component={PaymentCollections}
+        />
+        <Stack.Screen name="AddCollection" component={AddCollection} />
+        <Stack.Screen name="PaymentSchedule" component={PaymentSchedule} />
+      </Stack.Group>
     </Stack.Navigator>
   );
 }
@@ -333,26 +234,12 @@ function CustomerSectionStack() {
 function PlanningStack() {
   return (
     <Stack.Navigator initialRouteName="Phases">
-      <Stack.Screen
-        name="Phases"
-        component={Phases}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="SubPhases"
-        component={SubPhases}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="SubPhaseActivity"
-        component={SubPhaseActivity}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="PlanningDetails"
-        component={PlanningDetails}
-        options={{headerShown: false}}
-      />
+      <Stack.Group screenOptions={{headerShown: false}}>
+        <Stack.Screen name="Phases" component={Phases} />
+        <Stack.Screen name="SubPhases" component={SubPhases} />
+        <Stack.Screen name="SubPhaseActivity" component={SubPhaseActivity} />
+        <Stack.Screen name="PlanningDetails" component={PlanningDetails} />
+      </Stack.Group>
     </Stack.Navigator>
   );
 }
@@ -360,16 +247,10 @@ function PlanningStack() {
 function FilesStack() {
   return (
     <Stack.Navigator initialRouteName="Files">
-      <Stack.Screen
-        name="Files"
-        component={Files}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="FolderDetails"
-        component={Files}
-        options={{headerShown: false}}
-      />
+      <Stack.Group screenOptions={{headerShown: false}}>
+        <Stack.Screen name="Files" component={Files} />
+        <Stack.Screen name="FolderDetails" component={Files} />
+      </Stack.Group>
     </Stack.Navigator>
   );
 }
@@ -377,26 +258,12 @@ function FilesStack() {
 function BrokerStack() {
   return (
     <Stack.Navigator initialRouteName="BrokerList">
-      <Stack.Screen
-        name="BrokerList"
-        component={BrokerList}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="BrokerDetails"
-        component={BrokerDetails}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="AddBroker"
-        component={AddBroker}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="Remark"
-        component={Remark}
-        options={{headerShown: false}}
-      />
+      <Stack.Group screenOptions={{headerShown: false}}>
+        <Stack.Screen name="BrokerList" component={BrokerList} />
+        <Stack.Screen name="BrokerDetails" component={BrokerDetails} />
+        <Stack.Screen name="AddBroker" component={AddBroker} />
+        <Stack.Screen name="Remark" component={Remark} />
+      </Stack.Group>
     </Stack.Navigator>
   );
 }
@@ -404,21 +271,11 @@ function BrokerStack() {
 function RolesStack() {
   return (
     <Stack.Navigator initialRouteName="RolesListing">
-      <Stack.Screen
-        name="RolesListing"
-        component={Roles}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="AddUser"
-        component={AddUser}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="AddRole"
-        component={AddRole}
-        options={{headerShown: false}}
-      />
+      <Stack.Group screenOptions={{headerShown: false}}>
+        <Stack.Screen name="RolesListing" component={Roles} />
+        <Stack.Screen name="AddUser" component={AddUser} />
+        <Stack.Screen name="AddRole" component={AddRole} />
+      </Stack.Group>
     </Stack.Navigator>
   );
 }
@@ -434,11 +291,13 @@ const generalDrawerContent = props => (
 function GeneralDrawer() {
   return (
     <Drawer.Navigator drawerContent={generalDrawerContent}>
-      <Drawer.Screen name="Home" component={Home} />
-      <Drawer.Screen name="PurchasedProjects" component={PurchasedProjects} />
-      <Drawer.Screen name="ProjectDetails" component={ProjectDetails} />
-      <Drawer.Screen name="UpdateBillingInfo" component={UpdateBillingInfo} />
-      <Drawer.Screen name="Profile" component={Profile} />
+      <Drawer.Group screenOptions={{headerShown: false}}>
+        <Drawer.Screen name="Home" component={Home} />
+        <Drawer.Screen name="PurchasedProjects" component={PurchasedProjects} />
+        <Drawer.Screen name="ProjectDetails" component={ProjectDetails} />
+        <Drawer.Screen name="UpdateBillingInfo" component={UpdateBillingInfo} />
+        <Drawer.Screen name="Profile" component={Profile} />
+      </Drawer.Group>
     </Drawer.Navigator>
   );
 }
@@ -454,23 +313,28 @@ const developerDrawerContent = props => (
 function ProjectDrawer() {
   return (
     <Drawer.Navigator drawerContent={developerDrawerContent}>
-      <Drawer.Screen name="DeveloperDashboard" component={DeveloperDashboard} />
-      <Drawer.Screen name="Visitors" component={VisitorsStack} />
-      <Drawer.Screen name="SalesPipeline" component={PipelineStack} />
-      <Drawer.Screen name="BookingChartStack" component={BookingChartStack} />
-      <Drawer.Screen name="BrokerStack" component={BrokerStack} />
-      <Drawer.Screen name="Payment" component={Payment} />
-      <Drawer.Screen name="CustomerSection" component={CustomerSectionStack} />
-      <Drawer.Screen name="ProjectSchedule" component={ProjectSchedule} />
-      <Drawer.Screen name="MainPhase" component={MainPhase} />
-      <Drawer.Screen name="Lineup" component={Lineup} />
-      <Drawer.Screen name="Planning" component={PlanningStack} />
-      <Drawer.Screen name="ProcessChart" component={ProcessChart} />
-      <Drawer.Screen name="Estimation" component={Estimation} />
-      <Drawer.Screen name="RequestForPrice" component={RequestForPrice} />
-      <Drawer.Screen name="PurchaseOrders" component={PurchaseOrders} />
-      <Drawer.Screen name="Files" component={FilesStack} />
-      <Drawer.Screen name="Roles" component={RolesStack} />
+      <Drawer.Group screenOptions={{headerShown: false}}>
+        <Drawer.Screen name="DeveloperHome" component={DeveloperDashboard} />
+        <Drawer.Screen name="Visitors" component={VisitorsStack} />
+        <Drawer.Screen name="SalesPipeline" component={PipelineStack} />
+        <Drawer.Screen name="BookingChartStack" component={BookingChartStack} />
+        <Drawer.Screen name="BrokerStack" component={BrokerStack} />
+        <Drawer.Screen name="Payment" component={Payment} />
+        <Drawer.Screen
+          name="CustomerSection"
+          component={CustomerSectionStack}
+        />
+        <Drawer.Screen name="ProjectSchedule" component={ProjectSchedule} />
+        <Drawer.Screen name="MainPhase" component={MainPhase} />
+        <Drawer.Screen name="Lineup" component={Lineup} />
+        <Drawer.Screen name="Planning" component={PlanningStack} />
+        <Drawer.Screen name="ProcessChart" component={ProcessChart} />
+        <Drawer.Screen name="Estimation" component={Estimation} />
+        <Drawer.Screen name="RequestForPrice" component={RequestForPrice} />
+        <Drawer.Screen name="PurchaseOrders" component={PurchaseOrders} />
+        <Drawer.Screen name="Files" component={FilesStack} />
+        <Drawer.Screen name="Roles" component={RolesStack} />
+      </Drawer.Group>
     </Drawer.Navigator>
   );
 }
@@ -487,19 +351,25 @@ function CustomerDashboard() {
   return (
     <Drawer.Navigator
       initialRouteName="Ownership"
-      drawerContent={customerDrawerContent}>
-      <Drawer.Screen name="Ownership" component={CustomerHome} />
-      <Drawer.Screen name="BookingDetails" component={CustomerBooking} />
-      <Drawer.Screen name="LoanDetails" component={CustomerBankLoan} />
-      <Drawer.Screen name="CustomerAccount" component={CustomerAccount} />
-      <Drawer.Screen name="ModifyRequest" component={CustomerModifyRequest} />
-      <Drawer.Screen name="CustomerFiles" component={CustomerFiles} />
-      <Drawer.Screen name="AddCustomer" component={AddCustomer} />
-      <Drawer.Screen name="CustomerDetails" component={CustomerDetails} />
-      <Drawer.Screen name="AddModifyRequest" component={AddModifyRequest} />
-      <Drawer.Screen name="AddBankDetails" component={AddBankDetails} />
-      <Drawer.Screen name="PaymentCollections" component={PaymentCollections} />
-      <Drawer.Screen name="AddCollection" component={AddCollection} />
+      drawerContent={customerDrawerContent}
+    >
+      <Drawer.Group screenOptions={{headerShown: false}}>
+        <Drawer.Screen name="Ownership" component={CustomerHome} />
+        <Drawer.Screen name="BookingDetails" component={CustomerBooking} />
+        <Drawer.Screen name="LoanDetails" component={CustomerBankLoan} />
+        <Drawer.Screen name="CustomerAccount" component={CustomerAccount} />
+        <Drawer.Screen name="ModifyRequest" component={CustomerModifyRequest} />
+        <Drawer.Screen name="CustomerFiles" component={CustomerFiles} />
+        <Drawer.Screen name="AddCustomer" component={AddCustomer} />
+        <Drawer.Screen name="CustomerDetails" component={CustomerDetails} />
+        <Drawer.Screen name="AddModifyRequest" component={AddModifyRequest} />
+        <Drawer.Screen name="AddBankDetails" component={AddBankDetails} />
+        <Drawer.Screen
+          name="PaymentCollections"
+          component={PaymentCollections}
+        />
+        <Drawer.Screen name="AddCollection" component={AddCollection} />
+      </Drawer.Group>
     </Drawer.Navigator>
   );
 }
@@ -507,21 +377,11 @@ function CustomerDashboard() {
 function ChangePasswordStack() {
   return (
     <Stack.Navigator initialRouteName="ChangePasswordStepTwo">
-      <Stack.Screen
-        name="ChangePasswordStepOne"
-        component={StepOne}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="ChangePasswordStepTwo"
-        component={StepTwo}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="ChangePasswordStepThree"
-        component={StepThree}
-        options={{headerShown: false}}
-      />
+      <Stack.Group screenOptions={{headerShown: false}}>
+        <Stack.Screen name="ChangePasswordStepOne" component={StepOne} />
+        <Stack.Screen name="ChangePasswordStepTwo" component={StepTwo} />
+        <Stack.Screen name="ChangePasswordStepThree" component={StepThree} />
+      </Stack.Group>
     </Stack.Navigator>
   );
 }
@@ -598,124 +458,76 @@ function NavContainer() {
 
         // Save the current route name for later comparison
         routeNameRef.current = currentData;
-      }}>
+      }}
+    >
       <RouteContext.Provider value={routeData}>
         <Stack.Navigator initialRouteName={initialScreen}>
-          {authenticated ? (
-            // App Nav Screens
-            <>
-              <Stack.Screen
-                name="GeneralDashboard"
-                component={GeneralDrawer}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="DeveloperDashboard"
-                component={ProjectDrawer}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="CustomerDashboard"
-                component={CustomerDashboard}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="Search"
-                component={SearchScreen}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="Notification"
-                component={Notification}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="EditProfile"
-                component={EditProfile}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="ChangePassword"
-                component={ChangePasswordStack}
-                options={{headerShown: false}}
-              />
-            </>
-          ) : (
-            // Auth Nav Screens
-            <>
-              <Stack.Screen
-                name="LanguageSelect"
-                component={LanguageSelect}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="Login"
-                component={Login}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="SignUp"
-                component={SignUp}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="Otp"
-                component={OtpScreen}
-                options={{headerShown: false}}
-              />
-              {/* <Stack.Screen
-                name="RoleSelect"
-                component={RoleSelect}
-                options={{headerShown: false}}
-              /> */}
-              <Stack.Screen
-                name="ForgotPassword"
-                component={ForgotPassword}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="ForgotPasswordOtp"
-                component={ForgotPasswordOtp}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="ResetPassword"
-                component={ResetPassword}
-                options={{headerShown: false}}
-              />
-            </>
-          )}
-          {/* Project Creation screens */}
-          <Stack.Screen
-            name="ProjectCreationStepOne"
-            component={PC_StepOne}
-            options={{headerShown: false}}
-          />
-          <Stack.Screen
-            name="ProjectCreationStepTwo"
-            component={PC_StepTwo}
-            options={{headerShown: false}}
-          />
-          <Stack.Screen
-            name="ProjectStructureStepOne"
-            component={PS_StepOne}
-            options={{headerShown: false}}
-          />
-          <Stack.Screen
-            name="ProjectStructureStepTwo"
-            component={PS_StepTwo}
-            options={{headerShown: false}}
-          />
-          <Stack.Screen
-            name="PlanSelect"
-            component={PlanSelect}
-            options={{headerShown: false}}
-          />
-          <Stack.Screen
-            name="AdminCreation"
-            component={SignUp}
-            options={{headerShown: false}}
-          />
+          <Stack.Group screenOptions={{headerShown: false}}>
+            {authenticated ? (
+              // App Nav Screens
+              <>
+                <Stack.Screen
+                  name="GeneralDashboard"
+                  component={GeneralDrawer}
+                />
+                <Stack.Screen
+                  name="DeveloperDashboard"
+                  component={ProjectDrawer}
+                />
+                <Stack.Screen
+                  name="CustomerDashboard"
+                  component={CustomerDashboard}
+                />
+                <Stack.Screen name="Search" component={SearchScreen} />
+                <Stack.Screen name="Notification" component={Notification} />
+                <Stack.Screen name="EditProfile" component={EditProfile} />
+                <Stack.Screen
+                  name="ChangePassword"
+                  component={ChangePasswordStack}
+                />
+              </>
+            ) : (
+              // Auth Nav Screens
+              <>
+                <Stack.Screen
+                  name="LanguageSelect"
+                  component={LanguageSelect}
+                />
+                <Stack.Screen name="Login" component={Login} />
+                <Stack.Screen name="SignUp" component={SignUp} />
+                <Stack.Screen name="Otp" component={OtpScreen} />
+                {/* <Stack.Screen name="RoleSelect" component={RoleSelect} /> */}
+                <Stack.Screen
+                  name="ForgotPassword"
+                  component={ForgotPassword}
+                />
+                <Stack.Screen
+                  name="ForgotPasswordOtp"
+                  component={ForgotPasswordOtp}
+                />
+                <Stack.Screen name="ResetPassword" component={ResetPassword} />
+              </>
+            )}
+            {/* Project Creation screens */}
+            <Stack.Screen
+              name="ProjectCreationStepOne"
+              component={PC_StepOne}
+            />
+            <Stack.Screen
+              name="ProjectCreationStepTwo"
+              component={PC_StepTwo}
+            />
+            <Stack.Screen
+              name="ProjectStructureStepOne"
+              component={PS_StepOne}
+            />
+            <Stack.Screen
+              name="ProjectStructureStepTwo"
+              component={PS_StepTwo}
+            />
+            <Stack.Screen name="PlanSelect" component={PlanSelect} />
+            <Stack.Screen name="AdminCreation" component={SignUp} />
+          </Stack.Group>
         </Stack.Navigator>
       </RouteContext.Provider>
     </NavigationContainer>

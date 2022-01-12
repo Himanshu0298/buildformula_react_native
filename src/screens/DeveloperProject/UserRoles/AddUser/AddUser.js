@@ -302,7 +302,7 @@ const styles = StyleSheet.create({
     width: '75%',
   },
   actionContainer: {
-    marginBottom: 10,
+    marginBottom: 40,
   },
   emailsContainer: {
     marginVertical: 5,

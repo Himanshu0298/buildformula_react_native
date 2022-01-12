@@ -4,7 +4,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 export const DEVELOPER_DRAWER_ITEMS = [
   {
-    route: 'DeveloperDashboard',
+    route: 'DeveloperHome',
     label: 'Dashboard',
     icon: ({color, size}) => (
       <MaterialCommunityIcons

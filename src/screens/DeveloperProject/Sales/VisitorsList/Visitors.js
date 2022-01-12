@@ -21,7 +21,6 @@ import useSalesActions from 'redux/actions/salesActions';
 import {useSelector} from 'react-redux';
 import dayjs from 'dayjs';
 import Spinner from 'react-native-loading-spinner-overlay';
-import ProjectHeader from 'components/Molecules/Layout/ProjectHeader';
 import {PRIORITY_COLORS, STRUCTURE_TYPE_LABELS} from 'utils/constant';
 import CustomBadge from 'components/Atoms/CustomBadge';
 import NoDataFound from 'assets/images/NoDataFound.png';
@@ -173,14 +172,16 @@ function Header(props) {
               opacity={0.1}
               color={colors.primary}
               style={styles.filterButton}
-              onPress={toggleMenu}>
+              onPress={toggleMenu}
+            >
               <MaterialIcon
                 name="filter-variant"
                 color={colors.primary}
                 size={22}
               />
             </OpacityButton>
-          }>
+          }
+        >
           {FILTERS.map((i, index) => {
             const active = i.value === filter;
             return (

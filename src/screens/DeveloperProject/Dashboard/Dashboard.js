@@ -4,7 +4,6 @@ import React, {useEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {TabView} from 'react-native-tab-view';
-import {useSelector} from 'react-redux';
 import useProjectActions from 'redux/actions/projectActions';
 import Layout from 'utils/Layout';
 import {Subheading} from 'react-native-paper';
@@ -39,11 +38,13 @@ export default function DeveloperDashboard(props) {
   }, [project]);
 
   const loadData = () => {
-    getDashboardData(project.id);
-    getProjectPermissions(project.id);
-    getProjectData(project.id);
-    getProjectCommonData(project.id);
-    getProjectNotifications({project_id: project.id});
+    if (project?.id) {
+      getDashboardData(project.id);
+      getProjectPermissions(project.id);
+      getProjectData(project.id);
+      getProjectCommonData(project.id);
+      getProjectNotifications({project_id: project.id});
+    }
   };
 
   const renderScene = ({route: {key}}) => {
