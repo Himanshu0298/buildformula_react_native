@@ -163,7 +163,7 @@ function RenderRole(props) {
   };
 
   const handleDuplicate = () => {
-    navToAddRole();
+    navToAddRole(item.id);
     toggleMenu();
   };
 
@@ -197,13 +197,21 @@ function RenderRole(props) {
 }
 
 function RenderRoles(props) {
-  const {navigation, theme, roles, getRoleData, onDelete} = props;
+  const {
+    navigation,
+    theme,
+    roles,
+    getRoleData,
+    getRoleDetails,
+    selectedProject,
+    onDelete,
+  } = props;
 
   const [menuIndex, setMenuIndex] = useState(false);
 
   const toggleMenu = index => setMenuIndex(index);
 
-  const navToAddRole = () => navigation.navigate('AddRole');
+  const navToAddRole = id => navigation.navigate('AddRole', {roleId: id});
 
   return (
     <View style={styles.contentContainer}>
@@ -224,6 +232,8 @@ function RenderRoles(props) {
               toggleMenu,
               onDelete,
               navToAddRole,
+              getRoleDetails,
+              selectedProject,
             }}
           />
         )}
@@ -242,7 +252,8 @@ function Roles(props) {
   const {members, loading, roles} = useSelector(s => s.role);
   // console.log('----->selectedProject', selectedProject.id);
 
-  const {getMembers, getRoles, deleteRole, deleteMember} = useRoleActions();
+  const {getMembers, getRoles, deleteRole, deleteMember, getRoleDetails} =
+    useRoleActions();
 
   const [selectedTab, setSelectedTab] = React.useState(0);
   const [routes] = React.useState(TABS);
@@ -276,7 +287,12 @@ function Roles(props) {
           />
         );
       case 1:
-        return <RenderRoles {...props} {...{roles, getRoleData, onDelete}} />;
+        return (
+          <RenderRoles
+            {...props}
+            {...{roles, getRoleData, getRoleDetails, selectedProject, onDelete}}
+          />
+        );
       default:
         return null;
     }

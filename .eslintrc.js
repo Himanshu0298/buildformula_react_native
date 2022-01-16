@@ -53,7 +53,6 @@ module.exports = {
     'no-param-reassign': 0,
     'react/prop-types': 0,
     'no-shadow': 'off',
-    'react/function-component-definition': [0],
     'linebreak-style': 0,
     'no-unused-vars': 1,
     'import/no-unresolved': [2, {commonjs: true, amd: true}],

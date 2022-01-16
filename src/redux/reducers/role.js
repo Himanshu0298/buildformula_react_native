@@ -3,6 +3,7 @@ import {
   EDIT_USERS,
   GET_MEMBERS,
   GET_ROLES,
+  GET_ROLE_DETAILS,
   GET_SELECTED_PROJECT,
   DELETE_ROLE,
   DELETE_MEMBER,
@@ -15,6 +16,7 @@ const initialState = {
   errorMessage: undefined,
   members: [],
   roles: [],
+  roleDetails: undefined,
 };
 
 const reducer = (state = initialState, action = {}) => {
@@ -55,6 +57,30 @@ const reducer = (state = initialState, action = {}) => {
         roles: payload?.data,
       };
     case `${GET_ROLES}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+      };
+
+    case `${GET_ROLE_DETAILS}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${GET_ROLE_DETAILS}_FULFILLED`: {
+      const roleDetails = payload?.data;
+      Object.keys(payload?.data).map(moduleId => {
+        payload.data[moduleId] = Object.values(payload?.data[moduleId]);
+        return moduleId;
+      });
+
+      return {
+        ...state,
+        loading: false,
+        roleDetails,
+      };
+    }
+    case `${GET_ROLE_DETAILS}_REJECTED`:
       return {
         ...state,
         loading: false,

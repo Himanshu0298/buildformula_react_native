@@ -12,6 +12,7 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
+import Spinner from 'react-native-loading-spinner-overlay';
 import {
   Switch,
   Subheading,
@@ -304,29 +305,81 @@ function RenderForm(props) {
 }
 
 function AddRole(props) {
-  const {navigation} = props;
+  const {navigation, route} = props;
 
-  const {addRole, getRoles} = useRoleActions();
+  const {roleId} = route.params;
+
+  const {addRole, getRoles, getRoleDetails} = useRoleActions();
 
   const {commonData, selectedProject} = useSelector(s => s.project);
+  const {roleDetails, loading} = useSelector(s => s.role);
+
   const {modules: allModules, submodules, submodules_inner} = commonData;
 
+  React.useEffect(() => {
+    getRoleDetails({project_id: selectedProject.id, role_id: roleId});
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const getModulePermission = subModule => {
+    if (roleDetails && roleId) {
+      const subModuleData = roleDetails[subModule.modules_id].find(
+        i => i.sub_module_id === subModule.id,
+      );
+
+      if (subModuleData?.permissions?.id) {
+        return Object.keys(subModuleData?.permissions)[
+          Object.values(subModuleData?.permissions).indexOf('yes')
+        ];
+      }
+    }
+
+    return undefined;
+  };
+
+  const getInnerPermission = (inner, moduleId) => {
+    if (roleDetails && roleId) {
+      const subModuleData = roleDetails[moduleId].find(
+        i => i.sub_module_id === inner.submodules_id,
+      );
+
+      const innerModuleData = subModuleData?.inner_sub_module_data?.find(
+        i => i.id === inner.id,
+      );
+
+      if (innerModuleData?.permissions?.id) {
+        return Object.keys(innerModuleData?.permissions)[
+          Object.values(innerModuleData?.permissions).indexOf('yes')
+        ];
+      }
+    }
+    return undefined;
+  };
+
   const modulesList = React.useMemo(() => {
-    return allModules.map(i => {
+    return allModules.map(mainModule => {
       const processedSubModules = submodules.map(subModule => {
-        const children = submodules_inner.filter(
-          inner => inner.submodules_id === subModule.id,
-        );
-        return {...subModule, children};
+        const permission = getModulePermission(subModule);
+
+        const children = submodules_inner
+          .filter(inner => inner.submodules_id === subModule.id)
+          .map(i => ({
+            ...i,
+            permission: getInnerPermission(i, mainModule.id),
+          }));
+
+        return {...subModule, permission, children};
       });
 
       const subModules = processedSubModules.filter(
-        item => item.modules_id === i.id,
+        item => item.modules_id === mainModule.id,
       );
 
-      return {...i, subModules};
+      return {...mainModule, subModules};
     });
-  }, [allModules, submodules, submodules_inner]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allModules, roleDetails, submodules, submodules_inner]);
 
   const onSubmit = async values => {
     const {name, modules} = values;
@@ -341,19 +394,22 @@ function AddRole(props) {
       role_type_inner,
     });
     getRoles({project_id: selectedProject.id});
-    navigation.giBack();
+    navigation.goBack();
   };
 
   return (
-    <Formik
-      validateOnBlur={false}
-      validateOnChange={false}
-      initialValues={{modules: cloneDeep(modulesList)}}
-      validationSchema={schema}
-      onSubmit={onSubmit}
-    >
-      {formikProps => <RenderForm {...props} {...{formikProps}} />}
-    </Formik>
+    <>
+      <Spinner visible={loading} textContent="" />
+      <Formik
+        validateOnBlur={false}
+        validateOnChange={false}
+        initialValues={{modules: cloneDeep(modulesList)}}
+        validationSchema={schema}
+        onSubmit={onSubmit}
+      >
+        {formikProps => <RenderForm {...props} {...{formikProps}} />}
+      </Formik>
+    </>
   );
 }
 

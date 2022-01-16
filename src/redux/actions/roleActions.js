@@ -9,6 +9,7 @@ export default function useRoleActions() {
   const {
     getMembers,
     getRoles,
+    getRoleDetails,
     addUsers,
     addRole,
     editUser,
@@ -39,6 +40,20 @@ export default function useRoleActions() {
         payload: async () => {
           try {
             const res = _res(await getRoles(data));
+            return Promise.resolve(res);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    getRoleDetails: data =>
+      dispatch({
+        type: types.GET_ROLE_DETAILS,
+        payload: async () => {
+          try {
+            const res = _res(await getRoleDetails(data));
             return Promise.resolve(res);
           } catch (error) {
             const message = _err(error);
