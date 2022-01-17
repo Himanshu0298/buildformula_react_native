@@ -1,7 +1,6 @@
 import {BASE_API_URL} from 'utils/constant';
+import axios from 'axios';
 import {store} from '../redux/store';
-
-const axios = require('axios');
 
 export const instance = axios.create({baseURL: BASE_API_URL});
 
