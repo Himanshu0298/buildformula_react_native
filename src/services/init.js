@@ -1,5 +1,6 @@
 import {BASE_API_URL} from 'utils/constant';
 import axios from 'axios';
+import {logoutPayload} from 'redux/actions/appActions';
 import {store} from '../redux/store';
 
 export const instance = axios.create({baseURL: BASE_API_URL});
@@ -31,7 +32,23 @@ export const useConfig = () => {
 //   return request;
 // });
 
-// instance.interceptors.response.use((response) => {
-//   console.log('-----> response', response);
-//   return response;
-// });
+// Add a response interceptor
+instance.interceptors.response.use(
+  function (response) {
+    // Any status code that lie within the range of 2xx cause this function to trigger
+    // Do something with response data
+    return response;
+  },
+  function (error) {
+    console.log('-----> interceptors', error.response.data.message);
+    if (
+      error?.response?.data?.message ===
+      'Token has expired and can no longer be refreshed'
+    ) {
+      return store.dispatch(logoutPayload);
+    }
+    // Any status codes that falls outside the range of 2xx cause this function to trigger
+    // Do something with response error
+    return Promise.reject(error);
+  },
+);
