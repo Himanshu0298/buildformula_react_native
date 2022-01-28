@@ -34,13 +34,12 @@ export const useConfig = () => {
 
 // Add a response interceptor
 instance.interceptors.response.use(
-  function (response) {
+  response => {
     // Any status code that lie within the range of 2xx cause this function to trigger
     // Do something with response data
     return response;
   },
-  function (error) {
-    console.log('-----> interceptors', error.response.data.message);
+  error => {
     if (
       error?.response?.data?.message ===
       'Token has expired and can no longer be refreshed'
