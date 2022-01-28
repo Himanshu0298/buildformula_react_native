@@ -78,10 +78,8 @@ function Account(props) {
   const bookingStyle = BOOKING_STATUS_STYLES[bookingCurrentStatus] || {};
 
   const {documentCollected, propertyCollected} = React.useMemo(() => {
-    const {
-      documentcharges = [],
-      propertyfinalamount: property = [],
-    } = paymentCollection;
+    const {documentcharges = [], propertyfinalamount: property = []} =
+      paymentCollection;
     return {
       documentCollected: documentcharges.reduce(
         (sum, i) => sum + parseFloat(i.amount),

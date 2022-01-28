@@ -12,14 +12,8 @@ import {Divider, Menu, Searchbar, withTheme} from 'react-native-paper';
 import {getShadow} from 'utils';
 
 function SearchDropdown(props) {
-  const {
-    placeholder,
-    options,
-    searchQuery,
-    selected,
-    onSelect,
-    onChangeText,
-  } = props;
+  const {placeholder, options, searchQuery, selected, onSelect, onChangeText} =
+    props;
 
   const {t} = useTranslation();
 

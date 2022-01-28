@@ -2,7 +2,7 @@ import React, {useCallback, useMemo, useState} from 'react';
 import DefaultAlert from './Alert';
 import AlertContext from './AlertContext';
 
-const AlertProvider = ({children}) => {
+function AlertProvider({children}) {
   const [state, setState] = useState({open: false});
 
   const show = useCallback(
@@ -34,6 +34,6 @@ const AlertProvider = ({children}) => {
       />
     </>
   );
-};
+}
 
 export default AlertProvider;

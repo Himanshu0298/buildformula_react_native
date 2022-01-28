@@ -18,8 +18,7 @@ function RenderNotification(props) {
   return (
     <TouchableOpacity
       style={styles.notificationContainer}
-      onPress={() => handleNotification(item)}
-    >
+      onPress={() => handleNotification(item)}>
       <View>
         <OpacityButton style={styles.userIcon} opacity={0.1}>
           <MaterialIcons name="account-outline" size={25} />
@@ -38,8 +37,7 @@ function RenderNotification(props) {
       {!isHome ? (
         <TouchableOpacity
           style={styles.closeIconContainer}
-          onPress={() => clearNotification(item.id)}
-        >
+          onPress={() => clearNotification(item.id)}>
           <MaterialIcons name="close-circle-outline" size={20} />
         </TouchableOpacity>
       ) : null}
@@ -110,8 +108,7 @@ function Notification(props) {
             theme={{roundness: 10}}
             onPress={clearAll}
             uppercase={false}
-            labelStyle={{marginVertical: 6, fontSize: 13}}
-          >
+            labelStyle={{marginVertical: 6, fontSize: 13}}>
             CLear All
           </Button>
         ) : null}

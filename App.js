@@ -63,8 +63,7 @@ function App() {
         <PersistGate loading={null} persistor={persistor}>
           <PaperProvider theme={theme}>
             <SafeAreaProvider
-              initialSafeAreaInsets={initialWindowSafeAreaInsets}
-            >
+              initialSafeAreaInsets={initialWindowSafeAreaInsets}>
               <Suspense fallback={<Loader />}>
                 <SnackbarProvider>
                   <AlertProvider>

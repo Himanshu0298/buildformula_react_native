@@ -4,13 +4,13 @@ import PropTypes from 'prop-types';
 import {TextInput, withTheme} from 'react-native-paper';
 import _ from 'lodash';
 
-export const RenderError = ({error, style}) => {
+export function RenderError({error, style}) {
   return (
     <View style={[styles.errorContainer, style]}>
       <Text style={styles.errorStyles}>{error}</Text>
     </View>
   );
-};
+}
 
 const RenderInput = React.forwardRef((props, ref) => {
   let {

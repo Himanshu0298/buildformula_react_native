@@ -56,14 +56,8 @@ function LoginButton({label, onPress}) {
 }
 
 function RenderContent(props) {
-  const {
-    values,
-    handleChange,
-    handleBlur,
-    errors,
-    handleSubmit,
-    navigation,
-  } = props;
+  const {values, handleChange, handleBlur, errors, handleSubmit, navigation} =
+    props;
 
   const [showPassword, setShowPassword] = useState(false);
 

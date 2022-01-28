@@ -103,8 +103,7 @@ function RenderSubModule(props) {
     <View style={styles.screenContainer}>
       <TouchableOpacity
         style={styles.rowBetween}
-        onPress={() => onChangePermission('view')}
-      >
+        onPress={() => onChangePermission('view')}>
         <Text>{subModuleTitle}</Text>
         <Switch
           value={Boolean(permission)}
@@ -145,8 +144,7 @@ function RenderChildren(props) {
     <View key={id} style={[styles.screenContainer, styles.innerContainer]}>
       <TouchableOpacity
         style={styles.rowBetween}
-        onPress={() => onChangeChildrenPermission('view')}
-      >
+        onPress={() => onChangeChildrenPermission('view')}>
         <View style={styles.row}>
           <View
             style={[styles.badge, {backgroundColor: theme.colors.primary}]}
@@ -234,8 +232,7 @@ function RenderForm(props) {
       <View style={styles.screensContainer}>
         <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{flexGrow: 1, paddingBottom: 50}}
-        >
+          contentContainerStyle={{flexGrow: 1, paddingBottom: 50}}>
           {values.modules.map((module, index) => {
             const {title, subModules} = module;
 
@@ -405,8 +402,7 @@ function AddRole(props) {
         validateOnChange={false}
         initialValues={{modules: cloneDeep(modulesList)}}
         validationSchema={schema}
-        onSubmit={onSubmit}
-      >
+        onSubmit={onSubmit}>
         {formikProps => <RenderForm {...props} {...{formikProps}} />}
       </Formik>
     </>

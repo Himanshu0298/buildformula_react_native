@@ -94,13 +94,8 @@ function AddWorkCategoryDialog(props) {
 }
 
 function AddWorkDialog(props) {
-  const {
-    visible,
-    selectedActivity,
-    unitOptions,
-    toggleDialog,
-    onSubmit,
-  } = props;
+  const {visible, selectedActivity, unitOptions, toggleDialog, onSubmit} =
+    props;
 
   const {t} = useTranslation();
 
@@ -170,15 +165,8 @@ function AddWorkDialog(props) {
 }
 
 function RenderActivity(props) {
-  const {
-    item,
-    index,
-    unitOptions,
-    menuIndex,
-    toggleMenu,
-    onDelete,
-    onUpdate,
-  } = props;
+  const {item, index, unitOptions, menuIndex, toggleMenu, onDelete, onUpdate} =
+    props;
 
   return (
     <View style={styles.activityContainer}>
@@ -208,15 +196,8 @@ function RenderActivity(props) {
 }
 
 function RenderWork(props) {
-  const {
-    item,
-    index,
-    menuIndex,
-    toggleMenu,
-    onPress,
-    onDelete,
-    onUpdate,
-  } = props;
+  const {item, index, menuIndex, toggleMenu, onPress, onDelete, onUpdate} =
+    props;
 
   return (
     <TouchableOpacity
@@ -253,11 +234,8 @@ function RenderWorkCategories(props) {
   const [addWorkDialog, setAddWorkDialog] = React.useState(false);
   const [selectedCategory, setSelectedCategory] = React.useState();
 
-  const {
-    createLineupEntity,
-    updateLineupEntity,
-    deleteLineupEntity,
-  } = useProjectManagementActions();
+  const {createLineupEntity, updateLineupEntity, deleteLineupEntity} =
+    useProjectManagementActions();
 
   const toggleMenu = v => setMenuIndex(v);
   const toggleDialog = () => setAddWorkDialog(v => !v);
@@ -375,11 +353,8 @@ function RenderWorks(props) {
   const [addActivityDialog, setAddActivityDialog] = React.useState(false);
   const [selectedActivity, setSelectedActivity] = React.useState();
 
-  const {
-    createLineupEntity,
-    updateLineupEntity,
-    deleteLineupEntity,
-  } = useProjectManagementActions();
+  const {createLineupEntity, updateLineupEntity, deleteLineupEntity} =
+    useProjectManagementActions();
 
   const toggleMenu = v => setMenuIndex(v);
   const toggleDialog = () => setAddActivityDialog(v => !v);

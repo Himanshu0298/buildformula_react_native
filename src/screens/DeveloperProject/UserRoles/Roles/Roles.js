@@ -46,8 +46,7 @@ function RenderUserCard(props) {
               icon="dots-vertical"
               onPress={() => toggleMenu(index)}
             />
-          }
-        >
+          }>
           <Menu.Item
             icon="pencil"
             onPress={() => onUpdate(item)}
@@ -181,8 +180,7 @@ function RenderRole(props) {
               icon="dots-vertical"
               onPress={() => toggleMenu(index)}
             />
-          }
-        >
+          }>
           <Menu.Item
             icon="pencil"
             onPress={handleDuplicate}

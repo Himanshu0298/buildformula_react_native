@@ -177,23 +177,15 @@ function AddCollection(props) {
 
   const edit = Boolean(collection);
 
-  const {
-    addCollection,
-    updateCollection,
-    getAccountDetails,
-  } = useCustomerActions();
+  const {addCollection, updateCollection, getAccountDetails} =
+    useCustomerActions();
 
   const {loading} = useSelector(s => s.customer);
 
   const initialValues = React.useMemo(() => {
     if (edit) {
-      const {
-        collectiontype,
-        transaction_date,
-        id,
-        user_id,
-        ...restData
-      } = collection;
+      const {collectiontype, transaction_date, id, user_id, ...restData} =
+        collection;
 
       return {type: collectiontype, date: transaction_date, ...restData};
     }

@@ -48,8 +48,7 @@ function RenderUnits({
               backgroundColor:
                 (unitBhk && addOpacity(unitBhk.color, 1)) || DEFAULT_UNIT_COLOR,
             },
-          ]}
-        >
+          ]}>
           <Subheading theme={secondaryTheme}>
             {getUnitLabel(selectedFloor, i)}
           </Subheading>
@@ -60,8 +59,7 @@ function RenderUnits({
         <TouchableOpacity
           key={i}
           onPress={() => onPress(i)}
-          style={styles.imageContainer}
-        >
+          style={styles.imageContainer}>
           <Image
             source={selectedStructureType === 4 ? bungalowHut : plotHut}
             style={selectedStructureType === 4 ? styles.hut : styles.plot}
@@ -72,11 +70,9 @@ function RenderUnits({
               {
                 backgroundColor: unitBhk ? addOpacity(unitBhk.color, 1) : null,
               },
-            ]}
-          >
+            ]}>
             <BaseText
-              style={[styles.hutLabel, {color: unitBhk ? '#fff' : '#000'}]}
-            >
+              style={[styles.hutLabel, {color: unitBhk ? '#fff' : '#000'}]}>
               {i}
             </BaseText>
           </View>
@@ -184,8 +180,7 @@ function UnitsScreen(props) {
     <View style={{flex: 1}}>
       <ScrollView
         contentContainerStyle={styles.scrollView}
-        keyboardShouldPersistTaps="handled"
-      >
+        keyboardShouldPersistTaps="handled">
         <View style={styles.container}>
           <View>
             {selectedStructureType === 4 || selectedStructureType === 1 ? (
@@ -243,8 +238,7 @@ function UnitsScreen(props) {
                   disabled={!selectedBhk}
                   contentStyle={{paddingHorizontal: 6}}
                   theme={{roundness: 10}}
-                  onPress={assignToAll}
-                >
+                  onPress={assignToAll}>
                   Apply for all
                 </Button>
               ) : null}
@@ -269,8 +263,7 @@ function UnitsScreen(props) {
               mode="contained"
               contentStyle={{padding: 3}}
               theme={{roundness: 15}}
-              onPress={() => handleButtonPress()}
-            >
+              onPress={() => handleButtonPress()}>
               {selectedStructureType < 4 ? 'Back' : 'Next'}
             </Button>
           </View>

@@ -146,8 +146,7 @@ function RenderDeveloperDrawerItems(props) {
         <Drawer.Section key={section.title} style={styles.drawerSection}>
           <Paragraph
             style={styles.title}
-            theme={{colors: {text: theme.colors.primary}}}
-          >
+            theme={{colors: {text: theme.colors.primary}}}>
             {section.title}
           </Paragraph>
           {section.routes.map(route => {
@@ -173,8 +172,7 @@ function RenderCustomerDrawerItems(props) {
               style={styles.title}
               theme={{
                 colors: {text: theme.colors.primary},
-              }}
-            >
+              }}>
               {section.title}
             </Paragraph>
             {section.routes.map(route => {
@@ -194,17 +192,14 @@ function DrawerContent(props) {
     <DrawerContentScrollView
       {...props}
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={styles.scrollView}
-    >
+      contentContainerStyle={styles.scrollView}>
       <View
-        style={[styles.drawerContent, {backgroundColor: theme.colors.surface}]}
-      >
+        style={[styles.drawerContent, {backgroundColor: theme.colors.surface}]}>
         <View style={styles.backContainer}>
           <Button
             icon="arrow-expand-left"
             onPress={() => navigation.toggleDrawer()}
-            style={styles.backIcon}
-          >
+            style={styles.backIcon}>
             Back
           </Button>
         </View>

@@ -39,15 +39,13 @@ function RenderProject({project, handleOnPress, tab}) {
     <TouchableOpacity
       // activeOpacity={0.9}
       onPress={() => handleOnPress(project)}
-      style={styles.projectContainer}
-    >
+      style={styles.projectContainer}>
       <View
         style={
           tab === 'Supplier'
             ? styles.supplierImageContainer
             : styles.developerImageContainer
-        }
-      >
+        }>
         <Image
           source={IMAGES[tab]}
           style={
@@ -180,8 +178,7 @@ function Home(props) {
             showsVerticalScrollIndicator={false}
             refreshControl={
               <RefreshControl refreshing={false} onRefresh={onRefresh} />
-            }
-          >
+            }>
             <View style={styles.projectsContainer}>
               {projectsData[selectedTab].map((project, index) => (
                 <RenderProject

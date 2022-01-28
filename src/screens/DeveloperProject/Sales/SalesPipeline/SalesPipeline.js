@@ -346,12 +346,8 @@ export default function SalesPipeline(props) {
   const [selectedTab, setSelectedTab] = React.useState(0);
   const [showAddContact, setShowAddContact] = React.useState(false);
 
-  const {
-    getPipelineData,
-    addPipeline,
-    deletePipeline,
-    moveVisitor,
-  } = useSalesActions();
+  const {getPipelineData, addPipeline, deletePipeline, moveVisitor} =
+    useSalesActions();
 
   const {pipelines} = useSelector(s => s.sales);
   const {selectedProject} = useSelector(s => s.project);

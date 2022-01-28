@@ -14,11 +14,8 @@ function Ownership(props) {
   unit_info.unit_id = unit_info.id;
   const {unit_id} = unit_info;
 
-  const {
-    getProjectData,
-    getProjectCommonData,
-    setSelectedUnit,
-  } = useProjectActions();
+  const {getProjectData, getProjectCommonData, setSelectedUnit} =
+    useProjectActions();
   const {
     getCustomerDetails,
     getBookingDetails,

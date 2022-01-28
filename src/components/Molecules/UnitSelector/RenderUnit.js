@@ -83,11 +83,9 @@ function RenderUnit(props) {
       key={unitLabel}
       disabled={disabled}
       style={styles.container}
-      onPress={() => onSelectUnit({...unit, unit_id})}
-    >
+      onPress={() => onSelectUnit({...unit, unit_id})}>
       <Text
-        style={[styles.captionStyle, {color: `${bookingStyle.borderColor}`}]}
-      >
+        style={[styles.captionStyle, {color: `${bookingStyle.borderColor}`}]}>
         {statusStyle.title}
       </Text>
       <View style={[styles.unitContainer, bookingStyle]}>

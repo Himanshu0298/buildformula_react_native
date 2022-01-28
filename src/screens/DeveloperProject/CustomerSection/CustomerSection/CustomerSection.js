@@ -20,7 +20,7 @@ import {
 import DetailsHeader from './Components/DetailsHeader';
 
 const TABS = [
-  {key: 0, title: 'OWNERSHIP', id: 14},
+  {key: 0, title: 'DETAILS', id: 14},
   {key: 1, title: 'BOOKING FORM', id: 15},
   {key: 2, title: 'BANK LOANS', id: 16},
   {key: 3, title: 'ACCOUNT', id: 17},
@@ -67,7 +67,7 @@ function RenderTabBar(tabBarProps) {
 
 function CustomerSection(props) {
   const {route} = props;
-  const {project_id, unit} = route?.params || {};
+  const {project_id, unit, selectedStructure} = route?.params || {};
 
   const {t} = useTranslation();
   const {
@@ -82,6 +82,8 @@ function CustomerSection(props) {
   const {loading} = useSelector(s => s.customer);
   const {permissions, isProjectAdmin} = useSelector(s => s.project);
 
+  console.log('----->user.id', user.id);
+
   const [selectedTab, setSelectedTab] = React.useState(0);
   const routes = React.useMemo(() => {
     if (isProjectAdmin) {
@@ -92,10 +94,10 @@ function CustomerSection(props) {
   }, [isProjectAdmin, permissions]);
 
   React.useEffect(() => {
-    getCustomerDetails({user_id: user.id, project_id, unit_id: unit.unit_id});
+    getCustomerDetails({project_id, unit_id: unit.unit_id, user_id: user.id});
     getBookingDetails({project_id, unit_id: unit.unit_id});
     getBankDetails({project_id, unit_id: unit.unit_id});
-    getModifyRequests({project_id});
+    getModifyRequests({project_id, unit_id: unit.unit_id});
     getAccountDetails({project_id, unit_id: unit.unit_id});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

@@ -65,8 +65,7 @@ function TowersScreen(props) {
       />
       <ScrollView
         contentContainerStyle={styles.scrollView}
-        keyboardShouldPersistTaps="handled"
-      >
+        keyboardShouldPersistTaps="handled">
         <View style={styles.container}>
           <View>
             <View style={styles.headingContainer}>
@@ -95,8 +94,7 @@ function TowersScreen(props) {
                 disabled={!towerCount}
                 contentStyle={{paddingVertical: 2, paddingHorizontal: 6}}
                 theme={{roundness: 10}}
-                onPress={toggleDuplicateDialog}
-              >
+                onPress={toggleDuplicateDialog}>
                 Duplicate towers
               </Button>
             </View>
@@ -126,8 +124,7 @@ function TowersScreen(props) {
                 } else {
                   saveStructureType();
                 }
-              }}
-            >
+              }}>
               Next
             </Button>
           </View>

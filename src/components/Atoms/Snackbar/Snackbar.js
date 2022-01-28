@@ -57,8 +57,7 @@ function CustomSnackbar(props) {
               onPress: () => onClose(),
             }
           : undefined
-      }
-    >
+      }>
       {message}
     </Snackbar>
   );

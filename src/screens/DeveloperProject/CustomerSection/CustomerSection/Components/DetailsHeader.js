@@ -27,7 +27,7 @@ function DetailsHeader(props) {
       </View>
       <View style={styles.detailSubContainer}>
         {renderDetailText('Tower', getTowerLabel(towerId))}
-        {renderDetailText('Unit number', getUnitLabel(floorId, unit.index))}
+        {renderDetailText('Unit number', unit.unitLabel)}
       </View>
     </View>
   );

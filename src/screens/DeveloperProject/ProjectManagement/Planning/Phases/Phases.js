@@ -254,13 +254,8 @@ function Phases(props) {
 
   const alert = useAlert();
 
-  const {
-    getPhases,
-    addPhase,
-    updatePhase,
-    deletePhase,
-    updatePhaseOrder,
-  } = useProjectManagementActions();
+  const {getPhases, addPhase, updatePhase, deletePhase, updatePhaseOrder} =
+    useProjectManagementActions();
 
   const {selectedProject} = useSelector(s => s.project);
   const {loading, refreshing, phases} = useSelector(s => s.projectManagement);

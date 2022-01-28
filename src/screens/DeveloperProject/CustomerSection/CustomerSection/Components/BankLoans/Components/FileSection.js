@@ -110,11 +110,8 @@ function FileSection(props) {
   const [selectedFile, setSelectedFile] = React.useState();
 
   const {openImagePicker} = useImagePicker();
-  const {
-    updateBankFiles,
-    getBankDetails,
-    removeBankFile,
-  } = useCustomerActions();
+  const {updateBankFiles, getBankDetails, removeBankFile} =
+    useCustomerActions();
 
   const toggleDialog = () => setUploadDialog(v => !v);
 

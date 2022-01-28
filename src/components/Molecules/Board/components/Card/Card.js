@@ -3,15 +3,8 @@ import {Animated, TouchableWithoutFeedback} from 'react-native';
 import {bool, func, object, shape, string} from 'prop-types';
 
 function Card(props) {
-  const {
-    style,
-    hidden,
-    onPressIn,
-    onPress,
-    cardContent,
-    dragDisabled,
-    item,
-  } = props;
+  const {style, hidden, onPressIn, onPress, cardContent, dragDisabled, item} =
+    props;
 
   const styles = [style];
   if (hidden) {

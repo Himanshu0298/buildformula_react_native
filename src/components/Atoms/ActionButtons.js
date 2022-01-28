@@ -13,8 +13,7 @@ function ActionButtons(props) {
         style={styles.actionButton}
         contentStyle={styles.buttonLabel}
         theme={{roundness: 15}}
-        onPress={onCancel}
-      >
+        onPress={onCancel}>
         {cancelLabel || 'Cancel'}
       </Button>
       <Button
@@ -23,8 +22,7 @@ function ActionButtons(props) {
         disabled={submitDisabled}
         mode="contained"
         theme={{roundness: 15}}
-        onPress={onSubmit}
-      >
+        onPress={onSubmit}>
         {submitLabel || 'Save'}
       </Button>
     </View>

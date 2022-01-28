@@ -64,6 +64,7 @@ module.exports = {
     'prefer-const': ['warn', {destructuring: 'all'}],
     '@typescript-eslint/no-shadow': ['error'],
     '@typescript-eslint/no-use-before-define': 0,
+    'react/function-component-definition': [0],
   },
   settings: {
     'import/ignore': ['node_modules'],

@@ -28,15 +28,13 @@ function UploadDialog(props) {
       initialValues={{file: selectedUploadFile}}
       enableReinitialize
       validationSchema={schema}
-      onSubmit={async values => handleFileUpload(values)}
-    >
+      onSubmit={async values => handleFileUpload(values)}>
       {({values, handleChange, errors, handleSubmit}) => (
         <Portal>
           <Dialog
             visible={visible}
             onDismiss={toggleDialogue}
-            style={styles.dialog}
-          >
+            style={styles.dialog}>
             <Dialog.Content>
               <RenderInput
                 name="file_name"

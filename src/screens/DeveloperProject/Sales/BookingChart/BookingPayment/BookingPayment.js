@@ -779,14 +779,8 @@ function FormContent(props) {
   const {theme, formikProps, bankList, navigation} = props;
   const {t} = useTranslation();
 
-  const {
-    handleSubmit,
-    values,
-    errors,
-    setFieldValue,
-    handleChange,
-    resetForm,
-  } = formikProps;
+  const {handleSubmit, values, errors, setFieldValue, handleChange, resetForm} =
+    formikProps;
 
   const handleCancel = () => navigation.goBack();
 

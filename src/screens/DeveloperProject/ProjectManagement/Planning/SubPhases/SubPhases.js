@@ -171,12 +171,8 @@ function SubPhases(props) {
 
   const alert = useAlert();
 
-  const {
-    getSubPhases,
-    addSubPhase,
-    updateSubPhase,
-    deleteSubPhase,
-  } = useProjectManagementActions();
+  const {getSubPhases, addSubPhase, updateSubPhase, deleteSubPhase} =
+    useProjectManagementActions();
 
   const {selectedProject} = useSelector(s => s.project);
   const {loading, refreshing, subPhases} = useSelector(

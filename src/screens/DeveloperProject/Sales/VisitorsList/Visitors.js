@@ -172,16 +172,14 @@ function Header(props) {
               opacity={0.1}
               color={colors.primary}
               style={styles.filterButton}
-              onPress={toggleMenu}
-            >
+              onPress={toggleMenu}>
               <MaterialIcon
                 name="filter-variant"
                 color={colors.primary}
                 size={22}
               />
             </OpacityButton>
-          }
-        >
+          }>
           {FILTERS.map((i, index) => {
             const active = i.value === filter;
             return (

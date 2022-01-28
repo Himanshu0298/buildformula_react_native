@@ -84,8 +84,7 @@ function SignUpButton({label, onPress}) {
         mode="contained"
         contentStyle={{padding: 8}}
         theme={{roundness: 15}}
-        onPress={onPress}
-      >
+        onPress={onPress}>
         {label}
       </Button>
     </View>
@@ -119,8 +118,7 @@ function RenderContent(props) {
   return (
     <View style={styles.contentContainer}>
       <KeyboardAwareScrollView
-        contentContainerStyle={{paddingBottom: marginBottom}}
-      >
+        contentContainerStyle={{paddingBottom: marginBottom}}>
         {!adminSignUp ? (
           <View style={styles.headlineContainer}>
             <Headline theme={secondaryTheme} style={{fontWeight: 'bold'}}>
@@ -268,8 +266,7 @@ function RenderContent(props) {
         {!adminSignUp ? (
           <TouchableOpacity
             onPress={navigation.goBack}
-            style={styles.registerContainer}
-          >
+            style={styles.registerContainer}>
             <Text theme={secondaryTheme}>{t('loginLink')}</Text>
           </TouchableOpacity>
         ) : null}
@@ -388,13 +385,11 @@ function SignUp(props) {
       validateOnChange={false}
       initialValues={{}}
       validationSchema={adminSignUp ? adminSchema : signUpSchema}
-      onSubmit={onSubmit}
-    >
+      onSubmit={onSubmit}>
       {({handleChange, values, handleSubmit, handleBlur, isValid, errors}) => (
         <TouchableWithoutFeedback
           onPress={() => Keyboard.dismiss()}
-          style={styles.container}
-        >
+          style={styles.container}>
           <View style={styles.container}>
             <Spinner visible={loading || updatingAdmin} textContent="" />
             <View style={styles.topImageContainer}>
@@ -409,8 +404,7 @@ function SignUp(props) {
                 <View style={styles.noteContainer}>
                   <Text>
                     <Text
-                      style={{color: theme.colors.primary, fontWeight: 'bold'}}
-                    >
+                      style={{color: theme.colors.primary, fontWeight: 'bold'}}>
                       {'NOTE: '}
                     </Text>
                     Vshwan build Project or site have three main admins so if

@@ -153,8 +153,7 @@ function SelectUnit(props) {
       <View style={styles.headerContainer}>
         <TouchableOpacity
           style={styles.titleContainer}
-          onPress={navigation.goBack}
-        >
+          onPress={navigation.goBack}>
           <IconButton icon="keyboard-backspace" />
           <Subheading>{floor}</Subheading>
         </TouchableOpacity>

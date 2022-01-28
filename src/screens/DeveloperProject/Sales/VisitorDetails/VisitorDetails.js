@@ -30,12 +30,8 @@ function VisitorDetails(props) {
   ]);
 
   const {selectedProject} = useSelector(s => s.project);
-  const {
-    visitor,
-    pipelines,
-    occupationOptions,
-    sourceTypeOptions,
-  } = useSelector(s => s.sales);
+  const {visitor, pipelines, occupationOptions, sourceTypeOptions} =
+    useSelector(s => s.sales);
 
   const loading = useSalesLoading();
 

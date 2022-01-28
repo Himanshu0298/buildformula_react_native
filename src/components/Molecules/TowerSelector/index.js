@@ -27,8 +27,7 @@ export function RenderTowerBox(props) {
         style={[
           styles.labelContainer,
           active ? {backgroundColor: theme.colors.primary} : {},
-        ]}
-      >
+        ]}>
         <Text theme={active ? secondaryTheme : undefined}>{towerLabel}</Text>
       </View>
     </Container>

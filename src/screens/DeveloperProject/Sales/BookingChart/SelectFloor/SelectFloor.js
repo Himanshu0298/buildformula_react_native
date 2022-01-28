@@ -27,8 +27,7 @@ function SelectFloor(props) {
       <View style={styles.headerContainer}>
         <TouchableOpacity
           style={styles.titleContainer}
-          onPress={navigation.goBack}
-        >
+          onPress={navigation.goBack}>
           <IconButton icon="keyboard-backspace" />
           <RenderTowerBox {...props} towerId={towerId} active />
         </TouchableOpacity>

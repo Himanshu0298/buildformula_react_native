@@ -2,7 +2,7 @@ import React, {useCallback, useMemo, useState} from 'react';
 import SnackbarContext from './SnackbarContext';
 import DefaultSnackbar from './Snackbar';
 
-const SnackbarProvider = ({children}) => {
+function SnackbarProvider({children}) {
   const [state, setState] = useState({
     open: false,
     message: '',
@@ -38,6 +38,6 @@ const SnackbarProvider = ({children}) => {
       />
     </>
   );
-};
+}
 
 export default SnackbarProvider;

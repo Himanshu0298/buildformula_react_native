@@ -118,11 +118,8 @@ function BookingFormOnHold(props) {
   const {current_Hold_By_User_Details: userInfo, holdHistoryList} =
     bookingHoldDetails || {};
 
-  const {
-    getHoldBookingDetails,
-    unitHoldBooking,
-    unitUnHoldBooking,
-  } = useSalesActions();
+  const {getHoldBookingDetails, unitHoldBooking, unitUnHoldBooking} =
+    useSalesActions();
 
   const [visible, setVisible] = useState(false);
 

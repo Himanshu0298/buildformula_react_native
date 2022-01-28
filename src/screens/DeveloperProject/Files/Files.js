@@ -410,14 +410,12 @@ function Files(props) {
       <ScrollView
         refreshControl={
           <RefreshControl refreshing={false} onRefresh={loadData} />
-        }
-      >
+        }>
         {folderName ? (
           <View style={styles.backNavigation}>
             <TouchableOpacity
               style={styles.viewDirection}
-              onPress={navigation.goBack}
-            >
+              onPress={navigation.goBack}>
               <IconButton icon="arrow-left" onPress={navigation.goBack} />
               <Subheading style={styles.backNavHeading} numberOfLines={1}>
                 {folderName}

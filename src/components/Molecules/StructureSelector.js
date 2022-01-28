@@ -55,8 +55,7 @@ function ImageRender(props) {
   return (
     <TouchableOpacity
       style={[styles.box, style, active ? styles.active : {}]}
-      onPress={() => onPress(value, towerType)}
-    >
+      onPress={() => onPress(value, towerType)}>
       <BaseText style={styles.title}>{title}</BaseText>
       {src}
     </TouchableOpacity>

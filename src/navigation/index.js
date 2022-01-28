@@ -53,6 +53,7 @@ import BookingPayment from 'screens/DeveloperProject/Sales/BookingChart/BookingP
 import BrokerList from 'screens/DeveloperProject/Sales/BrokerList';
 // Project : Customer Section
 import CS_SelectStructure from 'screens/DeveloperProject/CustomerSection/SelectStructure';
+import CS_SelectTower from 'screens/DeveloperProject/CustomerSection/SelectTower';
 import CS_SelectFloor from 'screens/DeveloperProject/CustomerSection/SelectFloor';
 import CS_SelectUnit from 'screens/DeveloperProject/CustomerSection/SelectUnit';
 import CustomerSection from 'screens/DeveloperProject/CustomerSection/CustomerSection';
@@ -213,9 +214,10 @@ function CustomerSectionStack() {
     <Stack.Navigator initialRouteName="BC_Step_One">
       <Stack.Group screenOptions={{headerShown: false}}>
         <Stack.Screen name="CS_Step_One" component={CS_SelectStructure} />
-        <Stack.Screen name="CS_Step_Two" component={CS_SelectFloor} />
-        <Stack.Screen name="CS_Step_Three" component={CS_SelectUnit} />
-        <Stack.Screen name="CS_Step_Four" component={CustomerSection} />
+        <Stack.Screen name="CS_Step_Two" component={CS_SelectTower} />
+        <Stack.Screen name="CS_Step_Three" component={CS_SelectFloor} />
+        <Stack.Screen name="CS_Step_Four" component={CS_SelectUnit} />
+        <Stack.Screen name="CS_Step_Five" component={CustomerSection} />
         <Stack.Screen name="CustomerDetails" component={CustomerDetails} />
         <Stack.Screen name="AddCustomer" component={AddCustomer} />
         <Stack.Screen name="AddModifyRequest" component={AddModifyRequest} />
@@ -351,8 +353,7 @@ function CustomerDashboard() {
   return (
     <Drawer.Navigator
       initialRouteName="Ownership"
-      drawerContent={customerDrawerContent}
-    >
+      drawerContent={customerDrawerContent}>
       <Drawer.Group screenOptions={{headerShown: false}}>
         <Drawer.Screen name="Ownership" component={CustomerHome} />
         <Drawer.Screen name="BookingDetails" component={CustomerBooking} />
@@ -458,8 +459,7 @@ function NavContainer() {
 
         // Save the current route name for later comparison
         routeNameRef.current = currentData;
-      }}
-    >
+      }}>
       <RouteContext.Provider value={routeData}>
         <Stack.Navigator initialRouteName={initialScreen}>
           <Stack.Group screenOptions={{headerShown: false}}>

@@ -155,8 +155,7 @@ function RenderForm(props) {
       <View style={styles.rolesContainer}>
         <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{flexGrow: 1, paddingBottom: 200}}
-        >
+          contentContainerStyle={{flexGrow: 1, paddingBottom: 200}}>
           {values.selectedRoles.map((role, index) => {
             return (
               <View style={styles.roleContainer} key={index?.toString()}>
@@ -186,8 +185,7 @@ function RenderForm(props) {
               style={styles.addButton}
               mode="outlined"
               onPress={addRole}
-              uppercase={false}
-            >
+              uppercase={false}>
               + Add another role
             </Button>
           </View>
@@ -250,8 +248,7 @@ function AddUser(props) {
         emails: [],
       }}
       validationSchema={edit ? editSchema : addSchema}
-      onSubmit={onSubmit}
-    >
+      onSubmit={onSubmit}>
       {formikProps => <RenderForm {...props} {...{formikProps, user}} />}
     </Formik>
   );
