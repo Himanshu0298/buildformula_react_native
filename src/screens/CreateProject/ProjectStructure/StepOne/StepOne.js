@@ -18,7 +18,7 @@ function StepOne(props) {
   const {updateStructureTypes, updateStructure} = useAddProjectActions();
 
   const {structureTypes, structure, project, loading} = useSelector(
-    state => state.addProject,
+    s => s.addProject,
   );
 
   const activeTypes = useMemo(() => {
@@ -66,6 +66,7 @@ function StepOne(props) {
         } else {
           updatedStructure[type] = DEFAULT_STRUCTURE[type];
         }
+        return type;
       });
 
       updateStructure({structure: updatedStructure});
@@ -78,7 +79,7 @@ function StepOne(props) {
 
   return (
     <SafeAreaView edges={['bottom']} style={{flexGrow: 1}}>
-      <Spinner visible={loading} textContent={''} />
+      <Spinner visible={loading} textContent="" />
       <ScrollView contentContainerStyle={{flexGrow: 1}}>
         <StructureSelector
           title="label_project_structure"
@@ -94,7 +95,7 @@ function StepOne(props) {
             contentStyle={{padding: 3}}
             theme={{roundness: 15}}
             onPress={handleSubmit}>
-            {'Next'}
+            Next
           </Button>
         </View>
       </ScrollView>

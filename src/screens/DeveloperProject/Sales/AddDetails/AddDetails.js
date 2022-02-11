@@ -4,9 +4,8 @@ import RenderSelect from 'components/Atoms/RenderSelect';
 import AddComments from './Components/AddComments';
 import AddCallLogs from './Components/AddCallLogs';
 import AddFollowUp from './Components/AddFollowUp';
-import {SafeAreaView} from 'react-native-safe-area-context';
 
-const AddDetails = props => {
+function AddDetails(props) {
   const {route} = props;
   const {type: selectedType} = route.params || {};
 
@@ -28,22 +27,20 @@ const AddDetails = props => {
   }
 
   return (
-    <SafeAreaView style={{flexGrow: 1}}>
-      <View style={styles.container}>
-        <RenderSelect
-          name="assign_to"
-          ref={assignToRef}
-          label={'Select'}
-          options={['Comment', 'Call Log', 'Follow-up']}
-          containerStyles={styles.input}
-          value={type}
-          onSelect={v => setType(v)}
-        />
-        {renderSwitch()}
-      </View>
-    </SafeAreaView>
+    <View style={styles.container}>
+      <RenderSelect
+        name="assign_to"
+        ref={assignToRef}
+        label="Select"
+        options={['Comment', 'Call Log', 'Follow-up']}
+        containerStyles={styles.input}
+        value={type}
+        onSelect={setType}
+      />
+      {renderSwitch()}
+    </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {

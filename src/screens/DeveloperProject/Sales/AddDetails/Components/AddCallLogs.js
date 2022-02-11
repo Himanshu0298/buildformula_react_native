@@ -1,16 +1,16 @@
 import RenderSelect from 'components/Atoms/RenderSelect';
 import React, {useMemo} from 'react';
-import {View, StyleSheet, ScrollView} from 'react-native';
-import {withTheme, Button, Subheading, Title, Text} from 'react-native-paper';
+import {View, StyleSheet} from 'react-native';
+import {withTheme, Subheading} from 'react-native-paper';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import RenderDatePicker from 'components/Atoms/RenderDatePicker';
 import useSalesActions from 'redux/actions/salesActions';
 import {useSelector} from 'react-redux';
 import dayjs from 'dayjs';
-import {theme} from 'styles/theme';
-import RenderTextBox from 'components/Atoms/RenderTextbox';
 import RichTextEditor from 'components/Atoms/RichTextEditor';
+import ActionButtons from 'components/Atoms/ActionButtons';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 const schema = Yup.object().shape({
   last_date: Yup.date('Invalid').required('Required'),
@@ -19,7 +19,7 @@ const schema = Yup.object().shape({
   remarks: Yup.string('Invalid').required('Required'),
 });
 
-const AddCallLogs = props => {
+function AddCallLogs(props) {
   const {route, navigation} = props;
   const {visitorId} = route.params || {};
 
@@ -27,7 +27,7 @@ const AddCallLogs = props => {
   const followUpTimeRef = React.useRef();
   const assignToRef = React.useRef();
 
-  const {selectedProject, commonData} = useSelector(state => state.project);
+  const {selectedProject, commonData} = useSelector(s => s.project);
   const {callLog_call_outcome_values} = commonData;
 
   const {addVisitorCallLogs, getVisitorActivities} = useSalesActions();
@@ -56,8 +56,8 @@ const AddCallLogs = props => {
   };
 
   return (
-    <View style={{flexGrow: 1}}>
-      <Title style={styles.createCallLogs}>Create call log</Title>
+    <View style={styles.container}>
+      <Subheading style={styles.title}>Create call log</Subheading>
 
       <Formik
         validateOnBlur={false}
@@ -65,128 +65,107 @@ const AddCallLogs = props => {
         initialValues={{}}
         validationSchema={schema}
         onSubmit={onSubmit}>
-        {({
-          handleChange,
-          setFieldValue,
-          values,
-          handleSubmit,
-          handleBlur,
-          errors,
-        }) => (
+        {({setFieldValue, values, handleSubmit, errors}) => (
           <View style={styles.contentContainer}>
-            {console.log('----->values', values)}
-            <ScrollView style={styles.formContainer}>
-              <ScrollView keyboardShouldPersistTaps="handled">
-                <View style={{paddingLeft: 10, paddingRight: 10}}>
-                  <View style={{flexDirection: 'row'}}>
-                    <View style={{flex: 1, marginRight: 10}}>
-                      <RenderDatePicker
-                        name="last_date"
-                        label="Date"
-                        ref={followUpDateRef}
-                        containerStyles={styles.input}
-                        value={values.last_date}
-                        error={errors.last_date}
-                        min={new Date()}
-                        onChange={date => {
-                          setFieldValue('last_date', date);
-                          followUpTimeRef?.current?.focus?.();
-                        }}
-                      />
-                    </View>
-                    <View style={{flex: 1}}>
-                      <RenderDatePicker
-                        mode="time"
-                        label="Time"
-                        ref={followUpTimeRef}
-                        name="last_time"
-                        containerStyles={styles.input}
-                        value={values.last_time}
-                        error={errors.last_time}
-                        onChange={time => {
-                          setFieldValue('last_time', time);
-                          assignToRef?.current?.focus?.();
-                        }}
-                      />
-                    </View>
+            <KeyboardAwareScrollView
+              contentContainerStyle={styles.formContainer}
+              keyboardShouldPersistTaps="handled">
+              <View style={styles.inputsContainer}>
+                <View style={styles.row}>
+                  <View style={styles.flex}>
+                    <RenderDatePicker
+                      name="last_date"
+                      label="Date"
+                      ref={followUpDateRef}
+                      containerStyles={styles.input}
+                      value={values.last_date}
+                      error={errors.last_date}
+                      min={new Date()}
+                      onChange={date => {
+                        setFieldValue('last_date', date);
+                        followUpTimeRef?.current?.focus?.();
+                      }}
+                    />
                   </View>
-                  <Subheading style={styles.callOutcomes}>
-                    Call outcome
-                  </Subheading>
-                  <RenderSelect
-                    name="call_outcome"
-                    ref={assignToRef}
-                    label="Select Outcome"
-                    options={outcomeOptions}
-                    containerStyles={styles.input}
-                    value={values.call_outcome}
-                    error={errors.call_outcome}
-                    onSelect={value => {
-                      setFieldValue('call_outcome', value);
-                    }}
-                  />
-                  {/* <RenderTextBox
-                    name="remarks"
-                    numberOfLines={8}
-                    label="Response"
-                    containerStyles={styles.input}
-                    value={values.remarks}
-                    onChangeText={handleChange('remarks')}
-                    onBlur={handleBlur('remarks')}
-                    error={errors.remarks}
-                  /> */}
-                  <RichTextEditor
-                    name="remarks"
-                    placeholder="Response"
-                    value={values.remarks}
-                    onChangeText={value => {
-                      setFieldValue('remarks', value);
-                    }}
-                    error={errors.remarks}
-                  />
+                  <View style={styles.flex}>
+                    <RenderDatePicker
+                      mode="time"
+                      label="Time"
+                      ref={followUpTimeRef}
+                      name="last_time"
+                      containerStyles={styles.input}
+                      value={values.last_time}
+                      error={errors.last_time}
+                      onChange={time => {
+                        setFieldValue('last_time', time);
+                        assignToRef?.current?.focus?.();
+                      }}
+                    />
+                  </View>
                 </View>
-              </ScrollView>
-            </ScrollView>
+                <Subheading style={styles.callOutcomes}>
+                  Call outcome
+                </Subheading>
+                <RenderSelect
+                  name="call_outcome"
+                  ref={assignToRef}
+                  label="Select Outcome"
+                  options={outcomeOptions}
+                  containerStyles={styles.input}
+                  value={values.call_outcome}
+                  error={errors.call_outcome}
+                  onSelect={value => {
+                    setFieldValue('call_outcome', value);
+                  }}
+                />
+                <RichTextEditor
+                  style={styles.input}
+                  name="remarks"
+                  height={200}
+                  placeholder="Response"
+                  value={values.remarks}
+                  onChangeText={value => {
+                    setFieldValue('remarks', value);
+                  }}
+                  error={errors.remarks}
+                />
+              </View>
+            </KeyboardAwareScrollView>
 
-            <View style={styles.actionContainer}>
-              <Button
-                style={{
-                  flex: 1,
-                  marginHorizontal: 5,
-                  borderWidth: 1,
-                  borderColor: theme.colors.primary,
-                }}
-                contentStyle={{padding: 3}}
-                theme={{roundness: 15}}
-                onPress={navigation.goBack}>
-                Back
-              </Button>
-              <Button
-                style={{flex: 1, marginHorizontal: 5}}
-                mode="contained"
-                contentStyle={{padding: 3}}
-                theme={{roundness: 15}}
-                onPress={handleSubmit}>
-                Save
-              </Button>
-            </View>
+            <ActionButtons
+              cancelLabel="Back"
+              submitLabel="Save"
+              onCancel={navigation.goBack}
+              onSubmit={handleSubmit}
+            />
           </View>
         )}
       </Formik>
     </View>
   );
-};
+}
 
 export default withTheme(AddCallLogs);
 
 const styles = StyleSheet.create({
+  container: {
+    flexGrow: 1,
+  },
+  row: {
+    flexDirection: 'row',
+    marginHorizontal: -10,
+  },
+  flex: {
+    flex: 1,
+    marginHorizontal: 10,
+  },
   input: {
-    paddingVertical: 7,
+    marginVertical: 7,
   },
   callOutcomes: {
     marginTop: 15,
   },
-  createCallLogs: {
+  title: {
     paddingLeft: 10,
     marginTop: 15,
     paddingRight: 10,
@@ -198,12 +177,9 @@ const styles = StyleSheet.create({
   formContainer: {
     flexGrow: 1,
   },
-  actionContainer: {
-    paddingHorizontal: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    position: 'absolute',
-    bottom: 0,
+  inputsContainer: {
+    paddingLeft: 10,
+    paddingRight: 10,
+    flexGrow: 1,
   },
 });

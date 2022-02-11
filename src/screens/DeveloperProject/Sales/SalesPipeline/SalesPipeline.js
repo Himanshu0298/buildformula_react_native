@@ -13,16 +13,13 @@ import {
   Caption,
   Dialog,
   Divider,
-  IconButton,
   Menu,
   Portal,
   Searchbar,
   Subheading,
-  Text,
 } from 'react-native-paper';
 import {theme} from 'styles/theme';
 import Spinner from 'react-native-loading-spinner-overlay';
-import {COLORS} from 'utils/constant';
 import BaseText from 'components/Atoms/BaseText';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {Board, BoardRepository} from 'components/Molecules/Board/components';
@@ -30,7 +27,9 @@ import {useAlert} from 'components/Atoms/Alert';
 import {getPermissions, getShadow} from 'utils';
 import RenderInput from 'components/Atoms/RenderInput';
 import {useTranslation} from 'react-i18next';
-// import {BoardRepository, Board} from 'react-native-draganddrop-board';
+import {useSalesLoading} from 'redux/selectors';
+import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
+import _ from 'lodash';
 
 function RenderContacts({item}) {
   const {get_user = {}, get_role = {}} = item?.get_role_user || {};
@@ -39,8 +38,8 @@ function RenderContacts({item}) {
     <View style={styles.contactContainer}>
       <View style={styles.leftContainer}>
         <MaterialIcons
-          name={'drag-indicator'}
-          color={'rgba(4,29,54,0.15)'}
+          name="drag-indicator"
+          color="rgba(4,29,54,0.15)"
           size={30}
         />
         <View style={styles.visitorContainer}>
@@ -77,45 +76,37 @@ function RenderHeader(props) {
         <Subheading>{title}</Subheading>
         <Subheading>{id}</Subheading>
         <View style={styles.iconContainer}>
-          <TouchableOpacity
+          <OpacityButton
+            color={theme.colors.primary}
+            opacity={0.3}
             onPress={() => navigation.navigate('PipelineRearrange')}
-            style={[
-              styles.icon,
-              {backgroundColor: COLORS.primaryLight, paddingHorizontal: 8},
-            ]}>
+            style={styles.icon}>
             <MaterialIcons
               name="drag-indicator"
-              color={'rgba(4,29,54,0.6)'}
+              color="rgba(4,29,54,0.6)"
               size={19}
             />
-          </TouchableOpacity>
+          </OpacityButton>
           <TouchableOpacity style={styles.icon}>
-            <MaterialIcons
-              name={'search'}
-              color={'rgba(4,29,54,0.6)'}
-              size={19}
-            />
+            <MaterialIcons name="search" color="rgba(4,29,54,0.6)" size={19} />
           </TouchableOpacity>
           {id !== 1 && modulePermission?.editor && modulePermission?.admin ? (
-            <TouchableOpacity
+            <OpacityButton
+              color={theme.colors.red}
+              opacity={0.2}
               onPress={() => handleDelete(pipelineId, get_visitors.length)}
-              style={[styles.icon, {backgroundColor: COLORS.deleteLight}]}>
-              <MaterialIcons
-                name={'delete'}
-                color={theme.colors.red}
-                size={19}
-              />
-            </TouchableOpacity>
+              style={styles.icon}>
+              <MaterialIcons name="delete" color={theme.colors.red} size={19} />
+            </OpacityButton>
           ) : null}
-          <TouchableOpacity
-            style={[
-              styles.icon,
-              {backgroundColor: COLORS.primaryLight, paddingHorizontal: 8},
-            ]}>
+          <OpacityButton
+            color={theme.colors.primary}
+            opacity={0.3}
+            style={[styles.icon, {paddingHorizontal: 8}]}>
             <BaseText style={{color: theme.colors.primary}}>
               {get_visitors.length}
             </BaseText>
-          </TouchableOpacity>
+          </OpacityButton>
         </View>
       </View>
       {modulePermission?.editor && modulePermission?.admin ? (
@@ -128,7 +119,7 @@ function RenderHeader(props) {
 }
 
 function RenderAddNew({handleAddNew}) {
-  const [stage, setStage] = React.useState();
+  const [stage, setStage] = React.useState('');
 
   return (
     <View style={styles.addNewContainer}>
@@ -143,7 +134,6 @@ function RenderAddNew({handleAddNew}) {
       </View>
       <Button
         mode="contained"
-        contentStyle={{paddingVertical: 3, paddingHorizontal: 10}}
         theme={{roundness: 10}}
         onPress={() => {
           if (stage) {
@@ -151,7 +141,7 @@ function RenderAddNew({handleAddNew}) {
             handleAddNew(stage);
           }
         }}>
-        {'Save'}
+        Save
       </Button>
     </View>
   );
@@ -160,12 +150,15 @@ function RenderAddNew({handleAddNew}) {
 function DotIndicator({count, selected}) {
   return (
     <View style={styles.dotContainer}>
-      {new Array(count + 1).fill(0).map((_, i) => {
+      {new Array(count + 1).fill(0).map((_, index) => {
         const backgroundColor =
-          i === selected ? theme.colors.primary : 'rgba(4,29,54,0.1)';
+          index === selected ? theme.colors.primary : 'rgba(4,29,54,0.1)';
 
         return (
-          <View key={i} style={[styles.dotIndicator, {backgroundColor}]} />
+          <View
+            key={index.toString()}
+            style={[styles.dotIndicator, {backgroundColor}]}
+          />
         );
       })}
     </View>
@@ -176,7 +169,7 @@ function AddContactDialog({open, t, handleClose, moveContact}) {
   const [searchQuery, setSearchQuery] = React.useState();
   const [selectedVisitor, setSelectedVisitor] = React.useState();
 
-  const {visitorSuggestions} = useSelector(state => state.sales);
+  const {visitorSuggestions} = useSelector(s => s.sales);
 
   const filteredVisitors = React.useMemo(() => {
     if (searchQuery) {
@@ -200,70 +193,68 @@ function AddContactDialog({open, t, handleClose, moveContact}) {
   };
 
   return (
-    <View>
-      <Portal>
-        <Dialog
-          visible={open}
-          onDismiss={handleClose}
-          style={{marginBottom: 200}}>
-          <Dialog.Content>
-            <View style={styles.addContactContainer}>
-              <Subheading>Add Contact</Subheading>
-              <Searchbar
-                theme={{roundness: 12}}
-                placeholder={t('label_search_visitors')}
-                style={styles.searchBar}
-                value={searchQuery}
-                onChangeText={onSearch}
-              />
+    <Portal>
+      <Dialog
+        visible={open}
+        onDismiss={handleClose}
+        style={{marginBottom: 200}}>
+        <Dialog.Content>
+          <View style={styles.addContactContainer}>
+            <Subheading>Add Contact</Subheading>
+            <Searchbar
+              theme={{roundness: 12}}
+              placeholder={t('label_search_visitors')}
+              style={styles.searchBar}
+              value={searchQuery}
+              onChangeText={onSearch}
+            />
 
-              {filteredVisitors.length > 0 ? (
-                <View style={styles.listContainer}>
-                  <ScrollView
-                    contentContainerStyle={{flexGrow: 1}}
-                    keyboardShouldPersistTaps="handled">
-                    {filteredVisitors.map((visitor, index) => {
-                      const label = `${visitor.first_name} ${visitor.last_name}`;
-                      return (
-                        <TouchableOpacity
+            {filteredVisitors.length > 0 ? (
+              <View style={styles.listContainer}>
+                <ScrollView
+                  contentContainerStyle={styles.scrollContainer}
+                  keyboardShouldPersistTaps="handled">
+                  {filteredVisitors.map((visitor, index) => {
+                    const label = `${visitor.first_name} ${visitor.last_name}`;
+                    return (
+                      <TouchableOpacity
+                        key={index?.toString()}
+                        onPress={() => {
+                          Keyboard.dismiss();
+                          setSearchQuery(label);
+                          setSelectedVisitor(visitor.id);
+                        }}>
+                        <Menu.Item
                           key={index}
-                          onPress={() => {
-                            Keyboard.dismiss();
-                            setSearchQuery(label);
-                            setSelectedVisitor(visitor.id);
-                          }}>
-                          <Menu.Item
-                            key={index}
-                            icon="account-question-outline"
-                            title={label}
-                          />
-                          <Divider />
-                        </TouchableOpacity>
-                      );
-                    })}
-                  </ScrollView>
-                </View>
-              ) : null}
+                          icon="account-question-outline"
+                          title={label}
+                        />
+                        <Divider />
+                      </TouchableOpacity>
+                    );
+                  })}
+                </ScrollView>
+              </View>
+            ) : null}
 
-              <Button
-                mode="contained"
-                disabled={isNaN(selectedVisitor)}
-                contentStyle={{paddingVertical: 3, paddingHorizontal: 10}}
-                theme={{roundness: 10}}
-                style={{marginTop: 20, width: '100%'}}
-                onPress={() => {
-                  moveContact(selectedVisitor);
-                  handleClose();
-                  setSearchQuery();
-                  setSelectedVisitor();
-                }}>
-                Move
-              </Button>
-            </View>
-          </Dialog.Content>
-        </Dialog>
-      </Portal>
-    </View>
+            <Button
+              mode="contained"
+              disabled={!_.isFinite(selectedVisitor)}
+              contentStyle={{paddingVertical: 3, paddingHorizontal: 10}}
+              theme={{roundness: 10}}
+              style={{marginTop: 20, width: '100%'}}
+              onPress={() => {
+                moveContact(selectedVisitor);
+                handleClose();
+                setSearchQuery();
+                setSelectedVisitor();
+              }}>
+              Move
+            </Button>
+          </View>
+        </Dialog.Content>
+      </Dialog>
+    </Portal>
   );
 }
 
@@ -292,9 +283,7 @@ const RenderBoard = React.memo(props => {
       return;
     }
 
-    const formData = new FormData();
-    formData.append('status_id', id);
-    deletePipeline(id, formData);
+    deletePipeline(id);
   };
 
   const boardRepository = React.useMemo(() => {
@@ -317,6 +306,8 @@ const RenderBoard = React.memo(props => {
     return new BoardRepository(data);
   }, [modulePermission, pipelines]);
 
+  const cardContent = item => <RenderContacts item={item} />;
+
   return (
     <View style={styles.boardContainer}>
       <Board
@@ -332,12 +323,12 @@ const RenderBoard = React.memo(props => {
             handleDelete={onDeletePipeline}
           />
         )}
-        cardContent={item => <RenderContacts item={item} />}
+        cardContent={cardContent}
         renderAddNew={() => <RenderAddNew handleAddNew={handleAddNew} />}
         onChangeTab={setSelectedTab}
         open={() => console.log('-----> open')}
         onDragEnd={(srcColumnId, destColumnId, draggedItem) => {
-          const {row} = draggedItem?.attributes;
+          const {row} = draggedItem?.attributes || {};
           if (row?.id && srcColumnId !== destColumnId) {
             moveContact(row.id);
           }
@@ -350,37 +341,46 @@ const RenderBoard = React.memo(props => {
 export default function SalesPipeline(props) {
   const {t} = useTranslation();
 
+  const alert = useAlert();
+
   const [selectedTab, setSelectedTab] = React.useState(0);
   const [showAddContact, setShowAddContact] = React.useState(false);
 
-  const {
-    getPipelineData,
-    addPipeline,
-    deletePipeline,
-    moveVisitor,
-  } = useSalesActions();
+  const {getPipelineData, addPipeline, deletePipeline, moveVisitor} =
+    useSalesActions();
 
-  const {pipelines, loading} = useSelector(state => state.sales);
-  const {selectedProject} = useSelector(state => state.project);
-  const {user} = useSelector(state => state.user);
+  const {pipelines} = useSelector(s => s.sales);
+  const {selectedProject} = useSelector(s => s.project);
+  const {user} = useSelector(s => s.user);
 
-  console.log('----->pipelines', pipelines);
-  const myData = pipelines.sort((a, b) => (a.id > b.id ? 1 : -1));
-  console.log('----->myData', myData);
+  const loading = useSalesLoading();
+
+  const sortedPipelines = pipelines.sort((a, b) => a.order_by - b.order_by);
 
   React.useEffect(() => {
-    getPipelineData(selectedProject.id);
+    loadPipelines();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleAddNew = title => {
-    const formData = new FormData();
-    formData.append('title', title);
-    formData.append('project_id', selectedProject.id);
-    formData.append('user_id', user.id);
+  const loadPipelines = () => getPipelineData({project_id: selectedProject.id});
 
-    addPipeline(formData).then(() => {
-      getPipelineData(selectedProject.id);
+  const handleAddNew = async title => {
+    await addPipeline({
+      project_id: selectedProject.id,
+      user_id: user.id,
+      title,
+    });
+    loadPipelines();
+  };
+
+  const handleDelete = id => {
+    alert.show({
+      title: 'Confirm',
+      message: 'Are you sure you want to delete?',
+      confirmText: 'Delete',
+      onConfirm: () => {
+        deletePipeline({status_id: id, project_id: selectedProject.id});
+      },
     });
   };
 
@@ -388,7 +388,7 @@ export default function SalesPipeline(props) {
     moveVisitor({
       projectId: selectedProject.id,
       visitorId,
-      pipelineId: pipelines[selectedTab].id,
+      pipelineId: sortedPipelines[selectedTab].id,
     });
   };
 
@@ -396,23 +396,23 @@ export default function SalesPipeline(props) {
 
   return (
     <View style={styles.container}>
-      <Spinner visible={loading} textContent={''} />
-      {pipelines.length === 0 ? (
+      <Spinner visible={loading} textContent="" />
+      {sortedPipelines.length === 0 ? (
         <View style={styles.noResultContainer}>
-          <Subheading>{'No Data Found'}</Subheading>
+          <Subheading>No Data Found</Subheading>
         </View>
       ) : (
         <>
           <RenderBoard
             {...props}
-            pipelines={pipelines}
+            pipelines={sortedPipelines}
             setSelectedTab={setSelectedTab}
-            deletePipeline={deletePipeline}
+            deletePipeline={handleDelete}
             handleAddNew={handleAddNew}
             toggleModal={toggleModal}
             moveContact={moveContact}
           />
-          <DotIndicator count={pipelines.length} selected={selectedTab} />
+          <DotIndicator count={sortedPipelines.length} selected={selectedTab} />
         </>
       )}
       <AddContactDialog
@@ -487,11 +487,13 @@ const styles = StyleSheet.create({
     ...getShadow(3),
     borderRadius: 20,
     alignItems: 'center',
+    width: '100%',
   },
   pipelineInput: {
     paddingHorizontal: 25,
     paddingVertical: 15,
     marginBottom: 10,
+    width: '100%',
   },
   dotContainer: {
     padding: 10,
@@ -521,5 +523,8 @@ const styles = StyleSheet.create({
     marginTop: 5,
     maxHeight: 200,
     ...getShadow(2),
+  },
+  scrollContainer: {
+    flexGrow: 1,
   },
 });

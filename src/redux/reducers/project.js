@@ -9,7 +9,7 @@ import {
   GET_PURCHASE_PROJECT_DETAILS,
   GET_SELECTED_PROJECT,
   SET_SELECTED_UNIT,
-} from './../actions/actionTypes';
+} from '../actions/actionTypes';
 
 const persistConfig = {
   key: 'project',
@@ -18,7 +18,13 @@ const persistConfig = {
 };
 
 const initialState = {
-  loading: false,
+  loadingProject: false,
+  loadingProjects: false,
+  loadingPermissions: false,
+  loadingDashboardData: false,
+  loadingPurchaseData: false,
+  loadingPurchaseDetails: false,
+  loadingProjectCommonData: false,
   errorMessage: undefined,
   selectedProject: {},
   projects: [],
@@ -44,122 +50,122 @@ const reducer = (state = initialState, action = {}) => {
     case `${GET_SELECTED_PROJECT}_PENDING`:
       return {
         ...state,
-        loading: true,
+        loadingProject: true,
       };
     case `${GET_SELECTED_PROJECT}_FULFILLED`:
       return {
         ...state,
         selectedProject: payload,
-        loading: false,
+        loadingProject: false,
       };
     case `${GET_SELECTED_PROJECT}_REJECTED`:
       return {
         ...state,
-        loading: false,
+        loadingProject: false,
         errorMessage: payload,
       };
 
     case `${GET_PROJECTS}_PENDING`:
       return {
         ...state,
-        loading: true,
+        loadingProjects: true,
       };
     case `${GET_PROJECTS}_FULFILLED`:
       return {
         ...state,
         projects: payload,
-        loading: false,
+        loadingProjects: false,
       };
     case `${GET_PROJECTS}_REJECTED`:
       return {
         ...state,
-        loading: false,
+        loadingProjects: false,
         errorMessage: payload,
       };
 
     case `${GET_PROJECT_PERMISSIONS}_PENDING`:
       return {
         ...state,
-        loading: true,
+        loadingPermissions: true,
       };
     case `${GET_PROJECT_PERMISSIONS}_FULFILLED`:
       return {
         ...state,
         isProjectAdmin: payload.isAdmin,
         permissions: payload.permissions,
-        loading: false,
+        loadingPermissions: false,
       };
     case `${GET_PROJECT_PERMISSIONS}_REJECTED`:
       return {
         ...state,
-        loading: false,
+        loadingPermissions: false,
         errorMessage: payload,
       };
 
     case `${GET_DASHBOARD_DATA}_PENDING`:
       return {
         ...state,
-        loading: true,
+        loadingDashboardData: true,
       };
     case `${GET_DASHBOARD_DATA}_FULFILLED`:
       return {
         ...state,
         dashboardData: payload,
-        loading: false,
+        loadingDashboardData: false,
       };
     case `${GET_DASHBOARD_DATA}_REJECTED`:
       return {
         ...state,
-        loading: false,
+        loadingDashboardData: false,
         errorMessage: payload,
       };
 
     case `${GET_PURCHASED_PROJECTS}_PENDING`:
       return {
         ...state,
-        loading: true,
+        loadingPurchaseData: true,
       };
     case `${GET_PURCHASED_PROJECTS}_FULFILLED`:
       return {
         ...state,
         purchasedProjects: payload,
-        loading: false,
+        loadingPurchaseData: false,
       };
     case `${GET_PURCHASED_PROJECTS}_REJECTED`:
       return {
         ...state,
-        loading: false,
+        loadingPurchaseData: false,
         errorMessage: payload,
       };
 
     case `${GET_PURCHASE_PROJECT_DETAILS}_PENDING`:
       return {
         ...state,
-        loading: true,
+        loadingPurchaseDetails: true,
       };
     case `${GET_PURCHASE_PROJECT_DETAILS}_FULFILLED`:
       return {
         ...state,
         purchaseProjectDetails: payload,
-        loading: false,
+        loadingPurchaseDetails: false,
       };
     case `${GET_PURCHASE_PROJECT_DETAILS}_REJECTED`:
       return {
         ...state,
-        loading: false,
+        loadingPurchaseDetails: false,
         errorMessage: payload,
       };
 
     case `${GET_PROJECT_COMMON_DATA}_PENDING`:
       return {
         ...state,
-        loading: true,
+        loadingProjectCommonData: true,
       };
     case `${GET_PROJECT_COMMON_DATA}_FULFILLED`: {
       const {visitors_lists, units} = payload;
       return {
         ...state,
-        loading: false,
+        loadingProjectCommonData: false,
         commonData: payload,
         visitors: visitors_lists,
         unitOptions: units.map(i => ({label: i.title, value: i.id})),
@@ -168,7 +174,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${GET_PROJECT_COMMON_DATA}_REJECTED`:
       return {
         ...state,
-        loading: false,
+        loadingProjectCommonData: false,
         errorMessage: payload,
       };
 

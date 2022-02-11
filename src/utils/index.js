@@ -1,7 +1,6 @@
 import {debounce} from 'lodash';
 import {Platform} from 'react-native';
 import {store} from 'redux/store';
-import {BASE_API_URL} from './constant';
 
 const shadowsArray = {
   0: {
@@ -89,21 +88,27 @@ const shadowsArray = {
 
 export const getShadow = elevation => shadowsArray[elevation][Platform.OS];
 
-export const getTowerLabel = i => String.fromCharCode(64 + parseInt(i, 10));
+export function getTowerLabel(i) {
+  i -= 1;
+  return (
+    (i >= 26 ? getTowerLabel(Math.floor(i / 26) - 1) : '') +
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[i % 26]
+  );
+}
 
 export function getFloorNumber(i) {
   i = parseInt(i, 10);
-  var j = i % 10,
-    k = i % 100;
+  const j = i % 10;
+  const k = i % 100;
   let floor;
   if (j === 1 && k !== 11) {
-    floor = i + 'st';
+    floor = `${i}st`;
   } else if (j === 2 && k !== 12) {
-    floor = i + 'nd';
+    floor = `${i}nd`;
   } else if (j === 3 && k !== 13) {
-    floor = i + 'rd';
+    floor = `${i}rd`;
   } else {
-    floor = i + 'th';
+    floor = `${i}th`;
   }
 
   if (i === 0) {
@@ -127,7 +132,8 @@ export function getInitialScreen(authenticated, user = {}) {
     //   return 'ProjectStructureStepOne';
     // }
     return 'GeneralDashboard';
-  } else if (id) {
+  }
+  if (id) {
     if (otp_verified === 'N' || email_verified === 'N') {
       return 'Otp';
     }
@@ -136,13 +142,13 @@ export function getInitialScreen(authenticated, user = {}) {
 }
 
 export function addOpacity(color, opacity) {
-  return color.split(')')[0] + ',' + opacity + ')';
+  return color ? `${color?.split(')')[0]},${opacity})` : undefined;
 }
 
 export function round(num, decimalPlaces = 2) {
   num = parseFloat(num);
-  num = Math.round(num + 'e' + decimalPlaces);
-  const result = Number(num + 'e' + -decimalPlaces);
+  num = Math.round(`${num}e${decimalPlaces}`);
+  const result = Number(`${num}e${-decimalPlaces}`);
   return result;
 }
 
@@ -154,11 +160,14 @@ export function getPermissions(moduleTitle) {
   const {permissions, commonData} = store.getState().project;
   const {submodules} = commonData;
 
+  if (permissions.admin) {
+    return permissions;
+  }
+
   const moduleData = submodules.find(i => i.title === moduleTitle);
 
   if (moduleData) {
     const modulePermissions = permissions[moduleData?.id];
-
     return modulePermissions;
   }
 

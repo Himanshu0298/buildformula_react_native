@@ -4,7 +4,7 @@ import UpdateBillingInfo from './UpdateBillingInfo';
 
 export default props => {
   return (
-    <ProjectLayout {...props} showLogo={true} header={true}>
+    <ProjectLayout {...props} showLogo header>
       <UpdateBillingInfo {...props} />
     </ProjectLayout>
   );

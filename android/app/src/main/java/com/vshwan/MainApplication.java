@@ -14,6 +14,10 @@ import java.util.List;
 // Code push Config 
 import com.microsoft.codepush.react.CodePush;
 
+//Reanimated Config
+import com.facebook.react.bridge.JSIModulePackage; 
+import com.swmansion.reanimated.ReanimatedJSIModulePackage;
+
 public class MainApplication extends Application implements ReactApplication {
 
   private final ReactNativeHost mReactNativeHost =
@@ -35,6 +39,12 @@ public class MainApplication extends Application implements ReactApplication {
         @Override
         protected String getJSMainModuleName() {
           return "index";
+        }
+
+        //Reanimated Config
+        @Override
+        protected JSIModulePackage getJSIModulePackage() {
+          return new ReanimatedJSIModulePackage(); // <- add
         }
 
         // Code push Config 

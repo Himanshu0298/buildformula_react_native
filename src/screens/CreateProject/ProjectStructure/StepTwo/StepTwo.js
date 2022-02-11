@@ -7,9 +7,6 @@ import {secondaryTheme, theme} from 'styles/theme';
 import {getFloorNumber, getShadow, getTowerLabel, getUnitLabel} from 'utils';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import MaterialTabs from 'react-native-material-tabs';
-import TowersScreen from './Components/TowersScreen';
-import FloorsScreen from './Components/FloorsScreen';
-import UnitsScreen from './Components/UnitsScreen';
 import {
   MAX_TOWERS,
   MAX_FLOORS,
@@ -21,7 +18,10 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import AntIcons from 'react-native-vector-icons/AntDesign';
 import {useBackHandler} from '@react-native-community/hooks';
 import useAddProjectActions from 'redux/actions/addProjectActions';
-import {cloneDeep} from 'lodash';
+import _, {cloneDeep} from 'lodash';
+import UnitsScreen from './Components/UnitsScreen';
+import FloorsScreen from './Components/FloorsScreen';
+import TowersScreen from './Components/TowersScreen';
 
 const STRUCTURE_TYPES = [2, 3, 1, 4, 5];
 
@@ -123,17 +123,16 @@ function updateUnits({
         },
       },
     };
-  } else {
-    return {
-      structure: {
-        ...structure,
-        [selectedStructureType]: {
-          unitCount,
-          units,
-        },
-      },
-    };
   }
+  return {
+    structure: {
+      ...structure,
+      [selectedStructureType]: {
+        unitCount,
+        units,
+      },
+    },
+  };
 }
 
 function updateUnitsBhk({
@@ -177,24 +176,23 @@ function updateUnitsBhk({
         },
       },
     };
-  } else {
-    const {units} = currentStructureData;
+  }
+  const {units} = currentStructureData;
 
-    return {
-      structure: {
-        ...structure,
-        [selectedStructureType]: {
-          ...currentStructureData,
-          units: {
-            ...units,
-            [unitId]: {
-              bhk,
-            },
+  return {
+    structure: {
+      ...structure,
+      [selectedStructureType]: {
+        ...currentStructureData,
+        units: {
+          ...units,
+          [unitId]: {
+            bhk,
           },
         },
       },
-    };
-  }
+    },
+  };
 }
 
 function validateUnits({
@@ -206,7 +204,7 @@ function validateUnits({
   let error = '';
   let allValid = true;
   if (selectedStructureType === 1 || selectedStructureType === 4) {
-    for (let i = 1; i <= unitCount; i++) {
+    for (let i = 1; i <= unitCount; i += 1) {
       if (!units[i].bhk) {
         allValid = false;
         error = `Assign BHK to unit ${getUnitLabel(selectedFloor, i)}`;
@@ -237,8 +235,8 @@ function validateTowers(data, selectedStructureType) {
     Object.keys(towers).map(towerId => {
       result[towerId] = true;
       const {floors = {}, floorCount} = towers[towerId] || {};
-      if (isNaN(floorCount)) {
-        //check if floorCount is null
+      if (!_.isFinite(floorCount)) {
+        // check if floorCount is null
         result[towerId] = false;
         allValid = false;
         if (!error) {
@@ -248,8 +246,8 @@ function validateTowers(data, selectedStructureType) {
         }
       } else {
         Object.keys(floors).map(floorId => {
-          //check if all floors has 0 or more units
-          if (isNaN(floors?.[floorId]?.unitCount)) {
+          // check if all floors has 0 or more units
+          if (!_.isFinite(floors?.[floorId]?.unitCount)) {
             result[towerId] = false;
             allValid = false;
             if (!error) {
@@ -272,15 +270,19 @@ function validateTowers(data, selectedStructureType) {
               )}`;
             }
           }
+
+          return floorId;
         });
       }
+
+      return towerId;
     });
   } else {
     const {units, unitCount} = data;
     const unitResult = validateUnits({
       selectedStructureType,
-      units: units,
-      unitCount: unitCount,
+      units,
+      unitCount,
       selectedFloor: 0,
     });
     allValid = unitResult.allValid;
@@ -303,10 +305,10 @@ function StepTwo(props) {
   const snackbar = useSnackbar();
 
   let {structure, structureTypes, selectedStructureType, loading} = useSelector(
-    state => state.addProject,
+    s => s.addProject,
   );
-  const {project} = useSelector(state => state.addProject);
-  const {user} = useSelector(state => state.user);
+  const {project} = useSelector(s => s.addProject);
+  const {user} = useSelector(s => s.user);
 
   const [showModal, setShowModal] = useState(false);
   const [selectedTab, setSelectedTab] = useState(
@@ -340,8 +342,8 @@ function StepTwo(props) {
     return false;
   };
 
-  //TODO: use event-listener instead of hook and unmount on screen un-focus
-  //Handle back press
+  // TODO: use event-listener instead of hook and unmount on screen un-focus
+  // Handle back press
   useBackHandler(handleBack);
 
   const showAllFloors = towerId => {
@@ -462,6 +464,7 @@ function StepTwo(props) {
     const _towers = cloneDeep(towers);
     duplicateTo.map(key => {
       _towers[key] = fromTower;
+      return key;
     });
 
     updateStructure({
@@ -482,6 +485,7 @@ function StepTwo(props) {
     const _floors = cloneDeep(floors);
     duplicateTo.map(key => {
       _floors[key] = fromFloor;
+      return key;
     });
 
     updateStructure({
@@ -518,7 +522,7 @@ function StepTwo(props) {
   const updateBungalows = unitCount => onChangeUnit(null, unitCount);
 
   const saveStructureType = async () => {
-    //Validate all the previous types data is valid or not
+    // Validate all the previous types data is valid or not
     const selectedTypes = STRUCTURE_TYPES.filter(key => structureTypes[key]);
     const selectedTypeIndex = selectedTypes.indexOf(selectedStructureType);
 
@@ -581,19 +585,21 @@ function StepTwo(props) {
             return `tower ${getTowerLabel(selectedTower)} > ${getFloorNumber(
               selectedFloor,
             )} : ${t('project_structure_subtitle_units_bhk')}`;
-          } else {
-            return `${t(
-              'project_structure_subtitle_units',
-            )} : tower ${getTowerLabel(selectedTower)} > ${getFloorNumber(
-              selectedFloor,
-            )}`;
           }
+          return `${t(
+            'project_structure_subtitle_units',
+          )} : tower ${getTowerLabel(selectedTower)} > ${getFloorNumber(
+            selectedFloor,
+          )}`;
+
+        default:
       }
     } else if (selectedStructureType === 4) {
       return t('projectStructureSubtitleBungalows');
     } else if (selectedStructureType === 5) {
       return t('projectStructureSubtitlePlots');
     }
+    return '';
   };
 
   return (
@@ -641,6 +647,7 @@ function StepTwo(props) {
                       />
                     );
                   }
+                  return null;
                 })}
               </Menu>
             </View>
@@ -655,12 +662,10 @@ function StepTwo(props) {
             onChange={() => {}}
             barColor="#fff"
             indicatorColor={theme.colors.primary}
-            inactiveTextColor={'#919191'}
+            inactiveTextColor="#919191"
             activeTextColor={theme.colors.primary}
             uppercase={false}
-            textStyle={{
-              fontFamily: 'Nunito-Regular',
-            }}
+            textStyle={{fontFamily: 'Nunito-Regular'}}
           />
         ) : null}
       </View>

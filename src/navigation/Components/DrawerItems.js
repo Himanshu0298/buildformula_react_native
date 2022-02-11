@@ -4,11 +4,11 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 export const DEVELOPER_DRAWER_ITEMS = [
   {
-    route: 'DeveloperDashboard',
+    route: 'DeveloperHome',
     label: 'Dashboard',
     icon: ({color, size}) => (
       <MaterialCommunityIcons
-        name={'view-dashboard-outline'}
+        name="view-dashboard-outline"
         color={color}
         size={size}
       />
@@ -28,7 +28,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
         route: 'SalesPipeline',
         label: 'Sales Pipeline',
         icon: ({color, size}) => (
-          <MaterialIcons name={'filter-list'} {...{color, size}} />
+          <MaterialIcons name="filter-list" {...{color, size}} />
         ),
       },
       {
@@ -36,7 +36,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
         route: 'BookingChartStack',
         label: 'Booking Chart',
         icon: ({color, size}) => (
-          <MaterialIcons name={'library-books'} {...{color, size}} />
+          <MaterialIcons name="library-books" {...{color, size}} />
         ),
       },
       {
@@ -44,7 +44,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
         route: 'BrokerStack',
         label: 'Broker List',
         icon: ({color, size}) => (
-          <MaterialIcons name={'library-books'} {...{color, size}} />
+          <MaterialIcons name="recent-actors" {...{color, size}} />
         ),
       },
     ],
@@ -56,56 +56,59 @@ export const DEVELOPER_DRAWER_ITEMS = [
         route: 'CustomerSection',
         label: 'Customer Section',
         icon: ({color, size}) => (
-          <MaterialIcons name={'recent-actors'} {...{color, size}} />
+          <MaterialCommunityIcons
+            name="account-multiple-outline"
+            {...{color, size}}
+          />
         ),
       },
     ],
   },
-  {
-    title: 'PROJECT MANAGEMENT',
-    routes: [
-      {
-        route: 'Lineup',
-        label: 'Lineup',
-        icon: ({color, size}) => (
-          <MaterialIcons name={'house-siding'} {...{color, size}} />
-        ),
-      },
-      {
-        id: 5,
-        route: 'Planning',
-        label: 'Planning',
-        icon: ({color, size}) => (
-          <MaterialIcons name={'toc'} {...{color, size}} />
-        ),
-      },
-      {
-        id: 6,
-        route: 'Execution',
-        label: 'Execution',
-        icon: 'format-list-checks',
-      },
-      // {
-      //   route: 'MainPhase',
-      //   label: 'Main Phase',
-      //   icon: 'clock-outline',
-      // },
+  // {
+  //   title: 'PROJECT MANAGEMENT',
+  //   routes: [
+  //     {
+  //       route: 'Lineup',
+  //       label: 'Lineup',
+  //       icon: ({color, size}) => (
+  //         <MaterialIcons name="house-siding" {...{color, size}} />
+  //       ),
+  //     },
+  //     {
+  //       id: 5,
+  //       route: 'Planning',
+  //       label: 'Planning',
+  //       icon: ({color, size}) => (
+  //         <MaterialIcons name="toc" {...{color, size}} />
+  //       ),
+  //     },
+  //     {
+  //       id: 6,
+  //       route: 'Execution',
+  //       label: 'Execution',
+  //       icon: 'format-list-checks',
+  //     },
+  // {
+  //   route: 'MainPhase',
+  //   label: 'Main Phase',
+  //   icon: 'clock-outline',
+  // },
 
-      //     {
-      //       route: 'ProcessChart',
-      //       label: 'Process Chart',
-      //       activeIcon: ({color, size}) => (
-      //         <Image
-      //           source={ProcessIconActive}
-      //           style={{height: size, width: size}}
-      //         />
-      //       ),
-      //       inactiveIcon: ({color, size}) => (
-      //         <Image source={ProcessIcon} style={{height: size, width: size}} />
-      //       ),
-      //     },
-    ],
-  },
+  //     {
+  //       route: 'ProcessChart',
+  //       label: 'Process Chart',
+  //       activeIcon: ({color, size}) => (
+  //         <Image
+  //           source={ProcessIconActive}
+  //           style={{height: size, width: size}}
+  //         />
+  //       ),
+  //       inactiveIcon: ({color, size}) => (
+  //         <Image source={ProcessIcon} style={{height: size, width: size}} />
+  //       ),
+  //     },
+  //   ],
+  // },
   // {
   //   title: 'MATERIAL MANAGEMENT',
   //   routes: [
@@ -147,7 +150,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
         route: 'Files',
         label: 'Files',
         icon: ({color, size}) => (
-          <MaterialIcons name={'description'} {...{color, size}} />
+          <MaterialIcons name="description" {...{color, size}} />
         ),
       },
     ],
@@ -174,42 +177,42 @@ export const CUSTOMER_DRAWER_ITEMS = [
         route: 'Ownership',
         label: 'Ownership',
         icon: ({color, size}) => (
-          <MaterialIcons name={'recent-actors'} {...{color, size}} />
+          <MaterialIcons name="recent-actors" {...{color, size}} />
         ),
       },
       {
         route: 'BookingDetails',
         label: 'Booking Details',
         icon: ({color, size}) => (
-          <MaterialIcons name={'recent-actors'} {...{color, size}} />
+          <MaterialIcons name="recent-actors" {...{color, size}} />
         ),
       },
       {
         route: 'LoanDetails',
         label: 'Bank Loan',
         icon: ({color, size}) => (
-          <MaterialIcons name={'recent-actors'} {...{color, size}} />
+          <MaterialIcons name="recent-actors" {...{color, size}} />
         ),
       },
       {
         route: 'CustomerAccount',
         label: 'Account',
         icon: ({color, size}) => (
-          <MaterialIcons name={'recent-actors'} {...{color, size}} />
+          <MaterialIcons name="recent-actors" {...{color, size}} />
         ),
       },
       {
         route: 'ModifyRequest',
         label: 'Modify Request',
         icon: ({color, size}) => (
-          <MaterialIcons name={'recent-actors'} {...{color, size}} />
+          <MaterialIcons name="recent-actors" {...{color, size}} />
         ),
       },
       {
         route: 'CustomerFiles',
         label: 'Files',
         icon: ({color, size}) => (
-          <MaterialIcons name={'recent-actors'} {...{color, size}} />
+          <MaterialIcons name="recent-actors" {...{color, size}} />
         ),
       },
     ],

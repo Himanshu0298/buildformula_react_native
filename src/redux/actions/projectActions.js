@@ -1,8 +1,8 @@
-import * as types from './actionTypes';
 import {useDispatch} from 'react-redux';
-import useProject from '../../services/project';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import {useResProcessor} from 'utils/responseProcessor';
+import useProject from '../../services/project';
+import * as types from './actionTypes';
 
 export default function useProjectActions() {
   const dispatch = useDispatch();
@@ -17,6 +17,7 @@ export default function useProjectActions() {
     getProjectPermissions,
     getPurchasedProjects,
     getPurchaseProjectDetails,
+    updateBilling,
   } = useProject();
 
   return {
@@ -29,13 +30,11 @@ export default function useProjectActions() {
         payload: async () => {
           try {
             const response = _res(await getProjectData(projectId));
-            const {data} = response;
+            const {project_data, project_structure} = response.data;
 
-            if (data?.projectData?.towerCount) {
-              delete data.projectData.towerCount;
-            }
+            const project = {...project_data, project_structure};
 
-            return Promise.resolve(data);
+            return Promise.resolve(project);
           } catch (error) {
             const message = _err(error);
             snackbar.showMessage({message, variant: 'error'});
@@ -126,6 +125,22 @@ export default function useProjectActions() {
         payload: async () => {
           try {
             const {data} = _res(await getPurchaseProjectDetails({project_id}));
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    updateBilling: params =>
+      dispatch({
+        type: types.UPDATE_BILLING_DETAILS,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await updateBilling(params));
+            snackbar.showMessage({message: msg});
+
             return Promise.resolve(data);
           } catch (error) {
             const message = _err(error);

@@ -1,76 +1,39 @@
-import React, {PureComponent} from 'react';
-import PropTypes from 'prop-types';
-import AlertContext from './AlertContext';
+import React, {useCallback, useMemo, useState} from 'react';
 import DefaultAlert from './Alert';
+import AlertContext from './AlertContext';
 
-export default class AlertProvider extends PureComponent {
-  state = {open: false};
+function AlertProvider({children}) {
+  const [state, setState] = useState({open: false});
 
-  constructor(props) {
-    super(props);
-    this.contextValue = {
-      show: this.show,
-    };
-  }
+  const show = useCallback(
+    params => setState(v => ({...v, ...params, open: true})),
+    [],
+  );
 
-  /**
-   * Display a alert with this alert.
-   * @param {string} message message to display
-   * @param {string} variant variant for the message
-   * @param {function} [handleAction] click handler for the action button
-   * @param {any} [customParameters] custom parameters that will be passed to the alert renderer
-   * @public
-   */
-  show = props => {
-    this.setState({open: true, ...props});
+  const handleClose = () => {
+    const {onClose} = state;
+    setState(v => ({...v, open: false}));
+    onClose?.();
   };
 
-  handleClose = () => {
-    const {onClose} = this.state;
-    this.setState({open: false});
-    onClose && onClose();
+  const handleConfirm = () => {
+    const {onConfirm} = state;
+    setState(v => ({...v, open: false}));
+    onConfirm?.();
   };
 
-  handleConfirm = () => {
-    const {onConfirm} = this.state;
-    this.setState({open: false});
-    onConfirm && onConfirm();
-  };
+  const context = useMemo(() => ({show}), [show]);
 
-  render() {
-    const {children, AlertComponent = DefaultAlert} = this.props;
-    return (
-      <>
-        <AlertContext.Provider value={this.contextValue}>
-          {children}
-        </AlertContext.Provider>
-        <AlertComponent
-          {...this.state}
-          handleClose={this.handleClose}
-          handleConfirm={this.handleConfirm}
-        />
-      </>
-    );
-  }
+  return (
+    <>
+      <AlertContext.Provider value={context}>{children}</AlertContext.Provider>
+      <DefaultAlert
+        open={state.open}
+        handleClose={handleClose}
+        handleConfirm={handleConfirm}
+      />
+    </>
+  );
 }
 
-//TODO:UPDATE alert prop-types
-AlertProvider.propTypes = {
-  /**
-   * Props to pass through to the action button.
-   */
-  ButtonProps: PropTypes.object,
-  /**
-   * The children that are wrapped by this provider.
-   */
-  children: PropTypes.node,
-  /**
-   * Custom alert component.
-   * Props: open, message, action, ButtonProps, AlertProps
-   */
-  AlertComponent: PropTypes.elementType,
-  /**
-   * Props to pass through to the alert.
-   */
-  AlertProps: PropTypes.object,
-};
+export default AlertProvider;

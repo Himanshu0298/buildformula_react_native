@@ -1,22 +1,23 @@
-import * as types from './actionTypes';
 import {useDispatch} from 'react-redux';
-import useAuth from '../../services/user';
 import {useResProcessor} from 'utils/responseProcessor';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import messaging from '@react-native-firebase/messaging';
+import useAuth from '../../services/user';
+import * as types from './actionTypes';
 
 async function getFcmToken() {
   try {
     const authStatus = await messaging().requestPermission();
-    const enabled =
-      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+    const {AUTHORIZED, PROVISIONAL} = messaging.AuthorizationStatus;
+    const enabled = [AUTHORIZED, PROVISIONAL].includes(authStatus);
 
     if (enabled) {
       return messaging().getToken();
     }
+    return undefined;
   } catch (error) {
     console.log('-----> error', error);
+    return undefined;
   }
 }
 
@@ -68,9 +69,9 @@ export default function useUserActions() {
             const {email} = userData;
             if (email) {
               return Promise.resolve({data: userData});
-            } else {
-              return Promise.reject('Invalid email or password');
             }
+            // eslint-disable-next-line prefer-promise-reject-errors
+            return Promise.reject('Invalid email or password');
           }
         },
       }),

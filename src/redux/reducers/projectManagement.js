@@ -21,7 +21,7 @@ import {
   UPDATE_PHASE_ACTIVITY,
   UPDATE_PHASE_ORDER,
   UPDATE_SUB_PHASE,
-} from './../actions/actionTypes';
+} from '../actions/actionTypes';
 
 const initialState = {
   loading: false,
@@ -38,7 +38,7 @@ const initialState = {
 const reducer = (state = initialState, action = {}) => {
   const {type, payload} = action;
   switch (type) {
-    //RESET data on project change
+    // RESET data on project change
     case `${GET_SELECTED_PROJECT}_PENDING`:
       return {
         ...initialState,

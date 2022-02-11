@@ -1,10 +1,10 @@
 import React from 'react';
-import CustomerAccount from './CustomerAccount';
 import ProjectLayout from 'components/Molecules/Layout/ProjectLayout';
+import CustomerAccount from './CustomerAccount';
 
 export default props => {
   return (
-    <ProjectLayout {...props} >
+    <ProjectLayout {...props}>
       <CustomerAccount {...props} />
     </ProjectLayout>
   );

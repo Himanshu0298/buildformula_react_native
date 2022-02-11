@@ -24,7 +24,7 @@ function BottomAppBar(props) {
             icon="format-list-bulleted"
             mode="text"
             uppercase={false}
-            color={'rgba(4, 29, 54, 0.4)'}
+            color="rgba(4, 29, 54, 0.4)"
             contentStyle={{paddingVertical: 5}}
             onPress={() => navigation.toggleDrawer()}>
             Menu
@@ -44,7 +44,7 @@ function BottomAppBar(props) {
             mode="text"
             uppercase={false}
             accessibilityRole="button"
-            color={'rgba(4, 29, 54, 0.4)'}
+            color="rgba(4, 29, 54, 0.4)"
             onPress={onPressSwitch}
             contentStyle={{paddingVertical: 5}}>
             Switch

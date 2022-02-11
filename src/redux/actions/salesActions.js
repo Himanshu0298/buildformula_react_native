@@ -1,7 +1,7 @@
-import * as types from './actionTypes';
 import {useDispatch} from 'react-redux';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import {useResProcessor} from 'utils/responseProcessor';
+import * as types from './actionTypes';
 import useSalesServices from '../../services/sales';
 
 export default function useSalesActions() {
@@ -22,6 +22,9 @@ export default function useSalesActions() {
     moveVisitor,
     getUnitsBookingStatus,
     lockUnit,
+    getHoldBookingDetails,
+    unitHoldBooking,
+    unitUnHoldBooking,
     createBooking,
     getBankList,
     getVisitor,
@@ -101,15 +104,12 @@ export default function useSalesActions() {
         },
       }),
 
-    getPipelineData: projectId =>
+    getPipelineData: params =>
       dispatch({
         type: types.GET_PIPELINES,
         payload: async () => {
           try {
-            const formData = new FormData();
-            formData.append('project_id', projectId);
-
-            const response = _res(await getPipelines(formData));
+            const response = _res(await getPipelines(params));
             const {data, others} = response;
 
             return Promise.resolve({
@@ -259,9 +259,7 @@ export default function useSalesActions() {
         type: types.UPDATE_PIPELINE_ORDER_LIST,
         payload: async () => {
           try {
-            await Promise.all(
-              list.map(async item => await updatePipelineOrder(item)),
-            );
+            await Promise.all(list.map(item => updatePipelineOrder(item)));
             console.log('----->Reducer called in pipelineorderLit');
             return Promise.resolve();
           } catch (error) {
@@ -272,12 +270,12 @@ export default function useSalesActions() {
         },
       }),
 
-    addPipeline: formData =>
+    addPipeline: params =>
       dispatch({
         type: types.ADD_PIPELINE,
         payload: async () => {
           try {
-            const response = _res(await addPipeline(formData));
+            const response = _res(await addPipeline(params));
             const {data} = response;
 
             return Promise.resolve(data.data);
@@ -312,15 +310,15 @@ export default function useSalesActions() {
         },
       }),
 
-    deletePipeline: (id, formData) =>
+    deletePipeline: params =>
       dispatch({
         type: types.DELETE_PIPELINE,
         payload: async () => {
           try {
-            const response = _res(await deletePipeline(formData));
-            const {data} = response;
+            await deletePipeline(params);
+            snackbar.showMessage({message: 'Deleted Pipeline successfully!'});
 
-            return Promise.resolve(id);
+            return Promise.resolve(params.status_id);
           } catch (error) {
             const message = _err(error);
             snackbar.showMessage({message, variant: 'error'});
@@ -353,6 +351,58 @@ export default function useSalesActions() {
           try {
             const response = _res(await lockUnit(formData));
             const {data} = response;
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    getHoldBookingDetails: params =>
+      dispatch({
+        type: types.GET_HOLD_BOOKING_DETAILS,
+        payload: async () => {
+          try {
+            const response = _res(await getHoldBookingDetails(params));
+            const {data} = response;
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    unitHoldBooking: params =>
+      dispatch({
+        type: types.HOLD_UNIT_BOOKING,
+        payload: async () => {
+          try {
+            const response = _res(await unitHoldBooking(params));
+            const {data, msg} = response;
+            snackbar.showMessage({message: msg});
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    unitUnHoldBooking: params =>
+      dispatch({
+        type: types.UN_HOLD_UNIT_BOOKING,
+        payload: async () => {
+          try {
+            const response = _res(await unitUnHoldBooking(params));
+            const {data, msg} = response;
+            snackbar.showMessage({message: msg});
 
             return Promise.resolve(data);
           } catch (error) {

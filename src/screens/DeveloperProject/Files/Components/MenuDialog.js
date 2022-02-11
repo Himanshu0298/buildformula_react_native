@@ -84,6 +84,7 @@ function MenuDialog(props) {
       return Share.open(options);
     } catch (error) {
       console.log('-----> error', error);
+      return error;
     }
   };
 
@@ -136,12 +137,14 @@ function MenuDialog(props) {
           </View>
         </TouchableOpacity>
       ) : null}
-      <TouchableOpacity onPress={() => versionDataHandler(id)}>
-        <View style={styles.viewDirection}>
-          <IconButton icon="file-multiple" onPress={() => {}} />
-          <Text style={styles.ModalText}>Manage version</Text>
-        </View>
-      </TouchableOpacity>
+      {fileType === 'file' ? (
+        <TouchableOpacity onPress={() => versionDataHandler(id)}>
+          <View style={styles.viewDirection}>
+            <IconButton icon="file-multiple" onPress={() => {}} />
+            <Text style={styles.ModalText}>Manage version</Text>
+          </View>
+        </TouchableOpacity>
+      ) : null}
       {modulePermissions?.editor || modulePermissions?.admin ? (
         <TouchableOpacity
           onPress={() => {

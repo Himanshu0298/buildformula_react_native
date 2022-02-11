@@ -3,10 +3,9 @@ import {Keyboard, TouchableOpacity} from 'react-native';
 import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
 import {Button, Dialog, Portal, TextInput, withTheme} from 'react-native-paper';
-import {secondaryTheme} from 'styles/theme';
-import RenderInput from './RenderInput';
 import DatePicker from 'react-native-date-picker';
 import Layout from 'utils/Layout';
+import RenderInput from './RenderInput';
 
 const RenderDatePicker = React.forwardRef((props, ref) => {
   const {
@@ -92,7 +91,6 @@ const RenderDatePicker = React.forwardRef((props, ref) => {
 
 RenderDatePicker.defaultProps = {
   mode: 'date',
-  onChange: () => {},
 };
 
 RenderDatePicker.prototype = {

@@ -1,133 +1,95 @@
-import React, {useMemo, useState} from 'react';
-import {useTranslation} from 'react-i18next';
-import {StyleSheet, View, Image, Text, TouchableOpacity} from 'react-native';
-import {Subheading} from 'react-native-paper';
+import React from 'react';
+import {StyleSheet, View, TouchableOpacity, FlatList} from 'react-native';
+import {withTheme, Text} from 'react-native-paper';
 import PropTypes from 'prop-types';
-import plot from 'assets/images/plot.png';
-import {theme} from 'styles/theme';
+import TowerIcon from 'assets/images/tower.svg';
+import {getTowerLabel} from 'utils';
+import {secondaryTheme} from 'styles/theme';
 
-function TowersList({
-  onPress,
-  navigation,
-  towers,
-  towerCount,
-  heme,
-  activeSrc,
-  selectedTower,
-  towerType,
-}) {
-  const [value, setValue] = useState();
-  console.log('----->towerType in index screen', towerType);
+export function RenderTowerBox(props) {
+  const {towerId, onPress, active, theme} = props;
 
-  const selectTower = (floors, i) => {
-    // setValue(v - 1);
-    navigation.navigate('BC_Step_Floor', {
-      floors: floors,
-      towerType,
-      towerId: i,
-    });
-  };
+  const towerLabel = getTowerLabel(towerId);
+
+  const Container = onPress ? TouchableOpacity : View;
 
   return (
-    <View>
-      <View>
-        <View style={styles.towerList}>
-          {new Array(towerCount).fill(0).map((_, i) => {
-            const towerId = i + 1;
-            return (
-              <View
-                style={{
-                  flexDirection: 'row',
-                  borderWidth: 1,
-                  alignItems: 'center',
-                  margin: 8,
-                }}>
-                <View
-                  style={{
-                    backgroundColor: 'lightgrey',
-                    padding: 10,
-                  }}>
-                  {/* {activeSrc} */}
-                  <Image
-                    source={plot}
-                    style={{
-                      width: 30,
-                      height: 30,
-                    }}
-                  />
-                </View>
-                <TouchableOpacity
-                  onPress={() => selectTower(towers[towerId])}
-                  style={{
-                    backgroundColor: i === value ? theme.colors.primary : null,
-                    height: '100%',
-                  }}>
-                  <TouchableOpacity
-                    style={{margin: 10}}
-                    onPress={() => selectTower(towers[towerId], i)}>
-                    <Text style={{color: i === value ? 'white' : 'black'}}>
-                      {towerId}
-                    </Text>
-                  </TouchableOpacity>
-                </TouchableOpacity>
-              </View>
-            );
-          })}
-        </View>
+    <Container style={styles.towerContainer} onPress={() => onPress?.(towerId)}>
+      <View style={styles.iconContainer}>
+        <TowerIcon
+          height={20}
+          width={20}
+          fill={theme.colors.accent}
+          fillSecondary={theme.colors.primary}
+        />
       </View>
-    </View>
+      <View
+        style={[
+          styles.labelContainer,
+          active ? {backgroundColor: theme.colors.primary} : {},
+        ]}>
+        <Text theme={active ? secondaryTheme : undefined}>{towerLabel}</Text>
+      </View>
+    </Container>
   );
 }
 
 function TowerSelector(props) {
-  const {
-    title,
-    subtitle,
-    selectButtonLabel,
-    towers,
-    towerCount,
-    onSelectFloor,
-    towerType,
-    activeSrc,
-    navigation,
-  } = props;
-
-  const {t} = useTranslation();
-
-  const [selectedTower, setSelectedTower] = React.useState();
-
-  const floors = useMemo(() => {
-    return towers?.[selectedTower]?.floors || {};
-  }, [selectedTower, towers]);
+  const {towerCount, onSelectTower} = props;
 
   return (
-    <>
-      {/* <FormTitle title={t(title)} subTitle={t(subtitle)} /> */}
-      <View style={styles.container}>
-        <Subheading>{towerType}</Subheading>
-        <TowersList
-          towers={towers}
-          towerCount={towerCount}
-          towerType={towerType}
-          activeSrc={activeSrc}
-          theme={theme}
-          navigation={navigation}
-          selectedTower={selectedTower}
-          onPress={setSelectedTower}
-        />
-      </View>
-    </>
+    <View style={styles.towerList}>
+      <FlatList
+        data={new Array(towerCount).fill(0)}
+        numColumns={3}
+        extraData={new Array(towerCount).fill(0)}
+        contentContainerStyle={styles.scrollContainer}
+        renderItem={({index}) => (
+          <RenderTowerBox
+            {...props}
+            key={index.toString()}
+            towerId={index + 1}
+            onPress={onSelectTower}
+          />
+        )}
+      />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingHorizontal: 20,
-  },
   towerList: {
+    marginTop: 10,
+    flexGrow: 1,
+  },
+  scrollContainer: {
+    flexGrow: 1,
+  },
+  towerContainer: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
+    borderWidth: 1,
+    borderColor: 'rgba(94, 109, 124, 0.5)',
+    borderRadius: 5,
+    alignItems: 'center',
+    margin: 5,
+    width: '30%',
+    backgroundColor: '#E6E6E6',
+  },
+  iconContainer: {
+    width: 35,
+    height: 35,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  labelContainer: {
+    padding: 10,
+    flexGrow: 1,
+    backgroundColor: '#fff',
+    minWidth: 50,
+    borderTopRightRadius: 5,
+    borderBottomRightRadius: 5,
   },
 });
 
@@ -135,14 +97,13 @@ TowerSelector.defaultProps = {
   title: 'label_select_tower',
   subtitle: 'label_select_appropriate_option',
   selectButtonLabel: 'Show All Units',
-  onSelectFloor: () => {},
 };
 
 TowerSelector.propTypes = {
   title: PropTypes.string,
   subtitle: PropTypes.string,
   selectButtonLabel: PropTypes.string,
-  onSelectFloor: PropTypes.func.isRequired,
+  onSelectTower: PropTypes.func.isRequired,
 };
 
-export default TowerSelector;
+export default withTheme(TowerSelector);

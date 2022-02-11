@@ -21,13 +21,13 @@ import useSalesActions from 'redux/actions/salesActions';
 import {useSelector} from 'react-redux';
 import dayjs from 'dayjs';
 import Spinner from 'react-native-loading-spinner-overlay';
-import ProjectHeader from 'components/Molecules/Layout/ProjectHeader';
 import {PRIORITY_COLORS, STRUCTURE_TYPE_LABELS} from 'utils/constant';
 import CustomBadge from 'components/Atoms/CustomBadge';
 import NoDataFound from 'assets/images/NoDataFound.png';
 import {getShadow, getPermissions} from 'utils';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useSalesLoading} from 'redux/selectors';
 
 const FILTERS = [
   {value: 'name', label: 'Name'},
@@ -44,24 +44,22 @@ function StatsRow({visitorAnalytics}) {
     monthlyVisitors = 0,
     yearlyVisitors = 0,
   } = visitorAnalytics;
+
+  const data = [
+    {label: 'Total', value: totalVisitors},
+    {label: 'Weekly', value: weeklyVisitors},
+    {label: 'Monthly', value: monthlyVisitors},
+    {label: 'Yearly', value: yearlyVisitors},
+  ];
+
   return (
     <View style={styles.statsRowMainContainer}>
-      <View style={styles.rowItemContainer}>
-        <Title style={styles.rowTitle}>{totalVisitors}</Title>
-        <Caption style={styles.rowLabel}>Total</Caption>
-      </View>
-      <View style={styles.rowItemContainer}>
-        <Title style={styles.rowTitle}>{weeklyVisitors}</Title>
-        <Caption style={styles.rowLabel}>Weekly</Caption>
-      </View>
-      <View style={styles.rowItemContainer}>
-        <Title style={styles.rowTitle}>{monthlyVisitors}</Title>
-        <Caption style={styles.rowLabel}>Monthly</Caption>
-      </View>
-      <View style={styles.rowItemContainer}>
-        <Title style={styles.rowTitle}>{yearlyVisitors}</Title>
-        <Caption style={styles.rowLabel}>Yearly</Caption>
-      </View>
+      {data.map(i => (
+        <View key={i.label} style={styles.rowItemContainer}>
+          <Title style={styles.rowTitle}>{i.value}</Title>
+          <Caption style={styles.rowLabel}>{i.label}</Caption>
+        </View>
+      ))}
     </View>
   );
 }
@@ -69,13 +67,11 @@ function StatsRow({visitorAnalytics}) {
 function RenderVisitorItem(props) {
   const {theme, data, navToDetails} = props;
 
-  console.log('----->data in visitors list', data);
   const {
     id,
     first_name,
     last_name,
     phone,
-    follow_up_date,
     priority = 'low',
     inquiry_for,
     created,
@@ -112,35 +108,28 @@ function RenderVisitorItem(props) {
           />
         </View>
       </View>
-      <Divider style={{height: 1}} />
     </TouchableOpacity>
   );
 }
 
 function RenderVisitors(props) {
-  const {
-    theme,
-    visitors,
-    onRefresh,
-    showAnalyticsRow,
-    visitorAnalytics,
-    navToDetails,
-  } = props;
+  const {theme, visitors, onRefresh, navToDetails} = props;
+
+  const renderDivider = () => <Divider style={styles.divider} />;
 
   return (
     <View style={styles.contentContainer}>
-      {showAnalyticsRow ? (
-        <StatsRow visitorAnalytics={visitorAnalytics} />
-      ) : null}
       <FlatList
         data={visitors}
         extraData={visitors}
         keyExtractor={(item, index) => index.toString()}
-        contentContainerStyle={{paddingBottom: 240}}
+        contentContainerStyle={styles.scrollContainer}
         showsVerticalScrollIndicator={false}
+        ItemSeparatorComponent={renderDivider}
         renderItem={({item, index}) => (
           <RenderVisitorItem
             {...props}
+            key={index?.toString()}
             data={item}
             navToDetails={navToDetails}
           />
@@ -151,12 +140,7 @@ function RenderVisitors(props) {
         ListEmptyComponent={
           <View style={styles.noResultContainer}>
             <Image source={NoDataFound} />
-            <Title
-              style={{
-                color: theme.colors.primary,
-                fontSize: 22,
-                marginTop: 10,
-              }}>
+            <Title style={[styles.title, {color: theme.colors.primary}]}>
               Start adding your visitor
             </Title>
           </View>
@@ -168,6 +152,7 @@ function RenderVisitors(props) {
 
 function Header(props) {
   const {theme, filter, searchQuery, setFilter, setSearchQuery} = props;
+  const {colors} = theme;
 
   const [visible, setVisible] = React.useState(false);
 
@@ -177,27 +162,20 @@ function Header(props) {
 
   return (
     <>
-      <View
-        style={{
-          flexDirection: 'row',
-          marginBottom: 10,
-          justifyContent: 'space-between',
-          marginHorizontal: 20,
-          alignItems: 'center',
-        }}>
-        <Title style={{color: theme.colors.primary}}>Visitor's list</Title>
+      <View style={styles.headerContainer}>
+        <Subheading style={{color: colors.primary}}>Visitor's list</Subheading>
         <Menu
           visible={visible}
           onDismiss={toggleMenu}
           anchor={
             <OpacityButton
               opacity={0.1}
-              color={theme.colors.primary}
-              style={{borderRadius: 50}}
+              color={colors.primary}
+              style={styles.filterButton}
               onPress={toggleMenu}>
               <MaterialIcon
                 name="filter-variant"
-                color={theme.colors.primary}
+                color={colors.primary}
                 size={22}
               />
             </OpacityButton>
@@ -206,10 +184,10 @@ function Header(props) {
             const active = i.value === filter;
             return (
               <Menu.Item
-                key={index}
+                key={index?.toString()}
                 title={i.label}
-                style={active ? {backgroundColor: theme.colors.primary} : {}}
-                titleStyle={active ? {color: '#fff'} : {}}
+                style={active ? {backgroundColor: colors.primary} : {}}
+                titleStyle={active ? {color: colors.white} : {}}
                 onPress={() => {
                   setFilter(i.value);
                   toggleMenu();
@@ -232,7 +210,9 @@ function Visitors(props) {
   const {theme, navigation} = props;
 
   const {selectedProject} = useSelector(s => s.project);
-  const {loading, visitors, visitorAnalytics} = useSelector(s => s.sales);
+  const {visitors, visitorAnalytics} = useSelector(s => s.sales);
+
+  const loading = useSalesLoading();
 
   const modulePermission = getPermissions('Visitors');
 
@@ -268,10 +248,11 @@ function Visitors(props) {
     navigation.navigate('VisitorDetails', {visitorId: id});
   };
 
+  const navToAddVisitor = () => navigation.navigate('AddVisitor');
+
   return (
-    <>
-      <Spinner visible={loading} textContent={''} />
-      <ProjectHeader />
+    <View style={styles.container}>
+      <Spinner visible={loading} textContent="" />
       <Header
         {...props}
         filter={filter}
@@ -280,33 +261,38 @@ function Visitors(props) {
         setSearchQuery={setSearchQuery}
       />
 
-      <RenderVisitors
-        {...props}
-        visitors={filteredVisitors}
-        showAnalyticsRow={true}
-        visitorAnalytics={visitorAnalytics}
-        onRefresh={onRefresh}
-        navToDetails={navToDetails}
-      />
+      <StatsRow visitorAnalytics={visitorAnalytics} />
 
+      <View style={{flexGrow: 1}}>
+        <RenderVisitors
+          {...props}
+          visitors={filteredVisitors}
+          onRefresh={onRefresh}
+          navToDetails={navToDetails}
+        />
+      </View>
       {modulePermission?.editor || modulePermission?.admin ? (
         <FAB
           style={[styles.fab, {backgroundColor: theme.colors.primary}]}
           large
           icon="plus"
-          onPress={() => navigation.navigate('AddVisitor')}
+          onPress={navToAddVisitor}
         />
       ) : null}
-    </>
+    </View>
   );
 }
 
 export default withTheme(Visitors);
 
 const styles = StyleSheet.create({
+  container: {
+    flexGrow: 1,
+    position: 'relative',
+  },
   contentContainer: {
+    flex: 1,
     marginTop: 2,
-    marginBottom: 15,
   },
   statsRowMainContainer: {
     paddingVertical: 5,
@@ -319,7 +305,6 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     paddingHorizontal: 5,
     flexDirection: 'row',
-
     alignItems: 'center',
     backgroundColor: '#fff',
   },
@@ -369,5 +354,27 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(4, 29, 54, 0.1)',
     marginHorizontal: 10,
     ...getShadow(0),
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    marginBottom: 10,
+    justifyContent: 'space-between',
+    marginHorizontal: 20,
+    alignItems: 'center',
+  },
+  scrollContainer: {
+    flexGrow: 1,
+    paddingBottom: 30,
+  },
+  title: {
+    fontSize: 22,
+    marginTop: 10,
+  },
+  divider: {
+    height: 1,
+    marginVertical: 2,
+  },
+  filterButton: {
+    borderRadius: 50,
   },
 });

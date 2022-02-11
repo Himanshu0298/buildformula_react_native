@@ -4,7 +4,7 @@ import StepOne from './StepOne';
 
 export default props => {
   return (
-    <ProjectLayout {...props} showLogo={true} tab={false}>
+    <ProjectLayout {...props} showLogo tab={false}>
       <StepOne {...props} />
     </ProjectLayout>
   );

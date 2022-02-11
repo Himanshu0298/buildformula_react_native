@@ -517,13 +517,8 @@ function RenderFirstBigPaymentDetails(props) {
 
 function PaymentSection(props) {
   const {bookingDetails, bookingPaymentTypes, bookingBanks} = props;
-  const {
-    payment_type,
-    bank,
-    is_loan,
-    loan_amount,
-    payment_remark,
-  } = bookingDetails;
+  const {payment_type, bank, is_loan, loan_amount, payment_remark} =
+    bookingDetails;
 
   return (
     <View style={styles.sectionContainer}>

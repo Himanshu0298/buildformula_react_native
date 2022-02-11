@@ -7,13 +7,8 @@ import {useSelector} from 'react-redux';
 import NoResult from 'components/Atoms/NoResult';
 
 function RenderFile(props) {
-  const {
-    file,
-    toggleMenu,
-    setModalContentType,
-    fileIndex,
-    setModalContent,
-  } = props;
+  const {file, toggleMenu, setModalContentType, fileIndex, setModalContent} =
+    props;
 
   const {file_name, created} = file;
 
@@ -49,13 +44,8 @@ function RenderFile(props) {
 }
 
 function FileSection(props) {
-  const {
-    route,
-    menuId,
-    toggleMenu,
-    setModalContentType,
-    setModalContent,
-  } = props;
+  const {route, menuId, toggleMenu, setModalContentType, setModalContent} =
+    props;
 
   const {index_of: folderDepth = 0} = route?.params || {};
 

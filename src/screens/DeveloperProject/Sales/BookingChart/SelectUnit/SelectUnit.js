@@ -1,28 +1,40 @@
-import React, {useEffect, useMemo} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {useSelector} from 'react-redux';
 import useSalesActions from 'redux/actions/salesActions';
 import Spinner from 'react-native-loading-spinner-overlay';
 import UnitSelector from 'components/Molecules/UnitSelector';
 import dayjs from 'dayjs';
-import {getPermissions} from 'utils';
+import {getFloorNumber, getPermissions} from 'utils';
 import {useSnackbar} from 'components/Atoms/Snackbar';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {IconButton, Subheading} from 'react-native-paper';
+import SelectHoldOrBook from 'screens/DeveloperProject/Sales/BookingChart/SelectUnit/Components/UnitBookingDialog';
+import {STRUCTURE_TYPE_LABELS} from 'utils/constant';
+import {useSalesLoading} from 'redux/selectors';
 
-export default function SelectUnit(props) {
+function SelectUnit(props) {
   const {navigation, route} = props;
+  const {
+    project_id,
+    floorId,
+    towerId,
+    structureType,
+    selectedStructure,
+    towerType,
+  } = route?.params || {};
 
   const modulePermission = getPermissions('Booking Chart');
-
   const snackbar = useSnackbar();
 
   const {getUnitsBookingStatus, lockUnit, toggleTimer} = useSalesActions();
 
-  const {selectedProject} = useSelector(state => state.project);
-  const {loadingUnitStatus, unitBookingStatus} = useSelector(s => s.sales);
-  const {user} = useSelector(state => state.user);
+  const {selectedProject} = useSelector(s => s.project);
+  const {unitBookingStatus} = useSelector(s => s.sales);
+  const {user} = useSelector(s => s.user);
 
-  const {selectedStructure, floorId, towerId} = route?.params || {};
-  const structureData = selectedProject.projectData?.[selectedStructure] || {};
-  const {towers} = structureData;
+  const loading = useSalesLoading();
+
+  const [selectedUnit, setSelectedUnit] = useState();
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -34,27 +46,40 @@ export default function SelectUnit(props) {
   }, []);
 
   const units = useMemo(() => {
-    const data = towers?.[towerId]?.floors?.[floorId]?.units || {};
+    const structureData =
+      selectedProject.project_structure?.[selectedStructure] || {};
 
-    Object.keys(data).map(key => {
+    if ([4, 5].includes(selectedStructure)) {
+      return structureData.units;
+    }
+
+    return structureData.towers?.[towerId]?.floors?.[floorId]?.units || {};
+  }, [floorId, selectedProject, selectedStructure, towerId]);
+
+  const processedUnits = useMemo(() => {
+    const updatedUnits = units.map(unit => {
       const bookingData = unitBookingStatus.find(
-        unit => unit.id === data[key].unitId,
+        i => Number(i.id) === Number(unit.unit_id),
       );
 
       if (bookingData) {
-        data[key] = {...data[key], ...bookingData};
+        unit = {...unit, ...bookingData};
       }
+
+      return unit;
     });
 
-    return data;
-  }, [floorId, towerId, towers, unitBookingStatus]);
+    return updatedUnits;
+  }, [unitBookingStatus, units]);
+
+  const toggleDialog = value => setSelectedUnit(v => (!v ? value : undefined));
 
   const fetchUnitsBookingStatus = () => {
     getUnitsBookingStatus({
-      project_id: selectedProject.id,
-      project_type: selectedStructure,
-      project_tower: towerId,
-      project_floor: floorId,
+      project_id,
+      project_type: structureType || selectedStructure,
+      project_tower: towerId || 0,
+      project_floor: Number(floorId || 0),
     });
   };
 
@@ -70,16 +95,15 @@ export default function SelectUnit(props) {
     return disabled;
   };
 
-  const onSelectUnit = async (index, unit) => {
+  const handleBook = () => {
     if (modulePermission?.editor || modulePermission?.admin) {
-      await lockUnit({unit_id: unit.unitId, project_id: selectedProject.id});
+      lockUnit({unit_id: selectedUnit.unit_id, project_id: selectedProject.id});
       toggleTimer({showTimer: true, startTime: new Date(), time: 1800});
+      toggleDialog();
 
-      navigation.navigate('BC_Step_Four', {
-        project_id: selectedProject.id,
-        unit_id: unit.unitId,
-      });
+      navigation.navigate('BC_Step_Five', {...route?.params, ...selectedUnit});
     } else {
+      toggleDialog();
       snackbar.showMessage({
         message:
           'You do not have permissions to perform this action. Contact project Admin for support',
@@ -88,18 +112,83 @@ export default function SelectUnit(props) {
     }
   };
 
+  const handleHold = () => {
+    toggleDialog();
+    navigation.navigate('BookingFormOnHold', {
+      ...route?.params,
+      ...selectedUnit,
+    });
+  };
+
+  const handleSelectUnit = unit => {
+    if (unit.status === 5) {
+      handleHold();
+    } else {
+      toggleDialog(unit);
+    }
+  };
+
+  const floor = floorId
+    ? getFloorNumber(floorId)
+    : STRUCTURE_TYPE_LABELS?.[selectedStructure];
+
   return (
-    <>
-      <Spinner visible={loadingUnitStatus} textContent={''} />
-      <UnitSelector
-        refreshing={unitBookingStatus.length > 0 && loadingUnitStatus}
-        onRefresh={fetchUnitsBookingStatus}
-        onSelectUnit={onSelectUnit}
-        floorId={floorId}
-        units={units}
-        showBhkFilters={[1, 4].includes(selectedStructure)}
-        isUnitDisabled={checkUnitDisability}
+    <View style={styles.container}>
+      <SelectHoldOrBook
+        visible={Boolean(selectedUnit)}
+        setVisible={setSelectedUnit}
+        toggleDialog={toggleDialog}
+        handleBook={handleBook}
+        handleHold={handleHold}
       />
-    </>
+      <Spinner visible={loading} textContent="" />
+
+      {towerType ? (
+        <Subheading>
+          {towerType}
+          {structureType ? ` - ${STRUCTURE_TYPE_LABELS[structureType]}` : ''}
+        </Subheading>
+      ) : null}
+
+      <View style={styles.headerContainer}>
+        <TouchableOpacity
+          style={styles.titleContainer}
+          onPress={navigation.goBack}>
+          <IconButton icon="keyboard-backspace" />
+          <Subheading>{floor}</Subheading>
+        </TouchableOpacity>
+      </View>
+
+      <UnitSelector
+        {...props}
+        refreshing={unitBookingStatus.length > 0 && loading}
+        floorNumber={floor}
+        units={processedUnits}
+        showBhkFilters
+        floorType={structureType || selectedStructure}
+        isUnitDisabled={checkUnitDisability}
+        onRefresh={fetchUnitsBookingStatus}
+        onSelectUnit={handleSelectUnit}
+      />
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingHorizontal: 15,
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginLeft: -15,
+  },
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+});
+
+export default SelectUnit;

@@ -56,9 +56,8 @@ function AddApproverDialog(props) {
     if (_selectedUsers.length > 3) {
       setError('Max 3 approvers only!');
       return;
-    } else {
-      setError();
     }
+    setError();
 
     setSelectedUsers(_selectedUsers);
   };

@@ -1,26 +1,25 @@
 import React from 'react';
-import {View, StyleSheet} from 'react-native';
-import {Button, Title} from 'react-native-paper';
+import {StyleSheet, View} from 'react-native';
+import {Subheading} from 'react-native-paper';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import useSalesActions from 'redux/actions/salesActions';
 import {useSelector} from 'react-redux';
 import CustomCheckbox from 'components/Atoms/CustomCheckbox';
-import {theme} from 'styles/theme';
-import RenderTextBox from 'components/Atoms/RenderTextbox';
 import RichTextEditor from 'components/Atoms/RichTextEditor';
+import ActionButtons from 'components/Atoms/ActionButtons';
 
 const schema = Yup.object().shape({
   remarks: Yup.string().required('Please enter a comment'),
 });
 
-const AddComments = props => {
+function AddComments(props) {
   const {navigation, route} = props;
   const {visitorId} = route.params || {};
 
   const {addVisitorComment, getVisitorActivities} = useSalesActions();
 
-  const {selectedProject} = useSelector(state => state.project);
+  const {selectedProject} = useSelector(s => s.project);
 
   const onSubmit = async values => {
     await addVisitorComment({
@@ -43,10 +42,12 @@ const AddComments = props => {
       initialValues={{is_important: false}}
       validationSchema={schema}
       onSubmit={onSubmit}>
-      {({handleChange, setFieldValue, values, handleSubmit}) => (
-        <View style={{flexGrow: 1, justifyContent: 'space-between'}}>
-          <View>
-            <Title style={{marginLeft: 10, marginTop: 20}}>Add comment</Title>
+      {({setFieldValue, values, handleSubmit}) => (
+        <View style={styles.container}>
+          <View style={styles.contentContainer}>
+            <View style={styles.headingContainer}>
+              <Subheading>Add comment</Subheading>
+            </View>
 
             <CustomCheckbox
               label="Mark as important"
@@ -56,62 +57,38 @@ const AddComments = props => {
               }
             />
 
-            {/* <RenderTextBox
-              name="remarks"
-              numberOfLines={8}
-              label={'Add Comment'}
-              containerStyles={styles.input}
-              value={values.remarks}
-              onChangeText={handleChange('remarks')}
-            /> */}
             <RichTextEditor
               name="remarks"
               placeholder="Response"
               value={values.remarks}
-              onChangeText={value => {
-                setFieldValue('remarks', value);
-              }}
+              height={200}
+              onChangeText={value => setFieldValue('remarks', value)}
             />
           </View>
-          <View style={styles.actionContainer}>
-            <Button
-              style={{
-                flex: 1,
-                marginHorizontal: 5,
-                borderWidth: 1,
-                borderColor: theme.colors.primary,
-              }}
-              contentStyle={{padding: 3}}
-              theme={{roundness: 15}}
-              onPress={navigation.goBack}>
-              Back
-            </Button>
-            <Button
-              style={{flex: 1, marginHorizontal: 5}}
-              mode="contained"
-              contentStyle={{padding: 3}}
-              theme={{roundness: 15}}
-              onPress={handleSubmit}>
-              Save
-            </Button>
-          </View>
+          <ActionButtons
+            cancelLabel="Back"
+            submitLabel="Save"
+            onCancel={navigation.goBack}
+            onSubmit={handleSubmit}
+          />
         </View>
       )}
     </Formik>
   );
-};
-
-export default AddComments;
+}
 
 const styles = StyleSheet.create({
-  input: {
-    paddingVertical: 7,
-    padding: 10,
-  },
-  actionContainer: {
-    paddingHorizontal: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
+  container: {
+    flexGrow: 1,
     justifyContent: 'space-between',
   },
+  contentContainer: {
+    flexGrow: 1,
+  },
+  headingContainer: {
+    marginLeft: 10,
+    marginTop: 20,
+  },
 });
+
+export default AddComments;

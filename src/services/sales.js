@@ -31,7 +31,11 @@ export default function useSalesServices() {
       );
     },
     getPipelines: data => {
-      return instance.post('/pipeline/get_lists', data, config());
+      return instance.post(
+        '/pipeline/get_lists',
+        data,
+        config({multipart: false}),
+      );
     },
     addVisitor: data => {
       return instance.post('/visitors/add', data, config({multipart: false}));
@@ -79,13 +83,17 @@ export default function useSalesServices() {
       );
     },
     addPipeline: data => {
-      return instance.post('/pipeline/add', data, config());
+      return instance.post('/pipeline/add', data, config({multipart: false}));
     },
     moveVisitor: data => {
       return instance.post('/pipeline/movecontact', data, config());
     },
     deletePipeline: data => {
-      return instance.post('inquiry_status/remove', data, config());
+      return instance.post(
+        'inquiry_status/remove',
+        data,
+        config({multipart: false}),
+      );
     },
     getUnitsBookingStatus: data => {
       return instance.post(
@@ -101,9 +109,30 @@ export default function useSalesServices() {
         config({multipart: false}),
       );
     },
+    getHoldBookingDetails: data => {
+      return instance.post(
+        '/booking/get_booking_unhold_details',
+        data,
+        config({multipart: false}),
+      );
+    },
+    unitHoldBooking: data => {
+      return instance.post(
+        '/booking/hold_booking',
+        data,
+        config({multipart: false}),
+      );
+    },
+    unitUnHoldBooking: data => {
+      return instance.post(
+        '/booking/unhold_booking',
+        data,
+        config({multipart: false}),
+      );
+    },
     createBooking: data => {
       return instance.post(
-        '/booking/save_booking',
+        '/save_booking_new',
         data,
         config({multipart: false}),
       );

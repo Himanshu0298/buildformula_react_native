@@ -191,14 +191,14 @@ function ReviewForm(props) {
             <Text>Modification Type</Text>
             <View style={styles.radioContainer}>
               <Radio
-                label={'Free'}
-                value={'free'}
+                label="Free"
+                value="free"
                 checked={values.type === 'free'}
                 onChange={value => setFieldValue('type', value)}
               />
               <Radio
-                label={'Paid'}
-                value={'paid'}
+                label="Paid"
+                value="paid"
                 checked={values.type === 'paid'}
                 onChange={value => setFieldValue('type', value)}
               />
@@ -275,7 +275,7 @@ function ReviewForm(props) {
 
               <View style={styles.addButtonContainer}>
                 <OpacityButton
-                  color={'#4872F4'}
+                  color="#4872F4"
                   opacity={0.18}
                   style={styles.addButton}
                   onPress={toggleAddDialog}>

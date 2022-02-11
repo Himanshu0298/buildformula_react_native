@@ -1,5 +1,3 @@
-'use strict';
-
 import React, {PureComponent} from 'react';
 import {
   StyleSheet,
@@ -65,7 +63,7 @@ export default class Timeline extends PureComponent {
           data={this.state.data}
           extraData={this.state}
           renderItem={this._renderItem}
-          keyExtractor={(item, index) => index + ''}
+          keyExtractor={(item, index) => `${index}`}
           {...this.props.options}
         />
       </View>
@@ -118,7 +116,7 @@ export default class Timeline extends PureComponent {
     if (!this.props.showTime) {
       return null;
     }
-    var timeWrapper = null;
+    let timeWrapper = null;
     switch (this.props.columnFormat) {
       case 'single-column-left':
         timeWrapper = {
@@ -270,23 +268,23 @@ export default class Timeline extends PureComponent {
   }
 
   _renderCircle(rowData, rowID) {
-    var circleSize = rowData.circleSize
+    const circleSize = rowData.circleSize
       ? rowData.circleSize
       : this.props.circleSize
       ? this.props.circleSize
       : defaultCircleSize;
-    var circleColor = rowData.circleColor
+    const circleColor = rowData.circleColor
       ? rowData.circleColor
       : this.props.circleColor
       ? this.props.circleColor
       : defaultCircleColor;
-    var lineWidth = rowData.lineWidth
+    const lineWidth = rowData.lineWidth
       ? rowData.lineWidth
       : this.props.lineWidth
       ? this.props.lineWidth
       : defaultLineWidth;
 
-    var circleStyle = null;
+    let circleStyle = null;
 
     switch (this.props.columnFormat) {
       case 'single-column-left':
@@ -326,7 +324,7 @@ export default class Timeline extends PureComponent {
         break;
     }
 
-    var innerCircle = null;
+    let innerCircle = null;
     switch (this.props.innerCircle) {
       case 'icon': {
         const iconDefault = rowData.iconDefault

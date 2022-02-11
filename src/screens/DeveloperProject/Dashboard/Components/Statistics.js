@@ -27,7 +27,7 @@ function RenderProgressChart(props) {
         height={120}
         strokeWidth={14}
         radius={40}
-        hideLegend={true}
+        hideLegend
         chartConfig={{
           backgroundGradientFrom: '#fff',
           backgroundGradientTo: '#fff',
@@ -55,7 +55,7 @@ function RenderProgressChart(props) {
 function Statistics(props) {
   const {onRefresh} = props;
 
-  const {dashboardData = {}} = useSelector(state => state.project);
+  const {dashboardData = {}} = useSelector(s => s.project);
   const {
     salesData,
     bookingProjectTypeWiseCount: bookingData,
@@ -93,10 +93,7 @@ function Statistics(props) {
                 labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
               }}
               bezier
-              style={{
-                marginTop: 8,
-                marginLeft: -10,
-              }}
+              style={{marginTop: 8, marginLeft: -10}}
             />
           </View>
         ) : null}
@@ -106,7 +103,7 @@ function Statistics(props) {
             <View style={styles.row}>
               <RenderProgressChart
                 params={{labels: ['Apartment'], data: bookingData.apartment}}
-                color={'72, 161, 244'}
+                color="72, 161, 244"
                 width={(Layout.window.width - 40) / 3}
               />
               <RenderProgressChart
@@ -123,7 +120,7 @@ function Statistics(props) {
             <View style={styles.row}>
               <RenderProgressChart
                 params={{labels: ['Bungalow'], data: bookingData.bunglow}}
-                color={'7, 202, 3'}
+                color="7, 202, 3"
                 width={(Layout.window.width - 40) / 3}
               />
               <RenderProgressChart
@@ -156,10 +153,7 @@ function Statistics(props) {
                 labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
                 propsForHorizontalLabels: {paddingBottom: 100},
               }}
-              style={{
-                marginTop: 8,
-                marginLeft: -50,
-              }}
+              style={{marginTop: 8, marginLeft: -50}}
             />
           </View>
         ) : null}

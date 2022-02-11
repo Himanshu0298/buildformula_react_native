@@ -20,7 +20,6 @@ import {secondaryTheme, theme} from 'styles/theme';
 import banner from 'assets/images/banner.png';
 import image from 'assets/images/buildings.png';
 import {Formik} from 'formik';
-import CustomInput from './../Components/CustomInput';
 import useUserActions from 'redux/actions/userActions';
 import {useSelector} from 'react-redux';
 import * as Yup from 'yup';
@@ -31,6 +30,7 @@ import BottomSheet from 'reanimated-bottom-sheet';
 import {PHONE_REGEX} from 'utils/constant';
 import useAddProjectActions from 'redux/actions/addProjectActions';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import CustomInput from '../Components/CustomInput';
 
 const BANNER_HEIGHT = Layout.window.width * 0.75 * (5 / 12);
 const IMAGE_HEIGHT = Layout.window.width * 0.75 * (15 / 22);
@@ -44,17 +44,17 @@ const USER_SCHEMA = {
   firstName: Yup.string()
     .label('firstName')
     .required('required')
-    .min(3, 'to short'),
+    .min(3, 'too short'),
   lastName: Yup.string()
     .label('firstName')
     .required('required')
-    .min(3, 'to short'),
+    .min(3, 'too short'),
   phone: Yup.string()
     .label('phone')
     .required('required')
     .matches(PHONE_REGEX, 'Phone number is not valid')
-    .min(10, 'to short')
-    .max(10, 'to long'),
+    .min(10, 'too short')
+    .max(10, 'too long'),
   email: Yup.string()
     .email('Please enter a valid email')
     .label('email')
@@ -144,7 +144,7 @@ function RenderContent(props) {
                 onChangeText={handleChange('firstName')}
                 onBlur={handleBlur('firstName')}
                 autoCapitalize="none"
-                returnKeyType={'next'}
+                returnKeyType="next"
                 onSubmitEditing={() => {
                   lastRef?.current.focus();
                   bottomSheetRef?.current?.snapTo(0);
@@ -162,7 +162,7 @@ function RenderContent(props) {
                 onChangeText={handleChange('lastName')}
                 onBlur={handleBlur('lastName')}
                 autoCapitalize="none"
-                returnKeyType={'next'}
+                returnKeyType="next"
                 onSubmitEditing={() => phoneRef?.current.focus()}
                 error={errors.lastName}
               />
@@ -180,7 +180,7 @@ function RenderContent(props) {
             onChangeText={handleChange('phone')}
             onBlur={handleBlur('phone')}
             autoCapitalize="none"
-            returnKeyType={'next'}
+            returnKeyType="next"
             onSubmitEditing={() => emailRef?.current.focus()}
             left={
               <TextInput.Affix
@@ -201,7 +201,7 @@ function RenderContent(props) {
             onBlur={handleBlur('email')}
             placeholder={t('msgBlankEmail')}
             autoCapitalize="none"
-            returnKeyType={'next'}
+            returnKeyType="next"
             onSubmitEditing={() => passwordRef?.current.focus()}
             error={errors.email}
           />
@@ -217,7 +217,7 @@ function RenderContent(props) {
                 onBlur={handleBlur('password')}
                 placeholder={t('msgBlankPassword')}
                 autoCapitalize="none"
-                returnKeyType={'next'}
+                returnKeyType="next"
                 secureTextEntry={!showPass}
                 onSubmitEditing={() => cnfPassRef?.current.focus()}
                 error={errors.password}
@@ -239,7 +239,7 @@ function RenderContent(props) {
                 onBlur={handleBlur('confirmPassword')}
                 placeholder={t('msgBlankCnfPassword')}
                 autoCapitalize="none"
-                returnKeyType={'done'}
+                returnKeyType="done"
                 error={errors.confirmPassword}
                 secureTextEntry={!showCnfPass}
                 right={
@@ -297,7 +297,7 @@ function SignUp(props) {
   const {updateAdmins} = useAddProjectActions();
   const {resetStructure} = useAddProjectActions();
 
-  const {loading} = useSelector(state => state.user);
+  const {loading} = useSelector(s => s.user);
   const {loading: updatingAdmin, project} = useSelector(s => s.addProject);
 
   const [validationError, setValidationError] = React.useState({});
@@ -308,6 +308,7 @@ function SignUp(props) {
       Keyboard.addListener('keyboardDidShow', _keyboardDidShow);
       Keyboard.addListener('keyboardDidHide', _keyboardDidHide);
     });
+
     const blurUnsubscribe = navigation.addListener('blur', () => {
       Keyboard.removeListener('keyboardDidShow', _keyboardDidShow);
       Keyboard.removeListener('keyboardDidHide', _keyboardDidHide);
@@ -390,7 +391,7 @@ function SignUp(props) {
           onPress={() => Keyboard.dismiss()}
           style={styles.container}>
           <View style={styles.container}>
-            <Spinner visible={loading || updatingAdmin} textContent={''} />
+            <Spinner visible={loading || updatingAdmin} textContent="" />
             <View style={styles.topImageContainer}>
               <View style={styles.bannerContainer}>
                 <Image source={banner} style={styles.banner} />

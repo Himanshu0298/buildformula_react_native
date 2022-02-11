@@ -24,16 +24,16 @@ function LanguageButton({label, language, onPress, ...props}) {
 }
 
 function LanguageSelect(props) {
-  const {navigation} = props;
-  const {colors} = props.theme;
+  const {navigation, theme} = props;
+  const {colors} = theme;
 
   const {i18n} = useTranslation();
   const {setAppLanguage} = useAppActions();
 
-  const {language = 'en'} = useSelector(state => state.app);
+  const {language = 'en'} = useSelector(s => s.app);
 
   useEffect(() => {
-    //TODO: Remove this when language screen is to be enabled agaian
+    // TODO: Remove this when language screen is to be enabled agaian
     selectLanguage('en');
     if (language) {
       i18n.changeLanguage(language);
@@ -73,7 +73,7 @@ function LanguageSelect(props) {
             onPress={selectLanguage}
           />
           <LanguageButton
-            color={'#fff'}
+            color="#fff"
             mode="outlined"
             label="हिन्दी"
             language="hi"

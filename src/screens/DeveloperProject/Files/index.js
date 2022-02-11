@@ -1,6 +1,6 @@
 import ProjectLayout from 'components/Molecules/Layout/ProjectLayout';
-import Files from './Files';
 import React from 'react';
+import Files from './Files';
 
 export default props => {
   return (

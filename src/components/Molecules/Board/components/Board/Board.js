@@ -8,11 +8,11 @@ import {
   View,
 } from 'react-native';
 import {func, object, string} from 'prop-types';
+import {getShadow} from 'utils';
 import {colors, COLUMN_WIDTH, deviceWidth, ios, isX} from '../../constants';
 import Column from '../Column/Column';
 import Card from '../Card/Card';
 import Carousel from '../Carousel/Carousel';
-import {getShadow} from 'utils';
 
 const MAX_RANGE = 100;
 const MAX_DEG = 30;

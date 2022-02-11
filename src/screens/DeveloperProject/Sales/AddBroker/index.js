@@ -4,7 +4,7 @@ import AddBroker from './AddBroker';
 
 export default props => {
   return (
-    <ProjectLayout {...props} header={true}>
+    <ProjectLayout {...props} header>
       <AddBroker {...props} />
     </ProjectLayout>
   );

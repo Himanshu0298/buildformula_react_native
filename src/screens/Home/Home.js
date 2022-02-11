@@ -13,7 +13,6 @@ import developerImage from 'assets/images/developer_building.png';
 import supplierImage from 'assets/images/supplier_building.png';
 import MaterialTabs from 'react-native-material-tabs';
 import {getShadow} from 'utils';
-import useProjectActions from '../../redux/actions/projectActions';
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Layout from 'utils/Layout';
@@ -23,6 +22,7 @@ import waiting from 'assets/animation/waiting.json';
 import useAddProjectActions from 'redux/actions/addProjectActions';
 import ProjectHeader from 'components/Molecules/Layout/ProjectHeader';
 import useNotificationActions from 'redux/actions/notificationActions';
+import useProjectActions from '../../redux/actions/projectActions';
 
 const IMAGES = {
   Developer: developerImage,
@@ -73,7 +73,7 @@ function Home(props) {
 
   const [selectedTab, setSelectedTab] = useState(0);
 
-  const {loading, projects} = useSelector(state => state.project);
+  const {loading, projects} = useSelector(s => s.project);
 
   const {getProjects} = useProjectActions();
   const {setProjectData} = useAddProjectActions();
@@ -121,14 +121,11 @@ function Home(props) {
       const params = {project};
       if (tabs[selectedTab] === 'Developer') {
         navigation.navigate('DeveloperDashboard', {
-          screen: 'DeveloperDashboard',
+          screen: 'DeveloperHome',
           params,
         });
       } else if (tabs[selectedTab] === 'Customer') {
-        navigation.navigate('CustomerDashboard', {
-          screen: 'Ownership',
-          params,
-        });
+        navigation.navigate('CustomerDashboard', {screen: 'Ownership', params});
       }
     } else {
       alert.show({
@@ -154,10 +151,10 @@ function Home(props) {
   return (
     <>
       <View style={styles.container}>
-        <Spinner visible={loading} textContent={''} />
+        <Spinner visible={loading} textContent="" />
         <StatusBar barStyle="light-content" />
         <View style={styles.headerContainer}>
-          <ProjectHeader {...props} showLogo={true} />
+          <ProjectHeader {...props} showLogo />
           {/* TODO: update tab implementation */}
           {tabs.length > 1 ? (
             <MaterialTabs
@@ -166,7 +163,7 @@ function Home(props) {
               onChange={setSelectedTab}
               barColor="#fff"
               indicatorColor={theme.colors.primary}
-              inactiveTextColor={'#919191'}
+              inactiveTextColor="#919191"
               activeTextColor={theme.colors.primary}
               uppercase={false}
               textStyle={{
@@ -196,7 +193,7 @@ function Home(props) {
           </ScrollView>
         ) : (
           <View style={styles.noResultContainer}>
-            <Subheading>{'No Projects Found'}</Subheading>
+            <Subheading>No Projects Found</Subheading>
           </View>
         )}
       </View>

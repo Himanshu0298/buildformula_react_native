@@ -1,5 +1,9 @@
-import React, {useState} from 'react';
+import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
+import UserAvatar from 'components/Atoms/UserAvatar';
+import dayjs from 'dayjs';
+import React, {useEffect, useMemo, useState} from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import Spinner from 'react-native-loading-spinner-overlay';
 import {
   Subheading,
   withTheme,
@@ -8,153 +12,249 @@ import {
   Card,
   Divider,
   IconButton,
-  Title,
   Caption,
-  Avatar,
 } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useSelector} from 'react-redux';
+import useSalesActions from 'redux/actions/salesActions';
+import {useSalesLoading} from 'redux/selectors';
+import {getFloorNumber, getTowerLabel} from 'utils';
+import {STRUCTURE_TYPE_LABELS} from 'utils/constant';
+import BookingHoldForm from './Components/BookingHoldForm';
 
-const PropertyHoldUserDetails = () => {
-  const Container = props => {
-    const {heading, content} = props;
-
-    return (
-      <View style={{marginTop: 20}}>
-        <Caption>{heading}</Caption>
-        <Text>{content}</Text>
-      </View>
-    );
-  };
+function RenderRow(props) {
+  const {heading, content} = props;
 
   return (
-    <View style={{marginTop: 20}}>
-      <Title>Property On Hold</Title>
-      <Caption>On-hold by</Caption>
-      <View style={{flexDirection: 'row', alignItems: 'center'}}>
-        <Avatar.Icon size={40} style={{marginRight: 10}} />
-        <View>
-          <Text>Ashish Patel</Text>
-          <Caption>ashishpatel@example.com</Caption>
-        </View>
-      </View>
-      <Container heading="Date" content="20 Sept, 2020" />
-      <Container heading="Hold Duration" content="15 Days" />
-      <Container
-        heading="Remark"
-        content="Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet."
-      />
-      <Button
-        mode="contained"
-        onPress={() => {
-          console.log('----->BookingFormOnHold button pressed');
-          //   navigation.navigate('HoldPropertyForm');
-        }}
-        uppercase={false}
-        style={{margin: 15, borderRadius: 10}}>
-        Unhold this property
-      </Button>
-      <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-        <Caption>This property is on hold till </Caption>
-        <Text>20 Sept, 2020 8:30pm</Text>
-      </View>
+    <View style={styles.headingRow}>
+      <Caption>{heading}</Caption>
+      <Text>{content}</Text>
     </View>
   );
-};
+}
 
-const ProjectInfo = props => {
+function InfoRow(props) {
   const {data} = props;
 
   return (
-    <View
-      style={{
-        alignItems: 'center',
-        flexDirection: 'row',
-      }}>
+    <View style={styles.rowContainer}>
       {data.map(({title, value}) => (
-        <View style={{flex: 1, flexDirection: 'row'}}>
-          <Text style={{color: '#041D36'}}>{title}: </Text>
+        <View key={title} style={styles.rowCell}>
+          <Caption>{title}: </Caption>
           <Text>{value}</Text>
         </View>
       ))}
     </View>
   );
-};
+}
 
-function BookingFormOnHold(props) {
-  const {navigation, route} = props;
-  const {params = {}} = route;
+function PropertyHoldUserDetails(props) {
+  const {bookingDetails, userInfo, handleUnHold} = props;
 
-  const [propertyBooked, setPropertyBooked] = useState(false);
+  const {user} = useSelector(s => s.user);
 
-  function handleClick(id) {
-    if (id === 'withRate') {
-      console.log('----->handleclick called', id);
-    } else {
-      console.log('----->else called', id);
-    }
-  }
+  const holdTill = dayjs(
+    `${bookingDetails.hold_till_date} ${bookingDetails.hold_till_time}`,
+    'YYYY-MM-DD hh:mm:ss',
+  );
+
+  const holdDate = holdTill.format('DD MMM, YYYY');
+  const days = holdTill.diff(dayjs(), 'd');
 
   return (
-    <View style={{padding: 10}}>
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-        }}>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <IconButton
-            icon="keyboard-backspace"
-            onPress={() => navigation.goBack()}
-          />
-          <Text>Property On-hold</Text>
+    <View style={styles.holdDetailsContainer}>
+      <Subheading>Property On Hold</Subheading>
+      <Caption>On-hold by</Caption>
+      <View style={styles.userBlock}>
+        <UserAvatar
+          size={40}
+          uri={userInfo.profile_url}
+          style={styles.avatar}
+        />
+        <View>
+          <Text>
+            {userInfo.first_name} {userInfo.last_name}
+          </Text>
+          <Caption>{userInfo.email}</Caption>
         </View>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('History')}
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            backgroundColor: '#EDF1FE',
-            borderRadius: 5,
-            padding: 5,
-          }}>
-          <Icon name="information-outline" style={{marginRight: 10}} />
-          <Text>History</Text>
-        </TouchableOpacity>
       </View>
-      <View>
-        <Card elevation={5} style={{padding: 15}}>
+      <RenderRow heading="Date" content={holdDate} />
+      <RenderRow heading="Hold Duration" content={`${days} days`} />
+      <RenderRow heading="Remark" content={bookingDetails.remark} />
+
+      <View style={styles.actionContainer}>
+        {user.id === userInfo.id ? (
+          <Button
+            mode="contained"
+            onPress={handleUnHold}
+            uppercase={false}
+            style={styles.unHoldButton}>
+            Un-hold this property
+          </Button>
+        ) : null}
+        <View style={styles.helperText}>
+          <Caption>This property is on hold till </Caption>
+          <Text>{holdTill.format('DD MMM, YYYY hh:mm a')}</Text>
+        </View>
+      </View>
+    </View>
+  );
+}
+
+function BookingFormOnHold(props) {
+  const {navigation, route, theme} = props;
+  const {
+    project_id,
+    structureType,
+    selectedStructure,
+    towerId,
+    floorId,
+    unit_id,
+    unitLabel,
+  } = route?.params || {};
+
+  const {bookingHoldDetails} = useSelector(s => s.sales);
+  const loading = useSalesLoading();
+  const {current_Hold_By_User_Details: userInfo, holdHistoryList} =
+    bookingHoldDetails || {};
+
+  const {getHoldBookingDetails, unitHoldBooking, unitUnHoldBooking} =
+    useSalesActions();
+
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    loadHoldDetails();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [unit_id]);
+
+  const loadHoldDetails = () => getHoldBookingDetails({project_id, unit_id});
+
+  const toggleHoldForm = () => setVisible(v => !v);
+
+  const navToHistory = () =>
+    navigation.navigate('HoldBookingHistory', {history: holdHistoryList});
+
+  const propertyBooked = useMemo(() => {
+    return Array.isArray(holdHistoryList)
+      ? holdHistoryList?.find(i =>
+          dayjs(
+            `${i.hold_till_date} ${i.hold_till_time}`,
+            'YYYY-MM-DD hh:mm:ss',
+          ).isAfter(dayjs()),
+        )
+      : false;
+  }, [holdHistoryList]);
+
+  const handleHold = async values => {
+    const {date, time, remark} = values;
+    toggleHoldForm();
+    await unitHoldBooking({
+      project_id,
+      unit_id,
+      hold_till_date: dayjs(date).format('DD-MM-YYYY'),
+      hold_till_time: dayjs(time).format('hh:mm'),
+      remark,
+    });
+    loadHoldDetails();
+  };
+
+  const handleUnHold = async () => {
+    toggleHoldForm();
+    await unitUnHoldBooking({
+      project_id,
+      unit_id,
+      units_on_hold_id: propertyBooked.id,
+    });
+    loadHoldDetails();
+  };
+
+  return (
+    <>
+      <Spinner visible={loading} textContent="" />
+      <BookingHoldForm
+        {...props}
+        open={visible}
+        handleClose={toggleHoldForm}
+        handleSubmit={handleHold}
+      />
+
+      <View style={styles.container}>
+        <View style={styles.headerContainer}>
+          <TouchableOpacity
+            style={styles.backContainer}
+            onPress={navigation.goBack}>
+            <IconButton icon="keyboard-backspace" />
+            <Text>Property On-hold</Text>
+          </TouchableOpacity>
+          <OpacityButton
+            opacity={0.1}
+            onPress={navToHistory}
+            style={styles.historyButton}>
+            <MaterialCommunityIcons
+              name="information-outline"
+              size={18}
+              color={theme.colors.primary}
+              style={styles.infoIcon}
+            />
+            <Text>History</Text>
+          </OpacityButton>
+        </View>
+        <Card elevation={5} style={styles.infoCard}>
           <Subheading>Property info</Subheading>
-          <Divider style={{height: 1, marginVertical: 5}} />
-          <ProjectInfo
-            data={[
-              {title: 'Project type', value: 'apartment'},
-              {title: 'Tower', value: 'A'},
-            ]}
-          />
-          <ProjectInfo
-            data={[
-              {title: 'Floor', value: '12th Floor'},
-              {title: 'Unit Number', value: '1204'},
-            ]}
-          />
+          <Divider style={styles.divider} />
+          {towerId ? (
+            <>
+              <InfoRow
+                data={[
+                  {
+                    title: 'Project type',
+                    value:
+                      STRUCTURE_TYPE_LABELS[structureType || selectedStructure],
+                  },
+                  {title: 'Tower', value: getTowerLabel(towerId)},
+                ]}
+              />
+              <InfoRow
+                data={[
+                  {
+                    title: 'Floor',
+                    value: floorId ? getFloorNumber(floorId) : null,
+                  },
+                  {title: 'Unit Number', value: unitLabel},
+                ]}
+              />
+            </>
+          ) : (
+            <InfoRow
+              data={[
+                {
+                  title: 'Project type',
+                  value:
+                    STRUCTURE_TYPE_LABELS[structureType || selectedStructure],
+                },
+                {title: 'Unit Number', value: unitLabel},
+              ]}
+            />
+          )}
         </Card>
         {propertyBooked ? (
-          <PropertyHoldUserDetails />
+          <PropertyHoldUserDetails
+            bookingDetails={propertyBooked}
+            userInfo={userInfo}
+            handleUnHold={handleUnHold}
+          />
         ) : (
           <Button
             mode="contained"
-            onPress={() => {
-              console.log('----->BookingFormOnHold button pressed');
-              navigation.navigate('HoldPropertyForm');
-            }}
+            onPress={toggleHoldForm}
             uppercase={false}
-            style={{margin: 15, borderRadius: 10}}>
+            style={styles.holdButton}>
             Hold this property
           </Button>
         )}
       </View>
-    </View>
+    </>
   );
 }
 
@@ -163,6 +263,73 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 20,
     paddingVertical: 10,
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginLeft: -10,
+  },
+  backContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  historyButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 7,
+    padding: 7,
+  },
+  infoIcon: {
+    marginRight: 7,
+  },
+  infoCard: {
+    padding: 15,
+    marginVertical: 15,
+  },
+  rowContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    marginVertical: 3,
+  },
+  holdButton: {
+    margin: 15,
+    borderRadius: 10,
+  },
+  divider: {
+    height: 1,
+    marginBottom: 5,
+  },
+  rowCell: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  headingRow: {
+    marginTop: 20,
+  },
+  holdDetailsContainer: {
+    marginTop: 20,
+  },
+  userBlock: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  avatar: {
+    marginRight: 10,
+  },
+  actionContainer: {
+    marginTop: 20,
+    margin: 10,
+  },
+  unHoldButton: {
+    borderRadius: 10,
+  },
+  helperText: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, View} from 'react-native';
-import {Text, withTheme, IconButton, Title} from 'react-native-paper';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {withTheme, IconButton, Subheading} from 'react-native-paper';
 import {getShadow} from 'utils';
 import useSalesActions from 'redux/actions/salesActions';
 import {useSelector} from 'react-redux';
@@ -9,9 +9,10 @@ import ProjectHeader from 'components/Molecules/Layout/ProjectHeader';
 import {TabView} from 'react-native-tab-view';
 import Layout from 'utils/Layout';
 import MaterialTabBar from 'components/Atoms/MaterialTabBar';
+import {theme} from 'styles/theme';
+import {useSalesLoading} from 'redux/selectors';
 import BrokerInfo from './Components/BrokerInfo';
 import DealsClosed from './Components/DealsClosed';
-import {theme} from 'styles/theme';
 
 function BrokerDetails(props) {
   const {route, navigation} = props;
@@ -20,7 +21,8 @@ function BrokerDetails(props) {
   const {getBrokerDetails} = useSalesActions();
 
   const {selectedProject} = useSelector(s => s.project);
-  const {loading, brokerDetails} = useSelector(state => state.sales);
+  const {brokerDetails} = useSelector(s => s.sales);
+  const loading = useSalesLoading();
 
   const projectId = selectedProject.id;
 
@@ -44,24 +46,26 @@ function BrokerDetails(props) {
       case 0:
         return (
           <BrokerInfo
+            {...props}
             brokerInfo={brokerDetails.brokerInfo}
             userData={userData}
-            navigation={navigation}
           />
         );
       case 1:
         return (
           <DealsClosed
-            navigation={navigation}
+            {...props}
             dealsClosed={brokerDetails.dealClosedInfo || []}
           />
         );
+      default:
+        return <View />;
     }
   };
 
   return (
     <>
-      <Spinner visible={loading} textContent={''} />
+      <Spinner visible={loading} textContent="" />
 
       <View style={styles.body}>
         <TabView
@@ -73,17 +77,18 @@ function BrokerDetails(props) {
             return (
               <View style={styles.headerContainer}>
                 <ProjectHeader {...props} />
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <TouchableOpacity
+                  style={styles.headingContainer}
+                  onPress={navigation.goBack}>
                   <IconButton
                     icon="keyboard-backspace"
                     size={30}
                     color={theme.colors.primary}
-                    onPress={() => navigation.goBack()}
                   />
-                  <Title style={{color: theme.colors.primary}}>
+                  <Subheading style={{color: theme.colors.primary}}>
                     Broker Details
-                  </Title>
-                </View>
+                  </Subheading>
+                </TouchableOpacity>
                 <MaterialTabBar {...tabBarProps} />
               </View>
             );
@@ -102,6 +107,10 @@ const styles = StyleSheet.create({
   body: {
     flex: 1,
     position: 'relative',
+  },
+  headingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 });
 

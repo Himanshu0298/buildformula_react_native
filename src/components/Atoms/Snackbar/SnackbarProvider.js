@@ -1,83 +1,43 @@
-import React, {PureComponent} from 'react';
-import PropTypes from 'prop-types';
+import React, {useCallback, useMemo, useState} from 'react';
 import SnackbarContext from './SnackbarContext';
 import DefaultSnackbar from './Snackbar';
 
-export default class SnackbarProvider extends PureComponent {
-  state = {
-    message: null,
+function SnackbarProvider({children}) {
+  const [state, setState] = useState({
     open: false,
+    message: '',
+    variant: 'success',
     autoHideDuration: 2500,
+  });
+
+  const showMessage = useCallback(
+    params => setState(v => ({...v, ...params, open: true})),
+    [],
+  );
+
+  const handleClose = () => {
+    const {onClose} = state;
+    setState(v => ({...v, open: false}));
+    onClose?.();
   };
 
-  constructor(props) {
-    super(props);
-    this.contextValue = {
-      showMessage: this.showMessage,
-    };
-  }
+  const context = useMemo(() => ({showMessage}), [showMessage]);
 
-  /**
-   * Display a message with this snackbar.
-   * @param {string} message message to display
-   * @param {string} variant variant for the message
-   * @param {function} [handleAction] click handler for the action button
-   * @param {any} [customParameters] custom parameters that will be passed to the snackbar renderer
-   * @public
-   */
-  showMessage = ({
-    message = '',
-    variant = 'success',
-    onClose,
-    autoHideDuration = 2500,
-  }) => {
-    this.setState({open: true, message, variant, onClose, autoHideDuration});
-  };
-
-  handleClose = () => {
-    const {onClose} = this.state;
-    this.setState({open: false});
-    onClose && onClose();
-  };
-
-  render() {
-    const {open, message, variant, autoHideDuration} = this.state;
-
-    const {children, SnackbarComponent = DefaultSnackbar} = this.props;
-    return (
-      <>
-        <SnackbarContext.Provider value={this.contextValue}>
-          {children}
-        </SnackbarContext.Provider>
-        <SnackbarComponent
-          open={open}
-          message={message}
-          variant={variant}
-          onClose={this.handleClose}
-          stayOpen={Boolean(this.state.onClose)}
-          autoHideDuration={autoHideDuration}
-        />
-      </>
-    );
-  }
+  return (
+    <>
+      <SnackbarContext.Provider value={context}>
+        {children}
+      </SnackbarContext.Provider>
+      <DefaultSnackbar
+        open={state.open}
+        message={state.message}
+        variant={state.variant}
+        onClose={handleClose}
+        stayOpen={Boolean(state.onClose)}
+        autoHideDuration={state.autoHideDuration}
+      />
+    </>
+  );
 }
 
-SnackbarProvider.propTypes = {
-  /**
-   * Props to pass through to the action button.
-   */
-  ButtonProps: PropTypes.object,
-  /**
-   * The children that are wrapped by this provider.
-   */
-  children: PropTypes.node,
-  /**
-   * Custom snackbar component.
-   * Props: open, message, action, ButtonProps, SnackbarProps
-   */
-  SnackbarComponent: PropTypes.elementType,
-  /**
-   * Props to pass through to the snackbar.
-   */
-  SnackbarProps: PropTypes.object,
-};
+export default SnackbarProvider;

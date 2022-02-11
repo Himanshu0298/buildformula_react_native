@@ -11,17 +11,15 @@ import * as Yup from 'yup';
 import {PAN_REGEX, GST_REGEX} from 'utils/constant';
 import useAddProjectActions from 'redux/actions/addProjectActions';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import ActionButtons from 'components/Atoms/ActionButtons';
 
 // TODO: enable regex validation
 
 const schema = Yup.object().shape({
   company_name: Yup.string().label('Name').required('Name is required'),
   company_pan: Yup.string().required('PAN number is required'),
-  pan_image: Yup.object(),
   company_tan: Yup.string().trim(),
-  tan_image: Yup.object(),
   company_gst: Yup.string(),
-  gst_image: Yup.object(),
 });
 
 function StepOne(props) {
@@ -118,28 +116,18 @@ function StepOne(props) {
                   onChangeText={handleChange('company_gst')}
                   onChoose={v => setFieldValue('gst_image', v)}
                   onBlur={handleBlur('company_gst')}
-                  returnKeyType={'done'}
+                  returnKeyType="done"
                   onSubmitEditing={handleSubmit}
                   error={errors.company_gst || errors.gst_image}
                 />
               </View>
-              <View style={styles.actionContainer}>
-                <Button
-                  style={{flex: 1, marginHorizontal: 5}}
-                  contentStyle={{padding: 3}}
-                  theme={{roundness: 15}}
-                  onPress={navigation.goBack}>
-                  {'Back'}
-                </Button>
-                <Button
-                  style={{flex: 1, marginHorizontal: 5}}
-                  mode="contained"
-                  contentStyle={{padding: 3}}
-                  theme={{roundness: 15}}
-                  onPress={handleSubmit}>
-                  {'Continue'}
-                </Button>
-              </View>
+              <ActionButtons
+                style={styles.actionContainer}
+                cancelLabel="Back"
+                submitLabel="Continue"
+                onCancel={navigation.goBack}
+                onSubmit={handleSubmit}
+              />
             </View>
           )}
         </Formik>
@@ -166,10 +154,7 @@ const styles = StyleSheet.create({
     paddingVertical: 7,
   },
   actionContainer: {
-    paddingHorizontal: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    marginTop: 0,
   },
 });
 

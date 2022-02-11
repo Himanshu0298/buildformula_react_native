@@ -1,19 +1,36 @@
-import React, {useRef, useEffect} from 'react';
+import React, {useRef, useEffect, useMemo} from 'react';
 import {
   StyleSheet,
   View,
-  Image,
   ScrollView,
   RefreshControl,
+  SectionList,
+  TouchableOpacity,
 } from 'react-native';
-import {IconButton, Subheading, Text, FAB, withTheme} from 'react-native-paper';
+import {
+  IconButton,
+  Subheading,
+  Text,
+  FAB,
+  withTheme,
+  Divider,
+  Caption,
+} from 'react-native-paper';
 import useFileActions from 'redux/actions/fileActions';
-import PdfIcon from 'assets/images/pdf_icon.png';
 import FolderIcon from 'assets/images/folder_icon.png';
-import UploadFileIcon from 'assets/images/upload_files.png';
+import UploadFileIcon from 'assets/images/file_icon.png';
 import {useSelector} from 'react-redux';
 import useImagePicker from 'utils/useImagePicker';
 import Spinner from 'react-native-loading-spinner-overlay';
+import BottomSheet from 'reanimated-bottom-sheet';
+import {getPermissions, getShadow} from 'utils';
+import Animated from 'react-native-reanimated';
+import _ from 'lodash';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Feather from 'react-native-vector-icons/Feather';
+import dayjs from 'dayjs';
+import {getFileExtension} from 'utils/download';
 import DeleteDialog from './Components/DeleteDialog';
 import UploadDialog from './Components/UploadDialog';
 import RenameDialogue from './Components/RenameDialog';
@@ -23,38 +40,110 @@ import VersionDialog from './Components/VersionDialog';
 import FileSection from './Components/FilesSection';
 import FoldersSection from './Components/FoldersSection';
 import ShareDialogue from './Components/ShareDialogue';
-import BottomSheet from 'reanimated-bottom-sheet';
-import {getPermissions, getShadow} from 'utils';
-import Animated from 'react-native-reanimated';
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const relativeTime = require('dayjs/plugin/relativeTime');
+
+dayjs.extend(relativeTime);
 
 const SNAP_POINTS = [0, '70%'];
 
-function ActivityModal() {
+const ACTIVITY_ICONS = {
+  new_version: <MaterialIcons name="file-copy" size={20} />,
+  rename: <MaterialCommunityIcons name="pencil" size={20} />,
+  share: <MaterialIcons name="share" size={20} />,
+  delete: <MaterialIcons name="delete" size={20} />,
+  add: <Feather name="upload" size={20} />,
+  downloaded: (
+    <MaterialCommunityIcons name="cloud-download-outline" size={20} />
+  ),
+};
+
+const ACTIVITY_LABEL = {
+  new_version: 'Uploaded new version',
+  add: 'Uploaded file',
+  downloaded: 'Downloaded file',
+  share: 'Shared file',
+  rename: 'Renamed file',
+  delete: 'Deleted file',
+};
+
+function getFileName(string) {
+  if (string.includes('/')) {
+    const splits = string.split('/');
+    return splits[splits.length - 1];
+  }
+
+  return string;
+}
+
+function RenderActivity({item}) {
+  const {first_name, last_name, logs_type, created, logs} = item;
+
   return (
-    <ScrollView>
-      <View>
-        <View>
-          <Text>10 June</Text>
-        </View>
-        <View style={styles.activityContainer}>
-          <View style={styles.viewDirection}>
-            <Image source={FolderIcon} style={styles.activityUserImage} />
-            <View>
-              <Text>Ashish Patel</Text>
-              <Text>Update 5 times</Text>
-            </View>
-          </View>
-          <View style={styles.upperAlignment}>
-            <Text>5 min ago</Text>
-          </View>
+    <View style={styles.activityContainer}>
+      <View style={styles.iconContainer}>{ACTIVITY_ICONS?.[logs_type]}</View>
+      <View style={styles.activityBody}>
+        <View style={styles.activityUser}>
+          <Text>
+            {first_name} {last_name}
+          </Text>
+          <Caption>{dayjs(created).fromNow()}</Caption>
         </View>
 
-        <View style={styles.userActivityPadding}>
-          <Image source={PdfIcon} style={styles.activityImage} />
-          <Text>Project Schedule For Dharti Saket Icon</Text>
-        </View>
+        <Caption>{ACTIVITY_LABEL?.[logs_type] || logs_type}</Caption>
+        <Caption style={styles.fileName}>{getFileName(logs)}</Caption>
       </View>
-    </ScrollView>
+    </View>
+  );
+}
+
+function ActivityModal(props) {
+  const {theme} = props;
+  const {activities} = useSelector(s => s.files);
+
+  const processedActivities = useMemo(() => {
+    const sectionedData = [];
+    activities.map(i => {
+      const key = dayjs(i.created).format('YYYY-MM-DD');
+
+      sectionedData[key] = sectionedData[key] || {};
+      sectionedData[key].title = key;
+      sectionedData[key].data = sectionedData[key].data || [];
+      sectionedData[key].data.push(i);
+
+      return i;
+    });
+
+    return Object.values(sectionedData);
+  }, [activities]);
+
+  const renderSeparator = () => <Divider />;
+  const renderEmpty = () => (
+    <View style={styles.emptyContainer}>
+      <Text>No Activities found</Text>
+    </View>
+  );
+
+  return (
+    <View style={styles.activitiesContainer}>
+      <Subheading style={{color: theme.colors.primary}}>Activity</Subheading>
+
+      <SectionList
+        sections={processedActivities}
+        extraData={processedActivities}
+        showsVerticalScrollIndicator={false}
+        keyExtractor={(item, index) => index?.toString()}
+        ItemSeparatorComponent={renderSeparator}
+        contentContainerStyle={styles.activityScrollContainer}
+        stickySectionHeadersEnabled={false}
+        ListEmptyComponent={renderEmpty}
+        renderItem={params => <RenderActivity {...params} />}
+        renderSectionHeader={({section: {title}}) => (
+          <Caption>{dayjs(title).format('DD MMM')}</Caption>
+        )}
+      />
+    </View>
   );
 }
 
@@ -63,7 +152,7 @@ function RenderMenuModal(props) {
 
   const bottomSheetRef = useRef();
   const fall = new Animated.Value(1);
-  const open = !isNaN(menuId);
+  const open = _.isFinite(menuId);
 
   useEffect(() => {
     if (open) {
@@ -135,7 +224,7 @@ function Files(props) {
 
   const {loading, versionData} = useSelector(s => s.files);
   const {selectedProject} = useSelector(s => s.project);
-  const {user} = useSelector(state => state.user);
+  const {user} = useSelector(s => s.user);
 
   const project_id = selectedProject.id;
   const user_id = user?.id;
@@ -230,14 +319,16 @@ function Files(props) {
     }
   };
 
-  const deleteFileHandler = async (id, fileFolder, type) => {
-    if (fileFolder === 'folder') {
+  const deleteFileHandler = async (id, type) => {
+    if (type === 'folder') {
       await deleteFolder({folder_id: id, project_id});
       getFolders({project_id, index_of: folderDepth});
-      toggleDialog();
     } else {
-      deleteFile({file_id: id, project_id});
+      await deleteFile({file_id: id, project_id});
+      getFiles({project_id, folder_id: folderDepth});
     }
+
+    toggleDialog();
   };
 
   const onChoose = v => {
@@ -246,10 +337,14 @@ function Files(props) {
   };
 
   const handleFileUpload = async values => {
+    const {file, file_name} = values;
+    const extension = getFileExtension(file.name);
+    file.name = `${file_name}.${extension}`;
+
     const formData = new FormData();
 
     formData.append('folder_id', folderDepth);
-    formData.append('myfile[]', values.file);
+    formData.append('myfile[]', file);
     formData.append('project_id', project_id);
 
     await uploadFile(formData);
@@ -262,9 +357,15 @@ function Files(props) {
     getVersion({project_id, file_id: fileId});
   };
 
-  const activityDataHandler = (type, id) => {
+  const activityDataHandler = (fileType, id) => {
     setModalContentType('activity');
-    getActivities({project_id});
+    const params = {project_id, folder_id: folderDepth};
+    if (fileType === 'file') {
+      params.file_id = id;
+    } else {
+      params.folder_id = id;
+    }
+    getActivities(params);
   };
 
   const shareItem = async ({fileType, id, users, roles}) => {
@@ -312,15 +413,14 @@ function Files(props) {
         }>
         {folderName ? (
           <View style={styles.backNavigation}>
-            <View style={styles.viewDirection}>
-              <IconButton
-                icon="arrow-left"
-                onPress={() => navigation.goBack()}
-              />
+            <TouchableOpacity
+              style={styles.viewDirection}
+              onPress={navigation.goBack}>
+              <IconButton icon="arrow-left" onPress={navigation.goBack} />
               <Subheading style={styles.backNavHeading} numberOfLines={1}>
                 {folderName}
               </Subheading>
-            </View>
+            </TouchableOpacity>
             <IconButton
               icon="information"
               onPress={() => {
@@ -339,22 +439,19 @@ function Files(props) {
           {...{menuId, toggleMenu, setModalContent, setModalContentType}}
         />
       </ScrollView>
-      {console.log(
-        '----->modulePermissions?.editor',
-        modulePermissions?.editor,
-      )}
-      {console.log('----->modulePermissions?.admin', modulePermissions?.admin)}
       {modulePermissions?.editor || modulePermissions?.admin ? (
         <FAB.Group
           open={fab}
           style={styles.fab}
           fabStyle={{
-            backgroundColor: fab ? '#fff' : theme.colors.primary,
+            backgroundColor: fab ? theme.colors.white : theme.colors.primary,
           }}
           icon={fab ? 'window-close' : 'plus'}
           small
           onPress={toggleFab}
-          onStateChange={() => {}}
+          onStateChange={() => {
+            console.log('-----> onStateChange');
+          }}
           actions={FAB_ACTIONS}
         />
       ) : null}
@@ -445,44 +542,52 @@ const styles = StyleSheet.create({
   closeContainer: {
     alignItems: 'flex-end',
   },
-  viewDirection: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
   backNavigation: {
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
+  },
+  viewDirection: {
+    alignItems: 'center',
+    flexDirection: 'row',
   },
   backNavHeading: {
     maxWidth: 200,
     paddingHorizontal: 10,
     paddingVertical: 15,
   },
-  activityUserImage: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    marginRight: 20,
-  },
-  activityImage: {
-    width: 30,
-    height: 30,
-    marginRight: 10,
-  },
-  upperAlignment: {
-    alignItems: 'baseline',
-    paddingBottom: 20,
-  },
   activityContainer: {
     alignItems: 'center',
     flexDirection: 'row',
-    justifyContent: 'space-between',
     marginVertical: 5,
   },
-  userActivityPadding: {
-    marginVertical: 10,
+  activityBody: {
+    flexGrow: 1,
+  },
+  activitiesContainer: {
+    flexGrow: 1,
+  },
+  iconContainer: {
+    paddingHorizontal: 10,
+  },
+  activityScrollContainer: {
+    paddingBottom: 80,
+    marginTop: 10,
+    flexGrow: 1,
+  },
+  fileName: {
+    lineHeight: 12,
+    flex: 1,
+    flexShrink: 1,
+  },
+  activityUser: {
     flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  emptyContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

@@ -1,14 +1,6 @@
 import * as React from 'react';
 import {StyleSheet, View} from 'react-native';
-import {
-  Avatar,
-  Button,
-  IconButton,
-  Subheading,
-  TextInput,
-  withTheme,
-} from 'react-native-paper';
-import UserPic from 'assets/images/customer.png';
+import {IconButton, Subheading, TextInput, withTheme} from 'react-native-paper';
 import useImagePicker from 'utils/useImagePicker';
 import {Formik} from 'formik';
 import RenderInput from 'components/Atoms/RenderInput';
@@ -18,12 +10,20 @@ import {useSelector} from 'react-redux';
 import useUserActions from 'redux/actions/userActions';
 import {pick} from 'lodash';
 import Spinner from 'react-native-loading-spinner-overlay';
+import UserAvatar from 'components/Atoms/UserAvatar';
+import {PHONE_REGEX} from 'utils/constant';
+import ActionButtons from 'components/Atoms/ActionButtons';
 
 const schema = Yup.object().shape({
   first_name: Yup.string('Invalid').required('First name is required'),
   last_name: Yup.string('Invalid').required('Last name is required'),
   email: Yup.string('Invalid').email('Invalid').required('Email is required'),
-  phone: Yup.string('Invalid').required('Phone is required'),
+  phone: Yup.string()
+    .label('phone')
+    .required('required')
+    .matches(PHONE_REGEX, 'Phone number is not valid')
+    .min(10, 'too short')
+    .max(10, 'too long'),
 });
 
 function RenderForm(props) {
@@ -87,24 +87,7 @@ function RenderForm(props) {
         maxLength={10}
         left={<TextInput.Affix text="+91" />}
       />
-
-      <View style={styles.actionContainer}>
-        <Button
-          style={{width: '45%'}}
-          contentStyle={{padding: 1}}
-          theme={{roundness: 12}}
-          onPress={navigation.goBack}>
-          Cancel
-        </Button>
-        <Button
-          style={{width: '45%'}}
-          mode="contained"
-          contentStyle={{padding: 1}}
-          theme={{roundness: 12}}
-          onPress={handleSubmit}>
-          Save
-        </Button>
-      </View>
+      <ActionButtons onCancel={navigation.goBack} onSubmit={handleSubmit} />
     </View>
   );
 }
@@ -115,7 +98,7 @@ function EditProfile(props) {
   const {openImagePicker} = useImagePicker();
   const {updateUser} = useUserActions();
 
-  const {user, loading} = useSelector(state => state.user);
+  const {user, loading} = useSelector(s => s.user);
 
   const initialValues = pick(user, [
     'first_name',
@@ -159,14 +142,11 @@ function EditProfile(props) {
               <Subheading>Edit Profile Details</Subheading>
               <View style={styles.headerContainer}>
                 <View>
-                  <Avatar.Image
+                  <UserAvatar
                     size={150}
-                    source={
-                      profile_url
-                        ? {uri: profile_url.uri || profile_url}
-                        : UserPic
-                    }
+                    uri={profile_url?.uri || profile_url}
                   />
+
                   <IconButton
                     style={[
                       styles.cameraIcon,
@@ -219,13 +199,6 @@ const styles = StyleSheet.create({
   },
   input: {
     marginVertical: 5,
-  },
-  actionContainer: {
-    marginTop: 25,
-    paddingHorizontal: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-around',
   },
 });
 

@@ -1,9 +1,10 @@
-import React, {useEffect, useMemo, useRef} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import RenderInput from 'components/Atoms/RenderInput';
 import {Formik} from 'formik';
 import {useTranslation} from 'react-i18next';
 import {
   Keyboard,
+  ScrollView,
   StyleSheet,
   TouchableOpacity,
   TouchableWithoutFeedback,
@@ -14,15 +15,16 @@ import {
   Subheading,
   TextInput,
   withTheme,
-  Button,
   Caption,
   Text,
   Divider,
+  IconButton,
 } from 'react-native-paper';
 import * as Yup from 'yup';
 import _ from 'lodash';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import RenderSelect from 'components/Atoms/RenderSelect';
 import RenderDatePicker from 'components/Atoms/RenderDatePicker';
 import {round} from 'utils';
@@ -30,7 +32,15 @@ import dayjs from 'dayjs';
 import useSalesActions from 'redux/actions/salesActions';
 import Radio from 'components/Atoms/Radio';
 import {useSelector} from 'react-redux';
-import RenderTextBox from 'components/Atoms/RenderTextbox';
+import RenderHTML from 'react-native-render-html';
+import Layout from 'utils/Layout';
+import ActionButtons from 'components/Atoms/ActionButtons';
+import CustomDialog from 'components/Atoms/CustomDialog';
+import RichTextEditor from 'components/Atoms/RichTextEditor';
+import {DOCUMENT_CHARGE_LIMIT} from 'utils/constant';
+import {useSnackbar} from 'components/Atoms/Snackbar';
+import Spinner from 'react-native-loading-spinner-overlay';
+import {useSalesLoading} from 'redux/selectors';
 
 const PAYMENT_METHODS = [
   {label: 'Full payment', value: 1},
@@ -39,6 +49,7 @@ const PAYMENT_METHODS = [
 ];
 
 const schema = Yup.object().shape({
+  finalAmount: Yup.number('Invalid').required('Required'),
   start_date: Yup.string('Invalid').when('payment_type', {
     is: 1,
     then: Yup.string('Invalid').required('Required'),
@@ -84,14 +95,14 @@ const schema = Yup.object().shape({
     then: Yup.number('Invalid').required('Required'),
   }),
   document_start_date: Yup.string('Invalid').when(
-    'isDocumentCharge',
-    (isDocumentCharge, keySchema) =>
-      isDocumentCharge ? keySchema.required('Required') : keySchema,
+    'documentCharge',
+    (documentCharge, keySchema) =>
+      Number(documentCharge) ? keySchema.required('Required') : keySchema,
   ),
   document_end_date: Yup.string('Invalid').when(
-    'isDocumentCharge',
-    (isDocumentCharge, keySchema) =>
-      isDocumentCharge ? keySchema.required('Required') : keySchema,
+    'documentCharge',
+    (documentCharge, keySchema) =>
+      Number(documentCharge) ? keySchema.required('Required') : keySchema,
   ),
 });
 
@@ -136,7 +147,8 @@ export function RenderInstallments(props) {
   if (installments.length) {
     return (
       <>
-        <Caption style={{color: theme.colors.primary, marginTop: 15}}>
+        <Caption
+          style={[styles.installmentHeading, {color: theme.colors.primary}]}>
           Installments
         </Caption>
         <View style={styles.installmentTitleRow}>
@@ -150,18 +162,18 @@ export function RenderInstallments(props) {
         </View>
         {installments.map((installment, index) => {
           return (
-            <View key={index} style={styles.installmentRow}>
+            <View key={index?.toString()} style={styles.installmentRow}>
               <Subheading>{index + 1}</Subheading>
-              <View style={{flex: 0.4}}>
+              <View style={styles.installmentValue}>
                 <RenderInput
                   value={dayjs(installment.date).format('DD/MM/YYYY')}
-                  disabled={true}
+                  disabled
                 />
               </View>
-              <View style={{flex: 0.4}}>
+              <View style={styles.installmentValue}>
                 <RenderInput
                   value={installment.amount}
-                  disabled={true}
+                  disabled
                   left={<TextInput.Affix text="₹" />}
                 />
               </View>
@@ -179,7 +191,7 @@ function RenderOneBigInstallmentPaymentForm(props) {
   const {formikProps, t, theme} = props;
   const {values, setFieldValue, handleChange, errors} = formikProps;
 
-  const timeout = useRef();
+  const snackbar = useSnackbar();
 
   const calculateAmount = percent => {
     percent = parseFloat(percent);
@@ -191,12 +203,16 @@ function RenderOneBigInstallmentPaymentForm(props) {
   };
 
   const handlePercentChange = percent => {
-    setFieldValue('first_big_amount_percent', percent);
-
-    if (timeout.current) {
-      clearTimeout(timeout.current);
+    if (!values.finalAmount) {
+      snackbar.showMessage({
+        message: 'Please provide final amount',
+        variant: 'warning',
+      });
+      return;
     }
-    timeout.current = setTimeout(() => calculateAmount(percent), 1500);
+
+    setFieldValue('first_big_amount_percent', percent);
+    calculateAmount(percent);
   };
 
   const calcPercentage = amount => {
@@ -210,32 +226,31 @@ function RenderOneBigInstallmentPaymentForm(props) {
   };
 
   const handleAmountChange = amount => {
-    setFieldValue('first_big_amount', amount);
-
-    if (timeout.current) {
-      clearTimeout(timeout.current);
+    if (!values.finalAmount) {
+      snackbar.showMessage({
+        message: 'Please provide final amount',
+        variant: 'warning',
+      });
+      return;
     }
-    timeout.current = setTimeout(() => calcPercentage(amount), 1500);
+
+    setFieldValue('first_big_amount', amount);
+    calcPercentage(amount);
   };
 
   return (
     <>
       <Caption
-        style={{
-          color: theme.colors.primary,
-          marginTop: 20,
-          marginBottom: -10,
-          fontSize: 14,
-        }}>
+        style={[styles.bigInstallmentTitle, {color: theme.colors.primary}]}>
         1st BIG Installment
       </Caption>
       <View style={styles.customPaymentContainer}>
         <View style={styles.customInputsContainer}>
           <View style={styles.customPaymentRowContainer}>
-            <View style={styles.percentInputContainer}>
+            <View style={styles.dateInputContainer}>
               <RenderInput
-                name={'first_big_amount_percent'}
-                label={'%'}
+                name="first_big_amount_percent"
+                label="%"
                 keyboardType="decimal-pad"
                 value={values.first_big_amount_percent}
                 onChangeText={handlePercentChange}
@@ -266,15 +281,15 @@ function RenderOneBigInstallmentPaymentForm(props) {
                 }
               />
             </View>
-            <View style={{flex: 1}}>
+            <View style={styles.flexInput}>
               <RenderInput
-                name={'first_big_amount'}
+                name="first_big_amount"
                 label={t('label_amount')}
                 keyboardType="number-pad"
                 value={values.first_big_amount}
                 left={<TextInput.Affix text="₹" />}
                 error={errors.first_big_amount}
-                onChangeText={value => handleAmountChange(value)}
+                onChangeText={handleAmountChange}
               />
             </View>
           </View>
@@ -293,7 +308,7 @@ function RenderOneBigInstallmentPaymentForm(props) {
                 }}
               />
             </View>
-            <View style={{flex: 1}}>
+            <View style={styles.flexInput}>
               <RenderDatePicker
                 name="first_big_amount_end_date"
                 label={t('label_end_date')}
@@ -311,11 +326,11 @@ function RenderOneBigInstallmentPaymentForm(props) {
         </View>
       </View>
       <Caption
-        style={{color: theme.colors.primary, marginTop: 15, fontSize: 14}}>
+        style={[styles.otherDetailsTitle, {color: theme.colors.primary}]}>
         Other Installment Details
       </Caption>
       <RenderInput
-        name={'installment_count'}
+        name="installment_count"
         label={t('label_no_of_installments')}
         keyboardType="number-pad"
         value={values.installment_count}
@@ -323,7 +338,7 @@ function RenderOneBigInstallmentPaymentForm(props) {
         onChangeText={handleChange('installment_count')}
       />
       <View style={styles.installmentDetailsRow}>
-        <View style={{flex: 1, paddingRight: 10}}>
+        <View style={styles.dateInputContainer}>
           <RenderDatePicker
             name="installment_start_date"
             label={t('label_start_date')}
@@ -337,9 +352,9 @@ function RenderOneBigInstallmentPaymentForm(props) {
             }}
           />
         </View>
-        <View style={{flex: 1}}>
+        <View style={styles.flexInput}>
           <RenderInput
-            name={'installment_interval_days'}
+            name="installment_interval_days"
             label={t('label_interval_days')}
             keyboardType="number-pad"
             value={values.installment_interval_days}
@@ -356,8 +371,9 @@ function RenderOneBigInstallmentPaymentForm(props) {
 function RenderCustomPaymentForm(props) {
   const {theme, formikProps, t} = props;
   const {values, setFieldValue, errors} = formikProps;
+  const {colors} = theme;
 
-  const timeout = useRef();
+  const snackbar = useSnackbar();
 
   const totalPercent = useMemo(() => {
     return values.custom_payments.reduce((sum, i) => sum + i.percent || 0, 0);
@@ -396,11 +412,16 @@ function RenderCustomPaymentForm(props) {
   };
 
   const handlePercentChange = (index, percent) => {
-    setAmountData(index, {percent});
-    if (timeout.current) {
-      clearTimeout(timeout.current);
+    if (!values.finalAmount) {
+      snackbar.showMessage({
+        message: 'Please provide final amount',
+        variant: 'warning',
+      });
+      return;
     }
-    timeout.current = setTimeout(() => calculateAmount(index, percent), 2000);
+
+    setAmountData(index, {percent});
+    calculateAmount(index, percent);
   };
 
   const calcPercentage = (index, amount) => {
@@ -417,11 +438,16 @@ function RenderCustomPaymentForm(props) {
   };
 
   const handleAmountChange = (index, amount) => {
-    setAmountData(index, {amount: round(amount)});
-    if (timeout.current) {
-      clearTimeout(timeout.current);
+    if (!values.finalAmount) {
+      snackbar.showMessage({
+        message: 'Please provide final amount',
+        variant: 'warning',
+      });
+      return;
     }
-    timeout.current = setTimeout(() => calcPercentage(index, amount), 1500);
+
+    setAmountData(index, {amount: round(amount)});
+    calcPercentage(index, amount);
   };
 
   const addNewPayment = () => {
@@ -438,29 +464,29 @@ function RenderCustomPaymentForm(props) {
 
   return (
     <>
-      <Caption
-        style={{color: theme.colors.primary, marginTop: 15, fontSize: 14}}>
+      <Caption style={[styles.otherDetailsTitle, {color: colors.primary}]}>
         Payments
       </Caption>
 
       {errors.payment ? (
-        <Caption style={{color: theme.colors.error}}>{errors.payment}</Caption>
+        <Caption style={{color: colors.error}}>{errors.payment}</Caption>
       ) : null}
       {values.custom_payments.map(({percent, amount, date, remark}, index) => {
         return (
-          <View key={index}>
+          <View key={index?.toString()}>
             {values.custom_payments.length > 1 ? (
-              <Caption style={{color: theme.colors.primary, marginTop: 10}}>
+              <Caption
+                style={[styles.paymentFormContainer, {color: colors.primary}]}>
                 {`Installment No. ${index + 1}`}
               </Caption>
             ) : null}
-            <View key={index} style={styles.customPaymentContainer}>
+            <View key={index?.toString()} style={styles.customPaymentContainer}>
               <View style={styles.customInputsContainer}>
                 <View style={styles.customPaymentRowContainer}>
-                  <View style={styles.percentInputContainer}>
+                  <View style={styles.dateInputContainer}>
                     <RenderInput
-                      name={'percent'}
-                      label={'%'}
+                      name="percent"
+                      label="%"
                       keyboardType="decimal-pad"
                       value={percent}
                       onChangeText={value => handlePercentChange(index, value)}
@@ -487,9 +513,9 @@ function RenderCustomPaymentForm(props) {
                       }
                     />
                   </View>
-                  <View style={{flex: 1}}>
+                  <View style={styles.customInputsContainer}>
                     <RenderInput
-                      name={'amount'}
+                      name="amount"
                       label={t('label_amount')}
                       keyboardType="number-pad"
                       value={amount}
@@ -498,7 +524,7 @@ function RenderCustomPaymentForm(props) {
                     />
                   </View>
                 </View>
-                <View style={{marginTop: 5}}>
+                <View style={styles.rateInput}>
                   <RenderDatePicker
                     name="date"
                     label={t('label_date')}
@@ -512,7 +538,7 @@ function RenderCustomPaymentForm(props) {
                     }}
                   />
                 </View>
-                <View style={{marginTop: 5, marginBottom: 10}}>
+                <View style={styles.customRemarkContainer}>
                   <RenderInput
                     name="remark"
                     multiline
@@ -528,10 +554,10 @@ function RenderCustomPaymentForm(props) {
                 <OpacityButton
                   color={theme.colors.red}
                   opacity={0.1}
-                  style={{marginLeft: 15, borderRadius: 20}}
+                  style={styles.removePaymentButton}
                   onPress={() => removePayment(index)}>
                   <MaterialIcons
-                    name={'close'}
+                    name="close"
                     color={theme.colors.red}
                     size={19}
                   />
@@ -553,20 +579,23 @@ function RenderCustomPaymentForm(props) {
 }
 
 function RenderDocumentChargesPayment(props) {
-  const {theme, formikProps, t} = props;
-  const {values, setFieldValue, errors} = formikProps;
+  const {route, theme, formikProps, t} = props;
+  const {withRate} = route?.params || {};
+  const {values, errors, setFieldValue, handleChange, handleBlur} = formikProps;
 
   return (
     <>
       <Caption style={[styles.headingLabel, {color: theme.colors.primary}]}>
-        Document Charges payment
+        Document Charges
       </Caption>
       <View style={styles.docChargesSection}>
         <RenderInput
-          name={'documentation_charges'}
+          name="documentCharge"
           label={t('label_documentation_charges')}
+          onChangeText={handleChange('documentCharge')}
+          onBlur={handleBlur('documentCharge')}
           value={values.documentCharge}
-          editable={false}
+          editable={!withRate}
           left={<TextInput.Affix text="₹" />}
         />
         <View style={styles.inputRowContainer}>
@@ -584,7 +613,7 @@ function RenderDocumentChargesPayment(props) {
               }}
             />
           </View>
-          <View style={{flex: 1}}>
+          <View style={styles.customInputsContainer}>
             <RenderDatePicker
               name="document_end_date"
               label={t('label_end_date')}
@@ -604,20 +633,76 @@ function RenderDocumentChargesPayment(props) {
   );
 }
 
-function RenderPaymentForm(props) {
-  const {theme, formikProps, t} = props;
-  const {values, errors, handleChange, setFieldValue, handleBlur} = formikProps;
+function ConditionsDialog(props) {
+  const {title, value, handleSubmit} = props;
+
+  const [text, setText] = useState(value);
 
   return (
-    <View style={{marginTop: 10}}>
+    <CustomDialog
+      {...props}
+      title={title}
+      submitForm={() => handleSubmit(text)}>
+      <RichTextEditor
+        style={styles.textEditor}
+        height={200}
+        placeholder="Input Test here..."
+        value={text}
+        onChangeText={setText}
+      />
+    </CustomDialog>
+  );
+}
+
+function RenderPaymentForm(props) {
+  const {theme, formikProps, route, t} = props;
+  const {withRate} = route?.params || {};
+  const {values, errors, handleChange, setFieldValue, handleBlur} = formikProps;
+
+  const {commonData} = useSelector(s => s.project);
+
+  const [conditionsDialog, setConditionsDialog] = useState(false);
+
+  const TCOptions = useMemo(() => {
+    return commonData?.booking_TandC?.map(i => ({label: i.title, value: i.id}));
+  }, [commonData?.booking_TandC]);
+
+  useEffect(() => {
+    const terms = commonData?.booking_TandC?.find(
+      i => i.id === values.termsAndConditions,
+    );
+    if (terms?.description) {
+      setFieldValue('termsDescription', terms?.description);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [commonData?.booking_TandC, values.termsAndConditions]);
+
+  const toggleConditionsDialog = () => setConditionsDialog(v => !v);
+
+  return (
+    <View style={styles.paymentFormContainer}>
+      {conditionsDialog ? (
+        <ConditionsDialog
+          open={conditionsDialog}
+          value={values.termsDescription}
+          title="Update Terms"
+          handleClose={toggleConditionsDialog}
+          handleSubmit={v => {
+            setFieldValue('termsDescription', v);
+            toggleConditionsDialog();
+          }}
+        />
+      ) : null}
       {values.isDocumentCharge ? (
         <RenderDocumentChargesPayment {...props} />
       ) : null}
       <RenderInput
         label={t('label_final_amount')}
         value={values.finalAmount}
-        editable={false}
+        editable={!withRate}
         error={errors.finalAmount}
+        onChangeText={handleChange('finalAmount')}
+        onBlur={handleBlur('finalAmount')}
         left={<TextInput.Affix text="₹" />}
       />
       {values.payment_type === 1 ? (
@@ -633,7 +718,7 @@ function RenderPaymentForm(props) {
               }}
             />
           </View>
-          <View style={{flex: 1}}>
+          <View style={styles.flexInput}>
             <RenderDatePicker
               name="end_date"
               label={t('label_end_date')}
@@ -655,22 +740,37 @@ function RenderPaymentForm(props) {
         <RenderOneBigInstallmentPaymentForm {...props} />
       ) : null}
 
-      <Caption
-        style={[styles.otherChargesLabel, {color: theme.colors.primary}]}>
-        Remark
-      </Caption>
-      <RenderTextBox
-        name="payment_remark"
-        numberOfLines={5}
-        minHeight={120}
-        label={t('label_remark')}
-        containerStyles={styles.input}
-        value={values.payment_remark}
-        onChangeText={handleChange('payment_remark')}
-        onBlur={handleBlur('payment_remark')}
-        returnKeyType="done"
-        error={errors.payment_remark}
+      <RenderSelect
+        name="termsAndConditions"
+        label="Terms and conditions"
+        options={TCOptions}
+        style={styles.paymentFormContainer}
+        value={values.termsAndConditions}
+        error={errors.termsAndConditions}
+        onSelect={value => setFieldValue('termsAndConditions', value)}
       />
+
+      {values.termsDescription ? (
+        <View style={styles.termsBox}>
+          <ScrollView nestedScrollEnabled>
+            <RenderHTML
+              source={{html: values.termsDescription}}
+              contentWidth={Layout.window.width}
+            />
+          </ScrollView>
+          <OpacityButton
+            color={theme.colors.primary}
+            opacity={1}
+            style={styles.conditionsButton}
+            onPress={toggleConditionsDialog}>
+            <MaterialCommunityIcons
+              name="pencil"
+              color={theme.colors.white}
+              size={22}
+            />
+          </OpacityButton>
+        </View>
+      ) : null}
     </View>
   );
 }
@@ -679,41 +779,86 @@ function FormContent(props) {
   const {theme, formikProps, bankList, navigation} = props;
   const {t} = useTranslation();
 
-  const {
-    handleSubmit,
-    values,
-    errors,
-    setFieldValue,
-    handleChange,
-  } = formikProps;
+  const {handleSubmit, values, errors, setFieldValue, handleChange, resetForm} =
+    formikProps;
 
   const handleCancel = () => navigation.goBack();
 
+  useEffect(() => {
+    resetForm();
+    setFieldValue('payment_type', values.payment_type);
+    setFieldValue('documentCharge', values.documentCharge);
+    setFieldValue('finalAmount', values.finalAmount);
+    setFieldValue('document_start_date', values.document_start_date);
+    setFieldValue('document_end_date', values.document_end_date);
+    setFieldValue('loan', values.loan);
+    setFieldValue('loan_bank', values.loan_bank);
+    setFieldValue('loan_amount', values.loan_amount);
+    setFieldValue('loan_remark', values.loan_remark);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [values.payment_type]);
+
+  useEffect(() => {
+    resetForm();
+    setFieldValue('finalAmount', values.finalAmount);
+    setFieldValue('payment_type', values.payment_type);
+    setFieldValue('documentCharge', values.documentCharge);
+    setFieldValue('document_start_date', values.document_start_date);
+    setFieldValue('document_end_date', values.document_end_date);
+    setFieldValue('loan', values.loan);
+    setFieldValue('loan_bank', values.loan_bank);
+    setFieldValue('loan_amount', values.loan_amount);
+    setFieldValue('loan_remark', values.loan_remark);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [values.finalAmount]);
+
+  const snackbar = useSnackbar();
+
+  useEffect(() => {
+    if (values.documentCharge > DOCUMENT_CHARGE_LIMIT) {
+      snackbar.showMessage({
+        message: 'Document charges cannot be more than ₹20,000',
+        variant: 'warning',
+      });
+
+      setFieldValue('documentCharge', DOCUMENT_CHARGE_LIMIT);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [values.documentCharge]);
+
   return (
     <TouchableWithoutFeedback
-      style={{flexGrow: 1}}
+      style={styles.container}
       onPress={() => Keyboard.dismiss()}>
       <KeyboardAwareScrollView
         keyboardShouldPersistTaps="handled"
         extraScrollHeight={30}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{flexGrow: 1, paddingVertical: 10}}>
-        <View style={styles.container}>
-          <Subheading style={{color: theme.colors.primary}}>
-            3. Payment Installment
-          </Subheading>
+        contentContainerStyle={styles.scrollContainer}>
+        <View style={styles.contentContainer}>
+          <TouchableOpacity
+            style={styles.headingContainer}
+            onPress={navigation.goBack}>
+            <IconButton
+              icon="keyboard-backspace"
+              color={theme.colors.primary}
+            />
+            <Subheading style={{color: theme.colors.primary}}>
+              3. Payment Installment
+            </Subheading>
+          </TouchableOpacity>
 
           <View style={styles.radioRow}>
             <Text>Do you wish to take a loan?</Text>
             <View style={styles.radioContainer}>
               <Radio
-                label={'Yes'}
+                label="Yes"
                 value="yes"
                 checked={values.loan === 'yes'}
                 onChange={value => setFieldValue('loan', value)}
               />
               <Radio
-                label={'No'}
+                label="No"
                 value="no"
                 color={theme.colors.error}
                 checked={values.loan === 'no'}
@@ -727,19 +872,20 @@ function FormContent(props) {
               <View style={styles.otherChargesContainer}>
                 <View style={styles.dateInputContainer}>
                   <RenderSelect
-                    name={'loan_bank'}
+                    name="loan_bank"
                     label={t('label_choose_bank')}
                     options={bankList}
                     value={values.loan_bank}
+                    truncateLength={15}
                     error={errors.loan_bank}
                     onSelect={value => {
                       formikProps.setFieldValue('loan_bank', value);
                     }}
                   />
                 </View>
-                <View style={{flex: 1}}>
+                <View style={styles.customInputsContainer}>
                   <RenderInput
-                    name={'loan_amount'}
+                    name="loan_amount"
                     label={t('label_amount')}
                     keyboardType="number-pad"
                     value={values.loan_amount}
@@ -748,21 +894,20 @@ function FormContent(props) {
                   />
                 </View>
               </View>
-              <View style={{marginTop: 5}}>
+              <View style={styles.rateInput}>
                 <RenderInput
                   name="loan_remark"
-                  multiline
                   label={t('label_remark')}
                   value={values.loan_remark}
                   onChangeText={handleChange('loan_remark')}
                 />
               </View>
-              <Divider style={{marginTop: 25, marginBottom: 20}} />
+              <Divider style={styles.loanDivider} />
             </View>
           ) : null}
 
           <RenderSelect
-            name={'payment_type'}
+            name="payment_type"
             label={t('label_payment_method')}
             options={PAYMENT_METHODS}
             containerStyles={styles.rateInput}
@@ -773,25 +918,14 @@ function FormContent(props) {
               formikProps.setErrors({});
             }}
           />
-          <RenderPaymentForm {...props} formikProps={formikProps} t={t} />
+          <RenderPaymentForm {...props} {...{formikProps, t}} />
         </View>
-        <View style={styles.actionContainer}>
-          <Button
-            style={{flex: 1, marginHorizontal: 5}}
-            contentStyle={{padding: 3}}
-            theme={{roundness: 15}}
-            onPress={handleCancel}>
-            {'Back'}
-          </Button>
-          <Button
-            style={{flex: 1, marginHorizontal: 5}}
-            mode="contained"
-            contentStyle={{padding: 3}}
-            theme={{roundness: 15}}
-            onPress={handleSubmit}>
-            {'Save'}
-          </Button>
-        </View>
+        <ActionButtons
+          cancelLabel="Back"
+          submitLabel="Save"
+          onCancel={handleCancel}
+          onSubmit={handleSubmit}
+        />
       </KeyboardAwareScrollView>
     </TouchableWithoutFeedback>
   );
@@ -800,11 +934,13 @@ function FormContent(props) {
 function BookingPayments(props) {
   const {navigation, route = {}} = props;
   const {params = {}} = route;
-  const {project_id, unit_id} = params;
+  const {withRate, document_start, document_end} = params;
 
   const {createBooking, getBankList} = useSalesActions();
 
-  const {bankList} = useSelector(state => state.sales);
+  const {bankList} = useSelector(s => s.sales);
+
+  const loading = useSalesLoading();
 
   useEffect(() => {
     getBankList();
@@ -812,8 +948,8 @@ function BookingPayments(props) {
   }, []);
 
   const initialValues = useMemo(() => {
-    const documentCharge = `${params.document_start}.${params.document_end}`;
-    const isDocumentCharge = Number(documentCharge);
+    const documentCharge = withRate ? `${document_start}.${document_end}` : '';
+    const isDocumentCharge = withRate ? Number(documentCharge) : true;
 
     return {
       payment_type: 1,
@@ -821,9 +957,9 @@ function BookingPayments(props) {
       loan: 'no',
       documentCharge,
       isDocumentCharge,
-      ...params,
+      ...route?.params,
     };
-  }, [params]);
+  }, [document_end, document_start, route?.params, withRate]);
 
   const validate = values => {
     const errors = {};
@@ -840,6 +976,7 @@ function BookingPayments(props) {
             } for Installment No. ${index + 1}`;
           }
         }
+        return null;
       });
 
       const totalPercent = values.custom_payments.reduce(
@@ -848,81 +985,112 @@ function BookingPayments(props) {
       );
 
       if (totalPercent !== 100) {
-        errors.payment = 'Sum of all payments does not match Basic amount';
+        errors.payment = 'Sum of all payments does not match Final amount';
       }
     }
 
     return errors;
   };
 
+  const onSubmit = async values => {
+    const data = {...values};
+
+    if (values.payment_type !== 2) {
+      delete data.custom_payments;
+    }
+
+    if (values.payment_type === 1 && !data.withRate) {
+      data.full_basic_amount = data.finalAmount;
+    }
+
+    if (data.isDocumentCharge) {
+      data.basic_amount_document_charge_start = data.document_start;
+      data.basic_amount_document_charge_end = data.document_end;
+
+      switch (values.payment_type) {
+        case 1:
+          data.full_payment_documentation_charges = data.documentCharge;
+          data.full_payment_documentation_charges_start_date =
+            data.document_start_date;
+          data.full_payment_documentation_charges_end_date =
+            data.document_end_date;
+          break;
+        case 2:
+          data.custom_payment_documentation_charges = data.documentCharge;
+          data.custom_payment_documentation_charges_start_date =
+            data.document_start_date;
+          data.custom_payment_documentation_charges_end_date =
+            data.document_end_date;
+          break;
+        case 3:
+          data.installment_payment_documentation_charges = data.documentCharge;
+          data.installment_payment_documentation_charges_start_date =
+            data.document_start_date;
+          data.installment_payment_documentation_charges_end_date =
+            data.document_end_date;
+          break;
+        default:
+      }
+    }
+
+    if (data.payment_type === 1) {
+      data.full_payment_remark = data.termsDescription;
+    } else if (data.payment_type === 2) {
+      data.custom_payment_remark = data.termsDescription;
+    } else if (data.payment_type === 3) {
+      data.installment_payment_remarks = data.termsDescription;
+    }
+
+    delete data.loan;
+    delete data.broker;
+    delete data.documentCharge;
+    delete data.isDocumentCharge;
+    delete data.document_start;
+    delete data.document_end;
+    delete data.document_start_date;
+    delete data.document_end_date;
+    delete data.finalAmount;
+    delete data.termsDescription;
+    delete data.termsAndConditions;
+
+    createBooking(data).then(() => navigation.popToTop());
+  };
+
   return (
-    <Formik
-      validateOnBlur={false}
-      validateOnChange={false}
-      validate={validate}
-      initialValues={initialValues}
-      validationSchema={schema}
-      onSubmit={async values => {
-        console.log('-----> unit_id', unit_id);
-        console.log('-----> project_id', project_id);
-        const data = {...values, project_id, unit_id};
-
-        if (values.payment_type !== 2) {
-          delete data.custom_payments;
-        }
-
-        if (data.isDocumentCharge) {
-          data.basic_amount_document_charge_start = data.document_start;
-          data.basic_amount_document_charge_end = data.document_end;
-
-          switch (values.payment_type) {
-            case 1:
-              data.full_payment_documentation_charges = data.documentCharge;
-              data.full_payment_documentation_charges_start_date =
-                data.document_start_date;
-              data.full_payment_documentation_charges_end_date =
-                data.document_end_date;
-              break;
-            case 2:
-              data.custom_payment_documentation_charges = data.documentCharge;
-              data.custom_payment_documentation_charges_start_date =
-                data.document_start_date;
-              data.custom_payment_documentation_charges_end_date =
-                data.document_end_date;
-              break;
-            case 3:
-              data.installment_payment_documentation_charges =
-                data.documentCharge;
-              data.installment_payment_documentation_charges_start_date =
-                data.document_start_date;
-              data.installment_payment_documentation_charges_end_date =
-                data.document_end_date;
-              break;
-          }
-        }
-
-        delete data.loan;
-        delete data.broker;
-        delete data.documentCharge;
-        delete data.isDocumentCharge;
-        delete data.document_start;
-        delete data.document_end;
-        delete data.document_start_date;
-        delete data.document_end_date;
-        delete data.finalAmount;
-
-        createBooking(data).then(() => navigation.popToTop());
-      }}>
-      {formikProps => <FormContent {...props} {...{formikProps, bankList}} />}
-    </Formik>
+    <>
+      <Spinner visible={loading} textContent="" />
+      <Formik
+        validateOnBlur={false}
+        validateOnChange={false}
+        validate={validate}
+        initialValues={initialValues}
+        validationSchema={schema}
+        onSubmit={onSubmit}>
+        {formikProps => <FormContent {...props} {...{formikProps, bankList}} />}
+      </Formik>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
+  },
+  scrollContainer: {
+    flexGrow: 1,
+    paddingBottom: 10,
+  },
+  contentContainer: {
+    flexGrow: 1,
     paddingHorizontal: 20,
-    paddingVertical: 10,
+  },
+  headingContainer: {
+    marginLeft: -10,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  paymentFormContainer: {
+    marginTop: 10,
   },
   radioRow: {
     marginVertical: 10,
@@ -941,11 +1109,6 @@ const styles = StyleSheet.create({
   loadInputs: {},
   rateInput: {
     marginTop: 5,
-  },
-  otherChargesLabel: {
-    marginTop: 15,
-    marginBottom: 5,
-    fontSize: 14,
   },
   headingLabel: {
     marginTop: 5,
@@ -980,10 +1143,6 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingRight: 10,
   },
-  percentInputContainer: {
-    flex: 1,
-    paddingRight: 10,
-  },
   otherChargesContainer: {
     flexDirection: 'row',
   },
@@ -1004,13 +1163,54 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  actionContainer: {
+  termsBox: {
+    position: 'relative',
+    borderWidth: 1,
+    borderRadius: 10,
+    borderColor: 'rgba(0, 0, 0, 0.3)',
+    paddingHorizontal: 10,
+    marginTop: 10,
+    maxHeight: 200,
+  },
+  loanDivider: {
     marginTop: 25,
-    paddingHorizontal: 20,
-    flexDirection: 'row',
-
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  bigInstallmentTitle: {
+    marginTop: 20,
+    marginBottom: -10,
+    fontSize: 14,
+  },
+  conditionsButton: {
+    padding: 10,
+    position: 'absolute',
+    top: 10,
+    right: 10,
+  },
+  textEditor: {
+    flexGrow: 1,
+    margin: 10,
+  },
+  installmentHeading: {
+    marginTop: 15,
+  },
+  installmentValue: {
+    flex: 0.4,
+  },
+  flexInput: {
+    flex: 1,
+  },
+  otherDetailsTitle: {
+    marginTop: 15,
+    fontSize: 14,
+  },
+  removePaymentButton: {
+    marginLeft: 15,
+    borderRadius: 20,
+  },
+  customRemarkContainer: {
+    marginTop: 5,
+    marginBottom: 10,
   },
 });
 

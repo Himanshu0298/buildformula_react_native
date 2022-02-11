@@ -1,4 +1,3 @@
-import dayjs from 'dayjs';
 import React, {useEffect} from 'react';
 import {
   FlatList,
@@ -255,18 +254,11 @@ function Phases(props) {
 
   const alert = useAlert();
 
-  const {
-    getPhases,
-    addPhase,
-    updatePhase,
-    deletePhase,
-    updatePhaseOrder,
-  } = useProjectManagementActions();
+  const {getPhases, addPhase, updatePhase, deletePhase, updatePhaseOrder} =
+    useProjectManagementActions();
 
-  const {selectedProject} = useSelector(state => state.project);
-  const {loading, refreshing, phases} = useSelector(
-    state => state.projectManagement,
-  );
+  const {selectedProject} = useSelector(s => s.project);
+  const {loading, refreshing, phases} = useSelector(s => s.projectManagement);
 
   const [menuIndex, setMenuIndex] = React.useState(false);
   const [addDialog, setAddDialog] = React.useState(false);
@@ -294,6 +286,7 @@ function Phases(props) {
     const sorting = {};
     sortedData.map((item, index) => {
       sorting[item.id] = index;
+      return item;
     });
 
     await updatePhaseOrder({sorting, project_id: selectedProject.id});
@@ -353,6 +346,8 @@ function Phases(props) {
     });
   };
 
+  const emptyComponent = () => <EmptyComponent />;
+
   return (
     <View style={styles.container}>
       {addDialog ? (
@@ -378,7 +373,7 @@ function Phases(props) {
                 style={{borderRadius: 50, marginRight: 10}}
                 onPress={saveSort}>
                 <MaterialIcon
-                  name={'check'}
+                  name="check"
                   color={theme.colors.primary}
                   size={14}
                 />
@@ -389,7 +384,7 @@ function Phases(props) {
                 style={{borderRadius: 50}}
                 onPress={toggleSortable}>
                 <MaterialIcon
-                  name={'close'}
+                  name="close"
                   color={theme.colors.error}
                   size={14}
                 />
@@ -428,7 +423,7 @@ function Phases(props) {
           extraData={phases}
           contentContainerStyle={{flexGrow: 1}}
           keyExtractor={(_, i) => i.toString()}
-          ListEmptyComponent={() => <EmptyComponent />}
+          ListEmptyComponent={emptyComponent}
           refreshControl={
             <RefreshControl
               refreshing={refreshing}

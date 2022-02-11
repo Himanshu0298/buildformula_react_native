@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import persistReducer from 'redux-persist/es/persistReducer';
-import {SET_LANGUAGE} from './../actions/actionTypes';
+import {SET_LANGUAGE} from '../actions/actionTypes';
 
 const persistConfig = {
   key: 'app',

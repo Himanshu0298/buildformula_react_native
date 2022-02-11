@@ -28,11 +28,27 @@ import {
   ADD_BROKER,
   DELETE_BROKER,
   GET_BROKER_DETAILS,
-} from './../actions/actionTypes';
+  HOLD_UNIT_BOOKING,
+  GET_HOLD_BOOKING_DETAILS,
+  UN_HOLD_UNIT_BOOKING,
+} from '../actions/actionTypes';
 
 const initialState = {
   loading: false,
+  loadingCommonData: false,
+  loadingSalesData: false,
   loadingUnitStatus: false,
+  loadingVisitors: false,
+  loadingVisitor: false,
+  loadingFollowups: false,
+  loadingPipeline: false,
+  loadingBankList: false,
+  loadingBrokers: false,
+  loadingVisitorActivities: false,
+  loadingPipelineOrderList: false,
+  loadingBrokerDetails: false,
+  deletingPipeline: false,
+  loadingHoldBookingDetails: false,
   errorMessage: undefined,
   timerData: {showTimer: false},
   visitors: [],
@@ -60,7 +76,7 @@ const reducer = (state = initialState, action = {}) => {
   const {type, payload} = action;
 
   switch (type) {
-    //RESET data on project change
+    // RESET data on project change
     case `${GET_SELECTED_PROJECT}_PENDING`:
       return {...initialState};
 
@@ -76,7 +92,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${GET_PROJECT_COMMON_DATA}_PENDING`:
       return {
         ...state,
-        loading: true,
+        loadingCommonData: true,
       };
     case `${GET_PROJECT_COMMON_DATA}_FULFILLED`: {
       const sourceTypeOptions = payload.source_types
@@ -84,21 +100,21 @@ const reducer = (state = initialState, action = {}) => {
         .map(i => ({label: i.source_title, value: i.id}));
       return {
         ...state,
-        loading: false,
+        loadingCommonData: false,
         sourceTypeOptions,
       };
     }
     case `${GET_PROJECT_COMMON_DATA}_REJECTED`:
       return {
         ...state,
-        loading: false,
+        loadingCommonData: false,
         errorMessage: payload,
       };
 
     case `${GET_SALES_DATA}_PENDING`:
       return {
         ...state,
-        loading: true,
+        loadingSalesData: true,
       };
     case `${GET_SALES_DATA}_FULFILLED`: {
       const {
@@ -115,7 +131,7 @@ const reducer = (state = initialState, action = {}) => {
 
       return {
         ...state,
-        loading: false,
+        loadingSalesData: false,
         occupationOptions: occupations,
         inquiryOptions: Object.keys(inquiry_for).map(value => {
           return {value: Number(value), label: inquiry_for[value]};
@@ -134,19 +150,19 @@ const reducer = (state = initialState, action = {}) => {
     case `${GET_SALES_DATA}_REJECTED`:
       return {
         ...state,
-        loading: false,
+        loadingSalesData: false,
         errorMessage: payload,
       };
 
     case `${GET_VISITORS}_PENDING`:
       return {
         ...state,
-        loading: true,
+        loadingVisitors: true,
       };
     case `${GET_VISITORS}_FULFILLED`:
       return {
         ...state,
-        loading: false,
+        loadingVisitors: false,
         visitors: payload.sort(
           (a, b) =>
             dayjs(b.follow_up_date).unix() - dayjs(a.follow_up_date).unix(),
@@ -155,7 +171,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${GET_VISITORS}_REJECTED`:
       return {
         ...state,
-        loading: false,
+        loadingVisitors: false,
         errorMessage: payload,
       };
 
@@ -163,7 +179,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${UPDATE_FOLLOW_UP}_PENDING`:
       return {
         ...state,
-        loading: true,
+        loadingVisitor: true,
         visitor: {},
       };
     case `${GET_VISITOR}_FULFILLED`:
@@ -175,7 +191,7 @@ const reducer = (state = initialState, action = {}) => {
 
       return {
         ...state,
-        loading: false,
+        loadingVisitor: false,
         visitor: payload.visitors,
         visitorFollowUp,
       };
@@ -184,47 +200,51 @@ const reducer = (state = initialState, action = {}) => {
     case `${UPDATE_FOLLOW_UP}_REJECTED`:
       return {
         ...state,
-        loading: false,
+        loadingVisitor: false,
         errorMessage: payload,
       };
 
     case `${GET_FOLLOWUP_LIST}_PENDING`:
       return {
         ...state,
-        loading: true,
+        loadingFollowups: true,
       };
     case `${GET_FOLLOWUP_LIST}_FULFILLED`: {
       const {followups, todayFollowups} = payload;
+
+      const sortedFollowups = followups.sort(
+        (a, b) =>
+          dayjs(b.follow_up_date).unix() - dayjs(a.follow_up_date).unix(),
+      );
+      const sortedToday = todayFollowups.sort(
+        (a, b) =>
+          dayjs(b.follow_up_date).unix() - dayjs(a.follow_up_date).unix(),
+      );
+
       return {
         ...state,
-        loading: false,
-        followups: followups.sort(
-          (a, b) =>
-            dayjs(b.follow_up_date).unix() - dayjs(a.follow_up_date).unix(),
-        ),
-        todayFollowups: todayFollowups.sort(
-          (a, b) =>
-            dayjs(b.follow_up_date).unix() - dayjs(a.follow_up_date).unix(),
-        ),
+        loadingFollowups: false,
+        followups: sortedFollowups,
+        todayFollowups: sortedToday,
       };
     }
     case `${GET_FOLLOWUP_LIST}_REJECTED`:
       return {
         ...state,
-        loading: false,
+        loadingFollowups: false,
         errorMessage: payload,
       };
 
     case `${GET_PIPELINES}_PENDING`:
       return {
         ...state,
-        loading: true,
+        loadingPipeline: true,
       };
     case `${GET_PIPELINES}_FULFILLED`: {
       const {pipelines, visitorSuggestions} = payload;
       return {
         ...state,
-        loading: false,
+        loadingPipeline: false,
         pipelines,
         visitorSuggestions,
       };
@@ -232,7 +252,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${GET_PIPELINES}_REJECTED`:
       return {
         ...state,
-        loading: false,
+        loadingPipeline: false,
         errorMessage: payload,
       };
 
@@ -258,12 +278,12 @@ const reducer = (state = initialState, action = {}) => {
     case `${GET_BANK_LIST}_PENDING`:
       return {
         ...state,
-        loading: true,
+        loadingBankList: true,
       };
     case `${GET_BANK_LIST}_FULFILLED`: {
       return {
         ...state,
-        loading: false,
+        loadingBankList: false,
         bankList: payload.map(({id, title}) => ({
           label: title,
           value: id,
@@ -273,57 +293,57 @@ const reducer = (state = initialState, action = {}) => {
     case `${GET_BANK_LIST}_REJECTED`:
       return {
         ...state,
-        loading: false,
+        loadingBankList: false,
         errorMessage: payload,
       };
 
     case `${GET_BROKERS_LIST}_PENDING`:
       return {
         ...state,
-        loading: true,
+        loadingBrokers: true,
       };
     case `${GET_BROKERS_LIST}_FULFILLED`: {
       return {
         ...state,
-        loading: false,
+        loadingBrokers: false,
         brokersList: payload.sort((a, b) => (a.id > b.id ? 1 : -1)),
       };
     }
     case `${GET_BROKERS_LIST}_REJECTED`:
       return {
         ...state,
-        loading: false,
+        loadingBrokers: false,
         errorMessage: payload,
       };
 
     case `${GET_BROKER_DETAILS}_PENDING`:
       return {
         ...state,
-        loading: true,
+        loadingBrokerDetails: true,
       };
     case `${GET_BROKER_DETAILS}_FULFILLED`: {
       return {
         ...state,
-        loading: false,
+        loadingBrokerDetails: false,
         brokerDetails: payload,
       };
     }
     case `${GET_BROKER_DETAILS}_REJECTED`:
       return {
         ...state,
-        loading: false,
+        loadingBrokerDetails: false,
         errorMessage: payload,
       };
 
     case `${GET_VISITOR_ACTIVITIES}_PENDING`:
       return {
         ...state,
-        loading: true,
+        loadingVisitorActivities: true,
       };
     case `${GET_VISITOR_ACTIVITIES}_FULFILLED`: {
       return {
         ...state,
-        loading: false,
+        loadingVisitorActivities: false,
         visitorActivities: payload.listRecords
           ? Object.values(payload.listRecords)
           : [],
@@ -332,33 +352,33 @@ const reducer = (state = initialState, action = {}) => {
     case `${GET_VISITOR_ACTIVITIES}_REJECTED`:
       return {
         ...state,
-        loading: false,
+        loadingVisitorActivities: false,
         errorMessage: payload,
       };
 
     case `${GET_PIPELINES_ORDER_LIST}_PENDING`:
       return {
         ...state,
-        loading: true,
+        loadingPipelineOrderList: true,
       };
     case `${GET_PIPELINES_ORDER_LIST}_FULFILLED`: {
       return {
         ...state,
-        loading: false,
+        loadingPipelineOrderList: false,
         pipelinesOrderList: payload,
       };
     }
     case `${GET_PIPELINES_ORDER_LIST}_REJECTED`:
       return {
         ...state,
-        loading: false,
+        loadingPipelineOrderList: false,
         errorMessage: payload,
       };
 
     case `${DELETE_PIPELINE}_PENDING`:
       return {
         ...state,
-        loading: true,
+        deletingPipeline: true,
       };
     case `${DELETE_PIPELINE}_FULFILLED`: {
       const pipelines = _.cloneDeep(state.pipelines);
@@ -370,32 +390,33 @@ const reducer = (state = initialState, action = {}) => {
 
       return {
         ...state,
-        loading: false,
+        deletingPipeline: false,
         pipelines,
       };
     }
     case `${DELETE_PIPELINE}_REJECTED`:
       return {
         ...state,
-        loading: false,
+        deletingPipeline: false,
         errorMessage: payload,
       };
 
-    case `${DELETE_BROKER}_PENDING`:
+    case `${GET_HOLD_BOOKING_DETAILS}_PENDING`:
       return {
         ...state,
-        loading: true,
+        loadingHoldBookingDetails: true,
       };
-    case `${DELETE_BROKER}_FULFILLED`: {
+    case `${GET_HOLD_BOOKING_DETAILS}_FULFILLED`: {
       return {
         ...state,
-        loading: false,
+        loadingHoldBookingDetails: false,
+        bookingHoldDetails: payload,
       };
     }
-    case `${DELETE_BROKER}_REJECTED`:
+    case `${GET_HOLD_BOOKING_DETAILS}_REJECTED`:
       return {
         ...state,
-        loading: false,
+        loadingHoldBookingDetails: false,
         errorMessage: payload,
       };
 
@@ -406,7 +427,7 @@ const reducer = (state = initialState, action = {}) => {
       let movedVisitor = {};
       let newPipelineIndex = -1;
 
-      //Find old pipeline and remove visitor from the list
+      // Find old pipeline and remove visitor from the list
       pipelines = pipelines.map((pipeline, i) => {
         const {get_visitors} = _.cloneDeep(pipeline);
 
@@ -425,7 +446,7 @@ const reducer = (state = initialState, action = {}) => {
         return pipeline;
       });
 
-      //Add visitor to the new list
+      // Add visitor to the new list
       if (newPipelineIndex > -1 && movedVisitor.id) {
         pipelines[newPipelineIndex].get_visitors.push(movedVisitor);
       }
@@ -459,6 +480,9 @@ const reducer = (state = initialState, action = {}) => {
     case `${CREATE_BOOKING}_PENDING`:
     case `${UPDATE_BROKER}_PENDING`:
     case `${UPDATE_PIPELINE_ORDER_LIST}_PENDING`:
+    case `${HOLD_UNIT_BOOKING}_PENDING`:
+    case `${UN_HOLD_UNIT_BOOKING}_PENDING`:
+    case `${DELETE_BROKER}_PENDING`:
     case `${ADD_PIPELINE}_PENDING`: {
       return {
         ...state,
@@ -473,6 +497,9 @@ const reducer = (state = initialState, action = {}) => {
     case `${UPDATE_PIPELINE_ORDER_LIST}_FULFILLED`:
     case `${UPDATE_BROKER}_FULFILLED`:
     case `${CREATE_BOOKING}_FULFILLED`:
+    case `${HOLD_UNIT_BOOKING}_FULFILLED`:
+    case `${UN_HOLD_UNIT_BOOKING}_FULFILLED`:
+    case `${DELETE_BROKER}_FULFILLED`:
     case `${ADD_PIPELINE}_FULFILLED`: {
       return {
         ...state,
@@ -488,6 +515,9 @@ const reducer = (state = initialState, action = {}) => {
     case `${UPDATE_BROKER}_REJECTED`:
     case `${UPDATE_PIPELINE_ORDER_LIST}_REJECTED`:
     case `${CREATE_BOOKING}_REJECTED`:
+    case `${HOLD_UNIT_BOOKING}_REJECTED`:
+    case `${UN_HOLD_UNIT_BOOKING}_REJECTED`:
+    case `${DELETE_BROKER}_REJECTED`:
     case `${ADD_PIPELINE}_REJECTED`: {
       return {
         ...state,

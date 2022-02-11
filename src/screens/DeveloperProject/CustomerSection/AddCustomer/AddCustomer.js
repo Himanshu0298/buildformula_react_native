@@ -22,7 +22,7 @@ import useImagePicker from 'utils/useImagePicker';
 import CustomCheckbox from 'components/Atoms/CustomCheckbox';
 import Spinner from 'react-native-loading-spinner-overlay';
 
-//TODO: Add schema for customer
+// TODO: Add schema for customer
 const schema = Yup.object().shape({});
 
 function ProfileUpload({profilePic, onSelect}) {
@@ -231,15 +231,15 @@ function AddCustomer(props) {
   const {params} = route;
   const {unit} = params;
   const {t} = useTranslation();
-  const {user} = useSelector(state => state.user);
-  const {selectedProject} = useSelector(state => state.project);
-  const {loading} = useSelector(state => state.customer);
+  const {user} = useSelector(s => s.user);
+  const {selectedProject} = useSelector(s => s.project);
+  const {loading} = useSelector(s => s.customer);
 
   const {getCustomerDetails, addCustomer} = useCustomerActions();
 
   return (
     <View style={styles.container}>
-      <Spinner visible={loading} textContent={''} />
+      <Spinner visible={loading} textContent="" />
       <KeyboardAwareScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollView}
@@ -260,7 +260,7 @@ function AddCustomer(props) {
           onSubmit={async values => {
             const formData = new FormData();
             formData.append('project_id', selectedProject.id);
-            formData.append('unit_id', unit.unit_id || unit.unitId);
+            formData.append('unit_id', unit.unit_id);
             formData.append('customer_first_name', values.customer_full_name);
             formData.append('customer_phone', values.customer_phone);
             formData.append('customer_email', values.customer_email);
@@ -277,7 +277,7 @@ function AddCustomer(props) {
             getCustomerDetails({
               user_id: user.id,
               project_id: selectedProject.id,
-              unit_id: unit.unitId,
+              unit_id: unit.unit_id,
             });
             navigation.goBack();
           }}>

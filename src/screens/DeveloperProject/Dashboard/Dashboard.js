@@ -4,13 +4,13 @@ import React, {useEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {TabView} from 'react-native-tab-view';
-import {useSelector} from 'react-redux';
 import useProjectActions from 'redux/actions/projectActions';
 import Layout from 'utils/Layout';
 import {Subheading} from 'react-native-paper';
+import useNotificationActions from 'redux/actions/notificationActions';
+import {useProjectLoading} from 'redux/selectors';
 import Statistics from './Components/Statistics';
 import Activity from './Components/Activity';
-import useNotificationActions from 'redux/actions/notificationActions';
 
 export default function DeveloperDashboard(props) {
   const {route} = props;
@@ -24,11 +24,11 @@ export default function DeveloperDashboard(props) {
   } = useProjectActions();
   const {getProjectNotifications} = useNotificationActions();
 
-  const {loading} = useSelector(state => state.project);
+  const loading = useProjectLoading();
 
   const [selectedTab, setSelectedTab] = useState(0);
   const [routes] = React.useState([
-    {key: 0, title: 'Stastics'},
+    {key: 0, title: 'Statistics'},
     {key: 1, title: 'Activity'},
   ]);
 
@@ -38,11 +38,13 @@ export default function DeveloperDashboard(props) {
   }, [project]);
 
   const loadData = () => {
-    getDashboardData(project.id);
-    getProjectPermissions(project.id);
-    getProjectData(project.id);
-    getProjectCommonData(project.id);
-    getProjectNotifications({project_id: project.id});
+    if (project?.id) {
+      getDashboardData(project.id);
+      getProjectPermissions(project.id);
+      getProjectData(project.id);
+      getProjectCommonData(project.id);
+      getProjectNotifications({project_id: project.id});
+    }
   };
 
   const renderScene = ({route: {key}}) => {
@@ -51,12 +53,14 @@ export default function DeveloperDashboard(props) {
         return <Statistics onRefresh={loadData} />;
       case 1:
         return <Activity onRefresh={loadData} />;
+      default:
+        return <View />;
     }
   };
 
   return (
     <View style={styles.container}>
-      <Spinner visible={loading} textContent={''} />
+      <Spinner visible={loading} textContent="" />
       <TabView
         navigationState={{index: selectedTab, routes}}
         renderScene={renderScene}

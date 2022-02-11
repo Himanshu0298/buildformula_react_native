@@ -45,13 +45,8 @@ function RenderFolder(props) {
 }
 
 function FolderSection(props) {
-  const {
-    route,
-    menuId,
-    toggleMenu,
-    setModalContentType,
-    setModalContent,
-  } = props;
+  const {route, menuId, toggleMenu, setModalContentType, setModalContent} =
+    props;
 
   const {index_of: folderDepth = 0} = route?.params || {};
 

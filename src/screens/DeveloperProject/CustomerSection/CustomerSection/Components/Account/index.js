@@ -11,13 +11,13 @@ import {
   Text,
   withTheme,
 } from 'react-native-paper';
-import {BOOKING_STATUS_STYLES} from 'components/Molecules/UnitSelector/RenderUnits';
+import {BOOKING_STATUS_STYLES} from 'components/Molecules/UnitSelector/RenderUnit';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import ActivityDialog from './Components/ActivityDialog';
 import {useSelector} from 'react-redux';
 import useCustomerActions from 'redux/actions/customerActions';
 import {getPermissions} from 'utils';
+import ActivityDialog from './Components/ActivityDialog';
 
 function StatusDialog(props) {
   const {open, status, updateStatus, handleClose} = props;
@@ -62,7 +62,7 @@ function Account(props) {
 
   const {updateBookingStatus, getAccountDetails} = useCustomerActions();
 
-  const {accountDetails} = useSelector(state => state.customer);
+  const {accountDetails} = useSelector(s => s.customer);
   const {
     paymentSchedule,
     paymentCollection = {},
@@ -78,10 +78,8 @@ function Account(props) {
   const bookingStyle = BOOKING_STATUS_STYLES[bookingCurrentStatus] || {};
 
   const {documentCollected, propertyCollected} = React.useMemo(() => {
-    const {
-      documentcharges = [],
-      propertyfinalamount: property = [],
-    } = paymentCollection;
+    const {documentcharges = [], propertyfinalamount: property = []} =
+      paymentCollection;
     return {
       documentCollected: documentcharges.reduce(
         (sum, i) => sum + parseFloat(i.amount),
@@ -100,12 +98,12 @@ function Account(props) {
   const updateStatus = status => {
     updateBookingStatus({
       project_id,
-      unit_id: unit.unitId,
+      unit_id: unit.unit_id,
       booking_status: status,
     }).then(() => {
       toggleStatusDialog();
 
-      getAccountDetails({project_id, unit_id: unit.unitId});
+      getAccountDetails({project_id, unit_id: unit.unit_id});
     });
   };
 

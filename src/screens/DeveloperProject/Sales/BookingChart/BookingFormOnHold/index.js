@@ -4,7 +4,7 @@ import BookingFormOnHold from './BookingFormOnHold';
 
 export default props => {
   return (
-    <ProjectLayout {...props} showTimer={true}>
+    <ProjectLayout {...props} showTimer>
       <BookingFormOnHold {...props} />
     </ProjectLayout>
   );

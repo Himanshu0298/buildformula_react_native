@@ -20,6 +20,7 @@ import backArrow from 'assets/images/back_arrow.png';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
+import UserAvatar from 'components/Atoms/UserAvatar';
 
 function RenderInfo({label, value}) {
   return (
@@ -52,27 +53,22 @@ function CustomerDetails(props) {
           </TouchableOpacity>
         </View>
         <View style={styles.detailsTopContainer}>
-          <Avatar.Image
-            size={100}
-            source={{
-              uri: profile_pic,
-            }}
-          />
+          <UserAvatar size={100} uri={profile_pic} />
           <Text style={styles.nameText}>{name}</Text>
           <Caption>{role}</Caption>
         </View>
         <Divider />
         <View style={styles.bottomDetails}>
-          <RenderInfo label={'Full Name'} value={name} />
-          <RenderInfo label={'Phone'} value={'+91 9800 56789'} />
-          <RenderInfo label={'Alternate contact'} value={'+91 9800 56789'} />
-          <RenderInfo label={'Email'} value={'jamesparker@xyz.com'} />
+          <RenderInfo label="Full Name" value={name} />
+          <RenderInfo label="Phone" value="+91 9800 56789" />
+          <RenderInfo label="Alternate contact" value="+91 9800 56789" />
+          <RenderInfo label="Email" value="jamesparker@xyz.com" />
           <RenderInfo
-            label={'Address'}
-            value={'P 137, Pilanji, Sarojini Nagar, xyz lane, New Delhi'}
+            label="Address"
+            value="P 137, Pilanji, Sarojini Nagar, xyz lane, New Delhi"
           />
-          <RenderInfo label={'Age'} value={'17 yrs'} />
-          <RenderInfo label={'Occupation'} value={'Business'} />
+          <RenderInfo label="Age" value="17 yrs" />
+          <RenderInfo label="Occupation" value="Business" />
           <View style={styles.infoContainer}>
             <Text>PAN no:</Text>
             <View style={styles.valueContainer}>

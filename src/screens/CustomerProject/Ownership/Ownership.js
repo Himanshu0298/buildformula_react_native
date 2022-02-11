@@ -4,6 +4,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import {useSelector} from 'react-redux';
 import useCustomerActions from 'redux/actions/customerActions';
 import useProjectActions from 'redux/actions/projectActions';
+import {useProjectLoading} from 'redux/selectors';
 import {Details} from 'screens/DeveloperProject/CustomerSection/CustomerSection/Components';
 
 function Ownership(props) {
@@ -13,11 +14,8 @@ function Ownership(props) {
   unit_info.unit_id = unit_info.id;
   const {unit_id} = unit_info;
 
-  const {
-    getProjectData,
-    getProjectCommonData,
-    setSelectedUnit,
-  } = useProjectActions();
+  const {getProjectData, getProjectCommonData, setSelectedUnit} =
+    useProjectActions();
   const {
     getCustomerDetails,
     getBookingDetails,
@@ -26,9 +24,9 @@ function Ownership(props) {
     getAccountDetails,
   } = useCustomerActions();
 
-  const {loading} = useSelector(state => state.project);
-  const {loading: customerDataLoading} = useSelector(state => state.customer);
-  const {user} = useSelector(state => state.user);
+  const {loading: customerDataLoading} = useSelector(s => s.customer);
+  const {user} = useSelector(s => s.user);
+  const loading = useProjectLoading();
 
   React.useEffect(() => {
     setSelectedUnit(unit_info);

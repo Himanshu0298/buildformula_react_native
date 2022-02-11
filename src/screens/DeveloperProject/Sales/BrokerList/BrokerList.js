@@ -21,24 +21,18 @@ import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
 import NoDataFound from 'assets/images/NoDataFound.png';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
+import {useSalesLoading} from 'redux/selectors';
 
-function RenderBrokerList(props) {
+function RenderBroker(props) {
   const {theme, data, navigation, index} = props;
   const {first_name, last_name, phone, email, dealsClosed} = data;
 
+  const navToDetails = () => {
+    navigation.navigate('BrokerDetails', {userData: data});
+  };
+
   return (
-    <TouchableOpacity
-      onPress={() =>
-        navigation.navigate('BrokerDetails', {
-          userData: data,
-        })
-      }
-      style={{
-        backgroundColor: '#F2F4F5',
-        padding: 10,
-        marginBottom: 20,
-        borderRadius: 10,
-      }}>
+    <TouchableOpacity onPress={navToDetails} style={styles.listItem}>
       <View style={{flexDirection: 'row'}}>
         <View style={{marginRight: 10}}>
           <Text>
@@ -51,20 +45,12 @@ function RenderBrokerList(props) {
           </Text>
         </View>
         <View style={{flexGrow: 1}}>
-          <View
-            style={{
-              flexDirection: 'row',
-            }}>
+          <View style={{flexDirection: 'row'}}>
             <Text>
               {first_name} {last_name}
             </Text>
           </View>
-          <View
-            style={{
-              justifyContent: 'space-between',
-              flexDirection: 'row',
-              marginTop: 5,
-            }}>
+          <View style={styles.rowBetween}>
             <Caption>{email}</Caption>
             <Caption>+91 {phone}</Caption>
           </View>
@@ -92,7 +78,7 @@ function RenderBrokers(props) {
         contentContainerStyle={{flexGrow: 1, paddingBottom: 60}}
         showsVerticalScrollIndicator={false}
         renderItem={({item, index}) => (
-          <RenderBrokerList
+          <RenderBroker
             {...props}
             index={index}
             data={item}
@@ -106,12 +92,7 @@ function RenderBrokers(props) {
         ListEmptyComponent={
           <View style={styles.noResultContainer}>
             <Image source={NoDataFound} />
-            <Title
-              style={{
-                color: theme.colors.primary,
-                fontSize: 22,
-                marginTop: 10,
-              }}>
+            <Title style={[styles.emptyTitle, {color: theme.colors.primary}]}>
               Start adding your Brokers
             </Title>
           </View>
@@ -125,10 +106,11 @@ function BrokerList(props) {
   const {theme, navigation} = props;
 
   const {selectedProject} = useSelector(s => s.project);
-  const {loading, visitors, visitorAnalytics, brokersList} = useSelector(
-    s => s.sales,
-  );
+  const {visitorAnalytics, brokersList} = useSelector(s => s.sales);
 
+  const loading = useSalesLoading();
+
+  // TODO: setup permissions
   const modulePermission = getPermissions('Visitors');
 
   const {getBrokersList} = useSalesActions();
@@ -147,12 +129,12 @@ function BrokerList(props) {
 
   return (
     <View style={{padding: 15, flexGrow: 1}}>
-      <Spinner visible={loading} textContent={''} />
+      <Spinner visible={loading} textContent="" />
       <RenderBrokers
         {...props}
         filter={filter}
         data={brokersList}
-        showAnalyticsRow={true}
+        showAnalyticsRow
         visitorAnalytics={visitorAnalytics}
         setFilter={setFilter}
         navigation={navigation}
@@ -193,5 +175,20 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 20,
     bottom: 20,
+  },
+  listItem: {
+    backgroundColor: '#F2F4F5',
+    padding: 10,
+    marginBottom: 20,
+    borderRadius: 10,
+  },
+  rowBetween: {
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    marginTop: 5,
+  },
+  emptyTitle: {
+    fontSize: 22,
+    marginTop: 10,
   },
 });

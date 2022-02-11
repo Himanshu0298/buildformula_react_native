@@ -4,16 +4,16 @@ import {Button, TextInput, withTheme} from 'react-native-paper';
 import BaseText from 'components/Atoms/BaseText';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import {getTowerLabel} from 'utils';
-import TowerIcon from 'components/Atoms/TowerIcon';
+// import TowerIcon from 'components/Atoms/TowerIcon';
 import DuplicateDialog from './DuplicateDialog';
 
 function RenderTowers({towerCount, towerValidationById, onPress}) {
   const towersList = [];
   for (let i = 1; i <= towerCount; i += 1) {
     const active = towerValidationById[i];
-    towersList.push(
-      <TowerIcon onPress={onPress} key={i} index={i} active={active} />,
-    );
+    // towersList.push(
+    //   <TowerIcon onPress={onPress} key={i} index={i} active={active} />,
+    // );
   }
   return <View style={styles.towersList}>{towersList}</View>;
 }
@@ -36,7 +36,7 @@ function TowersScreen(props) {
 
   const [duplicateDialog, setDuplicateDialog] = useState(false);
 
-  //check towers data is valid for all floors
+  // check towers data is valid for all floors
   const {towerValidationById, allTowersValid, errorMessage} = useMemo(
     () => validateTowers(currentStructureData, selectedStructureType),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -88,7 +88,7 @@ function TowersScreen(props) {
                 }}
               />
               <Button
-                compact={true}
+                compact
                 mode="contained"
                 uppercase={false}
                 disabled={!towerCount}
@@ -125,7 +125,7 @@ function TowersScreen(props) {
                   saveStructureType();
                 }
               }}>
-              {'Next'}
+              Next
             </Button>
           </View>
         </View>

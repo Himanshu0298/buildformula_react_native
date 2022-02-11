@@ -1,12 +1,17 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import BhkButton from 'components/Atoms/Buttons/BhkButton';
-import FormTitle from 'components/Atoms/FormTitle';
-import {useTranslation} from 'react-i18next';
-import {StyleSheet, View, ScrollView, RefreshControl} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  RefreshControl,
+  FlatList,
+} from 'react-native';
 import {Subheading} from 'react-native-paper';
 import {BHK_OPTIONS} from 'utils/constant';
 import PropTypes from 'prop-types';
-import RenderUnits from './RenderUnits';
+import NoResult from 'components/Atoms/NoResult';
+import RenderUnit from './RenderUnit';
 
 function BhkList({onPress, selectedBhk}) {
   return (
@@ -17,7 +22,7 @@ function BhkList({onPress, selectedBhk}) {
             return (
               <BhkButton
                 bhk={bhk}
-                key={i}
+                key={i.toString()}
                 selected={bhk.type === selectedBhk}
                 onPress={onPress}
               />
@@ -29,55 +34,73 @@ function BhkList({onPress, selectedBhk}) {
   );
 }
 
-function UnitSelector({
-  title,
-  subtitle,
-  showBhkFilters,
-  refreshing,
-  onRefresh,
-  units,
-  floorId,
-  onSelectUnit,
-  isUnitDisabled,
-}) {
-  const {t} = useTranslation();
+function UnitSelector(props) {
+  const {
+    showBhkFilters,
+    refreshing,
+    onRefresh,
+    units,
+    floorNumber,
+    onSelectUnit,
+    floorType,
+    isUnitDisabled,
+  } = props;
 
   const [selectedBhk, setSelectedBhk] = React.useState();
 
+  const filteredUnits = useMemo(() => {
+    if (selectedBhk) {
+      return units.filter(i => i.bhk === selectedBhk);
+    }
+    return units;
+  }, [selectedBhk, units]);
+
+  const renderNoUnits = () => <NoResult title="No Units available" />;
+
   return (
-    <>
-      <FormTitle title={t(title)} subTitle={t(subtitle)} />
-      <ScrollView
-        contentContainerStyle={{flexGrow: 1}}
+    <View style={styles.container}>
+      {showBhkFilters ? (
+        <>
+          <Subheading style={styles.bhkHeading}>BHK indication</Subheading>
+          <BhkList selectedBhk={selectedBhk} onPress={setSelectedBhk} />
+        </>
+      ) : null}
+      <Subheading style={styles.floorTitle}>{floorNumber}</Subheading>
+      <FlatList
+        data={filteredUnits}
+        extraData={filteredUnits}
+        numColumns={3}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContainer}
+        ListEmptyComponent={renderNoUnits}
         refreshControl={
           onRefresh ? (
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           ) : null
-        }>
-        <View style={styles.container}>
-          {showBhkFilters ? (
-            <>
-              <Subheading style={{marginTop: 5}}>BHK indication</Subheading>
-              <BhkList selectedBhk={selectedBhk} onPress={setSelectedBhk} />
-            </>
-          ) : null}
-          <Subheading style={styles.floorTitle}>Units</Subheading>
-          <RenderUnits
-            units={units}
-            selectedFloor={floorId}
+        }
+        renderItem={({item: unit}) => (
+          <RenderUnit
+            key={unit?.unit_id}
+            unit={unit}
+            floorType={floorType}
             onSelectUnit={onSelectUnit}
             isUnitDisabled={isUnitDisabled}
           />
-        </View>
-      </ScrollView>
-    </>
+        )}
+      />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 20,
+  },
+  bhkHeading: {
+    marginTop: 5,
+  },
+  scrollContainer: {
+    flexGrow: 1,
   },
   towerList: {
     flexDirection: 'row',
@@ -91,7 +114,7 @@ UnitSelector.defaultProps = {
   title: 'title_select_unit',
   subtitle: 'label_select_appropriate_option',
   showBhkFilters: true,
-  onSelectUnit: () => {},
+  refreshing: false,
 };
 
 UnitSelector.propTypes = {
@@ -100,9 +123,7 @@ UnitSelector.propTypes = {
   showBhkFilters: PropTypes.bool,
   onSelectUnit: PropTypes.func.isRequired,
   refreshing: PropTypes.bool,
-  onRefresh: PropTypes.func,
-  units: PropTypes.object,
-  floorId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+  onRefresh: PropTypes.func.isRequired,
 };
 
 export default React.memo(UnitSelector);

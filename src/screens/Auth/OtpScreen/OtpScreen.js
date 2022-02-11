@@ -65,7 +65,7 @@ function UpdateDialog(props) {
                   onChangeText={handleChange('phone')}
                   onBlur={handleBlur('phone')}
                   autoCapitalize="none"
-                  returnKeyType={'next'}
+                  returnKeyType="next"
                   left={<TextInput.Affix style={{marginRight: 2}} text="+91" />}
                   error={errors.phone}
                 />
@@ -78,7 +78,7 @@ function UpdateDialog(props) {
                   onBlur={handleBlur('email')}
                   placeholder={t('msgBlankEmail')}
                   autoCapitalize="none"
-                  returnKeyType={'next'}
+                  returnKeyType="next"
                   error={errors.email}
                 />
                 <View style={styles.dialogActionContainer}>
@@ -88,7 +88,7 @@ function UpdateDialog(props) {
                     contentStyle={{padding: 1}}
                     theme={{roundness: 15}}
                     onPress={handleSubmit}>
-                    {'Update'}
+                    Update
                   </Button>
                 </View>
               </View>
@@ -100,7 +100,7 @@ function UpdateDialog(props) {
   );
 }
 
-const OtpScreen = props => {
+function OtpScreen(props) {
   const {navigation, theme, route} = props;
 
   const {fromLogin} = route?.params || {};
@@ -111,7 +111,7 @@ const OtpScreen = props => {
   const {sendOtpToPhone, sendOtpToEmail} = useAuth();
   const {verifyOtp, updateUser} = useUserActions();
 
-  const {user, loading} = useSelector(state => state.user);
+  const {user, loading} = useSelector(s => s.user);
 
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
@@ -171,7 +171,7 @@ const OtpScreen = props => {
     snackbar.showMessage({message: 'Otp sent successfully! Check your email'});
   };
 
-  //TODO: Update translations
+  // TODO: Update translations
 
   // TODO: enable 30 sec wait before subsequent resend
   return (
@@ -182,7 +182,7 @@ const OtpScreen = props => {
         toggleDialog={toggleDialog}
         onSubmit={updateUserDetails}
       />
-      <Spinner visible={loading} textContent={''} />
+      <Spinner visible={loading} textContent="" />
       <View style={styles.root}>
         <View style={styles.imageContainer}>
           <Image source={image} style={styles.image} />
@@ -232,7 +232,7 @@ const OtpScreen = props => {
       </View>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {

@@ -142,7 +142,7 @@ function RenderForm({navigation, formikProps}) {
           contentStyle={{padding: 1}}
           theme={{roundness: 15}}
           onPress={navigation.goBack}>
-          {'Cancel'}
+          Cancel
         </Button>
         <Button
           style={{width: '40%'}}
@@ -176,7 +176,7 @@ function AddBankDetails(props) {
 
   return (
     <View style={styles.container}>
-      <Spinner visible={loading} textContent={''} />
+      <Spinner visible={loading} textContent="" />
       <KeyboardAwareScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollView}>
@@ -198,7 +198,7 @@ function AddBankDetails(props) {
             const formData = new FormData();
 
             formData.append('project_id', selectedProject.id);
-            formData.append('unit_id', unit.unitId || unit.unit_id);
+            formData.append('unit_id', unit.unit_id);
             formData.append('bank_name', values.bank_name);
             formData.append('bank_branch', values.bank_branch);
             formData.append('bank_address', values.bank_address);
@@ -216,7 +216,7 @@ function AddBankDetails(props) {
             updateBankDetails(formData).then(() => {
               getBankDetails({
                 project_id: selectedProject.id,
-                unit_id: unit.unitId || unit.unit_id,
+                unit_id: unit.unit_id,
               });
               navigation.goBack();
             });

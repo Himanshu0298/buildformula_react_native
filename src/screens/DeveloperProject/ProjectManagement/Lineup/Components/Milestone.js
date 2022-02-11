@@ -119,7 +119,7 @@ function Milestone(props) {
 
   const alert = useAlert();
 
-  const {milestones} = useSelector(state => state.projectManagement);
+  const {milestones} = useSelector(s => s.projectManagement);
 
   const [menuIndex, setMenuIndex] = React.useState(false);
   const [showDialog, setShowDialog] = React.useState(false);

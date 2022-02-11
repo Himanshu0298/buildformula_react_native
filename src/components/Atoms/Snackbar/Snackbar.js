@@ -14,39 +14,29 @@ const VariantProps = {
   },
 };
 
-function CustomSnackbar({
-  open,
-  message,
-  variant,
-  onClose,
-  stayOpen,
-  isKeyboardShown,
-  autoHideDuration,
-}) {
+function CustomSnackbar(props) {
+  const {open, message, variant, onClose, stayOpen, autoHideDuration} = props;
   const [margin, setMargin] = useState(8);
 
   useEffect(() => {
-    _componentDidMount();
-    () => _componentWillUnmount();
+    const showSubscription = Keyboard.addListener(
+      'keyboardDidShow',
+      _keyboardDidShow,
+    );
+    const hideSubscription = Keyboard.addListener(
+      'keyboardDidHide',
+      _keyboardDidHide,
+    );
+
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
   });
 
-  const _componentDidMount = () => {
-    Keyboard.addListener('keyboardDidShow', _keyboardDidShow);
-    Keyboard.addListener('keyboardDidHide', _keyboardDidHide);
-  };
+  const _keyboardDidShow = e => setMargin(e.endCoordinates.height + 30);
 
-  const _componentWillUnmount = () => {
-    Keyboard.removeListener('keyboardDidShow', _keyboardDidShow);
-    Keyboard.removeListener('keyboardDidHide', _keyboardDidHide);
-  };
-
-  const _keyboardDidShow = e => {
-    setMargin(e.endCoordinates.height + 30);
-  };
-
-  const _keyboardDidHide = () => {
-    setMargin(8);
-  };
+  const _keyboardDidHide = () => setMargin(8);
 
   return (
     <Snackbar
@@ -61,10 +51,12 @@ function CustomSnackbar({
       duration={autoHideDuration}
       onDismiss={onClose}
       action={
-        stayOpen && {
-          label: 'OK',
-          onPress: () => onClose(),
-        }
+        stayOpen
+          ? {
+              label: 'OK',
+              onPress: () => onClose(),
+            }
+          : undefined
       }>
       {message}
     </Snackbar>

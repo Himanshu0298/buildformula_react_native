@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
   },
-  //File
+  // File
   fileContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: '#E5EAFA',
   },
-  //Errors
+  // Errors
   errorContainer: {
     marginLeft: 25,
   },

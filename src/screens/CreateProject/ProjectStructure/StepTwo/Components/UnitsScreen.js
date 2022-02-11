@@ -12,8 +12,8 @@ import {useSnackbar} from 'components/Atoms/Snackbar';
 import {secondaryTheme, theme} from 'styles/theme';
 import {addOpacity, getFloorNumber, getUnitLabel} from 'utils';
 import Layout from 'utils/Layout';
-import bungalowHut from 'assets/images/bungalow_hut.png';
-import plotHut from 'assets/images/plot.png';
+import bungalowHut from 'assets/images/logo.png';
+import plotHut from 'assets/images/upload_files.png';
 import {useBackHandler} from '@react-native-community/hooks';
 import BhkButton from 'components/Atoms/Buttons/BhkButton';
 import {BHK_OPTIONS} from 'utils/constant';
@@ -239,7 +239,7 @@ function UnitsScreen(props) {
                   contentStyle={{paddingHorizontal: 6}}
                   theme={{roundness: 10}}
                   onPress={assignToAll}>
-                  {'Apply for all'}
+                  Apply for all
                 </Button>
               ) : null}
             </View>

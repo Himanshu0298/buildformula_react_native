@@ -1,23 +1,23 @@
 import React from 'react';
 import {StyleSheet, View, ScrollView} from 'react-native';
-import {withTheme, Button, Subheading} from 'react-native-paper';
+import {withTheme, Button, Caption, Text} from 'react-native-paper';
 import useSalesActions from 'redux/actions/salesActions';
 import {useSelector} from 'react-redux';
 import {theme} from 'styles/theme';
 
-const RenderPairData = props => {
+function RenderPairData(props) {
   const {title, value} = props;
 
   return (
-    <View style={{marginBottom: 15}}>
-      <Subheading style={{color: '#5E6D7C'}}>{title}</Subheading>
-      <Subheading>{value}</Subheading>
+    <View style={styles.rowContainer}>
+      <Caption>{title}</Caption>
+      <Text>{value}</Text>
     </View>
   );
-};
+}
 
 function BrokerInfo(props) {
-  const {navigation, brokerInfo} = props;
+  const {navigation, brokerInfo, userData} = props;
 
   const {selectedProject} = useSelector(s => s.project);
   const {deleteBroker, getBrokersList} = useSalesActions();
@@ -39,32 +39,33 @@ function BrokerInfo(props) {
   };
 
   return (
-    <ScrollView style={{padding: 20}}>
-      {data.map(i => {
-        return <RenderPairData title={i.title} value={i.value} />;
-      })}
+    <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <View>
+        {data.map(i => {
+          return <RenderPairData title={i.title} value={i.value} />;
+        })}
+      </View>
+
       <View style={styles.actionContainer}>
         <Button
-          style={{flex: 1, marginHorizontal: 5}}
+          style={styles.button}
           icon="pencil-outline"
           mode="contained"
-          contentStyle={{padding: 3}}
+          contentStyle={styles.buttonLabel}
           theme={{roundness: 15}}
-          onPress={() =>
-            navigation.navigate('AddBroker', {broker: props.userData})
-          }>
-          {'Edit'}
+          onPress={() => navigation.navigate('AddBroker', {broker: userData})}>
+          Edit
         </Button>
         {!Number(brokerInfo?.dealClosedCount) ? (
           <Button
-            style={{flex: 1, marginHorizontal: 5}}
+            style={styles.button}
             icon="delete"
             mode="contained"
             color={theme.colors.error}
-            contentStyle={{padding: 3}}
+            contentStyle={styles.buttonLabel}
             theme={{roundness: 15}}
             onPress={handleDeleteButton}>
-            {'Delete'}
+            Delete
           </Button>
         ) : null}
       </View>
@@ -73,12 +74,27 @@ function BrokerInfo(props) {
 }
 
 const styles = StyleSheet.create({
+  scrollContainer: {
+    padding: 20,
+    justifyContent: 'space-between',
+    flexGrow: 1,
+  },
+  rowContainer: {
+    marginBottom: 15,
+  },
   actionContainer: {
     marginTop: 25,
     paddingHorizontal: 10,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  button: {
+    flex: 1,
+    marginHorizontal: 5,
+  },
+  buttonLabel: {
+    padding: 3,
   },
 });
 

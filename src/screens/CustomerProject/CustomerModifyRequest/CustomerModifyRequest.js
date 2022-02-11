@@ -7,7 +7,7 @@ import {ModifyRequest} from 'screens/DeveloperProject/CustomerSection/CustomerSe
 function CustomerModifyRequest(props) {
   const {navigation} = props;
 
-  const {loading, selectedUnit} = useSelector(state => state.project);
+  const {loading, selectedUnit} = useSelector(s => s.project);
   const {loading: customerDataLoading} = useSelector(s => s.customer);
 
   React.useEffect(() => {

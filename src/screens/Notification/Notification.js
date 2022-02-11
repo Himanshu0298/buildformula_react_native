@@ -12,12 +12,8 @@ import {useAlert} from 'components/Atoms/Alert';
 
 function RenderNotification(props) {
   const {item, isHome, clearNotification, handleNotification} = props;
-  const {
-    project_name,
-    notifications_text,
-    notifications,
-    receive_datetime,
-  } = item;
+  const {project_name, notifications_text, notifications, receive_datetime} =
+    item;
 
   return (
     <TouchableOpacity
@@ -62,11 +58,8 @@ function Notification(props) {
 
   const alert = useAlert();
 
-  const {
-    getProjectNotifications,
-    removeAllNotifications,
-    removeNotification,
-  } = useNotificationActions();
+  const {getProjectNotifications, removeAllNotifications, removeNotification} =
+    useNotificationActions();
 
   const {allNotifications, projectNotifications, loading} = useSelector(
     s => s.notification,
@@ -97,11 +90,13 @@ function Notification(props) {
         i => i.id === notification.project_id,
       );
       navigation.navigate('DeveloperDashboard', {
-        screen: 'DeveloperDashboard',
+        screen: 'DeveloperHome',
         params: {project},
       });
     }
   };
+
+  const renderEmpty = () => <EmptyComponent />;
 
   return (
     <View style={styles.container}>
@@ -129,7 +124,7 @@ function Notification(props) {
             {...{item, isHome, clearNotification, handleNotification}}
           />
         )}
-        ListEmptyComponent={() => <EmptyComponent />}
+        ListEmptyComponent={renderEmpty}
       />
     </View>
   );

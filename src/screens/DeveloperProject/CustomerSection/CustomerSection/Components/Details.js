@@ -4,6 +4,7 @@ import {Avatar, Caption, Divider, Text, withTheme} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {getPermissions} from 'utils';
+import UserAvatar from 'components/Atoms/UserAvatar';
 
 function RenderCustomer({customer, navToDetails}) {
   const {profile_pic, name, role} = customer;
@@ -13,7 +14,7 @@ function RenderCustomer({customer, navToDetails}) {
         onPress={() => navToDetails(customer)}
         style={styles.customerContainer}>
         <View style={styles.leftContainer}>
-          <Avatar.Image size={50} source={{uri: profile_pic}} />
+          <UserAvatar size={50} uri={profile_pic} />
           <View style={styles.nameContainer}>
             <Text>{name}</Text>
             <Caption>{role}</Caption>
@@ -38,7 +39,7 @@ function Details(props) {
 
   const modulePermissions = getPermissions('Ownership');
 
-  const {customerData} = useSelector(state => state.customer);
+  const {customerData} = useSelector(s => s.customer);
 
   const navToDetails = customer => {
     navigation.navigate('CustomerDetails', {customer});

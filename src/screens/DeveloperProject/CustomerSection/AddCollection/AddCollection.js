@@ -1,13 +1,7 @@
 import * as React from 'react';
 import {useTranslation} from 'react-i18next';
 import {StyleSheet, View, TouchableOpacity, Image} from 'react-native';
-import {
-  Subheading,
-  withTheme,
-  Button,
-  TextInput,
-  Text,
-} from 'react-native-paper';
+import {Subheading, withTheme, TextInput, Text} from 'react-native-paper';
 import backArrow from 'assets/images/back_arrow.png';
 import RenderInput from 'components/Atoms/RenderInput';
 import {Formik} from 'formik';
@@ -20,6 +14,7 @@ import useCustomerActions from 'redux/actions/customerActions';
 import dayjs from 'dayjs';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {useSelector} from 'react-redux';
+import ActionButtons from 'components/Atoms/ActionButtons';
 
 const schema = Yup.object().shape({
   date: Yup.string('Invalid').required('Required'),
@@ -62,19 +57,19 @@ function RenderForm(props) {
           <Text>Collection Type </Text>
           <View>
             <Radio
-              label={'Document charges'}
+              label="Document charges"
               value="documentcharges"
               checked={values.type === 'documentcharges'}
               onChange={v => setFieldValue('type', v)}
             />
             <Radio
-              label={'Property Final Amount'}
+              label="Property Final Amount"
               value="propertyfinalamount"
               checked={values.type === 'propertyfinalamount'}
               onChange={v => setFieldValue('type', v)}
             />
             <Radio
-              label={'GST Amount'}
+              label="GST Amount"
               value="gst"
               checked={values.type === 'gst'}
               onChange={v => setFieldValue('type', v)}
@@ -118,7 +113,7 @@ function RenderForm(props) {
         ) : null}
         <RenderInput
           name="transaction_number"
-          label={'Check no / Transaction no'}
+          label="Check no / Transaction no"
           ref={transRef}
           containerStyles={styles.input}
           value={values.transaction_number}
@@ -130,13 +125,13 @@ function RenderForm(props) {
           <Text>Collection Type </Text>
           <View style={styles.radioContainer}>
             <Radio
-              label={'Credit'}
+              label="Credit"
               value="credit"
               checked={values.transaction_type === 'credit'}
               onChange={v => setFieldValue('transaction_type', v)}
             />
             <Radio
-              label={'Debit'}
+              label="Debit"
               value="debit"
               checked={values.transaction_type === 'debit'}
               onChange={v => setFieldValue('transaction_type', v)}
@@ -166,23 +161,12 @@ function RenderForm(props) {
           numberOfLines={4}
         />
       </View>
-      <View style={styles.actionContainer}>
-        <Button
-          style={{width: '40%'}}
-          contentStyle={{padding: 1}}
-          theme={{roundness: 15}}
-          onPress={navigation.goBack}>
-          Cancel
-        </Button>
-        <Button
-          style={{width: '40%'}}
-          mode="contained"
-          contentStyle={{padding: 1}}
-          theme={{roundness: 15}}
-          onPress={handleSubmit}>
-          {edit ? 'Update' : 'Save'}
-        </Button>
-      </View>
+      <ActionButtons
+        cancelLabel="Cancel"
+        submitLabel={edit ? 'Update' : 'Save'}
+        onCancel={navigation.goBack}
+        onSubmit={handleSubmit}
+      />
     </>
   );
 }
@@ -193,23 +177,15 @@ function AddCollection(props) {
 
   const edit = Boolean(collection);
 
-  const {
-    addCollection,
-    updateCollection,
-    getAccountDetails,
-  } = useCustomerActions();
+  const {addCollection, updateCollection, getAccountDetails} =
+    useCustomerActions();
 
   const {loading} = useSelector(s => s.customer);
 
   const initialValues = React.useMemo(() => {
     if (edit) {
-      const {
-        collectiontype,
-        transaction_date,
-        id,
-        user_id,
-        ...restData
-      } = collection;
+      const {collectiontype, transaction_date, id, user_id, ...restData} =
+        collection;
 
       return {type: collectiontype, date: transaction_date, ...restData};
     }
@@ -221,7 +197,7 @@ function AddCollection(props) {
 
     const data = {
       project_id,
-      unit_id: unit.unitId,
+      unit_id: unit.unit_id,
       collectiontype: type,
       transaction_date: dayjs(date).format('DD-MM-YYYY'),
       ...restData,
@@ -233,7 +209,7 @@ function AddCollection(props) {
       await addCollection(data);
     }
 
-    getAccountDetails({project_id, unit_id: unit.unitId});
+    getAccountDetails({project_id, unit_id: unit.unit_id});
     navigation.goBack();
   };
 
@@ -299,13 +275,6 @@ const styles = StyleSheet.create({
   },
   radioContainer: {
     flexDirection: 'row',
-  },
-  actionContainer: {
-    marginTop: 25,
-    paddingHorizontal: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-around',
   },
 });
 

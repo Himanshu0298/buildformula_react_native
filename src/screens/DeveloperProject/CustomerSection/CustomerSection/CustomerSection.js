@@ -20,7 +20,7 @@ import {
 import DetailsHeader from './Components/DetailsHeader';
 
 const TABS = [
-  {key: 0, title: 'OWNERSHIP', id: 14},
+  {key: 0, title: 'DETAILS', id: 14},
   {key: 1, title: 'BOOKING FORM', id: 15},
   {key: 2, title: 'BANK LOANS', id: 16},
   {key: 3, title: 'ACCOUNT', id: 17},
@@ -52,7 +52,7 @@ function RenderTab(props) {
 }
 
 function RenderTabBar(tabBarProps) {
-  //TODO: improve tab change animation
+  // TODO: improve tab change animation
   return (
     <TabBar
       {...tabBarProps}
@@ -67,7 +67,7 @@ function RenderTabBar(tabBarProps) {
 
 function CustomerSection(props) {
   const {route} = props;
-  const {project_id, unit} = route?.params || {};
+  const {project_id, unit, selectedStructure} = route?.params || {};
 
   const {t} = useTranslation();
   const {
@@ -78,9 +78,11 @@ function CustomerSection(props) {
     getAccountDetails,
   } = useCustomerActions();
 
-  const {user} = useSelector(state => state.user);
-  const {loading} = useSelector(state => state.customer);
+  const {user} = useSelector(s => s.user);
+  const {loading} = useSelector(s => s.customer);
   const {permissions, isProjectAdmin} = useSelector(s => s.project);
+
+  console.log('----->user.id', user.id);
 
   const [selectedTab, setSelectedTab] = React.useState(0);
   const routes = React.useMemo(() => {
@@ -92,11 +94,11 @@ function CustomerSection(props) {
   }, [isProjectAdmin, permissions]);
 
   React.useEffect(() => {
-    getCustomerDetails({user_id: user.id, project_id, unit_id: unit.unitId});
-    getBookingDetails({project_id, unit_id: unit.unitId});
-    getBankDetails({project_id, unit_id: unit.unitId});
-    getModifyRequests({project_id});
-    getAccountDetails({project_id, unit_id: unit.unitId});
+    getCustomerDetails({project_id, unit_id: unit.unit_id, user_id: user.id});
+    getBookingDetails({project_id, unit_id: unit.unit_id});
+    getBankDetails({project_id, unit_id: unit.unit_id});
+    getModifyRequests({project_id, unit_id: unit.unit_id});
+    getAccountDetails({project_id, unit_id: unit.unit_id});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -114,12 +116,14 @@ function CustomerSection(props) {
         return <ModifyRequest {...props} setSelectedTab={setSelectedTab} />;
       case 5:
         return <Files {...props} setSelectedTab={setSelectedTab} />;
+      default:
+        return <View />;
     }
   };
 
   return (
     <>
-      <Spinner visible={loading} textContent={''} />
+      <Spinner visible={loading} textContent="" />
       <View style={styles.container}>
         <Title>{t('title_customer_section')}</Title>
         <DetailsHeader {...route?.params} />

@@ -20,7 +20,6 @@ import {secondaryTheme, theme} from 'styles/theme';
 import banner from 'assets/images/banner.png';
 import image from 'assets/images/buildings.png';
 import {Formik} from 'formik';
-import CustomInput from './../Components/CustomInput';
 import useUserActions from 'redux/actions/userActions';
 import {useSelector} from 'react-redux';
 import * as Yup from 'yup';
@@ -30,6 +29,7 @@ import Layout from 'utils/Layout';
 import BottomSheet from 'reanimated-bottom-sheet';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import SheetHeader from 'components/Atoms/SheetHeader';
+import CustomInput from '../Components/CustomInput';
 
 const BANNER_HEIGHT = Layout.window.width * 0.75 * (5 / 12);
 const IMAGE_HEIGHT = Layout.window.width * 0.75 * (15 / 22);
@@ -56,14 +56,8 @@ function LoginButton({label, onPress}) {
 }
 
 function RenderContent(props) {
-  const {
-    values,
-    handleChange,
-    handleBlur,
-    errors,
-    handleSubmit,
-    navigation,
-  } = props;
+  const {values, handleChange, handleBlur, errors, handleSubmit, navigation} =
+    props;
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -93,7 +87,7 @@ function RenderContent(props) {
             onBlur={handleBlur('email')}
             placeholder={t('msgBlankEmail')}
             autoCapitalize="none"
-            returnKeyType={'next'}
+            returnKeyType="next"
             onSubmitEditing={() => passwordRef?.current?.focus()}
             error={errors.email}
           />
@@ -108,7 +102,7 @@ function RenderContent(props) {
             onBlur={handleBlur('password')}
             placeholder={t('msgBlankPassword')}
             autoCapitalize="none"
-            returnKeyType={'done'}
+            returnKeyType="done"
             onSubmitEditing={handleSubmit}
             error={errors.password}
             right={
@@ -157,8 +151,8 @@ function Login(props) {
   const bottomSheetRef = React.createRef();
   const snackbar = useSnackbar();
 
-  const {loading} = useSelector(state => state.user);
-  const {project} = useSelector(state => state.addProject);
+  const {loading} = useSelector(s => s.user);
+  const {project} = useSelector(s => s.addProject);
 
   React.useEffect(() => {
     const focusUnsubscribe = navigation.addListener('focus', () => {
@@ -193,7 +187,7 @@ function Login(props) {
       const data = {email: values.email, password: values.password};
 
       const {value} = await login(data);
-      const {otp_verified, email_verified} = value?.data?.user;
+      const {otp_verified, email_verified} = value?.data?.user || {};
 
       if (otp_verified === 'N' || email_verified === 'N') {
         navigation.navigate('Otp', {fromLogin: true});
@@ -217,7 +211,7 @@ function Login(props) {
           onPress={() => Keyboard.dismiss()}
           style={styles.container}>
           <View style={styles.container}>
-            <Spinner visible={loading} textContent={''} />
+            <Spinner visible={loading} textContent="" />
             <View style={styles.topImageContainer}>
               <View style={styles.bannerContainer}>
                 <Image source={banner} style={styles.banner} />

@@ -154,7 +154,7 @@ function RenderAddForm({toggleAddForm}) {
                 contentStyle={{padding: 1}}
                 theme={{roundness: 15}}
                 onPress={toggleAddForm}>
-                {'Cancel'}
+                Cancel
               </Button>
               <Button
                 style={{width: '40%'}}

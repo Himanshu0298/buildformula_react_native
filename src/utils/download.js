@@ -1,9 +1,9 @@
 import {Platform} from 'react-native';
 import RNFetchBlob from 'rn-fetch-blob';
 import RNFS from 'react-native-fs';
-import {BASE_API_URL} from './constant';
 import {store} from 'redux/store';
 import * as mime from 'react-native-mime-types';
+import {BASE_API_URL} from './constant';
 
 const {DocumentDir, DownloadDir} = RNFetchBlob.fs.dirs;
 
@@ -17,7 +17,7 @@ const getFileName = name => {
   return split[0];
 };
 
-const getFileExtension = fileUrl => {
+export const getFileExtension = fileUrl => {
   // To get the file extension
   const fileExt = /[.]/.exec(fileUrl) ? /[^.]+$/.exec(fileUrl) : undefined;
 
@@ -30,7 +30,7 @@ function getFilePath(file) {
   const fileName = getFileName(file_name);
   const fileExt = getFileExtension(file_url);
 
-  return DIR + `/${fileName}.${fileExt}`;
+  return `${DIR}/${fileName}.${fileExt}`;
 }
 
 export async function checkDownloaded(file) {

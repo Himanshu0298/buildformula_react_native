@@ -19,8 +19,8 @@ import {
   Portal,
   Dialog,
   Text,
+  Divider,
 } from 'react-native-paper';
-import {theme} from 'styles/theme';
 import {round} from 'utils';
 import * as Yup from 'yup';
 import _ from 'lodash';
@@ -29,9 +29,9 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import RenderSelect from 'components/Atoms/RenderSelect';
 import {useSelector} from 'react-redux';
 import {useSnackbar} from 'components/Atoms/Snackbar';
+import {DOCUMENT_CHARGE_LIMIT} from 'utils/constant';
 
 const TYPES = ['super_buildup', 'buildup', 'carpet'];
-const DOCUMENT_CHARGE_LIMIT = 20000;
 
 const schema = Yup.object().shape({
   area_amount: Yup.number('Invalid').required('Required'),
@@ -45,6 +45,7 @@ function getTypesSchema(types) {
   types.map(type => {
     typesSchema[`${type}_area`] = Yup.number('Invalid').required('Required');
     typesSchema[`${type}_rate`] = Yup.number('Invalid').required('Required');
+    return type;
   });
   return typesSchema;
 }
@@ -56,7 +57,7 @@ function getType(key) {
 }
 
 function RatesColumn(props) {
-  const {t, formikProps, label, type: rateType, syncAmounts} = props;
+  const {t, formikProps, theme, label, type: rateType, syncAmounts} = props;
 
   const {values, handleBlur, errors, setFieldValue} = formikProps;
 
@@ -99,7 +100,7 @@ function RatesColumn(props) {
         name={`${rateType}_area`}
         label={t('label_area')}
         keyboardType="number-pad"
-        multiline={true}
+        multiline
         value={values[`${rateType}_area`]}
         onChangeText={value => handleAreaChange(`${rateType}_area`, value)}
         onBlur={handleBlur(`${rateType}_area`)}
@@ -109,7 +110,7 @@ function RatesColumn(props) {
         name={`${rateType}_rate`}
         label={t('label_rate')}
         keyboardType="number-pad"
-        multiline={true}
+        multiline
         containerStyles={styles.rateInput}
         value={values[`${rateType}_rate`]}
         onChangeText={value => handleRateChange(`${rateType}_rate`, value)}
@@ -131,6 +132,7 @@ function RenderRates(props) {
         const rate = amount / area;
         setFieldValue(`${type}_rate`, round(rate));
       }
+      return type;
     });
   };
 
@@ -144,26 +146,26 @@ function RenderRates(props) {
       <View style={styles.ratesContainer}>
         <RatesColumn
           {...props}
-          label={'Super Buildup'}
+          label="Super Buildup"
           type="super_buildup"
           syncAmounts={syncAmounts}
         />
         <RatesColumn
           {...props}
-          label={'Buildup'}
+          label="Buildup"
           type="buildup"
           syncAmounts={syncAmounts}
         />
         <RatesColumn
           {...props}
-          label={'Carpet'}
+          label="Carpet"
           type="carpet"
           syncAmounts={syncAmounts}
         />
       </View>
       <View>
         <RenderSelect
-          name={'carpet_unit'}
+          name="carpet_unit"
           label={t('label_unit')}
           options={unitOptions}
           containerStyles={styles.rateInput}
@@ -174,7 +176,7 @@ function RenderRates(props) {
           }}
         />
         <RenderInput
-          name={'area_amount'}
+          name="area_amount"
           label={t('label_amount')}
           keyboardType="number-pad"
           containerStyles={styles.rateInput}
@@ -189,12 +191,22 @@ function RenderRates(props) {
   );
 }
 
-function RenderCharges({formikProps, t}) {
+function RenderCharges({theme, formikProps, t}) {
   const {values, setFieldValue} = formikProps;
+
+  const snackbar = useSnackbar();
+
+  const {commonData} = useSelector(s => s.project);
 
   const [chargeModal, setChargeModal] = useState(false);
   const [charge, setCharge] = useState({});
   const [chargeError, setChargeError] = useState({});
+
+  const otherChargeOptions = useMemo(() => {
+    return commonData?.other_charges
+      ?.filter(i => i.items.length)
+      ?.map(i => ({label: i.title, value: i.id}));
+  }, [commonData?.other_charges]);
 
   const toggleChargeModal = () => {
     setChargeModal(v => !v);
@@ -206,6 +218,34 @@ function RenderCharges({formikProps, t}) {
     const data = _.cloneDeep(charge);
     data[id] = value;
     setCharge(data);
+  };
+
+  const onSelectOtherCharge = value => {
+    const selectedCharge = commonData?.other_charges?.find(i => i.id === value);
+    const {items} = selectedCharge;
+
+    const other_charges = _.cloneDeep(values.other_charges);
+
+    const isAdded = items.every(item =>
+      other_charges.find(i => {
+        return i.id === item.id && i.label === item.title;
+      }),
+    );
+
+    if (isAdded) {
+      snackbar.showMessage({
+        message: 'Charge Already Added',
+        variant: 'warning',
+      });
+      return;
+    }
+
+    items.map(i => {
+      other_charges.push({label: i.title, amount: i.amount, id: i.id});
+      return i;
+    });
+
+    setFieldValue('other_charges', other_charges);
   };
 
   const saveCharge = () => {
@@ -253,9 +293,9 @@ function RenderCharges({formikProps, t}) {
             <View style={styles.chargeInputContainer}>
               <View style={{flex: 1, paddingHorizontal: 5}}>
                 <RenderInput
-                  name={'label'}
+                  name="label"
                   label={t('label_charge')}
-                  multiline={true}
+                  multiline
                   value={charge.label}
                   contentContainerStyle={{flex: 1}}
                   onChangeText={value => setValue('label', value)}
@@ -264,7 +304,7 @@ function RenderCharges({formikProps, t}) {
               </View>
               <View style={{flex: 1, paddingHorizontal: 5}}>
                 <RenderInput
-                  name={'amount'}
+                  name="amount"
                   label={t('label_amount')}
                   keyboardType="number-pad"
                   value={charge.amount}
@@ -283,6 +323,13 @@ function RenderCharges({formikProps, t}) {
       <Subheading style={{color: theme.colors.primary, marginTop: 20}}>
         Other Charges
       </Subheading>
+      <RenderSelect
+        name="other_charges"
+        label="Select Other Charges"
+        options={otherChargeOptions}
+        containerStyles={styles.rateInput}
+        onSelect={onSelectOtherCharge}
+      />
       {values.other_charges.map((item, i) => {
         return (
           <View key={i} style={styles.chargesContainer}>
@@ -298,17 +345,13 @@ function RenderCharges({formikProps, t}) {
               opacity={0.1}
               style={{marginLeft: 15, borderRadius: 20}}
               onPress={() => removeCharge(i)}>
-              <MaterialIcons
-                name={'close'}
-                color={theme.colors.red}
-                size={19}
-              />
+              <MaterialIcons name="close" color={theme.colors.red} size={19} />
             </OpacityButton>
           </View>
         );
       })}
       <TouchableOpacity
-        style={styles.chargesButton}
+        style={[styles.chargesButton, {borderColor: theme.colors.primary}]}
         onPress={toggleChargeModal}>
         <Caption style={{color: theme.colors.primary}}>+ Create more</Caption>
       </TouchableOpacity>
@@ -316,14 +359,24 @@ function RenderCharges({formikProps, t}) {
   );
 }
 
+function RenderRow(props) {
+  const {label, value, valueStyle} = props;
+  return (
+    <View style={styles.rowBetween}>
+      <Caption>{label}</Caption>
+      <Caption style={[{fontWeight: 'bold'}, valueStyle]}>{value}</Caption>
+    </View>
+  );
+}
+
 function FormContent(props) {
-  const {formikProps, navigation} = props;
+  const {theme, formikProps, navigation} = props;
   const {handleChange, handleSubmit, values, setFieldValue} = formikProps;
 
   const {t} = useTranslation();
   const snackbar = useSnackbar();
 
-  const {unitOptions} = useSelector(state => state.project);
+  const {unitOptions} = useSelector(s => s.project);
 
   useEffect(() => {
     let amount = 0;
@@ -418,39 +471,15 @@ function FormContent(props) {
             2. Booking Rate
           </Subheading>
           <Caption>Enter all Area first for auto adjustment</Caption>
-          <RenderRates {...{t, formikProps, unitOptions}} />
-          <RenderCharges t={t} formikProps={formikProps} />
-          <View style={styles.totalContainer}>
-            <Subheading>Total other charges</Subheading>
-            <RenderInput
-              disabled={true}
-              value={values.other_charges_amount}
-              containerStyles={{width: '50%'}}
-              placeholder={'Total charges'}
-              left={<TextInput.Affix text="₹" />}
-            />
-          </View>
-          <View style={styles.totalContainer}>
-            <View>
-              <Subheading>Total amount</Subheading>
-              <Caption style={{lineHeight: 13}}>Amount + Other charges</Caption>
-            </View>
-
-            <RenderInput
-              disabled={true}
-              value={totalAmount || 0}
-              containerStyles={{width: '50%'}}
-              placeholder={'Total amount'}
-              left={<TextInput.Affix text="₹" />}
-            />
-          </View>
+          <RenderRates {...props} {...{t, formikProps, unitOptions}} />
+          <RenderCharges {...props} t={t} {...{t, formikProps}} />
 
           <View style={styles.discountSection}>
             <RenderInput
               value={values.discount_amount}
               keyboardType="number-pad"
               onChangeText={handleDiscount}
-              label={'Discount amount'}
+              label="Discount amount"
               left={<TextInput.Affix text="₹" />}
             />
             <View style={{marginTop: 10}}>
@@ -476,35 +505,64 @@ function FormContent(props) {
                   left={<TextInput.Affix text="₹" />}
                 />
               </View>
+              <View style={styles.documentHelper}>
+                <Caption>
+                  Note: Documentation charges will be collected first to confirm
+                  your booking
+                </Caption>
+              </View>
             </View>
           </View>
 
           <View style={[styles.totalContainer, {marginTop: 20}]}>
-            <Text>Property Final amount</Text>
-            <RenderInput
-              disabled={true}
-              value={values.finalAmount || 0}
-              containerStyles={{width: '50%'}}
-              placeholder={'Final amount'}
-              left={<TextInput.Affix text="₹" />}
-            />
+            <Subheading
+              style={{color: theme.colors.primary, fontWeight: '700'}}>
+              Final amount
+            </Subheading>
+
+            <View style={styles.finalAmountBox}>
+              <Text style={{marginBottom: 10}}>Booking Rate</Text>
+              <RenderRow
+                label="Booking Rate"
+                value={`₹ ${values.area_amount || 0} `}
+              />
+              <RenderRow
+                label="Total other charges"
+                value={`₹ ${values.other_charges_amount || 0} `}
+              />
+              <Divider style={styles.divider} />
+              <RenderRow
+                label="Total amount"
+                value={`₹ ${totalAmount || 0} `}
+              />
+              <RenderRow
+                label="Discount"
+                value={`₹ ${values.discount_amount || 0} `}
+              />
+              <Divider style={styles.divider} />
+              <RenderRow
+                label="Property Final amount"
+                value={`₹ ${values.finalAmount || 0} `}
+                valueStyle={{color: theme.colors.primary}}
+              />
+            </View>
           </View>
         </View>
         <View style={styles.actionContainer}>
           <Button
-            style={{flex: 1, marginHorizontal: 5}}
-            contentStyle={{padding: 3}}
+            style={styles.actionButton}
+            contentStyle={styles.buttonLabel}
             theme={{roundness: 15}}
             onPress={handleCancel}>
-            {'Back'}
+            Back
           </Button>
           <Button
-            style={{flex: 1, marginHorizontal: 5}}
+            style={styles.actionButton}
             mode="contained"
-            contentStyle={{padding: 3}}
+            contentStyle={styles.buttonLabel}
             theme={{roundness: 15}}
             onPress={handleSubmit}>
-            {'Next'}
+            Next
           </Button>
         </View>
       </KeyboardAwareScrollView>
@@ -523,7 +581,7 @@ function BookingRates(props) {
       initialValues={{other_charges: []}}
       validationSchema={schema}
       onSubmit={async values => {
-        navigation.navigate('BC_Step_Six', {...params, ...values});
+        navigation.navigate('BC_Step_Eight', {...params, ...values});
       }}>
       {formikProps => <FormContent {...props} formikProps={formikProps} />}
     </Formik>
@@ -555,7 +613,6 @@ const styles = StyleSheet.create({
   },
   chargesButton: {
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: theme.colors.primary,
     paddingVertical: 10,
     marginTop: 15,
     borderRadius: 5,
@@ -572,10 +629,7 @@ const styles = StyleSheet.create({
     width: '85%',
   },
   totalContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
     marginVertical: 15,
-    justifyContent: 'space-between',
   },
   discountSection: {
     padding: 15,
@@ -583,6 +637,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(255, 92, 22, 1)',
     borderRadius: 10,
+    marginTop: 30,
   },
   documentationInputContainer: {
     flexDirection: 'row',
@@ -597,12 +652,38 @@ const styles = StyleSheet.create({
     marginBottom: 3,
   },
   actionContainer: {
-    marginTop: 25,
+    marginTop: 15,
     paddingHorizontal: 20,
     flexDirection: 'row',
-
     alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  documentHelper: {
+    marginTop: 10,
+    paddingLeft: 10,
+  },
+  finalAmountBox: {
+    padding: 10,
+    marginTop: 10,
+    borderWidth: 1,
+    borderRadius: 10,
+    borderColor: 'rgba(0, 0, 0, 0.3)',
+  },
+  rowBetween: {
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+  },
+  divider: {
+    height: 1,
+    marginVertical: 7,
+  },
+  actionButton: {
+    flex: 1,
+    marginHorizontal: 5,
+  },
+  buttonLabel: {
+    padding: 3,
   },
 });
 

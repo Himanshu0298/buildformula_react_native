@@ -8,6 +8,7 @@ import {theme} from 'styles/theme';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import {useBackHandler} from '@react-native-community/hooks';
 import FloorBar from 'components/Atoms/FloorBar';
+import _ from 'lodash';
 import DuplicateDialog from './DuplicateDialog';
 
 const checkUnitBhkValidity = (floors, floorCount) => {
@@ -17,8 +18,8 @@ const checkUnitBhkValidity = (floors, floorCount) => {
 
   for (let floorId = 0; floorId <= floorCount; floorId += 1) {
     const {units = {}, unitCount} = floors[floorId];
-    for (let unitId = 1; unitId <= unitCount; unitId++) {
-      if (!units[unitId].bhk) {
+    for (let index = 0; index <= unitCount; index += 1) {
+      if (!units[index].bhk) {
         result[floorId] = false;
         allValid = false;
         if (!error) {
@@ -51,7 +52,7 @@ function RenderFloor(props) {
   return (
     <FloorBar
       floorId={floorId}
-      showBadge={true}
+      showBadge
       badgeActive={false}
       onPress={setSelectedFloor}
       inputProps={{
@@ -94,7 +95,7 @@ function FloorsScreen(props) {
     return true;
   });
 
-  //check units data is valid for all floors
+  // check units data is valid for all floors
   const {
     unitsValidityData = {},
     allUnitsValid = true,
@@ -115,15 +116,15 @@ function FloorsScreen(props) {
 
   const toggleDuplicateDialog = () => setDuplicateDialog(v => !v);
 
-  //check floors data is valid for all floors
+  // check floors data is valid for all floors
   const validateFloors = floorId => {
     let allValid = true;
     let error = '';
 
-    if (!isNaN(floorId)) {
+    if (_.isFinite(floorId)) {
       const {unitCount = ''} = floors[floorId];
       return {
-        valid: !isNaN(unitCount),
+        valid: _.isFinite(unitCount),
         error: `Please Provide units for the ${getFloorNumber(floorId)}`,
       };
     }
@@ -131,8 +132,8 @@ function FloorsScreen(props) {
     for (let i = 0; i <= floorCount; i += 1) {
       const {unitCount} = floors[i];
 
-      //check if unitCount is 0 or more than 0
-      if (isNaN(unitCount)) {
+      // check if unitCount is 0 or more than 0
+      if (!_.isFinite(unitCount)) {
         allValid = false;
         if (!error) {
           error = `Please Provide units for the ${getFloorNumber(i)}`;
@@ -182,14 +183,14 @@ function FloorsScreen(props) {
               }}
             />
             <Button
-              compact={true}
+              compact
               mode="contained"
               uppercase={false}
               disabled={!floorCount}
               contentStyle={{paddingVertical: 2, paddingHorizontal: 6}}
               theme={{roundness: 10}}
               onPress={toggleDuplicateDialog}>
-              {'Duplicate Floors'}
+              Duplicate Floors
             </Button>
           </View>
           <View style={styles.floorsListContainer}>
@@ -216,9 +217,9 @@ function FloorsScreen(props) {
             mode="contained"
             contentStyle={{padding: 3}}
             theme={{roundness: 15}}
-            //done like to avoid passing button event object
+            // done like to avoid passing button event object
             onPress={() => validateFloors()}>
-            {'Back'}
+            Back
           </Button>
         </View>
       </View>

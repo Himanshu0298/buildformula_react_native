@@ -4,7 +4,7 @@ import PurchasedProjects from './PurchasedProjects';
 
 export default props => {
   return (
-    <ProjectLayout {...props} showLogo={true} header={false}>
+    <ProjectLayout {...props} showLogo header={false}>
       <PurchasedProjects {...props} />
     </ProjectLayout>
   );

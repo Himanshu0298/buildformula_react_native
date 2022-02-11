@@ -1,14 +1,13 @@
 import React, {useMemo} from 'react';
-import {StyleSheet, View, Linking, NativeModules} from 'react-native';
+import {StyleSheet, View, Linking} from 'react-native';
 import {DrawerContentScrollView} from '@react-navigation/drawer';
 import {Paragraph, Drawer, Button, withTheme} from 'react-native-paper';
-import Animated from 'react-native-reanimated';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import useAppActions from '../../redux/actions/appActions';
-import {SITE_URL} from 'utils/constant';
-import {DEVELOPER_DRAWER_ITEMS, CUSTOMER_DRAWER_ITEMS} from './DrawerItems';
 import {useSelector} from 'react-redux';
+import {SITE_URL} from 'utils/constant';
+import useAppActions from '../../redux/actions/appActions';
+import {DEVELOPER_DRAWER_ITEMS, CUSTOMER_DRAWER_ITEMS} from './DrawerItems';
 
 function filterSidebar(items, permissions) {
   const filteredItems = [];
@@ -25,10 +24,19 @@ function filterSidebar(items, permissions) {
     } else {
       filteredItems.push(item);
     }
+    return item;
   });
 
   return filteredItems;
 }
+
+const materialCommunityIcon = ({icon, color, size}) => (
+  <MaterialCommunityIcons {...{name: icon, color, size}} />
+);
+
+const materialIcon = ({icon, color, size}) => (
+  <MaterialIcons {...{name: icon, color, size}} />
+);
 
 const DrawerItem = React.memo(props => {
   const {
@@ -50,9 +58,7 @@ const DrawerItem = React.memo(props => {
 
   let drawerIcon;
   if (typeof icon === 'string') {
-    drawerIcon = ({color, size}) => (
-      <MaterialCommunityIcons {...{name: icon, color, size}} />
-    );
+    drawerIcon = params => materialCommunityIcon({...params, icon});
   } else if (icon) {
     drawerIcon = icon;
   } else {
@@ -81,46 +87,42 @@ function RenderGeneralDrawerItems(props) {
     <>
       <DrawerItem
         {...props}
-        label={'Home'}
+        label="Home"
         route="Home"
-        icon={'home-variant-outline'}
+        icon="home-variant-outline"
       />
       <DrawerItem
         {...props}
-        label={'Profile'}
+        label="Profile"
         route="Profile"
-        icon={'account-box-outline'}
+        icon="account-box-outline"
       />
       <DrawerItem
         {...props}
-        label={'Project Purchase'}
+        label="Project Purchase"
         route="PurchasedProjects"
-        icon={({color, size}) => (
-          <MaterialIcons name={'shop'} color={color} size={size} />
-        )}
+        icon={params => materialIcon({...params, icon: 'shop'})}
       />
       <DrawerItem
         {...props}
-        label={'Support'}
+        label="Support"
         route="Support"
         onPress={() => Linking.openURL(SITE_URL)}
-        icon={({color, size}) => (
-          <MaterialIcons name={'support'} color={color} size={size} />
-        )}
+        icon={params => materialIcon({...params, icon: 'support'})}
       />
       <DrawerItem
         {...props}
-        label={'Help'}
+        label="Help"
         route="Help"
         onPress={() => Linking.openURL(SITE_URL)}
-        icon={'help-box'}
+        icon="help-box"
       />
       <DrawerItem
         {...props}
-        label={'Logout'}
+        label="Logout"
         route="Help"
         onPress={logout}
-        icon={'logout'}
+        icon="logout"
       />
     </>
   );
@@ -134,9 +136,8 @@ function RenderDeveloperDrawerItems(props) {
   const routes = useMemo(() => {
     if (isProjectAdmin) {
       return DEVELOPER_DRAWER_ITEMS;
-    } else {
-      return filterSidebar(DEVELOPER_DRAWER_ITEMS, permissions);
     }
+    return filterSidebar(DEVELOPER_DRAWER_ITEMS, permissions);
   }, [isProjectAdmin, permissions]);
 
   return routes.map(section => {
@@ -187,29 +188,18 @@ function RenderCustomerDrawerItems(props) {
 function DrawerContent(props) {
   const {navigation, theme, type} = props;
 
-  const translateX = Animated.interpolate(props.progress, {
-    inputRange: [0, 0.5, 0.7, 0.8, 1],
-    outputRange: [-100, -85, -70, -45, 0],
-  });
-
   return (
     <DrawerContentScrollView
       {...props}
       showsVerticalScrollIndicator={false}
       contentContainerStyle={styles.scrollView}>
-      <Animated.View
-        style={[
-          styles.drawerContent,
-          {
-            backgroundColor: theme.colors.surface,
-            transform: [{translateX}],
-          },
-        ]}>
+      <View
+        style={[styles.drawerContent, {backgroundColor: theme.colors.surface}]}>
         <View style={styles.backContainer}>
           <Button
             icon="arrow-expand-left"
             onPress={() => navigation.toggleDrawer()}
-            style={{width: 100, marginBottom: 5}}>
+            style={styles.backIcon}>
             Back
           </Button>
         </View>
@@ -218,7 +208,7 @@ function DrawerContent(props) {
           <RenderDeveloperDrawerItems {...props} />
         ) : null}
         {type === 'customer' ? <RenderCustomerDrawerItems {...props} /> : null}
-      </Animated.View>
+      </View>
     </DrawerContentScrollView>
   );
 }
@@ -245,6 +235,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginLeft: 10,
     fontSize: 14,
+  },
+  backIcon: {
+    width: 100,
+    marginBottom: 5,
   },
 });
 

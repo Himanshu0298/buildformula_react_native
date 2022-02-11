@@ -35,7 +35,7 @@ function AddDatesDialog(props) {
           <View style={styles.contentContainer}>
             <RenderDatePicker
               name="start_date"
-              label={'Start Date'}
+              label="Start Date"
               containerStyles={styles.input}
               value={values.start_date}
               onChange={v => setFieldValue('start_date', v)}
@@ -43,7 +43,7 @@ function AddDatesDialog(props) {
             />
             <RenderDatePicker
               name="end_date"
-              label={'End Date'}
+              label="End Date"
               containerStyles={styles.input}
               value={values.end_date}
               min={values.start_date}
@@ -52,7 +52,7 @@ function AddDatesDialog(props) {
             />
             <RenderInput
               name="duration"
-              label={'Duration'}
+              label="Duration"
               editable={false}
               containerStyles={styles.input}
               value={getDuration(values.start_date, values.end_date)}

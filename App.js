@@ -8,16 +8,16 @@ import {
   initialWindowSafeAreaInsets,
 } from 'react-native-safe-area-context';
 import RNBootSplash from 'react-native-bootsplash';
+import i18n from 'i18next';
+import Spinner from 'react-native-loading-spinner-overlay';
+import * as RNLocalize from 'react-native-localize';
+import {ActionSheetProvider} from '@expo/react-native-action-sheet';
+import {initReactI18next} from 'react-i18next';
 import {theme} from './src/styles/theme';
 import {store, persistor} from './src/redux/store';
 import NavContainer from './src/navigation';
-import i18next from 'i18next';
-import Spinner from 'react-native-loading-spinner-overlay';
-import {initReactI18next} from 'react-i18next';
 import translations from './src/translations/global';
-import * as RNLocalize from 'react-native-localize';
 import {SnackbarProvider} from './src/components/Atoms/Snackbar';
-import {ActionSheetProvider} from '@expo/react-native-action-sheet';
 import AlertProvider from './src/components/Atoms/Alert/AlertProvider';
 
 const languageDetector = {
@@ -30,19 +30,26 @@ const languageDetector = {
     };
     cb(languageTag);
   },
-  init: () => {},
-  cacheUserLanguage: () => {},
+  init: () => {
+    console.log('-----> init');
+  },
+  cacheUserLanguage: () => {
+    console.log('-----> cacheUserLanguage');
+  },
 };
 
-i18next.use(languageDetector).use(initReactI18next).init({
+i18n.use(languageDetector).use(initReactI18next).init({
+  compatibilityJSON: 'v3',
   fallbackLng: 'en',
   debug: false,
   resources: translations,
 });
 
-const Loader = () => <Spinner visible={true} textContent={''} />;
+function Loader() {
+  return <Spinner visible textContent="" />;
+}
 
-const App = () => {
+function App() {
   useEffect(() => {
     RNBootSplash.hide({fade: true});
   }, []);
@@ -50,7 +57,7 @@ const App = () => {
   // TODO: figure out action sheet (ActionSheetProvider) is only required for file Input or the whole app
 
   return (
-    <Fragment>
+    <>
       <StatusBar barStyle="light-content" />
       <StoreProvider store={store}>
         <PersistGate loading={null} persistor={persistor}>
@@ -70,8 +77,8 @@ const App = () => {
           </PaperProvider>
         </PersistGate>
       </StoreProvider>
-    </Fragment>
+    </>
   );
-};
+}
 
 export default App;

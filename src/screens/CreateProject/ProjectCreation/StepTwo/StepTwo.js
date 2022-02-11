@@ -16,6 +16,7 @@ import {useSnackbar} from 'components/Atoms/Snackbar';
 import {handleDebounce} from 'utils';
 import RenderTextBox from 'components/Atoms/RenderTextbox';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import ActionButtons from 'components/Atoms/ActionButtons';
 
 const schema = Yup.object().shape({
   project_name: Yup.string().required('name is required'),
@@ -56,7 +57,7 @@ function StepTwo(props) {
   const snackbar = useSnackbar();
   const {createProject, getCities} = useAddProjectActions();
 
-  const {user} = useSelector(state => state.user);
+  const {user} = useSelector(s => s.user);
   const {loading, statesData, citiesData} = useSelector(s => s.addProject);
 
   const stateOptions = useMemo(() => {
@@ -114,7 +115,7 @@ function StepTwo(props) {
   return (
     <>
       <FormTitle title={t('StepOneTitle')} subTitle={t('StepOneSubTitle')} />
-      <Spinner visible={loading} textContent={''} />
+      <Spinner visible={loading} textContent="" />
       <KeyboardAwareScrollView
         contentContainerStyle={styles.scrollView}
         keyboardShouldPersistTaps="handled">
@@ -245,23 +246,13 @@ function StepTwo(props) {
                   error={errors.project_pin}
                 />
               </View>
-              <View style={styles.actionContainer}>
-                <Button
-                  style={{flex: 1, marginHorizontal: 5}}
-                  contentStyle={{padding: 3}}
-                  theme={{roundness: 15}}
-                  onPress={navigation.goBack}>
-                  {'Back'}
-                </Button>
-                <Button
-                  style={{flex: 1, marginHorizontal: 5}}
-                  mode="contained"
-                  contentStyle={{padding: 3}}
-                  theme={{roundness: 15}}
-                  onPress={handleDebounce(handleSubmit)}>
-                  {'Save'}
-                </Button>
-              </View>
+              <ActionButtons
+                style={styles.actionContainer}
+                cancelLabel="Back"
+                submitLabel="Save"
+                onCancel={navigation.goBack}
+                onSubmit={handleDebounce(handleSubmit)}
+              />
             </View>
           )}
         </Formik>
@@ -288,10 +279,7 @@ const styles = StyleSheet.create({
     paddingVertical: 7,
   },
   actionContainer: {
-    paddingHorizontal: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    marginTop: 0,
   },
 });
 

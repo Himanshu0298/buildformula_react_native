@@ -1,3 +1,7 @@
+import _ from 'lodash';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {persistReducer} from 'redux-persist';
+import {DEFAULT_STRUCTURE} from 'utils/constant';
 import {
   UPDATE_LOCAL_STRUCTURE,
   SAVE_STRUCTURE,
@@ -9,10 +13,6 @@ import {
   GET_STATES,
   GET_CITIES,
 } from '../actions/actionTypes';
-import _ from 'lodash';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {persistReducer} from 'redux-persist';
-import {DEFAULT_STRUCTURE} from 'utils/constant';
 
 const persistConfig = {
   key: 'addProject',

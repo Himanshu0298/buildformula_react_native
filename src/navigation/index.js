@@ -5,46 +5,30 @@ import {theme} from 'styles/theme';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import TouchID from 'react-native-touch-id';
-import DrawerContent from './Components/DrawerContent';
 import {useSelector} from 'react-redux';
 import {getInitialScreen} from 'utils';
 
-//Auth Screens
-import LanguageSelect from '../screens/Auth/LanguageSelect';
-import Login from '../screens/Auth/Login';
-import SignUp from '../screens/Auth/SignUp';
-import OtpScreen from '../screens/Auth/OtpScreen';
-import RoleSelect from '../screens/Auth/RoleSelect';
+// Auth Screens
 import ForgotPassword from 'screens/Auth/ForgotPassword';
 import ForgotPasswordOtp from 'screens/Auth/ForgotPasswordOtp';
 import ResetPassword from 'screens/Auth/ResetPassword';
 
-//Project Creation Screens
-import PC_StepOne from '../screens/CreateProject/ProjectCreation/StepOne';
-import PC_StepTwo from '../screens/CreateProject/ProjectCreation/StepTwo';
-import PS_StepOne from '../screens/CreateProject/ProjectStructure/StepOne';
-import PS_StepTwo from '../screens/CreateProject/ProjectStructure/StepTwo';
-import PlanSelect from '../screens/CreateProject/PlanSelect';
+// Project Creation Screens
 
-//Home Screen
-import Home from '../screens/Home';
+// Home Screen
 // User Purchased PRoject Screens
-import PurchasedProjects from '../screens/PurchaseDetails/PurchasedProjects';
-import ProjectDetails from '../screens/PurchaseDetails/ProjectDetails';
-import UpdateBillingInfo from '../screens/PurchaseDetails/UpdateBillingInfo/index';
-//Notification Screen
+// Notification Screen
 import Notification from 'screens/Notification';
-//Profile Screen
+// Profile Screen
 import Profile from 'screens/UserAccount/Profile';
 import EditProfile from 'screens/UserAccount/EditProfile';
-//Change Password Screen
+// Change Password Screen
 import StepOne from 'screens/UserAccount/ChangePassword/StepOne';
 import StepTwo from 'screens/UserAccount/ChangePassword/StepTwo';
 import StepThree from 'screens/UserAccount/ChangePassword/StepThree';
-//Project Search Screen
-import SearchScreen from '../screens/Search';
+// Project Search Screen
 
-/************* Customer Project Sub Screens    *************/
+/** *********** Customer Project Sub Screens    ************ */
 import CustomerHome from 'screens/CustomerProject/Ownership';
 import CustomerBooking from 'screens/CustomerProject/CustomerBookingDetails';
 import CustomerBankLoan from 'screens/CustomerProject/CustomerBankLoan';
@@ -52,27 +36,24 @@ import CustomerAccount from 'screens/CustomerProject/CustomerAccount';
 import CustomerModifyRequest from 'screens/CustomerProject/CustomerModifyRequest';
 import CustomerFiles from 'screens/CustomerProject/CustomerFiles';
 
-/************* Customer Project Sub Screens End   *************/
+/** *********** Customer Project Sub Screens End   ************ */
 
-/************* Developer Project Sub Screens    *************/
-import DeveloperDashboard from '../screens/DeveloperProject/Dashboard';
-//Project : Sales Screens
-import Visitors from '../screens/DeveloperProject/Sales/Visitors';
-import VisitorDetails from '../screens/DeveloperProject/Sales/VisitorDetails';
-import SalesPipeline from '../screens/DeveloperProject/Sales/SalesPipeline';
-import Payment from '../screens/DeveloperProject/Sales/Payment';
-import AddVisitor from '../screens/DeveloperProject/Sales/AddVisitor';
-import AddFollowUp from '../screens/DeveloperProject/Sales/AddDetails/Components/AddFollowUp';
-import AddDetails from '../screens/DeveloperProject/Sales/AddDetails/index';
+/** *********** Developer Project Sub Screens    ************ */
+// Project : Sales Screens
 import BC_SelectStructure from 'screens/DeveloperProject/Sales/BookingChart/SelectStructure';
 import BC_SelectFloor from 'screens/DeveloperProject/Sales/BookingChart/SelectFloor';
+import BC_SelectTower from 'screens/DeveloperProject/Sales/BookingChart/SelectTower';
 import BC_SelectUnit from 'screens/DeveloperProject/Sales/BookingChart/SelectUnit';
+import BookingMode from 'screens/DeveloperProject/Sales/BookingChart/BookingMode';
 import BookingDetails from 'screens/DeveloperProject/Sales/BookingChart/BookingDetails';
+import BookingFormOnHold from 'screens/DeveloperProject/Sales/BookingChart/BookingFormOnHold';
+import HoldBookingHistory from 'screens/DeveloperProject/Sales/BookingChart/HoldBookingHistory';
 import BookingRates from 'screens/DeveloperProject/Sales/BookingChart/BookingRates';
 import BookingPayment from 'screens/DeveloperProject/Sales/BookingChart/BookingPayment';
 import BrokerList from 'screens/DeveloperProject/Sales/BrokerList';
-//Project : Customer Section
+// Project : Customer Section
 import CS_SelectStructure from 'screens/DeveloperProject/CustomerSection/SelectStructure';
+import CS_SelectTower from 'screens/DeveloperProject/CustomerSection/SelectTower';
 import CS_SelectFloor from 'screens/DeveloperProject/CustomerSection/SelectFloor';
 import CS_SelectUnit from 'screens/DeveloperProject/CustomerSection/SelectUnit';
 import CustomerSection from 'screens/DeveloperProject/CustomerSection/CustomerSection';
@@ -83,22 +64,11 @@ import AddBankDetails from 'screens/DeveloperProject/CustomerSection/AddBankDeta
 import PaymentCollections from 'screens/DeveloperProject/CustomerSection/PaymentColections';
 import AddCollection from 'screens/DeveloperProject/CustomerSection/AddCollection';
 import PaymentSchedule from 'screens/DeveloperProject/CustomerSection/PaymentSchedule';
-//Project : Project management screens
-import Lineup from '../screens/DeveloperProject/ProjectManagement/Lineup';
+// Project : Project management screens
 import Phases from 'screens/DeveloperProject/ProjectManagement/Planning/Phases';
 import SubPhases from 'screens/DeveloperProject/ProjectManagement/Planning/SubPhases';
 import SubPhaseActivity from 'screens/DeveloperProject/ProjectManagement/Planning/SubPhaseActivity';
 import PlanningDetails from 'screens/DeveloperProject/ProjectManagement/Planning/PlanningDetails';
-import ProjectSchedule from '../screens/DeveloperProject/ProjectManagement/ProjectSchedule';
-import MainPhase from '../screens/DeveloperProject/ProjectManagement/MainPhase';
-import ProcessChart from '../screens/DeveloperProject/ProjectManagement/ProcessChart/ProcessChart';
-//Project : Material management screens
-import Estimation from '../screens/DeveloperProject/MaterialManagement/Estimation';
-import RequestForPrice from '../screens/DeveloperProject/MaterialManagement/RequestForPrice';
-import PurchaseOrders from '../screens/DeveloperProject/MaterialManagement/PurchaseOrders';
-//Project : Files screens
-import Files from '../screens/DeveloperProject/Files';
-//Project : Role screens
 import Roles from 'screens/DeveloperProject/UserRoles/Roles';
 import AddUser from 'screens/DeveloperProject/UserRoles/AddUser';
 import AddRole from 'screens/DeveloperProject/UserRoles/AddRole';
@@ -106,7 +76,42 @@ import SalesPipelineRearrange from 'screens/DeveloperProject/Sales/SalesPipeline
 import BrokerDetails from 'screens/DeveloperProject/Sales/BrokerDetails';
 import AddBroker from 'screens/DeveloperProject/Sales/AddBroker';
 import Remark from 'screens/DeveloperProject/Sales/BrokerDetails/Components/Remark';
-/************* Developer Project Sub Screens End   *************/
+import ProjectSchedule from '../screens/DeveloperProject/ProjectManagement/ProjectSchedule';
+import MainPhase from '../screens/DeveloperProject/ProjectManagement/MainPhase';
+import ProcessChart from '../screens/DeveloperProject/ProjectManagement/ProcessChart/ProcessChart';
+// Project : Material management screens
+import Estimation from '../screens/DeveloperProject/MaterialManagement/Estimation';
+import RequestForPrice from '../screens/DeveloperProject/MaterialManagement/RequestForPrice';
+import PurchaseOrders from '../screens/DeveloperProject/MaterialManagement/PurchaseOrders';
+// Project : Files screens
+import Files from '../screens/DeveloperProject/Files';
+// Project : Role screens
+import Lineup from '../screens/DeveloperProject/ProjectManagement/Lineup';
+import AddDetails from '../screens/DeveloperProject/Sales/AddDetails/index';
+import AddFollowUp from '../screens/DeveloperProject/Sales/AddDetails/Components/AddFollowUp';
+import AddVisitor from '../screens/DeveloperProject/Sales/AddVisitor';
+import Payment from '../screens/DeveloperProject/Sales/Payment';
+import SalesPipeline from '../screens/DeveloperProject/Sales/SalesPipeline';
+import VisitorDetails from '../screens/DeveloperProject/Sales/VisitorDetails';
+import Visitors from '../screens/DeveloperProject/Sales/VisitorsList';
+import DeveloperDashboard from '../screens/DeveloperProject/Dashboard';
+import SearchScreen from '../screens/Search';
+import UpdateBillingInfo from '../screens/PurchaseDetails/UpdateBillingInfo/index';
+import ProjectDetails from '../screens/PurchaseDetails/ProjectDetails';
+import PurchasedProjects from '../screens/PurchaseDetails/PurchasedProjects';
+import Home from '../screens/Home';
+import PlanSelect from '../screens/CreateProject/PlanSelect';
+import PS_StepTwo from '../screens/CreateProject/ProjectStructure/StepTwo';
+import PS_StepOne from '../screens/CreateProject/ProjectStructure/StepOne';
+import PC_StepTwo from '../screens/CreateProject/ProjectCreation/StepTwo';
+import PC_StepOne from '../screens/CreateProject/ProjectCreation/StepOne';
+import RoleSelect from '../screens/Auth/RoleSelect';
+import OtpScreen from '../screens/Auth/OtpScreen';
+import SignUp from '../screens/Auth/SignUp';
+import Login from '../screens/Auth/Login';
+import LanguageSelect from '../screens/Auth/LanguageSelect';
+import DrawerContent from './Components/DrawerContent';
+/** *********** Developer Project Sub Screens End   ************ */
 
 const optionalConfigObject = {
   unifiedErrors: false, // use unified error messages (default false)
@@ -155,339 +160,229 @@ const RouteContext = React.createContext('Dashboard');
 
 function VisitorsStack() {
   return (
-    <Stack.Navigator initialRouteName={'VisitorsHome'}>
-      <Stack.Screen
-        name="VisitorsHome"
-        component={Visitors}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="VisitorDetails"
-        component={VisitorDetails}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="AddVisitor"
-        component={AddVisitor}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="AddFollowUp"
-        component={AddFollowUp}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="AddDetails"
-        component={AddDetails}
-        options={{headerShown: false}}
-      />
+    <Stack.Navigator initialRouteName="VisitorsHome">
+      <Stack.Group screenOptions={{headerShown: false}}>
+        <Stack.Screen name="VisitorsHome" component={Visitors} />
+        <Stack.Screen name="VisitorDetails" component={VisitorDetails} />
+        <Stack.Screen name="AddVisitor" component={AddVisitor} />
+        <Stack.Screen name="AddFollowUp" component={AddFollowUp} />
+        <Stack.Screen name="AddDetails" component={AddDetails} />
+      </Stack.Group>
     </Stack.Navigator>
   );
 }
 
 function PipelineStack() {
   return (
-    <Stack.Navigator initialRouteName={'PipelineHome'}>
-      <Stack.Screen
-        name="PipelineHome"
-        component={SalesPipeline}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="PipelineRearrange"
-        component={SalesPipelineRearrange}
-        options={{headerShown: false}}
-      />
+    <Stack.Navigator initialRouteName="PipelineHome">
+      <Stack.Group screenOptions={{headerShown: false}}>
+        <Stack.Screen name="PipelineHome" component={SalesPipeline} />
+        <Stack.Screen
+          name="PipelineRearrange"
+          component={SalesPipelineRearrange}
+        />
+        <Stack.Screen name="VisitorDetails" component={VisitorDetails} />
+      </Stack.Group>
     </Stack.Navigator>
   );
 }
 
 function BookingChartStack() {
   return (
-    <Stack.Navigator initialRouteName={'BC_Step_One'}>
-      <Stack.Screen
-        name="BC_Step_One"
-        component={BC_SelectStructure}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="BC_Step_Two"
-        component={BC_SelectFloor}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="BC_Step_Three"
-        component={BC_SelectUnit}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="BC_Step_Four"
-        component={BookingDetails}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="BC_Step_Five"
-        component={BookingRates}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="BC_Step_Six"
-        component={BookingPayment}
-        options={{headerShown: false}}
-      />
+    <Stack.Navigator initialRouteName="BC_Step_One">
+      <Stack.Group screenOptions={{headerShown: false}}>
+        <Stack.Screen name="BC_Step_One" component={BC_SelectStructure} />
+        <Stack.Screen name="BC_Step_Two" component={BC_SelectTower} />
+        <Stack.Screen name="BC_Step_Three" component={BC_SelectFloor} />
+        <Stack.Screen name="BC_Step_Four" component={BC_SelectUnit} />
+        <Stack.Screen name="BC_Step_Five" component={BookingMode} />
+        <Stack.Screen name="BC_Step_Six" component={BookingDetails} />
+        <Stack.Screen name="BC_Step_Seven" component={BookingRates} />
+        <Stack.Screen name="BC_Step_Eight" component={BookingPayment} />
+        <Stack.Screen name="BookingFormOnHold" component={BookingFormOnHold} />
+        <Stack.Screen
+          name="HoldBookingHistory"
+          component={HoldBookingHistory}
+        />
+      </Stack.Group>
     </Stack.Navigator>
   );
 }
 
 function CustomerSectionStack() {
   return (
-    <Stack.Navigator initialRouteName={'BC_Step_One'}>
-      <Stack.Screen
-        name="CS_Step_One"
-        component={CS_SelectStructure}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="CS_Step_Two"
-        component={CS_SelectFloor}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="CS_Step_Three"
-        component={CS_SelectUnit}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="CS_Step_Four"
-        component={CustomerSection}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="CustomerDetails"
-        component={CustomerDetails}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="AddCustomer"
-        component={AddCustomer}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="AddModifyRequest"
-        component={AddModifyRequest}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="AddBankDetails"
-        component={AddBankDetails}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="PaymentCollections"
-        component={PaymentCollections}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="AddCollection"
-        component={AddCollection}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="PaymentSchedule"
-        component={PaymentSchedule}
-        options={{headerShown: false}}
-      />
+    <Stack.Navigator initialRouteName="BC_Step_One">
+      <Stack.Group screenOptions={{headerShown: false}}>
+        <Stack.Screen name="CS_Step_One" component={CS_SelectStructure} />
+        <Stack.Screen name="CS_Step_Two" component={CS_SelectTower} />
+        <Stack.Screen name="CS_Step_Three" component={CS_SelectFloor} />
+        <Stack.Screen name="CS_Step_Four" component={CS_SelectUnit} />
+        <Stack.Screen name="CS_Step_Five" component={CustomerSection} />
+        <Stack.Screen name="CustomerDetails" component={CustomerDetails} />
+        <Stack.Screen name="AddCustomer" component={AddCustomer} />
+        <Stack.Screen name="AddModifyRequest" component={AddModifyRequest} />
+        <Stack.Screen name="AddBankDetails" component={AddBankDetails} />
+        <Stack.Screen
+          name="PaymentCollections"
+          component={PaymentCollections}
+        />
+        <Stack.Screen name="AddCollection" component={AddCollection} />
+        <Stack.Screen name="PaymentSchedule" component={PaymentSchedule} />
+      </Stack.Group>
     </Stack.Navigator>
   );
 }
 
 function PlanningStack() {
   return (
-    <Stack.Navigator initialRouteName={'Phases'}>
-      <Stack.Screen
-        name="Phases"
-        component={Phases}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="SubPhases"
-        component={SubPhases}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="SubPhaseActivity"
-        component={SubPhaseActivity}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="PlanningDetails"
-        component={PlanningDetails}
-        options={{headerShown: false}}
-      />
+    <Stack.Navigator initialRouteName="Phases">
+      <Stack.Group screenOptions={{headerShown: false}}>
+        <Stack.Screen name="Phases" component={Phases} />
+        <Stack.Screen name="SubPhases" component={SubPhases} />
+        <Stack.Screen name="SubPhaseActivity" component={SubPhaseActivity} />
+        <Stack.Screen name="PlanningDetails" component={PlanningDetails} />
+      </Stack.Group>
     </Stack.Navigator>
   );
 }
 
 function FilesStack() {
   return (
-    <Stack.Navigator initialRouteName={'Files'}>
-      <Stack.Screen
-        name="Files"
-        component={Files}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="FolderDetails"
-        component={Files}
-        options={{headerShown: false}}
-      />
+    <Stack.Navigator initialRouteName="Files">
+      <Stack.Group screenOptions={{headerShown: false}}>
+        <Stack.Screen name="Files" component={Files} />
+        <Stack.Screen name="FolderDetails" component={Files} />
+      </Stack.Group>
     </Stack.Navigator>
   );
 }
 
 function BrokerStack() {
   return (
-    <Stack.Navigator initialRouteName={'BrokerList'}>
-      <Stack.Screen
-        name="BrokerList"
-        component={BrokerList}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="BrokerDetails"
-        component={BrokerDetails}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="AddBroker"
-        component={AddBroker}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="Remark"
-        component={Remark}
-        options={{headerShown: false}}
-      />
+    <Stack.Navigator initialRouteName="BrokerList">
+      <Stack.Group screenOptions={{headerShown: false}}>
+        <Stack.Screen name="BrokerList" component={BrokerList} />
+        <Stack.Screen name="BrokerDetails" component={BrokerDetails} />
+        <Stack.Screen name="AddBroker" component={AddBroker} />
+        <Stack.Screen name="Remark" component={Remark} />
+      </Stack.Group>
     </Stack.Navigator>
   );
 }
 
 function RolesStack() {
   return (
-    <Stack.Navigator initialRouteName={'RolesListing'}>
-      <Stack.Screen
-        name="RolesListing"
-        component={Roles}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="AddUser"
-        component={AddUser}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="AddRole"
-        component={AddRole}
-        options={{headerShown: false}}
-      />
+    <Stack.Navigator initialRouteName="RolesListing">
+      <Stack.Group screenOptions={{headerShown: false}}>
+        <Stack.Screen name="RolesListing" component={Roles} />
+        <Stack.Screen name="AddUser" component={AddUser} />
+        <Stack.Screen name="AddRole" component={AddRole} />
+      </Stack.Group>
     </Stack.Navigator>
   );
 }
 
+const generalDrawerContent = props => (
+  <RouteContext.Consumer>
+    {routeData => (
+      <DrawerContent {...props} routeData={routeData} type="general" />
+    )}
+  </RouteContext.Consumer>
+);
+
 function GeneralDrawer() {
   return (
-    <Drawer.Navigator
-      drawerContent={props => (
-        <RouteContext.Consumer>
-          {routeData => (
-            <DrawerContent {...props} routeData={routeData} type="general" />
-          )}
-        </RouteContext.Consumer>
-      )}>
-      <Drawer.Screen name="Home" component={Home} />
-      <Drawer.Screen name="PurchasedProjects" component={PurchasedProjects} />
-      <Drawer.Screen name="ProjectDetails" component={ProjectDetails} />
-      <Drawer.Screen name="UpdateBillingInfo" component={UpdateBillingInfo} />
+    <Drawer.Navigator drawerContent={generalDrawerContent}>
+      <Drawer.Group screenOptions={{headerShown: false}}>
+        <Drawer.Screen name="Home" component={Home} />
+        <Drawer.Screen name="PurchasedProjects" component={PurchasedProjects} />
+        <Drawer.Screen name="ProjectDetails" component={ProjectDetails} />
+        <Drawer.Screen name="UpdateBillingInfo" component={UpdateBillingInfo} />
+        <Drawer.Screen name="Profile" component={Profile} />
+      </Drawer.Group>
     </Drawer.Navigator>
   );
 }
 
+const developerDrawerContent = props => (
+  <RouteContext.Consumer>
+    {routeData => (
+      <DrawerContent {...props} routeData={routeData} type="developer" />
+    )}
+  </RouteContext.Consumer>
+);
+
 function ProjectDrawer() {
   return (
-    <Drawer.Navigator
-      drawerContent={props => (
-        <RouteContext.Consumer>
-          {routeData => (
-            <DrawerContent {...props} routeData={routeData} type="developer" />
-          )}
-        </RouteContext.Consumer>
-      )}>
-      <Drawer.Screen name="DeveloperDashboard" component={DeveloperDashboard} />
-      <Drawer.Screen name="Visitors" component={VisitorsStack} />
-      <Drawer.Screen name="SalesPipeline" component={PipelineStack} />
-      <Drawer.Screen name="BookingChartStack" component={BookingChartStack} />
-      <Drawer.Screen name="BrokerStack" component={BrokerStack} />
-      <Drawer.Screen name="Payment" component={Payment} />
-      <Drawer.Screen name="CustomerSection" component={CustomerSectionStack} />
-      <Drawer.Screen name="ProjectSchedule" component={ProjectSchedule} />
-      <Drawer.Screen name="MainPhase" component={MainPhase} />
-      <Drawer.Screen name="Lineup" component={Lineup} />
-      <Drawer.Screen name="Planning" component={PlanningStack} />
-      <Drawer.Screen name="ProcessChart" component={ProcessChart} />
-      <Drawer.Screen name="Estimation" component={Estimation} />
-      <Drawer.Screen name="RequestForPrice" component={RequestForPrice} />
-      <Drawer.Screen name="PurchaseOrders" component={PurchaseOrders} />
-      <Drawer.Screen name="Files" component={FilesStack} />
-      <Drawer.Screen name="Roles" component={RolesStack} />
+    <Drawer.Navigator drawerContent={developerDrawerContent}>
+      <Drawer.Group screenOptions={{headerShown: false}}>
+        <Drawer.Screen name="DeveloperHome" component={DeveloperDashboard} />
+        <Drawer.Screen name="Visitors" component={VisitorsStack} />
+        <Drawer.Screen name="SalesPipeline" component={PipelineStack} />
+        <Drawer.Screen name="BookingChartStack" component={BookingChartStack} />
+        <Drawer.Screen name="BrokerStack" component={BrokerStack} />
+        <Drawer.Screen name="Payment" component={Payment} />
+        <Drawer.Screen
+          name="CustomerSection"
+          component={CustomerSectionStack}
+        />
+        <Drawer.Screen name="ProjectSchedule" component={ProjectSchedule} />
+        <Drawer.Screen name="MainPhase" component={MainPhase} />
+        <Drawer.Screen name="Lineup" component={Lineup} />
+        <Drawer.Screen name="Planning" component={PlanningStack} />
+        <Drawer.Screen name="ProcessChart" component={ProcessChart} />
+        <Drawer.Screen name="Estimation" component={Estimation} />
+        <Drawer.Screen name="RequestForPrice" component={RequestForPrice} />
+        <Drawer.Screen name="PurchaseOrders" component={PurchaseOrders} />
+        <Drawer.Screen name="Files" component={FilesStack} />
+        <Drawer.Screen name="Roles" component={RolesStack} />
+      </Drawer.Group>
     </Drawer.Navigator>
   );
 }
+
+const customerDrawerContent = props => (
+  <RouteContext.Consumer>
+    {routeData => (
+      <DrawerContent {...props} routeData={routeData} type="customer" />
+    )}
+  </RouteContext.Consumer>
+);
 
 function CustomerDashboard() {
   return (
     <Drawer.Navigator
-      initialRouteName={'Ownership'}
-      drawerContent={props => (
-        <RouteContext.Consumer>
-          {routeData => (
-            <DrawerContent {...props} routeData={routeData} type="customer" />
-          )}
-        </RouteContext.Consumer>
-      )}>
-      <Drawer.Screen name="Ownership" component={CustomerHome} />
-      <Drawer.Screen name="BookingDetails" component={CustomerBooking} />
-      <Drawer.Screen name="LoanDetails" component={CustomerBankLoan} />
-      <Drawer.Screen name="CustomerAccount" component={CustomerAccount} />
-      <Drawer.Screen name="ModifyRequest" component={CustomerModifyRequest} />
-      <Drawer.Screen name="CustomerFiles" component={CustomerFiles} />
-      <Drawer.Screen name="AddCustomer" component={AddCustomer} />
-      <Drawer.Screen name="CustomerDetails" component={CustomerDetails} />
-      <Drawer.Screen name="AddModifyRequest" component={AddModifyRequest} />
-      <Drawer.Screen name="AddBankDetails" component={AddBankDetails} />
-      <Drawer.Screen name="PaymentCollections" component={PaymentCollections} />
-      <Drawer.Screen name="AddCollection" component={AddCollection} />
+      initialRouteName="Ownership"
+      drawerContent={customerDrawerContent}>
+      <Drawer.Group screenOptions={{headerShown: false}}>
+        <Drawer.Screen name="Ownership" component={CustomerHome} />
+        <Drawer.Screen name="BookingDetails" component={CustomerBooking} />
+        <Drawer.Screen name="LoanDetails" component={CustomerBankLoan} />
+        <Drawer.Screen name="CustomerAccount" component={CustomerAccount} />
+        <Drawer.Screen name="ModifyRequest" component={CustomerModifyRequest} />
+        <Drawer.Screen name="CustomerFiles" component={CustomerFiles} />
+        <Drawer.Screen name="AddCustomer" component={AddCustomer} />
+        <Drawer.Screen name="CustomerDetails" component={CustomerDetails} />
+        <Drawer.Screen name="AddModifyRequest" component={AddModifyRequest} />
+        <Drawer.Screen name="AddBankDetails" component={AddBankDetails} />
+        <Drawer.Screen
+          name="PaymentCollections"
+          component={PaymentCollections}
+        />
+        <Drawer.Screen name="AddCollection" component={AddCollection} />
+      </Drawer.Group>
     </Drawer.Navigator>
   );
 }
 
 function ChangePasswordStack() {
   return (
-    <Stack.Navigator initialRouteName={'ChangePasswordStepTwo'}>
-      <Stack.Screen
-        name="ChangePasswordStepOne"
-        component={StepOne}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="ChangePasswordStepTwo"
-        component={StepTwo}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="ChangePasswordStepThree"
-        component={StepThree}
-        options={{headerShown: false}}
-      />
+    <Stack.Navigator initialRouteName="ChangePasswordStepTwo">
+      <Stack.Group screenOptions={{headerShown: false}}>
+        <Stack.Screen name="ChangePasswordStepOne" component={StepOne} />
+        <Stack.Screen name="ChangePasswordStepTwo" component={StepTwo} />
+        <Stack.Screen name="ChangePasswordStepThree" component={StepThree} />
+      </Stack.Group>
     </Stack.Navigator>
   );
 }
@@ -505,8 +400,8 @@ const getActiveRouteName = (state, parentRoute) => {
 };
 
 function NavContainer() {
-  const {authenticated, user} = useSelector(state => state.user);
-  const {language} = useSelector(state => state.app);
+  const {authenticated, user} = useSelector(s => s.user);
+  const {language} = useSelector(s => s.app);
 
   const [routeData, setRouteData] = useState({
     currentRoute: authenticated ? 'Home' : 'LanguageSelect',
@@ -527,7 +422,9 @@ function NavContainer() {
         .then(biometryType => {
           // Success code
           TouchID.authenticate('', authObject)
-            .then(success => {})
+            .then(success => {
+              console.log('----->success ', success);
+            })
             .catch(async error => {
               await BackHandler.exitApp();
             });
@@ -565,126 +462,72 @@ function NavContainer() {
       }}>
       <RouteContext.Provider value={routeData}>
         <Stack.Navigator initialRouteName={initialScreen}>
-          {authenticated ? (
-            //App Nav Screens
-            <Fragment>
-              <Stack.Screen
-                name="GeneralDashboard"
-                component={GeneralDrawer}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="DeveloperDashboard"
-                component={ProjectDrawer}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="CustomerDashboard"
-                component={CustomerDashboard}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="Search"
-                component={SearchScreen}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="Notification"
-                component={Notification}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="EditProfile"
-                component={EditProfile}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="ChangePassword"
-                component={ChangePasswordStack}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="Profile"
-                component={Profile}
-                options={{headerShown: false}}
-              />
-            </Fragment>
-          ) : (
-            //Auth Nav Screens
-            <Fragment>
-              <Stack.Screen
-                name="LanguageSelect"
-                component={LanguageSelect}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="Login"
-                component={Login}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="SignUp"
-                component={SignUp}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="Otp"
-                component={OtpScreen}
-                options={{headerShown: false}}
-              />
-              {/* <Stack.Screen
-                name="RoleSelect"
-                component={RoleSelect}
-                options={{headerShown: false}}
-              /> */}
-              <Stack.Screen
-                name="ForgotPassword"
-                component={ForgotPassword}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="ForgotPasswordOtp"
-                component={ForgotPasswordOtp}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="ResetPassword"
-                component={ResetPassword}
-                options={{headerShown: false}}
-              />
-            </Fragment>
-          )}
-          {/* Project Creation screens */}
-          <Stack.Screen
-            name="ProjectCreationStepOne"
-            component={PC_StepOne}
-            options={{headerShown: false}}
-          />
-          <Stack.Screen
-            name="ProjectCreationStepTwo"
-            component={PC_StepTwo}
-            options={{headerShown: false}}
-          />
-          <Stack.Screen
-            name="ProjectStructureStepOne"
-            component={PS_StepOne}
-            options={{headerShown: false}}
-          />
-          <Stack.Screen
-            name="ProjectStructureStepTwo"
-            component={PS_StepTwo}
-            options={{headerShown: false}}
-          />
-          <Stack.Screen
-            name="PlanSelect"
-            component={PlanSelect}
-            options={{headerShown: false}}
-          />
-          <Stack.Screen
-            name="AdminCreation"
-            component={SignUp}
-            options={{headerShown: false}}
-          />
+          <Stack.Group screenOptions={{headerShown: false}}>
+            {authenticated ? (
+              // App Nav Screens
+              <>
+                <Stack.Screen
+                  name="GeneralDashboard"
+                  component={GeneralDrawer}
+                />
+                <Stack.Screen
+                  name="DeveloperDashboard"
+                  component={ProjectDrawer}
+                />
+                <Stack.Screen
+                  name="CustomerDashboard"
+                  component={CustomerDashboard}
+                />
+                <Stack.Screen name="Search" component={SearchScreen} />
+                <Stack.Screen name="Notification" component={Notification} />
+                <Stack.Screen name="EditProfile" component={EditProfile} />
+                <Stack.Screen
+                  name="ChangePassword"
+                  component={ChangePasswordStack}
+                />
+              </>
+            ) : (
+              // Auth Nav Screens
+              <>
+                <Stack.Screen
+                  name="LanguageSelect"
+                  component={LanguageSelect}
+                />
+                <Stack.Screen name="Login" component={Login} />
+                <Stack.Screen name="SignUp" component={SignUp} />
+                <Stack.Screen name="Otp" component={OtpScreen} />
+                {/* <Stack.Screen name="RoleSelect" component={RoleSelect} /> */}
+                <Stack.Screen
+                  name="ForgotPassword"
+                  component={ForgotPassword}
+                />
+                <Stack.Screen
+                  name="ForgotPasswordOtp"
+                  component={ForgotPasswordOtp}
+                />
+                <Stack.Screen name="ResetPassword" component={ResetPassword} />
+              </>
+            )}
+            {/* Project Creation screens */}
+            <Stack.Screen
+              name="ProjectCreationStepOne"
+              component={PC_StepOne}
+            />
+            <Stack.Screen
+              name="ProjectCreationStepTwo"
+              component={PC_StepTwo}
+            />
+            <Stack.Screen
+              name="ProjectStructureStepOne"
+              component={PS_StepOne}
+            />
+            <Stack.Screen
+              name="ProjectStructureStepTwo"
+              component={PS_StepTwo}
+            />
+            <Stack.Screen name="PlanSelect" component={PlanSelect} />
+            <Stack.Screen name="AdminCreation" component={SignUp} />
+          </Stack.Group>
         </Stack.Navigator>
       </RouteContext.Provider>
     </NavigationContainer>

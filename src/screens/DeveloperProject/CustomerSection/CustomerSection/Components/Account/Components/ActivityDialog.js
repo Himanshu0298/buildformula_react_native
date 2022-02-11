@@ -14,8 +14,10 @@ import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {ActionSheetProvider} from '@expo/react-native-action-sheet';
 import dayjs from 'dayjs';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import UserAvatar from 'components/Atoms/UserAvatar';
 
 const customParseFormat = require('dayjs/plugin/customParseFormat');
+
 dayjs.extend(customParseFormat);
 
 const RenderCollection = React.memo(({collection}) => {
@@ -39,7 +41,7 @@ const RenderCollection = React.memo(({collection}) => {
   return (
     <View style={styles.collectionContainer}>
       {profile_pic ? (
-        <Avatar.Image size={40} source={{uri: profile_pic}} />
+        <UserAvatar size={40} uri={profile_pic} />
       ) : (
         <Avatar.Text size={40} label={initials} />
       )}

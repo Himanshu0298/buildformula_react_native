@@ -1,6 +1,13 @@
 import React, {useMemo} from 'react';
 import {StyleSheet, View, Image, ActivityIndicator} from 'react-native';
-import {IconButton, Text, Menu, Divider, Button} from 'react-native-paper';
+import {
+  IconButton,
+  Text,
+  Menu,
+  Divider,
+  Button,
+  Subheading,
+} from 'react-native-paper';
 import PdfIcon from 'assets/images/pdf_icon.png';
 import dayjs from 'dayjs';
 import {getDownloadUrl, downloadFile, checkDownloaded} from 'utils/download';
@@ -126,9 +133,7 @@ function VersionDialog(props) {
   return (
     <View style={styles.container}>
       <View style={styles.versionHeading}>
-        <Text style={{color: theme.colors.primary, fontSize: 18}}>
-          Versions
-        </Text>
+        <Subheading style={{color: theme.colors.primary}}>Versions</Subheading>
         {modulePermissions?.editor || modulePermissions?.admin ? (
           <Button
             uppercase={false}

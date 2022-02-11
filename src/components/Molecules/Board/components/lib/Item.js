@@ -36,7 +36,7 @@ class Item {
   setIndex = index => (this.attributes.index = index);
 
   measureAndSaveLayout = previousItem => {
-    const ref = this.attributes.ref;
+    const {ref} = this.attributes;
     const measure =
       ref &&
       ref.measure((fx, fy, width, height, px, py) => {

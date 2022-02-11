@@ -15,13 +15,12 @@ function Details(props) {
   } = props;
 
   const {
-    // id: visitorId,
     first_name,
     last_name,
     phone,
     budget_from,
     budget_to,
-    follow_up_date,
+    created,
     priority,
     inquiry_for,
     current_locality,
@@ -66,7 +65,7 @@ function Details(props) {
         <View style={styles.detailRow}>
           <Paragraph>Date</Paragraph>
           <Caption style={styles.value}>
-            {dayjs(follow_up_date).format('DD MMM YYYY')}
+            {dayjs(created).format('DD MMM YYYY')}
           </Caption>
         </View>
         <View style={styles.detailRow}>
@@ -79,7 +78,7 @@ function Details(props) {
         <View style={styles.detailRow}>
           <Paragraph>Budget Range</Paragraph>
           <Caption style={styles.value}>
-            {/*TODO: Add amount formatting */}
+            {/* TODO: Add amount formatting */}
             Rs. {budget_from} - Rs.{budget_to}
           </Caption>
         </View>
@@ -105,7 +104,7 @@ function Details(props) {
           <Paragraph>Status</Paragraph>
           <Caption>
             <CustomBadge
-              style={{paddingHorizontal: 10, paddingVertical: 2}}
+              style={styles.titleBadge}
               color="rgba(72,114,244,0.15)"
               label={inquiryStatus?.title}
               labelStyles={{color: theme.colors.primary}}
@@ -133,6 +132,10 @@ const styles = StyleSheet.create({
   badge: {
     borderRadius: 20,
     paddingHorizontal: 15,
+    paddingVertical: 2,
+  },
+  titleBadge: {
+    paddingHorizontal: 10,
     paddingVertical: 2,
   },
 });

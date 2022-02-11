@@ -1,21 +1,22 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, View} from 'react-native';
-import {withTheme, FAB, Text, IconButton, Title} from 'react-native-paper';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {withTheme, FAB, IconButton, Subheading} from 'react-native-paper';
 import {getPermissions, getShadow} from 'utils';
 import useSalesActions from 'redux/actions/salesActions';
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
-import {theme} from 'styles/theme';
 import ProjectHeader from 'components/Molecules/Layout/ProjectHeader';
 import {TabView} from 'react-native-tab-view';
 import Layout from 'utils/Layout';
 import MaterialTabBar from 'components/Atoms/MaterialTabBar';
+import {useSalesLoading} from 'redux/selectors';
 import Details from './Components/Details';
 import Activities from './Components/Activities';
 
 function VisitorDetails(props) {
-  const {route, navigation} = props;
+  const {theme, route, navigation} = props;
   const {visitorId} = route?.params || {};
+  const {colors} = theme;
 
   const [activityFilter, setActivityFilter] = useState('all');
   const modulePermission = getPermissions('Visitors');
@@ -28,18 +29,15 @@ function VisitorDetails(props) {
     {key: 1, title: 'Activity'},
   ]);
 
-  const {selectedProject} = useSelector(state => state.project);
-  const {
-    loading,
-    visitor,
-    pipelines,
-    occupationOptions,
-    sourceTypeOptions,
-  } = useSelector(s => s.sales);
+  const {selectedProject} = useSelector(s => s.project);
+  const {visitor, pipelines, occupationOptions, sourceTypeOptions} =
+    useSelector(s => s.sales);
+
+  const loading = useSalesLoading();
 
   useEffect(() => {
     getVisitor({project_id: selectedProject.id, visitor_id: visitorId});
-    getPipelineData(selectedProject.id);
+    getPipelineData({project_id: selectedProject.id});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedProject.id, visitorId]);
 
@@ -69,6 +67,8 @@ function VisitorDetails(props) {
         return (
           <Activities filter={activityFilter} setFilter={setActivityFilter} />
         );
+      default:
+        return null;
     }
   };
 
@@ -80,7 +80,7 @@ function VisitorDetails(props) {
 
   return (
     <>
-      <Spinner visible={loading} textContent={''} />
+      <Spinner visible={loading} textContent="" />
 
       <View style={styles.body}>
         <TabView
@@ -92,17 +92,18 @@ function VisitorDetails(props) {
             return (
               <View style={styles.headerContainer}>
                 <ProjectHeader {...props} />
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <TouchableOpacity
+                  style={styles.headingContainer}
+                  onPress={navigation.goBack}>
                   <IconButton
                     icon="keyboard-backspace"
-                    size={30}
-                    color={theme.colors.primary}
-                    onPress={() => navigation.goBack()}
+                    size={25}
+                    color={colors.primary}
                   />
-                  <Title style={{color: theme.colors.primary}}>
+                  <Subheading style={{color: colors.primary}}>
                     Visitors Details
-                  </Title>
-                </View>
+                  </Subheading>
+                </TouchableOpacity>
                 <MaterialTabBar {...tabBarProps} />
               </View>
             );
@@ -113,18 +114,13 @@ function VisitorDetails(props) {
             open={selectDialog}
             style={styles.fab}
             fabStyle={{
-              backgroundColor: selectDialog ? '#fff' : theme.colors.primary,
+              backgroundColor: selectDialog ? colors.white : colors.primary,
             }}
             icon={selectDialog ? 'window-close' : 'dots-horizontal'}
             small
             onPress={toggleSelectDialog}
             onStateChange={onStateChange}
             actions={[
-              {
-                icon: 'square-edit-outline',
-                label: 'Edit',
-                onPress: () => navigation.navigate('AddVisitor', {visitor}),
-              },
               {
                 icon: 'comment',
                 label: 'Add comment',
@@ -152,6 +148,11 @@ function VisitorDetails(props) {
                     visitorId,
                   }),
               },
+              {
+                icon: 'square-edit-outline',
+                label: 'Edit Visitor Info ',
+                onPress: () => navigation.navigate('AddVisitor', {visitor}),
+              },
             ]}
           />
         ) : null}
@@ -164,6 +165,10 @@ const styles = StyleSheet.create({
   headerContainer: {
     ...getShadow(5),
     backgroundColor: '#fff',
+  },
+  headingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   body: {
     flex: 1,

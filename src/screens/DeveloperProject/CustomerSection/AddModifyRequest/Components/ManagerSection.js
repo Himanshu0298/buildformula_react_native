@@ -22,86 +22,84 @@ function ManagerSection(props) {
   const toggleSignature = () => setShowPanel(v => !v);
 
   return (
-    <>
-      <View style={styles.sectionContainer}>
-        <Headline style={styles.headline}>3. Approval</Headline>
-        <View
-          style={[
-            styles.row,
-            {justifyContent: 'space-between', marginBottom: 5},
-          ]}>
-          <Caption>Date: {dayjs().format('DD-MM-YYYY')}</Caption>
-          <Caption>Time: {dayjs().format('HH:mm A')}</Caption>
-        </View>
-        <Formik
-          validateOnBlur={false}
-          validateOnChange={false}
-          initialValues={{accepted: false}}
-          validationSchema={schema}
-          onSubmit={async values => {}}>
-          {({
-            values,
-            errors,
-            handleChange,
-            handleBlur,
-            handleSubmit,
-            setFieldValue,
-          }) => (
-            <View style={styles.formContainer}>
-              <SignaturePanel
-                visible={showPanel}
-                toggleDialog={toggleSignature}
-                onSave={v => {
-                  console.log('----->onSave ');
+    <View style={styles.sectionContainer}>
+      <Headline style={styles.headline}>3. Approval</Headline>
+      <View
+        style={[
+          styles.row,
+          {justifyContent: 'space-between', marginBottom: 5},
+        ]}>
+        <Caption>Date: {dayjs().format('DD-MM-YYYY')}</Caption>
+        <Caption>Time: {dayjs().format('HH:mm A')}</Caption>
+      </View>
+      <Formik
+        validateOnBlur={false}
+        validateOnChange={false}
+        initialValues={{accepted: false}}
+        validationSchema={schema}
+        onSubmit={async values => {}}>
+        {({
+          values,
+          errors,
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          setFieldValue,
+        }) => (
+          <View style={styles.formContainer}>
+            <SignaturePanel
+              visible={showPanel}
+              toggleDialog={toggleSignature}
+              onSave={v => {
+                console.log('----->onSave ');
+              }}
+            />
+
+            <RenderTextBox
+              name="comments"
+              label={t('label_comments_for_staff')}
+              numberOfLines={5}
+              minHeight={120}
+              containerStyles={styles.input}
+              value={values.comments}
+              onChangeText={handleChange('comments')}
+              onBlur={handleBlur('comments')}
+              error={errors.comments}
+            />
+            <Button mode="outlined" onPress={toggleSignature}>
+              Signature
+            </Button>
+            <View style={styles.input}>
+              <CustomCheckbox
+                label="I confirm this change order by my signature and approve to GEH to make  modifications at that particular stage"
+                checked={values.accepted}
+                onChange={() => {
+                  setFieldValue('accepted', !values.accepted);
                 }}
               />
-
-              <RenderTextBox
-                name="comments"
-                label={t('label_comments_for_staff')}
-                numberOfLines={5}
-                minHeight={120}
-                containerStyles={styles.input}
-                value={values.comments}
-                onChangeText={handleChange('comments')}
-                onBlur={handleBlur('comments')}
-                error={errors.comments}
-              />
-              <Button mode="outlined" onPress={toggleSignature}>
-                Signature
-              </Button>
-              <View style={styles.input}>
-                <CustomCheckbox
-                  label="I confirm this change order by my signature and approve to GEH to make  modifications at that particular stage"
-                  checked={values.accepted}
-                  onChange={() => {
-                    setFieldValue('accepted', !values.accepted);
-                  }}
-                />
-              </View>
-
-              <View style={styles.actionContainer}>
-                <Button
-                  style={{width: '40%'}}
-                  contentStyle={{padding: 1}}
-                  theme={{roundness: 10}}
-                  onPress={navigation.goBack}>
-                  Decline
-                </Button>
-                <Button
-                  style={{width: '40%'}}
-                  mode="contained"
-                  contentStyle={{padding: 1}}
-                  theme={{roundness: 10}}
-                  onPress={handleSubmit}>
-                  Approve
-                </Button>
-              </View>
             </View>
-          )}
-        </Formik>
-      </View>
-    </>
+
+            <View style={styles.actionContainer}>
+              <Button
+                style={{width: '40%'}}
+                contentStyle={{padding: 1}}
+                theme={{roundness: 10}}
+                onPress={navigation.goBack}>
+                Decline
+              </Button>
+              <Button
+                style={{width: '40%'}}
+                mode="contained"
+                contentStyle={{padding: 1}}
+                theme={{roundness: 10}}
+                onPress={handleSubmit}>
+                Approve
+              </Button>
+            </View>
+          </View>
+        )}
+      </Formik>
+    </View>
   );
 }
 
