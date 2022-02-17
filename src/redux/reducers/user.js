@@ -34,15 +34,11 @@ const reducer = (state = initialState, action = {}) => {
         loading: true,
       };
     case `${LOGIN}_FULFILLED`: {
-      const {user, token} = payload?.data;
+      const {user, token} = payload?.data || {};
       const {otp_verified, email_verified, default_role_id} = user;
       let authenticated = true;
 
-      if (
-        otp_verified === 'N' ||
-        email_verified === 'N' ||
-        default_role_id === 0
-      ) {
+      if (otp_verified === 'N' || email_verified === 'N') {
         authenticated = false;
       }
 

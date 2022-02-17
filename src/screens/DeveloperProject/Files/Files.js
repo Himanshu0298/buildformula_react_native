@@ -253,7 +253,7 @@ function Files(props) {
   const [modalContent, setModalContent] = React.useState({});
   const [shareDialog, setShareDialog] = React.useState(false);
   const [DialogType, setDialogType] = React.useState();
-  const [selectedUploadFile, setSelectedUploadFile] = React.useState();
+  // const [selectedUploadFile, setSelectedUploadFile] = React.useState();
 
   React.useEffect(() => {
     loadData();
@@ -332,14 +332,15 @@ function Files(props) {
   };
 
   const onChoose = v => {
-    setSelectedUploadFile(v);
-    toggleDialog('uploadFile');
+    handleFileUpload(v);
+    // setSelectedUploadFile(v);
+    // toggleDialog('uploadFile');
   };
 
-  const handleFileUpload = async values => {
-    const {file, file_name} = values;
+  const handleFileUpload = async file => {
+    const {name} = file;
     const extension = getFileExtension(file.name);
-    file.name = `${file_name}.${extension}`;
+    file.name = `${name}.${extension}`;
 
     const formData = new FormData();
 
@@ -493,13 +494,13 @@ function Files(props) {
         dialogueContent={modalContent}
         renameFolderHandler={renameFolderHandler}
       />
-      <UploadDialog
+      {/* <UploadDialog
         {...props}
         visible={DialogType === 'uploadFile'}
         toggleDialogue={toggleDialog}
         selectedUploadFile={selectedUploadFile}
         handleFileUpload={handleFileUpload}
-      />
+      /> */}
       <DeleteDialog
         visible={DialogType === 'deleteFileFolder'}
         toggleDialogue={toggleDialog}

@@ -3,12 +3,11 @@ import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
 import PropTypes from 'prop-types';
 import {theme} from 'styles/theme';
 import Layout from 'utils/Layout';
-import {Badge, TextInput} from 'react-native-paper';
+import {Badge, Caption, TextInput} from 'react-native-paper';
 import {getFloorNumber, getShadow} from 'utils';
 import {STRUCTURE_TYPE_LABELS} from 'utils/constant';
 import floorSlab from 'assets/images/slab.png';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import BaseText from './BaseText';
 import OpacityButton from './Buttons/OpacityButton';
 
 function FloorBar(props) {
@@ -41,9 +40,7 @@ function FloorBar(props) {
           <LabelContainer
             style={styles.floorLabelContainer}
             onPress={() => onPressLabel?.(floorId)}>
-            <BaseText style={styles.floorLabel}>
-              {getFloorNumber(floorId)}
-            </BaseText>
+            <Caption>{getFloorNumber(floorId)}</Caption>
           </LabelContainer>
           <View style={styles.rightSection}>
             <TextInput
@@ -77,7 +74,10 @@ function FloorBar(props) {
               }}
               {...inputProps}
             />
-            <OpacityButton onPress={onPressNext} style={styles.button}>
+            <OpacityButton
+              opacity={1}
+              onPress={onPressNext}
+              style={styles.button}>
               <MaterialCommunityIcons
                 name="arrow-right"
                 size={20}
@@ -102,7 +102,7 @@ FloorBar.propTypes = {
 FloorBar.defaultProps = {
   badgeActive: false,
   showBadge: false,
-  onPressLabel: () => {},
+  onPressLabel: () => null,
   floorId: '',
 };
 
@@ -115,13 +115,13 @@ const styles = StyleSheet.create({
     ...getShadow(3),
   },
   structureInput: {
-    marginHorizontal: 10,
-    fontSize: 16,
+    marginHorizontal: 5,
+    fontSize: 14,
     justifyContent: 'center',
     color: '#ccc',
     textAlign: 'center',
     backgroundColor: '#fff',
-    minWidth: 120,
+    minWidth: 100,
     ...getShadow(3),
   },
   floorContainer: {
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   floorLabelContainer: {
-    width: 120,
+    width: 90,
     height: '100%',
     justifyContent: 'center',
   },

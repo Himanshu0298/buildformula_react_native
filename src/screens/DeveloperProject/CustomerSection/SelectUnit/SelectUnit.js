@@ -27,7 +27,6 @@ function SelectUnit(props) {
 
   const {selectedProject} = useSelector(s => s.project);
   const {unitBookingStatus} = useSelector(s => s.sales);
-  const {user} = useSelector(s => s.user);
 
   const loading = useSalesLoading();
 
@@ -58,8 +57,6 @@ function SelectUnit(props) {
     return structureData.towers?.[towerId - 1]?.floors?.[floorId]?.units || [];
   }, [floorId, selectedProject, selectedStructure, towerId]);
 
-  console.log('----->units in select unit', units);
-
   const processedUnits = useMemo(() => {
     const updatedUnits = units.map(unit => {
       const bookingData = unitBookingStatus.find(
@@ -76,8 +73,6 @@ function SelectUnit(props) {
     return updatedUnits;
   }, [unitBookingStatus, units]);
 
-  console.log('----->processedUnits', processedUnits);
-
   const fetchUnitsBookingStatus = () => {
     getUnitsBookingStatus({
       project_id,
@@ -87,16 +82,8 @@ function SelectUnit(props) {
     });
   };
 
-  const checkUnitDisability = unit => {
-    const {status, booked_unit_user_id, tmp_booking_time_end} = unit;
-    let disabled =
-      [3, 4].includes(status) ||
-      (status === 2 && booked_unit_user_id && booked_unit_user_id !== user.id);
-
-    if (status === 2 && dayjs(tmp_booking_time_end).isBefore(dayjs())) {
-      disabled = false;
-    }
-    return disabled;
+  const checkUnitDisability = ({status}) => {
+    return ![3, 4].includes(status);
   };
 
   const handleSelectUnit = unit => {
@@ -130,8 +117,6 @@ function SelectUnit(props) {
           <Subheading>{floor}</Subheading>
         </TouchableOpacity>
       </View>
-      {console.log('----->structureType', structureType)}
-      {console.log('----->selectedStructure', selectedStructure)}
 
       <UnitSelector
         {...props}

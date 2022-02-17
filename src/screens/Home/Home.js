@@ -5,7 +5,7 @@ import {
   View,
   StatusBar,
   TouchableOpacity,
-  ScrollView,
+  FlatList,
   RefreshControl,
 } from 'react-native';
 import {withTheme, Subheading, Caption, FAB} from 'react-native-paper';
@@ -31,7 +31,7 @@ const IMAGES = {
 };
 
 const PROJECT_CONTAINER_WIDTH = Layout.window.width * 0.435;
-const PROJECT_CONTAINER_MARGIN = Layout.window.width * 0.02;
+const PROJECT_CONTAINER_MARGIN = Layout.window.width * 0.03;
 const DEVELOPER_IMAGE_WIDTH = PROJECT_CONTAINER_WIDTH * 0.9;
 
 function RenderProject({project, handleOnPress, tab}) {
@@ -82,9 +82,9 @@ function Home(props) {
   useEffect(() => {
     getAllNotifications();
     getProjects().then(({value}) => {
-      if (!value?.developers?.length) {
-        navigation.navigate('ProjectCreationStepOne');
-      }
+      // if (!value?.developers?.length) {
+      //   navigation.navigate('ProjectCreationStepOne');
+      // }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -148,6 +148,12 @@ function Home(props) {
 
   const onRefresh = () => getProjects();
 
+  const renderEmpty = () => (
+    <View style={styles.noResultContainer}>
+      <Subheading>No Projects Found</Subheading>
+    </View>
+  );
+
   return (
     <>
       <View style={styles.container}>
@@ -166,37 +172,34 @@ function Home(props) {
               inactiveTextColor="#919191"
               activeTextColor={theme.colors.primary}
               uppercase={false}
-              textStyle={{
-                fontFamily: 'Nunito-Regular',
-              }}
+              textStyle={styles.text}
             />
           ) : null}
         </View>
-        {projectsData?.[selectedTab]?.length > 0 ? (
-          <ScrollView
-            style={styles.scrollView}
-            showsVerticalScrollIndicator={false}
-            refreshControl={
-              <RefreshControl refreshing={false} onRefresh={onRefresh} />
-            }>
-            <View style={styles.projectsContainer}>
-              {projectsData[selectedTab].map((project, index) => (
-                <RenderProject
-                  {...props}
-                  key={index}
-                  project={project}
-                  tab={tabs[selectedTab]}
-                  handleOnPress={handleOnPress}
-                />
-              ))}
-            </View>
-          </ScrollView>
-        ) : (
-          <View style={styles.noResultContainer}>
-            <Subheading>No Projects Found</Subheading>
-          </View>
-        )}
+        <FlatList
+          data={projectsData[selectedTab]}
+          extraData={projectsData[selectedTab]}
+          keyExtractor={item => item.id}
+          style={styles.scrollView}
+          numColumns={2}
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl refreshing={false} onRefresh={onRefresh} />
+          }
+          ListEmptyComponent={renderEmpty}
+          renderItem={({item}) => {
+            return (
+              <RenderProject
+                {...props}
+                project={item}
+                tab={tabs[selectedTab]}
+                handleOnPress={handleOnPress}
+              />
+            );
+          }}
+        />
       </View>
+
       {/* {selectedTab === 0 ? (
         <FAB
           style={[styles.fab, {backgroundColor: theme.colors.primary}]}
@@ -227,16 +230,12 @@ const styles = StyleSheet.create({
   scrollView: {
     flexGrow: 1,
   },
-  projectsContainer: {
-    flexWrap: 'wrap',
-    flexDirection: 'row',
-    paddingTop: 10,
-    paddingHorizontal: PROJECT_CONTAINER_MARGIN,
-  },
   projectContainer: {
     borderWidth: 5,
+    paddingTop: 10,
     width: PROJECT_CONTAINER_WIDTH,
     margin: PROJECT_CONTAINER_MARGIN,
+
     borderRadius: 10,
     borderColor: '#DEE1E7',
   },
@@ -285,5 +284,8 @@ const styles = StyleSheet.create({
   subtitleText: {
     textAlign: 'center',
     color: 'rgba(4, 29, 54, 0.5)',
+  },
+  text: {
+    fontFamily: 'Nunito-Regular',
   },
 });
