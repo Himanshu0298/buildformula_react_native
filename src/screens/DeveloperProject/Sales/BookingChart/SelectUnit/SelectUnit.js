@@ -53,11 +53,11 @@ function SelectUnit(props) {
       return structureData.units;
     }
 
-    return structureData.towers?.[towerId]?.floors?.[floorId]?.units || {};
+    return structureData.towers?.[towerId]?.floors?.[floorId]?.units || [];
   }, [floorId, selectedProject, selectedStructure, towerId]);
 
   const processedUnits = useMemo(() => {
-    const updatedUnits = units.map(unit => {
+    const updatedUnits = units?.map(unit => {
       const bookingData = unitBookingStatus.find(
         i => Number(i.id) === Number(unit.unit_id),
       );
