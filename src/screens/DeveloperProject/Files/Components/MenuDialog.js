@@ -52,7 +52,10 @@ function MenuDialog(props) {
       toggleDownloading();
       const fileUrl = getDownloadUrl(modalContent);
       const {dir} = await downloadFile(modalContent, fileUrl);
-      snackbar.showMessage({message: 'File Downloaded Successfully!'});
+      snackbar.showMessage({
+        message: 'File Downloaded Successfully!',
+        variant: 'success',
+      });
       setDownloaded(dir);
       toggleDownloading();
     } catch (error) {
@@ -140,7 +143,7 @@ function MenuDialog(props) {
       {fileType === 'file' ? (
         <TouchableOpacity onPress={() => versionDataHandler(id)}>
           <View style={styles.viewDirection}>
-            <IconButton icon="file-multiple" onPress={() => {}} />
+            <IconButton icon="file-multiple" />
             <Text style={styles.ModalText}>Manage version</Text>
           </View>
         </TouchableOpacity>
@@ -152,7 +155,7 @@ function MenuDialog(props) {
             toggleMenu();
           }}>
           <View style={styles.viewDirection}>
-            <IconButton icon="pencil" onPress={() => {}} />
+            <IconButton icon="pencil" />
             <Text style={styles.ModalText}>Rename</Text>
           </View>
         </TouchableOpacity>
@@ -169,7 +172,7 @@ function MenuDialog(props) {
 
       <TouchableOpacity onPress={() => activityDataHandler(fileType, id)}>
         <View style={styles.viewDirection}>
-          <IconButton icon="information" onPress={() => {}} />
+          <IconButton icon="information" />
           <Text style={styles.ModalText}>Activity</Text>
         </View>
       </TouchableOpacity>
@@ -180,7 +183,7 @@ function MenuDialog(props) {
             toggleMenu();
           }}>
           <View style={styles.viewDirection}>
-            <IconButton icon="delete" onPress={() => {}} />
+            <IconButton icon="delete" />
             <Text style={styles.ModalText}>Delete</Text>
           </View>
         </TouchableOpacity>

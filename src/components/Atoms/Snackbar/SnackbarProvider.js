@@ -2,13 +2,15 @@ import React, {useCallback, useMemo, useState} from 'react';
 import SnackbarContext from './SnackbarContext';
 import DefaultSnackbar from './Snackbar';
 
+const DEFAULT_STATE = {
+  open: false,
+  message: '',
+  variant: 'success',
+  autoHideDuration: 2500,
+};
+
 function SnackbarProvider({children}) {
-  const [state, setState] = useState({
-    open: false,
-    message: '',
-    variant: 'success',
-    autoHideDuration: 2500,
-  });
+  const [state, setState] = useState({...DEFAULT_STATE});
 
   const showMessage = useCallback(
     params => setState(v => ({...v, ...params, open: true})),
@@ -17,7 +19,7 @@ function SnackbarProvider({children}) {
 
   const handleClose = () => {
     const {onClose} = state;
-    setState(v => ({...v, open: false}));
+    setState(() => ({...DEFAULT_STATE, open: false}));
     onClose?.();
   };
 
@@ -29,12 +31,9 @@ function SnackbarProvider({children}) {
         {children}
       </SnackbarContext.Provider>
       <DefaultSnackbar
-        open={state.open}
-        message={state.message}
-        variant={state.variant}
+        {...state}
         onClose={handleClose}
         stayOpen={Boolean(state.onClose)}
-        autoHideDuration={state.autoHideDuration}
       />
     </>
   );

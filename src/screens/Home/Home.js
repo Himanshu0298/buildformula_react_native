@@ -180,6 +180,7 @@ function Home(props) {
           data={projectsData[selectedTab]}
           extraData={projectsData[selectedTab]}
           keyExtractor={item => item.id}
+          contentContainerStyle={styles.scrollContainer}
           style={styles.scrollView}
           numColumns={2}
           showsVerticalScrollIndicator={false}
@@ -228,6 +229,9 @@ const styles = StyleSheet.create({
   //   bottom: 20,
   // },
   scrollView: {
+    flexGrow: 1,
+  },
+  scrollContainer: {
     flexGrow: 1,
   },
   projectContainer: {

@@ -1,27 +1,39 @@
 import React from 'react';
-import {StyleSheet, View, Image} from 'react-native';
+import {StyleSheet, View, Image, TouchableOpacity} from 'react-native';
 import {IconButton, Subheading, Text} from 'react-native-paper';
 import FileIcon from 'assets/images/file_icon.png';
 import dayjs from 'dayjs';
 import {useSelector} from 'react-redux';
 import NoResult from 'components/Atoms/NoResult';
+import {downloadFile, getDownloadUrl} from 'utils/download';
+import {useSnackbar} from 'components/Atoms/Snackbar';
+import FileViewer from 'react-native-file-viewer';
 
 function RenderFile(props) {
-  const {file, toggleMenu, setModalContentType, fileIndex, setModalContent} =
-    props;
+  const {
+    file,
+    toggleMenu,
+    setModalContentType,
+    fileIndex,
+    setModalContent,
+    onPressFile,
+  } = props;
 
   const {file_name, created} = file;
 
   return (
     <View style={styles.recentFiles}>
-      <View style={styles.sectionContainer}>
+      <TouchableOpacity
+        style={styles.sectionContainer}
+        onPress={() => onPressFile(file)}>
         <Image source={FileIcon} style={styles.fileIcon} />
         <View>
           <Text style={(styles.verticalFlex, styles.text)} numberOfLines={2}>
             {file_name}
           </Text>
         </View>
-      </View>
+      </TouchableOpacity>
+
       <View style={styles.sectionContainer}>
         <View>
           <Text style={styles.date}>
@@ -44,14 +56,29 @@ function RenderFile(props) {
 }
 
 function FileSection(props) {
-  const {route, menuId, toggleMenu, setModalContentType, setModalContent} =
-    props;
-
+  const {route, toggleMenu, ...rest} = props;
   const {index_of: folderDepth = 0} = route?.params || {};
 
-  const {files} = useSelector(s => s.files);
+  const snackbar = useSnackbar();
 
+  const {files} = useSelector(s => s.files);
   const filteredFiles = files?.[folderDepth] || [];
+
+  const onPressFile = async file => {
+    snackbar.showMessage({
+      message: 'Preparing your download...',
+      variant: 'warning',
+      autoHideDuration: 10000,
+    });
+    const fileUrl = getDownloadUrl(file);
+    const {dir} = await downloadFile(file, fileUrl);
+
+    snackbar.showMessage({
+      message: 'File Downloaded!',
+      variant: 'success',
+      action: {label: 'Open', onPress: () => FileViewer.open(dir)},
+    });
+  };
 
   return (
     <View style={styles.container}>
@@ -59,13 +86,12 @@ function FileSection(props) {
       {filteredFiles?.length ? (
         filteredFiles?.map((file, index) => (
           <RenderFile
+            {...rest}
             file={file}
-            key={index}
-            menuId={menuId}
+            key={index?.toString()}
             toggleMenu={toggleMenu}
-            setModalContentType={setModalContentType}
             fileIndex={filteredFiles?.indexOf(file)}
-            setModalContent={setModalContent}
+            onPressFile={onPressFile}
           />
         ))
       ) : (
@@ -77,7 +103,7 @@ function FileSection(props) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     backgroundColor: '#ffffff',
   },
   Subheading: {

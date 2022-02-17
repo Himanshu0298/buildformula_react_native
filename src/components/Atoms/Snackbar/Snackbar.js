@@ -3,19 +3,13 @@ import {Snackbar, Colors} from 'react-native-paper';
 import {Keyboard} from 'react-native';
 
 const VariantProps = {
-  success: {
-    color: Colors.green700,
-  },
-  error: {
-    color: Colors.red700,
-  },
-  warning: {
-    color: Colors.orange400,
-  },
+  success: {color: Colors.green700},
+  error: {color: Colors.red700},
+  warning: {color: Colors.orange400},
 };
 
 function CustomSnackbar(props) {
-  const {open, message, variant, onClose, stayOpen, autoHideDuration} = props;
+  const {open, message, variant, onClose, action, autoHideDuration} = props;
   const [margin, setMargin] = useState(8);
 
   useEffect(() => {
@@ -50,14 +44,7 @@ function CustomSnackbar(props) {
       style={{marginBottom: margin}}
       duration={autoHideDuration}
       onDismiss={onClose}
-      action={
-        stayOpen
-          ? {
-              label: 'OK',
-              onPress: () => onClose(),
-            }
-          : undefined
-      }>
+      action={action}>
       {message}
     </Snackbar>
   );
