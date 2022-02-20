@@ -1,13 +1,7 @@
 import * as React from 'react';
 import {useTranslation} from 'react-i18next';
 import {StyleSheet, View, TouchableOpacity, Image} from 'react-native';
-import {
-  Subheading,
-  withTheme,
-  Caption,
-  Button,
-  TextInput,
-} from 'react-native-paper';
+import {Subheading, withTheme, Caption, Button, TextInput} from 'react-native-paper';
 import {theme} from 'styles/theme';
 import backArrow from 'assets/images/back_arrow.png';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -21,6 +15,8 @@ import useCustomerActions from 'redux/actions/customerActions';
 import useImagePicker from 'utils/useImagePicker';
 import CustomCheckbox from 'components/Atoms/CustomCheckbox';
 import Spinner from 'react-native-loading-spinner-overlay';
+import {getShadow} from 'utils';
+import ProjectHeader from 'components/Molecules/Layout/ProjectHeader';
 
 // TODO: Add schema for customer
 const schema = Yup.object().shape({});
@@ -39,14 +35,8 @@ function ProfileUpload({profilePic, onSelect}) {
           <Image style={styles.profilePic} source={{uri: profilePic.uri}} />
         ) : (
           <>
-            <MaterialCommunityIcons
-              name="camera"
-              color={theme.colors.primary}
-              size={25}
-            />
-            <Caption style={{color: theme.colors.primary}}>
-              {t('text_upload_photo')}
-            </Caption>
+            <MaterialCommunityIcons name="camera" color={theme.colors.primary} size={25} />
+            <Caption style={{color: theme.colors.primary}}>{t('text_upload_photo')}</Caption>
           </>
         )}
       </TouchableOpacity>
@@ -55,14 +45,7 @@ function ProfileUpload({profilePic, onSelect}) {
 }
 
 function RenderForm({formikProps, navigation, ...restProps}) {
-  const {
-    handleChange,
-    handleSubmit,
-    values,
-    handleBlur,
-    errors,
-    setFieldValue,
-  } = formikProps;
+  const {handleChange, handleSubmit, values, handleBlur, errors, setFieldValue} = formikProps;
 
   const {t} = useTranslation();
 
@@ -78,6 +61,7 @@ function RenderForm({formikProps, navigation, ...restProps}) {
 
   return (
     <>
+      {console.log('values in add customer form', values)}
       <View style={styles.inputsContainer}>
         <ProfileUpload
           profilePic={values.profile_pic}
@@ -173,12 +157,12 @@ function RenderForm({formikProps, navigation, ...restProps}) {
           ref={panRef}
           containerStyles={styles.input}
           value={values.company_pan}
-          file={values.pan_image}
+          file={values.customer_pan_file}
           onChangeText={handleChange('customer_pan')}
-          onChoose={v => setFieldValue('pan_image', v)}
+          onChoose={v => setFieldValue('customer_pan_file', v)}
           onBlur={handleBlur('customer_pan')}
           onSubmitEditing={() => aadharRef?.current?.focus()}
-          error={errors.customer_pan || errors.pan_image}
+          error={errors.customer_pan || errors.customer_pan_file}
         />
         <FileInput
           name="customer_aadhar"
@@ -186,12 +170,12 @@ function RenderForm({formikProps, navigation, ...restProps}) {
           ref={panRef}
           containerStyles={styles.input}
           value={values.customer_aadhar}
-          file={values.aadhar_image}
+          file={values.customer_aadhar_file}
           onChangeText={handleChange('customer_aadhar')}
           onBlur={handleBlur('customer_aadhar')}
-          onChoose={v => setFieldValue('aadhar_image', v)}
+          onChoose={v => setFieldValue('customer_aadhar_file', v)}
           onSubmitEditing={handleSubmit}
-          error={errors.customer_aadhar || errors.aadhar_image}
+          error={errors.customer_aadhar || errors.customer_aadhar_file}
         />
 
         <View style={styles.checkboxContainer}>
@@ -229,33 +213,49 @@ function RenderForm({formikProps, navigation, ...restProps}) {
 function AddCustomer(props) {
   const {navigation, route} = props;
   const {params} = route;
-  const {unit} = params;
+  const {unit, edit, customer} = params;
+
+  console.log('customer in add customer fewfwefw', customer);
+
   const {t} = useTranslation();
   const {user} = useSelector(s => s.user);
   const {selectedProject} = useSelector(s => s.project);
   const {loading} = useSelector(s => s.customer);
 
+  console.log('route.param.edit in form ', route.params);
+
   const {getCustomerDetails, addCustomer} = useCustomerActions();
+
+  const initialValues = React.useMemo(() => {
+    if (edit) {
+      const {customer_first_name} = customer;
+      return {
+        ...customer,
+        accepted: false,
+        customer_full_name: customer_first_name,
+      };
+    }
+    return {accepted: false};
+  }, [customer, edit]);
 
   return (
     <View style={styles.container}>
       <Spinner visible={loading} textContent="" />
+      <View style={styles.headerContainer}>
+        <ProjectHeader {...props} />
+
+        <TouchableOpacity onPress={navigation.goBack} style={styles.titleContainer}>
+          <Image source={backArrow} style={styles.backArrow} />
+          <Subheading>{t('title_customer_details')}</Subheading>
+        </TouchableOpacity>
+      </View>
       <KeyboardAwareScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollView}
-        stickyHeaderIndices={[0]}>
-        <View>
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={styles.titleContainer}>
-            <Image source={backArrow} style={styles.backArrow} />
-            <Subheading>{t('title_customer_details')}</Subheading>
-          </TouchableOpacity>
-        </View>
+        contentContainerStyle={styles.scrollView}>
         <Formik
           validateOnBlur={false}
           validateOnChange={false}
-          initialValues={{accepted: false}}
+          initialValues={initialValues}
           validationSchema={schema}
           onSubmit={async values => {
             const formData = new FormData();
@@ -269,9 +269,17 @@ function AddCustomer(props) {
             formData.append('customer_occupation', values.customer_occupation);
             formData.append('customer_pan', values.customer_pan);
             formData.append('customer_aadhar', values.customer_aadhar);
-            formData.append('aadhar_image', values.aadhar_image);
-            formData.append('pan_image', values.pan_image);
+            formData.append('customer_pan_file', values.customer_pan_file);
             formData.append('profile_pic', values.profile_pic);
+            formData.append('customer_aadhar_file', values.customer_aadhar_file);
+
+            console.log('unit_id', unit);
+            if (edit) {
+              formData.append('user_id', customer.user_id);
+            }
+            console.log('form data in on submit', formData);
+
+            await addCustomer(formData);
 
             await addCustomer(formData);
             getCustomerDetails({
@@ -296,6 +304,11 @@ const styles = StyleSheet.create({
   scrollView: {
     flexGrow: 1,
     paddingBottom: 20,
+  },
+  headerContainer: {
+    backgroundColor: '#fff',
+    marginHorizontal: -10,
+    ...getShadow(2),
   },
   titleContainer: {
     flexDirection: 'row',

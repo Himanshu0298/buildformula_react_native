@@ -1,31 +1,26 @@
 import * as React from 'react';
 import {StyleSheet, View, TouchableOpacity, ScrollView} from 'react-native';
-import {Avatar, Caption, Divider, Text, withTheme} from 'react-native-paper';
+import {Caption, Divider, Text, withTheme} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {getPermissions} from 'utils';
 import UserAvatar from 'components/Atoms/UserAvatar';
 
-function RenderCustomer({customer, navToDetails}) {
-  const {profile_pic, name, role} = customer;
+function RenderCustomer({customer, navToDetails, index}) {
+  const {profile_pic, customer_first_name, role} = customer;
+
   return (
     <>
-      <TouchableOpacity
-        onPress={() => navToDetails(customer)}
-        style={styles.customerContainer}>
+      <TouchableOpacity onPress={() => navToDetails(customer)} style={styles.customerContainer}>
         <View style={styles.leftContainer}>
           <UserAvatar size={50} uri={profile_pic} />
           <View style={styles.nameContainer}>
-            <Text>{name}</Text>
-            <Caption>{role}</Caption>
+            <Text>{customer_first_name}</Text>
+            <Caption>{index + 1} Member</Caption>
           </View>
         </View>
         <View style={styles.rightContainer}>
-          <MaterialIcons
-            name="keyboard-arrow-right"
-            size={25}
-            color="#8B959F"
-          />
+          <MaterialIcons name="keyboard-arrow-right" size={25} color="#8B959F" />
         </View>
       </TouchableOpacity>
       <Divider style={{marginVertical: 10}} />
@@ -42,7 +37,7 @@ function Details(props) {
   const {customerData} = useSelector(s => s.customer);
 
   const navToDetails = customer => {
-    navigation.navigate('CustomerDetails', {customer});
+    navigation.navigate('CustomerDetails', {customer, unit: params.unit});
   };
 
   const navToAdd = customer => {
@@ -52,9 +47,10 @@ function Details(props) {
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={{flexGrow: 1}}>
-        {customerData.map((customer, index) => (
+        {customerData?.members?.map((customer, index) => (
           <RenderCustomer
             key={index}
+            index={index}
             customer={customer}
             navToDetails={navToDetails}
           />
@@ -62,9 +58,7 @@ function Details(props) {
         <View style={styles.addPanel}>
           {modulePermissions?.editor || modulePermissions?.admin ? (
             <TouchableOpacity style={styles.addButton} onPress={navToAdd}>
-              <Text style={{color: theme.colors.primary}}>
-                + Add Joint name
-              </Text>
+              <Text style={{color: theme.colors.primary}}>+ Add Joint name</Text>
             </TouchableOpacity>
           ) : null}
 

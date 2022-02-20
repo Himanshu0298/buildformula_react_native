@@ -52,13 +52,7 @@ const schema = Yup.object().shape({
 });
 
 function PersonalTab(props) {
-  const {
-    navigation,
-    formikProps,
-    occupationOptions,
-    sourceTypeOptions,
-    setSelectedTab,
-  } = props;
+  const {navigation, formikProps, occupationOptions, sourceTypeOptions, setSelectedTab} = props;
   const {handleChange, setFieldValue, values, handleBlur, errors} = formikProps;
   const {t} = useTranslation();
 
@@ -127,11 +121,7 @@ function PersonalTab(props) {
           <RenderSelect
             name="occupation"
             ref={occupationRef}
-            label={
-              values.occupation
-                ? t('label_occupation')
-                : t('placeholder_occupation')
-            }
+            label={values.occupation ? t('label_occupation') : t('placeholder_occupation')}
             options={occupationOptions}
             containerStyles={styles.input}
             value={values.occupation}
@@ -167,7 +157,6 @@ function PersonalTab(props) {
             value={values.current_locality}
             onChangeText={handleChange('current_locality')}
             onBlur={handleBlur('current_locality')}
-            onSubmitEditing={() => setSelectedTab(1)}
             error={errors.email}
           />
           <RenderSelect
@@ -206,14 +195,7 @@ function PersonalTab(props) {
 function InquiryTab(props) {
   const {formikProps, setSelectedTab, inquiryOptions, bhkOptions, edit} = props;
 
-  const {
-    handleChange,
-    setFieldValue,
-    values,
-    handleSubmit,
-    handleBlur,
-    errors,
-  } = formikProps;
+  const {handleChange, setFieldValue, values, handleSubmit, handleBlur, errors} = formikProps;
 
   const {t} = useTranslation();
 
@@ -348,13 +330,8 @@ function RenderForm(props) {
     {key: 1, title: 'Inquiry details'},
   ]);
 
-  const {
-    bhkOptions,
-    occupationOptions,
-    inquiryOptions,
-    assignOptions,
-    sourceTypeOptions,
-  } = useSelector(s => s.sales);
+  const {bhkOptions, occupationOptions, inquiryOptions, assignOptions, sourceTypeOptions} =
+    useSelector(s => s.sales);
 
   const updatedAssignOptions = useMemo(() => {
     const data = [...assignOptions];
@@ -521,9 +498,7 @@ function AddVisitor(props) {
           initialValues={initialValues}
           validationSchema={schema}
           onSubmit={onSubmit}>
-          {formikProps => (
-            <RenderForm f {...props} {...{formikProps, user, edit}} />
-          )}
+          {formikProps => <RenderForm f {...props} {...{formikProps, user, edit}} />}
         </Formik>
       </View>
     </View>

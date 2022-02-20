@@ -14,14 +14,8 @@ import {useSalesLoading} from 'redux/selectors';
 
 function SelectUnit(props) {
   const {navigation, route} = props;
-  const {
-    project_id,
-    floorId,
-    towerId,
-    structureType,
-    selectedStructure,
-    towerType,
-  } = route?.params || {};
+  const {project_id, floorId, towerId, structureType, selectedStructure, towerType} =
+    route?.params || {};
 
   const {getUnitsBookingStatus} = useSalesActions();
 
@@ -40,28 +34,20 @@ function SelectUnit(props) {
   }, []);
 
   const units = useMemo(() => {
-    const structureData =
-      selectedProject.project_structure?.[selectedStructure] || {};
-
-    // console.log('----->towerId', towerId);
-
-    // console.log(
-    //   '----->structureData.towers[towerId - 1].floors in unit section',
-    //   structureData.towers[towerId - 1].floors[floorId],
-    // );
+    const structureData = selectedProject.project_structure?.[selectedStructure] || {};
 
     if ([4, 5].includes(selectedStructure)) {
       return structureData.units;
     }
 
-    return structureData.towers?.[towerId - 1]?.floors?.[floorId]?.units || [];
+    const {floors = {}} = structureData?.towers.find(i => i.tower_id === towerId) || {};
+
+    return floors?.[floorId]?.units || [];
   }, [floorId, selectedProject, selectedStructure, towerId]);
 
   const processedUnits = useMemo(() => {
     const updatedUnits = units.map(unit => {
-      const bookingData = unitBookingStatus.find(
-        i => Number(i.id) === Number(unit.unit_id),
-      );
+      const bookingData = unitBookingStatus.find(i => Number(i.id) === Number(unit.unit_id));
 
       if (bookingData) {
         unit = {...unit, ...bookingData};
@@ -94,9 +80,7 @@ function SelectUnit(props) {
     });
   };
 
-  const floor = floorId
-    ? getFloorNumber(floorId)
-    : STRUCTURE_TYPE_LABELS?.[selectedStructure];
+  const floor = floorId ? getFloorNumber(floorId) : STRUCTURE_TYPE_LABELS?.[selectedStructure];
 
   return (
     <View style={styles.container}>
@@ -110,9 +94,7 @@ function SelectUnit(props) {
       ) : null}
 
       <View style={styles.headerContainer}>
-        <TouchableOpacity
-          style={styles.titleContainer}
-          onPress={navigation.goBack}>
+        <TouchableOpacity style={styles.titleContainer} onPress={navigation.goBack}>
           <IconButton icon="keyboard-backspace" />
           <Subheading>{floor}</Subheading>
         </TouchableOpacity>

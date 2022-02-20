@@ -4,7 +4,7 @@ import CustomerDetails from './CustomerDetails';
 
 export default props => {
   return (
-    <ProjectLayout {...props}>
+    <ProjectLayout {...props} header={false}>
       <CustomerDetails {...props} />
     </ProjectLayout>
   );

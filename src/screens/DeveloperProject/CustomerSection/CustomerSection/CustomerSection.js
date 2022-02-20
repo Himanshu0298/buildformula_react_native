@@ -9,14 +9,7 @@ import {useSelector} from 'react-redux';
 import useCustomerActions from 'redux/actions/customerActions';
 import {getShadow} from 'utils';
 import Layout from 'utils/Layout';
-import {
-  Account,
-  BankLoans,
-  BookingDetails,
-  Details,
-  Files,
-  ModifyRequest,
-} from './Components';
+import {Account, BankLoans, BookingDetails, Details, Files, ModifyRequest} from './Components';
 import DetailsHeader from './Components/DetailsHeader';
 
 const TABS = [
@@ -67,7 +60,7 @@ function RenderTabBar(tabBarProps) {
 
 function CustomerSection(props) {
   const {route} = props;
-  const {project_id, unit, selectedStructure} = route?.params || {};
+  const {project_id, unit} = route?.params || {};
 
   const {t} = useTranslation();
   const {
@@ -94,7 +87,7 @@ function CustomerSection(props) {
   }, [isProjectAdmin, permissions]);
 
   React.useEffect(() => {
-    getCustomerDetails({project_id, unit_id: unit.unit_id, user_id: user.id});
+    getCustomerDetails({project_id, unit_id: unit.unit_id});
     getBookingDetails({project_id, unit_id: unit.unit_id});
     getBankDetails({project_id, unit_id: unit.unit_id});
     getModifyRequests({project_id, unit_id: unit.unit_id});

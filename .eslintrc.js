@@ -10,13 +10,7 @@ module.exports = {
     'prettier',
     'plugin:prettier/recommended',
   ],
-  plugins: [
-    '@typescript-eslint',
-    'react',
-    'react-native',
-    'module-resolver',
-    'prettier',
-  ],
+  plugins: ['@typescript-eslint', 'react', 'react-native', 'module-resolver', 'prettier'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaFeatures: {
@@ -31,6 +25,7 @@ module.exports = {
   rules: {
     'react-native/no-unused-styles': 1,
     'react-native/no-color-literals': 0,
+    '@typescript-eslint/no-var-requires': 1,
     'no-underscore-dangle': 0,
     'react/no-array-index-key': 1,
     'react/no-unused-prop-types': 0,
@@ -45,10 +40,7 @@ module.exports = {
     'no-nested-ternary': 0,
     'default-param-last': 0,
     'react/jsx-props-no-spreading': 0,
-    'react/jsx-filename-extension': [
-      1,
-      {extensions: ['.jsx', '.js', '.tsx', '.ts']},
-    ],
+    'react/jsx-filename-extension': [1, {extensions: ['.jsx', '.js', '.tsx', '.ts']}],
     'no-use-before-define': 'off',
     'no-param-reassign': 0,
     'react/prop-types': 0,
