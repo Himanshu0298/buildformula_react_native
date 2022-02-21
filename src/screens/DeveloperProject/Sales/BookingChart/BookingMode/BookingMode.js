@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     flexGrow: 1,
-    padding: 15,
+    paddingHorizontal: 15,
   },
   headingContainer: {
     flexDirection: 'row',

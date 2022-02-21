@@ -2,7 +2,7 @@ import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
 import {theme} from 'styles/theme';
-import {getFloorNumber, getTowerLabel, getUnitLabel} from 'utils';
+import {getFloorNumber, getTowerLabel} from 'utils';
 import {STRUCTURE_TYPE_LABELS} from 'utils/constant';
 
 function renderDetailText(label, value) {
@@ -14,16 +14,16 @@ function renderDetailText(label, value) {
 }
 
 function DetailsHeader(props) {
-  const {towerId, floorId, selectedStructure, unit} = props;
+  const {towerId, floorId, structureType, selectedStructure, unit} = props;
 
   return (
     <View style={styles.detailContainer}>
       <View style={styles.detailSubContainer}>
         {renderDetailText(
           'Project type',
-          STRUCTURE_TYPE_LABELS[selectedStructure],
+          STRUCTURE_TYPE_LABELS[structureType || selectedStructure],
         )}
-        {renderDetailText('Floor type', getFloorNumber(floorId))}
+        {renderDetailText('Floor', getFloorNumber(floorId))}
       </View>
       <View style={styles.detailSubContainer}>
         {renderDetailText('Tower', getTowerLabel(towerId))}

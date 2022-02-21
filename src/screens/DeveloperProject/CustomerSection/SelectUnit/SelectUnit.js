@@ -1,21 +1,24 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useMemo} from 'react';
 import {useSelector} from 'react-redux';
 import useSalesActions from 'redux/actions/salesActions';
 import Spinner from 'react-native-loading-spinner-overlay';
 import UnitSelector from 'components/Molecules/UnitSelector';
-import dayjs from 'dayjs';
-import {getFloorNumber, getPermissions} from 'utils';
-import {useSnackbar} from 'components/Atoms/Snackbar';
+import {getFloorNumber} from 'utils';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {IconButton, Subheading} from 'react-native-paper';
-import SelectHoldOrBook from 'screens/DeveloperProject/Sales/BookingChart/SelectUnit/Components/UnitBookingDialog';
 import {STRUCTURE_TYPE_LABELS} from 'utils/constant';
 import {useSalesLoading} from 'redux/selectors';
 
 function SelectUnit(props) {
   const {navigation, route} = props;
-  const {project_id, floorId, towerId, structureType, selectedStructure, towerType} =
-    route?.params || {};
+  const {
+    project_id,
+    floorId,
+    towerId,
+    structureType,
+    selectedStructure,
+    towerType,
+  } = route?.params || {};
 
   const {getUnitsBookingStatus} = useSalesActions();
 
@@ -34,20 +37,24 @@ function SelectUnit(props) {
   }, []);
 
   const units = useMemo(() => {
-    const structureData = selectedProject.project_structure?.[selectedStructure] || {};
+    const structureData =
+      selectedProject.project_structure?.[selectedStructure] || {};
 
     if ([4, 5].includes(selectedStructure)) {
       return structureData.units;
     }
 
-    const {floors = {}} = structureData?.towers.find(i => i.tower_id === towerId) || {};
+    const {floors = {}} =
+      structureData?.towers.find(i => i.tower_id === towerId) || {};
 
     return floors?.[floorId]?.units || [];
   }, [floorId, selectedProject, selectedStructure, towerId]);
 
   const processedUnits = useMemo(() => {
     const updatedUnits = units.map(unit => {
-      const bookingData = unitBookingStatus.find(i => Number(i.id) === Number(unit.unit_id));
+      const bookingData = unitBookingStatus.find(
+        i => Number(i.id) === Number(unit.unit_id),
+      );
 
       if (bookingData) {
         unit = {...unit, ...bookingData};
@@ -73,14 +80,12 @@ function SelectUnit(props) {
   };
 
   const handleSelectUnit = unit => {
-    navigation.navigate('CS_Step_Five', {
-      project_id: selectedProject.id,
-      unit,
-      selectedStructure,
-    });
+    navigation.navigate('CS_Step_Five', {...route?.params, unit});
   };
 
-  const floor = floorId ? getFloorNumber(floorId) : STRUCTURE_TYPE_LABELS?.[selectedStructure];
+  const floor = floorId
+    ? getFloorNumber(floorId)
+    : STRUCTURE_TYPE_LABELS?.[selectedStructure];
 
   return (
     <View style={styles.container}>
@@ -94,7 +99,9 @@ function SelectUnit(props) {
       ) : null}
 
       <View style={styles.headerContainer}>
-        <TouchableOpacity style={styles.titleContainer} onPress={navigation.goBack}>
+        <TouchableOpacity
+          style={styles.titleContainer}
+          onPress={navigation.goBack}>
           <IconButton icon="keyboard-backspace" />
           <Subheading>{floor}</Subheading>
         </TouchableOpacity>

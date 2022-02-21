@@ -31,11 +31,11 @@ function RenderForm(props) {
   }, [open]);
 
   return (
-    <ScrollView contentContainerStyle={styles.scrollContainer}>
-      <CustomDialog
-        {...props}
-        title="Hold this Property"
-        submitForm={formikProps.handleSubmit}>
+    <CustomDialog
+      {...props}
+      title="Hold this Property"
+      submitForm={formikProps.handleSubmit}>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.inputsContainer}>
           <RenderDatePicker
             name="date"
@@ -73,8 +73,8 @@ function RenderForm(props) {
             Save
           </Button>
         </View>
-      </CustomDialog>
-    </ScrollView>
+      </ScrollView>
+    </CustomDialog>
   );
 }
 
