@@ -60,6 +60,7 @@ import CustomerSection from 'screens/DeveloperProject/CustomerSection/CustomerSe
 import CustomerDetails from 'screens/DeveloperProject/CustomerSection/CustomerDetails';
 import AddCustomer from 'screens/DeveloperProject/CustomerSection/AddCustomer';
 import AddModifyRequest from 'screens/DeveloperProject/CustomerSection/AddModifyRequest';
+import ModifyRequestDetails from 'screens/DeveloperProject/CustomerSection/ModifyRequestDetails';
 import AddBankDetails from 'screens/DeveloperProject/CustomerSection/AddBankDetails';
 import PaymentCollections from 'screens/DeveloperProject/CustomerSection/PaymentColections';
 import AddCollection from 'screens/DeveloperProject/CustomerSection/AddCollection';
@@ -221,6 +222,10 @@ function CustomerSectionStack() {
         <Stack.Screen name="CustomerDetails" component={CustomerDetails} />
         <Stack.Screen name="AddCustomer" component={AddCustomer} />
         <Stack.Screen name="AddModifyRequest" component={AddModifyRequest} />
+        <Stack.Screen
+          name="ModifyRequestDetails"
+          component={ModifyRequestDetails}
+        />
         <Stack.Screen name="AddBankDetails" component={AddBankDetails} />
         <Stack.Screen
           name="PaymentCollections"

@@ -14,7 +14,7 @@ import {useSelector} from 'react-redux';
 import {getPermissions} from 'utils';
 
 const STATUS_LIST = {
-  1: {label: 'PENDING APPROVAL', color: '#F4AF48'},
+  pending: {label: 'PENDING APPROVAL', color: '#F4AF48'},
   2: {label: 'APPROVED', color: '#07CA03'},
   3: {label: 'REJECTED', color: '#FF5D5D'},
 };
@@ -94,18 +94,6 @@ function ModifyRequest(props) {
   const {modifyRequests} = useSelector(s => s.customer);
   const {user} = useSelector(s => s.user);
 
-  const requests = React.useMemo(() => {
-    const pendingRequests = modifyRequests.filter(
-      v => v.request_status === 'pending',
-    );
-    const approvedRequests = modifyRequests.filter(v => v.status === 2);
-    const rejectedRequests = modifyRequests.filter(v => v.status === 3);
-
-    return {pendingRequests, approvedRequests, rejectedRequests};
-  }, [modifyRequests]);
-
-  const {pendingRequests, approvedRequests, rejectedRequests} = requests;
-
   const navToAdd = customer => {
     navigation.navigate('AddModifyRequest', {...params});
   };
@@ -120,19 +108,30 @@ function ModifyRequest(props) {
         contentContainerStyle={styles.scrollView}
         showsVerticalScrollIndicator={false}>
         <Subheading style={{marginBottom: 10}}>All Modify Requests</Subheading>
-        <RequestsAccordion
-          title="Pending requests"
-          requests={pendingRequests}
-          showActions={checkRole}
-        />
-        <RequestsAccordion
-          title="Approved requests"
-          requests={approvedRequests}
-        />
-        <RequestsAccordion
-          title="Rejected requests"
-          requests={rejectedRequests}
-        />
+        {modifyRequests.map(item => {
+          return (
+            <View style={styles.contentContainer}>
+              <View style={styles.titleStyle}>
+                <Text>{item.title}</Text>
+                <Text style={{color: STATUS_LIST[item.request_status].color}}>
+                  {STATUS_LIST[item.request_status].label}
+                </Text>
+              </View>
+              {console.log('pending request', modifyRequests[0])}
+
+              <Caption style={{marginTop: 5}}>{item.description}</Caption>
+              <View style={styles.button}>
+                <Button
+                  mode="contained"
+                  theme={{roundness: 10}}
+                  uppercase={false}
+                  onPress={() => navigation.navigate('ModifyRequestDetails')}>
+                  View Modify Request
+                </Button>
+              </View>
+            </View>
+          );
+        })}
       </ScrollView>
       {modulePermissions?.editor || modulePermissions?.admin ? (
         <FAB
@@ -189,9 +188,24 @@ const styles = StyleSheet.create({
     marginTop: 25,
     paddingHorizontal: 10,
     flexDirection: 'row',
-
     alignItems: 'center',
     justifyContent: 'flex-end',
+  },
+  contentContainer: {
+    backgroundColor: '#F2F4F5',
+    borderRadius: 8,
+    padding: 10,
+    marginBottom: 20,
+  },
+  button: {
+    marginTop: 10,
+    alignItems: 'center',
+    marginRight: 110,
+  },
+  titleStyle: {
+    justifyContent: 'space-between',
+    display: 'flex',
+    flexDirection: 'row',
   },
 });
 
