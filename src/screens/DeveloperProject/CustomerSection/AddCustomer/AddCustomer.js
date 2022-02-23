@@ -1,7 +1,13 @@
 import * as React from 'react';
 import {useTranslation} from 'react-i18next';
 import {StyleSheet, View, TouchableOpacity, Image} from 'react-native';
-import {Subheading, withTheme, Caption, Button, TextInput} from 'react-native-paper';
+import {
+  Subheading,
+  withTheme,
+  Caption,
+  Button,
+  TextInput,
+} from 'react-native-paper';
 import {theme} from 'styles/theme';
 import backArrow from 'assets/images/back_arrow.png';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -35,8 +41,14 @@ function ProfileUpload({profilePic, onSelect}) {
           <Image style={styles.profilePic} source={{uri: profilePic.uri}} />
         ) : (
           <>
-            <MaterialCommunityIcons name="camera" color={theme.colors.primary} size={25} />
-            <Caption style={{color: theme.colors.primary}}>{t('text_upload_photo')}</Caption>
+            <MaterialCommunityIcons
+              name="camera"
+              color={theme.colors.primary}
+              size={25}
+            />
+            <Caption style={{color: theme.colors.primary}}>
+              {t('text_upload_photo')}
+            </Caption>
           </>
         )}
       </TouchableOpacity>
@@ -44,8 +56,15 @@ function ProfileUpload({profilePic, onSelect}) {
   );
 }
 
-function RenderForm({formikProps, navigation, ...restProps}) {
-  const {handleChange, handleSubmit, values, handleBlur, errors, setFieldValue} = formikProps;
+function RenderForm({formikProps, navigation}) {
+  const {
+    handleChange,
+    handleSubmit,
+    values,
+    handleBlur,
+    errors,
+    setFieldValue,
+  } = formikProps;
 
   const {t} = useTranslation();
 
@@ -244,7 +263,9 @@ function AddCustomer(props) {
       <View style={styles.headerContainer}>
         <ProjectHeader {...props} />
 
-        <TouchableOpacity onPress={navigation.goBack} style={styles.titleContainer}>
+        <TouchableOpacity
+          onPress={navigation.goBack}
+          style={styles.titleContainer}>
           <Image source={backArrow} style={styles.backArrow} />
           <Subheading>{t('title_customer_details')}</Subheading>
         </TouchableOpacity>
@@ -271,7 +292,10 @@ function AddCustomer(props) {
             formData.append('customer_aadhar', values.customer_aadhar);
             formData.append('customer_pan_file', values.customer_pan_file);
             formData.append('profile_pic', values.profile_pic);
-            formData.append('customer_aadhar_file', values.customer_aadhar_file);
+            formData.append(
+              'customer_aadhar_file',
+              values.customer_aadhar_file,
+            );
 
             console.log('unit_id', unit);
             if (edit) {

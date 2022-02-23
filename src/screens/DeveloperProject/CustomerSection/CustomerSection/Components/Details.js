@@ -11,7 +11,9 @@ function RenderCustomer({customer, navToDetails, index}) {
 
   return (
     <>
-      <TouchableOpacity onPress={() => navToDetails(customer)} style={styles.customerContainer}>
+      <TouchableOpacity
+        onPress={() => navToDetails(customer, index)}
+        style={styles.customerContainer}>
         <View style={styles.leftContainer}>
           <UserAvatar size={50} uri={profile_pic} />
           <View style={styles.nameContainer}>
@@ -20,7 +22,11 @@ function RenderCustomer({customer, navToDetails, index}) {
           </View>
         </View>
         <View style={styles.rightContainer}>
-          <MaterialIcons name="keyboard-arrow-right" size={25} color="#8B959F" />
+          <MaterialIcons
+            name="keyboard-arrow-right"
+            size={25}
+            color="#8B959F"
+          />
         </View>
       </TouchableOpacity>
       <Divider style={{marginVertical: 10}} />
@@ -36,8 +42,12 @@ function Details(props) {
 
   const {customerData} = useSelector(s => s.customer);
 
-  const navToDetails = customer => {
-    navigation.navigate('CustomerDetails', {customer, unit: params.unit});
+  const navToDetails = (customer, index) => {
+    navigation.navigate('CustomerDetails', {
+      customer,
+      unit: params.unit,
+      index,
+    });
   };
 
   const navToAdd = customer => {
@@ -58,7 +68,9 @@ function Details(props) {
         <View style={styles.addPanel}>
           {modulePermissions?.editor || modulePermissions?.admin ? (
             <TouchableOpacity style={styles.addButton} onPress={navToAdd}>
-              <Text style={{color: theme.colors.primary}}>+ Add Joint name</Text>
+              <Text style={{color: theme.colors.primary}}>
+                + Add Joint name
+              </Text>
             </TouchableOpacity>
           ) : null}
 
