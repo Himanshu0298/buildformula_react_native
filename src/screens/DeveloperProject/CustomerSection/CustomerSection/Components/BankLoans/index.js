@@ -33,13 +33,7 @@ function BankLoans(props) {
           contentContainerStyle={styles.scrollView}
           showsVerticalScrollIndicator={false}>
           <View style={styles.headingRow}>
-            <Subheading
-              style={{
-                fontSize: 14,
-                color: theme.colors.primary,
-              }}>
-              BANK DETAILS
-            </Subheading>
+            <Subheading style={styles.heading}>BANK DETAILS</Subheading>
             <Button
               icon="format-list-bulleted"
               mode="text"
@@ -74,6 +68,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  heading: {
+    fontSize: 14,
+    color: theme.colors.primary,
   },
 });
 

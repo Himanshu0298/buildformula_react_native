@@ -20,8 +20,13 @@ function BankDetailsSection(props) {
 
   const detailsAvailable = Object.keys(bankDetails?.details || {}).length > 0;
 
+  console.log('-----> bankDetails.id', bankDetails);
+
   const navToAddBankDetails = () =>
-    navigation.navigate('AddBankDetails', {...route?.params});
+    navigation.navigate('AddBankDetails', {
+      ...route?.params,
+      id: bankDetails.id,
+    });
 
   return (
     <View style={styles.container}>
