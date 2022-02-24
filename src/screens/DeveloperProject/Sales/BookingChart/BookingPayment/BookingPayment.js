@@ -999,7 +999,7 @@ function BookingPayments(props) {
       delete data.custom_payments;
     }
 
-    if (values.payment_type === 1 && !data.withRate) {
+    if (values.payment_type === 1) {
       data.full_basic_amount = data.finalAmount;
     }
 

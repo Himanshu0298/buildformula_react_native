@@ -188,6 +188,7 @@ function AddBankDetails(props) {
             <Subheading>{t('title_finalized_bank_details')}</Subheading>
           </TouchableOpacity>
         </View>
+        {console.log('bank details')}
         <Formik
           validateOnBlur={false}
           validateOnChange={false}
