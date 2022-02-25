@@ -226,9 +226,9 @@ const styles = StyleSheet.create({
   },
   customerContainer: {
     borderRadius: 5,
-    backgroundColor: '#F2F4F5',
     padding: 10,
     marginTop: 10,
+    backgroundColor: '#F2F4F5',
   },
   row: {
     flex: 1,

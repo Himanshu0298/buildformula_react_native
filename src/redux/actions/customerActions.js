@@ -15,9 +15,11 @@ export default function useCustomerActions() {
     getBankDetails,
     updateBankDetails,
     updateBankFiles,
+    updateModifiedRequestStatus,
     removeBankFile,
     getModifyRequests,
     addModifyRequest,
+    getModifyRequest,
     getAccountDetails,
     updateBookingStatus,
     addCollection,
@@ -127,6 +129,23 @@ export default function useCustomerActions() {
           }
         },
       }),
+
+    updateModifiedRequestStatus: formData =>
+      dispatch({
+        type: types.UPDATE_MODIFY_REQUEST,
+        payload: async () => {
+          try {
+            const response = _res(await updateModifiedRequestStatus(formData));
+            const {data} = response;
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
     removeBankFile: params =>
       dispatch({
         type: types.UPDATE_BANK_FILES,
@@ -164,6 +183,21 @@ export default function useCustomerActions() {
         payload: async () => {
           try {
             const {data} = _res(await addModifyRequest(params));
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    getModifyRequestDetails: params =>
+      dispatch({
+        type: types.GET_MODIFY_REQUEST,
+        payload: async () => {
+          try {
+            const {data} = _res(await getModifyRequest(params));
 
             return Promise.resolve(data);
           } catch (error) {

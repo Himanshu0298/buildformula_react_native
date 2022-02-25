@@ -15,6 +15,8 @@ import {
   ADD_COLLECTION,
   UPDATE_COLLECTION,
   DELETE_COLLECTION,
+  GET_MODIFY_REQUEST,
+  UPDATE_MODIFY_REQUEST,
 } from '../actions/actionTypes';
 
 const persistConfig = {
@@ -33,6 +35,7 @@ const initialState = {
   bookingPaymentTypes: {},
   bankDetails: {},
   modifyRequests: [],
+  modifyRequest: {},
   accountDetails: {},
 };
 
@@ -124,6 +127,25 @@ const reducer = (state = initialState, action = {}) => {
         errorMessage: action.payload,
       };
 
+    case `${GET_MODIFY_REQUEST}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${GET_MODIFY_REQUEST}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+        modifyRequest: payload,
+      };
+    }
+    case `${GET_MODIFY_REQUEST}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+        errorMessage: action.payload,
+      };
+
     case `${GET_ACCOUNT_DETAILS}_PENDING`:
       return {
         ...state,
@@ -172,6 +194,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${ADD_COLLECTION}_PENDING`:
     case `${UPDATE_COLLECTION}_PENDING`:
     case `${DELETE_COLLECTION}_PENDING`:
+    case `${UPDATE_MODIFY_REQUEST}_PENDING`:
       return {
         ...state,
         loading: true,
@@ -183,6 +206,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${ADD_COLLECTION}_FULFILLED`:
     case `${UPDATE_COLLECTION}_FULFILLED`:
     case `${DELETE_COLLECTION}_FULFILLED`:
+    case `${UPDATE_MODIFY_REQUEST}_FULFILLED`:
       return {
         ...state,
         loading: false,
@@ -195,6 +219,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${ADD_COLLECTION}_REJECTED`:
     case `${UPDATE_COLLECTION}_REJECTED`:
     case `${DELETE_COLLECTION}_REJECTED`:
+    case `${UPDATE_MODIFY_REQUEST}_REJECTED`:
       return {
         ...state,
         loading: false,

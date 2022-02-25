@@ -1,8 +1,14 @@
 import * as React from 'react';
 import {StyleSheet, View, Image} from 'react-native';
-import {Caption, Divider, Subheading, Text} from 'react-native-paper';
+import {
+  Caption,
+  Divider,
+  Subheading,
+  Text,
+  TextInput,
+} from 'react-native-paper';
 
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 
 import ActionButtons from 'components/Atoms/ActionButtons';
 import RenderSelect from 'components/Atoms/RenderSelect';
@@ -11,18 +17,15 @@ import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icons from 'react-native-vector-icons/FontAwesome';
 import {theme} from 'styles/theme';
-import {ScrollView} from 'react-native-gesture-handler';
+import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
 import {getShadow} from 'utils';
+import RenderInput from 'components/Atoms/RenderInput';
+import useCustomerActions from 'redux/actions/customerActions';
+import {useSelector} from 'react-redux';
+import dayjs from 'dayjs';
+import {MODIFY_REQUEST_STATUS} from 'utils/constant';
 import profile from '../../../../assets/images/profile.png';
 import app_logo from '../../../../assets/images/app_logo.png';
-
-const statusOptions = [
-  'REVIEWED',
-  'CANCELED BY CUSTOMER',
-  'CONFIRMED BY CUSTOMER',
-  'REJECTED',
-  'APPROVED',
-];
 
 const ModifyTicketNumber = () => {
   return (
@@ -105,37 +108,91 @@ const Chat = () => {
 };
 
 const Comment = () => {
+  const [text, setText] = React.useState('');
   return (
     <View style={styles.bottomContainer}>
-      <View>
-        <OpacityButton
-          opacity={0.1}
-          color={theme.colors.primary}
-          style={styles.commentButton}>
-          <Text>Add New Comment</Text>
-        </OpacityButton>
+      <View style={styles.inputContainer}>
+        <RenderInput
+          placeholder="Add New Comment"
+          value={text}
+          onChangeText={t => setText(t)}
+          right={
+            <TextInput.Icon name="attachment" color={theme.colors.primary} />
+          }
+        />
       </View>
       <View>
-        <OpacityButton opacity={0.1} borderRadius={30}>
-          <MaterialCommunityIcons
-            name="send"
-            size={20}
-            color={theme.colors.primary}
-            style={{padding: 10}}
-          />
-        </OpacityButton>
+        <TouchableOpacity>
+          <OpacityButton
+            opacity={0.1}
+            borderRadius={30}
+            style={styles.sendIcon}>
+            <MaterialCommunityIcons
+              name="send"
+              size={18}
+              color={theme.colors.primary}
+            />
+          </OpacityButton>
+        </TouchableOpacity>
       </View>
     </View>
   );
 };
 
-const ModifyRequestDetails = () => {
+const ModifyRequestDetails = props => {
+  const {route} = props;
+  const {id, unit, project_id} = route?.params || {};
+
+  const {
+    getModifyRequests,
+    getModifyRequestDetails,
+    updateModifiedRequestStatus,
+  } = useCustomerActions();
+
+  const {modifyRequest} = useSelector(s => s.customer);
+  const {propertyDetails} = modifyRequest || {};
+
   const [edit, setEdit] = useState(false);
   const [status, setStatus] = useState();
 
-  const onPressEdit = () => {
-    setEdit(true);
+  useEffect(() => {
+    if (id) {
+      loadRequestData();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
+
+  const statusOptions = React.useMemo(() => {
+    return Object.keys(MODIFY_REQUEST_STATUS).map(key => ({
+      label: MODIFY_REQUEST_STATUS[key].label,
+      value: key,
+    }));
+  }, []);
+
+  const loadRequestData = () =>
+    getModifyRequestDetails({
+      project_id,
+      project_modify_request_id: id,
+      unit_id: unit.unit_id,
+    });
+
+  const toggleEdit = () => setEdit(v => !v);
+
+  const handleStatusUpdate = async () => {
+    toggleEdit();
+    setStatus();
+    await updateModifiedRequestStatus({
+      project_id,
+      project_modify_request_id: id,
+      unit_id: unit.unit_id,
+      request_status: status,
+    });
+    loadRequestData();
+    getModifyRequests({project_id, unit_id: unit.unit_id});
   };
+
+  const requestStatus =
+    MODIFY_REQUEST_STATUS[propertyDetails?.request_status]?.label;
 
   return (
     <ScrollView>
@@ -145,21 +202,23 @@ const ModifyRequestDetails = () => {
           <View style={styles.row}>
             <View style={styles.userData}>
               <Text>Property Details</Text>
-              <Caption>3</Caption>
+              <Caption>{propertyDetails?.id}</Caption>
             </View>
             <View style={styles.userData}>
               <Text>Created On </Text>
-              <Caption>10/12/2021</Caption>
+              <Caption>
+                {dayjs(propertyDetails?.created).format('DD MMM YYYY, hh:mm A')}
+              </Caption>
             </View>
           </View>
-          <Text style={styles.userData}>Status</Text>
 
           <View>
             {!edit ? (
               <View>
-                <Caption>Approved</Caption>
+                <Text style={styles.userData}>Status</Text>
+                <Caption style={styles.statusValue}>{requestStatus}</Caption>
                 <View style={styles.OpacityButton}>
-                  <OpacityButton opacity={0.2} onPress={onPressEdit}>
+                  <OpacityButton opacity={0.2} onPress={toggleEdit}>
                     <MaterialCommunityIcons
                       name="pencil"
                       size={14}
@@ -174,7 +233,7 @@ const ModifyRequestDetails = () => {
                 <RenderSelect
                   name="Modify Request"
                   label="Status"
-                  value={status}
+                  value={status || propertyDetails?.request_status}
                   options={statusOptions}
                   onSelect={setStatus}
                 />
@@ -182,8 +241,8 @@ const ModifyRequestDetails = () => {
                   style={styles.actionButton}
                   cancelLabel="CANCEL"
                   submitLabel="SAVE"
-                  onCancel={() => setEdit(false)}
-                  onSubmit={() => setEdit(false)}
+                  onCancel={toggleEdit}
+                  onSubmit={handleStatusUpdate}
                 />
               </View>
             )}
@@ -221,17 +280,15 @@ const styles = StyleSheet.create({
   ticketNumber: {
     marginLeft: 10,
   },
-  commentButton: {
-    borderRadius: 50,
-    width: 250,
-    height: 50,
+  inputContainer: {
+    flexGrow: 1,
+    marginRight: 10,
   },
   bottomContainer: {
-    display: 'flex',
     flexDirection: 'row',
-    flexWrap: 'wrap',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: 10,
   },
   row: {
     flexDirection: 'row',
@@ -281,6 +338,13 @@ const styles = StyleSheet.create({
   userProfile: {
     borderRadius: 10,
     marginRight: 5,
+  },
+  sendIcon: {
+    padding: 11,
+    marginTop: 4,
+  },
+  statusValue: {
+    textTransform: 'capitalize',
   },
 });
 
