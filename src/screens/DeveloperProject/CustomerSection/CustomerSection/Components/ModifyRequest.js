@@ -41,7 +41,7 @@ function ModifyRequest(props) {
       <ScrollView
         contentContainerStyle={styles.scrollView}
         showsVerticalScrollIndicator={false}>
-        <Subheading style={{marginBottom: 10}}>All Modify Requests</Subheading>
+        <Subheading style={styles.Subheading}>All Modify Requests</Subheading>
         {modifyRequests.map(item => {
           return (
             <View style={styles.contentContainer}>
@@ -55,7 +55,7 @@ function ModifyRequest(props) {
                 </Caption>
               </View>
 
-              <Caption style={{marginTop: 5}}>{item.description}</Caption>
+              <Caption style={styles.caption}>{item.description}</Caption>
               <View style={styles.button}>
                 <Button
                   mode="contained"
@@ -109,6 +109,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     display: 'flex',
     flexDirection: 'row',
+  },
+  Subheading: {
+    marginBottom: 10,
+  },
+  caption: {
+    marginTop: 5,
   },
 });
 

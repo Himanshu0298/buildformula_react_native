@@ -22,14 +22,21 @@ import {getShadow} from 'utils';
 import RenderInput from 'components/Atoms/RenderInput';
 import useCustomerActions from 'redux/actions/customerActions';
 import {useSelector} from 'react-redux';
-import dayjs from 'dayjs';
 import {MODIFY_REQUEST_STATUS} from 'utils/constant';
-import profile from '../../../../assets/images/profile.png';
-import app_logo from '../../../../assets/images/app_logo.png';
+import dayjs from 'dayjs';
+import RenderHtml from 'react-native-render-html';
+import Layout from 'utils/Layout';
 
-const ModifyTicketNumber = () => {
+const relativeTime = require('dayjs/plugin/relativeTime');
+
+dayjs.extend(relativeTime);
+
+const ModifyTicket = props => {
+  const {modifyRequest} = props;
+  const {id, title, description} = modifyRequest?.propertyDetails || {};
+
   return (
-    <View style={styles.contentContainer}>
+    <View style={styles.cardContainer}>
       <View style={styles.messageContainer}>
         <View>
           <OpacityButton opacity={0.1} borderRadius={30}>
@@ -43,18 +50,26 @@ const ModifyTicketNumber = () => {
         </View>
 
         <View style={styles.ticketNumber}>
-          <Text style={styles.userName}>325415698</Text>
-          <Text>Creating project issue</Text>
-          <Text style={styles.text}>
-            Hello sir I want to know how to create project in the system
-          </Text>
-          {/* <img src={profile} alt="logo" /> */}
+          <Text style={styles.userName}>{id}</Text>
+          <Caption>Modify Request</Caption>
+
+          <Text style={styles.issueContainer}>{title}</Text>
+
+          <Text style={styles.text}>{description}</Text>
           <View style={styles.userImage}>
-            {Array(4)
-              .fill(0)
-              .map(item => {
-                return <Image source={profile} style={styles.userProfile} />;
-              })}
+            {modifyRequest?.cs_modify_request_documents?.map(item => {
+              return (
+                <Image
+                  style={styles.documentImage}
+                  height={40}
+                  width={40}
+                  source={{
+                    uri: 'https://reactnative.dev/img/tiny_logo.png',
+                    // uri: item.file_url,
+                  }}
+                />
+              );
+            })}
           </View>
         </View>
       </View>
@@ -62,46 +77,55 @@ const ModifyTicketNumber = () => {
   );
 };
 
-const Chat = () => {
+const Chat = props => {
+  const {modifyRequest} = props;
+
   return (
     <View>
       <Subheading style={styles.heading}>Conversation</Subheading>
-      <View style={styles.contentContainer}>
-        <View style={styles.messageContainer}>
-          <View>
-            <OpacityButton opacity={0.1} borderRadius={30}>
-              <MaterialCommunityIcons
-                styles={styles.ticket}
-                name="account-circle"
-                size={27}
-                color={theme.colors.primary}
-              />
-            </OpacityButton>
-          </View>
-          <View style={styles.messageBodyContainer}>
-            <Text style={styles.userName}>Param Mehta</Text>
-            <Text>Yesterday 7:30PM </Text>
-            <Text style={styles.text}>
-              Hello sir I want to know how to create project in the system
-            </Text>
-          </View>
-        </View>
-        <Divider />
-        <View style={styles.messageContainer}>
-          <View>
-            <OpacityButton opacity={0.1} borderRadius={30}>
-              <Image source={app_logo} style={styles.image} />
-            </OpacityButton>
-          </View>
-          <View style={styles.messageBodyContainer}>
-            <Text style={styles.userName}>Param Mehta</Text>
-            <Text>Yesterday 8:00PM </Text>
-            <Text style={styles.text}>
-              Hi Param, Sorry to hear about your issue Can you please log out
-              and login again that will fix your issue
-            </Text>
-          </View>
-        </View>
+      <View style={styles.cardContainer}>
+        {modifyRequest?.cs_modify_request_conversations?.map(conversation => {
+          const {created, description, user_info} = conversation;
+          const {user_full_name, profile_url} = user_info;
+          const isHtml =
+            description?.includes('<') && description?.includes('>');
+
+          return (
+            <View style={styles.messageContainer}>
+              <View>
+                <OpacityButton opacity={0.1} borderRadius={30}>
+                  {/* <MaterialCommunityIcons
+                    styles={styles.ticket}
+                    name="account-circle"
+                    size={27}
+                    color={theme.colors.primary}
+                  /> */}
+                  <Image
+                    style={styles.documentImage}
+                    height={30}
+                    width={30}
+                    source={{
+                      uri: profile_url,
+                      // uri: item.file_url,
+                    }}
+                  />
+                </OpacityButton>
+              </View>
+              <View style={styles.messageBodyContainer}>
+                <Text style={styles.userName}>{user_full_name}</Text>
+                <Text>{dayjs(created).fromNow()}</Text>
+                {!isHtml ? (
+                  <Text style={styles.text}>{description}</Text>
+                ) : (
+                  <RenderHtml
+                    source={{html: description}}
+                    contentWidth={Layout.window.width}
+                  />
+                )}
+              </View>
+            </View>
+          );
+        })}
       </View>
     </View>
   );
@@ -150,6 +174,7 @@ const ModifyRequestDetails = props => {
   } = useCustomerActions();
 
   const {modifyRequest} = useSelector(s => s.customer);
+  console.log('modify request', modifyRequest);
   const {propertyDetails} = modifyRequest || {};
 
   const [edit, setEdit] = useState(false);
@@ -195,64 +220,81 @@ const ModifyRequestDetails = props => {
     MODIFY_REQUEST_STATUS[propertyDetails?.request_status]?.label;
 
   return (
-    <ScrollView>
-      <View style={styles.container}>
-        <Subheading style={styles.heading}>Modify Requests</Subheading>
-        <View style={styles.contentContainer}>
-          <View style={styles.row}>
-            <View style={styles.userData}>
-              <Text>Property Details</Text>
-              <Caption>{propertyDetails?.id}</Caption>
-            </View>
-            <View style={styles.userData}>
-              <Text>Created On </Text>
-              <Caption>
-                {dayjs(propertyDetails?.created).format('DD MMM YYYY, hh:mm A')}
-              </Caption>
-            </View>
-          </View>
-
-          <View>
-            {!edit ? (
-              <View>
-                <Text style={styles.userData}>Status</Text>
-                <Caption style={styles.statusValue}>{requestStatus}</Caption>
-                <View style={styles.OpacityButton}>
-                  <OpacityButton opacity={0.2} onPress={toggleEdit}>
-                    <MaterialCommunityIcons
-                      name="pencil"
-                      size={14}
-                      color={theme.colors.primary}
-                    />
-                    <Text style={styles.editButton}>Edit</Text>
-                  </OpacityButton>
+    <View style={styles.container}>
+      <Subheading style={styles.heading}>Modify Requests</Subheading>
+      <View style={{flex: 1}}>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={styles.contentContainer}>
+            <View style={styles.cardContainer}>
+              <View style={styles.row}>
+                <View style={styles.userData}>
+                  <Text>Property Type</Text>
+                  <Caption>Apartment</Caption>
+                </View>
+                <View style={styles.userData}>
+                  <Text> Unit</Text>
+                  <Caption>A-502</Caption>
                 </View>
               </View>
-            ) : (
-              <View>
-                <RenderSelect
-                  name="Modify Request"
-                  label="Status"
-                  value={status || propertyDetails?.request_status}
-                  options={statusOptions}
-                  onSelect={setStatus}
-                />
-                <ActionButtons
-                  style={styles.actionButton}
-                  cancelLabel="CANCEL"
-                  submitLabel="SAVE"
-                  onCancel={toggleEdit}
-                  onSubmit={handleStatusUpdate}
-                />
+              <View style={styles.row}>
+                <View style={styles.userData}>
+                  <Text>Customer Name</Text>
+                  <Caption>ABCDEFGHI</Caption>
+                </View>
+                <View style={styles.userData}>
+                  <Text> Customer Mobile</Text>
+                  <Caption>7327621621</Caption>
+                </View>
               </View>
-            )}
+
+              <View>
+                {!edit ? (
+                  <View>
+                    <Text style={styles.userData}>Status</Text>
+                    <Caption style={styles.statusValue}>
+                      {requestStatus}
+                    </Caption>
+                    <View style={styles.OpacityButton}>
+                      <OpacityButton opacity={0.2} onPress={toggleEdit}>
+                        <MaterialCommunityIcons
+                          name="pencil"
+                          size={14}
+                          color={theme.colors.primary}
+                        />
+                        <Text style={styles.editButton}>Edit</Text>
+                      </OpacityButton>
+                    </View>
+                  </View>
+                ) : (
+                  <View>
+                    <RenderSelect
+                      name="Modify Request"
+                      label="Status"
+                      value={status || propertyDetails?.request_status}
+                      options={statusOptions}
+                      onSelect={setStatus}
+                    />
+                    <ActionButtons
+                      style={styles.actionButton}
+                      cancelLabel="CANCEL"
+                      submitLabel="SAVE"
+                      onCancel={toggleEdit}
+                      onSubmit={handleStatusUpdate}
+                    />
+                  </View>
+                )}
+              </View>
+            </View>
+            <ModifyTicket modifyRequest={modifyRequest} />
+            {modifyRequest?.cs_modify_request_conversations?.length ? (
+              <Chat modifyRequest={modifyRequest} />
+            ) : null}
           </View>
-        </View>
-        <ModifyTicketNumber />
-        <Chat />
-        <Comment />
+        </ScrollView>
       </View>
-    </ScrollView>
+
+      <Comment />
+    </View>
   );
 };
 
@@ -262,10 +304,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
   },
   contentContainer: {
+    flexGrow: 1,
+    marginTop: 5,
+  },
+  cardContainer: {
     backgroundColor: '#FFF',
     ...getShadow(3),
     paddingHorizontal: 20,
     paddingBottom: 20,
+    marginHorizontal: 2,
     marginBottom: 20,
   },
   OpacityButton: {
@@ -324,20 +371,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  image: {
-    borderRadius: 10,
-    marginRight: 5,
-    width: 20,
-    height: 20,
-  },
   userImage: {
     display: 'flex',
     flexDirection: 'row',
     marginTop: 10,
   },
-  userProfile: {
-    borderRadius: 10,
-    marginRight: 5,
+  documentImage: {
+    borderRadius: 5,
   },
   sendIcon: {
     padding: 11,
@@ -345,6 +385,10 @@ const styles = StyleSheet.create({
   },
   statusValue: {
     textTransform: 'capitalize',
+  },
+  issueContainer: {
+    marginTop: 10,
+    fontWeight: 'bold',
   },
 });
 

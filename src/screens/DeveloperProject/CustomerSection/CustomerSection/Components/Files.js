@@ -4,7 +4,12 @@ import {ScrollView} from 'react-native-gesture-handler';
 import {FAB, Text} from 'react-native-paper';
 import {theme} from 'styles/theme';
 
-function Files() {
+function Files(props) {
+  const {navigation} = props;
+  const navToAdd = () => {
+    navigation.navigate();
+  };
+
   return (
     <ScrollView>
       <View>
@@ -12,6 +17,7 @@ function Files() {
         <FAB
           style={[styles.fab, {backgroundColor: theme.colors.primary}]}
           icon="plus"
+          onPress={navToAdd}
         />
       </View>
     </ScrollView>
