@@ -114,19 +114,11 @@ function ModifyRequest(props) {
             <View style={styles.contentContainer}>
               <View style={styles.titleStyle}>
                 <Text>{item.title}</Text>
-                {console.log(
-                  'STATUS_LIST[item.request_status]',
-                  STATUS_LIST[item.request_status],
-                )}
-                {console.log('item.request_status', item.request_status)}
-
-                {/* <Text style={{color: STATUS_LIST[item.request_status].color}}> */}
-                <Text style={{color: 'red'}}>
-                  {/* {STATUS_LIST[item.request_status].label} */}
-                  hello
-                </Text>
+                <Caption
+                  style={{color: STATUS_LIST[item.request_status].color}}>
+                  {STATUS_LIST[item.request_status].label}
+                </Caption>
               </View>
-              {console.log('pending request', modifyRequests[0])}
 
               <Caption style={{marginTop: 5}}>{item.description}</Caption>
               <View style={styles.button}>
@@ -208,8 +200,7 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop: 10,
-    alignItems: 'center',
-    marginRight: 110,
+    flexDirection: 'row',
   },
   titleStyle: {
     justifyContent: 'space-between',

@@ -159,7 +159,7 @@ function RenderForm({navigation, formikProps}) {
 
 function AddBankDetails(props) {
   const {route, navigation} = props;
-  const {unit} = route?.params || {};
+  const {unit, id} = route?.params || {};
   const {t} = useTranslation();
 
   const {bankDetails, loading} = useSelector(({customer}) => customer);
@@ -173,6 +173,29 @@ function AddBankDetails(props) {
     }
     return {};
   }, [bankDetails.details]);
+
+  const onSubmit = async values => {
+    const formData = new FormData();
+
+    formData.append('project_id', selectedProject.id);
+    formData.append('project_bankloan_id', id);
+    formData.append('unit_id', unit.unit_id);
+    formData.append('bank_name', values.bank_name);
+    formData.append('bank_branch', values.bank_branch);
+    formData.append('bank_address', values.bank_address);
+    formData.append('loan_amount', values.loan_amount);
+    formData.append('loan_approval_letter', values.loan_approval_letter);
+    formData.append('number_of_installment', values.number_of_installment);
+    formData.append('installment_amount', values.installment_amount);
+
+    updateBankDetails(formData).then(() => {
+      getBankDetails({
+        project_id: selectedProject.id,
+        unit_id: unit.unit_id,
+      });
+      navigation.goBack();
+    });
+  };
 
   return (
     <View style={styles.container}>
@@ -188,40 +211,13 @@ function AddBankDetails(props) {
             <Subheading>{t('title_finalized_bank_details')}</Subheading>
           </TouchableOpacity>
         </View>
-        {console.log('bank details')}
         <Formik
           validateOnBlur={false}
           validateOnChange={false}
           initialValues={initialValues}
           enableReinitialize
           validationSchema={schema}
-          onSubmit={async values => {
-            const formData = new FormData();
-
-            formData.append('project_id', selectedProject.id);
-            formData.append('unit_id', unit.unit_id);
-            formData.append('bank_name', values.bank_name);
-            formData.append('bank_branch', values.bank_branch);
-            formData.append('bank_address', values.bank_address);
-            formData.append('loan_amount', values.loan_amount);
-            formData.append(
-              'loan_approval_letter',
-              values.loan_approval_letter,
-            );
-            formData.append(
-              'number_of_installment',
-              values.number_of_installment,
-            );
-            formData.append('installment_amount', values.installment_amount);
-
-            updateBankDetails(formData).then(() => {
-              getBankDetails({
-                project_id: selectedProject.id,
-                unit_id: unit.unit_id,
-              });
-              navigation.goBack();
-            });
-          }}>
+          onSubmit={onSubmit}>
           {formikProps => <RenderForm formikProps={formikProps} {...props} />}
         </Formik>
       </KeyboardAwareScrollView>
