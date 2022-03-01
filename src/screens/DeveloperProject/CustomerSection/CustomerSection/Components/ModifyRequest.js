@@ -108,13 +108,22 @@ function ModifyRequest(props) {
         contentContainerStyle={styles.scrollView}
         showsVerticalScrollIndicator={false}>
         <Subheading style={{marginBottom: 10}}>All Modify Requests</Subheading>
+        {console.log('modifyRequests', modifyRequests)}
         {modifyRequests.map(item => {
           return (
             <View style={styles.contentContainer}>
               <View style={styles.titleStyle}>
                 <Text>{item.title}</Text>
-                <Text style={{color: STATUS_LIST[item.request_status].color}}>
-                  {STATUS_LIST[item.request_status].label}
+                {console.log(
+                  'STATUS_LIST[item.request_status]',
+                  STATUS_LIST[item.request_status],
+                )}
+                {console.log('item.request_status', item.request_status)}
+
+                {/* <Text style={{color: STATUS_LIST[item.request_status].color}}> */}
+                <Text style={{color: 'red'}}>
+                  {/* {STATUS_LIST[item.request_status].label} */}
+                  hello
                 </Text>
               </View>
               {console.log('pending request', modifyRequests[0])}

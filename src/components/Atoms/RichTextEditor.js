@@ -25,7 +25,7 @@ function InsertLinkDialog(props) {
       initialValues={{}}
       validationSchema={schema}
       onSubmit={onSubmit}>
-      {({values, errors, handleChange, handleBlur, handleSubmit}) => (
+      {({values, errors, handleChange, handleBlur}) => (
         <CustomDialog {...props} title="Insert Link" submitForm={handleSubmit}>
           <KeyboardAwareScrollView>
             <View style={styles.dialogContent}>

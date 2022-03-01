@@ -107,44 +107,9 @@ const schema = Yup.object().shape({
 });
 
 export function RenderInstallments(props) {
-  const {
-    theme,
-    installment_count,
-    installment_start_date,
-    installment_interval_days,
-    finalAmount,
-    big_installment_amount,
-  } = props;
+  const {theme, installments} = props;
 
-  const installments = useMemo(() => {
-    if (
-      installment_count &&
-      installment_start_date &&
-      installment_interval_days
-    ) {
-      return new Array(Number(installment_count))
-        .fill(0)
-        .map((item, index) => ({
-          date: dayjs(installment_start_date).add(
-            installment_interval_days * index,
-            'days',
-          ),
-          amount: round(
-            (finalAmount - (big_installment_amount || 0)) / installment_count,
-          ),
-        }));
-    }
-
-    return [];
-  }, [
-    installment_count,
-    installment_start_date,
-    installment_interval_days,
-    finalAmount,
-    big_installment_amount,
-  ]);
-
-  if (installments.length) {
+  if (installments?.length) {
     return (
       <>
         <Caption
@@ -190,20 +155,60 @@ export function RenderInstallments(props) {
 function RenderOneBigInstallmentPaymentForm(props) {
   const {formikProps, t, theme} = props;
   const {values, setFieldValue, handleChange, errors} = formikProps;
+  const {
+    installment_count,
+    installment_start_date,
+    installment_interval_days,
+    finalAmount,
+    big_installment_amount,
+    first_big_amount,
+    first_big_amount_percent,
+    first_big_amount_start_date,
+    first_big_amount_end_date,
+  } = values;
 
   const snackbar = useSnackbar();
+
+  useEffect(() => {
+    if (
+      installment_count &&
+      installment_start_date &&
+      installment_interval_days
+    ) {
+      const installments = new Array(Number(installment_count))
+        .fill(0)
+        .map((item, index) => ({
+          date: dayjs(installment_start_date).add(
+            installment_interval_days * index,
+            'days',
+          ),
+          amount: round(
+            (finalAmount - (big_installment_amount || 0)) / installment_count,
+          ),
+        }));
+
+      setFieldValue('installments', installments);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    installment_count,
+    installment_start_date,
+    installment_interval_days,
+    finalAmount,
+    big_installment_amount,
+  ]);
 
   const calculateAmount = percent => {
     percent = parseFloat(percent);
     percent = round(percent > 100 ? 100 : percent);
-    const amount = round(values.finalAmount * (percent / 100));
+    const amount = round(finalAmount * (percent / 100));
 
     setFieldValue('first_big_amount_percent', percent);
     setFieldValue('first_big_amount', amount);
   };
 
   const handlePercentChange = percent => {
-    if (!values.finalAmount) {
+    if (!finalAmount) {
       snackbar.showMessage({
         message: 'Please provide final amount',
         variant: 'warning',
@@ -217,16 +222,16 @@ function RenderOneBigInstallmentPaymentForm(props) {
 
   const calcPercentage = amount => {
     amount = parseFloat(amount);
-    amount = round(amount > values.finalAmount ? values.finalAmount : amount);
+    amount = round(amount > finalAmount ? finalAmount : amount);
 
-    const percent = round((amount / values.finalAmount) * 100);
+    const percent = round((amount / finalAmount) * 100);
 
     setFieldValue('first_big_amount_percent', percent);
     setFieldValue('first_big_amount', amount);
   };
 
   const handleAmountChange = amount => {
-    if (!values.finalAmount) {
+    if (!finalAmount) {
       snackbar.showMessage({
         message: 'Please provide final amount',
         variant: 'warning',
@@ -252,7 +257,7 @@ function RenderOneBigInstallmentPaymentForm(props) {
                 name="first_big_amount_percent"
                 label="%"
                 keyboardType="decimal-pad"
-                value={values.first_big_amount_percent}
+                value={first_big_amount_percent}
                 onChangeText={handlePercentChange}
                 error={errors.first_big_amount_percent}
                 left={
@@ -261,8 +266,8 @@ function RenderOneBigInstallmentPaymentForm(props) {
                     color={theme.colors.error}
                     onPress={() => {
                       handlePercentChange(
-                        values.first_big_amount_percent > 0
-                          ? values.first_big_amount_percent - 1
+                        first_big_amount_percent > 0
+                          ? first_big_amount_percent - 1
                           : 0,
                       );
                     }}
@@ -273,9 +278,7 @@ function RenderOneBigInstallmentPaymentForm(props) {
                     name="plus"
                     color={theme.colors.primary}
                     onPress={() => {
-                      handlePercentChange(
-                        (values.first_big_amount_percent || 0) + 1,
-                      );
+                      handlePercentChange((first_big_amount_percent || 0) + 1);
                     }}
                   />
                 }
@@ -286,7 +289,7 @@ function RenderOneBigInstallmentPaymentForm(props) {
                 name="first_big_amount"
                 label={t('label_amount')}
                 keyboardType="number-pad"
-                value={values.first_big_amount}
+                value={first_big_amount}
                 left={<TextInput.Affix text="₹" />}
                 error={errors.first_big_amount}
                 onChangeText={handleAmountChange}
@@ -298,7 +301,7 @@ function RenderOneBigInstallmentPaymentForm(props) {
               <RenderDatePicker
                 name="first_big_amount_start_date"
                 label={t('label_start_date')}
-                value={values.first_big_amount_start_date}
+                value={first_big_amount_start_date}
                 error={errors.first_big_amount_start_date}
                 onChange={value => {
                   setFieldValue(
@@ -312,7 +315,7 @@ function RenderOneBigInstallmentPaymentForm(props) {
               <RenderDatePicker
                 name="first_big_amount_end_date"
                 label={t('label_end_date')}
-                value={values.first_big_amount_end_date}
+                value={first_big_amount_end_date}
                 error={errors.first_big_amount_end_date}
                 onChange={value => {
                   setFieldValue(
@@ -333,7 +336,7 @@ function RenderOneBigInstallmentPaymentForm(props) {
         name="installment_count"
         label={t('label_no_of_installments')}
         keyboardType="number-pad"
-        value={values.installment_count}
+        value={installment_count}
         error={errors.installment_count}
         onChangeText={handleChange('installment_count')}
       />
@@ -342,7 +345,7 @@ function RenderOneBigInstallmentPaymentForm(props) {
           <RenderDatePicker
             name="installment_start_date"
             label={t('label_start_date')}
-            value={values.installment_start_date}
+            value={installment_start_date}
             error={errors.installment_start_date}
             onChange={value => {
               setFieldValue(
@@ -357,7 +360,7 @@ function RenderOneBigInstallmentPaymentForm(props) {
             name="installment_interval_days"
             label={t('label_interval_days')}
             keyboardType="number-pad"
-            value={values.installment_interval_days}
+            value={installment_interval_days}
             error={errors.installment_interval_days}
             onChangeText={handleChange('installment_interval_days')}
           />
@@ -918,6 +921,7 @@ function FormContent(props) {
               formikProps.setErrors({});
             }}
           />
+          {console.log('values.payment_type', values.payment_type)}
           <RenderPaymentForm {...props} {...{formikProps, t}} />
         </View>
         <ActionButtons
@@ -995,12 +999,23 @@ function BookingPayments(props) {
   const onSubmit = async values => {
     const data = {...values};
 
+    console.log('values.payment type in submitted form', values.payment_type);
+
     if (values.payment_type !== 2) {
       delete data.custom_payments;
     }
 
     if (values.payment_type === 1) {
       data.full_basic_amount = data.finalAmount;
+    }
+
+    if (values.installments?.length) {
+      data.installments = Array.from(
+        {length: values.installments?.length},
+        (__, i) => `${i + 1}`,
+      );
+      data.installment_date = values.installments.map(i => i.date);
+      data.installment_amount = values.installments.map(i => i.amount);
     }
 
     if (data.isDocumentCharge) {
@@ -1053,7 +1068,8 @@ function BookingPayments(props) {
     delete data.termsDescription;
     delete data.termsAndConditions;
 
-    createBooking(data).then(() => navigation.popToTop());
+    await createBooking(data);
+    navigation.popToTop();
   };
 
   return (

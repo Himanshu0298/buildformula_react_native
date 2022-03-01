@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import {View, StatusBar, StyleSheet} from 'react-native';
-import {withTheme, Button} from 'react-native-paper';
+import {withTheme} from 'react-native-paper';
 import FormTitle from 'components/Atoms/FormTitle';
 import {Formik} from 'formik';
 import {useTranslation} from 'react-i18next';
@@ -8,7 +8,6 @@ import {theme} from 'styles/theme';
 import RenderInput from 'components/Atoms/RenderInput';
 import FileInput from 'components/Atoms/FileInput';
 import * as Yup from 'yup';
-import {PAN_REGEX, GST_REGEX} from 'utils/constant';
 import useAddProjectActions from 'redux/actions/addProjectActions';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import ActionButtons from 'components/Atoms/ActionButtons';
@@ -64,7 +63,6 @@ function StepOne(props) {
             values,
             handleSubmit,
             handleBlur,
-            isValid,
             errors,
           }) => (
             <View style={styles.container}>

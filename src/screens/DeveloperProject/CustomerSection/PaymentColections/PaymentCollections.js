@@ -121,6 +121,8 @@ function PaymentCollections(props) {
         return propertyfinalamount || [];
       case 'gst':
         return gst || [];
+      default:
+        return [];
     }
   }, [paymentCollection, type]);
 

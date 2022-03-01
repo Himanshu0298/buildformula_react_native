@@ -297,11 +297,9 @@ function AddCustomer(props) {
               values.customer_aadhar_file,
             );
 
-            console.log('unit_id', unit);
             if (edit) {
               formData.append('user_id', customer.user_id);
             }
-            console.log('form data in on submit', formData);
 
             await addCustomer(formData);
 
