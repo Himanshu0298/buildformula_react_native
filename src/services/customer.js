@@ -53,9 +53,23 @@ export default function useCustomerServices() {
     addModifyRequest: data => {
       return instance.post('/modify/request/add', data, config());
     },
+    getModifyRequest: data => {
+      return instance.post(
+        'details_modify_request',
+        data,
+        config({multipart: false}),
+      );
+    },
     updateBookingStatus: data => {
       return instance.post(
-        '/customers/bookingstatus',
+        'customers/bookingstatus',
+        data,
+        config({multipart: false}),
+      );
+    },
+    updateModifiedRequestStatus: data => {
+      return instance.post(
+        'modify_request_status_change',
         data,
         config({multipart: false}),
       );

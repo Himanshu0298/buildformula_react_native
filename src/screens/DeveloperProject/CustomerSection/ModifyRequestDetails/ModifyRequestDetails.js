@@ -1,8 +1,14 @@
 import * as React from 'react';
 import {StyleSheet, View, Image} from 'react-native';
-import {Caption, Divider, Subheading, Text} from 'react-native-paper';
+import {
+  Caption,
+  Divider,
+  Subheading,
+  Text,
+  TextInput,
+} from 'react-native-paper';
 
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 
 import ActionButtons from 'components/Atoms/ActionButtons';
 import RenderSelect from 'components/Atoms/RenderSelect';
@@ -11,22 +17,26 @@ import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icons from 'react-native-vector-icons/FontAwesome';
 import {theme} from 'styles/theme';
-import {ScrollView} from 'react-native-gesture-handler';
+import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
 import {getShadow} from 'utils';
-import profile from '../../../../assets/images/profile.png';
-import app_logo from '../../../../assets/images/app_logo.png';
+import RenderInput from 'components/Atoms/RenderInput';
+import useCustomerActions from 'redux/actions/customerActions';
+import {useSelector} from 'react-redux';
+import {MODIFY_REQUEST_STATUS} from 'utils/constant';
+import dayjs from 'dayjs';
+import RenderHtml from 'react-native-render-html';
+import Layout from 'utils/Layout';
 
-const statusOptions = [
-  'REVIEWED',
-  'CANCELED BY CUSTOMER',
-  'CONFIRMED BY CUSTOMER',
-  'REJECTED',
-  'APPROVED',
-];
+const relativeTime = require('dayjs/plugin/relativeTime');
 
-const ModifyTicketNumber = () => {
+dayjs.extend(relativeTime);
+
+const ModifyTicket = props => {
+  const {modifyRequest} = props;
+  const {id, title, description} = modifyRequest?.propertyDetails || {};
+
   return (
-    <View style={styles.contentContainer}>
+    <View style={styles.cardContainer}>
       <View style={styles.messageContainer}>
         <View>
           <OpacityButton opacity={0.1} borderRadius={30}>
@@ -40,18 +50,26 @@ const ModifyTicketNumber = () => {
         </View>
 
         <View style={styles.ticketNumber}>
-          <Text style={styles.userName}>325415698</Text>
-          <Text>Creating project issue</Text>
-          <Text style={styles.text}>
-            Hello sir I want to know how to create project in the system
-          </Text>
-          {/* <img src={profile} alt="logo" /> */}
+          <Text style={styles.userName}>{id}</Text>
+          <Caption>Modify Request</Caption>
+
+          <Text style={styles.issueContainer}>{title}</Text>
+
+          <Text style={styles.text}>{description}</Text>
           <View style={styles.userImage}>
-            {Array(4)
-              .fill(0)
-              .map(item => {
-                return <Image source={profile} style={styles.userProfile} />;
-              })}
+            {modifyRequest?.cs_modify_request_documents?.map(item => {
+              return (
+                <Image
+                  style={styles.documentImage}
+                  height={40}
+                  width={40}
+                  source={{
+                    uri: 'https://reactnative.dev/img/tiny_logo.png',
+                    // uri: item.file_url,
+                  }}
+                />
+              );
+            })}
           </View>
         </View>
       </View>
@@ -59,141 +77,224 @@ const ModifyTicketNumber = () => {
   );
 };
 
-const Chat = () => {
+const Chat = props => {
+  const {modifyRequest} = props;
+
   return (
     <View>
       <Subheading style={styles.heading}>Conversation</Subheading>
-      <View style={styles.contentContainer}>
-        <View style={styles.messageContainer}>
-          <View>
-            <OpacityButton opacity={0.1} borderRadius={30}>
-              <MaterialCommunityIcons
-                styles={styles.ticket}
-                name="account-circle"
-                size={27}
-                color={theme.colors.primary}
-              />
-            </OpacityButton>
-          </View>
-          <View style={styles.messageBodyContainer}>
-            <Text style={styles.userName}>Param Mehta</Text>
-            <Text>Yesterday 7:30PM </Text>
-            <Text style={styles.text}>
-              Hello sir I want to know how to create project in the system
-            </Text>
-          </View>
-        </View>
-        <Divider />
-        <View style={styles.messageContainer}>
-          <View>
-            <OpacityButton opacity={0.1} borderRadius={30}>
-              <Image source={app_logo} style={styles.image} />
-            </OpacityButton>
-          </View>
-          <View style={styles.messageBodyContainer}>
-            <Text style={styles.userName}>Param Mehta</Text>
-            <Text>Yesterday 8:00PM </Text>
-            <Text style={styles.text}>
-              Hi Param, Sorry to hear about your issue Can you please log out
-              and login again that will fix your issue
-            </Text>
-          </View>
-        </View>
+      <View style={styles.cardContainer}>
+        {modifyRequest?.cs_modify_request_conversations?.map(conversation => {
+          const {created, description, user_info} = conversation;
+          const {user_full_name, profile_url} = user_info;
+          const isHtml =
+            description?.includes('<') && description?.includes('>');
+
+          return (
+            <View style={styles.messageContainer}>
+              <View>
+                <OpacityButton opacity={0.1} borderRadius={30}>
+                  {/* <MaterialCommunityIcons
+                    styles={styles.ticket}
+                    name="account-circle"
+                    size={27}
+                    color={theme.colors.primary}
+                  /> */}
+                  <Image
+                    style={styles.documentImage}
+                    height={30}
+                    width={30}
+                    source={{
+                      uri: profile_url,
+                      // uri: item.file_url,
+                    }}
+                  />
+                </OpacityButton>
+              </View>
+              <View style={styles.messageBodyContainer}>
+                <Text style={styles.userName}>{user_full_name}</Text>
+                <Text>{dayjs(created).fromNow()}</Text>
+                {!isHtml ? (
+                  <Text style={styles.text}>{description}</Text>
+                ) : (
+                  <RenderHtml
+                    source={{html: description}}
+                    contentWidth={Layout.window.width}
+                  />
+                )}
+              </View>
+            </View>
+          );
+        })}
       </View>
     </View>
   );
 };
 
 const Comment = () => {
+  const [text, setText] = React.useState('');
   return (
     <View style={styles.bottomContainer}>
-      <View>
-        <OpacityButton
-          opacity={0.1}
-          color={theme.colors.primary}
-          style={styles.commentButton}>
-          <Text>Add New Comment</Text>
-        </OpacityButton>
+      <View style={styles.inputContainer}>
+        <RenderInput
+          placeholder="Add New Comment"
+          value={text}
+          onChangeText={t => setText(t)}
+          right={
+            <TextInput.Icon name="attachment" color={theme.colors.primary} />
+          }
+        />
       </View>
       <View>
-        <OpacityButton opacity={0.1} borderRadius={30}>
-          <MaterialCommunityIcons
-            name="send"
-            size={20}
-            color={theme.colors.primary}
-            style={{padding: 10}}
-          />
-        </OpacityButton>
+        <TouchableOpacity>
+          <OpacityButton
+            opacity={0.1}
+            borderRadius={30}
+            style={styles.sendIcon}>
+            <MaterialCommunityIcons
+              name="send"
+              size={18}
+              color={theme.colors.primary}
+            />
+          </OpacityButton>
+        </TouchableOpacity>
       </View>
     </View>
   );
 };
 
-const ModifyRequestDetails = () => {
+const ModifyRequestDetails = props => {
+  const {route} = props;
+  const {id, unit, project_id} = route?.params || {};
+
+  const {
+    getModifyRequests,
+    getModifyRequestDetails,
+    updateModifiedRequestStatus,
+  } = useCustomerActions();
+
+  const {modifyRequest} = useSelector(s => s.customer);
+  console.log('modify request', modifyRequest);
+  const {propertyDetails} = modifyRequest || {};
+
   const [edit, setEdit] = useState(false);
   const [status, setStatus] = useState();
 
-  const onPressEdit = () => {
-    setEdit(true);
+  useEffect(() => {
+    if (id) {
+      loadRequestData();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
+
+  const statusOptions = React.useMemo(() => {
+    return Object.keys(MODIFY_REQUEST_STATUS).map(key => ({
+      label: MODIFY_REQUEST_STATUS[key].label,
+      value: key,
+    }));
+  }, []);
+
+  const loadRequestData = () =>
+    getModifyRequestDetails({
+      project_id,
+      project_modify_request_id: id,
+      unit_id: unit.unit_id,
+    });
+
+  const toggleEdit = () => setEdit(v => !v);
+
+  const handleStatusUpdate = async () => {
+    toggleEdit();
+    setStatus();
+    await updateModifiedRequestStatus({
+      project_id,
+      project_modify_request_id: id,
+      unit_id: unit.unit_id,
+      request_status: status,
+    });
+    loadRequestData();
+    getModifyRequests({project_id, unit_id: unit.unit_id});
   };
 
-  return (
-    <ScrollView>
-      <View style={styles.container}>
-        <Subheading style={styles.heading}>Modify Requests</Subheading>
-        <View style={styles.contentContainer}>
-          <View style={styles.row}>
-            <View style={styles.userData}>
-              <Text>Property Details</Text>
-              <Caption>3</Caption>
-            </View>
-            <View style={styles.userData}>
-              <Text>Created On </Text>
-              <Caption>10/12/2021</Caption>
-            </View>
-          </View>
-          <Text style={styles.userData}>Status</Text>
+  const requestStatus =
+    MODIFY_REQUEST_STATUS[propertyDetails?.request_status]?.label;
 
-          <View>
-            {!edit ? (
-              <View>
-                <Caption>Approved</Caption>
-                <View style={styles.OpacityButton}>
-                  <OpacityButton opacity={0.2} onPress={onPressEdit}>
-                    <MaterialCommunityIcons
-                      name="pencil"
-                      size={14}
-                      color={theme.colors.primary}
-                    />
-                    <Text style={styles.editButton}>Edit</Text>
-                  </OpacityButton>
+  return (
+    <View style={styles.container}>
+      <Subheading style={styles.heading}>Modify Requests</Subheading>
+      <View style={{flex: 1}}>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={styles.contentContainer}>
+            <View style={styles.cardContainer}>
+              <View style={styles.row}>
+                <View style={styles.userData}>
+                  <Text>Property Type</Text>
+                  <Caption>Apartment</Caption>
+                </View>
+                <View style={styles.userData}>
+                  <Text> Unit</Text>
+                  <Caption>A-502</Caption>
                 </View>
               </View>
-            ) : (
-              <View>
-                <RenderSelect
-                  name="Modify Request"
-                  label="Status"
-                  value={status}
-                  options={statusOptions}
-                  onSelect={setStatus}
-                />
-                <ActionButtons
-                  style={styles.actionButton}
-                  cancelLabel="CANCEL"
-                  submitLabel="SAVE"
-                  onCancel={() => setEdit(false)}
-                  onSubmit={() => setEdit(false)}
-                />
+              <View style={styles.row}>
+                <View style={styles.userData}>
+                  <Text>Customer Name</Text>
+                  <Caption>ABCDEFGHI</Caption>
+                </View>
+                <View style={styles.userData}>
+                  <Text> Customer Mobile</Text>
+                  <Caption>7327621621</Caption>
+                </View>
               </View>
-            )}
+
+              <View>
+                {!edit ? (
+                  <View>
+                    <Text style={styles.userData}>Status</Text>
+                    <Caption style={styles.statusValue}>
+                      {requestStatus}
+                    </Caption>
+                    <View style={styles.OpacityButton}>
+                      <OpacityButton opacity={0.2} onPress={toggleEdit}>
+                        <MaterialCommunityIcons
+                          name="pencil"
+                          size={14}
+                          color={theme.colors.primary}
+                        />
+                        <Text style={styles.editButton}>Edit</Text>
+                      </OpacityButton>
+                    </View>
+                  </View>
+                ) : (
+                  <View>
+                    <RenderSelect
+                      name="Modify Request"
+                      label="Status"
+                      value={status || propertyDetails?.request_status}
+                      options={statusOptions}
+                      onSelect={setStatus}
+                    />
+                    <ActionButtons
+                      style={styles.actionButton}
+                      cancelLabel="CANCEL"
+                      submitLabel="SAVE"
+                      onCancel={toggleEdit}
+                      onSubmit={handleStatusUpdate}
+                    />
+                  </View>
+                )}
+              </View>
+            </View>
+            <ModifyTicket modifyRequest={modifyRequest} />
+            {modifyRequest?.cs_modify_request_conversations?.length ? (
+              <Chat modifyRequest={modifyRequest} />
+            ) : null}
           </View>
-        </View>
-        <ModifyTicketNumber />
-        <Chat />
-        <Comment />
+        </ScrollView>
       </View>
-    </ScrollView>
+
+      <Comment />
+    </View>
   );
 };
 
@@ -203,10 +304,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
   },
   contentContainer: {
+    flexGrow: 1,
+    marginTop: 5,
+  },
+  cardContainer: {
     backgroundColor: '#FFF',
     ...getShadow(3),
     paddingHorizontal: 20,
     paddingBottom: 20,
+    marginHorizontal: 2,
     marginBottom: 20,
   },
   OpacityButton: {
@@ -221,17 +327,15 @@ const styles = StyleSheet.create({
   ticketNumber: {
     marginLeft: 10,
   },
-  commentButton: {
-    borderRadius: 50,
-    width: 250,
-    height: 50,
+  inputContainer: {
+    flexGrow: 1,
+    marginRight: 10,
   },
   bottomContainer: {
-    display: 'flex',
     flexDirection: 'row',
-    flexWrap: 'wrap',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: 10,
   },
   row: {
     flexDirection: 'row',
@@ -267,20 +371,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  image: {
-    borderRadius: 10,
-    marginRight: 5,
-    width: 20,
-    height: 20,
-  },
   userImage: {
     display: 'flex',
     flexDirection: 'row',
     marginTop: 10,
   },
-  userProfile: {
-    borderRadius: 10,
-    marginRight: 5,
+  documentImage: {
+    borderRadius: 5,
+  },
+  sendIcon: {
+    padding: 11,
+    marginTop: 4,
+  },
+  statusValue: {
+    textTransform: 'capitalize',
+  },
+  issueContainer: {
+    marginTop: 10,
+    fontWeight: 'bold',
   },
 });
 

@@ -56,7 +56,10 @@ const RenderSelect = React.forwardRef((props, ref) => {
       buttonIndex => {
         if (buttonIndex < parsedOptions.length) {
           let selectedValue = parsedOptions[buttonIndex];
-          if (withValue && _.isFinite(options?.[buttonIndex]?.value)) {
+          if (
+            (withValue && options?.[buttonIndex]?.value) ||
+            !isNaN(options?.[buttonIndex]?.value)
+          ) {
             selectedValue = options[buttonIndex].value;
           }
           onSelect(selectedValue);
