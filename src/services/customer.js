@@ -50,8 +50,26 @@ export default function useCustomerServices() {
         config({multipart: false}),
       );
     },
+    getFile: data => {
+      return instance.post(
+        '/customers/list_files',
+        data,
+        config({multipart: false}),
+      );
+    },
+    getFolder: data => {
+      return instance.post(
+        '/cs_list_folders',
+        data,
+        config({multipart: false}),
+      );
+    },
+
     addModifyRequest: data => {
       return instance.post('/modify/request/add', data, config());
+    },
+    addComment: data => {
+      return instance.post('/modify_request_conversation_add', data, config());
     },
     getModifyRequest: data => {
       return instance.post(

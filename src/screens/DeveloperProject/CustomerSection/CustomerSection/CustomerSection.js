@@ -9,7 +9,14 @@ import {useSelector} from 'react-redux';
 import useCustomerActions from 'redux/actions/customerActions';
 import {getShadow} from 'utils';
 import Layout from 'utils/Layout';
-import {Account, BankLoans, BookingDetails, Details, Files, ModifyRequest} from './Components';
+import {
+  Account,
+  BankLoans,
+  BookingDetails,
+  Details,
+  Files,
+  ModifyRequest,
+} from './Components';
 import DetailsHeader from './Components/DetailsHeader';
 
 const TABS = [
@@ -69,6 +76,8 @@ function CustomerSection(props) {
     getBankDetails,
     getModifyRequests,
     getAccountDetails,
+    getFolder,
+    getFile,
   } = useCustomerActions();
 
   const {user} = useSelector(s => s.user);
@@ -92,6 +101,8 @@ function CustomerSection(props) {
     getBankDetails({project_id, unit_id: unit.unit_id});
     getModifyRequests({project_id, unit_id: unit.unit_id});
     getAccountDetails({project_id, unit_id: unit.unit_id});
+    getFolder({project_id, unitid: unit.unit_id});
+    getFile({project_id, unitid: unit.unit_id, folder_id: 0});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

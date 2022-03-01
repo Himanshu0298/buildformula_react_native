@@ -5,6 +5,8 @@ import {
   GET_CUSTOMER_DATA,
   GET_BOOKING_DATA,
   GET_BANK_DETAILS,
+  GET_FILE,
+  GET_FOLDER,
   UPDATE_BANK_DETAILS,
   UPDATE_BANK_FILES,
   GET_MODIFY_REQUESTS,
@@ -17,6 +19,7 @@ import {
   DELETE_COLLECTION,
   GET_MODIFY_REQUEST,
   UPDATE_MODIFY_REQUEST,
+  ADD_MODIFY_REQUEST_COMMENT,
 } from '../actions/actionTypes';
 
 const persistConfig = {
@@ -37,6 +40,8 @@ const initialState = {
   modifyRequests: [],
   modifyRequest: {},
   accountDetails: {},
+  file: {},
+  folder: {},
 };
 
 const reducer = (state = initialState, action = {}) => {
@@ -164,6 +169,42 @@ const reducer = (state = initialState, action = {}) => {
         loading: false,
         errorMessage: action.payload,
       };
+    case `${GET_FILE}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${GET_FILE}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+        accountDetails: payload,
+      };
+    }
+    case `${GET_FILE}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+        errorMessage: action.payload,
+      };
+    case `${GET_FOLDER}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${GET_FOLDER}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+        accountDetails: payload,
+      };
+    }
+    case `${GET_FOLDER}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+        errorMessage: action.payload,
+      };
 
     case `${UPDATE_BANK_DETAILS}_PENDING`:
       return {
@@ -190,6 +231,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${ADD_CUSTOMER}_PENDING`:
     case `${UPDATE_BANK_FILES}_PENDING`:
     case `${ADD_MODIFY_REQUEST}_PENDING`:
+    case `${ADD_MODIFY_REQUEST_COMMENT}_PENDING`:
     case `${UPDATE_BOOKING_STATUS}_PENDING`:
     case `${ADD_COLLECTION}_PENDING`:
     case `${UPDATE_COLLECTION}_PENDING`:
@@ -202,6 +244,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${ADD_CUSTOMER}_FULFILLED`:
     case `${UPDATE_BANK_FILES}_FULFILLED`:
     case `${ADD_MODIFY_REQUEST}_FULFILLED`:
+    case `${ADD_MODIFY_REQUEST_COMMENT}_FULFILLED`:
     case `${UPDATE_BOOKING_STATUS}_FULFILLED`:
     case `${ADD_COLLECTION}_FULFILLED`:
     case `${UPDATE_COLLECTION}_FULFILLED`:
@@ -215,6 +258,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${ADD_CUSTOMER}_REJECTED`:
     case `${UPDATE_BANK_FILES}_REJECTED`:
     case `${ADD_MODIFY_REQUEST}_REJECTED`:
+    case `${ADD_MODIFY_REQUEST_COMMENT}_REJECTED`:
     case `${UPDATE_BOOKING_STATUS}_REJECTED`:
     case `${ADD_COLLECTION}_REJECTED`:
     case `${UPDATE_COLLECTION}_REJECTED`:

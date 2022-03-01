@@ -16,8 +16,11 @@ export default function useCustomerActions() {
     updateBankDetails,
     updateBankFiles,
     updateModifiedRequestStatus,
+    addComment,
     removeBankFile,
     getModifyRequests,
+    getFolder,
+    getFile,
     addModifyRequest,
     getModifyRequest,
     getAccountDetails,
@@ -192,6 +195,21 @@ export default function useCustomerActions() {
           }
         },
       }),
+    addComment: params =>
+      dispatch({
+        type: types.ADD_MODIFY_REQUEST_COMMENT,
+        payload: async () => {
+          try {
+            const {data} = _res(await addComment(params));
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
     getModifyRequestDetails: params =>
       dispatch({
         type: types.GET_MODIFY_REQUEST,
@@ -214,6 +232,36 @@ export default function useCustomerActions() {
         payload: async () => {
           try {
             const {data} = _res(await getAccountDetails(params));
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    getFolder: params =>
+      dispatch({
+        type: types.GET_FOLDER,
+        payload: async () => {
+          try {
+            const {data} = _res(await getFolder(params));
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    getFile: params =>
+      dispatch({
+        type: types.GET_FILE,
+        payload: async () => {
+          try {
+            const {data} = _res(await getFile(params));
 
             return Promise.resolve(data);
           } catch (error) {
