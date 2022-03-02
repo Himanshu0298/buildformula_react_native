@@ -1,12 +1,11 @@
 import {Platform} from 'react-native';
-import RNFetchBlob from 'rn-fetch-blob';
+import RNFetchBlob from 'react-native-blob-util';
 import RNFS from 'react-native-fs';
 import {store} from 'redux/store';
 import * as mime from 'react-native-mime-types';
 import {BASE_API_URL} from './constant';
 
 const {DocumentDir, DownloadDir} = RNFetchBlob.fs.dirs;
-
 const DIR = Platform.OS === 'ios' ? DocumentDir : DownloadDir;
 
 const normalizeFilePath = path =>
@@ -57,6 +56,12 @@ export async function downloadFile(file, fileUrl, getBase64) {
 
   const Authorization = `Bearer ${token}`;
 
+  const downloaded = await checkDownloaded(file);
+
+  if (downloaded) {
+    await RNFS.unlink(path);
+  }
+
   const options = {
     fileCache: true,
     path,
@@ -69,17 +74,10 @@ export async function downloadFile(file, fileUrl, getBase64) {
     },
   };
 
-  const downloaded = await checkDownloaded(file);
-
-  if (downloaded) {
-    await RNFS.unlink(path);
-  }
-
   return RNFetchBlob.config(options)
     .fetch('GET', fileUrl, {Authorization})
     .then(async res => {
       // Alert after successful downloading
-      console.log('res -> ', JSON.stringify(res));
 
       const downloadDir = normalizeFilePath(res.data);
       let base64;

@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useRef, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import RenderInput from 'components/Atoms/RenderInput';
 import {Formik} from 'formik';
 import {useTranslation} from 'react-i18next';
@@ -716,8 +716,8 @@ function RenderPaymentForm(props) {
               label={t('label_start_date')}
               value={values.start_date}
               error={errors.start_date}
-              onChange={date => {
-                setFieldValue('start_date', dayjs(date).format('YYYY-MM-DD'));
+              onChange={v => {
+                setFieldValue('start_date', dayjs(v).format('YYYY-MM-DD'));
               }}
             />
           </View>
@@ -727,8 +727,8 @@ function RenderPaymentForm(props) {
               label={t('label_end_date')}
               value={values.end_date}
               error={errors.end_date}
-              onChange={date => {
-                setFieldValue('end_date', dayjs(date).format('YYYY-MM-DD'));
+              onChange={v => {
+                setFieldValue('end_date', dayjs(v).format('YYYY-MM-DD'));
               }}
             />
           </View>
@@ -1010,12 +1010,10 @@ function BookingPayments(props) {
     }
 
     if (values.installments?.length) {
-      data.installments = Array.from(
-        {length: values.installments?.length},
-        (__, i) => `${i + 1}`,
-      );
-      data.installment_date = values.installments.map(i => i.date);
-      data.installment_amount = values.installments.map(i => i.amount);
+      data.installment = values.installments.map(i => ({
+        installment_date: i.date.format('DD-MM-YYYY'),
+        installment_amount: i.amount,
+      }));
     }
 
     if (data.isDocumentCharge) {

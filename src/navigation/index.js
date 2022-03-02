@@ -7,6 +7,7 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 import TouchID from 'react-native-touch-id';
 import {useSelector} from 'react-redux';
 import {getInitialScreen} from 'utils';
+import RNBootSplash from 'react-native-bootsplash';
 
 // Auth Screens
 import ForgotPassword from 'screens/Auth/ForgotPassword';
@@ -454,6 +455,9 @@ function NavContainer() {
     <NavigationContainer
       theme={theme}
       ref={navigationRef}
+      onReady={() => {
+        RNBootSplash.hide({fade: true});
+      }}
       onStateChange={navState => {
         const prevData = routeNameRef.current;
         const currentData = getActiveRouteName(navState);

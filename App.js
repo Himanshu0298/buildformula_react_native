@@ -7,12 +7,12 @@ import {
   SafeAreaProvider,
   initialWindowSafeAreaInsets,
 } from 'react-native-safe-area-context';
-import RNBootSplash from 'react-native-bootsplash';
 import i18n from 'i18next';
 import Spinner from 'react-native-loading-spinner-overlay';
 import * as RNLocalize from 'react-native-localize';
 import {ActionSheetProvider} from '@expo/react-native-action-sheet';
 import {initReactI18next} from 'react-i18next';
+import {checkPermission} from 'utils/permissions';
 import {theme} from './src/styles/theme';
 import {store, persistor} from './src/redux/store';
 import NavContainer from './src/navigation';
@@ -51,8 +51,15 @@ function Loader() {
 
 function App() {
   useEffect(() => {
-    RNBootSplash.hide({fade: true});
+    checkPermissions();
   }, []);
+
+  const checkPermissions = async () => {
+    const fileReadPermission = await checkPermission('fileRead');
+    const fileWritePermission = await checkPermission('fileWrite');
+    console.log('-------->fileReadPermission', fileReadPermission);
+    console.log('-------->fileWritePermission', fileWritePermission);
+  };
 
   // TODO: figure out action sheet (ActionSheetProvider) is only required for file Input or the whole app
 
