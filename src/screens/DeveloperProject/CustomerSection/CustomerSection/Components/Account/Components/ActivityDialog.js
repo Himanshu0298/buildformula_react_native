@@ -15,6 +15,7 @@ import {ActionSheetProvider} from '@expo/react-native-action-sheet';
 import dayjs from 'dayjs';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import UserAvatar from 'components/Atoms/UserAvatar';
+import {Tabs} from 'react-native-collapsible-tab-view';
 
 const customParseFormat = require('dayjs/plugin/customParseFormat');
 
@@ -99,7 +100,7 @@ function ActivityDialog(props) {
             </View>
 
             {Object.keys(activities).length ? (
-              <ScrollView
+              <Tabs.ScrollView
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{flexGrow: 1}}>
                 <View style={styles.contentContainer}>
@@ -125,7 +126,7 @@ function ActivityDialog(props) {
                     );
                   })}
                 </View>
-              </ScrollView>
+              </Tabs.ScrollView>
             ) : (
               <View style={styles.emptyContainer}>
                 <Text>No Activities found!</Text>

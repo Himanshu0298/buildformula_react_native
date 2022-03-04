@@ -20,6 +20,7 @@ import {MODIFY_REQUEST_STATUS} from 'utils/constant';
 import dayjs from 'dayjs';
 import RenderHtml from 'react-native-render-html';
 import Layout from 'utils/Layout';
+import {Tabs} from 'react-native-collapsible-tab-view';
 
 const relativeTime = require('dayjs/plugin/relativeTime');
 
@@ -220,7 +221,7 @@ const ModifyRequestDetails = props => {
     <View style={styles.container}>
       <Subheading style={styles.heading}>Modify Requests</Subheading>
       <View style={{flex: 1}}>
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <Tabs.ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.contentContainer}>
             <View style={styles.cardContainer}>
               <View style={styles.row}>
@@ -287,7 +288,7 @@ const ModifyRequestDetails = props => {
               <Chat modifyRequest={modifyRequest} />
             ) : null}
           </View>
-        </ScrollView>
+        </Tabs.ScrollView>
       </View>
 
       <Comment addCommentData={addCommentData} />

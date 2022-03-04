@@ -57,3 +57,30 @@ export function useSalesLoading() {
     loadingHoldBookingDetails
   );
 }
+export function useCustomerDataLoading() {
+  const {
+    loading,
+    loadingSelectedProject,
+    loadingCustomerData,
+    loadingBankDetails,
+    loadingBookingData,
+    loadingModifyRequests,
+    loadingModifyRequest,
+    LoadingAccountDetails,
+    loadingFile,
+    loadingFolder,
+  } = useSelector(s => s.customer);
+
+  return (
+    loading ||
+    loadingSelectedProject ||
+    loadingCustomerData ||
+    loadingBankDetails ||
+    loadingBookingData ||
+    loadingModifyRequests ||
+    loadingModifyRequest ||
+    LoadingAccountDetails ||
+    loadingFile ||
+    loadingFolder
+  );
+}

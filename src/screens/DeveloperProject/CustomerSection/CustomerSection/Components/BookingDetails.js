@@ -13,6 +13,7 @@ import _ from 'lodash';
 import {round} from 'utils';
 import dayjs from 'dayjs';
 import {useMemo} from 'react';
+import {Tabs} from 'react-native-collapsible-tab-view';
 
 function RenderRow({row, style}) {
   return (
@@ -563,10 +564,10 @@ function BookingDetails(props) {
   } = useSelector(({customer}) => customer);
 
   return (
-    <View style={styles.container}>
-      <ScrollView
-        contentContainerStyle={styles.scrollView}
-        showsVerticalScrollIndicator={false}>
+    <Tabs.ScrollView
+      contentContainerStyle={styles.scrollView}
+      showsVerticalScrollIndicator={false}>
+      <View style={styles.container}>
         <CustomerSection {...props} {...{bookingDetails}} />
         <Divider />
         {bookingDetails.through_broker === 'yes' ? (
@@ -580,8 +581,8 @@ function BookingDetails(props) {
           {...props}
           {...{bookingDetails, bookingPaymentTypes, bookingBanks}}
         />
-      </ScrollView>
-    </View>
+      </View>
+    </Tabs.ScrollView>
   );
 }
 

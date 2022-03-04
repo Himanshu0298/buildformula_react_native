@@ -17,6 +17,7 @@ import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector} from 'react-redux';
 import useCustomerActions from 'redux/actions/customerActions';
 import {getPermissions} from 'utils';
+import {Tabs} from 'react-native-collapsible-tab-view';
 import ActivityDialog from './Components/ActivityDialog';
 
 function StatusDialog(props) {
@@ -117,7 +118,7 @@ function Account(props) {
     navigation.navigate('AddCollection', {...route.params});
 
   return (
-    <ScrollView
+    <Tabs.ScrollView
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{flexGrow: 1}}>
       <ActivityDialog
@@ -303,7 +304,7 @@ function Account(props) {
           </View>
         </View>
       </View>
-    </ScrollView>
+    </Tabs.ScrollView>
   );
 }
 

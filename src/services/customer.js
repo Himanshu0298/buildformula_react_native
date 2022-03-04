@@ -64,6 +64,13 @@ export default function useCustomerServices() {
         config({multipart: false}),
       );
     },
+    customerCreateFolder: data => {
+      return instance.post(
+        'cs_create_folder',
+        data,
+        config({multipart: false}),
+      );
+    },
 
     addModifyRequest: data => {
       return instance.post('/modify/request/add', data, config());
@@ -109,6 +116,16 @@ export default function useCustomerServices() {
     deleteCollection: data => {
       return instance.post(
         '/customers/account_collection_delete',
+        data,
+        config({multipart: false}),
+      );
+    },
+    deleteFile: data => {
+      return instance.post('/cs_delete_file', data, config({multipart: false}));
+    },
+    deleteFolder: data => {
+      return instance.post(
+        '/cs_delete_folder',
         data,
         config({multipart: false}),
       );
