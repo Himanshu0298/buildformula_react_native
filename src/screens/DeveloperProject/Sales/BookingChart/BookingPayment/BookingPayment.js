@@ -1010,7 +1010,7 @@ function BookingPayments(props) {
     }
 
     if (values.installments?.length) {
-      data.installment = values.installments.map(i => ({
+      data.installments = values.installments.map(i => ({
         installment_date: i.date.format('DD-MM-YYYY'),
         installment_amount: i.amount,
       }));

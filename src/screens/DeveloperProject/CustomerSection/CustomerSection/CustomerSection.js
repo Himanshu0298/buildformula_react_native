@@ -9,7 +9,14 @@ import {useSelector} from 'react-redux';
 import useCustomerActions from 'redux/actions/customerActions';
 import {getShadow} from 'utils';
 import Layout from 'utils/Layout';
-import {Account, BankLoans, BookingDetails, Details, Files, ModifyRequest} from './Components';
+import {
+  Account,
+  BankLoans,
+  BookingDetails,
+  Details,
+  Files,
+  ModifyRequest,
+} from './Components';
 import DetailsHeader from './Components/DetailsHeader';
 
 const TABS = [

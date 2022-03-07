@@ -276,10 +276,6 @@ function RatesSection(props) {
 
   const unit = bookingAreaUnitType[area_carpet_unit]?.toLowerCase();
 
-  console.log('bookingAreaUnitType', bookingAreaUnitType);
-  console.log('area_carpet_unit', area_carpet_unit);
-  console.log('units', unit);
-
   return (
     <View style={styles.sectionContainer}>
       <Title style={{marginBottom: 15}}>Booking Rate</Title>
@@ -294,7 +290,7 @@ function RatesSection(props) {
               label: 'Super Buildup',
               value: `${area_for_super_buildup} ${unit}.`,
             },
-            {label: 'Buildup', value: `${rate_for_buildup} ${unit}.`},
+            {label: 'Buildup', value: `${area_for_buildup} ${unit}.`},
             {label: 'Carpet', value: `${area_for_carpet} ${unit}.`},
           ]}
         />
@@ -361,7 +357,13 @@ function RatesSection(props) {
 
 function RenderCharges(props) {
   const {bookingDetails, theme} = props;
-  const {payment_type, discount_amount} = bookingDetails;
+  const {
+    payment_type,
+    full_payment_documentation_charges,
+    installment_payment_documentation_charges,
+    custom_payment_documentation_charges,
+    discount_amount,
+  } = bookingDetails;
 
   return (
     <View style={styles.sectionContainer}>
@@ -389,11 +391,11 @@ function RenderCharges(props) {
             {
               label: 'Documentation Charges',
               labelStyle: {color: theme.colors.documentation},
-              // value: `Rs.${
-              //   full_payment_documentation_charges ||
-              //   installment_payment_documentation_charges ||
-              //   custom_payment_documentation_charges
-              // }`,
+              value: `Rs.${
+                // full_payment_documentation_charges ||
+                installment_payment_documentation_charges
+                // custom_payment_documentation_charges
+              }`,
             },
           ]}
         />
@@ -574,7 +576,7 @@ function RenderCustomPaymentDetails(props) {
 
 export function RenderInstallments(props) {
   const {theme, installments} = props;
-
+  console.log('-------->installments', installments);
   if (installments?.length) {
     return (
       <>
@@ -589,10 +591,10 @@ export function RenderInstallments(props) {
           return (
             <View key={index} style={styles.installmentRow}>
               <Caption>{installment.id}</Caption>
-              <View style={{alignItems: 'center'}}>
+              <View style={styles.installmentDate}>
                 <Caption>{installment.date}</Caption>
               </View>
-              <View style={{alignItems: 'center'}}>
+              <View style={styles.installmentAmount}>
                 <Caption>₹ {installment.amount}</Caption>
               </View>
             </View>
@@ -879,6 +881,12 @@ const styles = StyleSheet.create({
   },
   termsBody: {
     paddingBottom: 25,
+  },
+  installmentAmount: {
+    alignItems: 'center',
+  },
+  installmentDate: {
+    alignItems: 'center',
   },
 });
 

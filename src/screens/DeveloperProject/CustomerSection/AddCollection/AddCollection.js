@@ -15,6 +15,18 @@ import dayjs from 'dayjs';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {useSelector} from 'react-redux';
 import ActionButtons from 'components/Atoms/ActionButtons';
+import RenderSelect from 'components/Atoms/RenderSelect';
+
+const PAYMENT_MODE = [
+  {label: 'DD', value: 'dd'},
+  {label: 'NetBanking', value: 'netbanking'},
+  {label: 'Cheque', value: 'cheque'},
+  {label: 'RTGS', value: 'rtgs'},
+  {label: 'NEFT', value: 'Neft'},
+  {label: 'Cash', value: 'cash'},
+  {label: 'DebitCard', value: 'debitcard'},
+  {label: 'UPI', value: 'UPI'},
+];
 
 const schema = Yup.object().shape({
   date: Yup.string('Invalid').required('Required'),
@@ -41,6 +53,7 @@ function RenderForm(props) {
     setFieldValue,
   } = formikProps;
 
+  console.log('-------->values', values);
   const {t} = useTranslation();
 
   const dateRef = React.useRef();
@@ -76,15 +89,18 @@ function RenderForm(props) {
             />
           </View>
         </View>
-        <RenderDatePicker
-          name="date"
-          label={t('label_date')}
-          ref={dateRef}
-          containerStyles={styles.input}
-          value={values.date}
-          onChange={v => setFieldValue('date', v)}
-          error={errors.date}
-        />
+        <View style={styles.transDateRow}>
+          <RenderDatePicker
+            name="date"
+            label={t('label_transaction_date')}
+            ref={dateRef}
+            containerStyles={styles.input}
+            value={values.date}
+            onChange={v => setFieldValue('date', v)}
+            error={errors.date}
+          />
+        </View>
+
         {values.type !== 'documentcharges' ? (
           <>
             <RenderInput
@@ -100,7 +116,7 @@ function RenderForm(props) {
             />
             <RenderInput
               name="bank_branch"
-              label={t('label_branch')}
+              label={t('label_bank_branch')}
               ref={branchRef}
               containerStyles={styles.input}
               value={values.bank_branch}
@@ -109,20 +125,20 @@ function RenderForm(props) {
               onSubmitEditing={() => transRef?.current?.focus()}
               error={errors.bank_branch}
             />
+            <RenderInput
+              name="transaction_number"
+              label="Check no / Transaction no"
+              ref={transRef}
+              containerStyles={styles.input}
+              value={values.transaction_number}
+              onChangeText={handleChange('transaction_number')}
+              onBlur={handleBlur('transaction_number')}
+              error={errors.transaction_number}
+            />
           </>
         ) : null}
-        <RenderInput
-          name="transaction_number"
-          label="Check no / Transaction no"
-          ref={transRef}
-          containerStyles={styles.input}
-          value={values.transaction_number}
-          onChangeText={handleChange('transaction_number')}
-          onBlur={handleBlur('transaction_number')}
-          error={errors.transaction_number}
-        />
+
         <View style={styles.radioRow}>
-          <Text>Collection Type </Text>
           <View style={styles.radioContainer}>
             <Radio
               label="Credit"
@@ -138,28 +154,43 @@ function RenderForm(props) {
             />
           </View>
         </View>
-        <RenderInput
-          name="amount"
-          label={t('label_amount')}
-          ref={amountRef}
-          keyboardType="number-pad"
-          containerStyles={styles.input}
-          value={values.amount}
-          onChangeText={handleChange('amount')}
-          onSubmitEditing={() => remarkRef?.current?.focus()}
-          onBlur={handleBlur('amount')}
-          error={errors.amount}
-          left={<TextInput.Affix text="₹" />}
-        />
-        <RenderTextBox
-          name="remark"
-          label={t('label_remark')}
-          ref={remarkRef}
-          containerStyles={styles.input}
-          value={values.remark}
-          onChangeText={handleChange('remark')}
-          numberOfLines={4}
-        />
+        <View style={styles.transDateRow}>
+          <RenderInput
+            name="amount"
+            label={t('label_amount')}
+            ref={amountRef}
+            keyboardType="number-pad"
+            containerStyles={styles.input}
+            value={values.amount}
+            onChangeText={handleChange('amount')}
+            onSubmitEditing={() => remarkRef?.current?.focus()}
+            onBlur={handleBlur('amount')}
+            error={errors.amount}
+            left={<TextInput.Affix text="₹" />}
+          />
+        </View>
+        <View>
+          <RenderSelect
+            label="Payment Mode"
+            options={PAYMENT_MODE}
+            style={styles.paymentFormContainer}
+            value={values.payment_mode}
+            error={errors.payment_mode}
+            onSelect={value => setFieldValue('payment_mode', value)}
+          />
+        </View>
+
+        <View style={styles.radioRow}>
+          <RenderTextBox
+            name="remark"
+            label={t('label_remark')}
+            ref={remarkRef}
+            containerStyles={styles.input}
+            value={values.remark}
+            onChangeText={handleChange('remark')}
+            numberOfLines={4}
+          />
+        </View>
       </View>
       <ActionButtons
         cancelLabel="Cancel"
@@ -275,6 +306,12 @@ const styles = StyleSheet.create({
   },
   radioContainer: {
     flexDirection: 'row',
+  },
+  transDateRow: {
+    marginTop: 10,
+  },
+  paymentFormContainer: {
+    marginTop: 10,
   },
 });
 

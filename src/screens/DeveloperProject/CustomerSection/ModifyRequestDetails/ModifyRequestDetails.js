@@ -174,7 +174,6 @@ const ModifyRequestDetails = props => {
   } = useCustomerActions();
 
   const {modifyRequest} = useSelector(s => s.customer);
-  console.log('modify request', modifyRequest);
   const {propertyDetails} = modifyRequest || {};
 
   const [edit, setEdit] = useState(false);
