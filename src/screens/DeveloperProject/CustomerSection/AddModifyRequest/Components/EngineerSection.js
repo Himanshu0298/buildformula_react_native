@@ -167,7 +167,8 @@ function ReviewForm(props) {
       validateOnChange={false}
       initialValues={{type: 'free'}}
       validationSchema={schema}
-      onSubmit={async values => {}}>
+      // TODO : Update handle
+      onSubmit={async values => null}>
       {({
         values,
         errors,

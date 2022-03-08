@@ -78,11 +78,8 @@ function CustomerSection(props) {
     getAccountDetails,
   } = useCustomerActions();
 
-  const {user} = useSelector(s => s.user);
   const {loading} = useSelector(s => s.customer);
   const {permissions, isProjectAdmin} = useSelector(s => s.project);
-
-  console.log('----->user.id', user.id);
 
   const [selectedTab, setSelectedTab] = React.useState(0);
   const routes = React.useMemo(() => {

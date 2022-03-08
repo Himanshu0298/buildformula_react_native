@@ -66,6 +66,12 @@ import AddBankDetails from 'screens/DeveloperProject/CustomerSection/AddBankDeta
 import PaymentCollections from 'screens/DeveloperProject/CustomerSection/PaymentColections';
 import AddCollection from 'screens/DeveloperProject/CustomerSection/AddCollection';
 import PaymentSchedule from 'screens/DeveloperProject/CustomerSection/PaymentSchedule';
+// Project : Design Modules
+import RoughDrawing from 'screens/DeveloperProject/DesignModule/RoughDrawing';
+import FinalDrawing from 'screens/DeveloperProject/DesignModule/FinalDrawing';
+import WorkingDrawing from 'screens/DeveloperProject/DesignModule/WorkingDrawing';
+import AreaSheet from 'screens/DeveloperProject/DesignModule/AreaSheet';
+import Parking from 'screens/DeveloperProject/DesignModule/Parking';
 // Project : Project management screens
 import Phases from 'screens/DeveloperProject/ProjectManagement/Planning/Phases';
 import SubPhases from 'screens/DeveloperProject/ProjectManagement/Planning/SubPhases';
@@ -107,7 +113,6 @@ import PS_StepTwo from '../screens/CreateProject/ProjectStructure/StepTwo';
 import PS_StepOne from '../screens/CreateProject/ProjectStructure/StepOne';
 import PC_StepTwo from '../screens/CreateProject/ProjectCreation/StepTwo';
 import PC_StepOne from '../screens/CreateProject/ProjectCreation/StepOne';
-import RoleSelect from '../screens/Auth/RoleSelect';
 import OtpScreen from '../screens/Auth/OtpScreen';
 import SignUp from '../screens/Auth/SignUp';
 import Login from '../screens/Auth/Login';
@@ -327,6 +332,11 @@ function ProjectDrawer() {
         <Drawer.Screen name="SalesPipeline" component={PipelineStack} />
         <Drawer.Screen name="BookingChartStack" component={BookingChartStack} />
         <Drawer.Screen name="BrokerStack" component={BrokerStack} />
+        <Drawer.Screen name="RoughDrawing" component={RoughDrawing} />
+        <Drawer.Screen name="FinalDrawing" component={FinalDrawing} />
+        <Drawer.Screen name="WorkingDrawing" component={WorkingDrawing} />
+        <Drawer.Screen name="AreaSheet" component={AreaSheet} />
+        <Drawer.Screen name="Parking" component={Parking} />
         <Drawer.Screen name="Payment" component={Payment} />
         <Drawer.Screen
           name="CustomerSection"

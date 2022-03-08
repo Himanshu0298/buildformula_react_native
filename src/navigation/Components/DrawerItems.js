@@ -64,6 +64,58 @@ export const DEVELOPER_DRAWER_ITEMS = [
       },
     ],
   },
+
+  {
+    title: 'DESIGN MODULE',
+    routes: [
+      {
+        id: 39,
+        route: 'RoughDrawing',
+        label: 'Rough Drawing',
+        icon: ({color, size}) => (
+          <MaterialCommunityIcons name="draw" {...{color, size}} />
+        ),
+      },
+      {
+        id: 40,
+        route: 'FinalDrawing',
+        label: 'Final Drawing',
+        icon: ({color, size}) => (
+          <MaterialCommunityIcons
+            name="file-check-outline"
+            {...{color, size}}
+          />
+        ),
+      },
+      {
+        id: 42,
+        route: 'WorkingDrawing',
+        label: 'Working Drawing',
+        icon: ({color, size}) => (
+          <MaterialCommunityIcons
+            name="vector-polyline-edit"
+            {...{color, size}}
+          />
+        ),
+      },
+      {
+        id: 41,
+        route: 'AreaSheet',
+        label: 'Areasheet',
+        icon: ({color, size}) => (
+          <MaterialCommunityIcons name="tab-unselected" {...{color, size}} />
+        ),
+      },
+      {
+        id: 43,
+        route: 'Parking',
+        label: 'Parking',
+        icon: ({color, size}) => (
+          <MaterialCommunityIcons name="parking" {...{color, size}} />
+        ),
+      },
+    ],
+  },
   // {
   //   title: 'PROJECT MANAGEMENT',
   //   routes: [

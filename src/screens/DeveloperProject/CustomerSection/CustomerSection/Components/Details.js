@@ -7,7 +7,7 @@ import {getPermissions} from 'utils';
 import UserAvatar from 'components/Atoms/UserAvatar';
 
 function RenderCustomer({customer, navToDetails, index}) {
-  const {profile_pic, customer_first_name, role} = customer;
+  const {profile_pic, customer_first_name} = customer;
 
   return (
     <>

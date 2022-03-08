@@ -86,11 +86,11 @@ const schema = Yup.object().shape({
     is: 3,
     then: Yup.string('Invalid').required('Required'),
   }),
-  loan_bank: Yup.string('Invalid').when('loan', {
+  loan_bank: Yup.string('Invalid').when('is_loan', {
     is: 'yes',
     then: Yup.string('Invalid').required('Required'),
   }),
-  loan_amount: Yup.number('Invalid').when('loan', {
+  loan_amount: Yup.number('Invalid').when('is_loan', {
     is: 'yes',
     then: Yup.number('Invalid').required('Required'),
   }),
@@ -794,7 +794,7 @@ function FormContent(props) {
     setFieldValue('finalAmount', values.finalAmount);
     setFieldValue('document_start_date', values.document_start_date);
     setFieldValue('document_end_date', values.document_end_date);
-    setFieldValue('loan', values.loan);
+    setFieldValue('is_loan', values.is_loan);
     setFieldValue('loan_bank', values.loan_bank);
     setFieldValue('loan_amount', values.loan_amount);
     setFieldValue('loan_remark', values.loan_remark);
@@ -808,7 +808,7 @@ function FormContent(props) {
     setFieldValue('documentCharge', values.documentCharge);
     setFieldValue('document_start_date', values.document_start_date);
     setFieldValue('document_end_date', values.document_end_date);
-    setFieldValue('loan', values.loan);
+    setFieldValue('is_loan', values.is_loan);
     setFieldValue('loan_bank', values.loan_bank);
     setFieldValue('loan_amount', values.loan_amount);
     setFieldValue('loan_remark', values.loan_remark);
@@ -857,20 +857,20 @@ function FormContent(props) {
               <Radio
                 label="Yes"
                 value="yes"
-                checked={values.loan === 'yes'}
-                onChange={value => setFieldValue('loan', value)}
+                checked={values.is_loan === 'yes'}
+                onChange={value => setFieldValue('is_loan', value)}
               />
               <Radio
                 label="No"
                 value="no"
                 color={theme.colors.error}
-                checked={values.loan === 'no'}
-                onChange={value => setFieldValue('loan', value)}
+                checked={values.is_loan === 'no'}
+                onChange={value => setFieldValue('is_loan', value)}
               />
             </View>
           </View>
 
-          {values.loan === 'yes' ? (
+          {values.is_loan === 'yes' ? (
             <View style={styles.loadInputs}>
               <View style={styles.otherChargesContainer}>
                 <View style={styles.dateInputContainer}>
@@ -921,7 +921,6 @@ function FormContent(props) {
               formikProps.setErrors({});
             }}
           />
-          {console.log('values.payment_type', values.payment_type)}
           <RenderPaymentForm {...props} {...{formikProps, t}} />
         </View>
         <ActionButtons
@@ -958,7 +957,7 @@ function BookingPayments(props) {
     return {
       payment_type: 1,
       custom_payments: [{}],
-      loan: 'no',
+      is_loan: 'no',
       documentCharge,
       isDocumentCharge,
       ...route?.params,
@@ -1054,7 +1053,6 @@ function BookingPayments(props) {
       data.installment_payment_remarks = data.termsDescription;
     }
 
-    delete data.loan;
     delete data.broker;
     delete data.documentCharge;
     delete data.isDocumentCharge;

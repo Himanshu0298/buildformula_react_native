@@ -31,6 +31,7 @@ module.exports = {
   rules: {
     'react-native/no-unused-styles': 1,
     'react-native/no-color-literals': 0,
+    'react/react-in-jsx-scope': 0,
     'no-restricted-globals': 0,
     '@typescript-eslint/no-var-requires': 1,
     'no-underscore-dangle': 0,

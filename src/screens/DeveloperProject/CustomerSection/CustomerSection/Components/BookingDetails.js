@@ -263,6 +263,7 @@ function RatesSection(props) {
     main_total_amount,
     other_charges = [],
     booking_rate_final_amount_input,
+    full_basic_amount,
   } = bookingDetails;
 
   const otherChargePairs = React.useMemo(() => {
@@ -346,7 +347,7 @@ function RatesSection(props) {
               Final Property Amount
             </Text>
             <Text style={styles.finalPropertyAmount}>
-              Rs. {booking_rate_final_amount_input}
+              Rs. {main_total_amount}
             </Text>
           </View>
         </View>
@@ -362,6 +363,7 @@ function RenderCharges(props) {
     full_payment_documentation_charges,
     installment_payment_documentation_charges,
     custom_payment_documentation_charges,
+    total_other_charges,
     discount_amount,
   } = bookingDetails;
 
@@ -373,12 +375,23 @@ function RenderCharges(props) {
             {
               label: 'Total Other Charges',
               labelStyle: {color: theme.colors.documentation},
-              // value: `Rs.${
-              //   full_payment_documentation_charges ||
-              //   installment_payment_documentation_charges ||
-              //   custom_payment_documentation_charges
-              // }`,
+              value: `Rs.${total_other_charges}`,
             },
+
+            // {total_other_charges ? (
+            //   <RenderRow
+            //     row={[
+            //       {
+            //         label: 'Total other charges',
+            //         value: `${total_other_charges} Rs.`,
+            //       },
+            //       {
+            //         label: 'Date',
+            //         value: dayjs(full_other_charges_date).format('DD MMM YYYY'),
+            //       },
+            //     ]}
+            //   />
+            // ) : null}
             {
               label: 'Discount Amount',
               labelStyle: {color: theme.colors.documentation},
@@ -478,6 +491,7 @@ function RenderFullPaymentDetails(props) {
     end_date,
     total_other_charges,
     full_other_charges_date,
+    full_basic_amount,
   } = bookingDetails;
 
   return (
@@ -486,7 +500,7 @@ function RenderFullPaymentDetails(props) {
       <View style={styles.sectionBody}>
         <RenderRow
           row={[
-            {label: 'Property Final amount', value: `Rs.${main_total_amount} `},
+            {label: 'Property Final amount', value: `Rs.${full_basic_amount} `},
           ]}
         />
         <RenderRow
@@ -498,20 +512,6 @@ function RenderFullPaymentDetails(props) {
             {label: 'End date', value: dayjs(end_date).format('DD MMM YYYY')},
           ]}
         />
-        {total_other_charges ? (
-          <RenderRow
-            row={[
-              {
-                label: 'Total other charges',
-                value: `${total_other_charges} Rs.`,
-              },
-              {
-                label: 'Date',
-                value: dayjs(full_other_charges_date).format('DD MMM YYYY'),
-              },
-            ]}
-          />
-        ) : null}
       </View>
     </View>
   );
