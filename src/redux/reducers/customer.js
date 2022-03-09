@@ -31,7 +31,7 @@ const initialState = {
   customerData: [],
   bookingDetails: {},
   bookingAreaUnitType: {},
-  bookingBanks: {},
+  bookingBanks: [],
   bookingPaymentTypes: {},
   bankDetails: {},
   modifyRequests: [],

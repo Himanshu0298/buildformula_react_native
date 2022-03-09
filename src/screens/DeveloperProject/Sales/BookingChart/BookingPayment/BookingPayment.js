@@ -769,7 +769,7 @@ function RenderPaymentForm(props) {
             <MaterialCommunityIcons
               name="pencil"
               color={theme.colors.white}
-              size={22}
+              size={16}
             />
           </OpacityButton>
         </View>
@@ -1194,7 +1194,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   conditionsButton: {
-    padding: 10,
+    padding: 5,
     position: 'absolute',
     top: 10,
     right: 10,

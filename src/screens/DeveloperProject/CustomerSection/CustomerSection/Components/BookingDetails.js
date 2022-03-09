@@ -16,9 +16,10 @@ import dayjs from 'dayjs';
 import {useMemo} from 'react';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import RenderHtml from 'react-native-render-html';
+import RenderHtml, {RenderHTML} from 'react-native-render-html';
 import RenderTextBox from 'components/Atoms/RenderTextbox';
 import ActionButtons from 'components/Atoms/ActionButtons';
+import Layout from 'utils/Layout';
 
 const schema = Yup.object().shape({
   email: Yup.string('Required').required('Required'),
@@ -26,6 +27,23 @@ const schema = Yup.object().shape({
     .required('Required')
     .min(10, 'Must be 10 digit'),
 });
+
+function getDocumnetCharges(bookingDetails) {
+  const {
+    full_payment_documentation_charges,
+    installment_payment_documentation_charges,
+    custom_payment_documentation_charges,
+  } = bookingDetails;
+
+  return (
+    (Number(full_payment_documentation_charges) &&
+      full_payment_documentation_charges) ||
+    (Number(installment_payment_documentation_charges) &&
+      installment_payment_documentation_charges) ||
+    (Number(custom_payment_documentation_charges) &&
+      custom_payment_documentation_charges)
+  );
+}
 
 function RenderRow({row, style}) {
   return (
@@ -56,10 +74,7 @@ function CustomerCredLogin(props) {
     console.log('-------->handleEdit');
   };
 
-  const handleCredEdit = () => {
-    console.log('-------->handleCredEdit');
-    setEditLoginCred(true);
-  };
+  const handleCredEdit = () => setEditLoginCred(true);
 
   return (
     <View style={styles.sectionContainer}>
@@ -124,8 +139,8 @@ function CustomerCredLogin(props) {
           setEditLoginCred(false);
         }}>
         {({values, errors, handleChange, handleSubmit}) => (
-          <View>
-            <View style={{display: 'flex', flexDirection: 'row'}}>
+          <View style={{marginVertical: 1}}>
+            <View style={styles.customerCredential}>
               <View style={{width: '50%'}}>
                 <Text>Email</Text>
                 {editLoginCred ? (
@@ -218,7 +233,7 @@ function BrokerSection({bookingDetails, theme}) {
   } = bookingDetails;
 
   return (
-    <View style={styles.sectionContainer}>
+    <View style={styles.brokerContainer}>
       <Subheading style={{color: theme.colors.primary}}>
         BROKER DETAILS
       </Subheading>
@@ -247,30 +262,23 @@ function BrokerSection({bookingDetails, theme}) {
 function RatesSection(props) {
   const {bookingDetails, bookingAreaUnitType, theme} = props;
 
-  console.log('booking details', bookingDetails);
   const {
     area_for_super_buildup,
-    buildup_area,
     area_for_buildup,
-    carpet_area,
     area_carpet_unit,
     rate_super_buildup,
-    buildup_rate,
     rate_for_buildup,
-    carpet_rate,
-    with_rate,
+    rate_for_carpet,
     area_for_carpet,
     main_total_amount,
     other_charges = [],
-    booking_rate_final_amount_input,
-    full_basic_amount,
   } = bookingDetails;
 
   const otherChargePairs = React.useMemo(() => {
     if (other_charges.length > 0) {
       return new Array(Math.ceil(2))
         .fill()
-        .map(item => other_charges.splice(0, 2));
+        .map(() => other_charges.splice(0, 2));
     }
     return [];
   }, [other_charges]);
@@ -303,8 +311,8 @@ function RatesSection(props) {
               label: 'Super Buildup',
               value: `Rs.${rate_super_buildup}`,
             },
-            {label: 'Buildup', value: `Rs.${buildup_rate}`},
-            {label: 'Carpet', value: `${carpet_rate} ${unit}.`},
+            {label: 'Buildup', value: `Rs.${rate_for_buildup}`},
+            {label: 'Carpet', value: `Rs.${rate_for_carpet}`},
           ]}
         />
         <Caption style={{color: theme.colors.primary, marginVertical: 10}}>
@@ -358,61 +366,33 @@ function RatesSection(props) {
 
 function RenderCharges(props) {
   const {bookingDetails, theme} = props;
-  const {
-    payment_type,
-    full_payment_documentation_charges,
-    installment_payment_documentation_charges,
-    custom_payment_documentation_charges,
-    total_other_charges,
-    discount_amount,
-  } = bookingDetails;
+  const {total_other_charges, discount_amount} = bookingDetails;
 
   return (
-    <View style={styles.sectionContainer}>
-      <View style={styles.sectionBody}>
-        <RenderRow
-          row={[
-            {
-              label: 'Total Other Charges',
-              labelStyle: {color: theme.colors.documentation},
-              value: `Rs.${total_other_charges}`,
-            },
-
-            // {total_other_charges ? (
-            //   <RenderRow
-            //     row={[
-            //       {
-            //         label: 'Total other charges',
-            //         value: `${total_other_charges} Rs.`,
-            //       },
-            //       {
-            //         label: 'Date',
-            //         value: dayjs(full_other_charges_date).format('DD MMM YYYY'),
-            //       },
-            //     ]}
-            //   />
-            // ) : null}
-            {
-              label: 'Discount Amount',
-              labelStyle: {color: theme.colors.documentation},
-              value: `Rs.${discount_amount}`,
-            },
-          ]}
-        />
-        <RenderRow
-          row={[
-            {
-              label: 'Documentation Charges',
-              labelStyle: {color: theme.colors.documentation},
-              value: `Rs.${
-                // full_payment_documentation_charges ||
-                installment_payment_documentation_charges
-                // custom_payment_documentation_charges
-              }`,
-            },
-          ]}
-        />
-      </View>
+    <View style={styles.sectionBody}>
+      <RenderRow
+        row={[
+          {
+            label: 'Total Other Charges',
+            labelStyle: {color: theme.colors.documentation},
+            value: `Rs.${total_other_charges}`,
+          },
+          {
+            label: 'Discount Amount',
+            labelStyle: {color: theme.colors.documentation},
+            value: `Rs.${discount_amount}`,
+          },
+        ]}
+      />
+      <RenderRow
+        row={[
+          {
+            label: 'Documentation Charges',
+            labelStyle: {color: theme.colors.documentation},
+            value: `Rs.${getDocumnetCharges(bookingDetails)}`,
+          },
+        ]}
+      />
     </View>
   );
 }
@@ -420,11 +400,8 @@ function RenderCharges(props) {
 function RenderDocumentCharges(props) {
   const {bookingDetails, bookingPaymentTypes, theme} = props;
   const {
-    full_payment_documentation_charges,
     full_payment_documentation_charges_start_date,
     full_payment_documentation_charges_end_date,
-    custom_payment_documentation_charges,
-    installment_payment_documentation_charges,
     custom_payment_documentation_charges_start_date,
     custom_payment_documentation_charges_end_date,
     installment_payment_documentation_charges_start_date,
@@ -433,69 +410,56 @@ function RenderDocumentCharges(props) {
   } = bookingDetails;
 
   return (
-    <View style={styles.sectionContainer}>
-      <View style={styles.sectionBody}>
-        <RenderRow
-          row={[
-            {
-              label: 'Payment method',
-              value: `${bookingPaymentTypes[payment_type]}`,
-            },
-          ]}
-        />
-        <RenderRow
-          row={[
-            {
-              label: 'Documentation charges',
-              labelStyle: {color: theme.colors.documentation},
-              value: `Rs.${
-                full_payment_documentation_charges ||
-                installment_payment_documentation_charges ||
-                custom_payment_documentation_charges
-              }`,
-            },
-          ]}
-        />
-        <RenderRow
-          row={[
-            {
-              label: 'Start date',
-              labelStyle: {color: theme.colors.documentation},
-              value: dayjs(
-                full_payment_documentation_charges_start_date ||
-                  custom_payment_documentation_charges_start_date ||
-                  installment_payment_documentation_charges_start_date,
-              ).format('DD MMM YYYY'),
-            },
-            {
-              label: 'End date',
-              labelStyle: {color: theme.colors.documentation},
-              value: dayjs(
-                full_payment_documentation_charges_end_date ||
-                  custom_payment_documentation_charges_end_date ||
-                  installment_payment_documentation_charges_end_date,
-              ).format('DD MMM YYYY'),
-            },
-          ]}
-        />
-      </View>
+    <View style={styles.sectionBody}>
+      <RenderRow
+        row={[
+          {
+            label: 'Payment method',
+            value: `${bookingPaymentTypes[payment_type]}`,
+          },
+        ]}
+      />
+      <RenderRow
+        row={[
+          {
+            label: 'Documentation charges',
+            labelStyle: {color: theme.colors.documentation},
+            value: `Rs.${getDocumnetCharges(bookingDetails)}`,
+          },
+        ]}
+      />
+      <RenderRow
+        row={[
+          {
+            label: 'Start date',
+            labelStyle: {color: theme.colors.documentation},
+            value: dayjs(
+              full_payment_documentation_charges_start_date ||
+                custom_payment_documentation_charges_start_date ||
+                installment_payment_documentation_charges_start_date,
+            ).format('DD MMM YYYY'),
+          },
+          {
+            label: 'End date',
+            labelStyle: {color: theme.colors.documentation},
+            value: dayjs(
+              full_payment_documentation_charges_end_date ||
+                custom_payment_documentation_charges_end_date ||
+                installment_payment_documentation_charges_end_date,
+            ).format('DD MMM YYYY'),
+          },
+        ]}
+      />
     </View>
   );
 }
 
 function RenderFullPaymentDetails(props) {
   const {bookingDetails} = props;
-  const {
-    main_total_amount,
-    start_date,
-    end_date,
-    total_other_charges,
-    full_other_charges_date,
-    full_basic_amount,
-  } = bookingDetails;
+  const {start_date, end_date, full_basic_amount} = bookingDetails;
 
   return (
-    <View style={styles.sectionContainer}>
+    <>
       <RenderDocumentCharges {...props} />
       <View style={styles.sectionBody}>
         <RenderRow
@@ -513,7 +477,7 @@ function RenderFullPaymentDetails(props) {
           ]}
         />
       </View>
-    </View>
+    </>
   );
 }
 function RenderCustomPaymentDetails(props) {
@@ -554,7 +518,7 @@ function RenderCustomPaymentDetails(props) {
           );
         })}
 
-        {total_other_charges ? (
+        {/* {total_other_charges ? (
           <RenderRow
             style={{marginTop: 15}}
             row={[
@@ -568,7 +532,7 @@ function RenderCustomPaymentDetails(props) {
               },
             ]}
           />
-        ) : null}
+        ) : null} */}
       </View>
     </View>
   );
@@ -576,7 +540,6 @@ function RenderCustomPaymentDetails(props) {
 
 export function RenderInstallments(props) {
   const {theme, installments} = props;
-  console.log('-------->installments', installments);
   if (installments?.length) {
     return (
       <>
@@ -704,9 +667,11 @@ function RenderFirstBigPaymentDetails(props) {
 }
 
 function PaymentSection(props) {
-  const {bookingDetails, bookingBanks} = props;
+  const {bookingDetails, bookingBanks = []} = props;
   const {payment_type, bank, is_loan, loan_amount, payment_remark} =
     bookingDetails;
+
+  const bankData = bookingBanks?.find(i => i.id === bank) || {};
 
   return (
     <View style={styles.sectionContainer}>
@@ -717,7 +682,7 @@ function PaymentSection(props) {
             {label: 'Loan taken', value: _.startCase(is_loan)},
             {
               label: 'Bank chosen',
-              value: `${bookingBanks?.[bank]?.title || 'NA'}`,
+              value: `${bankData?.title || 'NA'}`,
             },
           ]}
         />
@@ -746,7 +711,13 @@ function PaymentSection(props) {
   );
 }
 
-function TermsCondition({theme}) {
+function TermsCondition({theme, bookingDetails}) {
+  const {
+    custom_payment_remark,
+    full_payment_remark,
+    installment_payment_remarks,
+  } = bookingDetails;
+
   return (
     <View>
       <Subheading style={{color: theme.colors.primary}}>
@@ -754,8 +725,15 @@ function TermsCondition({theme}) {
       </Subheading>
       <View style={styles.termsBody}>
         <Text>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae
-          commodi alias, culp
+          <RenderHTML
+            source={{
+              html:
+                full_payment_remark ||
+                custom_payment_remark ||
+                installment_payment_remarks,
+            }}
+            contentWidth={Layout.window.width - 20}
+          />
         </Text>
       </View>
     </View>
@@ -786,7 +764,6 @@ function BookingDetails(props) {
             <Divider />
           </>
         ) : null}
-        {/* {console.log('booking details before ratesection call', bookingDetails)} */}
 
         {bookingDetails.form_type === 'withrate' ? (
           <RatesSection {...props} {...{bookingDetails, bookingAreaUnitType}} />
@@ -796,7 +773,7 @@ function BookingDetails(props) {
           {...props}
           {...{bookingDetails, bookingPaymentTypes, bookingBanks}}
         />
-        <TermsCondition {...props} />
+        <TermsCondition {...props} {...{bookingDetails}} />
       </ScrollView>
     </View>
   );
@@ -823,6 +800,11 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   sectionContainer: {
+    marginVertical: 10,
+    paddingHorizontal: 7,
+  },
+  brokerContainer: {
+    marginVertical: 5,
     paddingHorizontal: 7,
   },
   sectionBody: {
@@ -837,6 +819,10 @@ const styles = StyleSheet.create({
   cell: {
     flex: 1,
     paddingHorizontal: 3,
+  },
+  customerCredential: {
+    display: 'flex',
+    flexDirection: 'row',
   },
   totalContainer: {
     marginTop: 10,
