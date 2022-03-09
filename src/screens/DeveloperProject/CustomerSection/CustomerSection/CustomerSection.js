@@ -10,6 +10,7 @@ import {MaterialTabBar, Tabs} from 'react-native-collapsible-tab-view';
 
 import {theme} from 'styles/theme';
 import ProjectHeader from 'components/Molecules/Layout/ProjectHeader';
+import {useCustomerLoading} from 'redux/selectors';
 import {
   Account,
   BankLoans,
@@ -64,7 +65,7 @@ function CustomerSection(props) {
     getFile,
   } = useCustomerActions();
 
-  const {loading} = useSelector(s => s.customer);
+  const loading = useCustomerLoading();
   const {permissions, isProjectAdmin} = useSelector(s => s.project);
 
   const routes = React.useMemo(() => {

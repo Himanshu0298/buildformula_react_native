@@ -57,7 +57,7 @@ export function useSalesLoading() {
     loadingHoldBookingDetails
   );
 }
-export function useCustomerDataLoading() {
+export function useCustomerLoading() {
   const {
     loading,
     loadingSelectedProject,
