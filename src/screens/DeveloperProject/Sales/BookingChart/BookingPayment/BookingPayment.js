@@ -1004,8 +1004,16 @@ function BookingPayments(props) {
       delete data.custom_payments;
     }
 
-    if (values.payment_type === 1) {
-      data.full_basic_amount = data.finalAmount;
+    data.main_total_amount = data.finalAmount;
+
+    if (values.project_main_types === 4) {
+      data.area_for_super_buildup__bunglow =
+        values.construction_super_buildup_area;
+      data.rate_super_buildup_bunglow = values.construction_super_buildup_rate;
+      data.area_for_buildup_bunglow = values.construction_build_area;
+      data.rate_for_buildup_bunglow = values.construction_build_rate;
+      data.total_super_buildup_construction_amount = values.total_construction;
+      data.total_buildup_construction_amount = values.total_construction;
     }
 
     if (values.installments?.length) {
@@ -1063,6 +1071,11 @@ function BookingPayments(props) {
     delete data.finalAmount;
     delete data.termsDescription;
     delete data.termsAndConditions;
+    delete data.construction_super_buildup_area;
+    delete data.construction_super_buildup_rate;
+    delete data.construction_build_area;
+    delete data.construction_build_rate;
+    delete data.total_construction;
 
     await createBooking(data);
     navigation.popToTop();

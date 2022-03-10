@@ -89,7 +89,7 @@ function CustomerCredLogin(props) {
               color={theme.colors.red}
               name="delete"
               size={16}
-              style={styles.deleteIcon}
+              style={styles.iconStyle}
             />
             <Text>Delete</Text>
           </OpacityButton>
@@ -104,7 +104,7 @@ function CustomerCredLogin(props) {
               color={theme.colors.primary}
               name="tag"
               size={16}
-              style={styles.editIcon}
+              style={styles.iconStyle}
             />
             <Text>Cancel & Open for re-sale</Text>
           </OpacityButton>
@@ -124,7 +124,7 @@ function CustomerCredLogin(props) {
               color={theme.colors.primary}
               name="pencil"
               size={20}
-              style={styles.credEditIcon}
+              style={styles.iconStyle}
             />
           </OpacityButton>
         ) : null}
@@ -272,6 +272,11 @@ function RatesSection(props) {
     area_for_carpet,
     main_total_amount,
     other_charges = [],
+    area_for_super_buildup__bunglow,
+    area_for_buildup_bunglow,
+    rate_super_buildup_bunglow,
+    rate_for_buildup_bunglow,
+    total_super_buildup_construction_amount,
   } = bookingDetails;
 
   const otherChargePairs = React.useMemo(() => {
@@ -304,7 +309,6 @@ function RatesSection(props) {
           ]}
         />
         <Text style={styles.areaBuild}>Rate</Text>
-
         <RenderRow
           row={[
             {
@@ -327,6 +331,44 @@ function RatesSection(props) {
         <RenderRow
           row={[{label: 'As Carpet', value: `Rs.${main_total_amount}`}]}
         />
+        <Subheading style={{color: theme.colors.primary, marginTop: 20}}>
+          CONSTRUCTION RATE
+        </Subheading>
+        <RenderRow
+          row={[
+            {
+              label: 'Super Build-up Area',
+              value: `${area_for_super_buildup__bunglow}`,
+            },
+            {label: 'Build-up Area', value: `${area_for_buildup_bunglow}`},
+          ]}
+        />
+        <RenderRow
+          row={[
+            {
+              label: 'Super Build-up Rate',
+              value: `${rate_super_buildup_bunglow}`,
+            },
+            {label: 'Build-up Rate', value: `${rate_for_buildup_bunglow}`},
+          ]}
+        />
+
+        <Caption style={{color: theme.colors.primary, marginVertical: 10}}>
+          Total Construction Amount
+        </Caption>
+        <RenderRow
+          row={[
+            {
+              label: 'As Super Buildup',
+              value: `Rs.${total_super_buildup_construction_amount}`,
+            },
+            {
+              label: 'As Buildup',
+              value: `Rs.${total_super_buildup_construction_amount}`,
+            },
+          ]}
+        />
+
         {otherChargePairs.length ? (
           <>
             <Subheading style={{color: theme.colors.primary}}>
@@ -347,7 +389,6 @@ function RatesSection(props) {
         ) : null}
         <Divider />
         <RenderCharges {...props} />
-
         <Divider />
         <View style={styles.totalContainer}>
           <View style={styles.finalProperty}>
@@ -483,12 +524,7 @@ function RenderFullPaymentDetails(props) {
 function RenderCustomPaymentDetails(props) {
   const {bookingDetails} = props;
 
-  const {
-    custom_basic_amount,
-    total_other_charges,
-    full_other_charges_date,
-    custom_payment = [],
-  } = bookingDetails;
+  const {custom_basic_amount, custom_payment = []} = bookingDetails;
   return (
     <View style={styles.sectionContainer}>
       <RenderDocumentCharges {...props} />
@@ -496,7 +532,10 @@ function RenderCustomPaymentDetails(props) {
       <View style={styles.sectionBody}>
         <RenderRow
           row={[
-            {label: 'Total basic amount', value: `Rs.${custom_basic_amount}`},
+            {
+              label: 'Final Property Amount',
+              value: `Rs.${custom_basic_amount}`,
+            },
           ]}
         />
         <Divider style={{marginVertical: 10}} />
@@ -517,22 +556,6 @@ function RenderCustomPaymentDetails(props) {
             </>
           );
         })}
-
-        {/* {total_other_charges ? (
-          <RenderRow
-            style={{marginTop: 15}}
-            row={[
-              {
-                label: 'Total other charges',
-                value: `Rs.${total_other_charges}`,
-              },
-              {
-                label: 'Date',
-                value: dayjs(full_other_charges_date).format('DD MMM YYYY'),
-              },
-            ]}
-          />
-        ) : null} */}
       </View>
     </View>
   );
@@ -581,8 +604,6 @@ function RenderFirstBigPaymentDetails(props) {
     installment_start_date,
     installment_end_date,
     installment_interval_days,
-    total_other_charges,
-    full_other_charges_date,
     installments,
     installment_date,
     installment_amount,
@@ -645,22 +666,6 @@ function RenderFirstBigPaymentDetails(props) {
         />
 
         <RenderInstallments {...props} installments={parsedInstallments} />
-
-        {total_other_charges ? (
-          <RenderRow
-            style={{marginTop: 20}}
-            row={[
-              {
-                label: 'Total other charges',
-                value: `${total_other_charges} Rs.`,
-              },
-              {
-                label: 'Date',
-                value: dayjs(full_other_charges_date).format('DD MMM YYYY'),
-              },
-            ]}
-          />
-        ) : null}
       </View>
     </View>
   );
@@ -768,6 +773,7 @@ function BookingDetails(props) {
         {bookingDetails.form_type === 'withrate' ? (
           <RatesSection {...props} {...{bookingDetails, bookingAreaUnitType}} />
         ) : null}
+
         <Divider />
         <PaymentSection
           {...props}
@@ -853,13 +859,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: 20,
   },
-  credEditIcon: {
-    marginRight: 5,
-  },
-  editIcon: {
-    marginRight: 5,
-  },
-  deleteIcon: {
+  iconStyle: {
     marginRight: 5,
   },
   areaBuild: {
