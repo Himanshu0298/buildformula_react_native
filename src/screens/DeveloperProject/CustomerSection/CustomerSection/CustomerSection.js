@@ -11,6 +11,7 @@ import {MaterialTabBar, Tabs} from 'react-native-collapsible-tab-view';
 import {theme} from 'styles/theme';
 import ProjectHeader from 'components/Molecules/Layout/ProjectHeader';
 import {useCustomerLoading} from 'redux/selectors';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {
   Account,
   BankLoans,
@@ -51,6 +52,8 @@ const renderTabBar = params => {
 function CustomerSection(props) {
   const {route} = props;
   const {project_id, unit} = route?.params || {};
+
+  const insets = useSafeAreaInsets();
 
   const tabBarRef = React.useRef();
 
@@ -109,6 +112,7 @@ function CustomerSection(props) {
           renderHeader={renderHeader}
           renderTabBar={renderTabBar}
           ref={tabBarRef}
+          minHeaderHeight={insets.top}
           headerHeight={146}>
           <Tabs.Tab name="Details">
             <Details {...props} />
@@ -146,7 +150,7 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(139, 149, 159, 0.25)',
   },
   tab: {
-    width: 150,
+    width: 180,
   },
 });
 

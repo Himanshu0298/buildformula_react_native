@@ -364,7 +364,6 @@ function Files(props) {
             }}
           />
         </View>
-        s
         {/* <View styles={styles.contentContainer}>
           <View>
             <Subheading style={[styles.folder,{ color: theme.colors.primary}]}>FOLDERS</Subheading>
