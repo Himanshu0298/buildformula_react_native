@@ -16,8 +16,11 @@ export default function useCustomerActions() {
     updateBankDetails,
     updateBankFiles,
     updateModifiedRequestStatus,
+    addComment,
     removeBankFile,
     getModifyRequests,
+    getFolder,
+    getFile,
     addModifyRequest,
     getModifyRequest,
     getAccountDetails,
@@ -25,6 +28,9 @@ export default function useCustomerActions() {
     addCollection,
     updateCollection,
     deleteCollection,
+    deleteFolder,
+    deleteFile,
+    customerCreateFolder,
   } = useCustomerServices();
 
   return {
@@ -192,6 +198,21 @@ export default function useCustomerActions() {
           }
         },
       }),
+    addComment: params =>
+      dispatch({
+        type: types.ADD_MODIFY_REQUEST_COMMENT,
+        payload: async () => {
+          try {
+            const {data} = _res(await addComment(params));
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
     getModifyRequestDetails: params =>
       dispatch({
         type: types.GET_MODIFY_REQUEST,
@@ -214,6 +235,51 @@ export default function useCustomerActions() {
         payload: async () => {
           try {
             const {data} = _res(await getAccountDetails(params));
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    getFolder: params =>
+      dispatch({
+        type: types.GET_FOLDER,
+        payload: async () => {
+          try {
+            const {data} = _res(await getFolder(params));
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    customerCreateFolder: params =>
+      dispatch({
+        type: types.CUSTOMER_CREATE_FOLDER,
+        payload: async () => {
+          try {
+            const res = _res(await customerCreateFolder(params));
+
+            return Promise.resolve(res.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    getFile: params =>
+      dispatch({
+        type: types.GET_FILE,
+        payload: async () => {
+          try {
+            const {data} = _res(await getFile(params));
 
             return Promise.resolve(data);
           } catch (error) {
@@ -276,6 +342,36 @@ export default function useCustomerActions() {
         payload: async () => {
           try {
             const {data, msg} = _res(await deleteCollection(params));
+            snackbar.showMessage({message: msg});
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    deleteFile: params =>
+      dispatch({
+        type: types.CUSTOMER_DELETE_FILE,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await deleteFile(params));
+            snackbar.showMessage({message: msg});
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    deleteFolder: params =>
+      dispatch({
+        type: types.CUSTOMER_DELETE_FOLDER,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await deleteFolder(params));
             snackbar.showMessage({message: msg});
             return Promise.resolve(data);
           } catch (error) {

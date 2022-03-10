@@ -2,9 +2,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {persistReducer} from 'redux-persist';
 import {
   ADD_CUSTOMER,
+  CUSTOMER_CREATE_FOLDER,
   GET_CUSTOMER_DATA,
   GET_BOOKING_DATA,
   GET_BANK_DETAILS,
+  GET_FILE,
+  GET_FOLDER,
   UPDATE_BANK_DETAILS,
   UPDATE_BANK_FILES,
   GET_MODIFY_REQUESTS,
@@ -17,6 +20,7 @@ import {
   DELETE_COLLECTION,
   GET_MODIFY_REQUEST,
   UPDATE_MODIFY_REQUEST,
+  ADD_MODIFY_REQUEST_COMMENT,
 } from '../actions/actionTypes';
 
 const persistConfig = {
@@ -27,6 +31,14 @@ const persistConfig = {
 
 const initialState = {
   loading: false,
+  loadingCustomerData: false,
+  loadingBankDetails: false,
+  loadingBookingData: false,
+  loadingModifyRequests: false,
+  loadingModifyRequest: false,
+  LoadingAccountDetails: false,
+  loadingFile: false,
+  loadingFolder: false,
   errorMessage: undefined,
   customerData: [],
   bookingDetails: {},
@@ -37,6 +49,8 @@ const initialState = {
   modifyRequests: [],
   modifyRequest: {},
   accountDetails: {},
+  file: {},
+  folder: {},
 };
 
 const reducer = (state = initialState, action = {}) => {
@@ -51,31 +65,31 @@ const reducer = (state = initialState, action = {}) => {
     case `${GET_CUSTOMER_DATA}_PENDING`:
       return {
         ...state,
-        loading: true,
+        loadingCustomerData: true,
       };
     case `${GET_CUSTOMER_DATA}_FULFILLED`: {
       return {
         ...state,
-        loading: false,
+        loadingCustomerData: false,
         customerData: payload,
       };
     }
     case `${GET_CUSTOMER_DATA}_REJECTED`:
       return {
         ...state,
-        loading: false,
+        loadingCustomerData: false,
         errorMessage: action.payload,
       };
 
     case `${GET_BOOKING_DATA}_PENDING`:
       return {
         ...state,
-        loading: true,
+        loadingBookingData: true,
       };
     case `${GET_BOOKING_DATA}_FULFILLED`: {
       return {
         ...state,
-        loading: false,
+        loadingBookingData: false,
         bookingDetails: payload.formData,
         bookingAreaUnitType: payload.unit_type,
         bookingBanks: payload.banks,
@@ -85,95 +99,131 @@ const reducer = (state = initialState, action = {}) => {
     case `${GET_BOOKING_DATA}_REJECTED`:
       return {
         ...state,
-        loading: false,
+        loadingBookingData: false,
         errorMessage: action.payload,
       };
 
     case `${GET_BANK_DETAILS}_PENDING`:
       return {
         ...state,
-        loading: true,
+        loadingBankDetails: true,
       };
     case `${GET_BANK_DETAILS}_FULFILLED`: {
       return {
         ...state,
-        loading: false,
+        loadingBankDetails: false,
         bankDetails: payload,
       };
     }
     case `${GET_BANK_DETAILS}_REJECTED`:
       return {
         ...state,
-        loading: false,
+        loadingBankDetails: false,
         errorMessage: action.payload,
       };
 
     case `${GET_MODIFY_REQUESTS}_PENDING`:
       return {
         ...state,
-        loading: true,
+        loadingModifyRequests: true,
       };
     case `${GET_MODIFY_REQUESTS}_FULFILLED`: {
       return {
         ...state,
-        loading: false,
+        loadingModifyRequests: false,
         modifyRequests: payload.lists,
       };
     }
     case `${GET_MODIFY_REQUESTS}_REJECTED`:
       return {
         ...state,
-        loading: false,
+        loadingModifyRequests: false,
         errorMessage: action.payload,
       };
 
     case `${GET_MODIFY_REQUEST}_PENDING`:
       return {
         ...state,
-        loading: true,
+        loadingModifyRequest: true,
       };
     case `${GET_MODIFY_REQUEST}_FULFILLED`: {
       return {
         ...state,
-        loading: false,
+        loadingModifyRequest: false,
         modifyRequest: payload,
       };
     }
     case `${GET_MODIFY_REQUEST}_REJECTED`:
       return {
         ...state,
-        loading: false,
+        loadingModifyRequest: false,
         errorMessage: action.payload,
       };
 
     case `${GET_ACCOUNT_DETAILS}_PENDING`:
       return {
         ...state,
-        loading: true,
+        LoadingAccountDetails: true,
       };
     case `${GET_ACCOUNT_DETAILS}_FULFILLED`: {
       return {
         ...state,
-        loading: false,
+        LoadingAccountDetails: false,
         accountDetails: payload,
       };
     }
     case `${GET_ACCOUNT_DETAILS}_REJECTED`:
       return {
         ...state,
-        loading: false,
+        LoadingAccountDetails: false,
+        errorMessage: action.payload,
+      };
+    case `${GET_FILE}_PENDING`:
+      return {
+        ...state,
+        loadingFile: true,
+      };
+    case `${GET_FILE}_FULFILLED`: {
+      return {
+        ...state,
+        loadingFile: false,
+        accountDetails: payload,
+      };
+    }
+    case `${GET_FILE}_REJECTED`:
+      return {
+        ...state,
+        loadingFile: false,
+        errorMessage: action.payload,
+      };
+    case `${GET_FOLDER}_PENDING`:
+      return {
+        ...state,
+        loadingFolder: true,
+      };
+    case `${GET_FOLDER}_FULFILLED`: {
+      return {
+        ...state,
+        loadingFolder: false,
+        accountDetails: payload,
+      };
+    }
+    case `${GET_FOLDER}_REJECTED`:
+      return {
+        ...state,
+        loadingFolder: false,
         errorMessage: action.payload,
       };
 
     case `${UPDATE_BANK_DETAILS}_PENDING`:
       return {
         ...state,
-        loading: true,
+        loadingBankDetails: true,
       };
     case `${UPDATE_BANK_DETAILS}_FULFILLED`: {
       return {
         ...state,
-        loading: false,
+        loadingBankDetails: false,
         bankDetails: {
           ...state.bankDetails,
           details: payload,
@@ -183,18 +233,20 @@ const reducer = (state = initialState, action = {}) => {
     case `${UPDATE_BANK_DETAILS}_REJECTED`:
       return {
         ...state,
-        loading: false,
+        loadingBankDetails: false,
         errorMessage: action.payload,
       };
 
     case `${ADD_CUSTOMER}_PENDING`:
     case `${UPDATE_BANK_FILES}_PENDING`:
     case `${ADD_MODIFY_REQUEST}_PENDING`:
+    case `${ADD_MODIFY_REQUEST_COMMENT}_PENDING`:
     case `${UPDATE_BOOKING_STATUS}_PENDING`:
     case `${ADD_COLLECTION}_PENDING`:
     case `${UPDATE_COLLECTION}_PENDING`:
     case `${DELETE_COLLECTION}_PENDING`:
     case `${UPDATE_MODIFY_REQUEST}_PENDING`:
+    case `${CUSTOMER_CREATE_FOLDER}_PENDING`:
       return {
         ...state,
         loading: true,
@@ -202,11 +254,13 @@ const reducer = (state = initialState, action = {}) => {
     case `${ADD_CUSTOMER}_FULFILLED`:
     case `${UPDATE_BANK_FILES}_FULFILLED`:
     case `${ADD_MODIFY_REQUEST}_FULFILLED`:
+    case `${ADD_MODIFY_REQUEST_COMMENT}_FULFILLED`:
     case `${UPDATE_BOOKING_STATUS}_FULFILLED`:
     case `${ADD_COLLECTION}_FULFILLED`:
     case `${UPDATE_COLLECTION}_FULFILLED`:
     case `${DELETE_COLLECTION}_FULFILLED`:
     case `${UPDATE_MODIFY_REQUEST}_FULFILLED`:
+    case `${CUSTOMER_CREATE_FOLDER}_FULFILLED`:
       return {
         ...state,
         loading: false,
@@ -215,11 +269,13 @@ const reducer = (state = initialState, action = {}) => {
     case `${ADD_CUSTOMER}_REJECTED`:
     case `${UPDATE_BANK_FILES}_REJECTED`:
     case `${ADD_MODIFY_REQUEST}_REJECTED`:
+    case `${ADD_MODIFY_REQUEST_COMMENT}_REJECTED`:
     case `${UPDATE_BOOKING_STATUS}_REJECTED`:
     case `${ADD_COLLECTION}_REJECTED`:
     case `${UPDATE_COLLECTION}_REJECTED`:
     case `${DELETE_COLLECTION}_REJECTED`:
     case `${UPDATE_MODIFY_REQUEST}_REJECTED`:
+    case `${CUSTOMER_CREATE_FOLDER}_REJECTED`:
       return {
         ...state,
         loading: false,

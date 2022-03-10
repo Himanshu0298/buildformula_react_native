@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {StyleSheet, View} from 'react-native';
+import {Tabs} from 'react-native-collapsible-tab-view';
 import {ScrollView} from 'react-native-gesture-handler';
 import {
   Caption,
@@ -38,7 +39,7 @@ function ModifyRequest(props) {
 
   return (
     <View style={styles.container}>
-      <ScrollView
+      <Tabs.ScrollView
         contentContainerStyle={styles.scrollView}
         showsVerticalScrollIndicator={false}>
         <Subheading style={styles.Subheading}>All Modify Requests</Subheading>
@@ -68,7 +69,7 @@ function ModifyRequest(props) {
             </View>
           );
         })}
-      </ScrollView>
+      </Tabs.ScrollView>
       {modulePermissions?.editor || modulePermissions?.admin ? (
         <FAB
           style={[styles.fab, {backgroundColor: theme.colors.primary}]}

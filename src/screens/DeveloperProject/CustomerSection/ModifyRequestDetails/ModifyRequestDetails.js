@@ -1,12 +1,6 @@
 import * as React from 'react';
 import {StyleSheet, View, Image} from 'react-native';
-import {
-  Caption,
-  Divider,
-  Subheading,
-  Text,
-  TextInput,
-} from 'react-native-paper';
+import {Caption, Subheading, Text, TextInput} from 'react-native-paper';
 
 import {useState, useEffect} from 'react';
 
@@ -26,6 +20,7 @@ import {MODIFY_REQUEST_STATUS} from 'utils/constant';
 import dayjs from 'dayjs';
 import RenderHtml from 'react-native-render-html';
 import Layout from 'utils/Layout';
+import {Tabs} from 'react-native-collapsible-tab-view';
 
 const relativeTime = require('dayjs/plugin/relativeTime');
 
@@ -94,12 +89,6 @@ const Chat = props => {
             <View style={styles.messageContainer}>
               <View>
                 <OpacityButton opacity={0.1} borderRadius={30}>
-                  {/* <MaterialCommunityIcons
-                    styles={styles.ticket}
-                    name="account-circle"
-                    size={27}
-                    color={theme.colors.primary}
-                  /> */}
                   <Image
                     style={styles.documentImage}
                     height={30}
@@ -131,8 +120,11 @@ const Chat = props => {
   );
 };
 
-const Comment = () => {
+const Comment = props => {
+  const {addCommentData} = props;
+
   const [text, setText] = React.useState('');
+
   return (
     <View style={styles.bottomContainer}>
       <View style={styles.inputContainer}>
@@ -146,18 +138,19 @@ const Comment = () => {
         />
       </View>
       <View>
-        <TouchableOpacity>
-          <OpacityButton
-            opacity={0.1}
-            borderRadius={30}
-            style={styles.sendIcon}>
-            <MaterialCommunityIcons
-              name="send"
-              size={18}
-              color={theme.colors.primary}
-            />
-          </OpacityButton>
-        </TouchableOpacity>
+        <OpacityButton
+          onPress={() => {
+            addCommentData(text);
+          }}
+          opacity={0.1}
+          borderRadius={30}
+          style={styles.sendIcon}>
+          <MaterialCommunityIcons
+            name="send"
+            size={18}
+            color={theme.colors.primary}
+          />
+        </OpacityButton>
       </View>
     </View>
   );
@@ -171,6 +164,7 @@ const ModifyRequestDetails = props => {
     getModifyRequests,
     getModifyRequestDetails,
     updateModifiedRequestStatus,
+    addComment,
   } = useCustomerActions();
 
   const {modifyRequest} = useSelector(s => s.customer);
@@ -200,6 +194,10 @@ const ModifyRequestDetails = props => {
       unit_id: unit.unit_id,
     });
 
+  const addCommentData = description => {
+    addComment({project_id, project_modify_request_id: id, description});
+  };
+
   const toggleEdit = () => setEdit(v => !v);
 
   const handleStatusUpdate = async () => {
@@ -222,7 +220,7 @@ const ModifyRequestDetails = props => {
     <View style={styles.container}>
       <Subheading style={styles.heading}>Modify Requests</Subheading>
       <View style={{flex: 1}}>
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <Tabs.ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.contentContainer}>
             <View style={styles.cardContainer}>
               <View style={styles.row}>
@@ -289,10 +287,10 @@ const ModifyRequestDetails = props => {
               <Chat modifyRequest={modifyRequest} />
             ) : null}
           </View>
-        </ScrollView>
+        </Tabs.ScrollView>
       </View>
 
-      <Comment />
+      <Comment addCommentData={addCommentData} />
     </View>
   );
 };

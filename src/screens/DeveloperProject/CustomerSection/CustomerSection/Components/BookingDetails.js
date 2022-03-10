@@ -20,6 +20,7 @@ import RenderHtml, {RenderHTML} from 'react-native-render-html';
 import RenderTextBox from 'components/Atoms/RenderTextbox';
 import ActionButtons from 'components/Atoms/ActionButtons';
 import Layout from 'utils/Layout';
+import {Tabs} from 'react-native-collapsible-tab-view';
 
 const schema = Yup.object().shape({
   email: Yup.string('Required').required('Required'),
@@ -754,10 +755,10 @@ function BookingDetails(props) {
   } = useSelector(({customer}) => customer);
 
   return (
-    <View style={styles.container}>
-      <ScrollView
-        contentContainerStyle={styles.scrollView}
-        showsVerticalScrollIndicator={false}>
+    <Tabs.ScrollView
+      contentContainerStyle={styles.scrollView}
+      showsVerticalScrollIndicator={false}>
+      <View style={styles.container}>
         <CustomerCredLogin {...props} {...{bookingDetails}} />
         <Divider />
 
@@ -780,8 +781,8 @@ function BookingDetails(props) {
           {...{bookingDetails, bookingPaymentTypes, bookingBanks}}
         />
         <TermsCondition {...props} {...{bookingDetails}} />
-      </ScrollView>
-    </View>
+      </View>
+    </Tabs.ScrollView>
   );
 }
 

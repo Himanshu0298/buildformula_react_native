@@ -5,6 +5,7 @@ import {useSelector} from 'react-redux';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {getPermissions} from 'utils';
 import UserAvatar from 'components/Atoms/UserAvatar';
+import {Tabs} from 'react-native-collapsible-tab-view';
 
 function RenderCustomer({customer, navToDetails, index}) {
   const {profile_pic, customer_first_name} = customer;
@@ -55,8 +56,8 @@ function Details(props) {
   };
 
   return (
-    <View style={styles.container}>
-      <ScrollView contentContainerStyle={{flexGrow: 1}}>
+    <Tabs.ScrollView contentContainerStyle={{flexGrow: 1}}>
+      <View style={styles.container}>
         {customerData?.members?.map((customer, index) => (
           <RenderCustomer
             key={index}
@@ -76,8 +77,8 @@ function Details(props) {
 
           <Caption>You can add upto 10 joint names for your property</Caption>
         </View>
-      </ScrollView>
-    </View>
+      </View>
+    </Tabs.ScrollView>
   );
 }
 

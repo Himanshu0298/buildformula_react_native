@@ -21,7 +21,7 @@ import {useSelector} from 'react-redux';
 import useCustomerActions from 'redux/actions/customerActions';
 
 import {getPermissions} from 'utils';
-import {useMemo} from 'react';
+import {Tabs} from 'react-native-collapsible-tab-view';
 import ActivityDialog from './Components/ActivityDialog';
 
 function StatusDialog(props) {
@@ -97,7 +97,7 @@ function Account(props) {
     };
   }, [paymentCollection]);
 
-  const CollectionTypes = useMemo(() => {
+  const CollectionTypes = React.useMemo(() => {
     return [
       {
         key: 'document',
@@ -120,7 +120,7 @@ function Account(props) {
     ];
   }, [paymentCollection, theme]);
 
-  const PaymentScheduleTypes = useMemo(() => {
+  const PaymentScheduleTypes = React.useMemo(() => {
     return [
       {
         key: 'document',
@@ -179,7 +179,7 @@ function Account(props) {
   };
 
   return (
-    <ScrollView
+    <Tabs.ScrollView
       showsVerticalScrollIndicator={false}
       contentContainerStyle={styles.containerSection}>
       <ActivityDialog
@@ -360,13 +360,7 @@ function Account(props) {
           </View>
         </View>
       </View>
-
-      {/* <View style={styles.cardItemsContainer}>
-            <TouchableOpacity style={styles.cardItem} onPress={navToSchedule}>
-              <Text>View Schedule Details</Text>
-            </TouchableOpacity>
-          </View> */}
-    </ScrollView>
+    </Tabs.ScrollView>
   );
 }
 
