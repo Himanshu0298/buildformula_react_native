@@ -11,9 +11,9 @@
     "prepare": "husky install",
     "podinstall": "run-script-os",
     "podinstall:macos": "cd ios && pod install && cd ..",
-    "podinstall:windows:linux": "",
-    "postinstall": "patch-package; npx jetify; npm run podinstall;",
-    "postuninstall": "patch-package; npx jetify; npm run podinstall;"
+    "podinstall:windows:linux": "echo god",
+    "postinstall": "patch-package &&  npx jetify ; npm run podinstall;",
+    "postuninstall": "patch-package && npx jetify ; npm run podinstall;"
   },
   "dependencies": {
     "@expo/react-native-action-sheet": "^3.13.0",
@@ -121,6 +121,7 @@
     "eslint-plugin-react-native": "^4.0.0",
     "husky": "^7.0.4",
     "jest": "^27.4.7",
+    "jetifier": "^2.0.0",
     "lint-staged": "^12.1.7",
     "metro-react-native-babel-preset": "^0.66.2",
     "prettier": "^2.5.1",

@@ -1005,6 +1005,9 @@ function BookingPayments(props) {
     }
 
     data.main_total_amount = data.finalAmount;
+    if (values.payment_type === 1) {
+      data.full_basic_amount = data.finalAmount;
+    }
 
     if (values.project_main_types === 4) {
       data.area_for_super_buildup__bunglow =

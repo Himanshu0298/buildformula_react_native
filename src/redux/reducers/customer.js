@@ -90,7 +90,7 @@ const reducer = (state = initialState, action = {}) => {
       return {
         ...state,
         loadingBookingData: false,
-        bookingDetails: payload.formData,
+        bookingDetails: {...payload.formData, bookedUnit: payload.units},
         bookingAreaUnitType: payload.unit_type,
         bookingBanks: payload.banks,
         bookingPaymentTypes: payload.payment_type,

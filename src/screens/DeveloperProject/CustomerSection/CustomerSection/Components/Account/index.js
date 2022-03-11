@@ -171,8 +171,7 @@ function Account(props) {
           onPress={toggleActivityDialog}
           name="info-outline"
           size={20}
-          color="#8B959F
-          "
+          color="#8B959F"
         />
       </View>
     );
@@ -187,14 +186,14 @@ function Account(props) {
         handleClose={toggleActivityDialog}
         data={activityLog}
       />
-      {statusDialog ? (
+      {/* {statusDialog ? (
         <StatusDialog
           open={statusDialog}
           status={bookingCurrentStatus}
           handleClose={toggleStatusDialog}
           updateStatus={updateStatus}
         />
-      ) : null}
+      ) : null} */}
 
       <View style={styles.documentationContainer}>
         <Subheading style={{color: theme.colors.documentation}}>

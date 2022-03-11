@@ -278,6 +278,7 @@ function RatesSection(props) {
     rate_super_buildup_bunglow,
     rate_for_buildup_bunglow,
     total_super_buildup_construction_amount,
+    bookedUnit,
   } = bookingDetails;
 
   const otherChargePairs = React.useMemo(() => {
@@ -332,43 +333,48 @@ function RatesSection(props) {
         <RenderRow
           row={[{label: 'As Carpet', value: `Rs.${main_total_amount}`}]}
         />
-        <Subheading style={{color: theme.colors.primary, marginTop: 20}}>
-          CONSTRUCTION RATE
-        </Subheading>
-        <RenderRow
-          row={[
-            {
-              label: 'Super Build-up Area',
-              value: `${area_for_super_buildup__bunglow}`,
-            },
-            {label: 'Build-up Area', value: `${area_for_buildup_bunglow}`},
-          ]}
-        />
-        <RenderRow
-          row={[
-            {
-              label: 'Super Build-up Rate',
-              value: `${rate_super_buildup_bunglow}`,
-            },
-            {label: 'Build-up Rate', value: `${rate_for_buildup_bunglow}`},
-          ]}
-        />
 
-        <Caption style={{color: theme.colors.primary, marginVertical: 10}}>
-          Total Construction Amount
-        </Caption>
-        <RenderRow
-          row={[
-            {
-              label: 'As Super Buildup',
-              value: `Rs.${total_super_buildup_construction_amount}`,
-            },
-            {
-              label: 'As Buildup',
-              value: `Rs.${total_super_buildup_construction_amount}`,
-            },
-          ]}
-        />
+        {bookedUnit.project_type === 4 ? (
+          <>
+            <Subheading style={{color: theme.colors.primary, marginTop: 20}}>
+              CONSTRUCTION RATE
+            </Subheading>
+            <RenderRow
+              row={[
+                {
+                  label: 'Super Build-up Area',
+                  value: `${area_for_super_buildup__bunglow}`,
+                },
+                {label: 'Build-up Area', value: `${area_for_buildup_bunglow}`},
+              ]}
+            />
+            <RenderRow
+              row={[
+                {
+                  label: 'Super Build-up Rate',
+                  value: `${rate_super_buildup_bunglow}`,
+                },
+                {label: 'Build-up Rate', value: `${rate_for_buildup_bunglow}`},
+              ]}
+            />
+
+            <Caption style={{color: theme.colors.primary, marginVertical: 10}}>
+              Total Construction Amount
+            </Caption>
+            <RenderRow
+              row={[
+                {
+                  label: 'As Super Buildup',
+                  value: `Rs.${total_super_buildup_construction_amount}`,
+                },
+                {
+                  label: 'As Buildup',
+                  value: `Rs.${total_super_buildup_construction_amount}`,
+                },
+              ]}
+            />
+          </>
+        ) : null}
 
         {otherChargePairs.length ? (
           <>
