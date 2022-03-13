@@ -186,14 +186,12 @@ function Account(props) {
         handleClose={toggleActivityDialog}
         data={activityLog}
       />
-      {/* {statusDialog ? (
-        <StatusDialog
-          open={statusDialog}
-          status={bookingCurrentStatus}
-          handleClose={toggleStatusDialog}
-          updateStatus={updateStatus}
-        />
-      ) : null} */}
+      <StatusDialog
+        open={statusDialog}
+        status={bookingCurrentStatus}
+        handleClose={toggleStatusDialog}
+        updateStatus={updateStatus}
+      />
 
       <View style={styles.documentationContainer}>
         <Subheading style={{color: theme.colors.documentation}}>
