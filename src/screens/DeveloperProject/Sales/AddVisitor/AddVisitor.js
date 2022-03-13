@@ -1,6 +1,6 @@
 import React, {useEffect, useState, useMemo} from 'react';
 import {StyleSheet, View, StatusBar} from 'react-native';
-import {withTheme, Subheading, Button, TextInput} from 'react-native-paper';
+import {withTheme, Subheading, TextInput} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
 import ProjectHeader from 'components/Molecules/Layout/ProjectHeader';
@@ -180,23 +180,12 @@ function PersonalTab(props) {
             onSelect={value => setFieldValue('source_type', value)}
           />
         </View>
-        <View style={styles.actionContainer}>
-          <Button
-            style={{flex: 1, marginHorizontal: 5}}
-            contentStyle={{padding: 3}}
-            theme={{roundness: 15}}
-            onPress={navigation.goBack}>
-            Cancel
-          </Button>
-          <Button
-            style={{flex: 1, marginHorizontal: 5}}
-            mode="contained"
-            contentStyle={{padding: 3}}
-            theme={{roundness: 15}}
-            onPress={() => setSelectedTab(1)}>
-            Next
-          </Button>
-        </View>
+        <ActionButtons
+          cancelLabel="Cancel"
+          submitLabel="Next"
+          onSubmit={() => setSelectedTab(1)}
+          onCancel={navigation.goBack}
+        />
       </View>
     </KeyboardAwareScrollView>
   );
@@ -213,7 +202,6 @@ function InquiryTab(props) {
     handleBlur,
     errors,
   } = formikProps;
-  console.log('-------->inquiryOptions 123', inquiryOptions);
 
   const {t} = useTranslation();
 
@@ -454,8 +442,6 @@ function AddVisitor(props) {
     if (edit) {
       const visitorData = _.cloneDeep(visitor);
 
-      console.log('----->visitorData', visitorData);
-
       delete visitorData.created;
       delete visitorData.modified;
       delete visitorData.id;
@@ -474,8 +460,6 @@ function AddVisitor(props) {
   const onSubmit = async values => {
     const inputs = _.cloneDeep(values);
 
-    console.log('----->inputs', inputs);
-
     let data = {
       follow_up_date: dayjs(inputs.follow_up_date).format('DD-MM-YYYY'),
       follow_up_time: dayjs(inputs.follow_up_time).format('HH:mm'),
@@ -493,7 +477,6 @@ function AddVisitor(props) {
     };
 
     if (edit) {
-      console.log('----->data', data);
       await updateVisitor({...data, visitor_id: visitor.id});
       await getVisitor({
         project_id: selectedProject.id,
@@ -555,25 +538,11 @@ const styles = StyleSheet.create({
   input: {
     paddingVertical: 7,
   },
-  actionContainer: {
-    marginTop: 25,
-    paddingHorizontal: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
   priorityContainer: {
     marginVertical: 5,
     marginLeft: 5,
   },
   radioContainer: {
     flexDirection: 'row',
-  },
-  actionButton: {
-    flex: 1,
-    marginHorizontal: 5,
-  },
-  buttonLabel: {
-    padding: 3,
   },
 });

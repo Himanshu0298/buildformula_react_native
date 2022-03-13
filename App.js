@@ -12,13 +12,19 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import * as RNLocalize from 'react-native-localize';
 import {ActionSheetProvider} from '@expo/react-native-action-sheet';
 import {initReactI18next} from 'react-i18next';
-import {checkPermission} from 'utils/permissions';
+// import {checkPermission} from 'utils/permissions';
+import * as Sentry from '@sentry/react-native';
 import {theme} from './src/styles/theme';
 import {store, persistor} from './src/redux/store';
 import NavContainer from './src/navigation';
 import translations from './src/translations/global';
 import {SnackbarProvider} from './src/components/Atoms/Snackbar';
 import AlertProvider from './src/components/Atoms/Alert/AlertProvider';
+
+Sentry.init({
+  dsn: 'https://9f461e9c89264233b4b5ed91e2882497@o523674.ingest.sentry.io/6256539',
+  tracesSampleRate: 1,
+});
 
 const languageDetector = {
   type: 'languageDetector',
@@ -50,16 +56,16 @@ function Loader() {
 }
 
 function App() {
-  useEffect(() => {
-    checkPermissions();
-  }, []);
+  // useEffect(() => {
+  //   checkPermissions();
+  // }, []);
 
-  const checkPermissions = async () => {
-    const fileReadPermission = await checkPermission('fileRead');
-    const fileWritePermission = await checkPermission('fileWrite');
-    console.log('-------->fileReadPermission', fileReadPermission);
-    console.log('-------->fileWritePermission', fileWritePermission);
-  };
+  // const checkPermissions = async () => {
+  //   const fileReadPermission = await checkPermission('fileRead');
+  //   const fileWritePermission = await checkPermission('fileWrite');
+  //   console.log('-------->fileReadPermission', fileReadPermission);
+  //   console.log('-------->fileWritePermission', fileWritePermission);
+  // };
 
   // TODO: figure out action sheet (ActionSheetProvider) is only required for file Input or the whole app
 
@@ -88,4 +94,4 @@ function App() {
   );
 }
 
-export default App;
+export default Sentry.wrap(App);
