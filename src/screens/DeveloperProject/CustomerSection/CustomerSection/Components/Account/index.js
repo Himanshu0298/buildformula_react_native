@@ -14,9 +14,14 @@ import {
 import {BOOKING_STATUS_STYLES} from 'components/Molecules/UnitSelector/RenderUnit';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import {useSelector} from 'react-redux';
 import useCustomerActions from 'redux/actions/customerActions';
+
 import {getPermissions} from 'utils';
+import {Tabs} from 'react-native-collapsible-tab-view';
 import ActivityDialog from './Components/ActivityDialog';
 
 function StatusDialog(props) {
@@ -43,7 +48,7 @@ function StatusDialog(props) {
             </Button>
           </View>
           <Button
-            style={{marginTop: 15, marginHorizontal: 15}}
+            style={styles.updateStatus}
             mode="contained"
             onPress={() => updateStatus(selectedStatus)}>
             Update
@@ -69,8 +74,8 @@ function Account(props) {
     activityLog,
     bookingCurrentStatus = 3,
   } = accountDetails;
-  const {documentCharges, propertyfinalamount, bankLoanDetail} =
-    paymentSchedule || {};
+
+  const {documentCharges, propertyfinalamount} = paymentSchedule || {};
 
   const [activityDialog, setActivityDialog] = React.useState(false);
   const [statusDialog, setStatusDialog] = React.useState(false);
@@ -92,6 +97,52 @@ function Account(props) {
     };
   }, [paymentCollection]);
 
+  const CollectionTypes = React.useMemo(() => {
+    return [
+      {
+        key: 'document',
+        label: 'Documentation charges',
+        value: paymentCollection?.documentcharges?.length,
+        color: theme.colors.documentation,
+      },
+      {
+        key: 'property',
+        label: 'Property Final Amount',
+        value: paymentCollection?.propertyfinalamount?.length,
+        color: theme.colors.primary,
+      },
+      {
+        key: 'gst',
+        label: 'GST Amount',
+        value: paymentCollection?.gst?.length,
+        color: theme.colors.primary,
+      },
+    ];
+  }, [paymentCollection, theme]);
+
+  const PaymentScheduleTypes = React.useMemo(() => {
+    return [
+      {
+        key: 'document',
+        label: ' Documentation charges',
+        value: paymentSchedule?.documentcharges?.length,
+        color: theme.colors.documentation,
+      },
+      {
+        key: 'property',
+        label: 'Property Final Amount',
+        value: paymentSchedule?.propertyfinalamount?.length,
+        color: theme.colors.primary,
+      },
+      {
+        key: 'bankLoanDetail',
+        label: 'Bank loan details',
+        value: paymentSchedule?.bankLoanDetail?.length,
+        color: theme.colors.primary,
+      },
+    ];
+  }, [paymentSchedule, theme]);
+
   const toggleStatusDialog = () => setStatusDialog(v => !v);
   const toggleActivityDialog = () => setActivityDialog(v => !v);
 
@@ -110,29 +161,92 @@ function Account(props) {
   const navToDetails = (type, data) =>
     navigation.navigate('PaymentCollections', {...route.params, type, data});
 
-  const navToSchedule = () =>
-    navigation.navigate('PaymentSchedule', {data: paymentSchedule});
+  const navToSchedule = type =>
+    navigation.navigate('PaymentSchedule', {data: paymentSchedule, type});
 
-  const navToAddCollection = () =>
-    navigation.navigate('AddCollection', {...route.params});
+  const rightActivitySection = () => {
+    return (
+      <View>
+        <MaterialIcons
+          onPress={toggleActivityDialog}
+          name="info-outline"
+          size={20}
+          color="#8B959F"
+        />
+      </View>
+    );
+  };
 
   return (
-    <ScrollView
+    <Tabs.ScrollView
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={{flexGrow: 1}}>
+      contentContainerStyle={styles.containerSection}>
       <ActivityDialog
         open={activityDialog}
         handleClose={toggleActivityDialog}
         data={activityLog}
       />
-      {statusDialog ? (
+      {/* {statusDialog ? (
         <StatusDialog
           open={statusDialog}
           status={bookingCurrentStatus}
           handleClose={toggleStatusDialog}
           updateStatus={updateStatus}
         />
-      ) : null}
+      ) : null} */}
+
+      <View style={styles.documentationContainer}>
+        <Subheading style={{color: theme.colors.documentation}}>
+          Documentation Charges
+        </Subheading>
+
+        <View
+          style={[
+            styles.documentationChargesContainer,
+            {borderColor: theme.colors.documentation},
+          ]}>
+          <View
+            style={[
+              styles.documentSection,
+              {borderColor: theme.colors.documentation},
+            ]}>
+            <Subheading style={styles.allSubheading}>
+              ₹ {parseFloat(documentCharges?.document_charge) || 0}
+            </Subheading>
+            <Caption style={styles.fontSize}>Total amount</Caption>
+          </View>
+          <View style={styles.documentAmountSection}>
+            <Subheading style={styles.allSubheading}>
+              ₹ {parseFloat(documentCollected)}
+            </Subheading>
+            <Caption style={styles.fontSize}>Amount collected</Caption>
+          </View>
+        </View>
+      </View>
+
+      <View style={styles.documentationContainer}>
+        <Subheading>Property Final Amount </Subheading>
+
+        <View style={styles.amountContainer}>
+          <View style={styles.section}>
+            <Subheading style={styles.allSubheading}>
+              ₹{' '}
+              {parseFloat(
+                propertyfinalamount?.full_basic_amount ||
+                  propertyfinalamount?.basic_amount,
+              ) || 0}
+            </Subheading>
+            <Caption style={styles.fontSize}>Total amount</Caption>
+          </View>
+          <View style={styles.section}>
+            <Subheading style={styles.allSubheading}>
+              ₹ {parseFloat(propertyCollected)}
+            </Subheading>
+            <Caption style={styles.fontSize}>Amount collected</Caption>
+          </View>
+        </View>
+      </View>
+
       <View style={styles.container}>
         <Subheading>Booking status</Subheading>
         <View style={styles.statusCard}>
@@ -144,7 +258,7 @@ function Account(props) {
               ]}>
               {bookingStyle.badge}
             </Badge>
-            <Text>{bookingStyle.label}</Text>
+            <Text>{bookingStyle.title}</Text>
           </View>
           {showUpdateStatus &&
           (modulePermissions?.editor || modulePermissions?.admin) ? (
@@ -162,148 +276,90 @@ function Account(props) {
             </View>
           ) : null}
         </View>
-        <View style={styles.documentationContainer}>
-          <Subheading style={{color: theme.colors.documentation}}>
-            Documentation charges
-          </Subheading>
-
-          <View
-            style={[
-              styles.documentationChargesContainer,
-              {borderColor: theme.colors.documentation},
-            ]}>
-            <View
-              style={[
-                styles.section,
-                {
-                  borderRightWidth: 1,
-                  borderColor: theme.colors.documentation,
-                  backgroundColor: 'rgba(243, 122, 80, 0.1)',
-                },
-              ]}>
-              <Subheading style={{fontWeight: 'bold'}}>
-                ₹ {parseFloat(documentCharges?.document_charge) || 0}
-              </Subheading>
-              <Caption style={{fontSize: 16}}>Total amount</Caption>
-            </View>
-            <View
-              style={[
-                styles.section,
-                {backgroundColor: 'rgba(243, 122, 80, 0.1)'},
-              ]}>
-              <Subheading style={{fontWeight: 'bold'}}>
-                ₹ {parseFloat(documentCollected)}
-              </Subheading>
-              <Caption style={{fontSize: 16}}>Amount collected</Caption>
-            </View>
-          </View>
-        </View>
-
-        <View style={styles.documentationContainer}>
-          <Subheading>Property Final Amount </Subheading>
-
-          <View style={styles.amountContainer}>
-            <View
-              style={[
-                styles.section,
-                {borderRightWidth: 1, borderColor: 'rgba(222, 225, 231, 1)'},
-              ]}>
-              <Subheading style={{fontWeight: 'bold'}}>
-                ₹{' '}
-                {parseFloat(
-                  propertyfinalamount?.full_basic_amount ||
-                    propertyfinalamount?.basic_amount,
-                ) || 0}
-              </Subheading>
-              <Caption style={{fontSize: 16}}>Total amount</Caption>
-            </View>
-            <View style={styles.section}>
-              <Subheading style={{fontWeight: 'bold'}}>
-                ₹ {parseFloat(propertyCollected)}
-              </Subheading>
-              <Caption style={{fontSize: 16}}>Amount collected</Caption>
-            </View>
-          </View>
-        </View>
-
-        <View style={styles.actionRow}>
-          {showUpdateStatus &&
-          (modulePermissions?.editor || modulePermissions?.admin) ? (
-            <Button
-              mode="outlined"
-              style={[styles.actionButton, {borderColor: theme.colors.primary}]}
-              uppercase={false}
-              theme={{roundness: 7}}
-              onPress={navToAddCollection}>
-              Add collection
-            </Button>
-          ) : null}
-          <Button
-            mode="outlined"
-            style={[styles.actionButton, {borderColor: theme.colors.primary}]}
-            uppercase={false}
-            onPress={toggleActivityDialog}
-            theme={{roundness: 7}}>
-            View activity
-          </Button>
-        </View>
 
         <View style={styles.detailCard}>
-          <Subheading style={{color: theme.colors.primary}}>
-            Payment Schedule
-          </Subheading>
+          <View style={styles.rightIcon}>
+            <Subheading style={{color: theme.colors.primary}}>
+              Payment collection
+            </Subheading>
+            {rightActivitySection()}
+          </View>
 
           <View style={styles.cardItemsContainer}>
-            <TouchableOpacity style={styles.cardItem} onPress={navToSchedule}>
-              <Text>View Schedule Details</Text>
-            </TouchableOpacity>
+            {CollectionTypes.map(item => (
+              <>
+                <TouchableOpacity
+                  style={styles.cardItem}
+                  onPress={() => navToDetails(item.key)}>
+                  <View style={styles.arrowButton}>
+                    <View style={styles.badgeButton}>
+                      <Text style={{color: item.color}}>{item.label}</Text>
+                      {item.value ? (
+                        <Badge
+                          style={[
+                            styles.documentBadge,
+                            {backgroundColor: theme.colors.primary},
+                          ]}
+                          visible={item.value}>
+                          {item.value}
+                        </Badge>
+                      ) : null}
+                    </View>
+                    <Ionicons
+                      name="ios-arrow-forward-circle"
+                      size={22}
+                      color={theme.colors.primary}
+                    />
+                  </View>
+                </TouchableOpacity>
+                <Divider />
+              </>
+            ))}
           </View>
         </View>
 
         <View style={styles.detailCard}>
-          <Subheading style={{color: theme.colors.primary}}>
-            Payment collection
-          </Subheading>
+          <View style={styles.rightIcon}>
+            <Subheading style={{color: theme.colors.primary}}>
+              Payment Schedule
+            </Subheading>
+            {rightActivitySection()}
+          </View>
 
           <View style={styles.cardItemsContainer}>
-            <TouchableOpacity
-              style={styles.cardItem}
-              onPress={() => navToDetails('document')}>
-              <Text style={{color: theme.colors.documentation}}>
-                Documentation charges
-              </Text>
-              <Badge
-                style={{backgroundColor: theme.colors.primary}}
-                visible={paymentCollection?.documentcharges?.length}>
-                {paymentCollection?.documentcharges?.length}
-              </Badge>
-            </TouchableOpacity>
-            <Divider />
-            <TouchableOpacity
-              style={styles.cardItem}
-              onPress={() => navToDetails('property')}>
-              <Text>Property Final Amount</Text>
-              <Badge
-                style={{backgroundColor: theme.colors.primary}}
-                visible={paymentCollection?.propertyfinalamount?.length}>
-                {paymentCollection?.propertyfinalamount?.length}
-              </Badge>
-            </TouchableOpacity>
-            <Divider />
-            <TouchableOpacity
-              style={styles.cardItem}
-              onPress={() => navToDetails('gst')}>
-              <Text>GST Amount</Text>
-              <Badge
-                style={{backgroundColor: theme.colors.primary}}
-                visible={paymentCollection?.gst?.length}>
-                {paymentCollection?.gst?.length}
-              </Badge>
-            </TouchableOpacity>
+            {PaymentScheduleTypes.map(item => (
+              <>
+                <TouchableOpacity
+                  style={styles.cardItem}
+                  onPress={() => navToSchedule(item.key)}>
+                  <View style={styles.arrowButton}>
+                    <View style={styles.badgeButton}>
+                      <Text style={{color: item.color}}>{item.label}</Text>
+                      {item.value ? (
+                        <Badge
+                          style={[
+                            styles.documentBadge,
+                            {backgroundColor: theme.colors.primary},
+                          ]}
+                          visible={item.value}>
+                          {item.value}
+                        </Badge>
+                      ) : null}
+                    </View>
+                    <Ionicons
+                      name="ios-arrow-forward-circle"
+                      size={22}
+                      color={theme.colors.primary}
+                    />
+                  </View>
+                </TouchableOpacity>
+                <Divider />
+              </>
+            ))}
           </View>
         </View>
       </View>
-    </ScrollView>
+    </Tabs.ScrollView>
   );
 }
 
@@ -311,7 +367,11 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     padding: 10,
+    paddingHorizontal: 15,
     marginBottom: 20,
+  },
+  containerSection: {
+    flexGrow: 1,
   },
   statusCard: {
     marginTop: 5,
@@ -335,6 +395,7 @@ const styles = StyleSheet.create({
   },
   documentationContainer: {
     marginTop: 10,
+    paddingHorizontal: 13,
   },
   documentationChargesContainer: {
     marginTop: 3,
@@ -342,6 +403,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     flexDirection: 'row',
     alignItems: 'center',
+    flex: 1,
   },
   amountContainer: {
     marginTop: 3,
@@ -354,15 +416,23 @@ const styles = StyleSheet.create({
   section: {
     padding: 10,
     flex: 1,
+    borderRightWidth: 1,
+    borderColor: 'rgba(222, 225, 231, 1)',
   },
-  actionRow: {
-    marginTop: 15,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-around',
+
+  documentSection: {
+    padding: 10,
+    flex: 1,
+    borderRightWidth: 1,
+    backgroundColor: 'rgba(243, 122, 80, 0.1)',
   },
-  actionButton: {
-    width: '40%',
+  documentAmountSection: {
+    flex: 1,
+    backgroundColor: 'rgba(243, 122, 80, 0.1)',
+    padding: 10,
+  },
+  allSubheading: {
+    fontWeight: 'bold',
   },
   detailCard: {
     marginTop: 20,
@@ -390,6 +460,32 @@ const styles = StyleSheet.create({
   },
   statusBadge: {
     width: '45%',
+  },
+  badgeButton: {
+    flexDirection: 'row',
+  },
+  documentBadge: {
+    marginLeft: 10,
+  },
+
+  arrowButton: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    flex: 1,
+    marginRight: -10,
+    alignItems: 'center',
+  },
+  rightIcon: {
+    flex: 1,
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+  },
+  fontSize: {
+    fontSize: 16,
+  },
+  updateStatus: {
+    marginTop: 15,
+    marginHorizontal: 15,
   },
 });
 

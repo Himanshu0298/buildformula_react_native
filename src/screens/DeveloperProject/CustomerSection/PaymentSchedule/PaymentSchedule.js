@@ -19,7 +19,7 @@ function Item({label, value, style, valueStyle}) {
   );
 }
 
-function RenderPayment({theme, data}) {
+function RenderPayment({data}) {
   const {
     name,
     payment_mode,
@@ -31,14 +31,14 @@ function RenderPayment({theme, data}) {
 
   return (
     <>
-      <Subheading style={{marginTop: 10}}>Property Final Amount </Subheading>
+      <Subheading style={styles.Subheading}>Property Final Amount </Subheading>
       <View style={styles.detailCard}>
         <View style={styles.row}>
-          <Item label="Payment method" value={name} style={{flex: 1}} />
+          <Item label="Payment method" value={name} style={styles.item} />
           <Item
             label="Total basic amount"
             value={`₹ ${parseFloat(basic_amount || full_basic_amount || 0)}`}
-            style={{flex: 1}}
+            style={styles.item}
           />
         </View>
 
@@ -48,12 +48,12 @@ function RenderPayment({theme, data}) {
               <Item
                 label="Start date"
                 value={dayjs(start_date).format('DD MMM YYYY')}
-                style={{flex: 1}}
+                style={styles.item}
               />
               <Item
                 label="End date"
                 value={dayjs(end_date).format('DD MMM YYYY')}
-                style={{flex: 1}}
+                style={styles.item}
               />
             </View>
           ) : null}
@@ -69,7 +69,11 @@ function RenderDocumentCharges({theme, data}) {
 
   return (
     <>
-      <Subheading style={{color: theme.colors.documentation, marginTop: 10}}>
+      <Subheading
+        style={[
+          styles.documentSubheading,
+          {color: theme.colors.documentation},
+        ]}>
         Documentation charges
       </Subheading>
       <View style={styles.chargeContainer}>
@@ -82,12 +86,12 @@ function RenderDocumentCharges({theme, data}) {
             <Item
               label="Start date"
               value={dayjs(start_date).format('DD MMM YYYY')}
-              style={{flex: 1}}
+              style={styles.item}
             />
             <Item
               label="End date"
               value={dayjs(end_date).format('DD MMM YYYY')}
-              style={{flex: 1}}
+              style={styles.item}
             />
           </View>
         ) : null}
@@ -108,14 +112,14 @@ function RenderLoanDetails({loanDetails}) {
           <Item
             label="Loan taken"
             value={takeLoan}
-            style={{flex: 1}}
-            valueStyle={{textTransform: 'capitalize'}}
+            style={styles.item}
+            valueStyle={styles.loanText}
           />
           {loanTaken ? (
             <Item
               label="Amount"
               value={`₹ ${parseFloat(loan_amount || 0)}`}
-              style={{flex: 1}}
+              style={styles.item}
             />
           ) : null}
         </View>
@@ -132,26 +136,33 @@ function RenderLoanDetails({loanDetails}) {
 
 function PaymentSchedule(props) {
   const {navigation, route} = props;
-  const {data: scheduleData} = route?.params || {};
+  const {data: scheduleData, type} = route?.params || {};
 
   const {bankLoanDetail, documentCharges, propertyfinalamount} = scheduleData;
 
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={{flexGrow: 1}}>
+      contentContainerStyle={styles.scheduleContainer}>
       <View style={styles.container}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           style={styles.titleContainer}>
           <Image source={backArrow} style={styles.backArrow} />
-          <Subheading>Payment Collection</Subheading>
+          <Subheading>Payment Schedule</Subheading>
         </TouchableOpacity>
 
         <View style={styles.contentContainer}>
-          <RenderLoanDetails {...props} loanDetails={bankLoanDetail} />
-          <RenderDocumentCharges {...props} data={documentCharges} />
-          <RenderPayment {...props} data={propertyfinalamount} />
+          {type === 'bankLoanDetail' ? (
+            <RenderLoanDetails {...props} loanDetails={bankLoanDetail} />
+          ) : null}
+
+          {type === 'document' ? (
+            <RenderDocumentCharges {...props} data={documentCharges} />
+          ) : null}
+          {type === 'property' ? (
+            <RenderPayment {...props} data={propertyfinalamount} />
+          ) : null}
         </View>
       </View>
     </ScrollView>
@@ -175,6 +186,9 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     marginVertical: 15,
+  },
+  Subheading: {
+    marginTop: 10,
   },
   chargeContainer: {
     marginVertical: 10,
@@ -201,6 +215,18 @@ const styles = StyleSheet.create({
     padding: 10,
     marginTop: 10,
     borderRadius: 7,
+  },
+  scheduleContainer: {
+    flexGrow: 1,
+  },
+  item: {
+    flex: 1,
+  },
+  loanText: {
+    textTransform: 'capitalize',
+  },
+  documentSubheading: {
+    marginTop: 10,
   },
 });
 

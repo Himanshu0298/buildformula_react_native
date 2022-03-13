@@ -11,7 +11,6 @@ import ApartmentIcon from 'assets/images/apartment.svg';
 import OfficeIcon from 'assets/images/office.svg';
 import BungalowIcon from 'assets/images/bungalow.svg';
 import PlatIcon from 'assets/images/plot.svg';
-import {Caption} from 'react-native-paper';
 
 export const BOOKING_STATUS_STYLES = {
   2: {

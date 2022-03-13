@@ -126,7 +126,7 @@ export const getUnitLabel = (floor, unit) => {
 };
 
 export function getInitialScreen(authenticated, user = {}) {
-  const {id, otp_verified, email_verified, default_role_id} = user;
+  const {id, otp_verified, email_verified} = user;
   if (authenticated) {
     // if (project.id) {
     //   return 'ProjectStructureStepOne';

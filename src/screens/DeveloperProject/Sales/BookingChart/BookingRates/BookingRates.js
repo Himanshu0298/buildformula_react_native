@@ -30,15 +30,54 @@ import RenderSelect from 'components/Atoms/RenderSelect';
 import {useSelector} from 'react-redux';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import {DOCUMENT_CHARGE_LIMIT} from 'utils/constant';
+import {theme} from 'styles/theme';
+import ActionButtons from '../../../../../components/Atoms/ActionButtons';
 
-const TYPES = ['super_buildup', 'buildup', 'carpet'];
+const BASIC_TYPES = ['super_buildup', 'buildup', 'carpet'];
+const CONSTRUCTION_TYPES = ['construction_super_buildup', 'construction_build'];
 
 const schema = Yup.object().shape({
   area_amount: Yup.number('Invalid').required('Required'),
   carpet_unit: Yup.string('Invalid').required('Required'),
-  ...getTypesSchema(TYPES),
+  ...getTypesSchema(BASIC_TYPES),
+  construction_super_buildup_area: Yup.string('Invalid').when(
+    'project_main_types',
+    {
+      is: 4,
+      then: Yup.string('Invalid').required('Required'),
+    },
+  ),
+  construction_super_buildup_rate: Yup.string('Invalid').when(
+    'project_main_types',
+    {
+      is: 4,
+      then: Yup.string('Invalid').required('Required'),
+    },
+  ),
+  construction_build_area: Yup.string('Invalid').when('project_main_types', {
+    is: 4,
+    then: Yup.string('Invalid').required('Required'),
+  }),
+  construction_build_rate: Yup.string('Invalid').when('project_main_types', {
+    is: 4,
+    then: Yup.string('Invalid').required('Required'),
+  }),
 });
 
+function RenderItems({row}) {
+  return (
+    <View>
+      {row.map(({label, labelStyle, value}, index) => {
+        return (
+          <View key={index} style={styles.cell}>
+            <Text style={labelStyle}>{label}:</Text>
+            <Caption style={{flexShrink: 1}}>{value}</Caption>
+          </View>
+        );
+      })}
+    </View>
+  );
+}
 function getTypesSchema(types) {
   const typesSchema = {};
 
@@ -47,6 +86,7 @@ function getTypesSchema(types) {
     typesSchema[`${type}_rate`] = Yup.number('Invalid').required('Required');
     return type;
   });
+
   return typesSchema;
 }
 
@@ -57,7 +97,16 @@ function getType(key) {
 }
 
 function RatesColumn(props) {
-  const {t, formikProps, theme, label, type: rateType, syncAmounts} = props;
+  const {
+    t,
+    formikProps,
+    label,
+    type: rateType,
+    syncAmounts,
+    types,
+    amount,
+    getTotal,
+  } = props;
 
   const {values, handleBlur, errors, setFieldValue} = formikProps;
 
@@ -66,7 +115,6 @@ function RatesColumn(props) {
 
     const type = getType(key);
 
-    const amount = values.area_amount;
     if (amount) {
       const rate = amount / area;
       setFieldValue(`${type}_rate`, round(rate));
@@ -79,22 +127,15 @@ function RatesColumn(props) {
     const type = getType(key);
 
     const area = values[`${type}_area`];
-    let amount = values.area_amount;
     if (area) {
-      amount = area * rate;
-      setFieldValue('area_amount', round(amount));
-      const otherTypes = TYPES.filter(v => v !== type);
-
-      syncAmounts(amount, otherTypes);
+      const total = getTotal(area, rate);
+      const otherTypes = types.filter(v => v !== type);
+      syncAmounts(total, otherTypes);
     }
   };
 
   return (
-    <View
-      style={[
-        styles.rateInputContainer,
-        {paddingHorizontal: rateType === 'buildup' ? 10 : 0},
-      ]}>
+    <View style={styles.rateInputContainer}>
       <Caption style={{color: theme.colors.primary}}>{label}</Caption>
       <RenderInput
         name={`${rateType}_area`}
@@ -122,8 +163,11 @@ function RatesColumn(props) {
 }
 
 function RenderRates(props) {
-  const {t, formikProps, unitOptions} = props;
-  const {values, handleBlur, errors, setFieldValue} = formikProps;
+  const {t, formikProps, unitOptions, params} = props;
+  const {project_main_types} = params;
+  const {values, errors, setFieldValue} = formikProps;
+
+  const isBunglow = project_main_types === 4 || project_main_types === 5;
 
   const syncAmounts = (amount, types) => {
     types.map(type => {
@@ -136,9 +180,10 @@ function RenderRates(props) {
     });
   };
 
-  const handleAmountChange = (key, amount) => {
-    setFieldValue(key, amount);
-    syncAmounts(amount, TYPES);
+  const getTotal = (area, rate) => {
+    const total = area * rate;
+    setFieldValue('area_amount', round(total));
+    return total;
   };
 
   return (
@@ -146,20 +191,29 @@ function RenderRates(props) {
       <View style={styles.ratesContainer}>
         <RatesColumn
           {...props}
-          label="Super Buildup"
+          label={isBunglow ? 'Netplot' : 'Super Buildup'}
           type="super_buildup"
+          types={BASIC_TYPES}
+          amount={values.area_amount}
+          getTotal={getTotal}
           syncAmounts={syncAmounts}
         />
         <RatesColumn
           {...props}
-          label="Buildup"
+          label={isBunglow ? 'Un-divied' : 'Buildup'}
           type="buildup"
+          types={BASIC_TYPES}
+          getTotal={getTotal}
+          amount={values.area_amount}
           syncAmounts={syncAmounts}
         />
         <RatesColumn
           {...props}
-          label="Carpet"
+          types={BASIC_TYPES}
+          getTotal={getTotal}
+          label={isBunglow ? 'Super Build-up' : 'Carpet'}
           type="carpet"
+          amount={values.area_amount}
           syncAmounts={syncAmounts}
         />
       </View>
@@ -175,23 +229,113 @@ function RenderRates(props) {
             setFieldValue('carpet_unit', value);
           }}
         />
-        <RenderInput
-          name="area_amount"
-          label={t('label_amount')}
-          keyboardType="number-pad"
-          containerStyles={styles.rateInput}
-          value={values.area_amount}
-          onChangeText={value => handleAmountChange('area_amount', value)}
-          onBlur={handleBlur('area_amount')}
-          error={errors.area_amount}
-          left={<TextInput.Affix text="₹" />}
-        />
+        <View style={{marginTop: 20}}>
+          <Subheading style={{color: theme.colors.primary, fontWeight: '100'}}>
+            {isBunglow ? 'Total Land Amount' : 'Total Basic Amount'}
+          </Subheading>
+          <View style={styles.landAmountSection}>
+            <RenderItems
+              row={[
+                {
+                  label: isBunglow ? 'Netplot' : 'Super Buildup',
+                  value: `Rs.${values.area_amount || 0}`,
+                },
+                {
+                  label: isBunglow ? 'Super Build-up' : 'Carpet',
+                  value: `Rs.${values.area_amount || 0}`,
+                },
+              ]}
+            />
+            <RenderItems
+              row={[
+                {
+                  label: isBunglow ? 'Un-divied' : 'Buildup',
+                  value: `Rs.${values.area_amount || 0}`,
+                },
+              ]}
+            />
+          </View>
+        </View>
       </View>
     </>
   );
 }
 
-function RenderCharges({theme, formikProps, t}) {
+function ConstructionRate(props) {
+  const {t, formikProps} = props;
+  const {values, setFieldValue} = formikProps;
+
+  const syncAmounts = (amount, types) => {
+    types.map(type => {
+      const area = values[`${type}_area`];
+      if (area) {
+        const rate = amount / area;
+        setFieldValue(`${type}_rate`, round(rate));
+      }
+      return type;
+    });
+  };
+
+  const getTotal = (area, rate) => {
+    const total = area * rate;
+    setFieldValue('total_construction', round(total));
+
+    return total;
+  };
+
+  return (
+    <View>
+      <Subheading style={{color: theme.colors.primary, marginTop: 20}}>
+        Construction Rate
+      </Subheading>
+      <View style={styles.ratesContainer}>
+        <RatesColumn
+          {...props}
+          label="Super Build-up"
+          type="construction_super_buildup"
+          types={CONSTRUCTION_TYPES}
+          amount={values.total_construction}
+          getTotal={getTotal}
+          syncAmounts={syncAmounts}
+        />
+        <RatesColumn
+          {...props}
+          label="Build-up"
+          type="construction_build"
+          types={CONSTRUCTION_TYPES}
+          getTotal={getTotal}
+          amount={values.total_construction}
+          syncAmounts={syncAmounts}
+        />
+      </View>
+      <View style={styles.totalConstruction}>
+        <Subheading style={{color: theme.colors.primary, fontWeight: '100'}}>
+          Total Construction Amount
+        </Subheading>
+        <View style={styles.landAmountSection}>
+          <RenderItems
+            row={[
+              {
+                label: 'As Super Buildup',
+                value: `Rs.${values.total_construction || 0}`,
+              },
+            ]}
+          />
+          <RenderItems
+            row={[
+              {
+                label: 'As Build',
+                value: `Rs.${values.total_construction || 0}`,
+              },
+            ]}
+          />
+        </View>
+      </View>
+    </View>
+  );
+}
+
+function RenderCharges({formikProps, t}) {
   const {values, setFieldValue} = formikProps;
 
   const snackbar = useSnackbar();
@@ -370,8 +514,9 @@ function RenderRow(props) {
 }
 
 function FormContent(props) {
-  const {theme, formikProps, navigation} = props;
+  const {formikProps, params, navigation} = props;
   const {handleChange, handleSubmit, values, setFieldValue} = formikProps;
+  const {project_main_types} = params;
 
   const {t} = useTranslation();
   const snackbar = useSnackbar();
@@ -413,9 +558,14 @@ function FormContent(props) {
   const totalAmount = useMemo(() => {
     return (
       parseInt(values.other_charges_amount || 0, 10) +
-      parseInt(values.area_amount || 0, 10)
+      parseInt(values.area_amount || 0, 10) +
+      parseInt(values.total_construction || 0, 10)
     );
-  }, [values.other_charges_amount, values.area_amount]);
+  }, [
+    values.other_charges_amount,
+    values.area_amount,
+    values.total_construction,
+  ]);
 
   useEffect(() => {
     const finalAmount = totalAmount - parseInt(values.discount_amount || 0, 10);
@@ -471,8 +621,12 @@ function FormContent(props) {
             2. Booking Rate
           </Subheading>
           <Caption>Enter all Area first for auto adjustment</Caption>
-          <RenderRates {...props} {...{t, formikProps, unitOptions}} />
-          <RenderCharges {...props} t={t} {...{t, formikProps}} />
+          <RenderRates {...props} {...{t, unitOptions}} />
+          {project_main_types === 4 ? (
+            <ConstructionRate {...props} {...{t, unitOptions}} />
+          ) : null}
+
+          <RenderCharges {...props} t={t} {...{t}} />
 
           <View style={styles.discountSection}>
             <RenderInput
@@ -526,6 +680,12 @@ function FormContent(props) {
                 label="Booking Rate"
                 value={`₹ ${values.area_amount || 0} `}
               />
+              {project_main_types === 4 ? (
+                <RenderRow
+                  label="Total Construction charges"
+                  value={`₹ ${values.total_construction || 0} `}
+                />
+              ) : null}
               <RenderRow
                 label="Total other charges"
                 value={`₹ ${values.other_charges_amount || 0} `}
@@ -548,23 +708,12 @@ function FormContent(props) {
             </View>
           </View>
         </View>
-        <View style={styles.actionContainer}>
-          <Button
-            style={styles.actionButton}
-            contentStyle={styles.buttonLabel}
-            theme={{roundness: 15}}
-            onPress={handleCancel}>
-            Back
-          </Button>
-          <Button
-            style={styles.actionButton}
-            mode="contained"
-            contentStyle={styles.buttonLabel}
-            theme={{roundness: 15}}
-            onPress={handleSubmit}>
-            Next
-          </Button>
-        </View>
+        <ActionButtons
+          cancelLabel="Back"
+          submitLabel="Next"
+          onCancel={handleCancel}
+          onSubmit={handleSubmit}
+        />
       </KeyboardAwareScrollView>
     </TouchableWithoutFeedback>
   );
@@ -578,12 +727,12 @@ function BookingRates(props) {
     <Formik
       validateOnBlur={false}
       validateOnChange={false}
-      initialValues={{other_charges: []}}
+      initialValues={{other_charges: [], ...params}}
       validationSchema={schema}
       onSubmit={async values => {
-        navigation.navigate('BC_Step_Eight', {...params, ...values});
+        navigation.navigate('BC_Step_Eight', {...values});
       }}>
-      {formikProps => <FormContent {...props} formikProps={formikProps} />}
+      {formikProps => <FormContent {...props} {...{params, formikProps}} />}
     </Formik>
   );
 }
@@ -595,13 +744,24 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   ratesContainer: {
-    marginTop: 10,
+    marginHorizontal: -5,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
   },
+  landAmountSection: {
+    marginTop: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 5,
+  },
+  totalConstruction: {
+    marginTop: 20,
+    paddingVertical: 5,
+  },
   rateInputContainer: {
     flex: 1,
+    marginHorizontal: 5,
     alignItems: 'center',
   },
   rateInput: {
@@ -651,13 +811,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#000',
     marginBottom: 3,
   },
-  actionContainer: {
-    marginTop: 15,
-    paddingHorizontal: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
   documentHelper: {
     marginTop: 10,
     paddingLeft: 10,
@@ -677,13 +830,6 @@ const styles = StyleSheet.create({
   divider: {
     height: 1,
     marginVertical: 7,
-  },
-  actionButton: {
-    flex: 1,
-    marginHorizontal: 5,
-  },
-  buttonLabel: {
-    padding: 3,
   },
 });
 

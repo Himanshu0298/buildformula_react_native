@@ -1,7 +1,19 @@
 import * as React from 'react';
 import {useTranslation} from 'react-i18next';
-import {StyleSheet, View, TouchableOpacity, Image, ScrollView} from 'react-native';
-import {Divider, Subheading, Text, withTheme, Caption} from 'react-native-paper';
+import {
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  Image,
+  ScrollView,
+} from 'react-native';
+import {
+  Divider,
+  Subheading,
+  Text,
+  withTheme,
+  Caption,
+} from 'react-native-paper';
 import {theme} from 'styles/theme';
 import backArrow from 'assets/images/back_arrow.png';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -22,13 +34,11 @@ function RenderInfo({label, value}) {
 
 function CustomerDetails(props) {
   const {route, navigation} = props;
-  const {customer, unit} = route?.params || {};
+  const {customer, index} = route?.params || {};
   const {
     profile_pic,
-    name,
     customer_first_name,
     customer_phone,
-    role,
     customer_alternate_contact,
     customer_address,
     customer_age,
@@ -36,13 +46,10 @@ function CustomerDetails(props) {
     customer_occupation,
     customer_pan_file,
     customer_aadhar_file,
-    user_id,
   } = customer;
 
-  const {params} = route;
-
   const navToAdd = () => {
-    navigation.navigate('AddCustomer', {edit: 'true', ...params});
+    navigation.navigate('AddCustomer', {edit: 'true', ...route?.params});
   };
 
   const {t} = useTranslation();
@@ -52,25 +59,31 @@ function CustomerDetails(props) {
       <View style={styles.headerContainer}>
         <ProjectHeader {...props} />
 
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.titleContainer}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.titleContainer}>
           <Image source={backArrow} style={styles.backArrow} />
           <Subheading>{t('title_customer_details')}</Subheading>
         </TouchableOpacity>
       </View>
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollView}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollView}>
         <View style={styles.detailsTopContainer}>
           <UserAvatar size={100} uri={profile_pic} />
-          <Text style={styles.nameText}>{name}</Text>
-          <Caption>{role}</Caption>
+          <Text style={styles.nameText}>{customer_first_name}</Text>
+          <Caption>{index + 1} Member</Caption>
         </View>
         <Divider />
         <View style={styles.bottomDetails}>
           <RenderInfo label="Full Name" value={customer_first_name} />
           <RenderInfo label="Phone" value={`+91 ${customer_phone}`} />
-          <RenderInfo
-            label="Alternate contact"
-            value={customer_alternate_contact ? `+91 ${customer_alternate_contact}` : null}
-          />
+          {customer_alternate_contact ? (
+            <RenderInfo
+              label="Alternate contact"
+              value={`+91 ${customer_alternate_contact}`}
+            />
+          ) : null}
           <RenderInfo label="Email" value={customer_email} />
           <RenderInfo label="Address" value={customer_address} />
           <RenderInfo label="Age" value={customer_age} />
@@ -80,8 +93,13 @@ function CustomerDetails(props) {
             <View style={styles.valueContainer}>
               <Caption>{customer_pan_file}</Caption>
               <TouchableOpacity style={styles.openButton}>
-                <MaterialCommunityIcons name="paperclip" color={theme.colors.primary} />
-                <Caption style={{color: theme.colors.primary}}>Open attachment</Caption>
+                <MaterialCommunityIcons
+                  name="paperclip"
+                  color={theme.colors.primary}
+                />
+                <Caption style={{color: theme.colors.primary}}>
+                  Open attachment
+                </Caption>
               </TouchableOpacity>
             </View>
           </View>
@@ -90,8 +108,13 @@ function CustomerDetails(props) {
             <View style={styles.valueContainer}>
               <Caption>{customer_aadhar_file}</Caption>
               <TouchableOpacity style={styles.openButton}>
-                <MaterialCommunityIcons name="paperclip" color={theme.colors.primary} />
-                <Caption style={{color: theme.colors.primary}}>Open attachment</Caption>
+                <MaterialCommunityIcons
+                  name="paperclip"
+                  color={theme.colors.primary}
+                />
+                <Caption style={{color: theme.colors.primary}}>
+                  Open attachment
+                </Caption>
               </TouchableOpacity>
             </View>
           </View>
@@ -104,7 +127,9 @@ function CustomerDetails(props) {
             onPress={navToAdd}>
             <MaterialIcons name="edit" color={theme.colors.primary} />
 
-            <Text style={{color: theme.colors.primary, marginLeft: 7}}>Modify</Text>
+            <Text style={{color: theme.colors.primary, marginLeft: 7}}>
+              Modify
+            </Text>
           </OpacityButton>
         </View>
       </ScrollView>

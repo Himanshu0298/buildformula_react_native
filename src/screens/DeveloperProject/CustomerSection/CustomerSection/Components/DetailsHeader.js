@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
   },
   detailSubContainer: {
     flex: 1,
-    marginTop: 15,
+    // marginTop: 15,
   },
 });
 

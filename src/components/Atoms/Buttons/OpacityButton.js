@@ -13,13 +13,11 @@ function OpacityButton(props) {
 
   const Container = onPress ? TouchableOpacity : View;
 
+  const backgroundColor = hex2rgba(color, opacity);
+
   return (
     <Container
-      style={[
-        styles.button,
-        {backgroundColor: hex2rgba(color, opacity)},
-        style,
-      ]}
+      style={[styles.button, {backgroundColor}, style]}
       onPress={onPress}
       {...restProps}>
       {children}

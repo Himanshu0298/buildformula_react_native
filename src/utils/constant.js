@@ -54,3 +54,11 @@ export const BHK_OPTIONS = [
 ];
 
 export const DOCUMENT_CHARGE_LIMIT = 20000;
+
+export const MODIFY_REQUEST_STATUS = {
+  pending: {label: 'PENDING APPROVAL', color: '#F4AF48'},
+  approved: {label: 'APPROVED', color: '#07CA03'},
+  rejected: {label: 'REJECTED', color: '#FF5D5D'},
+  cancel_by_customer: {label: 'CANCEL BY CUSTOMER', color: '#041D36'},
+  confirmed_by_customer: {label: 'CONFIRMED BY CUSTOMER', color: '#041D36'},
+};

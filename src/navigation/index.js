@@ -7,6 +7,7 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 import TouchID from 'react-native-touch-id';
 import {useSelector} from 'react-redux';
 import {getInitialScreen} from 'utils';
+import RNBootSplash from 'react-native-bootsplash';
 
 // Auth Screens
 import ForgotPassword from 'screens/Auth/ForgotPassword';
@@ -60,10 +61,17 @@ import CustomerSection from 'screens/DeveloperProject/CustomerSection/CustomerSe
 import CustomerDetails from 'screens/DeveloperProject/CustomerSection/CustomerDetails';
 import AddCustomer from 'screens/DeveloperProject/CustomerSection/AddCustomer';
 import AddModifyRequest from 'screens/DeveloperProject/CustomerSection/AddModifyRequest';
+import ModifyRequestDetails from 'screens/DeveloperProject/CustomerSection/ModifyRequestDetails';
 import AddBankDetails from 'screens/DeveloperProject/CustomerSection/AddBankDetails';
 import PaymentCollections from 'screens/DeveloperProject/CustomerSection/PaymentColections';
 import AddCollection from 'screens/DeveloperProject/CustomerSection/AddCollection';
 import PaymentSchedule from 'screens/DeveloperProject/CustomerSection/PaymentSchedule';
+// Project : Design Modules
+import RoughDrawing from 'screens/DeveloperProject/DesignModule/RoughDrawing';
+import FinalDrawing from 'screens/DeveloperProject/DesignModule/FinalDrawing';
+import WorkingDrawing from 'screens/DeveloperProject/DesignModule/WorkingDrawing';
+import AreaSheet from 'screens/DeveloperProject/DesignModule/AreaSheet';
+import Parking from 'screens/DeveloperProject/DesignModule/Parking';
 // Project : Project management screens
 import Phases from 'screens/DeveloperProject/ProjectManagement/Planning/Phases';
 import SubPhases from 'screens/DeveloperProject/ProjectManagement/Planning/SubPhases';
@@ -105,7 +113,6 @@ import PS_StepTwo from '../screens/CreateProject/ProjectStructure/StepTwo';
 import PS_StepOne from '../screens/CreateProject/ProjectStructure/StepOne';
 import PC_StepTwo from '../screens/CreateProject/ProjectCreation/StepTwo';
 import PC_StepOne from '../screens/CreateProject/ProjectCreation/StepOne';
-import RoleSelect from '../screens/Auth/RoleSelect';
 import OtpScreen from '../screens/Auth/OtpScreen';
 import SignUp from '../screens/Auth/SignUp';
 import Login from '../screens/Auth/Login';
@@ -221,6 +228,10 @@ function CustomerSectionStack() {
         <Stack.Screen name="CustomerDetails" component={CustomerDetails} />
         <Stack.Screen name="AddCustomer" component={AddCustomer} />
         <Stack.Screen name="AddModifyRequest" component={AddModifyRequest} />
+        <Stack.Screen
+          name="ModifyRequestDetails"
+          component={ModifyRequestDetails}
+        />
         <Stack.Screen name="AddBankDetails" component={AddBankDetails} />
         <Stack.Screen
           name="PaymentCollections"
@@ -321,6 +332,11 @@ function ProjectDrawer() {
         <Drawer.Screen name="SalesPipeline" component={PipelineStack} />
         <Drawer.Screen name="BookingChartStack" component={BookingChartStack} />
         <Drawer.Screen name="BrokerStack" component={BrokerStack} />
+        <Drawer.Screen name="RoughDrawing" component={RoughDrawing} />
+        <Drawer.Screen name="FinalDrawing" component={FinalDrawing} />
+        <Drawer.Screen name="WorkingDrawing" component={WorkingDrawing} />
+        <Drawer.Screen name="AreaSheet" component={AreaSheet} />
+        <Drawer.Screen name="Parking" component={Parking} />
         <Drawer.Screen name="Payment" component={Payment} />
         <Drawer.Screen
           name="CustomerSection"
@@ -449,6 +465,9 @@ function NavContainer() {
     <NavigationContainer
       theme={theme}
       ref={navigationRef}
+      onReady={() => {
+        RNBootSplash.hide({fade: true});
+      }}
       onStateChange={navState => {
         const prevData = routeNameRef.current;
         const currentData = getActiveRouteName(navState);

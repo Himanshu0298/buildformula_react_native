@@ -3,13 +3,23 @@ import * as React from 'react';
 import {useTranslation} from 'react-i18next';
 import {StyleSheet, View} from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
-import {Divider, withTheme, Button, Title} from 'react-native-paper';
-import {TabBar, TabView} from 'react-native-tab-view';
+import {Divider, withTheme, Title} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import useCustomerActions from 'redux/actions/customerActions';
-import {getShadow} from 'utils';
-import Layout from 'utils/Layout';
-import {Account, BankLoans, BookingDetails, Details, Files, ModifyRequest} from './Components';
+import {MaterialTabBar, Tabs} from 'react-native-collapsible-tab-view';
+
+import {theme} from 'styles/theme';
+import ProjectHeader from 'components/Molecules/Layout/ProjectHeader';
+import {useCustomerLoading} from 'redux/selectors';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {
+  Account,
+  BankLoans,
+  BookingDetails,
+  Details,
+  Files,
+  ModifyRequest,
+} from './Components';
 import DetailsHeader from './Components/DetailsHeader';
 
 const TABS = [
@@ -27,40 +37,25 @@ function filterTabs(tabs, permissions) {
   });
 }
 
-function RenderTab(props) {
-  const {route: item, navigationState, onPress} = props;
-  const active = navigationState.index === item.key;
-
+const renderTabBar = params => {
   return (
-    <View style={styles.tab} key={item.key}>
-      <Button
-        style={{marginHorizontal: 5}}
-        mode={active ? 'contained' : 'outlined'}
-        theme={{roundness: 20}}
-        onPress={onPress}>
-        {item.title}
-      </Button>
-    </View>
-  );
-}
-
-function RenderTabBar(tabBarProps) {
-  // TODO: improve tab change animation
-  return (
-    <TabBar
-      {...tabBarProps}
+    <MaterialTabBar
+      {...params}
       scrollEnabled
-      style={styles.tabContainer}
+      activeColor={theme.colors.primary}
+      inactiveColor="#000"
       tabStyle={styles.tab}
-      indicatorStyle={{backgroundColor: 'white'}}
-      renderTabBarItem={props => <RenderTab {...props} />}
     />
   );
-}
+};
 
 function CustomerSection(props) {
   const {route} = props;
   const {project_id, unit} = route?.params || {};
+
+  const insets = useSafeAreaInsets();
+
+  const tabBarRef = React.useRef();
 
   const {t} = useTranslation();
   const {
@@ -69,15 +64,13 @@ function CustomerSection(props) {
     getBankDetails,
     getModifyRequests,
     getAccountDetails,
+    getFolder,
+    getFile,
   } = useCustomerActions();
 
-  const {user} = useSelector(s => s.user);
-  const {loading} = useSelector(s => s.customer);
+  const loading = useCustomerLoading();
   const {permissions, isProjectAdmin} = useSelector(s => s.project);
 
-  console.log('----->user.id', user.id);
-
-  const [selectedTab, setSelectedTab] = React.useState(0);
   const routes = React.useMemo(() => {
     if (isProjectAdmin) {
       return TABS;
@@ -92,45 +85,54 @@ function CustomerSection(props) {
     getBankDetails({project_id, unit_id: unit.unit_id});
     getModifyRequests({project_id, unit_id: unit.unit_id});
     getAccountDetails({project_id, unit_id: unit.unit_id});
+    getFolder({project_id, unitid: unit.unit_id});
+    getFile({project_id, unitid: unit.unit_id, folder_id: 0});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const renderScene = ({route: {key}}) => {
-    switch (key) {
-      case 0:
-        return <Details {...props} setSelectedTab={setSelectedTab} />;
-      case 1:
-        return <BookingDetails {...props} setSelectedTab={setSelectedTab} />;
-      case 2:
-        return <BankLoans {...props} {...{setSelectedTab}} />;
-      case 3:
-        return <Account {...props} setSelectedTab={setSelectedTab} />;
-      case 4:
-        return <ModifyRequest {...props} setSelectedTab={setSelectedTab} />;
-      case 5:
-        return <Files {...props} setSelectedTab={setSelectedTab} />;
-      default:
-        return <View />;
-    }
+  const renderHeader = () => {
+    return (
+      <>
+        <ProjectHeader {...props} />
+        <View style={styles.container}>
+          <Title>{t('title_customer_section')}</Title>
+          <DetailsHeader {...route?.params} />
+          <Divider style={styles.divider} />
+        </View>
+      </>
+    );
   };
 
   return (
     <>
       <Spinner visible={loading} textContent="" />
-      <View style={styles.container}>
-        <Title>{t('title_customer_section')}</Title>
-        <DetailsHeader {...route?.params} />
-        <Divider style={styles.divider} />
-      </View>
 
       {routes?.length ? (
-        <TabView
-          navigationState={{index: selectedTab, routes}}
-          renderScene={renderScene}
-          onIndexChange={setSelectedTab}
-          initialLayout={{width: Layout.window.width}}
-          renderTabBar={tabBarProps => <RenderTabBar {...tabBarProps} />}
-        />
+        <Tabs.Container
+          renderHeader={renderHeader}
+          renderTabBar={renderTabBar}
+          ref={tabBarRef}
+          minHeaderHeight={insets.top}
+          headerHeight={146}>
+          <Tabs.Tab name="Details">
+            <Details {...props} />
+          </Tabs.Tab>
+          <Tabs.Tab name="Booking Details">
+            <BookingDetails {...props} />
+          </Tabs.Tab>
+          <Tabs.Tab name="Bank Loans">
+            <BankLoans {...props} />
+          </Tabs.Tab>
+          <Tabs.Tab name="Account">
+            <Account {...props} />
+          </Tabs.Tab>
+          <Tabs.Tab name="Modify Request">
+            <ModifyRequest {...props} />
+          </Tabs.Tab>
+          <Tabs.Tab name="Files">
+            <Files {...props} />
+          </Tabs.Tab>
+        </Tabs.Container>
       ) : (
         <NoResult title="You do not permissions to view this page. Contact a project admin for support." />
       )}
@@ -144,15 +146,8 @@ const styles = StyleSheet.create({
   },
   divider: {
     marginTop: 8,
-    marginBottom: 15,
     borderWidth: 0.2,
     borderColor: 'rgba(139, 149, 159, 0.25)',
-  },
-  tabContainer: {
-    backgroundColor: '#fff',
-    ...getShadow(0),
-    width: '100%',
-    marginBottom: 15,
   },
   tab: {
     width: 180,

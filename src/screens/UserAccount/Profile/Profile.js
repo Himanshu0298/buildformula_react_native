@@ -38,6 +38,7 @@ function Profile(props) {
           <OpacityButton
             onPress={navToEdit}
             opacity={0.15}
+            color="#FF5D5D"
             style={styles.buttonContainer}>
             <IconButton color={theme.colors.primary} icon="pencil" size={20} />
             <Text>Edit Profile</Text>

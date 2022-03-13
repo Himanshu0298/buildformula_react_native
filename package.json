@@ -8,8 +8,12 @@
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint . --fix",
-    "postinstall": "patch-package",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "podinstall": "run-script-os",
+    "podinstall:macos": "cd ios && pod install && cd ..",
+    "podinstall:windows:linux": "echo god",
+    "postinstall": "patch-package &&  npx jetify ; npm run podinstall;",
+    "postuninstall": "patch-package && npx jetify ; npm run podinstall;"
   },
   "dependencies": {
     "@expo/react-native-action-sheet": "^3.13.0",
@@ -36,9 +40,11 @@
     "react-i18next": "^11.15.3",
     "react-native": "0.66.4",
     "react-native-autogrow-textinput": "^5.4.0",
+    "react-native-blob-util": "^0.14.1",
     "react-native-bootsplash": "^3.2.7",
     "react-native-chart-kit": "^6.11.0",
     "react-native-code-push": "^7.0.4",
+    "react-native-collapsible-tab-view": "^4.5.2",
     "react-native-config": "^1.4.5",
     "react-native-confirmation-code-field": "^7.2.0",
     "react-native-countdown-component": "^2.7.1",
@@ -60,9 +66,10 @@
     "react-native-material-tabs": "^4.2.0",
     "react-native-mime-types": "^2.3.0",
     "react-native-modal": "^13.0.0",
-    "react-native-pager-view": "^5.4.9",
+    "react-native-pager-view": "^5.4.11",
     "react-native-paper": "^4.11.1",
     "react-native-pell-rich-editor": "^1.8.8",
+    "react-native-permissions": "^3.3.0",
     "react-native-phone-input": "^1.3.0",
     "react-native-reanimated": "^2.3.1",
     "react-native-render-html": "^6.3.1",
@@ -85,7 +92,6 @@
     "redux-persist-transform-encrypt": "^3.0.1",
     "redux-promise-middleware": "^6.1.2",
     "redux-thunk": "^2.4.1",
-    "rn-fetch-blob": "^0.12.0",
     "yup": "^0.32.11"
   },
   "devDependencies": {
@@ -115,15 +121,17 @@
     "eslint-plugin-react-native": "^4.0.0",
     "husky": "^7.0.4",
     "jest": "^27.4.7",
+    "jetifier": "^2.0.0",
     "lint-staged": "^12.1.7",
     "metro-react-native-babel-preset": "^0.66.2",
     "prettier": "^2.5.1",
     "react-native-svg-transformer": "^1.0.0",
     "react-test-renderer": "17.0.2",
-    "redux-flipper": "^2.0.1",
-    "typescript": "^4.5.4",
     "reactotron-react-native": "^5.0.1",
-    "reactotron-redux": "^3.1.3"
+    "reactotron-redux": "^3.1.3",
+    "redux-flipper": "^2.0.1",
+    "run-script-os": "^1.1.6",
+    "typescript": "^4.5.4"
   },
   "lint-staged": {
     "*.js": "eslint --cache --fix"

@@ -1,12 +1,11 @@
 import ActionButtons from 'components/Atoms/ActionButtons';
-import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import RenderInput, {RenderError} from 'components/Atoms/RenderInput';
 import RenderSelect from 'components/Atoms/RenderSelect';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import {Formik} from 'formik';
 import {cloneDeep} from 'lodash';
 import * as React from 'react';
-import {useMemo, useState} from 'react';
+import {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 import {
   StyleSheet,
@@ -22,10 +21,8 @@ import {
   Chip,
   Subheading,
   TextInput,
-  Title,
   withTheme,
 } from 'react-native-paper';
-import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import {useSelector} from 'react-redux';
 import useRoleActions from 'redux/actions/roleActions';
 import * as Yup from 'yup';

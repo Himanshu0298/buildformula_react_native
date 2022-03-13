@@ -11,21 +11,18 @@ import backArrow from 'assets/images/back_arrow.png';
 import dayjs from 'dayjs';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import {useAlert} from 'components/Atoms/Alert';
 import useCustomerActions from 'redux/actions/customerActions';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {useSelector} from 'react-redux';
+import {theme} from 'styles/theme';
 
 const TITLE = {
   document: 'Documentation charges',
   property: 'Property Final Amount',
   gst: 'GST Amount',
-};
-
-const SUBTITLE = {
-  document: 'Total document amount collected',
-  property: 'Total property amount collected',
-  gst: 'Total GST amount collected',
 };
 
 function Item({label, value}) {
@@ -38,7 +35,8 @@ function Item({label, value}) {
 }
 
 const RenderCharge = React.memo(props => {
-  const {theme, charge, type, navToEdit, handleDelete} = props;
+  const {charge, payment_mode, navigation, type, navToEdit, handleDelete} =
+    props;
   const {
     bank_name,
     branch_name,
@@ -49,12 +47,16 @@ const RenderCharge = React.memo(props => {
     remark,
   } = charge;
 
+  const navToDownload = () => navigation.navigate(console.log('-------->'));
+
   return (
     <View style={styles.chargeContainer}>
       <Item
         label="Date"
         value={dayjs(transaction_date).format('DD MMM YYYY')}
       />
+      <Item label="Payment Mode" value={payment_mode} />
+
       {type !== 'document' ? (
         <>
           <Item
@@ -83,16 +85,27 @@ const RenderCharge = React.memo(props => {
       <Item label="Remark" value={remark} />
       <View style={styles.actionContainer}>
         <OpacityButton
+          opacity={0.08}
+          color={theme.colors.primary}
+          style={styles.rightContent}
+          onPress={navToDownload}>
+          <MaterialCommunityIcons
+            name="download"
+            size={18}
+            color={theme.colors.primary}
+          />
+        </OpacityButton>
+        <OpacityButton
           opacity={0.1}
           color={theme.colors.primary}
-          style={{borderRadius: 50, marginRight: 10}}
+          style={styles.rightContent}
           onPress={() => navToEdit(charge)}>
           <MaterialIcon name="edit" color={theme.colors.primary} size={18} />
         </OpacityButton>
         <OpacityButton
           opacity={0.1}
           color={theme.colors.red}
-          style={{borderRadius: 50}}
+          style={styles.deleteButton}
           onPress={() => handleDelete(charge)}>
           <MaterialIcon name="delete" color={theme.colors.red} size={18} />
         </OpacityButton>
@@ -102,7 +115,7 @@ const RenderCharge = React.memo(props => {
 });
 
 function PaymentCollections(props) {
-  const {navigation, theme, route} = props;
+  const {navigation, route} = props;
   const {type} = route?.params || {};
 
   const alert = useAlert();
@@ -121,6 +134,8 @@ function PaymentCollections(props) {
         return propertyfinalamount || [];
       case 'gst':
         return gst || [];
+      default:
+        return [];
     }
   }, [paymentCollection, type]);
 
@@ -131,6 +146,10 @@ function PaymentCollections(props) {
   const navToEdit = collection => {
     navigation.navigate('AddCollection', {...route.params, collection});
   };
+  const navToAddCollection = () =>
+    navigation.navigate('AddCollection', {...route.params});
+
+  const navToPrintAll = () => navigation.navigate(console.log('-------->'));
 
   const handleDelete = ({project_id, id, unit_id}) => {
     alert.show({
@@ -150,19 +169,41 @@ function PaymentCollections(props) {
       contentContainerStyle={{flexGrow: 1}}>
       <Spinner visible={loading} textContent="" />
       <View style={styles.container}>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.titleContainer}>
-          <Image source={backArrow} style={styles.backArrow} />
-          <Subheading>Payment Collection</Subheading>
-        </TouchableOpacity>
+        <View style={styles.actionButton}>
+          <View>
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={styles.titleContainer}>
+              <Image source={backArrow} style={styles.backArrow} />
+              <Subheading>Payment Collection</Subheading>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.actionRow}>
+            <OpacityButton opacity={0.2} onPress={navToAddCollection}>
+              {/* <Text style={[{color: theme.colors.primary,styles.buttonLabel }]}> */}
+              <Text style={[{color: theme.colors.primary}, styles.buttonLabel]}>
+                Add collection
+              </Text>
+            </OpacityButton>
+          </View>
+        </View>
 
         <View style={styles.contentContainer}>
           <Text style={{color: theme.colors.documentation}}>{TITLE[type]}</Text>
-          <Caption style={{marginTop: 10}}>{SUBTITLE[type]}:</Caption>
-          <Caption style={{color: theme.colors.documentation}}>
-            ₹ {amountCollected || 0}
-          </Caption>
+          <View style={styles.totalCollection}>
+            <Caption>Total collected:</Caption>
+            <Caption
+              style={[styles.amount, {color: theme.colors.documentation}]}>
+              ₹ {amountCollected || 0}
+            </Caption>
+            <OpacityButton
+              opacity={0.1}
+              color={theme.colors.primary}
+              style={styles.printAll}
+              onPress={navToPrintAll}>
+              <Ionicons name="print" size={22} color={theme.colors.primary} />
+            </OpacityButton>
+          </View>
 
           {charges?.map((charge, i) => (
             <RenderCharge
@@ -218,6 +259,38 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingRight: 10,
+  },
+  actionRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  actionButton: {
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+  },
+  buttonLabel: {
+    paddingHorizontal: 5,
+  },
+  totalCollection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 10,
+  },
+  printAll: {
+    borderRadius: 50,
+    marginRight: 10,
+  },
+  rightContent: {
+    borderRadius: 50,
+    marginRight: 10,
+  },
+  deleteButton: {
+    borderRadius: 50,
+  },
+  amount: {
+    alignSelf: 'center',
+    paddingEnd: 150,
   },
 });
 

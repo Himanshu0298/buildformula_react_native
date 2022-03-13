@@ -3,8 +3,8 @@ import {StyleSheet, View} from 'react-native';
 import {Button, Subheading, withTheme} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import {theme} from 'styles/theme';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {getPermissions} from 'utils';
+import {Tabs} from 'react-native-collapsible-tab-view';
 import ActivityChatModal from './Components/ActivityChat';
 import FileSection from './Components/FileSection';
 import BankDetailsSection from './Components/BankDetailsSection';
@@ -28,18 +28,12 @@ function BankLoans(props) {
         handleClose={toggleActivityModal}
       />
       <ShareFiles open={shareModal} handleClose={toggleShareModal} />
-      <View style={styles.container}>
-        <KeyboardAwareScrollView
-          contentContainerStyle={styles.scrollView}
-          showsVerticalScrollIndicator={false}>
+      <Tabs.ScrollView
+        contentContainerStyle={styles.scrollView}
+        showsVerticalScrollIndicator={false}>
+        <View style={styles.container}>
           <View style={styles.headingRow}>
-            <Subheading
-              style={{
-                fontSize: 14,
-                color: theme.colors.primary,
-              }}>
-              BANK DETAILS
-            </Subheading>
+            <Subheading style={styles.heading}>BANK DETAILS</Subheading>
             <Button
               icon="format-list-bulleted"
               mode="text"
@@ -55,8 +49,8 @@ function BankLoans(props) {
             {...props}
             {...{bankDetails, modulePermissions, toggleShareModal}}
           />
-        </KeyboardAwareScrollView>
-      </View>
+        </View>
+      </Tabs.ScrollView>
     </>
   );
 }
@@ -74,6 +68,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  heading: {
+    fontSize: 14,
+    color: theme.colors.primary,
   },
 });
 
