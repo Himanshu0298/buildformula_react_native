@@ -10,7 +10,7 @@ import * as Yup from 'yup';
 import RenderInput from 'components/Atoms/RenderInput';
 import {useTranslation} from 'react-i18next';
 import RenderSelect from 'components/Atoms/RenderSelect';
-import {PHONE_REGEX, PRIORITY_COLORS} from 'utils/constant';
+import {BHK_OPTIONS, PHONE_REGEX, PRIORITY_COLORS} from 'utils/constant';
 import Radio from 'components/Atoms/Radio';
 import useSalesActions from 'redux/actions/salesActions';
 import dayjs from 'dayjs';
@@ -35,7 +35,7 @@ const schema = Yup.object().shape({
   email: Yup.string('Invalid').email('Invalid'),
   phone: Yup.string()
     .label('phone')
-    .required('required')
+    .required('Required')
     .matches(PHONE_REGEX, 'Phone number is not valid')
     .min(10, 'too short')
     .max(10, 'too long'),
@@ -52,7 +52,13 @@ const schema = Yup.object().shape({
 });
 
 function PersonalTab(props) {
-  const {navigation, formikProps, occupationOptions, sourceTypeOptions, setSelectedTab} = props;
+  const {
+    navigation,
+    formikProps,
+    occupationOptions,
+    sourceTypeOptions,
+    setSelectedTab,
+  } = props;
   const {handleChange, setFieldValue, values, handleBlur, errors} = formikProps;
   const {t} = useTranslation();
 
@@ -121,7 +127,11 @@ function PersonalTab(props) {
           <RenderSelect
             name="occupation"
             ref={occupationRef}
-            label={values.occupation ? t('label_occupation') : t('placeholder_occupation')}
+            label={
+              values.occupation
+                ? t('label_occupation')
+                : t('placeholder_occupation')
+            }
             options={occupationOptions}
             containerStyles={styles.input}
             value={values.occupation}
@@ -195,7 +205,15 @@ function PersonalTab(props) {
 function InquiryTab(props) {
   const {formikProps, setSelectedTab, inquiryOptions, bhkOptions, edit} = props;
 
-  const {handleChange, setFieldValue, values, handleSubmit, handleBlur, errors} = formikProps;
+  const {
+    handleChange,
+    setFieldValue,
+    values,
+    handleSubmit,
+    handleBlur,
+    errors,
+  } = formikProps;
+  console.log('-------->inquiryOptions 123', inquiryOptions);
 
   const {t} = useTranslation();
 
@@ -203,16 +221,12 @@ function InquiryTab(props) {
   const budgetToRef = React.useRef();
 
   useEffect(() => {
-    if (
-      (values.inquiry_for === 1 || values.inquiry_for === 4) &&
-      bhkOptions?.[values.inquiry_for]?.length
-    ) {
-      setFieldValue('bhk_required', true);
-    } else {
-      setFieldValue('bhk_required', false);
-    }
+    setFieldValue(
+      'bhk_required',
+      values.inquiry_for === 1 || values.inquiry_for === 4,
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [values.inquiry_for, bhkOptions]);
+  }, [values.inquiry_for]);
 
   return (
     <KeyboardAwareScrollView
@@ -286,7 +300,10 @@ function InquiryTab(props) {
             <RenderSelect
               name="bhk"
               label={t('label_for_bhk')}
-              options={bhkOptions?.[values.inquiry_for].map(v => v.toString())}
+              options={BHK_OPTIONS.map(({type}) => ({
+                label: type.toString(),
+                value: type.toString(),
+              }))}
               containerStyles={styles.input}
               value={values.bhk}
               error={errors.bhk}
@@ -330,8 +347,13 @@ function RenderForm(props) {
     {key: 1, title: 'Inquiry details'},
   ]);
 
-  const {bhkOptions, occupationOptions, inquiryOptions, assignOptions, sourceTypeOptions} =
-    useSelector(s => s.sales);
+  const {
+    bhkOptions,
+    occupationOptions,
+    inquiryOptions,
+    assignOptions,
+    sourceTypeOptions,
+  } = useSelector(s => s.sales);
 
   const updatedAssignOptions = useMemo(() => {
     const data = [...assignOptions];
@@ -498,7 +520,9 @@ function AddVisitor(props) {
           initialValues={initialValues}
           validationSchema={schema}
           onSubmit={onSubmit}>
-          {formikProps => <RenderForm f {...props} {...{formikProps, user, edit}} />}
+          {formikProps => (
+            <RenderForm f {...props} {...{formikProps, user, edit}} />
+          )}
         </Formik>
       </View>
     </View>

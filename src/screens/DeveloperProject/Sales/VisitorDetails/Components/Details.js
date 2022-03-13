@@ -46,10 +46,7 @@ function Details(props) {
             {first_name} {last_name}
           </Caption>
         </View>
-        <View style={styles.detailRow}>
-          <Paragraph>Remark</Paragraph>
-          <Caption style={styles.value}>{remarks}</Caption>
-        </View>
+
         <View style={styles.detailRow}>
           <Paragraph>Email</Paragraph>
           <Caption style={styles.value}>{email}</Caption>
@@ -85,6 +82,10 @@ function Details(props) {
         <View style={styles.detailRow}>
           <Paragraph>Current Locality</Paragraph>
           <Caption style={styles.value}>{current_locality}</Caption>
+        </View>
+        <View style={styles.detailRow}>
+          <Paragraph>Remark</Paragraph>
+          <Caption style={styles.value}>{remarks}</Caption>
         </View>
         <View style={styles.detailRow}>
           <Paragraph>Source type</Paragraph>

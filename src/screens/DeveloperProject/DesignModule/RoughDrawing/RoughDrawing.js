@@ -18,7 +18,6 @@ import {
 } from 'react-native-paper';
 import useFileActions from 'redux/actions/fileActions';
 import FolderIcon from 'assets/images/folder_icon.png';
-import UploadFileIcon from 'assets/images/file_icon.png';
 import {useSelector} from 'react-redux';
 import useImagePicker from 'utils/useImagePicker';
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -32,12 +31,10 @@ import Feather from 'react-native-vector-icons/Feather';
 import dayjs from 'dayjs';
 import {getFileExtension} from 'utils/download';
 import DeleteDialog from './Components/DeleteDialog';
-import UploadDialog from './Components/UploadDialog';
 import RenameDialogue from './Components/RenameDialog';
 import CreateFolderDialogue from './Components/CreateFolderDialog';
 import MenuDialog from './Components/MenuDialog';
 import VersionDialog from './Components/VersionDialog';
-import FileSection from './Components/FilesSection';
 import FoldersSection from './Components/FoldersSection';
 import ShareDialogue from './Components/ShareDialogue';
 
@@ -275,15 +272,6 @@ function RoughDrawing(props) {
         toggleDialog('createFolder');
       },
     },
-    {
-      icon: UploadFileIcon,
-      color: theme.colors.primary,
-      label: 'Upload files',
-      onPress: () => {
-        toggleFab();
-        openImagePicker({type: 'file', onChoose});
-      },
-    },
   ];
 
   const toggleFab = () => setFab(v => !v);
@@ -443,7 +431,7 @@ function RoughDrawing(props) {
           fabStyle={{
             backgroundColor: fab ? theme.colors.white : theme.colors.primary,
           }}
-          icon={fab ? 'window-close' : 'plus'}
+          icon="plus"
           small
           onPress={toggleFab}
           onStateChange={() => {
