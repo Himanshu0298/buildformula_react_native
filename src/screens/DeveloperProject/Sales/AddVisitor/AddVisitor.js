@@ -49,6 +49,10 @@ const schema = Yup.object().shape({
   budget_to: Yup.number('Invalid'),
   assign_to: Yup.string('Invalid'),
   inquiry_for: Yup.string('Invalid').required('Required'),
+  bhk: Yup.string('Invalid').when('bhk_required', {
+    is: true,
+    then: Yup.string('Invalid').required('Required'),
+  }),
 });
 
 function PersonalTab(props) {
@@ -192,7 +196,7 @@ function PersonalTab(props) {
 }
 
 function InquiryTab(props) {
-  const {formikProps, setSelectedTab, inquiryOptions, bhkOptions, edit} = props;
+  const {formikProps, setSelectedTab, inquiryOptions, edit} = props;
 
   const {
     handleChange,
@@ -335,13 +339,8 @@ function RenderForm(props) {
     {key: 1, title: 'Inquiry details'},
   ]);
 
-  const {
-    bhkOptions,
-    occupationOptions,
-    inquiryOptions,
-    assignOptions,
-    sourceTypeOptions,
-  } = useSelector(s => s.sales);
+  const {occupationOptions, inquiryOptions, assignOptions, sourceTypeOptions} =
+    useSelector(s => s.sales);
 
   const updatedAssignOptions = useMemo(() => {
     const data = [...assignOptions];
@@ -391,7 +390,6 @@ function RenderForm(props) {
             {...restProps}
             setSelectedTab={setSelectedTab}
             inquiryOptions={inquiryOptions}
-            bhkOptions={bhkOptions}
             assignOptions={updatedAssignOptions}
             formikProps={formikProps}
           />
