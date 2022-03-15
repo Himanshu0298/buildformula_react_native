@@ -30,6 +30,9 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Feather from 'react-native-vector-icons/Feather';
 import dayjs from 'dayjs';
 import {getFileExtension} from 'utils/download';
+import NoResult from 'components/Atoms/NoResult';
+import Fontisto from 'react-native-vector-icons/Fontisto';
+import Foundation from 'react-native-vector-icons/Foundation';
 import DeleteDialog from './Components/DeleteDialog';
 import RenameDialogue from './Components/RenameDialog';
 import CreateFolderDialogue from './Components/CreateFolderDialog';
@@ -37,6 +40,7 @@ import MenuDialog from './Components/MenuDialog';
 import VersionDialog from './Components/VersionDialog';
 import FoldersSection from './Components/FoldersSection';
 import ShareDialogue from './Components/ShareDialogue';
+import FolderSectionGridView from './Components/FolderSectionGridView';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const relativeTime = require('dayjs/plugin/relativeTime');
@@ -212,6 +216,29 @@ function RenderMenuModal(props) {
   );
 }
 
+const ListViewControl = props => {
+  const {theme, listMode, setListMode} = props;
+  return (
+    <View style={styles.headerActionContainer}>
+      <TouchableOpacity onPress={() => setListMode('list')}>
+        <Foundation
+          name="list-bullet"
+          size={20}
+          color={listMode === 'list' ? theme.colors.primary : undefined}
+          style={styles.headerIcon}
+        />
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => setListMode('grid')}>
+        <Fontisto
+          name="nav-icon-grid"
+          size={17}
+          color={listMode === 'grid' ? theme.colors.primary : undefined}
+        />
+      </TouchableOpacity>
+    </View>
+  );
+};
+
 function RoughDrawing(props) {
   const {theme, route, navigation} = props;
   const {folder_name: folderName, index_of: folderDepth = 0} =
@@ -250,6 +277,8 @@ function RoughDrawing(props) {
   const [modalContent, setModalContent] = React.useState({});
   const [shareDialog, setShareDialog] = React.useState(false);
   const [DialogType, setDialogType] = React.useState();
+  const [listMode, setListMode] = React.useState('list');
+
   // const [selectedUploadFile, setSelectedUploadFile] = React.useState();
 
   React.useEffect(() => {
@@ -268,7 +297,6 @@ function RoughDrawing(props) {
       color: theme.colors.primary,
       label: 'Create new folder',
       onPress: () => {
-        toggleFab();
         toggleDialog('createFolder');
       },
     },
@@ -419,10 +447,22 @@ function RoughDrawing(props) {
             />
           </View>
         ) : null}
-        <FoldersSection
-          {...props}
-          {...{menuId, toggleMenu, setModalContent, setModalContentType}}
-        />
+        <View style={styles.headerContainer}>
+          <Subheading>Rough Drawing</Subheading>
+          <ListViewControl {...props} {...{listMode, setListMode}} />
+        </View>
+        {listMode === 'list' ? (
+          <FoldersSection
+            {...props}
+            {...{menuId, toggleMenu, setModalContent, setModalContentType}}
+          />
+        ) : null}
+        {listMode === 'grid' ? (
+          <FolderSectionGridView
+            {...props}
+            {...{menuId, toggleMenu, setModalContent, setModalContentType}}
+          />
+        ) : null}
       </ScrollView>
       {modulePermissions?.editor || modulePermissions?.admin ? (
         <FAB.Group
@@ -433,7 +473,8 @@ function RoughDrawing(props) {
           }}
           icon="plus"
           small
-          onPress={toggleFab}
+          // onPress={toggleFab}
+          onPress={() => toggleDialog('createFolder')}
           onStateChange={() => {
             console.log('-----> onStateChange');
           }}
@@ -478,13 +519,6 @@ function RoughDrawing(props) {
         dialogueContent={modalContent}
         renameFolderHandler={renameFolderHandler}
       />
-      {/* <UploadDialog
-        {...props}
-        visible={DialogType === 'uploadFile'}
-        toggleDialogue={toggleDialog}
-        selectedUploadFile={selectedUploadFile}
-        handleFileUpload={handleFileUpload}
-      /> */}
       <DeleteDialog
         visible={DialogType === 'deleteFileFolder'}
         toggleDialogue={toggleDialog}
@@ -573,6 +607,21 @@ const styles = StyleSheet.create({
   emptyContainer: {
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+    paddingLeft: 10,
+    paddingRight: 30,
+  },
+  headerActionContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  headerIcon: {
+    marginHorizontal: 10,
   },
 });
 
