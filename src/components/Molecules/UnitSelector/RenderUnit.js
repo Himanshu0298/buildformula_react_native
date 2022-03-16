@@ -72,7 +72,7 @@ function RenderUnit(props) {
   }
 
   const bookingStyle = statusStyle?.color
-    ? {borderWidth: 2, borderColor: statusStyle?.color}
+    ? {borderColor: statusStyle?.color}
     : {};
 
   const UnitIcon = UNIT_ICONS[floorType];
@@ -146,6 +146,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
     padding: 5,
     borderRadius: 7,
+    borderWidth: 2,
+    borderColor: 'transparent',
   },
   iconContainer: {
     backgroundColor: '#fff',
@@ -167,8 +169,8 @@ const styles = StyleSheet.create({
   },
   diagonalLine: {
     position: 'absolute',
-    transform: [{rotate: '20deg'}],
-    top: 22,
+    transform: [{rotate: '25deg'}],
+    top: 21,
     left: -5,
     right: -5,
     bottom: 0,

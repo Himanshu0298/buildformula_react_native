@@ -11,6 +11,8 @@ export default function useCustomerActions() {
   const {
     getCustomerDetails,
     getBookingDetails,
+    cancelBooking,
+    deleteBooking,
     addCustomer,
     getBankDetails,
     updateBankDetails,
@@ -50,6 +52,49 @@ export default function useCustomerActions() {
           }
         },
       }),
+    deleteBooking: formData =>
+      dispatch({
+        type: types.DELETE_BOOKING,
+        payload: async () => {
+          try {
+            const response = _res(await deleteBooking(formData));
+            const {data} = response;
+
+            snackbar.showMessage({
+              message: 'Delete Booking successfully',
+              variant: 'success',
+            });
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const errorMessage = _err(error);
+            snackbar.showMessage({message: errorMessage, variant: 'error'});
+            return Promise.reject(errorMessage);
+          }
+        },
+      }),
+    cancelBooking: formData =>
+      dispatch({
+        type: types.CANCEL_BOOKING,
+        payload: async () => {
+          try {
+            const response = _res(await cancelBooking(formData));
+            const {data} = response;
+
+            snackbar.showMessage({
+              message: 'Delete Booking successfully',
+              variant: 'success',
+            });
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const errorMessage = _err(error);
+            snackbar.showMessage({message: errorMessage, variant: 'error'});
+            return Promise.reject(errorMessage);
+          }
+        },
+      }),
+
     getBookingDetails: params =>
       dispatch({
         type: types.GET_BOOKING_DATA,

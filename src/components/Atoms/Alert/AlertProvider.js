@@ -28,7 +28,7 @@ function AlertProvider({children}) {
     <>
       <AlertContext.Provider value={context}>{children}</AlertContext.Provider>
       <DefaultAlert
-        open={state.open}
+        {...state}
         handleClose={handleClose}
         handleConfirm={handleConfirm}
       />

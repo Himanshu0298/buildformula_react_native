@@ -13,6 +13,11 @@ import PropTypes from 'prop-types';
 import NoResult from 'components/Atoms/NoResult';
 import RenderUnit from './RenderUnit';
 
+const getUnitNumber = string => {
+  const split = string.split('-R');
+  return Number(`${split[0]}.${split[1] || 0}`);
+};
+
 function BhkList({onPress, selectedBhk}) {
   return (
     <View>
@@ -48,12 +53,16 @@ function UnitSelector(props) {
 
   const [selectedBhk, setSelectedBhk] = React.useState();
 
+  const processedUnits = units.sort(
+    (a, b) => getUnitNumber(a.unitLabel) - getUnitNumber(b.unitLabel),
+  );
+
   const filteredUnits = useMemo(() => {
     if (selectedBhk) {
-      return units.filter(i => i.bhk === selectedBhk);
+      return processedUnits.filter(i => i.bhk === selectedBhk);
     }
-    return units;
-  }, [selectedBhk, units]);
+    return processedUnits;
+  }, [selectedBhk, processedUnits]);
 
   const renderNoUnits = () => <NoResult title="No Units available" />;
 

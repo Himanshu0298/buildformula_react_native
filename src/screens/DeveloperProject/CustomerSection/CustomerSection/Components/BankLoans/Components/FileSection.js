@@ -102,7 +102,7 @@ function FileUploadModal(props) {
 }
 
 function FileSection(props) {
-  const {route, toggleShareModal, modulePermissions, bankDetails} = props;
+  const {route, modulePermissions, bankDetails} = props;
   const {project_id, unit} = route?.params || {};
   const {files} = bankDetails || {};
 

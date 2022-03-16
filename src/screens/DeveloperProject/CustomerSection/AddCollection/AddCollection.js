@@ -17,17 +17,6 @@ import {useSelector} from 'react-redux';
 import ActionButtons from 'components/Atoms/ActionButtons';
 import RenderSelect from 'components/Atoms/RenderSelect';
 
-const PAYMENT_MODE = [
-  {label: 'DD', value: 'dd'},
-  {label: 'NetBanking', value: 'netbanking'},
-  {label: 'Cheque', value: 'cheque'},
-  {label: 'RTGS', value: 'rtgs'},
-  {label: 'NEFT', value: 'Neft'},
-  {label: 'Cash', value: 'cash'},
-  {label: 'DebitCard', value: 'debitcard'},
-  {label: 'UPI', value: 'UPI'},
-];
-
 const schema = Yup.object().shape({
   date: Yup.string('Invalid').required('Required'),
   bank_name: Yup.string('Invalid').when('type', (type, keySchema) =>
@@ -53,8 +42,13 @@ function RenderForm(props) {
     setFieldValue,
   } = formikProps;
 
-  console.log('-------->values', values);
   const {t} = useTranslation();
+
+  const {payment_mode} = useSelector(s => s.project.commonData);
+
+  const paymentOptions = React.useMemo(() => {
+    return payment_mode.map(item => ({label: item.title, value: item.value}));
+  }, [payment_mode]);
 
   const dateRef = React.useRef();
   const bankRef = React.useRef();
@@ -172,7 +166,7 @@ function RenderForm(props) {
         <View>
           <RenderSelect
             label="Payment Mode"
-            options={PAYMENT_MODE}
+            options={paymentOptions}
             style={styles.paymentFormContainer}
             value={values.payment_mode}
             error={errors.payment_mode}

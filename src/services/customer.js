@@ -13,6 +13,20 @@ export default function useCustomerServices() {
         config({multipart: false}),
       );
     },
+    deleteBooking: data => {
+      return instance.post(
+        '/customers/delete_booking',
+        data,
+        config({multipart: false}),
+      );
+    },
+    cancelBooking: data => {
+      return instance.post(
+        '/booking_resellunit',
+        data,
+        config({multipart: false}),
+      );
+    },
     getBankDetails: data => {
       return instance.post(
         '/customers/bank_details',

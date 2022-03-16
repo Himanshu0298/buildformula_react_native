@@ -16,7 +16,15 @@ function RenderDetail({label, value}) {
 function BankDetailsSection(props) {
   const {navigation, route, modulePermissions, bankDetails = {}} = props;
 
-  const {bank_name, bank_branch, bank_address} = bankDetails?.details || {};
+  const {
+    bank_name,
+    bank_branch,
+    loan_approval_letter,
+    loan_amount,
+    installment_amount,
+    number_of_installment,
+    bank_address,
+  } = bankDetails?.details || {};
 
   const detailsAvailable = Object.keys(bankDetails?.details || {}).length > 0;
 
@@ -33,9 +41,16 @@ function BankDetailsSection(props) {
           <RenderDetail label="Bank name" value={bank_name} />
           <RenderDetail label="Bank Branch" value={bank_branch} />
           <RenderDetail label="Bank Address" value={bank_address} />
-          <RenderDetail label="Loan approval letter" />
-          <RenderDetail label="Loan amount" />
-          <RenderDetail label="Installment amount" />
+          <RenderDetail
+            label="Loan approval letter"
+            value={loan_approval_letter}
+          />
+          <RenderDetail label="Loan amount" value={loan_amount} />
+          <RenderDetail
+            label="No of Installments"
+            value={number_of_installment}
+          />
+          <RenderDetail label="Installment amount" value={installment_amount} />
         </>
       ) : (
         <View style={styles.emptyContainer}>

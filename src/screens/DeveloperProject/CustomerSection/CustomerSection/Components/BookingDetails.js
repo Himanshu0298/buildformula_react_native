@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {StyleSheet, View, ScrollView, useWindowDimensions} from 'react-native';
+import {StyleSheet, View, useWindowDimensions} from 'react-native';
 import {
   Caption,
   Divider,
@@ -21,8 +21,9 @@ import RenderTextBox from 'components/Atoms/RenderTextbox';
 import ActionButtons from 'components/Atoms/ActionButtons';
 import Layout from 'utils/Layout';
 import {Tabs} from 'react-native-collapsible-tab-view';
-import useSalesActions from 'redux/actions/salesActions';
 import useCustomerActions from 'redux/actions/customerActions';
+import {useAlert} from 'components/Atoms/Alert';
+import useCustomerServices from 'services/customer';
 
 const schema = Yup.object().shape({
   email: Yup.string('Required').required('Required'),
@@ -65,6 +66,7 @@ function RenderRow({row, style}) {
 
 function CustomerCredLogin(props) {
   const {bookingDetails, theme, navigation} = props;
+  const alert = useAlert();
 
   const {customer_phone, customer_email, id} = bookingDetails;
 
@@ -72,17 +74,33 @@ function CustomerCredLogin(props) {
 
   const [editLoginCred, setEditLoginCred] = React.useState(false);
 
-  const {deleteBooking} = useSalesActions();
+  const {deleteBooking, cancelBooking} = useCustomerServices();
   const {getBookingDetails} = useCustomerActions();
 
   const handleDelete = async project_bookings_id => {
-    await deleteBooking({project_id: projectId, project_bookings_id});
-    console.log('-------->after delete call');
-    navigation.goBack();
+    alert.show({
+      title: 'Confirm',
+      message: 'Are you sure you want to delete?',
+      confirmText: 'Delete',
+      onConfirm: () => {
+        deleteBooking({project_id: projectId, project_bookings_id}).then(() => {
+          navigation.goBack();
+        });
+      },
+    });
   };
 
-  const handleEdit = () => {
-    console.log('-------->handleEdit');
+  const handleCancel = async project_bookings_id => {
+    alert.show({
+      title: 'Confirm',
+      message: 'Are you sure you want to Cancel?',
+      confirmText: 'Yes',
+      onConfirm: () => {
+        cancelBooking({project_id: projectId, project_bookings_id}).then(() => {
+          navigation.goBack();
+        });
+      },
+    });
   };
 
   const handleCredEdit = () => setEditLoginCred(true);
@@ -108,7 +126,7 @@ function CustomerCredLogin(props) {
         <View>
           <OpacityButton
             opacity={0.1}
-            onPress={handleEdit}
+            onPress={() => handleCancel(id)}
             color={theme.colors.primary}
             style={styles.editButton}>
             <MaterialCommunityIcons

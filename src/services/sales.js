@@ -137,13 +137,7 @@ export default function useSalesServices() {
         config({multipart: false}),
       );
     },
-    deleteBooking: data => {
-      return instance.post(
-        '/customers/delete_booking',
-        data,
-        config({multipart: false}),
-      );
-    },
+
     getVisitorActivities: data => {
       return instance.post(
         '/visitors/listactivities',
