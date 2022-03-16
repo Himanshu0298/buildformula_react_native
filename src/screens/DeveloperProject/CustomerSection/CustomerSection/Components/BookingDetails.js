@@ -21,6 +21,8 @@ import RenderTextBox from 'components/Atoms/RenderTextbox';
 import ActionButtons from 'components/Atoms/ActionButtons';
 import Layout from 'utils/Layout';
 import {Tabs} from 'react-native-collapsible-tab-view';
+import useSalesActions from 'redux/actions/salesActions';
+import useCustomerActions from 'redux/actions/customerActions';
 
 const schema = Yup.object().shape({
   email: Yup.string('Required').required('Required'),
@@ -62,13 +64,21 @@ function RenderRow({row, style}) {
 }
 
 function CustomerCredLogin(props) {
-  const {bookingDetails, theme} = props;
-  const {customer_phone, customer_email} = bookingDetails;
+  const {bookingDetails, theme, navigation} = props;
+
+  const {customer_phone, customer_email, id} = bookingDetails;
+
+  const projectId = useSelector(s => s.project.selectedProject.id);
 
   const [editLoginCred, setEditLoginCred] = React.useState(false);
 
-  const handleDelete = () => {
-    console.log('-------->handleDelete');
+  const {deleteBooking} = useSalesActions();
+  const {getBookingDetails} = useCustomerActions();
+
+  const handleDelete = async project_bookings_id => {
+    await deleteBooking({project_id: projectId, project_bookings_id});
+    console.log('-------->after delete call');
+    navigation.goBack();
   };
 
   const handleEdit = () => {
@@ -83,7 +93,7 @@ function CustomerCredLogin(props) {
         <View>
           <OpacityButton
             opacity={0.1}
-            onPress={handleDelete}
+            onPress={() => handleDelete(id)}
             color={theme.colors.red}
             style={styles.deletButton}>
             <MaterialCommunityIcons
@@ -760,12 +770,14 @@ function BookingDetails(props) {
     bookingBanks = {},
   } = useSelector(({customer}) => customer);
 
+  const {unit_id} = props;
+
   return (
     <Tabs.ScrollView
       contentContainerStyle={styles.scrollView}
       showsVerticalScrollIndicator={false}>
       <View style={styles.container}>
-        <CustomerCredLogin {...props} {...{bookingDetails}} />
+        <CustomerCredLogin {...props} {...{bookingDetails}} unit_id={unit_id} />
         <Divider />
 
         <CustomerSection {...props} {...{bookingDetails}} />

@@ -3,10 +3,6 @@ import {StyleSheet, View, Image, TouchableOpacity} from 'react-native';
 import {IconButton, Subheading, Text} from 'react-native-paper';
 import FolderIcon from 'assets/images/folder_icon.png';
 import {useSelector} from 'react-redux';
-import NoResult from 'components/Atoms/NoResult';
-import Fontisto from 'react-native-vector-icons/Fontisto';
-import Foundation from 'react-native-vector-icons/Foundation';
-import {theme} from 'styles/theme';
 
 function RenderFolder(props) {
   const {
@@ -47,24 +43,6 @@ function RenderFolder(props) {
   );
 }
 
-const ListViewControl = () => {
-  return (
-    <View style={styles.headerActionContainer}>
-      <TouchableOpacity>
-        <Foundation
-          name="list-bullet"
-          size={20}
-          color="black"
-          style={styles.headerIcon}
-        />
-      </TouchableOpacity>
-      <TouchableOpacity>
-        <Fontisto name="nav-icon-grid" size={20} color={theme.colors.primary} />
-      </TouchableOpacity>
-    </View>
-  );
-};
-
 function FolderSection(props) {
   const {route, menuId, toggleMenu, setModalContentType, setModalContent} =
     props;
@@ -77,12 +55,6 @@ function FolderSection(props) {
 
   return (
     <View style={styles.container}>
-      <View style={styles.gridView}>
-        <Subheading style={styles.Subheading}>Rough Drawing</Subheading>
-      </View>
-      {filteredFolders?.length === 0 ? (
-        <NoResult title="No Folders Found" />
-      ) : null}
       <View>
         {filteredFolders?.map((folder, index) => (
           <RenderFolder
@@ -107,26 +79,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#ffffff',
   },
-  gridView: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  headerActionContainer: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    marginRight: 20,
-  },
-  headerIcon: {
-    marginHorizontal: 10,
-  },
-  Subheading: {
-    fontSize: 20,
-    color: '#080707',
-    paddingHorizontal: 5,
-    paddingVertical: 15,
-  },
   PdfIcon: {
     width: 38,
     height: 38,
@@ -144,6 +96,7 @@ const styles = StyleSheet.create({
   sectionContainer: {
     alignItems: 'center',
     flexDirection: 'row',
+    paddingBottom: 5,
   },
 });
 
