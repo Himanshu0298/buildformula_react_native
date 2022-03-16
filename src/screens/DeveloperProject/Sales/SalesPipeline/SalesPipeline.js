@@ -150,7 +150,7 @@ function RenderAddNew({handleAddNew}) {
 function DotIndicator({count, selected}) {
   return (
     <View style={styles.dotContainer}>
-      {new Array(count + 1).fill(0).map((_, index) => {
+      {new Array(count + 1).fill(0).map((item, index) => {
         const backgroundColor =
           index === selected ? theme.colors.primary : 'rgba(4,29,54,0.1)';
 

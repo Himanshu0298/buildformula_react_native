@@ -30,7 +30,6 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Feather from 'react-native-vector-icons/Feather';
 import dayjs from 'dayjs';
 import {getFileExtension} from 'utils/download';
-import NoResult from 'components/Atoms/NoResult';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import Foundation from 'react-native-vector-icons/Foundation';
 import DeleteDialog from './Components/DeleteDialog';
@@ -302,7 +301,6 @@ function RoughDrawing(props) {
     },
   ];
 
-  const toggleFab = () => setFab(v => !v);
   const toggleMenu = folderIndex => setMenuId(folderIndex);
   const toggleDialog = v => setDialogType(v);
   const toggleShareDialog = () => setShareDialog(v => !v);

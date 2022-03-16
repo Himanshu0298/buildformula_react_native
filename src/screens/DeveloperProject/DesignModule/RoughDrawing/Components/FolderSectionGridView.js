@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, Image, TouchableOpacity} from 'react-native';
+import {StyleSheet, View, Image} from 'react-native';
 import {Text} from 'react-native-paper';
 import FolderIcon from 'assets/images/folder_icon.png';
 import {useSelector} from 'react-redux';

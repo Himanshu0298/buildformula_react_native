@@ -137,6 +137,13 @@ export default function useSalesServices() {
         config({multipart: false}),
       );
     },
+    deleteBooking: data => {
+      return instance.post(
+        '/customers/delete_booking',
+        data,
+        config({multipart: false}),
+      );
+    },
     getVisitorActivities: data => {
       return instance.post(
         '/visitors/listactivities',
@@ -156,6 +163,7 @@ export default function useSalesServices() {
     deleteBroker: data => {
       return instance.post('/delete_broker', data, config({multipart: false}));
     },
+
     getPipelinesOrderList: data => {
       return instance.post(
         '/pipeline/listrearrangesalespipeline',
