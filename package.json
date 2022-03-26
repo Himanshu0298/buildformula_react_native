@@ -40,6 +40,7 @@
     "react": "17.0.2",
     "react-i18next": "^11.15.3",
     "react-native": "0.66.4",
+    "react-native-android-keyboard-adjust": "github:saahiil-pny/react-native-android-keyboard-adjust#feat/typescript-and-autolinking-support",
     "react-native-autogrow-textinput": "^5.4.0",
     "react-native-blob-util": "^0.14.1",
     "react-native-bootsplash": "^3.2.7",

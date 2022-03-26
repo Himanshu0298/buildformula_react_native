@@ -18,6 +18,10 @@ import useCustomerActions from 'redux/actions/customerActions';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {useSelector} from 'react-redux';
 import {theme} from 'styles/theme';
+import {useSnackbar} from 'components/Atoms/Snackbar';
+import {downloadPdf} from 'utils/download';
+import FileViewer from 'react-native-file-viewer';
+import {BASE_API_URL} from 'utils/constant';
 
 const TITLE = {
   document: 'Documentation charges',
@@ -35,9 +39,17 @@ function Item({label, value}) {
 }
 
 const RenderCharge = React.memo(props => {
-  const {charge, payment_mode, navigation, type, navToEdit, handleDelete} =
-    props;
   const {
+    charge,
+    payment_mode,
+    type,
+    project_id,
+    unit_id,
+    navToEdit,
+    handleDelete,
+  } = props;
+  const {
+    id,
     bank_name,
     branch_name,
     transaction_number,
@@ -46,8 +58,30 @@ const RenderCharge = React.memo(props => {
     amount,
     remark,
   } = charge;
+  const snackbar = useSnackbar();
 
-  const navToDownload = () => navigation.navigate(console.log('-------->'));
+  const download = async () => {
+    snackbar.showMessage({
+      message: 'Preparing your download...',
+      variant: 'warning',
+      autoHideDuration: 10000,
+    });
+
+    const data = {
+      project_id,
+      unit_id,
+      customer_payment_collections_id: id,
+    };
+
+    const url = `${BASE_API_URL}/cs_account_property_final_amount_single`;
+    const {dir} = await downloadPdf(data, url);
+
+    snackbar.showMessage({
+      message: 'File Downloaded!',
+      variant: 'success',
+      action: {label: 'Open', onPress: () => FileViewer.open(`file://${dir}`)},
+    });
+  };
 
   return (
     <View style={styles.chargeContainer}>
@@ -88,7 +122,7 @@ const RenderCharge = React.memo(props => {
           opacity={0.08}
           color={theme.colors.primary}
           style={styles.rightContent}
-          onPress={navToDownload}>
+          onPress={download}>
           <MaterialCommunityIcons
             name="download"
             size={18}
@@ -149,7 +183,9 @@ function PaymentCollections(props) {
   const navToAddCollection = () =>
     navigation.navigate('AddCollection', {...route.params});
 
-  const navToPrintAll = () => navigation.navigate(console.log('-------->'));
+  const navToPrintAll = () => {
+    console.log('-------->');
+  };
 
   const handleDelete = ({project_id, id, unit_id}) => {
     alert.show({
@@ -172,7 +208,7 @@ function PaymentCollections(props) {
         <View style={styles.actionButton}>
           <View>
             <TouchableOpacity
-              onPress={() => navigation.goBack()}
+              onPress={navigation.goBack}
               style={styles.titleContainer}>
               <Image source={backArrow} style={styles.backArrow} />
               <Subheading>Payment Collection</Subheading>

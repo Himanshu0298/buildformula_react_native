@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {IconButton, Subheading, TextInput, withTheme} from 'react-native-paper';
-import useImagePicker from 'utils/useImagePicker';
+import useImagePicker from 'hooks/useImagePicker';
 import {Formik} from 'formik';
 import RenderInput from 'components/Atoms/RenderInput';
 import {useTranslation} from 'react-i18next';

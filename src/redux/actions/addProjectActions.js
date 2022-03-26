@@ -1,5 +1,5 @@
 import {useDispatch} from 'react-redux';
-import {useResProcessor} from 'utils/responseProcessor';
+import {useResProcessor} from 'hooks/useResponseProcessor';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import useAddProject from '../../services/addProject';
 import * as types from './actionTypes';

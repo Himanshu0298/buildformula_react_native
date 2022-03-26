@@ -1,3 +1,4 @@
+import {Platform} from 'react-native';
 import {theme} from 'styles/theme';
 
 // export const SITE_URL = 'https://www.vshwanbuild.com';
@@ -62,3 +63,8 @@ export const MODIFY_REQUEST_STATUS = {
   cancel_by_customer: {label: 'CANCEL BY CUSTOMER', color: '#041D36'},
   confirmed_by_customer: {label: 'CONFIRMED BY CUSTOMER', color: '#041D36'},
 };
+
+export const KEYBOARD_SHOW =
+  Platform.OS === 'ios' ? 'KeyboardWillShow' : 'keyboardDidShow';
+export const KEYBOARD_HIDE =
+  Platform.OS === 'ios' ? 'KeyboardWillHide' : 'KeyboardDidHide';

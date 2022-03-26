@@ -27,7 +27,7 @@ import Feather from 'react-native-vector-icons/Feather';
 
 import {useRef} from 'react';
 import {SectionList, Tabs} from 'react-native-collapsible-tab-view';
-import useImagePicker from 'utils/useImagePicker';
+import useImagePicker from 'hooks/useImagePicker';
 import useFileActions from 'redux/actions/fileActions';
 import {getFileExtension} from 'utils/download';
 import ShareDialogue from 'screens/DeveloperProject/Files/Components/ShareDialogue';

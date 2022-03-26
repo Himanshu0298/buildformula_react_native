@@ -29,6 +29,7 @@ import Layout from 'utils/Layout';
 import BottomSheet from 'reanimated-bottom-sheet';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import SheetHeader from 'components/Atoms/SheetHeader';
+import {KEYBOARD_HIDE, KEYBOARD_SHOW} from 'utils/constant';
 import CustomInput from '../Components/CustomInput';
 
 const BANNER_HEIGHT = Layout.window.width * 0.75 * (5 / 12);
@@ -156,10 +157,10 @@ function Login(props) {
 
   React.useEffect(() => {
     const focusUnsubscribe = navigation.addListener('focus', () => {
-      Keyboard.addListener('keyboardDidShow', _keyboardDidShow);
+      Keyboard.addListener(KEYBOARD_SHOW, _keyboardDidShow);
     });
     const blurUnsubscribe = navigation.addListener('blur', () => {
-      Keyboard.removeListener('keyboardDidShow', _keyboardDidShow);
+      Keyboard.removeListener(KEYBOARD_HIDE, _keyboardDidShow);
     });
 
     // cleanup function

@@ -659,7 +659,7 @@ function StepTwo(props) {
           <MaterialTabs
             items={['Towers', 'Floors', 'Units']}
             selectedIndex={selectedTab}
-            onChange={() => {}}
+            onChange={() => null}
             barColor="#fff"
             indicatorColor={theme.colors.primary}
             inactiveTextColor="#919191"

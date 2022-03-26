@@ -27,7 +27,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import {useTranslation} from 'react-i18next';
 import Layout from 'utils/Layout';
 import BottomSheet from 'reanimated-bottom-sheet';
-import {PHONE_REGEX} from 'utils/constant';
+import {KEYBOARD_HIDE, KEYBOARD_SHOW, PHONE_REGEX} from 'utils/constant';
 import useAddProjectActions from 'redux/actions/addProjectActions';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import CustomInput from '../Components/CustomInput';
@@ -305,13 +305,13 @@ function SignUp(props) {
 
   React.useEffect(() => {
     const focusUnsubscribe = navigation.addListener('focus', () => {
-      Keyboard.addListener('keyboardDidShow', _keyboardDidShow);
-      Keyboard.addListener('keyboardDidHide', _keyboardDidHide);
+      Keyboard.addListener(KEYBOARD_SHOW, _keyboardDidShow);
+      Keyboard.addListener(KEYBOARD_HIDE, _keyboardDidHide);
     });
 
     const blurUnsubscribe = navigation.addListener('blur', () => {
-      Keyboard.removeListener('keyboardDidShow', _keyboardDidShow);
-      Keyboard.removeListener('keyboardDidHide', _keyboardDidHide);
+      Keyboard.removeListener(KEYBOARD_SHOW, _keyboardDidShow);
+      Keyboard.removeListener(KEYBOARD_HIDE, _keyboardDidHide);
     });
 
     // cleanup function

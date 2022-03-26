@@ -11,7 +11,7 @@ import {
 } from 'react-native-paper';
 import RenderInput from 'components/Atoms/RenderInput';
 import {Formik} from 'formik';
-import useImagePicker from 'utils/useImagePicker';
+import useImagePicker from 'hooks/useImagePicker';
 import dayjs from 'dayjs';
 import RenderTextBox from 'components/Atoms/RenderTextbox';
 import {cloneDeep, uniqBy} from 'lodash';

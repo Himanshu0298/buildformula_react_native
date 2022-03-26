@@ -94,3 +94,45 @@ export async function downloadFile(file, fileUrl, getBase64) {
       throw error;
     });
 }
+
+export async function downloadPdf(data, fileUrl, getBase64) {
+  const path = `${DIR}/vshwan_document_${new Date().getTime()}.pdf`;
+
+  const {token} = store.getState().user;
+
+  const Authorization = `Bearer ${token}`;
+
+  const options = {
+    fileCache: true,
+    path,
+    addAndroidDownloads: {
+      path,
+      description: 'downloading file...',
+      notification: true,
+      // useDownloadManager works with Android only
+      useDownloadManager: true,
+    },
+  };
+
+  return RNFetchBlob.config(options)
+    .fetch('POST', fileUrl, {Authorization}, data)
+    .then(async res => {
+      // Alert after successful downloading
+
+      console.log('-------->res', res);
+
+      // const downloadDir = normalizeFilePath(res.data);
+      // let base64;
+      // if (getBase64) {
+      //   const base64Data = await RNFS.readFile(downloadDir, 'base64');
+      //   const mimeType = mime.lookup(file.file_name);
+      //   base64 = `data:${mimeType};base64,${base64Data}`;
+      // }
+
+      // return {base64, dir: downloadDir};
+    })
+    .catch(async error => {
+      console.log('-----> error', error);
+      throw error;
+    });
+}

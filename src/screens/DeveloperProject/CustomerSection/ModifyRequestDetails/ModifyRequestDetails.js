@@ -1,9 +1,7 @@
 import * as React from 'react';
-import {StyleSheet, View, Image} from 'react-native';
+import {StyleSheet, View, Image, ScrollView} from 'react-native';
 import {Caption, Subheading, Text, TextInput} from 'react-native-paper';
-
 import {useState, useEffect} from 'react';
-
 import ActionButtons from 'components/Atoms/ActionButtons';
 import RenderSelect from 'components/Atoms/RenderSelect';
 
@@ -11,7 +9,6 @@ import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icons from 'react-native-vector-icons/FontAwesome';
 import {theme} from 'styles/theme';
-import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
 import {getShadow} from 'utils';
 import RenderInput from 'components/Atoms/RenderInput';
 import useCustomerActions from 'redux/actions/customerActions';
@@ -20,7 +17,6 @@ import {MODIFY_REQUEST_STATUS} from 'utils/constant';
 import dayjs from 'dayjs';
 import RenderHtml from 'react-native-render-html';
 import Layout from 'utils/Layout';
-import {Tabs} from 'react-native-collapsible-tab-view';
 
 const relativeTime = require('dayjs/plugin/relativeTime');
 
@@ -220,7 +216,7 @@ const ModifyRequestDetails = props => {
     <View style={styles.container}>
       <Subheading style={styles.heading}>Modify Requests</Subheading>
       <View style={{flex: 1}}>
-        <Tabs.ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.contentContainer}>
             <View style={styles.cardContainer}>
               <View style={styles.row}>
@@ -287,7 +283,7 @@ const ModifyRequestDetails = props => {
               <Chat modifyRequest={modifyRequest} />
             ) : null}
           </View>
-        </Tabs.ScrollView>
+        </ScrollView>
       </View>
 
       <Comment addCommentData={addCommentData} />

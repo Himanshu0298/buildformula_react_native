@@ -16,6 +16,7 @@ export function useResProcessor() {
 
       if (typeof errorMessage !== 'string') {
         if (typeof errorMessage === 'object') {
+          // eslint-disable-next-line prefer-destructuring
           errorMessage = Object.values(errorMessage)[0];
         }
       }
@@ -41,7 +42,7 @@ export function useResProcessor() {
       ) {
         return data;
       }
-      throw {response};
+      throw new Error(response);
     },
   };
 }

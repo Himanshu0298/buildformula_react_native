@@ -17,7 +17,7 @@ import RenderInput from 'components/Atoms/RenderInput';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import useCustomerActions from 'redux/actions/customerActions';
 import PdfIcon from 'assets/images/pdf_icon.png';
-import useImagePicker from 'utils/useImagePicker';
+import useImagePicker from 'hooks/useImagePicker';
 
 const uploadSchema = Yup.object().shape({
   file_reason: Yup.string().trim().required('Required'),

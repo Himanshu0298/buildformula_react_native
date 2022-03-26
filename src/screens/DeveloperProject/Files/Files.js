@@ -20,7 +20,7 @@ import useFileActions from 'redux/actions/fileActions';
 import FolderIcon from 'assets/images/folder_icon.png';
 import UploadFileIcon from 'assets/images/file_icon.png';
 import {useSelector} from 'react-redux';
-import useImagePicker from 'utils/useImagePicker';
+import useImagePicker from 'hooks/useImagePicker';
 import Spinner from 'react-native-loading-spinner-overlay';
 import BottomSheet from 'reanimated-bottom-sheet';
 import {getPermissions, getShadow} from 'utils';

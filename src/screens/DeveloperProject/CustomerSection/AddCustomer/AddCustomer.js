@@ -18,7 +18,7 @@ import * as Yup from 'yup';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {useSelector} from 'react-redux';
 import useCustomerActions from 'redux/actions/customerActions';
-import useImagePicker from 'utils/useImagePicker';
+import useImagePicker from 'hooks/useImagePicker';
 import CustomCheckbox from 'components/Atoms/CustomCheckbox';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {getShadow} from 'utils';

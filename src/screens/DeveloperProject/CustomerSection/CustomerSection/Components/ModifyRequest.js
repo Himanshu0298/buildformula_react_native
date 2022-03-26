@@ -1,7 +1,6 @@
 import * as React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Tabs} from 'react-native-collapsible-tab-view';
-import {ScrollView} from 'react-native-gesture-handler';
 import {
   Caption,
   Text,

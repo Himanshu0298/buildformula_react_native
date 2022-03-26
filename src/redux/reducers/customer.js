@@ -187,7 +187,6 @@ const reducer = (state = initialState, action = {}) => {
       return {
         ...state,
         loadingFile: false,
-        accountDetails: payload,
       };
     }
     case `${GET_FILE}_REJECTED`:
@@ -205,7 +204,6 @@ const reducer = (state = initialState, action = {}) => {
       return {
         ...state,
         loadingFolder: false,
-        accountDetails: payload,
       };
     }
     case `${GET_FOLDER}_REJECTED`:

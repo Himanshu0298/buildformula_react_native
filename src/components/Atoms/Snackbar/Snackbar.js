@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Snackbar, Colors} from 'react-native-paper';
 import {Keyboard} from 'react-native';
+import {KEYBOARD_HIDE, KEYBOARD_SHOW} from 'utils/constant';
 
 const VariantProps = {
   success: {color: Colors.green700},
@@ -14,11 +15,11 @@ function CustomSnackbar(props) {
 
   useEffect(() => {
     const showSubscription = Keyboard.addListener(
-      'keyboardDidShow',
+      KEYBOARD_SHOW,
       _keyboardDidShow,
     );
     const hideSubscription = Keyboard.addListener(
-      'keyboardDidHide',
+      KEYBOARD_HIDE,
       _keyboardDidHide,
     );
 

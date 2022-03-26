@@ -72,7 +72,6 @@ function FileSection(props) {
     });
     const fileUrl = getDownloadUrl(file);
     const {dir} = await downloadFile(file, fileUrl);
-    console.log('dir', dir);
 
     snackbar.showMessage({
       message: 'File Downloaded!',

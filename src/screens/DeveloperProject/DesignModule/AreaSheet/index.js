@@ -1,11 +1,11 @@
 import React from 'react';
 import ProjectLayout from 'components/Molecules/Layout/ProjectLayout';
-import AreaSheet from './AreaSheet';
+import AreaSheetSection from './AreaSheetSection';
 
 export default props => {
   return (
-    <ProjectLayout {...props} header>
-      <AreaSheet {...props} />
+    <ProjectLayout {...props} header={false}>
+      <AreaSheetSection {...props} />
     </ProjectLayout>
   );
 };
