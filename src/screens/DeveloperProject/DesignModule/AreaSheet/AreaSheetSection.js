@@ -9,8 +9,8 @@ import Layout from 'utils/Layout';
 import MaterialTabBar from 'components/Atoms/MaterialTabBar';
 import {getShadow} from 'utils';
 import ProjectSheet from './Components/ProjectSheet';
-import CategorySheet from './Components/CategorySheet';
-import UnitSheet from './Components/UnitSheet';
+import CategorySheet from './Components/CategorySheet/CategorySheet';
+import UnitSheet from './Components/UnitAreaSheet/UnitSheet';
 
 function AreaSheetSection(props) {
   const [selectedTab, setSelectedTab] = React.useState(0);
@@ -24,11 +24,11 @@ function AreaSheetSection(props) {
   const renderScene = ({route: {key}}) => {
     switch (key) {
       case 0:
-        return <ProjectSheet />;
+        return <ProjectSheet {...props} />;
       case 1:
-        return <CategorySheet />;
+        return <CategorySheet {...props} />;
       case 2:
-        return <UnitSheet />;
+        return <UnitSheet {...props} />;
       default:
         return <View />;
     }

@@ -7,19 +7,27 @@ import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
 import RenderTable from 'components/Atoms/RenderTable';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import Layout from 'utils/Layout';
 
-const Parking_DETAILS = [
-  {label: 'Parking', key: 'parking', value: ''},
-  {label: 'Allocated to', key: 'allocated_to', value: ''},
+const PLOT_AREA_DETAILS = [
+  {label: 'Plot', key: 'plot', value: ''},
+  {label: 'Net Land Area', key: 'net_land_area', value: ''},
+  {label: 'Undivided Land Area', key: 'undivided_land_area', value: ''},
+  {label: 'Super Build-up Area', key: 'super_build-up_area', value: ''},
+  {label: 'Carpet Area', key: 'carpet_area', value: ''},
 ];
-const TABLE_WIDTH = [Layout.window.width * 0.25, Layout.window.width * 0.65];
+const TABLE_WIDTH = [70, 130, 120, 170, 150];
 
-const STATIC_DATA = [[''], [''], ['']];
+const STATIC_DATA = [
+  ['', '', '', ''],
+  ['', '', '', ''],
+  ['', '', '', ''],
+  ['', '', '', ''],
+  ['', '', '', ''],
+];
 
-function Parking(props) {
-  const {navigation} = props;
-  const [sheetData, setSheetData] = React.useState([...Parking_DETAILS]);
+function PlotUnitSheet(props) {
+  const {setSelectedUnit} = props;
+  const [sheetData, setSheetData] = React.useState([...PLOT_AREA_DETAILS]);
 
   const [selected, setSelected] = React.useState();
 
@@ -69,7 +77,7 @@ function Parking(props) {
             opacity={0.1}
             color={theme.colors.primary}
             style={styles.backButton}
-            onPress={() => navigation.goBack()}>
+            onPress={() => setSelectedUnit()}>
             <MaterialCommunityIcons
               name="keyboard-backspace"
               size={18}
@@ -77,7 +85,7 @@ function Parking(props) {
             />
           </OpacityButton>
         </View>
-        <Text style={styles.headerTitle}>Parking Sheet</Text>
+        <Text style={styles.headerTitle}>Plot</Text>
         {/* <View style={styles.button}>
           <OpacityButton
             opacity={0.1}
@@ -101,7 +109,7 @@ function Parking(props) {
         <View style={styles.tableContainer}>
           <RenderTable
             tableWidths={TABLE_WIDTH}
-            headerColumns={Parking_DETAILS.map(i => i.label)}
+            headerColumns={PLOT_AREA_DETAILS.map(i => i.label)}
             data={processedData}
           />
           {/* <View style={styles.tableContainer}>
@@ -149,7 +157,6 @@ const styles = StyleSheet.create({
   headerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingBottom: 5,
   },
   button: {
     flexDirection: 'row',
@@ -187,4 +194,4 @@ const styles = StyleSheet.create({
   // },
 });
 
-export default withTheme(Parking);
+export default withTheme(PlotUnitSheet);

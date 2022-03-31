@@ -7,19 +7,39 @@ import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
 import RenderTable from 'components/Atoms/RenderTable';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import Layout from 'utils/Layout';
+import RenderSelect from 'components/Atoms/RenderSelect';
 
-const Parking_DETAILS = [
-  {label: 'Parking', key: 'parking', value: ''},
-  {label: 'Allocated to', key: 'allocated_to', value: ''},
+const Tower_AREA_DETAILS = [
+  {label: 'Tower', key: 'tower', value: ''},
+  {label: 'Super buildup area', key: 'super_buildup_area', value: ''},
+  {label: 'Buildup area', key: 'buildup_area', value: ''},
+  {label: 'Carpet', key: 'carpet', value: ''},
+  {label: 'Wash area', key: 'wash_area', value: ''},
+  {label: 'Balcony area', key: 'blcony_area', value: ''},
+  {label: 'Total area', key: 'total_area', value: ''},
+  {label: 'North', key: 'north', value: ''},
+  {label: ' South ', key: 'south', value: ''},
+  {label: 'East', key: 'east', value: ''},
+  {label: 'West', key: 'west', value: ''},
+  {label: 'Undivided land', key: 'undivided_land', value: ''},
 ];
-const TABLE_WIDTH = [Layout.window.width * 0.25, Layout.window.width * 0.65];
+const TABLE_WIDTH = [70, 130, 120, 90, 100, 100, 100, 80, 80, 80, 80, 130];
 
-const STATIC_DATA = [[''], [''], ['']];
+const STATIC_DATA = [
+  ['', '', '', '', '', '', '', '', '', '', ''],
+  ['', '', '', '', '', '', '', '', '', '', ''],
+  ['', '', '', '', '', '', '', '', '', '', ''],
+  ['', '', '', '', '', '', '', '', '', '', ''],
+  ['', '', '', '', '', '', '', '', '', '', ''],
+  ['', '', '', '', '', '', '', '', '', '', ''],
+  ['', '', '', '', '', '', '', '', '', '', ''],
+  ['', '', '', '', '', '', '', '', '', '', ''],
+  ['', '', '', '', '', '', '', '', '', '', ''],
+];
 
-function Parking(props) {
-  const {navigation} = props;
-  const [sheetData, setSheetData] = React.useState([...Parking_DETAILS]);
+function TowerUnitSheet(props) {
+  const {setSelectedUnit} = props;
+  const [sheetData, setSheetData] = React.useState([...Tower_AREA_DETAILS]);
 
   const [selected, setSelected] = React.useState();
 
@@ -35,7 +55,7 @@ function Parking(props) {
   const processedData = React.useMemo(() => {
     return STATIC_DATA.map((item, index) => {
       const updatedData = [...item];
-      updatedData.unshift(`${index + 1}`);
+      updatedData.unshift(`A-10${index + 1}`);
       return {
         id: index + 1,
         data: updatedData,
@@ -69,7 +89,7 @@ function Parking(props) {
             opacity={0.1}
             color={theme.colors.primary}
             style={styles.backButton}
-            onPress={() => navigation.goBack()}>
+            onPress={() => setSelectedUnit()}>
             <MaterialCommunityIcons
               name="keyboard-backspace"
               size={18}
@@ -77,7 +97,7 @@ function Parking(props) {
             />
           </OpacityButton>
         </View>
-        <Text style={styles.headerTitle}>Parking Sheet</Text>
+        <Text style={styles.headerTitle}>Tower</Text>
         {/* <View style={styles.button}>
           <OpacityButton
             opacity={0.1}
@@ -94,6 +114,15 @@ function Parking(props) {
             <MaterialIcon name="close" color={theme.colors.error} size={20} />
           </OpacityButton>
         </View> */}
+        {/* <RenderSelect
+          name="source_type"
+          label="Select Unit"
+          // options={}
+          containerStyles={{marginRight: 10, alignItems: 'center'}}
+          value={value}
+          // error={errors.source_type}
+          // onSelect={value => setFieldValue('source_type', value)}
+        /> */}
       </View>
       <KeyboardAwareScrollView
         contentContainerStyle={styles.scrollContent}
@@ -101,7 +130,7 @@ function Parking(props) {
         <View style={styles.tableContainer}>
           <RenderTable
             tableWidths={TABLE_WIDTH}
-            headerColumns={Parking_DETAILS.map(i => i.label)}
+            headerColumns={Tower_AREA_DETAILS.map(i => i.label)}
             data={processedData}
           />
           {/* <View style={styles.tableContainer}>
@@ -149,7 +178,6 @@ const styles = StyleSheet.create({
   headerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingBottom: 5,
   },
   button: {
     flexDirection: 'row',
@@ -187,4 +215,4 @@ const styles = StyleSheet.create({
   // },
 });
 
-export default withTheme(Parking);
+export default withTheme(TowerUnitSheet);

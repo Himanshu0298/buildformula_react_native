@@ -7,19 +7,42 @@ import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
 import RenderTable from 'components/Atoms/RenderTable';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import Layout from 'utils/Layout';
 
-const Parking_DETAILS = [
-  {label: 'Parking', key: 'parking', value: ''},
-  {label: 'Allocated to', key: 'allocated_to', value: ''},
+const BUNGALOW_AREA_DETAILS = [
+  {label: 'Banglow', key: 'banglow', value: ''},
+  {label: 'Net land area', key: 'net_land_area', value: ''},
+  {label: 'Undivided land area', key: 'undivided_land_area', value: ''},
+  {label: 'Super buildup area', key: 'super_buildup_area', value: ''},
+  {
+    label: 'Construction buildup area',
+    key: 'construction_buildup_area',
+    value: '',
+  },
+  {
+    label: 'Construction super buildup area',
+    key: 'construction_super_buildup_area',
+    value: '',
+  },
+  {label: 'Carpet area', key: 'carpet_area', value: ''},
 ];
-const TABLE_WIDTH = [Layout.window.width * 0.25, Layout.window.width * 0.65];
+const TABLE_WIDTH = [70, 130, 120, 170, 150, 170, 120];
 
-const STATIC_DATA = [[''], [''], ['']];
+const STATIC_DATA = [
+  ['', '', '', '', '', '', ''],
+  ['', '', '', '', '', '', ''],
+  ['', '', '', '', '', '', ''],
+  ['', '', '', '', '', '', ''],
+  ['', '', '', '', '', '', ''],
+  ['', '', '', '', '', '', ''],
+  ['', '', '', '', '', '', ''],
+  ['', '', '', '', '', '', ''],
+  ['', '', '', '', '', '', ''],
+];
 
-function Parking(props) {
-  const {navigation} = props;
-  const [sheetData, setSheetData] = React.useState([...Parking_DETAILS]);
+function BungalowAreaSheet(props) {
+  const {setSelectedSubCategory} = props;
+
+  const [sheetData, setSheetData] = React.useState([...BUNGALOW_AREA_DETAILS]);
 
   const [selected, setSelected] = React.useState();
 
@@ -35,7 +58,7 @@ function Parking(props) {
   const processedData = React.useMemo(() => {
     return STATIC_DATA.map((item, index) => {
       const updatedData = [...item];
-      updatedData.unshift(`${index + 1}`);
+      updatedData.unshift(`10${index + 1}`);
       return {
         id: index + 1,
         data: updatedData,
@@ -69,7 +92,7 @@ function Parking(props) {
             opacity={0.1}
             color={theme.colors.primary}
             style={styles.backButton}
-            onPress={() => navigation.goBack()}>
+            onPress={() => setSelectedSubCategory()}>
             <MaterialCommunityIcons
               name="keyboard-backspace"
               size={18}
@@ -77,7 +100,8 @@ function Parking(props) {
             />
           </OpacityButton>
         </View>
-        <Text style={styles.headerTitle}>Parking Sheet</Text>
+        <Text style={styles.headerTitle}>Bungalow</Text>
+
         {/* <View style={styles.button}>
           <OpacityButton
             opacity={0.1}
@@ -101,7 +125,7 @@ function Parking(props) {
         <View style={styles.tableContainer}>
           <RenderTable
             tableWidths={TABLE_WIDTH}
-            headerColumns={Parking_DETAILS.map(i => i.label)}
+            headerColumns={BUNGALOW_AREA_DETAILS.map(i => i.label)}
             data={processedData}
           />
           {/* <View style={styles.tableContainer}>
@@ -149,7 +173,6 @@ const styles = StyleSheet.create({
   headerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingBottom: 5,
   },
   button: {
     flexDirection: 'row',
@@ -186,5 +209,4 @@ const styles = StyleSheet.create({
   //   borderRadius: 50,
   // },
 });
-
-export default withTheme(Parking);
+export default withTheme(BungalowAreaSheet);

@@ -4,22 +4,57 @@ import {StyleSheet, Text, View} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {Portal, TextInput, useTheme, withTheme} from 'react-native-paper';
 import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
+import {getTowerLabel} from 'utils';
 import RenderTable from 'components/Atoms/RenderTable';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import Layout from 'utils/Layout';
 
-const Parking_DETAILS = [
-  {label: 'Parking', key: 'parking', value: ''},
-  {label: 'Allocated to', key: 'allocated_to', value: ''},
+const Tower_AREA_DETAILS = [
+  {label: 'Tower', key: 'tower', value: ''},
+  {label: 'Total saleable area', key: 'total_saleable_area', value: ''},
+  {label: 'Total carpet area', key: 'total_carpet_area', value: ''},
+  {
+    label: 'Total balcony carpet area',
+    key: 'total_balcony_carpet_area',
+    value: '',
+  },
+  {label: 'Total wash area carpet', key: 'total_wash_area_carpet', value: ''},
+  {label: 'Total flat carpet area', key: 'total_flat_carpet_area', value: ''},
+  {label: 'Tower buildup area', key: 'total_tower_buildup_area', value: ''},
+  {label: 'Total lobby area', key: 'total_lobby_area', value: ''},
+  {label: 'Total Staircase area', key: 'total_staircase_area', value: ''},
+  {label: 'Total Lift Area', key: 'total_lift_area', value: ''},
+  {label: 'Total Floor Plate Area', key: 'total_floor_plate_area', value: ''},
+  {
+    label: 'Total Built-up Plinth Area',
+    key: 'total_built-up_plinth_area',
+    value: '',
+  },
+  {
+    label: 'Tarrace cabin,lift room,pump, etc area',
+    key: 'tarrace_cabin_lift_room_pump_etc_area',
+    value: '',
+  },
 ];
-const TABLE_WIDTH = [Layout.window.width * 0.25, Layout.window.width * 0.65];
+const TABLE_WIDTH = [
+  70, 130, 120, 170, 150, 170, 120, 120, 140, 125, 145, 150, 170,
+];
 
-const STATIC_DATA = [[''], [''], ['']];
+const STATIC_DATA = [
+  ['', '', '', '', '', '', '', '', '', '', '', ''],
+  ['', '', '', '', '', '', '', '', '', '', '', ''],
+  ['', '', '', '', '', '', '', '', '', '', '', ''],
+  ['', '', '', '', '', '', '', '', '', '', '', ''],
+  ['', '', '', '', '', '', '', '', '', '', '', ''],
+  ['', '', '', '', '', '', '', '', '', '', '', ''],
+  ['', '', '', '', '', '', '', '', '', '', '', ''],
+  ['', '', '', '', '', '', '', '', '', '', '', ''],
+  ['', '', '', '', '', '', '', '', '', '', '', ''],
+];
 
-function Parking(props) {
-  const {navigation} = props;
-  const [sheetData, setSheetData] = React.useState([...Parking_DETAILS]);
+function TowerAreaSheet(props) {
+  const {navigation, setSelectedSubCategory} = props;
+  const [sheetData, setSheetData] = React.useState([...Tower_AREA_DETAILS]);
 
   const [selected, setSelected] = React.useState();
 
@@ -35,7 +70,7 @@ function Parking(props) {
   const processedData = React.useMemo(() => {
     return STATIC_DATA.map((item, index) => {
       const updatedData = [...item];
-      updatedData.unshift(`${index + 1}`);
+      updatedData.unshift(`Tower ${getTowerLabel(index + 1)}`);
       return {
         id: index + 1,
         data: updatedData,
@@ -69,7 +104,7 @@ function Parking(props) {
             opacity={0.1}
             color={theme.colors.primary}
             style={styles.backButton}
-            onPress={() => navigation.goBack()}>
+            onPress={() => setSelectedSubCategory()}>
             <MaterialCommunityIcons
               name="keyboard-backspace"
               size={18}
@@ -77,7 +112,7 @@ function Parking(props) {
             />
           </OpacityButton>
         </View>
-        <Text style={styles.headerTitle}>Parking Sheet</Text>
+        <Text style={styles.headerTitle}>Tower</Text>
         {/* <View style={styles.button}>
           <OpacityButton
             opacity={0.1}
@@ -101,7 +136,7 @@ function Parking(props) {
         <View style={styles.tableContainer}>
           <RenderTable
             tableWidths={TABLE_WIDTH}
-            headerColumns={Parking_DETAILS.map(i => i.label)}
+            headerColumns={Tower_AREA_DETAILS.map(i => i.label)}
             data={processedData}
           />
           {/* <View style={styles.tableContainer}>
@@ -149,7 +184,6 @@ const styles = StyleSheet.create({
   headerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingBottom: 5,
   },
   button: {
     flexDirection: 'row',
@@ -187,4 +221,4 @@ const styles = StyleSheet.create({
   // },
 });
 
-export default withTheme(Parking);
+export default withTheme(TowerAreaSheet);
