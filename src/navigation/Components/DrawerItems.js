@@ -116,6 +116,70 @@ export const DEVELOPER_DRAWER_ITEMS = [
       },
     ],
   },
+  {
+    title: 'PROJECT MANAGEMENT',
+    routes: [
+      {
+        id: 20,
+        route: 'WorkMaster',
+        label: 'Work Master',
+        icon: ({color, size}) => (
+          <MaterialCommunityIcons name="home-analytics" {...{color, size}} />
+        ),
+      },
+      {
+        id: 44,
+        route: 'WBS',
+        label: 'WBS',
+        icon: ({color, size}) => (
+          <MaterialCommunityIcons name="vector-triangle" {...{color, size}} />
+        ),
+      },
+      {
+        id: 53,
+        route: 'List&Gantt',
+        label: 'List & Gantt',
+        icon: ({color, size}) => (
+          <MaterialCommunityIcons
+            name="format-list-bulleted"
+            {...{color, size}}
+          />
+        ),
+      },
+      {
+        id: 50,
+        route: 'Cost',
+        label: 'Cost',
+        icon: ({color, size}) => (
+          <MaterialCommunityIcons
+            name="script-text-outline"
+            {...{color, size}}
+          />
+        ),
+      },
+      {
+        id: 49,
+        route: 'Raci',
+        label: 'RACI',
+        icon: ({color, size}) => (
+          <MaterialCommunityIcons name="podium-bronze" {...{color, size}} />
+        ),
+      },
+    ],
+  },
+  {
+    title: 'MATERIAL',
+    routes: [
+      {
+        id: 20,
+        route: 'MaterialUtility',
+        label: 'Material Utility',
+        icon: ({color, size}) => (
+          <MaterialCommunityIcons name="wall" {...{color, size}} />
+        ),
+      },
+    ],
+  },
   // {
   //   title: 'PROJECT MANAGEMENT',
   //   routes: [

@@ -32,7 +32,12 @@ export default function useCustomerActions() {
     deleteCollection,
     deleteFolder,
     deleteFile,
+    renameFolder,
     customerCreateFolder,
+    renameFile,
+    uploadFile,
+    shareFile,
+    shareFolder,
   } = useCustomerServices();
 
   return {
@@ -291,12 +296,26 @@ export default function useCustomerActions() {
       }),
     getFolder: params =>
       dispatch({
-        type: types.GET_FOLDER,
+        type: types.GET_CUSTOMER_FOLDERS,
         payload: async () => {
           try {
-            const {data} = _res(await getFolder(params));
+            const res = _res(await getFolder(params));
+            return Promise.resolve({data: res.data, index_of: params.index_of});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
 
-            return Promise.resolve(data);
+    getFile: params =>
+      dispatch({
+        type: types.GET_CUSTOMER_FILES,
+        payload: async () => {
+          try {
+            const {data} = _res(await getFile(params));
+            return Promise.resolve({data, index_of: params.index_of});
           } catch (error) {
             const message = _err(error);
             snackbar.showMessage({message, variant: 'error'});
@@ -319,12 +338,73 @@ export default function useCustomerActions() {
           }
         },
       }),
-    getFile: params =>
+    renameFolder: params =>
       dispatch({
-        type: types.GET_FILE,
+        type: types.RENAME_CUSTOMER_FILE,
         payload: async () => {
           try {
-            const {data} = _res(await getFile(params));
+            const {data} = _res(await renameFolder(params));
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    renameFile: params =>
+      dispatch({
+        type: types.RENAME_CUSTOMER_FILE,
+        payload: async () => {
+          try {
+            const {data} = _res(await renameFile(params));
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    uploadFile: params =>
+      dispatch({
+        type: types.UPLOAD_CUSTOMER_FILE,
+        payload: async () => {
+          try {
+            const {data} = _res(await uploadFile(params));
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    shareFile: params =>
+      dispatch({
+        type: types.SHARE_CUSTOMER_FILE,
+        payload: async () => {
+          try {
+            const {data} = _res(await shareFile(params));
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    shareFolder: params =>
+      dispatch({
+        type: types.SHARE_CUSTOMER_FILE,
+        payload: async () => {
+          try {
+            const {data} = _res(await shareFolder(params));
 
             return Promise.resolve(data);
           } catch (error) {

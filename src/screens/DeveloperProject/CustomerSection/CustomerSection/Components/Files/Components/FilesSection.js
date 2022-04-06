@@ -62,9 +62,6 @@ function FileSection(props) {
   const snackbar = useSnackbar();
 
   const {files} = useSelector(s => s.customer);
-  const filteredFiles = files?.[folderDepth] || [];
-
-  console.log('-------->filteredFiles', files);
 
   const onPressFile = async file => {
     snackbar.showMessage({
@@ -85,14 +82,14 @@ function FileSection(props) {
   return (
     <View style={styles.container}>
       <Subheading style={styles.Subheading}>Files</Subheading>
-      {filteredFiles?.length ? (
-        filteredFiles?.map((file, index) => (
+      {files?.length ? (
+        files?.map((file, index) => (
           <RenderFile
             {...rest}
             file={file}
             key={index?.toString()}
             toggleMenu={toggleMenu}
-            fileIndex={filteredFiles?.indexOf(file)}
+            fileIndex={files?.indexOf(file)}
             onPressFile={onPressFile}
           />
         ))

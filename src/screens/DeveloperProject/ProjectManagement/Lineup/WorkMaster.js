@@ -3,7 +3,7 @@ import ProjectHeader from 'components/Molecules/Layout/ProjectHeader';
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
-import {Subheading} from 'react-native-paper';
+import {Subheading, withTheme} from 'react-native-paper';
 import {TabView} from 'react-native-tab-view';
 import {useSelector} from 'react-redux';
 import useProjectManagementActions from 'redux/actions/projectManagementActions';
@@ -12,7 +12,7 @@ import Layout from 'utils/Layout';
 import Milestone from './Components/Milestone';
 import WorkCategory from './Components/WorkCategory';
 
-function Lineup(props) {
+function WorkMaster(props) {
   const {getWorkCategories, getMilestones} = useProjectManagementActions();
 
   const {selectedProject} = useSelector(s => s.project);
@@ -87,4 +87,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Lineup;
+export default withTheme(WorkMaster);

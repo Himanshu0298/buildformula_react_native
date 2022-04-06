@@ -158,7 +158,7 @@ export function handleDebounce(func) {
 
 export function getPermissions(moduleTitle) {
   const {permissions, commonData} = store.getState().project;
-  const {submodules} = commonData;
+  const {submodules = []} = commonData || {};
 
   if (permissions.admin) {
     return permissions;

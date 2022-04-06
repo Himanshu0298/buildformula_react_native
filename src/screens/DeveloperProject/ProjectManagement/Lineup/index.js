@@ -1,11 +1,11 @@
 import React from 'react';
 import ProjectLayout from 'components/Molecules/Layout/ProjectLayout';
-import Lineup from './Lineup';
+import WorkMaster from './WorkMaster';
 
 export default props => {
   return (
     <ProjectLayout {...props} header={false}>
-      <Lineup {...props} />
+      <WorkMaster {...props} />
     </ProjectLayout>
   );
 };

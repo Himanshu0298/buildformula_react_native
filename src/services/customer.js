@@ -80,7 +80,30 @@ export default function useCustomerServices() {
     },
     customerCreateFolder: data => {
       return instance.post(
-        'cs_create_folder',
+        '/cs_create_folder',
+        data,
+        config({multipart: false}),
+      );
+    },
+
+    renameFolder: data => {
+      return instance.post(
+        '/files/rename_folder',
+        data,
+        config({multipart: false}),
+      );
+    },
+    renameFile: data => {
+      return instance.post(
+        '/files/rename_file',
+        data,
+        config({multipart: false}),
+      );
+    },
+
+    uploadFile: data => {
+      return instance.post(
+        '/files/upload_file',
         data,
         config({multipart: false}),
       );
@@ -90,7 +113,11 @@ export default function useCustomerServices() {
       return instance.post('/modify/request/add', data, config());
     },
     addComment: data => {
-      return instance.post('/modify_request_conversation_add', data, config());
+      return instance.post(
+        '/modify_request_conversation_add',
+        data,
+        config({multipart: false}),
+      );
     },
     getModifyRequest: data => {
       return instance.post(
@@ -135,11 +162,29 @@ export default function useCustomerServices() {
       );
     },
     deleteFile: data => {
-      return instance.post('/cs_delete_file', data, config({multipart: false}));
+      return instance.post(
+        '/files/remove_file',
+        data,
+        config({multipart: false}),
+      );
     },
     deleteFolder: data => {
       return instance.post(
-        '/cs_delete_folder',
+        '/files/delete_folder',
+        data,
+        config({multipart: false}),
+      );
+    },
+    shareFile: data => {
+      return instance.post(
+        '/files/share_files',
+        data,
+        config({multipart: false}),
+      );
+    },
+    shareFolder: data => {
+      return instance.post(
+        '/files/share_folder',
         data,
         config({multipart: false}),
       );
