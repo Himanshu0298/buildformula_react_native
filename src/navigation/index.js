@@ -67,6 +67,8 @@ import PaymentCollections from 'screens/DeveloperProject/CustomerSection/Payment
 import AddCollection from 'screens/DeveloperProject/CustomerSection/AddCollection';
 import PaymentSchedule from 'screens/DeveloperProject/CustomerSection/PaymentSchedule';
 // Project : Design Modules
+import MaterialUtility from 'screens/DeveloperProject/Material/MaterialUtility';
+// Project : Design Modules
 import RoughDrawing from 'screens/DeveloperProject/DesignModule/RoughDrawing';
 import FinalDrawing from 'screens/DeveloperProject/DesignModule/FinalDrawing';
 import WorkingDrawing from 'screens/DeveloperProject/DesignModule/WorkingDrawing';
@@ -244,6 +246,16 @@ function CustomerSectionStack() {
   );
 }
 
+function MaterialModuleStack() {
+  return (
+    <Stack.Navigator initialRouteName="MaterialUtility">
+      <Stack.Group screenOptions={{headerShown: false}}>
+        <Stack.Screen name="MaterialUtility" component={MaterialUtility} />
+      </Stack.Group>
+    </Stack.Navigator>
+  );
+}
+
 function PlanningStack() {
   return (
     <Stack.Navigator initialRouteName="Phases">
@@ -342,6 +354,7 @@ function ProjectDrawer() {
           name="CustomerSection"
           component={CustomerSectionStack}
         />
+        <Drawer.Screen name="MaterialUtility" component={MaterialModuleStack} />
         <Drawer.Screen name="ProjectSchedule" component={ProjectSchedule} />
         <Drawer.Screen name="MainPhase" component={MainPhase} />
         <Drawer.Screen name="Lineup" component={Lineup} />
