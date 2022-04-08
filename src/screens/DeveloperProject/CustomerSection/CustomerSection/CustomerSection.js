@@ -12,6 +12,7 @@ import {theme} from 'styles/theme';
 import ProjectHeader from 'components/Molecules/Layout/ProjectHeader';
 import {useCustomerLoading} from 'redux/selectors';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import useFileActions from 'redux/actions/fileActions';
 import {
   Account,
   BankLoans,
@@ -64,9 +65,9 @@ function CustomerSection(props) {
     getBankDetails,
     getModifyRequests,
     getAccountDetails,
-    getFolder,
-    getFile,
   } = useCustomerActions();
+
+  const {getFiles, getFolders} = useFileActions();
 
   const loading = useCustomerLoading();
   const {permissions, isProjectAdmin} = useSelector(s => s.project);
@@ -85,8 +86,8 @@ function CustomerSection(props) {
     getBankDetails({project_id, unit_id: unit.unit_id});
     getModifyRequests({project_id, unit_id: unit.unit_id});
     getAccountDetails({project_id, unit_id: unit.unit_id});
-    getFolder({project_id, unitid: unit.unit_id});
-    getFile({project_id, unitid: unit.unit_id, folder_id: 0});
+    getFolders({project_id, unit_id: unit.unit_id, index_of: 0});
+    getFiles({project_id, unit_id: unit.unit_id, folder_id: 0});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

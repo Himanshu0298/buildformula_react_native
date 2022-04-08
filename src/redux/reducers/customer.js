@@ -2,11 +2,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {persistReducer} from 'redux-persist';
 import {
   ADD_CUSTOMER,
-  CUSTOMER_CREATE_FOLDER,
   GET_CUSTOMER_DATA,
   GET_BOOKING_DATA,
   GET_BANK_DETAILS,
-  GET_CUSTOMER_FOLDERS,
   UPDATE_BANK_DETAILS,
   UPDATE_BANK_FILES,
   GET_MODIFY_REQUESTS,
@@ -20,11 +18,6 @@ import {
   GET_MODIFY_REQUEST,
   UPDATE_MODIFY_REQUEST,
   ADD_MODIFY_REQUEST_COMMENT,
-  GET_CUSTOMER_FILES,
-  RENAME_CUSTOMER_FILE,
-  RENAME_CUSTOMER_FOLDER,
-  UPLOAD_CUSTOMER_FILE,
-  SHARE_CUSTOMER_FILE,
 } from '../actions/actionTypes';
 
 const persistConfig = {
@@ -182,42 +175,6 @@ const reducer = (state = initialState, action = {}) => {
         LoadingAccountDetails: false,
         errorMessage: action.payload,
       };
-    case `${GET_CUSTOMER_FILES}_PENDING`:
-      return {
-        ...state,
-        loadingFile: true,
-      };
-    case `${GET_CUSTOMER_FILES}_FULFILLED`: {
-      return {
-        ...state,
-        loadingFile: false,
-        files: {...state.files, [payload.folder_id]: payload.data},
-      };
-    }
-    case `${GET_CUSTOMER_FILES}_REJECTED`:
-      return {
-        ...state,
-        loadingFile: false,
-        errorMessage: action.payload,
-      };
-    case `${GET_CUSTOMER_FOLDERS}_PENDING`:
-      return {
-        ...state,
-        loadingFolder: true,
-      };
-    case `${GET_CUSTOMER_FOLDERS}_FULFILLED`: {
-      return {
-        ...state,
-        loadingFolder: false,
-        folders: {...state.folders, [payload.index_of]: payload.data},
-      };
-    }
-    case `${GET_CUSTOMER_FOLDERS}_REJECTED`:
-      return {
-        ...state,
-        loadingFolder: false,
-        errorMessage: action.payload,
-      };
 
     case `${UPDATE_BANK_DETAILS}_PENDING`:
       return {
@@ -250,11 +207,6 @@ const reducer = (state = initialState, action = {}) => {
     case `${UPDATE_COLLECTION}_PENDING`:
     case `${DELETE_COLLECTION}_PENDING`:
     case `${UPDATE_MODIFY_REQUEST}_PENDING`:
-    case `${CUSTOMER_CREATE_FOLDER}_PENDING`:
-    case `${RENAME_CUSTOMER_FOLDER}_PENDING`:
-    case `${RENAME_CUSTOMER_FILE}_PENDING`:
-    case `${UPLOAD_CUSTOMER_FILE}_PENDING`:
-    case `${SHARE_CUSTOMER_FILE}_PENDING`:
       return {
         ...state,
         loading: true,
@@ -268,11 +220,6 @@ const reducer = (state = initialState, action = {}) => {
     case `${UPDATE_COLLECTION}_FULFILLED`:
     case `${DELETE_COLLECTION}_FULFILLED`:
     case `${UPDATE_MODIFY_REQUEST}_FULFILLED`:
-    case `${CUSTOMER_CREATE_FOLDER}_FULFILLED`:
-    case `${RENAME_CUSTOMER_FOLDER}_FULFILLED`:
-    case `${RENAME_CUSTOMER_FILE}_FULFILLED`:
-    case `${UPLOAD_CUSTOMER_FILE}_FULFILLED`:
-    case `${SHARE_CUSTOMER_FILE}_FULFILLED`:
       return {
         ...state,
         loading: false,
@@ -287,11 +234,6 @@ const reducer = (state = initialState, action = {}) => {
     case `${UPDATE_COLLECTION}_REJECTED`:
     case `${DELETE_COLLECTION}_REJECTED`:
     case `${UPDATE_MODIFY_REQUEST}_REJECTED`:
-    case `${CUSTOMER_CREATE_FOLDER}_REJECTED`:
-    case `${RENAME_CUSTOMER_FOLDER}_REJECTED`:
-    case `${RENAME_CUSTOMER_FILE}_REJECTED`:
-    case `${UPLOAD_CUSTOMER_FILE}_REJECTED`:
-    case `${SHARE_CUSTOMER_FILE}_REJECTED`:
       return {
         ...state,
         loading: false,

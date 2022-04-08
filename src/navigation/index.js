@@ -85,8 +85,11 @@ import BrokerDetails from 'screens/DeveloperProject/Sales/BrokerDetails';
 import AddBroker from 'screens/DeveloperProject/Sales/AddBroker';
 import Remark from 'screens/DeveloperProject/Sales/BrokerDetails/Components/Remark';
 import WorkMaster from 'screens/DeveloperProject/ProjectManagement/Lineup/WorkMaster';
+import Execution from 'screens/DeveloperProject/ProjectManagement/MainPhase/WBS/Components/TabsComponents/index';
+import WBS from 'screens/DeveloperProject/ProjectManagement/MainPhase/WBS';
 import ProjectSchedule from '../screens/DeveloperProject/ProjectManagement/ProjectSchedule';
 import MainPhase from '../screens/DeveloperProject/ProjectManagement/MainPhase';
+// import Execution from ""
 import ProcessChart from '../screens/DeveloperProject/ProjectManagement/ProcessChart/ProcessChart';
 // Project : Material management screens
 import Estimation from '../screens/DeveloperProject/MaterialManagement/Estimation';
@@ -339,11 +342,13 @@ function ProjectDrawer() {
         <Drawer.Screen name="AreaSheet" component={AreaSheet} />
         <Drawer.Screen name="Parking" component={Parking} />
         <Drawer.Screen name="Payment" component={Payment} />
+        <Drawer.Screen name="Execution" component={Execution} />
         <Drawer.Screen
           name="CustomerSection"
           component={CustomerSectionStack}
         />
         <Drawer.Screen name="WorkMaster" component={WorkMaster} />
+        <Drawer.Screen name="WBS" component={WBS} />
         <Drawer.Screen name="ProjectSchedule" component={ProjectSchedule} />
         <Drawer.Screen name="MainPhase" component={MainPhase} />
         <Drawer.Screen name="Planning" component={PlanningStack} />

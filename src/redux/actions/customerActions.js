@@ -21,8 +21,6 @@ export default function useCustomerActions() {
     addComment,
     removeBankFile,
     getModifyRequests,
-    getFolder,
-    getFile,
     addModifyRequest,
     getModifyRequest,
     getAccountDetails,
@@ -32,12 +30,6 @@ export default function useCustomerActions() {
     deleteCollection,
     deleteFolder,
     deleteFile,
-    renameFolder,
-    customerCreateFolder,
-    renameFile,
-    uploadFile,
-    shareFile,
-    shareFolder,
   } = useCustomerServices();
 
   return {
@@ -294,127 +286,6 @@ export default function useCustomerActions() {
           }
         },
       }),
-    getFolder: params =>
-      dispatch({
-        type: types.GET_CUSTOMER_FOLDERS,
-        payload: async () => {
-          try {
-            const res = _res(await getFolder(params));
-            return Promise.resolve({data: res.data, index_of: params.index_of});
-          } catch (error) {
-            const message = _err(error);
-            snackbar.showMessage({message, variant: 'error'});
-            return Promise.reject(message);
-          }
-        },
-      }),
-
-    getFile: params =>
-      dispatch({
-        type: types.GET_CUSTOMER_FILES,
-        payload: async () => {
-          try {
-            const {data} = _res(await getFile(params));
-            return Promise.resolve({data, index_of: params.index_of});
-          } catch (error) {
-            const message = _err(error);
-            snackbar.showMessage({message, variant: 'error'});
-            return Promise.reject(message);
-          }
-        },
-      }),
-    customerCreateFolder: params =>
-      dispatch({
-        type: types.CUSTOMER_CREATE_FOLDER,
-        payload: async () => {
-          try {
-            const res = _res(await customerCreateFolder(params));
-
-            return Promise.resolve(res.data);
-          } catch (error) {
-            const message = _err(error);
-            snackbar.showMessage({message, variant: 'error'});
-            return Promise.reject(message);
-          }
-        },
-      }),
-    renameFolder: params =>
-      dispatch({
-        type: types.RENAME_CUSTOMER_FILE,
-        payload: async () => {
-          try {
-            const {data} = _res(await renameFolder(params));
-
-            return Promise.resolve(data);
-          } catch (error) {
-            const message = _err(error);
-            snackbar.showMessage({message, variant: 'error'});
-            return Promise.reject(message);
-          }
-        },
-      }),
-    renameFile: params =>
-      dispatch({
-        type: types.RENAME_CUSTOMER_FILE,
-        payload: async () => {
-          try {
-            const {data} = _res(await renameFile(params));
-
-            return Promise.resolve(data);
-          } catch (error) {
-            const message = _err(error);
-            snackbar.showMessage({message, variant: 'error'});
-            return Promise.reject(message);
-          }
-        },
-      }),
-
-    uploadFile: params =>
-      dispatch({
-        type: types.UPLOAD_CUSTOMER_FILE,
-        payload: async () => {
-          try {
-            const {data} = _res(await uploadFile(params));
-
-            return Promise.resolve(data);
-          } catch (error) {
-            const message = _err(error);
-            snackbar.showMessage({message, variant: 'error'});
-            return Promise.reject(message);
-          }
-        },
-      }),
-    shareFile: params =>
-      dispatch({
-        type: types.SHARE_CUSTOMER_FILE,
-        payload: async () => {
-          try {
-            const {data} = _res(await shareFile(params));
-
-            return Promise.resolve(data);
-          } catch (error) {
-            const message = _err(error);
-            snackbar.showMessage({message, variant: 'error'});
-            return Promise.reject(message);
-          }
-        },
-      }),
-    shareFolder: params =>
-      dispatch({
-        type: types.SHARE_CUSTOMER_FILE,
-        payload: async () => {
-          try {
-            const {data} = _res(await shareFolder(params));
-
-            return Promise.resolve(data);
-          } catch (error) {
-            const message = _err(error);
-            snackbar.showMessage({message, variant: 'error'});
-            return Promise.reject(message);
-          }
-        },
-      }),
-
     updateBookingStatus: params =>
       dispatch({
         type: types.UPDATE_BOOKING_STATUS,
