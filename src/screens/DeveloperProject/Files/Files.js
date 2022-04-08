@@ -32,7 +32,6 @@ import Feather from 'react-native-vector-icons/Feather';
 import dayjs from 'dayjs';
 import {getFileExtension} from 'utils/download';
 import DeleteDialog from './Components/DeleteDialog';
-import UploadDialog from './Components/UploadDialog';
 import RenameDialogue from './Components/RenameDialog';
 import CreateFolderDialogue from './Components/CreateFolderDialog';
 import MenuDialog from './Components/MenuDialog';
@@ -41,7 +40,6 @@ import FileSection from './Components/FilesSection';
 import FoldersSection from './Components/FoldersSection';
 import ShareDialogue from './Components/ShareDialogue';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const relativeTime = require('dayjs/plugin/relativeTime');
 
 dayjs.extend(relativeTime);
@@ -253,17 +251,16 @@ function Files(props) {
   const [modalContent, setModalContent] = React.useState({});
   const [shareDialog, setShareDialog] = React.useState(false);
   const [DialogType, setDialogType] = React.useState();
-  // const [selectedUploadFile, setSelectedUploadFile] = React.useState();
-
-  React.useEffect(() => {
-    loadData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const loadData = () => {
     getFolders({project_id, index_of: folderDepth});
     getFiles({project_id, folder_id: folderDepth});
   };
+
+  React.useEffect(() => {
+    loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const FAB_ACTIONS = [
     {
@@ -333,8 +330,6 @@ function Files(props) {
 
   const onChoose = v => {
     handleFileUpload(v);
-    // setSelectedUploadFile(v);
-    // toggleDialog('uploadFile');
   };
 
   const handleFileUpload = async file => {
@@ -494,13 +489,6 @@ function Files(props) {
         dialogueContent={modalContent}
         renameFolderHandler={renameFolderHandler}
       />
-      {/* <UploadDialog
-        {...props}
-        visible={DialogType === 'uploadFile'}
-        toggleDialogue={toggleDialog}
-        selectedUploadFile={selectedUploadFile}
-        handleFileUpload={handleFileUpload}
-      /> */}
       <DeleteDialog
         visible={DialogType === 'deleteFileFolder'}
         toggleDialogue={toggleDialog}

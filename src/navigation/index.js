@@ -68,6 +68,7 @@ import AddCollection from 'screens/DeveloperProject/CustomerSection/AddCollectio
 import PaymentSchedule from 'screens/DeveloperProject/CustomerSection/PaymentSchedule';
 // Project : Design Modules
 import MaterialUtility from 'screens/DeveloperProject/Material/MaterialUtility';
+import DeliveryDetails from 'screens/DeveloperProject/Material/DeliveryDetails';
 // Project : Design Modules
 import RoughDrawing from 'screens/DeveloperProject/DesignModule/RoughDrawing';
 import FinalDrawing from 'screens/DeveloperProject/DesignModule/FinalDrawing';
@@ -86,6 +87,7 @@ import SalesPipelineRearrange from 'screens/DeveloperProject/Sales/SalesPipeline
 import BrokerDetails from 'screens/DeveloperProject/Sales/BrokerDetails';
 import AddBroker from 'screens/DeveloperProject/Sales/AddBroker';
 import Remark from 'screens/DeveloperProject/Sales/BrokerDetails/Components/Remark';
+import ChallanNumber from '../screens/DeveloperProject/Material/ChallanNumber';
 import ProjectSchedule from '../screens/DeveloperProject/ProjectManagement/ProjectSchedule';
 import MainPhase from '../screens/DeveloperProject/ProjectManagement/MainPhase';
 import ProcessChart from '../screens/DeveloperProject/ProjectManagement/ProcessChart/ProcessChart';
@@ -93,6 +95,7 @@ import ProcessChart from '../screens/DeveloperProject/ProjectManagement/ProcessC
 import Estimation from '../screens/DeveloperProject/MaterialManagement/Estimation';
 import RequestForPrice from '../screens/DeveloperProject/MaterialManagement/RequestForPrice';
 import PurchaseOrders from '../screens/DeveloperProject/MaterialManagement/PurchaseOrders';
+
 // Project : Files screens
 import Files from '../screens/DeveloperProject/Files';
 // Project : Role screens
@@ -248,9 +251,11 @@ function CustomerSectionStack() {
 
 function MaterialModuleStack() {
   return (
-    <Stack.Navigator initialRouteName="MaterialUtility">
+    <Stack.Navigator initialRouteName="ChallanNumber">
       <Stack.Group screenOptions={{headerShown: false}}>
         <Stack.Screen name="MaterialUtility" component={MaterialUtility} />
+        <Stack.Screen name="DeliveryDetails" component={DeliveryDetails} />
+        <Stack.Screen name="ChallanNumber" component={ChallanNumber} />
       </Stack.Group>
     </Stack.Navigator>
   );

@@ -43,7 +43,7 @@ const Row = props => {
   );
 };
 
-const OrderNo = props => {
+export const OrderNo = props => {
   const data1 = [11, 'Cement march'];
   const data2 = ['Rs 500', 'Quility Material Raamesh'];
 
@@ -114,12 +114,19 @@ const Created = props => {
 };
 
 const OrderDetail = props => {
+  const {navigation} = props;
+
+  const onPress = () => {
+    navigation.push('DeliveryDetails');
+  };
+
   return (
-    <View
+    <TouchableOpacity
+      onPress={onPress}
       style={{
         marginTop: 20,
         padding: 10,
-        // backgroundColor: 'grey',
+        backgroundColor: 'grey',
         borderRadius: 5,
       }}>
       <OrderNo />
@@ -127,14 +134,18 @@ const OrderDetail = props => {
       <Created />
       <Divider style={{height: 1, marginTop: 10, marginBottom: 10}} />
       <ChallanStatus />
-    </View>
+    </TouchableOpacity>
   );
 };
 
 const Header = () => {
   return (
     <View>
-      <View style={{display: 'flex', flexDirection: 'row'}}>
+      <View
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+        }}>
         <Subheading style={{width: '50%', fontWeight: 'bold'}}>
           Material Utility
         </Subheading>
@@ -147,7 +158,7 @@ const Header = () => {
   );
 };
 
-export default props => {
+const MaterialUtility = props => {
   return (
     <View style={{padding: 20}}>
       <Header />
@@ -157,3 +168,5 @@ export default props => {
     </View>
   );
 };
+
+export default MaterialUtility;
