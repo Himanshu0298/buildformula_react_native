@@ -1,12 +1,15 @@
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import * as React from 'react';
 import {Text, withTheme} from 'react-native-paper';
-import {StyleSheet, View} from 'react-native';
+import {ScrollView, StyleSheet, View} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {theme} from 'styles/theme';
 import {getShadow} from 'utils';
+import ProgressCard from '../Components/ProgressCard';
+import AddProgressDialog from '../Components/AddProgressDialog';
 
-const Header = () => {
+export const Header = props => {
+  const {navigation} = props;
   return (
     <View>
       <View style={styles.headerContainer}>
@@ -15,7 +18,7 @@ const Header = () => {
             opacity={0.1}
             color={theme.colors.primary}
             style={styles.backButton}
-            onPress={() => console.log('hello')}>
+            onPress={navigation.goBack}>
             <MaterialCommunityIcons
               name="keyboard-backspace"
               size={18}
@@ -73,10 +76,11 @@ const Details = () => {
   );
 };
 
-const AddButton = () => {
+const AddButton = props => {
+  const {onPress} = props;
   return (
     <OpacityButton
-      onPress={() => console.log('hello')}
+      onPress={onPress}
       opacity={0.1}
       style={styles.addButton}
       color="#fff">
@@ -86,11 +90,28 @@ const AddButton = () => {
 };
 
 function Execution(props) {
+  const [showAdd, setShowAdd] = React.useState(false);
+
+  const toggleAddDialog = () => setShowAdd(v => !v);
+
+  const handleAddProgress = value => {
+    console.log('-------->value', value);
+  };
+
   return (
     <View>
-      <Header {...props} />
-      <Details {...props} />
-      <AddButton />
+      <AddProgressDialog
+        open={showAdd}
+        title="Add Progress Record"
+        handleClose={toggleAddDialog}
+        handleSubmit={handleAddProgress}
+      />
+      <ScrollView>
+        <Header {...props} />
+        <Details {...props} />
+        <ProgressCard {...props} header />
+        <AddButton onPress={toggleAddDialog} />
+      </ScrollView>
     </View>
   );
 }

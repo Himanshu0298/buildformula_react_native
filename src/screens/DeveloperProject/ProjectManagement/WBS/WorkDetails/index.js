@@ -1,10 +1,10 @@
 import React from 'react';
 import ProjectLayout from 'components/Molecules/Layout/ProjectLayout';
-import Execution from './Execution';
+import Execution from './WorkDetails';
 
 export default props => {
   return (
-    <ProjectLayout {...props} header={false}>
+    <ProjectLayout {...props} header>
       <Execution {...props} />
     </ProjectLayout>
   );

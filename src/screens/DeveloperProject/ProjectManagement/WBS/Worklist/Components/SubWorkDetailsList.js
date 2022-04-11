@@ -5,6 +5,7 @@ import {Text, withTheme} from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {theme} from 'styles/theme';
 import {getShadow} from 'utils';
+import {Header} from '../../WorkDetails/WorkDetails';
 
 const WORK_LIST = [
   {key: 'level1', value: ''},
@@ -14,11 +15,11 @@ const WORK_LIST = [
 ];
 
 function RenderRow(props) {
-  const {navigation} = props;
+  const {onPress} = props;
 
   return (
-    <TouchableOpacity onPress={() => navigation.navigate('Execution')}>
-      <View style={styles.optionContainer}>
+    <View>
+      <TouchableOpacity style={styles.optionContainer} onPress={onPress}>
         <View style={styles.unitContainer}>
           <Text style={styles.unitDetailsText}>w-1.1</Text>
 
@@ -34,27 +35,17 @@ function RenderRow(props) {
           color={theme.colors.primary}>
           <MaterialCommunityIcons name="arrow-right" size={18} color="black" />
         </OpacityButton>
-      </View>
-    </TouchableOpacity>
+      </TouchableOpacity>
+    </View>
   );
 }
 
-function WorkDetails(props) {
-  const [selectedSubCategory, setSelectedSubCategory] = React.useState();
-
+function SubWorkDetailsList(props) {
   return (
     <View>
-      {/* {!selectedSubCategory ? ( */}
+      <Header {...props} />
       {WORK_LIST.map((item, index) => (
-        <RenderRow
-          key={index?.toString()}
-          {...props}
-          {...{
-            item,
-            selectedSubCategory,
-            setSelected: setSelectedSubCategory,
-          }}
-        />
+        <RenderRow key={index?.toString()} {...props} {...{item}} />
       ))}
     </View>
   );
@@ -66,9 +57,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 10,
-    marginVertical: 5,
+    paddingVertical: 4,
     backgroundColor: '#fff',
     ...getShadow(1),
+    margin: 1,
   },
   rightArrow: {
     borderRadius: 25,
@@ -90,4 +82,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default withTheme(WorkDetails);
+export default withTheme(SubWorkDetailsList);

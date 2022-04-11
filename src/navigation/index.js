@@ -85,10 +85,10 @@ import BrokerDetails from 'screens/DeveloperProject/Sales/BrokerDetails';
 import AddBroker from 'screens/DeveloperProject/Sales/AddBroker';
 import Remark from 'screens/DeveloperProject/Sales/BrokerDetails/Components/Remark';
 import WorkMaster from 'screens/DeveloperProject/ProjectManagement/Lineup/WorkMaster';
-import Execution from 'screens/DeveloperProject/ProjectManagement/MainPhase/WBS/Components/TabsComponents/index';
-import WBS from 'screens/DeveloperProject/ProjectManagement/MainPhase/WBS';
+import WorkDetails from 'screens/DeveloperProject/ProjectManagement/WBS/WorkDetails';
+import ProgressRecords from 'screens/DeveloperProject/ProjectManagement/WBS/ProgressRecords';
+import Worklist from 'screens/DeveloperProject/ProjectManagement/WBS/Worklist';
 import ProjectSchedule from '../screens/DeveloperProject/ProjectManagement/ProjectSchedule';
-import MainPhase from '../screens/DeveloperProject/ProjectManagement/MainPhase';
 // import Execution from ""
 import ProcessChart from '../screens/DeveloperProject/ProjectManagement/ProcessChart/ProcessChart';
 // Project : Material management screens
@@ -261,6 +261,18 @@ function PlanningStack() {
   );
 }
 
+function WBSStack() {
+  return (
+    <Stack.Navigator initialRouteName="Worklist">
+      <Stack.Group screenOptions={{headerShown: false}}>
+        <Stack.Screen name="Worklist" component={Worklist} />
+        <Stack.Screen name="WorkDetails" component={WorkDetails} />
+        <Stack.Screen name="RecordsDetail" component={ProgressRecords} />
+      </Stack.Group>
+    </Stack.Navigator>
+  );
+}
+
 function FilesStack() {
   return (
     <Stack.Navigator initialRouteName="Files">
@@ -342,15 +354,13 @@ function ProjectDrawer() {
         <Drawer.Screen name="AreaSheet" component={AreaSheet} />
         <Drawer.Screen name="Parking" component={Parking} />
         <Drawer.Screen name="Payment" component={Payment} />
-        <Drawer.Screen name="Execution" component={Execution} />
         <Drawer.Screen
           name="CustomerSection"
           component={CustomerSectionStack}
         />
         <Drawer.Screen name="WorkMaster" component={WorkMaster} />
-        <Drawer.Screen name="WBS" component={WBS} />
+        <Drawer.Screen name="WBS" component={WBSStack} />
         <Drawer.Screen name="ProjectSchedule" component={ProjectSchedule} />
-        <Drawer.Screen name="MainPhase" component={MainPhase} />
         <Drawer.Screen name="Planning" component={PlanningStack} />
         <Drawer.Screen name="ProcessChart" component={ProcessChart} />
         <Drawer.Screen name="Estimation" component={Estimation} />

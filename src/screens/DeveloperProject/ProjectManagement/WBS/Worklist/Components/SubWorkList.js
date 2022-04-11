@@ -4,7 +4,7 @@ import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Text, useTheme, withTheme} from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {getShadow} from 'utils';
-import WorkDetails from './WorkDetails';
+import WorkDetails from './SubWorkDetailsList';
 
 const WORK_LIST = [
   {label: 'Level 1', key: 'level1', value: ''},
@@ -15,25 +15,24 @@ const WORK_LIST = [
 ];
 
 function RenderRow(props) {
-  const {item, setSelected} = props;
-  const {label, key} = item;
+  const {item, onPress} = props;
+  const {label} = item;
 
   return (
-    <TouchableOpacity onPress={() => setSelected(key)}>
-      <View style={styles.optionContainer}>
+    <View>
+      <TouchableOpacity style={styles.optionContainer} onPress={onPress}>
         <Text style={styles.optionLabel}>{label}</Text>
         <MaterialCommunityIcons name="chevron-right" size={28} color="black" />
-      </View>
-    </TouchableOpacity>
+      </TouchableOpacity>
+    </View>
   );
 }
 
 function SubWorkList(props) {
+  const {navigation, onPress} = props;
   const theme = useTheme();
 
   const [showWorkDetails, setShowWorkDetails] = React.useState(false);
-
-  const {setSelectedSubCategory, selectedSubCategory} = props;
 
   return (
     <View>
@@ -44,7 +43,7 @@ function SubWorkList(props) {
               opacity={0.1}
               color={theme.colors.primary}
               style={styles.backButton}
-              onPress={() => setSelectedSubCategory('')}>
+              onPress={navigation.goBack}>
               <MaterialCommunityIcons
                 name="keyboard-backspace"
                 size={18}
@@ -76,35 +75,13 @@ function SubWorkList(props) {
           </OpacityButton>
         </View>
         {!showWorkDetails ? (
-          // {true ? (
           <View>
-            {console.log('-------->first if')}
             {WORK_LIST.map((item, index) => (
-              <RenderRow
-                key={index?.toString()}
-                {...{
-                  item,
-                  selectedSubCategory,
-                  setSelected: setShowWorkDetails,
-                }}
-              />
+              <RenderRow key={index?.toString()} {...{item, onPress}} />
             ))}
           </View>
         ) : (
-          <>
-            <WorkDetails {...props} />
-
-            {/* {selectedSubCategory === 'level1' ? (
-            // {true ? (
-            // <WorkDetails {...props} {...{setSelectedSubCategory}} />
-            <View>
-              {console.log('-------->inside work details')}
-            </View>
-          ) : null} */}
-            {/* {selectedSubCategory === 'bungalow' ? (
-            <BungalowAreaSheet {...props} {...{setSelectedSubCategory}} />
-          ) : null} */}
-          </>
+          <WorkDetails {...props} />
         )}
       </ScrollView>
     </View>
@@ -117,9 +94,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 10,
-    marginVertical: 5,
+    paddingVertical: 4,
     backgroundColor: '#fff',
     ...getShadow(1),
+    margin: 1,
   },
   optionLabel: {
     margin: 10,
