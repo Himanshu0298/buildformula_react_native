@@ -4,6 +4,7 @@ import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Text, useTheme, withTheme} from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {getShadow} from 'utils';
+import WorkPath from '../../Components/WorkPath';
 import WorkDetails from './SubWorkDetailsList';
 
 const WORK_LIST = [
@@ -29,7 +30,7 @@ function RenderRow(props) {
 }
 
 function SubWorkList(props) {
-  const {navigation, onPress} = props;
+  const {navigation, onPress, data, level} = props;
   const theme = useTheme();
 
   const [showWorkDetails, setShowWorkDetails] = React.useState(false);
@@ -51,29 +52,11 @@ function SubWorkList(props) {
               />
             </OpacityButton>
           </View>
-          <Text style={styles.headerTitle}>Level 1</Text>
+          <Text style={styles.headerTitle}>Level {level}</Text>
         </View>
-        <View style={styles.optionContainer}>
-          <View style={styles.headerLeftIcon}>
-            <MaterialCommunityIcons
-              name="format-line-spacing"
-              size={20}
-              color="black"
-            />
-            <Text style={styles.subHeading}>Work Path</Text>
-          </View>
-          <OpacityButton
-            onPress={null}
-            opacity={0.1}
-            style={styles.pathArrowButton}
-            color={theme.colors.primary}>
-            <MaterialCommunityIcons
-              name="chevron-down"
-              size={22}
-              color="black"
-            />
-          </OpacityButton>
-        </View>
+        {console.log('-------->data', data)}
+        <WorkPath data={data} />
+
         {!showWorkDetails ? (
           <View>
             {WORK_LIST.map((item, index) => (
@@ -104,17 +87,13 @@ const styles = StyleSheet.create({
     color: 'black',
     fontSize: 16,
   },
-  subHeading: {
-    fontSize: 16,
-    margin: 10,
-  },
+
   headerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   button: {
     flexDirection: 'row',
-    paddingHorizontal: 10,
     padding: 10,
   },
   backButton: {
@@ -124,13 +103,6 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 18,
     color: 'black',
-  },
-  headerLeftIcon: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  pathArrowButton: {
-    borderRadius: 75,
   },
 });
 

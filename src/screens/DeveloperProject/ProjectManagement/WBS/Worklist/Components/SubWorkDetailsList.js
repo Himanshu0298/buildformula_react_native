@@ -41,9 +41,11 @@ function RenderRow(props) {
 }
 
 function SubWorkDetailsList(props) {
+  const {data} = props;
+
   return (
     <View>
-      <Header {...props} />
+      <Header {...props} data={data} />
       {WORK_LIST.map((item, index) => (
         <RenderRow key={index?.toString()} {...props} {...{item}} />
       ))}
@@ -66,16 +68,16 @@ const styles = StyleSheet.create({
     borderRadius: 25,
   },
   unitContainer: {
-    paddingHorizontal: 10,
-    paddingVertical: 10,
+    paddingHorizontal: 7,
+    paddingVertical: 8,
   },
   unitDetailsText: {
-    fontSize: 17,
+    fontSize: 15,
     marginBottom: 5,
     backgroundColor: '#rgba(72, 114, 244, 0.1);',
     borderRadius: 5,
     paddingHorizontal: 5,
-    width: 60,
+    width: 55,
   },
   workDetails: {
     flexDirection: 'row',

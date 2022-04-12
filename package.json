@@ -47,6 +47,7 @@
     "react-native-bootsplash": "^3.2.7",
     "react-native-chart-kit": "^6.11.0",
     "react-native-code-push": "^7.0.4",
+    "react-native-collapsable-view": "^0.1.2",
     "react-native-collapsible-tab-view": "^4.5.2",
     "react-native-config": "^1.4.5",
     "react-native-confirmation-code-field": "^7.2.0",

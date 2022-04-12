@@ -15,7 +15,6 @@ const WORK_LIST = [
 function RenderRow(props) {
   const {item, onPress} = props;
   const {label} = item;
-  console.log('-------->props', props);
 
   return (
     <View>
@@ -29,13 +28,18 @@ function RenderRow(props) {
 
 function WorkList(props) {
   const {route, navigation} = props;
-  const {level = 0} = route?.params || {};
+  const {level = 0, list = []} = route?.params || {};
 
-  const navToNextLevel = () => {
+  const navToNextLevel = item => {
+    list.push(item);
+    const params = {level: level + 1, list};
+
+    console.log('-------->params', params);
+
     if (level < 2) {
-      navigation.push('Worklist', {level: level + 1});
+      navigation.push('Worklist', params);
     } else {
-      navigation.push('WorkDetails', {level: level + 1});
+      navigation.push('WorkDetails', params);
     }
   };
 
@@ -48,17 +52,23 @@ function WorkList(props) {
             {WORK_LIST.map((item, index) => (
               <RenderRow
                 key={index?.toString()}
-                onPress={navToNextLevel}
+                onPress={() => navToNextLevel(item.label)}
                 {...{item}}
               />
             ))}
           </>
         );
       case 1:
-        return <SubWorkList {...props} onPress={navToNextLevel} />;
-
+        return (
+          <SubWorkList
+            {...props}
+            data={list}
+            level={level}
+            onPress={() => navToNextLevel(level)}
+          />
+        );
       default:
-        return <WorkDetails {...props} onPress={navToNextLevel} />;
+        return <WorkDetails {...props} data={list} onPress={navToNextLevel} />;
     }
   }
 

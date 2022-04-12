@@ -7,9 +7,10 @@ import {theme} from 'styles/theme';
 import {getShadow} from 'utils';
 import ProgressCard from '../Components/ProgressCard';
 import AddProgressDialog from '../Components/AddProgressDialog';
+import WorkPath from '../Components/WorkPath';
 
 export const Header = props => {
-  const {navigation} = props;
+  const {navigation, data} = props;
   return (
     <View>
       <View style={styles.headerContainer}>
@@ -29,23 +30,7 @@ export const Header = props => {
         <Text style={styles.headerNavigationText}>w-1.1</Text>
         <Text>PCC-1</Text>
       </View>
-      <View style={styles.optionContainer}>
-        <View style={styles.headerLeftIcon}>
-          <MaterialCommunityIcons
-            name="format-line-spacing"
-            size={20}
-            color="black"
-          />
-          <Text style={styles.subHeading}>Work Path</Text>
-        </View>
-        <OpacityButton
-          onPress={null}
-          opacity={0.1}
-          style={styles.pathArrowButton}
-          color={theme.colors.primary}>
-          <MaterialCommunityIcons name="chevron-down" size={22} color="black" />
-        </OpacityButton>
-      </View>
+      <WorkPath data={data} />
     </View>
   );
 };
@@ -107,7 +92,7 @@ function Execution(props) {
         handleSubmit={handleAddProgress}
       />
       <ScrollView>
-        <Header {...props} />
+        <Header {...props} data={[1, 2, 3]} />
         <Details {...props} />
         <ProgressCard {...props} header />
         <AddButton onPress={toggleAddDialog} />
@@ -117,20 +102,6 @@ function Execution(props) {
 }
 
 const styles = StyleSheet.create({
-  optionContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-    marginVertical: 5,
-    backgroundColor: '#fff',
-    ...getShadow(2),
-  },
-
-  subHeading: {
-    fontSize: 16,
-    margin: 10,
-  },
   headerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -148,13 +119,6 @@ const styles = StyleSheet.create({
     marginRight: 7,
   },
 
-  headerLeftIcon: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  pathArrowButton: {
-    borderRadius: 75,
-  },
   detailsContainer: {
     padding: 10,
   },
