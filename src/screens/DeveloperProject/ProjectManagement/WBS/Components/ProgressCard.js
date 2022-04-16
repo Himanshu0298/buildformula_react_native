@@ -1,129 +1,59 @@
 import * as React from 'react';
 import {Caption, Text, withTheme} from 'react-native-paper';
 import {StyleSheet, View, TouchableOpacity, Image} from 'react-native';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
-import {theme} from 'styles/theme';
 import FileIcon from 'assets/images/file_icon.png';
+import dayjs from 'dayjs';
 
-function RenderCard(props) {
+const ProgressCard = props => {
+  const {details} = props;
+  const {
+    remarks,
+    created,
+    file_name,
+    percentage_completed,
+    quantity_completed,
+  } = details || {};
   return (
-    <View>
-      <Text>25 Feb 2022</Text>
-      <View style={styles.cardContainer}>
-        <View style={styles.cardDetailsContainer}>
-          <Caption>Percentage:</Caption>
+    <View style={styles.container}>
+      <View style={styles.recordContainer}>
+        <Text>{dayjs(created).format('DD-MM-YYYY')}</Text>
+        <View style={styles.cardContainer}>
+          <View style={styles.cardDetailsContainer}>
+            <Caption>Percentage:</Caption>
+            <View>
+              <Text style={styles.text}>{percentage_completed}</Text>
+            </View>
+          </View>
+          <View style={styles.cardDetailsContainer}>
+            <Caption>Quantity:</Caption>
+            <View>
+              <Text style={styles.text}>{quantity_completed}</Text>
+            </View>
+          </View>
+        </View>
+        <View style={styles.remarkContainer}>
+          <Caption>Remark:</Caption>
+          <View style={styles.remarkTextContainer}>
+            <Text style={styles.remarkText}>{remarks}</Text>
+          </View>
+        </View>
+        <TouchableOpacity
+          style={styles.sectionContainer}
+          // onPress={() => onPressFile(file)}
+        >
+          <Image source={FileIcon} style={styles.fileIcon} />
           <View>
-            <Text style={styles.text}>5</Text>
+            <Text style={(styles.verticalFlex, styles.text)} numberOfLines={2}>
+              {file_name}
+            </Text>
           </View>
-        </View>
-        <View style={styles.cardDetailsContainer}>
-          <Caption>Quantity:</Caption>
-          <View>
-            <Text style={styles.text}>5</Text>
-          </View>
-        </View>
-      </View>
-      <View style={styles.remarkContainer}>
-        <Caption>Remark:</Caption>
-        <View style={styles.remarkTextContainer}>
-          <Text style={styles.remarkText}>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil iste
-            at alias facere a libero officiis sed, accusamus, ullam aspernatur
-            dolorem illo distinctio modi, necessitatibus recusandae porro
-            accusantium minima consequuntur!
-          </Text>
-        </View>
-      </View>
-      <TouchableOpacity
-        style={styles.sectionContainer}
-        // onPress={() => onPressFile(file)}
-      >
-        <Image source={FileIcon} style={styles.fileIcon} />
-        <View>
-          <Text style={(styles.verticalFlex, styles.text)} numberOfLines={2}>
-            fileName.pdf
-          </Text>
-          <Caption style={(styles.verticalFlex, styles.size)} numberOfLines={2}>
-            15-20kb
-          </Caption>
-        </View>
-      </TouchableOpacity>
-    </View>
-  );
-}
-
-const Details = props => {
-  const data = [{name: '', value: ''}];
-
-  const {navigation, header} = props;
-
-  return (
-    <View style={styles.detailsContainer}>
-      <View style={styles.executionDateContainer}>
-        {header ? (
-          <View style={styles.progressRecordHeader}>
-            <Text style={styles.executionDate}>Progress Record</Text>
-            <OpacityButton
-              opacity={2}
-              style={styles.rightArrow}
-              color={theme.colors.primary}
-              onPress={() => navigation.navigate('RecordsDetail')}>
-              <MaterialCommunityIcons
-                name="arrow-right"
-                size={16}
-                color="#fff"
-              />
-            </OpacityButton>
-          </View>
-        ) : null}
-
-        {data.map((item, index) => {
-          return (
-            <RenderCard
-              key={index?.toString()}
-              {...{
-                item,
-              }}
-            />
-          );
-        })}
+        </TouchableOpacity>
       </View>
     </View>
   );
 };
 
-function ProgressCard(props) {
-  const {header} = props;
-
-  return (
-    <View>
-      <Details {...props} header={header} />
-    </View>
-  );
-}
-
 const styles = StyleSheet.create({
-  detailsContainer: {
-    padding: 10,
-  },
-  executionDateContainer: {
-    padding: 10,
-    backgroundColor: '#F2F4F5',
-    borderRadius: 5,
-  },
-  executionDate: {
-    marginBottom: 5,
-    fontWeight: 'bold',
-  },
-  progressRecordHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-
-  rightArrow: {
-    borderRadius: 25,
-  },
   cardContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -137,12 +67,21 @@ const styles = StyleSheet.create({
   text: {
     marginLeft: 5,
   },
-  size: {
-    marginLeft: 5,
+  container: {
+    padding: 10,
+    backgroundColor: '#F2F4F5',
+    borderRadius: 5,
+    margin: 10,
   },
+  recordContainer: {
+    paddingHorizontal: 10,
+    paddingBottom: 10,
+  },
+
   remarkContainer: {
     flexDirection: 'row',
     margin: 5,
+    paddingBottom: 10,
     flexGrow: 1,
   },
   remarkText: {
@@ -151,7 +90,6 @@ const styles = StyleSheet.create({
   remarkTextContainer: {
     flex: 1,
     paddingHorizontal: 5,
-    alignItems: 'center',
   },
   sectionContainer: {
     alignItems: 'center',

@@ -21,8 +21,6 @@ const schema = Yup.object().shape({
 const RenderAttachments = props => {
   const {attachments, handleDelete} = props;
 
-  console.log('-------->attachment', attachments);
-
   return (
     <View>
       <View style={styles.cardContainer}>
@@ -56,7 +54,7 @@ const RenderAttachments = props => {
 };
 
 function ModalContent(props) {
-  const {formikProps} = props;
+  const {formikProps, pathData} = props;
   const {values, errors, handleChange, handleBlur, setFieldValue} = formikProps;
 
   const {openFilePicker} = useImagePicker();
@@ -65,10 +63,7 @@ function ModalContent(props) {
     openFilePicker({
       type: 'file',
       onChoose: file => {
-        const {attachments = []} = values;
-        attachments.push(file);
-
-        setFieldValue('attachments', attachments);
+        setFieldValue('attachments', file);
       },
     });
   };
@@ -83,8 +78,9 @@ function ModalContent(props) {
       <View style={styles.headerContainer}>
         <Text style={styles.headerText}>WBS Execution</Text>
         <View style={styles.navigationTextContainer}>
-          <Text style={styles.headerNavigationText}>w-1.1</Text>
-          <Text style={styles.subHeadingText}>PCC-1</Text>
+          <Text style={styles.headerNavigationText}>
+            {pathData[pathData.length - 1]}
+          </Text>
         </View>
         <Divider />
       </View>
@@ -99,6 +95,7 @@ function ModalContent(props) {
             onChangeText={handleChange('percentage')}
             onBlur={handleBlur('percentage')}
             error={errors.percentage}
+            keyboardType="numeric"
           />
           <RenderInput
             name="quantity"
@@ -109,6 +106,7 @@ function ModalContent(props) {
             onChangeText={handleChange('quantity')}
             onBlur={handleBlur('quantity')}
             error={errors.quantity}
+            keyboardType="numeric"
           />
           <RenderTextBox
             name="remark"
@@ -120,7 +118,7 @@ function ModalContent(props) {
             onBlur={handleBlur('remark')}
             error={errors.remark}
           />
-          {!values.attachments?.length ? (
+          {!values.attachments ? (
             <View>
               <Text style={{color: theme.colors.primary}}>Attachment</Text>
               <OpacityButton
@@ -133,9 +131,9 @@ function ModalContent(props) {
             </View>
           ) : null}
 
-          {values.attachments?.length ? (
+          {values.attachments ? (
             <RenderAttachments
-              attachments={values.attachments}
+              attachments={[values.attachments]}
               handleDelete={i => handleDelete(i)}
             />
           ) : null}
@@ -146,9 +144,7 @@ function ModalContent(props) {
 }
 
 const AddProgressModal = props => {
-  const {handleSubmit} = props;
-
-  const onSubmit = values => handleSubmit(values);
+  const {handleSubmit, path} = props;
 
   return (
     <Formik
@@ -156,10 +152,10 @@ const AddProgressModal = props => {
       validateOnChange={false}
       initialValues={{}}
       validationSchema={schema}
-      onSubmit={onSubmit}>
+      onSubmit={handleSubmit}>
       {formikProps => (
-        <CustomDialog {...props} submitForm={handleSubmit}>
-          <ModalContent {...{formikProps}} />
+        <CustomDialog {...props} submitForm={formikProps.handleSubmit}>
+          <ModalContent {...{formikProps}} pathData={path} />
         </CustomDialog>
       )}
     </Formik>
@@ -183,17 +179,16 @@ const styles = StyleSheet.create({
   },
   navigationTextContainer: {
     flexDirection: 'row',
-    marginLeft: 10,
+    marginLeft: 15,
     margin: 10,
   },
   headerNavigationText: {
-    marginRight: 10,
     fontSize: 13,
     marginBottom: 5,
     backgroundColor: '#rgba(72, 114, 244, 0.1);',
     borderRadius: 5,
     paddingHorizontal: 5,
-    width: 45,
+    flexDirection: 'row',
     color: '#000',
   },
   uploadButton: {

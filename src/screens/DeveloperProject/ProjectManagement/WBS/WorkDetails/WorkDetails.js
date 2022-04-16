@@ -4,10 +4,42 @@ import {Text, withTheme} from 'react-native-paper';
 import {ScrollView, StyleSheet, View} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {theme} from 'styles/theme';
-import {getShadow} from 'utils';
+import useProjectManagementActions from 'redux/actions/projectManagementActions';
+import {useSelector} from 'react-redux';
+import dayjs from 'dayjs';
 import ProgressCard from '../Components/ProgressCard';
 import AddProgressDialog from '../Components/AddProgressDialog';
 import WorkPath from '../Components/WorkPath';
+
+const UpdatedCard = props => {
+  const {navigation, route, header, progressReport} = props;
+
+  return (
+    <View style={styles.detailsContainer}>
+      <View style={styles.executionDateContainer}>
+        {header ? (
+          <View style={styles.progressRecordHeader}>
+            <Text style={styles.executionDate}>Progress Record</Text>
+            <OpacityButton
+              opacity={2}
+              style={styles.rightArrow}
+              color={theme.colors.primary}
+              onPress={() =>
+                navigation.navigate('RecordsDetail', {...route?.params})
+              }>
+              <MaterialCommunityIcons
+                name="arrow-right"
+                size={16}
+                color="#fff"
+              />
+            </OpacityButton>
+          </View>
+        ) : null}
+        <ProgressCard details={progressReport} />
+      </View>
+    </View>
+  );
+};
 
 export const Header = props => {
   const {navigation, data} = props;
@@ -27,19 +59,31 @@ export const Header = props => {
             />
           </OpacityButton>
         </View>
-        <Text style={styles.headerNavigationText}>w-1.1</Text>
-        <Text>PCC-1</Text>
+        <Text style={styles.headerNavigationText}>{data[data.length - 1]}</Text>
       </View>
       <WorkPath data={data} />
     </View>
   );
 };
 
-const Details = () => {
+const Details = props => {
+  const {workDetails} = props;
+  const {
+    wbs_schedule_start_date,
+    wbs_schedule_end_date,
+    wbs_schedule_duration,
+  } = workDetails;
+
   const data = [
-    {name: 'Start Date', value: 1},
-    {name: 'Finish Date', value: 1},
-    {name: 'Duration', value: 1},
+    {
+      name: 'Start Date',
+      value: dayjs(wbs_schedule_start_date).format('DD-MM-YYYY'),
+    },
+    {
+      name: 'Finish Date',
+      value: dayjs(wbs_schedule_end_date).format('DD-MM-YYYY'),
+    },
+    {name: 'Duration', value: wbs_schedule_duration},
   ];
 
   return (
@@ -51,7 +95,7 @@ const Details = () => {
           return (
             <View style={styles.renderContainer}>
               <Text>{item.name}</Text>
-              <Text>:--</Text>
+              <Text>:-{'  '}</Text>
               <Text>{item.value}</Text>
             </View>
           );
@@ -75,12 +119,41 @@ const AddButton = props => {
 };
 
 function Execution(props) {
+  const {route, navigation} = props;
+  const {parent_id, pathList} = route?.params || {};
+
   const [showAdd, setShowAdd] = React.useState(false);
 
   const toggleAddDialog = () => setShowAdd(v => !v);
 
-  const handleAddProgress = value => {
-    console.log('-------->value', value);
+  const {WBSExecutionDetails, addProgressRecord} =
+    useProjectManagementActions();
+  const {selectedProject} = useSelector(s => s.project);
+  const {WBSDetails} = useSelector(s => s.projectManagement);
+
+  const workDetails = WBSDetails?.wbs_works?.[0] || {};
+  const latestProgressReport = WBSDetails?.wbs_execution || {};
+
+  React.useEffect(() => {
+    WBSExecutionDetails({
+      project_id: selectedProject.id,
+      wbs_works_id: parent_id,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleAddProgress = async values => {
+    const formData = new FormData();
+
+    formData.append('project_id', selectedProject.id);
+    formData.append('wbs_works_id', parent_id);
+    formData.append('quantity_completed', Number(values.quantity));
+    formData.append('percentage_completed', Number(values.percentage));
+    formData.append('remarks', values.remark);
+    formData.append('file', values.attachments);
+
+    await addProgressRecord(formData);
+    navigation.goBack();
   };
 
   return (
@@ -90,11 +163,12 @@ function Execution(props) {
         title="Add Progress Record"
         handleClose={toggleAddDialog}
         handleSubmit={handleAddProgress}
+        path={pathList}
       />
       <ScrollView>
-        <Header {...props} data={[1, 2, 3]} />
-        <Details {...props} />
-        <ProgressCard {...props} header />
+        <Header {...props} data={pathList} />
+        <Details {...props} workDetails={workDetails} />
+        <UpdatedCard {...props} header progressReport={latestProgressReport} />
         <AddButton onPress={toggleAddDialog} />
       </ScrollView>
     </View>
@@ -145,6 +219,15 @@ const styles = StyleSheet.create({
     borderColor: theme.colors.primary,
     padding: 10,
     margin: 10,
+  },
+
+  progressRecordHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+
+  rightArrow: {
+    borderRadius: 25,
   },
 });
 

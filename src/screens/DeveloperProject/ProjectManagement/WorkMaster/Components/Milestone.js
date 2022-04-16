@@ -37,9 +37,12 @@ function AddMilestoneDialog(props) {
 
   return (
     <Portal>
-      <Dialog visible={visible} onDismiss={toggleDialog} style={{top: -100}}>
+      <Dialog
+        visible={visible}
+        onDismiss={toggleDialog}
+        style={styles.toggleDialog}>
         <View style={styles.dialogTitleContainer}>
-          <Text style={{color: '#000'}}>Add Milestone</Text>
+          <Text style={styles.addMilestone}>Add Milestone</Text>
         </View>
         <Formik
           validateOnBlur={false}
@@ -64,9 +67,9 @@ function AddMilestoneDialog(props) {
                 />
                 <View style={styles.dialogActionContainer}>
                   <Button
-                    style={{width: '40%'}}
+                    style={styles.addMilestoneButton}
                     mode="contained"
-                    contentStyle={{padding: 1}}
+                    contentStyle={styles.contentStyle}
                     theme={{roundness: 15}}
                     onPress={handleSubmit}>
                     {selectedMilestone ? 'Update' : 'Save'}
@@ -87,17 +90,18 @@ function RenderMilestone(props) {
   return (
     <View style={styles.workContainer}>
       <View style={styles.titleContainer}>
+        <CustomBadge label={(index + 1).toString()} style={styles.badge} />
+
         <MaterialIcon
           name="drag-indicator"
           size={24}
           color="rgba(4, 29, 54, 0.15)"
         />
-        <CustomBadge label={(index + 1).toString()} style={styles.badge} />
-        <Text>{item.title}</Text>
+        <Text style={styles.renderMilestoneTitle}>{item.title}</Text>
       </View>
       <Menu
         visible={index === menuIndex}
-        contentStyle={{borderRadius: 10}}
+        contentStyle={styles.renderContentStyle}
         onDismiss={toggleMenu}
         anchor={
           <IconButton icon="dots-vertical" onPress={() => toggleMenu(index)} />
@@ -203,7 +207,7 @@ function Milestone(props) {
           <AutoDragSortableView
             dataSource={milestones}
             maxScale={1.03}
-            style={{width: '100%'}}
+            style={styles.autoDragView}
             childrenWidth={Layout.window.width}
             childrenHeight={ROW_HEIGHT}
             keyExtractor={(_, i) => i.toString()}
@@ -252,7 +256,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     width: Layout.window.width,
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
   },
   titleContainer: {
     flexGrow: 1,
@@ -264,11 +268,18 @@ const styles = StyleSheet.create({
     width: 18,
     marginHorizontal: 5,
     borderRadius: 3,
+    marginRight: 20,
+  },
+  toggleDialog: {
+    top: -100,
   },
   dialogTitleContainer: {
     justifyContent: 'center',
     alignItems: 'center',
     padding: 10,
+  },
+  addMilestone: {
+    color: '#000',
   },
   dialogContentContainer: {
     paddingHorizontal: 20,
@@ -278,6 +289,21 @@ const styles = StyleSheet.create({
     marginTop: 20,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  addMilestoneButton: {
+    width: '40%',
+  },
+  contentStyle: {
+    padding: 1,
+  },
+  autoDragView: {
+    width: '100%',
+  },
+  renderMilestoneTitle: {
+    marginLeft: 5,
+  },
+  renderContentStyle: {
+    borderRadius: 10,
   },
 });
 

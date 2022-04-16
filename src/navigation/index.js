@@ -84,10 +84,11 @@ import SalesPipelineRearrange from 'screens/DeveloperProject/Sales/SalesPipeline
 import BrokerDetails from 'screens/DeveloperProject/Sales/BrokerDetails';
 import AddBroker from 'screens/DeveloperProject/Sales/AddBroker';
 import Remark from 'screens/DeveloperProject/Sales/BrokerDetails/Components/Remark';
-import WorkMaster from 'screens/DeveloperProject/ProjectManagement/Lineup/WorkMaster';
+import WorkMaster from 'screens/DeveloperProject/ProjectManagement/WorkMaster/WorkMaster';
 import WorkDetails from 'screens/DeveloperProject/ProjectManagement/WBS/WorkDetails';
 import ProgressRecords from 'screens/DeveloperProject/ProjectManagement/WBS/ProgressRecords';
 import Worklist from 'screens/DeveloperProject/ProjectManagement/WBS/Worklist';
+import SubWorkCategory from 'screens/DeveloperProject/ProjectManagement/SubWorkCategory';
 import ProjectSchedule from '../screens/DeveloperProject/ProjectManagement/ProjectSchedule';
 // import Execution from ""
 import ProcessChart from '../screens/DeveloperProject/ProjectManagement/ProcessChart/ProcessChart';
@@ -272,6 +273,16 @@ function WBSStack() {
     </Stack.Navigator>
   );
 }
+function WorkMasterStack() {
+  return (
+    <Stack.Navigator initialRouteName="WorkMaster">
+      <Stack.Group screenOptions={{headerShown: false}}>
+        <Stack.Screen name="WorkMaster" component={WorkMaster} />
+        <Stack.Screen name="SubWorkCategory" component={SubWorkCategory} />
+      </Stack.Group>
+    </Stack.Navigator>
+  );
+}
 
 function FilesStack() {
   return (
@@ -358,7 +369,7 @@ function ProjectDrawer() {
           name="CustomerSection"
           component={CustomerSectionStack}
         />
-        <Drawer.Screen name="WorkMaster" component={WorkMaster} />
+        <Drawer.Screen name="WorkMaster" component={WorkMasterStack} />
         <Drawer.Screen name="WBS" component={WBSStack} />
         <Drawer.Screen name="ProjectSchedule" component={ProjectSchedule} />
         <Drawer.Screen name="Planning" component={PlanningStack} />

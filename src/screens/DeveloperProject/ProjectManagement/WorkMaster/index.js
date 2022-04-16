@@ -4,7 +4,7 @@ import WorkMaster from './WorkMaster';
 
 export default props => {
   return (
-    <ProjectLayout {...props} header={false}>
+    <ProjectLayout {...props} header>
       <WorkMaster {...props} />
     </ProjectLayout>
   );

@@ -26,6 +26,10 @@ export default function useProjectManagementActions() {
     getGeneralPhaseActivities,
     addGeneralPhaseActivity,
     updateGeneralActivity,
+    getWBSLevelWorks,
+    WBSExecutionDetails,
+    WBSExecutionList,
+    addProgressRecord,
   } = useProjectManagement();
 
   return {
@@ -303,6 +307,64 @@ export default function useProjectManagementActions() {
           try {
             const res = _res(await updateGeneralActivity(data));
             return Promise.resolve(res);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    getWBSLevelWorks: params =>
+      dispatch({
+        type: types.GET_WBS_LEVEL_WORKS,
+        payload: async () => {
+          try {
+            const res = _res(await getWBSLevelWorks(params));
+            return Promise.resolve({...res.data, id: params.parent_id});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    WBSExecutionDetails: params =>
+      dispatch({
+        type: types.WBS_EXECUTION_DETAILS,
+        payload: async () => {
+          try {
+            const res = _res(await WBSExecutionDetails(params));
+            return Promise.resolve(res.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    WBSExecutionList: params =>
+      dispatch({
+        type: types.WBS_EXECUTION_LIST,
+        payload: async () => {
+          try {
+            const res = _res(await WBSExecutionList(params));
+            return Promise.resolve(res.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    addProgressRecord: data =>
+      dispatch({
+        type: types.ADD_PROGRESS_RECORD,
+        payload: async () => {
+          try {
+            const res = _res(await addProgressRecord(data));
+            snackbar.showMessage({message: res.msg});
+            return Promise.resolve(res.data.lists);
           } catch (error) {
             const message = _err(error);
             snackbar.showMessage({message, variant: 'error'});

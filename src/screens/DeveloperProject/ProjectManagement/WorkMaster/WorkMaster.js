@@ -20,7 +20,7 @@ function WorkMaster(props) {
 
   const [selectedTab, setSelectedTab] = useState(0);
   const [routes] = React.useState([
-    {key: 0, title: 'Work category'},
+    {key: 0, title: 'Work'},
     {key: 1, title: 'Milestone'},
   ]);
 
@@ -47,7 +47,9 @@ function WorkMaster(props) {
   const renderScene = ({route: {key}}) => {
     switch (key) {
       case 0:
-        return <WorkCategory {...{selectedProject, getCategories}} />;
+        return (
+          <WorkCategory {...{selectedProject, getCategories}} {...props} />
+        );
       case 1:
         return <Milestone {...{selectedProject, getMilestoneData}} />;
       default:
@@ -67,7 +69,7 @@ function WorkMaster(props) {
           return (
             <View style={styles.headerContainer}>
               <ProjectHeader {...props} />
-              <Subheading style={{marginLeft: 20}}>Project Lineup</Subheading>
+              <Subheading style={styles.SubHeading}>Work Master</Subheading>
               <MaterialTabBar {...tabBarProps} />
             </View>
           );
@@ -84,6 +86,10 @@ const styles = StyleSheet.create({
   headerContainer: {
     ...getShadow(5),
     backgroundColor: '#fff',
+  },
+  SubHeading: {
+    marginLeft: 20,
+    color: '#000',
   },
 });
 

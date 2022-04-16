@@ -4,12 +4,14 @@ import {StyleSheet, View, ScrollView} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import {theme} from 'styles/theme';
+import useProjectManagementActions from 'redux/actions/projectManagementActions';
+import {useSelector} from 'react-redux';
+import _ from 'lodash';
 import ProgressCard from '../Components/ProgressCard';
 import AddProgressDialog from '../Components/AddProgressDialog';
 
 const Header = props => {
-  const {onPress, navigation} = props;
-  console.log('-------->props', props);
+  const {onPress, navigation, path} = props;
   return (
     <View>
       <View style={styles.container}>
@@ -24,8 +26,7 @@ const Header = props => {
             opacity={0.1}
             color={theme.colors.primary}
             style={styles.backButton}
-            // onPress={navigation.goBack}
-          >
+            onPress={navigation.goBack}>
             <MaterialCommunityIcons
               name="keyboard-backspace"
               size={18}
@@ -34,8 +35,9 @@ const Header = props => {
           </OpacityButton>
         </View>
         <View style={styles.navigationTextContainer}>
-          <Text style={styles.headerNavigationText}>w-1.1</Text>
-          <Text>PCC-1</Text>
+          <Text style={styles.headerNavigationText}>
+            {path[path.length - 1]}
+          </Text>
         </View>
         <OpacityButton
           opacity={0.2}
@@ -51,14 +53,48 @@ const Header = props => {
 };
 
 function RecordsDetails(props) {
-  const data = [1, 2, 3, 4];
+  const {route, navigation} = props;
+  const {parent_id, pathList} = route?.params || {};
 
   const [showAdd, setShowAdd] = React.useState(false);
 
   const toggleAddDialog = () => setShowAdd(v => !v);
 
-  const handleAddProgress = () => {
-    console.log('clicked');
+  const {WBSExecutionList, WBSExecutionDetails, addProgressRecord} =
+    useProjectManagementActions();
+
+  const {selectedProject} = useSelector(s => s.project);
+  const {WBSList} = useSelector(s => s.projectManagement);
+
+  React.useEffect(() => {
+    loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const loadData = () =>
+    WBSExecutionList({project_id: selectedProject.id, wbs_works_id: parent_id});
+
+  const loadDetails = () => {
+    WBSExecutionDetails({
+      project_id: selectedProject.id,
+      wbs_works_id: parent_id,
+    });
+  };
+
+  const handleAddProgress = async values => {
+    const formData = new FormData();
+
+    formData.append('project_id', selectedProject.id);
+    formData.append('wbs_works_id', parent_id);
+    formData.append('quantity_completed', Number(values.quantity));
+    formData.append('percentage_completed', Number(values.percentage));
+    formData.append('remarks', values.remark);
+    formData.append('file', values.attachments);
+
+    await addProgressRecord(formData);
+    loadData();
+    loadDetails();
+    navigation.goBack();
   };
 
   return (
@@ -68,12 +104,13 @@ function RecordsDetails(props) {
         title="Add Progress Record"
         handleClose={toggleAddDialog}
         handleSubmit={handleAddProgress}
+        path={pathList}
       />
-      <Header onPress={toggleAddDialog} />
+      <Header {...props} onPress={toggleAddDialog} path={pathList} />
       <View style={styles.recordContainer}>
         <ScrollView showsVerticalScrollIndicator={false}>
-          {data.map(item => {
-            return <ProgressCard header={false} />;
+          {WBSList.map(item => {
+            return <ProgressCard details={item} />;
           })}
         </ScrollView>
       </View>
@@ -97,7 +134,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#rgba(72, 114, 244, 0.1);',
     borderRadius: 5,
     paddingHorizontal: 5,
-    width: 45,
+    flexDirection: 'row',
   },
   button: {
     padding: 10,
@@ -115,6 +152,7 @@ const styles = StyleSheet.create({
   navigationTextContainer: {
     flexDirection: 'row',
     marginRight: 150,
+    alignItems: 'center',
   },
 
   headerText: {

@@ -502,7 +502,7 @@ function AddVisitor(props) {
           validationSchema={schema}
           onSubmit={onSubmit}>
           {formikProps => (
-            <RenderForm f {...props} {...{formikProps, user, edit}} />
+            <RenderForm {...props} {...{formikProps, user, edit}} />
           )}
         </Formik>
       </View>

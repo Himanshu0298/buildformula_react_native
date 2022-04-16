@@ -1,26 +1,53 @@
+import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
+import NoResult from 'components/Atoms/NoResult';
 import * as React from 'react';
-import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
-import {Text, withTheme} from 'react-native-paper';
+import {
+  RefreshControl,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  FlatList,
+} from 'react-native';
+import Spinner from 'react-native-loading-spinner-overlay';
+import {Caption, Text, useTheme, withTheme} from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useSelector} from 'react-redux';
+import useProjectManagementActions from 'redux/actions/projectManagementActions';
 import {getShadow} from 'utils';
-import WorkDetails from './Components/SubWorkDetailsList';
-import SubWorkList from './Components/SubWorkList';
-
-const WORK_LIST = [
-  {label: 'Level 1', key: 'level1', value: ''},
-  {label: 'Level 2', key: 'level2', value: ''},
-  {label: 'Level 3', key: 'level3', value: ''},
-];
+import {cloneDeep} from 'lodash';
+import WorkPath from '../Components/WorkPath';
 
 function RenderRow(props) {
-  const {item, onPress} = props;
-  const {label} = item;
+  const {item, onPress, isSubWorks} = props;
+  const {title, unique_id, master_work_category_title, master_work_title} =
+    item;
+
+  const {colors} = useTheme();
 
   return (
     <View>
       <TouchableOpacity style={styles.optionContainer} onPress={onPress}>
-        <Text style={styles.optionLabel}>{label}</Text>
-        <MaterialCommunityIcons name="chevron-right" size={28} color="black" />
+        <View style={styles.optionBody}>
+          <Text style={styles.optionLabel}>{title || unique_id}</Text>
+          {isSubWorks ? (
+            <View style={styles.workDetails}>
+              <Caption>
+                {master_work_category_title} {'  '}
+              </Caption>
+              <MaterialCommunityIcons name="label" size={18} color="#95A0AC" />
+              <Caption>
+                {'  '}
+                {master_work_title}
+              </Caption>
+            </View>
+          ) : null}
+        </View>
+        <OpacityButton
+          opacity={0.1}
+          style={styles.rightArrow}
+          color={colors.primary}>
+          <MaterialCommunityIcons name="arrow-right" size={18} color="black" />
+        </OpacityButton>
       </TouchableOpacity>
     </View>
   );
@@ -28,53 +55,93 @@ function RenderRow(props) {
 
 function WorkList(props) {
   const {route, navigation} = props;
-  const {level = 0, list = []} = route?.params || {};
+  const {parent_id = 0, pathList = []} = route?.params || {};
+
+  const {colors} = useTheme();
+
+  const {getWBSLevelWorks} = useProjectManagementActions();
+
+  const {WBSData, loading} = useSelector(s => s.projectManagement);
+
+  const currentData = WBSData?.[parent_id];
+  const isSubWorks = currentData?.wbs_works?.length;
+
+  const listData = React.useMemo(() => {
+    if (currentData?.wbs_levels?.length) {
+      return currentData?.wbs_levels;
+    }
+    if (currentData?.wbs_works?.length) {
+      return currentData?.wbs_works;
+    }
+    return [];
+  }, [currentData?.wbs_levels, currentData?.wbs_works]);
+
+  const {selectedProject} = useSelector(s => s.project);
+
+  React.useEffect(() => {
+    getWBSLevelWorks({project_id: selectedProject.id, parent_id});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const navToNextLevel = item => {
-    list.push(item);
-    const params = {level: level + 1, list};
+    const _pathList = cloneDeep(pathList);
+    _pathList.push(item.title || item.unique_id);
+    const params = {parent_id: item.id, pathList: _pathList};
 
-    console.log('-------->params', params);
-
-    if (level < 2) {
+    if (!isSubWorks) {
       navigation.push('Worklist', params);
     } else {
       navigation.push('WorkDetails', params);
     }
   };
 
-  function renderContent() {
-    switch (level) {
-      case 0:
-        return (
-          <>
-            <Text style={styles.subHeading}>Work List</Text>
-            {WORK_LIST.map((item, index) => (
-              <RenderRow
-                key={index?.toString()}
-                onPress={() => navToNextLevel(item.label)}
-                {...{item}}
-              />
-            ))}
-          </>
-        );
-      case 1:
-        return (
-          <SubWorkList
-            {...props}
-            data={list}
-            level={level}
-            onPress={() => navToNextLevel(level)}
-          />
-        );
-      default:
-        return <WorkDetails {...props} data={list} onPress={navToNextLevel} />;
-    }
-  }
+  const renderEmpty = () => <NoResult />;
 
   return (
     <View>
-      <ScrollView>{renderContent()}</ScrollView>
+      <Spinner visible={loading} textContent="" />
+      {!pathList?.length ? (
+        <Text style={styles.subHeading}>Work List</Text>
+      ) : (
+        <>
+          <View style={styles.headerContainer}>
+            <View style={styles.button}>
+              <OpacityButton
+                opacity={0.1}
+                color={colors.primary}
+                style={styles.backButton}
+                onPress={navigation.goBack}>
+                <MaterialCommunityIcons
+                  name="keyboard-backspace"
+                  size={18}
+                  color="black"
+                />
+              </OpacityButton>
+            </View>
+            <Text style={styles.headerTitle}>
+              {pathList[pathList.length - 1]}
+            </Text>
+          </View>
+          <WorkPath data={pathList} />
+        </>
+      )}
+      <FlatList
+        data={listData}
+        refreshControl={
+          <RefreshControl refreshing={false} onRefresh={getWBSLevelWorks} />
+        }
+        keyExtractor={item => item.id}
+        ListEmptyComponent={renderEmpty}
+        renderItem={({item}) => {
+          return (
+            <RenderRow
+              item={item}
+              isSubWorks={isSubWorks}
+              onPress={() => navToNextLevel(item)}
+            />
+          );
+        }}
+      />
     </View>
   );
 }
@@ -91,13 +158,39 @@ const styles = StyleSheet.create({
     margin: 1,
   },
   optionLabel: {
-    margin: 10,
     color: 'black',
     fontSize: 16,
   },
   subHeading: {
     fontSize: 17,
     margin: 10,
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  button: {
+    flexDirection: 'row',
+    padding: 10,
+  },
+  backButton: {
+    borderRadius: 50,
+    marginRight: 7,
+  },
+  headerTitle: {
+    fontSize: 18,
+    color: 'black',
+  },
+  workDetails: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  optionBody: {
+    paddingHorizontal: 10,
+    paddingVertical: 7,
+  },
+  rightArrow: {
+    borderRadius: 25,
   },
 });
 
