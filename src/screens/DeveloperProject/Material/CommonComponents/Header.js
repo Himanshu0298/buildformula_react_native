@@ -40,8 +40,6 @@ const Header = props => {
       <OpacityButton
         opacity={0.18}
         style={{marginRight: 10, borderRadius: 20}}
-        // style={styles.addButton}
-        // onPress={() => navigation.goBack()}>
         onPress={onPress}>
         <MaterialCommunityIcons name="arrow-left" size={20} />
       </OpacityButton>

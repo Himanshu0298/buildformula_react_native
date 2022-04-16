@@ -88,6 +88,9 @@ import BrokerDetails from 'screens/DeveloperProject/Sales/BrokerDetails';
 import AddBroker from 'screens/DeveloperProject/Sales/AddBroker';
 import Remark from 'screens/DeveloperProject/Sales/BrokerDetails/Components/Remark';
 import ChallanNumber from '../screens/DeveloperProject/Material/ChallanNumber';
+import MaterialGRN from '../screens/DeveloperProject/Material/MaterialGRN';
+import OrderDetail from '../screens/DeveloperProject/Material/OrderDetail';
+import MaterialList from '../screens/DeveloperProject/Material/MaterialList';
 import ProjectSchedule from '../screens/DeveloperProject/ProjectManagement/ProjectSchedule';
 import MainPhase from '../screens/DeveloperProject/ProjectManagement/MainPhase';
 import ProcessChart from '../screens/DeveloperProject/ProjectManagement/ProcessChart/ProcessChart';
@@ -251,11 +254,14 @@ function CustomerSectionStack() {
 
 function MaterialModuleStack() {
   return (
-    <Stack.Navigator initialRouteName="ChallanNumber">
+    <Stack.Navigator initialRouteName="MaterialGRN">
       <Stack.Group screenOptions={{headerShown: false}}>
         <Stack.Screen name="MaterialUtility" component={MaterialUtility} />
         <Stack.Screen name="DeliveryDetails" component={DeliveryDetails} />
         <Stack.Screen name="ChallanNumber" component={ChallanNumber} />
+        <Stack.Screen name="MaterialGRN" component={MaterialGRN} />
+        <Stack.Screen name="OrderDetail" component={OrderDetail} />
+        <Stack.Screen name="MaterialList" component={MaterialList} />
       </Stack.Group>
     </Stack.Navigator>
   );
