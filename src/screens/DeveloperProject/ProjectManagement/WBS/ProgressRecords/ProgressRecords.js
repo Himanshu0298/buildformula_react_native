@@ -1,12 +1,13 @@
 import * as React from 'react';
 import {Divider, Text, withTheme} from 'react-native-paper';
-import {StyleSheet, View, ScrollView} from 'react-native';
+import {StyleSheet, View, FlatList, RefreshControl} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import {theme} from 'styles/theme';
 import useProjectManagementActions from 'redux/actions/projectManagementActions';
 import {useSelector} from 'react-redux';
 import _ from 'lodash';
+import NoResult from 'components/Atoms/NoResult';
 import ProgressCard from '../Components/ProgressCard';
 import AddProgressDialog from '../Components/AddProgressDialog';
 
@@ -96,6 +97,7 @@ function RecordsDetails(props) {
     loadDetails();
     navigation.goBack();
   };
+  const renderEmpty = () => <NoResult />;
 
   return (
     <View style={styles.recordContainer}>
@@ -107,12 +109,18 @@ function RecordsDetails(props) {
         path={pathList}
       />
       <Header {...props} onPress={toggleAddDialog} path={pathList} />
-      <View style={styles.recordContainer}>
-        <ScrollView showsVerticalScrollIndicator={false}>
-          {WBSList.map(item => {
+      <View style={styles.listContainer}>
+        <FlatList
+          data={WBSList}
+          refreshControl={
+            <RefreshControl refreshing={false} onRefresh={WBSExecutionList} />
+          }
+          keyExtractor={item => item.id}
+          ListEmptyComponent={renderEmpty}
+          renderItem={({item}) => {
             return <ProgressCard details={item} />;
-          })}
-        </ScrollView>
+          }}
+        />
       </View>
     </View>
   );
@@ -149,6 +157,11 @@ const styles = StyleSheet.create({
   recordContainer: {
     flex: 1,
   },
+  listContainer: {
+    flex: 1,
+    paddingVertical: 10,
+  },
+
   navigationTextContainer: {
     flexDirection: 'row',
     marginRight: 150,

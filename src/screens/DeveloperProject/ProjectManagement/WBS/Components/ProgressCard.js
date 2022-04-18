@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
   cardContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginVertical: 10,
+    marginVertical: 7,
   },
   cardDetailsContainer: {
     flexDirection: 'row',
@@ -74,15 +74,14 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   recordContainer: {
-    paddingHorizontal: 10,
-    paddingBottom: 10,
+    paddingBottom: 5,
   },
 
   remarkContainer: {
     flexDirection: 'row',
-    margin: 5,
     paddingBottom: 10,
     flexGrow: 1,
+    paddingLeft: 2,
   },
   remarkText: {
     paddingTop: 3,

@@ -7,35 +7,34 @@ import {theme} from 'styles/theme';
 import useProjectManagementActions from 'redux/actions/projectManagementActions';
 import {useSelector} from 'react-redux';
 import dayjs from 'dayjs';
+import NoResult from 'components/Atoms/NoResult';
 import ProgressCard from '../Components/ProgressCard';
 import AddProgressDialog from '../Components/AddProgressDialog';
 import WorkPath from '../Components/WorkPath';
 
 const UpdatedCard = props => {
-  const {navigation, route, header, progressReport} = props;
+  const {navigation, route, progressReport} = props;
 
   return (
     <View style={styles.detailsContainer}>
       <View style={styles.executionDateContainer}>
-        {header ? (
-          <View style={styles.progressRecordHeader}>
-            <Text style={styles.executionDate}>Progress Record</Text>
-            <OpacityButton
-              opacity={2}
-              style={styles.rightArrow}
-              color={theme.colors.primary}
-              onPress={() =>
-                navigation.navigate('RecordsDetail', {...route?.params})
-              }>
-              <MaterialCommunityIcons
-                name="arrow-right"
-                size={16}
-                color="#fff"
-              />
-            </OpacityButton>
-          </View>
-        ) : null}
-        <ProgressCard details={progressReport} />
+        <View style={styles.progressRecordHeader}>
+          <Text style={styles.executionDate}>Progress Record</Text>
+          <OpacityButton
+            opacity={2}
+            style={styles.rightArrow}
+            color={theme.colors.primary}
+            onPress={() =>
+              navigation.navigate('RecordsDetail', {...route?.params})
+            }>
+            <MaterialCommunityIcons name="arrow-right" size={16} color="#fff" />
+          </OpacityButton>
+        </View>
+        {progressReport ? (
+          <ProgressCard details={progressReport} />
+        ) : (
+          <NoResult title="No Files Found" />
+        )}
       </View>
     </View>
   );
@@ -77,11 +76,15 @@ const Details = props => {
   const data = [
     {
       name: 'Start Date',
-      value: dayjs(wbs_schedule_start_date).format('DD-MM-YYYY'),
+      value: wbs_schedule_start_date
+        ? dayjs(wbs_schedule_start_date).format('DD-MM-YYYY')
+        : 'NA',
     },
     {
       name: 'Finish Date',
-      value: dayjs(wbs_schedule_end_date).format('DD-MM-YYYY'),
+      value: wbs_schedule_end_date
+        ? dayjs(wbs_schedule_end_date).format('DD-MM-YYYY')
+        : 'NA',
     },
     {name: 'Duration', value: wbs_schedule_duration},
   ];
@@ -132,15 +135,20 @@ function Execution(props) {
   const {WBSDetails} = useSelector(s => s.projectManagement);
 
   const workDetails = WBSDetails?.wbs_works?.[0] || {};
-  const latestProgressReport = WBSDetails?.wbs_execution || {};
+  const latestProgressReport = !Array.isArray(WBSDetails?.wbs_execution)
+    ? WBSDetails?.wbs_execution || {}
+    : undefined;
 
   React.useEffect(() => {
+    loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const loadData = () =>
     WBSExecutionDetails({
       project_id: selectedProject.id,
       wbs_works_id: parent_id,
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const handleAddProgress = async values => {
     const formData = new FormData();
@@ -153,6 +161,8 @@ function Execution(props) {
     formData.append('file', values.attachments);
 
     await addProgressRecord(formData);
+    loadData();
+
     navigation.goBack();
   };
 
