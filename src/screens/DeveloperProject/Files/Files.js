@@ -41,7 +41,6 @@ import FileSection from './Components/FilesSection';
 import FoldersSection from './Components/FoldersSection';
 import ShareDialogue from './Components/ShareDialogue';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const relativeTime = require('dayjs/plugin/relativeTime');
 
 dayjs.extend(relativeTime);
@@ -259,7 +258,6 @@ function Files(props) {
   const [modalContent, setModalContent] = React.useState({});
   const [shareDialog, setShareDialog] = React.useState(false);
   const [DialogType, setDialogType] = React.useState();
-  // const [selectedUploadFile, setSelectedUploadFile] = React.useState();
 
   React.useEffect(() => {
     loadData();
@@ -348,8 +346,6 @@ function Files(props) {
 
   const onChoose = v => {
     handleFileUpload(v);
-    // setSelectedUploadFile(v);
-    // toggleDialog('uploadFile');
   };
 
   const handleFileUpload = async file => {
@@ -509,13 +505,6 @@ function Files(props) {
         dialogueContent={modalContent}
         renameFolderHandler={renameFolderHandler}
       />
-      {/* <UploadDialog
-        {...props}
-        visible={DialogType === 'uploadFile'}
-        toggleDialogue={toggleDialog}
-        selectedUploadFile={selectedUploadFile}
-        handleFileUpload={handleFileUpload}
-      /> */}
       <DeleteDialog
         visible={DialogType === 'deleteFileFolder'}
         toggleDialogue={toggleDialog}

@@ -64,6 +64,21 @@ export const DEVELOPER_DRAWER_ITEMS = [
       },
     ],
   },
+  {
+    title: 'MATERIAL MODULE',
+    routes: [
+      {
+        route: 'MaterialUtility',
+        label: 'Material Utility',
+        icon: ({color, size}) => (
+          <MaterialCommunityIcons
+            name="account-multiple-outline"
+            {...{color, size}}
+          />
+        ),
+      },
+    ],
+  },
 
   {
     title: 'DESIGN MODULE',

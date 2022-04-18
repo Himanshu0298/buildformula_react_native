@@ -67,6 +67,9 @@ import PaymentCollections from 'screens/DeveloperProject/CustomerSection/Payment
 import AddCollection from 'screens/DeveloperProject/CustomerSection/AddCollection';
 import PaymentSchedule from 'screens/DeveloperProject/CustomerSection/PaymentSchedule';
 // Project : Design Modules
+import MaterialUtility from 'screens/DeveloperProject/Material/MaterialUtility';
+import DeliveryDetails from 'screens/DeveloperProject/Material/DeliveryDetails';
+// Project : Design Modules
 import RoughDrawing from 'screens/DeveloperProject/DesignModule/RoughDrawing';
 import FinalDrawing from 'screens/DeveloperProject/DesignModule/FinalDrawing';
 import WorkingDrawing from 'screens/DeveloperProject/DesignModule/WorkingDrawing';
@@ -89,6 +92,10 @@ import WorkDetails from 'screens/DeveloperProject/ProjectManagement/WBS/WorkDeta
 import ProgressRecords from 'screens/DeveloperProject/ProjectManagement/WBS/ProgressRecords';
 import Worklist from 'screens/DeveloperProject/ProjectManagement/WBS/Worklist';
 import SubWorkCategory from 'screens/DeveloperProject/ProjectManagement/SubWorkCategory';
+import ChallanNumber from '../screens/DeveloperProject/Material/ChallanNumber';
+import MaterialGRN from '../screens/DeveloperProject/Material/MaterialGRN';
+import OrderDetail from '../screens/DeveloperProject/Material/OrderDetail';
+import MaterialList from '../screens/DeveloperProject/Material/MaterialList';
 import ProjectSchedule from '../screens/DeveloperProject/ProjectManagement/ProjectSchedule';
 // import Execution from ""
 import ProcessChart from '../screens/DeveloperProject/ProjectManagement/ProcessChart/ProcessChart';
@@ -96,6 +103,7 @@ import ProcessChart from '../screens/DeveloperProject/ProjectManagement/ProcessC
 import Estimation from '../screens/DeveloperProject/MaterialManagement/Estimation';
 import RequestForPrice from '../screens/DeveloperProject/MaterialManagement/RequestForPrice';
 import PurchaseOrders from '../screens/DeveloperProject/MaterialManagement/PurchaseOrders';
+
 // Project : Files screens
 import Files from '../screens/DeveloperProject/Files';
 // Project : Role screens
@@ -249,6 +257,21 @@ function CustomerSectionStack() {
   );
 }
 
+function MaterialModuleStack() {
+  return (
+    <Stack.Navigator initialRouteName="MaterialGRN">
+      <Stack.Group screenOptions={{headerShown: false}}>
+        <Stack.Screen name="MaterialUtility" component={MaterialUtility} />
+        <Stack.Screen name="DeliveryDetails" component={DeliveryDetails} />
+        <Stack.Screen name="ChallanNumber" component={ChallanNumber} />
+        <Stack.Screen name="MaterialGRN" component={MaterialGRN} />
+        <Stack.Screen name="OrderDetail" component={OrderDetail} />
+        <Stack.Screen name="MaterialList" component={MaterialList} />
+      </Stack.Group>
+    </Stack.Navigator>
+  );
+}
+
 function PlanningStack() {
   return (
     <Stack.Navigator initialRouteName="Phases">
@@ -371,6 +394,7 @@ function ProjectDrawer() {
         />
         <Drawer.Screen name="WorkMaster" component={WorkMasterStack} />
         <Drawer.Screen name="WBS" component={WBSStack} />
+        <Drawer.Screen name="MaterialUtility" component={MaterialModuleStack} />
         <Drawer.Screen name="ProjectSchedule" component={ProjectSchedule} />
         <Drawer.Screen name="Planning" component={PlanningStack} />
         <Drawer.Screen name="ProcessChart" component={ProcessChart} />
