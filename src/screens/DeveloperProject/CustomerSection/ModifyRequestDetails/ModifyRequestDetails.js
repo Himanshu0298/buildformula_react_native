@@ -137,6 +137,7 @@ const Comment = props => {
         <OpacityButton
           onPress={() => {
             addCommentData(text);
+            setText();
           }}
           opacity={0.1}
           borderRadius={30}
@@ -154,7 +155,7 @@ const Comment = props => {
 
 const ModifyRequestDetails = props => {
   const {route} = props;
-  const {id, unit, project_id} = route?.params || {};
+  const {id, unit, towerType, project_id} = route?.params || {};
 
   const {
     getModifyRequests,
@@ -165,6 +166,8 @@ const ModifyRequestDetails = props => {
 
   const {modifyRequest} = useSelector(s => s.customer);
   const {propertyDetails} = modifyRequest || {};
+
+  const {user_full_name, phone} = propertyDetails?.user_id || {};
 
   const [edit, setEdit] = useState(false);
   const [status, setStatus] = useState();
@@ -190,8 +193,9 @@ const ModifyRequestDetails = props => {
       unit_id: unit.unit_id,
     });
 
-  const addCommentData = description => {
-    addComment({project_id, project_modify_request_id: id, description});
+  const addCommentData = async description => {
+    await addComment({project_id, project_modify_request_id: id, description});
+    loadRequestData();
   };
 
   const toggleEdit = () => setEdit(v => !v);
@@ -222,21 +226,21 @@ const ModifyRequestDetails = props => {
               <View style={styles.row}>
                 <View style={styles.userData}>
                   <Text>Property Type</Text>
-                  <Caption>Apartment</Caption>
+                  <Caption>{towerType}</Caption>
                 </View>
                 <View style={styles.userData}>
                   <Text> Unit</Text>
-                  <Caption>A-502</Caption>
+                  <Caption>{unit.unit_id}</Caption>
                 </View>
               </View>
-              <View style={styles.row}>
+              <View style={styles.customerNameRow}>
                 <View style={styles.userData}>
-                  <Text>Customer Name</Text>
-                  <Caption>ABCDEFGHI</Caption>
+                  <Text>Name</Text>
+                  <Caption>{user_full_name}</Caption>
                 </View>
                 <View style={styles.userData}>
-                  <Text> Customer Mobile</Text>
-                  <Caption>7327621621</Caption>
+                  <Text>Mobile</Text>
+                  <Caption>{phone}</Caption>
                 </View>
               </View>
 
@@ -333,6 +337,9 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  customerNameRow: {
+    flexDirection: 'row',
   },
   messageContainer: {
     flexDirection: 'row',

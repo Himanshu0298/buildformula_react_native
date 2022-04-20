@@ -67,6 +67,9 @@ import PaymentCollections from 'screens/DeveloperProject/CustomerSection/Payment
 import AddCollection from 'screens/DeveloperProject/CustomerSection/AddCollection';
 import PaymentSchedule from 'screens/DeveloperProject/CustomerSection/PaymentSchedule';
 // Project : Design Modules
+import MaterialUtility from 'screens/DeveloperProject/Material/MaterialUtility';
+import DeliveryDetails from 'screens/DeveloperProject/Material/DeliveryDetails';
+// Project : Design Modules
 import RoughDrawing from 'screens/DeveloperProject/DesignModule/RoughDrawing';
 import FinalDrawing from 'screens/DeveloperProject/DesignModule/FinalDrawing';
 import WorkingDrawing from 'screens/DeveloperProject/DesignModule/WorkingDrawing';
@@ -84,17 +87,25 @@ import SalesPipelineRearrange from 'screens/DeveloperProject/Sales/SalesPipeline
 import BrokerDetails from 'screens/DeveloperProject/Sales/BrokerDetails';
 import AddBroker from 'screens/DeveloperProject/Sales/AddBroker';
 import Remark from 'screens/DeveloperProject/Sales/BrokerDetails/Components/Remark';
+import WorkMaster from 'screens/DeveloperProject/ProjectManagement/WorkMaster/WorkMaster';
+import WorkDetails from 'screens/DeveloperProject/ProjectManagement/WBS/WorkDetails';
+import ProgressRecords from 'screens/DeveloperProject/ProjectManagement/WBS/ProgressRecords';
+import Worklist from 'screens/DeveloperProject/ProjectManagement/WBS/Worklist';
+import SubWorkCategory from 'screens/DeveloperProject/ProjectManagement/SubWorkCategory';
+import ChallanNumber from '../screens/DeveloperProject/Material/ChallanNumber';
+import MaterialGRN from '../screens/DeveloperProject/Material/MaterialGRN';
+import OrderDetail from '../screens/DeveloperProject/Material/OrderDetail';
+import MaterialList from '../screens/DeveloperProject/Material/MaterialList';
 import ProjectSchedule from '../screens/DeveloperProject/ProjectManagement/ProjectSchedule';
-import MainPhase from '../screens/DeveloperProject/ProjectManagement/MainPhase';
 import ProcessChart from '../screens/DeveloperProject/ProjectManagement/ProcessChart/ProcessChart';
 // Project : Material management screens
 import Estimation from '../screens/DeveloperProject/MaterialManagement/Estimation';
 import RequestForPrice from '../screens/DeveloperProject/MaterialManagement/RequestForPrice';
 import PurchaseOrders from '../screens/DeveloperProject/MaterialManagement/PurchaseOrders';
+
 // Project : Files screens
 import Files from '../screens/DeveloperProject/Files';
 // Project : Role screens
-import Lineup from '../screens/DeveloperProject/ProjectManagement/Lineup';
 import AddDetails from '../screens/DeveloperProject/Sales/AddDetails/index';
 import AddFollowUp from '../screens/DeveloperProject/Sales/AddDetails/Components/AddFollowUp';
 import AddVisitor from '../screens/DeveloperProject/Sales/AddVisitor';
@@ -239,6 +250,22 @@ function CustomerSectionStack() {
         />
         <Stack.Screen name="AddCollection" component={AddCollection} />
         <Stack.Screen name="PaymentSchedule" component={PaymentSchedule} />
+        <Stack.Screen name="CustomerFiles" component={CustomerFiles} />
+      </Stack.Group>
+    </Stack.Navigator>
+  );
+}
+
+function MaterialModuleStack() {
+  return (
+    <Stack.Navigator initialRouteName="MaterialGRN">
+      <Stack.Group screenOptions={{headerShown: false}}>
+        <Stack.Screen name="MaterialUtility" component={MaterialUtility} />
+        <Stack.Screen name="DeliveryDetails" component={DeliveryDetails} />
+        <Stack.Screen name="ChallanNumber" component={ChallanNumber} />
+        <Stack.Screen name="MaterialGRN" component={MaterialGRN} />
+        <Stack.Screen name="OrderDetail" component={OrderDetail} />
+        <Stack.Screen name="MaterialList" component={MaterialList} />
       </Stack.Group>
     </Stack.Navigator>
   );
@@ -252,6 +279,28 @@ function PlanningStack() {
         <Stack.Screen name="SubPhases" component={SubPhases} />
         <Stack.Screen name="SubPhaseActivity" component={SubPhaseActivity} />
         <Stack.Screen name="PlanningDetails" component={PlanningDetails} />
+      </Stack.Group>
+    </Stack.Navigator>
+  );
+}
+
+function WBSStack() {
+  return (
+    <Stack.Navigator initialRouteName="Worklist">
+      <Stack.Group screenOptions={{headerShown: false}}>
+        <Stack.Screen name="Worklist" component={Worklist} />
+        <Stack.Screen name="WorkDetails" component={WorkDetails} />
+        <Stack.Screen name="RecordsDetail" component={ProgressRecords} />
+      </Stack.Group>
+    </Stack.Navigator>
+  );
+}
+function WorkMasterStack() {
+  return (
+    <Stack.Navigator initialRouteName="WorkMaster">
+      <Stack.Group screenOptions={{headerShown: false}}>
+        <Stack.Screen name="WorkMaster" component={WorkMaster} />
+        <Stack.Screen name="SubWorkCategory" component={SubWorkCategory} />
       </Stack.Group>
     </Stack.Navigator>
   );
@@ -342,9 +391,10 @@ function ProjectDrawer() {
           name="CustomerSection"
           component={CustomerSectionStack}
         />
+        <Drawer.Screen name="WorkMaster" component={WorkMasterStack} />
+        <Drawer.Screen name="WBS" component={WBSStack} />
+        <Drawer.Screen name="MaterialUtility" component={MaterialModuleStack} />
         <Drawer.Screen name="ProjectSchedule" component={ProjectSchedule} />
-        <Drawer.Screen name="MainPhase" component={MainPhase} />
-        <Drawer.Screen name="Lineup" component={Lineup} />
         <Drawer.Screen name="Planning" component={PlanningStack} />
         <Drawer.Screen name="ProcessChart" component={ProcessChart} />
         <Drawer.Screen name="Estimation" component={Estimation} />

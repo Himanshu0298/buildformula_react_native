@@ -2,12 +2,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {persistReducer} from 'redux-persist';
 import {
   ADD_CUSTOMER,
-  CUSTOMER_CREATE_FOLDER,
   GET_CUSTOMER_DATA,
   GET_BOOKING_DATA,
   GET_BANK_DETAILS,
-  GET_FILE,
-  GET_FOLDER,
   UPDATE_BANK_DETAILS,
   UPDATE_BANK_FILES,
   GET_MODIFY_REQUESTS,
@@ -49,8 +46,6 @@ const initialState = {
   modifyRequests: [],
   modifyRequest: {},
   accountDetails: {},
-  file: {},
-  folder: {},
 };
 
 const reducer = (state = initialState, action = {}) => {
@@ -178,40 +173,6 @@ const reducer = (state = initialState, action = {}) => {
         LoadingAccountDetails: false,
         errorMessage: action.payload,
       };
-    case `${GET_FILE}_PENDING`:
-      return {
-        ...state,
-        loadingFile: true,
-      };
-    case `${GET_FILE}_FULFILLED`: {
-      return {
-        ...state,
-        loadingFile: false,
-      };
-    }
-    case `${GET_FILE}_REJECTED`:
-      return {
-        ...state,
-        loadingFile: false,
-        errorMessage: action.payload,
-      };
-    case `${GET_FOLDER}_PENDING`:
-      return {
-        ...state,
-        loadingFolder: true,
-      };
-    case `${GET_FOLDER}_FULFILLED`: {
-      return {
-        ...state,
-        loadingFolder: false,
-      };
-    }
-    case `${GET_FOLDER}_REJECTED`:
-      return {
-        ...state,
-        loadingFolder: false,
-        errorMessage: action.payload,
-      };
 
     case `${UPDATE_BANK_DETAILS}_PENDING`:
       return {
@@ -244,7 +205,6 @@ const reducer = (state = initialState, action = {}) => {
     case `${UPDATE_COLLECTION}_PENDING`:
     case `${DELETE_COLLECTION}_PENDING`:
     case `${UPDATE_MODIFY_REQUEST}_PENDING`:
-    case `${CUSTOMER_CREATE_FOLDER}_PENDING`:
       return {
         ...state,
         loading: true,
@@ -258,7 +218,6 @@ const reducer = (state = initialState, action = {}) => {
     case `${UPDATE_COLLECTION}_FULFILLED`:
     case `${DELETE_COLLECTION}_FULFILLED`:
     case `${UPDATE_MODIFY_REQUEST}_FULFILLED`:
-    case `${CUSTOMER_CREATE_FOLDER}_FULFILLED`:
       return {
         ...state,
         loading: false,
@@ -273,7 +232,6 @@ const reducer = (state = initialState, action = {}) => {
     case `${UPDATE_COLLECTION}_REJECTED`:
     case `${DELETE_COLLECTION}_REJECTED`:
     case `${UPDATE_MODIFY_REQUEST}_REJECTED`:
-    case `${CUSTOMER_CREATE_FOLDER}_REJECTED`:
       return {
         ...state,
         loading: false,

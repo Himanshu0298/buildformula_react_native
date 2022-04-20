@@ -67,9 +67,8 @@ export function useCustomerLoading() {
     loadingModifyRequests,
     loadingModifyRequest,
     LoadingAccountDetails,
-    loadingFile,
-    loadingFolder,
   } = useSelector(s => s.customer);
+  const {loading: filesLoading} = useSelector(s => s.files);
 
   return (
     loading ||
@@ -80,7 +79,6 @@ export function useCustomerLoading() {
     loadingModifyRequests ||
     loadingModifyRequest ||
     LoadingAccountDetails ||
-    loadingFile ||
-    loadingFolder
+    filesLoading
   );
 }

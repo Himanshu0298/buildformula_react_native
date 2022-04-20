@@ -42,7 +42,9 @@ export function useResProcessor() {
       ) {
         return data;
       }
-      throw new Error(response);
+      console.log('-------->');
+      // eslint-disable-next-line no-throw-literal
+      throw {response};
     },
   };
 }

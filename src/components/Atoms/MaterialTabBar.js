@@ -1,17 +1,23 @@
 import React from 'react';
 import {StyleSheet} from 'react-native';
+import {useTheme} from 'react-native-paper';
 import {TabBar} from 'react-native-tab-view';
-import {theme} from 'styles/theme';
 import BaseText from './BaseText';
 
 export default function MaterialTabBar(props) {
+  const {colors} = useTheme();
   return (
     <TabBar
       {...props}
-      indicatorStyle={{backgroundColor: theme.colors.primary}}
+      indicatorStyle={{
+        backgroundColor: colors.primary,
+      }}
       style={styles.container}
-      renderLabel={({route /* focused, color */}) => (
-        <BaseText style={styles.label}>{route.title}</BaseText>
+      renderLabel={({route, focused}) => (
+        <BaseText
+          style={[styles.label, focused ? {color: colors.primary} : {}]}>
+          {route.title}
+        </BaseText>
       )}
     />
   );
@@ -23,7 +29,7 @@ const styles = StyleSheet.create({
     elevation: 0,
   },
   label: {
-    color: '#000',
     margin: 8,
+    fontSize: 15,
   },
 });

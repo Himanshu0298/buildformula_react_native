@@ -138,11 +138,11 @@ export default {
       label_quantity: 'Quantity',
       label_unit_price: 'Price',
 
-      // Lineup
+      // Work Master
       label_select_unit: 'Select unit',
-      label_work: 'Work',
+      label_work: 'Work Name',
       label_milestone: 'Milestone',
-      label_activity_name: 'Activity name',
+      label_activity_name: 'Sub-work Name',
 
       // Phases
       label_phase: 'Phase',

@@ -45,7 +45,7 @@ function PlanSelect(props) {
 
   const toggleAlert = () => setShowAlert(v => !v);
 
-  function onSelectPlan(amount) {
+  const onSelectPlan = amount => {
     selectPlan({project_id: project.id || project.project_id, amount})
       .then(data => {
         toggleAlert();
@@ -53,7 +53,7 @@ function PlanSelect(props) {
       .catch(error => {
         console.log('-----> error', error);
       });
-  }
+  };
 
   const handleNext = () => {
     toggleAlert();

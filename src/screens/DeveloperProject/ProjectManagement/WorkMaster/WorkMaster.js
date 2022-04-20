@@ -3,7 +3,7 @@ import ProjectHeader from 'components/Molecules/Layout/ProjectHeader';
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
-import {Subheading} from 'react-native-paper';
+import {Subheading, withTheme} from 'react-native-paper';
 import {TabView} from 'react-native-tab-view';
 import {useSelector} from 'react-redux';
 import useProjectManagementActions from 'redux/actions/projectManagementActions';
@@ -12,7 +12,7 @@ import Layout from 'utils/Layout';
 import Milestone from './Components/Milestone';
 import WorkCategory from './Components/WorkCategory';
 
-function Lineup(props) {
+function WorkMaster(props) {
   const {getWorkCategories, getMilestones} = useProjectManagementActions();
 
   const {selectedProject} = useSelector(s => s.project);
@@ -20,7 +20,7 @@ function Lineup(props) {
 
   const [selectedTab, setSelectedTab] = useState(0);
   const [routes] = React.useState([
-    {key: 0, title: 'Work category'},
+    {key: 0, title: 'Work'},
     {key: 1, title: 'Milestone'},
   ]);
 
@@ -47,7 +47,9 @@ function Lineup(props) {
   const renderScene = ({route: {key}}) => {
     switch (key) {
       case 0:
-        return <WorkCategory {...{selectedProject, getCategories}} />;
+        return (
+          <WorkCategory {...{selectedProject, getCategories}} {...props} />
+        );
       case 1:
         return <Milestone {...{selectedProject, getMilestoneData}} />;
       default:
@@ -67,7 +69,7 @@ function Lineup(props) {
           return (
             <View style={styles.headerContainer}>
               <ProjectHeader {...props} />
-              <Subheading style={{marginLeft: 20}}>Project Lineup</Subheading>
+              <Subheading style={styles.SubHeading}>Work Master</Subheading>
               <MaterialTabBar {...tabBarProps} />
             </View>
           );
@@ -85,6 +87,10 @@ const styles = StyleSheet.create({
     ...getShadow(5),
     backgroundColor: '#fff',
   },
+  SubHeading: {
+    marginLeft: 20,
+    color: '#000',
+  },
 });
 
-export default Lineup;
+export default withTheme(WorkMaster);

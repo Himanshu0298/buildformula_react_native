@@ -61,8 +61,10 @@ function FileSection(props) {
 
   const snackbar = useSnackbar();
 
-  const {files} = useSelector(s => s.files);
+  const {files} = useSelector(s => s.customer);
   const filteredFiles = files?.[folderDepth] || [];
+
+  console.log('-------->filteredFiles', files);
 
   const onPressFile = async file => {
     snackbar.showMessage({

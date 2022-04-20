@@ -31,8 +31,8 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Feather from 'react-native-vector-icons/Feather';
 import dayjs from 'dayjs';
 import {getFileExtension} from 'utils/download';
+import {Tabs} from 'react-native-collapsible-tab-view';
 import DeleteDialog from './Components/DeleteDialog';
-import UploadDialog from './Components/UploadDialog';
 import RenameDialogue from './Components/RenameDialog';
 import CreateFolderDialogue from './Components/CreateFolderDialog';
 import MenuDialog from './Components/MenuDialog';
@@ -41,7 +41,6 @@ import FileSection from './Components/FilesSection';
 import FoldersSection from './Components/FoldersSection';
 import ShareDialogue from './Components/ShareDialogue';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const relativeTime = require('dayjs/plugin/relativeTime');
 
 dayjs.extend(relativeTime);
@@ -216,9 +215,12 @@ function RenderMenuModal(props) {
 }
 
 function Files(props) {
-  const {theme, route, navigation} = props;
-  const {folder_name: folderName, index_of: folderDepth = 0} =
-    route?.params || {};
+  const {theme, route, navigation, customerSection} = props;
+  const {
+    unit,
+    folder_name: folderName,
+    index_of: folderDepth = 0,
+  } = route?.params || {};
 
   const modulePermissions = getPermissions('Files');
 
@@ -228,6 +230,9 @@ function Files(props) {
 
   const project_id = selectedProject.id;
   const user_id = user?.id;
+
+  const ScrollContainer =
+    customerSection && !folderDepth ? Tabs.ScrollView : ScrollView;
 
   const {
     getFolders,
@@ -253,7 +258,6 @@ function Files(props) {
   const [modalContent, setModalContent] = React.useState({});
   const [shareDialog, setShareDialog] = React.useState(false);
   const [DialogType, setDialogType] = React.useState();
-  // const [selectedUploadFile, setSelectedUploadFile] = React.useState();
 
   React.useEffect(() => {
     loadData();
@@ -261,8 +265,17 @@ function Files(props) {
   }, []);
 
   const loadData = () => {
-    getFolders({project_id, index_of: folderDepth});
+    loadFolders();
     getFiles({project_id, folder_id: folderDepth});
+  };
+
+  const loadFolders = () => {
+    const params = {project_id, index_of: folderDepth};
+    if (customerSection) {
+      params.unitId = unit?.unit_id;
+    }
+
+    getFolders(params);
   };
 
   const FAB_ACTIONS = [
@@ -299,7 +312,7 @@ function Files(props) {
       user_id,
     });
     toggleDialog();
-    getFolders({project_id, index_of: folderDepth});
+    loadFolders();
   };
 
   const renameFolderHandler = async (name, id, type) => {
@@ -310,7 +323,7 @@ function Files(props) {
         user_id: user?.id,
         project_id: selectedProject?.id,
       });
-      getFolders({project_id, index_of: folderDepth});
+      loadFolders();
       toggleDialog();
     } else {
       await renameFile({file_id: id, project_id, new_file_name: name});
@@ -322,7 +335,7 @@ function Files(props) {
   const deleteFileHandler = async (id, type) => {
     if (type === 'folder') {
       await deleteFolder({folder_id: id, project_id});
-      getFolders({project_id, index_of: folderDepth});
+      loadFolders();
     } else {
       await deleteFile({file_id: id, project_id});
       getFiles({project_id, folder_id: folderDepth});
@@ -333,8 +346,6 @@ function Files(props) {
 
   const onChoose = v => {
     handleFileUpload(v);
-    // setSelectedUploadFile(v);
-    // toggleDialog('uploadFile');
   };
 
   const handleFileUpload = async file => {
@@ -408,7 +419,7 @@ function Files(props) {
   return (
     <View style={styles.container}>
       <Spinner visible={loading} textContent="" />
-      <ScrollView
+      <ScrollContainer
         refreshControl={
           <RefreshControl refreshing={false} onRefresh={loadData} />
         }>
@@ -439,7 +450,7 @@ function Files(props) {
           {...props}
           {...{menuId, toggleMenu, setModalContent, setModalContentType}}
         />
-      </ScrollView>
+      </ScrollContainer>
       {modulePermissions?.editor || modulePermissions?.admin ? (
         <FAB.Group
           open={fab}
@@ -494,13 +505,6 @@ function Files(props) {
         dialogueContent={modalContent}
         renameFolderHandler={renameFolderHandler}
       />
-      {/* <UploadDialog
-        {...props}
-        visible={DialogType === 'uploadFile'}
-        toggleDialogue={toggleDialog}
-        selectedUploadFile={selectedUploadFile}
-        handleFileUpload={handleFileUpload}
-      /> */}
       <DeleteDialog
         visible={DialogType === 'deleteFileFolder'}
         toggleDialogue={toggleDialog}
@@ -518,8 +522,10 @@ const styles = StyleSheet.create({
   },
   fab: {
     position: 'absolute',
+    height: '100%',
+    width: '100%',
     right: 10,
-    bottom: 2,
+    bottom: 30,
     zIndex: 2,
   },
   backdrop: {

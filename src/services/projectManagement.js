@@ -56,5 +56,21 @@ export default function useProjectManagement() {
     updateGeneralActivity: data => {
       return instance.post('/generalactivity/update', data, params);
     },
+    getWBSLevelWorks: data => {
+      return instance.post('/wbs/getWBSLevelsWorks', data, params);
+    },
+    WBSExecutionDetails: data => {
+      return instance.post('/wbs/getWBSExecutionDetails', data, params);
+    },
+    WBSExecutionList: data => {
+      return instance.post('/wbs/getWBSExecutionList', data, params);
+    },
+    addProgressRecord: data => {
+      return instance.post(
+        '/wbs/execution_qty_save',
+        data,
+        config({multipart: true}),
+      );
+    },
   };
 }

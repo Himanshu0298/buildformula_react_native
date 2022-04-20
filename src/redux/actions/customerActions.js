@@ -21,8 +21,6 @@ export default function useCustomerActions() {
     addComment,
     removeBankFile,
     getModifyRequests,
-    getFolder,
-    getFile,
     addModifyRequest,
     getModifyRequest,
     getAccountDetails,
@@ -32,7 +30,6 @@ export default function useCustomerActions() {
     deleteCollection,
     deleteFolder,
     deleteFile,
-    customerCreateFolder,
   } = useCustomerServices();
 
   return {
@@ -289,52 +286,6 @@ export default function useCustomerActions() {
           }
         },
       }),
-    getFolder: params =>
-      dispatch({
-        type: types.GET_FOLDER,
-        payload: async () => {
-          try {
-            const {data} = _res(await getFolder(params));
-
-            return Promise.resolve(data);
-          } catch (error) {
-            const message = _err(error);
-            snackbar.showMessage({message, variant: 'error'});
-            return Promise.reject(message);
-          }
-        },
-      }),
-    customerCreateFolder: params =>
-      dispatch({
-        type: types.CUSTOMER_CREATE_FOLDER,
-        payload: async () => {
-          try {
-            const res = _res(await customerCreateFolder(params));
-
-            return Promise.resolve(res.data);
-          } catch (error) {
-            const message = _err(error);
-            snackbar.showMessage({message, variant: 'error'});
-            return Promise.reject(message);
-          }
-        },
-      }),
-    getFile: params =>
-      dispatch({
-        type: types.GET_FILE,
-        payload: async () => {
-          try {
-            const {data} = _res(await getFile(params));
-
-            return Promise.resolve(data);
-          } catch (error) {
-            const message = _err(error);
-            snackbar.showMessage({message, variant: 'error'});
-            return Promise.reject(message);
-          }
-        },
-      }),
-
     updateBookingStatus: params =>
       dispatch({
         type: types.UPDATE_BOOKING_STATUS,
