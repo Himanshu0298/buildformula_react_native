@@ -46,8 +46,6 @@ const initialState = {
   modifyRequests: [],
   modifyRequest: {},
   accountDetails: {},
-  files: {},
-  folders: {},
 };
 
 const reducer = (state = initialState, action = {}) => {
