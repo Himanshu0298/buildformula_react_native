@@ -211,7 +211,6 @@ const reducer = (state = initialState, action = {}) => {
       return {
         ...state,
         loading: true,
-        activities: [],
       };
     case `${WBS_EXECUTION_DETAILS}_FULFILLED`:
       return {
@@ -228,7 +227,6 @@ const reducer = (state = initialState, action = {}) => {
       return {
         ...state,
         loading: true,
-        activities: [],
       };
     case `${WBS_EXECUTION_LIST}_FULFILLED`:
       return {
