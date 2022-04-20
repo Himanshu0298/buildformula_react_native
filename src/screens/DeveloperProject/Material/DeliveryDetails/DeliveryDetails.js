@@ -1,25 +1,5 @@
-import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
-import React, {useRef, useEffect, useMemo} from 'react';
-import {
-  StyleSheet,
-  View,
-  ScrollView,
-  RefreshControl,
-  SectionList,
-  TouchableOpacity,
-} from 'react-native';
-import {
-  IconButton,
-  Subheading,
-  Text,
-  FAB,
-  withTheme,
-  Divider,
-  Caption,
-  Headline,
-} from 'react-native-paper';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {theme} from '../../../../styles/theme';
+import React from 'react';
+import {View} from 'react-native';
 import Header from '../CommonComponents/Header';
 import {OrderNo} from '../MaterialUtility/MaterialUtility';
 

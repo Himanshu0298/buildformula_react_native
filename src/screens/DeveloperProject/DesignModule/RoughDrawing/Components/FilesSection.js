@@ -64,8 +64,6 @@ function FileSection(props) {
   const {files} = useSelector(s => s.customer);
   const filteredFiles = files?.[folderDepth] || [];
 
-  console.log('-------->filteredFiles', files);
-
   const onPressFile = async file => {
     snackbar.showMessage({
       message: 'Preparing your download...',

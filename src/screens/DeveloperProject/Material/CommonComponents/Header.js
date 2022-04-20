@@ -1,27 +1,9 @@
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import React from 'react';
-import {
-  StyleSheet,
-  View,
-  ScrollView,
-  RefreshControl,
-  SectionList,
-  TouchableOpacity,
-} from 'react-native';
-import {
-  IconButton,
-  Subheading,
-  Text,
-  FAB,
-  withTheme,
-  Divider,
-  Caption,
-  Headline,
-} from 'react-native-paper';
+import {View} from 'react-native';
+import {Subheading} from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 // import {theme} from './src/styles/theme';
-import {theme} from '../../../../styles/theme';
-import {OrderNo} from '../MaterialUtility/MaterialUtility';
 
 const Header = props => {
   const {navigation, title} = props;

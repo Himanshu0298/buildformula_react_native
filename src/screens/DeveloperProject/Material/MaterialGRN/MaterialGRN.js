@@ -1,45 +1,26 @@
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
-import React, {useRef, useEffect, useMemo} from 'react';
-import {
-  StyleSheet,
-  View,
-  ScrollView,
-  RefreshControl,
-  SectionList,
-  TouchableOpacity,
-} from 'react-native';
-import {
-  IconButton,
-  Subheading,
-  Text,
-  FAB,
-  withTheme,
-  Divider,
-  Caption,
-  Headline,
-} from 'react-native-paper';
+import React from 'react';
+import {StyleSheet, View, TouchableOpacity} from 'react-native';
+import {Subheading, Text, Divider, Caption} from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {getShadow} from 'utils';
 import {theme} from '../../../../styles/theme';
 
 const OrderDetails = () => {
   return (
-    <View style={{padding: 10}}>
-      <View
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-        }}>
-        <Text style={{width: '40%'}}>Material Order no:</Text>
+    <View style={styles.orderContainer}>
+      <View style={styles.materialSection}>
+        <Caption style={styles.materialSubSection}>Material Order no:</Caption>
         <Text>12</Text>
       </View>
-      <View
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-        }}>
-        <Text style={{width: '40%'}}>Order amount</Text>
-        <Text>12</Text>
+      <View style={styles.materialSection}>
+        <View style={styles.materialAmountSection}>
+          <Caption style={styles.materialSubSection}>Order Amount:</Caption>
+          <Text
+            style={{
+              color: theme.colors.primary,
+            }}>{`₹${' 15'}`}</Text>
+        </View>
       </View>
     </View>
   );
@@ -47,20 +28,12 @@ const OrderDetails = () => {
 
 const CompanyDetails = () => {
   return (
-    <View style={{padding: 10}}>
-      <View
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-        }}>
+    <View style={styles.orderContainer}>
+      <View style={styles.companyDetailsContainer}>
         <Text>Company: </Text>
         <Text>Shreeji</Text>
       </View>
-      <View
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-        }}>
+      <View style={styles.supplier}>
         <Text>Supplies: </Text>
         <Text>Mukeshbhai</Text>
       </View>
@@ -78,7 +51,7 @@ const OrderCard = props => {
       <OpacityButton
         opacity={0.1}
         color={theme.colors.primary}
-        style={{position: 'absolute', top: 10, right: 10}}>
+        style={styles.button}>
         <MaterialCommunityIcons
           name="arrow-right"
           color={theme.colors.primary}
@@ -86,7 +59,7 @@ const OrderCard = props => {
         />
       </OpacityButton>
       <OrderDetails />
-      <Divider style={{height: 2}} />
+      <Divider style={styles.divider} />
       <CompanyDetails />
     </TouchableOpacity>
   );
@@ -94,8 +67,8 @@ const OrderCard = props => {
 
 const MaterialGRN = props => {
   return (
-    <View style={{padding: 20}}>
-      <Subheading>Material GRN</Subheading>
+    <View style={styles.orderContainer}>
+      <Subheading style={styles.SubHeading}>Material GRN</Subheading>
       <Text>Select material order for which delivery to be added.</Text>
       <OrderCard {...props} />
       <OrderCard {...props} />
@@ -108,7 +81,50 @@ export default MaterialGRN;
 
 const styles = StyleSheet.create({
   cardContainer: {
-    backgroundColor: '#999999',
+    // backgroundColor: '#999999',
+    padding: 5,
+    backgroundColor: '#fff',
+    ...getShadow(2),
     marginTop: 20,
+    borderRadius: 5,
+  },
+  orderContainer: {
+    padding: 10,
+  },
+  materialSection: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  materialSubSection: {
+    flexDirection: 'row',
+    fontSize: 14,
+    marginRight: 10,
+  },
+  materialAmountSection: {
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  companyDetailsContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  supplier: {
+    display: 'flex',
+    flexDirection: 'row',
+    marginTop: 5,
+    alignItems: 'center',
+  },
+  button: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+  },
+  divider: {
+    height: 2,
+  },
+  SubHeading: {
+    fontSize: 18,
   },
 });

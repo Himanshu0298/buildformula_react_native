@@ -1,81 +1,77 @@
-import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
-import React, {useRef, useEffect, useMemo} from 'react';
-import {
-  StyleSheet,
-  View,
-  ScrollView,
-  RefreshControl,
-  SectionList,
-  TouchableOpacity,
-} from 'react-native';
-import {
-  IconButton,
-  Subheading,
-  Text,
-  FAB,
-  withTheme,
-  Divider,
-  Caption,
-  Headline,
-} from 'react-native-paper';
+import React from 'react';
+import {StyleSheet, View} from 'react-native';
+import {Text, Divider, Caption} from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {theme} from 'styles/theme';
 import {getShadow} from 'utils';
-import {theme} from '../../../../styles/theme';
 import Header from '../CommonComponents/Header';
 
-const data = [1, 2];
+const LIST_DATA = [
+  {label: 'Ordered: ', value: '2000'},
+  {label: 'Remaining: ', value: '1959'},
+];
 
-const data2 = [1, 2, 3, 4, 5, 6];
+const SUB_LIST_DATA = [
+  {label: 'Delivered: ', value: '40'},
+  {label: 'Damage: ', value: '1'},
+];
 
-const Row = props => {
+const RenderRow = props => {
+  const {item} = props;
   return (
-    <View style={{flexDirection: 'row', marginTop: 5}}>
-      {data.map(() => {
-        return (
-          <View style={{width: '50%', flexDirection: 'row'}}>
-            <Text>Ordered: </Text>
-            <Text>2000</Text>
-          </View>
-        );
-      })}
+    <View style={styles.renderContainer}>
+      <Caption numberOfLines={1} style={styles.label}>
+        {item.label}
+      </Caption>
+      <Text>{item.value}</Text>
     </View>
   );
 };
 
-const CommonCard = props => {
+const Quantity = props => {
   return (
-    <View style={{backgroundColor: 'red', marginTop: 20}}>
-      <View
-        style={{
-          padding: 10,
-          flexDirection: 'row',
-          alignItems: 'center',
-        }}>
-        <Text>Brick</Text>
+    <View style={styles.quantityContainer}>
+      <Text>Quantity</Text>
+
+      <View style={styles.itemContainer}>
+        {LIST_DATA.map(item => {
+          return <RenderRow item={item} />;
+        })}
+      </View>
+      <View style={styles.itemContainer}>
+        {SUB_LIST_DATA.map(item => {
+          return <RenderRow item={item} />;
+        })}
+      </View>
+    </View>
+  );
+};
+
+const DetailsCard = props => {
+  return (
+    <View style={styles.detailsContainer}>
+      <View style={styles.subHeading}>
+        <Text style={{color: theme.colors.primary}}>Brick</Text>
         <MaterialCommunityIcons
           name="label"
           size={20}
-          style={{marginLeft: 5, marginRight: 5}}
+          style={[styles.labelIcon, {color: theme.colors.primary}]}
         />
-        <Text>Brick Bricks 6 inch, Nos</Text>
+        <Text style={{color: theme.colors.primary}}>
+          Brick Bricks 6 inch, Nos
+        </Text>
       </View>
-      <Divider style={{height: 3}} />
-      <View style={{padding: 10}}>
-        <Text>Quantity</Text>
-        <Row />
-        <Row />
-      </View>
+      <Divider style={styles.divider} />
+      <Quantity />
     </View>
   );
 };
 
 const MaterialList = props => {
   return (
-    <View style={{padding: 20}}>
+    <View style={styles.materialContainer}>
       <Header title="List" />
-      {data2.map(() => {
-        return <CommonCard {...props} />;
-      })}
+      <DetailsCard {...props} />
     </View>
   );
 };
@@ -83,8 +79,40 @@ const MaterialList = props => {
 export default MaterialList;
 
 const styles = StyleSheet.create({
-  cardContainer: {
-    backgroundColor: '#999999',
+  renderContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  label: {
+    fontSize: 12,
+  },
+  quantityContainer: {
+    padding: 10,
+  },
+  itemContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  detailsContainer: {
     marginTop: 20,
+    backgroundColor: '#fff',
+    ...getShadow(2),
+    borderRadius: 5,
+  },
+  subHeading: {
+    padding: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  labelIcon: {
+    marginLeft: 5,
+    marginRight: 5,
+  },
+  divider: {
+    height: 2,
+  },
+  materialContainer: {
+    padding: 20,
   },
 });

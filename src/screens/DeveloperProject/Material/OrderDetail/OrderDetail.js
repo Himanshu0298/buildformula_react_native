@@ -1,95 +1,91 @@
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
-import React, {useRef, useEffect, useMemo} from 'react';
-import {
-  StyleSheet,
-  View,
-  ScrollView,
-  RefreshControl,
-  SectionList,
-  TouchableOpacity,
-} from 'react-native';
-import {
-  IconButton,
-  Subheading,
-  Text,
-  FAB,
-  withTheme,
-  Divider,
-  Caption,
-  Headline,
-  Button,
-} from 'react-native-paper';
+import React from 'react';
+import {ScrollView, StyleSheet, View} from 'react-native';
+import {Subheading, Text, Divider, Caption, Button} from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {getShadow} from 'utils';
 import {theme} from '../../../../styles/theme';
 import Header from '../CommonComponents/Header';
 
-const data2 = [1, 2, 3, 4];
+const CHALLAN_DETAILS = [
+  {label: 'Challan Number:', value: '90'},
+  {label: 'Delivery Date', value: '1/1/2022'},
+];
+const CREATED_BY = [
+  {
+    label: 'Created by:',
+    value: 'Nilesh Gupta',
+    subValue: 'rinkupoonia162@gmail.com',
+  },
+];
+const UPDATED_BY = [
+  {
+    label: 'Updated by:',
+    value: 'Nilesh Gupta',
+    subValue: 'rinkupoonia162@gmail.com',
+  },
+];
 
-const Row = props => {
-  const {data} = props;
+const orderedListData = [1, 2, 3, 4];
+
+const RenderRow = props => {
+  const {item} = props;
   return (
-    <View style={{display: 'flex'}}>
-      {data.map(item => {
-        return (
-          <View>
-            <Text>{item}</Text>
-          </View>
-        );
+    <View>
+      <Caption>{item.label}</Caption>
+      <Text>{item.value}</Text>
+      {item.subValue ? <Caption>{item.subValue}</Caption> : null}
+    </View>
+  );
+};
+
+const ChallanSection = () => {
+  return (
+    <View style={styles.challanContainer}>
+      {CHALLAN_DETAILS.map(item => {
+        return <RenderRow item={item} />;
       })}
     </View>
   );
 };
 
-export const OrderNo = props => {
-  const data1 = ['Challan Number', 90, 'rinkupoonia162@gmail.com'];
-  const data3 = ['Delivery Date', '1/1/2021'];
-
+const Created = () => {
   return (
-    <View
-      style={{
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginBottom: 20,
-        paddingHorizontal: 10,
-      }}>
-      <Row data={data1} />
-      <Row data={data3} />
+    <View style={styles.createdContainer}>
+      {CREATED_BY.map(item => {
+        return <RenderRow item={item} />;
+      })}
+    </View>
+  );
+};
+const Updated = () => {
+  return (
+    <View style={styles.updatedContainer}>
+      {UPDATED_BY.map(item => {
+        return <RenderRow item={item} />;
+      })}
     </View>
   );
 };
 
-const Created = props => {
+const Details = props => {
+  const {navigation} = props;
   return (
-    <View style={{paddingHorizontal: 10}}>
-      <Text style={{color: '#5E6D7C', marginBottom: 5}}>Created by</Text>
-      <Text>Nilesh Gupta</Text>
-      <Text>nileshratangupta@gmail.com</Text>
-    </View>
-  );
-};
-
-const Details = () => {
-  return (
-    <View style={{flexDirection: 'row', padding: 10, marginTop: 20}}>
-      {data2.map(() => {
+    <View style={styles.orderedContainer}>
+      {orderedListData.map(() => {
         return (
-          <View style={{width: '20%'}}>
-            <Text>Ordered</Text>
+          <View style={styles.orderedItem}>
+            <Caption>Ordered</Caption>
             <Text>3232</Text>
           </View>
         );
       })}
-      <View
-        style={{
-          width: '20%',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}>
+      <View style={styles.orderNavigation}>
         <OpacityButton
           opacity={0.1}
           color={theme.colors.primary}
-          style={{borderRadius: 20}}>
+          style={styles.button}
+          onPress={() => navigation.navigate('MaterialList')}>
           <MaterialCommunityIcons
             name="chevron-right"
             color={theme.colors.primary}
@@ -101,21 +97,23 @@ const Details = () => {
   );
 };
 
-const CommonCard = props => {
+const CommonCard = () => {
   return (
-    <View
-      style={{
-        marginTop: 20,
-        backgroundColor: 'grey',
-        paddingVertical: 10,
-      }}>
-      <OrderNo />
+    <View style={styles.commonCard}>
+      <ChallanSection />
       <Created />
-      <Divider style={{height: 2, marginVertical: 10}} />
-      <OrderNo />
+      <Divider style={styles.divider} />
+      <View style={styles.statusContainer}>
+        <Updated />
+        <View style={styles.statusHeading}>
+          <Caption> Status</Caption>
+          <Text>Pending</Text>
+        </View>
+      </View>
+
       <Button
         mode="contained"
-        style={{width: '30%', marginLeft: 10}}
+        style={styles.viewButton}
         onPress={() => console.log('Pressed')}>
         View
       </Button>
@@ -125,23 +123,24 @@ const CommonCard = props => {
 
 const OrderDetail = props => {
   return (
-    <View style={{padding: 20}}>
+    <View style={styles.headerContainer}>
       <Header title="M.O. No.: 11" />
-      <Details />
-      <View style={{justifyContent: 'space-between', flexDirection: 'row'}}>
-        <Subheading>Challans</Subheading>
-        <OpacityButton opacity={0.1} color={theme.colors.primary}>
-          <MaterialCommunityIcons
-            name="plus"
-            color={theme.colors.primary}
-            size={18}
-          />
-          <Text style={{color: theme.colors.primary}}>Add Challan</Text>
-        </OpacityButton>
-      </View>
-      <CommonCard />
-      <CommonCard />
-      <CommonCard />
+      <Details {...props} />
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={styles.subheadingContainer}>
+          <Subheading>Challans</Subheading>
+          <OpacityButton opacity={0.1} color={theme.colors.primary}>
+            <MaterialCommunityIcons
+              name="plus"
+              color={theme.colors.primary}
+              size={18}
+            />
+            <Text style={{color: theme.colors.primary}}>Add Challan</Text>
+          </OpacityButton>
+        </View>
+        <CommonCard />
+        <CommonCard />
+      </ScrollView>
     </View>
   );
 };
@@ -149,8 +148,71 @@ const OrderDetail = props => {
 export default OrderDetail;
 
 const styles = StyleSheet.create({
-  cardContainer: {
-    backgroundColor: '#999999',
+  challanContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+  },
+  createdContainer: {
+    paddingHorizontal: 10,
+    padding: 5,
+  },
+  updatedContainer: {
+    paddingHorizontal: 7,
+    padding: 5,
+  },
+  orderedContainer: {
+    flexDirection: 'row',
+    paddingHorizontal: 10,
+    marginTop: 10,
+    backgroundColor: '#fff',
+    ...getShadow(1),
+    borderRadius: 5,
+  },
+  orderedItem: {
+    margin: 5,
+    paddingVertical: 10,
+    paddingRight: 1,
+  },
+  orderNavigation: {
+    width: '20%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  button: {
+    borderRadius: 20,
+  },
+  commonCard: {
     marginTop: 20,
+    paddingVertical: 10,
+    backgroundColor: '#fff',
+    ...getShadow(2),
+    borderRadius: 5,
+    borderWidth: 1,
+  },
+  divider: {
+    height: 2,
+  },
+  statusContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 5,
+  },
+  statusHeading: {
+    marginRight: 20,
+    paddingTop: 5,
+  },
+  viewButton: {
+    width: '30%',
+    marginLeft: 10,
+  },
+  headerContainer: {
+    padding: 20,
+  },
+  subheadingContainer: {
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    paddingTop: 15,
+    flexGrow: 1,
   },
 });
