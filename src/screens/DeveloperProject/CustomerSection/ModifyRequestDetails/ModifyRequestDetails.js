@@ -156,7 +156,6 @@ const Comment = props => {
 const ModifyRequestDetails = props => {
   const {route} = props;
   const {id, unit, towerType, project_id} = route?.params || {};
-  console.log('-------->route?.params', route?.params);
 
   const {
     getModifyRequests,
@@ -167,10 +166,8 @@ const ModifyRequestDetails = props => {
 
   const {modifyRequest} = useSelector(s => s.customer);
   const {propertyDetails} = modifyRequest || {};
-  console.log('-------->modifyRequest', modifyRequest);
-  console.log('-------->propertyDetails', propertyDetails);
 
-  const {user_full_name, phone} = propertyDetails.user_id;
+  const {user_full_name, phone} = propertyDetails?.user_id || {};
 
   const [edit, setEdit] = useState(false);
   const [status, setStatus] = useState();

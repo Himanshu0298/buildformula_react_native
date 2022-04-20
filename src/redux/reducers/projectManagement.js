@@ -193,7 +193,6 @@ const reducer = (state = initialState, action = {}) => {
       return {
         ...state,
         loading: true,
-        activities: [],
       };
     case `${GET_WBS_LEVEL_WORKS}_FULFILLED`:
       return {
