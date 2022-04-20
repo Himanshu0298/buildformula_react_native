@@ -5,17 +5,16 @@ import {Image, StyleSheet, Text, View} from 'react-native';
 import * as Yup from 'yup';
 import RenderInput from 'components/Atoms/RenderInput';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import CustomDialog from 'components/Atoms/CustomDialog';
-import RenderTextBox from 'components/Atoms/RenderTextbox';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import {theme} from 'styles/theme';
 import FileIcon from 'assets/images/file_icon.png';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useImagePicker} from 'hooks';
+import Header from '../../CommonComponents/Header';
+import ActionButtons from './Components/ActionButtons';
 
 const schema = Yup.object().shape({
-  percentage: Yup.number('Required').required('Required'),
-  quantity: Yup.number('Required').required('Required'),
+  challan: Yup.number('Required').required('Required'),
 });
 
 const RenderAttachments = props => {
@@ -34,7 +33,7 @@ const RenderAttachments = props => {
             <MaterialIcon name="close" color={theme.colors.error} size={17} />
           </OpacityButton>
         </View>
-        {attachments.map(attachment => {
+        {attachments?.map(attachment => {
           return (
             <View style={styles.sectionContainer}>
               <Image source={FileIcon} style={styles.fileIcon} />
@@ -42,7 +41,7 @@ const RenderAttachments = props => {
                 <Text
                   style={(styles.verticalFlex, styles.text)}
                   numberOfLines={2}>
-                  {attachment.name}
+                  image.jpeg
                 </Text>
               </View>
             </View>
@@ -53,8 +52,8 @@ const RenderAttachments = props => {
   );
 };
 
-function ModalContent(props) {
-  const {formikProps, pathData} = props;
+function ChallanForm(props) {
+  const {formikProps, navigation} = props;
   const {values, errors, handleChange, handleBlur, setFieldValue} = formikProps;
 
   const {openFilePicker} = useImagePicker();
@@ -73,78 +72,52 @@ function ModalContent(props) {
     setFieldValue('attachments', []);
   };
 
+  const navToStepTwo = () => {
+    navigation.navigate('SelectMaterials');
+  };
+
   return (
     <>
       <View style={styles.headerContainer}>
-        <Text style={styles.headerText}>WBS Execution</Text>
-        <View style={styles.navigationTextContainer}>
-          <Text style={styles.headerNavigationText}>
-            {pathData[pathData.length - 1]}
-          </Text>
-        </View>
-        <Divider />
+        <Header title="Challan Info" />
       </View>
-      <KeyboardAwareScrollView>
+      <KeyboardAwareScrollView
+        contentContainerStyle={styles.contentContainerStyle}>
         <View style={styles.dialogContent}>
           <RenderInput
-            name="percentage"
-            label="Percentage Completed"
+            name="challan"
+            label="Challan No"
             numberOfLines={3}
             containerStyles={styles.input}
-            value={values.percentage}
-            onChangeText={handleChange('percentage')}
-            onBlur={handleBlur('percentage')}
-            error={errors.percentage}
-            keyboardType="numeric"
+            value={values.challan}
+            onChangeText={handleChange('challan')}
+            onBlur={handleBlur('challan')}
+            error={errors.challan}
           />
-          <RenderInput
-            name="quantity"
-            label="Quantity Completed"
-            numberOfLines={3}
-            containerStyles={styles.input}
-            value={values.quantity}
-            onChangeText={handleChange('quantity')}
-            onBlur={handleBlur('quantity')}
-            error={errors.quantity}
-            keyboardType="numeric"
-          />
-          <RenderTextBox
-            name="remark"
-            label="Remark"
-            containerStyles={styles.input}
-            value={values.remark}
-            onChangeText={handleChange('remark')}
-            numberOfLines={4}
-            onBlur={handleBlur('remark')}
-            error={errors.remark}
-          />
-          {!values.attachments ? (
-            <View>
-              <Text style={{color: theme.colors.primary}}>Attachment</Text>
-              <OpacityButton
-                onPress={handleUpload}
-                opacity={0.1}
-                style={styles.uploadButton}
-                color="#fff">
-                <Text style={{color: theme.colors.primary}}>Upload File</Text>
-              </OpacityButton>
-            </View>
-          ) : null}
+          <View>
+            <Text style={{color: theme.colors.primary}}>Attachment</Text>
+            <OpacityButton
+              onPress={handleUpload}
+              opacity={0.1}
+              style={styles.uploadButton}
+              color="#fff">
+              <Text style={{color: theme.colors.primary}}>Upload File</Text>
+            </OpacityButton>
+          </View>
 
-          {values.attachments ? (
-            <RenderAttachments
-              attachments={[values.attachments]}
-              handleDelete={i => handleDelete(i)}
-            />
-          ) : null}
+          <RenderAttachments
+            attachments={[values.attachments]}
+            handleDelete={i => handleDelete(i)}
+          />
+          <ActionButtons onPress={navToStepTwo} />
         </View>
       </KeyboardAwareScrollView>
     </>
   );
 }
 
-const AddProgressModal = props => {
-  const {handleSubmit, path} = props;
+const AddChallan = props => {
+  const {handleSubmit} = props;
 
   return (
     <Formik
@@ -153,11 +126,7 @@ const AddProgressModal = props => {
       initialValues={{}}
       validationSchema={schema}
       onSubmit={handleSubmit}>
-      {formikProps => (
-        <CustomDialog {...props} submitForm={formikProps.handleSubmit}>
-          <ModalContent {...{formikProps}} pathData={path} />
-        </CustomDialog>
-      )}
+      {formikProps => <ChallanForm {...{formikProps}} {...props} />}
     </Formik>
   );
 };
@@ -165,32 +134,15 @@ const AddProgressModal = props => {
 const styles = StyleSheet.create({
   dialogContent: {
     paddingHorizontal: 15,
+    flexGrow: 1,
   },
   input: {
     marginVertical: 10,
   },
   headerContainer: {
-    paddingVertical: 10,
+    marginTop: 10,
   },
-  headerText: {
-    margin: 10,
-    fontSize: 18,
-    color: '#000',
-  },
-  navigationTextContainer: {
-    flexDirection: 'row',
-    marginLeft: 15,
-    margin: 10,
-  },
-  headerNavigationText: {
-    fontSize: 13,
-    marginBottom: 5,
-    backgroundColor: '#rgba(72, 114, 244, 0.1);',
-    borderRadius: 5,
-    paddingHorizontal: 5,
-    flexDirection: 'row',
-    color: '#000',
-  },
+
   uploadButton: {
     borderWidth: 1,
     borderRadius: 5,
@@ -246,6 +198,9 @@ const styles = StyleSheet.create({
     maxWidth: 170,
     flex: 1,
   },
+  contentContainerStyle: {
+    flexGrow: 1,
+  },
 });
 
-export default withTheme(AddProgressModal);
+export default withTheme(AddChallan);

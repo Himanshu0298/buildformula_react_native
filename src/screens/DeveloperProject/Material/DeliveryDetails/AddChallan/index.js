@@ -1,11 +1,11 @@
 import React from 'react';
 import ProjectLayout from 'components/Molecules/Layout/ProjectLayout';
-import ChallanNumber from './ChallanNumber';
+import AddChallan from './AddChallan';
 
 export default props => {
   return (
     <ProjectLayout {...props} header>
-      <ChallanNumber {...props} />
+      <AddChallan {...props} />
     </ProjectLayout>
   );
 };

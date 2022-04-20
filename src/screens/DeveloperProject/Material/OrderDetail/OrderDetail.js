@@ -97,7 +97,8 @@ const Details = props => {
   );
 };
 
-const CommonCard = () => {
+const CommonCard = props => {
+  const {navigation} = props;
   return (
     <View style={styles.commonCard}>
       <ChallanSection />
@@ -114,7 +115,7 @@ const CommonCard = () => {
       <Button
         mode="contained"
         style={styles.viewButton}
-        onPress={() => console.log('Pressed')}>
+        onPress={() => navigation.navigate('DeliveryDetails')}>
         View
       </Button>
     </View>
@@ -122,6 +123,7 @@ const CommonCard = () => {
 };
 
 const OrderDetail = props => {
+  const {navigation} = props;
   return (
     <View style={styles.headerContainer}>
       <Header title="M.O. No.: 11" />
@@ -129,7 +131,10 @@ const OrderDetail = props => {
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.subheadingContainer}>
           <Subheading>Challans</Subheading>
-          <OpacityButton opacity={0.1} color={theme.colors.primary}>
+          <OpacityButton
+            opacity={0.1}
+            color={theme.colors.primary}
+            onPress={() => navigation.navigate('AddChallan')}>
             <MaterialCommunityIcons
               name="plus"
               color={theme.colors.primary}
@@ -138,7 +143,7 @@ const OrderDetail = props => {
             <Text style={{color: theme.colors.primary}}>Add Challan</Text>
           </OpacityButton>
         </View>
-        <CommonCard />
+        <CommonCard {...props} />
         <CommonCard />
       </ScrollView>
     </View>
@@ -213,6 +218,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     flexDirection: 'row',
     paddingTop: 15,
-    flexGrow: 1,
+    flex: 1,
   },
 });

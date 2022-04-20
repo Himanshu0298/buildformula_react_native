@@ -1,11 +1,11 @@
 import React from 'react';
 import ProjectLayout from 'components/Molecules/Layout/ProjectLayout';
-import MaterialUtility from './MaterialUtility';
+import SelectMaterials from './SelectMaterials';
 
 export default props => {
   return (
     <ProjectLayout {...props} header>
-      <MaterialUtility {...props} />
+      <SelectMaterials {...props} />
     </ProjectLayout>
   );
 };
