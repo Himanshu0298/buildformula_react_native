@@ -34,7 +34,7 @@ const Attachments = () => {
 const DeliverDetails = props => {
   return (
     <View style={styles.mainContainer}>
-      <Header title="Challan No: 90" />
+      <Header title="Challan No: 90" {...props} />
       <ScrollView showsVerticalScrollIndicator={false}>
         <View>
           <Subheading style={styles.challanHeading}>Challan Images</Subheading>

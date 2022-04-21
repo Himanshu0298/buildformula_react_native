@@ -1,10 +1,9 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Button} from 'react-native-paper';
-import PropTypes from 'prop-types';
 
 function ActionButtons(props) {
-  const {cancelLabel, onPress, submitDisabled, style, onCancel, onSubmit} =
+  const {onPress, submitDisabled, style, submitLabel, onCancel, onSubmit} =
     props;
 
   return (
@@ -23,7 +22,7 @@ function ActionButtons(props) {
         mode="contained"
         theme={{roundness: 10}}
         onPress={onPress}>
-        Next
+        {submitLabel || 'Next'}
       </Button>
     </View>
   );

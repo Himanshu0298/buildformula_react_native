@@ -130,6 +130,8 @@ import LanguageSelect from '../screens/Auth/LanguageSelect';
 import DrawerContent from './Components/DrawerContent';
 import AddChallan from 'screens/DeveloperProject/Material/DeliveryDetails/AddChallan/AddChallan';
 import SelectMaterials from 'screens/DeveloperProject/Material/DeliveryDetails/SelectMaterial/SelectMaterials';
+import AddMaterialInfo from 'screens/DeveloperProject/Material/DeliveryDetails/AddMaterialChallan/AddMaterialInfo';
+import AddVehicleInfo from 'screens/DeveloperProject/Material/DeliveryDetails/AddVehicleChallan/AddVehicleInfo';
 /** *********** Developer Project Sub Screens End   ************ */
 
 const optionalConfigObject = {
@@ -267,6 +269,8 @@ function MaterialModuleStack() {
         <Stack.Screen name="MaterialList" component={MaterialList} />
         <Stack.Screen name="AddChallan" component={AddChallan} />
         <Stack.Screen name="SelectMaterials" component={SelectMaterials} />
+        <Stack.Screen name="AddMaterialInfo" component={AddMaterialInfo} />
+        <Stack.Screen name="AddVehicleInfo" component={AddVehicleInfo} />
       </Stack.Group>
     </Stack.Navigator>
   );

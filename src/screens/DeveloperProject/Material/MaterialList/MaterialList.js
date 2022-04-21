@@ -70,7 +70,7 @@ const DetailsCard = props => {
 const MaterialList = props => {
   return (
     <View style={styles.materialContainer}>
-      <Header title="List" />
+      <Header title="List" {...props} />
       <DetailsCard {...props} />
     </View>
   );
@@ -113,6 +113,6 @@ const styles = StyleSheet.create({
     height: 2,
   },
   materialContainer: {
-    padding: 20,
+    paddingHorizontal: 15,
   },
 });

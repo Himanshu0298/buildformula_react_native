@@ -27,16 +27,17 @@ const CustomCheckbox = React.forwardRef((props, ref) => {
 });
 
 CustomCheckbox.defaultProps = {
-  onChange: () => {},
-  checked: false,
   uncheckedColor: '#bcbcbc',
   color: theme.colors.primary,
+  label: '',
 };
 
 CustomCheckbox.propTypes = {
   onChange: PropTypes.func.isRequired,
   checked: PropTypes.bool.isRequired,
   label: PropTypes.string,
+  uncheckedColor: PropTypes.string,
+  color: PropTypes.string,
 };
 
 const styles = StyleSheet.create({

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {Formik} from 'formik';
-import {Divider, withTheme} from 'react-native-paper';
+import {Divider, Subheading, withTheme} from 'react-native-paper';
 import {Image, StyleSheet, Text, View} from 'react-native';
 import * as Yup from 'yup';
 import RenderInput from 'components/Atoms/RenderInput';
@@ -11,11 +11,14 @@ import FileIcon from 'assets/images/file_icon.png';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useImagePicker} from 'hooks';
 import Header from '../../CommonComponents/Header';
-import ActionButtons from './Components/ActionButtons';
+import ActionButtons from '../AddChallan/Components/ActionButtons';
 import Pagination from '../../CommonComponents/Pagination';
 
+const Data = ['', ''];
+
 const schema = Yup.object().shape({
-  challan: Yup.number('Required').required('Required'),
+  quantity: Yup.number('Required').required('Required'),
+  damage: Yup.number('Required').required('Required'),
 });
 
 const RenderAttachments = props => {
@@ -53,9 +56,54 @@ const RenderAttachments = props => {
   );
 };
 
-function ChallanForm(props) {
+const MaterialDetailsForm = props => {
+  const {formikProps} = props;
+
+  const {values, errors, handleChange, handleBlur} = formikProps;
+
+  return (
+    <View>
+      <Subheading style={{color: theme.colors.primary}}>Category</Subheading>
+      <View style={styles.subHeadingText}>
+        <Text>Brick-1 </Text>
+        <MaterialIcon name="label" size={20} />
+        <Text> Bricks-2, Nos</Text>
+      </View>
+
+      <View style={styles.categoryDetailsContainer}>
+        <View style={styles.renderInputContainer}>
+          <RenderInput
+            name="quantity"
+            label="Quantity"
+            numberOfLines={3}
+            containerStyles={styles.input}
+            value={values.quantity}
+            onChangeText={handleChange('quantity')}
+            onBlur={handleBlur('quantity')}
+            error={errors.quantity}
+          />
+        </View>
+        <View style={styles.renderInputContainer}>
+          <RenderInput
+            name="damage"
+            label="Damage Q."
+            numberOfLines={3}
+            containerStyles={styles.input}
+            value={values.damage}
+            onChangeText={handleChange('damage')}
+            onBlur={handleBlur('damage')}
+            error={errors.damage}
+          />
+        </View>
+      </View>
+      <Divider />
+    </View>
+  );
+};
+
+function MaterialForm(props) {
   const {formikProps, navigation} = props;
-  const {values, errors, handleChange, handleBlur, setFieldValue} = formikProps;
+  const {values, setFieldValue} = formikProps;
 
   const {openFilePicker} = useImagePicker();
 
@@ -73,31 +121,25 @@ function ChallanForm(props) {
     setFieldValue('attachments', []);
   };
 
-  const navToStepTwo = () => {
-    navigation.navigate('SelectMaterials');
+  const navToStepFour = () => {
+    navigation.navigate('AddVehicleInfo');
   };
 
   return (
     <>
       <View style={styles.headerContainer}>
-        <Header title="Challan Info" {...props} />
+        <Header title="Material Info" {...props} />
         <Pagination />
       </View>
       <KeyboardAwareScrollView
         contentContainerStyle={styles.contentContainerStyle}>
         <View style={styles.dialogContent}>
-          <RenderInput
-            name="challan"
-            label="Challan No"
-            numberOfLines={3}
-            containerStyles={styles.input}
-            value={values.challan}
-            onChangeText={handleChange('challan')}
-            onBlur={handleBlur('challan')}
-            error={errors.challan}
-          />
+          {Data.map(item => {
+            return <MaterialDetailsForm item={item} {...props} />;
+          })}
+
           <View>
-            <Text style={{color: theme.colors.primary}}>Attachment</Text>
+            <Text style={styles.attachmentHeading}>Attachment</Text>
             <OpacityButton
               onPress={handleUpload}
               opacity={0.1}
@@ -111,14 +153,14 @@ function ChallanForm(props) {
             attachments={[values.attachments]}
             handleDelete={i => handleDelete(i)}
           />
-          <ActionButtons onPress={navToStepTwo} />
+          <ActionButtons onPress={navToStepFour} />
         </View>
       </KeyboardAwareScrollView>
     </>
   );
 }
 
-const AddChallan = props => {
+const AddMaterialInfo = props => {
   const {handleSubmit} = props;
 
   return (
@@ -128,7 +170,7 @@ const AddChallan = props => {
       initialValues={{}}
       validationSchema={schema}
       onSubmit={handleSubmit}>
-      {formikProps => <ChallanForm {...{formikProps}} {...props} />}
+      {formikProps => <MaterialForm {...{formikProps}} {...props} />}
     </Formik>
   );
 };
@@ -154,6 +196,10 @@ const styles = StyleSheet.create({
     borderColor: theme.colors.primary,
     padding: 10,
     marginVertical: 10,
+  },
+  attachmentHeading: {
+    color: theme.colors.primary,
+    marginTop: 10,
   },
   cardContainer: {
     padding: 10,
@@ -205,7 +251,21 @@ const styles = StyleSheet.create({
   },
   contentContainerStyle: {
     flexGrow: 1,
+    paddingHorizontal: 5,
+  },
+  subHeadingText: {
+    flexDirection: 'row',
+    marginTop: 5,
+  },
+  categoryDetailsContainer: {
+    flexDirection: 'row',
+    marginHorizontal: -10,
+    paddingBottom: 5,
+  },
+  renderInputContainer: {
+    flex: 1,
+    marginHorizontal: 10,
   },
 });
 
-export default withTheme(AddChallan);
+export default withTheme(AddMaterialInfo);

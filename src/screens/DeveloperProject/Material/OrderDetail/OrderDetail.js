@@ -126,7 +126,7 @@ const OrderDetail = props => {
   const {navigation} = props;
   return (
     <View style={styles.headerContainer}>
-      <Header title="M.O. No.: 11" />
+      <Header title="M.O. No.: 11" {...props} />
       <Details {...props} />
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.subheadingContainer}>
@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   headerContainer: {
-    padding: 20,
+    paddingHorizontal: 15,
   },
   subheadingContainer: {
     justifyContent: 'space-between',

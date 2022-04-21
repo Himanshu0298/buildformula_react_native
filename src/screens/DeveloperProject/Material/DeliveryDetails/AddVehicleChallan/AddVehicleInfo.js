@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {Formik} from 'formik';
-import {Divider, withTheme} from 'react-native-paper';
+import {withTheme} from 'react-native-paper';
 import {Image, StyleSheet, Text, View} from 'react-native';
 import * as Yup from 'yup';
 import RenderInput from 'components/Atoms/RenderInput';
@@ -10,12 +10,14 @@ import {theme} from 'styles/theme';
 import FileIcon from 'assets/images/file_icon.png';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useImagePicker} from 'hooks';
+import RenderTextBox from 'components/Atoms/RenderTextbox';
 import Header from '../../CommonComponents/Header';
-import ActionButtons from './Components/ActionButtons';
+import ActionButtons from '../AddChallan/Components/ActionButtons';
 import Pagination from '../../CommonComponents/Pagination';
 
 const schema = Yup.object().shape({
-  challan: Yup.number('Required').required('Required'),
+  driverName: Yup.number('Required').required('Required'),
+  vehicleNo: Yup.number('Required').required('Required'),
 });
 
 const RenderAttachments = props => {
@@ -73,29 +75,50 @@ function ChallanForm(props) {
     setFieldValue('attachments', []);
   };
 
-  const navToStepTwo = () => {
-    navigation.navigate('SelectMaterials');
+  const navToSubmit = () => {
+    navigation.navigate('');
   };
 
   return (
     <>
       <View style={styles.headerContainer}>
-        <Header title="Challan Info" {...props} />
+        <Header title="Vehicle Info" {...props} />
         <Pagination />
       </View>
       <KeyboardAwareScrollView
         contentContainerStyle={styles.contentContainerStyle}>
         <View style={styles.dialogContent}>
           <RenderInput
-            name="challan"
-            label="Challan No"
+            name="driverName"
+            label="Driver Name"
             numberOfLines={3}
             containerStyles={styles.input}
-            value={values.challan}
-            onChangeText={handleChange('challan')}
-            onBlur={handleBlur('challan')}
-            error={errors.challan}
+            value={values.driverName}
+            onChangeText={handleChange('driverName')}
+            onBlur={handleBlur('driverName')}
+            error={errors.driverName}
           />
+          <RenderInput
+            name="vehicleNo"
+            label="Vehicle No"
+            numberOfLines={3}
+            containerStyles={styles.input}
+            value={values.vehicleNo}
+            onChangeText={handleChange('vehicleNo')}
+            onBlur={handleBlur('vehicleNo')}
+            error={errors.vehicleNo}
+          />
+          <RenderTextBox
+            name="remark"
+            label="Challan Remark"
+            containerStyles={styles.input}
+            value={values.remark}
+            onChangeText={handleChange('remark')}
+            numberOfLines={4}
+            onBlur={handleBlur('remark')}
+            error={errors.remark}
+          />
+
           <View>
             <Text style={{color: theme.colors.primary}}>Attachment</Text>
             <OpacityButton
@@ -111,14 +134,14 @@ function ChallanForm(props) {
             attachments={[values.attachments]}
             handleDelete={i => handleDelete(i)}
           />
-          <ActionButtons onPress={navToStepTwo} />
+          <ActionButtons onPress={navToSubmit} submitLabel="Save" />
         </View>
       </KeyboardAwareScrollView>
     </>
   );
 }
 
-const AddChallan = props => {
+const AddVehicleInfo = props => {
   const {handleSubmit} = props;
 
   return (
@@ -208,4 +231,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default withTheme(AddChallan);
+export default withTheme(AddVehicleInfo);
