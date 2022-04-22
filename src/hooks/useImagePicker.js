@@ -148,7 +148,11 @@ function useImagePicker() {
     );
   };
 
-  return {openImagePicker, openFilePicker: handleFilePicker};
+  return {
+    openImagePicker,
+    openFilePicker: handleFilePicker,
+    openCamera: handleCamera,
+  };
 }
 
 export default useImagePicker;

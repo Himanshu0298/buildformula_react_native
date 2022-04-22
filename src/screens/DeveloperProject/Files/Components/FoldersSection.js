@@ -9,20 +9,18 @@ function RenderFolder(props) {
   const {
     folder,
     toggleMenu,
-    navigation,
     setModalContentType,
     folderIndex,
     setModalContent,
+    navToFiles,
   } = props;
   const {folder_name} = folder;
 
+  const handleNav = () => navToFiles({folder_name, index_of: folder.id});
+
   return (
     <View style={styles.sectionContainer}>
-      <TouchableOpacity
-        style={{flexGrow: 1}}
-        onPress={() => {
-          navigation.push('Files', {folder_name, index_of: folder.id});
-        }}>
+      <TouchableOpacity style={{flexGrow: 1}} onPress={handleNav}>
         <View style={styles.sectionContainer}>
           <Image source={FolderIcon} style={styles.PdfIcon} />
           <View>

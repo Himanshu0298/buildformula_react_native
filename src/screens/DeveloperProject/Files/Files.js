@@ -217,12 +217,17 @@ function RenderMenuModal(props) {
 function Files(props) {
   const {theme, route, navigation, customerSection} = props;
   const {
+    isCustomerSection,
     unit,
     folder_name: folderName,
     index_of: folderDepth = 0,
   } = route?.params || {};
 
   const modulePermissions = getPermissions('Files');
+
+  const fromDustomerSection = customerSection || isCustomerSection;
+
+  console.log('-------->unit', unit);
 
   const {loading, versionData} = useSelector(s => s.files);
   const {selectedProject} = useSelector(s => s.project);
@@ -232,7 +237,7 @@ function Files(props) {
   const user_id = user?.id;
 
   const ScrollContainer =
-    customerSection && !folderDepth ? Tabs.ScrollView : ScrollView;
+    fromDustomerSection && !folderDepth ? Tabs.ScrollView : ScrollView;
 
   const {
     getFolders,
@@ -266,13 +271,22 @@ function Files(props) {
 
   const loadData = () => {
     loadFolders();
-    getFiles({project_id, folder_id: folderDepth});
+    loadFiles();
+  };
+
+  const loadFiles = () => {
+    const params = {project_id, folder_id: folderDepth};
+    if (fromDustomerSection) {
+      params.unit_id = unit?.unit_id;
+    }
+
+    getFiles(params);
   };
 
   const loadFolders = () => {
     const params = {project_id, index_of: folderDepth};
-    if (customerSection) {
-      params.unitId = unit?.unit_id;
+    if (fromDustomerSection) {
+      params.unit_id = unit?.unit_id;
     }
 
     getFolders(params);
@@ -298,6 +312,15 @@ function Files(props) {
       },
     },
   ];
+
+  const navToFiles = details => {
+    const path = fromDustomerSection ? 'CustomerFiles' : 'Files';
+    navigation.push(path, {
+      ...details,
+      isCustomerSection: fromDustomerSection,
+      unit,
+    });
+  };
 
   const toggleFab = () => setFab(v => !v);
   const toggleMenu = folderIndex => setMenuId(folderIndex);
@@ -328,7 +351,7 @@ function Files(props) {
     } else {
       await renameFile({file_id: id, project_id, new_file_name: name});
       toggleDialog();
-      getFiles({project_id, folder_id: folderDepth});
+      loadFiles();
     }
   };
 
@@ -338,7 +361,7 @@ function Files(props) {
       loadFolders();
     } else {
       await deleteFile({file_id: id, project_id});
-      getFiles({project_id, folder_id: folderDepth});
+      loadFiles();
     }
 
     toggleDialog();
@@ -358,10 +381,13 @@ function Files(props) {
     formData.append('folder_id', folderDepth);
     formData.append('myfile[]', file);
     formData.append('project_id', project_id);
+    if (fromDustomerSection) {
+      formData.append('customer_unit_id', unit.unit_id);
+    }
 
     await uploadFile(formData);
     toggleDialog();
-    getFiles({project_id, folder_id: folderDepth});
+    loadFiles();
   };
 
   const versionDataHandler = fileId => {
@@ -444,7 +470,13 @@ function Files(props) {
         ) : null}
         <FoldersSection
           {...props}
-          {...{menuId, toggleMenu, setModalContent, setModalContentType}}
+          {...{
+            menuId,
+            toggleMenu,
+            setModalContent,
+            setModalContentType,
+            navToFiles,
+          }}
         />
         <FileSection
           {...props}

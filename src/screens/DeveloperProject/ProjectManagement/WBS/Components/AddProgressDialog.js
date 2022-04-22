@@ -57,10 +57,10 @@ function ModalContent(props) {
   const {formikProps, pathData} = props;
   const {values, errors, handleChange, handleBlur, setFieldValue} = formikProps;
 
-  const {openFilePicker} = useImagePicker();
+  const {openCamera} = useImagePicker();
 
   const handleUpload = () => {
-    openFilePicker({
+    openCamera({
       type: 'file',
       onChoose: file => {
         setFieldValue('attachments', file);
@@ -70,7 +70,7 @@ function ModalContent(props) {
 
   const handleDelete = () => {
     console.log('-------->inside delete');
-    setFieldValue('attachments', []);
+    setFieldValue('attachments', undefined);
   };
 
   return (
