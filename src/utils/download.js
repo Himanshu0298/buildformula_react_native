@@ -11,11 +11,6 @@ const DIR = Platform.OS === 'ios' ? DocumentDir : DownloadDir;
 const normalizeFilePath = path =>
   path.startsWith('file://') ? path.slice(7) : path;
 
-const getFileName = name => {
-  const split = name.split('.');
-  return split[0];
-};
-
 export const getFileExtension = fileUrl => {
   // To get the file extension
   const fileExt = /[.]/.exec(fileUrl) ? /[^.]+$/.exec(fileUrl) : undefined;
@@ -23,17 +18,23 @@ export const getFileExtension = fileUrl => {
   return fileExt[0];
 };
 
-function getFilePath(file) {
+export function getFileName(file) {
   const {file_name, file_url} = file;
 
-  const fileName = getFileName(file_name);
+  const split = file_name.split('.');
+  const fileName = split[0];
+
   const fileExt = getFileExtension(file_url);
 
-  return `${DIR}/${fileName}.${fileExt}`;
+  return `${fileName}.${fileExt}`;
 }
 
-export async function checkDownloaded(file) {
-  const path = getFilePath(file);
+function getFilePath(name) {
+  return `${DIR}/${name}`;
+}
+
+export async function checkDownloaded(name) {
+  const path = getFilePath(name);
   const result = await RNFS.exists(path);
   return result ? path : result;
 }
@@ -49,14 +50,14 @@ export function getDownloadUrl(file, version) {
   return `${BASE_API_URL}${url}`;
 }
 
-export async function downloadFile(file, fileUrl, getBase64) {
-  const path = getFilePath(file);
+export async function downloadFile(name, fileUrl, getBase64) {
+  const path = getFilePath(name);
 
   const {token} = store.getState().user;
 
   const Authorization = `Bearer ${token}`;
 
-  const downloaded = await checkDownloaded(file);
+  const downloaded = await checkDownloaded(name);
 
   if (downloaded) {
     await RNFS.unlink(path);
@@ -83,7 +84,7 @@ export async function downloadFile(file, fileUrl, getBase64) {
       let base64;
       if (getBase64) {
         const base64Data = await RNFS.readFile(downloadDir, 'base64');
-        const mimeType = mime.lookup(file.file_name);
+        const mimeType = mime.lookup(name);
         base64 = `data:${mimeType};base64,${base64Data}`;
       }
 

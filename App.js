@@ -14,6 +14,7 @@ import {ActionSheetProvider} from '@expo/react-native-action-sheet';
 import {initReactI18next} from 'react-i18next';
 // import {checkPermission} from 'utils/permissions';
 import * as Sentry from '@sentry/react-native';
+import {DownloadProvider} from 'components/Atoms/Download';
 import {theme} from './src/styles/theme';
 import {store, persistor} from './src/redux/store';
 import NavContainer from './src/navigation';
@@ -78,13 +79,15 @@ function App() {
             <SafeAreaProvider
               initialSafeAreaInsets={initialWindowSafeAreaInsets}>
               <Suspense fallback={<Loader />}>
-                <SnackbarProvider>
-                  <AlertProvider>
-                    <ActionSheetProvider>
-                      <NavContainer />
-                    </ActionSheetProvider>
-                  </AlertProvider>
-                </SnackbarProvider>
+                <DownloadProvider>
+                  <SnackbarProvider>
+                    <AlertProvider>
+                      <ActionSheetProvider>
+                        <NavContainer />
+                      </ActionSheetProvider>
+                    </AlertProvider>
+                  </SnackbarProvider>
+                </DownloadProvider>
               </Suspense>
             </SafeAreaProvider>
           </PaperProvider>
