@@ -10,9 +10,9 @@ import {Button, IconButton, Subheading, Text} from 'react-native-paper';
 import FolderIcon from 'assets/images/folder_icon.png';
 import FileIcon from 'assets/images/file_icon.png';
 import FileViewer from 'react-native-file-viewer';
-import {useSnackbar} from 'components/Atoms/Snackbar';
 import Share from 'react-native-share';
-import {checkDownloaded, downloadFile, getDownloadUrl} from 'utils/download';
+import {checkDownloaded, getDownloadUrl, getFileName} from 'utils/download';
+import {useDownload} from 'components/Atoms/Download';
 
 function MenuDialog(props) {
   const {
@@ -27,7 +27,7 @@ function MenuDialog(props) {
   } = props;
   const {id, file_name, folder_name} = modalContent;
 
-  const snackbar = useSnackbar();
+  const download = useDownload();
 
   const fileType = folder_name ? 'folder' : 'file';
 
@@ -51,13 +51,16 @@ function MenuDialog(props) {
     try {
       toggleDownloading();
       const fileUrl = getDownloadUrl(modalContent);
-      const {dir} = await downloadFile(modalContent, fileUrl);
-      snackbar.showMessage({
-        message: 'File Downloaded Successfully!',
-        variant: 'success',
+      const name = getFileName(modalContent);
+
+      download.link({
+        name,
+        link: fileUrl,
+        onFinish: ({dir}) => {
+          setDownloaded(dir);
+          toggleDownloading();
+        },
       });
-      setDownloaded(dir);
-      toggleDownloading();
     } catch (error) {
       toggleDownloading();
       console.log('----->erorr', error);
@@ -74,17 +77,24 @@ function MenuDialog(props) {
     try {
       toggleSharing();
       const fileUrl = getDownloadUrl(modalContent);
-      const {base64} = await downloadFile(modalContent, fileUrl, true);
+      const name = getFileName(modalContent);
 
-      const options = {
-        title: 'Share',
-        message: `Share ${file_name || folder_name} :`,
-        url: base64,
-      };
+      return download.link({
+        name,
+        link: fileUrl,
+        showAction: false,
+        base64: true,
+        onFinish: ({base64}) => {
+          const options = {
+            title: 'Share',
+            message: `Share ${file_name || folder_name} :`,
+            url: base64,
+          };
+          toggleSharing();
 
-      toggleSharing();
-
-      return Share.open(options);
+          return Share.open(options);
+        },
+      });
     } catch (error) {
       console.log('-----> error', error);
       return error;

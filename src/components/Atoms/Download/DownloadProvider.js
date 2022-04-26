@@ -16,24 +16,53 @@ function DownloadProvider({children}) {
 
   const link = useCallback(
     async params => {
-      setState(() => ({...DEFAULT_STATE, ...params, open: true}));
+      const {
+        name,
+        base64,
+        showAction,
+        link: downloadLink,
+        onFinish,
+        onAction,
+      } = params;
+      try {
+        setState(() => ({...DEFAULT_STATE, ...params, open: true}));
 
-      const {name, link: downloadLink, onSuccess} = params;
+        const result = await downloadFile(name, downloadLink, base64);
 
-      const {dir} = await downloadFile(name, downloadLink);
+        onFinish(result);
 
-      setState(v => ({
-        ...v,
-        message: 'Download Completed!',
-        variant: 'success',
-        action: {
-          label: 'Open',
-          onPress: () => {
-            onSuccess(dir);
-            handleClose();
-          },
-        },
-      }));
+        let action;
+        if (showAction) {
+          action = {
+            label: 'Open',
+            onPress: () => {
+              onAction(result);
+              handleClose();
+            },
+          };
+
+          setState(v => ({
+            ...v,
+            message: 'Download Completed!',
+            variant: 'success',
+            action,
+            duration: showAction ? 4000 : undefined,
+          }));
+        } else {
+          handleClose();
+        }
+      } catch (err) {
+        console.log('-----> err', err);
+
+        onFinish({});
+
+        setState(v => ({
+          ...v,
+          message: 'Download Failed!',
+          variant: 'error',
+          duration: 3000,
+        }));
+      }
     },
     [handleClose],
   );

@@ -71,7 +71,8 @@ function FileSection(props) {
     download.link({
       name,
       link: fileUrl,
-      onSuccess: dir => {
+      showAction: false,
+      onFinish: ({dir}) => {
         FileViewer.open(`file://${dir}`);
       },
     });

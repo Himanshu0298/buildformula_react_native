@@ -8,14 +8,14 @@ const VariantProps = {
 };
 
 function DownloadPrompt(props) {
-  const {open, message, onClose, variant, action} = props;
+  const {open, message, onClose, variant, action, duration = 100000} = props;
 
   return (
     <Snackbar
       visible={open}
       theme={{colors: {onSurface: VariantProps[variant].color, accent: '#fff'}}}
       onDismiss={onClose}
-      duration={100000}
+      duration={duration}
       action={action}>
       {message}
     </Snackbar>

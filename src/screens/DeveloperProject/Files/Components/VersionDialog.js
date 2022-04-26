@@ -10,14 +10,14 @@ import {
 } from 'react-native-paper';
 import PdfIcon from 'assets/images/pdf_icon.png';
 import dayjs from 'dayjs';
-import {getDownloadUrl, downloadFile, checkDownloaded} from 'utils/download';
-import {useSnackbar} from 'components/Atoms/Snackbar';
+import {getDownloadUrl, checkDownloaded, getFileName} from 'utils/download';
 import FileViewer from 'react-native-file-viewer';
+import {useDownload} from 'components/Atoms/Download';
 
 function VersionFile(props) {
   const {theme, modulePermissions, version, countVersion} = props;
 
-  const snackbar = useSnackbar();
+  const download = useDownload();
 
   const [versionMenu, setVersionMenu] = React.useState(false);
   const [downloading, setDownloading] = React.useState(false);
@@ -38,11 +38,18 @@ function VersionFile(props) {
   const handleDownload = async () => {
     toggleVersionMenu();
     toggleDownloading();
+
     const fileUrl = getDownloadUrl(version, true);
-    const {dir} = await downloadFile(version, fileUrl);
-    snackbar.showMessage({message: 'File Downloaded Successfully!'});
-    setDownloaded(dir);
-    toggleDownloading();
+    const name = getFileName(version);
+
+    download.link({
+      name,
+      link: fileUrl,
+      onFinish: ({dir}) => {
+        setDownloaded(dir);
+        toggleDownloading();
+      },
+    });
   };
 
   const openFile = filePath => {
@@ -106,7 +113,14 @@ function VersionFile(props) {
             {modulePermissions?.editor || modulePermissions?.admin ? (
               <>
                 <Divider />
-                <Menu.Item icon="delete" onPress={() => {}} title="Delete" />
+                <Menu.Item
+                  icon="delete"
+                  onPress={() => {
+                    // TODO: handle delete
+                    console.log('-----> delete');
+                  }}
+                  title="Delete"
+                />
               </>
             ) : null}
           </Menu>
