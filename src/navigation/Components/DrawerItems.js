@@ -130,7 +130,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
       {
         id: 44,
         route: 'WBS',
-        label: 'WBS',
+        label: 'List And Gantt',
         icon: ({color, size}) => (
           <MaterialCommunityIcons name="vector-triangle" {...{color, size}} />
         ),
