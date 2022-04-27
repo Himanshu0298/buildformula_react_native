@@ -19,24 +19,26 @@ function DownloadProvider({children}) {
       const {
         name,
         base64,
+        data,
         showAction,
         link: downloadLink,
         onFinish,
         onAction,
       } = params;
+
       try {
         setState(() => ({...DEFAULT_STATE, ...params, open: true}));
 
-        const result = await downloadFile(name, downloadLink, base64);
+        const result = await downloadFile({name, downloadLink, base64, data});
 
-        onFinish(result);
+        onFinish?.(result);
 
         let action;
         if (showAction) {
           action = {
             label: 'Open',
             onPress: () => {
-              onAction(result);
+              onAction?.(result);
               handleClose();
             },
           };
@@ -54,7 +56,7 @@ function DownloadProvider({children}) {
       } catch (err) {
         console.log('-----> err', err);
 
-        onFinish({});
+        onFinish?.({});
 
         setState(v => ({
           ...v,

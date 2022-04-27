@@ -227,8 +227,6 @@ function Files(props) {
 
   const fromDustomerSection = customerSection || isCustomerSection;
 
-  console.log('-------->unit', unit);
-
   const {loading, versionData} = useSelector(s => s.files);
   const {selectedProject} = useSelector(s => s.project);
   const {user} = useSelector(s => s.user);

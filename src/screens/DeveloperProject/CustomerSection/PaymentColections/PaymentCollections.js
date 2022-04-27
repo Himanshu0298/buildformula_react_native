@@ -22,6 +22,7 @@ import {useSnackbar} from 'components/Atoms/Snackbar';
 import {downloadPdf} from 'utils/download';
 import FileViewer from 'react-native-file-viewer';
 import {BASE_API_URL} from 'utils/constant';
+import {useDownload} from 'components/Atoms/Download';
 
 const TITLE = {
   document: 'Documentation charges',
@@ -39,15 +40,8 @@ function Item({label, value}) {
 }
 
 const RenderCharge = React.memo(props => {
-  const {
-    charge,
-    payment_mode,
-    type,
-    project_id,
-    unit_id,
-    navToEdit,
-    handleDelete,
-  } = props;
+  const {charge, payment_mode, type, navToEdit, handleDelete} = props;
+
   const {
     id,
     bank_name,
@@ -56,31 +50,24 @@ const RenderCharge = React.memo(props => {
     transaction_date,
     transaction_type,
     amount,
+    unit_id,
+    project_id,
     remark,
   } = charge;
-  const snackbar = useSnackbar();
 
-  const download = async () => {
-    snackbar.showMessage({
-      message: 'Preparing your download...',
-      variant: 'warning',
-      autoHideDuration: 10000,
-    });
+  const download = useDownload();
 
+  const handleDownload = async () => {
     const data = {
       project_id,
       unit_id,
       customer_payment_collections_id: id,
     };
 
-    const url = `${BASE_API_URL}/cs_account_property_final_amount_single`;
-    const {dir} = await downloadPdf(data, url);
+    const link = `${BASE_API_URL}cs_account_property_final_amount_single`;
+    const name = `vshwan_document_${new Date().getTime()}.pdf`;
 
-    snackbar.showMessage({
-      message: 'File Downloaded!',
-      variant: 'success',
-      action: {label: 'Open', onPress: () => FileViewer.open(`file://${dir}`)},
-    });
+    download.link({name, data, link, showAction: true});
   };
 
   return (
@@ -118,17 +105,20 @@ const RenderCharge = React.memo(props => {
       </View>
       <Item label="Remark" value={remark} />
       <View style={styles.actionContainer}>
-        <OpacityButton
-          opacity={0.08}
-          color={theme.colors.primary}
-          style={styles.rightContent}
-          onPress={download}>
-          <MaterialCommunityIcons
-            name="download"
-            size={18}
+        {/* TODO: enable this */}
+        {type !== 'document' && false ? (
+          <OpacityButton
+            opacity={0.08}
             color={theme.colors.primary}
-          />
-        </OpacityButton>
+            style={styles.rightContent}
+            onPress={handleDownload}>
+            <MaterialCommunityIcons
+              name="download"
+              size={18}
+              color={theme.colors.primary}
+            />
+          </OpacityButton>
+        ) : null}
         <OpacityButton
           opacity={0.1}
           color={theme.colors.primary}

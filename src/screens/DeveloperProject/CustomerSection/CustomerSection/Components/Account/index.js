@@ -284,8 +284,8 @@ function Account(props) {
           </View>
 
           <View style={styles.cardItemsContainer}>
-            {CollectionTypes.map(item => (
-              <>
+            {CollectionTypes.map((item, index) => (
+              <React.Fragment key={index.toString}>
                 <TouchableOpacity
                   style={styles.cardItem}
                   onPress={() => navToDetails(item.key)}>
@@ -311,7 +311,7 @@ function Account(props) {
                   </View>
                 </TouchableOpacity>
                 <Divider />
-              </>
+              </React.Fragment>
             ))}
           </View>
         </View>

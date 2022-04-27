@@ -41,15 +41,23 @@ function RenderProject({project, handleOnPress, tab}) {
       onPress={() => handleOnPress(project)}
       style={styles.projectContainer}>
       <View
-        style={tab === 'Supplier' ? styles.supplierImageContainer : styles.developerImageContainer}>
+        style={
+          tab === 'Supplier'
+            ? styles.supplierImageContainer
+            : styles.developerImageContainer
+        }>
         <Image
           source={IMAGES[tab]}
-          style={tab === 'Supplier' ? styles.supplierImage : styles.developerImage}
+          style={
+            tab === 'Supplier' ? styles.supplierImage : styles.developerImage
+          }
         />
       </View>
 
       <View style={styles.labelContainer}>
-        <Subheading style={styles.projectLabel}>{project.project_name}</Subheading>
+        <Subheading style={styles.projectLabel}>
+          {project.project_name}
+        </Subheading>
         <Caption numberOfLines={1} style={styles.projectLabel}>
           {project.project_id}
         </Caption>
@@ -57,6 +65,8 @@ function RenderProject({project, handleOnPress, tab}) {
     </TouchableOpacity>
   );
 }
+
+const getData = data => (Array.isArray(data) ? data : Object.values(data));
 
 function Home(props) {
   const {theme, navigation} = props;
@@ -85,15 +95,15 @@ function Home(props) {
     const {developers, suppliers, customers} = projects;
 
     const _tabs = ['Developer'];
-    const data = [developers];
+    const data = [getData(developers)];
 
     if (projects?.suppliers?.length) {
       _tabs.push('Supplier');
-      data.push(suppliers);
+      data.push(getData(suppliers));
     }
     if (projects?.customers?.length) {
       _tabs.push('Customer');
-      data.push(customers);
+      data.push(getData(customers));
     }
     return {tabs: _tabs, projectsData: data};
   }, [projects]);
@@ -129,7 +139,9 @@ function Home(props) {
             <View style={styles.splashImage}>
               <LottieView source={waiting} autoPlay loop />
             </View>
-            <Subheading style={styles.subtitleText}>Waiting for Project Approval</Subheading>
+            <Subheading style={styles.subtitleText}>
+              Waiting for Project Approval
+            </Subheading>
           </View>
         ),
       });
@@ -166,15 +178,18 @@ function Home(props) {
             />
           ) : null}
         </View>
+
         <FlatList
-          data={projectsData[selectedTab]}
-          extraData={projectsData[selectedTab]}
+          data={projectsData?.[selectedTab] || []}
+          extraData={projectsData?.[selectedTab] || []}
           keyExtractor={item => item.id}
           contentContainerStyle={styles.scrollContainer}
           style={styles.scrollView}
           numColumns={2}
           showsVerticalScrollIndicator={false}
-          refreshControl={<RefreshControl refreshing={false} onRefresh={onRefresh} />}
+          refreshControl={
+            <RefreshControl refreshing={false} onRefresh={onRefresh} />
+          }
           ListEmptyComponent={renderEmpty}
           renderItem={({item}) => {
             return (

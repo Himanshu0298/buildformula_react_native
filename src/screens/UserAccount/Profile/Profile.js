@@ -24,7 +24,14 @@ function Profile(props) {
   return (
     <View style={styles.container}>
       <View style={styles.contentContainer}>
-        <Subheading>Profile Details</Subheading>
+        <View style={styles.titleContainer}>
+          <IconButton
+            icon="chevron-left"
+            size={30}
+            onPress={navigation.goBack}
+          />
+          <Subheading>Profile Details</Subheading>
+        </View>
         <View style={styles.headerContainer}>
           <UserAvatar size={150} uri={profile_url} />
           <Subheading style={{marginTop: 15}}>
@@ -59,6 +66,10 @@ function Profile(props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   contentContainer: {
     padding: 10,

@@ -363,7 +363,6 @@ function GeneralDrawer() {
         <Drawer.Screen name="PurchasedProjects" component={PurchasedProjects} />
         <Drawer.Screen name="ProjectDetails" component={ProjectDetails} />
         <Drawer.Screen name="UpdateBillingInfo" component={UpdateBillingInfo} />
-        <Drawer.Screen name="Profile" component={Profile} />
       </Drawer.Group>
     </Drawer.Navigator>
   );
@@ -555,6 +554,7 @@ function NavContainer() {
                 <Stack.Screen name="Search" component={SearchScreen} />
                 <Stack.Screen name="Notification" component={Notification} />
                 <Stack.Screen name="EditProfile" component={EditProfile} />
+                <Stack.Screen name="Profile" component={Profile} />
                 <Stack.Screen
                   name="ChangePassword"
                   component={ChangePasswordStack}

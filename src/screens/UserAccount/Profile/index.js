@@ -4,7 +4,12 @@ import Profile from './Profile';
 
 export default props => {
   return (
-    <ProjectLayout {...props} showHeaderIcons={false} showLogo>
+    <ProjectLayout
+      {...props}
+      showHeaderIcons={false}
+      showLogo
+      header={false}
+      tab={false}>
       <Profile {...props} />
     </ProjectLayout>
   );

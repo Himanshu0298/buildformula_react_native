@@ -24,10 +24,7 @@ const schema = Yup.object().shape({
     .matches(PHONE_REGEX, 'Phone number is not valid')
     .min(10, 'too short')
     .max(10, 'too long'),
-  email: Yup.string()
-    .email('Please enter a valid email')
-    .label('email')
-    .required('invalid email'),
+  email: Yup.string().email('Please enter a valid email').label('email'),
 });
 
 function AddBroker(props) {

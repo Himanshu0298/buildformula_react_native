@@ -50,7 +50,9 @@ export function getDownloadUrl(file, version) {
   return `${BASE_API_URL}${url}`;
 }
 
-export async function downloadFile(name, fileUrl, getBase64) {
+export async function downloadFile(params) {
+  const {name, downloadLink: fileUrl, base64: getBase64, data} = params;
+
   const path = getFilePath(name);
 
   const {token} = store.getState().user;
@@ -75,8 +77,15 @@ export async function downloadFile(name, fileUrl, getBase64) {
     },
   };
 
+  const REQUEST_TYPE = data ? 'POST' : 'GET';
+
   return RNFetchBlob.config(options)
-    .fetch('GET', fileUrl, {Authorization})
+    .fetch(
+      REQUEST_TYPE,
+      fileUrl,
+      {Authorization, Accept: '*/*'},
+      JSON.stringify(data),
+    )
     .then(async res => {
       // Alert after successful downloading
 

@@ -44,7 +44,7 @@ function ModifyRequest(props) {
         <Subheading style={styles.Subheading}>All Modify Requests</Subheading>
         {modifyRequests.map(item => {
           return (
-            <View style={styles.contentContainer}>
+            <View key={item.id} style={styles.contentContainer}>
               <View style={styles.titleStyle}>
                 <Text>{item.title}</Text>
                 <Caption
