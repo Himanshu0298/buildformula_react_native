@@ -66,7 +66,8 @@ function RenderProject({project, handleOnPress, tab}) {
   );
 }
 
-const getData = data => (Array.isArray(data) ? data : Object.values(data));
+const getData = (data = []) =>
+  Array.isArray(data) ? data : Object.values(data);
 
 function Home(props) {
   const {theme, navigation} = props;

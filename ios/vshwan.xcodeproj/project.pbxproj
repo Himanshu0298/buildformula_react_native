@@ -15,6 +15,7 @@
 		259A4DC4FC28FC92647FF577 /* libPods-vshwan.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F32E49DA04EEBBCCBCB9F7D0 /* libPods-vshwan.a */; };
 		42E94F3DD28345B7B5DCDD32 /* Nunito-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CF9C7B4E30014AB7A3BF3C1C /* Nunito-Regular.ttf */; };
 		45CEBF8370B948BB87533614 /* Nunito-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5090BC9249EB44DD981D0F71 /* Nunito-ExtraLight.ttf */; };
+		4E374D662820E6C30017F967 /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4E374D652820E6C30017F967 /* BootSplash.storyboard */; };
 		4E9DAFDD266872E80016F732 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4E9DAFDC266872E80016F732 /* GoogleService-Info.plist */; };
 		98517B59257B011600ED1C94 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 98517B58257B011600ED1C94 /* LaunchScreen.storyboard */; };
 		98517BDF257B05CB00ED1C94 /* Void.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98517BDE257B05CB00ED1C94 /* Void.swift */; };
@@ -37,6 +38,7 @@
 		3C094EDB74E047D880C6D163 /* Poppins-Medium.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Medium.otf"; path = "../src/assets/fonts/Poppins-Medium.otf"; sourceTree = "<group>"; };
 		4107B55A946440BAA441012C /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
 		4D981C44F3B64E4FBA8CA3B5 /* Poppins-SemiBold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-SemiBold.otf"; path = "../src/assets/fonts/Poppins-SemiBold.otf"; sourceTree = "<group>"; };
+		4E374D652820E6C30017F967 /* BootSplash.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = BootSplash.storyboard; path = vshwan/BootSplash.storyboard; sourceTree = "<group>"; };
 		4E64426326CA64CC00C25C69 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		4E9DAFDC266872E80016F732 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		4E9DAFDE2668735D0016F732 /* vshwan.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = vshwan.entitlements; path = vshwan/vshwan.entitlements; sourceTree = "<group>"; };
@@ -92,6 +94,7 @@
 		13B07FAE1A68108700A75B9A /* vshwan */ = {
 			isa = PBXGroup;
 			children = (
+				4E374D652820E6C30017F967 /* BootSplash.storyboard */,
 				4E9DAFDE2668735D0016F732 /* vshwan.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
@@ -249,6 +252,7 @@
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				4E9DAFDD266872E80016F732 /* GoogleService-Info.plist in Resources */,
 				1873BA48097140509ACAF65F /* Nunito-Bold.ttf in Resources */,
+				4E374D662820E6C30017F967 /* BootSplash.storyboard in Resources */,
 				45CEBF8370B948BB87533614 /* Nunito-ExtraLight.ttf in Resources */,
 				D9C478F163114DEE877882D8 /* Nunito-Light.ttf in Resources */,
 				98517B59257B011600ED1C94 /* LaunchScreen.storyboard in Resources */,

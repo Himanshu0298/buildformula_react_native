@@ -3,6 +3,7 @@ package com.vshwan;
 import android.os.Bundle;
 import com.facebook.react.ReactActivity;
 import com.zoontek.rnbootsplash.RNBootSplash;
+import com.facebook.react.ReactActivityDelegate;
 
 public class MainActivity extends ReactActivity {
 
@@ -10,9 +11,15 @@ public class MainActivity extends ReactActivity {
    * Renders Splash Screen On App Load
    */
   @Override
-  protected void onCreate(Bundle savedInstanceState) {
-      super.onCreate(savedInstanceState);
-      RNBootSplash.init(R.drawable.bootsplash, MainActivity.this);
+  protected ReactActivityDelegate createReactActivityDelegate() {
+    return new ReactActivityDelegate(this, getMainComponentName()) {
+
+      @Override
+      protected void loadApp(String appKey) {
+        RNBootSplash.init(MainActivity.this);
+        super.loadApp(appKey);
+      }
+    };
   }
 
   /**

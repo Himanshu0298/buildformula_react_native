@@ -65,6 +65,6 @@ export const MODIFY_REQUEST_STATUS = {
 };
 
 export const KEYBOARD_SHOW =
-  Platform.OS === 'ios' ? 'KeyboardWillShow' : 'keyboardDidShow';
+  Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
 export const KEYBOARD_HIDE =
-  Platform.OS === 'ios' ? 'KeyboardWillHide' : 'KeyboardDidHide';
+  Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
