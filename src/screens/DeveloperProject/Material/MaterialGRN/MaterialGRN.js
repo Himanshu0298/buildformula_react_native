@@ -1,17 +1,29 @@
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
+import NoResult from 'components/Atoms/NoResult';
 import React from 'react';
-import {StyleSheet, View, TouchableOpacity} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  FlatList,
+  RefreshControl,
+} from 'react-native';
 import {Subheading, Text, Divider, Caption} from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useSelector} from 'react-redux';
+import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 import {getShadow} from 'utils';
-import {theme} from '../../../../styles/theme';
+import {theme} from 'styles/theme';
 
-const OrderDetails = () => {
+const OrderDetails = props => {
+  const {item} = props;
+  const {material_order_no} = item;
+
   return (
     <View style={styles.orderContainer}>
       <View style={styles.materialSection}>
         <Caption style={styles.materialSubSection}>Material Order no:</Caption>
-        <Text>12</Text>
+        <Text>{material_order_no}</Text>
       </View>
       <View style={styles.materialSection}>
         <View style={styles.materialAmountSection}>
@@ -26,28 +38,31 @@ const OrderDetails = () => {
   );
 };
 
-const CompanyDetails = () => {
+const CompanyDetails = props => {
+  const {item} = props;
+  const {company_name, supplier_name} = item;
   return (
     <View style={styles.orderContainer}>
       <View style={styles.companyDetailsContainer}>
         <Text>Company: </Text>
-        <Text>Shreeji</Text>
+        <Text>{company_name}</Text>
       </View>
       <View style={styles.supplier}>
-        <Text>Supplies: </Text>
-        <Text>Mukeshbhai</Text>
+        <Text>Supplier: </Text>
+        <Text>{supplier_name}</Text>
       </View>
     </View>
   );
 };
 
 const OrderCard = props => {
-  const {navigation} = props;
+  const {navigation, item} = props;
+  const {material_order_no} = item;
 
   return (
     <TouchableOpacity
       style={styles.cardContainer}
-      onPress={() => navigation.navigate('OrderDetail')}>
+      onPress={() => navigation.navigate('OrderDetail', {material_order_no})}>
       <OpacityButton
         opacity={0.1}
         color={theme.colors.primary}
@@ -58,21 +73,48 @@ const OrderCard = props => {
           size={18}
         />
       </OpacityButton>
-      <OrderDetails />
+      <OrderDetails {...props} />
       <Divider style={styles.divider} />
-      <CompanyDetails />
+      <CompanyDetails {...props} />
     </TouchableOpacity>
   );
 };
 
 const MaterialGRN = props => {
+  const {getMaterialOrderList} = useMaterialManagementActions();
+
+  const {materialOrderList} = useSelector(s => s.materialManagement);
+
+  const {selectedProject} = useSelector(s => s.project);
+
+  React.useEffect(() => {
+    getMaterialOrderList({project_id: selectedProject.id});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const reloadOrders = () => {
+    getMaterialOrderList({project_id: selectedProject.id});
+  };
+
+  const renderEmpty = () => <NoResult />;
+
   return (
     <View style={styles.orderContainer}>
       <Subheading style={styles.SubHeading}>Material GRN</Subheading>
       <Text>Select material order for which delivery to be added.</Text>
-      <OrderCard {...props} />
-      <OrderCard {...props} />
-      <OrderCard {...props} />
+      <FlatList
+        data={materialOrderList}
+        refreshControl={
+          <RefreshControl refreshing={false} onRefresh={reloadOrders} />
+        }
+        contentContainerStyle={styles.contentContainerStyle}
+        showsVerticalScrollIndicator={false}
+        keyExtractor={item => item.material_order_no}
+        ListEmptyComponent={renderEmpty}
+        renderItem={({item}) => {
+          return <OrderCard {...props} item={item} />;
+        }}
+      />
     </View>
   );
 };
@@ -90,6 +132,11 @@ const styles = StyleSheet.create({
   },
   orderContainer: {
     padding: 10,
+  },
+  contentContainerStyle: {
+    flexGrow: 1,
+    paddingBottom: 50,
+    paddingHorizontal: 2,
   },
   materialSection: {
     display: 'flex',

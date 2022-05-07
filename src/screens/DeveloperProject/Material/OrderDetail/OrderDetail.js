@@ -1,37 +1,27 @@
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
-import React from 'react';
+import React, {useMemo} from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
 import {Subheading, Text, Divider, Caption, Button} from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useSelector} from 'react-redux';
+import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 import {getShadow} from 'utils';
+import {MODIFY_REQUEST_STATUS} from 'utils/constant';
 import {theme} from '../../../../styles/theme';
 import Header from '../CommonComponents/Header';
 
-const CHALLAN_DETAILS = [
-  {label: 'Challan Number:', value: '90'},
-  {label: 'Delivery Date', value: '1/1/2022'},
-];
-const CREATED_BY = [
-  {
-    label: 'Created by:',
-    value: 'Nilesh Gupta',
-    subValue: 'rinkupoonia162@gmail.com',
-  },
-];
 const UPDATED_BY = [
   {
-    label: 'Updated by:',
+    label: 'Updated by',
     value: 'Nilesh Gupta',
     subValue: 'rinkupoonia162@gmail.com',
   },
 ];
 
-const orderedListData = [1, 2, 3, 4];
-
 const RenderRow = props => {
-  const {item} = props;
+  const {item, containerStyle} = props;
   return (
-    <View>
+    <View style={containerStyle}>
       <Caption>{item.label}</Caption>
       <Text>{item.value}</Text>
       {item.subValue ? <Caption>{item.subValue}</Caption> : null}
@@ -39,22 +29,31 @@ const RenderRow = props => {
   );
 };
 
-const ChallanSection = () => {
+const ChallanSection = props => {
+  const {item} = props;
   return (
     <View style={styles.challanContainer}>
-      {CHALLAN_DETAILS.map(item => {
-        return <RenderRow item={item} />;
-      })}
+      <View style={styles.challanSection}>
+        <RenderRow
+          item={{label: 'Challan Number', value: item.challan_number}}
+        />
+        <RenderRow item={{label: 'Delivery Date', value: '1/1/2022'}} />
+      </View>
     </View>
   );
 };
 
-const Created = () => {
+const Created = props => {
+  const {item} = props;
   return (
     <View style={styles.createdContainer}>
-      {CREATED_BY.map(item => {
-        return <RenderRow item={item} />;
-      })}
+      <RenderRow
+        item={{
+          label: 'Created by',
+          value: `${item.first_name} ${item.last_name}`,
+          subValue: item.email,
+        }}
+      />
     </View>
   );
 };
@@ -69,23 +68,40 @@ const Updated = () => {
 };
 
 const Details = props => {
-  const {navigation} = props;
+  const {navigation, materialOrderNo, summaryData} = props;
+  const {damage, delivered, ordered, remaining} = summaryData;
   return (
     <View style={styles.orderedContainer}>
-      {orderedListData.map(() => {
-        return (
-          <View style={styles.orderedItem}>
-            <Caption>Ordered</Caption>
-            <Text>3232</Text>
-          </View>
-        );
-      })}
+      <View style={styles.orderedItem}>
+        <View style={styles.itemContainer}>
+          <RenderRow
+            item={{label: 'Ordered  ', value: ordered}}
+            containerStyle={styles.orderedListValue}
+          />
+          <RenderRow
+            item={{label: 'Delivered  ', value: delivered}}
+            containerStyle={styles.orderedListValue}
+          />
+        </View>
+        <View style={styles.itemContainer}>
+          <RenderRow
+            item={{label: 'Damage  ', value: damage}}
+            containerStyle={styles.orderedListValue}
+          />
+          <RenderRow
+            item={{label: 'Remaining   ', value: remaining}}
+            containerStyle={styles.orderedListValue}
+          />
+        </View>
+      </View>
       <View style={styles.orderNavigation}>
         <OpacityButton
           opacity={0.1}
           color={theme.colors.primary}
           style={styles.button}
-          onPress={() => navigation.navigate('MaterialList')}>
+          onPress={() =>
+            navigation.navigate('MaterialList', {materialOrderNo})
+          }>
           <MaterialCommunityIcons
             name="chevron-right"
             color={theme.colors.primary}
@@ -98,17 +114,22 @@ const Details = props => {
 };
 
 const CommonCard = props => {
-  const {navigation} = props;
+  const {navigation, item} = props;
   return (
     <View style={styles.commonCard}>
-      <ChallanSection />
-      <Created />
+      <ChallanSection item={item} />
+      <Created item={item} />
       <Divider style={styles.divider} />
       <View style={styles.statusContainer}>
         <Updated />
         <View style={styles.statusHeading}>
           <Caption> Status</Caption>
-          <Text>Pending</Text>
+          <Text
+            style={{
+              color: MODIFY_REQUEST_STATUS[item.challan_status]?.color,
+            }}>
+            {item.challan_status}
+          </Text>
         </View>
       </View>
 
@@ -123,11 +144,36 @@ const CommonCard = props => {
 };
 
 const OrderDetail = props => {
-  const {navigation} = props;
+  const {navigation, route} = props;
+
+  const {material_order_no} = route?.params || {};
+
+  const {getMaterialChallanList} = useMaterialManagementActions();
+  const {materialChallanList, materialOrderList} = useSelector(
+    s => s.materialManagement,
+  );
+
+  const {selectedProject} = useSelector(s => s.project);
+
+  React.useEffect(() => {
+    getMaterialChallanList({project_id: selectedProject.id, material_order_no});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const selectedMaterial = useMemo(() => {
+    return materialOrderList?.find(
+      i => i.material_order_no === material_order_no,
+    );
+  }, [materialOrderList, material_order_no]);
+
   return (
     <View style={styles.headerContainer}>
-      <Header title="M.O. No.: 11" {...props} />
-      <Details {...props} />
+      <Header title={`M.O. No. : ${material_order_no}`} {...props} />
+      <Details
+        {...props}
+        materialOrderNo={material_order_no}
+        summaryData={selectedMaterial?.summary || []}
+      />
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.subheadingContainer}>
           <Subheading>Challans</Subheading>
@@ -143,8 +189,15 @@ const OrderDetail = props => {
             <Text style={{color: theme.colors.primary}}>Add Challan</Text>
           </OpacityButton>
         </View>
-        <CommonCard {...props} />
-        <CommonCard />
+        {materialChallanList.map(item => {
+          return (
+            <CommonCard
+              {...props}
+              item={item}
+              challanList={materialChallanList}
+            />
+          );
+        })}
       </ScrollView>
     </View>
   );
@@ -154,9 +207,13 @@ export default OrderDetail;
 
 const styles = StyleSheet.create({
   challanContainer: {
+    flex: 1,
+    paddingHorizontal: 10,
+  },
+  challanSection: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingHorizontal: 10,
+    alignItems: 'center',
   },
   createdContainer: {
     paddingHorizontal: 10,
@@ -174,10 +231,20 @@ const styles = StyleSheet.create({
     ...getShadow(1),
     borderRadius: 5,
   },
+  itemContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  orderedListValue: {
+    alignItems: 'center',
+  },
   orderedItem: {
     margin: 5,
     paddingVertical: 10,
     paddingRight: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
   },
   orderNavigation: {
     width: '20%',
@@ -193,7 +260,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     ...getShadow(2),
     borderRadius: 5,
-    borderWidth: 1,
+    flex: 1,
+    marginHorizontal: 2,
+    marginBottom: 3,
   },
   divider: {
     height: 2,
@@ -213,6 +282,7 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     paddingHorizontal: 15,
+    flex: 1,
   },
   subheadingContainer: {
     justifyContent: 'space-between',

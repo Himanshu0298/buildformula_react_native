@@ -20,7 +20,7 @@ function RenderFolder(props) {
 
   return (
     <View style={styles.sectionContainer}>
-      <TouchableOpacity style={{flexGrow: 1}} onPress={handleNav}>
+      <TouchableOpacity style={styles.folderContainer} onPress={handleNav}>
         <View style={styles.sectionContainer}>
           <Image source={FolderIcon} style={styles.PdfIcon} />
           <View>
@@ -106,6 +106,9 @@ const styles = StyleSheet.create({
   sectionContainer: {
     alignItems: 'center',
     flexDirection: 'row',
+  },
+  folderContainer: {
+    flexGrow: 1,
   },
 });
 
