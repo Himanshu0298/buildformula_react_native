@@ -14,6 +14,7 @@ import {useSelector} from 'react-redux';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 import {getShadow} from 'utils';
 import {theme} from 'styles/theme';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const OrderDetails = props => {
   const {item} = props;
@@ -57,12 +58,14 @@ const CompanyDetails = props => {
 
 const OrderCard = props => {
   const {navigation, item} = props;
-  const {material_order_no} = item;
+  const {material_order_no, material_requests_id: materialId} = item;
 
   return (
     <TouchableOpacity
       style={styles.cardContainer}
-      onPress={() => navigation.navigate('OrderDetail', {material_order_no})}>
+      onPress={() =>
+        navigation.navigate('OrderDetail', {material_order_no, materialId})
+      }>
       <OpacityButton
         opacity={0.1}
         color={theme.colors.primary}
@@ -83,7 +86,7 @@ const OrderCard = props => {
 const MaterialGRN = props => {
   const {getMaterialOrderList} = useMaterialManagementActions();
 
-  const {materialOrderList} = useSelector(s => s.materialManagement);
+  const {materialOrderList, loading} = useSelector(s => s.materialManagement);
 
   const {selectedProject} = useSelector(s => s.project);
 
@@ -102,6 +105,7 @@ const MaterialGRN = props => {
     <View style={styles.orderContainer}>
       <Subheading style={styles.SubHeading}>Material GRN</Subheading>
       <Text>Select material order for which delivery to be added.</Text>
+      <Spinner visible={loading} textContent="" />
       <FlatList
         data={materialOrderList}
         refreshControl={

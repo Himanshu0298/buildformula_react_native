@@ -1,9 +1,9 @@
 import * as React from 'react';
 import {Formik} from 'formik';
-import {Divider, withTheme} from 'react-native-paper';
+import {withTheme} from 'react-native-paper';
 import {Image, StyleSheet, Text, View} from 'react-native';
 import * as Yup from 'yup';
-import RenderInput from 'components/Atoms/RenderInput';
+import RenderInput, {RenderError} from 'components/Atoms/RenderInput';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import {theme} from 'styles/theme';
@@ -16,6 +16,7 @@ import Pagination from '../../CommonComponents/Pagination';
 
 const schema = Yup.object().shape({
   challan: Yup.number('Required').required('Required'),
+  attachments: Yup.mixed().required('File is required'),
 });
 
 const RenderAttachments = props => {
@@ -55,7 +56,14 @@ const RenderAttachments = props => {
 
 function ChallanForm(props) {
   const {formikProps, navigation} = props;
-  const {values, errors, handleChange, handleBlur, setFieldValue} = formikProps;
+  const {
+    values,
+    errors,
+    handleChange,
+    handleBlur,
+    handleSubmit,
+    setFieldValue,
+  } = formikProps;
 
   const {openFilePicker} = useImagePicker();
 
@@ -68,14 +76,7 @@ function ChallanForm(props) {
     });
   };
 
-  const handleDelete = () => {
-    console.log('-------->inside delete');
-    setFieldValue('attachments', []);
-  };
-
-  const navToStepTwo = () => {
-    navigation.navigate('SelectMaterials');
-  };
+  const handleDelete = () => setFieldValue('attachments', undefined);
 
   return (
     <>
@@ -105,13 +106,15 @@ function ChallanForm(props) {
               color="#fff">
               <Text style={{color: theme.colors.primary}}>Upload File</Text>
             </OpacityButton>
+            <RenderError error={errors.attachments} />
           </View>
-
-          <RenderAttachments
-            attachments={[values.attachments]}
-            handleDelete={i => handleDelete(i)}
-          />
-          <ActionButtons onPress={navToStepTwo} />
+          {values.attachments ? (
+            <RenderAttachments
+              attachments={[values.attachments]}
+              handleDelete={i => handleDelete(i)}
+            />
+          ) : null}
+          <ActionButtons onPress={handleSubmit} />
         </View>
       </KeyboardAwareScrollView>
     </>
@@ -119,7 +122,12 @@ function ChallanForm(props) {
 }
 
 const AddChallan = props => {
-  const {handleSubmit} = props;
+  const {route, navigation} = props;
+  const {material_order_no} = route?.params || {};
+
+  const navToStepTwo = values => {
+    navigation.navigate('SelectMaterials', {...values, ...route.params});
+  };
 
   return (
     <Formik
@@ -127,7 +135,7 @@ const AddChallan = props => {
       validateOnChange={false}
       initialValues={{}}
       validationSchema={schema}
-      onSubmit={handleSubmit}>
+      onSubmit={navToStepTwo}>
       {formikProps => <ChallanForm {...{formikProps}} {...props} />}
     </Formik>
   );

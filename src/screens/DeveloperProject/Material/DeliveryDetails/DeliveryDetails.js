@@ -8,40 +8,77 @@ import {
   ScrollView,
 } from 'react-native';
 import FileIcon from 'assets/images/file_icon.png';
+import useMaterialManagementActions from 'redux/actions/materialManagementActions';
+import {useSelector} from 'react-redux';
+import NoResult from 'components/Atoms/NoResult';
+import Spinner from 'react-native-loading-spinner-overlay';
 import Header from '../CommonComponents/Header';
 import MaterialInfo from './Components/MaterialInfo';
 import VehicleInfo from './Components/VehicleInfo';
 
-const Attachments = () => {
+const Attachments = props => {
+  const {challanImages = []} = props;
   return (
     <View style={styles.container}>
       <Text style={styles.attachmentsText}>Attachments</Text>
-      <TouchableOpacity
-        style={styles.sectionContainer}
-        // onPress={() => onPressFile(file)}
-      >
-        <Image source={FileIcon} style={styles.fileIcon} />
-        <View>
-          <Text style={(styles.verticalFlex, styles.text)} numberOfLines={2}>
-            Image.jpeg
-          </Text>
-        </View>
-      </TouchableOpacity>
+      {challanImages?.length ? (
+        challanImages?.map((item, index) => {
+          return (
+            <TouchableOpacity
+              style={styles.sectionContainer}
+              // onPress={() => onPressFile(file)}
+            >
+              <Image source={FileIcon} style={styles.fileIcon} />
+              <View>
+                <Text
+                  style={[styles.verticalFlex, styles.text]}
+                  numberOfLines={2}>
+                  Challan Image {index + 1}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          );
+        })
+      ) : (
+        <NoResult />
+      )}
     </View>
   );
 };
 
 const DeliverDetails = props => {
+  const {route} = props;
+  const {item, orderNumber} = route?.params || {};
+  const {id: challanId, challan_number: challanNumber} = item;
+
+  const {getMaterialChallanDetails} = useMaterialManagementActions();
+
+  const {selectedProject} = useSelector(s => s.project);
+  const {materialChallanDetails, loading} = useSelector(
+    s => s.materialManagement,
+  );
+  const {challan_images, challan_info, materila_info} =
+    materialChallanDetails || {};
+
+  React.useEffect(() => {
+    getMaterialChallanDetails({
+      project_id: selectedProject.id,
+      material_order_no: orderNumber,
+      material_delivery_challan_id: challanId,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
     <View style={styles.mainContainer}>
-      <Header title="Challan No: 90" {...props} />
+      <Header title={`Challan No: ${challanNumber}`} {...props} />
+      <Spinner visible={loading} textContent="" />
       <ScrollView showsVerticalScrollIndicator={false}>
         <View>
           <Subheading style={styles.challanHeading}>Challan Images</Subheading>
-          <Attachments />
+          <Attachments challanImages={challan_images} />
         </View>
-        <MaterialInfo />
-        <VehicleInfo />
+        <MaterialInfo materialInfo={materila_info} />
+        <VehicleInfo vehicleInfo={challan_info} />
       </ScrollView>
     </View>
   );

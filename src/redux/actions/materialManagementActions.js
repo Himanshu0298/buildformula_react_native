@@ -8,8 +8,13 @@ export default function useMaterialManagementActions() {
   const dispatch = useDispatch();
   const snackbar = useSnackbar();
   const {_err, _res} = useResProcessor();
-  const {getMaterialOrderList, getMaterialChallanList} =
-    useMaterialManagement();
+  const {
+    getMaterialOrderList,
+    getMaterialChallanList,
+    getMaterialChallanDetails,
+    addMaterialChallan,
+    getSelectMaterialChallan,
+  } = useMaterialManagement();
 
   return {
     getMaterialOrderList: data =>
@@ -32,6 +37,48 @@ export default function useMaterialManagementActions() {
         payload: async () => {
           try {
             const response = _res(await getMaterialChallanList(data));
+            return Promise.resolve(response.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    getMaterialChallanDetails: data =>
+      dispatch({
+        type: types.GET_MATERIAL_CHALLAN_DETAILS,
+        payload: async () => {
+          try {
+            const response = _res(await getMaterialChallanDetails(data));
+            return Promise.resolve(response.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    addMaterialChallan: data =>
+      dispatch({
+        type: types.ADD_MATERIAL_CHALLAN,
+        payload: async () => {
+          try {
+            const response = _res(await addMaterialChallan(data));
+            return Promise.resolve(response.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    getSelectMaterialChallan: data =>
+      dispatch({
+        type: types.GET_SELECT_MATERIAL_CHALLAN,
+        payload: async () => {
+          try {
+            const response = _res(await getSelectMaterialChallan(data));
             return Promise.resolve(response.data);
           } catch (error) {
             const message = _err(error);

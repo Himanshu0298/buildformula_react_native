@@ -2,6 +2,8 @@ import CustomCheckbox from 'components/Atoms/CustomCheckbox';
 import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {Subheading, withTheme} from 'react-native-paper';
+import {useSelector} from 'react-redux';
+import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 import {theme} from 'styles/theme';
 import ActionButtons from '../AddChallan/Components/ActionButtons';
 
@@ -29,7 +31,23 @@ const MaterialData = props => {
 };
 
 function SelectMaterials(props) {
-  const {navigation} = props;
+  const {navigation, route} = props;
+  const {materialId} = route?.params || {};
+  console.log('-------->123456', materialId);
+  const {getSelectMaterialChallan} = useMaterialManagementActions();
+
+  const {selectedMaterialChallan} = useSelector(s => s.materialManagement);
+  console.log('-------->selectedMaterialChallan', selectedMaterialChallan);
+
+  const {selectedProject} = useSelector(s => s.project);
+
+  React.useEffect(() => {
+    getSelectMaterialChallan({
+      project_id: selectedProject.id,
+      material_request_id: materialId,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const navToStepThree = () => {
     navigation.navigate('AddMaterialInfo');
@@ -61,7 +79,7 @@ const styles = StyleSheet.create({
   titleContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginLeft: 50,
+    marginLeft: 32,
     marginTop: 10,
   },
   titles: {
@@ -72,7 +90,6 @@ const styles = StyleSheet.create({
   valuesContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginLeft: 50,
     marginTop: 10,
     alignItems: 'center',
   },

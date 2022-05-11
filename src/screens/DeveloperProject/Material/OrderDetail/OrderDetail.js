@@ -1,6 +1,7 @@
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import React, {useMemo} from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
+import Spinner from 'react-native-loading-spinner-overlay';
 import {Subheading, Text, Divider, Caption, Button} from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector} from 'react-redux';
@@ -114,7 +115,7 @@ const Details = props => {
 };
 
 const CommonCard = props => {
-  const {navigation, item} = props;
+  const {navigation, materialOrderNo: orderNumber, item} = props;
   return (
     <View style={styles.commonCard}>
       <ChallanSection item={item} />
@@ -136,7 +137,9 @@ const CommonCard = props => {
       <Button
         mode="contained"
         style={styles.viewButton}
-        onPress={() => navigation.navigate('DeliveryDetails')}>
+        onPress={() =>
+          navigation.navigate('DeliveryDetails', {item, orderNumber})
+        }>
         View
       </Button>
     </View>
@@ -146,10 +149,11 @@ const CommonCard = props => {
 const OrderDetail = props => {
   const {navigation, route} = props;
 
-  const {material_order_no} = route?.params || {};
+  const {material_order_no, materialId} = route?.params || {};
+  console.log('-------->materialId', materialId);
 
   const {getMaterialChallanList} = useMaterialManagementActions();
-  const {materialChallanList, materialOrderList} = useSelector(
+  const {materialChallanList, materialOrderList, loading} = useSelector(
     s => s.materialManagement,
   );
 
@@ -174,13 +178,17 @@ const OrderDetail = props => {
         materialOrderNo={material_order_no}
         summaryData={selectedMaterial?.summary || []}
       />
+      <Spinner visible={loading} textContent="" />
+
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.subheadingContainer}>
           <Subheading>Challans</Subheading>
           <OpacityButton
             opacity={0.1}
             color={theme.colors.primary}
-            onPress={() => navigation.navigate('AddChallan')}>
+            onPress={() =>
+              navigation.navigate('AddChallan', {material_order_no, materialId})
+            }>
             <MaterialCommunityIcons
               name="plus"
               color={theme.colors.primary}
@@ -195,6 +203,7 @@ const OrderDetail = props => {
               {...props}
               item={item}
               challanList={materialChallanList}
+              materialOrderNo={material_order_no}
             />
           );
         })}

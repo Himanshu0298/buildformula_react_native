@@ -1,6 +1,7 @@
 import NoResult from 'components/Atoms/NoResult';
 import React, {useMemo} from 'react';
 import {FlatList, RefreshControl, StyleSheet, View} from 'react-native';
+import Spinner from 'react-native-loading-spinner-overlay';
 import {Text, Divider, Caption} from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector} from 'react-redux';
@@ -70,7 +71,7 @@ const MaterialList = props => {
 
   const {getMaterialOrderList} = useMaterialManagementActions();
 
-  const {materialOrderList} = useSelector(s => s.materialManagement);
+  const {materialOrderList, loading} = useSelector(s => s.materialManagement);
   const {selectedProject} = useSelector(s => s.project);
 
   const {summary} = useMemo(() => {
@@ -88,6 +89,8 @@ const MaterialList = props => {
   return (
     <View style={styles.materialContainer}>
       <Header title="List" {...props} />
+      <Spinner visible={loading} textContent="" />
+
       <FlatList
         data={summary?.summaryDetails || []}
         extraData={summary?.summaryDetails || []}

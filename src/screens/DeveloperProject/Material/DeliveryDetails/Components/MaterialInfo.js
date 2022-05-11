@@ -10,11 +10,8 @@ import {StyleSheet, View} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {theme} from 'styles/theme';
 import {getShadow} from 'utils';
-
-const LIST_DATA = [
-  {label: 'Fine Qantity: ', value: '1999'},
-  {label: 'Damage Qantity: ', value: '1'},
-];
+import Spinner from 'react-native-loading-spinner-overlay';
+import {useSelector} from 'react-redux';
 
 const RenderRow = props => {
   const {item} = props;
@@ -27,34 +24,49 @@ const RenderRow = props => {
 };
 
 const MaterialData = props => {
+  const {item} = props;
   return (
     <View style={styles.quantityContainer}>
       <View style={styles.itemContainer}>
-        {LIST_DATA.map(item => {
-          return <RenderRow item={item} />;
-        })}
+        <RenderRow item={{label: 'Fine Qantity: ', value: item.quantity}} />
+        <RenderRow item={{label: 'Damage Qantity: ', value: item.damage}} />
       </View>
     </View>
   );
 };
 
-const MaterialInfo = () => {
+const MaterialInfo = props => {
+  const {materialInfo = {}} = props;
+  const {materials = []} = materialInfo;
+  const {loading} = useSelector(s => s.materialManagement);
+
   return (
-    <View style={{margin: 10}}>
+    <View style={styles.container}>
       <Subheading>Material Info</Subheading>
-      <View style={styles.detailsContainer}>
-        <View style={styles.subHeading}>
-          <Text style={{color: theme.colors.primary}}>Brick-1 </Text>
-          <MaterialCommunityIcons
-            name="label"
-            size={20}
-            style={[styles.labelIcon, {color: theme.colors.primary}]}
-          />
-          <Text style={{color: theme.colors.primary}}> Bricks-2, Nos</Text>
-        </View>
-        <Divider style={styles.divider} />
-        <MaterialData />
-      </View>
+      <Spinner visible={loading} textContent="" />
+
+      {materials?.map(item => {
+        return (
+          <View style={styles.detailsContainer}>
+            <View style={styles.subHeading}>
+              <Text style={{color: theme.colors.primary}}>
+                {item.category_title}
+              </Text>
+              <MaterialCommunityIcons
+                name="label"
+                size={20}
+                style={[styles.labelIcon, {color: theme.colors.primary}]}
+              />
+              <Text
+                style={{
+                  color: theme.colors.primary,
+                }}>{` ${item.sub_category_title} ${item.work_units_title}`}</Text>
+            </View>
+            <Divider style={styles.divider} />
+            <MaterialData item={item} />
+          </View>
+        );
+      })}
     </View>
   );
 };
@@ -63,6 +75,9 @@ const styles = StyleSheet.create({
   renderContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  container: {
+    margin: 10,
   },
   label: {
     fontSize: 14,

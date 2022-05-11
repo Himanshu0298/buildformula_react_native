@@ -5,7 +5,7 @@ import {Text} from 'react-native-paper';
 function NoResult({title, style}) {
   return (
     <View style={[styles.container, style]}>
-      <Text style={{textAlign: 'center'}}>{title || 'No data found'}</Text>
+      <Text style={styles.text}>{title || 'No data found'}</Text>
     </View>
   );
 }
@@ -16,6 +16,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginHorizontal: 60,
+  },
+  text: {
+    textAlign: 'center',
   },
 });
 
