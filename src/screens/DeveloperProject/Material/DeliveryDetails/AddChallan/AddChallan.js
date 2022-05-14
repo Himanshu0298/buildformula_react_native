@@ -21,30 +21,37 @@ const schema = Yup.object().shape({
 
 const RenderAttachments = props => {
   const {attachments, handleDelete} = props;
+  console.log('-------->attachments', attachments);
 
   return (
     <View>
       <View style={styles.cardContainer}>
         <View style={styles.renderFileContainer}>
           <Text style={styles.attachmentFileHeader}>Attachments</Text>
-          <OpacityButton
-            opacity={0.1}
-            color={theme.colors.error}
-            style={styles.closeButton}
-            onPress={handleDelete}>
-            <MaterialIcon name="close" color={theme.colors.error} size={17} />
-          </OpacityButton>
         </View>
-        {attachments?.map(attachment => {
+        {attachments?.map((attachment, i) => {
           return (
-            <View style={styles.sectionContainer}>
-              <Image source={FileIcon} style={styles.fileIcon} />
-              <View>
-                <Text
-                  style={(styles.verticalFlex, styles.text)}
-                  numberOfLines={2}>
-                  image.jpeg
-                </Text>
+            <View>
+              <OpacityButton
+                opacity={0.1}
+                color={theme.colors.error}
+                style={styles.closeButton}
+                onPress={() => handleDelete(i)}>
+                <MaterialIcon
+                  name="close"
+                  color={theme.colors.error}
+                  size={17}
+                />
+              </OpacityButton>
+              <View style={styles.sectionContainer}>
+                <Image source={FileIcon} style={styles.fileIcon} />
+                <View>
+                  <Text
+                    style={(styles.verticalFlex, styles.text)}
+                    numberOfLines={2}>
+                    image.jpeg
+                  </Text>
+                </View>
               </View>
             </View>
           );
@@ -71,12 +78,17 @@ function ChallanForm(props) {
     openFilePicker({
       type: 'file',
       onChoose: file => {
-        setFieldValue('attachments', file);
+        const attachments = values.attachments || [];
+        attachments.push(file);
+        setFieldValue('attachments', attachments);
       },
     });
   };
 
-  const handleDelete = () => setFieldValue('attachments', undefined);
+  const handleDelete = i => {
+    values.attachments.splice(i, 1);
+    setFieldValue('attachments', values.attachments);
+  };
 
   return (
     <>
@@ -108,9 +120,9 @@ function ChallanForm(props) {
             </OpacityButton>
             <RenderError error={errors.attachments} />
           </View>
-          {values.attachments ? (
+          {values.attachments?.length ? (
             <RenderAttachments
-              attachments={[values.attachments]}
+              attachments={values.attachments}
               handleDelete={i => handleDelete(i)}
             />
           ) : null}
@@ -133,7 +145,7 @@ const AddChallan = props => {
     <Formik
       validateOnBlur={false}
       validateOnChange={false}
-      initialValues={{}}
+      initialValues={{attachments: []}}
       validationSchema={schema}
       onSubmit={navToStepTwo}>
       {formikProps => <ChallanForm {...{formikProps}} {...props} />}
@@ -178,6 +190,7 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     borderRadius: 50,
+    alignSelf: 'flex-end',
   },
   attachmentFileHeader: {
     color: '#000',

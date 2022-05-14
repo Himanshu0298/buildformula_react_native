@@ -12,7 +12,7 @@ const initialState = {
   materialOrderList: [],
   materialChallanList: [],
   materialChallanDetails: {},
-  selectedMaterialChallan: {},
+  selectedMaterialChallan: [],
 };
 
 const reducer = (state = initialState, action = {}) => {

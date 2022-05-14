@@ -1,44 +1,45 @@
-import * as React from 'react';
+import React, {useMemo} from 'react';
 import {Formik} from 'formik';
 import {Divider, Subheading, withTheme} from 'react-native-paper';
 import {Image, StyleSheet, Text, View} from 'react-native';
 import * as Yup from 'yup';
-import RenderInput from 'components/Atoms/RenderInput';
+import RenderInput, {RenderError} from 'components/Atoms/RenderInput';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import {theme} from 'styles/theme';
 import FileIcon from 'assets/images/file_icon.png';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useImagePicker} from 'hooks';
+import {useSelector} from 'react-redux';
 import Header from '../../CommonComponents/Header';
 import ActionButtons from '../AddChallan/Components/ActionButtons';
 import Pagination from '../../CommonComponents/Pagination';
 
-const Data = ['', ''];
-
 const schema = Yup.object().shape({
   quantity: Yup.number('Required').required('Required'),
   damage: Yup.number('Required').required('Required'),
+  materialAttachments: Yup.mixed().required('File is required'),
+  damageAttachments: Yup.mixed().required('File is required'),
 });
 
-const RenderAttachments = props => {
+const RenderDamageAttachments = props => {
   const {attachments, handleDelete} = props;
 
   return (
-    <View>
-      <View style={styles.cardContainer}>
-        <View style={styles.renderFileContainer}>
-          <Text style={styles.attachmentFileHeader}>Attachments</Text>
-          <OpacityButton
-            opacity={0.1}
-            color={theme.colors.error}
-            style={styles.closeButton}
-            onPress={handleDelete}>
-            <MaterialIcon name="close" color={theme.colors.error} size={17} />
-          </OpacityButton>
-        </View>
-        {attachments?.map(attachment => {
-          return (
+    <View style={styles.cardContainer}>
+      <View style={styles.renderFileContainer}>
+        <Text style={styles.attachmentFileHeader}>Attachments</Text>
+      </View>
+      {attachments?.map((attachment, i) => {
+        return (
+          <View>
+            <OpacityButton
+              opacity={0.1}
+              color={theme.colors.error}
+              style={styles.closeButton}
+              onPress={() => handleDelete(i)}>
+              <MaterialIcon name="close" color={theme.colors.error} size={17} />
+            </OpacityButton>
             <View style={styles.sectionContainer}>
               <Image source={FileIcon} style={styles.fileIcon} />
               <View>
@@ -49,6 +50,47 @@ const RenderAttachments = props => {
                 </Text>
               </View>
             </View>
+          </View>
+        );
+      })}
+    </View>
+  );
+};
+
+const RenderAttachments = props => {
+  const {attachments, handleDelete} = props;
+
+  return (
+    <View>
+      <View style={styles.cardContainer}>
+        <View style={styles.renderFileContainer}>
+          <Text style={styles.attachmentFileHeader}>Attachments</Text>
+        </View>
+        {attachments?.map((attachment, i) => {
+          return (
+            <View>
+              <OpacityButton
+                opacity={0.1}
+                color={theme.colors.error}
+                style={styles.closeButton}
+                onPress={() => handleDelete(i)}>
+                <MaterialIcon
+                  name="close"
+                  color={theme.colors.error}
+                  size={17}
+                />
+              </OpacityButton>
+              <View style={styles.sectionContainer}>
+                <Image source={FileIcon} style={styles.fileIcon} />
+                <View>
+                  <Text
+                    style={(styles.verticalFlex, styles.text)}
+                    numberOfLines={2}>
+                    image.jpeg
+                  </Text>
+                </View>
+              </View>
+            </View>
           );
         })}
       </View>
@@ -57,7 +99,9 @@ const RenderAttachments = props => {
 };
 
 const MaterialDetailsForm = props => {
-  const {formikProps} = props;
+  const {formikProps, item} = props;
+  const {category_title, subcategory_title, unit_title} = item;
+  console.log('-------->item142', item);
 
   const {values, errors, handleChange, handleBlur} = formikProps;
 
@@ -65,9 +109,9 @@ const MaterialDetailsForm = props => {
     <View>
       <Subheading style={{color: theme.colors.primary}}>Category</Subheading>
       <View style={styles.subHeadingText}>
-        <Text>Brick-1 </Text>
+        <Text>{category_title}</Text>
         <MaterialIcon name="label" size={20} />
-        <Text> Bricks-2, Nos</Text>
+        <Text>{` ${subcategory_title}  ${unit_title}`}</Text>
       </View>
 
       <View style={styles.categoryDetailsContainer}>
@@ -102,8 +146,9 @@ const MaterialDetailsForm = props => {
 };
 
 function MaterialForm(props) {
-  const {formikProps, navigation} = props;
-  const {values, setFieldValue} = formikProps;
+  const {formikProps, materialCategory} = props;
+  const {values, errors, setFieldValue, handleSubmit} = formikProps;
+  console.log('-------->materialCategory123', materialCategory);
 
   const {openFilePicker} = useImagePicker();
 
@@ -111,18 +156,30 @@ function MaterialForm(props) {
     openFilePicker({
       type: 'file',
       onChoose: file => {
-        setFieldValue('attachments', file);
+        const attachments = values.materialAttachments || [];
+        attachments.push(file);
+        setFieldValue('materialAttachments', attachments);
+      },
+    });
+  };
+  const handleUploadDamage = () => {
+    openFilePicker({
+      type: 'file',
+      onChoose: file => {
+        const attachments = values.damageAttachments || [];
+        attachments.push(file);
+        setFieldValue('damageAttachments', attachments);
       },
     });
   };
 
-  const handleDelete = () => {
-    console.log('-------->inside delete');
-    setFieldValue('attachments', []);
+  const handleDelete = i => {
+    values.materialAttachments.splice(i, 1);
+    setFieldValue('materialAttachments', values.materialAttachments);
   };
-
-  const navToStepFour = () => {
-    navigation.navigate('AddVehicleInfo');
+  const handleDeleteDamage = i => {
+    values.damageAttachments.splice(i, 1);
+    setFieldValue('damageAttachments', values.damageAttachments);
   };
 
   return (
@@ -134,9 +191,7 @@ function MaterialForm(props) {
       <KeyboardAwareScrollView
         contentContainerStyle={styles.contentContainerStyle}>
         <View style={styles.dialogContent}>
-          {Data.map(item => {
-            return <MaterialDetailsForm item={item} {...props} />;
-          })}
+          <MaterialDetailsForm item={materialCategory} {...props} />
 
           <View>
             <Text style={styles.attachmentHeading}>Attachment</Text>
@@ -147,21 +202,53 @@ function MaterialForm(props) {
               color="#fff">
               <Text style={{color: theme.colors.primary}}>Upload File</Text>
             </OpacityButton>
+            <RenderError error={errors.materialAttachments} />
+          </View>
+          {values.materialAttachments?.length ? (
+            <RenderAttachments
+              attachments={values.materialAttachments}
+              handleDelete={i => handleDelete(i)}
+            />
+          ) : null}
+          <View>
+            <Text style={styles.damageAttachment}>Attachment</Text>
+            <OpacityButton
+              onPress={handleUploadDamage}
+              opacity={0.1}
+              style={styles.uploadButton}
+              color="#fff">
+              <Text style={{color: theme.colors.red}}>Upload File</Text>
+            </OpacityButton>
+            <RenderError error={errors.damageAttachments} />
           </View>
 
-          <RenderAttachments
-            attachments={[values.attachments]}
-            handleDelete={i => handleDelete(i)}
-          />
-          <ActionButtons onPress={navToStepFour} />
+          {values.damageAttachments?.length ? (
+            <RenderDamageAttachments
+              attachments={values.damageAttachments}
+              handleDelete={i => handleDeleteDamage(i)}
+            />
+          ) : null}
         </View>
+        <ActionButtons onPress={handleSubmit} />
       </KeyboardAwareScrollView>
     </>
   );
 }
 
 const AddMaterialInfo = props => {
-  const {handleSubmit} = props;
+  const {navigation, route} = props;
+  const {materialId} = route?.params || {};
+  const {selectedMaterialChallan} = useSelector(s => s.materialManagement);
+
+  const materialCategory = useMemo(() => {
+    return selectedMaterialChallan?.find(
+      i => i.material_request_id === materialId,
+    );
+  }, [materialId, selectedMaterialChallan]);
+
+  const navToStepFour = values => {
+    navigation.navigate('AddVehicleInfo', {...values, ...route?.params});
+  };
 
   return (
     <Formik
@@ -169,8 +256,14 @@ const AddMaterialInfo = props => {
       validateOnChange={false}
       initialValues={{}}
       validationSchema={schema}
-      onSubmit={handleSubmit}>
-      {formikProps => <MaterialForm {...{formikProps}} {...props} />}
+      onSubmit={navToStepFour}>
+      {formikProps => (
+        <MaterialForm
+          {...{formikProps}}
+          {...props}
+          materialCategory={materialCategory}
+        />
+      )}
     </Formik>
   );
 };
@@ -201,6 +294,10 @@ const styles = StyleSheet.create({
     color: theme.colors.primary,
     marginTop: 10,
   },
+  damageAttachment: {
+    color: theme.colors.red,
+    marginTop: 10,
+  },
   cardContainer: {
     padding: 10,
     backgroundColor: '#F2F4F5',
@@ -216,6 +313,7 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     borderRadius: 50,
+    alignSelf: 'flex-end',
   },
   attachmentFileHeader: {
     color: '#000',

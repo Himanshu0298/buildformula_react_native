@@ -1,9 +1,9 @@
-import * as React from 'react';
+import React, {useMemo} from 'react';
 import {Formik} from 'formik';
 import {withTheme} from 'react-native-paper';
 import {Image, StyleSheet, Text, View} from 'react-native';
 import * as Yup from 'yup';
-import RenderInput from 'components/Atoms/RenderInput';
+import RenderInput, {RenderError} from 'components/Atoms/RenderInput';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import {theme} from 'styles/theme';
@@ -11,13 +11,16 @@ import FileIcon from 'assets/images/file_icon.png';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useImagePicker} from 'hooks';
 import RenderTextBox from 'components/Atoms/RenderTextbox';
+import {useSelector} from 'react-redux';
+import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 import Header from '../../CommonComponents/Header';
 import ActionButtons from '../AddChallan/Components/ActionButtons';
 import Pagination from '../../CommonComponents/Pagination';
 
 const schema = Yup.object().shape({
-  driverName: Yup.number('Required').required('Required'),
-  vehicleNo: Yup.number('Required').required('Required'),
+  driverName: Yup.string('Required').required('Required'),
+  vehicleNo: Yup.string('Required').required('Required'),
+  vehicleAttachments: Yup.mixed().required('File is required'),
 });
 
 const RenderAttachments = props => {
@@ -28,24 +31,30 @@ const RenderAttachments = props => {
       <View style={styles.cardContainer}>
         <View style={styles.renderFileContainer}>
           <Text style={styles.attachmentFileHeader}>Attachments</Text>
-          <OpacityButton
-            opacity={0.1}
-            color={theme.colors.error}
-            style={styles.closeButton}
-            onPress={handleDelete}>
-            <MaterialIcon name="close" color={theme.colors.error} size={17} />
-          </OpacityButton>
         </View>
-        {attachments?.map(attachment => {
+        {attachments?.map((attachment, i) => {
           return (
-            <View style={styles.sectionContainer}>
-              <Image source={FileIcon} style={styles.fileIcon} />
-              <View>
-                <Text
-                  style={(styles.verticalFlex, styles.text)}
-                  numberOfLines={2}>
-                  image.jpeg
-                </Text>
+            <View>
+              <OpacityButton
+                opacity={0.1}
+                color={theme.colors.error}
+                style={styles.closeButton}
+                onPress={() => handleDelete(i)}>
+                <MaterialIcon
+                  name="close"
+                  color={theme.colors.error}
+                  size={17}
+                />
+              </OpacityButton>
+              <View style={styles.sectionContainer}>
+                <Image source={FileIcon} style={styles.fileIcon} />
+                <View>
+                  <Text
+                    style={(styles.verticalFlex, styles.text)}
+                    numberOfLines={2}>
+                    image.jpeg
+                  </Text>
+                </View>
               </View>
             </View>
           );
@@ -57,7 +66,14 @@ const RenderAttachments = props => {
 
 function ChallanForm(props) {
   const {formikProps, navigation} = props;
-  const {values, errors, handleChange, handleBlur, setFieldValue} = formikProps;
+  const {
+    values,
+    handleSubmit,
+    errors,
+    handleChange,
+    handleBlur,
+    setFieldValue,
+  } = formikProps;
 
   const {openFilePicker} = useImagePicker();
 
@@ -65,18 +81,16 @@ function ChallanForm(props) {
     openFilePicker({
       type: 'file',
       onChoose: file => {
-        setFieldValue('attachments', file);
+        const attachments = values.vehicleAttachments || [];
+        attachments.push(file);
+        setFieldValue('vehicleAttachments', attachments);
       },
     });
   };
 
-  const handleDelete = () => {
-    console.log('-------->inside delete');
-    setFieldValue('attachments', []);
-  };
-
-  const navToSubmit = () => {
-    navigation.navigate('');
+  const handleDelete = i => {
+    values.vehicleAttachments.splice(i, 1);
+    setFieldValue('vehicleAttachments', values.vehicleAttachments);
   };
 
   return (
@@ -128,13 +142,15 @@ function ChallanForm(props) {
               color="#fff">
               <Text style={{color: theme.colors.primary}}>Upload File</Text>
             </OpacityButton>
+            <RenderError error={errors.vehicleAttachments} />
           </View>
-
-          <RenderAttachments
-            attachments={[values.attachments]}
-            handleDelete={i => handleDelete(i)}
-          />
-          <ActionButtons onPress={navToSubmit} submitLabel="Save" />
+          {values.vehicleAttachments?.length ? (
+            <RenderAttachments
+              attachments={values.vehicleAttachments}
+              handleDelete={i => handleDelete(i)}
+            />
+          ) : null}
+          <ActionButtons onPress={handleSubmit} submitLabel="Save" />
         </View>
       </KeyboardAwareScrollView>
     </>
@@ -142,7 +158,40 @@ function ChallanForm(props) {
 }
 
 const AddVehicleInfo = props => {
-  const {handleSubmit} = props;
+  const {navigation, route} = props;
+
+  const {
+    material_order_no,
+    attachments,
+    damageAttachments,
+    materialAttachments,
+    selectedMaterial,
+  } = route?.params || {};
+  console.log('-------->Vehicleroute?.params', route?.params);
+
+  const {selectedProject} = useSelector(s => s.project);
+  const {addMaterialChallan} = useMaterialManagementActions();
+
+  const navToSubmit = async values => {
+    const formData = new FormData();
+
+    formData.append('project_id', selectedProject.id);
+    formData.append('material_order_no', material_order_no);
+    formData.append('driver_name', values.driverName);
+    formData.append('materials', selectedMaterial);
+    formData.append('vehicle_number', values.vehicleNo);
+    formData.append('challan_remark', values.remark);
+    formData.append('challan_images[]', attachments);
+    formData.append('damageMaterial_images[]', damageAttachments);
+    formData.append('material_images[]', materialAttachments);
+    formData.append('material_images[]', materialAttachments);
+    formData.append('vehicle_images[]', values.vehicleAttachments);
+
+    await addMaterialChallan(formData);
+    // loadData();
+
+    navigation.goBack();
+  };
 
   return (
     <Formik
@@ -150,7 +199,7 @@ const AddVehicleInfo = props => {
       validateOnChange={false}
       initialValues={{}}
       validationSchema={schema}
-      onSubmit={handleSubmit}>
+      onSubmit={navToSubmit}>
       {formikProps => <ChallanForm {...{formikProps}} {...props} />}
     </Formik>
   );
@@ -193,6 +242,7 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     borderRadius: 50,
+    alignSelf: 'flex-end',
   },
   attachmentFileHeader: {
     color: '#000',
