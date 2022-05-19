@@ -10,8 +10,8 @@ import {theme} from 'styles/theme';
 import FileIcon from 'assets/images/file_icon.png';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useImagePicker} from 'hooks';
+import ActionButtons from 'components/Atoms/ActionButtons';
 import Header from '../../CommonComponents/Header';
-import ActionButtons from './Components/ActionButtons';
 import Pagination from '../../CommonComponents/Pagination';
 
 const schema = Yup.object().shape({
@@ -29,30 +29,30 @@ const RenderAttachments = props => {
         <View style={styles.renderFileContainer}>
           <Text style={styles.attachmentFileHeader}>Attachments</Text>
         </View>
-        {attachments?.map((attachment, i) => {
+        {attachments?.map((attachment, index, i) => {
           return (
             <View>
+              <View style={styles.sectionContainer}>
+                <Image source={FileIcon} style={styles.fileIcon} />
+                <View>
+                  <Text
+                    style={(styles.verticalFlex, styles.text)}
+                    numberOfLines={1}>
+                    {attachment.name}
+                  </Text>
+                </View>
+              </View>
               <OpacityButton
                 opacity={0.1}
                 color={theme.colors.error}
                 style={styles.closeButton}
-                onPress={() => handleDelete(i)}>
+                onPress={() => handleDelete(index)}>
                 <MaterialIcon
                   name="close"
                   color={theme.colors.error}
                   size={17}
                 />
               </OpacityButton>
-              <View style={styles.sectionContainer}>
-                <Image source={FileIcon} style={styles.fileIcon} />
-                <View>
-                  <Text
-                    style={(styles.verticalFlex, styles.text)}
-                    numberOfLines={2}>
-                    image.jpeg
-                  </Text>
-                </View>
-              </View>
             </View>
           );
         })}
@@ -62,7 +62,7 @@ const RenderAttachments = props => {
 };
 
 function ChallanForm(props) {
-  const {formikProps, navigation} = props;
+  const {formikProps} = props;
   const {
     values,
     errors,
@@ -94,39 +94,42 @@ function ChallanForm(props) {
     <>
       <View style={styles.headerContainer}>
         <Header title="Challan Info" {...props} />
-        <Pagination />
+        <Pagination title="Page 1 of 3" />
       </View>
       <KeyboardAwareScrollView
         contentContainerStyle={styles.contentContainerStyle}>
         <View style={styles.dialogContent}>
-          <RenderInput
-            name="challan"
-            label="Challan No"
-            numberOfLines={3}
-            containerStyles={styles.input}
-            value={values.challan}
-            onChangeText={handleChange('challan')}
-            onBlur={handleBlur('challan')}
-            error={errors.challan}
-          />
           <View>
-            <Text style={{color: theme.colors.primary}}>Attachment</Text>
-            <OpacityButton
-              onPress={handleUpload}
-              opacity={0.1}
-              style={styles.uploadButton}
-              color="#fff">
-              <Text style={{color: theme.colors.primary}}>Upload File</Text>
-            </OpacityButton>
-            <RenderError error={errors.attachments} />
-          </View>
-          {values.attachments?.length ? (
-            <RenderAttachments
-              attachments={values.attachments}
-              handleDelete={i => handleDelete(i)}
+            <RenderInput
+              name="challan"
+              label="Challan No"
+              numberOfLines={3}
+              containerStyles={styles.input}
+              value={values.challan}
+              onChangeText={handleChange('challan')}
+              onBlur={handleBlur('challan')}
+              error={errors.challan}
             />
-          ) : null}
-          <ActionButtons onPress={handleSubmit} />
+            <View>
+              <Text style={{color: theme.colors.primary}}>Attachment</Text>
+              <OpacityButton
+                onPress={handleUpload}
+                opacity={0.1}
+                style={styles.uploadButton}
+                color="#fff">
+                <Text style={{color: theme.colors.primary}}>Upload File</Text>
+              </OpacityButton>
+              <RenderError error={errors.attachments} />
+            </View>
+            {values.attachments?.length ? (
+              <RenderAttachments
+                attachments={values.attachments}
+                handleDelete={i => handleDelete(i)}
+              />
+            ) : null}
+          </View>
+
+          <ActionButtons onSubmit={handleSubmit} submitLabel="Next" />
         </View>
       </KeyboardAwareScrollView>
     </>
@@ -135,7 +138,6 @@ function ChallanForm(props) {
 
 const AddChallan = props => {
   const {route, navigation} = props;
-  const {material_order_no} = route?.params || {};
 
   const navToStepTwo = values => {
     navigation.navigate('SelectMaterials', {...values, ...route.params});
@@ -157,6 +159,7 @@ const styles = StyleSheet.create({
   dialogContent: {
     paddingHorizontal: 15,
     flexGrow: 1,
+    justifyContent: 'space-between',
   },
   input: {
     marginVertical: 10,
@@ -191,6 +194,7 @@ const styles = StyleSheet.create({
   closeButton: {
     borderRadius: 50,
     alignSelf: 'flex-end',
+    position: 'absolute',
   },
   attachmentFileHeader: {
     color: '#000',
@@ -207,6 +211,7 @@ const styles = StyleSheet.create({
     marginVertical: 7,
     marginHorizontal: 7,
     flexGrow: 1,
+    position: 'relative',
   },
 
   renderFileContainer: {

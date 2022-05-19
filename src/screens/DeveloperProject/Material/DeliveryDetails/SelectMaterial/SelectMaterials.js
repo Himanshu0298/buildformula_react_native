@@ -1,5 +1,7 @@
+import ActionButtons from 'components/Atoms/ActionButtons';
 import CustomCheckbox from 'components/Atoms/CustomCheckbox';
 import NoResult from 'components/Atoms/NoResult';
+import {useSnackbar} from 'components/Atoms/Snackbar';
 import React, {useState} from 'react';
 import {FlatList, RefreshControl, StyleSheet, Text, View} from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -7,7 +9,6 @@ import {Subheading, withTheme} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 import {theme} from 'styles/theme';
-import ActionButtons from '../AddChallan/Components/ActionButtons';
 
 const HeaderTitle = () => {
   return (
@@ -42,6 +43,8 @@ const MaterialData = props => {
 function SelectMaterials(props) {
   const {navigation, route} = props;
   const {materialId} = route?.params || {};
+
+  const snackbar = useSnackbar();
   const {getSelectMaterialChallan} = useMaterialManagementActions();
 
   const {selectedMaterialChallan, loading} = useSelector(
@@ -49,7 +52,7 @@ function SelectMaterials(props) {
   );
   const {selectedProject} = useSelector(s => s.project);
 
-  const [selectedMaterial = 0, setSelectedMaterial] = useState([]);
+  const [selectedMaterial, setSelectedMaterial] = useState([]);
 
   React.useEffect(() => {
     getSelectMaterialChallan({
@@ -68,11 +71,19 @@ function SelectMaterials(props) {
     } else {
       _selectedMaterial.splice(index, 1);
     }
-
     setSelectedMaterial(_selectedMaterial);
   };
 
   const navToStepThree = () => {
+    if (!selectedMaterial.length) {
+      snackbar.showMessage({
+        message: 'Please select material to proceed',
+        variant: 'warning',
+      });
+
+      return;
+    }
+
     navigation.navigate('AddMaterialInfo', {
       selectedMaterial,
       ...route.params,
@@ -91,7 +102,6 @@ function SelectMaterials(props) {
         Select materials which is right now
       </Subheading>
       <HeaderTitle />
-
       <Spinner visible={loading} textContent="" />
       <FlatList
         data={selectedMaterialChallan}
@@ -116,7 +126,7 @@ function SelectMaterials(props) {
       />
       <ActionButtons
         style={styles.actionButton}
-        onPress={navToStepThree}
+        onSubmit={navToStepThree}
         submitLabel="Select"
       />
     </View>

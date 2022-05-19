@@ -12,6 +12,7 @@ function getDuration(start, end) {
   if (start && end) {
     return `${dayjs(end).diff(dayjs(start), 'd')} days`;
   }
+  return null;
 }
 
 const schema = Yup.object().shape({});
@@ -69,8 +70,9 @@ function PlanningDatePanel(props) {
 
   const toggleDialog = () => setDialog(v => !v);
 
-  const handleSubmit = () => {};
-
+  const handleSubmit = () => {
+    console.log('-------->', handleSubmit);
+  };
   return (
     <View style={styles.container}>
       {dialog ? (

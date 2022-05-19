@@ -77,8 +77,9 @@ function AttachmentsPanel(props) {
 
   const toggleDialog = () => setDialog(v => !v);
 
-  const handleSubmit = () => {};
-
+  const handleSubmit = () => {
+    console.log('-------->', handleSubmit);
+  };
   return (
     <View style={styles.container}>
       {dialog ? (

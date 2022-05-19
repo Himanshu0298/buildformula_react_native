@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import React from 'react';
 import {Formik} from 'formik';
 import {withTheme} from 'react-native-paper';
 import {Image, StyleSheet, Text, View} from 'react-native';
@@ -13,8 +13,9 @@ import {useImagePicker} from 'hooks';
 import RenderTextBox from 'components/Atoms/RenderTextbox';
 import {useSelector} from 'react-redux';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
+import ActionButtons from 'components/Atoms/ActionButtons';
+import TextInputMask from 'react-native-text-input-mask';
 import Header from '../../CommonComponents/Header';
-import ActionButtons from '../AddChallan/Components/ActionButtons';
 import Pagination from '../../CommonComponents/Pagination';
 
 const schema = Yup.object().shape({
@@ -51,8 +52,8 @@ const RenderAttachments = props => {
                 <View>
                   <Text
                     style={(styles.verticalFlex, styles.text)}
-                    numberOfLines={2}>
-                    image.jpeg
+                    numberOfLines={1}>
+                    {attachment.name}
                   </Text>
                 </View>
               </View>
@@ -65,7 +66,7 @@ const RenderAttachments = props => {
 };
 
 function ChallanForm(props) {
-  const {formikProps, navigation} = props;
+  const {formikProps} = props;
   const {
     values,
     handleSubmit,
@@ -97,60 +98,63 @@ function ChallanForm(props) {
     <>
       <View style={styles.headerContainer}>
         <Header title="Vehicle Info" {...props} />
-        <Pagination />
+        <Pagination title="Page 3 of 3" />
       </View>
       <KeyboardAwareScrollView
         contentContainerStyle={styles.contentContainerStyle}>
         <View style={styles.dialogContent}>
-          <RenderInput
-            name="driverName"
-            label="Driver Name"
-            numberOfLines={3}
-            containerStyles={styles.input}
-            value={values.driverName}
-            onChangeText={handleChange('driverName')}
-            onBlur={handleBlur('driverName')}
-            error={errors.driverName}
-          />
-          <RenderInput
-            name="vehicleNo"
-            label="Vehicle No"
-            numberOfLines={3}
-            containerStyles={styles.input}
-            value={values.vehicleNo}
-            onChangeText={handleChange('vehicleNo')}
-            onBlur={handleBlur('vehicleNo')}
-            error={errors.vehicleNo}
-          />
-          <RenderTextBox
-            name="remark"
-            label="Challan Remark"
-            containerStyles={styles.input}
-            value={values.remark}
-            onChangeText={handleChange('remark')}
-            numberOfLines={4}
-            onBlur={handleBlur('remark')}
-            error={errors.remark}
-          />
-
           <View>
-            <Text style={{color: theme.colors.primary}}>Attachment</Text>
-            <OpacityButton
-              onPress={handleUpload}
-              opacity={0.1}
-              style={styles.uploadButton}
-              color="#fff">
-              <Text style={{color: theme.colors.primary}}>Upload File</Text>
-            </OpacityButton>
-            <RenderError error={errors.vehicleAttachments} />
-          </View>
-          {values.vehicleAttachments?.length ? (
-            <RenderAttachments
-              attachments={values.vehicleAttachments}
-              handleDelete={i => handleDelete(i)}
+            <RenderInput
+              name="driverName"
+              label="Driver Name"
+              containerStyles={styles.input}
+              value={values.driverName}
+              onChangeText={handleChange('driverName')}
+              onBlur={handleBlur('driverName')}
+              error={errors.driverName}
             />
-          ) : null}
-          <ActionButtons onPress={handleSubmit} submitLabel="Save" />
+            <RenderInput
+              name="vehicleNo"
+              label="Vehicle No"
+              containerStyles={styles.input}
+              value={values.vehicleNo}
+              onBlur={handleBlur('vehicleNo')}
+              onChangeText={handleChange('vehicleNo')}
+              error={errors.vehicleNo}
+              render={inputProps => (
+                <TextInputMask {...inputProps} mask="[AA]-[00]-[AA]-[0000]" />
+              )}
+            />
+            <RenderTextBox
+              name="remark"
+              label="Challan Remark"
+              containerStyles={styles.input}
+              value={values.remark}
+              onChangeText={handleChange('remark')}
+              numberOfLines={4}
+              onBlur={handleBlur('remark')}
+              error={errors.remark}
+            />
+
+            <View>
+              <Text style={{color: theme.colors.primary}}>Attachment</Text>
+              <OpacityButton
+                onPress={handleUpload}
+                opacity={0.1}
+                style={styles.uploadButton}
+                color="#fff">
+                <Text style={{color: theme.colors.primary}}>Upload File</Text>
+              </OpacityButton>
+              <RenderError error={errors.vehicleAttachments} />
+            </View>
+            {values.vehicleAttachments?.length ? (
+              <RenderAttachments
+                attachments={values.vehicleAttachments}
+                handleDelete={i => handleDelete(i)}
+              />
+            ) : null}
+          </View>
+          <ActionButtons onSubmit={handleSubmit} submitLabel="Save" />
         </View>
       </KeyboardAwareScrollView>
     </>
@@ -165,30 +169,73 @@ const AddVehicleInfo = props => {
     attachments,
     damageAttachments,
     materialAttachments,
-    selectedMaterial,
+    challan,
+    materials,
   } = route?.params || {};
   console.log('-------->Vehicleroute?.params', route?.params);
 
   const {selectedProject} = useSelector(s => s.project);
-  const {addMaterialChallan} = useMaterialManagementActions();
+  const {addMaterialChallan, getMaterialChallanList} =
+    useMaterialManagementActions();
+
+  React.useEffect(() => {
+    loadData(); // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const loadData = () => {
+    return getMaterialChallanList({
+      project_id: selectedProject.id,
+      material_order_no,
+    });
+  };
+
+  console.log('-------->challan', challan);
 
   const navToSubmit = async values => {
     const formData = new FormData();
 
+    const materialData = materials.map(i => ({
+      material_requests_items_id: i.id,
+      approved_quantity: i.quantity,
+      damaged_quantity: i.damaged,
+    }));
+
+    attachments.map(item => {
+      formData.append('challan_images[]', item);
+      return item;
+    });
+    damageAttachments.map(item => {
+      formData.append('damageMaterial_images[]', item);
+      return item;
+    });
+    materialAttachments.map(item => {
+      formData.append('material_images[]', item);
+      return item;
+    });
+    values.vehicleAttachments.map(item => {
+      formData.append('vehicle_images[]', item);
+      return item;
+    });
+
+    //   item.map((val) => {
+    //     FormData.append("image", {
+    //         uri: val.uri,
+    //         type: val.type,
+    //         name: val.fileName
+    //     });
+    // });
+
     formData.append('project_id', selectedProject.id);
     formData.append('material_order_no', material_order_no);
+    formData.append('challan_no', challan);
     formData.append('driver_name', values.driverName);
-    formData.append('materials', selectedMaterial);
+    formData.append('materials', JSON.stringify(materialData));
     formData.append('vehicle_number', values.vehicleNo);
     formData.append('challan_remark', values.remark);
-    formData.append('challan_images[]', attachments);
-    formData.append('damageMaterial_images[]', damageAttachments);
-    formData.append('material_images[]', materialAttachments);
-    formData.append('material_images[]', materialAttachments);
-    formData.append('vehicle_images[]', values.vehicleAttachments);
+    formData.append('edit_challan_id', 0);
 
     await addMaterialChallan(formData);
-    // loadData();
+    loadData();
 
     navigation.goBack();
   };
@@ -209,6 +256,7 @@ const styles = StyleSheet.create({
   dialogContent: {
     paddingHorizontal: 15,
     flexGrow: 1,
+    justifyContent: 'space-between',
   },
   input: {
     marginVertical: 10,

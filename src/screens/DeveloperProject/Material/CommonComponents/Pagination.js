@@ -2,10 +2,11 @@ import * as React from 'react';
 import {withTheme} from 'react-native-paper';
 import {StyleSheet, Text, View} from 'react-native';
 
-const Pagination = () => {
+const Pagination = props => {
+  const {title} = props;
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Page 1 of 3</Text>
+      <Text style={styles.text}>{title}</Text>
     </View>
   );
 };

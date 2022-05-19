@@ -15,8 +15,13 @@ export default function useMaterialManagement() {
       return instance.post('/materialChallanDetails', data, params);
     },
     addMaterialChallan: data => {
-      return instance.post('/material/addEditChallan', data, params);
+      return instance.post(
+        '/material/addEditChallan',
+        data,
+        config({multipart: true}),
+      );
     },
+
     getSelectMaterialChallan: data => {
       return instance.post('/getChallanMaterial', data, params);
     },
