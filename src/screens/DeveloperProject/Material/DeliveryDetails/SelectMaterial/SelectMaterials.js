@@ -128,6 +128,7 @@ function SelectMaterials(props) {
         style={styles.actionButton}
         onSubmit={navToStepThree}
         submitLabel="Select"
+        onCancel={() => navigation.goBack()}
       />
     </View>
   );

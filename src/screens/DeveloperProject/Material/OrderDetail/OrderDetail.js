@@ -8,16 +8,9 @@ import {useSelector} from 'react-redux';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 import {getShadow} from 'utils';
 import {MODIFY_REQUEST_STATUS} from 'utils/constant';
+import dayjs from 'dayjs';
 import {theme} from '../../../../styles/theme';
 import Header from '../CommonComponents/Header';
-
-const UPDATED_BY = [
-  {
-    label: 'Updated by',
-    value: 'Nilesh Gupta',
-    subValue: 'rinkupoonia162@gmail.com',
-  },
-];
 
 const RenderRow = props => {
   const {item, containerStyle} = props;
@@ -32,13 +25,19 @@ const RenderRow = props => {
 
 const ChallanSection = props => {
   const {item} = props;
+  const {created} = item;
   return (
     <View style={styles.challanContainer}>
       <View style={styles.challanSection}>
         <RenderRow
           item={{label: 'Challan Number', value: item.challan_number}}
         />
-        <RenderRow item={{label: 'Delivery Date', value: '1/1/2022'}} />
+        <RenderRow
+          item={{
+            label: 'Delivery Date',
+            value: dayjs(created).format('DD MMM YYYY'),
+          }}
+        />
       </View>
     </View>
   );
@@ -46,6 +45,7 @@ const ChallanSection = props => {
 
 const Created = props => {
   const {item} = props;
+
   return (
     <View style={styles.createdContainer}>
       <RenderRow
@@ -58,12 +58,18 @@ const Created = props => {
     </View>
   );
 };
-const Updated = () => {
+const Updated = props => {
+  const {item} = props;
+
   return (
     <View style={styles.updatedContainer}>
-      {UPDATED_BY.map(item => {
-        return <RenderRow item={item} />;
-      })}
+      <RenderRow
+        item={{
+          label: 'Updated by',
+          value: `${item.first_name} ${item.last_name}`,
+          subValue: item.email,
+        }}
+      />
     </View>
   );
 };
@@ -122,7 +128,7 @@ const CommonCard = props => {
       <Created item={item} />
       <Divider style={styles.divider} />
       <View style={styles.statusContainer}>
-        <Updated />
+        <Updated item={item} />
         <View style={styles.statusHeading}>
           <Caption> Status</Caption>
           <Text
@@ -150,7 +156,6 @@ const OrderDetail = props => {
   const {navigation, route} = props;
 
   const {material_order_no, materialId} = route?.params || {};
-  console.log('-------->materialId', materialId);
 
   const {getMaterialChallanList} = useMaterialManagementActions();
   const {materialChallanList, materialOrderList, loading} = useSelector(

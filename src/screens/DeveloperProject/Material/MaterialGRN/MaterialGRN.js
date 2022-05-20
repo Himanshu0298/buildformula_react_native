@@ -18,7 +18,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 
 const OrderDetails = props => {
   const {item} = props;
-  const {material_order_no} = item;
+  const {material_order_no, total_material_charges} = item;
 
   return (
     <View style={styles.orderContainer}>
@@ -32,7 +32,7 @@ const OrderDetails = props => {
           <Text
             style={{
               color: theme.colors.primary,
-            }}>{`₹${' 15'}`}</Text>
+            }}>{`₹ ${total_material_charges}`}</Text>
         </View>
       </View>
     </View>
@@ -127,7 +127,6 @@ export default MaterialGRN;
 
 const styles = StyleSheet.create({
   cardContainer: {
-    // backgroundColor: '#999999',
     padding: 5,
     backgroundColor: '#fff',
     ...getShadow(2),

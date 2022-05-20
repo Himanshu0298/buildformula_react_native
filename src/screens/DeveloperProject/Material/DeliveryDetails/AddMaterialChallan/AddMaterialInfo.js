@@ -107,7 +107,6 @@ const MaterialDetailsForm = props => {
   const {values, errors: allErrors, setFieldValue} = formikProps;
 
   const errors = allErrors?.materials?.[index] || {};
-  console.log('-------->allErrors', allErrors);
 
   const {id, quantity, damaged} = item;
 
@@ -125,8 +124,6 @@ const MaterialDetailsForm = props => {
 
     setFieldValue('materials', _updatedMaterials);
   };
-
-  console.log('-------->errors', errors);
 
   return (
     <View>
@@ -167,13 +164,13 @@ const MaterialDetailsForm = props => {
 };
 
 function MaterialForm(props) {
-  const {formikProps, selectedMaterialChallan, selectedMaterial} = props;
+  const {formikProps, selectedMaterialChallan, navigation} = props;
   const {values, errors, setFieldValue, handleSubmit} = formikProps;
 
-  const {openFilePicker} = useImagePicker();
+  const {openImagePicker} = useImagePicker();
 
   const handleUpload = () => {
-    openFilePicker({
+    openImagePicker({
       type: 'file',
       onChoose: file => {
         const attachments = values.materialAttachments || [];
@@ -184,7 +181,7 @@ function MaterialForm(props) {
   };
 
   const handleUploadDamage = () => {
-    openFilePicker({
+    openImagePicker({
       type: 'file',
       onChoose: file => {
         const attachments = values.damageAttachments || [];
@@ -257,7 +254,11 @@ function MaterialForm(props) {
               />
             ) : null}
           </View>
-          <ActionButtons onSubmit={handleSubmit} submitLabel="Next" />
+          <ActionButtons
+            onSubmit={handleSubmit}
+            submitLabel="Next"
+            onCancel={() => navigation.goBack()}
+          />
         </View>
       </KeyboardAwareScrollView>
     </>

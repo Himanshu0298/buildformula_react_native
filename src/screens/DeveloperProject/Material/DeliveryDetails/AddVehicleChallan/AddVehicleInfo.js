@@ -36,6 +36,16 @@ const RenderAttachments = props => {
         {attachments?.map((attachment, i) => {
           return (
             <View>
+              <View style={styles.sectionContainer}>
+                <Image source={FileIcon} style={styles.fileIcon} />
+                <View>
+                  <Text
+                    style={(styles.verticalFlex, styles.text)}
+                    numberOfLines={1}>
+                    {attachment.name}
+                  </Text>
+                </View>
+              </View>
               <OpacityButton
                 opacity={0.1}
                 color={theme.colors.error}
@@ -47,16 +57,6 @@ const RenderAttachments = props => {
                   size={17}
                 />
               </OpacityButton>
-              <View style={styles.sectionContainer}>
-                <Image source={FileIcon} style={styles.fileIcon} />
-                <View>
-                  <Text
-                    style={(styles.verticalFlex, styles.text)}
-                    numberOfLines={1}>
-                    {attachment.name}
-                  </Text>
-                </View>
-              </View>
             </View>
           );
         })}
@@ -66,7 +66,7 @@ const RenderAttachments = props => {
 };
 
 function ChallanForm(props) {
-  const {formikProps} = props;
+  const {formikProps, navigation} = props;
   const {
     values,
     handleSubmit,
@@ -76,10 +76,10 @@ function ChallanForm(props) {
     setFieldValue,
   } = formikProps;
 
-  const {openFilePicker} = useImagePicker();
+  const {openImagePicker} = useImagePicker();
 
   const handleUpload = () => {
-    openFilePicker({
+    openImagePicker({
       type: 'file',
       onChoose: file => {
         const attachments = values.vehicleAttachments || [];
@@ -154,7 +154,11 @@ function ChallanForm(props) {
               />
             ) : null}
           </View>
-          <ActionButtons onSubmit={handleSubmit} submitLabel="Save" />
+          <ActionButtons
+            onSubmit={handleSubmit}
+            submitLabel="Save"
+            onCancel={() => navigation.goBack()}
+          />
         </View>
       </KeyboardAwareScrollView>
     </>
@@ -172,7 +176,6 @@ const AddVehicleInfo = props => {
     challan,
     materials,
   } = route?.params || {};
-  console.log('-------->Vehicleroute?.params', route?.params);
 
   const {selectedProject} = useSelector(s => s.project);
   const {addMaterialChallan, getMaterialChallanList} =
@@ -188,8 +191,6 @@ const AddVehicleInfo = props => {
       material_order_no,
     });
   };
-
-  console.log('-------->challan', challan);
 
   const navToSubmit = async values => {
     const formData = new FormData();
@@ -217,14 +218,6 @@ const AddVehicleInfo = props => {
       return item;
     });
 
-    //   item.map((val) => {
-    //     FormData.append("image", {
-    //         uri: val.uri,
-    //         type: val.type,
-    //         name: val.fileName
-    //     });
-    // });
-
     formData.append('project_id', selectedProject.id);
     formData.append('material_order_no', material_order_no);
     formData.append('challan_no', challan);
@@ -236,8 +229,7 @@ const AddVehicleInfo = props => {
 
     await addMaterialChallan(formData);
     loadData();
-
-    navigation.goBack();
+    navigation.popToTop();
   };
 
   return (
@@ -291,6 +283,7 @@ const styles = StyleSheet.create({
   closeButton: {
     borderRadius: 50,
     alignSelf: 'flex-end',
+    position: 'absolute',
   },
   attachmentFileHeader: {
     color: '#000',

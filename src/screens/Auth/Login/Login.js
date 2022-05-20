@@ -207,7 +207,7 @@ function Login(props) {
       initialValues={{}}
       validationSchema={schema}
       onSubmit={onSubmit}>
-      {({handleChange, values, handleSubmit, handleBlur, isValid, errors}) => (
+      {({handleChange, values, handleSubmit, handleBlur, errors}) => (
         <TouchableWithoutFeedback
           onPress={() => Keyboard.dismiss()}
           style={styles.container}>

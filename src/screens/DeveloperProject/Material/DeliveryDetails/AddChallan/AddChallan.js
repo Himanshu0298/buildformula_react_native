@@ -62,7 +62,7 @@ const RenderAttachments = props => {
 };
 
 function ChallanForm(props) {
-  const {formikProps} = props;
+  const {formikProps, navigation} = props;
   const {
     values,
     errors,
@@ -72,10 +72,10 @@ function ChallanForm(props) {
     setFieldValue,
   } = formikProps;
 
-  const {openFilePicker} = useImagePicker();
+  const {openImagePicker} = useImagePicker();
 
   const handleUpload = () => {
-    openFilePicker({
+    openImagePicker({
       type: 'file',
       onChoose: file => {
         const attachments = values.attachments || [];
@@ -129,7 +129,11 @@ function ChallanForm(props) {
             ) : null}
           </View>
 
-          <ActionButtons onSubmit={handleSubmit} submitLabel="Next" />
+          <ActionButtons
+            onSubmit={handleSubmit}
+            submitLabel="Next"
+            onCancel={() => navigation.goBack()}
+          />
         </View>
       </KeyboardAwareScrollView>
     </>
