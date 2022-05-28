@@ -31,6 +31,7 @@ import {
   HOLD_UNIT_BOOKING,
   GET_HOLD_BOOKING_DETAILS,
   UN_HOLD_UNIT_BOOKING,
+  GET_INTERESTED_PROPERTY,
 } from '../actions/actionTypes';
 
 const initialState = {
@@ -58,6 +59,7 @@ const initialState = {
   occupationOptions: [],
   sourceTypeOptions: [],
   inquiryOptions: [],
+  interestedOptions: [],
   assignOptions: [],
   visitorAnalytics: {},
   visitorSuggestions: [],
@@ -154,6 +156,30 @@ const reducer = (state = initialState, action = {}) => {
         errorMessage: payload,
       };
 
+    //
+
+    case `${GET_INTERESTED_PROPERTY}_PENDING`:
+      return {
+        ...state,
+        loadingSalesData: true,
+      };
+    case `${GET_INTERESTED_PROPERTY}_FULFILLED`: {
+      console.log('-------->payload', payload);
+      return {
+        ...state,
+        loadingSalesData: false,
+        interestedOptions: payload?.map(i => ({value: i, label: i})),
+      };
+    }
+    case `${GET_INTERESTED_PROPERTY}_REJECTED`:
+      return {
+        ...state,
+        loadingSalesData: false,
+        errorMessage: payload,
+      };
+
+    //
+
     case `${GET_VISITORS}_PENDING`:
       return {
         ...state,
@@ -191,8 +217,12 @@ const reducer = (state = initialState, action = {}) => {
 
       return {
         ...state,
+
         loadingVisitor: false,
-        visitor: payload.visitors,
+        visitor: {
+          ...payload.visitors,
+          intrestedIn: payload.selected_interested_list,
+        },
         visitorFollowUp,
       };
     }

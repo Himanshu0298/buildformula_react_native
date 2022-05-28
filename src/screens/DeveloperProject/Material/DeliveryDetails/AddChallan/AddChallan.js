@@ -21,7 +21,6 @@ const schema = Yup.object().shape({
 
 const RenderAttachments = props => {
   const {attachments, handleDelete} = props;
-  console.log('-------->attachments', attachments);
 
   return (
     <View>
@@ -29,9 +28,9 @@ const RenderAttachments = props => {
         <View style={styles.renderFileContainer}>
           <Text style={styles.attachmentFileHeader}>Attachments</Text>
         </View>
-        {attachments?.map((attachment, index, i) => {
+        {attachments?.map((attachment, index) => {
           return (
-            <View>
+            <View key={attachment.name}>
               <View style={styles.sectionContainer}>
                 <Image source={FileIcon} style={styles.fileIcon} />
                 <View>

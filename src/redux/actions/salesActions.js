@@ -38,6 +38,7 @@ export default function useSalesActions() {
     addBroker,
     updateBroker,
     getBrokerDetails,
+    getVisitorInterestedProperty,
   } = useSalesServices();
 
   return {
@@ -140,7 +141,25 @@ export default function useSalesActions() {
           }
         },
       }),
+    getVisitorInterestedProperty: params => {
+      console.log('-------->params', params);
+      dispatch({
+        type: types.GET_INTERESTED_PROPERTY,
+        payload: async () => {
+          try {
+            const response = _res(await getVisitorInterestedProperty(params));
+            const {data} = response;
 
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      });
+    },
+    // console.log('-------->params',params)
     addVisitorComment: params =>
       dispatch({
         type: types.ADD_VISITOR_COMMENT,

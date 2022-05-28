@@ -5,14 +5,8 @@ import FileIcon from 'assets/images/file_icon.png';
 import NoResult from 'components/Atoms/NoResult';
 
 const VehicleInfo = props => {
-  const {vehicleInfo} = props;
-  const {
-    driver_name,
-    vehicle_number,
-    challan_remark,
-    challan_file = [],
-  } = vehicleInfo || {};
-  console.log('-------->vehicleInfo', vehicleInfo);
+  const {vehicleInfo, vehicleAttachments} = props;
+  const {driver_name, vehicle_number, challan_remark} = vehicleInfo || {};
   return (
     <View style={styles.infoContainer}>
       <Subheading style={styles.infoHeading}>Vehicle Info</Subheading>
@@ -38,14 +32,14 @@ const VehicleInfo = props => {
           // onPress={() => onPressFile(file)}
         >
           <Image source={FileIcon} style={styles.fileIcon} />
-          {challan_file?.length ? (
-            challan_file?.map((item, index) => {
+          {vehicleAttachments?.length ? (
+            vehicleAttachments?.map((item, index) => {
               return (
-                <View>
+                <View key={item.id}>
                   <Text
                     style={(styles.verticalFlex, styles.text)}
                     numberOfLines={2}>
-                    Vehicle File{index + 1}
+                    Vehicle File {index + 1}
                   </Text>
                 </View>
               );

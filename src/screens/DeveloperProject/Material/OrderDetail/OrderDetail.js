@@ -207,6 +207,7 @@ const OrderDetail = props => {
             <CommonCard
               {...props}
               item={item}
+              key={item.id}
               challanList={materialChallanList}
               materialOrderNo={material_order_no}
             />

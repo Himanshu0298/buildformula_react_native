@@ -75,4 +75,5 @@ module.exports = {
       'babel-module': {},
     },
   },
+  globals: {__DEV__: true},
 };

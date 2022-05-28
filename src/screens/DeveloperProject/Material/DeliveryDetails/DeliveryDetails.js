@@ -12,22 +12,38 @@ import useMaterialManagementActions from 'redux/actions/materialManagementAction
 import {useSelector} from 'react-redux';
 import NoResult from 'components/Atoms/NoResult';
 import Spinner from 'react-native-loading-spinner-overlay';
+import {useDownload} from 'components/Atoms/Download';
+import FileViewer from 'react-native-file-viewer';
 import Header from '../CommonComponents/Header';
 import MaterialInfo from './Components/MaterialInfo';
 import VehicleInfo from './Components/VehicleInfo';
 
 const Attachments = props => {
   const {challanImages = []} = props;
+
+  const download = useDownload();
+
+  const onPressFile = async fileUrl => {
+    const name = fileUrl.split('/').pop();
+
+    download.link({
+      name,
+      link: fileUrl,
+      showAction: false,
+      onFinish: ({dir}) => {
+        FileViewer.open(`file://${dir}`);
+      },
+    });
+  };
   return (
     <View style={styles.container}>
       <Text style={styles.attachmentsText}>Attachments</Text>
       {challanImages?.length ? (
-        challanImages?.map((item, index) => {
+        challanImages?.map((file, index) => {
           return (
             <TouchableOpacity
               style={styles.sectionContainer}
-              // onPress={() => onPressFile(file)}
-            >
+              onPress={() => onPressFile(file.challan_image)}>
               <Image source={FileIcon} style={styles.fileIcon} />
               <View>
                 <Text
@@ -57,7 +73,7 @@ const DeliverDetails = props => {
   const {materialChallanDetails, loading} = useSelector(
     s => s.materialManagement,
   );
-  const {challan_images, challan_info, materila_info} =
+  const {challan_images, challan_info, materila_info, vehicle_images} =
     materialChallanDetails || {};
 
   React.useEffect(() => {
@@ -78,7 +94,10 @@ const DeliverDetails = props => {
           <Attachments challanImages={challan_images} />
         </View>
         <MaterialInfo materialInfo={materila_info} />
-        <VehicleInfo vehicleInfo={challan_info} />
+        <VehicleInfo
+          vehicleInfo={challan_info}
+          vehicleAttachments={vehicle_images}
+        />
       </ScrollView>
     </View>
   );

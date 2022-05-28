@@ -111,7 +111,7 @@ function SelectMaterials(props) {
         }
         contentContainerStyle={styles.contentContainerStyle}
         showsVerticalScrollIndicator={false}
-        keyExtractor={item => item.material_order_no}
+        keyExtractor={item => item.id}
         ListEmptyComponent={renderEmpty}
         renderItem={({item}) => {
           return (

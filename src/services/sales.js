@@ -40,6 +40,13 @@ export default function useSalesServices() {
     addVisitor: data => {
       return instance.post('/visitors/add', data, config({multipart: false}));
     },
+    getVisitorInterestedProperty: data => {
+      return instance.post(
+        '/visitors/getInterestedProperty',
+        data,
+        config({multipart: false}),
+      );
+    },
     addVisitorComment: data => {
       return instance.post(
         '/visitors/addcomment',

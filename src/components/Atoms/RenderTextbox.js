@@ -15,7 +15,7 @@ const RenderTextBox = React.forwardRef((props, ref) => {
       name="payment_remark"
       multiline
       blurOnSubmit={false}
-      returnKeyType={Platform.OS === 'ios' ? 'default' : 'null'}
+      returnKeyType={Platform.OS === 'ios' ? 'default' : 'none'}
       numberOfLines={Platform.OS === 'ios' ? null : numberOfLines}
       minHeight={Platform.OS === 'ios' ? minHeight : null}
     />

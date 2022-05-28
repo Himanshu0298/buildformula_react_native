@@ -21,6 +21,7 @@ import RenderTextBox from 'components/Atoms/RenderTextbox';
 import _ from 'lodash';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import ActionButtons from 'components/Atoms/ActionButtons';
+import RenderSelcetMultiple from 'components/Atoms/RenderSelectMultiple';
 
 const customParseFormat = require('dayjs/plugin/customParseFormat');
 
@@ -196,7 +197,8 @@ function PersonalTab(props) {
 }
 
 function InquiryTab(props) {
-  const {formikProps, setSelectedTab, inquiryOptions, edit} = props;
+  const {formikProps, setSelectedTab, inquiryOptions, interestedOptions, edit} =
+    props;
 
   const {
     handleChange,
@@ -288,6 +290,17 @@ function InquiryTab(props) {
               setFieldValue('inquiry_for', value);
             }}
           />
+          <RenderSelcetMultiple
+            name="interested_for"
+            label="Interested Property"
+            options={interestedOptions}
+            value={values.interested_for}
+            containerStyles={styles.input}
+            error={errors.interested_for}
+            onSelect={v => {
+              setFieldValue('interested_for', v);
+            }}
+          />
           {values.bhk_required ? (
             <RenderSelect
               name="bhk"
@@ -339,8 +352,16 @@ function RenderForm(props) {
     {key: 1, title: 'Inquiry details'},
   ]);
 
-  const {occupationOptions, inquiryOptions, assignOptions, sourceTypeOptions} =
-    useSelector(s => s.sales);
+  const {
+    occupationOptions,
+    inquiryOptions,
+    interestedOptions,
+    assignOptions,
+    sourceTypeOptions,
+  } = useSelector(s => s.sales);
+  const {selectedProject} = useSelector(s => s.project);
+
+  const {getVisitorInterestedProperty} = useSalesActions();
 
   const updatedAssignOptions = useMemo(() => {
     const data = [...assignOptions];
@@ -372,6 +393,13 @@ function RenderForm(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [errors]);
 
+  React.useEffect(() => {
+    getVisitorInterestedProperty({
+      project_id: selectedProject.id,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const renderScene = ({route: {key}}) => {
     switch (key) {
       case 0:
@@ -390,6 +418,7 @@ function RenderForm(props) {
             {...restProps}
             setSelectedTab={setSelectedTab}
             inquiryOptions={inquiryOptions}
+            interestedOptions={interestedOptions}
             assignOptions={updatedAssignOptions}
             formikProps={formikProps}
           />
@@ -450,6 +479,7 @@ function AddVisitor(props) {
         follow_up_time: dayjs(visitorData.follow_up_time, 'HH:mm:ss').toDate(),
         bhk: visitorData.bhk,
         remarks: visitorData.remarks,
+        interested_for: [],
       };
     }
     return {priority: 'none'};

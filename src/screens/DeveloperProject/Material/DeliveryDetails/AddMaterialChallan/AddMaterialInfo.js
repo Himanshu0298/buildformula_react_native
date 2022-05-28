@@ -36,7 +36,7 @@ const RenderDamageAttachments = props => {
       </View>
       {attachments?.map((attachment, i) => {
         return (
-          <View>
+          <View key={attachment.name}>
             <View style={styles.sectionContainer}>
               <Image source={FileIcon} style={styles.fileIcon} />
               <View>
@@ -72,7 +72,7 @@ const RenderAttachments = props => {
         </View>
         {attachments?.map((attachment, i) => {
           return (
-            <View>
+            <View key={attachment.name}>
               <View style={styles.sectionContainer}>
                 <Image source={FileIcon} style={styles.fileIcon} />
                 <View>
@@ -214,6 +214,7 @@ function MaterialForm(props) {
             <MaterialDetailsForm
               {...props}
               item={item}
+              key={item.id}
               index={index}
               selectedMaterialChallan={selectedMaterialChallan}
             />

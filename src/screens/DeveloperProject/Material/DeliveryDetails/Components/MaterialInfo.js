@@ -6,12 +6,58 @@ import {
   Text,
   withTheme,
 } from 'react-native-paper';
-import {StyleSheet, View} from 'react-native';
+import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {theme} from 'styles/theme';
 import {getShadow} from 'utils';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {useSelector} from 'react-redux';
+import FileIcon from 'assets/images/file_icon.png';
+import NoResult from 'components/Atoms/NoResult';
+
+const renderImage = (item, index, type) => {
+  const label =
+    type === 'normal'
+      ? `Material image ${index + 1}`
+      : `Damaged image ${index + 1}`;
+
+  return (
+    <TouchableOpacity
+      style={styles.sectionContainer}
+      // onPress={() => onPressFile(file)}
+      key={item.id}>
+      <Image source={FileIcon} style={styles.fileIcon} />
+      <View>
+        <Text style={[styles.verticalFlex, styles.text]}>{label}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+};
+
+const RenderMaterialAttachments = props => {
+  const {materialImages} = props;
+
+  const normalImages = materialImages?.filter(i => i.image_type === 'normal');
+  const damagedImages = materialImages?.filter(i => i.image_type === 'damage');
+
+  return (
+    <View style={styles.imageContainer}>
+      <Text style={styles.attachmentsText}>Attachments</Text>
+      {materialImages?.length ? (
+        <>
+          {normalImages?.map((item, index) =>
+            renderImage(item, index, 'normal'),
+          )}
+          {damagedImages?.map((item, index) =>
+            renderImage(item, index, 'damage'),
+          )}
+        </>
+      ) : (
+        <NoResult />
+      )}
+    </View>
+  );
+};
 
 const RenderRow = props => {
   const {item} = props;
@@ -37,7 +83,7 @@ const MaterialData = props => {
 
 const MaterialInfo = props => {
   const {materialInfo = {}} = props;
-  const {materials = []} = materialInfo;
+  const {materials = [], material_images} = materialInfo;
   const {loading} = useSelector(s => s.materialManagement);
 
   return (
@@ -67,6 +113,7 @@ const MaterialInfo = props => {
           </View>
         );
       })}
+      <RenderMaterialAttachments materialImages={material_images} />
     </View>
   );
 };
@@ -101,6 +148,33 @@ const styles = StyleSheet.create({
   },
   itemContainer: {
     flexGrow: 1,
+  },
+  fileIcon: {
+    width: 32,
+    height: 38,
+    paddingLeft: 10,
+    marginLeft: 10,
+  },
+  imageContainer: {
+    padding: 10,
+    backgroundColor: '#F2F4F5',
+    borderRadius: 5,
+    marginTop: 10,
+  },
+  attachmentsText: {
+    fontSize: 15,
+    paddingBottom: 10,
+  },
+  sectionContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    padding: 10,
+    display: 'flex',
+    borderRadius: 5,
+  },
+  text: {
+    marginLeft: 5,
   },
 });
 

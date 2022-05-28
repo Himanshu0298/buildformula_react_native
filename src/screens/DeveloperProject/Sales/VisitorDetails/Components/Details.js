@@ -28,6 +28,7 @@ function Details(props) {
     email,
     remarks,
     inquiry_status_id,
+    intrestedIn,
   } = visitor;
 
   const occupation = occupationOptions.find(
@@ -36,6 +37,9 @@ function Details(props) {
   const source = sourceTypeOptions.find(v => v.value === visitor.source_type);
 
   const inquiryStatus = pipelines.find(i => i.id === inquiry_status_id);
+
+  const Interested = JSON.stringify(intrestedIn);
+  // console.log('-------->Interested12', Interested);
 
   return (
     <ScrollView>
@@ -82,6 +86,10 @@ function Details(props) {
         <View style={styles.detailRow}>
           <Paragraph>Current Locality</Paragraph>
           <Caption style={styles.value}>{current_locality}</Caption>
+        </View>
+        <View style={styles.detailRow}>
+          <Paragraph>Intersted In</Paragraph>
+          <Caption style={styles.value}>{intrestedIn}</Caption>
         </View>
         <View style={styles.detailRow}>
           <Paragraph>Remark</Paragraph>

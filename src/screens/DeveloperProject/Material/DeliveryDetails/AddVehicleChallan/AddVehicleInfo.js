@@ -35,7 +35,7 @@ const RenderAttachments = props => {
         </View>
         {attachments?.map((attachment, i) => {
           return (
-            <View>
+            <View key={attachment.name}>
               <View style={styles.sectionContainer}>
                 <Image source={FileIcon} style={styles.fileIcon} />
                 <View>
