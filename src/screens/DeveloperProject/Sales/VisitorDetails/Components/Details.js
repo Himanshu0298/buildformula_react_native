@@ -38,9 +38,6 @@ function Details(props) {
 
   const inquiryStatus = pipelines.find(i => i.id === inquiry_status_id);
 
-  const Interested = JSON.stringify(intrestedIn);
-  // console.log('-------->Interested12', Interested);
-
   return (
     <ScrollView>
       <View style={styles.detailsContainer}>

@@ -93,16 +93,16 @@ function Home(props) {
   }, []);
 
   const {tabs, projectsData} = useMemo(() => {
-    const {developers, suppliers, customers} = projects;
+    const {developers = [], suppliers, customers} = projects || {};
 
     const _tabs = ['Developer'];
     const data = [getData(developers)];
 
-    if (projects?.suppliers?.length) {
+    if (suppliers?.length) {
       _tabs.push('Supplier');
       data.push(getData(suppliers));
     }
-    if (projects?.customers?.length) {
+    if (customers?.length) {
       _tabs.push('Customer');
       data.push(getData(customers));
     }

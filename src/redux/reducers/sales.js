@@ -164,7 +164,6 @@ const reducer = (state = initialState, action = {}) => {
         loadingSalesData: true,
       };
     case `${GET_INTERESTED_PROPERTY}_FULFILLED`: {
-      console.log('-------->payload', payload);
       return {
         ...state,
         loadingSalesData: false,

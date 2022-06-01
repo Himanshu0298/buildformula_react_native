@@ -1,10 +1,8 @@
 import {Platform} from 'react-native';
 import {theme} from 'styles/theme';
 
-// export const SITE_URL = 'https://www.vshwanbuild.com';
 export const SITE_URL = 'http://104.198.176.6';
-// export const SITE_URL = 'http://35.232.251.130';
-// export const SITE_URL = 'http://vshwanbuild.in';
+// export const SITE_URL = 'https://portal.buildformula.com';
 export const BASE_API_URL = `${SITE_URL}/api/`;
 
 export const PHONE_REGEX =

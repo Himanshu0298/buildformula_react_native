@@ -1,11 +1,11 @@
 import React from 'react';
-import {Subheading, Badge, Avatar, withTheme} from 'react-native-paper';
+import {Subheading, Badge, withTheme} from 'react-native-paper';
 import {View, TouchableOpacity, StyleSheet, Image} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector} from 'react-redux';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Timer from 'components/Atoms/Timer';
-import logo from 'assets/images/logo.png';
+import logo from 'assets/images/vshwanLogo.png';
 import UserAvatar from 'components/Atoms/UserAvatar';
 
 function ProjectHeader(props) {
@@ -29,7 +29,9 @@ function ProjectHeader(props) {
         <View style={styles.logoContainer}>
           <Subheading style={{fontSize: 14}}>
             {showLogo ? (
-              <Image source={logo} style={styles.banner} />
+              <Subheading style={{fontSize: 35}}>
+                <Image source={logo} style={styles.banner} />
+              </Subheading>
             ) : (
               selectedProject?.project_name
             )}
@@ -85,7 +87,7 @@ const styles = StyleSheet.create({
   },
   banner: {
     width: 150,
-    height: 18,
+    height: 24,
   },
   profileIconContainer: {
     marginLeft: 15,

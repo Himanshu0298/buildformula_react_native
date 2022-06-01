@@ -17,7 +17,7 @@ import {
   TextInput,
 } from 'react-native-paper';
 import {secondaryTheme, theme} from 'styles/theme';
-import banner from 'assets/images/banner.png';
+import banner from 'assets/images/vshwanLogo.png';
 import image from 'assets/images/buildings.png';
 import {Formik} from 'formik';
 import useUserActions from 'redux/actions/userActions';

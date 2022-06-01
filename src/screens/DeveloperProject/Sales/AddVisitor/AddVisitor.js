@@ -291,14 +291,14 @@ function InquiryTab(props) {
             }}
           />
           <RenderSelcetMultiple
-            name="interested_for"
+            name="interested_property"
             label="Interested Property"
             options={interestedOptions}
-            value={values.interested_for}
+            value={values.interested_property}
             containerStyles={styles.input}
-            error={errors.interested_for}
+            error={errors.interested_property}
             onSelect={v => {
-              setFieldValue('interested_for', v);
+              setFieldValue('interested_property', v);
             }}
           />
           {values.bhk_required ? (
@@ -487,6 +487,7 @@ function AddVisitor(props) {
 
   const onSubmit = async values => {
     const inputs = _.cloneDeep(values);
+    console.log('-------->inputs', inputs);
 
     let data = {
       follow_up_date: dayjs(inputs.follow_up_date).format('DD-MM-YYYY'),
@@ -497,12 +498,18 @@ function AddVisitor(props) {
     delete inputs.follow_up_time;
     delete inputs.bhk_required;
 
+    const arrString = values.interested_property.join(',');
+    console.log('-------->values', values);
+    console.log('-------->data', data);
+
     data = {
       ...data,
       ...inputs,
       project_id: selectedProject.id,
       user_id: user.id,
+      interested_property: arrString,
     };
+    console.log('-------->data before edit function call', data);
 
     if (edit) {
       await updateVisitor({...data, visitor_id: visitor.id});
