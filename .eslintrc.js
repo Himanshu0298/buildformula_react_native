@@ -33,6 +33,7 @@ module.exports = {
     'react-native/no-color-literals': 0,
     'react/react-in-jsx-scope': 0,
     'no-restricted-globals': 0,
+    'no-restricted-exports': 0,
     '@typescript-eslint/no-var-requires': 1,
     'no-underscore-dangle': 0,
     'react/no-array-index-key': 1,

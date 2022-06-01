@@ -1,13 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useState} from 'react';
-import {
-  StyleSheet,
-  View,
-  Image,
-  TouchableOpacity,
-  Keyboard,
-  TouchableWithoutFeedback,
-} from 'react-native';
+import {StyleSheet, View, TouchableOpacity, Keyboard} from 'react-native';
 import {
   withTheme,
   Headline,
@@ -17,28 +10,17 @@ import {
   Text,
 } from 'react-native-paper';
 import {secondaryTheme, theme} from 'styles/theme';
-import banner from 'assets/images/banner.png';
-import image from 'assets/images/buildings.png';
 import {Formik} from 'formik';
 import useUserActions from 'redux/actions/userActions';
 import {useSelector} from 'react-redux';
 import * as Yup from 'yup';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {useTranslation} from 'react-i18next';
-import Layout from 'utils/Layout';
-import BottomSheet from 'reanimated-bottom-sheet';
 import {KEYBOARD_HIDE, KEYBOARD_SHOW, PHONE_REGEX} from 'utils/constant';
 import useAddProjectActions from 'redux/actions/addProjectActions';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import CustomInput from '../Components/CustomInput';
-
-const BANNER_HEIGHT = Layout.window.width * 0.75 * (5 / 12);
-const IMAGE_HEIGHT = Layout.window.width * 0.75 * (15 / 22);
-
-const SNAP_POINTS = [
-  Layout.window.height - BANNER_HEIGHT,
-  Layout.window.height - (BANNER_HEIGHT + IMAGE_HEIGHT),
-];
+import AuthLayout from '../Components/AuthLayout';
 
 const USER_SCHEMA = {
   firstName: Yup.string()
@@ -285,6 +267,20 @@ function RenderHeader() {
   );
 }
 
+const renderImage = () => () => {
+  return (
+    <View style={styles.noteContainer}>
+      <Text>
+        <Text style={[styles.noteText, {color: theme.colors.primary}]}>
+          {'NOTE: '}
+        </Text>
+        Vshwan build Project or site have three main admins so if anyone admin
+        isn't available your team can be manged without interruption.
+      </Text>
+    </View>
+  );
+};
+
 function SignUp(props) {
   const {navigation, route} = props;
   const {adminSignUp = false, adminId, adminData} = route?.params || {};
@@ -380,47 +376,21 @@ function SignUp(props) {
   };
 
   return (
-    <Formik
-      validateOnBlur={false}
-      validateOnChange={false}
-      initialValues={{}}
-      validationSchema={adminSignUp ? adminSchema : signUpSchema}
-      onSubmit={onSubmit}>
-      {({handleChange, values, handleSubmit, handleBlur, isValid, errors}) => (
-        <TouchableWithoutFeedback
-          onPress={() => Keyboard.dismiss()}
-          style={styles.container}>
-          <View style={styles.container}>
-            <Spinner visible={loading || updatingAdmin} textContent="" />
-            <View style={styles.topImageContainer}>
-              <View style={styles.bannerContainer}>
-                <Image source={banner} style={styles.banner} />
-              </View>
-              {!adminSignUp ? (
-                <View style={styles.imageContainer}>
-                  <Image source={image} style={styles.image} />
-                </View>
-              ) : (
-                <View style={styles.noteContainer}>
-                  <Text>
-                    <Text
-                      style={{color: theme.colors.primary, fontWeight: 'bold'}}>
-                      {'NOTE: '}
-                    </Text>
-                    Vshwan build Project or site have three main admins so if
-                    anyone admin isn't available your team can be manged without
-                    interruption.
-                  </Text>
-                </View>
-              )}
-            </View>
-            <BottomSheet
-              ref={bottomSheetRef}
-              snapPoints={adminSignUp ? ['85%', '70%'] : SNAP_POINTS}
-              initialSnap={1}
-              enabledGestureInteraction={!marginBottom}
-              renderHeader={() => <RenderHeader />}
-              renderContent={() => (
+    <>
+      <Spinner visible={loading || updatingAdmin} textContent="" />
+      <Formik
+        validateOnBlur={false}
+        validateOnChange={false}
+        initialValues={{}}
+        validationSchema={adminSignUp ? adminSchema : signUpSchema}
+        onSubmit={onSubmit}>
+        {formikProps => (
+          <AuthLayout
+            bottomSheetRef={bottomSheetRef}
+            renderImage={adminSignUp ? renderImage : undefined}
+            renderHeader={() => <RenderHeader />}
+            renderContent={() => {
+              return (
                 <RenderContent
                   {...props}
                   t={t}
@@ -428,46 +398,19 @@ function SignUp(props) {
                   marginBottom={marginBottom}
                   adminSignUp={adminSignUp}
                   adminId={adminId}
-                  values={values}
-                  handleSubmit={handleSubmit}
-                  handleBlur={handleBlur}
-                  handleChange={handleChange}
-                  errors={{...errors, ...validationError}}
+                  {...formikProps}
+                  errors={{...formikProps.errors, ...validationError}}
                 />
-              )}
-            />
-          </View>
-        </TouchableWithoutFeedback>
-      )}
-    </Formik>
+              );
+            }}
+          />
+        )}
+      </Formik>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    height: '100%',
-  },
-  topImageContainer: {
-    height: '40%',
-  },
-  bannerContainer: {
-    width: '100%',
-
-    alignItems: 'center',
-  },
-  banner: {
-    width: Layout.window.width * 0.75,
-    height: BANNER_HEIGHT,
-  },
-  imageContainer: {
-    marginBottom: -30,
-    right: 10,
-    alignItems: 'center',
-  },
-  image: {
-    width: Layout.window.width * 0.75,
-    height: IMAGE_HEIGHT,
-  },
   noteContainer: {
     paddingHorizontal: 20,
   },
@@ -515,7 +458,6 @@ const styles = StyleSheet.create({
     marginTop: 25,
     paddingHorizontal: 20,
     width: '100%',
-
     alignItems: 'center',
   },
   registerContainer: {
@@ -523,6 +465,9 @@ const styles = StyleSheet.create({
     padding: 3,
     width: '100%',
     alignItems: 'center',
+  },
+  noteText: {
+    fontWeight: 'bold',
   },
 });
 

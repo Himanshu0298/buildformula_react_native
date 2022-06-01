@@ -2,11 +2,11 @@ import React, {useEffect} from 'react';
 import {StyleSheet, StatusBar, View, Image} from 'react-native';
 import {withTheme, Button, Headline} from 'react-native-paper';
 import welcomeImage from 'assets/images/language.png';
-import banner from 'assets/images/banner.png';
+import banner from 'assets/images/vshwanLogo.png';
 import BaseText from 'components/Atoms/BaseText';
 import {useTranslation} from 'react-i18next';
 import Layout from 'utils/Layout';
-import {secondaryTheme, theme} from 'styles/theme';
+import {secondaryTheme} from 'styles/theme';
 import {useSelector} from 'react-redux';
 import useAppActions from 'redux/actions/appActions';
 
@@ -58,7 +58,11 @@ function LanguageSelect(props) {
           <Image source={welcomeImage} style={styles.image} />
         </View>
       </View>
-      <View style={styles.contentContainer}>
+      <View
+        style={[
+          styles.contentContainer,
+          {backgroundColor: theme.colors.primary},
+        ]}>
         <View style={styles.headlineContainer}>
           <Headline theme={secondaryTheme} style={styles.headline}>
             Select Language
@@ -116,7 +120,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderTopLeftRadius: 50,
     borderTopRightRadius: 50,
-    backgroundColor: theme.colors.primary,
   },
   headlineContainer: {
     flex: 0.5,

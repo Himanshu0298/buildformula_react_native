@@ -1,35 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useEffect, useState} from 'react';
-import {
-  StyleSheet,
-  View,
-  Image,
-  TouchableWithoutFeedback,
-  Keyboard,
-} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {withTheme, Headline, Subheading, Button} from 'react-native-paper';
 import {secondaryTheme, theme} from 'styles/theme';
-import banner from 'assets/images/banner.png';
-import image from 'assets/images/buildings.png';
 import {Formik} from 'formik';
 import useUserActions from 'redux/actions/userActions';
 import {useSelector} from 'react-redux';
 import * as Yup from 'yup';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {useTranslation} from 'react-i18next';
-import Layout from 'utils/Layout';
-import BottomSheet from 'reanimated-bottom-sheet';
 import {useSnackbar} from 'components/Atoms/Snackbar';
-import SheetHeader from 'components/Atoms/SheetHeader';
 import CustomInput from '../Components/CustomInput';
-
-const BANNER_HEIGHT = Layout.window.width * 0.75 * (5 / 12);
-const IMAGE_HEIGHT = Layout.window.width * 0.75 * (15 / 22);
-
-const SNAP_POINTS = [
-  Layout.window.height - BANNER_HEIGHT,
-  Layout.window.height - (BANNER_HEIGHT + IMAGE_HEIGHT),
-];
+import AuthLayout from '../Components/AuthLayout';
 
 const schema = Yup.object().shape({
   email: Yup.string()
@@ -62,6 +44,7 @@ function RenderContent(props) {
     errors,
     handleSubmit,
     bottomSheetRef,
+    navigation,
   } = props;
 
   const emailRef = React.useRef();
@@ -96,6 +79,7 @@ function RenderContent(props) {
           />
         </View>
         <LoginButton label="Next" onPress={handleSubmit} />
+        <LoginButton label="Back" onPress={navigation.goBack} />
       </View>
     </View>
   );
@@ -123,82 +107,46 @@ function ForgotPassword(props) {
   }, [loginError]);
 
   return (
-    <Formik
-      validateOnBlur={false}
-      validateOnChange={false}
-      initialValues={{}}
-      validationSchema={schema}
-      onSubmit={async values => {
-        sendForgetPasswordOtp(values)
-          .then(({value}) =>
-            navigation.navigate('ForgotPasswordOtp', {user_id: value.data.id}),
-          )
-          .catch(err => {
-            if (err) {
-              setLoginError("User with this email doesn't exist");
-            }
-          });
-      }}>
-      {({handleChange, values, handleSubmit, handleBlur, isValid, errors}) => (
-        <TouchableWithoutFeedback
-          onPress={() => Keyboard.dismiss()}
-          style={styles.container}>
-          <View style={styles.container}>
-            <Spinner visible={loading} textContent="" />
-            <View style={styles.topImageContainer}>
-              <View style={styles.bannerContainer}>
-                <Image source={banner} style={styles.banner} />
-              </View>
-              <View style={styles.imageContainer}>
-                <Image source={image} style={styles.image} />
-              </View>
-            </View>
-            <BottomSheet
-              ref={bottomSheetRef}
-              snapPoints={SNAP_POINTS}
-              initialSnap={1}
-              renderHeader={() => <SheetHeader />}
-              renderContent={() => (
+    <>
+      <Spinner visible={loading} textContent="" />
+      <Formik
+        validateOnBlur={false}
+        validateOnChange={false}
+        initialValues={{}}
+        validationSchema={schema}
+        onSubmit={async values => {
+          sendForgetPasswordOtp(values)
+            .then(({value}) =>
+              navigation.navigate('ForgotPasswordOtp', {
+                user_id: value.data.id,
+              }),
+            )
+            .catch(err => {
+              if (err) {
+                setLoginError("User with this email doesn't exist");
+              }
+            });
+        }}>
+        {formikProps => (
+          <AuthLayout
+            bottomSheetRef={bottomSheetRef}
+            renderContent={() => {
+              return (
                 <RenderContent
+                  {...formikProps}
                   navigation={navigation}
                   bottomSheetRef={bottomSheetRef}
-                  values={values}
-                  errors={errors}
-                  handleChange={handleChange}
-                  handleSubmit={handleSubmit}
-                  handleBlur={handleBlur}
                 />
-              )}
-            />
-          </View>
-        </TouchableWithoutFeedback>
-      )}
-    </Formik>
+              );
+            }}
+          />
+        )}
+      </Formik>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  topImageContainer: {
-    flexGrow: 1,
-  },
-  bannerContainer: {
-    width: '100%',
-    alignItems: 'center',
-  },
-  banner: {
-    width: Layout.window.width * 0.75,
-    height: BANNER_HEIGHT,
-  },
-  imageContainer: {
-    alignItems: 'center',
-  },
-  image: {
-    width: Layout.window.width * 0.75,
-    height: IMAGE_HEIGHT,
-  },
   contentContainer: {
     backgroundColor: theme.colors.primary,
     height: '100%',

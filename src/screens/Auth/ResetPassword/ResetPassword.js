@@ -1,33 +1,15 @@
 import React, {useState} from 'react';
-import {
-  StyleSheet,
-  View,
-  Image,
-  TouchableWithoutFeedback,
-  Keyboard,
-} from 'react-native';
+import {StyleSheet, View, Keyboard} from 'react-native';
 import {withTheme, Headline, Button, TextInput} from 'react-native-paper';
 import {secondaryTheme, theme} from 'styles/theme';
-import banner from 'assets/images/banner.png';
-import image from 'assets/images/buildings.png';
 import {Formik} from 'formik';
 import useUserActions from 'redux/actions/userActions';
 import {useSelector} from 'react-redux';
 import * as Yup from 'yup';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {useTranslation} from 'react-i18next';
-import Layout from 'utils/Layout';
-import BottomSheet from 'reanimated-bottom-sheet';
-import SheetHeader from 'components/Atoms/SheetHeader';
 import CustomInput from '../Components/CustomInput';
-
-const BANNER_HEIGHT = Layout.window.width * 0.75 * (5 / 12);
-const IMAGE_HEIGHT = Layout.window.width * 0.75 * (15 / 22);
-
-const SNAP_POINTS = [
-  Layout.window.height - BANNER_HEIGHT,
-  Layout.window.height - (BANNER_HEIGHT + IMAGE_HEIGHT),
-];
+import AuthLayout from '../Components/AuthLayout';
 
 const schema = Yup.object().shape({
   password: Yup.string()
@@ -146,77 +128,39 @@ function ResetPassword(props) {
   const {loading} = useSelector(s => s.user);
 
   return (
-    <Formik
-      validateOnBlur={false}
-      validateOnChange={false}
-      initialValues={{}}
-      validationSchema={schema}
-      onSubmit={async values => {
-        Keyboard.dismiss();
-        resetPassword({new_password: values.password, user_id}).then(() => {
-          navigation.popToTop();
-        });
-      }}>
-      {({handleChange, values, handleSubmit, handleBlur, isValid, errors}) => (
-        <TouchableWithoutFeedback
-          onPress={() => Keyboard.dismiss()}
-          style={styles.container}>
-          <View style={styles.container}>
-            <Spinner visible={loading} textContent="" />
-            <View style={styles.topImageContainer}>
-              <View style={styles.bannerContainer}>
-                <Image source={banner} style={styles.banner} />
-              </View>
-              <View style={styles.imageContainer}>
-                <Image source={image} style={styles.image} />
-              </View>
-            </View>
-            <BottomSheet
-              ref={bottomSheetRef}
-              snapPoints={SNAP_POINTS}
-              initialSnap={1}
-              renderHeader={() => <SheetHeader />}
-              renderContent={() => (
+    <>
+      <Spinner visible={loading} textContent="" />
+      <Formik
+        validateOnBlur={false}
+        validateOnChange={false}
+        initialValues={{}}
+        validationSchema={schema}
+        onSubmit={async values => {
+          Keyboard.dismiss();
+          resetPassword({new_password: values.password, user_id}).then(() => {
+            navigation.popToTop();
+          });
+        }}>
+        {formikProps => (
+          <AuthLayout
+            bottomSheetRef={bottomSheetRef}
+            renderContent={() => {
+              return (
                 <RenderContent
                   navigation={navigation}
                   bottomSheetRef={bottomSheetRef}
-                  values={values}
-                  errors={errors}
-                  handleChange={handleChange}
-                  handleSubmit={handleSubmit}
-                  handleBlur={handleBlur}
+                  {...formikProps}
                 />
-              )}
-            />
-          </View>
-        </TouchableWithoutFeedback>
-      )}
-    </Formik>
+              );
+            }}
+          />
+        )}
+      </Formik>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  topImageContainer: {
-    flexGrow: 1,
-  },
-  bannerContainer: {
-    width: '100%',
-    alignItems: 'center',
-  },
-  banner: {
-    width: Layout.window.width * 0.75,
-    height: BANNER_HEIGHT,
-  },
-  imageContainer: {
-    alignItems: 'center',
-  },
-  image: {
-    width: Layout.window.width * 0.75,
-    height: IMAGE_HEIGHT,
-  },
   contentContainer: {
     backgroundColor: theme.colors.primary,
     height: '100%',

@@ -16,6 +16,7 @@ target 'vshwan' do
 
   pod 'react-native-blob-util', :path => '../node_modules/react-native-blob-util'
   pod 'RNFS', :path => '../node_modules/react-native-fs'
+  pod 'React-RCTText', :path => '../node_modules/react-native/Libraries/Text', :modular_headers => true
 
   permissions_path = '../node_modules/react-native-permissions/ios'
   pod 'Permission-PhotoLibrary', :path => "#{permissions_path}/PhotoLibrary"
