@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">Vshwan</string>
+    <string name="app_name">Build Formula</string>
     <string moduleConfig="true" name="CodePushDeploymentKey">@string/CODE_PUSH_KEY_ANDROID</string>
 </resources>
