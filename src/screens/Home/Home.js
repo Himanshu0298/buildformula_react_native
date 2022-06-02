@@ -102,10 +102,10 @@ function Home(props) {
       _tabs.push('Supplier');
       data.push(getData(suppliers));
     }
-    if (customers?.length) {
-      _tabs.push('Customer');
-      data.push(getData(customers));
-    }
+    // if (customers?.length) {
+    //   _tabs.push('Customer');
+    //   data.push(getData(customers));
+    // }
     return {tabs: _tabs, projectsData: data};
   }, [projects]);
 
