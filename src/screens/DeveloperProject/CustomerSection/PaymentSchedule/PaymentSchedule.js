@@ -1,14 +1,8 @@
 import * as React from 'react';
-import {
-  Image,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {ScrollView, StyleSheet, View} from 'react-native';
 import {Caption, Subheading, Text, withTheme} from 'react-native-paper';
-import backArrow from 'assets/images/back_arrow.png';
 import dayjs from 'dayjs';
+import ScreenTitle from 'components/Atoms/ScreenTitle';
 
 function Item({label, value, style, valueStyle}) {
   return (
@@ -145,12 +139,7 @@ function PaymentSchedule(props) {
       showsVerticalScrollIndicator={false}
       contentContainerStyle={styles.scheduleContainer}>
       <View style={styles.container}>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.titleContainer}>
-          <Image source={backArrow} style={styles.backArrow} />
-          <Subheading>Payment Schedule</Subheading>
-        </TouchableOpacity>
+        <ScreenTitle title="Payment Schedule" backIcon />
 
         <View style={styles.contentContainer}>
           {type === 'bankLoanDetail' ? (
@@ -173,16 +162,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 20,
-  },
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 5,
-  },
-  backArrow: {
-    height: 23,
-    width: 23,
-    marginRight: 5,
   },
   contentContainer: {
     marginVertical: 15,

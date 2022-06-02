@@ -1,27 +1,15 @@
 import * as React from 'react';
 import {useTranslation} from 'react-i18next';
-import {
-  StyleSheet,
-  View,
-  TouchableOpacity,
-  Image,
-  ScrollView,
-} from 'react-native';
-import {
-  Divider,
-  Subheading,
-  Text,
-  withTheme,
-  Caption,
-} from 'react-native-paper';
+import {StyleSheet, View, TouchableOpacity, ScrollView} from 'react-native';
+import {Divider, Text, withTheme, Caption} from 'react-native-paper';
 import {theme} from 'styles/theme';
-import backArrow from 'assets/images/back_arrow.png';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import UserAvatar from 'components/Atoms/UserAvatar';
 import ProjectHeader from 'components/Molecules/Layout/ProjectHeader';
 import {getShadow} from 'utils';
+import ScreenTitle from 'components/Atoms/ScreenTitle';
 
 function RenderInfo({label, value}) {
   return (
@@ -58,13 +46,7 @@ function CustomerDetails(props) {
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <ProjectHeader {...props} />
-
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.titleContainer}>
-          <Image source={backArrow} style={styles.backArrow} />
-          <Subheading>{t('title_customer_details')}</Subheading>
-        </TouchableOpacity>
+        <ScreenTitle title={t('title_customer_details')} backIcon />
       </View>
       <ScrollView
         showsVerticalScrollIndicator={false}
@@ -146,19 +128,9 @@ const styles = StyleSheet.create({
     marginHorizontal: -20,
     ...getShadow(2),
   },
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 5,
-  },
   scrollView: {
     flexGrow: 1,
     paddingBottom: 100,
-  },
-  backArrow: {
-    height: 25,
-    width: 25,
-    marginRight: 5,
   },
   detailsTopContainer: {
     alignItems: 'center',

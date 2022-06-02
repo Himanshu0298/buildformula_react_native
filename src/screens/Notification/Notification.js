@@ -1,7 +1,7 @@
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import * as React from 'react';
 import {StyleSheet, View, FlatList, TouchableOpacity} from 'react-native';
-import {Title, Text, withTheme, Caption, Button} from 'react-native-paper';
+import {Text, withTheme, Caption, Button} from 'react-native-paper';
 import {getShadow} from 'utils';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import dayjs from 'dayjs';
@@ -9,6 +9,7 @@ import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
 import useNotificationActions from 'redux/actions/notificationActions';
 import {useAlert} from 'components/Atoms/Alert';
+import ScreenTitle from 'components/Atoms/ScreenTitle';
 
 function RenderNotification(props) {
   const {item, isHome, clearNotification, handleNotification} = props;
@@ -101,7 +102,7 @@ function Notification(props) {
   return (
     <View style={styles.container}>
       <View style={styles.rowBetween}>
-        <Title>Notifications</Title>
+        <ScreenTitle title="Notifications" backIcon />
         {!isHome && projectNotifications.length ? (
           <Button
             mode="contained"

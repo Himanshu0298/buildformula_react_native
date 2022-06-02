@@ -17,6 +17,7 @@ import {MODIFY_REQUEST_STATUS} from 'utils/constant';
 import dayjs from 'dayjs';
 import RenderHtml from 'react-native-render-html';
 import Layout from 'utils/Layout';
+import ScreenTitle from 'components/Atoms/ScreenTitle';
 
 const relativeTime = require('dayjs/plugin/relativeTime');
 
@@ -218,7 +219,7 @@ const ModifyRequestDetails = props => {
 
   return (
     <View style={styles.container}>
-      <Subheading style={styles.heading}>Modify Requests</Subheading>
+      <ScreenTitle title="Modify Requests" backIcon />
       <View style={{flex: 1}}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.contentContainer}>

@@ -1,14 +1,7 @@
 import * as React from 'react';
 import {useTranslation} from 'react-i18next';
-import {StyleSheet, View, TouchableOpacity, Image} from 'react-native';
-import {
-  Subheading,
-  withTheme,
-  Button,
-  TextInput,
-  Text,
-} from 'react-native-paper';
-import backArrow from 'assets/images/back_arrow.png';
+import {StyleSheet, View} from 'react-native';
+import {withTheme, TextInput, Text} from 'react-native-paper';
 import RenderInput from 'components/Atoms/RenderInput';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
@@ -20,6 +13,8 @@ import RenderTextBox from 'components/Atoms/RenderTextbox';
 import FileSelector from 'components/Atoms/FileSelector';
 import {theme} from 'styles/theme';
 import Spinner from 'react-native-loading-spinner-overlay';
+import ScreenTitle from 'components/Atoms/ScreenTitle';
+import ActionButtons from 'components/Atoms/ActionButtons';
 
 const schema = Yup.object().shape({
   bank_name: Yup.string().trim().required('Required'),
@@ -136,23 +131,12 @@ function RenderForm({navigation, formikProps}) {
           error={errors.installment_amount}
         />
       </View>
-      <View style={styles.actionContainer}>
-        <Button
-          style={{width: '40%'}}
-          contentStyle={{padding: 1}}
-          theme={{roundness: 15}}
-          onPress={navigation.goBack}>
-          Cancel
-        </Button>
-        <Button
-          style={{width: '40%'}}
-          mode="contained"
-          contentStyle={{padding: 1}}
-          theme={{roundness: 15}}
-          onPress={handleSubmit}>
-          Save
-        </Button>
-      </View>
+      <ActionButtons
+        cancelLabel="Cancel"
+        submitLabel="Save"
+        onSubmit={handleSubmit}
+        onCancel={navigation.goBack}
+      />
     </>
   );
 }
@@ -203,14 +187,7 @@ function AddBankDetails(props) {
       <KeyboardAwareScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollView}>
-        <View>
-          <TouchableOpacity
-            onPress={navigation.goBack}
-            style={styles.titleContainer}>
-            <Image source={backArrow} style={styles.backArrow} />
-            <Subheading>{t('title_finalized_bank_details')}</Subheading>
-          </TouchableOpacity>
-        </View>
+        <ScreenTitle title={t('title_finalized_bank_details')} backIcon />
         <Formik
           validateOnBlur={false}
           validateOnChange={false}
@@ -234,16 +211,6 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingBottom: 20,
   },
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 5,
-  },
-  backArrow: {
-    height: 25,
-    width: 25,
-    marginRight: 5,
-  },
   inputsContainer: {
     width: '100%',
     flex: 1,
@@ -256,12 +223,6 @@ const styles = StyleSheet.create({
     color: theme.colors.primary,
     marginTop: 15,
     marginBottom: 5,
-  },
-  actionContainer: {
-    marginTop: 15,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-around',
   },
 });
 

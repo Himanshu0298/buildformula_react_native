@@ -1,10 +1,9 @@
 import React from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, View, SafeAreaView} from 'react-native';
 import {Portal, Subheading, withTheme} from 'react-native-paper';
 import Modal from 'react-native-modal';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import PropTypes from 'prop-types';
 
 function CustomDialog(props) {
@@ -19,39 +18,41 @@ function CustomDialog(props) {
       style={styles.modal}>
       <Portal.Host>
         <View style={styles.modalContainer}>
-          <SafeAreaView style={styles.modalContainer}>
-            <View style={styles.headerContainer}>
-              <View style={styles.titleContainer}>
-                <Subheading style={{color: theme.colors.primary}}>
-                  {title}
-                </Subheading>
-              </View>
-              <View style={styles.actionContainer}>
-                <OpacityButton
-                  opacity={0.1}
-                  color={theme.colors.primary}
-                  style={styles.checkButton}
-                  onPress={submitForm}>
-                  <MaterialIcon
-                    name="check"
+          <SafeAreaView>
+            <View style={styles.modalContainer}>
+              <View style={styles.headerContainer}>
+                <View style={styles.titleContainer}>
+                  <Subheading style={{color: theme.colors.primary}}>
+                    {title}
+                  </Subheading>
+                </View>
+                <View style={styles.actionContainer}>
+                  <OpacityButton
+                    opacity={0.1}
                     color={theme.colors.primary}
-                    size={18}
-                  />
-                </OpacityButton>
-                <OpacityButton
-                  opacity={0.1}
-                  color={theme.colors.error}
-                  style={styles.closeButton}
-                  onPress={handleClose}>
-                  <MaterialIcon
-                    name="close"
+                    style={styles.checkButton}
+                    onPress={submitForm}>
+                    <MaterialIcon
+                      name="check"
+                      color={theme.colors.primary}
+                      size={18}
+                    />
+                  </OpacityButton>
+                  <OpacityButton
+                    opacity={0.1}
                     color={theme.colors.error}
-                    size={18}
-                  />
-                </OpacityButton>
+                    style={styles.closeButton}
+                    onPress={handleClose}>
+                    <MaterialIcon
+                      name="close"
+                      color={theme.colors.error}
+                      size={18}
+                    />
+                  </OpacityButton>
+                </View>
               </View>
+              {children}
             </View>
-            {children}
           </SafeAreaView>
         </View>
       </Portal.Host>

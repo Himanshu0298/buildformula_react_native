@@ -6,6 +6,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useSelector} from 'react-redux';
 import {SITE_URL} from 'utils/constant';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import useAppActions from '../../redux/actions/appActions';
 import {DEVELOPER_DRAWER_ITEMS, CUSTOMER_DRAWER_ITEMS} from './DrawerItems';
 
@@ -189,27 +190,34 @@ function DrawerContent(props) {
   const {navigation, theme, type} = props;
 
   return (
-    <DrawerContentScrollView
-      {...props}
-      showsVerticalScrollIndicator={false}
-      contentContainerStyle={styles.scrollView}>
-      <View
-        style={[styles.drawerContent, {backgroundColor: theme.colors.surface}]}>
-        <View style={styles.backContainer}>
-          <Button
-            icon="arrow-expand-left"
-            onPress={() => navigation.toggleDrawer()}
-            style={styles.backIcon}>
-            Back
-          </Button>
+    <SafeAreaView style={styles.scrollView} edges={['bottom']}>
+      <DrawerContentScrollView
+        {...props}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollView}>
+        <View
+          style={[
+            styles.drawerContent,
+            {backgroundColor: theme.colors.surface},
+          ]}>
+          <View style={styles.backContainer}>
+            <Button
+              icon="arrow-expand-left"
+              onPress={() => navigation.toggleDrawer()}
+              style={styles.backIcon}>
+              Back
+            </Button>
+          </View>
+          {type === 'general' ? <RenderGeneralDrawerItems {...props} /> : null}
+          {type === 'developer' ? (
+            <RenderDeveloperDrawerItems {...props} />
+          ) : null}
+          {type === 'customer' ? (
+            <RenderCustomerDrawerItems {...props} />
+          ) : null}
         </View>
-        {type === 'general' ? <RenderGeneralDrawerItems {...props} /> : null}
-        {type === 'developer' ? (
-          <RenderDeveloperDrawerItems {...props} />
-        ) : null}
-        {type === 'customer' ? <RenderCustomerDrawerItems {...props} /> : null}
-      </View>
-    </DrawerContentScrollView>
+      </DrawerContentScrollView>
+    </SafeAreaView>
   );
 }
 

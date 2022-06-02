@@ -13,6 +13,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import UserAvatar from 'components/Atoms/UserAvatar';
 import {PHONE_REGEX} from 'utils/constant';
 import ActionButtons from 'components/Atoms/ActionButtons';
+import ScreenTitle from 'components/Atoms/ScreenTitle';
 
 const schema = Yup.object().shape({
   first_name: Yup.string('Invalid').required('First name is required'),
@@ -139,7 +140,7 @@ function EditProfile(props) {
 
           return (
             <View style={styles.contentContainer}>
-              <Subheading>Edit Profile Details</Subheading>
+              <ScreenTitle title="Edit Profile Details" backIcon />
               <View style={styles.headerContainer}>
                 <View>
                   <UserAvatar

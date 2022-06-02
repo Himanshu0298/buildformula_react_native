@@ -1,13 +1,6 @@
 import * as React from 'react';
-import {
-  Image,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import {Caption, Subheading, Text, withTheme} from 'react-native-paper';
-import backArrow from 'assets/images/back_arrow.png';
+import {ScrollView, StyleSheet, View} from 'react-native';
+import {Caption, Text, withTheme} from 'react-native-paper';
 import dayjs from 'dayjs';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
@@ -23,6 +16,7 @@ import {downloadPdf} from 'utils/download';
 import FileViewer from 'react-native-file-viewer';
 import {BASE_API_URL} from 'utils/constant';
 import {useDownload} from 'components/Atoms/Download';
+import ScreenTitle from 'components/Atoms/ScreenTitle';
 
 const TITLE = {
   document: 'Documentation charges',
@@ -196,14 +190,7 @@ function PaymentCollections(props) {
       <Spinner visible={loading} textContent="" />
       <View style={styles.container}>
         <View style={styles.actionButton}>
-          <View>
-            <TouchableOpacity
-              onPress={navigation.goBack}
-              style={styles.titleContainer}>
-              <Image source={backArrow} style={styles.backArrow} />
-              <Subheading>Payment Collection</Subheading>
-            </TouchableOpacity>
-          </View>
+          <ScreenTitle title="Payment Collection" backIcon />
           <View style={styles.actionRow}>
             <OpacityButton opacity={0.2} onPress={navToAddCollection}>
               {/* <Text style={[{color: theme.colors.primary,styles.buttonLabel }]}> */}
@@ -248,16 +235,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 20,
-  },
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 5,
-  },
-  backArrow: {
-    height: 23,
-    width: 23,
-    marginRight: 5,
   },
   contentContainer: {
     marginVertical: 15,

@@ -11,6 +11,8 @@ import {
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import {useSelector} from 'react-redux';
 import UserAvatar from 'components/Atoms/UserAvatar';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import ScreenTitle from 'components/Atoms/ScreenTitle';
 
 function Profile(props) {
   const {theme, navigation} = props;
@@ -22,16 +24,9 @@ function Profile(props) {
   const navToChangePassword = () => navigation.navigate('ChangePassword');
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView edges={['top']} style={styles.container}>
       <View style={styles.contentContainer}>
-        <View style={styles.titleContainer}>
-          <IconButton
-            icon="chevron-left"
-            size={30}
-            onPress={navigation.goBack}
-          />
-          <Subheading>Profile Details</Subheading>
-        </View>
+        <ScreenTitle title="Profile Details" backIcon />
         <View style={styles.headerContainer}>
           <UserAvatar size={150} uri={profile_url} />
           <Subheading style={{marginTop: 15}}>
@@ -59,17 +54,13 @@ function Profile(props) {
           </OpacityButton>
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
   },
   contentContainer: {
     padding: 10,

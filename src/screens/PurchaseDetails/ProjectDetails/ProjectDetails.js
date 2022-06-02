@@ -129,7 +129,8 @@ function ProjectDetails(props) {
             <Caption>Subscription Renewal Date</Caption>
             <Text>{expired_date}</Text>
           </View>
-          <View style={{flexDirection: 'row', marginVertical: 15}}>
+          {/* TODO: enable this */}
+          {/* <View style={{flexDirection: 'row', marginVertical: 15}}>
             <View style={styles.companyLabel}>
               <Button
                 mode="outlined"
@@ -148,7 +149,7 @@ function ProjectDetails(props) {
                 Delete project
               </Button>
             </View>
-          </View>
+          </View> */}
         </View>
 
         {isExpired ? (

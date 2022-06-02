@@ -85,7 +85,7 @@ import SalesPipelineRearrange from 'screens/DeveloperProject/Sales/SalesPipeline
 import BrokerDetails from 'screens/DeveloperProject/Sales/BrokerDetails';
 import AddBroker from 'screens/DeveloperProject/Sales/AddBroker';
 import Remark from 'screens/DeveloperProject/Sales/BrokerDetails/Components/Remark';
-import WorkMaster from 'screens/DeveloperProject/ProjectManagement/WorkMaster/WorkMaster';
+import WorkMaster from 'screens/DeveloperProject/ProjectManagement/WorkMaster';
 import WorkDetails from 'screens/DeveloperProject/ProjectManagement/WBS/WorkDetails';
 import ProgressRecords from 'screens/DeveloperProject/ProjectManagement/WBS/ProgressRecords';
 import Worklist from 'screens/DeveloperProject/ProjectManagement/WBS/Worklist';
@@ -302,9 +302,9 @@ function WBSStack() {
 }
 function WorkMasterStack() {
   return (
-    <Stack.Navigator initialRouteName="WorkMaster">
+    <Stack.Navigator initialRouteName="WorkMasterMain">
       <Stack.Group screenOptions={{headerShown: false}}>
-        <Stack.Screen name="WorkMaster" component={WorkMaster} />
+        <Stack.Screen name="WorkMasterMain" component={WorkMaster} />
         <Stack.Screen name="SubWorkCategory" component={SubWorkCategory} />
       </Stack.Group>
     </Stack.Navigator>
@@ -347,6 +347,18 @@ function RolesStack() {
   );
 }
 
+function PurchasedProjectsStack() {
+  return (
+    <Stack.Navigator initialRouteName="PurchasedProjects">
+      <Stack.Group screenOptions={{headerShown: false}}>
+        <Stack.Screen name="PurchasedProjects" component={PurchasedProjects} />
+        <Stack.Screen name="ProjectDetails" component={ProjectDetails} />
+        <Stack.Screen name="UpdateBillingInfo" component={UpdateBillingInfo} />
+      </Stack.Group>
+    </Stack.Navigator>
+  );
+}
+
 const generalDrawerContent = props => (
   <RouteContext.Consumer>
     {routeData => (
@@ -360,9 +372,10 @@ function GeneralDrawer() {
     <Drawer.Navigator drawerContent={generalDrawerContent}>
       <Drawer.Group screenOptions={{headerShown: false}}>
         <Drawer.Screen name="Home" component={Home} />
-        <Drawer.Screen name="PurchasedProjects" component={PurchasedProjects} />
-        <Drawer.Screen name="ProjectDetails" component={ProjectDetails} />
-        <Drawer.Screen name="UpdateBillingInfo" component={UpdateBillingInfo} />
+        <Drawer.Screen
+          name="PurchasedProjects"
+          component={PurchasedProjectsStack}
+        />
       </Drawer.Group>
     </Drawer.Navigator>
   );

@@ -1,3 +1,4 @@
+import ScreenTitle from 'components/Atoms/ScreenTitle';
 import * as React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Tabs} from 'react-native-collapsible-tab-view';
@@ -41,7 +42,7 @@ function ModifyRequest(props) {
       <Tabs.ScrollView
         contentContainerStyle={styles.scrollView}
         showsVerticalScrollIndicator={false}>
-        <Subheading style={styles.Subheading}>All Modify Requests</Subheading>
+        <ScreenTitle title="All Modify Requests" />
         {modifyRequests.map(item => {
           return (
             <View key={item.id} style={styles.contentContainer}>

@@ -1,8 +1,7 @@
 import * as React from 'react';
 import {useTranslation} from 'react-i18next';
-import {StyleSheet, View, TouchableOpacity, Image} from 'react-native';
-import {Subheading, withTheme, TextInput, Text} from 'react-native-paper';
-import backArrow from 'assets/images/back_arrow.png';
+import {StyleSheet, View} from 'react-native';
+import {withTheme, TextInput, Text} from 'react-native-paper';
 import RenderInput from 'components/Atoms/RenderInput';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
@@ -16,6 +15,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import {useSelector} from 'react-redux';
 import ActionButtons from 'components/Atoms/ActionButtons';
 import RenderSelect from 'components/Atoms/RenderSelect';
+import ScreenTitle from 'components/Atoms/ScreenTitle';
 
 const schema = Yup.object().shape({
   date: Yup.string('Invalid').required('Required'),
@@ -244,12 +244,7 @@ function AddCollection(props) {
       <KeyboardAwareScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollView}>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.titleContainer}>
-          <Image source={backArrow} style={styles.backArrow} />
-          <Subheading>{edit ? 'Update' : 'Add'} collection</Subheading>
-        </TouchableOpacity>
+        <ScreenTitle title={`${edit ? 'Update' : 'Add'} collection`} backIcon />
         <Formik
           validateOnBlur={false}
           validateOnChange={false}
@@ -271,16 +266,6 @@ const styles = StyleSheet.create({
   scrollView: {
     flexGrow: 1,
     paddingBottom: 20,
-  },
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 5,
-  },
-  backArrow: {
-    height: 23,
-    width: 23,
-    marginRight: 5,
   },
   inputsContainer: {
     width: '100%',

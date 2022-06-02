@@ -1,15 +1,8 @@
 import * as React from 'react';
 import {useTranslation} from 'react-i18next';
 import {StyleSheet, View, TouchableOpacity, Image} from 'react-native';
-import {
-  Subheading,
-  withTheme,
-  Caption,
-  Button,
-  TextInput,
-} from 'react-native-paper';
+import {withTheme, Caption, TextInput} from 'react-native-paper';
 import {theme} from 'styles/theme';
-import backArrow from 'assets/images/back_arrow.png';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import RenderInput from 'components/Atoms/RenderInput';
 import FileInput from 'components/Atoms/FileInput';
@@ -23,6 +16,8 @@ import CustomCheckbox from 'components/Atoms/CustomCheckbox';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {getShadow} from 'utils';
 import ProjectHeader from 'components/Molecules/Layout/ProjectHeader';
+import ScreenTitle from 'components/Atoms/ScreenTitle';
+import ActionButtons from 'components/Atoms/ActionButtons';
 
 // TODO: Add schema for customer
 const schema = Yup.object().shape({});
@@ -80,7 +75,6 @@ function RenderForm({formikProps, navigation}) {
 
   return (
     <>
-      {console.log('values in add customer form', values)}
       <View style={styles.inputsContainer}>
         <ProfileUpload
           profilePic={values.profile_pic}
@@ -207,24 +201,12 @@ function RenderForm({formikProps, navigation}) {
           />
         </View>
       </View>
-      <View style={styles.actionContainer}>
-        <Button
-          style={{width: '40%'}}
-          contentStyle={{padding: 1}}
-          theme={{roundness: 12}}
-          onPress={navigation.goBack}>
-          Cancel
-        </Button>
-        <Button
-          style={{width: '40%'}}
-          mode="contained"
-          disabled={!values.accepted}
-          contentStyle={{padding: 1}}
-          theme={{roundness: 12}}
-          onPress={handleSubmit}>
-          Save
-        </Button>
-      </View>
+      <ActionButtons
+        submitLabel="Save"
+        onCancel={navigation.goBack}
+        onSubmit={handleSubmit}
+        submitDisabled={!values.accepted}
+      />
     </>
   );
 }
@@ -234,14 +216,10 @@ function AddCustomer(props) {
   const {params} = route;
   const {unit, edit, customer} = params;
 
-  console.log('customer in add customer fewfwefw', customer);
-
   const {t} = useTranslation();
   const {user} = useSelector(s => s.user);
   const {selectedProject} = useSelector(s => s.project);
   const {loading} = useSelector(s => s.customer);
-
-  console.log('route.param.edit in form ', route.params);
 
   const {getCustomerDetails, addCustomer} = useCustomerActions();
 
@@ -262,13 +240,7 @@ function AddCustomer(props) {
       <Spinner visible={loading} textContent="" />
       <View style={styles.headerContainer}>
         <ProjectHeader {...props} />
-
-        <TouchableOpacity
-          onPress={navigation.goBack}
-          style={styles.titleContainer}>
-          <Image source={backArrow} style={styles.backArrow} />
-          <Subheading>{t('title_customer_details')}</Subheading>
-        </TouchableOpacity>
+        <ScreenTitle title={t('title_customer_details')} backIcon />
       </View>
       <KeyboardAwareScrollView
         showsVerticalScrollIndicator={false}
@@ -332,16 +304,6 @@ const styles = StyleSheet.create({
     marginHorizontal: -10,
     ...getShadow(2),
   },
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 5,
-  },
-  backArrow: {
-    height: 23,
-    width: 23,
-    marginRight: 5,
-  },
   profilePicContainer: {
     paddingTop: 30,
     paddingBottom: 20,
@@ -371,14 +333,6 @@ const styles = StyleSheet.create({
     paddingVertical: 7,
   },
   checkboxContainer: {},
-  actionContainer: {
-    marginTop: 25,
-    paddingHorizontal: 10,
-    flexDirection: 'row',
-
-    alignItems: 'center',
-    justifyContent: 'space-around',
-  },
 });
 
 export default withTheme(AddCustomer);

@@ -1,16 +1,10 @@
 import * as React from 'react';
 import {useTranslation} from 'react-i18next';
-import {
-  StyleSheet,
-  View,
-  TouchableOpacity,
-  Image,
-  RefreshControl,
-} from 'react-native';
-import {Subheading, withTheme, Divider} from 'react-native-paper';
-import backArrow from 'assets/images/back_arrow.png';
+import {StyleSheet, View, RefreshControl} from 'react-native';
+import {withTheme, Divider} from 'react-native-paper';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import useCustomerActions from 'redux/actions/customerActions';
+import ScreenTitle from 'components/Atoms/ScreenTitle';
 import DetailsHeader from '../CustomerSection/Components/DetailsHeader';
 import {CustomerSection, EngineerSection, ManagerSection} from './Components';
 
@@ -48,12 +42,8 @@ function AddModifyRequest(props) {
         refreshControl={
           <RefreshControl refreshing={false} onRefresh={handleRefresh} />
         }>
-        <TouchableOpacity
-          onPress={navigation.goBack}
-          style={styles.titleContainer}>
-          <Image source={backArrow} style={styles.backArrow} />
-          <Subheading>{t('title_customer_section')}</Subheading>
-        </TouchableOpacity>
+        <ScreenTitle title={t('title_customer_section')} backIcon />
+
         <DetailsHeader {...route?.params} />
         <Divider style={styles.divider} />
         <CustomerSection
