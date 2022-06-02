@@ -128,10 +128,10 @@ import SignUp from '../screens/Auth/SignUp';
 import Login from '../screens/Auth/Login';
 import LanguageSelect from '../screens/Auth/LanguageSelect';
 import DrawerContent from './Components/DrawerContent';
-import AddChallan from 'screens/DeveloperProject/Material/DeliveryDetails/AddChallan/AddChallan';
-import SelectMaterials from 'screens/DeveloperProject/Material/DeliveryDetails/SelectMaterial/SelectMaterials';
-import AddMaterialInfo from 'screens/DeveloperProject/Material/DeliveryDetails/AddMaterialChallan/AddMaterialInfo';
-import AddVehicleInfo from 'screens/DeveloperProject/Material/DeliveryDetails/AddVehicleChallan/AddVehicleInfo';
+import AddChallan from 'screens/DeveloperProject/Material/DeliveryDetails/AddChallan';
+import SelectMaterials from 'screens/DeveloperProject/Material/DeliveryDetails/SelectMaterial';
+import AddMaterialInfo from 'screens/DeveloperProject/Material/DeliveryDetails/AddMaterialChallan';
+import AddVehicleInfo from 'screens/DeveloperProject/Material/DeliveryDetails/AddVehicleChallan';
 /** *********** Developer Project Sub Screens End   ************ */
 
 const optionalConfigObject = {
@@ -263,8 +263,8 @@ function MaterialModuleStack() {
   return (
     <Stack.Navigator initialRouteName="MaterialGRN">
       <Stack.Group screenOptions={{headerShown: false}}>
-        <Stack.Screen name="DeliveryDetails" component={DeliveryDetails} />
         <Stack.Screen name="MaterialGRN" component={MaterialGRN} />
+        <Stack.Screen name="DeliveryDetails" component={DeliveryDetails} />
         <Stack.Screen name="OrderDetail" component={OrderDetail} />
         <Stack.Screen name="MaterialList" component={MaterialList} />
         <Stack.Screen name="AddChallan" component={AddChallan} />

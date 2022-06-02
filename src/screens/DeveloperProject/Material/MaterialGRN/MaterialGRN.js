@@ -60,12 +60,14 @@ const OrderCard = props => {
   const {navigation, item} = props;
   const {material_order_no, material_requests_id: materialId} = item;
 
+  const handleNav = () => {
+    if (materialId) {
+      navigation.navigate('OrderDetail', {material_order_no, materialId});
+    }
+  };
+
   return (
-    <TouchableOpacity
-      style={styles.cardContainer}
-      onPress={() =>
-        navigation.navigate('OrderDetail', {material_order_no, materialId})
-      }>
+    <TouchableOpacity style={styles.cardContainer} onPress={handleNav}>
       <OpacityButton
         opacity={0.1}
         color={theme.colors.primary}
@@ -103,7 +105,7 @@ const MaterialGRN = props => {
 
   return (
     <View style={styles.orderContainer}>
-      <Subheading style={styles.SubHeading}>Material GRN</Subheading>
+      <Subheading>Material GRN</Subheading>
       <Text>Select material order for which delivery to be added.</Text>
       <Spinner visible={loading} textContent="" />
       <FlatList
@@ -134,6 +136,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   orderContainer: {
+    flexGrow: 1,
     padding: 10,
   },
   contentContainerStyle: {
@@ -173,8 +176,5 @@ const styles = StyleSheet.create({
   },
   divider: {
     height: 2,
-  },
-  SubHeading: {
-    fontSize: 18,
   },
 });

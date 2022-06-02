@@ -98,7 +98,7 @@ function WorkList(props) {
   const renderEmpty = () => <NoResult />;
 
   return (
-    <View>
+    <View style={styles.container}>
       <Spinner visible={loading} textContent="" />
       {!pathList?.length ? (
         <Text style={styles.subHeading}>Work List</Text>
@@ -130,6 +130,7 @@ function WorkList(props) {
         refreshControl={
           <RefreshControl refreshing={false} onRefresh={getWBSLevelWorks} />
         }
+        contentContainerStyle={styles.flatList}
         keyExtractor={item => item.id}
         ListEmptyComponent={renderEmpty}
         renderItem={({item}) => {
@@ -147,6 +148,9 @@ function WorkList(props) {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flexGrow: 1,
+  },
   optionContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -191,6 +195,9 @@ const styles = StyleSheet.create({
   },
   rightArrow: {
     borderRadius: 25,
+  },
+  flatList: {
+    flexGrow: 1,
   },
 });
 

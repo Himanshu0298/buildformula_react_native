@@ -120,6 +120,10 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 12,
   },
+  contentContainerStyle: {
+    flexGrow: 1,
+  },
+
   quantityContainer: {
     padding: 10,
   },
@@ -150,6 +154,6 @@ const styles = StyleSheet.create({
   },
   materialContainer: {
     paddingHorizontal: 15,
-    flex: 1,
+    flexGrow: 1,
   },
 });

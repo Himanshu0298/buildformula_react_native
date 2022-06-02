@@ -128,7 +128,7 @@ function SelectMaterials(props) {
         style={styles.actionButton}
         onSubmit={navToStepThree}
         submitLabel="Select"
-        onCancel={() => navigation.goBack()}
+        onCancel={navigation.goBack}
       />
     </View>
   );
@@ -144,6 +144,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginLeft: 32,
     marginTop: 10,
+  },
+  contentContainerStyle: {
+    flexGrow: 1,
   },
   titles: {
     flex: 1,

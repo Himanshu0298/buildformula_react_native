@@ -80,28 +80,22 @@ const Details = props => {
   return (
     <View style={styles.orderedContainer}>
       <View style={styles.orderedItem}>
-        <View style={styles.itemContainer}>
-          <RenderRow
-            item={{label: 'Ordered  ', value: ordered}}
-            containerStyle={styles.orderedListValue}
-          />
-          <RenderRow
-            item={{label: 'Delivered  ', value: delivered}}
-            containerStyle={styles.orderedListValue}
-          />
-        </View>
-        <View style={styles.itemContainer}>
-          <RenderRow
-            item={{label: 'Damage  ', value: damage}}
-            containerStyle={styles.orderedListValue}
-          />
-          <RenderRow
-            item={{label: 'Remaining   ', value: remaining}}
-            containerStyle={styles.orderedListValue}
-          />
-        </View>
-      </View>
-      <View style={styles.orderNavigation}>
+        <RenderRow
+          item={{label: 'Ordered', value: ordered}}
+          containerStyle={styles.orderedListValue}
+        />
+        <RenderRow
+          item={{label: 'Delivered', value: delivered}}
+          containerStyle={styles.orderedListValue}
+        />
+        <RenderRow
+          item={{label: 'Damage', value: damage}}
+          containerStyle={styles.orderedListValue}
+        />
+        <RenderRow
+          item={{label: 'Remaining', value: remaining}}
+          containerStyle={styles.orderedListValue}
+        />
         <OpacityButton
           opacity={0.1}
           color={theme.colors.primary}
@@ -122,6 +116,7 @@ const Details = props => {
 
 const CommonCard = props => {
   const {navigation, materialOrderNo: orderNumber, item} = props;
+
   return (
     <View style={styles.commonCard}>
       <ChallanSection item={item} />
@@ -161,6 +156,8 @@ const OrderDetail = props => {
   const {materialChallanList, materialOrderList, loading} = useSelector(
     s => s.materialManagement,
   );
+
+  console.log('-----> materialId', materialId);
 
   const {selectedProject} = useSelector(s => s.project);
 
@@ -246,25 +243,16 @@ const styles = StyleSheet.create({
     ...getShadow(1),
     borderRadius: 5,
   },
-  itemContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
   orderedListValue: {
     alignItems: 'center',
   },
   orderedItem: {
+    flexGrow: 1,
     margin: 5,
     paddingVertical: 10,
-    paddingRight: 1,
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
+    justifyContent: 'space-between',
     alignItems: 'center',
-  },
-  orderNavigation: {
-    width: '20%',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   button: {
     borderRadius: 20,
