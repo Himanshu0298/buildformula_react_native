@@ -52,4 +52,18 @@ platform :android do
         groups: "vshwan-team"
     )
   end
+
+  lane :bundle do |options|
+
+    environment='dev'
+    if options[:env]
+      environment = options[:env]
+    end
+
+    # build_android_app is a built-in fastlane action.
+    gradle(
+      task: 'bundle', 
+      build_type: "Release",
+    ) 
+  end
 end
