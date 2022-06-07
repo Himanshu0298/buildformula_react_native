@@ -156,7 +156,11 @@ const Comment = props => {
 
 const ModifyRequestDetails = props => {
   const {route} = props;
-  const {id, unit, towerType, project_id} = route?.params || {};
+  const {id, unit, towerType} = route?.params || {};
+
+  const {selectedProject} = useSelector(s => s.project);
+
+  const project_id = selectedProject.id;
 
   const {
     getModifyRequests,
@@ -187,12 +191,13 @@ const ModifyRequestDetails = props => {
     }));
   }, []);
 
-  const loadRequestData = () =>
+  const loadRequestData = () => {
     getModifyRequestDetails({
       project_id,
       project_modify_request_id: id,
       unit_id: unit.unit_id,
     });
+  };
 
   const addCommentData = async description => {
     await addComment({project_id, project_modify_request_id: id, description});

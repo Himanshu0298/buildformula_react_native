@@ -20,7 +20,7 @@ function CustomerBankLoan(props) {
   return (
     <View style={styles.container}>
       <Spinner visible={loading || customerDataLoading} textContent="" />
-      <BankLoans {...props} />
+      <BankLoans {...props} isCustomer />
     </View>
   );
 }

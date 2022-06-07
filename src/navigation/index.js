@@ -442,6 +442,10 @@ function CustomerDashboard() {
         <Drawer.Screen name="BookingDetails" component={CustomerBooking} />
         <Drawer.Screen name="LoanDetails" component={CustomerBankLoan} />
         <Drawer.Screen name="CustomerAccount" component={CustomerAccount} />
+        <Drawer.Screen
+          name="ModifyRequestDetails"
+          component={ModifyRequestDetails}
+        />
         <Drawer.Screen name="ModifyRequest" component={CustomerModifyRequest} />
         <Drawer.Screen name="CustomerFiles" component={CustomerFiles} />
         <Drawer.Screen name="AddCustomer" component={AddCustomer} />

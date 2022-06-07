@@ -1,6 +1,6 @@
 import ScreenTitle from 'components/Atoms/ScreenTitle';
 import * as React from 'react';
-import {StyleSheet, View} from 'react-native';
+import {ScrollView, StyleSheet, View} from 'react-native';
 import {Tabs} from 'react-native-collapsible-tab-view';
 import {
   Caption,
@@ -15,7 +15,7 @@ import {getPermissions} from 'utils';
 import {MODIFY_REQUEST_STATUS} from 'utils/constant';
 
 function ModifyRequest(props) {
-  const {theme, navigation, route} = props;
+  const {theme, navigation, isCustomer, route} = props;
 
   const modulePermissions = getPermissions('Modify Request');
 
@@ -37,9 +37,11 @@ function ModifyRequest(props) {
     });
   };
 
+  const ContainerView = isCustomer ? ScrollView : Tabs.ScrollView;
+
   return (
     <View style={styles.container}>
-      <Tabs.ScrollView
+      <ContainerView
         contentContainerStyle={styles.scrollView}
         showsVerticalScrollIndicator={false}>
         <ScreenTitle title="All Modify Requests" />
@@ -69,7 +71,7 @@ function ModifyRequest(props) {
             </View>
           );
         })}
-      </Tabs.ScrollView>
+      </ContainerView>
       {modulePermissions?.editor || modulePermissions?.admin ? (
         <FAB
           style={[styles.fab, {backgroundColor: theme.colors.primary}]}

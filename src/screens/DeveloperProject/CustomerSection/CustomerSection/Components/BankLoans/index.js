@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {StyleSheet, View} from 'react-native';
+import {ScrollView, StyleSheet, View} from 'react-native';
 import {Button, Subheading, withTheme} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import {theme} from 'styles/theme';
@@ -11,6 +11,7 @@ import BankDetailsSection from './Components/BankDetailsSection';
 import ShareFiles from './Components/ShareFiles';
 
 function BankLoans(props) {
+  const {isCustomer} = props;
   const modulePermissions = getPermissions('Bank Loan');
 
   const [activityModal, setActivityModal] = React.useState(false);
@@ -21,6 +22,8 @@ function BankLoans(props) {
   const toggleActivityModal = () => setActivityModal(v => !v);
   const toggleShareModal = () => setShareModal(v => !v);
 
+  const ContainerView = isCustomer ? ScrollView : Tabs.ScrollView;
+
   return (
     <>
       <ActivityChatModal
@@ -28,7 +31,7 @@ function BankLoans(props) {
         handleClose={toggleActivityModal}
       />
       <ShareFiles open={shareModal} handleClose={toggleShareModal} />
-      <Tabs.ScrollView
+      <ContainerView
         contentContainerStyle={styles.scrollView}
         showsVerticalScrollIndicator={false}>
         <View style={styles.container}>
@@ -50,7 +53,7 @@ function BankLoans(props) {
             {...{bankDetails, modulePermissions, toggleShareModal}}
           />
         </View>
-      </Tabs.ScrollView>
+      </ContainerView>
     </>
   );
 }

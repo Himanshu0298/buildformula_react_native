@@ -8,7 +8,7 @@ import {
   FlatList,
   RefreshControl,
 } from 'react-native';
-import {withTheme, Subheading, Caption, FAB} from 'react-native-paper';
+import {withTheme, Subheading, Caption} from 'react-native-paper';
 import developerImage from 'assets/images/developer_building.png';
 import supplierImage from 'assets/images/supplier_building.png';
 import MaterialTabs from 'react-native-material-tabs';
@@ -102,10 +102,10 @@ function Home(props) {
       _tabs.push('Supplier');
       data.push(getData(suppliers));
     }
-    // if (customers?.length) {
-    //   _tabs.push('Customer');
-    //   data.push(getData(customers));
-    // }
+    if (customers?.length) {
+      _tabs.push('Customer');
+      data.push(getData(customers));
+    }
     return {tabs: _tabs, projectsData: data};
   }, [projects]);
 

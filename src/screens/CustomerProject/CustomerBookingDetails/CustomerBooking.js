@@ -20,7 +20,7 @@ function CustomerBooking(props) {
   return (
     <View style={styles.container}>
       <Spinner visible={loading || customerDataLoading} textContent="" />
-      <BookingDetails {...props} />
+      <BookingDetails {...props} isCustomer />
     </View>
   );
 }

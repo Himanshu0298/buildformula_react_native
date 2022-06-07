@@ -12,7 +12,7 @@ function CustomerFiles(props) {
   return (
     <View style={styles.container}>
       <Spinner visible={loading || customerDataLoading} textContent="" />
-      <Files {...props} />
+      <Files {...props} isCustomer />
     </View>
   );
 }

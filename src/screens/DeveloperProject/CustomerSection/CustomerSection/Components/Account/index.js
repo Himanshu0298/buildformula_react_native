@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {
   Badge,
   Button,
@@ -60,7 +60,7 @@ function StatusDialog(props) {
 }
 
 function Account(props) {
-  const {route, theme, navigation, showUpdateStatus = true} = props;
+  const {route, theme, isCustomer, navigation, showUpdateStatus = true} = props;
   const {project_id, unit} = route?.params || {};
 
   const modulePermissions = getPermissions('Account');
@@ -177,8 +177,10 @@ function Account(props) {
     );
   };
 
+  const ContainerView = isCustomer ? ScrollView : Tabs.ScrollView;
+
   return (
-    <Tabs.ScrollView
+    <ContainerView
       showsVerticalScrollIndicator={false}
       contentContainerStyle={styles.containerSection}>
       <ActivityDialog
@@ -357,7 +359,7 @@ function Account(props) {
           </View>
         </View>
       </View>
-    </Tabs.ScrollView>
+    </ContainerView>
   );
 }
 

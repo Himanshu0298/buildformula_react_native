@@ -36,7 +36,7 @@ function RenderCustomer({customer, navToDetails, index}) {
 }
 
 function Details(props) {
-  const {theme, navigation, route} = props;
+  const {theme, navigation, route, isCustomer} = props;
   const {params} = route;
 
   const modulePermissions = getPermissions('Ownership');
@@ -55,8 +55,10 @@ function Details(props) {
     navigation.navigate('AddCustomer', {...params});
   };
 
+  const ContainerView = isCustomer ? ScrollView : Tabs.ScrollView;
+
   return (
-    <Tabs.ScrollView contentContainerStyle={{flexGrow: 1}}>
+    <ContainerView contentContainerStyle={{flexGrow: 1}}>
       <View style={styles.container}>
         {customerData?.members?.map((customer, index) => (
           <RenderCustomer
@@ -78,7 +80,7 @@ function Details(props) {
           <Caption>You can add upto 10 joint names for your property</Caption>
         </View>
       </View>
-    </Tabs.ScrollView>
+    </ContainerView>
   );
 }
 

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {StyleSheet, View, useWindowDimensions} from 'react-native';
+import {StyleSheet, View, useWindowDimensions, ScrollView} from 'react-native';
 import {
   Caption,
   Divider,
@@ -788,10 +788,12 @@ function BookingDetails(props) {
     bookingBanks = {},
   } = useSelector(({customer}) => customer);
 
-  const {unit_id} = props;
+  const {unit_id, isCustomer} = props;
+
+  const ContainerView = isCustomer ? ScrollView : Tabs.ScrollView;
 
   return (
-    <Tabs.ScrollView
+    <ContainerView
       contentContainerStyle={styles.scrollView}
       showsVerticalScrollIndicator={false}>
       <View style={styles.container}>
@@ -818,7 +820,7 @@ function BookingDetails(props) {
         />
         <TermsCondition {...props} {...{bookingDetails}} />
       </View>
-    </Tabs.ScrollView>
+    </ContainerView>
   );
 }
 

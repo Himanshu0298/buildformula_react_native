@@ -18,7 +18,7 @@ function CustomerModifyRequest(props) {
   return (
     <View style={styles.container}>
       <Spinner visible={loading || customerDataLoading} textContent="" />
-      <ModifyRequest {...props} />
+      <ModifyRequest {...props} isCustomer />
     </View>
   );
 }

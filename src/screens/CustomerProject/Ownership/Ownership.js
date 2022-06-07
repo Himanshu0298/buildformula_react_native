@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {useSelector} from 'react-redux';
 import useCustomerActions from 'redux/actions/customerActions';
@@ -35,6 +35,7 @@ function Ownership(props) {
   }, [unit_id]);
 
   React.useEffect(() => {
+    console.log('-------->ownership useeffext');
     getProjectData(project.id);
     getProjectCommonData(project.id);
     getCustomerDetails({user_id: user.id, project_id, unit_id});
@@ -48,7 +49,7 @@ function Ownership(props) {
   return (
     <View style={styles.container}>
       <Spinner visible={loading || customerDataLoading} textContent="" />
-      <Details {...props} />
+      <Details {...props} isCustomer />
     </View>
   );
 }

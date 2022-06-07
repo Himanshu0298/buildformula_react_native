@@ -20,7 +20,7 @@ function CustomerAccount(props) {
   return (
     <View style={styles.container}>
       <Spinner visible={loading || customerDataLoading} textContent="" />
-      <Account {...props} showUpdateStatus={false} />
+      <Account {...props} showUpdateStatus={false} isCustomer />
     </View>
   );
 }
