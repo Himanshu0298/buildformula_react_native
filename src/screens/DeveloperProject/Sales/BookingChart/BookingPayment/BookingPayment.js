@@ -795,6 +795,7 @@ function FormContent(props) {
     setFieldValue('document_start_date', values.document_start_date);
     setFieldValue('document_end_date', values.document_end_date);
     setFieldValue('is_loan', values.is_loan);
+    setFieldValue('payment_type', values.payment_type);
     setFieldValue('loan_bank', values.loan_bank);
     setFieldValue('loan_amount', values.loan_amount);
     setFieldValue('loan_remark', values.loan_remark);
@@ -809,6 +810,7 @@ function FormContent(props) {
     setFieldValue('document_start_date', values.document_start_date);
     setFieldValue('document_end_date', values.document_end_date);
     setFieldValue('is_loan', values.is_loan);
+    setFieldValue('payment_type', values.payment_type);
     setFieldValue('loan_bank', values.loan_bank);
     setFieldValue('loan_amount', values.loan_amount);
     setFieldValue('loan_remark', values.loan_remark);
@@ -870,6 +872,25 @@ function FormContent(props) {
             </View>
           </View>
 
+          <View style={styles.radioRow}>
+            <Text>Payment Method?</Text>
+            <View style={styles.radioContainer}>
+              <Radio
+                label="Yes"
+                value="yes"
+                checked={values.is_payment === 'yes'}
+                onChange={value => setFieldValue('is_payment', value)}
+              />
+              <Radio
+                label="No"
+                value="no"
+                color={theme.colors.error}
+                checked={values.is_payment === 'no'}
+                onChange={value => setFieldValue('is_payment', value)}
+              />
+            </View>
+          </View>
+
           {values.is_loan === 'yes' ? (
             <View style={styles.loadInputs}>
               <View style={styles.otherChargesContainer}>
@@ -909,23 +930,27 @@ function FormContent(props) {
             </View>
           ) : null}
 
-          <RenderSelect
-            name="payment_type"
-            label={t('label_payment_method')}
-            options={PAYMENT_METHODS}
-            containerStyles={styles.rateInput}
-            value={values.payment_type}
-            error={errors.payment_type}
-            onSelect={value => {
-              formikProps.setFieldValue('payment_type', value);
-              formikProps.setErrors({});
-            }}
-          />
-          <RenderPaymentForm {...props} {...{formikProps, t}} />
+          {values.is_payment === 'yes' ? (
+            <>
+              <RenderSelect
+                name="payment_type"
+                label={t('label_payment_method')}
+                options={PAYMENT_METHODS}
+                containerStyles={styles.rateInput}
+                value={values.payment_type}
+                error={errors.payment_type}
+                onSelect={value => {
+                  formikProps.setFieldValue('payment_type', value);
+                  formikProps.setErrors({});
+                }}
+              />
+              <RenderPaymentForm {...props} {...{formikProps, t}} />
+            </>
+          ) : null}
         </View>
         <ActionButtons
           cancelLabel="Back"
-          submitLabel="Save"
+          submitLabel="Save With OTP"
           onCancel={handleCancel}
           onSubmit={handleSubmit}
         />
@@ -958,6 +983,7 @@ function BookingPayments(props) {
       payment_type: 1,
       custom_payments: [{}],
       is_loan: 'no',
+      is_payment: 'no',
       documentCharge,
       isDocumentCharge,
       ...route?.params,

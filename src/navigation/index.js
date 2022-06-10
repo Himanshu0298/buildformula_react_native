@@ -132,6 +132,11 @@ import AddChallan from 'screens/DeveloperProject/Material/DeliveryDetails/AddCha
 import SelectMaterials from 'screens/DeveloperProject/Material/DeliveryDetails/SelectMaterial';
 import AddMaterialInfo from 'screens/DeveloperProject/Material/DeliveryDetails/AddMaterialChallan';
 import AddVehicleInfo from 'screens/DeveloperProject/Material/DeliveryDetails/AddVehicleChallan';
+import DocumentGenerater from 'screens/DeveloperProject/DocumentGenerater';
+import CustomerSectionSettings from 'screens/DeveloperProject/CustomerSectionSettings';
+import Approval from 'screens/DeveloperProject/Sales/Approval';
+import CreateApproval from 'screens/DeveloperProject/Sales/Approval/Components/CreateApproval';
+import ApprovalListing from 'screens/DeveloperProject/Sales/Approval/Components/ApprovalListing';
 /** *********** Developer Project Sub Screens End   ************ */
 
 const optionalConfigObject = {
@@ -203,6 +208,17 @@ function PipelineStack() {
           component={SalesPipelineRearrange}
         />
         <Stack.Screen name="VisitorDetails" component={VisitorDetails} />
+      </Stack.Group>
+    </Stack.Navigator>
+  );
+}
+function ApprovalStack() {
+  return (
+    <Stack.Navigator initialRouteName="Approval">
+      <Stack.Group screenOptions={{headerShown: false}}>
+        <Stack.Screen name="Approval" component={Approval} />
+        <Stack.Screen name="CreateApproval" component={CreateApproval} />
+        <Stack.Screen name="ApprovalListing" component={ApprovalListing} />
       </Stack.Group>
     </Stack.Navigator>
   );
@@ -396,6 +412,7 @@ function ProjectDrawer() {
         <Drawer.Screen name="DeveloperHome" component={DeveloperDashboard} />
         <Drawer.Screen name="Visitors" component={VisitorsStack} />
         <Drawer.Screen name="SalesPipeline" component={PipelineStack} />
+        <Drawer.Screen name="Approval" component={ApprovalStack} />
         <Drawer.Screen name="BookingChartStack" component={BookingChartStack} />
         <Drawer.Screen name="BrokerStack" component={BrokerStack} />
         <Drawer.Screen name="RoughDrawing" component={RoughDrawing} />
@@ -409,6 +426,11 @@ function ProjectDrawer() {
           component={CustomerSectionStack}
         />
         <Drawer.Screen name="WorkMaster" component={WorkMasterStack} />
+        {/* <Drawer.Screen name="DocumentGenerater" component={DocumentGenerater} /> */}
+        {/* <Drawer.Screen
+          name="CustomerSectionSettings"
+          component={CustomerSectionSettings}
+        /> */}
         <Drawer.Screen name="WBS" component={WBSStack} />
         <Drawer.Screen name="MaterialUtility" component={MaterialModuleStack} />
         <Drawer.Screen name="ProjectSchedule" component={ProjectSchedule} />

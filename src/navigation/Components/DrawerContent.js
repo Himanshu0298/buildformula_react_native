@@ -140,7 +140,6 @@ function RenderDeveloperDrawerItems(props) {
     }
     return filterSidebar(DEVELOPER_DRAWER_ITEMS, permissions);
   }, [isProjectAdmin, permissions]);
-
   return routes.map(section => {
     if (section.title) {
       return (

@@ -32,6 +32,14 @@ export const DEVELOPER_DRAWER_ITEMS = [
         ),
       },
       {
+        id: 58,
+        route: 'Approval',
+        label: 'Approval',
+        icon: ({color, size}) => (
+          <MaterialIcons name="approval" {...{color, size}} />
+        ),
+      },
+      {
         id: 3,
         route: 'BookingChartStack',
         label: 'Booking Chart',
@@ -62,6 +70,28 @@ export const DEVELOPER_DRAWER_ITEMS = [
           />
         ),
       },
+
+      // {
+      //   route: 'DocumentGenerater',
+      //   label: 'Document Generater',
+      //   icon: ({color, size}) => (
+      //     <MaterialCommunityIcons
+      //       name="account-multiple-outline"
+      //       {...{color, size}}
+      //     />
+      //   ),
+      // },
+
+      // {
+      //   route: 'CustomerSectionSettings',
+      //   label: 'Settings',
+      //   icon: ({color, size}) => (
+      //     <MaterialCommunityIcons
+      //       name="account-multiple-outline"
+      //       {...{color, size}}
+      //     />
+      //   ),
+      // },
     ],
   },
 
