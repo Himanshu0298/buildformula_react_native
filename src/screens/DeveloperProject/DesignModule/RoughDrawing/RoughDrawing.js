@@ -32,6 +32,7 @@ import dayjs from 'dayjs';
 import {getFileExtension} from 'utils/download';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import Foundation from 'react-native-vector-icons/Foundation';
+import useDesignModuleActions from 'redux/actions/designModuleActions';
 import DeleteDialog from './Components/DeleteDialog';
 import RenameDialogue from './Components/RenameDialog';
 import CreateFolderDialogue from './Components/CreateFolderDialog';
@@ -247,6 +248,9 @@ function RoughDrawing(props) {
 
   const {loading, versionData} = useSelector(s => s.files);
   const {selectedProject} = useSelector(s => s.project);
+  const {folders} = useSelector(s => s.designModule);
+  console.log('-------->folders', folders);
+
   const {user} = useSelector(s => s.user);
 
   const project_id = selectedProject.id;
@@ -267,6 +271,8 @@ function RoughDrawing(props) {
     shareFile,
     addVersion,
   } = useFileActions();
+  const {getRDFolders} = useDesignModuleActions();
+  console.log('-------->getRDFolders', getRDFolders);
 
   const {openImagePicker} = useImagePicker();
 
@@ -279,6 +285,11 @@ function RoughDrawing(props) {
   const [listMode, setListMode] = React.useState('list');
 
   // const [selectedUploadFile, setSelectedUploadFile] = React.useState();
+
+  React.useEffect(() => {
+    getRDFolders({project_id, mode: 'folder', default_folders: 'yes'});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   React.useEffect(() => {
     loadData();
@@ -452,7 +463,12 @@ function RoughDrawing(props) {
         {listMode === 'list' ? (
           <FoldersSection
             {...props}
-            {...{menuId, toggleMenu, setModalContent, setModalContentType}}
+            {...{
+              menuId,
+              toggleMenu,
+              setModalContent,
+              setModalContentType,
+            }}
           />
         ) : null}
         {listMode === 'grid' ? (

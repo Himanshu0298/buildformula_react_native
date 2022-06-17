@@ -50,6 +50,7 @@ const schema = Yup.object().shape({
     is: 'yes',
     then: Yup.string('Invalid').required('Required'),
   }),
+  selectedVisitor: Yup.string().required('Please Select a Visitor'),
 });
 
 function InfoRow(props) {
@@ -190,6 +191,9 @@ function FormContent(props) {
                   onChange={value => setFieldValue('userType', value)}
                 />
               </View>
+              {errors.selectedVisitor ? (
+                <RenderError error={errors.selectedVisitor} />
+              ) : null}
             </View>
             {values.userType === 'visitor' ? (
               <View style={styles.searchContainer}>

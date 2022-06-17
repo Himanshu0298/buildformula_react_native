@@ -137,6 +137,10 @@ import CustomerSectionSettings from 'screens/DeveloperProject/CustomerSectionSet
 import Approval from 'screens/DeveloperProject/Sales/Approval';
 import CreateApproval from 'screens/DeveloperProject/Sales/Approval/Components/CreateApproval';
 import ApprovalListing from 'screens/DeveloperProject/Sales/Approval/Components/ApprovalListing';
+import FollowUpTask from 'screens/DeveloperProject/Sales/Follow-upTask';
+import FollowUpDetails from 'screens/DeveloperProject/Sales/Follow-upTask/FollowUpDetails';
+import DocumentDownload from 'screens/DeveloperProject/DocumentGenerater/Documents/DocumentDownload';
+import ProjectNotification from 'screens/Notification/ProjectNotification';
 /** *********** Developer Project Sub Screens End   ************ */
 
 const optionalConfigObject = {
@@ -223,6 +227,16 @@ function ApprovalStack() {
     </Stack.Navigator>
   );
 }
+function FollowUpStack() {
+  return (
+    <Stack.Navigator initialRouteName="FollowUpTask">
+      <Stack.Group screenOptions={{headerShown: false}}>
+        <Stack.Screen name="FollowUpTask" component={FollowUpTask} />
+        <Stack.Screen name="FollowUpDetails" component={FollowUpDetails} />
+      </Stack.Group>
+    </Stack.Navigator>
+  );
+}
 
 function BookingChartStack() {
   return (
@@ -236,6 +250,7 @@ function BookingChartStack() {
         <Stack.Screen name="BC_Step_Six" component={BookingDetails} />
         <Stack.Screen name="BC_Step_Seven" component={BookingRates} />
         <Stack.Screen name="BC_Step_Eight" component={BookingPayment} />
+        <Stack.Screen name="BookkingOtp" component={OtpScreen} />
         <Stack.Screen name="BookingFormOnHold" component={BookingFormOnHold} />
         <Stack.Screen
           name="HoldBookingHistory"
@@ -413,6 +428,7 @@ function ProjectDrawer() {
         <Drawer.Screen name="Visitors" component={VisitorsStack} />
         <Drawer.Screen name="SalesPipeline" component={PipelineStack} />
         <Drawer.Screen name="Approval" component={ApprovalStack} />
+        <Drawer.Screen name="FollowUpTask" component={FollowUpStack} />
         <Drawer.Screen name="BookingChartStack" component={BookingChartStack} />
         <Drawer.Screen name="BrokerStack" component={BrokerStack} />
         <Drawer.Screen name="RoughDrawing" component={RoughDrawing} />
@@ -426,7 +442,8 @@ function ProjectDrawer() {
           component={CustomerSectionStack}
         />
         <Drawer.Screen name="WorkMaster" component={WorkMasterStack} />
-        {/* <Drawer.Screen name="DocumentGenerater" component={DocumentGenerater} /> */}
+        <Drawer.Screen name="DocumentGenerater" component={DocumentGenerater} />
+        <Drawer.Screen name="DocumentDownload" component={DocumentDownload} />
         {/* <Drawer.Screen
           name="CustomerSectionSettings"
           component={CustomerSectionSettings}
@@ -592,6 +609,10 @@ function NavContainer() {
                 />
                 <Stack.Screen name="Search" component={SearchScreen} />
                 <Stack.Screen name="Notification" component={Notification} />
+                <Stack.Screen
+                  name="ProjectNotification"
+                  component={ProjectNotification}
+                />
                 <Stack.Screen name="EditProfile" component={EditProfile} />
                 <Stack.Screen name="Profile" component={Profile} />
                 <Stack.Screen

@@ -44,7 +44,7 @@ function ApprovalRequestForm(props) {
               label="Title"
               numberOfLines={3}
               containerStyles={styles.input}
-              value={values.challan}
+              value={values.title}
               onChangeText={handleChange('title')}
               onBlur={handleBlur('title')}
               error={errors.title}
@@ -82,7 +82,7 @@ function ApprovalRequestForm(props) {
               value={values.approval}
               error={errors.approval}
               onSelect={value => {
-                setFieldValue('inquiry_for', value);
+                setFieldValue('approval', value);
               }}
             />
 

@@ -47,7 +47,10 @@ function FolderSection(props) {
   const {route, menuId, toggleMenu, setModalContentType, setModalContent} =
     props;
 
-  const {index_of: folderDepth = 0} = route?.params || {};
+  const {index_of: folderDepth = 0, folderData} = route?.params || {};
+  console.log('-------->route?.params', route?.params);
+  console.log('-------->folderData', folderData);
+  console.log('-------->route', route);
 
   const {folders} = useSelector(s => s.files);
 

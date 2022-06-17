@@ -39,6 +39,9 @@ export default function useSalesActions() {
     updateBroker,
     getBrokerDetails,
     getVisitorInterestedProperty,
+    getConfirmBookingOTP,
+    setBookingOTPStatus,
+    getBookingFormOTPStatus,
   } = useSalesServices();
 
   return {
@@ -460,6 +463,55 @@ export default function useSalesActions() {
         payload: async () => {
           try {
             const response = _res(await getBankList());
+            const {data} = response;
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    getConfirmBookingOTP: () =>
+      dispatch({
+        type: types.CONFIRM_BOOKING_OTP,
+        payload: async () => {
+          try {
+            const response = _res(await getConfirmBookingOTP());
+            const {data} = response;
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    setBookingOTPStatus: () =>
+      dispatch({
+        type: types.SET_BOOKING_OTP_STATUS,
+        payload: async () => {
+          try {
+            const response = _res(await setBookingOTPStatus());
+            const {data} = response;
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    getBookingFormOTPStatus: params =>
+      dispatch({
+        type: types.GET_BOOKING_FORM_OTP_STATUS,
+        payload: async () => {
+          try {
+            const response = _res(await getBookingFormOTPStatus(params));
             const {data} = response;
 
             return Promise.resolve(data);

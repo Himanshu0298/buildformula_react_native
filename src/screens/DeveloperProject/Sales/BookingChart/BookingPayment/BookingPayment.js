@@ -948,11 +948,20 @@ function FormContent(props) {
             </>
           ) : null}
         </View>
+
         <ActionButtons
           cancelLabel="Back"
-          submitLabel="Save With OTP"
+          submitLabel="Save"
+          addationalLabel="Save With OTP"
           onCancel={handleCancel}
-          onSubmit={handleSubmit}
+          onSubmit={() => {
+            setFieldValue('booking_confirm_via_otp', 'no');
+            handleSubmit();
+          }}
+          onAdditional={() => {
+            setFieldValue('booking_confirm_via_otp', 'yes');
+            handleSubmit();
+          }}
         />
       </KeyboardAwareScrollView>
     </TouchableWithoutFeedback>
@@ -964,14 +973,21 @@ function BookingPayments(props) {
   const {params = {}} = route;
   const {withRate, document_start, document_end} = params;
 
-  const {createBooking, getBankList} = useSalesActions();
-
-  const {bankList} = useSelector(s => s.sales);
+  const {createBooking, getBankList, getBookingFormOTPStatus} =
+    useSalesActions();
 
   const loading = useSalesLoading();
 
+  const {bankList, bookingOTPStatus} = useSelector(s => s.sales);
+  const {booking_confirm_otp_status} = bookingOTPStatus || {};
+  console.log('-------->bookingOTPStatus', bookingOTPStatus);
+
+  const {selectedProject} = useSelector(s => s.project);
+  const projectId = selectedProject.id;
+
   useEffect(() => {
     getBankList();
+    getBookingFormOTPStatus({project_id: projectId});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -1023,8 +1039,6 @@ function BookingPayments(props) {
 
   const onSubmit = async values => {
     const data = {...values};
-
-    console.log('values.payment type in submitted form', values.payment_type);
 
     if (values.payment_type !== 2) {
       delete data.custom_payments;
@@ -1106,8 +1120,14 @@ function BookingPayments(props) {
     delete data.construction_build_rate;
     delete data.total_construction;
 
-    await createBooking(data);
-    navigation.popToTop();
+    const response = await createBooking(data);
+    console.log('-------->respose', response);
+
+    if (values.booking_confirm_via_otp === 'yes') {
+      navigation.navigate('BookkingOtp', {fromBooking: true});
+    } else {
+      navigation.popToTop();
+    }
   };
 
   return (

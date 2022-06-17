@@ -1,5 +1,6 @@
 import React from 'react';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export const DEVELOPER_DRAWER_ITEMS = [
@@ -40,6 +41,14 @@ export const DEVELOPER_DRAWER_ITEMS = [
         ),
       },
       {
+        id: 57,
+        route: 'FollowUpTask',
+        label: 'Follow-up Task',
+        icon: ({color, size}) => (
+          <AntDesign name="barchart" {...{color, size}} />
+        ),
+      },
+      {
         id: 3,
         route: 'BookingChartStack',
         label: 'Booking Chart',
@@ -71,16 +80,16 @@ export const DEVELOPER_DRAWER_ITEMS = [
         ),
       },
 
-      // {
-      //   route: 'DocumentGenerater',
-      //   label: 'Document Generater',
-      //   icon: ({color, size}) => (
-      //     <MaterialCommunityIcons
-      //       name="account-multiple-outline"
-      //       {...{color, size}}
-      //     />
-      //   ),
-      // },
+      {
+        route: 'DocumentGenerater',
+        label: 'Document Generater',
+        icon: ({color, size}) => (
+          <MaterialCommunityIcons
+            name="account-multiple-outline"
+            {...{color, size}}
+          />
+        ),
+      },
 
       // {
       //   route: 'CustomerSectionSettings',

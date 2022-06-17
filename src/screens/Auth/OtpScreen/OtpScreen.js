@@ -24,6 +24,7 @@ import {PHONE_REGEX} from 'utils/constant';
 import * as Yup from 'yup';
 import RenderInput from 'components/Atoms/RenderInput';
 import {useTranslation} from 'react-i18next';
+import useSalesActions from 'redux/actions/salesActions';
 
 const schema = Yup.object().shape({
   phone: Yup.string()
@@ -103,10 +104,14 @@ function UpdateDialog(props) {
 function OtpScreen(props) {
   const {navigation, theme, route} = props;
 
-  const {fromLogin} = route?.params || {};
+  const {fromLogin, fromBooking} = route?.params || {};
+
+  const {selectedProject} = useSelector(s => s.project);
+  const projectId = selectedProject.id;
 
   const alert = useAlert();
   const snackbar = useSnackbar();
+  const {getConfirmBookingOTP} = useSalesActions();
 
   const {sendOtpToPhone, sendOtpToEmail} = useAuth();
   const {verifyOtp, updateUser} = useUserActions();
@@ -129,7 +134,19 @@ function OtpScreen(props) {
 
   const submit = async () => {
     try {
-      await verifyOtp({mobile_otp: phone, user_id: user.id, email_otp: email});
+      if (fromBooking) {
+        await getConfirmBookingOTP({
+          project_id: projectId,
+          // project_bookings_id,
+          booking_confirm_via_otp: phone,
+        });
+      } else {
+        await verifyOtp({
+          mobile_otp: phone,
+          user_id: user.id,
+          email_otp: email,
+        });
+      }
     } catch (error) {
       console.log('-----> error', error);
       alert.show({
@@ -203,23 +220,27 @@ function OtpScreen(props) {
           </TouchableOpacity>
         </View>
 
-        <Text>
-          Enter the OTP send to {`${user.email}`}
-          {/* send to {`+91 ${user.phone}`} */}
-        </Text>
-        <OtpInput value={email} setValue={setEmail} />
-        <View style={[styles.row, {marginTop: 10}]}>
-          <Caption>Not your email? </Caption>
-          <TouchableOpacity onPress={toggleDialog}>
-            <Caption style={{color: theme.colors.primary}}>Update</Caption>
-          </TouchableOpacity>
-        </View>
-        <View style={[styles.row, {marginBottom: 20}]}>
-          <Caption style={styles.subTitle}>Didn’t receive a code. </Caption>
-          <TouchableOpacity onPress={sendEmailOtp}>
-            <Caption style={{color: theme.colors.primary}}>Resend</Caption>
-          </TouchableOpacity>
-        </View>
+        {!fromBooking ? (
+          <>
+            <Text>
+              Enter the OTP send to {`${user.email}`}
+              {/* send to {`+91 ${user.phone}`} */}
+            </Text>
+            <OtpInput value={email} setValue={setEmail} />
+            <View style={[styles.row, {marginTop: 10}]}>
+              <Caption>Not your email? </Caption>
+              <TouchableOpacity onPress={toggleDialog}>
+                <Caption style={{color: theme.colors.primary}}>Update</Caption>
+              </TouchableOpacity>
+            </View>
+            <View style={[styles.row, {marginBottom: 20}]}>
+              <Caption style={styles.subTitle}>Didn’t receive a code. </Caption>
+              <TouchableOpacity onPress={sendEmailOtp}>
+                <Caption style={{color: theme.colors.primary}}>Resend</Caption>
+              </TouchableOpacity>
+            </View>
+          </>
+        ) : null}
         <Button
           onPress={submit}
           color={theme.colors.primary}

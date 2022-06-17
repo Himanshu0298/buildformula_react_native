@@ -759,7 +759,7 @@ function TermsCondition({theme, bookingDetails}) {
   } = bookingDetails;
 
   return (
-    <View>
+    <View style={styles.termsContainer}>
       <Subheading style={{color: theme.colors.primary}}>
         Terms & Conditions
       </Subheading>
@@ -779,6 +779,18 @@ function TermsCondition({theme, bookingDetails}) {
     </View>
   );
 }
+
+const VerifiedOtpIcon = () => {
+  return (
+    <View style={styles.otpContainer}>
+      <MaterialCommunityIcons name="check-decagram" size={24} color="green" />
+      <View style={styles.otpTextContainer}>
+        <Text style={styles.otpText}>Verified with OTP </Text>
+        <Text>on 12th Jan, 02:00 PM</Text>
+      </View>
+    </View>
+  );
+};
 
 function BookingDetails(props) {
   const {
@@ -819,6 +831,7 @@ function BookingDetails(props) {
           {...{bookingDetails, bookingPaymentTypes, bookingBanks}}
         />
         <TermsCondition {...props} {...{bookingDetails}} />
+        <VerifiedOtpIcon />
       </View>
     </ContainerView>
   );
@@ -905,13 +918,29 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   termsBody: {
-    paddingBottom: 25,
+    paddingBottom: 10,
+    paddingHorizontal: 3,
   },
   installmentAmount: {
     alignItems: 'center',
   },
   installmentDate: {
     alignItems: 'center',
+  },
+  termsContainer: {
+    paddingHorizontal: 15,
+  },
+  otpContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 15,
+    paddingBottom: 10,
+  },
+  otpTextContainer: {
+    marginLeft: 10,
+  },
+  otpText: {
+    color: 'green',
   },
 });
 
