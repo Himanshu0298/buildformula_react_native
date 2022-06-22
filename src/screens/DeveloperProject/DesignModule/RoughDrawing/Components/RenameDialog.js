@@ -14,8 +14,6 @@ function RenameDialogue(props) {
   const {visible, toggleDialogue, dialogueContent, renameFolderHandler} = props;
   const {file_name, folder_name} = dialogueContent || {};
 
-  const fileType = folder_name ? 'folder' : 'file';
-
   const renaNameRef = React.useRef();
 
   return (
@@ -30,7 +28,7 @@ function RenameDialogue(props) {
           initialValues={{name: file_name || folder_name}}
           validationSchema={schema}
           onSubmit={async values => {
-            renameFolderHandler(values.name, dialogueContent?.id, fileType);
+            renameFolderHandler(values.name, dialogueContent?.id);
           }}>
           {({values, errors, handleChange, handleBlur, handleSubmit}) => {
             return (

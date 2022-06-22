@@ -1,32 +1,38 @@
 import React from 'react';
-import {StyleSheet, View, Image, TouchableOpacity} from 'react-native';
-import {IconButton, Subheading, Text} from 'react-native-paper';
+import {
+  StyleSheet,
+  View,
+  Image,
+  TouchableOpacity,
+  FlatList,
+} from 'react-native';
+import {IconButton, Text} from 'react-native-paper';
 import FolderIcon from 'assets/images/folder_icon.png';
-import {useSelector} from 'react-redux';
+import NoResult from 'components/Atoms/NoResult';
 
 function RenderFolder(props) {
   const {
-    folder,
+    item,
+    index,
+    setModalContentType,
     toggleMenu,
     navigation,
-    setModalContentType,
-    folderIndex,
     setModalContent,
   } = props;
-  const {folder_name} = folder;
+  const {title} = item;
 
   return (
     <View style={styles.sectionContainer}>
       <TouchableOpacity
         style={{flexGrow: 1}}
         onPress={() => {
-          navigation.push('Files', {folder_name, index_of: folder.id});
+          navigation.navigate('RDFileSection', {title, folderId: item.id});
         }}>
         <View style={styles.sectionContainer}>
           <Image source={FolderIcon} style={styles.PdfIcon} />
           <View>
             <Text numberOfLines={2} style={styles.text}>
-              {folder_name}
+              {title}
             </Text>
           </View>
         </View>
@@ -34,9 +40,9 @@ function RenderFolder(props) {
       <IconButton
         icon="dots-vertical"
         onPress={() => {
-          toggleMenu(folderIndex);
+          toggleMenu(index);
           setModalContentType('menu');
-          setModalContent(folder);
+          setModalContent(item);
         }}
       />
     </View>
@@ -44,34 +50,33 @@ function RenderFolder(props) {
 }
 
 function FolderSection(props) {
-  const {route, menuId, toggleMenu, setModalContentType, setModalContent} =
+  const {folders, menuId, toggleMenu, setModalContentType, setModalContent} =
     props;
-
-  const {index_of: folderDepth = 0, folderData} = route?.params || {};
-  console.log('-------->route?.params', route?.params);
-  console.log('-------->folderData', folderData);
-  console.log('-------->route', route);
-
-  const {folders} = useSelector(s => s.files);
-
-  const filteredFolders = folders?.[folderDepth] || [];
+  const {data} = folders || {};
 
   return (
     <View style={styles.container}>
       <View>
-        {filteredFolders?.map((folder, index) => (
-          <RenderFolder
-            {...props}
-            folder={folder}
-            key={index}
-            menuId={menuId}
-            toggleMenu={toggleMenu}
-            setModalContentType={setModalContentType}
-            folderDepth={folderDepth}
-            folderIndex={filteredFolders.indexOf(folder)}
-            setModalContent={setModalContent}
-          />
-        ))}
+        <FlatList
+          data={data}
+          extraData={data}
+          keyExtractor={(_, i) => i.toString()}
+          contentContainerStyle={styles.contentContainerStyle}
+          ListEmptyComponent={<NoResult title="No Data found!" />}
+          renderItem={({item, index}) => (
+            <RenderFolder
+              {...props}
+              {...{
+                item,
+                index,
+                menuId,
+                toggleMenu,
+                setModalContentType,
+                setModalContent,
+              }}
+            />
+          )}
+        />
       </View>
     </View>
   );
@@ -100,6 +105,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     paddingBottom: 5,
+  },
+  contentContainerStyle: {
+    flexGrow: 1,
   },
 });
 

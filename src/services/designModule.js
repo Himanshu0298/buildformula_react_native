@@ -17,5 +17,40 @@ export default function useDesignModule() {
         config({multipart: false}),
       );
     },
+    createRDFolder: data => {
+      return instance.post(
+        '/roughdrawing/createFolder',
+        data,
+        config({multipart: false}),
+      );
+    },
+    uploadRDFile: data => {
+      return instance.post(
+        '/roughdrawing/uploadFiles',
+        data,
+        config({multipart: true}),
+      );
+    },
+    renameRDFolder: data => {
+      return instance.post(
+        '/roughdrawing/renameFolder',
+        data,
+        config({multipart: true}),
+      );
+    },
+    deleteRDFolder: data => {
+      return instance.post(
+        '/roughdrawing/deleteFolder',
+        data,
+        config({multipart: true}),
+      );
+    },
+    getRDActivities: data => {
+      return instance.post(
+        '/roughdrawing/activity_logs',
+        data,
+        config({multipart: true}),
+      );
+    },
   };
 }

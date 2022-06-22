@@ -141,6 +141,7 @@ import FollowUpTask from 'screens/DeveloperProject/Sales/Follow-upTask';
 import FollowUpDetails from 'screens/DeveloperProject/Sales/Follow-upTask/FollowUpDetails';
 import DocumentDownload from 'screens/DeveloperProject/DocumentGenerater/Documents/DocumentDownload';
 import ProjectNotification from 'screens/Notification/ProjectNotification';
+import RDFileSection from 'screens/DeveloperProject/DesignModule/RoughDrawing/Components/FilesSection';
 /** *********** Developer Project Sub Screens End   ************ */
 
 const optionalConfigObject = {
@@ -250,7 +251,7 @@ function BookingChartStack() {
         <Stack.Screen name="BC_Step_Six" component={BookingDetails} />
         <Stack.Screen name="BC_Step_Seven" component={BookingRates} />
         <Stack.Screen name="BC_Step_Eight" component={BookingPayment} />
-        <Stack.Screen name="BookkingOtp" component={OtpScreen} />
+        <Stack.Screen name="BookingOtp" component={OtpScreen} />
         <Stack.Screen name="BookingFormOnHold" component={BookingFormOnHold} />
         <Stack.Screen
           name="HoldBookingHistory"
@@ -389,6 +390,16 @@ function PurchasedProjectsStack() {
     </Stack.Navigator>
   );
 }
+function RoughDrawingStack() {
+  return (
+    <Stack.Navigator initialRouteName="RoughDrawing">
+      <Stack.Group screenOptions={{headerShown: false}}>
+        <Stack.Screen name="RoughDrawing" component={RoughDrawing} />
+        <Stack.Screen name="RDFileSection" component={RDFileSection} />
+      </Stack.Group>
+    </Stack.Navigator>
+  );
+}
 
 const generalDrawerContent = props => (
   <RouteContext.Consumer>
@@ -431,7 +442,7 @@ function ProjectDrawer() {
         <Drawer.Screen name="FollowUpTask" component={FollowUpStack} />
         <Drawer.Screen name="BookingChartStack" component={BookingChartStack} />
         <Drawer.Screen name="BrokerStack" component={BrokerStack} />
-        <Drawer.Screen name="RoughDrawing" component={RoughDrawing} />
+        <Drawer.Screen name="RoughDrawing" component={RoughDrawingStack} />
         <Drawer.Screen name="FinalDrawing" component={FinalDrawing} />
         <Drawer.Screen name="WorkingDrawing" component={WorkingDrawing} />
         <Drawer.Screen name="AreaSheet" component={AreaSheet} />

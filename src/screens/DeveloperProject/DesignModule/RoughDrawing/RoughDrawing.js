@@ -29,17 +29,16 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Feather from 'react-native-vector-icons/Feather';
 import dayjs from 'dayjs';
-import {getFileExtension} from 'utils/download';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import Foundation from 'react-native-vector-icons/Foundation';
 import useDesignModuleActions from 'redux/actions/designModuleActions';
+import {useSnackbar} from 'components/Atoms/Snackbar';
 import DeleteDialog from './Components/DeleteDialog';
 import RenameDialogue from './Components/RenameDialog';
 import CreateFolderDialogue from './Components/CreateFolderDialog';
 import MenuDialog from './Components/MenuDialog';
 import VersionDialog from './Components/VersionDialog';
 import FoldersSection from './Components/FoldersSection';
-import ShareDialogue from './Components/ShareDialogue';
 import FolderSectionGridView from './Components/FolderSectionGridView';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -60,13 +59,21 @@ const ACTIVITY_ICONS = {
   ),
 };
 
+// const ACTIVITY_LABEL = {
+//   new_version: 'Uploaded new version',
+//   add: 'Uploaded file',
+//   downloaded: 'Downloaded file',
+//   share: 'Shared file',
+//   rename: 'Renamed file',
+//   delete: 'Deleted file',
+// };
+
 const ACTIVITY_LABEL = {
   new_version: 'Uploaded new version',
-  add: 'Uploaded file',
-  downloaded: 'Downloaded file',
-  share: 'Shared file',
-  rename: 'Renamed file',
-  delete: 'Deleted file',
+  add: 'Folder Added',
+  downloaded: 'Downloaded Folder file',
+  rename: 'Renamed Folder',
+  delete: 'Deleted Folder',
 };
 
 function getFileName(string) {
@@ -79,21 +86,20 @@ function getFileName(string) {
 }
 
 function RenderActivity({item}) {
-  const {first_name, last_name, logs_type, created, logs} = item;
+  const {user_full_name, log_type, created, log_text} = item;
+  console.log('-------->item', item);
 
   return (
     <View style={styles.activityContainer}>
-      <View style={styles.iconContainer}>{ACTIVITY_ICONS?.[logs_type]}</View>
+      <View style={styles.iconContainer}>{ACTIVITY_ICONS?.[log_type]}</View>
       <View style={styles.activityBody}>
         <View style={styles.activityUser}>
-          <Text>
-            {first_name} {last_name}
-          </Text>
+          <Text>{user_full_name}</Text>
           <Caption>{dayjs(created).fromNow()}</Caption>
         </View>
 
-        <Caption>{ACTIVITY_LABEL?.[logs_type] || logs_type}</Caption>
-        <Caption style={styles.fileName}>{getFileName(logs)}</Caption>
+        <Caption>{ACTIVITY_LABEL?.[log_type] || log_type}</Caption>
+        <Caption style={styles.fileName}>{getFileName(log_text)}</Caption>
       </View>
     </View>
   );
@@ -101,11 +107,11 @@ function RenderActivity({item}) {
 
 function ActivityModal(props) {
   const {theme} = props;
-  const {activities} = useSelector(s => s.files);
+  const {activities = []} = useSelector(s => s.designModule);
 
   const processedActivities = useMemo(() => {
     const sectionedData = [];
-    activities.map(i => {
+    activities?.map(i => {
       const key = dayjs(i.created).format('YYYY-MM-DD');
 
       sectionedData[key] = sectionedData[key] || {};
@@ -245,34 +251,23 @@ function RoughDrawing(props) {
     route?.params || {};
 
   const modulePermissions = getPermissions('Files');
+  const snackbar = useSnackbar();
 
-  const {loading, versionData} = useSelector(s => s.files);
+  const {versionData} = useSelector(s => s.files);
   const {selectedProject} = useSelector(s => s.project);
-  const {folders} = useSelector(s => s.designModule);
-  console.log('-------->folders', folders);
-
-  const {user} = useSelector(s => s.user);
+  const {folders, loading, activities} = useSelector(s => s.designModule);
+  console.log('-------->activities', activities);
 
   const project_id = selectedProject.id;
-  const user_id = user?.id;
 
+  const {getVersion, addVersion} = useFileActions();
   const {
-    getFolders,
-    createFolder,
-    renameFolder,
-    deleteFolder,
-    getFiles,
-    renameFile,
-    uploadFile,
-    deleteFile,
-    getVersion,
-    getActivities,
-    shareFolder,
-    shareFile,
-    addVersion,
-  } = useFileActions();
-  const {getRDFolders} = useDesignModuleActions();
-  console.log('-------->getRDFolders', getRDFolders);
+    getRDFolders,
+    createRDFolder,
+    renameRDFolder,
+    deleteRDFolder,
+    getRDActivities,
+  } = useDesignModuleActions();
 
   const {openImagePicker} = useImagePicker();
 
@@ -284,21 +279,13 @@ function RoughDrawing(props) {
   const [DialogType, setDialogType] = React.useState();
   const [listMode, setListMode] = React.useState('list');
 
-  // const [selectedUploadFile, setSelectedUploadFile] = React.useState();
-
-  React.useEffect(() => {
-    getRDFolders({project_id, mode: 'folder', default_folders: 'yes'});
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   React.useEffect(() => {
     loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const loadData = () => {
-    getFolders({project_id, index_of: folderDepth});
-    getFiles({project_id, folder_id: folderDepth});
+    getRDFolders({project_id, mode: 'folder', default_folders: 'no'});
   };
 
   const FAB_ACTIONS = [
@@ -317,65 +304,35 @@ function RoughDrawing(props) {
   const toggleShareDialog = () => setShareDialog(v => !v);
 
   const createFolderHandler = async folder_name => {
-    await createFolder({
+    await createRDFolder({
       project_id,
-      index_of: folderDepth,
+      row_type: 'folder',
+      parent_id: 0,
+      is_preset: 'no',
       folder_name,
-      user_id,
     });
     toggleDialog();
-    getFolders({project_id, index_of: folderDepth});
+    getRDFolders({project_id, mode: 'folder', default_folders: 'no'});
   };
 
   const renameFolderHandler = async (name, id, type) => {
-    if (type === 'folder') {
-      await renameFolder({
-        folder_name: name,
-        folder_id: id,
-        user_id: user?.id,
-        project_id: selectedProject?.id,
-      });
-      getFolders({project_id, index_of: folderDepth});
-      toggleDialog();
-    } else {
-      await renameFile({file_id: id, project_id, new_file_name: name});
-      toggleDialog();
-      getFiles({project_id, folder_id: folderDepth});
-    }
+    await renameRDFolder({
+      folder_name: name,
+      rough_drawing_id: id,
+      project_id,
+    });
+    getRDFolders({project_id, mode: 'folder', default_folders: 'no'});
+    toggleDialog();
   };
 
   const deleteFileHandler = async (id, type) => {
-    if (type === 'folder') {
-      await deleteFolder({folder_id: id, project_id});
-      getFolders({project_id, index_of: folderDepth});
-    } else {
-      await deleteFile({file_id: id, project_id});
-      getFiles({project_id, folder_id: folderDepth});
-    }
-
+    await deleteRDFolder({rough_drawing_id: id, project_id});
+    getRDFolders({project_id, mode: 'folder', default_folders: 'no'});
     toggleDialog();
-  };
-
-  const onChoose = v => {
-    handleFileUpload(v);
-    // setSelectedUploadFile(v);
-    // toggleDialog('uploadFile');
-  };
-
-  const handleFileUpload = async file => {
-    const {name} = file;
-    const extension = getFileExtension(file.name);
-    file.name = `${name}.${extension}`;
-
-    const formData = new FormData();
-
-    formData.append('folder_id', folderDepth);
-    formData.append('myfile[]', file);
-    formData.append('project_id', project_id);
-
-    await uploadFile(formData);
-    toggleDialog();
-    getFiles({project_id, folder_id: folderDepth});
+    snackbar.showMessage({
+      message: 'Folder Deleted!',
+      variant: 'success',
+    });
   };
 
   const versionDataHandler = fileId => {
@@ -383,35 +340,9 @@ function RoughDrawing(props) {
     getVersion({project_id, file_id: fileId});
   };
 
-  const activityDataHandler = (fileType, id) => {
+  const activityDataHandler = (action_type, id) => {
     setModalContentType('activity');
-    const params = {project_id, folder_id: folderDepth};
-    if (fileType === 'file') {
-      params.file_id = id;
-    } else {
-      params.folder_id = id;
-    }
-    getActivities(params);
-  };
-
-  const shareItem = async ({fileType, id, users, roles}) => {
-    toggleMenu();
-    if (fileType === 'folder') {
-      await shareFolder({
-        folder_id: id,
-        project_id,
-        access: 'admin',
-        share_user: users,
-        share_roles: roles,
-      });
-    } else {
-      await shareFile({
-        file_id: id,
-        project_id,
-        share_user: users,
-        access: 'admin',
-      });
-    }
+    getRDActivities({project_id, rough_drawing_id: id});
   };
 
   const handleNewVersionUpload = file_id => {
@@ -463,6 +394,7 @@ function RoughDrawing(props) {
         {listMode === 'list' ? (
           <FoldersSection
             {...props}
+            folders={folders}
             {...{
               menuId,
               toggleMenu,
@@ -487,7 +419,6 @@ function RoughDrawing(props) {
           }}
           icon="plus"
           small
-          // onPress={toggleFab}
           onPress={() => toggleDialog('createFolder')}
           onStateChange={() => {
             console.log('-----> onStateChange');
@@ -512,15 +443,6 @@ function RoughDrawing(props) {
           handleNewVersionUpload,
         }}
       />
-
-      {shareDialog ? (
-        <ShareDialogue
-          open={shareDialog}
-          selectedItem={modalContent}
-          handleClose={toggleShareDialog}
-          handleSubmit={shareItem}
-        />
-      ) : null}
 
       <CreateFolderDialogue
         visible={DialogType === 'createFolder'}

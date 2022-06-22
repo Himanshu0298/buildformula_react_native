@@ -1,13 +1,16 @@
 import React from 'react';
 import {StyleSheet, View, Image, TouchableOpacity} from 'react-native';
-import {IconButton, Subheading, Text} from 'react-native-paper';
+import {FAB, IconButton, Subheading, Text} from 'react-native-paper';
 import FileIcon from 'assets/images/file_icon.png';
 import dayjs from 'dayjs';
 import {useSelector} from 'react-redux';
 import NoResult from 'components/Atoms/NoResult';
-import {downloadFile, getDownloadUrl} from 'utils/download';
+import {downloadFile, getDownloadUrl, getFileExtension} from 'utils/download';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import FileViewer from 'react-native-file-viewer';
+import useDesignModuleActions from 'redux/actions/designModuleActions';
+import {theme} from 'styles/theme';
+import {useImagePicker} from 'hooks';
 
 function RenderFile(props) {
   const {
@@ -19,7 +22,7 @@ function RenderFile(props) {
     onPressFile,
   } = props;
 
-  const {file_name, created} = file;
+  const {title, created} = file;
 
   return (
     <View style={styles.recentFiles}>
@@ -29,7 +32,7 @@ function RenderFile(props) {
         <Image source={FileIcon} style={styles.fileIcon} />
         <View>
           <Text style={(styles.verticalFlex, styles.text)} numberOfLines={2}>
-            {file_name}
+            {title}
           </Text>
         </View>
       </TouchableOpacity>
@@ -55,14 +58,32 @@ function RenderFile(props) {
   );
 }
 
-function FileSection(props) {
+function RDFileSection(props) {
   const {route, toggleMenu, ...rest} = props;
-  const {index_of: folderDepth = 0} = route?.params || {};
+  const {folderId} = route?.params || {};
+
+  const {getRDFiles, uploadRDFile} = useDesignModuleActions();
+  const {openImagePicker} = useImagePicker();
 
   const snackbar = useSnackbar();
+  const {selectedProject} = useSelector(s => s.project);
+  const {files} = useSelector(s => s.designModule);
 
-  const {files} = useSelector(s => s.customer);
-  const filteredFiles = files?.[folderDepth] || [];
+  const project_id = selectedProject.id;
+  const {data} = files;
+
+  const [DialogType, setDialogType] = React.useState();
+
+  const toggleDialog = v => setDialogType(v);
+
+  React.useEffect(() => {
+    loadFiles();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const loadFiles = () => {
+    getRDFiles({project_id, folder_id: folderId});
+  };
 
   const onPressFile = async file => {
     snackbar.showMessage({
@@ -80,23 +101,54 @@ function FileSection(props) {
     });
   };
 
+  const onChoose = v => {
+    handleFileUpload(v);
+  };
+
+  const handleFileUpload = async file => {
+    const {name} = file;
+    const extension = getFileExtension(file.name);
+    file.name = `${name}.${extension}`;
+
+    const formData = new FormData();
+
+    formData.append('folder_id', folderId);
+    formData.append('myfile[]', file);
+    formData.append('project_id', project_id);
+
+    await uploadRDFile(formData);
+    toggleDialog();
+    snackbar.showMessage({
+      message: 'File Downloaded!',
+      variant: 'success',
+    });
+    loadFiles();
+  };
+
   return (
     <View style={styles.container}>
       <Subheading style={styles.Subheading}>Files</Subheading>
-      {filteredFiles?.length ? (
-        filteredFiles?.map((file, index) => (
+      {data?.length ? (
+        data?.map((file, i) => (
           <RenderFile
             {...rest}
             file={file}
-            key={index?.toString()}
+            key={i?.toString()}
             toggleMenu={toggleMenu}
-            fileIndex={filteredFiles?.indexOf(file)}
+            fileIndex={data?.indexOf(file)}
             onPressFile={onPressFile}
           />
         ))
       ) : (
         <NoResult title="No Files Found" />
       )}
+
+      <FAB
+        style={styles.fab}
+        icon="plus"
+        onPress={() => openImagePicker({type: 'file', onChoose})}
+        medium
+      />
     </View>
   );
 }
@@ -141,6 +193,13 @@ const styles = StyleSheet.create({
   verticalFlex: {
     flexDirection: 'column',
   },
+  fab: {
+    position: 'absolute',
+    right: 25,
+    bottom: 30,
+    zIndex: 2,
+    backgroundColor: theme.colors.primary,
+  },
 });
 
-export default FileSection;
+export default RDFileSection;

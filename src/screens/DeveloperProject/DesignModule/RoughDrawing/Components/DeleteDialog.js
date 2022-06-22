@@ -1,22 +1,24 @@
 import React from 'react';
-import {View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 
 import {Text, Dialog, Button, Portal} from 'react-native-paper';
 import {theme} from 'styles/theme';
 
 function DeleteDialog(props) {
   const {visible, toggleDialogue, dialogueContent, deleteFileHandler} = props;
-  const fileType = dialogueContent.folder_name ? 'folder' : 'file';
 
   return (
     <Portal>
-      <Dialog visible={visible} onDismiss={toggleDialogue} style={{top: -100}}>
+      <Dialog
+        visible={visible}
+        onDismiss={toggleDialogue}
+        style={styles.dialogContainer}>
         <Dialog.Content>
-          <View style={{alignItems: 'center'}}>
-            <Text style={{fontSize: 16}}>Are you sure you want to delete</Text>
-            <Text>
-              {dialogueContent.folder_name || dialogueContent.file_name}
+          <View style={styles.alertContainer}>
+            <Text style={styles.alertText}>
+              Are you sure you want to delete
             </Text>
+            <Text>{dialogueContent.title || dialogueContent.file_name}</Text>
           </View>
         </Dialog.Content>
         <Dialog.Actions>
@@ -24,13 +26,9 @@ function DeleteDialog(props) {
             Cancel
           </Button>
           <Button
-            style={{minWidth: 80}}
+            style={styles.button}
             onPress={() => {
-              deleteFileHandler(
-                dialogueContent.id,
-                fileType,
-                dialogueContent.file_type,
-              );
+              deleteFileHandler(dialogueContent.id);
             }}>
             Delete
           </Button>
@@ -39,5 +37,20 @@ function DeleteDialog(props) {
     </Portal>
   );
 }
+
+const styles = StyleSheet.create({
+  dialogContainer: {
+    top: -100,
+  },
+  alertContainer: {
+    alignItems: 'center',
+  },
+  alertText: {
+    fontSize: 16,
+  },
+  button: {
+    minWidth: 80,
+  },
+});
 
 export default DeleteDialog;

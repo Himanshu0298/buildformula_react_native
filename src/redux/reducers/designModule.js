@@ -1,7 +1,12 @@
 import {
+  CREATE_RD_FOLDER,
+  DELETE_RD_FOLDER,
   GET_RD_FILES,
   GET_RD_FOLDERS,
+  GET_RD_FOLDER_ACTIVITIES,
   GET_SELECTED_PROJECT,
+  RENAME_RD_FOLDER,
+  UPLOAD_RD_FILES,
 } from '../actions/actionTypes';
 
 const initialState = {
@@ -9,6 +14,7 @@ const initialState = {
   errorMessage: undefined,
   folders: [],
   files: {},
+  activities: [],
 };
 
 export default (state = initialState, action = {}) => {
@@ -52,6 +58,52 @@ export default (state = initialState, action = {}) => {
       };
     }
     case `${GET_RD_FILES}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+        errorMessage: action.payload,
+      };
+
+    case `${GET_RD_FOLDER_ACTIVITIES}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${GET_RD_FOLDER_ACTIVITIES}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+        activities: Object.values(payload).flat(),
+      };
+    }
+    case `${GET_RD_FOLDER_ACTIVITIES}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+        errorMessage: action.payload,
+      };
+
+    case `${CREATE_RD_FOLDER}_PENDING`:
+    case `${UPLOAD_RD_FILES}_PENDING`:
+    case `${RENAME_RD_FOLDER}_PENDING`:
+    case `${DELETE_RD_FOLDER}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${CREATE_RD_FOLDER}_FULFILLED`:
+    case `${UPLOAD_RD_FILES}_FULFILLED`:
+    case `${RENAME_RD_FOLDER}_FULFILLED`:
+    case `${DELETE_RD_FOLDER}_FULFILLED`:
+      return {
+        ...state,
+        loading: false,
+      };
+
+    case `${CREATE_RD_FOLDER}_REJECTED`:
+    case `${UPLOAD_RD_FILES}_REJECTED`:
+    case `${RENAME_RD_FOLDER}_REJECTED`:
+    case `${DELETE_RD_FOLDER}_REJECTED`:
       return {
         ...state,
         loading: false,

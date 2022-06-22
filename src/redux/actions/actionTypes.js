@@ -119,7 +119,12 @@ export const DELETE_VERSION = 'DELETE_VERSION';
 
 // For Design Modules
 export const GET_RD_FOLDERS = 'GET_RD_FOLDERS';
+export const CREATE_RD_FOLDER = 'CREATE_RD_FOLDER';
+export const RENAME_RD_FOLDER = 'RENAME_RD_FOLDER';
+export const DELETE_RD_FOLDER = 'DELETE_RD_FOLDER';
+export const GET_RD_FOLDER_ACTIVITIES = 'GET_RD_FOLDER_ACTIVITIES';
 export const GET_RD_FILES = 'GET_RD_FILES';
+export const UPLOAD_RD_FILES = 'UPLOAD_RD_FILES';
 
 // For Project Management
 export const GET_WORKS = 'GET_WORKS';
