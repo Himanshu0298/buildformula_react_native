@@ -22,8 +22,11 @@ function MenuDialog(props) {
     toggleMenu,
     versionDataHandler,
     activityDataHandler,
+    toggleShareDialog,
   } = props;
   const {id, row_type, is_preset, title} = modalContent;
+
+  console.log('-------->modalContentFolder', modalContent);
 
   const snackbar = useSnackbar();
 
@@ -101,49 +104,45 @@ function MenuDialog(props) {
           </View>
         </TouchableOpacity>
 
-        {is_preset === 'no' ? (
-          <>
-            {row_type === 'file' ? (
-              <TouchableOpacity onPress={() => versionDataHandler(id)}>
-                <View style={styles.viewDirection}>
-                  <IconButton icon="file-multiple" />
-                  <Text style={styles.ModalText}>Manage version</Text>
-                </View>
-              </TouchableOpacity>
-            ) : null}
-            {/* {modulePermissions?.editor || modulePermissions?.admin ? ( */}
-            <TouchableOpacity
-              onPress={() => {
-                toggleDialog('renameFile');
-                toggleMenu();
-              }}>
-              <View style={styles.viewDirection}>
-                <IconButton icon="pencil" />
-                <Text style={styles.ModalText}>Rename</Text>
-              </View>
-            </TouchableOpacity>
-            {/* ) : null} */}
+        {row_type === 'file' ? (
+          <TouchableOpacity onPress={() => versionDataHandler(id)}>
+            <View style={styles.viewDirection}>
+              <IconButton icon="file-multiple" />
+              <Text style={styles.ModalText}>Manage version</Text>
+            </View>
+          </TouchableOpacity>
+        ) : null}
+        {/* {modulePermissions?.editor || modulePermissions?.admin ? ( */}
+        <TouchableOpacity
+          onPress={() => {
+            toggleDialog('renameFile');
+            toggleMenu();
+          }}>
+          <View style={styles.viewDirection}>
+            <IconButton icon="pencil" />
+            <Text style={styles.ModalText}>Rename</Text>
+          </View>
+        </TouchableOpacity>
+        {/* ) : null} */}
 
-            <TouchableOpacity onPress={() => activityDataHandler(fileType, id)}>
-              <View style={styles.viewDirection}>
-                <IconButton icon="information" />
-                <Text style={styles.ModalText}>Activity</Text>
-              </View>
-            </TouchableOpacity>
+        <TouchableOpacity onPress={() => activityDataHandler(fileType, id)}>
+          <View style={styles.viewDirection}>
+            <IconButton icon="information" />
+            <Text style={styles.ModalText}>Activity</Text>
+          </View>
+        </TouchableOpacity>
 
-            {modulePermissions?.editor || modulePermissions?.admin ? (
-              <TouchableOpacity
-                onPress={() => {
-                  toggleDialog('deleteFileFolder');
-                  toggleMenu();
-                }}>
-                <View style={styles.viewDirection}>
-                  <IconButton icon="delete" />
-                  <Text style={styles.ModalText}>Delete</Text>
-                </View>
-              </TouchableOpacity>
-            ) : null}
-          </>
+        {modulePermissions?.editor || modulePermissions?.admin ? (
+          <TouchableOpacity
+            onPress={() => {
+              toggleDialog('deleteFileFolder');
+              toggleMenu();
+            }}>
+            <View style={styles.viewDirection}>
+              <IconButton icon="delete" />
+              <Text style={styles.ModalText}>Delete</Text>
+            </View>
+          </TouchableOpacity>
         ) : null}
       </View>
       {/* ) : null} */}

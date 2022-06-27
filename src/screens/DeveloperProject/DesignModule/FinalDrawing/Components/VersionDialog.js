@@ -17,6 +17,7 @@ import {theme} from 'styles/theme';
 
 function VersionFile(props) {
   const {modulePermissions, version, countVersion} = props;
+  console.log('-------->propsVersile', props);
 
   const snackbar = useSnackbar();
 

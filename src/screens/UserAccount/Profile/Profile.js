@@ -11,7 +11,6 @@ import {
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import {useSelector} from 'react-redux';
 import UserAvatar from 'components/Atoms/UserAvatar';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import ScreenTitle from 'components/Atoms/ScreenTitle';
 
 function Profile(props) {
@@ -21,49 +20,45 @@ function Profile(props) {
   const {first_name, last_name, email, phone, profile_url} = user;
 
   const navToEdit = () => navigation.navigate('EditProfile');
-  const navToChangePassword = () => navigation.navigate('ChangePassword');
+  const navToChangePassword = () =>
+    navigation.navigate('ChangePasswordStepOne');
 
   return (
-    <SafeAreaView edges={['top']} style={styles.container}>
-      <View style={styles.contentContainer}>
-        <ScreenTitle title="Profile Details" backIcon />
-        <View style={styles.headerContainer}>
-          <UserAvatar size={150} uri={profile_url} />
-          <Subheading style={{marginTop: 15}}>
-            {first_name} {last_name}
-          </Subheading>
-          <Caption style={{marginTop: 10}}>{email}</Caption>
-          {phone ? <Caption>+91{phone}</Caption> : null}
-        </View>
-
-        <View style={styles.actionContainer}>
-          <OpacityButton
-            onPress={navToEdit}
-            opacity={0.15}
-            color="#FF5D5D"
-            style={styles.buttonContainer}>
-            <IconButton color={theme.colors.primary} icon="pencil" size={20} />
-            <Text>Edit Profile</Text>
-          </OpacityButton>
-          <OpacityButton
-            opacity={0.15}
-            style={styles.buttonContainer}
-            onPress={navToChangePassword}>
-            <IconButton color={theme.colors.primary} icon="refresh" size={20} />
-            <Text>Reset Password</Text>
-          </OpacityButton>
-        </View>
+    <View style={styles.contentContainer}>
+      <ScreenTitle title="Profile" backIcon />
+      <View style={styles.headerContainer}>
+        <UserAvatar size={150} uri={profile_url} />
+        <Subheading style={{marginTop: 15}}>
+          {first_name} {last_name}
+        </Subheading>
+        <Caption style={{marginTop: 10}}>{email}</Caption>
+        {phone ? <Caption>+91{phone}</Caption> : null}
       </View>
-    </SafeAreaView>
+
+      <View style={styles.actionContainer}>
+        <OpacityButton
+          onPress={navToEdit}
+          opacity={0.15}
+          color="#FF5D5D"
+          style={styles.buttonContainer}>
+          <IconButton color={theme.colors.primary} icon="pencil" size={20} />
+          <Text>Edit Profile</Text>
+        </OpacityButton>
+        <OpacityButton
+          opacity={0.15}
+          style={styles.buttonContainer}
+          onPress={navToChangePassword}>
+          <IconButton color={theme.colors.primary} icon="refresh" size={20} />
+          <Text>Reset Password</Text>
+        </OpacityButton>
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   contentContainer: {
-    padding: 10,
+    paddingHorizontal: 10,
   },
   headerContainer: {
     justifyContent: 'center',
