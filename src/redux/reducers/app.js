@@ -1,14 +1,16 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import persistReducer from 'redux-persist/es/persistReducer';
-import {SET_LANGUAGE} from '../actions/actionTypes';
+import {SET_DRAWER_TYPE, SET_LANGUAGE} from '../actions/actionTypes';
 
 const persistConfig = {
   key: 'app',
   storage: AsyncStorage,
+  blacklist: ['drawerType'],
 };
 
 const initialState = {
   language: undefined,
+  drawerType: 'general',
 };
 
 const reducer = (state = initialState, action = {}) => {
@@ -18,6 +20,11 @@ const reducer = (state = initialState, action = {}) => {
       return {
         ...state,
         language: payload,
+      };
+    case `${SET_DRAWER_TYPE}`:
+      return {
+        ...state,
+        drawerType: payload,
       };
 
     default:

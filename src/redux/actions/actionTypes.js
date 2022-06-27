@@ -1,5 +1,6 @@
 // For App
 export const SET_LANGUAGE = 'SET_LANGUAGE';
+export const SET_DRAWER_TYPE = 'SET_DRAWER_TYPE';
 export const LOGOUT = 'LOGOUT';
 export const SET_TIMER = 'SET_TIMER';
 
@@ -118,13 +119,18 @@ export const ADD_NEW_VERSION = 'ADD_NEW_VERSION';
 export const DELETE_VERSION = 'DELETE_VERSION';
 
 // For Design Modules
+
+// Rough Drawing
 export const GET_RD_FOLDERS = 'GET_RD_FOLDERS';
 export const CREATE_RD_FOLDER = 'CREATE_RD_FOLDER';
 export const RENAME_RD_FOLDER = 'RENAME_RD_FOLDER';
 export const DELETE_RD_FOLDER = 'DELETE_RD_FOLDER';
 export const GET_RD_FOLDER_ACTIVITIES = 'GET_RD_FOLDER_ACTIVITIES';
 export const GET_RD_FILES = 'GET_RD_FILES';
+export const RENAME_RD_FILES = 'RENAME_RD_FILES';
+export const DELETE_RD_FILES = 'DELETE_RD_FILES';
 export const UPLOAD_RD_FILES = 'UPLOAD_RD_FILES';
+export const ADD_NEW_RD_VERSION = 'ADD_NEW_RD_VERSION';
 
 // For Project Management
 export const GET_WORKS = 'GET_WORKS';

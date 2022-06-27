@@ -16,6 +16,7 @@ export default function useAppActions() {
   return {
     setAppLanguage: language =>
       dispatch({type: types.SET_LANGUAGE, payload: language}),
+    setDrawerType: payload => dispatch({type: types.SET_DRAWER_TYPE, payload}),
     logout: async () => dispatch(logoutPayload),
   };
 }

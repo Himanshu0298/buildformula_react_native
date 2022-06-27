@@ -20,7 +20,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
     routes: [
       {
         id: 1,
-        route: 'Visitors',
+        route: 'VisitorsHome',
         label: 'Visitors',
         icon: 'badge-account-horizontal-outline',
       },
@@ -50,7 +50,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
       },
       {
         id: 3,
-        route: 'BookingChartStack',
+        route: 'BC_Step_One',
         label: 'Booking Chart',
         icon: ({color, size}) => (
           <MaterialIcons name="library-books" {...{color, size}} />
@@ -58,7 +58,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
       },
       {
         id: 3,
-        route: 'BrokerStack',
+        route: 'BrokerList',
         label: 'Broker List',
         icon: ({color, size}) => (
           <MaterialIcons name="recent-actors" {...{color, size}} />
@@ -70,7 +70,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
     title: 'CUSTOMER SECTION',
     routes: [
       {
-        route: 'CustomerSection',
+        route: 'CS_Step_One',
         label: 'Customer Section',
         icon: ({color, size}) => (
           <MaterialCommunityIcons
@@ -109,7 +109,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
     routes: [
       {
         id: 39,
-        route: 'RoughDrawing',
+        route: 'RoughDrawingFolders',
         label: 'Rough Drawing',
         icon: ({color, size}) => (
           <MaterialCommunityIcons name="draw" {...{color, size}} />
@@ -117,7 +117,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
       },
       {
         id: 40,
-        route: 'FinalDrawing',
+        route: 'FinalDrawingFolders',
         label: 'Final Drawing',
         icon: ({color, size}) => (
           <MaterialCommunityIcons
@@ -168,16 +168,8 @@ export const DEVELOPER_DRAWER_ITEMS = [
       },
       {
         id: 44,
-        route: 'WBS',
+        route: 'Worklist',
         label: 'List And Gantt',
-        icon: ({color, size}) => (
-          <MaterialCommunityIcons name="vector-triangle" {...{color, size}} />
-        ),
-      },
-      {
-        id: 53,
-        route: 'List&Gantt',
-        label: 'List & Gantt',
         icon: ({color, size}) => (
           <MaterialCommunityIcons
             name="format-list-bulleted"
@@ -185,6 +177,17 @@ export const DEVELOPER_DRAWER_ITEMS = [
           />
         ),
       },
+      // {
+      //   id: 53,
+      //   route: 'List&Gantt',
+      //   label: 'List & Gantt',
+      //   icon: ({color, size}) => (
+      //     <MaterialCommunityIcons
+      //       name="format-list-bulleted"
+      //       {...{color, size}}
+      //     />
+      //   ),
+      // },
       {
         id: 50,
         route: 'Cost',
@@ -211,7 +214,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
     routes: [
       {
         id: 20,
-        route: 'MaterialUtility',
+        route: 'MaterialGRN',
         label: 'Material Utility',
         icon: ({color, size}) => (
           <MaterialCommunityIcons name="wall" {...{color, size}} />
