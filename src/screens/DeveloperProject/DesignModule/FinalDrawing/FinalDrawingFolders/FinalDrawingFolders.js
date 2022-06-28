@@ -162,7 +162,6 @@ function getFileName(string) {
 
 function RenderActivity({item}) {
   const {user_full_name, log_type, created, log_text} = item;
-  console.log('-------->item', item);
 
   return (
     <View style={styles.activityContainer}>
@@ -325,8 +324,7 @@ function FinalDrawingFolders(props) {
 
   const {versionData} = useSelector(s => s.files);
   const {selectedProject} = useSelector(s => s.project);
-  const {folders, loading, activities} = useSelector(s => s.designModule);
-  console.log('-------->folders', folders);
+  const {folders, loading} = useSelector(s => s.designModule);
 
   const project_id = selectedProject.id;
 
@@ -530,20 +528,7 @@ const styles = StyleSheet.create({
   closeContainer: {
     alignItems: 'flex-end',
   },
-  backNavigation: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  viewDirection: {
-    alignItems: 'center',
-    flexDirection: 'row',
-  },
-  backNavHeading: {
-    maxWidth: 200,
-    paddingHorizontal: 10,
-    paddingVertical: 15,
-  },
+
   activityContainer: {
     alignItems: 'center',
     flexDirection: 'row',

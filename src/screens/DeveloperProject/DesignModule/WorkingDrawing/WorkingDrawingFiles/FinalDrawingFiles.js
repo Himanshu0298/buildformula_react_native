@@ -250,16 +250,16 @@ function RenderMenuModal(props) {
   );
 }
 
-function FinalDrawingFiles(props) {
+function WorkingDrawingFiles(props) {
   const {route, navigation} = props;
   const {folderId} = route?.params || {};
 
   const {
-    getFDFiles,
-    uploadFDFile,
-    renameFDFile,
-    deleteFDFile,
-    getFDActivities,
+    getWDFiles,
+    uploadWDFile,
+    renameWDFile,
+    deleteWDFile,
+    getWDActivities,
     addRDVersion,
   } = useDesignModuleActions();
   const {openImagePicker} = useImagePicker();
@@ -278,6 +278,7 @@ function FinalDrawingFiles(props) {
 
   const project_id = selectedProject.id;
   const {data} = files;
+  console.log('-------->WDFiles', data);
 
   React.useEffect(() => {
     loadFiles();
@@ -285,7 +286,7 @@ function FinalDrawingFiles(props) {
   }, []);
 
   const loadFiles = () => {
-    getFDFiles({project_id, folder_id: folderId});
+    getWDFiles({project_id, folder_id: folderId});
   };
 
   const toggleMenu = folderIndex => setMenuId(folderIndex);
@@ -293,9 +294,9 @@ function FinalDrawingFiles(props) {
   const toggleShareDialog = () => setShareDialog(v => !v);
 
   const renameFileHandler = async (name, id, type) => {
-    await renameFDFile({
+    await renameWDFile({
       file_name: name,
-      final_drawing_files_id: id,
+      working_drawing_files_id: id,
       project_id,
     });
     loadFiles();
@@ -303,7 +304,7 @@ function FinalDrawingFiles(props) {
   };
 
   const deleteFileHandler = async (id, type) => {
-    await deleteFDFile({final_drawing_files_id: id, project_id});
+    await deleteWDFile({working_drawing_files_id: id, project_id});
     loadFiles();
     toggleDialog();
     snackbar.showMessage({
@@ -319,7 +320,7 @@ function FinalDrawingFiles(props) {
 
   const activityDataHandler = (action_type, id) => {
     setModalContentType('activity');
-    getFDActivities({project_id, record_id: id, mode: 'file'});
+    getWDActivities({project_id, record_id: id, mode: 'file'});
   };
 
   const onPressFile = async file => {
@@ -353,7 +354,8 @@ function FinalDrawingFiles(props) {
     formData.append('myfile[]', file);
     formData.append('project_id', project_id);
 
-    await uploadFDFile(formData);
+    await uploadWDFile(formData);
+
     toggleDialog();
     snackbar.showMessage({
       message: 'File Downloaded!',
@@ -557,4 +559,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FinalDrawingFiles;
+export default WorkingDrawingFiles;

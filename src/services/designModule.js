@@ -129,5 +129,85 @@ export default function useDesignModule() {
         config({multipart: true}),
       );
     },
+    deleteFDFile: data => {
+      return instance.post(
+        '/finaldrawing/deleteFile',
+        data,
+        config({multipart: true}),
+      );
+    },
+
+    // Working Drawing
+
+    getWDFolders: data => {
+      return instance.post(
+        '/workingdrawing/list_folders',
+        data,
+        config({multipart: false}),
+      );
+    },
+    getWDFiles: data => {
+      return instance.post(
+        '/workingdrawing/list_files',
+        data,
+        config({multipart: false}),
+      );
+    },
+    createWDFolder: data => {
+      return instance.post(
+        '/workingdrawing/createFolder',
+        data,
+        config({multipart: false}),
+      );
+    },
+    renameWDFolder: data => {
+      return instance.post(
+        '/workingdrawing/renameFolder',
+        data,
+        config({multipart: false}),
+      );
+    },
+    deleteWDFolder: data => {
+      return instance.post(
+        '/workingdrawing/deleteFolder',
+        data,
+        config({multipart: false}),
+      );
+    },
+    getWDActivities: data => {
+      return instance.post(
+        '/workingdrawing/activity_logs',
+        data,
+        config({multipart: false}),
+      );
+    },
+    uploadWDFile: data => {
+      return instance.post(
+        '/workingdrawing/uploadFiles',
+        data,
+        config({multipart: true}),
+      );
+    },
+    renameWDFile: data => {
+      return instance.post(
+        '/workingdrawing/renameFile',
+        data,
+        config({multipart: false}),
+      );
+    },
+    deleteWDFile: data => {
+      return instance.post(
+        '/workingdrawing/deleteFile',
+        data,
+        config({multipart: true}),
+      );
+    },
+    updateAreaSheet: data => {
+      return instance.post(
+        '/areaSheet/projectSheet',
+        data,
+        config({multipart: true}),
+      );
+    },
   };
 }

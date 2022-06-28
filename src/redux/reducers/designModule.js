@@ -9,6 +9,7 @@ import {
   GET_SELECTED_PROJECT,
   RENAME_RD_FILES,
   RENAME_RD_FOLDER,
+  UPDATE_AREA_SHEET,
   UPLOAD_RD_FILES,
 } from '../actions/actionTypes';
 
@@ -18,6 +19,7 @@ const initialState = {
   folders: [],
   files: {},
   activities: [],
+  areaSheet: {},
 };
 
 export default (state = initialState, action = {}) => {
@@ -80,6 +82,25 @@ export default (state = initialState, action = {}) => {
       };
     }
     case `${GET_RD_FOLDER_ACTIVITIES}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+        errorMessage: action.payload,
+      };
+
+    case `${UPDATE_AREA_SHEET}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${UPDATE_AREA_SHEET}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+        areaSheet: payload,
+      };
+    }
+    case `${UPDATE_AREA_SHEET}_REJECTED`:
       return {
         ...state,
         loading: false,

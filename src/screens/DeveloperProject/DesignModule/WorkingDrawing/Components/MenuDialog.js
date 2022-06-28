@@ -23,11 +23,11 @@ function MenuDialog(props) {
     versionDataHandler,
     activityDataHandler,
   } = props;
-  const {id, row_type, title} = modalContent;
+  const {id, row_type, is_preset, file_type, title} = modalContent;
 
   const snackbar = useSnackbar();
 
-  const fileType = row_type ? 'folder' : 'file';
+  const fileType = file_type ? 'image/jpeg' : is_preset;
 
   const [downloading, setDownloading] = useState(false);
   const [downloaded, setDownloaded] = useState(false);

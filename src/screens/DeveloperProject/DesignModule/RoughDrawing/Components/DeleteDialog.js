@@ -6,7 +6,6 @@ import {theme} from 'styles/theme';
 
 function DeleteDialog(props) {
   const {visible, toggleDialogue, dialogueContent, deleteFileHandler} = props;
-  console.log('-------->dialogueContent12', dialogueContent);
 
   return (
     <Portal>

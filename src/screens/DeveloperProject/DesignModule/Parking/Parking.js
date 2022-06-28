@@ -1,6 +1,6 @@
 import RenderInput from 'components/Atoms/RenderInput';
 import * as React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {Platform, StyleSheet, Text, View} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {Portal, TextInput, useTheme, withTheme} from 'react-native-paper';
 import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
@@ -24,10 +24,12 @@ function Parking(props) {
   const [selected, setSelected] = React.useState();
 
   React.useEffect(() => {
-    AndroidKeyboardAdjust.adjustResize();
-    return () => AndroidKeyboardAdjust.adjustPan();
+    if (Platform.OS === 'android') {
+      AndroidKeyboardAdjust?.adjustResize();
+      return () => AndroidKeyboardAdjust.adjustPan();
+    }
+    return null;
   }, []);
-
   const value = React.useMemo(() => {
     return sheetData.find(i => i.key === selected)?.value;
   }, [sheetData, selected]);

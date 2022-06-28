@@ -128,7 +128,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
       },
       {
         id: 42,
-        route: 'WorkingDrawing',
+        route: 'WorkingDrawingFolders',
         label: 'Working Drawing',
         icon: ({color, size}) => (
           <MaterialCommunityIcons

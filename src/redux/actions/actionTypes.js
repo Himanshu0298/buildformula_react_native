@@ -131,6 +131,7 @@ export const RENAME_RD_FILES = 'RENAME_RD_FILES';
 export const DELETE_RD_FILES = 'DELETE_RD_FILES';
 export const UPLOAD_RD_FILES = 'UPLOAD_RD_FILES';
 export const ADD_NEW_RD_VERSION = 'ADD_NEW_RD_VERSION';
+export const UPDATE_AREA_SHEET = 'UPDATE_AREA_SHEET';
 
 // For Project Management
 export const GET_WORKS = 'GET_WORKS';

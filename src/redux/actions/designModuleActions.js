@@ -25,6 +25,17 @@ export default function useDesignModuleActions() {
     getFDActivities,
     uploadFDFile,
     renameFDFile,
+    deleteFDFile,
+    getWDFiles,
+    getWDFolders,
+    createWDFolder,
+    renameWDFolder,
+    deleteWDFolder,
+    getWDActivities,
+    uploadWDFile,
+    renameWDFile,
+    deleteWDFile,
+    updateAreaSheet,
   } = useDesignModule();
   const {_err, _res} = useResProcessor();
   const snackbar = useSnackbar();
@@ -319,6 +330,193 @@ export default function useDesignModuleActions() {
             return Promise.resolve({
               data: res,
             });
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    deleteFDFile: params =>
+      dispatch({
+        type: types.DELETE_RD_FILES,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await deleteFDFile(params));
+            snackbar.showMessage({message: msg});
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    // Working Drawing
+
+    getWDFolders: params =>
+      dispatch({
+        type: types.GET_RD_FOLDERS,
+        payload: async () => {
+          try {
+            const res = _res(await getWDFolders(params));
+
+            return Promise.resolve({data: res.data, index_of: params.index_of});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    getWDFiles: params =>
+      dispatch({
+        type: types.GET_RD_FILES,
+        payload: async () => {
+          try {
+            const res = _res(await getWDFiles(params));
+            return Promise.resolve({
+              data: res.data,
+              folder_id: params.folder_id,
+            });
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    createWDFolder: params =>
+      dispatch({
+        type: types.CREATE_RD_FOLDER,
+        payload: async () => {
+          try {
+            const res = _res(await createWDFolder(params));
+
+            return Promise.resolve(res.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    renameWDFolder: params =>
+      dispatch({
+        type: types.RENAME_RD_FOLDER,
+        payload: async () => {
+          try {
+            const res = _res(await renameWDFolder(params));
+            return Promise.resolve({
+              data: res.data,
+            });
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    deleteWDFolder: params =>
+      dispatch({
+        type: types.DELETE_RD_FOLDER,
+        payload: async () => {
+          try {
+            const res = _res(await deleteWDFolder(params));
+            console.log('--->delete', res);
+            return Promise.resolve(res);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    getWDActivities: params =>
+      dispatch({
+        type: types.GET_RD_FOLDER_ACTIVITIES,
+        payload: async () => {
+          try {
+            const {data} = _res(await getWDActivities(params));
+            return Promise.resolve(data || []);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    uploadWDFile: params =>
+      dispatch({
+        type: types.UPLOAD_RD_FILES,
+        payload: async () => {
+          try {
+            const res = _res(await uploadWDFile(params));
+            return Promise.resolve({
+              data: res.data,
+            });
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    renameWDFile: params =>
+      dispatch({
+        type: types.RENAME_RD_FILES,
+        payload: async () => {
+          try {
+            const res = _res(await renameWDFile(params));
+            return Promise.resolve({
+              data: res,
+            });
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    deleteWDFile: params =>
+      dispatch({
+        type: types.DELETE_RD_FILES,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await deleteWDFile(params));
+            snackbar.showMessage({message: msg});
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    // Area sheet / Project Sheet
+
+    updateAreaSheet: params =>
+      dispatch({
+        type: types.UPDATE_AREA_SHEET,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await updateAreaSheet(params));
+            snackbar.showMessage({message: msg});
+
+            return Promise.resolve({data});
           } catch (error) {
             const message = _err(error);
             snackbar.showMessage({message, variant: 'error'});

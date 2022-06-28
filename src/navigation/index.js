@@ -72,7 +72,9 @@ import RoughDrawingFiles from 'screens/DeveloperProject/DesignModule/RoughDrawin
 import RoughDrawingFolders from 'screens/DeveloperProject/DesignModule/RoughDrawing/RoughDrawingFolders';
 import FinalDrawingFolders from 'screens/DeveloperProject/DesignModule/FinalDrawing/FinalDrawingFolders';
 import FinalDrawingFiles from 'screens/DeveloperProject/DesignModule/FinalDrawing/FinalDrawingFiles';
-import WorkingDrawing from 'screens/DeveloperProject/DesignModule/WorkingDrawing';
+import WorkingDrawingFolders from 'screens/DeveloperProject/DesignModule/WorkingDrawing/WorkingDrawingFolders/';
+import WorkingDrawingFiles from 'screens/DeveloperProject/DesignModule/WorkingDrawing/WorkingDrawingFiles/';
+
 import AreaSheet from 'screens/DeveloperProject/DesignModule/AreaSheet';
 import Parking from 'screens/DeveloperProject/DesignModule/Parking';
 // Project : Project management screens
@@ -390,8 +392,19 @@ function AppStackNavigator() {
                 component={FinalDrawingFiles}
               />
             </Stack.Group>
+
             <Stack.Group>
-              <Stack.Screen name="WorkingDrawing" component={WorkingDrawing} />
+              <Stack.Screen
+                name="WorkingDrawingFolders"
+                component={WorkingDrawingFolders}
+              />
+              <Stack.Screen
+                name="WorkingDrawingFiles"
+                component={WorkingDrawingFiles}
+              />
+            </Stack.Group>
+
+            <Stack.Group>
               <Stack.Screen name="AreaSheet" component={AreaSheet} />
               <Stack.Screen name="Parking" component={Parking} />
               <Stack.Screen name="Payment" component={Payment} />
