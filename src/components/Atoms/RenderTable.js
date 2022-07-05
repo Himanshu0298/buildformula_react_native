@@ -2,8 +2,16 @@ import {FlatList, ScrollView, StyleSheet, View} from 'react-native';
 import * as React from 'react';
 import {Text} from 'react-native-paper';
 
+function RenderCell({value, width}) {
+  return (
+    <View style={[styles.tableRowCell, {width}]}>
+      <Text style={styles.tableRowCellText}>{value}</Text>
+    </View>
+  );
+}
+
 function RenderTable(props) {
-  const {headerColumns, data, tableWidths} = props;
+  const {headerColumns, data, tableWidths, renderCell} = props;
 
   return (
     <ScrollView horizontal>
@@ -31,24 +39,32 @@ function RenderTable(props) {
             contentContainerStyle={styles.contentContainerStyle}
             keyExtractor={(_, index) => index.toString()}
             renderItem={({item}) => {
-              const {id, data: columnData} = item;
+              const {id, title, data: columnData} = item;
               return (
                 <View style={styles.tableRow}>
+                  {title ? (
+                    <RenderCell value={title} width={tableWidths[0]} />
+                  ) : null}
                   {columnData.map((cellData, cellIndex) => {
+                    const updatedCellIndex = title ? cellIndex + 1 : cellIndex;
+                    const width = tableWidths[updatedCellIndex];
+
+                    if (renderCell) {
+                      return (
+                        <View
+                          key={updatedCellIndex?.toString()}
+                          style={[styles.tableRowCell, {width}]}>
+                          {renderCell(cellData, cellIndex, id)}
+                        </View>
+                      );
+                    }
+
                     return (
-                      <View
-                        key={cellIndex?.toString()}
-                        style={[
-                          styles.tableRowCell,
-                          {width: tableWidths[cellIndex]},
-                        ]}>
-                        <Text
-                          onPressIn={() => null}
-                          onPressOut={() => null}
-                          style={styles.tableRowCellText}>
-                          {cellData}
-                        </Text>
-                      </View>
+                      <RenderCell
+                        key={updatedCellIndex?.toString()}
+                        value={cellData}
+                        width={width}
+                      />
                     );
                   })}
                 </View>

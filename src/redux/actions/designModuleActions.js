@@ -36,6 +36,15 @@ export default function useDesignModuleActions() {
     renameWDFile,
     deleteWDFile,
     updateAreaSheet,
+    getCategoryTowerSheet,
+    updateCategoryTowerSheet,
+    getCategoryBungalowSheet,
+    updateCategoryBungalowSheet,
+    getCategoryPlotSheet,
+    updateCategoryPlotSheet,
+    getParkingList,
+    uploadParkingFile,
+    deleteParkingFile,
   } = useDesignModule();
   const {_err, _res} = useResProcessor();
   const snackbar = useSnackbar();
@@ -517,6 +526,162 @@ export default function useDesignModuleActions() {
             snackbar.showMessage({message: msg});
 
             return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    // CategorySheet --TowerSheet
+
+    getCategoryTowerSheet: params =>
+      dispatch({
+        type: types.GET_CATEGORY_TOWER_SHEET,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await getCategoryTowerSheet(params));
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    updateCategoryTowerSheet: params =>
+      dispatch({
+        type: types.UPDATE_CATEGORY_TOWER_SHEET,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await updateCategoryTowerSheet(params));
+            snackbar.showMessage({message: msg});
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    // CategorySheet --BungalowsSheet
+
+    getCategoryBungalowSheet: params =>
+      dispatch({
+        type: types.GET_CATEGORY_BUNGALOW_SHEET,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await getCategoryBungalowSheet(params));
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    updateCategoryBungalowSheet: params =>
+      dispatch({
+        type: types.UPDATE_CATEGORY_BUNGALOW_SHEET,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await updateCategoryBungalowSheet(params));
+            snackbar.showMessage({message: msg});
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    // CategorySheet - PlotArea Sheet
+
+    getCategoryPlotSheet: params =>
+      dispatch({
+        type: types.GET_CATEGORY_PLOT_SHEET,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await getCategoryPlotSheet(params));
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    updateCategoryPlotSheet: params =>
+      dispatch({
+        type: types.UPDATE_CATEGORY_PLOT_SHEET,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await updateCategoryPlotSheet(params));
+            snackbar.showMessage({message: msg});
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    // Parking
+
+    getParkingList: params =>
+      dispatch({
+        type: types.GET_PARKING_LIST,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await getParkingList(params));
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    uploadParkingFile: params =>
+      dispatch({
+        type: types.UPLOAD_PARKING_FILE,
+        payload: async () => {
+          try {
+            const res = _res(await uploadParkingFile(params));
+            return Promise.resolve({
+              data: res.data,
+            });
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    deleteParkingFile: params =>
+      dispatch({
+        type: types.DELETE_PARKING_FILE,
+        payload: async () => {
+          try {
+            const res = _res(await deleteParkingFile(params));
+            return Promise.resolve({
+              data: res.data,
+            });
           } catch (error) {
             const message = _err(error);
             snackbar.showMessage({message, variant: 'error'});

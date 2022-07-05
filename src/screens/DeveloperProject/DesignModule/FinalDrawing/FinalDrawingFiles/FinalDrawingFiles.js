@@ -332,7 +332,7 @@ function FinalDrawingFiles(props) {
     const {dir} = await downloadFile(file, fileUrl);
 
     snackbar.showMessage({
-      message: 'File Uploaded successfully!',
+      message: 'File Downloaded!',
       variant: 'success',
       action: {label: 'Open', onPress: () => FileViewer.open(`file://${dir}`)},
     });
@@ -356,7 +356,7 @@ function FinalDrawingFiles(props) {
     await uploadFDFile(formData);
     toggleDialog();
     snackbar.showMessage({
-      message: 'File Downloaded!',
+      message: 'File Uploaded Sucessfully!',
       variant: 'success',
     });
     loadFiles();

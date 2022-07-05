@@ -1,4 +1,4 @@
-import React, {useEffect, Fragment, Suspense} from 'react';
+import React, {Fragment, Suspense} from 'react';
 import {StatusBar} from 'react-native';
 import {Provider as PaperProvider} from 'react-native-paper';
 import {Provider as StoreProvider} from 'react-redux';
@@ -15,6 +15,7 @@ import {initReactI18next} from 'react-i18next';
 // import {checkPermission} from 'utils/permissions';
 import * as Sentry from '@sentry/react-native';
 import {DownloadProvider} from 'components/Atoms/Download';
+import InternetConnectionAlert from 'react-native-internet-connection-alert';
 import {theme} from './src/styles/theme';
 import {store, persistor} from './src/redux/store';
 import NavContainer from './src/navigation';
@@ -22,10 +23,12 @@ import translations from './src/translations/global';
 import {SnackbarProvider} from './src/components/Atoms/Snackbar';
 import AlertProvider from './src/components/Atoms/Alert/AlertProvider';
 
-Sentry.init({
-  dsn: 'https://9f461e9c89264233b4b5ed91e2882497@o523674.ingest.sentry.io/6256539',
-  tracesSampleRate: __DEV__ ? 0 : 1,
-});
+if (!__DEV__) {
+  Sentry.init({
+    dsn: 'https://9f461e9c89264233b4b5ed91e2882497@o523674.ingest.sentry.io/6256539',
+    tracesSampleRate: 1,
+  });
+}
 
 const languageDetector = {
   type: 'languageDetector',
@@ -79,15 +82,20 @@ function App() {
             <SafeAreaProvider
               initialSafeAreaInsets={initialWindowSafeAreaInsets}>
               <Suspense fallback={<Loader />}>
-                <DownloadProvider>
-                  <SnackbarProvider>
-                    <AlertProvider>
-                      <ActionSheetProvider>
-                        <NavContainer />
-                      </ActionSheetProvider>
-                    </AlertProvider>
-                  </SnackbarProvider>
-                </DownloadProvider>
+                <InternetConnectionAlert
+                  onChange={connectionState => {
+                    console.log('Connection State: ', connectionState);
+                  }}>
+                  <DownloadProvider>
+                    <SnackbarProvider>
+                      <AlertProvider>
+                        <ActionSheetProvider>
+                          <NavContainer />
+                        </ActionSheetProvider>
+                      </AlertProvider>
+                    </SnackbarProvider>
+                  </DownloadProvider>
+                </InternetConnectionAlert>
               </Suspense>
             </SafeAreaProvider>
           </PaperProvider>
@@ -97,4 +105,6 @@ function App() {
   );
 }
 
-export default Sentry.wrap(App);
+const MyApp = __DEV__ ? App : Sentry.wrap(App);
+
+export default MyApp;

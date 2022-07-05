@@ -209,5 +209,76 @@ export default function useDesignModule() {
         config({multipart: true}),
       );
     },
+
+    // CATEGORY SHEET
+
+    getCategoryTowerSheet: data => {
+      return instance.post(
+        '/areaSheet/categorySheet_tower_list',
+        data,
+        config({multipart: true}),
+      );
+    },
+    updateCategoryTowerSheet: data => {
+      return instance.post(
+        '/areaSheet/add_Update_categorySheet_tower',
+        data,
+        config({multipart: true}),
+      );
+    },
+    getCategoryBungalowSheet: data => {
+      return instance.post(
+        '/areaSheet/categorySheet_bungalow_list',
+        data,
+        config({multipart: true}),
+      );
+    },
+    updateCategoryBungalowSheet: data => {
+      return instance.post(
+        '/areaSheet/add_Update_categorySheet_bungalow',
+        data,
+        config({multipart: true}),
+      );
+    },
+
+    getCategoryPlotSheet: data => {
+      return instance.post(
+        '/areaSheet/categorySheet_plot_list',
+        data,
+        config({multipart: true}),
+      );
+    },
+    updateCategoryPlotSheet: data => {
+      return instance.post(
+        '/areaSheet/add_Update_categorySheet_plot',
+        data,
+        config({multipart: true}),
+      );
+    },
+
+    // Parking
+
+    getParkingList: data => {
+      return instance.post(
+        '/parking/list_parking_design',
+        data,
+        config({multipart: true}),
+      );
+    },
+
+    uploadParkingFile: data => {
+      return instance.post(
+        '/parking/file_save',
+        data,
+        config({multipart: true}),
+      );
+    },
+    deleteParkingFile: data => {
+      return instance.post(
+        '/parking/file_delete',
+        data,
+        config({multipart: true}),
+      );
+    },
   };
 }

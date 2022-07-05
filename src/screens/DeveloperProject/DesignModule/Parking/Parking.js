@@ -1,13 +1,30 @@
-import RenderInput from 'components/Atoms/RenderInput';
 import * as React from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import {
+  Image,
+  Platform,
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  TextInput,
+} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {Portal, TextInput, useTheme, withTheme} from 'react-native-paper';
+import {IconButton, Menu, withTheme} from 'react-native-paper';
 import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
 import RenderTable from 'components/Atoms/RenderTable';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Layout from 'utils/Layout';
+import useDesignModuleActions from 'redux/actions/designModuleActions';
+import {useSelector} from 'react-redux';
+import {theme} from 'styles/theme';
+import FileIcon from 'assets/images/file_icon.png';
+import {getFileExtension} from 'utils/download';
+import {useImagePicker} from 'hooks';
+import {useSnackbar} from 'components/Atoms/Snackbar';
+import Spinner from 'react-native-loading-spinner-overlay';
+import NoResult from 'components/Atoms/NoResult';
+import {useAlert} from 'components/Atoms/Alert';
 
 const Parking_DETAILS = [
   {label: 'Parking', key: 'parking', value: ''},
@@ -15,13 +32,120 @@ const Parking_DETAILS = [
 ];
 const TABLE_WIDTH = [Layout.window.width * 0.25, Layout.window.width * 0.65];
 
-const STATIC_DATA = [[''], [''], ['']];
+function RenderRow(props) {
+  const {item, updateValue, setSelected} = props;
+  const {label, key, value} = item;
+
+  return (
+    <View style={styles.rowContainer}>
+      <View style={styles.rowLeftContainer}>
+        <Text>{label}</Text>
+      </View>
+      <TextInput
+        value={value?.toString()}
+        style={styles.textInput}
+        onChangeText={text => updateValue(key, text)}
+        keyboardType="numeric"
+      />
+    </View>
+  );
+}
+
+function RenderFile(props) {
+  const {item, onPressFile, handleDelete} = props;
+
+  const [visible, setVisible] = React.useState(false);
+
+  const openMenu = () => setVisible(true);
+
+  const closeMenu = () => setVisible(false);
+
+  return (
+    <View style={styles.renderContainer}>
+      <TouchableOpacity
+        style={styles.renderContainer}
+        onPress={() => onPressFile(item)}>
+        <Image source={FileIcon} style={styles.fileIcon} />
+        <View>
+          <Text style={(styles.verticalFlex, styles.text)} numberOfLines={2}>
+            {item?.title}
+          </Text>
+        </View>
+      </TouchableOpacity>
+
+      <View style={{}}>
+        <Menu
+          visible={visible}
+          onDismiss={closeMenu}
+          anchor={<IconButton onPress={openMenu} icon="dots-vertical" />}>
+          <Menu.Item
+            onPress={() => {
+              console.log('-->');
+            }}
+            title="Download"
+          />
+          <Menu.Item onPress={() => handleDelete(item.id)} title="Delete" />
+        </Menu>
+      </View>
+    </View>
+  );
+}
+
+const ParkingFiles = props => {
+  const {onChoose, data, handleDelete} = props;
+  const {parking_file} = data;
+  const {file_type} = parking_file || {};
+
+  const {openImagePicker} = useImagePicker();
+
+  return (
+    <View style={styles.parkingContainer}>
+      <Text style={styles.parkingFilesText}>Parking Files</Text>
+      {!file_type || file_type === 'image/jpg' ? (
+        <View style={styles.uploadContainer}>
+          <OpacityButton
+            opacity={0.1}
+            color={theme.colors.primary}
+            onPress={() => openImagePicker({type: 'file', onChoose})}
+            style={styles.backButton}>
+            <MaterialCommunityIcons
+              name="cloud-upload"
+              size={25}
+              color={theme.colors.primary}
+            />
+          </OpacityButton>
+          <Text>Upload</Text>
+        </View>
+      ) : (
+        <RenderFile item={parking_file} handleDelete={handleDelete} />
+      )}
+    </View>
+  );
+};
 
 function Parking(props) {
-  const {navigation} = props;
   const [sheetData, setSheetData] = React.useState([...Parking_DETAILS]);
+  const [menuIndex, setMenuIndex] = React.useState(false);
+
+  const toggleMenu = v => setMenuIndex(v);
 
   const [selected, setSelected] = React.useState();
+  const snackbar = useSnackbar();
+  const alert = useAlert();
+
+  const {getParkingList, uploadParkingFile, deleteParkingFile} =
+    useDesignModuleActions();
+
+  const {selectedProject} = useSelector(s => s.project);
+  const project_id = selectedProject.id;
+
+  const {parkingList, loading} = useSelector(s => s.designModule);
+  const {all_parking_units = []} = parkingList || {};
+
+  React.useEffect(() => {
+    getParkingList({project_id});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   React.useEffect(() => {
     if (Platform.OS === 'android') {
@@ -30,20 +154,16 @@ function Parking(props) {
     }
     return null;
   }, []);
-  const value = React.useMemo(() => {
-    return sheetData.find(i => i.key === selected)?.value;
-  }, [sheetData, selected]);
 
   const processedData = React.useMemo(() => {
-    return STATIC_DATA.map((item, index) => {
-      const updatedData = [...item];
-      updatedData.unshift(`${index + 1}`);
+    return all_parking_units.map((item, index) => {
       return {
         id: index + 1,
-        data: updatedData,
+        title: index + 1,
+        data: [item.allotment_data],
       };
     });
-  }, []);
+  }, [all_parking_units]);
 
   const updateValue = text => {
     const index = sheetData.findIndex(i => i.key === selected);
@@ -54,49 +174,53 @@ function Parking(props) {
       setSheetData([...oldSheetData]);
     }
   };
-  const theme = useTheme();
 
-  // const handleClose = () => {
-  //   console.log('');
-  // };
-  // const submitForm = () => {
-  //   console.log('');
-  // };
+  const handleDelete = id => {
+    toggleMenu();
+    alert.show({
+      title: 'Confirm',
+      message: 'Are you sure you want to delete?',
+      confirmText: 'Delete',
+      onConfirm: () => {
+        deleteParkingFile({project_id, parking_file_id: id}).then(() => {
+          getParkingList({project_id});
+        });
+      },
+    });
+  };
+
+  const onChoose = v => {
+    handleFileUpload(v);
+  };
+
+  const handleFileUpload = async file => {
+    const {name} = file;
+    const extension = getFileExtension(file.name);
+    file.name = `${name}.${extension}`;
+
+    const formData = new FormData();
+
+    formData.append('myfile', file);
+    formData.append('project_id', project_id);
+
+    await uploadParkingFile(formData);
+    snackbar.showMessage({
+      message: 'File Uploaded Sucessfully!',
+      variant: 'success',
+    });
+    getParkingList({project_id});
+  };
 
   return (
     <View style={styles.container}>
-      <View style={styles.headerContainer}>
-        <View style={styles.button}>
-          <OpacityButton
-            opacity={0.1}
-            color={theme.colors.primary}
-            style={styles.backButton}
-            onPress={() => navigation.goBack()}>
-            <MaterialCommunityIcons
-              name="keyboard-backspace"
-              size={18}
-              color="black"
-            />
-          </OpacityButton>
-        </View>
-        <Text style={styles.headerTitle}>Parking Sheet</Text>
-        {/* <View style={styles.button}>
-          <OpacityButton
-            opacity={0.1}
-            color={theme.colors.primary}
-            style={styles.checkButton}
-            onPress={submitForm}>
-            <MaterialIcon name="check" color={theme.colors.primary} size={20} />
-          </OpacityButton>
-          <OpacityButton
-            opacity={0.1}
-            color={theme.colors.error}
-            style={styles.closeButton}
-            onPress={handleClose}>
-            <MaterialIcon name="close" color={theme.colors.error} size={20} />
-          </OpacityButton>
-        </View> */}
-      </View>
+      <Spinner visible={loading} textContent="" />
+
+      <ParkingFiles
+        onChoose={onChoose}
+        data={parkingList}
+        handleDelete={handleDelete}
+      />
+      <Text style={styles.headerTitle}>Parking Sheet</Text>
       <KeyboardAwareScrollView
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled">
@@ -105,40 +229,30 @@ function Parking(props) {
             tableWidths={TABLE_WIDTH}
             headerColumns={Parking_DETAILS.map(i => i.label)}
             data={processedData}
+            renderCell={(cellData, cellIndex, rowId) => {
+              return (
+                <TextInput
+                  value={cellData?.toString()}
+                  style={styles.textInput}
+                  onChangeText={text => updateValue(rowId, cellIndex, text)}
+                  keyboardType="numeric"
+                />
+              );
+            }}
           />
-          {/* <View style={styles.tableContainer}>
-            {unitName.map((item, index) => (
-              <RenderRow
-                key={index?.toString()}
-                {...{item, selected, setSelected}}
-              />
-            ))}
-          </View> */}
+
+          {/*           
+          {processedData?.length ? (
+            <RenderTable
+              tableWidths={TABLE_WIDTH}
+              headerColumns={Parking_DETAILS.map(i => i.label)}
+              data={processedData}
+            />
+          ) : (
+            <NoResult />
+          )} */}
         </View>
       </KeyboardAwareScrollView>
-
-      {selected ? (
-        <Portal>
-          <View style={styles.inputContainer}>
-            <RenderInput
-              autoFocus
-              value={value}
-              placeholder="Enter text or formula"
-              onChangeText={updateValue}
-              right={
-                <TextInput.Icon
-                  name="check"
-                  color="#fff"
-                  style={[
-                    styles.checkIcon,
-                    {backgroundColor: theme.colors.primary},
-                  ]}
-                />
-              }
-            />
-          </View>
-        </Portal>
-      ) : null}
     </View>
   );
 }
@@ -148,45 +262,57 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     padding: 15,
   },
-  headerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingBottom: 5,
-  },
-  button: {
-    flexDirection: 'row',
-    paddingHorizontal: 10,
-    padding: 10,
-  },
   headerTitle: {
     fontSize: 18,
     color: 'black',
+    paddingVertical: 20,
   },
   scrollContent: {
     paddingBottom: 50,
+    flexGrow: 1,
   },
   tableContainer: {
+    flexGrow: 1,
     borderColor: '#C3C3C3',
     alignItems: 'center',
   },
-
-  inputContainer: {
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-    left: 0,
-  },
   backButton: {
     borderRadius: 50,
-    marginRight: 7,
+    marginRight: 10,
   },
-  // checkButton: {
-  //   borderRadius: 50,
-  //   marginRight: 10,
-  // },
-  // closeButton: {
-  //   borderRadius: 50,
-  // },
+  fileIcon: {
+    width: 32,
+    height: 38,
+    paddingLeft: 10,
+    marginLeft: 10,
+    marginBottom: 10,
+  },
+  verticalFlex: {
+    flexDirection: 'column',
+  },
+  text: {
+    color: '#080707',
+    paddingHorizontal: 10,
+    fontSize: 14,
+    alignItems: 'center',
+    maxWidth: 170,
+  },
+  parkingContainer: {
+    marginTop: 20,
+  },
+  parkingFilesText: {
+    fontSize: 18,
+  },
+  uploadContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+  },
+  renderContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 10,
+  },
 });
 
 export default withTheme(Parking);

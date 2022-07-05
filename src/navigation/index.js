@@ -402,11 +402,11 @@ function AppStackNavigator() {
                 name="WorkingDrawingFiles"
                 component={WorkingDrawingFiles}
               />
+              <Stack.Screen name="Parking" component={Parking} />
             </Stack.Group>
 
             <Stack.Group>
               <Stack.Screen name="AreaSheet" component={AreaSheet} />
-              <Stack.Screen name="Parking" component={Parking} />
               <Stack.Screen name="Payment" component={Payment} />
               <Stack.Screen
                 name="DocumentGenerater"

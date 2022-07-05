@@ -36,6 +36,7 @@ const initialState = {
   dashboardData: {},
   purchasedProjects: [],
   purchaseProjectDetails: [],
+  selectedUnit: undefined,
 };
 
 const reducer = (state = initialState, action = {}) => {
@@ -52,12 +53,13 @@ const reducer = (state = initialState, action = {}) => {
         ...state,
         loadingProject: true,
       };
-    case `${GET_SELECTED_PROJECT}_FULFILLED`:
+    case `${GET_SELECTED_PROJECT}_FULFILLED`: {
       return {
         ...state,
         selectedProject: payload,
         loadingProject: false,
       };
+    }
     case `${GET_SELECTED_PROJECT}_REJECTED`:
       return {
         ...state,
