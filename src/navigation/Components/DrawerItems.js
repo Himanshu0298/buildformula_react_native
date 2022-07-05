@@ -91,6 +91,14 @@ export const DEVELOPER_DRAWER_ITEMS = [
         ),
       },
 
+      {
+        route: 'CustomerList',
+        label: 'Customers',
+        icon: ({color, size}) => (
+          <MaterialCommunityIcons name="account-group" {...{color, size}} />
+        ),
+      },
+
       // {
       //   route: 'CustomerSectionSettings',
       //   label: 'Settings',

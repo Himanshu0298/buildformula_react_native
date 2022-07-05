@@ -67,6 +67,8 @@ import AddBankDetails from 'screens/DeveloperProject/CustomerSection/AddBankDeta
 import PaymentCollections from 'screens/DeveloperProject/CustomerSection/PaymentColections';
 import AddCollection from 'screens/DeveloperProject/CustomerSection/AddCollection';
 import PaymentSchedule from 'screens/DeveloperProject/CustomerSection/PaymentSchedule';
+import CustomerList from 'screens/CustomerProject/CustomerList';
+import CustomerInnerDetails from 'screens/CustomerProject/CustomerInnerDetails';
 // Project : Design Modules
 import RoughDrawingFiles from 'screens/DeveloperProject/DesignModule/RoughDrawing/RoughDrawingFiles';
 import RoughDrawingFolders from 'screens/DeveloperProject/DesignModule/RoughDrawing/RoughDrawingFolders';
@@ -287,6 +289,11 @@ function AppStackNavigator() {
               <Stack.Screen name="CS_Step_Three" component={CS_SelectFloor} />
               <Stack.Screen name="CS_Step_Four" component={CS_SelectUnit} />
               <Stack.Screen name="CS_Step_Five" component={CustomerSection} />
+              <Stack.Screen name="CustomerList" component={CustomerList} />
+              <Stack.Screen
+                name="CustomerInnerDetails"
+                component={CustomerInnerDetails}
+              />
               <Stack.Screen
                 name="CustomerDetails"
                 component={CustomerDetails}
