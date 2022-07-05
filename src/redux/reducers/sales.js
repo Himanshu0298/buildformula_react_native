@@ -32,6 +32,9 @@ import {
   GET_HOLD_BOOKING_DETAILS,
   UN_HOLD_UNIT_BOOKING,
   GET_INTERESTED_PROPERTY,
+  CONFIRM_BOOKING_OTP,
+  SET_BOOKING_OTP_STATUS,
+  GET_BOOKING_FORM_OTP_STATUS,
 } from '../actions/actionTypes';
 
 const initialState = {
@@ -72,6 +75,7 @@ const initialState = {
   pipelinesOrderList: [],
   brokersList: [],
   brokerDetails: {},
+  bookingOTPStatus: {},
 };
 
 const reducer = (state = initialState, action = {}) => {
@@ -364,6 +368,25 @@ const reducer = (state = initialState, action = {}) => {
         errorMessage: payload,
       };
 
+    case `${GET_BOOKING_FORM_OTP_STATUS}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${GET_BOOKING_FORM_OTP_STATUS}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+        bookingOTPStatus: payload,
+      };
+    }
+    case `${GET_BOOKING_FORM_OTP_STATUS}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+        errorMessage: payload,
+      };
+
     case `${GET_VISITOR_ACTIVITIES}_PENDING`:
       return {
         ...state,
@@ -511,6 +534,8 @@ const reducer = (state = initialState, action = {}) => {
     case `${UPDATE_PIPELINE_ORDER_LIST}_PENDING`:
     case `${HOLD_UNIT_BOOKING}_PENDING`:
     case `${UN_HOLD_UNIT_BOOKING}_PENDING`:
+    case `${CONFIRM_BOOKING_OTP}_PENDING`:
+    case `${SET_BOOKING_OTP_STATUS}_PENDING`:
     case `${DELETE_BROKER}_PENDING`:
     case `${ADD_PIPELINE}_PENDING`: {
       return {
@@ -528,6 +553,8 @@ const reducer = (state = initialState, action = {}) => {
     case `${CREATE_BOOKING}_FULFILLED`:
     case `${HOLD_UNIT_BOOKING}_FULFILLED`:
     case `${UN_HOLD_UNIT_BOOKING}_FULFILLED`:
+    case `${CONFIRM_BOOKING_OTP}_FULFILLED`:
+    case `${SET_BOOKING_OTP_STATUS}_FULFILLED`:
     case `${DELETE_BROKER}_FULFILLED`:
     case `${ADD_PIPELINE}_FULFILLED`: {
       return {
@@ -545,6 +572,8 @@ const reducer = (state = initialState, action = {}) => {
     case `${UPDATE_PIPELINE_ORDER_LIST}_REJECTED`:
     case `${CREATE_BOOKING}_REJECTED`:
     case `${HOLD_UNIT_BOOKING}_REJECTED`:
+    case `${CONFIRM_BOOKING_OTP}_REJECTED`:
+    case `${SET_BOOKING_OTP_STATUS}_REJECTED`:
     case `${UN_HOLD_UNIT_BOOKING}_REJECTED`:
     case `${DELETE_BROKER}_REJECTED`:
     case `${ADD_PIPELINE}_REJECTED`: {

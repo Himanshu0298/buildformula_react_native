@@ -16,20 +16,18 @@ function ProjectHeader(props) {
   const {user} = useSelector(s => s.user);
 
   const navToNotification = () => {
-    navigation.push('Notification', {showLogo});
+    navigation.push('ProjectNotification', {showLogo});
   };
 
-  const navToProfile = () => {
-    navigation.push('Profile');
-  };
+  const navToProfile = () => navigation.push('Profile');
 
   return (
     <SafeAreaView edges={['right', 'top', 'left']}>
       <View style={styles.header}>
         <View style={styles.logoContainer}>
-          <Subheading style={{fontSize: 14}}>
+          <Subheading style={styles.headerLogo}>
             {showLogo ? (
-              <Subheading style={{fontSize: 35}}>
+              <Subheading style={styles.headerText}>
                 <Image source={logo} style={styles.banner} />
               </Subheading>
             ) : (
@@ -92,6 +90,12 @@ const styles = StyleSheet.create({
   profileIconContainer: {
     marginLeft: 15,
     borderRadius: 20,
+  },
+  headerLogo: {
+    fontSize: 14,
+  },
+  headerText: {
+    fontSize: 35,
   },
 });
 

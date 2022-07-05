@@ -7,7 +7,7 @@ const initialState = {
   loading: false,
   errorMessage: undefined,
   allNotifications: [],
-  projectNotifications: {},
+  projectNotifications: [],
 };
 
 const reducer = (state = initialState, action = {}) => {

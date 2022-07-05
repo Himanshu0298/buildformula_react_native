@@ -22,6 +22,7 @@ import waiting from 'assets/animation/waiting.json';
 import useAddProjectActions from 'redux/actions/addProjectActions';
 import ProjectHeader from 'components/Molecules/Layout/ProjectHeader';
 import useNotificationActions from 'redux/actions/notificationActions';
+import useAppActions from 'redux/actions/appActions';
 import useProjectActions from '../../redux/actions/projectActions';
 
 const IMAGES = {
@@ -78,6 +79,7 @@ function Home(props) {
 
   const {loading, projects} = useSelector(s => s.project);
 
+  const {setDrawerType} = useAppActions();
   const {getProjects} = useProjectActions();
   const {setProjectData} = useAddProjectActions();
   const {getAllNotifications} = useNotificationActions();
@@ -121,14 +123,12 @@ function Home(props) {
       return;
     }
     if (project.project_approved === 'Y') {
-      const params = {project};
       if (tabs[selectedTab] === 'Developer') {
-        navigation.navigate('DeveloperDashboard', {
-          screen: 'DeveloperHome',
-          params,
-        });
+        setDrawerType('developer');
+        navigation.navigate('DeveloperHome', {project});
       } else if (tabs[selectedTab] === 'Customer') {
-        navigation.navigate('CustomerDashboard', {screen: 'Ownership', params});
+        setDrawerType('customer');
+        navigation.navigate('Ownership', {project});
       }
     } else {
       alert.show({

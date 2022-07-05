@@ -158,6 +158,27 @@ export default function useSalesServices() {
     addBroker: data => {
       return instance.post('/add_broker', data, config({multipart: false}));
     },
+    getConfirmBookingOTP: data => {
+      return instance.post(
+        '/booking_confirm_via_otp',
+        data,
+        config({multipart: false}),
+      );
+    },
+    setBookingOTPStatus: data => {
+      return instance.post(
+        '/booking_form_settings/set_booking_otp_status',
+        data,
+        config({multipart: false}),
+      );
+    },
+    getBookingFormOTPStatus: data => {
+      return instance.post(
+        '/booking_form_settings/get_booking_otp_status',
+        data,
+        config({multipart: false}),
+      );
+    },
     updateBroker: data => {
       return instance.post('/update_broker', data, config({multipart: false}));
     },

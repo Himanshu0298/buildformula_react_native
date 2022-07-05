@@ -1,70 +1,103 @@
+import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import * as React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
-import {Divider, Subheading, withTheme} from 'react-native-paper';
+import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {Text, withTheme, Subheading} from 'react-native-paper';
+import {theme} from 'styles/theme';
+import Feather from 'react-native-vector-icons/Feather';
 
 const DATA = [1, 2, 3];
 
-const HeaderTitle = () => {
-  return (
-    <View style={styles.titleContainer}>
-      <Text style={styles.titleText}>ID</Text>
-      <Text style={styles.titleText}>Document Name</Text>
-      <Text style={styles.titleText}>Description</Text>
-    </View>
-  );
-};
+const ApprovalList = props => {
+  const {navigation} = props;
 
-const DocumentDetails = props => {
+  const navToDownload = () => {
+    navigation.navigate('DocumentDownload');
+  };
+
   return (
-    <View>
-      <View style={styles.detailsContainer}>
-        <Text>1</Text>
-        <Text>Allotment Letter</Text>
-        <Text>Allotment Letter</Text>
+    <TouchableOpacity style={styles.contentContainer}>
+      <View style={styles.titleStyle}>
+        <View style={styles.approvalContainer}>
+          <OpacityButton
+            style={{
+              paddingHorizontal: 5,
+              paddingVertical: 2,
+              borderRadius: 3,
+            }}>
+            <Text style={{color: theme.colors.primary}}>2</Text>
+          </OpacityButton>
+          <Text style={styles.headingText}>Allotment letter</Text>
+        </View>
+        <TouchableOpacity onPress={navToDownload}>
+          <Feather name="download" size={20} color="blue" />
+        </TouchableOpacity>
       </View>
-      <Divider />
-    </View>
+      <View style={styles.listDetailContainer}>
+        <Text>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur
+          voluptate eum deserunt, quas minima qui?
+        </Text>
+      </View>
+    </TouchableOpacity>
   );
 };
 
 function DocumentGenerater(props) {
+  const {navigation, route} = props;
+
   return (
-    <View style={{flex: 1, marginTop: 10}}>
-      <Subheading style={{fontSize: 20, padding: 10}}>
-        Document Gernerator
-      </Subheading>
-      <Divider style={{height: 1}} />
-      <View style={{flex: 1}}>
-        <HeaderTitle />
-        <Divider style={{height: 1}} />
+    <View style={styles.container}>
+      <ScrollView
+        contentContainerStyle={styles.scrollView}
+        showsVerticalScrollIndicator={false}>
+        <Subheading style={styles.Subheading}>Document Generater</Subheading>
         {DATA.map(item => {
-          return <DocumentDetails item={item} />;
+          return <ApprovalList item={item} {...props} />;
         })}
-      </View>
+      </ScrollView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginHorizontal: 10,
-    padding: 5,
+  container: {
+    flex: 1,
   },
-  detailsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 5,
-    margin: 10,
+  scrollView: {
+    paddingHorizontal: 20,
+    // paddingVertical: 5,
+    flexGrow: 1,
   },
-  titleText: {
-    fontWeight: 'bold',
-    color: '#000',
-    fontSize: 15,
-    margin: 5,
+
+  contentContainer: {
+    backgroundColor: '#F2F4F5',
+    borderRadius: 8,
+    padding: 10,
+    marginBottom: 20,
+  },
+
+  titleStyle: {
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    flex: 1,
+  },
+
+  approvalContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+
+  headingText: {
+    marginLeft: 5,
+  },
+
+  listDetailContainer: {
+    paddingLeft: 25,
+    marginVertical: 5,
+  },
+  Subheading: {
+    paddingVertical: 10,
+    color: theme.colors.primary,
   },
 });
 

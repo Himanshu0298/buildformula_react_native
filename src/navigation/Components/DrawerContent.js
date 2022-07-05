@@ -39,6 +39,12 @@ const materialIcon = ({icon, color, size}) => (
   <MaterialIcons {...{name: icon, color, size}} />
 );
 
+const INITIAL_ROUTES = {
+  general: 'Home',
+  developer: 'DeveloperHome',
+  customer: 'Ownership',
+};
+
 const DrawerItem = React.memo(props => {
   const {
     routeData,
@@ -47,10 +53,10 @@ const DrawerItem = React.memo(props => {
     navigation,
     label,
     icon,
-    onPress = () => navigation.navigate(route),
+    onPress,
     activeIcon,
+    drawerType,
     inactiveIcon,
-    image,
     ...restProps
   } = props;
 
@@ -66,6 +72,16 @@ const DrawerItem = React.memo(props => {
     drawerIcon = active ? activeIcon : inactiveIcon;
   }
 
+  const handlePress = () => {
+    if (onPress) {
+      onPress();
+    } else {
+      navigation.navigate(INITIAL_ROUTES[drawerType]);
+      navigation.navigate(route);
+      navigation.closeDrawer();
+    }
+  };
+
   return (
     <Drawer.Item
       {...restProps}
@@ -73,7 +89,7 @@ const DrawerItem = React.memo(props => {
       theme={{
         colors: {primary: active ? '#fff' : theme.colors.primary},
       }}
-      onPress={onPress}
+      onPress={handlePress}
       style={active ? {backgroundColor: theme.colors.primary} : {}}
       active={active}
       icon={drawerIcon}
@@ -140,6 +156,7 @@ function RenderDeveloperDrawerItems(props) {
     }
     return filterSidebar(DEVELOPER_DRAWER_ITEMS, permissions);
   }, [isProjectAdmin, permissions]);
+
   return routes.map(section => {
     if (section.title) {
       return (
@@ -150,7 +167,14 @@ function RenderDeveloperDrawerItems(props) {
             {section.title}
           </Paragraph>
           {section.routes.map(route => {
-            return <DrawerItem {...props} key={route.route} {...route} />;
+            return (
+              <DrawerItem
+                {...props}
+                type="developer"
+                key={route.route}
+                {...route}
+              />
+            );
           })}
         </Drawer.Section>
       );
@@ -176,7 +200,14 @@ function RenderCustomerDrawerItems(props) {
               {section.title}
             </Paragraph>
             {section.routes.map(route => {
-              return <DrawerItem {...props} key={route.route} {...route} />;
+              return (
+                <DrawerItem
+                  type="customer"
+                  {...props}
+                  key={route.route}
+                  {...route}
+                />
+              );
             })}
           </Drawer.Section>
         );
@@ -186,7 +217,8 @@ function RenderCustomerDrawerItems(props) {
 }
 
 function DrawerContent(props) {
-  const {navigation, theme, type} = props;
+  const {navigation, theme} = props;
+  const {drawerType} = useSelector(s => s.app);
 
   return (
     <SafeAreaView style={styles.scrollView} edges={['bottom']}>
@@ -207,12 +239,14 @@ function DrawerContent(props) {
               Back
             </Button>
           </View>
-          {type === 'general' ? <RenderGeneralDrawerItems {...props} /> : null}
-          {type === 'developer' ? (
-            <RenderDeveloperDrawerItems {...props} />
+          {drawerType === 'general' ? (
+            <RenderGeneralDrawerItems {...props} drawerType={drawerType} />
           ) : null}
-          {type === 'customer' ? (
-            <RenderCustomerDrawerItems {...props} />
+          {drawerType === 'developer' ? (
+            <RenderDeveloperDrawerItems {...props} drawerType={drawerType} />
+          ) : null}
+          {drawerType === 'customer' ? (
+            <RenderCustomerDrawerItems {...props} drawerType={drawerType} />
           ) : null}
         </View>
       </DrawerContentScrollView>

@@ -13,6 +13,7 @@ function ActionButtons(props) {
         style={styles.actionButton}
         contentStyle={styles.buttonLabel}
         theme={{roundness: 15}}
+        mode="outlined"
         onPress={onCancel}>
         {cancelLabel || 'Cancel'}
       </Button>

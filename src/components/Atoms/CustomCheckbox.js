@@ -12,6 +12,7 @@ const CustomCheckbox = React.forwardRef((props, ref) => {
       <Checkbox.Android
         {...rest}
         ref={ref}
+        onPress={onChange}
         style={checkboxStyle}
         status={checked ? 'checked' : 'unchecked'}
       />

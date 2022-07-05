@@ -2,15 +2,20 @@ import React from 'react';
 import {View, StyleSheet} from 'react-native';
 import {withTheme, Button} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import useAppActions from 'redux/actions/appActions';
 import {getShadow} from 'utils';
 import {APP_BOTTOM_TAB_HEIGHT} from 'utils/constant';
 
 function BottomAppBar(props) {
-  const {navigation, route} = props;
+  const {navigation} = props;
+
+  const {setDrawerType} = useAppActions();
 
   const onPressSwitch = () => {
-    if (route.name !== 'Home') {
-      navigation.reset({index: 0, routes: [{name: 'GeneralDashboard'}]});
+    setDrawerType('general');
+    const {index: routeIndex} = navigation.getState();
+    if (routeIndex) {
+      navigation.reset({index: 0, routes: [{name: 'Home'}]});
     }
   };
 
@@ -26,7 +31,7 @@ function BottomAppBar(props) {
             uppercase={false}
             color="rgba(4, 29, 54, 0.4)"
             contentStyle={{paddingVertical: 5}}
-            onPress={() => navigation.toggleDrawer()}>
+            onPress={navigation.toggleDrawer}>
             Menu
           </Button>
           {/* <Button

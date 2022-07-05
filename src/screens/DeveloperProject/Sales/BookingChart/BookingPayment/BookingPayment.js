@@ -41,6 +41,7 @@ import {DOCUMENT_CHARGE_LIMIT} from 'utils/constant';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {useSalesLoading} from 'redux/selectors';
+import CustomCheckbox from 'components/Atoms/CustomCheckbox';
 
 const PAYMENT_METHODS = [
   {label: 'Full payment', value: 1},
@@ -87,6 +88,10 @@ const schema = Yup.object().shape({
     then: Yup.string('Invalid').required('Required'),
   }),
   loan_bank: Yup.string('Invalid').when('is_loan', {
+    is: 'yes',
+    then: Yup.string('Invalid').required('Required'),
+  }),
+  payment_type: Yup.string('Invalid').when('is_payment', {
     is: 'yes',
     then: Yup.string('Invalid').required('Required'),
   }),
@@ -779,12 +784,19 @@ function RenderPaymentForm(props) {
 }
 
 function FormContent(props) {
-  const {theme, formikProps, bankList, navigation} = props;
-  const {t} = useTranslation();
+  const {
+    theme,
+    formikProps,
+    bankList,
+    navigation,
+    setPaymentMethod,
+    paymentMethod,
+  } = props;
 
   const {handleSubmit, values, errors, setFieldValue, handleChange, resetForm} =
     formikProps;
 
+  const {t} = useTranslation();
   const handleCancel = () => navigation.goBack();
 
   useEffect(() => {
@@ -878,15 +890,15 @@ function FormContent(props) {
               <Radio
                 label="Yes"
                 value="yes"
-                checked={values.is_payment === 'yes'}
-                onChange={value => setFieldValue('is_payment', value)}
+                checked={paymentMethod}
+                onChange={() => setPaymentMethod(true)}
               />
               <Radio
                 label="No"
                 value="no"
                 color={theme.colors.error}
-                checked={values.is_payment === 'no'}
-                onChange={value => setFieldValue('is_payment', value)}
+                checked={!paymentMethod}
+                onChange={() => setPaymentMethod(false)}
               />
             </View>
           </View>
@@ -930,7 +942,9 @@ function FormContent(props) {
             </View>
           ) : null}
 
-          {values.is_payment === 'yes' ? (
+          {console.log('-------->paymentMethod', paymentMethod)}
+
+          {paymentMethod ? (
             <>
               <RenderSelect
                 name="payment_type"
@@ -948,12 +962,29 @@ function FormContent(props) {
             </>
           ) : null}
         </View>
-        <ActionButtons
-          cancelLabel="Back"
-          submitLabel="Save With OTP"
-          onCancel={handleCancel}
-          onSubmit={handleSubmit}
-        />
+
+        <View style={styles.buttonContainer}>
+          <View style={styles.checkBox}>
+            <CustomCheckbox
+              label="Save with OTP"
+              checked={values.booking_confirm_via_otp === 'yes'}
+              onChange={() => {
+                setFieldValue(
+                  'booking_confirm_via_otp',
+                  values.booking_confirm_via_otp === 'yes' ? 'no' : 'yes',
+                );
+              }}
+            />
+          </View>
+
+          <ActionButtons
+            cancelLabel="Back"
+            submitLabel="Save"
+            onCancel={handleCancel}
+            onSubmit={handleSubmit}
+            style={styles.actionButtons}
+          />
+        </View>
       </KeyboardAwareScrollView>
     </TouchableWithoutFeedback>
   );
@@ -964,14 +995,22 @@ function BookingPayments(props) {
   const {params = {}} = route;
   const {withRate, document_start, document_end} = params;
 
-  const {createBooking, getBankList} = useSalesActions();
+  const {createBooking, getBankList, getBookingFormOTPStatus} =
+    useSalesActions();
 
-  const {bankList} = useSelector(s => s.sales);
+  const [paymentMethod, setPaymentMethod] = useState(false);
 
   const loading = useSalesLoading();
 
+  const {bankList, bookingOTPStatus} = useSelector(s => s.sales);
+  const {booking_confirm_otp_status} = bookingOTPStatus || {};
+
+  const {selectedProject} = useSelector(s => s.project);
+  const projectId = selectedProject.id;
+
   useEffect(() => {
     getBankList();
+    getBookingFormOTPStatus({project_id: projectId});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -1023,8 +1062,6 @@ function BookingPayments(props) {
 
   const onSubmit = async values => {
     const data = {...values};
-
-    console.log('values.payment type in submitted form', values.payment_type);
 
     if (values.payment_type !== 2) {
       delete data.custom_payments;
@@ -1107,20 +1144,31 @@ function BookingPayments(props) {
     delete data.total_construction;
 
     await createBooking(data);
-    navigation.popToTop();
+
+    if (values.booking_confirm_via_otp === 'yes') {
+      navigation.navigate('BookingOtp', {fromBooking: true});
+    } else {
+      navigation.popToTop();
+    }
   };
 
   return (
     <>
+      {console.log('-------->paymentMethod12', paymentMethod)}
       <Spinner visible={loading} textContent="" />
       <Formik
         validateOnBlur={false}
         validateOnChange={false}
-        validate={validate}
+        validate={paymentMethod ? validate : undefined}
         initialValues={initialValues}
-        validationSchema={schema}
+        validationSchema={paymentMethod ? schema : undefined}
         onSubmit={onSubmit}>
-        {formikProps => <FormContent {...props} {...{formikProps, bankList}} />}
+        {formikProps => (
+          <FormContent
+            {...props}
+            {...{formikProps, bankList, paymentMethod, setPaymentMethod}}
+          />
+        )}
       </Formik>
     </>
   );
@@ -1266,6 +1314,15 @@ const styles = StyleSheet.create({
     marginTop: 5,
     marginBottom: 10,
   },
+  buttonContainer: {
+    marginTop: 25,
+  },
+  checkBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: 10,
+  },
+  actionButtons: {marginTop: 5},
 });
 
 export default withTheme(BookingPayments);
