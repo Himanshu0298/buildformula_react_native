@@ -69,6 +69,7 @@ import AddCollection from 'screens/DeveloperProject/CustomerSection/AddCollectio
 import PaymentSchedule from 'screens/DeveloperProject/CustomerSection/PaymentSchedule';
 import CustomerList from 'screens/CustomerProject/CustomerList';
 import CustomerInnerDetails from 'screens/CustomerProject/CustomerInnerDetails';
+import EditCustomerDetails from 'screens/CustomerProject/CustomerInnerDetails/EditDetails/EditCustomerDetails';
 // Project : Design Modules
 import RoughDrawingFiles from 'screens/DeveloperProject/DesignModule/RoughDrawing/RoughDrawingFiles';
 import RoughDrawingFolders from 'screens/DeveloperProject/DesignModule/RoughDrawing/RoughDrawingFolders';
@@ -293,6 +294,10 @@ function AppStackNavigator() {
               <Stack.Screen
                 name="CustomerInnerDetails"
                 component={CustomerInnerDetails}
+              />
+              <Stack.Screen
+                name="EditCustomerDetails"
+                component={EditCustomerDetails}
               />
               <Stack.Screen
                 name="CustomerDetails"

@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
 import {IconButton, FAB} from 'react-native-paper';
+import ProjectHeader from 'components/Molecules/Layout/ProjectHeader';
 
 const CustDetails = () => (
   <ScrollView style={styles.custContainer}>
@@ -55,12 +56,7 @@ const CustDetails = () => (
 );
 
 const Activity = () => {
-  const [state, setState] = useState({open: false});
-  const onStateChange = ({open}) => setState({open});
-
   const activites = ['All', 'Comment', 'Call Log', 'Follow up'];
-
-  const {open} = state;
   return (
     <View style={styles.mainContainer}>
       <View>
@@ -73,42 +69,15 @@ const Activity = () => {
           }}
         />
       </View>
-      <FAB.Group
-        open={open}
-        fabStyle={{
-          backgroundColor: open ? '#fff' : '#4872f4',
-        }}
-        icon={open ? 'window-close' : 'plus'}
-        actions={[
-          {
-            icon: 'message',
-            label: 'Add Comment',
-            onPress: () => console.log('Pressed'),
-          },
-          {
-            icon: 'phone',
-            label: 'Add Call Logs',
-            onPress: () => console.log('Pressed'),
-          },
-          {
-            icon: 'arrow-up',
-            label: 'Add Follow-up',
-            onPress: () => console.log('Pressed'),
-          },
-        ]}
-        onStateChange={onStateChange}
-        onPress={() => {
-          if (open) {
-            // do something if the speed dial is open
-          }
-        }}
-        style={{position: 'absolute', top: 0}}
-      />
     </View>
   );
 };
 
-const CustomerInnerDetails = ({navigation, route}) => {
+const CustomerInnerDetails = ({navigation}) => {
+  const [state, setState] = useState({open: false});
+  const onStateChange = ({open}) => setState({open});
+  const {open} = state;
+
   const layout = useWindowDimensions();
 
   const [index, setIndex] = React.useState(0);
@@ -129,6 +98,17 @@ const CustomerInnerDetails = ({navigation, route}) => {
     />
   );
 
+  const renderScene = ({route}) => {
+    switch (route.key) {
+      case 'first':
+        return CustDetails();
+      case 'second':
+        return Activity();
+      default:
+        return null;
+    }
+  };
+
   return (
     <View style={styles.mainContainer}>
       <View style={styles.headerContainer}>
@@ -144,11 +124,38 @@ const CustomerInnerDetails = ({navigation, route}) => {
       <TabView
         navigationState={{index, routes}}
         onIndexChange={setIndex}
-        renderScene={SceneMap({
-          first: CustDetails,
-          second: Activity,
-        })}
+        renderScene={renderScene}
         renderTabBar={renderTabBar}
+      />
+      <FAB.Group
+        open={open}
+        fabStyle={{
+          backgroundColor: open ? '#fff' : '#4872f4',
+        }}
+        icon={open ? 'window-close' : 'dots-horizontal'}
+        actions={[
+          {
+            icon: 'message',
+            label: 'Add Comment',
+            onPress: () => console.log('Pressed'),
+          },
+          {
+            icon: 'phone',
+            label: 'Add Call Logs',
+            onPress: () => console.log('Pressed'),
+          },
+          {
+            icon: 'arrow-up',
+            label: 'Add Follow-up',
+            onPress: () => console.log('Pressed'),
+          },
+          {
+            icon: 'account-edit',
+            label: 'Edit Customer Info',
+            onPress: () => navigation.navigate('EditCustomerDetails'),
+          },
+        ]}
+        onStateChange={onStateChange}
       />
     </View>
   );
@@ -183,7 +190,7 @@ const styles = StyleSheet.create({
     color: '#041d36',
   },
   value: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#5E6D7C',
     marginTop: 5,
   },
