@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   id: {
-    borderRadius: 20,
+    borderRadius: 5,
     paddingHorizontal: 10,
   },
   noResultContainer: {

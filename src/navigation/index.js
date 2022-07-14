@@ -53,6 +53,7 @@ import HoldBookingHistory from 'screens/DeveloperProject/Sales/BookingChart/Hold
 import BookingRates from 'screens/DeveloperProject/Sales/BookingChart/BookingRates';
 import BookingPayment from 'screens/DeveloperProject/Sales/BookingChart/BookingPayment';
 import BrokerList from 'screens/DeveloperProject/Sales/BrokerList';
+import AddBrokerPaymentDetails from 'screens/DeveloperProject/Sales/BrokerDetails/Components/AddBrokerPaymentDetails';
 // Project : Customer Section
 import CS_SelectStructure from 'screens/DeveloperProject/CustomerSection/SelectStructure';
 import CS_SelectTower from 'screens/DeveloperProject/CustomerSection/SelectTower';
@@ -89,6 +90,7 @@ import AddRole from 'screens/DeveloperProject/UserRoles/AddRole';
 import SalesPipelineRearrange from 'screens/DeveloperProject/Sales/SalesPipelineRearrange';
 import BrokerDetails from 'screens/DeveloperProject/Sales/BrokerDetails';
 import AddBroker from 'screens/DeveloperProject/Sales/AddBroker';
+import DealsClosedDetails from 'screens/DeveloperProject/Sales/BrokerDetails/Components/DealsClosedDetails';
 import Remark from 'screens/DeveloperProject/Sales/BrokerDetails/Components/Remark';
 import WorkMaster from 'screens/DeveloperProject/ProjectManagement/WorkMaster';
 import WorkDetails from 'screens/DeveloperProject/ProjectManagement/WBS/WorkDetails';
@@ -371,6 +373,14 @@ function AppStackNavigator() {
               <Stack.Screen name="BrokerList" component={BrokerList} />
               <Stack.Screen name="BrokerDetails" component={BrokerDetails} />
               <Stack.Screen name="AddBroker" component={AddBroker} />
+              <Stack.Screen
+                name="DealsClosedDetails"
+                component={DealsClosedDetails}
+              />
+              <Stack.Screen
+                name="AddBrokerPaymentDetails"
+                component={AddBrokerPaymentDetails}
+              />
               <Stack.Screen name="Remark" component={Remark} />
             </Stack.Group>
             <Stack.Group>
