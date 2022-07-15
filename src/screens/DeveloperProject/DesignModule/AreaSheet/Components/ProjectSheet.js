@@ -22,7 +22,7 @@ const PROJECT_AREA_DETAILS = {
 };
 
 function RenderRow(props) {
-  const {item, updateValue, setSelected} = props;
+  const {item, updateValue} = props;
   const {label, key, value} = item;
 
   return (
@@ -42,27 +42,17 @@ function RenderRow(props) {
 
 function ProjectSheet() {
   const {selectedProject, loading} = useSelector(s => s.project);
-  const {areaSheet} = useSelector(s => s.designModule);
-  const {data} = areaSheet;
+  const {projectAreaSheet} = useSelector(s => s.designModule);
   const project_id = selectedProject.id;
 
   const [sheetData, setSheetData] = useState({});
-  const [selected, setSelected] = useState(true);
 
-  const {updateAreaSheet} = useDesignModuleActions();
+  const {updateAreaSheet, getProjectSheetList} = useDesignModuleActions();
 
-  React.useEffect(() => {
-    const updatedData = {...PROJECT_AREA_DETAILS};
-    if (data) {
-      Object.keys(PROJECT_AREA_DETAILS)?.map(key => {
-        updatedData[key] = {...updatedData[key], value: data[key]};
-        return key;
-      });
-    }
-    setSheetData(updatedData);
-
+  useEffect(() => {
+    getProjectSheetList({project_id});
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data]);
+  }, []);
 
   useEffect(() => {
     if (Platform.OS === 'android') {
@@ -72,6 +62,22 @@ function ProjectSheet() {
     return () => null;
   }, []);
 
+  const UpdatedData = () => {
+    const updatedData = {...PROJECT_AREA_DETAILS};
+    if (projectAreaSheet) {
+      Object.keys(PROJECT_AREA_DETAILS)?.map(key => {
+        updatedData[key] = {...updatedData[key], value: projectAreaSheet[key]};
+        return key;
+      });
+    }
+    setSheetData(updatedData);
+  };
+
+  useEffect(() => {
+    UpdatedData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [projectAreaSheet]);
+
   const updateValue = (key, value) => {
     setSheetData(v => ({
       ...v,
@@ -79,10 +85,6 @@ function ProjectSheet() {
     }));
   };
   const theme = useTheme();
-
-  const handleClose = () => {
-    setSelected(false);
-  };
 
   const submitForm = () => {
     const finalData = {};
@@ -111,28 +113,22 @@ function ProjectSheet() {
 
       <View style={styles.headerContainer}>
         <Text style={styles.headerTitle}>Project Area Details</Text>
-        {selected ? (
-          <View style={styles.button}>
-            <OpacityButton
-              opacity={0.1}
-              color={theme.colors.primary}
-              style={styles.checkButton}
-              onPress={submitForm}>
-              <MaterialIcon
-                name="check"
-                color={theme.colors.primary}
-                size={20}
-              />
-            </OpacityButton>
-            <OpacityButton
-              opacity={0.1}
-              color={theme.colors.error}
-              style={styles.closeButton}
-              onPress={handleClose}>
-              <MaterialIcon name="close" color={theme.colors.error} size={20} />
-            </OpacityButton>
-          </View>
-        ) : null}
+        <View style={styles.button}>
+          <OpacityButton
+            opacity={0.1}
+            color={theme.colors.primary}
+            style={styles.checkButton}
+            onPress={submitForm}>
+            <MaterialIcon name="check" color={theme.colors.primary} size={20} />
+          </OpacityButton>
+          <OpacityButton
+            opacity={0.1}
+            color={theme.colors.error}
+            style={styles.closeButton}
+            onPress={() => UpdatedData()}>
+            <MaterialIcon name="close" color={theme.colors.error} size={20} />
+          </OpacityButton>
+        </View>
       </View>
       <KeyboardAwareScrollView
         contentContainerStyle={styles.scrollContent}

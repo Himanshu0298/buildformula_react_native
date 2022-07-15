@@ -35,6 +35,7 @@ export default function useDesignModuleActions() {
     uploadWDFile,
     renameWDFile,
     deleteWDFile,
+    getProjectSheetList,
     updateAreaSheet,
     getCategoryTowerSheet,
     updateCategoryTowerSheet,
@@ -42,6 +43,11 @@ export default function useDesignModuleActions() {
     updateCategoryBungalowSheet,
     getCategoryPlotSheet,
     updateCategoryPlotSheet,
+    getTowerUnitSheet,
+    updateTowerUnitSheet,
+    getBungalowUnitSheet,
+    updateBungalowUnitSheet,
+    getPlotUnitSheet,
     getParkingList,
     uploadParkingFile,
     deleteParkingFile,
@@ -517,6 +523,22 @@ export default function useDesignModuleActions() {
 
     // Area sheet / Project Sheet
 
+    getProjectSheetList: params =>
+      dispatch({
+        type: types.GET_PROJECT_AREA_SHEET,
+        payload: async () => {
+          try {
+            const {data} = _res(await getProjectSheetList(params));
+
+            return Promise.resolve(data[0]);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
     updateAreaSheet: params =>
       dispatch({
         type: types.UPDATE_AREA_SHEET,
@@ -629,6 +651,92 @@ export default function useDesignModuleActions() {
           try {
             const {data, msg} = _res(await updateCategoryPlotSheet(params));
             snackbar.showMessage({message: msg});
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    // Unit sheet
+
+    getTowerUnitSheet: params =>
+      dispatch({
+        type: types.GET_UNIT_TOWER_SHEET,
+        payload: async () => {
+          try {
+            const {data} = _res(await getTowerUnitSheet(params));
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    updateTowerUnitSheet: params =>
+      dispatch({
+        type: types.UPDATE_UNIT_TOWER_SHEET,
+        payload: async () => {
+          try {
+            const {data} = _res(await updateTowerUnitSheet(params));
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    getBungalowUnitSheet: params =>
+      dispatch({
+        type: types.GET_BUNGALOW_UNIT_SHEET,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await getBungalowUnitSheet(params));
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    updateBungalowUnitSheet: params =>
+      dispatch({
+        type: types.UPDATE_BUNGALOW_UNIT_SHEET,
+        payload: async () => {
+          try {
+            await Promise.all(
+              params.map(item => updateBungalowUnitSheet(item)),
+            );
+            // updateBungalowUnitSheet(params[0]);
+            console.log('-------->paramsbungalow', params);
+            snackbar.showMessage({message: 'Unit Sheet Bungalow Updated'});
+            return Promise.resolve();
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    getPlotUnitSheet: params =>
+      dispatch({
+        type: types.GET_PLOT_UNIT_SHEET,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await getPlotUnitSheet(params));
 
             return Promise.resolve({data});
           } catch (error) {

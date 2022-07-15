@@ -1,123 +1,138 @@
-import RenderInput from 'components/Atoms/RenderInput';
 import * as React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {Platform, StyleSheet, Text, View} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {Portal, TextInput, useTheme, withTheme} from 'react-native-paper';
+import {TextInput, useTheme, withTheme} from 'react-native-paper';
 import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
 import RenderTable from 'components/Atoms/RenderTable';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import useDesignModuleActions from 'redux/actions/designModuleActions';
+import {useSelector} from 'react-redux';
+import RenderOpacityButton from 'components/Atoms/RenderOpacityButton';
+import {cloneDeep} from 'lodash';
+import {useEffect} from 'react';
 
-const BUNGALOW_UNIT_DETAILS = [
+const BUNGALOW_AREA_DETAILS = [
   {label: 'Banglow', key: 'banglow', value: ''},
   {label: 'Net land area', key: 'net_land_area', value: ''},
-  {label: 'Undivided land area', key: 'undivided_land_area', value: ''},
-  {label: 'Super buildup area', key: 'super_buildup_area', value: ''},
+  {label: 'Undivided land area', key: 'undevided_land_area', value: ''},
+  {label: 'Super buildup area', key: 'super_build_up_area', value: ''},
   {
     label: 'Construction buildup area',
-    key: 'construction_buildup_area',
+    key: 'construction_build_up_area',
     value: '',
   },
   {
     label: 'Construction super buildup area',
-    key: 'construction_super_buildup_area',
+    key: 'construction_super_build_up_area',
     value: '',
   },
   {label: 'Carpet area', key: 'carpet_area', value: ''},
 ];
 const TABLE_WIDTH = [70, 130, 120, 170, 150, 170, 120];
 
-const STATIC_DATA = [
-  ['', '', '', '', '', '', ''],
-  ['', '', '', '', '', '', ''],
-  ['', '', '', '', '', '', ''],
-  ['', '', '', '', '', '', ''],
-  ['', '', '', '', '', '', ''],
-  ['', '', '', '', '', '', ''],
-  ['', '', '', '', '', '', ''],
-  ['', '', '', '', '', '', ''],
-  ['', '', '', '', '', '', ''],
-];
-
 function BungalowUnitSheet(props) {
   const {setSelectedUnit} = props;
 
-  const [sheetData, setSheetData] = React.useState([...BUNGALOW_UNIT_DETAILS]);
+  const [sheetData, setSheetData] = React.useState([]);
 
-  const [selected, setSelected] = React.useState();
-
-  React.useEffect(() => {
-    AndroidKeyboardAdjust.adjustResize();
-    return () => AndroidKeyboardAdjust.adjustPan();
-  }, []);
-
-  const value = React.useMemo(() => {
-    return sheetData.find(i => i.key === selected)?.value;
-  }, [sheetData, selected]);
-
-  const processedData = React.useMemo(() => {
-    return STATIC_DATA.map((item, index) => {
-      const updatedData = [...item];
-      updatedData.unshift(`${index + 1}`);
-      return {
-        id: index + 1,
-        data: updatedData,
-      };
-    });
-  }, []);
-
-  const updateValue = text => {
-    const index = sheetData.findIndex(i => i.key === selected);
-    if (index !== -1) {
-      const oldSheetData = [...sheetData];
-      oldSheetData[index].value = text;
-
-      setSheetData([...oldSheetData]);
-    }
-  };
+  const {getBungalowUnitSheet, updateBungalowUnitSheet} =
+    useDesignModuleActions();
   const theme = useTheme();
 
-  // const handleClose = () => {
-  //   console.log('');
-  // };
-  // const submitForm = () => {
-  //   console.log('');
-  // };
+  const {selectedProject} = useSelector(s => s.project);
+  const {unitBungalowList} = useSelector(s => s.designModule);
+
+  const {unit_sheet_bungalow_data: unitData} = unitBungalowList;
+  const project_id = selectedProject.id;
+
+  useEffect(() => {
+    getBungalowUnitSheet({project_id});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  React.useEffect(() => {
+    if (Platform.OS === 'android') {
+      AndroidKeyboardAdjust?.adjustResize();
+      return () => AndroidKeyboardAdjust.adjustPan();
+    }
+    return null;
+  }, []);
+  React.useEffect(() => {
+    if (unitData?.length) {
+      const updatedSheetData = new Array(unitData.length)
+        .fill(new Array(BUNGALOW_AREA_DETAILS.length - 1).fill(''))
+        .map((item, index) => {
+          const updatedData = item.map((_value, cellIndex) => {
+            const {key} = BUNGALOW_AREA_DETAILS[cellIndex + 1];
+            return unitData[index][key];
+          });
+          return cloneDeep({
+            id: index,
+            title: `${index + 1}`,
+            data: updatedData,
+          });
+        });
+
+      setSheetData(updatedSheetData);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [unitData]);
+
+  const updateValue = (rowId, cellIndex, text) => {
+    const index = sheetData.findIndex(i => i.id === rowId);
+
+    const oldSheetData = cloneDeep(sheetData);
+    oldSheetData[index].data[cellIndex] = text;
+
+    setSheetData([...oldSheetData]);
+  };
+  console.log('-------->sheetDataBungalowUnit', sheetData);
+  // console.log('-------->unitData', unitData);
+
+  const submitForm = async () => {
+    const updatedData = unitData.map((item, index) => {
+      console.log('-------->222222', item);
+      const currentData = {};
+      sheetData[index].data.map((value, cellIndex) => {
+        const {key} = BUNGALOW_AREA_DETAILS[cellIndex + 1];
+        // console.log('-------->key', key);
+        // console.log('-------->currentData', currentData);
+        // console.log('-------->currentData[key]', currentData[key]);
+        currentData[key] = Number(value);
+        return value;
+      });
+
+      return {...item, ...currentData};
+    });
+
+    await updateBungalowUnitSheet(updatedData);
+    getBungalowUnitSheet({project_id});
+  };
 
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-        <View style={styles.button}>
-          <OpacityButton
-            opacity={0.1}
-            color={theme.colors.primary}
-            style={styles.backButton}
-            onPress={() => setSelectedUnit()}>
-            <MaterialCommunityIcons
-              name="keyboard-backspace"
-              size={18}
-              color="black"
-            />
-          </OpacityButton>
+        <View style={styles.headerButtonContainer}>
+          <View style={styles.button}>
+            <OpacityButton
+              opacity={0.1}
+              color={theme.colors.primary}
+              style={styles.backButton}
+              onPress={() => setSelectedUnit()}>
+              <MaterialCommunityIcons
+                name="keyboard-backspace"
+                size={18}
+                color="black"
+              />
+            </OpacityButton>
+          </View>
+          <Text style={styles.headerTitle}>Bungalow</Text>
         </View>
-        <Text style={styles.headerTitle}>Bungalow</Text>
-
-        {/* <View style={styles.button}>
-          <OpacityButton
-            opacity={0.1}
-            color={theme.colors.primary}
-            style={styles.checkButton}
-            onPress={submitForm}>
-            <MaterialIcon name="check" color={theme.colors.primary} size={20} />
-          </OpacityButton>
-          <OpacityButton
-            opacity={0.1}
-            color={theme.colors.error}
-            style={styles.closeButton}
-            onPress={handleClose}>
-            <MaterialIcon name="close" color={theme.colors.error} size={20} />
-          </OpacityButton>
-        </View> */}
+        <RenderOpacityButton
+          handleClose={() => console.log('-------->')}
+          submitForm={submitForm}
+        />
       </View>
       <KeyboardAwareScrollView
         contentContainerStyle={styles.scrollContent}
@@ -125,42 +140,21 @@ function BungalowUnitSheet(props) {
         <View style={styles.tableContainer}>
           <RenderTable
             tableWidths={TABLE_WIDTH}
-            headerColumns={BUNGALOW_UNIT_DETAILS.map(i => i.label)}
-            data={processedData}
+            headerColumns={BUNGALOW_AREA_DETAILS.map(i => i.label)}
+            data={sheetData}
+            renderCell={(cellData, cellIndex, rowId) => {
+              return (
+                <TextInput
+                  value={cellData?.toString()}
+                  style={styles.textInput}
+                  onChangeText={text => updateValue(rowId, cellIndex, text)}
+                  keyboardType="numeric"
+                />
+              );
+            }}
           />
-          {/* <View style={styles.tableContainer}>
-            {unitName.map((item, index) => (
-              <RenderRow
-                key={index?.toString()}
-                {...{item, selected, setSelected}}
-              />
-            ))}
-          </View> */}
         </View>
       </KeyboardAwareScrollView>
-
-      {selected ? (
-        <Portal>
-          <View style={styles.inputContainer}>
-            <RenderInput
-              autoFocus
-              value={value}
-              placeholder="Enter text or formula"
-              onChangeText={updateValue}
-              right={
-                <TextInput.Icon
-                  name="check"
-                  color="#fff"
-                  style={[
-                    styles.checkIcon,
-                    {backgroundColor: theme.colors.primary},
-                  ]}
-                />
-              }
-            />
-          </View>
-        </Portal>
-      ) : null}
     </View>
   );
 }
@@ -171,6 +165,12 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   headerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingBottom: 10,
+  },
+  headerButtonContainer: {
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -191,22 +191,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 
-  inputContainer: {
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-    left: 0,
-  },
   backButton: {
     borderRadius: 50,
     marginRight: 7,
   },
-  // checkButton: {
-  //   borderRadius: 50,
-  //   marginRight: 10,
-  // },
-  // closeButton: {
-  //   borderRadius: 50,
-  // },
+
+  textInput: {
+    height: 37,
+    borderWidth: 0,
+  },
 });
 export default withTheme(BungalowUnitSheet);
