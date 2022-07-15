@@ -26,6 +26,7 @@ import {getShadow} from 'utils';
 import * as Yup from 'yup';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import CustomBadge from 'components/Atoms/CustomBadge';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const workActivitySchema = Yup.object().shape({
   activity: Yup.string().trim().required('Required'),
@@ -166,6 +167,7 @@ function RenderWorks(props) {
     data,
     selectedWork,
     getWorkActivities,
+    loading,
   } = props;
 
   const alert = useAlert();
@@ -173,7 +175,7 @@ function RenderWorks(props) {
   const {commonData} = useSelector(s => s.project);
 
   const unitOptions = useMemo(() => {
-    return commonData.units.map(({id, title}) => ({label: title, value: id}));
+    return commonData?.units?.map(({id, title}) => ({label: title, value: id}));
   }, [commonData]);
 
   const [menuIndex, setMenuIndex] = React.useState(false);
@@ -186,31 +188,22 @@ function RenderWorks(props) {
   const toggleMenu = v => setMenuIndex(v);
   const toggleDialog = () => setAddActivityDialog(v => !v);
 
-  const createWorkActivity = ({activity, unit}) => {
+  const createWorkActivity = async ({activity, unit}) => {
+    const params = {
+      title: activity,
+      unit_id: unit,
+      type: 'work',
+      category_id: selectedWork.id,
+      project_id: selectedProject.id,
+    };
     if (selectedActivity) {
-      updateLineupEntity({
-        id: selectedActivity.id,
-        title: activity,
-        unit_id: unit,
-        type: 'work',
-        category_id: selectedWork.id,
-        project_id: selectedProject.id,
-      }).then(() => {
-        toggleDialog();
-        getWorkActivities(selectedWork.id);
-      });
+      await updateLineupEntity({id: selectedActivity.id, ...params});
+      setSelectedActivity();
     } else {
-      createLineupEntity({
-        title: activity,
-        unit_id: unit,
-        type: 'work',
-        category_id: selectedWork.id,
-        project_id: selectedProject.id,
-      }).then(() => {
-        toggleDialog();
-        getWorkActivities(selectedWork.id);
-      });
+      await createLineupEntity(params);
     }
+    toggleDialog();
+    getWorkActivities(selectedWork.id);
   };
 
   const handleDelete = id => {
@@ -220,7 +213,11 @@ function RenderWorks(props) {
       message: 'Are you sure you want to delete?',
       confirmText: 'Delete',
       onConfirm: () => {
-        deleteLineupEntity({id, type: 'work'}).then(() => {
+        deleteLineupEntity({
+          id,
+          type: 'work',
+          project_id: selectedProject.id,
+        }).then(() => {
           getWorkActivities(selectedWork.id);
         });
       },
@@ -235,6 +232,7 @@ function RenderWorks(props) {
 
   return (
     <>
+      <Spinner visible={loading} textContent="" />
       <AddWorkDialog
         visible={addActivityDialog}
         unitOptions={unitOptions}
@@ -296,7 +294,7 @@ function SubWorkCategory(props) {
   const {route} = props;
   const {work} = route?.params || {};
 
-  const {works} = useSelector(s => s.projectManagement);
+  const {works, loading} = useSelector(s => s.projectManagement);
   const {selectedProject} = useSelector(s => s.project);
 
   const {getWorks} = useProjectManagementActions();
@@ -317,7 +315,13 @@ function SubWorkCategory(props) {
   return (
     <RenderWorks
       {...props}
-      {...{data: works, selectedWork: work, getWorkActivities}}
+      {...{
+        data: works,
+        selectedWork: work,
+        loading,
+        selectedProject,
+        getWorkActivities,
+      }}
     />
   );
 }

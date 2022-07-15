@@ -13,6 +13,7 @@ import {
   TouchableOpacity,
   RefreshControl,
 } from 'react-native';
+import Spinner from 'react-native-loading-spinner-overlay';
 import {
   Button,
   Caption,
@@ -181,6 +182,7 @@ function RenderActivity(props) {
       <View style={styles.subWorKConatainer}>
         <View style={styles.subWorkTextContainer}>
           <Text style={styles.subWorkText}> {index + 1}</Text>
+
           <Menu
             visible={index === menuIndex}
             contentStyle={styles.toggleDotIcon}
@@ -220,6 +222,9 @@ function RenderActivity(props) {
 function RenderWork(props) {
   const {item, index, menuIndex, toggleMenu, onDelete, onUpdate, navigation} =
     props;
+  const {is_freeze} = item;
+
+  const frozen = is_freeze === 'yes';
 
   return (
     <TouchableOpacity
@@ -231,27 +236,37 @@ function RenderWork(props) {
         </View>
         <Text>{item.title}</Text>
       </View>
-      <Menu
-        visible={index === menuIndex}
-        contentStyle={styles.toggleDotIcon}
-        onDismiss={toggleMenu}
-        anchor={
-          <IconButton icon="dots-vertical" onPress={() => toggleMenu(index)} />
-        }>
-        <Menu.Item icon="pencil" onPress={() => onUpdate(item)} title="Edit" />
-        <Divider />
-        <Menu.Item
-          icon="delete"
-          onPress={() => onDelete(item.id)}
-          title="Delete"
-        />
-      </Menu>
+      {!frozen ? (
+        <Menu
+          visible={index === menuIndex}
+          contentStyle={styles.toggleDotIcon}
+          onDismiss={toggleMenu}
+          anchor={
+            <IconButton
+              icon="dots-vertical"
+              onPress={() => toggleMenu(index)}
+            />
+          }>
+          <Menu.Item
+            icon="pencil"
+            onPress={() => onUpdate(item)}
+            title="Edit"
+          />
+          <Divider />
+          <Menu.Item
+            icon="delete"
+            onPress={() => onDelete(item.id)}
+            title="Delete"
+          />
+        </Menu>
+      ) : null}
     </TouchableOpacity>
   );
 }
 
 function RenderWorkCategories(props) {
-  const {theme, selectedProject, data, getCategories, selectWork} = props;
+  const {theme, selectedProject, data, getCategories, selectWork, loading} =
+    props;
 
   const alert = useAlert();
 
@@ -297,7 +312,11 @@ function RenderWorkCategories(props) {
       message: 'Are you sure you want to delete?',
       confirmText: 'Delete',
       onConfirm: () => {
-        deleteLineupEntity({id, type: 'workcategory'}).then(() => {
+        deleteLineupEntity({
+          id,
+          type: 'workcategory',
+          project_id: selectedProject.id,
+        }).then(() => {
           getCategories();
         });
       },
@@ -312,6 +331,7 @@ function RenderWorkCategories(props) {
 
   return (
     <>
+      <Spinner visible={loading} textContent="" />
       <AddWorkCategoryDialog
         visible={addWorkDialog}
         selectedCategory={selectedCategory}
@@ -364,6 +384,7 @@ function RenderWorks(props) {
     selectedWork,
     setSelectedWork,
     getWorkActivities,
+    loading,
   } = props;
 
   const alert = useAlert();
@@ -433,6 +454,7 @@ function RenderWorks(props) {
 
   return (
     <>
+      <Spinner visible={loading} textContent="" />
       <AddWorkDialog
         visible={addActivityDialog}
         unitOptions={unitOptions}
@@ -488,7 +510,9 @@ function WorkCategory(props) {
 
   const [selectedWork, setSelectedWork] = useState();
 
-  const {workCategories, works} = useSelector(s => s.projectManagement);
+  const {workCategories, works, loading} = useSelector(
+    s => s.projectManagement,
+  );
 
   const {getWorks} = useProjectManagementActions();
 
@@ -509,7 +533,13 @@ function WorkCategory(props) {
     return (
       <RenderWorks
         {...props}
-        {...{data: works, selectedWork, setSelectedWork, getWorkActivities}}
+        {...{
+          data: works,
+          selectedWork,
+          setSelectedWork,
+          getWorkActivities,
+          loading,
+        }}
       />
     );
   }
@@ -520,6 +550,7 @@ function WorkCategory(props) {
       data={workCategories}
       selectWork={selectWork}
       getCategories={getCategories}
+      loading={loading}
     />
   );
 }
