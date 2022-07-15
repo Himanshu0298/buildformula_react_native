@@ -7,16 +7,35 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import UserImage from 'assets/images/approvalUser.png';
 import UserIcon from 'assets/images/requestedUser.png';
+import useSalesActions from 'redux/actions/salesActions';
+import {useSelector} from 'react-redux';
+import {useEffect} from 'react';
+import dayjs from 'dayjs';
+import UserAvatar from 'components/Atoms/UserAvatar';
 
 const DATA = [1, 2, 3];
 
 const RequestedUser = props => {
-  const {remark, approved, approvedBy} = props;
+  const {
+    remark,
+    approved,
+    approvedBy,
+    requested_user_id,
+    created,
+    approver_info,
+  } = props;
+
   return (
     <View>
       <View style={styles.renderContainer}>
         <View>
-          <Image source={UserIcon} style={styles.requestedImage} />
+          <UserAvatar
+            size={30}
+            uri={approver_info?.profile_url}
+            style={styles.requestedImage}
+          />
+
+          {/* <Image source={UserIcon} style={styles.requestedImage} /> */}
         </View>
         <View style={styles.userData}>
           <View>
@@ -25,7 +44,10 @@ const RequestedUser = props => {
             ) : approvedBy ? (
               <Caption>Pending Response</Caption>
             ) : (
-              <Caption>Requested by</Caption>
+              <>
+                <Caption>Requested by</Caption>
+                <Text>{requested_user_id}</Text>
+              </>
             )}
 
             {approved ? (
@@ -36,7 +58,7 @@ const RequestedUser = props => {
             ) : null}
           </View>
           <View>
-            <Caption>15 Apr,2022</Caption>
+            <Caption> {dayjs(created).format('MMMM D, YYYY h:mm A')}</Caption>
           </View>
         </View>
       </View>
@@ -51,7 +73,8 @@ const RequestedUser = props => {
   );
 };
 
-const RenderImages = () => {
+const RenderImages = props => {
+  const {approver_info} = props;
   return (
     <View style={styles.images}>
       <Image source={UserImage} />
@@ -59,25 +82,27 @@ const RenderImages = () => {
   );
 };
 
-const ListingDescription = () => {
+const ListingDescription = props => {
+  const {description, due_date, visitors_details, approver_info} = props;
+  const {first_name, last_name} = visitors_details || {};
   return (
     <View style={styles.descriptionContainer}>
-      <Text style={styles.descriptionText}>
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Iste omnis
-        natus possimus commodi, impedit provident asperiores, cum dicta eius
-        repellat nemo tempore rem magni sit?
-      </Text>
+      <Text style={styles.descriptionText}>{description}</Text>
       <View style={styles.date}>
         <Text>Due Date:</Text>
-        <Text style={styles.dateText}>15 Apr,2022</Text>
+        <Text style={styles.dateText}>
+          {dayjs(due_date).format('MMMM D, YYYY')}
+        </Text>
       </View>
       <View style={styles.visitor}>
         <Text>Linked Visitor:</Text>
-        <Text style={styles.visitorName}>Akash Patel</Text>
+        <Text style={styles.visitorName}>
+          {first_name ? `${first_name} ${last_name}` : ''}
+        </Text>
       </View>
       <View style={styles.imageContainer}>
         {DATA.map(item => {
-          return <RenderImages item={item} />;
+          return <RenderImages item={item} approver_info={approver_info} />;
         })}
       </View>
     </View>
@@ -85,7 +110,27 @@ const ListingDescription = () => {
 };
 
 function ApprovalListing(props) {
-  const {navigation} = props;
+  const {navigation, route} = props;
+  const {id: approval_id} = route.params || {};
+
+  const {approvalDetails} = useSalesActions();
+
+  const {selectedProject} = useSelector(s => s.project);
+  const {approvalsDetails} = useSelector(s => s.sales);
+
+  const {visitors_details, approver_info, record_details} = approvalsDetails;
+
+  console.log('-------->approver_info', approver_info);
+  // console.log('-------->visitors_details', visitors_details);
+  // console.log('-------->approvalsDetails', approvalsDetails);
+
+  const projectId = selectedProject.id;
+
+  useEffect(() => {
+    approvalDetails({project_id: projectId, booking_approval_id: approval_id});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [projectId]);
+
   return (
     <ScrollView style={styles.formContainer}>
       <View style={styles.button}>
@@ -102,9 +147,12 @@ function ApprovalListing(props) {
         </OpacityButton>
         <Subheading style={styles.subheading}>Approval listing</Subheading>
       </View>
-      <ListingDescription />
+      <ListingDescription
+        {...route.params}
+        visitors_details={visitors_details}
+      />
       <Divider style={styles.divider} />
-      <RequestedUser />
+      <RequestedUser {...route.params} approver_info={approver_info} />
       <Divider style={styles.divider} />
       <RequestedUser remark approvedBy />
       <Divider style={styles.divider} />
@@ -145,11 +193,12 @@ const styles = StyleSheet.create({
   date: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 10,
+    marginVertical: 10,
   },
   dateText: {
     marginLeft: 5,
     color: '#000',
+    fontWeight: '600',
   },
   visitor: {
     flexDirection: 'row',
@@ -176,7 +225,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
   },
   requestedImage: {
-    marginRight: 10,
+    marginRight: 15,
   },
   userData: {
     justifyContent: 'space-between',

@@ -9,7 +9,7 @@ import DetailsHeader from '../CustomerSection/Components/DetailsHeader';
 import {CustomerSection, EngineerSection, ManagerSection} from './Components';
 
 function AddModifyRequest(props) {
-  const {navigation, route} = props;
+  const {route} = props;
   const {params} = route;
   const {unit, project_id} = params;
 
@@ -81,16 +81,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingBottom: 20,
   },
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 5,
-  },
-  backArrow: {
-    height: 25,
-    width: 25,
-    marginRight: 5,
-  },
+
   divider: {
     marginTop: 8,
     marginBottom: 15,

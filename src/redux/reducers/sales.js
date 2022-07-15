@@ -35,6 +35,11 @@ import {
   CONFIRM_BOOKING_OTP,
   SET_BOOKING_OTP_STATUS,
   GET_BOOKING_FORM_OTP_STATUS,
+  RESEND_BOOKING_OTP,
+  GET_APPROVALS,
+  GET_APPROVERS,
+  CREATE_APPROVAL,
+  APPROVAL_DETAILS,
 } from '../actions/actionTypes';
 
 const initialState = {
@@ -76,6 +81,9 @@ const initialState = {
   brokersList: [],
   brokerDetails: {},
   bookingOTPStatus: {},
+  approvalList: [],
+  approversList: [],
+  approvalsDetails: {},
 };
 
 const reducer = (state = initialState, action = {}) => {
@@ -261,6 +269,66 @@ const reducer = (state = initialState, action = {}) => {
         todayFollowups: sortedToday,
       };
     }
+    // Approvals
+
+    case `${GET_APPROVALS}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${GET_APPROVALS}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+        approvalList: payload,
+      };
+    }
+    case `${GET_APPROVALS}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+        errorMessage: action.payload,
+      };
+
+    case `${GET_APPROVERS}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${GET_APPROVERS}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+        approversList: payload,
+      };
+    }
+    case `${GET_APPROVERS}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+        errorMessage: action.payload,
+      };
+    case `${APPROVAL_DETAILS}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${APPROVAL_DETAILS}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+        approvalsDetails: payload,
+      };
+    }
+    case `${APPROVAL_DETAILS}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+        errorMessage: action.payload,
+      };
+
+    // Followup List
+
     case `${GET_FOLLOWUP_LIST}_REJECTED`:
       return {
         ...state,
@@ -499,6 +567,7 @@ const reducer = (state = initialState, action = {}) => {
       });
 
       // Add visitor to the new list
+
       if (newPipelineIndex > -1 && movedVisitor.id) {
         pipelines[newPipelineIndex].get_visitors.push(movedVisitor);
       }
@@ -537,6 +606,8 @@ const reducer = (state = initialState, action = {}) => {
     case `${CONFIRM_BOOKING_OTP}_PENDING`:
     case `${SET_BOOKING_OTP_STATUS}_PENDING`:
     case `${DELETE_BROKER}_PENDING`:
+    case `${RESEND_BOOKING_OTP}_PENDING`:
+    case `${CREATE_APPROVAL}_PENDING`:
     case `${ADD_PIPELINE}_PENDING`: {
       return {
         ...state,
@@ -556,6 +627,8 @@ const reducer = (state = initialState, action = {}) => {
     case `${CONFIRM_BOOKING_OTP}_FULFILLED`:
     case `${SET_BOOKING_OTP_STATUS}_FULFILLED`:
     case `${DELETE_BROKER}_FULFILLED`:
+    case `${RESEND_BOOKING_OTP}_FULFILLED`:
+    case `${CREATE_APPROVAL}_FULFILLED`:
     case `${ADD_PIPELINE}_FULFILLED`: {
       return {
         ...state,
@@ -576,6 +649,8 @@ const reducer = (state = initialState, action = {}) => {
     case `${SET_BOOKING_OTP_STATUS}_REJECTED`:
     case `${UN_HOLD_UNIT_BOOKING}_REJECTED`:
     case `${DELETE_BROKER}_REJECTED`:
+    case `${RESEND_BOOKING_OTP}_REJECTED`:
+    case `${CREATE_APPROVAL}_REJECTED`:
     case `${ADD_PIPELINE}_REJECTED`: {
       return {
         ...state,
