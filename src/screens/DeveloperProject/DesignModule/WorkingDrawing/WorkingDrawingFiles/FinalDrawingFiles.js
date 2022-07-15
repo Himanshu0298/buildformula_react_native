@@ -168,7 +168,7 @@ function ActivityModal(props) {
         sections={processedActivities}
         extraData={processedActivities}
         showsVerticalScrollIndicator={false}
-        keyExtractor={(item, index) => index?.()}
+        keyExtractor={(item, index) => index?.toString()}
         ItemSeparatorComponent={renderSeparator}
         contentContainerStyle={styles.activityScrollContainer}
         stickySectionHeadersEnabled={false}
@@ -250,16 +250,16 @@ function RenderMenuModal(props) {
   );
 }
 
-function RoughDrawingFiles(props) {
+function WorkingDrawingFiles(props) {
   const {route, navigation} = props;
   const {folderId} = route?.params || {};
 
   const {
-    getRDFiles,
-    uploadRDFile,
-    renameRDFile,
-    deleteRDFile,
-    getRDActivities,
+    getWDFiles,
+    uploadWDFile,
+    renameWDFile,
+    deleteWDFile,
+    getWDActivities,
     addRDVersion,
   } = useDesignModuleActions();
   const {openImagePicker} = useImagePicker();
@@ -278,6 +278,7 @@ function RoughDrawingFiles(props) {
 
   const project_id = selectedProject.id;
   const {data} = files;
+  console.log('-------->WDFiles', data);
 
   React.useEffect(() => {
     loadFiles();
@@ -285,7 +286,7 @@ function RoughDrawingFiles(props) {
   }, []);
 
   const loadFiles = () => {
-    getRDFiles({project_id, folder_id: folderId});
+    getWDFiles({project_id, folder_id: folderId});
   };
 
   const toggleMenu = folderIndex => setMenuId(folderIndex);
@@ -293,19 +294,18 @@ function RoughDrawingFiles(props) {
   const toggleShareDialog = () => setShareDialog(v => !v);
 
   const renameFileHandler = async (name, id, type) => {
-    await renameRDFile({
+    await renameWDFile({
       file_name: name,
-      rough_drawing_id: id,
+      working_drawing_files_id: id,
       project_id,
-      folder_id: folderId,
     });
     loadFiles();
     toggleDialog();
   };
 
   const deleteFileHandler = async (id, type) => {
-    await deleteRDFile({rough_drawing_id: id, project_id, folder_id: folderId});
-    getRDFiles({project_id, folder_id: folderId});
+    await deleteWDFile({working_drawing_files_id: id, project_id});
+    loadFiles();
     toggleDialog();
     snackbar.showMessage({
       message: 'File Deleted!',
@@ -320,7 +320,7 @@ function RoughDrawingFiles(props) {
 
   const activityDataHandler = (action_type, id) => {
     setModalContentType('activity');
-    getRDActivities({project_id, rough_drawing_id: id});
+    getWDActivities({project_id, record_id: id, mode: 'file'});
   };
 
   const onPressFile = async file => {
@@ -333,7 +333,7 @@ function RoughDrawingFiles(props) {
     const {dir} = await downloadFile(file, fileUrl);
 
     snackbar.showMessage({
-      message: 'File Downloaded!',
+      message: 'File Uploaded successfully!',
       variant: 'success',
       action: {label: 'Open', onPress: () => FileViewer.open(`file://${dir}`)},
     });
@@ -354,10 +354,11 @@ function RoughDrawingFiles(props) {
     formData.append('myfile[]', file);
     formData.append('project_id', project_id);
 
-    await uploadRDFile(formData);
+    await uploadWDFile(formData);
+
     toggleDialog();
     snackbar.showMessage({
-      message: 'File Uploaded successfully!',
+      message: 'File Downloaded!',
       variant: 'success',
     });
     loadFiles();
@@ -558,4 +559,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RoughDrawingFiles;
+export default WorkingDrawingFiles;

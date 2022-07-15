@@ -129,5 +129,156 @@ export default function useDesignModule() {
         config({multipart: true}),
       );
     },
+    deleteFDFile: data => {
+      return instance.post(
+        '/finaldrawing/deleteFile',
+        data,
+        config({multipart: true}),
+      );
+    },
+
+    // Working Drawing
+
+    getWDFolders: data => {
+      return instance.post(
+        '/workingdrawing/list_folders',
+        data,
+        config({multipart: false}),
+      );
+    },
+    getWDFiles: data => {
+      return instance.post(
+        '/workingdrawing/list_files',
+        data,
+        config({multipart: false}),
+      );
+    },
+    createWDFolder: data => {
+      return instance.post(
+        '/workingdrawing/createFolder',
+        data,
+        config({multipart: false}),
+      );
+    },
+    renameWDFolder: data => {
+      return instance.post(
+        '/workingdrawing/renameFolder',
+        data,
+        config({multipart: false}),
+      );
+    },
+    deleteWDFolder: data => {
+      return instance.post(
+        '/workingdrawing/deleteFolder',
+        data,
+        config({multipart: false}),
+      );
+    },
+    getWDActivities: data => {
+      return instance.post(
+        '/workingdrawing/activity_logs',
+        data,
+        config({multipart: false}),
+      );
+    },
+    uploadWDFile: data => {
+      return instance.post(
+        '/workingdrawing/uploadFiles',
+        data,
+        config({multipart: true}),
+      );
+    },
+    renameWDFile: data => {
+      return instance.post(
+        '/workingdrawing/renameFile',
+        data,
+        config({multipart: false}),
+      );
+    },
+    deleteWDFile: data => {
+      return instance.post(
+        '/workingdrawing/deleteFile',
+        data,
+        config({multipart: true}),
+      );
+    },
+    updateAreaSheet: data => {
+      return instance.post(
+        '/areaSheet/projectSheet',
+        data,
+        config({multipart: true}),
+      );
+    },
+
+    // CATEGORY SHEET
+
+    getCategoryTowerSheet: data => {
+      return instance.post(
+        '/areaSheet/categorySheet_tower_list',
+        data,
+        config({multipart: true}),
+      );
+    },
+    updateCategoryTowerSheet: data => {
+      return instance.post(
+        '/areaSheet/add_Update_categorySheet_tower',
+        data,
+        config({multipart: true}),
+      );
+    },
+    getCategoryBungalowSheet: data => {
+      return instance.post(
+        '/areaSheet/categorySheet_bungalow_list',
+        data,
+        config({multipart: true}),
+      );
+    },
+    updateCategoryBungalowSheet: data => {
+      return instance.post(
+        '/areaSheet/add_Update_categorySheet_bungalow',
+        data,
+        config({multipart: true}),
+      );
+    },
+
+    getCategoryPlotSheet: data => {
+      return instance.post(
+        '/areaSheet/categorySheet_plot_list',
+        data,
+        config({multipart: true}),
+      );
+    },
+    updateCategoryPlotSheet: data => {
+      return instance.post(
+        '/areaSheet/add_Update_categorySheet_plot',
+        data,
+        config({multipart: true}),
+      );
+    },
+
+    // Parking
+
+    getParkingList: data => {
+      return instance.post(
+        '/parking/list_parking_design',
+        data,
+        config({multipart: true}),
+      );
+    },
+
+    uploadParkingFile: data => {
+      return instance.post(
+        '/parking/file_save',
+        data,
+        config({multipart: true}),
+      );
+    },
+    deleteParkingFile: data => {
+      return instance.post(
+        '/parking/file_delete',
+        data,
+        config({multipart: true}),
+      );
+    },
   };
 }

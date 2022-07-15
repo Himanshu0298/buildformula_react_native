@@ -1,11 +1,11 @@
 import React from 'react';
 import ProjectLayout from 'components/Molecules/Layout/ProjectLayout';
-import WorkingDrawing from './WorkingDrawing';
+import WorkingDrawingFiles from './FinalDrawingFiles';
 
 export default props => {
   return (
     <ProjectLayout {...props} header>
-      <WorkingDrawing {...props} />
+      <WorkingDrawingFiles {...props} />
     </ProjectLayout>
   );
 };

@@ -34,6 +34,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Feather from 'react-native-vector-icons/Feather';
 import {getPermissions, getShadow} from 'utils';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
+import Spinner from 'react-native-loading-spinner-overlay';
 import MenuDialog from '../Components/MenuDialog';
 import VersionDialog from '../Components/VersionDialog';
 import DeleteDialog from '../Components/DeleteDialog';
@@ -252,14 +253,13 @@ function RenderMenuModal(props) {
 function FinalDrawingFiles(props) {
   const {route, navigation} = props;
   const {folderId} = route?.params || {};
-  console.log('-------->folderId', folderId);
 
   const {
     getFDFiles,
     uploadFDFile,
     renameFDFile,
-    deleteRDFile,
-    getRDActivities,
+    deleteFDFile,
+    getFDActivities,
     addRDVersion,
   } = useDesignModuleActions();
   const {openImagePicker} = useImagePicker();
@@ -274,8 +274,7 @@ function FinalDrawingFiles(props) {
 
   const snackbar = useSnackbar();
   const {selectedProject} = useSelector(s => s.project);
-  const {files} = useSelector(s => s.designModule);
-  console.log('-------->files', files);
+  const {files, loading} = useSelector(s => s.designModule);
 
   const project_id = selectedProject.id;
   const {data} = files;
@@ -304,8 +303,8 @@ function FinalDrawingFiles(props) {
   };
 
   const deleteFileHandler = async (id, type) => {
-    await deleteRDFile({rough_drawing_id: id, project_id, folder_id: folderId});
-    // getRDFiles({project_id, folder_id: folderId});
+    await deleteFDFile({final_drawing_files_id: id, project_id});
+    loadFiles();
     toggleDialog();
     snackbar.showMessage({
       message: 'File Deleted!',
@@ -320,7 +319,7 @@ function FinalDrawingFiles(props) {
 
   const activityDataHandler = (action_type, id) => {
     setModalContentType('activity');
-    getRDActivities({project_id, rough_drawing_id: id});
+    getFDActivities({project_id, record_id: id, mode: 'file'});
   };
 
   const onPressFile = async file => {
@@ -357,7 +356,7 @@ function FinalDrawingFiles(props) {
     await uploadFDFile(formData);
     toggleDialog();
     snackbar.showMessage({
-      message: 'File Downloaded!',
+      message: 'File Uploaded Sucessfully!',
       variant: 'success',
     });
     loadFiles();
@@ -365,6 +364,8 @@ function FinalDrawingFiles(props) {
 
   return (
     <View style={styles.container}>
+      <Spinner visible={loading} textContent="" />
+
       <View style={styles.header}>
         <OpacityButton
           opacity={0.18}
