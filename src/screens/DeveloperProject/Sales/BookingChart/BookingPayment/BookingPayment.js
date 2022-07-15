@@ -784,14 +784,7 @@ function RenderPaymentForm(props) {
 }
 
 function FormContent(props) {
-  const {
-    theme,
-    formikProps,
-    bankList,
-    navigation,
-    setPaymentMethod,
-    paymentMethod,
-  } = props;
+  const {theme, formikProps, bankList, navigation} = props;
 
   const {handleSubmit, values, errors, setFieldValue, handleChange, resetForm} =
     formikProps;
@@ -890,15 +883,15 @@ function FormContent(props) {
               <Radio
                 label="Yes"
                 value="yes"
-                checked={paymentMethod}
-                onChange={() => setPaymentMethod(true)}
+                checked={Boolean(values.payment_type)}
+                onChange={() => setFieldValue('payment_type', 1)}
               />
               <Radio
                 label="No"
                 value="no"
                 color={theme.colors.error}
-                checked={!paymentMethod}
-                onChange={() => setPaymentMethod(false)}
+                checked={!values.payment_type}
+                onChange={() => setFieldValue('payment_type', 0)}
               />
             </View>
           </View>
@@ -942,9 +935,7 @@ function FormContent(props) {
             </View>
           ) : null}
 
-          {console.log('-------->paymentMethod', paymentMethod)}
-
-          {paymentMethod ? (
+          {values.payment_type === 1 ? (
             <>
               <RenderSelect
                 name="payment_type"
@@ -993,20 +984,30 @@ function FormContent(props) {
 function BookingPayments(props) {
   const {navigation, route = {}} = props;
   const {params = {}} = route;
-  const {withRate, document_start, document_end} = params;
+  const {
+    withRate,
+    document_start,
+    document_end,
+    user_id_info,
+    customer_phone,
+    unit_id,
+  } = params;
 
   const {createBooking, getBankList, getBookingFormOTPStatus} =
     useSalesActions();
-
-  const [paymentMethod, setPaymentMethod] = useState(false);
-
   const loading = useSalesLoading();
 
+  const [paymentMethod, setPaymentMethod] = useState(false);
+  const {visitors} = useSelector(s => s.project);
   const {bankList, bookingOTPStatus} = useSelector(s => s.sales);
   const {booking_confirm_otp_status} = bookingOTPStatus || {};
 
   const {selectedProject} = useSelector(s => s.project);
   const projectId = selectedProject.id;
+
+  const visitorDetails = useMemo(() => {
+    return visitors.find(visitor => visitor.id === user_id_info);
+  }, [user_id_info, visitors]);
 
   useEffect(() => {
     getBankList();
@@ -1143,10 +1144,15 @@ function BookingPayments(props) {
     delete data.construction_build_rate;
     delete data.total_construction;
 
-    await createBooking(data);
+    const result = await createBooking(data);
 
     if (values.booking_confirm_via_otp === 'yes') {
-      navigation.navigate('BookingOtp', {fromBooking: true});
+      navigation.navigate('BookingOtp', {
+        fromBooking: true,
+        bookingID: result.value.id,
+        userPhone: customer_phone || visitorDetails?.phone,
+        unit_id,
+      });
     } else {
       navigation.popToTop();
     }
@@ -1154,7 +1160,6 @@ function BookingPayments(props) {
 
   return (
     <>
-      {console.log('-------->paymentMethod12', paymentMethod)}
       <Spinner visible={loading} textContent="" />
       <Formik
         validateOnBlur={false}
