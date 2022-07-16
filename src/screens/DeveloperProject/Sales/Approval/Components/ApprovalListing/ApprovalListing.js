@@ -4,9 +4,7 @@ import {StyleSheet, View, Text, Image, ScrollView} from 'react-native';
 import {theme} from 'styles/theme';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import UserImage from 'assets/images/approvalUser.png';
-import UserIcon from 'assets/images/requestedUser.png';
 import useSalesActions from 'redux/actions/salesActions';
 import {useSelector} from 'react-redux';
 import {useEffect} from 'react';
@@ -16,65 +14,31 @@ import UserAvatar from 'components/Atoms/UserAvatar';
 const DATA = [1, 2, 3];
 
 const RequestedUser = props => {
-  const {
-    remark,
-    approved,
-    approvedBy,
-    requested_user_id,
-    created,
-    approver_info,
-  } = props;
+  const {requested_user_id, created, approver_info} = props;
 
   return (
-    <View>
-      <View style={styles.renderContainer}>
+    <View style={styles.renderContainer}>
+      <UserAvatar
+        size={30}
+        uri={approver_info?.profile_url}
+        style={styles.requestedImage}
+      />
+
+      {/* <Image source={UserIcon} style={styles.requestedImage} /> */}
+      <View style={styles.userData}>
         <View>
-          <UserAvatar
-            size={30}
-            uri={approver_info?.profile_url}
-            style={styles.requestedImage}
-          />
-
-          {/* <Image source={UserIcon} style={styles.requestedImage} /> */}
+          <Caption>Requested by</Caption>
+          <Text>{requested_user_id}</Text>
         </View>
-        <View style={styles.userData}>
-          <View>
-            {approved ? (
-              <Text style={styles.userText}>Jasmin Kacha</Text>
-            ) : approvedBy ? (
-              <Caption>Pending Response</Caption>
-            ) : (
-              <>
-                <Caption>Requested by</Caption>
-                <Text>{requested_user_id}</Text>
-              </>
-            )}
-
-            {approved ? (
-              <View style={styles.statusContainer}>
-                <Ionicons name="ios-checkmark-circle" size={18} color="green" />
-                <Text style={styles.statusText}> Approved</Text>
-              </View>
-            ) : null}
-          </View>
-          <View>
-            <Caption> {dayjs(created).format('MMMM D, YYYY h:mm A')}</Caption>
-          </View>
+        <View>
+          <Caption> {dayjs(created).format('MMMM D, YYYY h:mm A')}</Caption>
         </View>
       </View>
-      {remark ? (
-        <Text style={styles.userComments}>
-          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Beatae,
-          doloribus culpa ex expedita provident quae dolorum modi error autem
-          neque? Voluptatum mollitia nesciunt at? Perferendis.
-        </Text>
-      ) : null}
     </View>
   );
 };
 
-const RenderImages = props => {
-  const {approver_info} = props;
+const RenderImages = () => {
   return (
     <View style={styles.images}>
       <Image source={UserImage} />
@@ -154,9 +118,6 @@ function ApprovalListing(props) {
       <Divider style={styles.divider} />
       <RequestedUser {...route.params} approver_info={approver_info} />
       <Divider style={styles.divider} />
-      <RequestedUser remark approvedBy />
-      <Divider style={styles.divider} />
-      <RequestedUser remark approved />
     </ScrollView>
   );
 }
@@ -180,7 +141,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   images: {
-    marginTop: 15,
+    marginTop: 20,
     marginRight: 10,
   },
   descriptionContainer: {
@@ -231,21 +192,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     flexDirection: 'row',
     flexGrow: 1,
-  },
-  userComments: {
-    paddingHorizontal: 10,
-    paddingBottom: 5,
-  },
-  userText: {
-    color: '#000',
-  },
-  statusContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 2,
-  },
-  statusText: {
-    color: 'green',
   },
 });
 

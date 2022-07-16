@@ -62,7 +62,7 @@ const ApprovalList = props => {
 };
 
 function Approval(props) {
-  const {navigation, route} = props;
+  const {navigation} = props;
 
   const {getApprovals} = useSalesActions();
 
