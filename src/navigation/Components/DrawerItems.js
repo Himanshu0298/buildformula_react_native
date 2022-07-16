@@ -70,6 +70,14 @@ export const DEVELOPER_DRAWER_ITEMS = [
     title: 'CUSTOMER SECTION',
     routes: [
       {
+        route: 'CustomerList',
+        label: 'Customer List',
+        icon: ({color, size}) => (
+          <MaterialCommunityIcons name="account-group" {...{color, size}} />
+        ),
+      },
+
+      {
         route: 'CS_Step_One',
         label: 'Customer Section',
         icon: ({color, size}) => (
