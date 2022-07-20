@@ -1,14 +1,11 @@
 import React from 'react';
 import ProjectLayout from 'components/Molecules/Layout/ProjectLayout';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import AddDetails from './AddDetails';
+import EditCustomerDetails from './EditCustomerDetails';
 
 export default props => {
   return (
     <ProjectLayout {...props} header>
-      <SafeAreaView edges={['top', 'bottom']}>
-        <AddDetails {...props} />
-      </SafeAreaView>
+      <EditCustomerDetails {...props} />
     </ProjectLayout>
   );
 };

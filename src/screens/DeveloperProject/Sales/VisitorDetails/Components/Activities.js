@@ -180,6 +180,7 @@ function Activities(props) {
 const styles = StyleSheet.create({
   mainContainer: {
     flexGrow: 1,
+    marginTop: 5,
   },
   container: {
     marginTop: 10,

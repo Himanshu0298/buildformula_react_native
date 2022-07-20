@@ -18,6 +18,9 @@ import {
   GET_MODIFY_REQUEST,
   UPDATE_MODIFY_REQUEST,
   ADD_MODIFY_REQUEST_COMMENT,
+  GET_CUSTOMER_LIST,
+  GET_CUSTOMER_LIST_DETAILS,
+  UPDATE_CUSTOMER_DETAILS,
 } from '../actions/actionTypes';
 
 const persistConfig = {
@@ -46,6 +49,8 @@ const initialState = {
   modifyRequests: [],
   modifyRequest: {},
   accountDetails: {},
+  customerList: {},
+  customerListDetails: {},
 };
 
 const reducer = (state = initialState, action = {}) => {
@@ -196,6 +201,45 @@ const reducer = (state = initialState, action = {}) => {
         errorMessage: action.payload,
       };
 
+    // Customer List
+
+    case `${GET_CUSTOMER_LIST}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${GET_CUSTOMER_LIST}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+        customerList: payload,
+      };
+    }
+    case `${GET_CUSTOMER_LIST}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+        errorMessage: action.payload,
+      };
+    case `${GET_CUSTOMER_LIST_DETAILS}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${GET_CUSTOMER_LIST_DETAILS}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+        customerListDetails: payload,
+      };
+    }
+    case `${GET_CUSTOMER_LIST_DETAILS}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+        errorMessage: action.payload,
+      };
+
     case `${ADD_CUSTOMER}_PENDING`:
     case `${UPDATE_BANK_FILES}_PENDING`:
     case `${ADD_MODIFY_REQUEST}_PENDING`:
@@ -205,6 +249,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${UPDATE_COLLECTION}_PENDING`:
     case `${DELETE_COLLECTION}_PENDING`:
     case `${UPDATE_MODIFY_REQUEST}_PENDING`:
+    case `${UPDATE_CUSTOMER_DETAILS}_PENDING`:
       return {
         ...state,
         loading: true,
@@ -218,6 +263,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${UPDATE_COLLECTION}_FULFILLED`:
     case `${DELETE_COLLECTION}_FULFILLED`:
     case `${UPDATE_MODIFY_REQUEST}_FULFILLED`:
+    case `${UPDATE_CUSTOMER_DETAILS}_FULFILLED`:
       return {
         ...state,
         loading: false,
@@ -232,6 +278,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${UPDATE_COLLECTION}_REJECTED`:
     case `${DELETE_COLLECTION}_REJECTED`:
     case `${UPDATE_MODIFY_REQUEST}_REJECTED`:
+    case `${UPDATE_CUSTOMER_DETAILS}_REJECTED`:
       return {
         ...state,
         loading: false,

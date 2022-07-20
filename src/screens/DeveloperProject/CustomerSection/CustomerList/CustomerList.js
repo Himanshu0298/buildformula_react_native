@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {StyleSheet, Text, View, FlatList, TouchableOpacity} from 'react-native';
 import {
   Menu,
@@ -7,10 +7,24 @@ import {
   Searchbar,
   Caption,
 } from 'react-native-paper';
+import {useSelector} from 'react-redux';
+import useCustomerActions from 'redux/actions/customerActions';
 import {getShadow} from 'utils';
-import {csListing} from './csListing';
 
 const CustomerList = ({navigation}) => {
+  const {selectedProject} = useSelector(s => s.project);
+
+  const project_id = selectedProject.id;
+
+  const {getVisitorCustomerList} = useCustomerActions();
+
+  const {customerList} = useSelector(s => s.customer);
+
+  useEffect(() => {
+    getVisitorCustomerList({project_id});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const [visible, setVisible] = React.useState(false);
 
   const [filter, setFilter] = React.useState('name');
@@ -31,38 +45,40 @@ const CustomerList = ({navigation}) => {
 
   function listItem() {
     return (
-      <View style={{marginTop: 10}}>
-        <FlatList
-          data={csListing}
-          keyExtractor={item => item.id}
-          renderItem={({item}) => {
-            return (
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate('CustomerInnerDetails', {
-                    id: `${item.id}`,
-                  });
-                }}>
-                <Divider />
-                <View style={styles.listContainer} key={item.id}>
-                  <View style={{flexDirection: 'row'}}>
-                    <View style={styles.idBox}>
-                      <Text>{item.id}</Text>
-                    </View>
-                    <View style={styles.customerDetails}>
-                      <Text>{item.name}</Text>
-                      <Caption>{item.phone}</Caption>
-                    </View>
+      <FlatList
+        data={customerList}
+        keyExtractor={item => item.id}
+        contentContainerStyle={styles.contentContainerStyle}
+        renderItem={({item, index}) => {
+          return (
+            <TouchableOpacity
+              // style={{borderWidth: 1}}
+              onPress={() => {
+                navigation.navigate('CustomerInnerDetails', {
+                  id: `${item.visitor_id}`,
+                  linkedProperty: `${item.linked_property}`,
+                  customerId: item.id,
+                });
+              }}>
+              <Divider />
+              <View style={styles.listContainer} key={item.id}>
+                <View style={styles.customerContainer}>
+                  <View style={styles.idBox}>
+                    <Text>{index + 1}</Text>
                   </View>
-                  <View style={styles.customerBookings}>
-                    <Text>{item.bookings}</Text>
+                  <View style={styles.customerDetails}>
+                    <Text>{`${item.first_name} ${item.last_name}`}</Text>
+                    <Caption>{item.phone}</Caption>
                   </View>
                 </View>
-              </TouchableOpacity>
-            );
-          }}
-        />
-      </View>
+                <View style={styles.customerBookings}>
+                  <Text>{item.linked_property}</Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+          );
+        }}
+      />
     );
   }
 
@@ -80,7 +96,7 @@ const CustomerList = ({navigation}) => {
               size={23}
               onPress={openMenu}
               color="#4872f4"
-              style={{backgroundColor: 'rgba(72, 114, 244, 0.1)'}}
+              style={styles.iconButton}
             />
           }>
           {FILTER.map((i, index) => {
@@ -89,8 +105,8 @@ const CustomerList = ({navigation}) => {
               <Menu.Item
                 index={index?.toString()}
                 title={i.label}
-                style={active ? {backgroundColor: '#4872f4'} : {}}
-                titleStyle={active ? {color: '#fff'} : {}}
+                style={active ? styles.menuItem : {}}
+                titleStyle={active ? styles.titleStyle : {}}
                 onPress={() => {
                   setFilter(i.value);
                   setVisible(false);
@@ -118,6 +134,7 @@ export default CustomerList;
 const styles = StyleSheet.create({
   mainContainer: {
     padding: 15,
+    flexGrow: 1,
   },
   headerContainer: {
     display: 'flex',
@@ -137,13 +154,14 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     flexDirection: 'row',
     alignItems: 'center',
-    overflow: 'hidden',
+    // overflow: 'hidden',
     justifyContent: 'space-between',
   },
   idBox: {
     backgroundColor: 'rgba(72, 114, 244, 0.1)',
     padding: 10,
     borderRadius: 5,
+    marginRight: 5,
   },
   customerDetails: {
     marginLeft: 10,
@@ -157,9 +175,25 @@ const styles = StyleSheet.create({
     paddingVertical: 0,
   },
   search: {
-    backgroundColor: '#EAECF11A',
+    backgroundColor: '#fff',
     borderWidth: 1,
-    borderColor: 'rgba(4, 29, 54, 0.1)',
-    ...getShadow(0),
+    borderColor: '#fff',
+    ...getShadow(2),
+  },
+  contentContainerStyle: {
+    marginTop: 10,
+  },
+  iconButton: {
+    backgroundColor: 'rgba(72, 114, 244, 0.1)',
+  },
+  customerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  menuItem: {
+    backgroundColor: '#4872f4',
+  },
+  titleStyle: {
+    color: '#fff',
   },
 });
