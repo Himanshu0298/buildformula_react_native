@@ -49,7 +49,7 @@ const initialState = {
   modifyRequests: [],
   modifyRequest: {},
   accountDetails: {},
-  customerList: {},
+  customerList: [],
   customerListDetails: {},
 };
 

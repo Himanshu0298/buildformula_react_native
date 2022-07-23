@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useMemo} from 'react';
 import {StyleSheet, Text, View, FlatList, TouchableOpacity} from 'react-native';
 import {
   Menu,
@@ -18,7 +18,9 @@ const CustomerList = ({navigation}) => {
 
   const {getVisitorCustomerList} = useCustomerActions();
 
-  const {customerList} = useSelector(s => s.customer);
+  const {customerList = []} = useSelector(s => s.customer);
+
+  console.log('-------->customerList', customerList);
 
   useEffect(() => {
     getVisitorCustomerList({project_id});
@@ -27,15 +29,23 @@ const CustomerList = ({navigation}) => {
 
   const [visible, setVisible] = React.useState(false);
 
+  const toggleMenu = () => setVisible(v => !v);
+
   const [filter, setFilter] = React.useState('name');
-
-  const openMenu = () => setVisible(true);
-
-  const closeMenu = () => setVisible(false);
 
   const [searchQuery, setSearchQuery] = React.useState('');
 
-  const onChangeSearch = query => setSearchQuery(query);
+  const onSearch = v => setSearchQuery(v);
+
+  const filteredCustomer = useMemo(() => {
+    return customerList?.filter(
+      i =>
+        i.first_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        i.last_name.toLowerCase().includes(searchQuery.toLowerCase()),
+    );
+  }, [customerList, searchQuery]);
+
+  console.log('-------->filteredCustomer  ', filteredCustomer);
 
   const FILTER = [
     {value: 'recent', label: 'Recent'},
@@ -46,7 +56,7 @@ const CustomerList = ({navigation}) => {
   function listItem() {
     return (
       <FlatList
-        data={customerList}
+        data={filteredCustomer}
         keyExtractor={item => item.id}
         contentContainerStyle={styles.contentContainerStyle}
         renderItem={({item, index}) => {
@@ -89,12 +99,12 @@ const CustomerList = ({navigation}) => {
         <Menu
           style={styles.filterMenu}
           visible={visible}
-          onDismiss={closeMenu}
+          onDismiss={toggleMenu}
           anchor={
             <IconButton
               icon="filter-variant"
               size={23}
-              onPress={openMenu}
+              onPress={toggleMenu}
               color="#4872f4"
               style={styles.iconButton}
             />
@@ -109,7 +119,7 @@ const CustomerList = ({navigation}) => {
                 titleStyle={active ? styles.titleStyle : {}}
                 onPress={() => {
                   setFilter(i.value);
-                  setVisible(false);
+                  toggleMenu();
                 }}
               />
             );
@@ -119,7 +129,7 @@ const CustomerList = ({navigation}) => {
       <View style={styles.searchContainer}>
         <Searchbar
           placeholder="Search Customer"
-          onChangeText={onChangeSearch}
+          onChangeText={onSearch}
           value={searchQuery}
           style={styles.search}
         />
