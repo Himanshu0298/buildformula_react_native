@@ -48,6 +48,7 @@ export default function useDesignModuleActions() {
     getBungalowUnitSheet,
     updateBungalowUnitSheet,
     getPlotUnitSheet,
+    updatePlotUnitSheet,
     getParkingList,
     uploadParkingFile,
     deleteParkingFile,
@@ -738,7 +739,21 @@ export default function useDesignModuleActions() {
           try {
             const {data, msg} = _res(await getPlotUnitSheet(params));
 
-            return Promise.resolve({data});
+            return Promise.resolve(data.unit_sheet_plot_data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    updatePlotUnitSheet: params =>
+      dispatch({
+        type: types.UPDATE_PLOT_UNIT_SHEET,
+        payload: async () => {
+          try {
+            const {data: res} = await updatePlotUnitSheet(params);
+            return Promise.resolve(res.data || params);
           } catch (error) {
             const message = _err(error);
             snackbar.showMessage({message, variant: 'error'});

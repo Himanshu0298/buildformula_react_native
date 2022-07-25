@@ -23,6 +23,7 @@ import {
   UPDATE_CATEGORY_BUNGALOW_SHEET,
   UPDATE_CATEGORY_PLOT_SHEET,
   UPDATE_CATEGORY_TOWER_SHEET,
+  UPDATE_PLOT_UNIT_SHEET,
   UPDATE_UNIT_TOWER_SHEET,
   UPLOAD_PARKING_FILE,
   UPLOAD_RD_FILES,
@@ -41,7 +42,7 @@ const initialState = {
   plotList: {},
   unitTowerList: {},
   unitBungalowList: {},
-  unitPlotList: {},
+  unitPlotList: [],
 };
 
 export default (state = initialState, action = {}) => {
@@ -232,7 +233,7 @@ export default (state = initialState, action = {}) => {
       return {
         ...state,
         loading: false,
-        unitPlotList: payload.data || {},
+        unitPlotList: payload,
       };
     }
     case `${GET_PLOT_UNIT_SHEET}_REJECTED`:
@@ -255,6 +256,35 @@ export default (state = initialState, action = {}) => {
       };
     }
     case `${GET_PARKING_LIST}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+        errorMessage: action.payload,
+      };
+
+    case `${UPDATE_PLOT_UNIT_SHEET}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${UPDATE_PLOT_UNIT_SHEET}_FULFILLED`: {
+      const {unitPlotList} = state;
+      console.log('-------->unitPlotList', unitPlotList);
+      const index = unitPlotList.findIndex(
+        i => i.project_main_units_id === payload.project_main_units_id,
+      );
+
+      if (index > -1) {
+        unitPlotList[index] = payload;
+      }
+
+      return {
+        ...state,
+        loading: false,
+        unitPlotList: [...unitPlotList],
+      };
+    }
+    case `${UPDATE_PLOT_UNIT_SHEET}_REJECTED`:
       return {
         ...state,
         loading: false,
@@ -314,7 +344,6 @@ export default (state = initialState, action = {}) => {
     case `${DELETE_PARKING_FILE}_REJECTED`:
     case `${UPDATE_CATEGORY_PLOT_SHEET}_REJECTED`:
     case `${UPDATE_BUNGALOW_UNIT_SHEET}_REJECTED`:
-    case `${UPDATE_UNIT_TOWER_SHEET}_REJECTED`:
       return {
         ...state,
         loading: false,

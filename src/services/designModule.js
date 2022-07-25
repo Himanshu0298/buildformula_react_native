@@ -300,6 +300,13 @@ export default function useDesignModule() {
         config({multipart: false}),
       );
     },
+    updatePlotUnitSheet: data => {
+      return instance.post(
+        '/areaSheet/add_Update_unitSheet_plot',
+        data,
+        config({multipart: false}),
+      );
+    },
 
     // Parking
 

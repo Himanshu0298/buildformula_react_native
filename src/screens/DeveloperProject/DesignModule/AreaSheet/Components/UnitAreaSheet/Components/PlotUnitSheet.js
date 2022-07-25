@@ -1,5 +1,11 @@
 import * as React from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import {
+  Platform,
+  StyleSheet,
+  Text,
+  View,
+  ActivityIndicator,
+} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {TextInput, useTheme, withTheme} from 'react-native-paper';
 import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
@@ -8,30 +14,27 @@ import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import useDesignModuleActions from 'redux/actions/designModuleActions';
 import {useSelector} from 'react-redux';
-import RenderOpacityButton from 'components/Atoms/RenderOpacityButton';
-import {cloneDeep} from 'lodash';
+import {cloneDeep, debounce} from 'lodash';
 
-const PLOT_AREA_DETAILS = [
+const PLOT_AREA_UNIT_DETAILS = [
   {label: 'Plot', key: 'plot', value: ''},
   {label: 'Net Land Area', key: 'net_land_area', value: ''},
   {label: 'Undivided Land Area', key: 'undevided_land_area', value: ''},
   {label: 'Super Build-up Area', key: 'super_build_up_area', value: ''},
   {label: 'Carpet Area', key: 'carpet_area', value: ''},
 ];
+
 const TABLE_WIDTH = [70, 130, 120, 170, 150];
 
 function PlotUnitSheet(props) {
   const {setSelectedUnit} = props;
   const [sheetData, setSheetData] = React.useState([]);
 
-  const {getPlotUnitSheet, updateCategoryPlotSheet} = useDesignModuleActions();
+  const {getPlotUnitSheet, updatePlotUnitSheet} = useDesignModuleActions();
   const theme = useTheme();
 
   const {selectedProject} = useSelector(s => s.project);
-  const {unitPlotList} = useSelector(s => s.designModule);
-  console.log('-------->unitPlotList', unitPlotList);
-
-  const {unit_sheet_plot_data: plotUnitData} = unitPlotList || {};
+  const {loading, unitPlotList} = useSelector(s => s.designModule);
 
   // const {category_sheet_plot_data, project_plot_data} = plotList || {};
 
@@ -51,13 +54,13 @@ function PlotUnitSheet(props) {
   }, []);
 
   React.useEffect(() => {
-    if (plotUnitData?.length) {
-      const updatedSheetData = new Array(plotUnitData.length)
-        .fill(new Array(PLOT_AREA_DETAILS.length - 1).fill(''))
+    if (unitPlotList?.length) {
+      const updatedSheetData = new Array(unitPlotList.length)
+        .fill(new Array(PLOT_AREA_UNIT_DETAILS.length - 1).fill(''))
         .map((item, index) => {
           const updatedData = item.map((_value, cellIndex) => {
-            const {key} = PLOT_AREA_DETAILS[cellIndex + 1];
-            return plotUnitData[index][key];
+            const {key} = PLOT_AREA_UNIT_DETAILS[cellIndex + 1];
+            return unitPlotList[index][key];
           });
           return cloneDeep({
             id: index,
@@ -69,38 +72,35 @@ function PlotUnitSheet(props) {
       setSheetData(updatedSheetData);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [plotUnitData]);
+  }, [unitPlotList]);
+
+  const syncData = (rowIndex, updatedSheetData) => {
+    const currentRow = unitPlotList[rowIndex];
+    let updatedData = {};
+    updatedSheetData[rowIndex].data.map((value, cellIndex) => {
+      const {key} = PLOT_AREA_UNIT_DETAILS[cellIndex + 1];
+      updatedData[key] = Number(value);
+      return value;
+    });
+
+    updatedData = {...currentRow, ...updatedData};
+
+    updatePlotUnitSheet(updatedData);
+  };
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedSave = React.useCallback(debounce(syncData, 1000), []);
 
   const updateValue = (rowId, cellIndex, text) => {
-    const index = sheetData.findIndex(i => i.id === rowId);
+    const rowIndex = sheetData.findIndex(i => i.id === rowId);
 
     const oldSheetData = cloneDeep(sheetData);
-    oldSheetData[index].data[cellIndex] = text;
-
+    oldSheetData[rowIndex].data[cellIndex] = text;
     setSheetData([...oldSheetData]);
+
+    debouncedSave(rowIndex, oldSheetData);
   };
 
-  const submitForm = async () => {
-    const {data} = sheetData[0];
-
-    const updatedData = cloneDeep([]);
-
-    data.map((i, index) => {
-      const {key} = PLOT_AREA_DETAILS[index + 1];
-      updatedData[key] = i;
-      return i;
-    });
-
-    delete updatedData.last_updated;
-
-    updateCategoryPlotSheet({
-      project_id,
-      net_land_area: updatedData.net_land_area,
-      undevided_land_area: updatedData.undevided_land_area,
-      super_build_up_area: updatedData.super_build_up_area,
-      carpet_area: updatedData.carpet_area,
-    });
-  };
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
@@ -120,10 +120,23 @@ function PlotUnitSheet(props) {
           </View>
           <Text style={styles.headerTitle}>Plot</Text>
         </View>
-        <RenderOpacityButton
-          handleClose={() => console.log('-------->')}
-          submitForm={submitForm}
-        />
+
+        <View style={styles.savedContainer}>
+          {loading ? (
+            <ActivityIndicator size="small" color="#00ff00" />
+          ) : (
+            <>
+              <MaterialCommunityIcons
+                name="check-circle-outline"
+                size={24}
+                color="green"
+              />
+              <View style={styles.textContainer}>
+                <Text>Saved</Text>
+              </View>
+            </>
+          )}
+        </View>
       </View>
 
       <KeyboardAwareScrollView
@@ -132,7 +145,7 @@ function PlotUnitSheet(props) {
         <View style={styles.tableContainer}>
           <RenderTable
             tableWidths={TABLE_WIDTH}
-            headerColumns={PLOT_AREA_DETAILS.map(i => i.label)}
+            headerColumns={PLOT_AREA_UNIT_DETAILS.map(i => i.label)}
             data={sheetData}
             renderCell={(cellData, cellIndex, rowId) => {
               return (
@@ -190,6 +203,15 @@ const styles = StyleSheet.create({
   textInput: {
     height: 37,
     borderWidth: 0,
+  },
+  savedContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 15,
+    paddingBottom: 10,
+  },
+  textContainer: {
+    marginLeft: 5,
   },
 });
 
