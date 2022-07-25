@@ -67,9 +67,7 @@ import AddBankDetails from 'screens/DeveloperProject/CustomerSection/AddBankDeta
 import PaymentCollections from 'screens/DeveloperProject/CustomerSection/PaymentColections';
 import AddCollection from 'screens/DeveloperProject/CustomerSection/AddCollection';
 import PaymentSchedule from 'screens/DeveloperProject/CustomerSection/PaymentSchedule';
-import CustomerList from 'screens/CustomerProject/CustomerList';
-import CustomerInnerDetails from 'screens/CustomerProject/CustomerInnerDetails';
-import EditCustomerDetails from 'screens/CustomerProject/CustomerInnerDetails/EditDetails/EditCustomerDetails';
+import CustomerList from 'screens/DeveloperProject/CustomerSection/CustomerList';
 // Project : Design Modules
 import RoughDrawingFiles from 'screens/DeveloperProject/DesignModule/RoughDrawing/RoughDrawingFiles';
 import RoughDrawingFolders from 'screens/DeveloperProject/DesignModule/RoughDrawing/RoughDrawingFolders';
@@ -147,6 +145,8 @@ import FollowUpTask from 'screens/DeveloperProject/Sales/Follow-upTask';
 import FollowUpDetails from 'screens/DeveloperProject/Sales/Follow-upTask/FollowUpDetails';
 import DocumentDownload from 'screens/DeveloperProject/DocumentGenerater/Documents/DocumentDownload';
 import ProjectNotification from 'screens/Notification/ProjectNotification';
+import CustomerInnerDetails from 'screens/DeveloperProject/CustomerSection/CustomerInnerDetails';
+import EditCustomerDetails from 'screens/DeveloperProject/CustomerSection/CustomerInnerDetails/EditDetails/';
 /** *********** Developer Project Sub Screens End   ************ */
 
 const optionalConfigObject = {

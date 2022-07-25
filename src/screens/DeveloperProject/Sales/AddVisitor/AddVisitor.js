@@ -487,7 +487,6 @@ function AddVisitor(props) {
 
   const onSubmit = async values => {
     const inputs = _.cloneDeep(values);
-    console.log('-------->inputs', inputs);
 
     let data = {
       follow_up_date: dayjs(inputs.follow_up_date).format('DD-MM-YYYY'),
@@ -499,8 +498,6 @@ function AddVisitor(props) {
     delete inputs.bhk_required;
 
     const arrString = values.interested_property.join(',');
-    console.log('-------->values', values);
-    console.log('-------->data', data);
 
     data = {
       ...data,
@@ -509,7 +506,6 @@ function AddVisitor(props) {
       user_id: user.id,
       interested_property: arrString,
     };
-    console.log('-------->data before edit function call', data);
 
     if (edit) {
       await updateVisitor({...data, visitor_id: visitor.id});

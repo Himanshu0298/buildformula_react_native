@@ -189,5 +189,26 @@ export default function useCustomerServices() {
         config({multipart: false}),
       );
     },
+    getVisitorCustomerList: data => {
+      return instance.post(
+        '/visitorcustomer/list',
+        data,
+        config({multipart: false}),
+      );
+    },
+    getVisitorCustomerListDetails: data => {
+      return instance.post(
+        '/visitorcustomer/details',
+        data,
+        config({multipart: false}),
+      );
+    },
+    updateCustomerDetails: data => {
+      return instance.post(
+        '/visitorcustomer/save_details',
+        data,
+        config({multipart: false}),
+      );
+    },
   };
 }

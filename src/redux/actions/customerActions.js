@@ -30,6 +30,9 @@ export default function useCustomerActions() {
     deleteCollection,
     deleteFolder,
     deleteFile,
+    getVisitorCustomerList,
+    getVisitorCustomerListDetails,
+    updateCustomerDetails,
   } = useCustomerServices();
 
   return {
@@ -368,6 +371,56 @@ export default function useCustomerActions() {
         payload: async () => {
           try {
             const {data, msg} = _res(await deleteFolder(params));
+            snackbar.showMessage({message: msg});
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    // Customer List
+
+    getVisitorCustomerList: params =>
+      dispatch({
+        type: types.GET_CUSTOMER_LIST,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await getVisitorCustomerList(params));
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    getVisitorCustomerListDetails: params =>
+      dispatch({
+        type: types.GET_CUSTOMER_LIST_DETAILS,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(
+              await getVisitorCustomerListDetails(params),
+            );
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    updateCustomerDetails: params =>
+      dispatch({
+        type: types.UPDATE_CUSTOMER_DETAILS,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await updateCustomerDetails(params));
             snackbar.showMessage({message: msg});
             return Promise.resolve(data);
           } catch (error) {

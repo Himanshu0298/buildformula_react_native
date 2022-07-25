@@ -48,6 +48,7 @@
     "react-native-autogrow-textinput": "^5.4.0",
     "react-native-blob-util": "^0.14.1",
     "react-native-bootsplash": "^4.1.5",
+    "react-native-calendars": "^1.1285.0",
     "react-native-chart-kit": "^6.12.0",
     "react-native-code-push": "^7.0.4",
     "react-native-collapsable-view": "^0.1.2",

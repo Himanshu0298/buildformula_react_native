@@ -21,7 +21,7 @@ const schema = Yup.object().shape({
 
 function AddCallLogs(props) {
   const {route, navigation} = props;
-  const {visitorId} = route.params || {};
+  const {visitorId, customerId} = route.params || {};
 
   const followUpDateRef = React.useRef();
   const followUpTimeRef = React.useRef();
@@ -45,11 +45,11 @@ function AddCallLogs(props) {
       // last_date:dayjsvalues.last_last_date,
       last_date: dayjs(values.last_date).format('DD-MM-YYYY'),
       last_time: dayjs(values.last_time).format('hh:mm:ss'),
-      visitor_id: visitorId,
+      visitor_id: visitorId || customerId,
       project_id: selectedProject.id,
     });
     getVisitorActivities({
-      visitor_id: visitorId,
+      visitor_id: visitorId || customerId,
       project_id: selectedProject.id,
     });
     navigation.goBack();
