@@ -497,7 +497,7 @@ function AddVisitor(props) {
     delete inputs.follow_up_time;
     delete inputs.bhk_required;
 
-    const arrString = values.interested_property.join(',');
+    const arrString = inputs?.interested_property?.join(',') || undefined;
 
     data = {
       ...data,
@@ -505,6 +505,10 @@ function AddVisitor(props) {
       project_id: selectedProject.id,
       user_id: user.id,
       interested_property: arrString,
+      occupation: inputs?.occupation || 0,
+      other_occupation: inputs?.other_occupation || 0,
+      budget_from: inputs?.budget_from || 0,
+      budget_to: inputs?.budget_to || 0,
     };
 
     if (edit) {

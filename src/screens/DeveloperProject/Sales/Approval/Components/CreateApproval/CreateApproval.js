@@ -10,15 +10,17 @@ import {theme} from 'styles/theme';
 import RenderTextBox from 'components/Atoms/RenderTextbox';
 import RenderSelect from 'components/Atoms/RenderSelect';
 import RenderDatePicker from 'components/Atoms/RenderDatePicker';
-
-const ApprovalOptions = ['hello', 'world'];
+import useSalesActions from 'redux/actions/salesActions';
+import {useSelector} from 'react-redux';
+import {useEffect, useMemo} from 'react';
+import dayjs from 'dayjs';
 
 const schema = Yup.object().shape({
   title: Yup.string('Required').required('Required'),
 });
 
 function ApprovalRequestForm(props) {
-  const {formikProps, navigation} = props;
+  const {formikProps, navigation, ApprovalOptions} = props;
   const {
     values,
     errors,
@@ -90,21 +92,49 @@ function ApprovalRequestForm(props) {
               Upload Image
             </Button>
           </View>
-
-          <ActionButtons
-            onSubmit={handleSubmit}
-            submitLabel="Save"
-            onCancel={() => navigation.goBack()}
-          />
         </View>
+        <ActionButtons
+          onSubmit={handleSubmit}
+          submitLabel="Save"
+          onCancel={() => navigation.goBack()}
+        />
       </KeyboardAwareScrollView>
     </>
   );
 }
 
 const CreateApproval = props => {
-  const handleSubmit = () => {
-    console.log('-------->');
+  const {navigation} = props;
+  const {createApproval, getApprovers} = useSalesActions();
+
+  const {selectedProject} = useSelector(s => s.project);
+
+  const {approversList} = useSelector(s => s.sales);
+  const projectId = selectedProject.id;
+
+  const filteredOptions = useMemo(() => {
+    return approversList?.map(i => ({
+      label: `${i.first_name} ${i.last_name}`,
+      value: i.id,
+    }));
+  }, [approversList]);
+
+  useEffect(() => {
+    getApprovers({project_id: projectId});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [projectId]);
+
+  const handleSubmit = async values => {
+    const date = dayjs(values.date).format('DD-MM-YYYY');
+
+    await createApproval({
+      project_id: projectId,
+      title: values.title,
+      description: values.description,
+      due_date: date,
+      approver_id: values.approval,
+    });
+    navigation.goBack();
   };
 
   return (
@@ -114,19 +144,26 @@ const CreateApproval = props => {
       initialValues={{}}
       validationSchema={schema}
       onSubmit={handleSubmit}>
-      {formikProps => <ApprovalRequestForm {...{formikProps}} {...props} />}
+      {formikProps => (
+        <ApprovalRequestForm
+          {...{formikProps}}
+          {...props}
+          ApprovalOptions={filteredOptions}
+        />
+      )}
     </Formik>
   );
 };
 
 const styles = StyleSheet.create({
   dialogContent: {
-    paddingHorizontal: 15,
+    paddingHorizontal: 25,
     flexGrow: 1,
     justifyContent: 'space-between',
   },
   formContainer: {
     marginTop: 5,
+    paddingHorizontal: 10,
   },
   subheading: {
     padding: 10,
@@ -138,6 +175,7 @@ const styles = StyleSheet.create({
 
   contentContainerStyle: {
     flexGrow: 1,
+    paddingHorizontal: 5,
   },
   uploadButton: {
     marginTop: 15,

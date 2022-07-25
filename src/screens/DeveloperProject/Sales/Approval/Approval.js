@@ -1,45 +1,59 @@
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
+import dayjs from 'dayjs';
 import * as React from 'react';
+import {useEffect} from 'react';
 import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
+import Spinner from 'react-native-loading-spinner-overlay';
 import {Caption, Text, withTheme, FAB, Subheading} from 'react-native-paper';
+import {useSelector} from 'react-redux';
+import useSalesActions from 'redux/actions/salesActions';
 import {theme} from 'styles/theme';
 import {getPermissions} from 'utils';
-
-const DATA = [1, 2, 3];
+import {MODIFY_REQUEST_STATUS} from 'utils/constant';
 
 const ApprovalList = props => {
-  const {navigation} = props;
+  const {navigation, item, index} = props;
+  const {status, due_date, title, requested_user_id, approver_id, visitors_id} =
+    item;
 
   const navToList = () => {
-    navigation.navigate('ApprovalListing');
+    navigation.navigate('ApprovalListing', {...item, visitors_id});
   };
   return (
     <TouchableOpacity style={styles.contentContainer} onPress={navToList}>
       <View style={styles.titleStyle}>
         <View style={styles.approvalContainer}>
-          <OpacityButton style={styles.buttonText}>
-            <Text>1</Text>
+          <OpacityButton
+            style={styles.buttonText}
+            color={theme.colors.primary}
+            opacity={0.2}>
+            <Text style={{color: theme.colors.primary}}>{index + 1}</Text>
           </OpacityButton>
-          <Text style={styles.headingText}>Research</Text>
+          <Text style={styles.headingText}>{title}</Text>
         </View>
 
-        <Caption>Pending</Caption>
+        <Caption
+          style={{
+            color: MODIFY_REQUEST_STATUS[status]?.color,
+          }}>
+          {MODIFY_REQUEST_STATUS[status]?.label}
+        </Caption>
       </View>
       <View style={styles.listDetailContainer}>
         <View style={styles.cardSection}>
           <Caption style={styles.cardSubSection}>Send by:</Caption>
-          <Text>Mihir Patel</Text>
+          <Text>{requested_user_id}</Text>
         </View>
         <View style={styles.cardSection}>
           <View style={styles.cardSubContainer}>
             <Caption style={styles.cardSubSection}>Send To:</Caption>
-            <Text>Akash Chauhan</Text>
+            <Text>{approver_id}</Text>
           </View>
         </View>
         <View style={styles.cardSection}>
           <View style={styles.cardSubContainer}>
             <Caption style={styles.cardSubSection}>Due Date:</Caption>
-            <Text>15 Oct 2022</Text>
+            <Text>{dayjs(due_date).format('MMMM D, YYYY')}</Text>
           </View>
         </View>
       </View>
@@ -48,24 +62,39 @@ const ApprovalList = props => {
 };
 
 function Approval(props) {
-  const {navigation, route} = props;
+  const {navigation} = props;
+
+  const {getApprovals} = useSalesActions();
+
+  const {selectedProject} = useSelector(s => s.project);
+  const {approvalList, loading} = useSelector(s => s.sales);
+
+  const projectId = selectedProject.id;
+
+  useEffect(() => {
+    getApprovals({project_id: projectId});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [projectId]);
 
   const modulePermissions = getPermissions('Approval');
 
   const navToAdd = () => {
-    navigation.navigate('CreateApproval', {...route?.params});
+    navigation.navigate('CreateApproval');
   };
 
   return (
     <View style={styles.container}>
+      <Spinner visible={loading} textContent="" />
+      <Subheading style={styles.Subheading}>Approval listing</Subheading>
+
       <ScrollView
         contentContainerStyle={styles.scrollView}
         showsVerticalScrollIndicator={false}>
-        <Subheading style={styles.Subheading}>Approval listing</Subheading>
-        {DATA.map(item => {
-          return <ApprovalList item={item} {...props} />;
+        {approvalList?.map((item, index) => {
+          return <ApprovalList item={item} index={index} {...props} />;
         })}
       </ScrollView>
+
       {modulePermissions?.editor || modulePermissions?.admin ? (
         <FAB
           style={[styles.fab, {backgroundColor: theme.colors.primary}]}
@@ -82,7 +111,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollView: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 25,
     // paddingVertical: 5,
     flexGrow: 1,
   },
@@ -112,6 +141,8 @@ const styles = StyleSheet.create({
 
   buttonText: {
     borderRadius: 5,
+    paddingHorizontal: 10,
+    marginRight: 10,
   },
 
   headingText: {
@@ -133,11 +164,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   listDetailContainer: {
-    paddingHorizontal: 18,
+    marginTop: 5,
+    paddingHorizontal: 40,
   },
   Subheading: {
-    paddingVertical: 10,
+    paddingVertical: 20,
     color: theme.colors.primary,
+    paddingHorizontal: 20,
   },
 });
 

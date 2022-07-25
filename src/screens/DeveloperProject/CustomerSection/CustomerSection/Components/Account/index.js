@@ -287,7 +287,7 @@ function Account(props) {
 
           <View style={styles.cardItemsContainer}>
             {CollectionTypes.map((item, index) => (
-              <React.Fragment key={index.toString}>
+              <React.Fragment key={index.toString()}>
                 <TouchableOpacity
                   style={styles.cardItem}
                   onPress={() => navToDetails(item.key)}>

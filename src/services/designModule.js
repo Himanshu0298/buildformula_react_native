@@ -42,28 +42,28 @@ export default function useDesignModule() {
       return instance.post(
         '/roughdrawing/deleteFolder',
         data,
-        config({multipart: true}),
+        config({multipart: false}),
       );
     },
     getRDActivities: data => {
       return instance.post(
         '/roughdrawing/activity_logs',
         data,
-        config({multipart: true}),
+        config({multipart: false}),
       );
     },
     renameRDFile: data => {
       return instance.post(
         '/roughdrawing/renameFile',
         data,
-        config({multipart: true}),
+        config({multipart: false}),
       );
     },
     deleteRDFile: data => {
       return instance.post(
         '/roughdrawing/deleteFile',
         data,
-        config({multipart: true}),
+        config({multipart: false}),
       );
     },
     addRDVersion: data => {
@@ -126,14 +126,14 @@ export default function useDesignModule() {
       return instance.post(
         '/finaldrawing/renameFile',
         data,
-        config({multipart: true}),
+        config({multipart: false}),
       );
     },
     deleteFDFile: data => {
       return instance.post(
         '/finaldrawing/deleteFile',
         data,
-        config({multipart: true}),
+        config({multipart: false}),
       );
     },
 
@@ -199,14 +199,21 @@ export default function useDesignModule() {
       return instance.post(
         '/workingdrawing/deleteFile',
         data,
-        config({multipart: true}),
+        config({multipart: false}),
       );
     },
     updateAreaSheet: data => {
       return instance.post(
         '/areaSheet/projectSheet',
         data,
-        config({multipart: true}),
+        config({multipart: false}),
+      );
+    },
+    getProjectSheetList: data => {
+      return instance.post(
+        '/areaSheet/get_list_projectSheet',
+        data,
+        config({multipart: false}),
       );
     },
 
@@ -216,28 +223,28 @@ export default function useDesignModule() {
       return instance.post(
         '/areaSheet/categorySheet_tower_list',
         data,
-        config({multipart: true}),
+        config({multipart: false}),
       );
     },
     updateCategoryTowerSheet: data => {
       return instance.post(
         '/areaSheet/add_Update_categorySheet_tower',
         data,
-        config({multipart: true}),
+        config({multipart: false}),
       );
     },
     getCategoryBungalowSheet: data => {
       return instance.post(
         '/areaSheet/categorySheet_bungalow_list',
         data,
-        config({multipart: true}),
+        config({multipart: false}),
       );
     },
     updateCategoryBungalowSheet: data => {
       return instance.post(
         '/areaSheet/add_Update_categorySheet_bungalow',
         data,
-        config({multipart: true}),
+        config({multipart: false}),
       );
     },
 
@@ -245,14 +252,59 @@ export default function useDesignModule() {
       return instance.post(
         '/areaSheet/categorySheet_plot_list',
         data,
-        config({multipart: true}),
+        config({multipart: false}),
       );
     },
     updateCategoryPlotSheet: data => {
       return instance.post(
         '/areaSheet/add_Update_categorySheet_plot',
         data,
-        config({multipart: true}),
+        config({multipart: false}),
+      );
+    },
+
+    // Unit Sheet
+
+    getTowerUnitSheet: data => {
+      return instance.post(
+        '/areaSheet/unitSheet_tower_list',
+        data,
+        config({multipart: false}),
+      );
+    },
+    updateTowerUnitSheet: data => {
+      return instance.post(
+        '/areaSheet/add_Update_unitSheet_tower',
+        data,
+        config({multipart: false}),
+      );
+    },
+    getBungalowUnitSheet: data => {
+      return instance.post(
+        '/areaSheet/unitSheet_bungalow_list',
+        data,
+        config({multipart: false}),
+      );
+    },
+    updateBungalowUnitSheet: data => {
+      return instance.post(
+        '/areaSheet/add_Update_unitSheet_bungalow',
+        data,
+        config({multipart: false}),
+      );
+    },
+    getPlotUnitSheet: data => {
+      return instance.post(
+        '/areaSheet/unitSheet_plot_list',
+        data,
+        config({multipart: false}),
+      );
+    },
+    updatePlotUnitSheet: data => {
+      return instance.post(
+        '/areaSheet/add_Update_unitSheet_plot',
+        data,
+        config({multipart: false}),
       );
     },
 
@@ -262,7 +314,7 @@ export default function useDesignModule() {
       return instance.post(
         '/parking/list_parking_design',
         data,
-        config({multipart: true}),
+        config({multipart: false}),
       );
     },
 
@@ -270,14 +322,14 @@ export default function useDesignModule() {
       return instance.post(
         '/parking/file_save',
         data,
-        config({multipart: true}),
+        config({multipart: false}),
       );
     },
     deleteParkingFile: data => {
       return instance.post(
         '/parking/file_delete',
         data,
-        config({multipart: true}),
+        config({multipart: false}),
       );
     },
   };

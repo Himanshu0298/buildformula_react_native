@@ -24,6 +24,7 @@ import {Tabs} from 'react-native-collapsible-tab-view';
 import useCustomerActions from 'redux/actions/customerActions';
 import {useAlert} from 'components/Atoms/Alert';
 import useCustomerServices from 'services/customer';
+import {theme} from 'styles/theme';
 
 const schema = Yup.object().shape({
   email: Yup.string('Required').required('Required'),
@@ -65,7 +66,7 @@ function RenderRow({row, style}) {
 }
 
 function CustomerCredLogin(props) {
-  const {bookingDetails, theme, navigation} = props;
+  const {bookingDetails, navigation} = props;
   const alert = useAlert();
 
   const {customer_phone, customer_email, id} = bookingDetails;
@@ -75,7 +76,7 @@ function CustomerCredLogin(props) {
   const [editLoginCred, setEditLoginCred] = React.useState(false);
 
   const {deleteBooking, cancelBooking} = useCustomerServices();
-  const {getBookingDetails} = useCustomerActions();
+  // const {getBookingDetails} = useCustomerActions();
 
   const handleDelete = async project_bookings_id => {
     alert.show({
@@ -168,9 +169,9 @@ function CustomerCredLogin(props) {
           setEditLoginCred(false);
         }}>
         {({values, errors, handleChange, handleSubmit}) => (
-          <View style={{marginVertical: 1}}>
+          <View style={styles.customerCredentialContainer}>
             <View style={styles.customerCredential}>
-              <View style={{width: '50%'}}>
+              <View style={styles.emailContainer}>
                 <Text>Email</Text>
                 {editLoginCred ? (
                   <RenderTextBox
@@ -178,7 +179,7 @@ function CustomerCredLogin(props) {
                     value={values.email}
                     onChangeText={handleChange('email')}
                     error={errors.email}
-                    style={{marginRight: 10}}
+                    style={styles.renderTextBox}
                   />
                 ) : (
                   <Text>{customer_email}</Text>
@@ -216,7 +217,7 @@ function CustomerCredLogin(props) {
   );
 }
 
-function CustomerSection({bookingDetails, theme}) {
+function CustomerSection({bookingDetails}) {
   const {
     customer_first_name,
     customer_last_name,
@@ -252,7 +253,7 @@ function CustomerSection({bookingDetails, theme}) {
   );
 }
 
-function BrokerSection({bookingDetails, theme}) {
+function BrokerSection({bookingDetails}) {
   const {
     broker_first_name,
     broker_last_name,
@@ -289,7 +290,7 @@ function BrokerSection({bookingDetails, theme}) {
 }
 
 function RatesSection(props) {
-  const {bookingDetails, bookingAreaUnitType, theme} = props;
+  const {bookingDetails, bookingAreaUnitType} = props;
 
   const {
     area_for_super_buildup,
@@ -322,7 +323,7 @@ function RatesSection(props) {
 
   return (
     <View style={styles.sectionContainer}>
-      <Title style={{marginBottom: 15}}>Booking Rate</Title>
+      <Title style={styles.bookingRateText}>Booking Rate</Title>
       <Subheading style={{color: theme.colors.primary}}>
         BASIC AMOUNT
       </Subheading>
@@ -349,7 +350,7 @@ function RatesSection(props) {
             {label: 'Carpet', value: `Rs.${rate_for_carpet}`},
           ]}
         />
-        <Caption style={{color: theme.colors.primary, marginVertical: 10}}>
+        <Caption style={styles.totalBasicAmountText}>
           Total Basic Amount
         </Caption>
         <RenderRow
@@ -364,7 +365,7 @@ function RatesSection(props) {
 
         {bookedUnit.project_type === 4 ? (
           <>
-            <Subheading style={{color: theme.colors.primary, marginTop: 20}}>
+            <Subheading style={styles.constructionRateText}>
               CONSTRUCTION RATE
             </Subheading>
             <RenderRow
@@ -386,7 +387,7 @@ function RatesSection(props) {
               ]}
             />
 
-            <Caption style={{color: theme.colors.primary, marginVertical: 10}}>
+            <Caption style={styles.totalConstructionText}>
               Total Construction Amount
             </Caption>
             <RenderRow
@@ -427,7 +428,7 @@ function RatesSection(props) {
         <Divider />
         <View style={styles.totalContainer}>
           <View style={styles.finalProperty}>
-            <Text style={{color: theme.colors.primary, fontWeight: 'bold'}}>
+            <Text style={styles.finalPropertyAmountText}>
               Final Property Amount
             </Text>
             <Text style={styles.finalPropertyAmount}>
@@ -441,7 +442,7 @@ function RatesSection(props) {
 }
 
 function RenderCharges(props) {
-  const {bookingDetails, theme} = props;
+  const {bookingDetails} = props;
   const {total_other_charges, discount_amount} = bookingDetails;
 
   return (
@@ -474,7 +475,7 @@ function RenderCharges(props) {
 }
 
 function RenderDocumentCharges(props) {
-  const {bookingDetails, bookingPaymentTypes, theme} = props;
+  const {bookingDetails, bookingPaymentTypes} = props;
   const {
     full_payment_documentation_charges_start_date,
     full_payment_documentation_charges_end_date,
@@ -573,13 +574,13 @@ function RenderCustomPaymentDetails(props) {
             },
           ]}
         />
-        <Divider style={{marginVertical: 10}} />
+        <Divider style={styles.dividerRenderPayment} />
         {custom_payment.map(payment => {
           const {percent, amount, date, remark} = payment;
           return (
             <>
               <RenderRow
-                style={{marginTop: 5}}
+                style={styles.renderRow}
                 row={[
                   {label: 'Percent', value: `${percent} %`},
                   {label: 'Amount', value: `Rs.${amount}`},
@@ -597,7 +598,7 @@ function RenderCustomPaymentDetails(props) {
 }
 
 export function RenderInstallments(props) {
-  const {theme, installments} = props;
+  const {installments} = props;
   if (installments?.length) {
     return (
       <>
@@ -629,7 +630,7 @@ export function RenderInstallments(props) {
 }
 
 function RenderFirstBigPaymentDetails(props) {
-  const {bookingDetails, theme} = props;
+  const {bookingDetails} = props;
   const {
     first_big_amount_percentage,
     instllment_first_amount,
@@ -675,14 +676,12 @@ function RenderFirstBigPaymentDetails(props) {
           ]}
         />
 
-        <View style={{marginTop: 20}}>
+        <View style={styles.remark}>
           <Text>Remark: </Text>
           <RenderHtml contentWidth={width} source={source} />
         </View>
 
-        <Text style={{color: theme.colors.primary, marginVertical: 5}}>
-          INSTALLMENT
-        </Text>
+        <Text style={styles.installmentText}>INSTALLMENT</Text>
         <RenderRow
           row={[{label: 'No. of installments', value: installment_numbers}]}
         />
@@ -715,7 +714,7 @@ function PaymentSection(props) {
 
   return (
     <View style={styles.sectionContainer}>
-      <Title style={{marginBottom: 15}}>Payment Schedule</Title>
+      <Title style={styles.paymentScheduleText}>Payment Schedule</Title>
       <View style={styles.sectionBody}>
         <RenderRow
           row={[
@@ -751,7 +750,7 @@ function PaymentSection(props) {
   );
 }
 
-function TermsCondition({theme, bookingDetails}) {
+function TermsCondition({bookingDetails}) {
   const {
     custom_payment_remark,
     full_payment_remark,
@@ -780,13 +779,14 @@ function TermsCondition({theme, bookingDetails}) {
   );
 }
 
-const VerifiedOtpIcon = () => {
+const VerifiedOtpIcon = props => {
+  const {bookingDate} = props;
   return (
     <View style={styles.otpContainer}>
       <MaterialCommunityIcons name="check-decagram" size={24} color="green" />
       <View style={styles.otpTextContainer}>
         <Text style={styles.otpText}>Verified with OTP </Text>
-        <Text>on 12th Jan, 02:00 PM</Text>
+        <Text>{dayjs(bookingDate).format('MMMM D, YYYY h:mm A')}</Text>
       </View>
     </View>
   );
@@ -799,6 +799,7 @@ function BookingDetails(props) {
     bookingPaymentTypes = {},
     bookingBanks = {},
   } = useSelector(({customer}) => customer);
+  const {is_verified_mobile_otp, booking_date} = bookingDetails || {};
 
   const {unit_id, isCustomer} = props;
 
@@ -831,7 +832,9 @@ function BookingDetails(props) {
           {...{bookingDetails, bookingPaymentTypes, bookingBanks}}
         />
         <TermsCondition {...props} {...{bookingDetails}} />
-        <VerifiedOtpIcon />
+        {is_verified_mobile_otp === 'yes' ? (
+          <VerifiedOtpIcon bookingDate={booking_date} />
+        ) : null}
       </View>
     </ContainerView>
   );
@@ -941,6 +944,50 @@ const styles = StyleSheet.create({
   },
   otpText: {
     color: 'green',
+  },
+  installmentText: {
+    color: theme.colors.primary,
+    marginVertical: 5,
+  },
+  finalPropertyAmountText: {
+    color: theme.colors.primary,
+    fontWeight: 'bold',
+  },
+  totalConstructionText: {
+    color: theme.colors.primary,
+    marginVertical: 10,
+  },
+  constructionRateText: {
+    color: theme.colors.primary,
+    marginTop: 20,
+  },
+  totalBasicAmountText: {
+    color: theme.colors.primary,
+    marginVertical: 10,
+  },
+  bookingRateText: {
+    marginBottom: 15,
+  },
+  dividerRenderPayment: {
+    marginVertical: 10,
+  },
+  renderRow: {
+    marginTop: 5,
+  },
+  paymentScheduleText: {
+    marginBottom: 15,
+  },
+  remark: {
+    marginTop: 20,
+  },
+  customerCredentialContainer: {
+    marginVertical: 1,
+  },
+  emailContainer: {
+    width: '50%',
+  },
+  renderTextBox: {
+    marginRight: 10,
   },
 });
 
