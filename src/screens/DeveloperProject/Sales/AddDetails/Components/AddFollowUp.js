@@ -26,7 +26,7 @@ function AddFollowUp(props) {
 
   const {route, navigation} = props;
 
-  const {visitorId} = route.params || {};
+  const {visitorId, customerId} = route.params || {};
 
   const {selectedProject} = useSelector(s => s.project);
 
@@ -37,11 +37,11 @@ function AddFollowUp(props) {
       ...values,
       followup_date: dayjs(values.followup_date).format('DD-MM-YYYY'),
       followup_time: dayjs(values.followup_time).format('hh:mm:ss'),
-      visitor_id: visitorId,
+      visitor_id: visitorId || customerId,
       project_id: selectedProject.id,
     });
     getVisitorActivities({
-      visitor_id: visitorId,
+      visitor_id: visitorId || customerId,
       project_id: selectedProject.id,
     });
     navigation.goBack();

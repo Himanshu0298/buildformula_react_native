@@ -15,7 +15,7 @@ const schema = Yup.object().shape({
 
 function AddComments(props) {
   const {navigation, route} = props;
-  const {visitorId} = route.params || {};
+  const {visitorId, customerId} = route.params || {};
 
   const {addVisitorComment, getVisitorActivities} = useSalesActions();
 
@@ -25,11 +25,11 @@ function AddComments(props) {
     await addVisitorComment({
       ...values,
       is_important: values.is_important ? 1 : 0,
-      visitor_id: visitorId,
+      visitor_id: visitorId || customerId,
       project_id: selectedProject.id,
     });
     getVisitorActivities({
-      visitor_id: visitorId,
+      visitor_id: visitorId || customerId,
       project_id: selectedProject.id,
     });
     navigation.goBack();
@@ -70,6 +70,7 @@ function AddComments(props) {
             submitLabel="Save"
             onCancel={navigation.goBack}
             onSubmit={handleSubmit}
+            style={styles.button}
           />
         </View>
       )}

@@ -53,7 +53,7 @@ function RenderContacts({item}) {
         <Subheading>
           {get_user?.first_name} {get_user?.last_name}
         </Subheading>
-        <Caption>{get_role.role_name}</Caption>
+        <Caption>{get_role?.role_name}</Caption>
       </View>
     </View>
   );

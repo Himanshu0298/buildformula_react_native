@@ -22,11 +22,8 @@ function MenuDialog(props) {
     toggleMenu,
     versionDataHandler,
     activityDataHandler,
-    toggleShareDialog,
   } = props;
-  const {id, row_type, is_preset, title} = modalContent;
-
-  console.log('-------->modalContentFolder', modalContent);
+  const {id, row_type, title} = modalContent;
 
   const snackbar = useSnackbar();
 
@@ -103,7 +100,8 @@ function MenuDialog(props) {
             </View>
           </View>
         </TouchableOpacity>
-
+        {/* {is_preset === 'no' ? (
+          <> */}
         {row_type === 'file' ? (
           <TouchableOpacity onPress={() => versionDataHandler(id)}>
             <View style={styles.viewDirection}>
@@ -144,6 +142,8 @@ function MenuDialog(props) {
             </View>
           </TouchableOpacity>
         ) : null}
+        {/* </>
+        ) : null} */}
       </View>
       {/* ) : null} */}
     </View>

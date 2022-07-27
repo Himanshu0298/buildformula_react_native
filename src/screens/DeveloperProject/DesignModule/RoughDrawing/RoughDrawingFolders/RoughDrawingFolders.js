@@ -329,8 +329,7 @@ function RoughDrawingFolder(props) {
 
   const {versionData} = useSelector(s => s.files);
   const {selectedProject} = useSelector(s => s.project);
-  const {folders, loading, activities} = useSelector(s => s.designModule);
-  console.log('-------->activities', activities);
+  const {folders, loading} = useSelector(s => s.designModule);
 
   const project_id = selectedProject.id;
 

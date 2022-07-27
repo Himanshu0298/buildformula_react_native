@@ -5,7 +5,7 @@ import AddDetails from './AddDetails';
 
 export default props => {
   return (
-    <ProjectLayout {...props} header={false} tab={false}>
+    <ProjectLayout {...props} header>
       <SafeAreaView edges={['top', 'bottom']}>
         <AddDetails {...props} />
       </SafeAreaView>

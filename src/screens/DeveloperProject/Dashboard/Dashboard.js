@@ -9,6 +9,7 @@ import Layout from 'utils/Layout';
 import {Subheading} from 'react-native-paper';
 import useNotificationActions from 'redux/actions/notificationActions';
 import {useProjectLoading} from 'redux/selectors';
+import useSalesActions from 'redux/actions/salesActions';
 import Statistics from './Components/Statistics';
 import Activity from './Components/Activity';
 
@@ -23,6 +24,7 @@ export default function DeveloperDashboard(props) {
     getProjectPermissions,
   } = useProjectActions();
   const {getProjectNotifications} = useNotificationActions();
+  const {getSalesData} = useSalesActions();
 
   const loading = useProjectLoading();
 
@@ -44,6 +46,7 @@ export default function DeveloperDashboard(props) {
       getProjectData(project.id);
       getProjectCommonData(project.id);
       getProjectNotifications({project_id: project.id});
+      getSalesData({project_id: project.id});
     }
   };
 

@@ -39,9 +39,14 @@ export default function useSalesActions() {
     updateBroker,
     getBrokerDetails,
     getVisitorInterestedProperty,
-    getConfirmBookingOTP,
+    confirmBookingOTP,
+    resendBookingOTP,
     setBookingOTPStatus,
     getBookingFormOTPStatus,
+    getApprovals,
+    getApprovers,
+    createApproval,
+    approvalDetails,
   } = useSalesServices();
 
   return {
@@ -134,7 +139,8 @@ export default function useSalesActions() {
         payload: async () => {
           try {
             const response = _res(await addVisitor(formData));
-            const {data} = response;
+            const {data, msg} = response;
+            snackbar.showMessage({message: msg});
 
             return Promise.resolve(data.data);
           } catch (error) {
@@ -145,7 +151,6 @@ export default function useSalesActions() {
         },
       }),
     getVisitorInterestedProperty: params => {
-      console.log('-------->params', params);
       dispatch({
         type: types.GET_INTERESTED_PROPERTY,
         payload: async () => {
@@ -457,12 +462,12 @@ export default function useSalesActions() {
         },
       }),
 
-    getBankList: () =>
+    getBankList: params =>
       dispatch({
         type: types.GET_BANK_LIST,
         payload: async () => {
           try {
-            const response = _res(await getBankList());
+            const response = _res(await getBankList(params));
             const {data} = response;
 
             return Promise.resolve(data);
@@ -474,13 +479,33 @@ export default function useSalesActions() {
         },
       }),
 
-    getConfirmBookingOTP: () =>
+    confirmBookingOTP: params =>
       dispatch({
         type: types.CONFIRM_BOOKING_OTP,
         payload: async () => {
           try {
-            const response = _res(await getConfirmBookingOTP());
-            const {data} = response;
+            const response = _res(await confirmBookingOTP(params));
+            const {data, msg} = response;
+
+            snackbar.showMessage({message: msg, variant: 'success'});
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    resendBookingOTP: params =>
+      dispatch({
+        type: types.RESEND_BOOKING_OTP,
+        payload: async () => {
+          try {
+            const response = _res(await resendBookingOTP(params));
+            const {data, msg} = response;
+
+            // snackbar.showMessage({message: msg, variant: 'success'});
 
             return Promise.resolve(data);
           } catch (error) {
@@ -615,6 +640,77 @@ export default function useSalesActions() {
         payload: async () => {
           try {
             const response = _res(await getVisitorActivities(params));
+            const {data} = response;
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    // Approval Module
+
+    getApprovals: params =>
+      dispatch({
+        type: types.GET_APPROVALS,
+        payload: async () => {
+          try {
+            const response = _res(await getApprovals(params));
+            const {data} = response;
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    getApprovers: params =>
+      dispatch({
+        type: types.GET_APPROVERS,
+        payload: async () => {
+          try {
+            const response = _res(await getApprovers(params));
+            const {data} = response;
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    createApproval: params =>
+      dispatch({
+        type: types.CREATE_APPROVAL,
+        payload: async () => {
+          try {
+            const response = _res(await createApproval(params));
+            const {data, msg} = response;
+
+            snackbar.showMessage({message: msg});
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    approvalDetails: params =>
+      dispatch({
+        type: types.APPROVAL_DETAILS,
+        payload: async () => {
+          try {
+            const response = _res(await approvalDetails(params));
             const {data} = response;
 
             return Promise.resolve(data);

@@ -50,7 +50,10 @@ const schema = Yup.object().shape({
     is: 'yes',
     then: Yup.string('Invalid').required('Required'),
   }),
-  selectedVisitor: Yup.string().required('Please Select a Visitor'),
+  selectedVisitor: Yup.string('Invalid').when('userType', {
+    is: 'visitor',
+    then: Yup.string('Invalid').required('Please Select a Visitor'),
+  }),
 });
 
 function InfoRow(props) {
@@ -365,6 +368,7 @@ function BookingDetails(props) {
 
   const onSubmit = async values => {
     const data = {...values};
+
     if (data.userType === 'visitor') {
       data.user_id_info = data.selectedVisitor;
 

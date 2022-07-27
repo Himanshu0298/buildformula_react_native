@@ -68,15 +68,15 @@ import AddBankDetails from 'screens/DeveloperProject/CustomerSection/AddBankDeta
 import PaymentCollections from 'screens/DeveloperProject/CustomerSection/PaymentColections';
 import AddCollection from 'screens/DeveloperProject/CustomerSection/AddCollection';
 import PaymentSchedule from 'screens/DeveloperProject/CustomerSection/PaymentSchedule';
-import CustomerList from 'screens/CustomerProject/CustomerList';
-import CustomerInnerDetails from 'screens/CustomerProject/CustomerInnerDetails';
-import EditCustomerDetails from 'screens/CustomerProject/CustomerInnerDetails/EditDetails/EditCustomerDetails';
+import CustomerList from 'screens/DeveloperProject/CustomerSection/CustomerList';
 // Project : Design Modules
 import RoughDrawingFiles from 'screens/DeveloperProject/DesignModule/RoughDrawing/RoughDrawingFiles';
 import RoughDrawingFolders from 'screens/DeveloperProject/DesignModule/RoughDrawing/RoughDrawingFolders';
 import FinalDrawingFolders from 'screens/DeveloperProject/DesignModule/FinalDrawing/FinalDrawingFolders';
 import FinalDrawingFiles from 'screens/DeveloperProject/DesignModule/FinalDrawing/FinalDrawingFiles';
-import WorkingDrawing from 'screens/DeveloperProject/DesignModule/WorkingDrawing';
+import WorkingDrawingFolders from 'screens/DeveloperProject/DesignModule/WorkingDrawing/WorkingDrawingFolders/';
+import WorkingDrawingFiles from 'screens/DeveloperProject/DesignModule/WorkingDrawing/WorkingDrawingFiles/';
+
 import AreaSheet from 'screens/DeveloperProject/DesignModule/AreaSheet';
 import Parking from 'screens/DeveloperProject/DesignModule/Parking';
 // Project : Project management screens
@@ -152,6 +152,8 @@ import FollowUpTask from 'screens/DeveloperProject/Sales/Follow-upTask';
 import FollowUpDetails from 'screens/DeveloperProject/Sales/Follow-upTask/FollowUpDetails';
 import DocumentDownload from 'screens/DeveloperProject/DocumentGenerater/Documents/DocumentDownload';
 import ProjectNotification from 'screens/Notification/ProjectNotification';
+import CustomerInnerDetails from 'screens/DeveloperProject/CustomerSection/CustomerInnerDetails';
+import EditCustomerDetails from 'screens/DeveloperProject/CustomerSection/CustomerInnerDetails/EditDetails/';
 /** *********** Developer Project Sub Screens End   ************ */
 
 const optionalConfigObject = {
@@ -428,10 +430,21 @@ function AppStackNavigator() {
                 component={FinalDrawingFiles}
               />
             </Stack.Group>
+
             <Stack.Group>
-              <Stack.Screen name="WorkingDrawing" component={WorkingDrawing} />
-              <Stack.Screen name="AreaSheet" component={AreaSheet} />
+              <Stack.Screen
+                name="WorkingDrawingFolders"
+                component={WorkingDrawingFolders}
+              />
+              <Stack.Screen
+                name="WorkingDrawingFiles"
+                component={WorkingDrawingFiles}
+              />
               <Stack.Screen name="Parking" component={Parking} />
+            </Stack.Group>
+
+            <Stack.Group>
+              <Stack.Screen name="AreaSheet" component={AreaSheet} />
               <Stack.Screen name="Payment" component={Payment} />
               <Stack.Screen
                 name="DocumentGenerater"

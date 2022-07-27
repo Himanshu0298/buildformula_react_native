@@ -158,9 +158,16 @@ export default function useSalesServices() {
     addBroker: data => {
       return instance.post('/add_broker', data, config({multipart: false}));
     },
-    getConfirmBookingOTP: data => {
+    confirmBookingOTP: data => {
       return instance.post(
         '/booking_confirm_via_otp',
+        data,
+        config({multipart: false}),
+      );
+    },
+    resendBookingOTP: data => {
+      return instance.post(
+        '/resend_booking_otp',
         data,
         config({multipart: false}),
       );
@@ -195,13 +202,45 @@ export default function useSalesServices() {
     },
     updatePipelineOrder: data => {
       return instance.post(
-        'pipeline/updaterearrangesalespipeline',
+        '/pipeline/updaterearrangesalespipeline',
         data,
         config({multipart: false}),
       );
     },
+
     getBankList: data => {
-      return instance.get('get_banks', config());
+      return instance.get('get_banks', data, config());
+    },
+
+    // Approvals
+
+    getApprovals: data => {
+      return instance.post(
+        '/bookingapproval/list_approvals',
+        data,
+        config({multipart: false}),
+      );
+    },
+    getApprovers: data => {
+      return instance.post(
+        '/bookingapproval/list_approvers',
+        data,
+        config({multipart: false}),
+      );
+    },
+    createApproval: data => {
+      return instance.post(
+        '/bookingapproval/add_approvals',
+        data,
+        config({multipart: false}),
+      );
+    },
+    approvalDetails: data => {
+      return instance.post(
+        '/bookingapproval/details',
+        data,
+        config({multipart: false}),
+      );
     },
   };
 }

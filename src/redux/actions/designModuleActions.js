@@ -25,6 +25,33 @@ export default function useDesignModuleActions() {
     getFDActivities,
     uploadFDFile,
     renameFDFile,
+    deleteFDFile,
+    getWDFiles,
+    getWDFolders,
+    createWDFolder,
+    renameWDFolder,
+    deleteWDFolder,
+    getWDActivities,
+    uploadWDFile,
+    renameWDFile,
+    deleteWDFile,
+    getProjectSheetList,
+    updateAreaSheet,
+    getCategoryTowerSheet,
+    updateCategoryTowerSheet,
+    getCategoryBungalowSheet,
+    updateCategoryBungalowSheet,
+    getCategoryPlotSheet,
+    updateCategoryPlotSheet,
+    getTowerUnitSheet,
+    updateTowerUnitSheet,
+    getBungalowUnitSheet,
+    updateBungalowUnitSheet,
+    getPlotUnitSheet,
+    updatePlotUnitSheet,
+    getParkingList,
+    uploadParkingFile,
+    deleteParkingFile,
   } = useDesignModule();
   const {_err, _res} = useResProcessor();
   const snackbar = useSnackbar();
@@ -318,6 +345,465 @@ export default function useDesignModuleActions() {
             const res = _res(await renameFDFile(params));
             return Promise.resolve({
               data: res,
+            });
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    deleteFDFile: params =>
+      dispatch({
+        type: types.DELETE_RD_FILES,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await deleteFDFile(params));
+            snackbar.showMessage({message: msg});
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    // Working Drawing
+
+    getWDFolders: params =>
+      dispatch({
+        type: types.GET_RD_FOLDERS,
+        payload: async () => {
+          try {
+            const res = _res(await getWDFolders(params));
+
+            return Promise.resolve({data: res.data, index_of: params.index_of});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    getWDFiles: params =>
+      dispatch({
+        type: types.GET_RD_FILES,
+        payload: async () => {
+          try {
+            const res = _res(await getWDFiles(params));
+            return Promise.resolve({
+              data: res.data,
+              folder_id: params.folder_id,
+            });
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    createWDFolder: params =>
+      dispatch({
+        type: types.CREATE_RD_FOLDER,
+        payload: async () => {
+          try {
+            const res = _res(await createWDFolder(params));
+
+            return Promise.resolve(res.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    renameWDFolder: params =>
+      dispatch({
+        type: types.RENAME_RD_FOLDER,
+        payload: async () => {
+          try {
+            const res = _res(await renameWDFolder(params));
+            return Promise.resolve({
+              data: res.data,
+            });
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    deleteWDFolder: params =>
+      dispatch({
+        type: types.DELETE_RD_FOLDER,
+        payload: async () => {
+          try {
+            const res = _res(await deleteWDFolder(params));
+            console.log('--->delete', res);
+            return Promise.resolve(res);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    getWDActivities: params =>
+      dispatch({
+        type: types.GET_RD_FOLDER_ACTIVITIES,
+        payload: async () => {
+          try {
+            const {data} = _res(await getWDActivities(params));
+            return Promise.resolve(data || []);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    uploadWDFile: params =>
+      dispatch({
+        type: types.UPLOAD_RD_FILES,
+        payload: async () => {
+          try {
+            const res = _res(await uploadWDFile(params));
+            return Promise.resolve({
+              data: res.data,
+            });
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    renameWDFile: params =>
+      dispatch({
+        type: types.RENAME_RD_FILES,
+        payload: async () => {
+          try {
+            const res = _res(await renameWDFile(params));
+            return Promise.resolve({
+              data: res,
+            });
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    deleteWDFile: params =>
+      dispatch({
+        type: types.DELETE_RD_FILES,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await deleteWDFile(params));
+            snackbar.showMessage({message: msg});
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    // Area sheet / Project Sheet
+
+    getProjectSheetList: params =>
+      dispatch({
+        type: types.GET_PROJECT_AREA_SHEET,
+        payload: async () => {
+          try {
+            const {data} = _res(await getProjectSheetList(params));
+
+            return Promise.resolve(data[0]);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    updateAreaSheet: params =>
+      dispatch({
+        type: types.UPDATE_AREA_SHEET,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await updateAreaSheet(params));
+            snackbar.showMessage({message: msg});
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    // CategorySheet --TowerSheet
+
+    getCategoryTowerSheet: params =>
+      dispatch({
+        type: types.GET_CATEGORY_TOWER_SHEET,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await getCategoryTowerSheet(params));
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    updateCategoryTowerSheet: params =>
+      dispatch({
+        type: types.UPDATE_CATEGORY_TOWER_SHEET,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await updateCategoryTowerSheet(params));
+            snackbar.showMessage({message: msg});
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    // CategorySheet --BungalowsSheet
+
+    getCategoryBungalowSheet: params =>
+      dispatch({
+        type: types.GET_CATEGORY_BUNGALOW_SHEET,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await getCategoryBungalowSheet(params));
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    updateCategoryBungalowSheet: params =>
+      dispatch({
+        type: types.UPDATE_CATEGORY_BUNGALOW_SHEET,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await updateCategoryBungalowSheet(params));
+            snackbar.showMessage({message: msg});
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    // CategorySheet - PlotArea Sheet
+
+    getCategoryPlotSheet: params =>
+      dispatch({
+        type: types.GET_CATEGORY_PLOT_SHEET,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await getCategoryPlotSheet(params));
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    updateCategoryPlotSheet: params =>
+      dispatch({
+        type: types.UPDATE_CATEGORY_PLOT_SHEET,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await updateCategoryPlotSheet(params));
+            snackbar.showMessage({message: msg});
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    // Unit sheet
+
+    getTowerUnitSheet: params =>
+      dispatch({
+        type: types.GET_UNIT_TOWER_SHEET,
+        payload: async () => {
+          try {
+            const {data} = _res(await getTowerUnitSheet(params));
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    updateTowerUnitSheet: params =>
+      dispatch({
+        type: types.UPDATE_UNIT_TOWER_SHEET,
+        payload: async () => {
+          try {
+            const {data} = _res(await updateTowerUnitSheet(params));
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    getBungalowUnitSheet: params =>
+      dispatch({
+        type: types.GET_BUNGALOW_UNIT_SHEET,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await getBungalowUnitSheet(params));
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    updateBungalowUnitSheet: params =>
+      dispatch({
+        type: types.UPDATE_BUNGALOW_UNIT_SHEET,
+        payload: async () => {
+          try {
+            await Promise.all(
+              params.map(item => updateBungalowUnitSheet(item)),
+            );
+            // updateBungalowUnitSheet(params[0]);
+            console.log('-------->paramsbungalow', params);
+            snackbar.showMessage({message: 'Unit Sheet Bungalow Updated'});
+            return Promise.resolve();
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    getPlotUnitSheet: params =>
+      dispatch({
+        type: types.GET_PLOT_UNIT_SHEET,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await getPlotUnitSheet(params));
+
+            return Promise.resolve(data.unit_sheet_plot_data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    updatePlotUnitSheet: params =>
+      dispatch({
+        type: types.UPDATE_PLOT_UNIT_SHEET,
+        payload: async () => {
+          try {
+            const {data: res} = await updatePlotUnitSheet(params);
+            return Promise.resolve(res.data || params);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    // Parking
+
+    getParkingList: params =>
+      dispatch({
+        type: types.GET_PARKING_LIST,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await getParkingList(params));
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    uploadParkingFile: params =>
+      dispatch({
+        type: types.UPLOAD_PARKING_FILE,
+        payload: async () => {
+          try {
+            const res = _res(await uploadParkingFile(params));
+            return Promise.resolve({
+              data: res.data,
+            });
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    deleteParkingFile: params =>
+      dispatch({
+        type: types.DELETE_PARKING_FILE,
+        payload: async () => {
+          try {
+            const res = _res(await deleteParkingFile(params));
+            return Promise.resolve({
+              data: res.data,
             });
           } catch (error) {
             const message = _err(error);

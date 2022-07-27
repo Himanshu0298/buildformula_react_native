@@ -46,7 +46,7 @@ function UpdateDialog(props) {
 
   return (
     <Portal>
-      <Dialog visible={visible} onDismiss={toggleDialog} style={{top: -100}}>
+      <Dialog visible={visible} onDismiss={toggleDialog} style={styles.dialog}>
         <Formik
           validateOnBlur={false}
           validateOnChange={false}
@@ -67,7 +67,9 @@ function UpdateDialog(props) {
                   onBlur={handleBlur('phone')}
                   autoCapitalize="none"
                   returnKeyType="next"
-                  left={<TextInput.Affix style={{marginRight: 2}} text="+91" />}
+                  left={
+                    <TextInput.Affix style={styles.renderInput} text="+91" />
+                  }
                   error={errors.phone}
                 />
                 <RenderInput
@@ -84,9 +86,9 @@ function UpdateDialog(props) {
                 />
                 <View style={styles.dialogActionContainer}>
                   <Button
-                    style={{width: '40%'}}
+                    style={styles.button}
                     mode="contained"
-                    contentStyle={{padding: 1}}
+                    contentStyle={styles.updateButton}
                     theme={{roundness: 15}}
                     onPress={handleSubmit}>
                     Update
@@ -104,14 +106,15 @@ function UpdateDialog(props) {
 function OtpScreen(props) {
   const {navigation, theme, route} = props;
 
-  const {fromLogin, fromBooking} = route?.params || {};
+  const {fromLogin, fromBooking, bookingID, userPhone, unit_id} =
+    route?.params || {};
 
   const {selectedProject} = useSelector(s => s.project);
   const projectId = selectedProject.id;
 
   const alert = useAlert();
   const snackbar = useSnackbar();
-  const {getConfirmBookingOTP} = useSalesActions();
+  const {confirmBookingOTP, resendBookingOTP} = useSalesActions();
 
   const {sendOtpToPhone, sendOtpToEmail} = useAuth();
   const {verifyOtp, updateUser} = useUserActions();
@@ -135,11 +138,12 @@ function OtpScreen(props) {
   const submit = async () => {
     try {
       if (fromBooking) {
-        await getConfirmBookingOTP({
+        await confirmBookingOTP({
           project_id: projectId,
-          // project_bookings_id,
+          project_bookings_id: bookingID,
           booking_confirm_via_otp: phone,
         });
+        navigation.popToTop();
       } else {
         await verifyOtp({
           mobile_otp: phone,
@@ -183,6 +187,15 @@ function OtpScreen(props) {
     snackbar.showMessage({message: 'Otp sent successfully! Check your phone'});
   };
 
+  const sendBookingPhoneOtp = async () => {
+    await resendBookingOTP({
+      project_id: projectId,
+      unit_id,
+      phone: userPhone,
+    });
+    snackbar.showMessage({message: 'Otp sent successfully! Check your phone'});
+  };
+
   const sendEmailOtp = async () => {
     await sendOtpToEmail({user_id: user.id});
     snackbar.showMessage({message: 'Otp sent successfully! Check your email'});
@@ -205,23 +218,46 @@ function OtpScreen(props) {
           <Image source={image} style={styles.image} />
         </View>
         <BaseText style={styles.title}>Verification Code</BaseText>
-        <Text>Enter the OTP send to {`+91 ${user.phone || '1111111111'}`}</Text>
-        <OtpInput value={phone} setValue={setPhone} />
-        <View style={[styles.row, {marginTop: 10}]}>
-          <Caption>Not your phone number? </Caption>
-          <TouchableOpacity onPress={toggleDialog}>
-            <Caption style={{color: theme.colors.primary}}>Update</Caption>
-          </TouchableOpacity>
-        </View>
-        <View style={[styles.row, {marginBottom: 20}]}>
-          <Caption>Didn’t receive a code. </Caption>
-          <TouchableOpacity onPress={sendPhoneOtp}>
-            <Caption style={{color: theme.colors.primary}}>Resend</Caption>
-          </TouchableOpacity>
-        </View>
 
-        {!fromBooking ? (
+        {fromBooking ? (
           <>
+            <Text>
+              Enter the OTP send to {`${userPhone}`}
+              {/* send to {`+91 ${user.phone}`} */}
+            </Text>
+            <OtpInput value={phone} setValue={setPhone} />
+            <View style={[styles.row, styles.confirmContainer]}>
+              <Caption>Not your Phone? </Caption>
+              <TouchableOpacity onPress={toggleDialog}>
+                <Caption style={{color: theme.colors.primary}}>Update</Caption>
+              </TouchableOpacity>
+            </View>
+            <View style={[styles.row, styles.codeContainer]}>
+              <Caption style={styles.subTitle}>Didn’t receive a code. </Caption>
+              <TouchableOpacity onPress={sendBookingPhoneOtp}>
+                <Caption style={{color: theme.colors.primary}}>Resend</Caption>
+              </TouchableOpacity>
+            </View>
+          </>
+        ) : (
+          <>
+            <Text>
+              Enter the OTP send to {`+91 ${user.phone || '1111111111'}`}
+            </Text>
+            <OtpInput value={phone} setValue={setPhone} />
+            <View style={[styles.row, styles.confirmContainer]}>
+              <Caption>Not your phone number? </Caption>
+              <TouchableOpacity onPress={toggleDialog}>
+                <Caption style={{color: theme.colors.primary}}>Update</Caption>
+              </TouchableOpacity>
+            </View>
+            <View style={[styles.row, styles.codeContainer]}>
+              <Caption>Didn’t receive a code. </Caption>
+              <TouchableOpacity onPress={sendPhoneOtp}>
+                <Caption style={{color: theme.colors.primary}}>Resend</Caption>
+              </TouchableOpacity>
+            </View>
+
             <Text>
               Enter the OTP send to {`${user.email}`}
               {/* send to {`+91 ${user.phone}`} */}
@@ -240,13 +276,14 @@ function OtpScreen(props) {
               </TouchableOpacity>
             </View>
           </>
-        ) : null}
+        )}
+
         <Button
           onPress={submit}
           color={theme.colors.primary}
           mode="contained"
           style={styles.nextButton}
-          contentStyle={{paddingVertical: 10, borderRadius: 15}}
+          contentStyle={styles.contentStyle}
           theme={{roundness: 18}}>
           CONFIRM
         </Button>
@@ -299,6 +336,28 @@ const styles = StyleSheet.create({
     marginTop: 20,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  contentStyle: {
+    paddingVertical: 10,
+    borderRadius: 15,
+  },
+  confirmContainer: {
+    marginTop: 10,
+  },
+  codeContainer: {
+    marginBottom: 20,
+  },
+  renderInput: {
+    marginRight: 2,
+  },
+  button: {
+    width: '40%',
+  },
+  updateButton: {
+    padding: 1,
+  },
+  dialog: {
+    top: -100,
   },
 });
 

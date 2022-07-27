@@ -86,7 +86,6 @@ function AddMilestoneDialog(props) {
 
 function RenderMilestone(props) {
   const {item, index, menuIndex, toggleMenu, onDelete, onUpdate} = props;
-
   return (
     <View style={styles.workContainer}>
       <View style={styles.titleContainer}>
@@ -181,7 +180,11 @@ function Milestone(props) {
       message: 'Are you sure you want to delete?',
       confirmText: 'Delete',
       onConfirm: () => {
-        deleteLineupEntity({id, type: 'milestone'}).then(() => {
+        deleteLineupEntity({
+          id,
+          type: 'milestone',
+          project_id: selectedProject.id,
+        }).then(() => {
           getMilestoneData();
         });
       },

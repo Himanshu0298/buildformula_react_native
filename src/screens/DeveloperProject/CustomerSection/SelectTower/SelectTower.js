@@ -15,9 +15,6 @@ function SelectTower(props) {
 
   const {towerCount, towers} = structureData;
 
-  console.log('----->towers', towers);
-  console.log('----->towerCount', towerCount);
-
   const onSelectTower = towerId => {
     navigation.navigate('CS_Step_Three', {...route?.params, towerId});
   };

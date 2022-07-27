@@ -1,82 +1,116 @@
-import RenderInput from 'components/Atoms/RenderInput';
-import * as React from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {Platform, StyleSheet, Text, View} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {Portal, TextInput, useTheme, withTheme} from 'react-native-paper';
+import {TextInput, useTheme, withTheme} from 'react-native-paper';
 import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useSelector} from 'react-redux';
+import useDesignModuleActions from 'redux/actions/designModuleActions';
+import Spinner from 'react-native-loading-spinner-overlay';
 
-const PROJECT_AREA_DETAILS = [
-  {label: 'Total Plot Area', key: 'total_plot_area', value: ''},
-  {label: 'F.S.I', key: 'fsi', value: ''},
-  {label: 'Total Buildup Area', key: 'total_buildup_area', value: ''},
-  {label: 'Total carpet area', key: 'total_carpet_area', value: ''},
-  {label: 'Total saleable area', key: 'total_saleable_area', value: ''},
-  {label: 'Parking buildup area', key: 'parking_buildup_area', value: ''},
-  {label: 'Ground coverage ratio', key: 'tower_coverage_area', value: ''},
-  {label: 'Tower buildup area', key: 'total_tower_buildup_area', value: ''},
-  {label: 'Total footprint area', key: 'total_footprint_area', value: ''},
-];
+const PROJECT_AREA_DETAILS = {
+  total_plot_area: {label: 'Total Plot Area', value: ''},
+  fsi: {label: 'F.S.I', value: ''},
+  total_build_up_area: {label: 'Total Buildup Area', value: ''},
+  total_carpet_area: {label: 'Total carpet area', value: ''},
+  total_saleable_area: {label: 'Total saleable area', value: ''},
+  parking_buildup_area: {label: 'Parking buildup area', value: ''},
+  ground_coverage_area: {label: 'Ground coverage ratio', value: ''},
+  tower_build_up_area: {label: 'Tower buildup area', value: ''},
+  total_footprint_area: {label: 'Total footprint area', value: ''},
+};
 
 function RenderRow(props) {
-  const {item, selected, setSelected} = props;
-  const {label, value, key} = item;
-
-  const theme = useTheme();
+  const {item, updateValue} = props;
+  const {label, key, value} = item;
 
   return (
     <View style={styles.rowContainer}>
       <View style={styles.rowLeftContainer}>
         <Text>{label}</Text>
       </View>
-      <TouchableOpacity
-        style={[
-          styles.rowRightContainer,
-          selected === key
-            ? {borderWidth: 1, borderColor: theme.colors.primary}
-            : {},
-        ]}
-        onPress={() => setSelected(key)}>
-        <Text>{value}</Text>
-      </TouchableOpacity>
+      <TextInput
+        value={value?.toString()}
+        style={styles.textInput}
+        onChangeText={text => updateValue(key, text)}
+        keyboardType="numeric"
+      />
     </View>
   );
 }
 
 function ProjectSheet() {
-  const [sheetData, setSheetData] = React.useState([...PROJECT_AREA_DETAILS]);
-  const [selected, setSelected] = React.useState();
+  const {selectedProject, loading} = useSelector(s => s.project);
+  const {projectAreaSheet} = useSelector(s => s.designModule);
+  const project_id = selectedProject.id;
 
-  React.useEffect(() => {
-    AndroidKeyboardAdjust.adjustResize();
-    return () => AndroidKeyboardAdjust.adjustPan();
+  const [sheetData, setSheetData] = useState({});
+
+  const {updateAreaSheet, getProjectSheetList} = useDesignModuleActions();
+
+  useEffect(() => {
+    getProjectSheetList({project_id});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const value = React.useMemo(() => {
-    return sheetData.find(i => i.key === selected)?.value;
-  }, [sheetData, selected]);
-
-  const updateValue = text => {
-    const index = sheetData.findIndex(i => i.key === selected);
-    if (index !== -1) {
-      const oldSheetData = [...sheetData];
-      oldSheetData[index].value = text;
-
-      setSheetData([...oldSheetData]);
+  useEffect(() => {
+    if (Platform.OS === 'android') {
+      AndroidKeyboardAdjust?.adjustResize();
+      return () => AndroidKeyboardAdjust.adjustPan();
     }
+    return () => null;
+  }, []);
+
+  const UpdatedData = () => {
+    const updatedData = {...PROJECT_AREA_DETAILS};
+    if (projectAreaSheet) {
+      Object.keys(PROJECT_AREA_DETAILS)?.map(key => {
+        updatedData[key] = {...updatedData[key], value: projectAreaSheet[key]};
+        return key;
+      });
+    }
+    setSheetData(updatedData);
+  };
+
+  useEffect(() => {
+    UpdatedData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [projectAreaSheet]);
+
+  const updateValue = (key, value) => {
+    setSheetData(v => ({
+      ...v,
+      [key]: {...v[key], value: value ? Number(value) : value},
+    }));
   };
   const theme = useTheme();
 
-  const handleClose = () => {
-    console.log('');
-  };
   const submitForm = () => {
-    console.log('');
+    const finalData = {};
+
+    Object.entries(sheetData).map(([key, {value}]) => {
+      finalData[key] = value;
+      return key;
+    });
+    updateAreaSheet({
+      project_id,
+      total_plot_area: finalData.total_plot_area,
+      fsi: finalData.fsi,
+      total_build_up_area: finalData.total_build_up_area,
+      total_carpet_area: finalData.total_carpet_area,
+      total_saleable_area: finalData.total_saleable_area,
+      parking_buildup_area: finalData.parking_buildup_area,
+      ground_coverage_area: finalData.ground_coverage_area,
+      tower_build_up_area: finalData.tower_build_up_area,
+      total_footprint_area: finalData.total_footprint_area,
+    });
   };
 
   return (
     <View style={styles.container}>
+      <Spinner visible={loading} textContent="" />
+
       <View style={styles.headerContainer}>
         <Text style={styles.headerTitle}>Project Area Details</Text>
         <View style={styles.button}>
@@ -91,7 +125,7 @@ function ProjectSheet() {
             opacity={0.1}
             color={theme.colors.error}
             style={styles.closeButton}
-            onPress={handleClose}>
+            onPress={() => UpdatedData()}>
             <MaterialIcon name="close" color={theme.colors.error} size={20} />
           </OpacityButton>
         </View>
@@ -100,37 +134,16 @@ function ProjectSheet() {
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled">
         <View style={styles.tableContainer}>
-          {sheetData.map((item, index) => (
+          {Object.keys(sheetData)?.map(key => (
             <RenderRow
-              key={index?.toString()}
-              {...{item, selected, setSelected}}
+              key={key}
+              item={{...sheetData[key], key}}
+              updateValue={updateValue}
+              setSelected
             />
           ))}
         </View>
       </KeyboardAwareScrollView>
-
-      {selected ? (
-        <Portal>
-          <View style={styles.inputContainer}>
-            <RenderInput
-              autoFocus
-              value={value}
-              placeholder="Enter text or formula"
-              onChangeText={updateValue}
-              right={
-                <TextInput.Icon
-                  name="check"
-                  color="#fff"
-                  style={[
-                    styles.checkIcon,
-                    {backgroundColor: theme.colors.primary},
-                  ]}
-                />
-              }
-            />
-          </View>
-        </Portal>
-      ) : null}
     </View>
   );
 }
@@ -175,27 +188,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  checkIcon: {
-    borderRadius: 4,
-  },
-  rowRightContainer: {
-    flex: 1,
-    padding: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  inputContainer: {
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-    left: 0,
-  },
+
   checkButton: {
     borderRadius: 50,
     marginRight: 10,
   },
   closeButton: {
     borderRadius: 50,
+  },
+  textInput: {
+    height: 37,
+    width: 150,
+    borderWidth: 0,
   },
 });
 

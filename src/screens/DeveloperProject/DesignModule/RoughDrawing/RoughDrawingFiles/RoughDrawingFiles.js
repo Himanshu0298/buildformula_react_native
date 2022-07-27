@@ -34,6 +34,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Feather from 'react-native-vector-icons/Feather';
 import {getPermissions, getShadow} from 'utils';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
+import Spinner from 'react-native-loading-spinner-overlay';
 import MenuDialog from '../Components/MenuDialog';
 import VersionDialog from '../Components/VersionDialog';
 import DeleteDialog from '../Components/DeleteDialog';
@@ -167,7 +168,7 @@ function ActivityModal(props) {
         sections={processedActivities}
         extraData={processedActivities}
         showsVerticalScrollIndicator={false}
-        keyExtractor={(item, index) => index?.toString()}
+        keyExtractor={(item, index) => index?.()}
         ItemSeparatorComponent={renderSeparator}
         contentContainerStyle={styles.activityScrollContainer}
         stickySectionHeadersEnabled={false}
@@ -273,7 +274,7 @@ function RoughDrawingFiles(props) {
 
   const snackbar = useSnackbar();
   const {selectedProject} = useSelector(s => s.project);
-  const {files} = useSelector(s => s.designModule);
+  const {files, loading} = useSelector(s => s.designModule);
 
   const project_id = selectedProject.id;
   const {data} = files;
@@ -356,7 +357,7 @@ function RoughDrawingFiles(props) {
     await uploadRDFile(formData);
     toggleDialog();
     snackbar.showMessage({
-      message: 'File Downloaded!',
+      message: 'File Uploaded successfully!',
       variant: 'success',
     });
     loadFiles();
@@ -364,6 +365,8 @@ function RoughDrawingFiles(props) {
 
   return (
     <View style={styles.container}>
+      <Spinner visible={loading} textContent="" />
+
       <View style={styles.header}>
         <OpacityButton
           opacity={0.18}

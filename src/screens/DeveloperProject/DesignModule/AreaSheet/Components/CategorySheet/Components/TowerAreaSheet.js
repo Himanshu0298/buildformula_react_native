@@ -1,15 +1,17 @@
-import RenderInput from 'components/Atoms/RenderInput';
-import * as React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {Platform, StyleSheet, Text, View} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {Portal, TextInput, useTheme, withTheme} from 'react-native-paper';
+import {TextInput, useTheme, withTheme} from 'react-native-paper';
 import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
-import {getTowerLabel} from 'utils';
 import RenderTable from 'components/Atoms/RenderTable';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useSelector} from 'react-redux';
+import useDesignModuleActions from 'redux/actions/designModuleActions';
+import {cloneDeep} from 'lodash';
+import RenderOpacityButton from 'components/Atoms/RenderOpacityButton';
 
-const Tower_AREA_DETAILS = [
+const TOWER_AREA_DETAILS = [
   {label: 'Tower', key: 'tower', value: ''},
   {label: 'Total saleable area', key: 'total_saleable_area', value: ''},
   {label: 'Total carpet area', key: 'total_carpet_area', value: ''},
@@ -20,14 +22,14 @@ const Tower_AREA_DETAILS = [
   },
   {label: 'Total wash area carpet', key: 'total_wash_area_carpet', value: ''},
   {label: 'Total flat carpet area', key: 'total_flat_carpet_area', value: ''},
-  {label: 'Tower buildup area', key: 'total_tower_buildup_area', value: ''},
+  {label: 'Tower buildup area', key: 'total_build_up_area', value: ''},
   {label: 'Total lobby area', key: 'total_lobby_area', value: ''},
-  {label: 'Total Staircase area', key: 'total_staircase_area', value: ''},
+  {label: 'Total Staircase area', key: 'total_straircase_area', value: ''},
   {label: 'Total Lift Area', key: 'total_lift_area', value: ''},
-  {label: 'Total Floor Plate Area', key: 'total_floor_plate_area', value: ''},
+  {label: 'Total Floor Plate Area', key: 'total_floor_plat_area', value: ''},
   {
     label: 'Total Built-up Plinth Area',
-    key: 'total_built-up_plinth_area',
+    key: 'total_build_up_plinth_area',
     value: '',
   },
   {
@@ -36,99 +38,113 @@ const Tower_AREA_DETAILS = [
     value: '',
   },
 ];
+
 const TABLE_WIDTH = [
   70, 130, 120, 170, 150, 170, 120, 120, 140, 125, 145, 150, 170,
 ];
 
-const STATIC_DATA = [
-  ['', '', '', '', '', '', '', '', '', '', '', ''],
-  ['', '', '', '', '', '', '', '', '', '', '', ''],
-  ['', '', '', '', '', '', '', '', '', '', '', ''],
-  ['', '', '', '', '', '', '', '', '', '', '', ''],
-  ['', '', '', '', '', '', '', '', '', '', '', ''],
-  ['', '', '', '', '', '', '', '', '', '', '', ''],
-  ['', '', '', '', '', '', '', '', '', '', '', ''],
-  ['', '', '', '', '', '', '', '', '', '', '', ''],
-  ['', '', '', '', '', '', '', '', '', '', '', ''],
-];
-
 function TowerAreaSheet(props) {
-  const {navigation, setSelectedSubCategory} = props;
-  const [sheetData, setSheetData] = React.useState([...Tower_AREA_DETAILS]);
+  const {setSelectedSubCategory} = props;
 
-  const [selected, setSelected] = React.useState();
+  const [sheetData, setSheetData] = useState([]);
 
-  React.useEffect(() => {
-    AndroidKeyboardAdjust.adjustResize();
-    return () => AndroidKeyboardAdjust.adjustPan();
-  }, []);
-
-  const value = React.useMemo(() => {
-    return sheetData.find(i => i.key === selected)?.value;
-  }, [sheetData, selected]);
-
-  const processedData = React.useMemo(() => {
-    return STATIC_DATA.map((item, index) => {
-      const updatedData = [...item];
-      updatedData.unshift(`Tower ${getTowerLabel(index + 1)}`);
-      return {
-        id: index + 1,
-        data: updatedData,
-      };
-    });
-  }, []);
-
-  const updateValue = text => {
-    const index = sheetData.findIndex(i => i.key === selected);
-    if (index !== -1) {
-      const oldSheetData = [...sheetData];
-      oldSheetData[index].value = text;
-
-      setSheetData([...oldSheetData]);
-    }
-  };
+  const {getCategoryTowerSheet, updateCategoryTowerSheet} =
+    useDesignModuleActions();
   const theme = useTheme();
 
-  // const handleClose = () => {
-  //   console.log('');
-  // };
-  // const submitForm = () => {
-  //   console.log('');
-  // };
+  const {selectedProject} = useSelector(s => s.project);
+  const {towerList} = useSelector(s => s.designModule);
+  const project_id = selectedProject.id;
+
+  const {project_tower_data = [], category_sheet_towers_data: towersData} =
+    towerList || {};
+
+  useEffect(() => {
+    getCategoryTowerSheet({project_id});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (Platform.OS === 'android') {
+      AndroidKeyboardAdjust?.adjustResize();
+      return () => AndroidKeyboardAdjust.adjustPan();
+    }
+    return null;
+  }, []);
+
+  const UpdateData = () => {
+    const towerLabels = project_tower_data?.map(i => i.tower_title);
+    const updatedSheetData = new Array(project_tower_data.length)
+      .fill(new Array(TOWER_AREA_DETAILS.length - 1).fill(''))
+      .map((item, index) => {
+        const rowData = towersData[index];
+        const updatedData = item.map((_value, cellIndex) => {
+          const {key} = TOWER_AREA_DETAILS[cellIndex + 1];
+          return rowData[key];
+        });
+        return cloneDeep({
+          id: index + 1,
+          title: `Tower ${towerLabels[index]}`,
+          data: updatedData,
+        });
+      });
+    setSheetData(updatedSheetData);
+  };
+
+  useEffect(() => {
+    if (project_tower_data?.length) {
+      UpdateData();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [project_tower_data]);
+
+  const updateValue = (rowId, cellIndex, text) => {
+    const index = sheetData.findIndex(i => i.id === rowId);
+
+    const oldSheetData = cloneDeep(sheetData);
+    oldSheetData[index].data[cellIndex] = text;
+
+    setSheetData([...oldSheetData]);
+  };
+
+  const submitForm = async () => {
+    const updatedData = towersData.map((item, index) => {
+      const currentData = {};
+      sheetData[index].data.map((value, cellIndex) => {
+        const {key} = TOWER_AREA_DETAILS[cellIndex + 1];
+        currentData[key] = Number(value);
+        return value;
+      });
+
+      return {...item, ...currentData};
+    });
+
+    await Promise.all(updatedData.map(item => updateCategoryTowerSheet(item)));
+  };
 
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-        <View style={styles.button}>
-          <OpacityButton
-            opacity={0.1}
-            color={theme.colors.primary}
-            style={styles.backButton}
-            onPress={() => setSelectedSubCategory()}>
-            <MaterialCommunityIcons
-              name="keyboard-backspace"
-              size={18}
-              color="black"
-            />
-          </OpacityButton>
+        <View style={styles.headerButtonContainer}>
+          <View style={styles.button}>
+            <OpacityButton
+              opacity={0.1}
+              color={theme.colors.primary}
+              style={styles.backButton}
+              onPress={() => setSelectedSubCategory()}>
+              <MaterialCommunityIcons
+                name="keyboard-backspace"
+                size={18}
+                color="black"
+              />
+            </OpacityButton>
+          </View>
+          <Text style={styles.headerTitle}>Tower</Text>
         </View>
-        <Text style={styles.headerTitle}>Tower</Text>
-        {/* <View style={styles.button}>
-          <OpacityButton
-            opacity={0.1}
-            color={theme.colors.primary}
-            style={styles.checkButton}
-            onPress={submitForm}>
-            <MaterialIcon name="check" color={theme.colors.primary} size={20} />
-          </OpacityButton>
-          <OpacityButton
-            opacity={0.1}
-            color={theme.colors.error}
-            style={styles.closeButton}
-            onPress={handleClose}>
-            <MaterialIcon name="close" color={theme.colors.error} size={20} />
-          </OpacityButton>
-        </View> */}
+        <RenderOpacityButton
+          handleClose={() => UpdateData()}
+          submitForm={submitForm}
+        />
       </View>
       <KeyboardAwareScrollView
         contentContainerStyle={styles.scrollContent}
@@ -136,42 +152,21 @@ function TowerAreaSheet(props) {
         <View style={styles.tableContainer}>
           <RenderTable
             tableWidths={TABLE_WIDTH}
-            headerColumns={Tower_AREA_DETAILS.map(i => i.label)}
-            data={processedData}
+            headerColumns={TOWER_AREA_DETAILS.map(i => i.label)}
+            data={sheetData}
+            renderCell={(cellData, cellIndex, rowId) => {
+              return (
+                <TextInput
+                  value={cellData?.toString()}
+                  style={styles.textInput}
+                  onChangeText={text => updateValue(rowId, cellIndex, text)}
+                  keyboardType="numeric"
+                />
+              );
+            }}
           />
-          {/* <View style={styles.tableContainer}>
-            {unitName.map((item, index) => (
-              <RenderRow
-                key={index?.toString()}
-                {...{item, selected, setSelected}}
-              />
-            ))}
-          </View> */}
         </View>
       </KeyboardAwareScrollView>
-
-      {selected ? (
-        <Portal>
-          <View style={styles.inputContainer}>
-            <RenderInput
-              autoFocus
-              value={value}
-              placeholder="Enter text or formula"
-              onChangeText={updateValue}
-              right={
-                <TextInput.Icon
-                  name="check"
-                  color="#fff"
-                  style={[
-                    styles.checkIcon,
-                    {backgroundColor: theme.colors.primary},
-                  ]}
-                />
-              }
-            />
-          </View>
-        </Portal>
-      ) : null}
     </View>
   );
 }
@@ -182,6 +177,12 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   headerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingBottom: 10,
+  },
+  headerButtonContainer: {
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -202,23 +203,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 
-  inputContainer: {
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-    left: 0,
-  },
   backButton: {
     borderRadius: 50,
     marginRight: 7,
   },
-  // checkButton: {
-  //   borderRadius: 50,
-  //   marginRight: 10,
-  // },
-  // closeButton: {
-  //   borderRadius: 50,
-  // },
+  textInput: {
+    height: 37,
+    borderWidth: 0,
+  },
 });
 
 export default withTheme(TowerAreaSheet);
