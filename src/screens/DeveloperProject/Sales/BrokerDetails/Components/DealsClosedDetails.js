@@ -1,6 +1,7 @@
 import {Alert, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import ProjectHeader from 'components/Molecules/Layout/ProjectHeader';
+import {useAlert} from 'components/Atoms/Alert';
 import {
   Caption,
   Divider,
@@ -15,6 +16,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const DealsClosedDetails = props => {
   const {navigation} = props;
+  const alert = useAlert();
   const [visible, setVisible] = React.useState(false);
   const showModal = () => setVisible(true);
   const hideDialog = () => setVisible(false);
@@ -110,7 +112,9 @@ const DealsClosedDetails = props => {
                   opacity={0.18}
                   style={{borderRadius: 20, marginLeft: 10, marginBottom: 10}}
                   onPress={() => {
-                    Alert.alert('edit');
+                    navigation.navigate('AddBrokerPaymentDetails', {
+                      pageName: 'Edit',
+                    });
                   }}>
                   <MaterialIcons name="edit" color="#4872f4" size={13} />
                 </OpacityButton>
@@ -119,7 +123,13 @@ const DealsClosedDetails = props => {
                 <OpacityButton
                   color="#FF5D5D"
                   opacity={0.18}
-                  onPress={() => showModal()}
+                  onPress={() => {
+                    alert.show({
+                      title: 'Alert',
+                      message: 'Are you sure want to delete this?',
+                      dismissable: false,
+                    });
+                  }}
                   style={{borderRadius: 20}}>
                   <MaterialIcons name="delete" color="#FF5D5D" size={13} />
                 </OpacityButton>

@@ -9,9 +9,8 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
+import {TabView, TabBar} from 'react-native-tab-view';
 import {IconButton, FAB} from 'react-native-paper';
-import ProjectHeader from 'components/Molecules/Layout/ProjectHeader';
 
 const CustDetails = () => (
   <ScrollView style={styles.custContainer}>

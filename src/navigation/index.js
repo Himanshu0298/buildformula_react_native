@@ -108,6 +108,11 @@ import MaterialGRN from '../screens/DeveloperProject/Material/MaterialGRN';
 import OrderDetail from '../screens/DeveloperProject/Material/OrderDetail';
 import MaterialList from '../screens/DeveloperProject/Material/MaterialList';
 import DeliveryDetails from 'screens/DeveloperProject/Material/DeliveryDetails';
+import PRListing from 'screens/DeveloperProject/Material/MaterialPR/PRListing';
+import CreatePR from 'screens/DeveloperProject/Material/MaterialPR/CreatePR/CreatePR';
+import CreatePRMaterial from 'screens/DeveloperProject/Material/MaterialPR/CreatePR/CreatePRMaterial';
+import PRPreview from 'screens/DeveloperProject/Material/MaterialPR/PRPreview/PRPreview';
+import AddMaterialList from 'screens/DeveloperProject/Material/MaterialPR/CreatePR/AddMaterialList';
 
 // Project : Files screens
 import Files from '../screens/DeveloperProject/Files';
@@ -335,6 +340,17 @@ function AppStackNavigator() {
               <Stack.Screen name="OrderDetail" component={OrderDetail} />
               <Stack.Screen name="MaterialList" component={MaterialList} />
               <Stack.Screen name="AddChallan" component={AddChallan} />
+              <Stack.Screen name="PRList" component={PRListing} />
+              <Stack.Screen name="CreatePR" component={CreatePR} />
+              <Stack.Screen
+                name="CreatePRMaterial"
+                component={CreatePRMaterial}
+              />
+              <Stack.Screen name="PRPreview" component={PRPreview} />
+              <Stack.Screen
+                name="AddMaterialList"
+                component={AddMaterialList}
+              />
               <Stack.Screen
                 name="SelectMaterials"
                 component={SelectMaterials}

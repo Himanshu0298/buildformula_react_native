@@ -228,6 +228,13 @@ export const DEVELOPER_DRAWER_ITEMS = [
           <MaterialCommunityIcons name="wall" {...{color, size}} />
         ),
       },
+      {
+        route: 'PRList',
+        label: 'PR List',
+        icon: ({color, size}) => (
+          <MaterialCommunityIcons name="format-list-text" {...{color, size}} />
+        ),
+      },
     ],
   },
   // {
