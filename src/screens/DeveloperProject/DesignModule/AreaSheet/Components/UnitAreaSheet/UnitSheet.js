@@ -31,7 +31,7 @@ function UnitAreaSheet(props) {
   const [selectedSubCategory, setSelectedUnit] = React.useState();
 
   return (
-    <View>
+    <View style={styles.container}>
       {!selectedSubCategory ? (
         UNITS.map((item, index) => (
           <RenderRow
@@ -72,6 +72,9 @@ const styles = StyleSheet.create({
     margin: 10,
     color: 'black',
     fontSize: 16,
+  },
+  container: {
+    flexGrow: 1,
   },
 });
 

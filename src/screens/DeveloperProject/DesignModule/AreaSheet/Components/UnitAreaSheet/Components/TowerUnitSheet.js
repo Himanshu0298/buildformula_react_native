@@ -1,6 +1,11 @@
 import * as React from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {
+  ActivityIndicator,
+  Platform,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import {TextInput, useTheme, withTheme} from 'react-native-paper';
 import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
 import RenderTable from 'components/Atoms/RenderTable';
@@ -11,8 +16,8 @@ import {useSelector} from 'react-redux';
 import {useEffect} from 'react';
 import {getTowerLabel} from 'utils';
 import RenderSelect from 'components/Atoms/RenderSelect';
-import {cloneDeep} from 'lodash';
-import RenderOpacityButton from 'components/Atoms/RenderOpacityButton';
+import {cloneDeep, debounce} from 'lodash';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const Tower_AREA_DETAILS = [
   {label: 'Floor', key: 'floor', value: ''},
@@ -39,12 +44,11 @@ function TowerUnitSheet(props) {
   const theme = useTheme();
 
   const [selectedTower, setSelectedTower] = React.useState();
-  console.log('-------->selectedTower', selectedTower);
 
   const {selectedProject} = useSelector(s => s.project);
-  const {unitTowerList} = useSelector(s => s.designModule);
+  const {unitTowerList, loading} = useSelector(s => s.designModule);
 
-  const {project_tower_data, unit_sheet_towers_data} = unitTowerList;
+  const {unit_sheet_towers_data} = unitTowerList;
 
   const project_id = selectedProject.id;
 
@@ -66,10 +70,13 @@ function TowerUnitSheet(props) {
 
   useEffect(() => {
     if (selectedTower) {
-      getTowerUnitSheet({project_id, tower_id: selectedTower});
+      loadInitialData();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTower]);
+
+  const loadInitialData = () =>
+    getTowerUnitSheet({project_id, tower_id: selectedTower});
 
   React.useEffect(() => {
     if (Platform.OS === 'android') {
@@ -82,7 +89,6 @@ function TowerUnitSheet(props) {
   React.useEffect(() => {
     if (unit_sheet_towers_data?.length) {
       const leftTitle = unit_sheet_towers_data.map(item => item.title);
-      console.log('-------->leftTitle', leftTitle);
       const updatedSheetData = new Array(unit_sheet_towers_data.length)
         .fill(new Array(Tower_AREA_DETAILS.length - 1).fill(''))
         .map((item, index) => {
@@ -102,57 +108,37 @@ function TowerUnitSheet(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [unit_sheet_towers_data]);
 
-  const updateValue = (rowId, cellIndex, text) => {
-    const index = sheetData.findIndex(i => i.id === rowId);
+  const syncData = (rowIndex, updatedSheetData, existingData) => {
+    let updatedData = {};
+    const currentData = existingData[rowIndex];
 
-    const oldSheetData = cloneDeep(sheetData);
-    oldSheetData[index].data[cellIndex] = text;
+    updatedSheetData[rowIndex].data.map((value, cellIndex) => {
+      const {key} = Tower_AREA_DETAILS[cellIndex + 1];
+      updatedData[key] = Number(value);
+      return value;
+    });
 
-    setSheetData([...oldSheetData]);
+    updatedData = {...currentData, ...updatedData};
+
+    updateTowerUnitSheet(updatedData);
   };
 
-  // const handleClose = () => {
-  //   console.log('');
-  // };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedSave = React.useCallback(debounce(syncData, 1000), []);
 
-  const submitForm = async () => {
-    const updatedData = project_tower_data.map((item, index) => {
-      console.log('-------->index', index);
-      console.log('-------->222222', item);
-      const currentData = {};
-      sheetData[index].data.map((value, cellIndex) => {
-        const {key} = Tower_AREA_DETAILS[cellIndex + 1];
-        currentData[key] = Number(value);
-        return value;
-      });
+  const updateValue = (rowId, cellIndex, text) => {
+    const rowIndex = sheetData.findIndex(i => i.id === rowId);
 
-      return {...item, ...currentData};
-    });
-    console.log('-------->updatedData', updatedData);
+    const oldSheetData = cloneDeep(sheetData);
+    oldSheetData[rowIndex].data[cellIndex] = text;
+    setSheetData([...oldSheetData]);
 
-    // await updateBungalowUnitSheet(updatedData);
-    // getBungalowUnitSheet({project_id})
-    // updateTowerUnitSheet({
-    //   project_id,
-    //   tower_id: 1,
-    //   project_main_units_id: 5,
-    //   super_build_up_area: 501,
-    //   build_up_area: 502,
-    //   carpet: 503,
-    //   wash_area: 504,
-    //   balcony_area: 505,
-    //   total_area: 506,
-    //   north: 3,
-    //   south: 3,
-    //   east: 3,
-    //   west: 3,
-    //   open_terrace_area: 3,
-    //   undevided_land: 3,
-    // });
+    debouncedSave(rowIndex, oldSheetData, unit_sheet_towers_data);
   };
 
   return (
     <View style={styles.container}>
+      <Spinner visible={loading} textContent="" />
       <View style={styles.renderSelectContainer}>
         <View style={styles.headerContainer}>
           <View style={styles.button}>
@@ -170,12 +156,24 @@ function TowerUnitSheet(props) {
           </View>
           <Text style={styles.headerTitle}>Tower</Text>
         </View>
-        <RenderOpacityButton
-          handleClose={() => console.log('-------->')}
-          submitForm={submitForm}
-        />
+        <View style={styles.savedContainer}>
+          {loading ? (
+            <ActivityIndicator size="small" color="#00ff00" />
+          ) : (
+            <>
+              <MaterialCommunityIcons
+                name="check-circle-outline"
+                size={24}
+                color="green"
+              />
+              <View style={styles.textContainer}>
+                <Text>Saved</Text>
+              </View>
+            </>
+          )}
+        </View>
       </View>
-      <View style={{paddingBottom: 20, width: 200}}>
+      <View style={styles.selectTower}>
         <RenderSelect
           name="tower"
           label="Tower"
@@ -184,28 +182,24 @@ function TowerUnitSheet(props) {
           onSelect={setSelectedTower}
         />
       </View>
-      <KeyboardAwareScrollView
-        contentContainerStyle={styles.scrollContent}
-        extraScrollHeight={100}
-        keyboardShouldPersistTaps="handled">
-        <View style={styles.tableContainer}>
-          <RenderTable
-            tableWidths={TABLE_WIDTH}
-            headerColumns={Tower_AREA_DETAILS.map(i => i.label)}
-            data={sheetData}
-            renderCell={(cellData, cellIndex, rowId) => {
-              return (
-                <TextInput
-                  value={cellData?.toString()}
-                  style={styles.textInput}
-                  onChangeText={text => updateValue(rowId, cellIndex, text)}
-                  keyboardType="numeric"
-                />
-              );
-            }}
-          />
-        </View>
-      </KeyboardAwareScrollView>
+
+      <View style={styles.scrollContent}>
+        <RenderTable
+          tableWidths={TABLE_WIDTH}
+          headerColumns={Tower_AREA_DETAILS.map(i => i.label)}
+          data={sheetData}
+          renderCell={(cellData, cellIndex, rowId) => {
+            return (
+              <TextInput
+                value={cellData?.toString()}
+                style={styles.textInput}
+                onChangeText={text => updateValue(rowId, cellIndex, text)}
+                keyboardType="numeric"
+              />
+            );
+          }}
+        />
+      </View>
     </View>
   );
 }
@@ -229,14 +223,8 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   scrollContent: {
-    paddingBottom: 50,
+    flexGrow: 1,
   },
-  tableContainer: {
-    borderColor: '#C3C3C3',
-    alignItems: 'center',
-    flex: 1,
-  },
-
   backButton: {
     borderRadius: 50,
     marginRight: 7,
@@ -246,6 +234,22 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 15,
+  },
+  savedContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 15,
+    paddingBottom: 10,
+  },
+  textContainer: {
+    marginLeft: 5,
+  },
+  selectTower: {
+    paddingBottom: 20,
+  },
+  textInput: {
+    height: 37,
+    borderWidth: 0,
   },
 });
 

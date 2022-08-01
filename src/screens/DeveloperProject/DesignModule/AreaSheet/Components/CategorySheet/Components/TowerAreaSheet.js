@@ -1,5 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import {
+  ActivityIndicator,
+  Platform,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {TextInput, useTheme, withTheme} from 'react-native-paper';
 import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
@@ -8,8 +14,7 @@ import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector} from 'react-redux';
 import useDesignModuleActions from 'redux/actions/designModuleActions';
-import {cloneDeep} from 'lodash';
-import RenderOpacityButton from 'components/Atoms/RenderOpacityButton';
+import {cloneDeep, debounce} from 'lodash';
 
 const TOWER_AREA_DETAILS = [
   {label: 'Tower', key: 'tower', value: ''},
@@ -53,11 +58,11 @@ function TowerAreaSheet(props) {
   const theme = useTheme();
 
   const {selectedProject} = useSelector(s => s.project);
-  const {towerList} = useSelector(s => s.designModule);
+  const {towerList, loading} = useSelector(s => s.designModule);
   const project_id = selectedProject.id;
 
-  const {project_tower_data = [], category_sheet_towers_data: towersData} =
-    towerList || {};
+  const {project_tower_data = [], category_sheet_towers_data = []} =
+    towerList || [];
 
   useEffect(() => {
     getCategoryTowerSheet({project_id});
@@ -72,54 +77,56 @@ function TowerAreaSheet(props) {
     return null;
   }, []);
 
-  const UpdateData = () => {
-    const towerLabels = project_tower_data?.map(i => i.tower_title);
-    const updatedSheetData = new Array(project_tower_data.length)
-      .fill(new Array(TOWER_AREA_DETAILS.length - 1).fill(''))
-      .map((item, index) => {
-        const rowData = towersData[index];
-        const updatedData = item.map((_value, cellIndex) => {
-          const {key} = TOWER_AREA_DETAILS[cellIndex + 1];
-          return rowData[key];
-        });
-        return cloneDeep({
-          id: index + 1,
-          title: `Tower ${towerLabels[index]}`,
-          data: updatedData,
-        });
-      });
-    setSheetData(updatedSheetData);
-  };
-
   useEffect(() => {
     if (project_tower_data?.length) {
-      UpdateData();
+      const towerLabels = project_tower_data?.map(i => i.tower_title);
+      const updatedSheetData = new Array(project_tower_data.length)
+        .fill(new Array(TOWER_AREA_DETAILS.length - 1).fill(''))
+        .map((item, index) => {
+          const rowData = category_sheet_towers_data[index] || {};
+          const updatedData = item.map((_value, cellIndex) => {
+            const {key} = TOWER_AREA_DETAILS[cellIndex + 1];
+            return rowData[key];
+          });
+          return cloneDeep({
+            id: index + 1,
+            title: `Tower ${towerLabels[index]}`,
+            data: updatedData,
+          });
+        });
+      setSheetData(updatedSheetData);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project_tower_data]);
 
-  const updateValue = (rowId, cellIndex, text) => {
-    const index = sheetData.findIndex(i => i.id === rowId);
-
-    const oldSheetData = cloneDeep(sheetData);
-    oldSheetData[index].data[cellIndex] = text;
-
-    setSheetData([...oldSheetData]);
-  };
-
-  const submitForm = async () => {
-    const updatedData = towersData.map((item, index) => {
-      const currentData = {};
-      sheetData[index].data.map((value, cellIndex) => {
-        const {key} = TOWER_AREA_DETAILS[cellIndex + 1];
-        currentData[key] = Number(value);
-        return value;
-      });
-
-      return {...item, ...currentData};
+  const syncData = (rowIndex, updatedSheetData) => {
+    let updatedData = {};
+    updatedSheetData[rowIndex].data.map((value, cellIndex) => {
+      const {key} = TOWER_AREA_DETAILS[cellIndex + 1];
+      updatedData[key] = Number(value);
+      return value;
     });
 
-    await Promise.all(updatedData.map(item => updateCategoryTowerSheet(item)));
+    const currentData = category_sheet_towers_data[rowIndex];
+
+    updatedData = {...currentData, ...updatedData};
+
+    updateCategoryTowerSheet(updatedData);
+  };
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedSave = React.useCallback(debounce(syncData, 1000), [
+    category_sheet_towers_data,
+  ]);
+
+  const updateValue = (rowId, cellIndex, text) => {
+    const rowIndex = sheetData.findIndex(i => i.id === rowId);
+
+    const oldSheetData = cloneDeep(sheetData);
+    oldSheetData[rowIndex].data[cellIndex] = text;
+    setSheetData([...oldSheetData]);
+
+    debouncedSave(rowIndex, oldSheetData);
   };
 
   return (
@@ -141,10 +148,23 @@ function TowerAreaSheet(props) {
           </View>
           <Text style={styles.headerTitle}>Tower</Text>
         </View>
-        <RenderOpacityButton
-          handleClose={() => UpdateData()}
-          submitForm={submitForm}
-        />
+
+        <View style={styles.savedContainer}>
+          {loading ? (
+            <ActivityIndicator size="small" color="#00ff00" />
+          ) : (
+            <>
+              <MaterialCommunityIcons
+                name="check-circle-outline"
+                size={24}
+                color="green"
+              />
+              <View style={styles.textContainer}>
+                <Text>Saved</Text>
+              </View>
+            </>
+          )}
+        </View>
       </View>
       <KeyboardAwareScrollView
         contentContainerStyle={styles.scrollContent}
@@ -210,6 +230,15 @@ const styles = StyleSheet.create({
   textInput: {
     height: 37,
     borderWidth: 0,
+  },
+  savedContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 15,
+    paddingBottom: 10,
+  },
+  textContainer: {
+    marginLeft: 5,
   },
 });
 

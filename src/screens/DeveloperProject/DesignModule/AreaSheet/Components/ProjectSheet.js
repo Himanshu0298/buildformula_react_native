@@ -1,13 +1,19 @@
 import React, {useEffect, useState} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import {
+  ActivityIndicator,
+  Platform,
+  RefreshControl,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {TextInput, useTheme, withTheme} from 'react-native-paper';
+import {TextInput, withTheme} from 'react-native-paper';
 import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
-import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
-import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector} from 'react-redux';
 import useDesignModuleActions from 'redux/actions/designModuleActions';
-import Spinner from 'react-native-loading-spinner-overlay';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {debounce, cloneDeep} from 'lodash';
 
 const PROJECT_AREA_DETAILS = {
   total_plot_area: {label: 'Total Plot Area', value: ''},
@@ -41,8 +47,8 @@ function RenderRow(props) {
 }
 
 function ProjectSheet() {
-  const {selectedProject, loading} = useSelector(s => s.project);
-  const {projectAreaSheet} = useSelector(s => s.designModule);
+  const {selectedProject} = useSelector(s => s.project);
+  const {projectAreaSheet, loading} = useSelector(s => s.designModule);
   const project_id = selectedProject.id;
 
   const [sheetData, setSheetData] = useState({});
@@ -50,7 +56,7 @@ function ProjectSheet() {
   const {updateAreaSheet, getProjectSheetList} = useDesignModuleActions();
 
   useEffect(() => {
-    getProjectSheetList({project_id});
+    loadInitialData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -62,7 +68,15 @@ function ProjectSheet() {
     return () => null;
   }, []);
 
-  const UpdatedData = () => {
+  useEffect(() => {
+    processData();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [projectAreaSheet]);
+
+  const loadInitialData = () => getProjectSheetList({project_id});
+
+  const processData = () => {
     const updatedData = {...PROJECT_AREA_DETAILS};
     if (projectAreaSheet) {
       Object.keys(PROJECT_AREA_DETAILS)?.map(key => {
@@ -73,23 +87,10 @@ function ProjectSheet() {
     setSheetData(updatedData);
   };
 
-  useEffect(() => {
-    UpdatedData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [projectAreaSheet]);
-
-  const updateValue = (key, value) => {
-    setSheetData(v => ({
-      ...v,
-      [key]: {...v[key], value: value ? Number(value) : value},
-    }));
-  };
-  const theme = useTheme();
-
-  const submitForm = () => {
+  const syncData = updatedSheetData => {
     const finalData = {};
 
-    Object.entries(sheetData).map(([key, {value}]) => {
+    Object.entries(updatedSheetData).map(([key, {value}]) => {
       finalData[key] = value;
       return key;
     });
@@ -107,30 +108,44 @@ function ProjectSheet() {
     });
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedSave = React.useCallback(debounce(syncData, 1000), []);
+
+  const updateValue = (key, value) => {
+    const updatedSheetData = cloneDeep(sheetData);
+
+    updatedSheetData[key].value = value ? Number(value) : value;
+
+    setSheetData(updatedSheetData);
+
+    debouncedSave(updatedSheetData);
+  };
+
   return (
     <View style={styles.container}>
-      <Spinner visible={loading} textContent="" />
-
       <View style={styles.headerContainer}>
         <Text style={styles.headerTitle}>Project Area Details</Text>
-        <View style={styles.button}>
-          <OpacityButton
-            opacity={0.1}
-            color={theme.colors.primary}
-            style={styles.checkButton}
-            onPress={submitForm}>
-            <MaterialIcon name="check" color={theme.colors.primary} size={20} />
-          </OpacityButton>
-          <OpacityButton
-            opacity={0.1}
-            color={theme.colors.error}
-            style={styles.closeButton}
-            onPress={() => UpdatedData()}>
-            <MaterialIcon name="close" color={theme.colors.error} size={20} />
-          </OpacityButton>
+        <View style={styles.savedContainer}>
+          {loading ? (
+            <ActivityIndicator size="small" color="#00ff00" />
+          ) : (
+            <>
+              <MaterialCommunityIcons
+                name="check-circle-outline"
+                size={24}
+                color="green"
+              />
+              <View style={styles.textContainer}>
+                <Text>Saved</Text>
+              </View>
+            </>
+          )}
         </View>
       </View>
       <KeyboardAwareScrollView
+        refreshControl={
+          <RefreshControl refreshing={false} onRefresh={loadInitialData} />
+        }
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled">
         <View style={styles.tableContainer}>
@@ -158,10 +173,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  button: {
-    flexDirection: 'row',
-    paddingBottom: 10,
-  },
   headerTitle: {
     fontSize: 16,
     paddingBottom: 13,
@@ -188,18 +199,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-
-  checkButton: {
-    borderRadius: 50,
-    marginRight: 10,
-  },
-  closeButton: {
-    borderRadius: 50,
-  },
   textInput: {
     height: 37,
     width: 150,
     borderWidth: 0,
+  },
+  savedContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 15,
+    paddingBottom: 10,
+  },
+  textContainer: {
+    marginLeft: 5,
   },
 });
 

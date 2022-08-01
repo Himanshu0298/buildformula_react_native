@@ -1,5 +1,11 @@
 import * as React from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import {
+  ActivityIndicator,
+  Platform,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {TextInput, useTheme, withTheme} from 'react-native-paper';
 import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
@@ -8,8 +14,7 @@ import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import useDesignModuleActions from 'redux/actions/designModuleActions';
 import {useSelector} from 'react-redux';
-import RenderOpacityButton from 'components/Atoms/RenderOpacityButton';
-import {cloneDeep} from 'lodash';
+import {cloneDeep, debounce} from 'lodash';
 
 const PLOT_AREA_DETAILS = [
   {label: 'Plot', key: 'plot', value: ''},
@@ -29,9 +34,9 @@ function PlotAreaSheet(props) {
   const theme = useTheme();
 
   const {selectedProject} = useSelector(s => s.project);
-  const {plotList} = useSelector(s => s.designModule);
+  const {plotList, loading} = useSelector(s => s.designModule);
 
-  const {category_sheet_plot_data, project_plot_data} = plotList || {};
+  const {category_sheet_plot_data = {}, project_plot_data} = plotList || {};
 
   const project_id = selectedProject.id;
 
@@ -48,60 +53,50 @@ function PlotAreaSheet(props) {
     return null;
   }, []);
 
-  const UpdateData = () => {
-    const updatedSheetData = new Array(category_sheet_plot_data.length)
-      .fill(new Array(PLOT_AREA_DETAILS.length - 1).fill(''))
-      .map((item, index) => {
-        const updatedData = item.map((_value, cellIndex) => {
-          const {key} = PLOT_AREA_DETAILS[cellIndex + 1];
-          return category_sheet_plot_data[key];
-        });
-        return cloneDeep({
-          id: index,
-          title: 'All Plot',
-          data: updatedData,
-        });
-      });
-    setSheetData(updatedSheetData);
-  };
-
   React.useEffect(() => {
     if (project_plot_data?.length) {
-      UpdateData();
+      const updatedSheetData = new Array(category_sheet_plot_data.length)
+        .fill(new Array(PLOT_AREA_DETAILS.length - 1).fill(''))
+        .map((item, index) => {
+          const updatedData = item.map((_value, cellIndex) => {
+            const {key} = PLOT_AREA_DETAILS[cellIndex + 1];
+            return category_sheet_plot_data[key];
+          });
+          return cloneDeep({id: index, title: 'All Plot', data: updatedData});
+        });
+      setSheetData(updatedSheetData);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project_plot_data]);
 
+  const syncData = (rowIndex, updatedSheetData) => {
+    let updatedData = {};
+    updatedSheetData[rowIndex].data.map((value, cellIndex) => {
+      const {key} = PLOT_AREA_DETAILS[cellIndex + 1];
+      updatedData[key] = Number(value);
+      return value;
+    });
+
+    updatedData = {...category_sheet_plot_data, ...updatedData};
+
+    updateCategoryPlotSheet(updatedData);
+  };
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedSave = React.useCallback(debounce(syncData, 1000), [
+    category_sheet_plot_data,
+  ]);
+
   const updateValue = (rowId, cellIndex, text) => {
-    const index = sheetData.findIndex(i => i.id === rowId);
+    const rowIndex = sheetData.findIndex(i => i.id === rowId);
 
     const oldSheetData = cloneDeep(sheetData);
-    oldSheetData[index].data[cellIndex] = text;
-
+    oldSheetData[rowIndex].data[cellIndex] = text;
     setSheetData([...oldSheetData]);
+
+    debouncedSave(rowIndex, oldSheetData);
   };
 
-  const submitForm = async () => {
-    const {data} = sheetData[0];
-
-    const updatedData = cloneDeep(category_sheet_plot_data);
-
-    data.map((i, index) => {
-      const {key} = PLOT_AREA_DETAILS[index + 1];
-      updatedData[key] = i;
-      return i;
-    });
-
-    delete updatedData.last_updated;
-
-    updateCategoryPlotSheet({
-      project_id,
-      net_land_area: updatedData.net_land_area,
-      undevided_land_area: updatedData.undevided_land_area,
-      super_build_up_area: updatedData.super_build_up_area,
-      carpet_area: updatedData.carpet_area,
-    });
-  };
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
@@ -121,10 +116,23 @@ function PlotAreaSheet(props) {
           </View>
           <Text style={styles.headerTitle}>Plot</Text>
         </View>
-        <RenderOpacityButton
-          handleClose={() => UpdateData()}
-          submitForm={submitForm}
-        />
+
+        <View style={styles.savedContainer}>
+          {loading ? (
+            <ActivityIndicator size="small" color="#00ff00" />
+          ) : (
+            <>
+              <MaterialCommunityIcons
+                name="check-circle-outline"
+                size={24}
+                color="green"
+              />
+              <View style={styles.textContainer}>
+                <Text>Saved</Text>
+              </View>
+            </>
+          )}
+        </View>
       </View>
 
       <KeyboardAwareScrollView
@@ -191,6 +199,15 @@ const styles = StyleSheet.create({
   textInput: {
     height: 37,
     borderWidth: 0,
+  },
+  savedContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 15,
+    paddingBottom: 10,
+  },
+  textContainer: {
+    marginLeft: 5,
   },
 });
 

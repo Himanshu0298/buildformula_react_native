@@ -1,5 +1,11 @@
 import * as React from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import {
+  ActivityIndicator,
+  Platform,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {TextInput, useTheme, withTheme} from 'react-native-paper';
 import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
@@ -8,8 +14,7 @@ import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import useDesignModuleActions from 'redux/actions/designModuleActions';
 import {useSelector} from 'react-redux';
-import RenderOpacityButton from 'components/Atoms/RenderOpacityButton';
-import {cloneDeep} from 'lodash';
+import {cloneDeep, debounce} from 'lodash';
 
 const BUNGALOW_AREA_DETAILS = [
   {label: 'Banglow', key: 'banglow', value: ''},
@@ -40,7 +45,7 @@ function BungalowAreaSheet(props) {
     useDesignModuleActions();
 
   const {selectedProject} = useSelector(s => s.project);
-  const {bungalowList} = useSelector(s => s.designModule);
+  const {bungalowList, loading} = useSelector(s => s.designModule);
 
   const project_id = selectedProject.id;
 
@@ -60,62 +65,51 @@ function BungalowAreaSheet(props) {
     return null;
   }, []);
 
-  const UpdateData = () => {
-    const updatedSheetData = new Array(bungalowData.length)
-      .fill(new Array(BUNGALOW_AREA_DETAILS.length - 1).fill(''))
-      .map((item, index) => {
-        const updatedData = item.map((_value, cellIndex) => {
-          const {key} = BUNGALOW_AREA_DETAILS[cellIndex + 1];
-          return bungalowData[key];
-        });
-        return cloneDeep({
-          id: index,
-          title: 'All Banglow',
-          data: updatedData,
-        });
-      });
-    setSheetData(updatedSheetData);
-  };
-
   React.useEffect(() => {
     if (project_bungalow_data?.length) {
-      UpdateData();
+      const updatedSheetData = new Array(bungalowData.length)
+        .fill(new Array(BUNGALOW_AREA_DETAILS.length - 1).fill(''))
+        .map((item, index) => {
+          const updatedData = item.map((_value, cellIndex) => {
+            const {key} = BUNGALOW_AREA_DETAILS[cellIndex + 1];
+            return bungalowData[key];
+          });
+          return cloneDeep({
+            id: index,
+            title: 'All Banglow',
+            data: updatedData,
+          });
+        });
+      setSheetData(updatedSheetData);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project_bungalow_data]);
 
-  const updateValue = (rowId, cellIndex, text) => {
-    const index = sheetData.findIndex(i => i.id === rowId);
+  const syncData = (rowIndex, updatedSheetData) => {
+    let updatedData = {};
+    updatedSheetData[rowIndex].data.map((value, cellIndex) => {
+      const {key} = BUNGALOW_AREA_DETAILS[cellIndex + 1];
+      updatedData[key] = Number(value);
+      return value;
+    });
 
-    const oldSheetData = cloneDeep(sheetData);
-    oldSheetData[index].data[cellIndex] = text;
+    updatedData = {...bungalowData, ...updatedData};
 
-    setSheetData([...oldSheetData]);
+    updateCategoryBungalowSheet(updatedData);
   };
 
-  const submitForm = async () => {
-    const {data} = sheetData[0];
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedSave = React.useCallback(debounce(syncData, 1000), [
+    bungalowData,
+  ]);
+  const updateValue = (rowId, cellIndex, text) => {
+    const rowIndex = sheetData.findIndex(i => i.id === rowId);
 
-    const updatedData = cloneDeep(bungalowData);
+    const oldSheetData = cloneDeep(sheetData);
+    oldSheetData[rowIndex].data[cellIndex] = text;
+    setSheetData([...oldSheetData]);
 
-    data.map((i, index) => {
-      const {key} = BUNGALOW_AREA_DETAILS[index + 1];
-      updatedData[key] = i;
-      return i;
-    });
-
-    delete updatedData.last_updated;
-
-    updateCategoryBungalowSheet({
-      project_id,
-      net_land_area: updatedData.net_land_area,
-      undevided_land_area: updatedData.undevided_land_area,
-      super_build_up_area: updatedData.super_build_up_area,
-      construction_build_up_area: updatedData.construction_build_up_area,
-      construction_super_build_up_area:
-        updatedData.construction_super_build_up_area,
-      carpet_area: updatedData.carpet_area,
-    });
+    debouncedSave(rowIndex, oldSheetData);
   };
 
   return (
@@ -137,10 +131,23 @@ function BungalowAreaSheet(props) {
           </View>
           <Text style={styles.headerTitle}>Bungalow</Text>
         </View>
-        <RenderOpacityButton
-          handleClose={() => UpdateData()}
-          submitForm={submitForm}
-        />
+
+        <View style={styles.savedContainer}>
+          {loading ? (
+            <ActivityIndicator size="small" color="#00ff00" />
+          ) : (
+            <>
+              <MaterialCommunityIcons
+                name="check-circle-outline"
+                size={24}
+                color="green"
+              />
+              <View style={styles.textContainer}>
+                <Text>Saved</Text>
+              </View>
+            </>
+          )}
+        </View>
       </View>
       <KeyboardAwareScrollView
         contentContainerStyle={styles.scrollContent}
@@ -207,6 +214,15 @@ const styles = StyleSheet.create({
   textInput: {
     height: 37,
     borderWidth: 0,
+  },
+  savedContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 15,
+    paddingBottom: 10,
+  },
+  textContainer: {
+    marginLeft: 5,
   },
 });
 export default withTheme(BungalowAreaSheet);
