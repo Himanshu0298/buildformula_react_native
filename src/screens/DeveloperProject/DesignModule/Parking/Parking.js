@@ -7,6 +7,8 @@ import {
   View,
   TouchableOpacity,
   TextInput,
+  ActivityIndicator,
+  RefreshControl,
 } from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {IconButton, Menu, withTheme} from 'react-native-paper';
@@ -23,34 +25,14 @@ import {getFileExtension} from 'utils/download';
 import {useImagePicker} from 'hooks';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import Spinner from 'react-native-loading-spinner-overlay';
-import NoResult from 'components/Atoms/NoResult';
 import {useAlert} from 'components/Atoms/Alert';
-import RenderOpacityButton from 'components/Atoms/RenderOpacityButton';
+import {cloneDeep, debounce} from 'lodash';
 
 const Parking_DETAILS = [
   {label: 'Parking', key: 'parking', value: ''},
   {label: 'Allocated to', key: 'allocated_to', value: ''},
 ];
 const TABLE_WIDTH = [Layout.window.width * 0.25, Layout.window.width * 0.65];
-
-function RenderRow(props) {
-  const {item, updateValue, setSelected} = props;
-  const {label, key, value} = item;
-
-  return (
-    <View style={styles.rowContainer}>
-      <View style={styles.rowLeftContainer}>
-        <Text>{label}</Text>
-      </View>
-      <TextInput
-        value={value?.toString()}
-        style={styles.textInput}
-        onChangeText={text => updateValue(key, text)}
-        keyboardType="numeric"
-      />
-    </View>
-  );
-}
 
 function RenderFile(props) {
   const {item, onPressFile, handleDelete} = props;
@@ -125,17 +107,18 @@ const ParkingFiles = props => {
 };
 
 function Parking(props) {
-  const [sheetData, setSheetData] = React.useState([...Parking_DETAILS]);
+  const [sheetData, setSheetData] = React.useState([]);
   const [menuIndex, setMenuIndex] = React.useState(false);
 
-  const toggleMenu = v => setMenuIndex(v);
-
-  const [selected, setSelected] = React.useState();
   const snackbar = useSnackbar();
   const alert = useAlert();
 
-  const {getParkingList, uploadParkingFile, deleteParkingFile} =
-    useDesignModuleActions();
+  const {
+    getParkingList,
+    updateParkingList,
+    uploadParkingFile,
+    deleteParkingFile,
+  } = useDesignModuleActions();
 
   const {selectedProject} = useSelector(s => s.project);
   const project_id = selectedProject.id;
@@ -144,9 +127,11 @@ function Parking(props) {
   const {all_parking_units = []} = parkingList || {};
 
   React.useEffect(() => {
-    getParkingList({project_id});
+    loadInitialData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const loadInitialData = () => getParkingList({project_id});
 
   React.useEffect(() => {
     if (Platform.OS === 'android') {
@@ -156,36 +141,47 @@ function Parking(props) {
     return null;
   }, []);
 
-  const processedData = React.useMemo(() => {
-    return all_parking_units.map((item, index) => {
-      return {
-        title: index + 1,
-        data: [item.allotment_data],
-      };
-    });
+  React.useEffect(() => {
+    processData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [all_parking_units]);
 
-  const updateValue = (key, value) => {
-    console.log('-------->key', key);
-    console.log('-------->value', value);
-    setSheetData(v => ({
-      ...v,
-      [key]: {...v[key], value: value ? String(value) : value},
-    }));
+  const processData = () => {
+    if (all_parking_units.length) {
+      const data = all_parking_units.map((item, index) => {
+        return {title: index + 1, id: item.id, data: [item.allotment_data]};
+      });
+
+      setSheetData(data);
+    }
   };
 
-  console.log('-------->sheetData', sheetData);
+  const toggleMenu = v => setMenuIndex(v);
 
-  // const updateValue = (key, text) => {
-  //   const index = sheetData.findIndex(i => i.key);
-  //   console.log('-------->index', index);
+  const syncData = updatedSheetData => {
+    const updatedData = updatedSheetData.map(i => ({
+      id: i.id,
+      allotment_data: i.data[0],
+    }));
+    updateParkingList({
+      project_id,
+      parking_allotments: updatedData,
+    });
+  };
 
-  //   const oldSheetData = cloneDeep(sheetData);
-  //   console.log('-------->oldSheetData', oldSheetData);
-  //   // oldSheetData[index].data[cellIndex] = text;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedSave = React.useCallback(debounce(syncData, 1000), []);
 
-  //   setSheetData([...oldSheetData]);
-  // };
+  const updateValue = (id, cellIndex, value) => {
+    const updatedSheetData = cloneDeep(sheetData);
+    const rowIndex = sheetData.findIndex(i => i.id === id);
+
+    updatedSheetData[rowIndex].data[cellIndex] = value;
+
+    setSheetData(updatedSheetData);
+
+    debouncedSave(updatedSheetData);
+  };
 
   const handleDelete = id => {
     toggleMenu();
@@ -234,41 +230,46 @@ function Parking(props) {
       />
       <View style={styles.actionButton}>
         <Text style={styles.headerTitle}>Parking Sheet</Text>
-        <RenderOpacityButton
-          handleClose={() => console.log('-------->')}
-          submitForm={() => console.log('-------->')}
-        />
+
+        <View style={styles.savedContainer}>
+          {loading ? (
+            <ActivityIndicator size="small" color="#00ff00" />
+          ) : (
+            <>
+              <MaterialCommunityIcons
+                name="check-circle-outline"
+                size={24}
+                color="green"
+              />
+              <View style={styles.textContainer}>
+                <Text>Saved</Text>
+              </View>
+            </>
+          )}
+        </View>
       </View>
       <KeyboardAwareScrollView
         contentContainerStyle={styles.scrollContent}
+        refreshControl={
+          <RefreshControl refreshing={false} onRefresh={loadInitialData} />
+        }
         keyboardShouldPersistTaps="handled">
         <View style={styles.tableContainer}>
           <RenderTable
             tableWidths={TABLE_WIDTH}
             headerColumns={Parking_DETAILS.map(i => i.label)}
-            data={processedData}
-            renderCell={(cellData, key) => {
+            data={sheetData}
+            renderCell={(cellData, cellIndex, id) => {
               return (
                 <TextInput
                   value={cellData?.toString()}
                   style={styles.textInput}
-                  onChangeText={text => updateValue(key, text)}
+                  onChangeText={text => updateValue(id, cellIndex, text)}
                   keyboardType="numeric"
                 />
               );
             }}
           />
-
-          {/*           
-          {processedData?.length ? (
-            <RenderTable
-              tableWidths={TABLE_WIDTH}
-              headerColumns={Parking_DETAILS.map(i => i.label)}
-              data={processedData}
-            />
-          ) : (
-            <NoResult />
-          )} */}
         </View>
       </KeyboardAwareScrollView>
     </View>
@@ -335,6 +336,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  savedContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 15,
+    paddingBottom: 10,
+  },
+  textContainer: {
+    marginLeft: 5,
   },
 });
 

@@ -47,6 +47,7 @@ export default function useSalesActions() {
     getApprovers,
     createApproval,
     approvalDetails,
+    getFollowUpList,
   } = useSalesServices();
 
   return {
@@ -711,6 +712,23 @@ export default function useSalesActions() {
         payload: async () => {
           try {
             const response = _res(await approvalDetails(params));
+            const {data} = response;
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    getFollowUpList: params =>
+      dispatch({
+        type: types.GET_FOLLOWUP_LIST,
+        payload: async () => {
+          try {
+            const response = _res(await getFollowUpList(params));
             const {data} = response;
 
             return Promise.resolve(data);

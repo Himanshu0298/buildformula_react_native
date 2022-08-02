@@ -19,7 +19,6 @@ import {
 } from 'react-native-paper';
 import FolderIcon from 'assets/images/folder_icon.png';
 import {useSelector} from 'react-redux';
-import useImagePicker from 'hooks/useImagePicker';
 import Spinner from 'react-native-loading-spinner-overlay';
 import BottomSheet from 'reanimated-bottom-sheet';
 import {getPermissions, getShadow} from 'utils';
@@ -213,7 +212,7 @@ function ActivityModal(props) {
         sections={processedActivities}
         extraData={processedActivities}
         showsVerticalScrollIndicator={false}
-        keyExtractor={(item, index) => index?.toString()}
+        keyExtractor={i => i.id}
         ItemSeparatorComponent={renderSeparator}
         contentContainerStyle={styles.activityScrollContainer}
         stickySectionHeadersEnabled={false}
@@ -285,9 +284,6 @@ function RenderMenuModal(props) {
             {modelContentType === 'activity' ? (
               <ActivityModal {...props} />
             ) : null}
-            {modelContentType === 'version' ? (
-              <VersionDialog {...props} />
-            ) : null}
           </View>
         )}
       />
@@ -328,7 +324,6 @@ function FinalDrawingFolders(props) {
 
   const project_id = selectedProject.id;
 
-  //   const {getVersion, addVersion} = useFileActions();
   const {
     getFDFolders,
     createFDFolder,
@@ -336,8 +331,6 @@ function FinalDrawingFolders(props) {
     deleteFDFolder,
     getFDActivities,
   } = useDesignModuleActions();
-
-  const {openImagePicker} = useImagePicker();
 
   const [menuId, setMenuId] = React.useState();
   const [modelContentType, setModalContentType] = React.useState('menu');
@@ -388,30 +381,9 @@ function FinalDrawingFolders(props) {
     });
   };
 
-  const versionDataHandler = fileId => {
-    setModalContentType('version');
-    // getVersion({project_id, file_id: fileId});
-  };
-
   const activityDataHandler = (action_type, id) => {
     setModalContentType('activity');
     getFDActivities({project_id, record_id: id, mode: 'folder'});
-  };
-
-  const handleNewVersionUpload = file_id => {
-    openImagePicker({
-      type: 'file',
-      onChoose: async v => {
-        const formData = new FormData();
-
-        formData.append('file_id', file_id);
-        formData.append('file_upload', v);
-        formData.append('project_id', project_id);
-
-        // await addVersion(formData);
-        // getVersion({project_id, file_id});
-      },
-    });
   };
 
   return (
@@ -466,10 +438,9 @@ function FinalDrawingFolders(props) {
           toggleMenu,
           setModalContentType,
           toggleDialog,
-          versionDataHandler,
           activityDataHandler,
           toggleShareDialog,
-          handleNewVersionUpload,
+          is_preset: 'no',
         }}
       />
 

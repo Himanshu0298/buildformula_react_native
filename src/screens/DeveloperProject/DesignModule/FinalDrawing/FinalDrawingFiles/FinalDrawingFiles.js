@@ -36,9 +36,9 @@ import {getPermissions, getShadow} from 'utils';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import Spinner from 'react-native-loading-spinner-overlay';
 import MenuDialog from '../Components/MenuDialog';
-import VersionDialog from '../Components/VersionDialog';
 import DeleteDialog from '../Components/DeleteDialog';
 import RenameDialogue from '../Components/RenameDialog';
+import VersionDialog from '../../RoughDrawing/Components/VersionDialog';
 
 const SNAP_POINTS = [0, '70%'];
 
@@ -168,7 +168,7 @@ function ActivityModal(props) {
         sections={processedActivities}
         extraData={processedActivities}
         showsVerticalScrollIndicator={false}
-        keyExtractor={(item, index) => index?.toString()}
+        keyExtractor={i => i.id}
         ItemSeparatorComponent={renderSeparator}
         contentContainerStyle={styles.activityScrollContainer}
         stickySectionHeadersEnabled={false}
@@ -260,7 +260,9 @@ function FinalDrawingFiles(props) {
     renameFDFile,
     deleteFDFile,
     getFDActivities,
-    addRDVersion,
+    addFDVersion,
+    getFDVersion,
+    deleteFDVersion,
   } = useDesignModuleActions();
   const {openImagePicker} = useImagePicker();
 
@@ -274,7 +276,7 @@ function FinalDrawingFiles(props) {
 
   const snackbar = useSnackbar();
   const {selectedProject} = useSelector(s => s.project);
-  const {files, loading} = useSelector(s => s.designModule);
+  const {files, versionData, loading} = useSelector(s => s.designModule);
 
   const project_id = selectedProject.id;
   const {data} = files;
@@ -314,7 +316,7 @@ function FinalDrawingFiles(props) {
 
   const versionDataHandler = async (id, type) => {
     setModalContentType('version');
-    addRDVersion({project_id, final_drawing_files_id: id});
+    getFDVersion({project_id, final_drawing_files_id: id});
   };
 
   const activityDataHandler = (action_type, id) => {
@@ -362,6 +364,36 @@ function FinalDrawingFiles(props) {
     loadFiles();
   };
 
+  const handleNewVersionUpload = file_id => {
+    openImagePicker({
+      type: 'file',
+      onChoose: async v => {
+        const formData = new FormData();
+
+        formData.append('finaldrawing_file_id', file_id);
+        formData.append('myfile', v);
+        formData.append('folder_id', folderId);
+        formData.append('project_id', project_id);
+
+        await addFDVersion(formData);
+        getFDVersion({project_id, final_drawing_files_id: file_id});
+      },
+    });
+  };
+
+  const handleDeleteVersion = async (version, type) => {
+    setModalContentType('version');
+    await deleteFDVersion({
+      project_id,
+      record_id: version.id,
+      record_type: type,
+    });
+    getFDVersion({
+      project_id,
+      final_drawing_files_id: version.final_drawing_files_id,
+    });
+  };
+
   return (
     <View style={styles.container}>
       <Spinner visible={loading} textContent="" />
@@ -382,7 +414,7 @@ function FinalDrawingFiles(props) {
         }
         data={data}
         extraData={data}
-        keyExtractor={i => i.toString()}
+        keyExtractor={i => i.id}
         contentContainerStyle={styles.contentContainerStyle}
         ListEmptyComponent={<NoResult title="No Data found!" />}
         renderItem={({item, index}) => (
@@ -415,14 +447,15 @@ function FinalDrawingFiles(props) {
           menuId,
           modelContentType,
           modalContent,
-          // versionData,
+          versionData,
           toggleMenu,
           setModalContentType,
           toggleDialog,
           versionDataHandler,
           activityDataHandler,
           toggleShareDialog,
-          // handleNewVersionUpload,
+          handleNewVersionUpload,
+          handleDeleteVersion,
         }}
       />
 

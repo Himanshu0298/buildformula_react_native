@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import React from 'react';
 import {StyleSheet, View, Image, ActivityIndicator} from 'react-native';
 import {
   IconButton,
@@ -14,9 +14,10 @@ import {getDownloadUrl, downloadFile, checkDownloaded} from 'utils/download';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import FileViewer from 'react-native-file-viewer';
 import {theme} from 'styles/theme';
+import NoResult from 'components/Atoms/NoResult';
 
 function VersionFile(props) {
-  const {modulePermissions, version, countVersion} = props;
+  const {modulePermissions, version, countVersion, handleDeleteVersion} = props;
 
   const snackbar = useSnackbar();
 
@@ -25,7 +26,7 @@ function VersionFile(props) {
   const [downloaded, setDownloaded] = React.useState(false);
 
   React.useEffect(() => {
-    if (version?.file_name) {
+    if (version?.title) {
       setDownloading(false);
       checkDownloaded(version).then(result => {
         setDownloaded(result);
@@ -64,7 +65,7 @@ function VersionFile(props) {
               {!countVersion ? 'Current Version' : `Version ${countVersion}`}
             </Text>
             <Text numberOfLines={1} style={styles.text}>
-              By {version?.first_name} {version?.last_name}
+              By {version?.user_id}
             </Text>
           </View>
         </View>
@@ -98,8 +99,16 @@ function VersionFile(props) {
             {modulePermissions?.editor || modulePermissions?.admin ? (
               <>
                 <Divider />
-                {/* TODO: update handle delete */}
-                <Menu.Item icon="delete" onPress={() => null} title="Delete" />
+                <Menu.Item
+                  icon="delete"
+                  onPress={() =>
+                    handleDeleteVersion(
+                      version,
+                      !countVersion ? 'current' : 'version',
+                    )
+                  }
+                  title="Delete"
+                />
               </>
             ) : null}
           </Menu>
@@ -111,12 +120,13 @@ function VersionFile(props) {
 }
 
 function VersionDialog(props) {
-  const {modulePermissions, modalContent, versionData, handleNewVersionUpload} =
-    props;
-
-  const filteredVersion = useMemo(() => {
-    return [versionData?.current, ...(versionData?.lists || [])];
-  }, [versionData]);
+  const {
+    modulePermissions,
+    modalContent,
+    versionData,
+    handleNewVersionUpload,
+    handleDeleteVersion,
+  } = props;
 
   return (
     <View style={styles.container}>
@@ -133,17 +143,21 @@ function VersionDialog(props) {
           </Button>
         ) : null}
       </View>
-
-      <View>
-        {filteredVersion?.map((version, index) => (
-          <VersionFile
-            {...props}
-            version={version}
-            key={index}
-            countVersion={index}
-          />
-        ))}
-      </View>
+      {versionData.length ? (
+        <View>
+          {versionData?.map((version, index) => (
+            <VersionFile
+              {...props}
+              version={version}
+              key={index}
+              countVersion={index}
+              handleDeleteVersion={handleDeleteVersion}
+            />
+          ))}
+        </View>
+      ) : (
+        <NoResult title="No Data found!" />
+      )}
     </View>
   );
 }

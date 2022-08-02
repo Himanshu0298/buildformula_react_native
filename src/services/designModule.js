@@ -66,8 +66,27 @@ export default function useDesignModule() {
         config({multipart: false}),
       );
     },
+    getRDVersion: data => {
+      return instance.post(
+        '/roughdrawing/files_version',
+        data,
+        config({multipart: false}),
+      );
+    },
     addRDVersion: data => {
-      return instance.post('/roughdrawing/files_version', data, config());
+      return instance.post(
+        '/roughdrawing/upload_file_version',
+        data,
+        config({multipart: true}),
+      );
+    },
+
+    deleteRDVersion: data => {
+      return instance.post(
+        '/roughdrawing/delete_file_version',
+        data,
+        config({multipart: false}),
+      );
     },
 
     // Final Drawing
@@ -136,6 +155,27 @@ export default function useDesignModule() {
         config({multipart: false}),
       );
     },
+    addFDVersion: data => {
+      return instance.post(
+        '/finaldrawing/upload_file_version',
+        data,
+        config({multipart: true}),
+      );
+    },
+    deleteFDVersion: data => {
+      return instance.post(
+        '/finaldrawing/delete_file_version',
+        data,
+        config({multipart: false}),
+      );
+    },
+    getFDVersion: data => {
+      return instance.post(
+        '/finaldrawing/files_version',
+        data,
+        config({multipart: false}),
+      );
+    },
 
     // Working Drawing
 
@@ -174,6 +214,28 @@ export default function useDesignModule() {
         config({multipart: false}),
       );
     },
+    getWDVersion: data => {
+      return instance.post(
+        '/workingdrawing/files_version',
+        data,
+        config({multipart: false}),
+      );
+    },
+    addWDVersion: data => {
+      return instance.post(
+        '/workingdrawing/upload_file_version',
+        data,
+        config({multipart: true}),
+      );
+    },
+    deleteWDVersion: data => {
+      return instance.post(
+        '/workingdrawing/delete_file_version',
+        data,
+        config({multipart: false}),
+      );
+    },
+
     getWDActivities: data => {
       return instance.post(
         '/workingdrawing/activity_logs',
@@ -328,6 +390,13 @@ export default function useDesignModule() {
     deleteParkingFile: data => {
       return instance.post(
         '/parking/file_delete',
+        data,
+        config({multipart: false}),
+      );
+    },
+    updateParkingList: data => {
+      return instance.post(
+        '/parking/update_parking_allotment',
         data,
         config({multipart: false}),
       );

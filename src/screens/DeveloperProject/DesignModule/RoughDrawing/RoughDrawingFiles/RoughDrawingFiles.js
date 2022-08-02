@@ -20,7 +20,7 @@ import FileIcon from 'assets/images/file_icon.png';
 import dayjs from 'dayjs';
 import {useSelector} from 'react-redux';
 import NoResult from 'components/Atoms/NoResult';
-import {downloadFile, getDownloadUrl, getFileExtension} from 'utils/download';
+import {getFileExtension} from 'utils/download';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import FileViewer from 'react-native-file-viewer';
 import useDesignModuleActions from 'redux/actions/designModuleActions';
@@ -35,6 +35,8 @@ import Feather from 'react-native-vector-icons/Feather';
 import {getPermissions, getShadow} from 'utils';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import Spinner from 'react-native-loading-spinner-overlay';
+import {BASE_API_URL} from 'utils/constant';
+import {useDownload} from 'components/Atoms/Download';
 import MenuDialog from '../Components/MenuDialog';
 import VersionDialog from '../Components/VersionDialog';
 import DeleteDialog from '../Components/DeleteDialog';
@@ -168,7 +170,7 @@ function ActivityModal(props) {
         sections={processedActivities}
         extraData={processedActivities}
         showsVerticalScrollIndicator={false}
-        keyExtractor={(item, index) => index?.()}
+        keyExtractor={i => i.id}
         ItemSeparatorComponent={renderSeparator}
         contentContainerStyle={styles.activityScrollContainer}
         stickySectionHeadersEnabled={false}
@@ -260,9 +262,13 @@ function RoughDrawingFiles(props) {
     renameRDFile,
     deleteRDFile,
     getRDActivities,
+    getRDVersion,
+    deleteRDVersion,
     addRDVersion,
   } = useDesignModuleActions();
+
   const {openImagePicker} = useImagePicker();
+  const download = useDownload();
 
   const modulePermissions = getPermissions('Files');
 
@@ -274,7 +280,7 @@ function RoughDrawingFiles(props) {
 
   const snackbar = useSnackbar();
   const {selectedProject} = useSelector(s => s.project);
-  const {files, loading} = useSelector(s => s.designModule);
+  const {files, versionData, loading} = useSelector(s => s.designModule);
 
   const project_id = selectedProject.id;
   const {data} = files;
@@ -307,41 +313,48 @@ function RoughDrawingFiles(props) {
     await deleteRDFile({rough_drawing_id: id, project_id, folder_id: folderId});
     getRDFiles({project_id, folder_id: folderId});
     toggleDialog();
-    snackbar.showMessage({
-      message: 'File Deleted!',
-      variant: 'success',
-    });
+    snackbar.showMessage({message: 'File Deleted!', variant: 'success'});
   };
 
   const versionDataHandler = async (id, type) => {
     setModalContentType('version');
-    addRDVersion({project_id, final_drawing_files_id: id});
+    getRDVersion({project_id, rough_drawing_id: id});
   };
 
-  const activityDataHandler = (action_type, id) => {
+  const handleDeleteVersion = async (version, versionType) => {
+    setModalContentType('version');
+    await deleteRDVersion({
+      project_id,
+      record_id: version.id,
+      record_type: versionType,
+    });
+    getRDVersion({project_id, rough_drawing_id: version.rough_drawing_id});
+  };
+
+  const activityDataHandler = (id, type) => {
     setModalContentType('activity');
-    getRDActivities({project_id, rough_drawing_id: id});
+    getRDActivities({project_id, rough_drawing_id: id, action_type: 'file'});
   };
 
   const onPressFile = async file => {
-    snackbar.showMessage({
-      message: 'Preparing your download...',
-      variant: 'warning',
-      autoHideDuration: 10000,
-    });
-    const fileUrl = getDownloadUrl(file);
-    const {dir} = await downloadFile(file, fileUrl);
+    toggleMenu();
+    const fileUrl = `${BASE_API_URL}roughdrawing/download_file`;
+    const name = file.title;
 
-    snackbar.showMessage({
-      message: 'File Downloaded!',
-      variant: 'success',
-      action: {label: 'Open', onPress: () => FileViewer.open(`file://${dir}`)},
+    const params = {project_id, rough_drawing_id: file.id};
+
+    download.link({
+      name,
+      link: fileUrl,
+      data: params,
+      showAction: false,
+      onFinish: ({dir}) => {
+        FileViewer.open(`file://${dir}`);
+      },
     });
   };
 
-  const onChoose = v => {
-    handleFileUpload(v);
-  };
+  const onChoose = v => handleFileUpload(v);
 
   const handleFileUpload = async file => {
     const {name} = file;
@@ -361,6 +374,46 @@ function RoughDrawingFiles(props) {
       variant: 'success',
     });
     loadFiles();
+  };
+
+  const downloadFile = file => {
+    return new Promise(resolve => {
+      const fileUrl = `${BASE_API_URL}roughdrawing/download_file`;
+      const name = file.title;
+
+      const params = {
+        project_id,
+        rough_drawing_id: file.id,
+      };
+
+      download.link({
+        name,
+        link: fileUrl,
+        data: params,
+        showAction: true,
+        onAction: ({dir}) => {
+          FileViewer.open(`file://${dir}`);
+          resolve(dir);
+        },
+      });
+    });
+  };
+
+  const handleNewVersionUpload = file_id => {
+    openImagePicker({
+      type: 'file',
+      onChoose: async v => {
+        const formData = new FormData();
+
+        formData.append('rough_drawing_id', file_id);
+        formData.append('myfile', v);
+        formData.append('folder_id', folderId);
+        formData.append('project_id', project_id);
+
+        await addRDVersion(formData);
+        getRDVersion({project_id, rough_drawing_id: file_id});
+      },
+    });
   };
 
   return (
@@ -383,7 +436,7 @@ function RoughDrawingFiles(props) {
         }
         data={data}
         extraData={data}
-        keyExtractor={i => i.toString()}
+        keyExtractor={i => i.id}
         contentContainerStyle={styles.contentContainerStyle}
         ListEmptyComponent={<NoResult title="No Data found!" />}
         renderItem={({item, index}) => (
@@ -416,14 +469,16 @@ function RoughDrawingFiles(props) {
           menuId,
           modelContentType,
           modalContent,
-          // versionData,
+          versionData,
           toggleMenu,
           setModalContentType,
           toggleDialog,
           versionDataHandler,
           activityDataHandler,
           toggleShareDialog,
-          // handleNewVersionUpload,
+          downloadFile,
+          handleNewVersionUpload,
+          handleDeleteVersion,
         }}
       />
 

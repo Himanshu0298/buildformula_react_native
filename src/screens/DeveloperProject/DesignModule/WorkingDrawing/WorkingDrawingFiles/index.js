@@ -1,6 +1,6 @@
 import React from 'react';
 import ProjectLayout from 'components/Molecules/Layout/ProjectLayout';
-import WorkingDrawingFiles from './FinalDrawingFiles';
+import WorkingDrawingFiles from './WorkingDrawingFiles';
 
 export default props => {
   return (

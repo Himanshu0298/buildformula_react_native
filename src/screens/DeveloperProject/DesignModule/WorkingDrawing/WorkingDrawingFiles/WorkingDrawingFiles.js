@@ -36,9 +36,9 @@ import {getPermissions, getShadow} from 'utils';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import Spinner from 'react-native-loading-spinner-overlay';
 import MenuDialog from '../Components/MenuDialog';
-import VersionDialog from '../Components/VersionDialog';
 import DeleteDialog from '../Components/DeleteDialog';
 import RenameDialogue from '../Components/RenameDialog';
+import VersionDialog from '../../RoughDrawing/Components/VersionDialog';
 
 const SNAP_POINTS = [0, '70%'];
 
@@ -168,7 +168,7 @@ function ActivityModal(props) {
         sections={processedActivities}
         extraData={processedActivities}
         showsVerticalScrollIndicator={false}
-        keyExtractor={(item, index) => index?.toString()}
+        keyExtractor={i => i.id}
         ItemSeparatorComponent={renderSeparator}
         contentContainerStyle={styles.activityScrollContainer}
         stickySectionHeadersEnabled={false}
@@ -260,7 +260,9 @@ function WorkingDrawingFiles(props) {
     renameWDFile,
     deleteWDFile,
     getWDActivities,
-    addRDVersion,
+    getWDVersion,
+    addWDVersion,
+    deleteWDVersion,
   } = useDesignModuleActions();
   const {openImagePicker} = useImagePicker();
 
@@ -274,11 +276,11 @@ function WorkingDrawingFiles(props) {
 
   const snackbar = useSnackbar();
   const {selectedProject} = useSelector(s => s.project);
-  const {files, loading} = useSelector(s => s.designModule);
+  const {files, versionData, loading} = useSelector(s => s.designModule);
+  console.log('-------->versionData123', versionData);
 
   const project_id = selectedProject.id;
   const {data} = files;
-  console.log('-------->WDFiles', data);
 
   React.useEffect(() => {
     loadFiles();
@@ -315,7 +317,7 @@ function WorkingDrawingFiles(props) {
 
   const versionDataHandler = async (id, type) => {
     setModalContentType('version');
-    addRDVersion({project_id, final_drawing_files_id: id});
+    getWDVersion({project_id, working_drawing_files_id: id});
   };
 
   const activityDataHandler = (action_type, id) => {
@@ -364,6 +366,35 @@ function WorkingDrawingFiles(props) {
     loadFiles();
   };
 
+  const handleNewVersionUpload = async file_id => {
+    openImagePicker({
+      type: 'file',
+      onChoose: async v => {
+        const formData = new FormData();
+
+        formData.append('workingdrawing_file_id', file_id);
+        formData.append('myfile', v);
+        formData.append('folder_id', folderId);
+        formData.append('project_id', project_id);
+
+        await addWDVersion(formData);
+        getWDVersion({project_id, working_drawing_files_id: file_id});
+      },
+    });
+  };
+  const handleDeleteVersion = async (version, versionType) => {
+    setModalContentType('version');
+    await deleteWDVersion({
+      project_id,
+      record_id: version.id,
+      record_type: versionType,
+    });
+    getWDVersion({
+      project_id,
+      working_drawing_files_id: version.working_drawing_files_id,
+    });
+  };
+
   return (
     <View style={styles.container}>
       <Spinner visible={loading} textContent="" />
@@ -384,7 +415,7 @@ function WorkingDrawingFiles(props) {
         }
         data={data}
         extraData={data}
-        keyExtractor={i => i.toString()}
+        keyExtractor={i => i.id}
         contentContainerStyle={styles.contentContainerStyle}
         ListEmptyComponent={<NoResult title="No Data found!" />}
         renderItem={({item, index}) => (
@@ -417,14 +448,15 @@ function WorkingDrawingFiles(props) {
           menuId,
           modelContentType,
           modalContent,
-          // versionData,
+          versionData,
           toggleMenu,
           setModalContentType,
           toggleDialog,
           versionDataHandler,
           activityDataHandler,
           toggleShareDialog,
-          // handleNewVersionUpload,
+          handleNewVersionUpload,
+          handleDeleteVersion,
         }}
       />
 
@@ -448,6 +480,7 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     backgroundColor: '#ffffff',
+    paddingHorizontal: 10,
   },
   Subheading: {
     fontSize: 20,
