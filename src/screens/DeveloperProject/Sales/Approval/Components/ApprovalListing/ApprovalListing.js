@@ -1,17 +1,23 @@
 import * as React from 'react';
 import {Caption, Divider, Subheading, withTheme} from 'react-native-paper';
-import {StyleSheet, View, Text, Image, ScrollView} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+} from 'react-native';
 import {theme} from 'styles/theme';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import UserImage from 'assets/images/approvalUser.png';
 import useSalesActions from 'redux/actions/salesActions';
 import {useSelector} from 'react-redux';
-import {useEffect} from 'react';
 import dayjs from 'dayjs';
 import UserAvatar from 'components/Atoms/UserAvatar';
-
-const DATA = [1, 2, 3];
+import ImageView from 'react-native-image-viewing';
+import {useState, useEffect} from 'react';
+import {isNumber} from 'lodash';
 
 const RequestedUser = props => {
   const {requested_user_id, created, approver_info} = props;
@@ -24,7 +30,6 @@ const RequestedUser = props => {
         style={styles.requestedImage}
       />
 
-      {/* <Image source={UserIcon} style={styles.requestedImage} /> */}
       <View style={styles.userData}>
         <View>
           <Caption>Requested by</Caption>
@@ -38,19 +43,24 @@ const RequestedUser = props => {
   );
 };
 
-const RenderImages = () => {
-  return (
-    <View style={styles.images}>
-      <Image source={UserImage} />
-    </View>
-  );
-};
-
 const ListingDescription = props => {
-  const {description, due_date, visitors_details, approver_info} = props;
+  const {description, due_date, visitors_details, userDetails} = props;
   const {first_name, last_name} = visitors_details || {};
+
+  const [imageIndex, setImageIndex] = useState(false);
+
+  const userImages = React.useMemo(() => {
+    return userDetails?.map(i => ({uri: i.file_url}));
+  }, [userDetails]);
+
   return (
     <View style={styles.descriptionContainer}>
+      <ImageView
+        images={userImages}
+        imageIndex={imageIndex}
+        visible={isNumber(imageIndex)}
+        onRequestClose={() => setImageIndex(false)}
+      />
       <Text style={styles.descriptionText}>{description}</Text>
       <View style={styles.date}>
         <Text>Due Date:</Text>
@@ -65,9 +75,13 @@ const ListingDescription = props => {
         </Text>
       </View>
       <View style={styles.imageContainer}>
-        {DATA.map(item => {
-          return <RenderImages item={item} approver_info={approver_info} />;
-        })}
+        {userImages?.map((image, index) => (
+          <TouchableOpacity
+            style={styles.imageIconContainer}
+            onPress={() => setImageIndex(index)}>
+            <Image source={image} style={styles.imageIcon} />
+          </TouchableOpacity>
+        ))}
       </View>
     </View>
   );
@@ -82,11 +96,11 @@ function ApprovalListing(props) {
   const {selectedProject} = useSelector(s => s.project);
   const {approvalsDetails} = useSelector(s => s.sales);
 
-  const {visitors_details, approver_info, record_details} = approvalsDetails;
-
-  console.log('-------->approver_info', approver_info);
-  // console.log('-------->visitors_details', visitors_details);
-  // console.log('-------->approvalsDetails', approvalsDetails);
+  const {
+    visitors_details,
+    approver_info,
+    record_docs: userDetails,
+  } = approvalsDetails;
 
   const projectId = selectedProject.id;
 
@@ -114,6 +128,7 @@ function ApprovalListing(props) {
       <ListingDescription
         {...route.params}
         visitors_details={visitors_details}
+        userDetails={userDetails}
       />
       <Divider style={styles.divider} />
       <RequestedUser {...route.params} approver_info={approver_info} />
@@ -139,10 +154,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingHorizontal: 10,
     padding: 10,
-  },
-  images: {
-    marginTop: 20,
-    marginRight: 10,
   },
   descriptionContainer: {
     flexGrow: 1,
@@ -192,6 +203,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     flexDirection: 'row',
     flexGrow: 1,
+  },
+  imageIcon: {
+    height: 50,
+    width: 50,
+  },
+  imageIconContainer: {
+    marginTop: 10,
   },
 });
 
