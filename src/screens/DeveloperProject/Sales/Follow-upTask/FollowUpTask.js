@@ -2,8 +2,10 @@ import * as React from 'react';
 import {SafeAreaView, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Text, withTheme, Subheading, Caption} from 'react-native-paper';
 import {theme} from 'styles/theme';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import {Agenda} from 'react-native-calendars';
+import {useSelector} from 'react-redux';
+import useSalesActions from 'redux/actions/salesActions';
 
 const Calendar = props => {
   const {navigation} = props;
@@ -70,6 +72,20 @@ const Calendar = props => {
 
 function FollowUpTask(props) {
   const {navigation, route} = props;
+
+  const {selectedProject} = useSelector(s => s.project);
+  const project_id = selectedProject.id;
+
+  const {todayFollowups} = useSelector(s => s.sales);
+
+  console.log('-------->todayFollowups', todayFollowups);
+
+  const {getFollowUpList} = useSalesActions();
+
+  useEffect(() => {
+    getFollowUpList({project_id, given_date: '2021-07-10'});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const navToAdd = () => {
     navigation.navigate('', {...route?.params});

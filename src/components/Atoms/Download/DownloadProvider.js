@@ -25,11 +25,13 @@ function DownloadProvider({children}) {
         onFinish,
         onAction,
       } = params;
+      console.log('--------> downloadProvide', params);
 
       try {
         setState(() => ({...DEFAULT_STATE, ...params, open: true}));
 
         const result = await downloadFile({name, downloadLink, base64, data});
+        console.log('-------->result', result);
 
         onFinish?.(result);
 

@@ -251,24 +251,32 @@ const reducer = (state = initialState, action = {}) => {
         loadingFollowups: true,
       };
     case `${GET_FOLLOWUP_LIST}_FULFILLED`: {
-      const {followups, todayFollowups} = payload;
+      // const {followups, todayFollowups} = payload;
 
-      const sortedFollowups = followups.sort(
-        (a, b) =>
-          dayjs(b.follow_up_date).unix() - dayjs(a.follow_up_date).unix(),
-      );
-      const sortedToday = todayFollowups.sort(
-        (a, b) =>
-          dayjs(b.follow_up_date).unix() - dayjs(a.follow_up_date).unix(),
-      );
+      // const sortedFollowups = followups.sort(
+      //   (a, b) =>
+      //     dayjs(b.follow_up_date).unix() - dayjs(a.follow_up_date).unix(),
+      // );
+      // const sortedToday = todayFollowups.sort(
+      //   (a, b) =>
+      //     dayjs(b.follow_up_date).unix() - dayjs(a.follow_up_date).unix(),
+      // );
 
       return {
         ...state,
         loadingFollowups: false,
-        followups: sortedFollowups,
-        todayFollowups: sortedToday,
+        // followups: sortedFollowups,
+        todayFollowups: payload,
       };
     }
+
+    case `${GET_FOLLOWUP_LIST}_REJECTED`:
+      return {
+        ...state,
+        loadingFollowups: false,
+        errorMessage: payload,
+      };
+
     // Approvals
 
     case `${GET_APPROVALS}_PENDING`:
@@ -328,13 +336,6 @@ const reducer = (state = initialState, action = {}) => {
       };
 
     // Followup List
-
-    case `${GET_FOLLOWUP_LIST}_REJECTED`:
-      return {
-        ...state,
-        loadingFollowups: false,
-        errorMessage: payload,
-      };
 
     case `${GET_PIPELINES}_PENDING`:
       return {

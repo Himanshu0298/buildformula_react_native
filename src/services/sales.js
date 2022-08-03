@@ -20,9 +20,7 @@ export default function useSalesServices() {
     getBrokerDetails: data => {
       return instance.post('/broker_details', data, config({multipart: false}));
     },
-    getFollowUpList: data => {
-      return instance.post('/followup/get_lists', data, config());
-    },
+
     getSalesData: data => {
       return instance.post(
         '/followup/other_info',
@@ -232,12 +230,22 @@ export default function useSalesServices() {
       return instance.post(
         '/bookingapproval/add_approvals',
         data,
-        config({multipart: false}),
+        config({multipart: true}),
       );
     },
     approvalDetails: data => {
       return instance.post(
         '/bookingapproval/details',
+        data,
+        config({multipart: false}),
+      );
+    },
+
+    // Follow_Up Task
+
+    getFollowUpList: data => {
+      return instance.post(
+        '/visitors/list_followups',
         data,
         config({multipart: false}),
       );
