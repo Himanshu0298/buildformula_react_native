@@ -235,6 +235,16 @@ export const DEVELOPER_DRAWER_ITEMS = [
           <MaterialCommunityIcons name="format-list-text" {...{color, size}} />
         ),
       },
+      {
+        route: 'PILisitng',
+        label: 'PI List',
+        icon: ({color, size}) => (
+          <MaterialCommunityIcons
+            name="frequently-asked-questions"
+            {...{color, size}}
+          />
+        ),
+      },
     ],
   },
   // {

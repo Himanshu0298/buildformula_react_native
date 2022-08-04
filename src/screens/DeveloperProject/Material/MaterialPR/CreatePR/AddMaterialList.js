@@ -26,62 +26,76 @@ const AddMaterialList = props => {
           <FlatList
             data={PRMaterialData}
             renderItem={({item}) => {
+              console.log(item);
               return (
                 <View style={styles.cardContainer}>
-                  <View style={styles.cardHeader}>
-                    <View style={styles.dataRow}>
-                      <Caption style={styles.lightData}>Category:</Caption>
-                      <Text>{item.category}</Text>
-                    </View>
-                    <View style={{flexDirection: 'row'}}>
-                      <View style={{marginRight: 10}}>
-                        <OpacityButton
-                          color="#4872f4"
-                          opacity={0.18}
-                          style={{borderRadius: 20, marginLeft: 10}}
-                          onPress={() => {
-                            navigation.navigate('CreatePRMaterial');
-                          }}>
-                          <MaterialIcons
-                            name="edit"
-                            color="#4872f4"
-                            size={13}
-                          />
-                        </OpacityButton>
+                  {/* <View><Text>Add Some Material</Text></View> */}
+                  {item.length === 0 ? (
+                    <Caption style={{alignSelf: 'center'}}>
+                      No Material Added
+                    </Caption>
+                  ) : (
+                    <View>
+                      <View style={styles.cardHeader}>
+                        <View style={styles.dataRow}>
+                          <Caption style={styles.lightData}>Category:</Caption>
+                          <Text>{item.category}</Text>
+                        </View>
+                        <View style={{flexDirection: 'row'}}>
+                          <View style={{marginRight: 10}}>
+                            <OpacityButton
+                              color="#4872f4"
+                              opacity={0.18}
+                              style={{borderRadius: 20, marginLeft: 10}}
+                              onPress={() => {
+                                navigation.navigate('CreatePRMaterial');
+                              }}>
+                              <MaterialIcons
+                                name="edit"
+                                color="#4872f4"
+                                size={13}
+                              />
+                            </OpacityButton>
+                          </View>
+                          <View>
+                            <OpacityButton
+                              color="#FF5D5D"
+                              opacity={0.18}
+                              onPress={() => {
+                                alert.show({
+                                  title: 'Alert',
+                                  message: 'Are you sure want to delete this?',
+                                  dismissable: false,
+                                });
+                              }}
+                              style={{borderRadius: 20}}>
+                              <MaterialIcons
+                                name="delete"
+                                color="#FF5D5D"
+                                size={13}
+                              />
+                            </OpacityButton>
+                          </View>
+                        </View>
                       </View>
-                      <View>
-                        <OpacityButton
-                          color="#FF5D5D"
-                          opacity={0.18}
-                          onPress={() => {
-                            alert.show({
-                              title: 'Alert',
-                              message: 'Are you sure want to delete this?',
-                              dismissable: false,
-                            });
-                          }}
-                          style={{borderRadius: 20}}>
-                          <MaterialIcons
-                            name="delete"
-                            color="#FF5D5D"
-                            size={13}
-                          />
-                        </OpacityButton>
+                      <View style={styles.dataRow}>
+                        <Caption style={styles.lightData}>
+                          Sub Category:
+                        </Caption>
+                        <Text>OPC</Text>
+                      </View>
+                      <View style={styles.dataRow}>
+                        <Caption style={styles.lightData}>Unit:</Caption>
+                        <Text>CUM or m3</Text>
+                      </View>
+                      <View style={styles.dataRow}>
+                        <Caption style={styles.lightData}>
+                          Required date:
+                        </Caption>
+                        <Text>15 July, 2022</Text>
                       </View>
                     </View>
-                  </View>
-                  <View style={styles.dataRow}>
-                    <Caption style={styles.lightData}>Sub Category:</Caption>
-                    <Text>OPC</Text>
-                  </View>
-                  <View style={styles.dataRow}>
-                    <Caption style={styles.lightData}>Unit:</Caption>
-                    <Text>CUM or m3</Text>
-                  </View>
-                  <View style={styles.dataRow}>
-                    <Caption style={styles.lightData}>Required date:</Caption>
-                    <Text>15 July, 2022</Text>
-                  </View>
+                  )}
                 </View>
               );
             }}
@@ -91,7 +105,7 @@ const AddMaterialList = props => {
           style={styles.btnAddMore}
           onPress={() => navigation.navigate('CreatePRMaterial')}>
           <MaterialIcons name="add" color="#4872f4" size={17} />
-          <Text style={styles.addmoreTxt}>Add More</Text>
+          <Text style={styles.addmoreTxt}>Add Material</Text>
         </TouchableOpacity>
         <View>
           <ActionButtons

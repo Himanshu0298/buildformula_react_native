@@ -41,4 +41,11 @@ export const PRList = [
     approvedBy: 'Louis Sossou',
     date: '15th June, 2022',
   },
+  {
+    id: 7,
+    status: 'Approved',
+    name: 'Cement',
+    approvedBy: 'Louis Sossou',
+    date: '16th June, 2022',
+  },
 ];

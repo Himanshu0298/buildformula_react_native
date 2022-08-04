@@ -62,7 +62,6 @@ const CustomerList = ({navigation}) => {
         renderItem={({item, index}) => {
           return (
             <TouchableOpacity
-              // style={{borderWidth: 1}}
               onPress={() => {
                 navigation.navigate('CustomerInnerDetails', {
                   id: `${item.visitor_id}`,

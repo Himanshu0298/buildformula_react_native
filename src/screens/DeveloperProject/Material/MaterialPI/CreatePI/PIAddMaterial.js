@@ -1,11 +1,13 @@
-import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
-import React, {useState} from 'react';
+import {StyleSheet, View, SafeAreaView} from 'react-native';
+import React from 'react';
 
 import {Formik} from 'formik';
 import RenderInput from 'components/Atoms/RenderInput';
 import RenderSelect from 'components/Atoms/RenderSelect';
 import RenderDatePicker from 'components/Atoms/RenderDatePicker';
 import ActionButtons from 'components/Atoms/ActionButtons';
+import {Title} from 'react-native-paper';
+import RenderSelcetMultiple from 'components/Atoms/RenderSelectMultiple';
 
 const onSubmit = () => {
   console.log('Create PR');
@@ -13,25 +15,32 @@ const onSubmit = () => {
 
 const options = ['A', 'B', 'C'];
 
-const CreatePRMaterial = props => {
+const PIAddMaterial = props => {
   const {navigation} = props;
+
   return (
-    <View style={{flexGrow: 1, paddingTop: 50}}>
+    <SafeAreaView style={{flexGrow: 1}}>
       <View style={styles.mainContainer}>
-        <View style={styles.headerContainer}>
-          <Text style={styles.headerText}>Add Material</Text>
-        </View>
+        <Title style={styles.headerText}>Add Material</Title>
         <Formik
           validateOnBlur={false}
           validateOnChange={false}
           initialValues={{
             category: '',
             subCategory: '',
-            requireddate: '',
+            requiredDate: '',
             qty: '',
+            lom: '',
           }}
           onSubmit={onSubmit}>
-          {({values, errors, handleChange, handleBlur, handleSubmit}) => {
+          {({
+            values,
+            errors,
+            handleChange,
+            handleBlur,
+            handleSubmit,
+            setFieldValue,
+          }) => {
             return (
               <View style={{flexGrow: 1}}>
                 <RenderSelect
@@ -63,9 +72,9 @@ const CreatePRMaterial = props => {
                   editable={false}
                 />
                 <RenderDatePicker
-                  name="requireddate"
-                  label="Required Date"
+                  name="requiredDate"
                   style={styles.inputStyles}
+                  label="Required Date"
                   value={values.start_date}
                   error={errors.start_date}
                   onChange={() => console.log('date')}
@@ -73,7 +82,6 @@ const CreatePRMaterial = props => {
                 <RenderInput
                   name="qty"
                   label="Quantity"
-                  containerStyles={styles.inputStyles}
                   maxLength={10}
                   value={values.subject}
                   onChangeText={handleChange('qty')}
@@ -81,13 +89,26 @@ const CreatePRMaterial = props => {
                   autoCapitalize="none"
                   returnKeyType="next"
                   error={errors.subject}
+                  style={styles.inputStyles}
+                />
+
+                <RenderSelcetMultiple
+                  name="lom"
+                  label="List of Makes"
+                  options={options}
+                  value={values.interested_property}
+                  containerStyles={styles.input}
+                  error={errors.interested_property}
+                  onSelect={v => {
+                    setFieldValue('interested_property', v);
+                  }}
                 />
                 <View style={styles.btnContainer}>
                   <ActionButtons
                     cancelLabel="Cancel"
                     submitLabel="Save"
                     onCancel={navigation.goBack}
-                    onSubmit={() => navigation.navigate('AddMaterialList')}
+                    onSubmit={() => navigation.navigate('PIMaterialList')}
                   />
                 </View>
               </View>
@@ -95,11 +116,11 @@ const CreatePRMaterial = props => {
           }}
         </Formik>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
-export default CreatePRMaterial;
+export default PIAddMaterial;
 
 const styles = StyleSheet.create({
   mainContainer: {
@@ -114,8 +135,8 @@ const styles = StyleSheet.create({
     marginVertical: 8,
   },
   btnContainer: {
-    flex: 1,
+    flexGrow: 1,
     justifyContent: 'flex-end',
-    marginBottom: 50,
+    marginBottom: 20,
   },
 });

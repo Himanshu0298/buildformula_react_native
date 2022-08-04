@@ -1,22 +1,19 @@
 import {StyleSheet, Text, View, FlatList, Dimensions} from 'react-native';
-import React, {useState} from 'react';
+import React from 'react';
 import ProjectHeader from 'components/Molecules/Layout/ProjectHeader';
-import {IconButton, Caption} from 'react-native-paper';
+import {IconButton, Caption, Title} from 'react-native-paper';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
-import ActionButtons from 'components/Atoms/ActionButtons';
 import {useAlert} from 'components/Atoms/Alert';
-import PRMaterialData from '../CreatePR/PRMaterialData';
+import PRMaterialData from '../../MaterialPR/CreatePR/PRMaterialData';
 
 const {height} = Dimensions.get('window');
 
-const dynamicHeight = height - 245;
+const dynamicHeight = height - 180;
 
-const PRPreview = props => {
+const PIPreview = props => {
   const {navigation} = props;
   const alert = useAlert();
-
-  const [status, setStatus] = useState();
 
   return (
     <View>
@@ -26,28 +23,27 @@ const PRPreview = props => {
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <IconButton
               icon="keyboard-backspace"
-              size={22}
+              size={20}
               color="#4872f4"
               style={{backgroundColor: 'rgba(72, 114, 244, 0.1)'}}
               onPress={() => navigation.goBack()}
             />
-            <Text style={styles.headerText}>PR Preview</Text>
+            <Title>PI Preview</Title>
           </View>
           <View
             style={{flexDirection: 'row', marginEnd: 10, alignSelf: 'center'}}>
-            {status == null ? (
-              <View style={{marginRight: 15}}>
-                <OpacityButton
-                  color="#4872f4"
-                  opacity={0.18}
-                  style={{borderRadius: 20, marginLeft: 15}}
-                  onPress={() => {
-                    navigation.navigate('CreatePR');
-                  }}>
-                  <MaterialIcons name="edit" color="#4872f4" size={13} />
-                </OpacityButton>
-              </View>
-            ) : null}
+            <View style={{marginRight: 15}}>
+              <OpacityButton
+                color="#4872f4"
+                opacity={0.18}
+                style={{borderRadius: 20, marginLeft: 15}}
+                onPress={() => {
+                  navigation.navigate('CreatePI');
+                }}>
+                <MaterialIcons name="edit" color="#4872f4" size={13} />
+              </OpacityButton>
+            </View>
+
             <View>
               <OpacityButton
                 color="#FF5D5D"
@@ -94,89 +90,85 @@ const PRPreview = props => {
                       <Caption style={styles.lightData}>Quantity:</Caption>
                       <Text>{item.qty}</Text>
                     </View>
+                    <View style={styles.dataRow}>
+                      <Caption style={styles.lightData}>List of Makes:</Caption>
+                      <View style={styles.lomContainer}>
+                        <Text style={styles.lom}>Birla</Text>
+                        <Text style={styles.lom}>Ambhuja</Text>
+                        <Text style={styles.lom}>Aditya</Text>
+                      </View>
+                    </View>
                   </View>
                 );
               }}
               ListHeaderComponent={
                 <View>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                    }}>
-                    <View style={styles.dataRow}>
+                  <View style={styles.dataCells}>
+                    <View>
+                      <Caption style={styles.lightData}>Inquiry ID:</Caption>
+                      <Text>022</Text>
+                    </View>
+                    <View>
                       <Caption style={styles.lightData}>PR ID:</Caption>
                       <Text>022</Text>
                     </View>
-                    {status === 'PR Rejected' ? (
-                      <View style={{alignSelf: 'center', flexDirection: 'row'}}>
-                        <MaterialIcons
-                          name="cancel"
-                          size={18}
-                          color="#FF5D5D"
-                        />
-                        <Text
-                          style={{
-                            color: '#FF5D5D',
-                            marginLeft: 5,
-                          }}>
-                          PR Rejected
-                        </Text>
-                      </View>
-                    ) : status === 'PR Approved' ? (
-                      <View style={{alignSelf: 'center', flexDirection: 'row'}}>
-                        <MaterialIcons
-                          name="check-circle"
-                          size={18}
-                          color="#07CA03"
-                        />
-                        <Text
-                          style={{
-                            color: '#07CA03',
-                            marginLeft: 5,
-                          }}>
-                          PR Approved
-                        </Text>
-                      </View>
-                    ) : null}
                   </View>
-                  <View style={styles.dataRow}>
-                    <Caption style={styles.lightData}>Subject:</Caption>
-                    <Text>OPC</Text>
+                  <View style={styles.dataCells}>
+                    <View>
+                      <Caption style={styles.lightData}>Inquiry Date:</Caption>
+                      <Text>02 Nov, 2022</Text>
+                    </View>
+                    <View>
+                      <Caption style={styles.lightData}>Validity Date:</Caption>
+                      <Text>02 Nov, 2022</Text>
+                    </View>
                   </View>
-                  <View style={styles.dataRow}>
-                    <Caption style={styles.lightData}>Required Vendor:</Caption>
-                    <Text>Hiren tarale</Text>
+                  <View>
+                    <Caption style={styles.lightData}>Project Name:</Caption>
+                    <Text>Satyamev Builder</Text>
                   </View>
-                  <View style={styles.dataRow}>
-                    <Caption style={styles.lightData}>Required For:</Caption>
-                    <Text>(Task Link, ID, Name)</Text>
+                  <View style={styles.dataCells}>
+                    <View>
+                      <Caption style={styles.lightData}>Contact Name:</Caption>
+                      <Text>Himanshu Nanikwal</Text>
+                    </View>
+                    <View>
+                      <Caption style={styles.lightData}>
+                        Contact Number:
+                      </Caption>
+                      <Text>+91 8460159550</Text>
+                    </View>
                   </View>
-                  <View style={styles.dataRow}>
-                    <Caption style={styles.lightData}>Remark:</Caption>
+                  <View style={styles.dataCells}>
+                    <View>
+                      <Caption style={styles.lightData}>GST Number:</Caption>
+                      <Text>22XXXXXXX32ZW</Text>
+                    </View>
+                    <View>
+                      <Caption style={styles.lightData}>PAN Number:</Caption>
+                      <Text>EOPPXXXX5J</Text>
+                    </View>
+                  </View>
+                  <View>
+                    <Caption style={styles.lightData}>Billing Address:</Caption>
                     <Text style={{flexShrink: 1}}>
-                      Please Soon as Possible Order it we have not enough
-                      cement.ssible Order it we have not enough cement.
+                      1st Floor, Road, above Central Bank of India, near SBI
+                      Bank, Patiya, Naroda Patiya, Naroda, Ahmedabad, Gujarat
+                      382340.
                     </Text>
                   </View>
-                  <View style={styles.dataRow}>
-                    <Caption style={styles.lightData}>Creater Name:</Caption>
-                    <Text>Jaismin Fataniya</Text>
-                  </View>
-                  <View style={styles.dataRow}>
-                    <Caption style={styles.lightData}>Created on:</Caption>
-                    <Text>15 April, 2022</Text>
+                  <View>
+                    <Caption style={styles.lightData}>
+                      Delivery Address:
+                    </Caption>
+                    <Text style={{flexShrink: 1}}>
+                      1st Floor, Road, above Central Bank of India, near SBI
+                      Bank, Patiya, Naroda Patiya, Naroda, Ahmedabad, Gujarat
+                      382340.
+                    </Text>
                   </View>
                 </View>
               }
-            />
-          </View>
-          <View>
-            <ActionButtons
-              cancelLabel="Reject"
-              submitLabel="Approve"
-              onCancel={() => setStatus('PR Rejected')}
-              onSubmit={() => setStatus('PR Approved')}
             />
           </View>
         </View>
@@ -185,7 +177,7 @@ const PRPreview = props => {
   );
 };
 
-export default PRPreview;
+export default PIPreview;
 
 const styles = StyleSheet.create({
   mainContainer: {
@@ -230,5 +222,20 @@ const styles = StyleSheet.create({
   cardHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+  },
+  lomContainer: {
+    flexDirection: 'row',
+  },
+  lom: {
+    paddingHorizontal: 5,
+    backgroundColor: '#4872f4',
+    color: '#fff',
+    marginHorizontal: 2.5,
+  },
+  dataCells: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginVertical: 5,
   },
 });

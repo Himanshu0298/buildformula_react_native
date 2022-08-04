@@ -6,7 +6,7 @@ import RenderInput from 'components/Atoms/RenderInput';
 import RenderSelect from 'components/Atoms/RenderSelect';
 import RenderTextBox from 'components/Atoms/RenderTextbox';
 import ActionButtons from 'components/Atoms/ActionButtons';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import {Title} from 'react-native-paper';
 
 const schema = Yup.object().shape({
   subject: Yup.string().label('subject').required('Subject is Required'),
@@ -39,7 +39,7 @@ const CreatePR = props => {
           onSubmit={onSubmit}>
           {({values, errors, handleChange, handleBlur, handleSubmit}) => {
             return (
-              <View>
+              <View style={{flexGrow: 1}}>
                 <RenderInput
                   name="subject"
                   label="Subject"
@@ -83,19 +83,19 @@ const CreatePR = props => {
                   onBlur={handleBlur('remark')}
                   onSubmitEditing={handleSubmit}
                 />
+                <View style={styles.btnContainer}>
+                  <ActionButtons
+                    style={{justifyContent: 'flex-end'}}
+                    cancelLabel="Cancel"
+                    submitLabel="Next"
+                    onCancel={navigation.goBack}
+                    onSubmit={() => navigation.navigate('AddMaterialList')}
+                  />
+                </View>
               </View>
             );
           }}
         </Formik>
-      </View>
-      <View style={styles.btnContainer}>
-        <ActionButtons
-          style={{justifyContent: 'flex-end'}}
-          cancelLabel="Cancel"
-          submitLabel="Next"
-          onCancel={navigation.goBack}
-          onSubmit={() => navigation.navigate('AddMaterialList')}
-        />
       </View>
     </View>
   );
@@ -106,6 +106,7 @@ export default CreatePR;
 const styles = StyleSheet.create({
   mainContainer: {
     padding: 5,
+    flexGrow: 1,
   },
   headerText: {
     fontSize: 22,
@@ -115,7 +116,7 @@ const styles = StyleSheet.create({
     marginVertical: 8,
   },
   btnContainer: {
-    flex: 1,
+    flexGrow: 1,
     justifyContent: 'flex-end',
     marginBottom: 50,
   },

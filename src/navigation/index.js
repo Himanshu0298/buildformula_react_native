@@ -113,6 +113,13 @@ import CreatePR from 'screens/DeveloperProject/Material/MaterialPR/CreatePR/Crea
 import CreatePRMaterial from 'screens/DeveloperProject/Material/MaterialPR/CreatePR/CreatePRMaterial';
 import PRPreview from 'screens/DeveloperProject/Material/MaterialPR/PRPreview/PRPreview';
 import AddMaterialList from 'screens/DeveloperProject/Material/MaterialPR/CreatePR/AddMaterialList';
+import PILisitng from 'screens/DeveloperProject/Material/MaterialPI/PIListing';
+import FROMPR from 'screens/DeveloperProject/Material/MaterialPI/FROMPR';
+import CreatePI from 'screens/DeveloperProject/Material/MaterialPI/CreatePI/CreatePI';
+import PIMaterialList from 'screens/DeveloperProject/Material/MaterialPI/CreatePI/PIMaterialList';
+import PIAddMaterial from 'screens/DeveloperProject/Material/MaterialPI/CreatePI/PIAddMaterial';
+import PITnC from 'screens/DeveloperProject/Material/MaterialPI/CreatePI/PITnC';
+import PIPreview from 'screens/DeveloperProject/Material/MaterialPI/CreatePI/PIPreview';
 
 // Project : Files screens
 import Files from '../screens/DeveloperProject/Files';
@@ -342,6 +349,7 @@ function AppStackNavigator() {
               <Stack.Screen name="OrderDetail" component={OrderDetail} />
               <Stack.Screen name="MaterialList" component={MaterialList} />
               <Stack.Screen name="AddChallan" component={AddChallan} />
+
               <Stack.Screen name="PRList" component={PRListing} />
               <Stack.Screen name="CreatePR" component={CreatePR} />
               <Stack.Screen
@@ -353,10 +361,26 @@ function AppStackNavigator() {
                 name="AddMaterialList"
                 component={AddMaterialList}
               />
+
+              <Stack.Screen name="PILisitng" component={PILisitng} />
+
+              <Stack.Screen name="FROMPR" component={FROMPR} />
+
+              <Stack.Screen name="CreatePI" component={CreatePI} />
+
+              <Stack.Screen name="PIMaterialList" component={PIMaterialList} />
+
+              <Stack.Screen name="PIAddMaterial" component={PIAddMaterial} />
+
+              <Stack.Screen name="PITnC" component={PITnC} />
+
+              <Stack.Screen name="PIPreview" component={PIPreview} />
+
               <Stack.Screen
                 name="SelectMaterials"
                 component={SelectMaterials}
               />
+
               <Stack.Screen
                 name="AddMaterialInfo"
                 component={AddMaterialInfo}
