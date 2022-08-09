@@ -8,7 +8,8 @@ import {
   Button,
   Subheading,
 } from 'react-native-paper';
-import PdfIcon from 'assets/images/pdf_icon.png';
+import FileIcon from 'assets/images/file_icon.png';
+
 import dayjs from 'dayjs';
 import {getDownloadUrl, downloadFile, checkDownloaded} from 'utils/download';
 import {useSnackbar} from 'components/Atoms/Snackbar';
@@ -58,7 +59,7 @@ function VersionFile(props) {
       <View style={styles.versionFiles}>
         <View style={styles.sectionContainer}>
           <View style={styles.iconContainer}>
-            <Image source={PdfIcon} style={styles.pdfIcon} />
+            <Image source={FileIcon} style={styles.pdfIcon} />
           </View>
           <View style={styles.currentVersion}>
             <Text style={styles.text}>
@@ -172,7 +173,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
   },
   pdfIcon: {
-    width: 38,
+    width: 32,
     height: 38,
   },
   text: {

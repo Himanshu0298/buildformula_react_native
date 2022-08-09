@@ -27,10 +27,22 @@ export const useConfig = () => {
   };
 };
 
-// instance.interceptors.request.use((request) => {
-//   console.log('-----> Request', request);
-//   return request;
-// });
+// instance.interceptors.request.use(
+//   request => {
+//     console.log('-----> Request', request);
+//     return request;
+//   },
+//   async function (error) {
+//     const originalRequest = error.config;
+//     if (error.response.status === 403 && !originalRequest._retry) {
+//       originalRequest._retry = true;
+//       const access_token = await refreshAccessToken();
+//       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+//       return axiosApiInstance(originalRequest);
+//     }
+//     return Promise.reject(error);
+//   },
+// );
 
 // Add a response interceptor
 instance.interceptors.response.use(

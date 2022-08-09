@@ -7,8 +7,7 @@ import {
   Image,
 } from 'react-native';
 import {Button, IconButton, Subheading, Text} from 'react-native-paper';
-import {useSnackbar} from 'components/Atoms/Snackbar';
-import {checkDownloaded, getDownloadUrl} from 'utils/download';
+import {checkDownloaded} from 'utils/download';
 import {theme} from 'styles/theme';
 import FileViewer from 'react-native-file-viewer';
 import FolderIcon from 'assets/images/folder_icon.png';
@@ -150,7 +149,7 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   PdfIcon: {
-    width: 38,
+    width: 32,
     height: 38,
     paddingLeft: 10,
     marginLeft: 10,

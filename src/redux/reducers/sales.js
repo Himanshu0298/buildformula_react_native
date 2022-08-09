@@ -40,6 +40,9 @@ import {
   GET_APPROVERS,
   CREATE_APPROVAL,
   APPROVAL_DETAILS,
+  UPDATE_BROKER_REMARK,
+  GET_FOLLOWUP_DETAILS_LIST,
+  UPDATE_COMPLETE_TASK,
 } from '../actions/actionTypes';
 
 const initialState = {
@@ -84,6 +87,7 @@ const initialState = {
   approvalList: [],
   approversList: [],
   approvalsDetails: {},
+  approvalDetailsList: [],
 };
 
 const reducer = (state = initialState, action = {}) => {
@@ -277,6 +281,25 @@ const reducer = (state = initialState, action = {}) => {
         errorMessage: payload,
       };
 
+    case `${GET_FOLLOWUP_DETAILS_LIST}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${GET_FOLLOWUP_DETAILS_LIST}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+        approvalDetailsList: payload,
+      };
+    }
+    case `${GET_FOLLOWUP_DETAILS_LIST}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+        errorMessage: action.payload,
+      };
+
     // Approvals
 
     case `${GET_APPROVALS}_PENDING`:
@@ -288,7 +311,7 @@ const reducer = (state = initialState, action = {}) => {
       return {
         ...state,
         loading: false,
-        approvalList: payload,
+        approvalList: payload.sort((a, b) => (a.created < b.created ? 1 : -1)),
       };
     }
     case `${GET_APPROVALS}_REJECTED`:
@@ -383,10 +406,11 @@ const reducer = (state = initialState, action = {}) => {
         loadingBankList: true,
       };
     case `${GET_BANK_LIST}_FULFILLED`: {
+      console.log('-------->bankList payload', payload);
       return {
         ...state,
         loadingBankList: false,
-        bankList: payload.map(({id, title}) => ({
+        bankList: payload?.map(({id, title}) => ({
           label: title,
           value: id,
         })),
@@ -443,6 +467,7 @@ const reducer = (state = initialState, action = {}) => {
         loading: true,
       };
     case `${GET_BOOKING_FORM_OTP_STATUS}_FULFILLED`: {
+      console.log('-------->payloadBookingotp', payload);
       return {
         ...state,
         loading: false,
@@ -607,8 +632,10 @@ const reducer = (state = initialState, action = {}) => {
     case `${CONFIRM_BOOKING_OTP}_PENDING`:
     case `${SET_BOOKING_OTP_STATUS}_PENDING`:
     case `${DELETE_BROKER}_PENDING`:
+    case `${UPDATE_BROKER_REMARK}_PENDING`:
     case `${RESEND_BOOKING_OTP}_PENDING`:
     case `${CREATE_APPROVAL}_PENDING`:
+    case `${UPDATE_COMPLETE_TASK}_PENDING`:
     case `${ADD_PIPELINE}_PENDING`: {
       return {
         ...state,
@@ -628,8 +655,10 @@ const reducer = (state = initialState, action = {}) => {
     case `${CONFIRM_BOOKING_OTP}_FULFILLED`:
     case `${SET_BOOKING_OTP_STATUS}_FULFILLED`:
     case `${DELETE_BROKER}_FULFILLED`:
+    case `${UPDATE_BROKER_REMARK}_FULFILLED`:
     case `${RESEND_BOOKING_OTP}_FULFILLED`:
     case `${CREATE_APPROVAL}_FULFILLED`:
+    case `${UPDATE_COMPLETE_TASK}_FULFILLED`:
     case `${ADD_PIPELINE}_FULFILLED`: {
       return {
         ...state,
@@ -650,8 +679,10 @@ const reducer = (state = initialState, action = {}) => {
     case `${SET_BOOKING_OTP_STATUS}_REJECTED`:
     case `${UN_HOLD_UNIT_BOOKING}_REJECTED`:
     case `${DELETE_BROKER}_REJECTED`:
+    case `${UPDATE_BROKER_REMARK}_REJECTED`:
     case `${RESEND_BOOKING_OTP}_REJECTED`:
     case `${CREATE_APPROVAL}_REJECTED`:
+    case `${UPDATE_COMPLETE_TASK}_REJECTED`:
     case `${ADD_PIPELINE}_REJECTED`: {
       return {
         ...state,

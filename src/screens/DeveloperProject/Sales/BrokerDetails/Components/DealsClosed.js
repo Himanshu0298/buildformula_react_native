@@ -10,19 +10,13 @@ import Layout from 'utils/Layout';
 function SingleUnit(props) {
   const {sectionLeft, sectionRight} = props;
   return (
-    <View style={{flexDirection: 'row', marginBottom: 10}}>
-      <View
-        style={{
-          borderRightWidth: 1,
-          borderRightColor: 'grey',
-          flexDirection: 'row',
-          paddingRight: 10,
-        }}>
-        <Text style={{color: 'grey'}}>{sectionLeft.label}: </Text>
+    <View style={styles.singleUnitContainer}>
+      <View style={styles.labelContainer}>
+        <Text style={styles.labelText}>{sectionLeft.label}: </Text>
         <Text>{sectionLeft.value} </Text>
       </View>
-      <View style={{flexDirection: 'row', marginLeft: 10}}>
-        <Text style={{color: 'grey'}}>{sectionRight.label}: </Text>
+      <View style={styles.rightSection}>
+        <Text style={styles.labelText}>{sectionRight.label}: </Text>
         <Text>{sectionRight.value} </Text>
       </View>
     </View>
@@ -42,21 +36,9 @@ const DealsClosed = props => {
     const isHtml = remark?.includes('<') && remark?.includes('>');
 
     return (
-      <View
-        style={{
-          borderWidth: 1,
-          marginTop: 20,
-          borderColor: '#C3C3C3',
-          margin: 10,
-        }}>
-        <View style={{padding: 10}}>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              marginBottom: 20,
-            }}>
+      <View style={styles.container}>
+        <View style={styles.mainContainer}>
+          <View style={styles.propertyContainer}>
             <Title>Property</Title>
             <Caption>{value.booking_date}</Caption>
           </View>
@@ -69,15 +51,14 @@ const DealsClosed = props => {
             sectionRight={{label: 'Unit', value: value.Unitnumber}}
           />
         </View>
-        <Divider style={{height: 2}} />
-        <View
-          style={{paddingHorizontal: 10, paddingTop: 20, paddingBottom: 20}}>
-          <View style={{flexDirection: 'row'}}>
+        <Divider style={styles.divider} />
+        <View style={styles.remarkContainer}>
+          <View style={styles.remark}>
             <Text>Remark</Text>
             <OpacityButton
               color={theme.colors.primary}
               opacity={0.18}
-              style={{borderRadius: 20, marginLeft: 10, marginBottom: 10}}
+              style={styles.button}
               onPress={() => {
                 handleRemarkPress(remark);
               }}>
@@ -89,7 +70,7 @@ const DealsClosed = props => {
             </OpacityButton>
           </View>
           {!isHtml ? (
-            <Text style={{marginTop: 10}}>{remark}</Text>
+            <Text style={styles.remarkText}>{remark}</Text>
           ) : (
             <RenderHtml
               source={{html: remark}}
@@ -105,8 +86,55 @@ const DealsClosed = props => {
 export default DealsClosed;
 
 const styles = StyleSheet.create({
-  // Button: {
-  //   padding: 10,
-  //   margin: 10,
-  // },
+  singleUnitContainer: {
+    flexDirection: 'row',
+    marginBottom: 10,
+  },
+  labelContainer: {
+    borderRightWidth: 1,
+    borderRightColor: 'grey',
+    flexDirection: 'row',
+    paddingRight: 10,
+  },
+  labelText: {
+    color: 'grey',
+  },
+  rightSection: {
+    flexDirection: 'row',
+    marginLeft: 10,
+  },
+  container: {
+    borderWidth: 1,
+    marginTop: 20,
+    borderColor: '#C3C3C3',
+    margin: 10,
+  },
+  propertyContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  mainContainer: {
+    padding: 10,
+  },
+  divider: {
+    height: 2,
+  },
+  remarkContainer: {
+    paddingHorizontal: 10,
+    paddingTop: 20,
+    paddingBottom: 20,
+  },
+  remark: {
+    flexDirection: 'row',
+  },
+  button: {
+    borderRadius: 20,
+    marginLeft: 10,
+    marginBottom: 10,
+  },
+  remarkText: {
+    marginTop: 10,
+  },
 });

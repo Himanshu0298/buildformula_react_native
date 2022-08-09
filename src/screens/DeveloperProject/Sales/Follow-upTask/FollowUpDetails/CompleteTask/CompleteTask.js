@@ -5,41 +5,52 @@ import useSalesActions from 'redux/actions/salesActions';
 import {useSelector} from 'react-redux';
 import {theme} from 'styles/theme';
 import RichTextEditor from 'components/Atoms/RichTextEditor';
-import RenderInput from 'components/Atoms/RenderInput';
 import * as Yup from 'yup';
 import {Formik} from 'formik';
+import {RenderError} from 'components/Atoms/RenderInput';
 
 const schema = Yup.object().shape({
   remark: Yup.string('Invalid').required('Required'),
 });
 
 // TODO: review this
-function Remark(props) {
+function CompleteTask(props) {
   const {navigation, route} = props;
-  const {remark} = route?.params || {};
-
-  const isHtml = remark?.includes('<') && remark?.includes('>');
+  const {date, time, visitorID} = route?.params || {};
 
   const {selectedProject} = useSelector(s => s.project);
-  const {deleteBroker} = useSalesActions();
+  const project_id = selectedProject.id;
 
-  const projectId = selectedProject.id;
+  const {updateCompleteTask, getFollowUpDetailsList} = useSalesActions();
 
-  const onSubmit = values => {
-    console.log('----->values', values);
+  const loadData = () => {
+    getFollowUpDetailsList({
+      project_id,
+      visitor_followup_id: visitorID,
+      followup_date: date,
+    });
   };
 
-  const richText = React.createRef();
-  // || useRef();
+  const onSubmit = async values => {
+    await updateCompleteTask({
+      project_id,
+      visitor_followup_id: visitorID,
+      followuptask_remark: values.remark.toString(),
+      next_followup_save: 'yes',
+      followup_date: date,
+      followup_time: time,
+    });
+    loadData();
+    navigation.goBack();
+  };
 
   return (
-    <ScrollView style={{padding: 20}}>
-      <Text style={{color: theme.colors.primary}}>Remark</Text>
-      {/* <RichToolbar editor={richText} /> */}
+    <ScrollView style={styles.container}>
+      <Text style={styles.subheading}>Remark</Text>
       <Formik
         validateOnBlur={false}
         validateOnChange={false}
-        initialValues={{remark}}
+        initialValues={{}}
         validationSchema={schema}
         onSubmit={onSubmit}>
         {({
@@ -52,41 +63,29 @@ function Remark(props) {
         }) => {
           return (
             <View style={styles.dialogContentContainer}>
-              {console.log('----->errors', errors)}
-              {/* <RenderInput
-                name="remark"
-                multiline
-                numberOfLines={8}
-                label="Remark"
-                value={values.remark}
-                onChangeText={handleChange('remark')}
-                onBlur={handleBlur('remark')}
-                onSubmitEditing={handleSubmit}
-                returnKeyType="done"
-                error={errors.remark}
-              /> */}
-
               <RichTextEditor
                 name="remark"
                 placeholder="Remark"
+                height={150}
                 value={values.remark}
+                error={errors.remark}
                 onChangeText={value => {
                   setFieldValue('remark', value);
                 }}
               />
+              <RenderError error={errors.remark} style={styles.renderError} />
 
               <View style={styles.actionContainer}>
                 <Button
-                  style={{flex: 1, marginHorizontal: 5}}
-                  contentStyle={{padding: 3}}
+                  style={styles.button}
                   theme={{roundness: 15}}
                   onPress={navigation.goBack}>
                   Back
                 </Button>
                 <Button
-                  style={{flex: 1, marginHorizontal: 5}}
+                  style={styles.button}
                   mode="contained"
-                  contentStyle={{padding: 3}}
+                  contentStyle={styles.contentStyle}
                   theme={{roundness: 15}}
                   onPress={handleSubmit}>
                   Save
@@ -114,6 +113,25 @@ const styles = StyleSheet.create({
   //     justifyContent: 'center',
   //     marginTop: 20,
   //   },
+  container: {
+    padding: 20,
+    marginTop: 10,
+  },
+  subheading: {
+    color: theme.colors.primary,
+    margin: 5,
+    fontSize: 18,
+  },
+  button: {
+    flex: 1,
+    marginHorizontal: 5,
+  },
+  contentStyle: {
+    padding: 3,
+  },
+  renderError: {
+    marginTop: 5,
+  },
 });
 
-export default withTheme(Remark);
+export default withTheme(CompleteTask);

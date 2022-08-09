@@ -89,7 +89,6 @@ import AddRole from 'screens/DeveloperProject/UserRoles/AddRole';
 import SalesPipelineRearrange from 'screens/DeveloperProject/Sales/SalesPipelineRearrange';
 import BrokerDetails from 'screens/DeveloperProject/Sales/BrokerDetails';
 import AddBroker from 'screens/DeveloperProject/Sales/AddBroker';
-import Remark from 'screens/DeveloperProject/Sales/BrokerDetails/Components/Remark';
 import WorkMaster from 'screens/DeveloperProject/ProjectManagement/WorkMaster';
 import WorkDetails from 'screens/DeveloperProject/ProjectManagement/WBS/WorkDetails';
 import ProgressRecords from 'screens/DeveloperProject/ProjectManagement/WBS/ProgressRecords';
@@ -147,6 +146,8 @@ import DocumentDownload from 'screens/DeveloperProject/DocumentGenerater/Documen
 import ProjectNotification from 'screens/Notification/ProjectNotification';
 import CustomerInnerDetails from 'screens/DeveloperProject/CustomerSection/CustomerInnerDetails';
 import EditCustomerDetails from 'screens/DeveloperProject/CustomerSection/CustomerInnerDetails/EditDetails/';
+import Remark from 'screens/DeveloperProject/Sales/BrokerDetails/Components/Remark';
+import CompleteTask from 'screens/DeveloperProject/Sales/Follow-upTask/FollowUpDetails/CompleteTask';
 /** *********** Developer Project Sub Screens End   ************ */
 
 const optionalConfigObject = {
@@ -266,6 +267,7 @@ function AppStackNavigator() {
                 name="FollowUpDetails"
                 component={FollowUpDetails}
               />
+              <Stack.Screen name="CompleteTask" component={CompleteTask} />
             </Stack.Group>
             <Stack.Group screenOptions={{headerShown: false}}>
               <Stack.Screen name="BC_Step_One" component={BC_SelectStructure} />

@@ -91,7 +91,9 @@ function Approval(props) {
         contentContainerStyle={styles.scrollView}
         showsVerticalScrollIndicator={false}>
         {approvalList?.map((item, index) => {
-          return <ApprovalList item={item} index={index} {...props} />;
+          return (
+            <ApprovalList item={item} key={item.id} index={index} {...props} />
+          );
         })}
       </ScrollView>
 

@@ -11,6 +11,12 @@ import {useSelector} from 'react-redux';
 import useCustomerActions from 'redux/actions/customerActions';
 import {getShadow} from 'utils';
 
+const FILTER = [
+  {value: 'recent', label: 'Recent'},
+  {value: 'asc', label: 'Ascending'},
+  {value: 'desc', label: 'Descending'},
+];
+
 const CustomerList = ({navigation}) => {
   const {selectedProject} = useSelector(s => s.project);
 
@@ -19,8 +25,6 @@ const CustomerList = ({navigation}) => {
   const {getVisitorCustomerList} = useCustomerActions();
 
   const {customerList = []} = useSelector(s => s.customer);
-
-  console.log('-------->customerList', customerList);
 
   useEffect(() => {
     getVisitorCustomerList({project_id});
@@ -31,7 +35,7 @@ const CustomerList = ({navigation}) => {
 
   const toggleMenu = () => setVisible(v => !v);
 
-  const [filter, setFilter] = React.useState('name');
+  const [sort, setSort] = React.useState('recent');
 
   const [searchQuery, setSearchQuery] = React.useState('');
 
@@ -45,24 +49,37 @@ const CustomerList = ({navigation}) => {
     );
   }, [customerList, searchQuery]);
 
-  console.log('-------->filteredCustomer  ', filteredCustomer);
+  const sortedCustomer = useMemo(() => {
+    switch (sort) {
+      case 'recent':
+        return filteredCustomer.sort((a, b) =>
+          a.created < b.created ? 1 : -1,
+        );
 
-  const FILTER = [
-    {value: 'recent', label: 'Recent'},
-    {value: 'asc', label: 'Ascending'},
-    {value: 'desc', label: 'Descending'},
-  ];
+      case 'asc':
+        return filteredCustomer.sort((a, b) =>
+          a.first_name.localeCompare(b.first_name),
+        );
+
+      case 'desc':
+        return filteredCustomer.sort((a, b) =>
+          b.first_name.localeCompare(a.first_name),
+        );
+
+      default:
+        return filteredCustomer;
+    }
+  }, [filteredCustomer, sort]);
 
   function listItem() {
     return (
       <FlatList
-        data={filteredCustomer}
+        data={sortedCustomer}
         keyExtractor={item => item.id}
         contentContainerStyle={styles.contentContainerStyle}
         renderItem={({item, index}) => {
           return (
             <TouchableOpacity
-              // style={{borderWidth: 1}}
               onPress={() => {
                 navigation.navigate('CustomerInnerDetails', {
                   id: `${item.visitor_id}`,
@@ -74,15 +91,18 @@ const CustomerList = ({navigation}) => {
               <View style={styles.listContainer} key={item.id}>
                 <View style={styles.customerContainer}>
                   <View style={styles.idBox}>
-                    <Text>{index + 1}</Text>
+                    <Text style={styles.text}>{index + 1}</Text>
                   </View>
                   <View style={styles.customerDetails}>
-                    <Text>{`${item.first_name} ${item.last_name}`}</Text>
+                    <Text
+                      style={
+                        styles.text
+                      }>{`${item.first_name} ${item.last_name}`}</Text>
                     <Caption>{item.phone}</Caption>
                   </View>
                 </View>
                 <View style={styles.customerBookings}>
-                  <Text>{item.linked_property}</Text>
+                  <Text style={styles.text}>{item.linked_property}</Text>
                 </View>
               </View>
             </TouchableOpacity>
@@ -110,7 +130,7 @@ const CustomerList = ({navigation}) => {
             />
           }>
           {FILTER.map((i, index) => {
-            const active = i.value === filter;
+            const active = i.value === sort;
             return (
               <Menu.Item
                 index={index?.toString()}
@@ -118,7 +138,7 @@ const CustomerList = ({navigation}) => {
                 style={active ? styles.menuItem : {}}
                 titleStyle={active ? styles.titleStyle : {}}
                 onPress={() => {
-                  setFilter(i.value);
+                  setSort(i.value);
                   toggleMenu();
                 }}
               />
@@ -205,5 +225,8 @@ const styles = StyleSheet.create({
   },
   titleStyle: {
     color: '#fff',
+  },
+  text: {
+    color: '#000',
   },
 });

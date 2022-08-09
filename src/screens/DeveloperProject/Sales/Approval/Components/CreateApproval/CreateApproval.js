@@ -18,6 +18,7 @@ import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import {useImagePicker} from 'hooks';
 import FileIcon from 'assets/images/file_icon.png';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const schema = Yup.object().shape({
   title: Yup.string('Required').required('Required'),
@@ -85,9 +86,11 @@ function ApprovalRequestForm(props) {
     openImagePicker({
       type: 'file',
       onChoose: file => {
-        const attachments = values.attachments || [];
-        attachments.push(file);
-        setFieldValue('attachments', attachments);
+        if (file.uri) {
+          const attachments = values.attachments || [];
+          attachments.push(file);
+          setFieldValue('attachments', attachments);
+        }
       },
     });
   };
@@ -186,11 +189,11 @@ function ApprovalRequestForm(props) {
 
 const CreateApproval = props => {
   const {navigation} = props;
-  const {createApproval, getApprovers} = useSalesActions();
+  const {createApproval, getApprovers, getApprovals} = useSalesActions();
 
   const {selectedProject} = useSelector(s => s.project);
 
-  const {approversList} = useSelector(s => s.sales);
+  const {approversList, loading} = useSelector(s => s.sales);
   const projectId = selectedProject.id;
 
   const filteredOptions = useMemo(() => {
@@ -225,25 +228,29 @@ const CreateApproval = props => {
     formData.append('approver_id', values.approval);
 
     await createApproval(formData);
-    loadData();
+    getApprovals({project_id: projectId});
     navigation.goBack();
   };
 
   return (
-    <Formik
-      validateOnBlur={false}
-      validateOnChange={false}
-      initialValues={{}}
-      validationSchema={schema}
-      onSubmit={handleSubmit}>
-      {formikProps => (
-        <ApprovalRequestForm
-          {...{formikProps}}
-          {...props}
-          ApprovalOptions={filteredOptions}
-        />
-      )}
-    </Formik>
+    <>
+      <Spinner visible={loading} textContent="" />
+
+      <Formik
+        validateOnBlur={false}
+        validateOnChange={false}
+        initialValues={{}}
+        validationSchema={schema}
+        onSubmit={handleSubmit}>
+        {formikProps => (
+          <ApprovalRequestForm
+            {...{formikProps}}
+            {...props}
+            ApprovalOptions={filteredOptions}
+          />
+        )}
+      </Formik>
+    </>
   );
 };
 

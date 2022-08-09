@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   PdfIcon: {
-    width: 38,
+    width: 32,
     height: 38,
     paddingLeft: 10,
     marginLeft: 10,

@@ -6,31 +6,19 @@ import {useState, useEffect} from 'react';
 import {Agenda} from 'react-native-calendars';
 import {useSelector} from 'react-redux';
 import useSalesActions from 'redux/actions/salesActions';
+import NoResult from 'components/Atoms/NoResult';
 
 const Calendar = props => {
-  const {navigation} = props;
-  const [items, setItems] = useState({
-    '2022-07-20': [
-      {name: 'Mihir Patel', task: 'call for visit', cookies: true},
-      {name: 'Mihir Patel', task: 'call for visit', cookies: true},
-    ],
-    '2022-07-19': [
-      {name: 'Mihir Patel', task: 'call for visit', cookies: false},
-    ],
-    '2022-07-18': [
-      {name: 'Mihir Patel', task: 'call for visit', cookies: false},
-    ],
-    '2022-07-21': [
-      {name: 'Mihir Patel', task: 'call for visit', cookies: false},
-    ],
-    '2022-07-15': [
-      {name: 'Mihir Patel', task: 'call for visit', cookies: false},
-    ],
-  });
+  const {navigation, todayFollowups} = props;
+
+  const [items, setItems] = useState(todayFollowups);
 
   const renderItem = item => {
     const navToDetails = () => {
-      navigation.navigate('FollowUpDetails');
+      navigation.navigate('FollowUpDetails', {
+        date: item.followup_date,
+        visitorId: item.visitor_followup_id,
+      });
     };
     return (
       <View style={styles.renderContainer}>
@@ -38,9 +26,12 @@ const Calendar = props => {
           onPress={navToDetails}
           style={styles.cardMainContainer}>
           <View style={styles.itemContainer}>
-            <Text>10:00 AM - 10:25 AM</Text>
-            <Text style={styles.nameText}>{item.name}</Text>
-            <Caption style={styles.taskText}>{item.task}</Caption>
+            <Text>{`${item.followup_time}`}</Text>
+            <Text
+              style={
+                styles.nameText
+              }>{`${item.first_name} ${item.last_name}`}</Text>
+            <Caption style={styles.taskText}>{item.task_title}</Caption>
           </View>
           <View style={styles.avatarText}>
             <Text style={styles.avatarTextStyle}>DT</Text>
@@ -57,6 +48,14 @@ const Calendar = props => {
         rowHasChanged={(r1, r2) => {
           return r1.text !== r2.text;
         }}
+        renderEmptyData={() => {
+          return (
+            <View style={{flex: 1, alignItems: 'center'}}>
+              <NoResult title="No data found" />
+            </View>
+          );
+        }}
+        futureScrollRange={4}
         theme={{
           agendaDayTextColor: '#000',
           agendaDayNumColor: 'green',
@@ -78,12 +77,13 @@ function FollowUpTask(props) {
 
   const {todayFollowups} = useSelector(s => s.sales);
 
-  console.log('-------->todayFollowups', todayFollowups);
+  const givenDate = Object.keys(todayFollowups);
+  console.log('-------->givenDate', givenDate);
 
   const {getFollowUpList} = useSalesActions();
 
   useEffect(() => {
-    getFollowUpList({project_id, given_date: '2021-07-10'});
+    getFollowUpList({project_id, given_date: '20-07-2022'});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -97,7 +97,7 @@ function FollowUpTask(props) {
         <View style={styles.headingContainer}>
           <Subheading style={styles.Subheading}>Follow-up Task</Subheading>
         </View>
-        <Calendar {...props} />
+        <Calendar todayFollowups={todayFollowups} {...props} />
       </View>
     </View>
   );

@@ -19,6 +19,7 @@ export default function useSalesActions() {
     addPipeline,
     deletePipeline,
     deleteBroker,
+    updateBrokerRemark,
     moveVisitor,
     getUnitsBookingStatus,
     lockUnit,
@@ -48,6 +49,8 @@ export default function useSalesActions() {
     createApproval,
     approvalDetails,
     getFollowUpList,
+    getFollowUpDetailsList,
+    updateCompleteTask,
   } = useSalesServices();
 
   return {
@@ -600,12 +603,28 @@ export default function useSalesActions() {
         },
       }),
 
+    updateBrokerRemark: params =>
+      dispatch({
+        type: types.UPDATE_BROKER_REMARK,
+        payload: async () => {
+          try {
+            const response = _res(await updateBrokerRemark(params));
+            const {data} = response;
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
     getBrokerDetails: params =>
       dispatch({
         type: types.GET_BROKER_DETAILS,
         payload: async () => {
           try {
-            console.log('----->params', params);
             const response = _res(await getBrokerDetails(params));
             const {data} = response;
 
@@ -730,6 +749,40 @@ export default function useSalesActions() {
           try {
             const response = _res(await getFollowUpList(params));
             const {data} = response;
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    getFollowUpDetailsList: params =>
+      dispatch({
+        type: types.GET_FOLLOWUP_DETAILS_LIST,
+        payload: async () => {
+          try {
+            const response = _res(await getFollowUpDetailsList(params));
+            const {data} = response;
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    updateCompleteTask: params =>
+      dispatch({
+        type: types.UPDATE_COMPLETE_TASK,
+        payload: async () => {
+          try {
+            const response = _res(await updateCompleteTask(params));
+            const {data, msg} = response;
+            snackbar.showMessage({message: msg});
 
             return Promise.resolve(data);
           } catch (error) {
