@@ -22,7 +22,6 @@ const CustDetails = props => {
   const {visitors_info, linkedProperty, BrokerData} = props;
   const {first_name, last_name, email, phone, address, dob, anniversary_date} =
     visitors_info || {};
-
   return (
     <ScrollView style={styles.custContainer}>
       <View style={styles.valueContainer}>
@@ -45,7 +44,9 @@ const CustDetails = props => {
       </View>
       <View style={styles.valueContainer}>
         <Text style={styles.label}>Broker</Text>
-        <Text style={styles.value}>{BrokerData}</Text>
+        <Text style={styles.value}>
+          {BrokerData ? BrokerData?.label : '---'}
+        </Text>
       </View>
       <View style={styles.valueContainer}>
         <Text style={styles.label}>Birthdate</Text>
@@ -93,14 +94,18 @@ const CustomerInnerDetails = ({navigation, route: routeData}) => {
     s => s.customer,
   );
 
-  const {visitors_info, brokers} = customerListDetails || {};
+  const {visitors_info = {}, brokers = []} = customerListDetails || {};
+
+  const brokerOptions = useMemo(() => {
+    return brokers?.map(i => ({
+      label: `${i.first_name} ${i.last_name}`,
+      value: i.id,
+    }));
+  }, [brokers]);
 
   const BrokerData = useMemo(() => {
-    const brokerList = brokers?.map(
-      item => `${item.first_name} ${item.last_name}`,
-    );
-    return brokerList;
-  }, [brokers]);
+    return brokerOptions?.find(item => item.value === visitors_info.brokers_id);
+  }, [brokerOptions, visitors_info.brokers_id]);
 
   useEffect(() => {
     getVisitorCustomerListDetails({project_id, visitors_id: visitorId});

@@ -16,7 +16,11 @@ function ProjectHeader(props) {
   const {user} = useSelector(s => s.user);
 
   const navToNotification = () => {
-    navigation.push('ProjectNotification', {showLogo});
+    if (showLogo) {
+      navigation.push('GlobalNotification', {showLogo});
+    } else {
+      navigation.push('ProjectNotification', {showLogo});
+    }
   };
 
   const navToProfile = () => navigation.push('Profile');

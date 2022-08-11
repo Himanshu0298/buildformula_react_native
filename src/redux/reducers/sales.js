@@ -65,7 +65,7 @@ const initialState = {
   timerData: {showTimer: false},
   visitors: [],
   followups: [],
-  todayFollowups: [],
+  followUpsData: {},
   bhkOptions: {},
   occupationOptions: [],
   sourceTypeOptions: [],
@@ -255,22 +255,11 @@ const reducer = (state = initialState, action = {}) => {
         loadingFollowups: true,
       };
     case `${GET_FOLLOWUP_LIST}_FULFILLED`: {
-      // const {followups, todayFollowups} = payload;
-
-      // const sortedFollowups = followups.sort(
-      //   (a, b) =>
-      //     dayjs(b.follow_up_date).unix() - dayjs(a.follow_up_date).unix(),
-      // );
-      // const sortedToday = todayFollowups.sort(
-      //   (a, b) =>
-      //     dayjs(b.follow_up_date).unix() - dayjs(a.follow_up_date).unix(),
-      // );
-
       return {
         ...state,
         loadingFollowups: false,
         // followups: sortedFollowups,
-        todayFollowups: payload,
+        followUpsData: {...state.followUpsData, ...payload},
       };
     }
 
@@ -406,7 +395,6 @@ const reducer = (state = initialState, action = {}) => {
         loadingBankList: true,
       };
     case `${GET_BANK_LIST}_FULFILLED`: {
-      console.log('-------->bankList payload', payload);
       return {
         ...state,
         loadingBankList: false,

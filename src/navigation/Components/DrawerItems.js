@@ -90,7 +90,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
 
       {
         route: 'DocumentGenerater',
-        label: 'Document Generater',
+        label: 'Document Generator',
         icon: ({color, size}) => (
           <MaterialCommunityIcons
             name="account-multiple-outline"

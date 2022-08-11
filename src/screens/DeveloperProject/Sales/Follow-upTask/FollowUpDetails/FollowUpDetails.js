@@ -22,12 +22,17 @@ import Spinner from 'react-native-loading-spinner-overlay';
 
 const TaskList = props => {
   const {item, navigation} = props;
-  console.log('-------->item', item);
 
   const isHtml = item.f_remarks?.includes('<') && item.f_remarks?.includes('>');
-  const source =
-    item.completed_remarks?.includes('<') &&
-    item.completed_remarks?.includes('>');
+
+  const source = {
+    html: `<span style="color: '#DEE1E4';margin-left: 2px;font-size: 15px">
+       ${item.completed_remarks}</span>`,
+  };
+
+  const navToDetails = () => {
+    navigation.navigate('VisitorDetails', {visitorId: item.visitor_id});
+  };
 
   const handleTask = () => {
     navigation.navigate('CompleteTask', {
@@ -70,11 +75,11 @@ const TaskList = props => {
           <View style={styles.remarkContainer}>
             <Text style={styles.remarkText}>Complete Remark</Text>
             {!source ? (
-              <Caption>{item.completed_remarks}</Caption>
+              <Caption>{source}</Caption>
             ) : (
               <View style={styles.renderHtml}>
                 <RenderHtml
-                  source={{html: item.completed_remarks}}
+                  source={source}
                   contentWidth={Layout.window.width}
                 />
               </View>
@@ -97,7 +102,7 @@ const TaskList = props => {
         <Button
           style={styles.taskButton}
           mode="outlined"
-          onPress={() => console.log('-------->view')}>
+          onPress={navToDetails}>
           View Details
         </Button>
         {item.completed === 'no' ? (

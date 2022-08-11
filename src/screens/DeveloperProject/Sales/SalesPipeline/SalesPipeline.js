@@ -169,16 +169,16 @@ function AddContactDialog({open, t, handleClose, moveContact}) {
   const [searchQuery, setSearchQuery] = React.useState();
   const [selectedVisitor, setSelectedVisitor] = React.useState();
 
-  const {visitorSuggestions} = useSelector(s => s.sales);
+  const {visitorSuggestions = []} = useSelector(s => s.sales);
 
   const filteredVisitors = React.useMemo(() => {
     if (searchQuery) {
-      return visitorSuggestions.filter(visitor => {
+      return visitorSuggestions?.filter(visitor => {
         return (
-          visitor.first_name.includes(searchQuery) ||
-          visitor.last_name.includes(searchQuery) ||
-          visitor.phone.includes(searchQuery) ||
-          visitor.email.includes(searchQuery)
+          visitor?.first_name?.includes(searchQuery) ||
+          visitor?.last_name?.includes(searchQuery) ||
+          visitor?.phone?.includes(searchQuery) ||
+          visitor?.email?.includes(searchQuery)
         );
       });
     }

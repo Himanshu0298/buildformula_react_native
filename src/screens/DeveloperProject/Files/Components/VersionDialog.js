@@ -15,7 +15,8 @@ import FileViewer from 'react-native-file-viewer';
 import {useDownload} from 'components/Atoms/Download';
 
 function VersionFile(props) {
-  const {theme, modulePermissions, version, countVersion} = props;
+  const {theme, modulePermissions, version, countVersion, handleDeleteVersion} =
+    props;
 
   const download = useDownload();
 
@@ -65,11 +66,7 @@ function VersionFile(props) {
           <View style={styles.iconContainer}>
             <Image source={PdfIcon} style={styles.pdfIcon} />
           </View>
-          <View
-            style={{
-              flexGrow: 1,
-              justifyContent: 'space-around',
-            }}>
+          <View style={styles.versionContainer}>
             <Text style={styles.text}>
               {!countVersion ? 'Current Version' : `Version ${countVersion}`}
             </Text>
@@ -79,12 +76,7 @@ function VersionFile(props) {
           </View>
         </View>
         <View style={styles.sectionContainer}>
-          <View
-            style={{
-              flexGrow: 1,
-              justifyContent: 'space-around',
-              alignItems: 'flex-end',
-            }}>
+          <View style={styles.versionDateContainer}>
             <Text style={styles.date}>
               {dayjs(version?.created).format('DD MMM YYYY')}
             </Text>
@@ -93,7 +85,7 @@ function VersionFile(props) {
             ) : downloaded ? (
               <Button
                 compact
-                labelStyle={{fontSize: 13, marginVertical: 3}}
+                labelStyle={styles.labelStyle}
                 onPress={() => openFile()}>
                 Open
               </Button>
@@ -115,10 +107,12 @@ function VersionFile(props) {
                 <Divider />
                 <Menu.Item
                   icon="delete"
-                  onPress={() => {
-                    // TODO: handle delete
-                    console.log('-----> delete');
-                  }}
+                  onPress={() =>
+                    handleDeleteVersion(
+                      version,
+                      !countVersion ? 'current' : 'version',
+                    )
+                  }
                   title="Delete"
                 />
               </>
@@ -138,6 +132,7 @@ function VersionDialog(props) {
     modalContent,
     versionData,
     handleNewVersionUpload,
+    handleDeleteVersion,
   } = props;
 
   const filteredVersion = useMemo(() => {
@@ -153,7 +148,7 @@ function VersionDialog(props) {
             uppercase={false}
             mode="contained"
             compact
-            labelStyle={{fontSize: 12}}
+            labelStyle={styles.labelStyleButton}
             onPress={() => handleNewVersionUpload(modalContent.id)}>
             Add New Version
           </Button>
@@ -167,6 +162,7 @@ function VersionDialog(props) {
             version={version}
             key={index}
             countVersion={index}
+            handleDeleteVersion={handleDeleteVersion}
           />
         ))}
       </View>
@@ -210,6 +206,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingBottom: 15,
+  },
+  versionContainer: {
+    flexGrow: 1,
+    justifyContent: 'space-around',
+  },
+  versionDateContainer: {
+    flexGrow: 1,
+    justifyContent: 'space-around',
+    alignItems: 'flex-end',
+  },
+  labelStyle: {
+    fontSize: 13,
+    marginVertical: 3,
+  },
+  labelStyleButton: {
+    fontSize: 12,
   },
 });
 

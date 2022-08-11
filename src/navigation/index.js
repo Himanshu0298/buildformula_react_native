@@ -20,7 +20,9 @@ import ResetPassword from 'screens/Auth/ResetPassword';
 // Home Screen
 // User Purchased PRoject Screens
 // Notification Screen
-import Notification from 'screens/Notification';
+import ProjectNotification from 'screens/Notification/ProjectNotification';
+import GlobalNotification from 'screens/Notification/GlobalNotification';
+
 // Profile Screen
 import Profile from 'screens/UserAccount/Profile';
 import EditProfile from 'screens/UserAccount/EditProfile';
@@ -53,6 +55,14 @@ import HoldBookingHistory from 'screens/DeveloperProject/Sales/BookingChart/Hold
 import BookingRates from 'screens/DeveloperProject/Sales/BookingChart/BookingRates';
 import BookingPayment from 'screens/DeveloperProject/Sales/BookingChart/BookingPayment';
 import BrokerList from 'screens/DeveloperProject/Sales/BrokerList';
+import Approval from 'screens/DeveloperProject/Sales/Approval';
+import CreateApproval from 'screens/DeveloperProject/Sales/Approval/Components/CreateApproval';
+import ApprovalListing from 'screens/DeveloperProject/Sales/Approval/Components/ApprovalListing';
+import FollowUpTask from 'screens/DeveloperProject/Sales/Follow-upTask';
+import FollowUpDetails from 'screens/DeveloperProject/Sales/Follow-upTask/FollowUpDetails';
+import Remark from 'screens/DeveloperProject/Sales/BrokerDetails/Components/Remark';
+import CompleteTask from 'screens/DeveloperProject/Sales/Follow-upTask/FollowUpDetails/CompleteTask';
+
 // Project : Customer Section
 import CS_SelectStructure from 'screens/DeveloperProject/CustomerSection/SelectStructure';
 import CS_SelectTower from 'screens/DeveloperProject/CustomerSection/SelectTower';
@@ -68,6 +78,9 @@ import PaymentCollections from 'screens/DeveloperProject/CustomerSection/Payment
 import AddCollection from 'screens/DeveloperProject/CustomerSection/AddCollection';
 import PaymentSchedule from 'screens/DeveloperProject/CustomerSection/PaymentSchedule';
 import CustomerList from 'screens/DeveloperProject/CustomerSection/CustomerList';
+import CustomerInnerDetails from 'screens/DeveloperProject/CustomerSection/CustomerInnerDetails';
+import EditCustomerDetails from 'screens/DeveloperProject/CustomerSection/CustomerInnerDetails/EditDetails/';
+
 // Project : Design Modules
 import RoughDrawingFiles from 'screens/DeveloperProject/DesignModule/RoughDrawing/RoughDrawingFiles';
 import RoughDrawingFolders from 'screens/DeveloperProject/DesignModule/RoughDrawing/RoughDrawingFolders';
@@ -105,6 +118,10 @@ import MaterialGRN from '../screens/DeveloperProject/Material/MaterialGRN';
 import OrderDetail from '../screens/DeveloperProject/Material/OrderDetail';
 import MaterialList from '../screens/DeveloperProject/Material/MaterialList';
 import DeliveryDetails from 'screens/DeveloperProject/Material/DeliveryDetails';
+import AddChallan from 'screens/DeveloperProject/Material/DeliveryDetails/AddChallan';
+import SelectMaterials from 'screens/DeveloperProject/Material/DeliveryDetails/SelectMaterial';
+import AddMaterialInfo from 'screens/DeveloperProject/Material/DeliveryDetails/AddMaterialChallan';
+import AddVehicleInfo from 'screens/DeveloperProject/Material/DeliveryDetails/AddVehicleChallan';
 
 // Project : Files screens
 import Files from '../screens/DeveloperProject/Files';
@@ -132,22 +149,8 @@ import SignUp from '../screens/Auth/SignUp';
 import Login from '../screens/Auth/Login';
 import LanguageSelect from '../screens/Auth/LanguageSelect';
 import DrawerContent from './Components/DrawerContent';
-import AddChallan from 'screens/DeveloperProject/Material/DeliveryDetails/AddChallan';
-import SelectMaterials from 'screens/DeveloperProject/Material/DeliveryDetails/SelectMaterial';
-import AddMaterialInfo from 'screens/DeveloperProject/Material/DeliveryDetails/AddMaterialChallan';
-import AddVehicleInfo from 'screens/DeveloperProject/Material/DeliveryDetails/AddVehicleChallan';
 import DocumentGenerater from 'screens/DeveloperProject/DocumentGenerater';
-import Approval from 'screens/DeveloperProject/Sales/Approval';
-import CreateApproval from 'screens/DeveloperProject/Sales/Approval/Components/CreateApproval';
-import ApprovalListing from 'screens/DeveloperProject/Sales/Approval/Components/ApprovalListing';
-import FollowUpTask from 'screens/DeveloperProject/Sales/Follow-upTask';
-import FollowUpDetails from 'screens/DeveloperProject/Sales/Follow-upTask/FollowUpDetails';
 import DocumentDownload from 'screens/DeveloperProject/DocumentGenerater/Documents/DocumentDownload';
-import ProjectNotification from 'screens/Notification/ProjectNotification';
-import CustomerInnerDetails from 'screens/DeveloperProject/CustomerSection/CustomerInnerDetails';
-import EditCustomerDetails from 'screens/DeveloperProject/CustomerSection/CustomerInnerDetails/EditDetails/';
-import Remark from 'screens/DeveloperProject/Sales/BrokerDetails/Components/Remark';
-import CompleteTask from 'screens/DeveloperProject/Sales/Follow-upTask/FollowUpDetails/CompleteTask';
 /** *********** Developer Project Sub Screens End   ************ */
 
 const optionalConfigObject = {
@@ -229,7 +232,10 @@ function AppStackNavigator() {
           <Stack.Screen name="ChangePasswordStepTwo" component={StepTwo} />
           <Stack.Screen name="ChangePasswordStepThree" component={StepThree} />
           <Stack.Screen name="Search" component={SearchScreen} />
-          <Stack.Screen name="Notification" component={Notification} />
+          <Stack.Screen
+            name="GlobalNotification"
+            component={GlobalNotification}
+          />
           <Stack.Screen
             name="ProjectNotification"
             component={ProjectNotification}

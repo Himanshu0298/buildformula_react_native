@@ -1,6 +1,6 @@
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import React from 'react';
-import {Text, View, StyleSheet} from 'react-native';
+import {Text, View, StyleSheet, ScrollView} from 'react-native';
 import {Caption, Divider, Title} from 'react-native-paper';
 import {theme} from 'styles/theme';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -30,57 +30,61 @@ const DealsClosed = props => {
     navigation.navigate('Remark', {remark});
   };
 
-  return dealsClosed?.map(value => {
-    const remark = value.Remark;
+  return (
+    <ScrollView style={styles.dealsClosedContainer}>
+      {dealsClosed?.map(value => {
+        const remark = value.Remark;
 
-    const isHtml = remark?.includes('<') && remark?.includes('>');
+        const isHtml = remark?.includes('<') && remark?.includes('>');
 
-    return (
-      <View style={styles.container}>
-        <View style={styles.mainContainer}>
-          <View style={styles.propertyContainer}>
-            <Title>Property</Title>
-            <Caption>{value.booking_date}</Caption>
-          </View>
-          <SingleUnit
-            sectionLeft={{label: 'Type', value: value.projectType}}
-            sectionRight={{label: 'Tower', value: value.Tower}}
-          />
-          <SingleUnit
-            sectionLeft={{label: 'Floor', value: value.Floor}}
-            sectionRight={{label: 'Unit', value: value.Unitnumber}}
-          />
-        </View>
-        <Divider style={styles.divider} />
-        <View style={styles.remarkContainer}>
-          <View style={styles.remark}>
-            <Text>Remark</Text>
-            <OpacityButton
-              color={theme.colors.primary}
-              opacity={0.18}
-              style={styles.button}
-              onPress={() => {
-                handleRemarkPress(remark);
-              }}>
-              <MaterialIcons
-                name="edit"
-                color={theme.colors.primary}
-                size={10}
+        return (
+          <View Style={styles.container}>
+            <View style={styles.mainContainer}>
+              <View style={styles.propertyContainer}>
+                <Title>Property</Title>
+                <Caption>{value.booking_date}</Caption>
+              </View>
+              <SingleUnit
+                sectionLeft={{label: 'Type', value: value.projectType}}
+                sectionRight={{label: 'Tower', value: value.Tower}}
               />
-            </OpacityButton>
+              <SingleUnit
+                sectionLeft={{label: 'Floor', value: value.Floor}}
+                sectionRight={{label: 'Unit', value: value.Unitnumber}}
+              />
+            </View>
+            <Divider style={styles.divider} />
+            <View style={styles.remarkContainer}>
+              <View style={styles.remark}>
+                <Text>Remark</Text>
+                <OpacityButton
+                  color={theme.colors.primary}
+                  opacity={0.18}
+                  style={styles.button}
+                  onPress={() => {
+                    handleRemarkPress(remark);
+                  }}>
+                  <MaterialIcons
+                    name="edit"
+                    color={theme.colors.primary}
+                    size={10}
+                  />
+                </OpacityButton>
+              </View>
+              {!isHtml ? (
+                <Text style={styles.remarkText}>{remark}</Text>
+              ) : (
+                <RenderHtml
+                  source={{html: remark}}
+                  contentWidth={Layout.window.width}
+                />
+              )}
+            </View>
           </View>
-          {!isHtml ? (
-            <Text style={styles.remarkText}>{remark}</Text>
-          ) : (
-            <RenderHtml
-              source={{html: remark}}
-              contentWidth={Layout.window.width}
-            />
-          )}
-        </View>
-      </View>
-    );
-  });
+        );
+      })}
+    </ScrollView>
+  );
 };
 
 export default DealsClosed;
@@ -136,5 +140,8 @@ const styles = StyleSheet.create({
   },
   remarkText: {
     marginTop: 10,
+  },
+  dealsClosedContainer: {
+    padding: 10,
   },
 });

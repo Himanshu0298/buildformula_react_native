@@ -384,7 +384,7 @@ export default function useDesignModule() {
       return instance.post(
         '/parking/file_save',
         data,
-        config({multipart: false}),
+        config({multipart: true}),
       );
     },
     deleteParkingFile: data => {

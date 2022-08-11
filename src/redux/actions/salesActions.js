@@ -609,7 +609,8 @@ export default function useSalesActions() {
         payload: async () => {
           try {
             const response = _res(await updateBrokerRemark(params));
-            const {data} = response;
+            const {data, msg} = response;
+            snackbar.showMessage({message: msg});
 
             return Promise.resolve(data);
           } catch (error) {

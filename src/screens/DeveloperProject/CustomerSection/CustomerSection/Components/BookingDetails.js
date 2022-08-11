@@ -21,7 +21,6 @@ import RenderTextBox from 'components/Atoms/RenderTextbox';
 import ActionButtons from 'components/Atoms/ActionButtons';
 import Layout from 'utils/Layout';
 import {Tabs} from 'react-native-collapsible-tab-view';
-import useCustomerActions from 'redux/actions/customerActions';
 import {useAlert} from 'components/Atoms/Alert';
 import useCustomerServices from 'services/customer';
 import {theme} from 'styles/theme';
@@ -144,7 +143,8 @@ function CustomerCredLogin(props) {
         <Subheading style={{color: theme.colors.primary}}>
           CUSTOMER LOGIN CREDENTIAL
         </Subheading>
-        {!editLoginCred ? (
+        {/* { TO DO Api integration pending and linked with otp input screen} */}
+        {/* {!editLoginCred ? (
           <OpacityButton
             opacity={0.1}
             onPress={handleCredEdit}
@@ -157,7 +157,7 @@ function CustomerCredLogin(props) {
               style={styles.iconStyle}
             />
           </OpacityButton>
-        ) : null}
+        ) : null} */}
       </View>
 
       <Formik
@@ -856,6 +856,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    marginTop: 5,
   },
   scrollView: {
     flexGrow: 1,

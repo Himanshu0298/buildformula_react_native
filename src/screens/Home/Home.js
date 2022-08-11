@@ -112,16 +112,16 @@ function Home(props) {
   }, [projects]);
 
   const handleOnPress = project => {
-    if (project.is_completed === 'N' && project.project_structure === 'N') {
-      setProjectData(project);
-      navigation.navigate('ProjectStructureStepOne');
-      return;
-    }
-    if (project.is_completed === 'N') {
-      setProjectData(project);
-      navigation.navigate('PlanSelect');
-      return;
-    }
+    // if (project.is_completed === 'N' && project.project_structure === 'N') {
+    //   setProjectData(project);
+    //   navigation.navigate('ProjectStructureStepOne');
+    //   return;
+    // }
+    // if (project.is_completed === 'N') {
+    //   setProjectData(project);
+    //   navigation.navigate('PlanSelect');
+    //   return;
+    // }
     if (project.project_approved === 'Y') {
       if (tabs[selectedTab] === 'Developer') {
         setDrawerType('developer');

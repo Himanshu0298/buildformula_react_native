@@ -265,7 +265,6 @@ function Parking(props) {
                   value={cellData?.toString()}
                   style={styles.textInput}
                   onChangeText={text => updateValue(id, cellIndex, text)}
-                  keyboardType="numeric"
                 />
               );
             }}

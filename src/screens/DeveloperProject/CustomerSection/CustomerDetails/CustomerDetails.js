@@ -69,11 +69,14 @@ function CustomerDetails(props) {
           <RenderInfo label="Email" value={customer_email} />
           <RenderInfo label="Address" value={customer_address} />
           <RenderInfo label="Age" value={customer_age} />
-          <RenderInfo label="Occupation" value={customer_occupation} />
+          <RenderInfo
+            label="Occupation"
+            value={!customer_occupation ? customer_occupation : '--'}
+          />
           <View style={styles.infoContainer}>
-            <Text>PAN no:</Text>
+            <Text>PAN No:</Text>
             <View style={styles.valueContainer}>
-              <Caption>{customer_pan_file}</Caption>
+              <Caption numberOfLines={1}>{customer_pan_file}</Caption>
               <TouchableOpacity style={styles.openButton}>
                 <MaterialCommunityIcons
                   name="paperclip"
@@ -86,9 +89,9 @@ function CustomerDetails(props) {
             </View>
           </View>
           <View style={styles.infoContainer}>
-            <Text>Aadhaar no:</Text>
+            <Text>Aadhaar No:</Text>
             <View style={styles.valueContainer}>
-              <Caption>{customer_aadhar_file}</Caption>
+              <Caption numberOfLines={1}>{customer_aadhar_file}</Caption>
               <TouchableOpacity style={styles.openButton}>
                 <MaterialCommunityIcons
                   name="paperclip"
@@ -109,9 +112,7 @@ function CustomerDetails(props) {
             onPress={navToAdd}>
             <MaterialIcons name="edit" color={theme.colors.primary} />
 
-            <Text style={{color: theme.colors.primary, marginLeft: 7}}>
-              Modify
-            </Text>
+            <Text style={styles.modifyButton}>Modify</Text>
           </OpacityButton>
         </View>
       </ScrollView>
@@ -122,6 +123,7 @@ function CustomerDetails(props) {
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 20,
+    flex: 1,
   },
   headerContainer: {
     backgroundColor: '#fff',
@@ -145,8 +147,8 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   valueContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    // flexDirection: 'row',
+    // alignItems: 'center',
   },
   openButton: {
     flexDirection: 'row',
@@ -158,6 +160,10 @@ const styles = StyleSheet.create({
   },
   editButton: {
     padding: 10,
+  },
+  modifyButton: {
+    color: theme.colors.primary,
+    marginLeft: 7,
   },
 });
 

@@ -66,3 +66,5 @@ export const KEYBOARD_SHOW =
   Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
 export const KEYBOARD_HIDE =
   Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+
+export const STRUCTURE_TYPE = {PLOT: 5, BUNGALOW: 4};

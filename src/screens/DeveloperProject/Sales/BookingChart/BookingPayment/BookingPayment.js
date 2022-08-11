@@ -1001,7 +1001,6 @@ function BookingPayments(props) {
   const {visitors} = useSelector(s => s.project);
   const {bankList, bookingOTPStatus} = useSelector(s => s.sales);
   const {booking_confirm_otp_status} = bookingOTPStatus || {};
-  console.log('-------->bankList', bankList);
 
   const {selectedProject} = useSelector(s => s.project);
   const projectId = selectedProject.id;
@@ -1155,7 +1154,7 @@ function BookingPayments(props) {
         unit_id,
       });
     } else {
-      navigation.popToTop();
+      navigation.navigate('BC_Step_One');
     }
   };
 

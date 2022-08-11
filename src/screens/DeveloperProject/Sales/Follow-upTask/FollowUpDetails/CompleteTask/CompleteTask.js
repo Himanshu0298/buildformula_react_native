@@ -13,7 +13,6 @@ const schema = Yup.object().shape({
   remark: Yup.string('Invalid').required('Required'),
 });
 
-// TODO: review this
 function CompleteTask(props) {
   const {navigation, route} = props;
   const {date, time, visitorID} = route?.params || {};
@@ -36,7 +35,7 @@ function CompleteTask(props) {
       project_id,
       visitor_followup_id: visitorID,
       followuptask_remark: values.remark.toString(),
-      next_followup_save: 'yes',
+      next_followup_save: 'no',
       followup_date: date,
       followup_time: time,
     });
@@ -53,14 +52,7 @@ function CompleteTask(props) {
         initialValues={{}}
         validationSchema={schema}
         onSubmit={onSubmit}>
-        {({
-          values,
-          errors,
-          setFieldValue,
-          handleChange,
-          handleBlur,
-          handleSubmit,
-        }) => {
+        {({values, errors, setFieldValue, handleSubmit}) => {
           return (
             <View style={styles.dialogContentContainer}>
               <RichTextEditor
@@ -107,12 +99,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginTop: 20,
   },
-  //   dialogActionContainer: {
-  //     flexDirection: 'row',
-  //     alignItems: 'center',
-  //     justifyContent: 'center',
-  //     marginTop: 20,
-  //   },
   container: {
     padding: 20,
     marginTop: 10,
