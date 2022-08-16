@@ -61,12 +61,12 @@ function RenderFile(props) {
           visible={visible}
           onDismiss={closeMenu}
           anchor={<IconButton onPress={openMenu} icon="dots-vertical" />}>
-          <Menu.Item
+          {/* <Menu.Item
             onPress={() => {
               console.log('-->');
             }}
             title="Download"
-          />
+          /> */}
           <Menu.Item onPress={() => handleDelete(item.id)} title="Delete" />
         </Menu>
       </View>

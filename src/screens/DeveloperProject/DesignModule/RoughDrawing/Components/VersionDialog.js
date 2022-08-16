@@ -92,11 +92,11 @@ function VersionFile(props) {
             anchor={
               <IconButton icon="dots-vertical" onPress={toggleVersionMenu} />
             }>
-            <Menu.Item
+            {/* <Menu.Item
               icon="download"
               onPress={() => handleDownload()}
               title="Download"
-            />
+            /> */}
             {modulePermissions?.editor || modulePermissions?.admin ? (
               <>
                 <Divider />

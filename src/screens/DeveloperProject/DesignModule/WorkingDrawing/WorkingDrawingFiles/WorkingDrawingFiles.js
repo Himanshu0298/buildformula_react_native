@@ -54,11 +54,14 @@ function RenderFile(props) {
 
   const {title, created} = item;
 
+  // TO DO
+
   return (
     <View style={styles.recentFiles}>
       <TouchableOpacity
         style={styles.sectionContainer}
-        onPress={() => onPressFile(item)}>
+        // onPress={() => onPressFile(item)}
+      >
         <Image source={FileIcon} style={styles.fileIcon} />
         <View>
           <Text style={(styles.verticalFlex, styles.text)} numberOfLines={2}>

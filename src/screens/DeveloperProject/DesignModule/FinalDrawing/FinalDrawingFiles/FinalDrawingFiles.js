@@ -58,7 +58,7 @@ function RenderFile(props) {
     <View style={styles.recentFiles}>
       <TouchableOpacity
         style={styles.sectionContainer}
-        onPress={() => onPressFile(item)}>
+        onPress={() => onPressFile(console.log('-------->TO do'))}>
         <Image source={FileIcon} style={styles.fileIcon} />
         <View>
           <Text style={(styles.verticalFlex, styles.text)} numberOfLines={2}>

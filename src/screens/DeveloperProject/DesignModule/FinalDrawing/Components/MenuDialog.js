@@ -79,7 +79,7 @@ function MenuDialog(props) {
       </View>
 
       <View>
-        <TouchableOpacity onPress={handleDownload}>
+        {/* <TouchableOpacity onPress={handleDownload}>
           <View style={styles.viewDirection}>
             <IconButton icon="download" />
             <View style={styles.rowBetween}>
@@ -93,7 +93,7 @@ function MenuDialog(props) {
               ) : null}
             </View>
           </View>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         {!fixedFolder ? (
           <>
             {file_type === 'image/jpeg' ? (

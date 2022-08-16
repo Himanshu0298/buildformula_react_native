@@ -38,7 +38,6 @@ import DeleteDialog from '../Components/DeleteDialog';
 import RenameDialogue from '../Components/RenameDialog';
 import CreateFolderDialogue from '../Components/CreateFolderDialog';
 import MenuDialog from '../Components/MenuDialog';
-import VersionDialog from '../Components/VersionDialog';
 import FolderSectionGridView from '../Components/FolderSectionGridView';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
