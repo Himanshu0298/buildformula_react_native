@@ -79,7 +79,7 @@ function Details(props) {
   };
 
   const openWhatsApp = value => {
-    const url = `https://wa.me/+91${value}`;
+    const url = `whatsapp://send?phone=${value}`;
     Linking.canOpenURL(url)
       .then(supported => {
         if (!supported) {
