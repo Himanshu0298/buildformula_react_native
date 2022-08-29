@@ -1,9 +1,18 @@
-import React from 'react';
-import {StyleSheet, View, ScrollView} from 'react-native';
-import {withTheme, Caption, Paragraph} from 'react-native-paper';
+import React, {useMemo} from 'react';
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  TouchableOpacity,
+  Platform,
+  Linking,
+  Alert,
+} from 'react-native';
+import {withTheme, Caption, Paragraph, IconButton} from 'react-native-paper';
 import dayjs from 'dayjs';
 import {PRIORITY_COLORS, STRUCTURE_TYPE_LABELS} from 'utils/constant';
 import CustomBadge from 'components/Atoms/CustomBadge';
+import {useSnackbar} from 'components/Atoms/Snackbar';
 
 function Details(props) {
   const {
@@ -31,12 +40,61 @@ function Details(props) {
     intrestedIn,
   } = visitor;
 
-  const occupation = occupationOptions.find(
-    i => i.value === visitor.occupation,
-  );
-  const source = sourceTypeOptions.find(v => v.value === visitor.source_type);
+  const snackbar = useSnackbar();
 
-  const inquiryStatus = pipelines.find(i => i.id === inquiry_status_id);
+  const [occupation, source, inquiryStatus] = useMemo(() => {
+    return [
+      occupationOptions.find(i => i.value === visitor.occupation),
+      sourceTypeOptions.find(v => v.value === visitor.source_type),
+      pipelines.find(i => i.id === inquiry_status_id),
+    ];
+  }, [
+    inquiry_status_id,
+    occupationOptions,
+    pipelines,
+    sourceTypeOptions,
+    visitor,
+  ]);
+
+  const phoneNumber = `+91 ${phone}`;
+
+  const openDialScreen = value => {
+    const url =
+      Platform.OS !== 'android' ? `telprompt:${value}` : `tel:${value}`;
+
+    Linking.canOpenURL(url)
+      .then(supported => {
+        if (!supported) {
+          snackbar.showMessage({
+            message: 'Phone number is not available',
+            variant: 'error',
+          });
+          return;
+        }
+        Linking.openURL(url);
+      })
+      .catch(err =>
+        snackbar.showMessage({message: err.message, variant: 'error'}),
+      );
+  };
+
+  const openWhatsApp = value => {
+    const url = `whatsapp://phone=${value}`;
+    Linking.canOpenURL(url)
+      .then(supported => {
+        if (!supported) {
+          snackbar.showMessage({
+            message: 'Cannot open Whatsapp',
+            variant: 'error',
+          });
+          return;
+        }
+        Linking.openURL(url);
+      })
+      .catch(err =>
+        snackbar.showMessage({message: err.message, variant: 'error'}),
+      );
+  };
 
   return (
     <ScrollView>
@@ -52,9 +110,26 @@ function Details(props) {
           <Paragraph>Email</Paragraph>
           <Caption style={styles.value}>{email}</Caption>
         </View>
-        <View style={styles.detailRow}>
-          <Paragraph>Phone no.</Paragraph>
-          <Caption style={styles.value}>+91 {phone}</Caption>
+        <View style={styles.phoneContainer}>
+          <View>
+            <Paragraph>Phone no.</Paragraph>
+            <TouchableOpacity
+              disabled={!phone}
+              onPress={() => openDialScreen(phoneNumber)}>
+              <Caption style={[styles.value, {color: theme.colors.primary}]}>
+                {phone ? phoneNumber : 'NA'}
+              </Caption>
+            </TouchableOpacity>
+          </View>
+          {phone ? (
+            <View>
+              <IconButton
+                onPress={() => openWhatsApp(phoneNumber)}
+                icon="whatsapp"
+                color={theme.colors.success}
+              />
+            </View>
+          ) : null}
         </View>
         <View style={styles.detailRow}>
           <Paragraph>Occupation</Paragraph>
@@ -131,6 +206,12 @@ const styles = StyleSheet.create({
   detailRow: {
     flexShrink: 1,
     marginBottom: 10,
+  },
+  phoneContainer: {
+    marginBottom: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   value: {
     lineHeight: 14,
