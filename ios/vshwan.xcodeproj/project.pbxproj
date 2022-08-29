@@ -94,6 +94,10 @@
 		13B07FAE1A68108700A75B9A /* vshwan */ = {
 			isa = PBXGroup;
 			children = (
+				4E64426326CA64CC00C25C69 /* Config.xcconfig */,
+				4E9DAFDC266872E80016F732 /* GoogleService-Info.plist */,
+				98517BDE257B05CB00ED1C94 /* Void.swift */,
+				98517BDD257B05CA00ED1C94 /* vshwan-Bridging-Header.h */,
 				4E374D652820E6C30017F967 /* BootSplash.storyboard */,
 				4E9DAFDE2668735D0016F732 /* vshwan.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
@@ -160,16 +164,12 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				4E64426326CA64CC00C25C69 /* Config.xcconfig */,
-				4E9DAFDC266872E80016F732 /* GoogleService-Info.plist */,
-				98517BDE257B05CB00ED1C94 /* Void.swift */,
 				13B07FAE1A68108700A75B9A /* vshwan */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				359EBAB5564040C6AA918F40 /* Resources */,
 				1190F805B55F7678EDEF782C /* Pods */,
-				98517BDD257B05CA00ED1C94 /* vshwan-Bridging-Header.h */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
