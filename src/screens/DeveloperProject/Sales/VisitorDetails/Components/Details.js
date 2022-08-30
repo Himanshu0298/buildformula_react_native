@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   Platform,
   Linking,
-  Alert,
 } from 'react-native';
 import {withTheme, Caption, Paragraph, IconButton} from 'react-native-paper';
 import dayjs from 'dayjs';
@@ -56,7 +55,7 @@ function Details(props) {
     visitor,
   ]);
 
-  const phoneNumber = `+91 ${phone}`;
+  const phoneNumber = `+91${phone}`;
 
   const openDialScreen = value => {
     const url =
@@ -79,7 +78,7 @@ function Details(props) {
   };
 
   const openWhatsApp = value => {
-    const url = `whatsapp://send?phone=${value}`;
+    const url = `https://wa.me/${value}`;
     Linking.canOpenURL(url)
       .then(supported => {
         if (!supported) {
