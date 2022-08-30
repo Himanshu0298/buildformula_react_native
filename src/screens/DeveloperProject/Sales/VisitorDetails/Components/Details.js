@@ -12,6 +12,7 @@ import dayjs from 'dayjs';
 import {PRIORITY_COLORS, STRUCTURE_TYPE_LABELS} from 'utils/constant';
 import CustomBadge from 'components/Atoms/CustomBadge';
 import {useSnackbar} from 'components/Atoms/Snackbar';
+import {getCountryCode} from 'utils';
 
 function Details(props) {
   const {
@@ -55,7 +56,12 @@ function Details(props) {
     visitor,
   ]);
 
-  const phoneNumber = `+91${phone}`;
+  const phoneNumber = useMemo(() => {
+    if (getCountryCode(phone)) {
+      return phone.replace(/ /g, '');
+    }
+    return `+91${phone}`.replace(/ /g, '');
+  }, [phone]);
 
   const openDialScreen = value => {
     const url =
