@@ -1,7 +1,6 @@
-import {instance, useConfig} from './init';
+import {instance, config} from './init';
 
 export default function useProject() {
-  const {config} = useConfig();
   return {
     getProjects: data => {
       return instance.get('/get_project', config());

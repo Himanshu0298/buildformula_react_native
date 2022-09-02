@@ -6,6 +6,7 @@ export const SET_TIMER = 'SET_TIMER';
 
 // For Auth/User
 export const LOGIN = 'LOGIN';
+export const REFRESH_TOKEN = 'REFRESH_TOKEN';
 export const SIGN_UP_INIT = 'SIGN_UP_INIT';
 export const SIGN_UP = 'SIGN_UP';
 export const SEND_OTP = 'SEND_OTP';
