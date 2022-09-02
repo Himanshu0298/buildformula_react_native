@@ -1,4 +1,4 @@
-import React, {Fragment, Suspense} from 'react';
+import React, {Fragment, Suspense, useState, useEffect} from 'react';
 import {StatusBar} from 'react-native';
 import {Provider as PaperProvider} from 'react-native-paper';
 import {Provider as StoreProvider} from 'react-redux';
@@ -16,6 +16,8 @@ import {initReactI18next} from 'react-i18next';
 import * as Sentry from '@sentry/react-native';
 import {DownloadProvider} from 'components/Atoms/Download';
 import InternetConnectionAlert from 'react-native-internet-connection-alert';
+import UpdateDialog from 'components/Atoms/UpdateDialog';
+import CodePush from 'react-native-code-push';
 import {theme} from './src/styles/theme';
 import {store, persistor} from './src/redux/store';
 import NavContainer from './src/navigation';
@@ -59,16 +61,28 @@ function Loader() {
 }
 
 function App() {
-  // useEffect(() => {
-  //   checkPermissions();
-  // }, []);
+  const [updateAvailable, setUpdateAvailable] = useState(false);
 
-  // const checkPermissions = async () => {
-  //   const fileReadPermission = await checkPermission('fileRead');
-  //   const fileWritePermission = await checkPermission('fileWrite');
-  //   console.log('-------->fileReadPermission', fileReadPermission);
-  //   console.log('-------->fileWritePermission', fileWritePermission);
-  // };
+  useEffect(() => {
+    CodePush.sync(
+      {
+        installMode: CodePush.InstallMode.ON_NEXT_RESTART,
+        mandatoryInstallMode: CodePush.InstallMode.ON_NEXT_RESTART,
+      },
+      handleStatusChange,
+    );
+  }, []);
+
+  const handleStatusChange = status => {
+    if (
+      status === CodePush.SyncStatus.INSTALLING_UPDATE ||
+      status === CodePush.SyncStatus.UPDATE_INSTALLED
+    ) {
+      setUpdateAvailable(true);
+    }
+  };
+
+  const restartApp = () => CodePush.restartApp();
 
   // TODO: figure out action sheet (ActionSheetProvider) is only required for file Input or the whole app
 
@@ -81,10 +95,7 @@ function App() {
             <SafeAreaProvider
               initialSafeAreaInsets={initialWindowSafeAreaInsets}>
               <Suspense fallback={<Loader />}>
-                <InternetConnectionAlert
-                  onChange={connectionState => {
-                    console.log('Connection State: ', connectionState);
-                  }}>
+                <InternetConnectionAlert>
                   <DownloadProvider>
                     <SnackbarProvider>
                       <AlertProvider>
@@ -95,6 +106,9 @@ function App() {
                     </SnackbarProvider>
                   </DownloadProvider>
                 </InternetConnectionAlert>
+                {updateAvailable ? (
+                  <UpdateDialog restartApp={restartApp} />
+                ) : null}
               </Suspense>
             </SafeAreaProvider>
           </PaperProvider>

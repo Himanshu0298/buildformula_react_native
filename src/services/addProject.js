@@ -1,7 +1,6 @@
-import {instance, useConfig} from './init';
+import {instance, config} from './init';
 
 export default function useAddProject() {
-  const {config} = useConfig();
   return {
     createProject: data => {
       return instance.post('/project/create', data, config());

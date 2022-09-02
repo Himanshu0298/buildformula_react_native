@@ -1,7 +1,6 @@
-import {instance, useConfig} from './init';
+import {instance, config} from './init';
 
 export default function useFiles() {
-  const {config} = useConfig();
   return {
     getFolders: data => {
       return instance.post(

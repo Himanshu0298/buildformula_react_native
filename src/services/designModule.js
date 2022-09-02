@@ -1,7 +1,6 @@
-import {instance, useConfig} from './init';
+import {instance, config} from './init';
 
 export default function useDesignModule() {
-  const {config} = useConfig();
   return {
     getRDFolders: data => {
       return instance.post(
