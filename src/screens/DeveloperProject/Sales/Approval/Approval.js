@@ -29,15 +29,21 @@ const ApprovalList = props => {
             opacity={0.2}>
             <Text style={{color: theme.colors.primary}}>{index + 1}</Text>
           </OpacityButton>
-          <Text style={styles.headingText}>{title}</Text>
+          <View style={styles.text}>
+            <Text numberOfLines={1} style={styles.headingText}>
+              {title}
+            </Text>
+          </View>
         </View>
-
-        <Caption
-          style={{
-            color: MODIFY_REQUEST_STATUS[status]?.color,
-          }}>
-          {MODIFY_REQUEST_STATUS[status]?.label}
-        </Caption>
+        <View style={styles.statusContainer}>
+          <Caption
+            numberOfLines={2}
+            style={{
+              color: MODIFY_REQUEST_STATUS[status]?.color,
+            }}>
+            {MODIFY_REQUEST_STATUS[status]?.label}
+          </Caption>
+        </View>
       </View>
       <View style={styles.listDetailContainer}>
         <View style={styles.cardSection}>
@@ -129,16 +135,15 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 20,
   },
-
   titleStyle: {
     justifyContent: 'space-between',
-    display: 'flex',
     flexDirection: 'row',
+    flex: 1,
   },
-
   approvalContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    flex: 1,
   },
 
   buttonText: {
@@ -173,6 +178,13 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     color: theme.colors.primary,
     paddingHorizontal: 20,
+  },
+  text: {
+    flex: 1,
+    flexGrow: 1,
+  },
+  statusContainer: {
+    marginLeft: 5,
   },
 });
 

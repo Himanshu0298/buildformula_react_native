@@ -17,9 +17,9 @@ function ProjectHeader(props) {
 
   const navToNotification = () => {
     if (showLogo) {
-      navigation.push('GlobalNotification', {showLogo});
+      navigation.navigate('GlobalNotification', {showLogo});
     } else {
-      navigation.push('ProjectNotification', {showLogo});
+      navigation.navigate('ProjectNotification', {showLogo});
     }
   };
 

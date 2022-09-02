@@ -1,6 +1,12 @@
 import ProjectHeader from 'components/Molecules/Layout/ProjectHeader';
 import React, {useEffect, useMemo} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
 import {Title, withTheme} from 'react-native-paper';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import useProjectActions from 'redux/actions/projectActions';
@@ -35,10 +41,10 @@ function ProjectCard(props) {
         </View>
       </View>
       <View>
-        <Text style={{marginTop: 5}}>{company_name}</Text>
+        <Text style={styles.company}>{company_name}</Text>
       </View>
       {status === 'EXPIRE' ? (
-        <View style={{paddingHorizontal: '30%'}}>
+        <View style={styles.status}>
           <OpacityButton
             color={theme.colors.primary}
             opacity={0.15}
@@ -65,14 +71,18 @@ function PurchasedProjects(props) {
   }, []);
 
   return (
-    <View>
+    <View style={styles.container}>
       <Spinner visible={loading} textContent="" />
       <ProjectHeader {...props} showLogo />
-      <View style={{padding: 10}}>
-        <Title style={{marginBottom: 15}}>Projects</Title>
-        {purchasedProjects.map(project => (
-          <ProjectCard {...props} project={project} />
-        ))}
+      <View style={styles.projectContainer}>
+        <Title style={styles.text}>Projects</Title>
+        <ScrollView
+          style={styles.container}
+          showsVerticalScrollIndicator={false}>
+          {purchasedProjects.map(project => (
+            <ProjectCard {...props} project={project} />
+          ))}
+        </ScrollView>
       </View>
     </View>
   );
@@ -91,6 +101,22 @@ const styles = StyleSheet.create({
   },
   button: {
     justifyContent: 'center',
+  },
+  container: {
+    flexGrow: 1,
+  },
+  text: {
+    marginBottom: 15,
+  },
+  projectContainer: {
+    flex: 1,
+    paddingHorizontal: 15,
+  },
+  company: {
+    marginTop: 5,
+  },
+  status: {
+    paddingHorizontal: '30%',
   },
 });
 

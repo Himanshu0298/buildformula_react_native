@@ -22,9 +22,10 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import NoDataFound from 'assets/images/NoDataFound.png';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import {useSalesLoading} from 'redux/selectors';
+import {theme} from 'styles/theme';
 
 function RenderBroker(props) {
-  const {theme, data, navigation, index} = props;
+  const {data, navigation, index} = props;
   const {first_name, last_name, phone, email, dealsClosed} = data;
 
   const navToDetails = () => {
@@ -33,8 +34,8 @@ function RenderBroker(props) {
 
   return (
     <TouchableOpacity onPress={navToDetails} style={styles.listItem}>
-      <View style={{flexDirection: 'row'}}>
-        <View style={{marginRight: 10}}>
+      <View style={styles.renderContainer}>
+        <View style={styles.indexContainer}>
           <Text>
             <OpacityButton
               color={theme.colors.primary}
@@ -44,8 +45,8 @@ function RenderBroker(props) {
             </OpacityButton>
           </Text>
         </View>
-        <View style={{flexGrow: 1}}>
-          <View style={{flexDirection: 'row'}}>
+        <View style={styles.nameContainer}>
+          <View style={styles.renderContainer}>
             <Text>
               {first_name} {last_name}
             </Text>
@@ -62,20 +63,18 @@ function RenderBroker(props) {
 }
 
 function RenderBrokers(props) {
-  const {theme, data, onRefresh, navToDetails, navigation} = props;
+  const {data, onRefresh, navToDetails, navigation} = props;
 
   return (
     <View style={styles.contentContainer}>
-      <Subheading style={{color: theme.colors.primary, marginBottom: 15}}>
-        Broker List
-      </Subheading>
+      <Subheading style={styles.subHeading}>Broker List</Subheading>
 
       <FlatList
         data={data}
         extraData={data}
         keyExtractor={(item, index) => index.toString()}
         style={styles.scrollView}
-        contentContainerStyle={{flexGrow: 1, paddingBottom: 60}}
+        contentContainerStyle={styles.contentContainerStyle}
         showsVerticalScrollIndicator={false}
         renderItem={({item, index}) => (
           <RenderBroker
@@ -103,7 +102,7 @@ function RenderBrokers(props) {
 }
 
 function BrokerList(props) {
-  const {theme, navigation} = props;
+  const {navigation} = props;
 
   const {selectedProject} = useSelector(s => s.project);
   const {visitorAnalytics, brokersList} = useSelector(s => s.sales);
@@ -128,7 +127,7 @@ function BrokerList(props) {
   };
 
   return (
-    <View style={{padding: 15, flexGrow: 1}}>
+    <View style={styles.container}>
       <Spinner visible={loading} textContent="" />
       <RenderBrokers
         {...props}
@@ -173,8 +172,9 @@ const styles = StyleSheet.create({
   },
   fab: {
     position: 'absolute',
-    right: 20,
-    bottom: 20,
+    margin: 16,
+    right: 10,
+    bottom: 10,
   },
   listItem: {
     backgroundColor: '#F2F4F5',
@@ -190,5 +190,26 @@ const styles = StyleSheet.create({
   emptyTitle: {
     fontSize: 22,
     marginTop: 10,
+  },
+  container: {
+    padding: 15,
+    flex: 1,
+  },
+  renderContainer: {
+    flexDirection: 'row',
+  },
+  indexContainer: {
+    marginRight: 10,
+  },
+  nameContainer: {
+    flexGrow: 1,
+  },
+  subHeading: {
+    color: theme.colors.primary,
+    marginBottom: 15,
+  },
+  contentContainerStyle: {
+    flexGrow: 1,
+    paddingBottom: 60,
   },
 });

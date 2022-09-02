@@ -217,10 +217,12 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingBottom: 50,
+    flexGrow: 1,
   },
   tableContainer: {
     borderColor: '#C3C3C3',
     alignItems: 'center',
+    flexGrow: 1,
   },
 
   backButton: {
