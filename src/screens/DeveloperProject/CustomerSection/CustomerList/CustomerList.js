@@ -71,46 +71,13 @@ const CustomerList = ({navigation}) => {
     }
   }, [filteredCustomer, sort]);
 
-  function listItem() {
-    return (
-      <FlatList
-        data={sortedCustomer}
-        keyExtractor={item => item.id}
-        contentContainerStyle={styles.contentContainerStyle}
-        renderItem={({item, index}) => {
-          return (
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate('CustomerInnerDetails', {
-                  id: `${item.visitor_id}`,
-                  linkedProperty: `${item.linked_property}`,
-                  customerId: item.id,
-                });
-              }}>
-              <Divider />
-              <View style={styles.listContainer} key={item.id}>
-                <View style={styles.customerContainer}>
-                  <View style={styles.idBox}>
-                    <Text style={styles.text}>{index + 1}</Text>
-                  </View>
-                  <View style={styles.customerDetails}>
-                    <Text
-                      style={
-                        styles.text
-                      }>{`${item.first_name} ${item.last_name}`}</Text>
-                    <Caption>{item.phone}</Caption>
-                  </View>
-                </View>
-                <View style={styles.customerBookings}>
-                  <Text style={styles.text}>{item.linked_property}</Text>
-                </View>
-              </View>
-            </TouchableOpacity>
-          );
-        }}
-      />
-    );
-  }
+  const navToDetails = item => {
+    navigation.navigate('CustomerInnerDetails', {
+      id: `${item.visitor_id}`,
+      linkedProperty: `${item.linked_property}`,
+      customerId: item.id,
+    });
+  };
 
   return (
     <View style={styles.mainContainer}>
@@ -154,7 +121,35 @@ const CustomerList = ({navigation}) => {
           style={styles.search}
         />
       </View>
-      {listItem()}
+      <FlatList
+        data={sortedCustomer}
+        keyExtractor={item => item.id}
+        contentContainerStyle={styles.contentContainerStyle}
+        renderItem={({item, index}) => {
+          return (
+            <TouchableOpacity onPress={() => navToDetails(item)}>
+              <Divider />
+              <View style={styles.listContainer} key={item.id}>
+                <View style={styles.customerContainer}>
+                  <View style={styles.idBox}>
+                    <Text style={styles.text}>{index + 1}</Text>
+                  </View>
+                  <View style={styles.customerDetails}>
+                    <Text
+                      style={
+                        styles.text
+                      }>{`${item.first_name} ${item.last_name}`}</Text>
+                    <Caption>{item.phone}</Caption>
+                  </View>
+                </View>
+                <View style={styles.customerBookings}>
+                  <Text style={styles.text}>{item.linked_property}</Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+          );
+        }}
+      />
     </View>
   );
 };

@@ -6,9 +6,11 @@ import {
   useWindowDimensions,
   ScrollView,
   TouchableOpacity,
+  Platform,
+  Linking,
 } from 'react-native';
 import {TabView, TabBar} from 'react-native-tab-view';
-import {IconButton, FAB} from 'react-native-paper';
+import {IconButton, FAB, Caption} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import useCustomerActions from 'redux/actions/customerActions';
 import dayjs from 'dayjs';
@@ -17,11 +19,45 @@ import {theme} from 'styles/theme';
 import useSalesActions from 'redux/actions/salesActions';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {useSalesLoading} from 'redux/selectors';
+import {getCountryCode} from 'utils';
+import {useSnackbar} from 'components/Atoms/Snackbar';
 
-const CustDetails = props => {
+const CustomerDetails = props => {
   const {visitors_info, linkedProperty, BrokerData} = props;
   const {first_name, last_name, email, phone, address, dob, anniversary_date} =
     visitors_info || {};
+
+  const snackbar = useSnackbar();
+
+  const phoneNumber = React.useMemo(() => {
+    if (getCountryCode(phone)) {
+      return phone.replace(/ /g, '');
+    }
+    return `+91${phone}`.replace(/ /g, '');
+  }, [phone]);
+
+  const openDialScreen = value => {
+    const url =
+      Platform.OS !== 'android' ? `telprompt:${value}` : `tel:${value}`;
+
+    Linking.canOpenURL(url)
+      .then(supported => {
+        if (!supported) {
+          snackbar.showMessage({
+            message: 'Phone number is not available',
+            variant: 'error',
+          });
+          return;
+        }
+        Linking.openURL(url);
+      })
+      .catch(err =>
+        snackbar.showMessage({message: err.message, variant: 'error'}),
+      );
+  };
+
+  const openWhatsApp = value => Linking.openURL(`https://wa.me/${value}`);
+
   return (
     <ScrollView style={styles.custContainer}>
       <View style={styles.valueContainer}>
@@ -32,9 +68,26 @@ const CustDetails = props => {
         <Text style={styles.label}>Email</Text>
         <Text style={styles.value}>{email}</Text>
       </View>
-      <View style={styles.valueContainer}>
-        <Text style={styles.label}>Phone no.</Text>
-        <Text style={styles.value}>{phone}</Text>
+      <View style={styles.phoneContainer}>
+        <View>
+          <Text>Phone no.</Text>
+          <TouchableOpacity
+            disabled={!phone}
+            onPress={() => openDialScreen(phoneNumber)}>
+            <Caption style={[styles.value, {color: theme.colors.primary}]}>
+              {phone ? phoneNumber : 'NA'}
+            </Caption>
+          </TouchableOpacity>
+        </View>
+        {phone ? (
+          <View>
+            <IconButton
+              onPress={() => openWhatsApp(phoneNumber)}
+              icon="whatsapp"
+              color={theme.colors.success}
+            />
+          </View>
+        ) : null}
       </View>
       <View style={styles.valueContainer}>
         <Text style={styles.label}>Related Property</Text>
@@ -148,7 +201,7 @@ const CustomerInnerDetails = ({navigation, route: routeData}) => {
     switch (route.key) {
       case 'first':
         return (
-          <CustDetails
+          <CustomerDetails
             visitors_info={visitors_info}
             linkedProperty={linkedProperty}
             BrokerData={BrokerData}
@@ -287,5 +340,11 @@ const styles = StyleSheet.create({
   },
   iconButton: {
     backgroundColor: 'rgba(72, 114, 244, 0.1)',
+  },
+  phoneContainer: {
+    marginBottom: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
 });

@@ -23,12 +23,11 @@ import translations from './src/translations/global';
 import {SnackbarProvider} from './src/components/Atoms/Snackbar';
 import AlertProvider from './src/components/Atoms/Alert/AlertProvider';
 
-if (!__DEV__) {
-  Sentry.init({
-    dsn: 'https://9f461e9c89264233b4b5ed91e2882497@o523674.ingest.sentry.io/6256539',
-    tracesSampleRate: 1,
-  });
-}
+Sentry.init({
+  environment: __DEV__ ? 'development' : 'release',
+  dsn: 'https://9f461e9c89264233b4b5ed91e2882497@o523674.ingest.sentry.io/6256539',
+  tracesSampleRate: 1,
+});
 
 const languageDetector = {
   type: 'languageDetector',
@@ -105,6 +104,6 @@ function App() {
   );
 }
 
-const MyApp = __DEV__ ? App : Sentry.wrap(App);
+const MyApp = Sentry.wrap(App);
 
 export default MyApp;

@@ -83,23 +83,7 @@ function Details(props) {
       );
   };
 
-  const openWhatsApp = value => {
-    const url = `https://wa.me/${value}`;
-    Linking.canOpenURL(url)
-      .then(supported => {
-        if (!supported) {
-          snackbar.showMessage({
-            message: 'Cannot open Whatsapp',
-            variant: 'error',
-          });
-          return;
-        }
-        Linking.openURL(url);
-      })
-      .catch(err =>
-        snackbar.showMessage({message: err.message, variant: 'error'}),
-      );
-  };
+  const openWhatsApp = value => Linking.openURL(`https://wa.me/${value}`);
 
   return (
     <ScrollView>
