@@ -1,5 +1,13 @@
+import NoResult from 'components/Atoms/NoResult';
 import React, {useEffect, useMemo} from 'react';
-import {StyleSheet, Text, View, FlatList, TouchableOpacity} from 'react-native';
+import {
+  RefreshControl,
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+  TouchableOpacity,
+} from 'react-native';
 import {
   Menu,
   Divider,
@@ -17,6 +25,8 @@ const FILTER = [
   {value: 'desc', label: 'Descending'},
 ];
 
+const EmptyData = () => <NoResult title="No Customer Found!" />;
+
 const CustomerList = ({navigation}) => {
   const {selectedProject} = useSelector(s => s.project);
 
@@ -27,9 +37,13 @@ const CustomerList = ({navigation}) => {
   const {customerList = []} = useSelector(s => s.customer);
 
   useEffect(() => {
-    getVisitorCustomerList({project_id});
+    loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const loadData = () => {
+    getVisitorCustomerList({project_id});
+  };
 
   const [visible, setVisible] = React.useState(false);
 
@@ -121,10 +135,16 @@ const CustomerList = ({navigation}) => {
           style={styles.search}
         />
       </View>
+      {/* <View style={{flexGrow: 1, flex: 1}}> */}
       <FlatList
         data={sortedCustomer}
         keyExtractor={item => item.id}
-        contentContainerStyle={styles.contentContainerStyle}
+        style={styles.contentContainerStyle}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={false} onRefresh={loadData} />
+        }
+        ListEmptyComponent={() => EmptyData()}
         renderItem={({item, index}) => {
           return (
             <TouchableOpacity onPress={() => navToDetails(item)}>
@@ -150,6 +170,7 @@ const CustomerList = ({navigation}) => {
           );
         }}
       />
+      {/* </View> */}
     </View>
   );
 };
@@ -162,7 +183,6 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   headerContainer: {
-    display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -206,7 +226,8 @@ const styles = StyleSheet.create({
     ...getShadow(2),
   },
   contentContainerStyle: {
-    marginTop: 10,
+    flexGrow: 1,
+    flex: 1,
   },
   iconButton: {
     backgroundColor: 'rgba(72, 114, 244, 0.1)',

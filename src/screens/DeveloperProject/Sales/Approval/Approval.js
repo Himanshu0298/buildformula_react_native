@@ -1,8 +1,15 @@
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
+import NoResult from 'components/Atoms/NoResult';
 import dayjs from 'dayjs';
 import * as React from 'react';
 import {useEffect} from 'react';
-import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {
+  FlatList,
+  RefreshControl,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {Caption, Text, withTheme, FAB, Subheading} from 'react-native-paper';
 import {useSelector} from 'react-redux';
@@ -10,6 +17,8 @@ import useSalesActions from 'redux/actions/salesActions';
 import {theme} from 'styles/theme';
 import {getPermissions} from 'utils';
 import {MODIFY_REQUEST_STATUS} from 'utils/constant';
+
+const EmptyData = () => <NoResult title="No Data Found" />;
 
 const ApprovalList = props => {
   const {navigation, item, index} = props;
@@ -78,9 +87,13 @@ function Approval(props) {
   const projectId = selectedProject.id;
 
   useEffect(() => {
-    getApprovals({project_id: projectId});
+    loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectId]);
+
+  const loadData = () => {
+    getApprovals({project_id: projectId});
+  };
 
   const modulePermissions = getPermissions('Approval');
 
@@ -92,16 +105,21 @@ function Approval(props) {
     <View style={styles.container}>
       <Spinner visible={loading} textContent="" />
       <Subheading style={styles.Subheading}>Approval listing</Subheading>
-
-      <ScrollView
-        contentContainerStyle={styles.scrollView}
-        showsVerticalScrollIndicator={false}>
-        {approvalList?.map((item, index) => {
-          return (
-            <ApprovalList item={item} key={item.id} index={index} {...props} />
-          );
-        })}
-      </ScrollView>
+      <FlatList
+        data={approvalList}
+        extraData={approvalList}
+        keyExtractor={(item, index) => index.toString()}
+        style={styles.scrollView}
+        contentContainerStyle={{flexGrow: 1}}
+        showsVerticalScrollIndicator={false}
+        renderItem={({item, index}) => (
+          <ApprovalList item={item} key={item.id} index={index} {...props} />
+        )}
+        refreshControl={
+          <RefreshControl refreshing={false} onRefresh={loadData} />
+        }
+        ListEmptyComponent={() => EmptyData()}
+      />
 
       {modulePermissions?.editor || modulePermissions?.admin ? (
         <FAB

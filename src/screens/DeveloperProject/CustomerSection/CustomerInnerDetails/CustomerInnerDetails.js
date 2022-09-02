@@ -225,11 +225,11 @@ const CustomerInnerDetails = ({navigation, route: routeData}) => {
         <IconButton
           icon="keyboard-backspace"
           size={25}
-          color="#4872f4"
+          color="#000"
           style={styles.iconButton}
           onPress={() => navigation.goBack()}
         />
-        <Text style={styles.headerText}>Customer details</Text>
+        <Text style={styles.headerText}>Customer Details</Text>
       </View>
       <TabView
         navigationState={{index: selectedTab, routes}}
@@ -302,7 +302,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerText: {
-    fontSize: 20,
+    fontSize: 18,
     color: '#4872f4',
   },
   custContainer: {
