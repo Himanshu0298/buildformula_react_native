@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {StyleSheet, View} from 'react-native';
-import {IconButton, Subheading, TextInput, withTheme} from 'react-native-paper';
+import {IconButton, TextInput, withTheme} from 'react-native-paper';
 import useImagePicker from 'hooks/useImagePicker';
 import {Formik} from 'formik';
 import RenderInput from 'components/Atoms/RenderInput';

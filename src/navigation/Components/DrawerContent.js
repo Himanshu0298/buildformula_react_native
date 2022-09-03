@@ -7,7 +7,6 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useSelector} from 'react-redux';
 import {SITE_URL} from 'utils/constant';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import useAppActions from '../../redux/actions/appActions';
 import {DEVELOPER_DRAWER_ITEMS, CUSTOMER_DRAWER_ITEMS} from './DrawerItems';
 
 function filterSidebar(items, permissions) {
@@ -98,8 +97,6 @@ const DrawerItem = React.memo(props => {
 });
 
 function RenderGeneralDrawerItems(props) {
-  const {logout} = useAppActions();
-
   return (
     <>
       <DrawerItem
@@ -133,13 +130,6 @@ function RenderGeneralDrawerItems(props) {
         route="Help"
         onPress={() => Linking.openURL(SITE_URL)}
         icon="help-box"
-      />
-      <DrawerItem
-        {...props}
-        label="Logout"
-        route="Help"
-        onPress={logout}
-        icon="logout"
       />
     </>
   );

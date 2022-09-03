@@ -6,13 +6,7 @@ import useAppActions from 'redux/actions/appActions';
 function Settings() {
   const {logout} = useAppActions();
   return (
-    <View
-      style={{
-        height: '100%',
-        borderWidth: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}>
+    <View style={styles.container}>
       <Text>Search!</Text>
       <Button onPress={logout}>Logout</Button>
     </View>
@@ -20,3 +14,11 @@ function Settings() {
 }
 
 export default Settings;
+const styles = StyleSheet.create({
+  container: {
+    height: '100%',
+    borderWidth: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});

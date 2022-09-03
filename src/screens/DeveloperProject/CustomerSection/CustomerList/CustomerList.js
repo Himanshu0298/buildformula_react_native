@@ -135,7 +135,6 @@ const CustomerList = ({navigation}) => {
           style={styles.search}
         />
       </View>
-      {/* <View style={{flexGrow: 1, flex: 1}}> */}
       <FlatList
         data={sortedCustomer}
         keyExtractor={item => item.id}
@@ -170,7 +169,6 @@ const CustomerList = ({navigation}) => {
           );
         }}
       />
-      {/* </View> */}
     </View>
   );
 };
