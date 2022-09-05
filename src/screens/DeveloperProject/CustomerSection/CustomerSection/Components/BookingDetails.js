@@ -113,7 +113,7 @@ function CustomerCredLogin(props) {
             opacity={0.1}
             onPress={() => handleDelete(id)}
             color={theme.colors.red}
-            style={styles.deletButton}>
+            style={styles.deleteButton}>
             <MaterialCommunityIcons
               color={theme.colors.red}
               name="delete"
@@ -902,7 +902,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-around',
   },
-  deletButton: {
+  deleteButton: {
     padding: 10,
     alignItems: 'center',
   },
