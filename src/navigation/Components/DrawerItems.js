@@ -66,6 +66,19 @@ export const DEVELOPER_DRAWER_ITEMS = [
       },
     ],
   },
+
+  {
+    title: 'TODO LIST',
+    routes: [
+      {
+        route: 'TaskList',
+        label: 'Task List',
+        icon: ({color, size}) => (
+          <MaterialCommunityIcons name="account-group" {...{color, size}} />
+        ),
+      },
+    ],
+  },
   {
     title: 'CUSTOMER SECTION',
     routes: [
