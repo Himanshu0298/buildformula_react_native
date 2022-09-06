@@ -24,9 +24,21 @@ function MenuDialog(props) {
         title="Share"
       />
       <Divider />
-      <Menu.Item onPress={onUpdate} title="Rename" />
+      <Menu.Item
+        onPress={() => {
+          toggleVersionMenu();
+          onUpdate();
+        }}
+        title="Rename"
+      />
       <Divider />
-      <Menu.Item onPress={onDelete} title="Delete" />
+      <Menu.Item
+        onPress={() => {
+          toggleVersionMenu();
+          onDelete();
+        }}
+        title="Delete"
+      />
       <Divider />
     </Menu>
   );

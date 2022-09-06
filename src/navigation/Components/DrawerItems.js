@@ -125,49 +125,6 @@ export const DEVELOPER_DRAWER_ITEMS = [
     ],
   },
 
-  // {
-  //   route: 'ImportantTask',
-  //   label: 'Important Task',
-  //   icon: ({color, size}) => (
-  //     <MaterialCommunityIcons
-  //       name="progress-star"
-  //       {...{color, size}}
-  //     />
-  //   ),
-  // },
-
-  // {
-  //   route: 'MyTask',
-  //   label: 'My Task',
-  //   icon: ({color, size}) => (
-  //     <MaterialCommunityIcons
-  //       name="file-check-outline"
-  //       {...{color, size}}
-  //     />
-  //   ),
-  // },
-
-  // {
-  //   route: 'SalesTeam',
-  //   label: 'Sales Team',
-  //   icon: ({color, size}) => (
-  //     <MaterialCommunityIcons
-  //       name="account-multiple-outline"
-  //       {...{color, size}}
-  //     />
-  //   ),
-  // },
-  //  {
-  //   route: 'DevTeam',
-  //   label: 'Dev Team',
-  //   icon: ({color, size}) => (
-  //     <MaterialCommunityIcons
-  //       name="account-multiple-outline"
-  //       {...{color, size}}
-  //     />
-  //   ),
-  // },
-
   {
     title: 'DESIGN MODULE',
     routes: [
