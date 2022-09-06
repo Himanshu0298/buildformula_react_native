@@ -415,12 +415,12 @@ const styles = StyleSheet.create({
   dialogTitleContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 10,
   },
 
   dialogHeader: {
     color: '#000',
     marginTop: 20,
+    marginBottom: -10,
   },
   closeButton: {
     borderRadius: 50,

@@ -2,20 +2,14 @@ import * as React from 'react';
 import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import {
-  Button,
-  Caption,
-  Dialog,
-  Divider,
-  Portal,
-  Text,
-} from 'react-native-paper';
+import {Button, Dialog, Divider, Portal, Text} from 'react-native-paper';
 import {Formik} from 'formik';
 import RenderInput from 'components/Atoms/RenderInput';
 
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import {theme} from 'styles/theme';
-import TaskMenu from '../Components/MenuDialog';
+import MenuDialog from '../Components/MenuDialog';
+import ShareTask from './ShareTask';
 
 const arr = [
   {title: "Today's Task", name: 'calendar'},
@@ -34,7 +28,7 @@ function AddTaskCategory(props) {
         visible={visible}
         onDismiss={toggleDialog}
         style={styles.toggleDialog}>
-        <View style={{margin: 10}}>
+        <View style={styles.dialogContainer}>
           <View style={styles.dialogTitleContainer}>
             <OpacityButton
               opacity={0.1}
@@ -91,66 +85,80 @@ function AddTaskCategory(props) {
 }
 
 function TaskList(props) {
-  const {navigation, onUpdate, onDelete, onShare} = props;
+  const {navigation, onUpdate, onDelete} = props;
 
   const [addActivityDialog, setAddActivityDialog] = React.useState(false);
   const [selectedCategory, setSelectedCategory] = React.useState();
 
   const toggleDialog = () => setAddActivityDialog(v => !v);
 
-  const handleSubmit = () => {
+  const [dialog, setDialog] = React.useState(false);
+
+  const toggleModal = () => setDialog(v => !v);
+
+  const OnSubmit = () => {
     toggleDialog();
   };
 
   const navToSubtask = () => navigation.navigate('SubTaskList');
-  const navToShare = () => navigation.navigate('ShareTask');
 
   return (
-    <View style={styles.container}>
-      <View style={styles.headerContainer} />
-      <View style={styles.headingContainer2}>
-        <Text style={styles.subHeading}>Task List</Text>
-        <View style={{padding: 10, width: 100}}>
-          <OpacityButton mode="contained" opacity={0.2} onPress={toggleDialog}>
-            <MaterialCommunityIcons name="plus" size={16} color="#005BE4" />
-            <Text style={styles.add}>Add</Text>
-          </OpacityButton>
-        </View>
-      </View>
+    <>
       <AddTaskCategory
         visible={addActivityDialog}
         selectedCategory={selectedCategory}
         toggleDialog={toggleDialog}
-        onSubmit={handleSubmit}
+        onSubmit={OnSubmit}
       />
-      <Divider />
-      {arr.map((ele, index) => {
-        return (
-          <View>
-            <TouchableOpacity onPress={navToSubtask}>
-              <View style={styles.sectionContainer}>
-                <TouchableOpacity style={styles.taskContainer}>
-                  <View style={styles.calenderIcon}>
-                    <MaterialCommunityIcons
-                      name={ele.name}
-                      size={23}
-                      color="black"
-                    />
-                  </View>
-                  <Text style={styles.subHeading}>{ele.title}</Text>
-                </TouchableOpacity>
-                <TaskMenu
-                  onUpdate={onUpdate}
-                  onDelete={onDelete}
-                  onShare={navToShare}
-                />
-              </View>
-            </TouchableOpacity>
-            <Divider />
+      <ShareTask
+        open={dialog}
+        handleClose={toggleModal}
+        submitForm={console.log('----->')}
+      />
+
+      <View style={styles.container}>
+        <View style={styles.headerContainer} />
+        <View style={styles.headingContainer2}>
+          <Text style={styles.subHeading}>Task List</Text>
+          <View style={styles.buttonContainer}>
+            <OpacityButton
+              mode="contained"
+              opacity={0.2}
+              onPress={toggleDialog}>
+              <MaterialCommunityIcons name="plus" size={16} color="#005BE4" />
+              <Text style={styles.add}>Add</Text>
+            </OpacityButton>
           </View>
-        );
-      })}
-    </View>
+        </View>
+        <Divider />
+        {arr.map((ele, index) => {
+          return (
+            <View>
+              <TouchableOpacity onPress={navToSubtask}>
+                <View style={styles.sectionContainer}>
+                  <View style={styles.taskContainer}>
+                    <View style={styles.calenderIcon}>
+                      <MaterialCommunityIcons
+                        name={ele.name}
+                        size={23}
+                        color="black"
+                      />
+                    </View>
+                    <Text style={styles.subHeading}>{ele.title}</Text>
+                  </View>
+                  <MenuDialog
+                    onUpdate={onUpdate}
+                    onDelete={onDelete}
+                    onShare={toggleModal}
+                  />
+                </View>
+              </TouchableOpacity>
+              <Divider />
+            </View>
+          );
+        })}
+      </View>
+    </>
   );
 }
 export default TaskList;
@@ -163,6 +171,15 @@ const styles = StyleSheet.create({
 
   add: {
     color: '#005BE4',
+  },
+
+  buttonContainer: {
+    padding: 10,
+    width: 100,
+  },
+
+  dialogContainer: {
+    margin: 10,
   },
 
   subHeading: {

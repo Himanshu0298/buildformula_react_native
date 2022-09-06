@@ -3,35 +3,36 @@ import {View, StyleSheet} from 'react-native';
 
 import {Divider, IconButton, Menu} from 'react-native-paper';
 
-function TaskMenu(props) {
-  const {onDelete, onUpdate, onShare, navigation} = props;
+function MenuDialog(props) {
+  const {onDelete, onUpdate, onShare} = props;
 
-  const [versionMenu, setVersionMenu] = React.useState(false);
+  const [versionMenu, setVersionMenu] = React.useState();
+
   const toggleVersionMenu = () => setVersionMenu(v => !v);
 
-  const navToShare = () => navigation.navigate('ShareTask');
-
   return (
-    <View>
-      <Menu
-        visible={versionMenu}
-        contentStyle={styles.toggleDotIcon}
-        onDismiss={toggleVersionMenu}
-        anchor={
-          <IconButton icon="dots-vertical" onPress={toggleVersionMenu} />
-        }>
-        <Menu.Item onPress={onShare} title="Share" />
-        <Divider />
-        <Menu.Item onPress={onUpdate} title="Rename" />
-        <Divider />
-        <Menu.Item onPress={onDelete} title="Delete" />
-        <Divider />
-      </Menu>
-    </View>
+    <Menu
+      visible={versionMenu}
+      contentStyle={styles.toggleDotIcon}
+      onDismiss={toggleVersionMenu}
+      anchor={<IconButton icon="dots-vertical" onPress={toggleVersionMenu} />}>
+      <Menu.Item
+        onPress={() => {
+          toggleVersionMenu();
+          onShare();
+        }}
+        title="Share"
+      />
+      <Divider />
+      <Menu.Item onPress={onUpdate} title="Rename" />
+      <Divider />
+      <Menu.Item onPress={onDelete} title="Delete" />
+      <Divider />
+    </Menu>
   );
 }
 
-export default TaskMenu;
+export default MenuDialog;
 
 const styles = StyleSheet.create({
   toggleDotIcon: {

@@ -68,7 +68,6 @@ import TaskList from 'screens/DeveloperProject/TodoTask/TaskList';
 import SubTaskList from 'screens/DeveloperProject/TodoTask/SubTaskList';
 import AddTask from 'screens/DeveloperProject/TodoTask/AddTask';
 import TaskDetails from 'screens/DeveloperProject/TodoTask/TaskDetails';
-import ShareTask from 'screens/DeveloperProject/TodoTask/ShareTask/ShareTask';
 
 // Project : Customer Section
 import CS_SelectStructure from 'screens/DeveloperProject/CustomerSection/SelectStructure';
@@ -280,7 +279,6 @@ function AppStackNavigator() {
               <Stack.Screen name="SubTaskList" component={SubTaskList} />
               <Stack.Screen name="AddTask" component={AddTask} />
               <Stack.Screen name="TaskDetails" component={TaskDetails} />
-              <Stack.Screen name="ShareTask" component={ShareTask} />
             </Stack.Group>
 
             <Stack.Group>

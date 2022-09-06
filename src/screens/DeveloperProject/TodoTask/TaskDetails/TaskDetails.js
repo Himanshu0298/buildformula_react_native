@@ -10,12 +10,25 @@ import {Caption, Paragraph, Text, withTheme} from 'react-native-paper';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import {theme} from 'styles/theme';
 import {useState} from 'react';
+import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
 
 const arr = [
-  {title: 'Pay Bill', icon: 'checkbox-marked-circle'},
-  {title: 'Check Bank Statement', icon: 'checkbox-marked-circle'},
-  {title: 'Print bill payed Receipt', icon: 'checkbox-marked-circle'},
-  {title: 'Attach in file', icon: 'checkbox-marked-circle'},
+  {title: 'Pay Bill', icon: 'checkbox-marked-circle', completed: false},
+  {
+    title: 'Check Bank Statement',
+    icon: 'checkbox-marked-circle',
+    completed: false,
+  },
+  {
+    title: 'Print bill payed Receipt',
+    icon: 'checkbox-blank-circle-outline',
+    completed: false,
+  },
+  {
+    title: 'Attach in file',
+    icon: 'checkbox-blank-circle-outline',
+    completed: false,
+  },
 ];
 
 const Attachment = [
@@ -33,161 +46,172 @@ const Attachment = [
   },
 ];
 
+const Array = [
+  {title: 'Reminder', caption: '15 March 2022,1:00 PM'},
+  {title: 'Due Date', caption: '20 March, 2022'},
+];
+
 function TaskDetails(props) {
-  const {navigation, onDelete} = props;
-
-  const [edit, setEdit] = useState(false);
-
-  const toggleEdit = () => setEdit(v => !v);
+  const {navigation} = props;
 
   const navToEdit = () => {
     navigation.navigate('AddTask', {type: 'edit'});
   };
 
   const handleDelete = () => {
-    console.log('-----> ');
+    console.log('----->');
   };
 
-  return (
-    <View style={styles.container}>
-      <View style={styles.subContainer1}>
-        <OpacityButton
-          opacity={0.2}
-          style={styles.backButton}
-          onPress={navigation.goBack}>
-          <MaterialIcon name="keyboard-backspace" color="#000" size={20} />
-        </OpacityButton>
+  const toggleComplete = () => {
+    console.log('----->');
+  };
 
-        <Text style={styles.text}> Task</Text>
-        <View style={styles.subContainer}>
-          <OpacityButton
-            opacity={0.1}
-            color={theme.colors.error}
-            onPress={handleDelete}
-            style={styles.icons}>
-            <MaterialCommunityIcons name="delete" size={18} color="#FF5D5D" />
-          </OpacityButton>
-          <OpacityButton
-            opacity={0.1}
-            color={theme.colors.primary}
-            onPress={navToEdit}
-            style={styles.icons}>
-            <MaterialCommunityIcons
-              name="pencil"
-              size={18}
-              color={theme.colors.primary}
-            />
-          </OpacityButton>
+  const AddToFavorite = i => {
+    console.log('----->i', i);
+  };
+  return (
+    <ScrollView>
+      <View style={styles.container}>
+        <View style={styles.subContainer1}>
           <OpacityButton
             opacity={0.2}
-            style={styles.icons}
-            onPress={console.log('-----> ')}>
-            <MaterialCommunityIcons
-              name="star-outline"
-              size={18}
-              color="#4872F4"
-            />
+            style={styles.backButton}
+            onPress={navigation.goBack}>
+            <MaterialIcon name="keyboard-backspace" color="#000" size={20} />
           </OpacityButton>
+
+          <Text style={styles.text}> Task</Text>
+          <View style={styles.subContainer}>
+            <OpacityButton
+              opacity={0.1}
+              color={theme.colors.error}
+              onPress={handleDelete}
+              style={styles.icons}>
+              <MaterialCommunityIcons name="delete" size={18} color="#FF5D5D" />
+            </OpacityButton>
+            <OpacityButton
+              opacity={0.1}
+              color={theme.colors.primary}
+              onPress={navToEdit}
+              style={styles.icons}>
+              <MaterialCommunityIcons
+                name="pencil"
+                size={18}
+                color={theme.colors.primary}
+              />
+            </OpacityButton>
+            <OpacityButton
+              opacity={0.2}
+              style={styles.icons}
+              onPress={AddToFavorite}>
+              <MaterialCommunityIcons
+                name="star-outline"
+                size={18}
+                color={theme.colors.primary}
+              />
+            </OpacityButton>
+          </View>
         </View>
-      </View>
-      <View style={styles.tasks}>
-        <OpacityButton opacity={0}>
-          <Feather name="circle" size={23} color="#4872F4" />
-        </OpacityButton>
-        <Text style={styles.header}>2nd round with dev</Text>
-      </View>
-      <View style={styles.description}>
-        <Text style={styles.textContainer}>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Gravida duis
-          consectetur adipiscing eu egestas sed id euismod erat. Turpis morbi
-          tellus eu leo. Donec vestibulum aliquet facilisi tristique. In neque
-          dictum quis turpis. Nisl, faucibus fermentum mauris dolor in vitae
-          magna sit. Donec libero sed risus fringilla ultrices imperdiet
-          fringilla eu odio.
-        </Text>
-      </View>
-      <View style={{}}>
-        {arr.map((element, index) => {
+        <View style={styles.tasks}>
+          <TouchableOpacity opacity={0} onPress={toggleComplete}>
+            <Feather name="circle" size={22} color="#4872F4" />
+          </TouchableOpacity>
+          <Text style={styles.header}>2nd round with dev</Text>
+        </View>
+        <View style={styles.description}>
+          <Text style={styles.textContainer}>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Gravida
+            duis consectetur adipiscing eu egestas sed id euismod erat. Turpis
+            morbi tellus eu leo. Donec vestibulum aliquet facilisi tristique. In
+            neque dictum quis turpis. Nisl, faucibus fermentum mauris dolor in
+            vitae magna sit. Donec libero sed risus fringilla ultrices imperdiet
+            fringilla eu odio.
+          </Text>
+        </View>
+        <View>
+          {arr.map((element, index) => {
+            return (
+              <View style={styles.detailContainer}>
+                <OpacityButton opacity={0} onPress={toggleComplete}>
+                  <MaterialCommunityIcons
+                    name={element.icon}
+                    size={20}
+                    color="#005BE4"
+                    style={styles.circle}
+                  />
+                </OpacityButton>
+                <Paragraph style={styles.successParagraph}>
+                  {element.title}
+                </Paragraph>
+              </View>
+            );
+          })}
+        </View>
+
+        {Array.map((i, index) => {
           return (
-            <View style={styles.detailContainer}>
-              <OpacityButton opacity={0}>
-                <MaterialCommunityIcons
-                  name={element.icon}
-                  size={20}
-                  color="#005BE4"
-                  style={styles.circle}
-                />
-              </OpacityButton>
-              <Paragraph style={styles.successParagraph}>
-                {element.title}
-              </Paragraph>
+            <View style={styles.captionContainer}>
+              <Caption style={styles.caption}>{i.title} :</Caption>
+              <Text style={styles.value}>{i.caption}</Text>
             </View>
           );
         })}
-      </View>
-      <View style={styles.captionContainer}>
-        <Caption style={styles.caption}>Reminder :</Caption>
-        <Text style={styles.value}> 15 March 2022,1:00 PM</Text>
-      </View>
-      <View style={styles.captionContainer}>
-        <Caption style={styles.caption}>Due Date :</Caption>
-        <Text style={styles.value}>20 March, 2022</Text>
-      </View>
-      <View style={styles.captionContainer}>
-        <Caption style={styles.caption}>Assignee:</Caption>
-      </View>
-      <View style={styles.headingContainer}>
-        <View style={styles.subCardContainer}>
+        <View style={styles.captionContainer}>
+          <Caption style={styles.caption}>Assignee:</Caption>
+        </View>
+        <View style={styles.headingContainer}>
           <View style={{padding: 5}}>
             <Text style={styles.textContainer}> Pratik Ghandhi</Text>
 
             <Caption style={styles.input}>pratikghandhi0001@gmail.com</Caption>
           </View>
         </View>
-      </View>
 
-      <View style={styles.captionContainer}>
-        <Caption style={styles.caption}>Attachments</Caption>
-      </View>
+        <View style={styles.captionContainer}>
+          <Caption style={styles.caption}>Attachments</Caption>
+        </View>
 
-      {Attachment.map((ele, index) => {
-        return (
-          <View style={styles.card}>
-            <View style={styles.headingContainer1}>
-              <View style={styles.subCardContainer}>
-                <View style={{flexDirection: 'row'}}>
-                  <View style={styles.pdfIcon}>
-                    <MaterialCommunityIcons
-                      name={ele.icon}
-                      size={25}
-                      color="#4872F4"
-                    />
-                  </View>
-                  <View>
-                    <View style={{paddingTop: 5}}>
-                      <Text>{ele.title}</Text>
-                      <View>
-                        <Caption> {ele.storage}</Caption>
+        {Attachment.map((ele, index) => {
+          return (
+            <View style={styles.card}>
+              <View style={styles.cardContainer}>
+                <View style={styles.subCardContainer}>
+                  <View style={{flexDirection: 'row'}}>
+                    <View style={styles.pdfIcon}>
+                      <MaterialCommunityIcons
+                        name={ele.icon}
+                        size={25}
+                        color="#4872F4"
+                      />
+                    </View>
+                    <View>
+                      <View style={styles.InputContainer}>
+                        <Text>{ele.title}</Text>
+                        <View>
+                          <Caption> {ele.storage}</Caption>
+                        </View>
                       </View>
                     </View>
                   </View>
                 </View>
-              </View>
-              <View style={styles.download}>
-                <AntDesign name={ele.name} size={24} color="#4872F4" />
+                <View style={styles.download}>
+                  <AntDesign name={ele.name} size={24} color="#4872F4" />
+                </View>
               </View>
             </View>
-          </View>
-        );
-      })}
-    </View>
+          );
+        })}
+      </View>
+    </ScrollView>
   );
 }
 
 export default withTheme(TaskDetails);
 
 const styles = StyleSheet.create({
-  container: {margin: 10},
+  container: {
+    margin: 15,
+  },
 
   value: {
     fontSize: 12,
@@ -196,11 +220,11 @@ const styles = StyleSheet.create({
 
   header: {
     color: '#4872F4',
-    marginTop: 5,
+    margin: 5,
   },
 
   textContainer: {
-    fontSize: 12,
+    paddingTop: 4,
   },
 
   pdfIcon: {
@@ -210,12 +234,18 @@ const styles = StyleSheet.create({
 
   tasks: {
     flexDirection: 'row',
+    alignItems: 'center',
     marginTop: 15,
+  },
+
+  InputContainer: {
+    paddingTop: 5,
   },
 
   download: {
     alignSelf: 'flex-end',
     paddingBottom: 10,
+    marginRight: 15,
   },
 
   card: {
@@ -236,7 +266,6 @@ const styles = StyleSheet.create({
 
   input: {
     fontStyle: 'italic',
-    fontSize: 8,
   },
 
   text: {
@@ -258,7 +287,7 @@ const styles = StyleSheet.create({
   },
 
   captionContainer: {
-    marginVertical: 5,
+    marginTop: 15,
     flexDirection: 'row',
   },
 
@@ -288,9 +317,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: ' rgba(72, 114, 244, 0.1)',
-    borderRadius: 10,
+    borderRadius: 5,
   },
-  headingContainer1: {
+  cardContainer: {
     marginTop: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',

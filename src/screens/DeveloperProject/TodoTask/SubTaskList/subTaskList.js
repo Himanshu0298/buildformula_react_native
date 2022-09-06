@@ -1,10 +1,7 @@
 import * as React from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, FlatList, ScrollView} from 'react-native';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
-import Feather from 'react-native-vector-icons/Feather';
-
 import {
   Caption,
   FAB,
@@ -13,167 +10,106 @@ import {
   Text,
   withTheme,
 } from 'react-native-paper';
-import {AutoDragSortableView} from 'react-native-drag-sort';
-
-import Layout from 'utils/Layout';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
-import {useState} from 'react';
 import {TouchableOpacity} from 'react-native-gesture-handler';
-import TaskMenu from '../Components/MenuDialog';
+import MenuDialog from '../Components/MenuDialog';
 
 const arr = [
-  {title: ' Pay Bill For Gas Cylinder', favorite: true},
-  {title: 'Need more candidates', favorite: false},
-  {title: ' interview with startup', favorite: false},
-  {title: ' 2nd round with dev', favorite: false},
-  {title: 'talk to harry', favorite: false},
+  {id: 1, title: 'Pay Bill For Gas Cylinder', favorite: true, completed: false},
+  {id: 2, title: 'Need more candidates', favorite: false, completed: false},
+  {id: 3, title: 'interview with startup', favorite: false, completed: false},
+  {id: 4, title: '2nd round with dev', favorite: false, completed: false},
+  {id: 5, title: 'talk to harry', favorite: false, completed: false},
 ];
 
-function InCompleteCard(props) {
-  const {navigation, inComplete, setIncomplete, complete, setComplete} = props;
-
-  const handlePress = i => {
-    const dummy = [...inComplete];
-    const completeDummy = [...complete, inComplete[i]];
-    setComplete(completeDummy);
-    dummy.splice(i, 1);
-    setIncomplete(dummy);
-  };
-
-  const navToDetails = () => navigation.navigate('TaskDetails');
+function RenderTodoCard(props) {
+  const {item, toggleComplete, toggleFavorite, navToDetails} = props;
+  const {id, title, favorite, completed} = item;
 
   return (
-    <View>
-      <Text>
-        {inComplete.map((ele, index) => {
-          return (
-            <View style={styles.CardContainer}>
-              <View style={styles.headingContainer}>
-                <View style={styles.subCardContainer}>
-                  <OpacityButton opacity={0} onPress={() => handlePress(index)}>
-                    <Feather
-                      name="circle"
-                      size={25}
-                      color="rgba(4, 29, 54, 0.15)"
-                      style={styles.circle}
-                    />
-                  </OpacityButton>
+    <ScrollView>
+      <View style={styles.cardContainer}>
+        <View style={styles.headingContainer}>
+          <View style={styles.subCardContainer}>
+            <OpacityButton opacity={0} onPress={() => toggleComplete(id)}>
+              <MaterialCommunityIcons
+                name={
+                  completed
+                    ? 'checkbox-marked-circle'
+                    : 'checkbox-blank-circle-outline'
+                }
+                size={25}
+                color={completed ? '#005BE4' : 'rgba(4, 29, 54, 0.15)'}
+                style={styles.circle}
+              />
+            </OpacityButton>
 
-                  <View style={{}}>
-                    <TouchableOpacity
-                      onPress={navToDetails}
-                      style={styles.paragraph}>
-                      <Text style={{color: '#005BE4'}}>{ele.title}</Text>
-
-                      <Caption>2 of 5. 15 March,2022. Jayesh Ghandhi</Caption>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-                <View style={styles.icons}>
-                  {ele.favorite ? (
-                    <OpacityButton opacity={0}>
-                      <MaterialCommunityIcons
-                        name="star"
-                        size={23}
-                        color="#FFC700"
-                      />
-                    </OpacityButton>
-                  ) : (
-                    <OpacityButton opacity={0}>
-                      <MaterialCommunityIcons name="star-outline" size={23} />
-                    </OpacityButton>
-                  )}
-                  {/* {index === 0 ? (
-                    <OpacityButton opacity={0}>
-                      <MaterialIcon
-                        name="drag-indicator"
-                        id="testId"
-                        size={24}
-                        color="#041D36"
-                      />
-                    </OpacityButton>
-                  ) : null} */}
-                </View>
-              </View>
-            </View>
-          );
-        })}
-      </Text>
-    </View>
-  );
-}
-
-function Completed(props) {
-  const {complete} = props;
-
-  return (
-    <View>
-      <Text>
-        {complete.map((element, index) => {
-          return (
-            <View style={styles.CardContainer}>
-              <View style={styles.headingContainer}>
-                <View style={styles.subCardContainer}>
-                  <OpacityButton opacity={0}>
-                    <MaterialCommunityIcons
-                      name="checkbox-marked-circle"
-                      size={25}
-                      color="#005BE4"
-                      style={styles.circle}
-                    />
-                  </OpacityButton>
-
-                  <View>
-                    <Paragraph style={styles.successParagraph}>
-                      {element.title}
-                    </Paragraph>
-
-                    <Caption>2 of 5. 15 March,2022. Jayesh Ghandhi</Caption>
-                  </View>
-                </View>
-                <View style={styles.icons}>
-                  {element.favorite ? (
-                    <OpacityButton opacity={0}>
-                      <MaterialCommunityIcons
-                        name="star"
-                        size={23}
-                        color="#FFC700"
-                      />
-                    </OpacityButton>
-                  ) : (
-                    <OpacityButton opacity={0}>
-                      <MaterialCommunityIcons name="star-outline" size={23} />
-                    </OpacityButton>
-                  )}
-                </View>
-              </View>
-            </View>
-          );
-        })}
-      </Text>
-    </View>
+            <TouchableOpacity onPress={() => navToDetails()}>
+              <Paragraph
+                style={[
+                  styles.successParagraph,
+                  completed ? {textDecorationLine: 'line-through'} : {},
+                ]}>
+                {title}
+              </Paragraph>
+              <Caption>2 of 5. 15 March,2022. Jayesh Ghandhi</Caption>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.icons}>
+            <OpacityButton opacity={0} onPress={() => toggleFavorite(id)}>
+              <MaterialCommunityIcons
+                name={favorite ? 'star' : 'star-outline'}
+                size={23}
+                color={favorite ? '#FFC700' : undefined}
+              />
+            </OpacityButton>
+          </View>
+        </View>
+      </View>
+    </ScrollView>
   );
 }
 
 function SubTaskList(props) {
   const {navigation, theme} = props;
 
-  const [inComplete, setIncomplete] = useState(arr);
-  const [complete, setComplete] = useState([]);
+  const [list, setList] = React.useState(arr);
 
-  const navToAdd = () => {
-    navigation.navigate('AddTask');
+  const [completedList, incompleteList] = React.useMemo(() => {
+    return [list.filter(i => i.completed), list.filter(i => !i.completed)];
+  }, [list]);
+
+  const navToAdd = () => navigation.navigate('AddTask');
+
+  const navToShare = () => navigation.navigate('ShareTask');
+  const navToDetails = () => navigation.navigate('TaskDetails');
+
+  const toggleComplete = id => {
+    const updatedList = [...list];
+    const index = updatedList.findIndex(i => i.id === id);
+    updatedList[index].completed = !updatedList[index].completed;
+
+    setList(updatedList);
   };
 
+  const toggleFavorite = id => {
+    const updatedList = [...list];
+    const index = updatedList.findIndex(i => i.id === id);
+    updatedList[index].favorite = !updatedList[index].favorite;
+
+    setList(updatedList);
+  };
+
+  const onDelete = () => {
+    console.log('----->');
+  };
+  const onUpdate = () => {
+    console.log('----->');
+  };
   return (
     <View style={styles.container}>
       <View style={styles.headingContainer2}>
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}>
+        <View style={styles.subContainer}>
           <OpacityButton
             opacity={0.2}
             // color={theme.colors.primary}
@@ -183,7 +119,11 @@ function SubTaskList(props) {
           </OpacityButton>
           <Subheading>Sales Team</Subheading>
         </View>
-        <TaskMenu />
+        <MenuDialog
+          onUpdate={onUpdate}
+          onDelete={onDelete}
+          onShare={navToShare}
+        />
       </View>
       {/* <AutoDragSortableView
         dataSource={milestones}
@@ -194,30 +134,46 @@ function SubTaskList(props) {
         keyExtractor={(_, i) => i.toString()}
         renderItem={() => <RenderTaskList />}
       /> */}
-      <View style={styles.container}>
-        <InCompleteCard
-          inComplete={inComplete}
-          setIncomplete={setIncomplete}
-          complete={complete}
-          navigation={navigation}
-          setComplete={setComplete}
+      <View style={styles.contentContainer}>
+        <FlatList
+          data={incompleteList}
+          extraData={incompleteList}
+          keyExtractor={(_, index) => String(index)}
+          renderItem={({item}) => (
+            <RenderTodoCard
+              item={item}
+              toggleComplete={toggleComplete}
+              toggleFavorite={toggleFavorite}
+              navToDetails={navToDetails}
+            />
+          )}
         />
-        <View
-          style={{flexDirection: 'row', alignItems: 'center', paddingLeft: 5}}>
-          <Text style={{fontSize: 17}}>Completed</Text>
-          <MaterialCommunityIcons
-            name="chevron-right"
-            size={24}
-            color="black"
-          />
-        </View>
 
-        <Completed
-          inComplete={inComplete}
-          setIncomplete={setIncomplete}
-          complete={complete}
-          setComplete={setComplete}
-        />
+        {completedList.length ? (
+          <>
+            <View style={styles.completeHeadingContainer}>
+              <Text style={styles.completedHeading}>Completed</Text>
+              <MaterialCommunityIcons
+                name="chevron-right"
+                size={24}
+                color="black"
+              />
+            </View>
+            <FlatList
+              data={completedList}
+              extraData={completedList}
+              keyExtractor={(_, index) => String(index)}
+              renderItem={({item}) => (
+                <RenderTodoCard
+                  item={item}
+                  toggleComplete={toggleComplete}
+                  toggleFavorite={toggleFavorite}
+                  navToDetails={navToDetails}
+                />
+              )}
+            />
+          </>
+        ) : null}
       </View>
       <FAB
         style={[styles.fab, {backgroundColor: theme.colors.primary}]}
@@ -233,15 +189,23 @@ export default withTheme(SubTaskList);
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
+    padding: 10,
   },
-
-  CardContainer: {
-    width: Layout.window.width,
-    paddingHorizontal: 8,
-    display: 'flex',
-    padding: 5,
+  cardContainer: {
+    marginVertical: 5,
   },
-
+  subContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  completeHeadingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: 5,
+    marginTop: 10,
+    marginBottom: 5,
+  },
   subCardContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -250,27 +214,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-
-  paragraph: {
-    fontSize: 12,
-    color: '#005BE4',
-  },
-  menu: {
-    marginLeft: 170,
-  },
-
   circle: {
     margin: 15,
   },
+  completedHeading: {
+    fontSize: 17,
+  },
   successParagraph: {
-    textDecorationLine: 'line-through',
     fontSize: 12,
     color: '#005BE4',
   },
-  paragraph2: {
-    margin: 30,
-  },
-
   headingContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
