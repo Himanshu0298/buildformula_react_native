@@ -2,10 +2,8 @@ import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import * as React from 'react';
 import {StyleSheet, View, ScrollView, Image} from 'react-native';
 import FileIcon from 'assets/images/file_icon.png';
-
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-
 import {
   Button,
   Dialog,
@@ -15,7 +13,6 @@ import {
   withTheme,
 } from 'react-native-paper';
 import Feather from 'react-native-vector-icons/Feather';
-
 import RenderInput, {RenderError} from 'components/Atoms/RenderInput';
 import {Formik} from 'formik';
 import RenderSelect from 'components/Atoms/RenderSelect';
@@ -51,7 +48,7 @@ function AddSubTask(props) {
             validateOnChange={false}
             initialValues={{work: selectedCategory?.title}}
             // validationSchema={schema}
-            onSubmit={async values => onSubmit(values)}>
+            onSubmit={onSubmit}>
             {({values, errors, handleChange, handleBlur, handleSubmit}) => {
               return (
                 <View style={styles.dialogContentContainer}>
@@ -126,7 +123,36 @@ const RenderAttachments = props => {
   );
 };
 
-const RenderSubTask = props => {
+function RenderSubTaskItem(props) {
+  const {task, index, handleDelete} = props;
+  return (
+    <View>
+      <MaterialIcon name="arrow-right-bottom" color="black" size={17} />
+      <OpacityButton>
+        <Feather
+          name="circle"
+          size={25}
+          color="rgba(4, 29, 54, 0.15)"
+          style={styles.circle}
+        />
+      </OpacityButton>
+      <View>
+        <Text style={(styles.verticalFlex, styles.text)} numberOfLines={1}>
+          {task.name}
+        </Text>
+      </View>
+      <OpacityButton
+        opacity={0.1}
+        color={theme.colors.error}
+        style={styles.closeButton}
+        onPress={() => handleDelete(index)}>
+        <MaterialIcon name="close" color={theme.colors.error} size={17} />
+      </OpacityButton>
+    </View>
+  );
+}
+
+function RenderSubTask(props) {
   const {tasks, handleDelete, type} = props;
   return (
     <View>
@@ -136,41 +162,17 @@ const RenderSubTask = props => {
         </View>
         {tasks?.map((task, index) => {
           return (
-            <View>
-              <MaterialIcon name="arrow-right-bottom" color="black" size={17} />
-              <OpacityButton>
-                <Feather
-                  name="circle"
-                  size={25}
-                  color="rgba(4, 29, 54, 0.15)"
-                  style={styles.circle}
-                />
-              </OpacityButton>
-              <View>
-                <Text
-                  style={(styles.verticalFlex, styles.text)}
-                  numberOfLines={1}>
-                  {task.name}
-                </Text>
-              </View>
-              <OpacityButton
-                opacity={0.1}
-                color={theme.colors.error}
-                style={styles.closeButton}
-                onPress={() => handleDelete(index)}>
-                <MaterialIcon
-                  name="close"
-                  color={theme.colors.error}
-                  size={17}
-                />
-              </OpacityButton>
-            </View>
+            <RenderSubTaskItem
+              task={task}
+              index={index}
+              handleDelete={handleDelete}
+            />
           );
         })}
       </View>
     </View>
   );
-};
+}
 
 function CreateTask(props) {
   const {formikProps, navigation, type} = props;
