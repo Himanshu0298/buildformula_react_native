@@ -1,26 +1,142 @@
-import {StyleSheet, Text, View, FlatList, Dimensions} from 'react-native';
-import React, {useState} from 'react';
+import {StyleSheet, Text, View, Dimensions} from 'react-native';
+import React, {useState, useEffect} from 'react';
 import ProjectHeader from 'components/Molecules/Layout/ProjectHeader';
 import {IconButton, Caption} from 'react-native-paper';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import ActionButtons from 'components/Atoms/ActionButtons';
 import {useAlert} from 'components/Atoms/Alert';
-import PRMaterialData from '../CreatePR/PRMaterialData';
+import {useSelector} from 'react-redux';
+import useMaterialManagementActions from 'redux/actions/materialManagementActions';
+import {ScrollView} from 'react-native-gesture-handler';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const {height} = Dimensions.get('window');
 
 const dynamicHeight = height - 245;
 
 const PRPreview = props => {
-  const {navigation} = props;
+  const {navigation, route} = props;
+  const {purchase_request_id, prStatus} = route?.params || {};
   const alert = useAlert();
 
+  const {selectedProject} = useSelector(s => s.project);
+  const project_id = selectedProject.id;
+
+  const {getMaterialPRDetails} = useMaterialManagementActions();
+
+  const {prDetails, loading} = useSelector(s => s.materialManagement);
+
+  const {
+    record_data = {},
+    material_request_items = {},
+    required_for_data = [],
+  } = prDetails[0] || {};
+
+  useEffect(() => {
+    getMaterialPRDetails({project_id, purchase_request_id});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const [status, setStatus] = useState();
+
+  const materialIndex = Object.keys(material_request_items);
+
+  const prHeader = () => (
+    <>
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+        }}>
+        <View style={styles.dataRow}>
+          <Caption style={styles.lightData}>PR ID:</Caption>
+          <Text>{record_data.id}</Text>
+        </View>
+        {status === 'PR Rejected' ? (
+          <View style={{alignSelf: 'center', flexDirection: 'row'}}>
+            <MaterialIcons name="cancel" size={18} color="#FF5D5D" />
+            <Text
+              style={{
+                color: '#FF5D5D',
+                marginLeft: 5,
+              }}>
+              PR Rejected
+            </Text>
+          </View>
+        ) : status === 'PR Approved' ? (
+          <View style={{alignSelf: 'center', flexDirection: 'row'}}>
+            <MaterialIcons name="check-circle" size={18} color="#07CA03" />
+            <Text
+              style={{
+                color: '#07CA03',
+                marginLeft: 5,
+              }}>
+              PR Approved
+            </Text>
+          </View>
+        ) : null}
+      </View>
+      <View style={styles.dataRow}>
+        <Caption style={styles.lightData}>Subject:</Caption>
+        <Text>{record_data.subject}</Text>
+      </View>
+      <View style={styles.dataRow}>
+        <Caption style={styles.lightData}>Required Vendor:</Caption>
+        <Text>{record_data.contractor_name}</Text>
+      </View>
+      <View style={styles.dataRow}>
+        <Caption style={styles.lightData}>Required For:</Caption>
+        <Text style={{flexShrink: 1}}>{required_for_data}</Text>
+      </View>
+      <View style={styles.dataRow}>
+        <Caption style={styles.lightData}>Remark:</Caption>
+        <Text style={{flexShrink: 1}}>{record_data.remarks}</Text>
+      </View>
+      <View style={styles.dataRow}>
+        <Caption style={styles.lightData}>Creater Name:</Caption>
+        <Text>{`${record_data.first_name} ${record_data.last_name}`}</Text>
+      </View>
+      <View style={styles.dataRow}>
+        <Caption style={styles.lightData}>Created on:</Caption>
+        <Text>{record_data.created}</Text>
+      </View>
+    </>
+  );
+
+  const prMaterial = item => {
+    return (
+      <View style={styles.cardContainer}>
+        <View style={styles.cardHeader}>
+          <View style={styles.dataRow}>
+            <Caption style={styles.lightData}>Category:</Caption>
+            <Text>{item.materialcategrytitle}</Text>
+          </View>
+        </View>
+        <View style={styles.dataRow}>
+          <Caption style={styles.lightData}>Sub Category:</Caption>
+          <Text>{item.subcategorytitle}</Text>
+        </View>
+        <View style={styles.dataRow}>
+          <Caption style={styles.lightData}>Unit:</Caption>
+          <Text>{item.materialunitstitle}</Text>
+        </View>
+        <View style={styles.dataRow}>
+          <Caption style={styles.lightData}>Required date:</Caption>
+          <Text>{item.created}</Text>
+        </View>
+        <View style={styles.dataRow}>
+          <Caption style={styles.lightData}>Quantity:</Caption>
+          <Text>{item.material_quantity}</Text>
+        </View>
+      </View>
+    );
+  };
 
   return (
     <View>
       <ProjectHeader {...props} />
+      <Spinner visible={loading} textContent="" />
       <View style={styles.mainContainer}>
         <View style={styles.headerContainer}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -35,7 +151,7 @@ const PRPreview = props => {
           </View>
           <View
             style={{flexDirection: 'row', marginEnd: 10, alignSelf: 'center'}}>
-            {status == null ? (
+            {prStatus === 1 ? (
               <View style={{marginRight: 15}}>
                 <OpacityButton
                   color="#4872f4"
@@ -66,119 +182,29 @@ const PRPreview = props => {
           </View>
         </View>
         <View style={styles.bodyContent}>
-          <View style={styles.materialListContainer}>
-            <FlatList
-              data={PRMaterialData}
-              renderItem={({item}) => {
-                return (
-                  <View style={styles.cardContainer}>
-                    <View style={styles.cardHeader}>
-                      <View style={styles.dataRow}>
-                        <Caption style={styles.lightData}>Category:</Caption>
-                        <Text>{item.category}</Text>
-                      </View>
-                    </View>
-                    <View style={styles.dataRow}>
-                      <Caption style={styles.lightData}>Sub Category:</Caption>
-                      <Text>{item.subCategory}</Text>
-                    </View>
-                    <View style={styles.dataRow}>
-                      <Caption style={styles.lightData}>Unit:</Caption>
-                      <Text>{item.unit}</Text>
-                    </View>
-                    <View style={styles.dataRow}>
-                      <Caption style={styles.lightData}>Required date:</Caption>
-                      <Text>{item.requiredDate}</Text>
-                    </View>
-                    <View style={styles.dataRow}>
-                      <Caption style={styles.lightData}>Quantity:</Caption>
-                      <Text>{item.qty}</Text>
-                    </View>
-                  </View>
-                );
-              }}
-              ListHeaderComponent={
-                <View>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                    }}>
-                    <View style={styles.dataRow}>
-                      <Caption style={styles.lightData}>PR ID:</Caption>
-                      <Text>022</Text>
-                    </View>
-                    {status === 'PR Rejected' ? (
-                      <View style={{alignSelf: 'center', flexDirection: 'row'}}>
-                        <MaterialIcons
-                          name="cancel"
-                          size={18}
-                          color="#FF5D5D"
-                        />
-                        <Text
-                          style={{
-                            color: '#FF5D5D',
-                            marginLeft: 5,
-                          }}>
-                          PR Rejected
-                        </Text>
-                      </View>
-                    ) : status === 'PR Approved' ? (
-                      <View style={{alignSelf: 'center', flexDirection: 'row'}}>
-                        <MaterialIcons
-                          name="check-circle"
-                          size={18}
-                          color="#07CA03"
-                        />
-                        <Text
-                          style={{
-                            color: '#07CA03',
-                            marginLeft: 5,
-                          }}>
-                          PR Approved
-                        </Text>
-                      </View>
-                    ) : null}
-                  </View>
-                  <View style={styles.dataRow}>
-                    <Caption style={styles.lightData}>Subject:</Caption>
-                    <Text>OPC</Text>
-                  </View>
-                  <View style={styles.dataRow}>
-                    <Caption style={styles.lightData}>Required Vendor:</Caption>
-                    <Text>Hiren tarale</Text>
-                  </View>
-                  <View style={styles.dataRow}>
-                    <Caption style={styles.lightData}>Required For:</Caption>
-                    <Text>(Task Link, ID, Name)</Text>
-                  </View>
-                  <View style={styles.dataRow}>
-                    <Caption style={styles.lightData}>Remark:</Caption>
-                    <Text style={{flexShrink: 1}}>
-                      Please Soon as Possible Order it we have not enough
-                      cement.ssible Order it we have not enough cement.
-                    </Text>
-                  </View>
-                  <View style={styles.dataRow}>
-                    <Caption style={styles.lightData}>Creater Name:</Caption>
-                    <Text>Jaismin Fataniya</Text>
-                  </View>
-                  <View style={styles.dataRow}>
-                    <Caption style={styles.lightData}>Created on:</Caption>
-                    <Text>15 April, 2022</Text>
-                  </View>
-                </View>
-              }
-            />
-          </View>
-          <View>
+          <ScrollView
+            style={styles.materialListContainer}
+            showsVerticalScrollIndicator={false}>
+            {prHeader()}
+            {materialIndex.map(key => {
+              const subCat = material_request_items[key];
+              return (
+                <>
+                  {subCat.map(item => {
+                    return prMaterial(item);
+                  })}
+                </>
+              );
+            })}
+          </ScrollView>
+          {status == null ? (
             <ActionButtons
               cancelLabel="Reject"
               submitLabel="Approve"
               onCancel={() => setStatus('PR Rejected')}
               onSubmit={() => setStatus('PR Approved')}
             />
-          </View>
+          ) : null}
         </View>
       </View>
     </View>
@@ -189,7 +215,7 @@ export default PRPreview;
 
 const styles = StyleSheet.create({
   mainContainer: {
-    paddingHorizontal: 5,
+    paddingHorizontal: 15,
   },
   headerContainer: {
     flexDirection: 'row',
@@ -214,7 +240,7 @@ const styles = StyleSheet.create({
   },
   cardContainer: {
     marginVertical: 10,
-    borderWidth: 0.2,
+    borderWidth: 0.5,
     borderRadius: 5,
     borderColor: 'rgba(0, 0, 0, 0.3)',
     shadowColor: '#000',

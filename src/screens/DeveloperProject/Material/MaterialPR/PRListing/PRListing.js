@@ -1,10 +1,25 @@
 import {StyleSheet, Text, View, TouchableOpacity, FlatList} from 'react-native';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Caption, Divider, FAB} from 'react-native-paper';
-import {PRList} from './PRData';
+import {useSelector} from 'react-redux';
+import useMaterialManagementActions from 'redux/actions/materialManagementActions';
+import {COMMON_STATUS} from 'utils/constant';
 
 const PRListing = props => {
   const {navigation} = props;
+
+  const {selectedProject} = useSelector(s => s.project);
+  const project_id = selectedProject.id;
+
+  const {getMaterialPR} = useMaterialManagementActions();
+
+  const {prList = []} = useSelector(s => s.materialManagement);
+
+  useEffect(() => {
+    getMaterialPR({project_id});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <View style={styles.mainContainer}>
       <View style={styles.headerContainer}>
@@ -12,33 +27,31 @@ const PRListing = props => {
       </View>
       <View style={styles.bodyContainer}>
         <FlatList
+          showsVerticalScrollIndicator={false}
           style={{height: '96%'}}
-          data={PRList}
+          data={prList}
+          keyExtractor={item => item.id}
           renderItem={({item}) => {
             return (
               <TouchableOpacity
                 onPress={() => {
-                  navigation.navigate('PRPreview');
+                  navigation.navigate('PRPreview', {
+                    purchase_request_id: item.id,
+                  });
                 }}>
                 <View style={styles.cardContainer}>
                   <View style={styles.cardHeader}>
                     <Text style={styles.ID}>{item.id}</Text>
-                    <Text
-                      style={
-                        item.status === 'Pending'
-                          ? styles.pending
-                          : item.status === 'Rejected'
-                          ? styles.rejected
-                          : item.status === 'Approved'
-                          ? styles.approved
-                          : null
-                      }>
-                      {item.status}
-                    </Text>
+                    <Caption
+                      style={{
+                        color: COMMON_STATUS[item.status]?.color,
+                      }}>
+                      {COMMON_STATUS[item.status]?.label}
+                    </Caption>
                   </View>
                   <Divider style={{color: 'rgba(0, 0, 0, 0.2)', height: 1}} />
                   <View>
-                    <Text style={{marginTop: 5}}>{item.name}</Text>
+                    <Text style={{marginTop: 5}}>{item.subject}</Text>
                     <View
                       style={{
                         flexDirection: 'row',
@@ -46,9 +59,9 @@ const PRListing = props => {
                         marginTop: 10,
                       }}>
                       <Caption>Approved by:</Caption>
-                      <Text style={{marginLeft: 5}}>{item.approvedBy}</Text>
+                      <Text style={{marginLeft: 5}}>{item.approved_by}</Text>
                     </View>
-                    <Caption>{item.date}</Caption>
+                    <Caption>{item.created}</Caption>
                   </View>
                 </View>
               </TouchableOpacity>
@@ -95,15 +108,6 @@ const styles = StyleSheet.create({
     padding: 5,
     borderRadius: 3,
     color: 'rgba(72, 114, 244, 1)',
-  },
-  pending: {
-    color: 'rgba(244, 175, 72, 1)',
-  },
-  rejected: {
-    color: 'rgba(255, 93, 93, 1)',
-  },
-  approved: {
-    color: 'rgba(7, 202, 3, 1)',
   },
   fab: {
     position: 'absolute',

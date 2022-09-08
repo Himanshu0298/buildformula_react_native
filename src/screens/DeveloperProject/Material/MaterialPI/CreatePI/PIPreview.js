@@ -65,6 +65,7 @@ const PIPreview = props => {
           <View style={styles.materialListContainer}>
             <FlatList
               data={PRMaterialData}
+              showsVerticalScrollIndicator={false}
               renderItem={({item}) => {
                 return (
                   <View style={styles.cardContainer}>
@@ -206,7 +207,7 @@ const styles = StyleSheet.create({
   },
   cardContainer: {
     marginVertical: 10,
-    borderWidth: 0.2,
+    borderWidth: 0.5,
     borderRadius: 5,
     borderColor: 'rgba(0, 0, 0, 0.3)',
     shadowColor: '#000',

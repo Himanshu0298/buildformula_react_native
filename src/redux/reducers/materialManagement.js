@@ -4,6 +4,8 @@ import {
   GET_MATERIAL_CHALLAN_DETAILS,
   ADD_MATERIAL_CHALLAN,
   GET_SELECT_MATERIAL_CHALLAN,
+  GET_MATERIAL_PR,
+  GET_MATERIAL_PR_DETAILS,
 } from '../actions/actionTypes';
 
 const initialState = {
@@ -13,6 +15,9 @@ const initialState = {
   materialChallanList: [],
   materialChallanDetails: {},
   selectedMaterialChallan: [],
+  prList: [],
+  prDetails: [],
+  contractorList: [],
 };
 
 const reducer = (state = initialState, action = {}) => {
@@ -103,6 +108,46 @@ const reducer = (state = initialState, action = {}) => {
       return {
         ...state,
         loading: false,
+      };
+
+    // PR List
+    case `${GET_MATERIAL_PR}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${GET_MATERIAL_PR}_FULFILLED`: {
+      return {
+        ...state,
+        prList: payload,
+        loading: false,
+      };
+    }
+    case `${GET_MATERIAL_PR}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+        errorMessage: action.payload,
+      };
+
+    // PR Details
+    case `${GET_MATERIAL_PR_DETAILS}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${GET_MATERIAL_PR_DETAILS}_FULFILLED`: {
+      return {
+        ...state,
+        prDetails: payload,
+        loading: false,
+      };
+    }
+    case `${GET_MATERIAL_PR_DETAILS}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+        errorMessage: action.payload,
       };
 
     default:

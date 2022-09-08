@@ -25,6 +25,7 @@ const PIMaterialList = props => {
         <View style={styles.bodyContent}>
           <FlatList
             data={PRMaterialData}
+            showsVerticalScrollIndicator={false}
             renderItem={({item}) => {
               return (
                 <View style={styles.cardContainer}>

@@ -14,6 +14,8 @@ export default function useMaterialManagementActions() {
     getMaterialChallanDetails,
     addMaterialChallan,
     getSelectMaterialChallan,
+    getMaterialPR,
+    getMaterialPRDetails,
   } = useMaterialManagement();
 
   return {
@@ -79,6 +81,35 @@ export default function useMaterialManagementActions() {
         payload: async () => {
           try {
             const response = _res(await getSelectMaterialChallan(data));
+            return Promise.resolve(response.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    getMaterialPR: data =>
+      dispatch({
+        type: types.GET_MATERIAL_PR,
+        payload: async () => {
+          try {
+            const response = _res(await getMaterialPR(data));
+            return Promise.resolve(response.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    getMaterialPRDetails: data =>
+      dispatch({
+        type: types.GET_MATERIAL_PR_DETAILS,
+        payload: async () => {
+          try {
+            const response = _res(await getMaterialPRDetails(data));
             return Promise.resolve(response.data);
           } catch (error) {
             const message = _err(error);
