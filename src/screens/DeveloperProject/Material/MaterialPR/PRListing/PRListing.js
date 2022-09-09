@@ -4,9 +4,51 @@ import {Caption, Divider, FAB} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 import {COMMON_STATUS} from 'utils/constant';
+import {getShadow} from 'utils';
+
+function RenderPRCard(props) {
+  const {navPRDetails, prData} = props;
+  const {id, status, subject, approved_by, created} = prData;
+  return (
+    <TouchableOpacity
+      style={{...getShadow(2)}}
+      onPress={() => {
+        navPRDetails(id);
+      }}>
+      <View style={styles.cardContainer}>
+        <View style={styles.cardHeader}>
+          <Text style={styles.ID}>{id}</Text>
+          <Caption
+            style={{
+              color: COMMON_STATUS[status]?.color,
+            }}>
+            {COMMON_STATUS[status]?.label}
+          </Caption>
+        </View>
+        <Divider style={{color: 'rgba(0, 0, 0, 0.2)', height: 1}} />
+        <View>
+          <Text style={{marginTop: 5}}>{subject}</Text>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginTop: 10,
+            }}>
+            <Caption>Approved by:</Caption>
+            <Text style={{marginLeft: 5}}>{approved_by}</Text>
+          </View>
+          <Caption>{created}</Caption>
+        </View>
+      </View>
+    </TouchableOpacity>
+  );
+}
 
 const PRListing = props => {
   const {navigation} = props;
+  const navPRDetails = id => {
+    navigation.navigate('PRPreview', {purchase_request_id: id});
+  };
 
   const {selectedProject} = useSelector(s => s.project);
   const project_id = selectedProject.id;
@@ -28,44 +70,10 @@ const PRListing = props => {
       <View style={styles.bodyContainer}>
         <FlatList
           showsVerticalScrollIndicator={false}
-          style={{height: '96%'}}
           data={prList}
           keyExtractor={item => item.id}
           renderItem={({item}) => {
-            return (
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate('PRPreview', {
-                    purchase_request_id: item.id,
-                  });
-                }}>
-                <View style={styles.cardContainer}>
-                  <View style={styles.cardHeader}>
-                    <Text style={styles.ID}>{item.id}</Text>
-                    <Caption
-                      style={{
-                        color: COMMON_STATUS[item.status]?.color,
-                      }}>
-                      {COMMON_STATUS[item.status]?.label}
-                    </Caption>
-                  </View>
-                  <Divider style={{color: 'rgba(0, 0, 0, 0.2)', height: 1}} />
-                  <View>
-                    <Text style={{marginTop: 5}}>{item.subject}</Text>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        marginTop: 10,
-                      }}>
-                      <Caption>Approved by:</Caption>
-                      <Text style={{marginLeft: 5}}>{item.approved_by}</Text>
-                    </View>
-                    <Caption>{item.created}</Caption>
-                  </View>
-                </View>
-              </TouchableOpacity>
-            );
+            return <RenderPRCard navPRDetails={navPRDetails} prData={item} />;
           }}
         />
       </View>
@@ -84,10 +92,15 @@ export default PRListing;
 const styles = StyleSheet.create({
   mainContainer: {
     padding: 5,
+    paddingHorizontal: 15,
+    flex: 1,
   },
   headerText: {
     fontSize: 22,
     fontWeight: '400',
+  },
+  bodyContainer: {
+    flex: 1,
   },
   cardContainer: {
     marginTop: 15,

@@ -10,39 +10,76 @@ import {useSelector} from 'react-redux';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 import {ScrollView} from 'react-native-gesture-handler';
 import Spinner from 'react-native-loading-spinner-overlay';
+import {getShadow} from 'utils';
 
 const {height} = Dimensions.get('window');
 
 const dynamicHeight = height - 245;
 
-const PRPreview = props => {
-  const {navigation, route} = props;
-  const {purchase_request_id, prStatus} = route?.params || {};
+function RenderHeaderBar(props) {
+  console.log(
+    '🚀 ~ file: PRPreview.js ~ line 20 ~ RenderHeaderBar ~ props',
+    props,
+  );
   const alert = useAlert();
+  const {goBack, NavigatetoCreatePR, status} = props;
+  return (
+    <View style={styles.headerContainer}>
+      <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        <IconButton
+          icon="keyboard-backspace"
+          size={22}
+          color="#4872f4"
+          style={{backgroundColor: 'rgba(72, 114, 244, 0.1)'}}
+          onPress={() => goBack()}
+        />
+        <Text style={styles.headerText}>PR Preview</Text>
+      </View>
+      <View style={{flexDirection: 'row', marginEnd: 10, alignSelf: 'center'}}>
+        {status == null ? (
+          <View style={{marginRight: 15}}>
+            <OpacityButton
+              color="#4872f4"
+              opacity={0.18}
+              style={{borderRadius: 20, marginLeft: 15}}
+              onPress={NavigatetoCreatePR}>
+              <MaterialIcons name="edit" color="#4872f4" size={13} />
+            </OpacityButton>
+          </View>
+        ) : null}
+        <View>
+          <OpacityButton
+            color="#FF5D5D"
+            opacity={0.18}
+            onPress={() => {
+              alert.show({
+                title: 'Alert',
+                message: 'Are you sure want to delete this?',
+                dismissable: false,
+              });
+            }}
+            style={{borderRadius: 20}}>
+            <MaterialIcons name="delete" color="#FF5D5D" size={13} />
+          </OpacityButton>
+        </View>
+      </View>
+    </View>
+  );
+}
 
-  const {selectedProject} = useSelector(s => s.project);
-  const project_id = selectedProject.id;
-
-  const {getMaterialPRDetails} = useMaterialManagementActions();
-
-  const {prDetails, loading} = useSelector(s => s.materialManagement);
-
+function RenderPRHeaderCard(props) {
   const {
-    record_data = {},
-    material_request_items = {},
-    required_for_data = [],
-  } = prDetails[0] || {};
-
-  useEffect(() => {
-    getMaterialPRDetails({project_id, purchase_request_id});
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const [status, setStatus] = useState();
-
-  const materialIndex = Object.keys(material_request_items);
-
-  const prHeader = () => (
+    id,
+    subject,
+    contractor_name,
+    required_for_data,
+    remarks,
+    first_name,
+    last_name,
+    created,
+    status,
+  } = props;
+  return (
     <>
       <View
         style={{
@@ -51,7 +88,7 @@ const PRPreview = props => {
         }}>
         <View style={styles.dataRow}>
           <Caption style={styles.lightData}>PR ID:</Caption>
-          <Text>{record_data.id}</Text>
+          <Text>{id}</Text>
         </View>
         {status === 'PR Rejected' ? (
           <View style={{alignSelf: 'center', flexDirection: 'row'}}>
@@ -79,11 +116,11 @@ const PRPreview = props => {
       </View>
       <View style={styles.dataRow}>
         <Caption style={styles.lightData}>Subject:</Caption>
-        <Text>{record_data.subject}</Text>
+        <Text>{subject}</Text>
       </View>
       <View style={styles.dataRow}>
         <Caption style={styles.lightData}>Required Vendor:</Caption>
-        <Text>{record_data.contractor_name}</Text>
+        <Text>{contractor_name}</Text>
       </View>
       <View style={styles.dataRow}>
         <Caption style={styles.lightData}>Required For:</Caption>
@@ -91,107 +128,114 @@ const PRPreview = props => {
       </View>
       <View style={styles.dataRow}>
         <Caption style={styles.lightData}>Remark:</Caption>
-        <Text style={{flexShrink: 1}}>{record_data.remarks}</Text>
+        <Text style={{flexShrink: 1}}>{remarks}</Text>
       </View>
       <View style={styles.dataRow}>
         <Caption style={styles.lightData}>Creater Name:</Caption>
-        <Text>{`${record_data.first_name} ${record_data.last_name}`}</Text>
+        <Text>{`${first_name} ${last_name}`}</Text>
       </View>
       <View style={styles.dataRow}>
         <Caption style={styles.lightData}>Created on:</Caption>
-        <Text>{record_data.created}</Text>
+        <Text>{created}</Text>
       </View>
     </>
   );
+}
 
-  const prMaterial = item => {
-    return (
-      <View style={styles.cardContainer}>
-        <View style={styles.cardHeader}>
-          <View style={styles.dataRow}>
-            <Caption style={styles.lightData}>Category:</Caption>
-            <Text>{item.materialcategrytitle}</Text>
-          </View>
-        </View>
+function RenderMaterialCard(props) {
+  const {
+    materialcategrytitle,
+    subcategorytitle,
+    materialunitstitle,
+    created,
+    material_quantity,
+  } = props;
+  return (
+    <View style={styles.cardContainer}>
+      <View style={styles.cardHeader}>
         <View style={styles.dataRow}>
-          <Caption style={styles.lightData}>Sub Category:</Caption>
-          <Text>{item.subcategorytitle}</Text>
-        </View>
-        <View style={styles.dataRow}>
-          <Caption style={styles.lightData}>Unit:</Caption>
-          <Text>{item.materialunitstitle}</Text>
-        </View>
-        <View style={styles.dataRow}>
-          <Caption style={styles.lightData}>Required date:</Caption>
-          <Text>{item.created}</Text>
-        </View>
-        <View style={styles.dataRow}>
-          <Caption style={styles.lightData}>Quantity:</Caption>
-          <Text>{item.material_quantity}</Text>
+          <Caption style={styles.lightData}>Category:</Caption>
+          <Text>{materialcategrytitle}</Text>
         </View>
       </View>
-    );
+      <View style={styles.dataRow}>
+        <Caption style={styles.lightData}>Sub Category:</Caption>
+        <Text>{subcategorytitle}</Text>
+      </View>
+      <View style={styles.dataRow}>
+        <Caption style={styles.lightData}>Unit:</Caption>
+        <Text>{materialunitstitle}</Text>
+      </View>
+      <View style={styles.dataRow}>
+        <Caption style={styles.lightData}>Required date:</Caption>
+        <Text>{created}</Text>
+      </View>
+      <View style={styles.dataRow}>
+        <Caption style={styles.lightData}>Quantity:</Caption>
+        <Text>{material_quantity}</Text>
+      </View>
+    </View>
+  );
+}
+
+const PRPreview = props => {
+  const {navigation, route} = props;
+  const goBack = () => {
+    navigation.goBack();
   };
+
+  const NavigatetoCreatePR = () => {
+    navigation.navigate('CreatePR');
+  };
+
+  const {purchase_request_id} = route?.params || {};
+
+  const {selectedProject} = useSelector(s => s.project);
+  const {prDetails, loading} = useSelector(s => s.materialManagement);
+  const project_id = selectedProject.id;
+
+  const {getMaterialPRDetails} = useMaterialManagementActions();
+
+  const {
+    record_data = {},
+    material_request_items = {},
+    required_for_data = [],
+  } = prDetails[0] || {};
+
+  useEffect(() => {
+    getMaterialPRDetails({project_id, purchase_request_id});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const [status, setStatus] = useState();
+
+  const materialIndex = Object.keys(material_request_items);
 
   return (
     <View>
       <ProjectHeader {...props} />
       <Spinner visible={loading} textContent="" />
       <View style={styles.mainContainer}>
-        <View style={styles.headerContainer}>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <IconButton
-              icon="keyboard-backspace"
-              size={22}
-              color="#4872f4"
-              style={{backgroundColor: 'rgba(72, 114, 244, 0.1)'}}
-              onPress={() => navigation.goBack()}
-            />
-            <Text style={styles.headerText}>PR Preview</Text>
-          </View>
-          <View
-            style={{flexDirection: 'row', marginEnd: 10, alignSelf: 'center'}}>
-            {prStatus === 1 ? (
-              <View style={{marginRight: 15}}>
-                <OpacityButton
-                  color="#4872f4"
-                  opacity={0.18}
-                  style={{borderRadius: 20, marginLeft: 15}}
-                  onPress={() => {
-                    navigation.navigate('CreatePR');
-                  }}>
-                  <MaterialIcons name="edit" color="#4872f4" size={13} />
-                </OpacityButton>
-              </View>
-            ) : null}
-            <View>
-              <OpacityButton
-                color="#FF5D5D"
-                opacity={0.18}
-                onPress={() => {
-                  alert.show({
-                    title: 'Alert',
-                    message: 'Are you sure want to delete this?',
-                    dismissable: false,
-                  });
-                }}
-                style={{borderRadius: 20}}>
-                <MaterialIcons name="delete" color="#FF5D5D" size={13} />
-              </OpacityButton>
-            </View>
-          </View>
-        </View>
+        <RenderHeaderBar
+          goBack={goBack}
+          NavigatetoCreatePR={NavigatetoCreatePR}
+          {...status}
+        />
         <View style={styles.bodyContent}>
           <ScrollView
             style={styles.materialListContainer}
             showsVerticalScrollIndicator={false}>
-            {prHeader()}
+            <RenderPRHeaderCard
+              {...record_data}
+              {...required_for_data}
+              {...status}
+            />
             {materialIndex.map(key => {
               const subCat = material_request_items[key];
               return (
                 <>
                   {subCat.map(item => {
-                    return prMaterial(item);
+                    return <RenderMaterialCard {...item} />;
                   })}
                 </>
               );
@@ -243,11 +287,7 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderRadius: 5,
     borderColor: 'rgba(0, 0, 0, 0.3)',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    ...getShadow(2),
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,

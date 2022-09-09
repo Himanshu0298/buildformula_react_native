@@ -117,9 +117,11 @@ const reducer = (state = initialState, action = {}) => {
         loading: true,
       };
     case `${GET_MATERIAL_PR}_FULFILLED`: {
+      const prList = payload;
+      const sortedPR = prList.sort().reverse();
       return {
         ...state,
-        prList: payload,
+        prList: sortedPR,
         loading: false,
       };
     }
