@@ -24,7 +24,6 @@ const TaskList = props => {
   const {item, navigation} = props;
 
   const isHtml = item.f_remarks?.includes('<') && item.f_remarks?.includes('>');
-
   const source = {
     html: `<span style="color: '#DEE1E4';margin-left: 2px;font-size: 15px">
        ${item.completed_remarks}</span>`,
@@ -33,7 +32,6 @@ const TaskList = props => {
   const navToDetails = () => {
     navigation.navigate('VisitorDetails', {visitorId: item.visitor_id});
   };
-
   const handleTask = () => {
     navigation.navigate('CompleteTask', {
       date: item.followup_date,
