@@ -332,9 +332,6 @@ const styles = StyleSheet.create({
   renderTab: {
     backgroundColor: 'transparent',
   },
-  tabStyle: {
-    borderBottomColor: 'red',
-  },
   indicatorStyle: {
     backgroundColor: '#4872f4',
   },

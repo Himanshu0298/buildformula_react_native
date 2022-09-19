@@ -1,9 +1,11 @@
 import * as React from 'react';
 import {Formik} from 'formik';
 import {withTheme} from 'react-native-paper';
-import {Image, StyleSheet, Text, View} from 'react-native';
+import {Image, SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import * as Yup from 'yup';
 import RenderInput, {RenderError} from 'components/Atoms/RenderInput';
+import RenderSelect from 'components/Atoms/RenderSelect';
+import RenderDatePicker from 'components/Atoms/RenderDatePicker';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import {theme} from 'styles/theme';
@@ -11,6 +13,7 @@ import FileIcon from 'assets/images/file_icon.png';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useImagePicker} from 'hooks';
 import ActionButtons from 'components/Atoms/ActionButtons';
+import {useAlert} from 'components/Atoms/Alert';
 import Header from '../../CommonComponents/Header';
 import Pagination from '../../CommonComponents/Pagination';
 
@@ -61,6 +64,28 @@ const RenderAttachments = props => {
 };
 
 function ChallanForm(props) {
+  const alert = useAlert();
+  const options = ['Add Company', 'One', 'Two', 'Three'];
+  const [company, setCompany] = React.useState('');
+
+  const addCompany = () => {
+    alert.show({
+      title: 'Alert',
+      message: 'Add Company',
+      dismissable: false,
+    });
+  };
+
+  if (company === 'Add Company') {
+    addCompany();
+  }
+
+  const suppName = {
+    One: {name: 'Himanshu'},
+    Two: {name: 'James'},
+    Three: {name: 'Parker'},
+  };
+
   const {formikProps, navigation} = props;
   const {
     values,
@@ -90,7 +115,7 @@ function ChallanForm(props) {
   };
 
   return (
-    <>
+    <SafeAreaView style={styles.mainContainer}>
       <View style={styles.headerContainer}>
         <Header title="Challan Info" {...props} />
         <Pagination title="Page 1 of 3" />
@@ -99,6 +124,27 @@ function ChallanForm(props) {
         contentContainerStyle={styles.contentContainerStyle}>
         <View style={styles.dialogContent}>
           <View>
+            <RenderSelect
+              name="company"
+              options={options}
+              containerStyles={styles.input}
+              value={company}
+              placeholder="Select Company"
+              error={errors.company}
+              onSelect={value => {
+                setCompany(value);
+              }}
+            />
+            <RenderInput
+              name="supplier"
+              label="Supplier Name"
+              containerStyles={styles.input}
+              value={suppName[company]?.name}
+              onChangeText={handleChange('challan')}
+              onBlur={handleBlur('challan')}
+              error={errors.supplier}
+              editable={false}
+            />
             <RenderInput
               name="challan"
               label="Challan No"
@@ -109,6 +155,15 @@ function ChallanForm(props) {
               onBlur={handleBlur('challan')}
               error={errors.challan}
             />
+
+            <RenderDatePicker
+              name="delivery_date"
+              label="Delivery Date"
+              containerStyles={styles.input}
+              onChange={() => console.log('Dated')}
+              error={errors.delivery_date}
+            />
+
             <View>
               <Text style={{color: theme.colors.primary}}>Attachment</Text>
               <OpacityButton
@@ -127,23 +182,23 @@ function ChallanForm(props) {
               />
             ) : null}
           </View>
-
-          <ActionButtons
-            onSubmit={handleSubmit}
-            submitLabel="Next"
-            onCancel={() => navigation.goBack()}
-          />
         </View>
       </KeyboardAwareScrollView>
-    </>
+      <ActionButtons
+        onSubmit={handleSubmit}
+        submitLabel="Next"
+        cancelLabel="Previous"
+        onCancel={() => navigation.goBack()}
+      />
+    </SafeAreaView>
   );
 }
 
-const AddChallan = props => {
+const AddDirectGRN = props => {
   const {route, navigation} = props;
 
   const navToStepTwo = values => {
-    navigation.navigate('SelectMaterials', {...values, ...route.params});
+    navigation.navigate('GRNMaterial', {...values, ...route.params});
   };
 
   return (
@@ -159,6 +214,9 @@ const AddChallan = props => {
 };
 
 const styles = StyleSheet.create({
+  mainContainer: {
+    flex: 1,
+  },
   dialogContent: {
     paddingHorizontal: 15,
     flexGrow: 1,
@@ -237,4 +295,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default withTheme(AddChallan);
+export default withTheme(AddDirectGRN);
