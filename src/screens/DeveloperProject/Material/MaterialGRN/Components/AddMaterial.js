@@ -1,12 +1,12 @@
 import {StyleSheet, View} from 'react-native';
 import React from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {Title} from 'react-native-paper';
 import * as Yup from 'yup';
 import {Formik} from 'formik';
 import ActionButtons from 'components/Atoms/ActionButtons';
 import RenderInput from 'components/Atoms/RenderInput';
 import RenderSelect from 'components/Atoms/RenderSelect';
+import Header from '../../CommonComponents/Header';
 
 const schema = Yup.object().shape({
   category: Yup.string('Required').required('Required'),
@@ -95,7 +95,7 @@ const AddMaterial = props => {
   const {navigation} = props;
   return (
     <SafeAreaView style={styles.mainContainer}>
-      <Title>Add Material</Title>
+      <Header title="Material Info" {...props} />
       <Formik
         validateOnBlur={false}
         validateOnChange={false}
