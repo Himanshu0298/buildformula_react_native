@@ -122,7 +122,7 @@ function VisitorDetails(props) {
             onStateChange={onStateChange}
             actions={[
               {
-                icon: 'comment',
+                icon: 'file_icon',
                 label: 'Add comment',
                 onPress: () =>
                   navigation.navigate('AddDetails', {

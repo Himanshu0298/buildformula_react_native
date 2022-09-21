@@ -109,10 +109,16 @@ import OrderDetail from '../screens/DeveloperProject/Material/OrderDetail';
 import MaterialList from '../screens/DeveloperProject/Material/MaterialList';
 import DeliveryDetails from 'screens/DeveloperProject/Material/DeliveryDetails';
 import PRListing from 'screens/DeveloperProject/Material/MaterialPR/PRListing';
+import PIListing from 'screens/DeveloperProject/Material/MaterialPI/PIListing';
 import CreatePR from 'screens/DeveloperProject/Material/MaterialPR/CreatePR/CreatePR';
 import CreatePRMaterial from 'screens/DeveloperProject/Material/MaterialPR/CreatePR/CreatePRMaterial';
 import PRPreview from 'screens/DeveloperProject/Material/MaterialPR/PRPreview/PRPreview';
 import AddMaterialList from 'screens/DeveloperProject/Material/MaterialPR/CreatePR/AddMaterialList';
+import CreatePI from 'screens/DeveloperProject/Material/MaterialPI/CreatePI/CreatePI';
+import PIPreview from 'screens/DeveloperProject/Material/MaterialPI/PIPreview/PIPreview';
+import PIRequest from 'screens/DeveloperProject/Material/MaterialPI/PIRequest/PIRequest';
+import TermsAndConditions from 'screens/DeveloperProject/Material/MaterialPI/CreatePI/Teams&Conditions';
+import AddPIMaterialList from 'screens/DeveloperProject/Material/MaterialPI/CreatePI/AddPIMaterialList';
 
 // Project : Files screens
 import Files from '../screens/DeveloperProject/Files';
@@ -154,6 +160,8 @@ import DocumentDownload from 'screens/DeveloperProject/DocumentGenerater/Documen
 import ProjectNotification from 'screens/Notification/ProjectNotification';
 import CustomerInnerDetails from 'screens/DeveloperProject/CustomerSection/CustomerInnerDetails';
 import EditCustomerDetails from 'screens/DeveloperProject/CustomerSection/CustomerInnerDetails/EditDetails/';
+import CreatePIMaterial from 'screens/DeveloperProject/Material/MaterialPI/CreatePI/AddPIMaterial';
+
 /** *********** Developer Project Sub Screens End   ************ */
 
 const optionalConfigObject = {
@@ -343,12 +351,26 @@ function AppStackNavigator() {
               <Stack.Screen name="MaterialList" component={MaterialList} />
               <Stack.Screen name="AddChallan" component={AddChallan} />
               <Stack.Screen name="PRList" component={PRListing} />
+              <Stack.Screen name="PIList" component={PIListing} />
               <Stack.Screen name="CreatePR" component={CreatePR} />
+              <Stack.Screen name="CreatePI" component={CreatePI} />
+              <Stack.Screen name="AddPIMaterial" component={CreatePIMaterial} />
+              <Stack.Screen name="PIRequest" component={PIRequest} />
+              <Stack.Screen
+                name="AddPIMaterialList"
+                component={AddPIMaterialList}
+              />
+              <Stack.Screen
+                name="Teams&Conditions"
+                component={TermsAndConditions}
+              />
               <Stack.Screen
                 name="CreatePRMaterial"
                 component={CreatePRMaterial}
               />
+
               <Stack.Screen name="PRPreview" component={PRPreview} />
+              <Stack.Screen name="PIPreview" component={PIPreview} />
               <Stack.Screen
                 name="AddMaterialList"
                 component={AddMaterialList}

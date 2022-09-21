@@ -21,7 +21,7 @@ import RenderTextBox from 'components/Atoms/RenderTextbox';
 import _ from 'lodash';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import ActionButtons from 'components/Atoms/ActionButtons';
-import RenderSelcetMultiple from 'components/Atoms/RenderSelectMultiple';
+import RenderSelectMultiple from 'components/Atoms/RenderSelectMultiple';
 
 const customParseFormat = require('dayjs/plugin/customParseFormat');
 
@@ -290,7 +290,7 @@ function InquiryTab(props) {
               setFieldValue('inquiry_for', value);
             }}
           />
-          <RenderSelcetMultiple
+          <RenderSelectMultiple
             name="interested_property"
             label="Interested Property"
             options={interestedOptions}

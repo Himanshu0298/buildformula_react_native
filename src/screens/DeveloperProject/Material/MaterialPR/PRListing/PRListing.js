@@ -1,6 +1,7 @@
 import {StyleSheet, Text, View, TouchableOpacity, FlatList} from 'react-native';
 import React from 'react';
-import {Caption, Divider, FAB} from 'react-native-paper';
+import {Caption, Divider, FAB, Subheading} from 'react-native-paper';
+import {getShadow} from 'utils';
 import {PRList} from './PRData';
 
 const PRListing = props => {
@@ -8,11 +9,11 @@ const PRListing = props => {
   return (
     <View style={styles.mainContainer}>
       <View style={styles.headerContainer}>
-        <Text style={styles.headerText}>PR Listing</Text>
+        <Subheading style={styles.headerText}>PR Listing</Subheading>
       </View>
       <View style={styles.bodyContainer}>
         <FlatList
-          style={{height: '96%'}}
+          style={styles.flatList}
           data={PRList}
           renderItem={({item}) => {
             return (
@@ -36,17 +37,14 @@ const PRListing = props => {
                       {item.status}
                     </Text>
                   </View>
-                  <Divider style={{color: 'rgba(0, 0, 0, 0.2)', height: 1}} />
-                  <View>
-                    <Text style={{marginTop: 5}}>{item.name}</Text>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        marginTop: 10,
-                      }}>
+                  <Divider />
+                  <View style={styles.cardDetails}>
+                    <Subheading>{item.name}</Subheading>
+                    <View style={styles.cardContent}>
                       <Caption>Approved by:</Caption>
-                      <Text style={{marginLeft: 5}}>{item.approvedBy}</Text>
+                      <Subheading style={styles.detail}>
+                        {item.approvedBy}
+                      </Subheading>
                     </View>
                     <Caption>{item.date}</Caption>
                   </View>
@@ -57,7 +55,7 @@ const PRListing = props => {
         />
       </View>
       <FAB
-        style={[styles.fab, {backgroundColor: '#4872f4'}]}
+        style={styles.fab}
         large
         icon="plus"
         onPress={() => navigation.navigate('CreatePR')}
@@ -70,18 +68,34 @@ export default PRListing;
 
 const styles = StyleSheet.create({
   mainContainer: {
-    padding: 5,
+    margin: 20,
+    flexGrow: 1,
+  },
+
+  headerContainer: {
+    marginBottom: 10,
+  },
+  flatList: {
+    height: '96%',
   },
   headerText: {
-    fontSize: 22,
-    fontWeight: '400',
+    fontSize: 18,
+  },
+  cardContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 10,
   },
   cardContainer: {
-    marginTop: 15,
-    borderWidth: 1,
-    borderColor: '#e5eafa',
+    marginBottom: 10,
+    backgroundColor: '#fff',
     borderRadius: 5,
     paddingHorizontal: 10,
+    ...getShadow(2),
+  },
+
+  cardDetails: {
+    padding: 5,
   },
   cardHeader: {
     padding: 10,
@@ -92,8 +106,9 @@ const styles = StyleSheet.create({
   },
   ID: {
     backgroundColor: '#E5EAFA',
-    padding: 5,
-    borderRadius: 3,
+    padding: 7,
+    borderRadius: 5,
+    fontSize: 10,
     color: 'rgba(72, 114, 244, 1)',
   },
   pending: {
@@ -105,9 +120,14 @@ const styles = StyleSheet.create({
   approved: {
     color: 'rgba(7, 202, 3, 1)',
   },
+
+  detail: {
+    marginLeft: 7,
+  },
   fab: {
     position: 'absolute',
     right: 20,
     bottom: 20,
+    backgroundColor: '#4872f4',
   },
 });

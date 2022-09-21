@@ -1,13 +1,16 @@
-import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import React from 'react';
 
 import {Formik} from 'formik';
 import RenderInput from 'components/Atoms/RenderInput';
 import RenderSelect from 'components/Atoms/RenderSelect';
-import RenderTextBox from 'components/Atoms/RenderTextbox';
 import RenderDatePicker from 'components/Atoms/RenderDatePicker';
 import ActionButtons from 'components/Atoms/ActionButtons';
+
 import {Subheading} from 'react-native-paper';
+import RenderSelectMultiple from 'components/Atoms/RenderSelectMultiple';
+
+const makesOptions = ['A 2022', 'A 123', 'A 654', 'A 869'];
 
 const onSubmit = () => {
   console.log('Create PR');
@@ -15,8 +18,9 @@ const onSubmit = () => {
 
 const options = ['A', 'B', 'C'];
 
-function CreatePRMaterial(props) {
+function CreatePIMaterial(props) {
   const {navigation, material} = props;
+
   return (
     <View style={styles.container}>
       <View style={styles.mainContainer}>
@@ -36,7 +40,7 @@ function CreatePRMaterial(props) {
             Remark: '',
           }}
           onSubmit={onSubmit}>
-          {({values, errors, handleChange, handleBlur, handleSubmit}) => {
+          {({values, errors, handleChange, handleBlur, setFieldValue}) => {
             return (
               <View>
                 <RenderSelect
@@ -63,7 +67,7 @@ function CreatePRMaterial(props) {
                   name="unit"
                   label="Unit"
                   containerStyles={styles.inputStyles}
-                  style={{backgroundColor: 'rgba(0, 0, 0, 0.1);'}}
+                  style={styles.input}
                   error={errors.subject}
                   editable={false}
                 />
@@ -86,6 +90,17 @@ function CreatePRMaterial(props) {
                   returnKeyType="next"
                   error={errors.subject}
                 />
+                <RenderSelectMultiple
+                  name="listOfMakes"
+                  label="List of Makes"
+                  options={makesOptions}
+                  value={values.listOfMakes}
+                  containerStyles={styles.inputStyles}
+                  error={errors.listOfMakes}
+                  onSelect={v => {
+                    setFieldValue('listOfMakes', v);
+                  }}
+                />
               </View>
             );
           }}
@@ -96,14 +111,14 @@ function CreatePRMaterial(props) {
           cancelLabel="Cancel"
           submitLabel="Save"
           onCancel={navigation.goBack}
-          onSubmit={() => navigation.navigate('AddMaterialList')}
+          onSubmit={() => navigation.navigate('AddPIMaterialList')}
         />
       </View>
     </View>
   );
 }
 
-export default CreatePRMaterial;
+export default CreatePIMaterial;
 
 const styles = StyleSheet.create({
   container: {
@@ -119,6 +134,10 @@ const styles = StyleSheet.create({
   },
   inputStyles: {
     marginVertical: 8,
+  },
+
+  input: {
+    backgroundColor: 'rgba(0, 0, 0, 0.1);',
   },
 
   headerContainer: {

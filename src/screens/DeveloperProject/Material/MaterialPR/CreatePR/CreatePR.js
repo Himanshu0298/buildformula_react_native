@@ -7,6 +7,7 @@ import RenderSelect from 'components/Atoms/RenderSelect';
 import RenderTextBox from 'components/Atoms/RenderTextbox';
 import ActionButtons from 'components/Atoms/ActionButtons';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {Subheading} from 'react-native-paper';
 
 const schema = Yup.object().shape({
   subject: Yup.string().label('subject').required('Subject is Required'),
@@ -21,10 +22,10 @@ const options = ['A', 'B', 'C'];
 const CreatePR = props => {
   const {navigation} = props;
   return (
-    <View style={{flexGrow: 1, paddingTop: 50}}>
+    <View style={{flexGrow: 1, margin: 10}}>
       <View style={styles.mainContainer}>
         <View style={styles.headerContainer}>
-          <Text style={styles.headerText}>Create PR</Text>
+          <Subheading style={styles.headerText}>Create PR </Subheading>
         </View>
         <Formik
           validateOnBlur={false}
@@ -107,9 +108,12 @@ const styles = StyleSheet.create({
   mainContainer: {
     padding: 5,
   },
+
+  headerContainer: {
+    marginBottom: 10,
+  },
   headerText: {
-    fontSize: 22,
-    fontWeight: '400',
+    fontSize: 18,
   },
   inputStyles: {
     marginVertical: 8,

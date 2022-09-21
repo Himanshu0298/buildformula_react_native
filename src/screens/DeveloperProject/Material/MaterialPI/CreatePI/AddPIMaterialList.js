@@ -7,13 +7,40 @@ import {useAlert} from 'components/Atoms/Alert';
 import {FlatList, TouchableOpacity} from 'react-native-gesture-handler';
 import ActionButtons from 'components/Atoms/ActionButtons';
 import {getShadow} from 'utils';
-import PRMaterialData from './PRMaterialData';
 
 const {height} = Dimensions.get('window');
 
 const dynamicHeight = height - 250;
 
-const AddMaterialList = props => {
+const PIMaterialList = [
+  {
+    id: 1,
+    category: 'Cement',
+    subCategory: 'OPC',
+    unit: ' CUM or m3',
+    requiredDate: '15 July, 2022',
+    qty: 150,
+  },
+];
+
+const MAKES_LIST = [{nub: ' A-102'}, {nub: ' A-502'}, {nub: ' A-305'}];
+
+function ListOfMakes() {
+  return (
+    <View style={styles.makerContainer}>
+      <Caption> List of Makes :</Caption>
+      {MAKES_LIST.map(item => {
+        return (
+          <View style={styles.list}>
+            <Text style={styles.text}> {item.nub}</Text>
+          </View>
+        );
+      })}
+    </View>
+  );
+}
+
+function AddPIMaterialList(props) {
   const {navigation} = props;
   const alert = useAlert();
 
@@ -31,7 +58,7 @@ const AddMaterialList = props => {
             <Text style={styles.add}>Add Material</Text>
           </TouchableOpacity>
           <FlatList
-            data={PRMaterialData}
+            data={PIMaterialList}
             renderItem={({item}) => {
               return (
                 <View style={styles.cardContainer}>
@@ -40,14 +67,14 @@ const AddMaterialList = props => {
                       <Caption style={styles.lightData}>Category:</Caption>
                       <Text>{item.category}</Text>
                     </View>
-                    <View style={styles.buttonContainer}>
-                      <View style={styles.editButton}>
+                    <View style={styles.subContainer}>
+                      <View style={styles.buttonContainer}>
                         <OpacityButton
                           color="#4872f4"
                           opacity={0.18}
-                          style={styles.OpacityButton}
+                          style={styles.opacity}
                           onPress={() => {
-                            navigation.navigate('CreatePRMaterial');
+                            navigation.navigate('AddPIMaterial');
                           }}>
                           <MaterialIcons
                             name="edit"
@@ -93,6 +120,7 @@ const AddMaterialList = props => {
                     <Caption style={styles.lightData}>Quantity:</Caption>
                     <Text>150</Text>
                   </View>
+                  <ListOfMakes />
                 </View>
               );
             }}
@@ -102,38 +130,33 @@ const AddMaterialList = props => {
         <View>
           <ActionButtons
             cancelLabel="Previous"
-            submitLabel="Save"
+            submitLabel="Next"
             onCancel={navigation.goBack}
-            onSubmit={() => navigation.navigate('PRPreview')}
+            onSubmit={() => navigation.navigate('Teams&Conditions')}
           />
         </View>
       </View>
     </SafeAreaView>
   );
-};
+}
 
-export default AddMaterialList;
+export default AddPIMaterialList;
 
 const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
+  mainContainer: {
     margin: 10,
   },
-  mainContainer: {
+
+  container: {
+    flexGrow: 1,
     margin: 10,
   },
   headerText: {
     fontSize: 18,
   },
-
-  editButton: {
-    marginRight: 10,
-  },
-
   deleteButton: {
     borderRadius: 20,
   },
-
   bodyContent: {
     marginVertical: 10,
     height: dynamicHeight,
@@ -148,10 +171,6 @@ const styles = StyleSheet.create({
   dataRow: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
-
-  buttonContainer: {
-    flexDirection: 'row',
   },
   cardHeader: {
     flexDirection: 'row',
@@ -170,11 +189,31 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
   },
-  OpacityButton: {
+  add: {
+    color: '#4872f4',
+  },
+  text: {
+    color: '#fff',
+  },
+  list: {
+    backgroundColor: 'rgba(72, 114, 244, 1)',
+    borderRadius: 5,
+    paddingRight: 5,
+    paddingVertical: 3,
+    marginHorizontal: 10,
+  },
+  subContainer: {
+    flexDirection: 'row',
+  },
+  makerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  opacity: {
     borderRadius: 20,
     marginLeft: 10,
   },
-  add: {
-    color: '#4872f4',
+  buttonContainer: {
+    marginRight: 10,
   },
 });
