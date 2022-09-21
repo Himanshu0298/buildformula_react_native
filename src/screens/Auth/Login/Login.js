@@ -175,9 +175,10 @@ function Login(props) {
 
       if (otp_verified === 'N' || email_verified === 'N') {
         navigation.navigate('Otp', {fromLogin: true});
-      } else if (project.id) {
-        navigation.navigate('ProjectStructureStepOne');
       }
+      // else if (project.id) {
+      //   navigation.navigate('ProjectStructureStepOne');
+      // }
     } catch (error) {
       setLoginError(error);
     }

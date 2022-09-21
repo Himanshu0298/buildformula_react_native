@@ -66,6 +66,19 @@ export const DEVELOPER_DRAWER_ITEMS = [
       },
     ],
   },
+
+  {
+    title: 'TODO LIST',
+    routes: [
+      {
+        route: 'TaskList',
+        label: 'Task List',
+        icon: ({color, size}) => (
+          <MaterialCommunityIcons name="account-group" {...{color, size}} />
+        ),
+      },
+    ],
+  },
   {
     title: 'CUSTOMER SECTION',
     routes: [
@@ -90,7 +103,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
 
       {
         route: 'DocumentGenerater',
-        label: 'Document Generater',
+        label: 'Document Generator',
         icon: ({color, size}) => (
           <MaterialCommunityIcons
             name="account-multiple-outline"
@@ -223,7 +236,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
       {
         id: 20,
         route: 'MaterialGRN',
-        label: 'Material Utility',
+        label: 'GRN',
         icon: ({color, size}) => (
           <MaterialCommunityIcons name="wall" {...{color, size}} />
         ),

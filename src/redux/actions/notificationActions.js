@@ -64,6 +64,8 @@ export default function useNotificationActions() {
         payload: async () => {
           try {
             const response = _res(await removeNotification(id, data));
+            snackbar.showMessage({message: response.msg});
+
             return Promise.resolve(response);
           } catch (error) {
             const message = _err(error);

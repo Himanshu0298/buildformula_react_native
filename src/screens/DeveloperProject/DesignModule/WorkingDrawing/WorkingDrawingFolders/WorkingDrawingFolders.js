@@ -19,7 +19,6 @@ import {
 } from 'react-native-paper';
 import FolderIcon from 'assets/images/folder_icon.png';
 import {useSelector} from 'react-redux';
-import useImagePicker from 'hooks/useImagePicker';
 import Spinner from 'react-native-loading-spinner-overlay';
 import BottomSheet from 'reanimated-bottom-sheet';
 import {getPermissions, getShadow} from 'utils';
@@ -39,7 +38,6 @@ import DeleteDialog from '../Components/DeleteDialog';
 import RenameDialogue from '../Components/RenameDialog';
 import CreateFolderDialogue from '../Components/CreateFolderDialog';
 import MenuDialog from '../Components/MenuDialog';
-import VersionDialog from '../Components/VersionDialog';
 import FolderSectionGridView from '../Components/FolderSectionGridView';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -63,7 +61,7 @@ function RenderFolder(props) {
   return (
     <View style={styles.sectionContainer}>
       <TouchableOpacity
-        style={{flexGrow: 1}}
+        style={styles.renderFolder}
         onPress={() => {
           navigation.navigate('WorkingDrawingFiles', {
             ...props,
@@ -213,7 +211,7 @@ function ActivityModal(props) {
         sections={processedActivities}
         extraData={processedActivities}
         showsVerticalScrollIndicator={false}
-        keyExtractor={(item, index) => item.id}
+        keyExtractor={item => item.id}
         ItemSeparatorComponent={renderSeparator}
         contentContainerStyle={styles.activityScrollContainer}
         stickySectionHeadersEnabled={false}
@@ -285,9 +283,6 @@ function RenderMenuModal(props) {
             {modelContentType === 'activity' ? (
               <ActivityModal {...props} />
             ) : null}
-            {modelContentType === 'version' ? (
-              <VersionDialog {...props} />
-            ) : null}
           </View>
         )}
       />
@@ -335,8 +330,6 @@ function WorkingDrawingFolders(props) {
     deleteWDFolder,
     getWDActivities,
   } = useDesignModuleActions();
-
-  const {openImagePicker} = useImagePicker();
 
   const [menuId, setMenuId] = React.useState();
   const [modelContentType, setModalContentType] = React.useState('menu');
@@ -387,30 +380,9 @@ function WorkingDrawingFolders(props) {
     });
   };
 
-  const versionDataHandler = fileId => {
-    setModalContentType('version');
-    // getVersion({project_id, file_id: fileId});
-  };
-
   const activityDataHandler = (action_type, id) => {
     setModalContentType('activity');
     getWDActivities({project_id, record_id: id, mode: 'folder'});
-  };
-
-  const handleNewVersionUpload = file_id => {
-    openImagePicker({
-      type: 'file',
-      onChoose: async v => {
-        const formData = new FormData();
-
-        formData.append('file_id', file_id);
-        formData.append('file_upload', v);
-        formData.append('project_id', project_id);
-
-        // await addVersion(formData);
-        // getVersion({project_id, file_id});
-      },
-    });
   };
 
   return (
@@ -465,10 +437,8 @@ function WorkingDrawingFolders(props) {
           toggleMenu,
           setModalContentType,
           toggleDialog,
-          versionDataHandler,
           activityDataHandler,
           toggleShareDialog,
-          handleNewVersionUpload,
         }}
       />
 
@@ -596,6 +566,9 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
   },
   contentContainerStyle: {
+    flexGrow: 1,
+  },
+  renderFolder: {
     flexGrow: 1,
   },
 });

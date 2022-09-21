@@ -173,3 +173,11 @@ export function getPermissions(moduleTitle) {
 
   return false;
 }
+
+export function getCountryCode(numbers) {
+  const regex = /(\+91)/g;
+  if (numbers) {
+    return numbers.match(regex)?.[0];
+  }
+  return false;
+}

@@ -7,5 +7,9 @@
     "rehydrated",
     "rera",
     "Searchbar"
-  ]
+  ],
+  "eslint.alwaysShowStatus": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
 }

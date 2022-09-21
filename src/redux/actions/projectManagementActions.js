@@ -123,6 +123,7 @@ export default function useProjectManagementActions() {
         payload: async () => {
           try {
             const response = _res(await updateMilestoneOrder(data));
+            snackbar.showMessage({message: response.msg});
             return Promise.resolve(response.data);
           } catch (error) {
             const message = _err(error);

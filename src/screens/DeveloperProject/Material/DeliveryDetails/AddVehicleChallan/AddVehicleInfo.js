@@ -15,6 +15,8 @@ import {useSelector} from 'react-redux';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 import ActionButtons from 'components/Atoms/ActionButtons';
 import TextInputMask from 'react-native-text-input-mask';
+import Spinner from 'react-native-loading-spinner-overlay';
+import {StackActions} from '@react-navigation/native';
 import Header from '../../CommonComponents/Header';
 import Pagination from '../../CommonComponents/Pagination';
 
@@ -177,7 +179,9 @@ const AddVehicleInfo = props => {
     materials,
   } = route?.params || {};
 
+  const {loading} = useSelector(s => s.materialManagement);
   const {selectedProject} = useSelector(s => s.project);
+
   const {addMaterialChallan, getMaterialChallanList} =
     useMaterialManagementActions();
 
@@ -229,18 +233,22 @@ const AddVehicleInfo = props => {
 
     await addMaterialChallan(formData);
     loadData();
-    navigation.popToTop();
+
+    navigation.dispatch(StackActions.pop(4));
   };
 
   return (
-    <Formik
-      validateOnBlur={false}
-      validateOnChange={false}
-      initialValues={{}}
-      validationSchema={schema}
-      onSubmit={navToSubmit}>
-      {formikProps => <ChallanForm {...{formikProps}} {...props} />}
-    </Formik>
+    <>
+      <Spinner visible={loading} textContent="" />
+      <Formik
+        validateOnBlur={false}
+        validateOnChange={false}
+        initialValues={{}}
+        validationSchema={schema}
+        onSubmit={navToSubmit}>
+        {formikProps => <ChallanForm {...{formikProps}} {...props} />}
+      </Formik>
+    </>
   );
 };
 

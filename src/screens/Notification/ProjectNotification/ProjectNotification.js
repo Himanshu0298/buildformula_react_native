@@ -5,10 +5,10 @@ import {
   View,
   FlatList,
   TouchableOpacity,
-  Image,
   Animated,
+  RefreshControl,
 } from 'react-native';
-import {Text, withTheme, Caption} from 'react-native-paper';
+import {Text, withTheme, Caption, Avatar} from 'react-native-paper';
 import {getShadow} from 'utils';
 import dayjs from 'dayjs';
 import {useSelector} from 'react-redux';
@@ -17,65 +17,16 @@ import useNotificationActions from 'redux/actions/notificationActions';
 import ScreenTitle from 'components/Atoms/ScreenTitle';
 import {useState, useRef} from 'react';
 import {theme} from 'styles/theme';
-import UserImage from 'assets/images/requestedUser.png';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
-import Layout from 'utils/Layout';
+import useAppActions from 'redux/actions/appActions';
 
-const rightSwipeActions = (progress, dragX) => {
-  const scale = dragX.interpolate({
-    inputRange: [-100, 1],
-    outputRange: [1, 0],
-  });
+const rightSwipeActions = (progress, dragX, handleRemove) => {
   return (
-    <TouchableOpacity onPress={() => alert('Delete button pressed')}>
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: 'red',
-          justifyContent: 'center',
-          marginVertical: 5,
-          borderBottomRightRadius: 5,
-          borderTopRightRadius: 5,
-        }}>
-        <Animated.Text
-          style={{
-            color: 'white',
-            paddingHorizontal: 10,
-            fontWeight: '700',
-            transform: [{scale}],
-          }}>
-          Delete
-        </Animated.Text>
+    <TouchableOpacity onPress={handleRemove}>
+      <View style={styles.swipeContainer}>
+        <Animated.Text style={styles.deleteText}>Delete</Animated.Text>
       </View>
     </TouchableOpacity>
-  );
-};
-
-const leftActions = (progress, dragX) => {
-  const translateX = dragX.interpolate({
-    inputRange: [-Layout.window.width, 0],
-    outputRange: [-(Layout.window.width / 2 - 50), 0],
-  });
-  return (
-    <View
-      style={{
-        width: Layout.window.width,
-        backgroundColor: 'rgba(255, 94, 94, 0.2)',
-        marginVertical: 5,
-        alignItems: 'flex-end',
-        justifyContent: 'center',
-      }}>
-      <Animated.Text
-        style={{
-          paddingHorizontal: 10,
-          fontWeight: '600',
-          color: theme.colors.error,
-          transform: [{translateX}],
-        }}>
-        {/* <AntDesign name="closecircle" size={20} color="red" /> */}
-        Removed
-      </Animated.Text>
-    </View>
   );
 };
 
@@ -105,26 +56,27 @@ function ChatActivityButton() {
 }
 
 function RenderNotification(props) {
-  const {item, handleNotification, clearNotification} = props;
-  const {modules, receive_datetime} = item;
+  const {item, handleNotification, clearNotification, actionStatus} = props;
+  const {modules, receive_datetime, notifications_text} = item;
 
   const ref = useRef();
 
-  const handleClick = () => {
-    // open the nested swipeable
-    ref.current.open();
+  const handleRemove = async () => {
+    await clearNotification(item.id);
+    ref?.current?.close();
   };
 
   return (
     <Swipeable
-      renderRightActions={rightSwipeActions}
       ref={ref}
-      {...props}
-      onSwipeableLeftOpen={() => clearNotification(item.id)}>
+      renderRightActions={(...params) =>
+        rightSwipeActions(...params, handleRemove)
+      }
+      {...props}>
       <View style={styles.notificationContainer}>
         <View>
           <OpacityButton style={styles.userIcon} opacity={0.1}>
-            <Image source={UserImage} />
+            <Avatar.Text size={35} label={modules.charAt(0).toUpperCase()} />
           </OpacityButton>
         </View>
 
@@ -133,13 +85,15 @@ function RenderNotification(props) {
             <Text>{modules}</Text>
             <Caption>{`${dayjs(receive_datetime).format('hh:mm A')}`}</Caption>
           </View>
-          <Caption>{`You have ${modules} unread notifications`}</Caption>
+          <Caption>{notifications_text}</Caption>
 
           {/* To do After API
            <Text style={styles.alertBadge}>Important</Text> */}
-          <TouchableOpacity>
-            <Text style={styles.alertActionBadge}>Action Needed</Text>
-          </TouchableOpacity>
+          {actionStatus ? (
+            <TouchableOpacity>
+              <Text style={styles.alertActionBadge}>Action Needed</Text>
+            </TouchableOpacity>
+          ) : null}
         </View>
       </View>
     </Swipeable>
@@ -159,12 +113,17 @@ function ProjectNotification(props) {
 
   const {getProjectNotifications, removeNotification} =
     useNotificationActions();
+  const {setDrawerType} = useAppActions();
 
   const {projectNotifications, loading} = useSelector(s => s.notification);
   const {selectedProject, projects} = useSelector(s => s.project);
 
   const clearNotification = async id => {
     await removeNotification(id, {project_id: selectedProject.id});
+    return loadData();
+  };
+
+  const loadData = () => {
     getProjectNotifications({project_id: selectedProject.id});
   };
 
@@ -175,16 +134,12 @@ function ProjectNotification(props) {
       const project = [...developers, ...suppliers, ...customers].find(
         i => i.id === notification.project_id,
       );
-      navigation.navigate('DeveloperDashboard', {
-        screen: 'DeveloperHome',
-        params: {project},
-      });
+      setDrawerType('developer');
+      navigation.navigate('DeveloperHome', {project});
     }
   };
 
   const renderEmpty = () => <EmptyComponent />;
-
-  console.log('-------->projectNotifications', projectNotifications);
 
   return (
     <View style={styles.container}>
@@ -196,6 +151,9 @@ function ProjectNotification(props) {
       <ChatActivityButton />
       <Spinner visible={loading} textContent="" />
       <FlatList
+        refreshControl={
+          <RefreshControl refreshing={false} onRefresh={loadData} />
+        }
         showsVerticalScrollIndicator={false}
         data={projectNotifications}
         extraData={projectNotifications}
@@ -228,7 +186,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderBottomLeftRadius: 10,
     borderLeftWidth: 5,
-    borderLeftColor: 'red',
+    borderLeftColor: 'blue',
   },
   userIcon: {
     borderRadius: 30,
@@ -241,14 +199,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-  },
-  alertBadge: {
-    backgroundColor: theme.colors.primary,
-    borderRadius: 15,
-    color: '#fff',
-    width: 80,
-    paddingLeft: 10,
-    paddingBottom: 2,
   },
   alertActionBadge: {
     backgroundColor: theme.colors.error,
@@ -302,6 +252,19 @@ const styles = StyleSheet.create({
   allNotifications: {
     color: theme.colors.primary,
     marginRight: 5,
+  },
+  swipeContainer: {
+    flex: 1,
+    backgroundColor: 'red',
+    justifyContent: 'center',
+    marginVertical: 5,
+    borderBottomRightRadius: 5,
+    borderTopRightRadius: 5,
+  },
+  deleteText: {
+    color: 'white',
+    paddingHorizontal: 10,
+    fontWeight: '700',
   },
 });
 

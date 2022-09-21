@@ -10,6 +10,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import useNotificationActions from 'redux/actions/notificationActions';
 import {useAlert} from 'components/Atoms/Alert';
 import ScreenTitle from 'components/Atoms/ScreenTitle';
+import useAppActions from 'redux/actions/appActions';
 
 function RenderNotification(props) {
   const {item, isHome, clearNotification, handleNotification} = props;
@@ -48,7 +49,7 @@ function RenderNotification(props) {
 
 function EmptyComponent() {
   return (
-    <View style={{flexGrow: 1, alignItems: 'center', justifyContent: 'center'}}>
+    <View style={styles.emptyContainer}>
       <Text>No new notifications!</Text>
     </View>
   );
@@ -61,6 +62,8 @@ function Notification(props) {
 
   const {getProjectNotifications, removeAllNotifications, removeNotification} =
     useNotificationActions();
+
+  const {setDrawerType} = useAppActions();
 
   const {allNotifications, projectNotifications, loading} = useSelector(
     s => s.notification,
@@ -90,10 +93,9 @@ function Notification(props) {
       const project = [...developers, ...suppliers, ...customers].find(
         i => i.id === notification.project_id,
       );
-      navigation.navigate('DeveloperDashboard', {
-        screen: 'DeveloperHome',
-        params: {project},
-      });
+
+      setDrawerType('developer');
+      navigation.navigate('DeveloperHome', {project});
     }
   };
 
@@ -109,7 +111,7 @@ function Notification(props) {
             theme={{roundness: 10}}
             onPress={clearAll}
             uppercase={false}
-            labelStyle={{marginVertical: 6, fontSize: 13}}>
+            labelStyle={styles.labelStyle}>
             CLear All
           </Button>
         ) : null}
@@ -118,7 +120,7 @@ function Notification(props) {
       <FlatList
         data={isHome ? allNotifications : projectNotifications}
         extraData={isHome ? allNotifications : projectNotifications}
-        contentContainerStyle={{flexGrow: 1}}
+        contentContainerStyle={styles.contentContainerStyle}
         keyExtractor={(_, i) => i.toString()}
         renderItem={({item}) => (
           <RenderNotification
@@ -163,6 +165,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 10,
+  },
+  emptyContainer: {
+    flexGrow: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  contentContainerStyle: {
+    flexGrow: 1,
+  },
+  labelStyle: {
+    marginVertical: 6,
+    fontSize: 13,
   },
 });
 

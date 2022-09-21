@@ -16,7 +16,7 @@ export default function useDesignModuleActions() {
     getRDActivities,
     renameRDFile,
     deleteRDFile,
-    addRDVersion,
+    getRDVersion,
     getFDFolders,
     getFDFiles,
     createFDFolder,
@@ -52,6 +52,16 @@ export default function useDesignModuleActions() {
     getParkingList,
     uploadParkingFile,
     deleteParkingFile,
+    updateParkingList,
+    downloadRDFile,
+    getWDVersion,
+    addRDVersion,
+    addFDVersion,
+    addWDVersion,
+    deleteRDVersion,
+    getFDVersion,
+    deleteFDVersion,
+    deleteWDVersion,
   } = useDesignModule();
   const {_err, _res} = useResProcessor();
   const snackbar = useSnackbar();
@@ -206,13 +216,44 @@ export default function useDesignModuleActions() {
         },
       }),
 
+    getRDVersion: params =>
+      dispatch({
+        type: types.GET_RD_VERSION,
+        payload: async () => {
+          try {
+            const {data} = _res(await getRDVersion(params));
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
     addRDVersion: params =>
       dispatch({
-        type: types.ADD_NEW_RD_VERSION,
+        type: types.ADD_RD_VERSION,
         payload: async () => {
           try {
             const {data} = _res(await addRDVersion(params));
             snackbar.showMessage({message: 'New Version Added Successfully!'});
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    deleteRDVersion: params =>
+      dispatch({
+        type: types.DELETE_RD_VERSION,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await deleteRDVersion(params));
+            snackbar.showMessage({message: msg});
 
             return Promise.resolve({data});
           } catch (error) {
@@ -360,6 +401,55 @@ export default function useDesignModuleActions() {
         payload: async () => {
           try {
             const {data, msg} = _res(await deleteFDFile(params));
+            snackbar.showMessage({message: msg});
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    getFDVersion: params =>
+      dispatch({
+        type: types.GET_RD_VERSION,
+        payload: async () => {
+          try {
+            const {data} = _res(await getFDVersion(params));
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    addFDVersion: params =>
+      dispatch({
+        type: types.ADD_RD_VERSION,
+        payload: async () => {
+          try {
+            const {data} = _res(await addFDVersion(params));
+            snackbar.showMessage({message: 'New Version Added Successfully!'});
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    deleteFDVersion: params =>
+      dispatch({
+        type: types.DELETE_RD_VERSION,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await deleteFDVersion(params));
             snackbar.showMessage({message: msg});
 
             return Promise.resolve({data});
@@ -522,6 +612,55 @@ export default function useDesignModuleActions() {
         },
       }),
 
+    getWDVersion: params =>
+      dispatch({
+        type: types.GET_RD_VERSION,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await getWDVersion(params));
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    addWDVersion: params =>
+      dispatch({
+        type: types.ADD_RD_VERSION,
+        payload: async () => {
+          try {
+            const {data} = _res(await addWDVersion(params));
+            snackbar.showMessage({message: 'New Version Added Successfully!'});
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    deleteWDVersion: params =>
+      dispatch({
+        type: types.DELETE_RD_VERSION,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await deleteWDVersion(params));
+            snackbar.showMessage({message: msg});
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
     // Area sheet / Project Sheet
 
     getProjectSheetList: params =>
@@ -545,8 +684,7 @@ export default function useDesignModuleActions() {
         type: types.UPDATE_AREA_SHEET,
         payload: async () => {
           try {
-            const {data, msg} = _res(await updateAreaSheet(params));
-            snackbar.showMessage({message: msg});
+            const {data} = _res(await updateAreaSheet(params));
 
             return Promise.resolve({data});
           } catch (error) {
@@ -580,10 +718,8 @@ export default function useDesignModuleActions() {
         type: types.UPDATE_CATEGORY_TOWER_SHEET,
         payload: async () => {
           try {
-            const {data, msg} = _res(await updateCategoryTowerSheet(params));
-            snackbar.showMessage({message: msg});
-
-            return Promise.resolve({data});
+            const {data: res} = await updateCategoryTowerSheet(params);
+            return Promise.resolve(res.data || params);
           } catch (error) {
             const message = _err(error);
             snackbar.showMessage({message, variant: 'error'});
@@ -615,10 +751,8 @@ export default function useDesignModuleActions() {
         type: types.UPDATE_CATEGORY_BUNGALOW_SHEET,
         payload: async () => {
           try {
-            const {data, msg} = _res(await updateCategoryBungalowSheet(params));
-            snackbar.showMessage({message: msg});
-
-            return Promise.resolve({data});
+            const {data: res} = await updateCategoryBungalowSheet(params);
+            return Promise.resolve(res.data || params);
           } catch (error) {
             const message = _err(error);
             snackbar.showMessage({message, variant: 'error'});
@@ -650,10 +784,8 @@ export default function useDesignModuleActions() {
         type: types.UPDATE_CATEGORY_PLOT_SHEET,
         payload: async () => {
           try {
-            const {data, msg} = _res(await updateCategoryPlotSheet(params));
-            snackbar.showMessage({message: msg});
-
-            return Promise.resolve({data});
+            const {data: res} = await updateCategoryPlotSheet(params);
+            return Promise.resolve(res.data || params);
           } catch (error) {
             const message = _err(error);
             snackbar.showMessage({message, variant: 'error'});
@@ -685,9 +817,8 @@ export default function useDesignModuleActions() {
         type: types.UPDATE_UNIT_TOWER_SHEET,
         payload: async () => {
           try {
-            const {data} = _res(await updateTowerUnitSheet(params));
-
-            return Promise.resolve({data});
+            const {data: res} = await updateTowerUnitSheet(params);
+            return Promise.resolve(res.data || params);
           } catch (error) {
             const message = _err(error);
             snackbar.showMessage({message, variant: 'error'});
@@ -717,13 +848,8 @@ export default function useDesignModuleActions() {
         type: types.UPDATE_BUNGALOW_UNIT_SHEET,
         payload: async () => {
           try {
-            await Promise.all(
-              params.map(item => updateBungalowUnitSheet(item)),
-            );
-            // updateBungalowUnitSheet(params[0]);
-            console.log('-------->paramsbungalow', params);
-            snackbar.showMessage({message: 'Unit Sheet Bungalow Updated'});
-            return Promise.resolve();
+            const {data: res} = await updateBungalowUnitSheet(params);
+            return Promise.resolve(res.data || params);
           } catch (error) {
             const message = _err(error);
             snackbar.showMessage({message, variant: 'error'});
@@ -802,6 +928,22 @@ export default function useDesignModuleActions() {
         payload: async () => {
           try {
             const res = _res(await deleteParkingFile(params));
+            return Promise.resolve({
+              data: res.data,
+            });
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    updateParkingList: params =>
+      dispatch({
+        type: types.UPDATE_PARKING_LIST,
+        payload: async () => {
+          try {
+            const res = _res(await updateParkingList(params));
             return Promise.resolve({
               data: res.data,
             });

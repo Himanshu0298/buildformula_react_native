@@ -13,6 +13,7 @@ import {
   SHARE_FILE_WITH_USERS,
   GET_FILE_ACTIVITIES,
   ADD_NEW_VERSION,
+  DELETE_VERSION,
 } from '../actions/actionTypes';
 
 const initialState = {
@@ -119,6 +120,7 @@ export default (state = initialState, action = {}) => {
     case `${SHARE_FOLDER_WITH_USERS}_PENDING`:
     case `${SHARE_FILE_WITH_USERS}_PENDING`:
     case `${ADD_NEW_VERSION}_PENDING`:
+    case `${DELETE_VERSION}_PENDING`:
       return {
         ...state,
         loading: true,
@@ -132,6 +134,7 @@ export default (state = initialState, action = {}) => {
     case `${SHARE_FOLDER_WITH_USERS}_FULFILLED`:
     case `${SHARE_FILE_WITH_USERS}_FULFILLED`:
     case `${ADD_NEW_VERSION}_FULFILLED`:
+    case `${DELETE_VERSION}_FULFILLED`:
       return {
         ...state,
         loading: false,
@@ -146,6 +149,7 @@ export default (state = initialState, action = {}) => {
     case `${SHARE_FOLDER_WITH_USERS}_REJECTED`:
     case `${SHARE_FILE_WITH_USERS}_REJECTED`:
     case `${ADD_NEW_VERSION}_REJECTED`:
+    case `${DELETE_VERSION}_REJECTED`:
       return {
         ...state,
         loading: false,

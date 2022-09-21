@@ -1,8 +1,15 @@
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
+import NoResult from 'components/Atoms/NoResult';
 import dayjs from 'dayjs';
 import * as React from 'react';
 import {useEffect} from 'react';
-import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {
+  FlatList,
+  RefreshControl,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {Caption, Text, withTheme, FAB, Subheading} from 'react-native-paper';
 import {useSelector} from 'react-redux';
@@ -10,6 +17,8 @@ import useSalesActions from 'redux/actions/salesActions';
 import {theme} from 'styles/theme';
 import {getPermissions} from 'utils';
 import {MODIFY_REQUEST_STATUS} from 'utils/constant';
+
+const EmptyData = () => <NoResult title="No Data Found" />;
 
 const ApprovalList = props => {
   const {navigation, item, index} = props;
@@ -29,15 +38,21 @@ const ApprovalList = props => {
             opacity={0.2}>
             <Text style={{color: theme.colors.primary}}>{index + 1}</Text>
           </OpacityButton>
-          <Text style={styles.headingText}>{title}</Text>
+          <View style={styles.text}>
+            <Text numberOfLines={1} style={styles.headingText}>
+              {title}
+            </Text>
+          </View>
         </View>
-
-        <Caption
-          style={{
-            color: MODIFY_REQUEST_STATUS[status]?.color,
-          }}>
-          {MODIFY_REQUEST_STATUS[status]?.label}
-        </Caption>
+        <View style={styles.statusContainer}>
+          <Caption
+            numberOfLines={2}
+            style={{
+              color: MODIFY_REQUEST_STATUS[status]?.color,
+            }}>
+            {MODIFY_REQUEST_STATUS[status]?.label}
+          </Caption>
+        </View>
       </View>
       <View style={styles.listDetailContainer}>
         <View style={styles.cardSection}>
@@ -72,9 +87,13 @@ function Approval(props) {
   const projectId = selectedProject.id;
 
   useEffect(() => {
-    getApprovals({project_id: projectId});
+    loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectId]);
+
+  const loadData = () => {
+    getApprovals({project_id: projectId});
+  };
 
   const modulePermissions = getPermissions('Approval');
 
@@ -86,14 +105,21 @@ function Approval(props) {
     <View style={styles.container}>
       <Spinner visible={loading} textContent="" />
       <Subheading style={styles.Subheading}>Approval listing</Subheading>
-
-      <ScrollView
-        contentContainerStyle={styles.scrollView}
-        showsVerticalScrollIndicator={false}>
-        {approvalList?.map((item, index) => {
-          return <ApprovalList item={item} index={index} {...props} />;
-        })}
-      </ScrollView>
+      <FlatList
+        data={approvalList}
+        extraData={approvalList}
+        keyExtractor={(item, index) => index.toString()}
+        style={styles.scrollView}
+        contentContainerStyle={{flexGrow: 1}}
+        showsVerticalScrollIndicator={false}
+        renderItem={({item, index}) => (
+          <ApprovalList item={item} key={item.id} index={index} {...props} />
+        )}
+        refreshControl={
+          <RefreshControl refreshing={false} onRefresh={loadData} />
+        }
+        ListEmptyComponent={() => EmptyData()}
+      />
 
       {modulePermissions?.editor || modulePermissions?.admin ? (
         <FAB
@@ -127,16 +153,15 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 20,
   },
-
   titleStyle: {
     justifyContent: 'space-between',
-    display: 'flex',
     flexDirection: 'row',
+    flex: 1,
   },
-
   approvalContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    flex: 1,
   },
 
   buttonText: {
@@ -171,6 +196,13 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     color: theme.colors.primary,
     paddingHorizontal: 20,
+  },
+  text: {
+    flex: 1,
+    flexGrow: 1,
+  },
+  statusContainer: {
+    marginLeft: 5,
   },
 });
 

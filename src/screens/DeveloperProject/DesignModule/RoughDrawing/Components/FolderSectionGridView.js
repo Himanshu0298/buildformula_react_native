@@ -105,13 +105,15 @@ const styles = StyleSheet.create({
     margin: 5,
     alignItems: 'flex-start',
     paddingHorizontal: 10,
+    justifyContent: 'flex-start',
+    flexGrow: 1,
   },
   text: {
     paddingBottom: 10,
     paddingHorizontal: 15,
   },
   pdfIconContainer: {
-    flexGrow: 1,
+    marginRight: 5,
   },
 });
 

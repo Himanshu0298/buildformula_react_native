@@ -106,7 +106,11 @@ const MaterialInfo = props => {
               <Text
                 style={{
                   color: theme.colors.primary,
-                }}>{` ${item.sub_category_title} ${item.work_units_title}`}</Text>
+                }}>
+                {item.sub_category_title && item.work_units_title
+                  ? ` ${item.sub_category_title} ${item.work_units_title}`
+                  : ' NA'}
+              </Text>
             </View>
             <Divider style={styles.divider} />
             <MaterialData item={item} />

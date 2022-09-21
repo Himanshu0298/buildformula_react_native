@@ -18,7 +18,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 
 const OrderDetails = props => {
   const {item} = props;
-  const {material_order_no, total_material_charges} = item;
+  const {material_order_no, total_amount} = item;
 
   return (
     <View style={styles.orderContainer}>
@@ -32,7 +32,7 @@ const OrderDetails = props => {
           <Text
             style={{
               color: theme.colors.primary,
-            }}>{`₹ ${total_material_charges}`}</Text>
+            }}>{`₹ ${total_amount}`}</Text>
         </View>
       </View>
     </View>
@@ -58,7 +58,8 @@ const CompanyDetails = props => {
 
 const OrderCard = props => {
   const {navigation, item} = props;
-  const {material_order_no, material_requests_id: materialId} = item;
+  const {material_order_no, material_request_id, materialrequesttitle} = item;
+  const materialId = Number(material_request_id || materialrequesttitle);
 
   const handleNav = () => {
     if (materialId) {

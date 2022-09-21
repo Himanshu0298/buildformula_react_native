@@ -2,46 +2,49 @@ import * as React from 'react';
 import {SafeAreaView, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Text, withTheme, Subheading, Caption} from 'react-native-paper';
 import {theme} from 'styles/theme';
-import {useState} from 'react';
+import {useEffect} from 'react';
 import {Agenda} from 'react-native-calendars';
+import {useSelector} from 'react-redux';
+import useSalesActions from 'redux/actions/salesActions';
+import NoResult from 'components/Atoms/NoResult';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import dayjs from 'dayjs';
 
 const Calendar = props => {
-  const {navigation} = props;
-  const [items, setItems] = useState({
-    '2022-07-20': [
-      {name: 'Mihir Patel', task: 'call for visit', cookies: true},
-      {name: 'Mihir Patel', task: 'call for visit', cookies: true},
-    ],
-    '2022-07-19': [
-      {name: 'Mihir Patel', task: 'call for visit', cookies: false},
-    ],
-    '2022-07-18': [
-      {name: 'Mihir Patel', task: 'call for visit', cookies: false},
-    ],
-    '2022-07-21': [
-      {name: 'Mihir Patel', task: 'call for visit', cookies: false},
-    ],
-    '2022-07-15': [
-      {name: 'Mihir Patel', task: 'call for visit', cookies: false},
-    ],
-  });
+  const {navigation, followUpsData, loadMonthData} = props;
+
+  const navToDetails = item => {
+    navigation.navigate('FollowUpDetails', {
+      date: item.followup_date,
+      visitorId: item.visitor_followup_id,
+    });
+  };
 
   const renderItem = item => {
-    const navToDetails = () => {
-      navigation.navigate('FollowUpDetails');
-    };
     return (
       <View style={styles.renderContainer}>
-        <TouchableOpacity
-          onPress={navToDetails}
-          style={styles.cardMainContainer}>
-          <View style={styles.itemContainer}>
-            <Text>10:00 AM - 10:25 AM</Text>
-            <Text style={styles.nameText}>{item.name}</Text>
-            <Caption style={styles.taskText}>{item.task}</Caption>
+        <TouchableOpacity onPress={() => navToDetails(item)}>
+          <View style={styles.followupTime}>
+            <Text>{`${item.followup_time}`}</Text>
+            {item.completed === 'yes' ? (
+              <MaterialCommunityIcons
+                name="check-circle-outline"
+                size={24}
+                color="green"
+              />
+            ) : null}
           </View>
-          <View style={styles.avatarText}>
-            <Text style={styles.avatarTextStyle}>DT</Text>
+          <View style={styles.avatarContainer}>
+            <View>
+              <Text
+                style={
+                  styles.nameText
+                }>{`${item.first_name} ${item.last_name}`}</Text>
+              <Caption style={styles.taskText}>{item.task_title}</Caption>
+            </View>
+            {/* <View style={styles.avatarText}>
+              <Text style={styles.avatarTextStyle}>DT</Text>
+            </View> */}
           </View>
         </TouchableOpacity>
       </View>
@@ -52,16 +55,23 @@ const Calendar = props => {
     <SafeAreaView style={styles.agenda}>
       <Agenda
         showClosingKnob
-        rowHasChanged={(r1, r2) => {
-          return r1.text !== r2.text;
+        rowHasChanged={(r1, r2) => r1.text !== r2.text}
+        loadItemsForMonth={loadMonthData}
+        renderEmptyData={() => {
+          return (
+            <View style={styles.noResult}>
+              <NoResult title="No data found" />
+            </View>
+          );
         }}
+        futureScrollRange={4}
         theme={{
           agendaDayTextColor: '#000',
           agendaDayNumColor: 'green',
           agendaTodayColor: 'red',
           agendaKnobColor: theme.colors.primary,
         }}
-        items={items}
+        items={followUpsData}
         renderItem={renderItem}
       />
     </SafeAreaView>
@@ -69,10 +79,20 @@ const Calendar = props => {
 };
 
 function FollowUpTask(props) {
-  const {navigation, route} = props;
+  const {selectedProject} = useSelector(s => s.project);
+  const project_id = selectedProject.id;
 
-  const navToAdd = () => {
-    navigation.navigate('', {...route?.params});
+  const {followUpsData} = useSelector(s => s.sales);
+
+  const {getFollowUpList} = useSalesActions();
+
+  useEffect(() => {
+    loadMonthData({dateString: dayjs().format('YYYY-MM-DD')});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const loadMonthData = ({dateString}) => {
+    getFollowUpList({project_id, given_date: dateString});
   };
 
   return (
@@ -81,7 +101,11 @@ function FollowUpTask(props) {
         <View style={styles.headingContainer}>
           <Subheading style={styles.Subheading}>Follow-up Task</Subheading>
         </View>
-        <Calendar {...props} />
+        <Calendar
+          {...props}
+          followUpsData={followUpsData}
+          loadMonthData={loadMonthData}
+        />
       </View>
     </View>
   );
@@ -114,14 +138,6 @@ const styles = StyleSheet.create({
     height: 120,
     borderRadius: 5,
   },
-  cardMainContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  itemContainer: {
-    margin: 10,
-  },
   nameText: {
     fontSize: 19,
     marginTop: 5,
@@ -130,18 +146,34 @@ const styles = StyleSheet.create({
     fontSize: 15,
     marginTop: 5,
   },
-  avatarText: {
-    backgroundColor: '#A020F0',
-    borderRadius: 30,
-    padding: 10,
-    marginRight: 10,
-  },
-  avatarTextStyle: {
-    color: '#fff',
-    fontSize: 25,
-  },
+  // avatarText: {
+  //   backgroundColor: '#A020F0',
+  //   borderRadius: 30,
+  //   padding: 10,
+  //   marginRight: 10,
+  // },
+  // avatarTextStyle: {
+  //   color: '#fff',
+  //   fontSize: 25,
+  // },
   agenda: {
     flex: 1,
+  },
+  followupTime: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 5,
+  },
+  avatarContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  noResult: {
+    flex: 1,
+    alignItems: 'center',
   },
 });
 

@@ -45,7 +45,7 @@ const relativeTime = require('dayjs/plugin/relativeTime');
 
 dayjs.extend(relativeTime);
 
-const SNAP_POINTS = [0, '70%'];
+const SNAP_POINTS = [0, '65%'];
 
 const ACTIVITY_ICONS = {
   new_version: <MaterialIcons name="file-copy" size={20} />,
@@ -230,6 +230,7 @@ function Files(props) {
   const {loading, versionData} = useSelector(s => s.files);
   const {selectedProject} = useSelector(s => s.project);
   const {user} = useSelector(s => s.user);
+  console.log('-------->versionData', versionData);
 
   const project_id = selectedProject.id;
   const user_id = user?.id;
@@ -251,6 +252,7 @@ function Files(props) {
     shareFolder,
     shareFile,
     addVersion,
+    deleteVersion,
   } = useFileActions();
 
   const {openImagePicker} = useImagePicker();
@@ -440,6 +442,16 @@ function Files(props) {
     });
   };
 
+  const handleDeleteVersion = async (version, versionType) => {
+    setModalContentType('version');
+    await deleteVersion({
+      project_id,
+      file_id: version.id,
+      type: versionType,
+    });
+    getVersion({project_id, file_id: version.main_file_id});
+  };
+
   return (
     <View style={styles.container}>
       <Spinner visible={loading} textContent="" />
@@ -512,6 +524,7 @@ function Files(props) {
           activityDataHandler,
           toggleShareDialog,
           handleNewVersionUpload,
+          handleDeleteVersion,
         }}
       />
 

@@ -6,7 +6,6 @@ import {
   View,
   ActivityIndicator,
 } from 'react-native';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {TextInput, useTheme, withTheme} from 'react-native-paper';
 import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
 import RenderTable from 'components/Atoms/RenderTable';
@@ -41,9 +40,10 @@ function PlotUnitSheet(props) {
   const project_id = selectedProject.id;
 
   React.useEffect(() => {
-    getPlotUnitSheet({project_id});
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    loadInitialData(); // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const loadInitialData = () => getPlotUnitSheet({project_id});
 
   React.useEffect(() => {
     if (Platform.OS === 'android') {
@@ -74,8 +74,8 @@ function PlotUnitSheet(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [unitPlotList]);
 
-  const syncData = (rowIndex, updatedSheetData) => {
-    const currentRow = unitPlotList[rowIndex];
+  const syncData = (rowIndex, updatedSheetData, existingData) => {
+    const currentRow = existingData[rowIndex];
     let updatedData = {};
     updatedSheetData[rowIndex].data.map((value, cellIndex) => {
       const {key} = PLOT_AREA_UNIT_DETAILS[cellIndex + 1];
@@ -98,7 +98,7 @@ function PlotUnitSheet(props) {
     oldSheetData[rowIndex].data[cellIndex] = text;
     setSheetData([...oldSheetData]);
 
-    debouncedSave(rowIndex, oldSheetData);
+    debouncedSave(rowIndex, oldSheetData, unitPlotList);
   };
 
   return (
@@ -138,28 +138,23 @@ function PlotUnitSheet(props) {
           )}
         </View>
       </View>
-
-      <KeyboardAwareScrollView
-        contentContainerStyle={styles.scrollContent}
-        keyboardShouldPersistTaps="handled">
-        <View style={styles.tableContainer}>
-          <RenderTable
-            tableWidths={TABLE_WIDTH}
-            headerColumns={PLOT_AREA_UNIT_DETAILS.map(i => i.label)}
-            data={sheetData}
-            renderCell={(cellData, cellIndex, rowId) => {
-              return (
-                <TextInput
-                  value={cellData?.toString()}
-                  style={styles.textInput}
-                  onChangeText={text => updateValue(rowId, cellIndex, text)}
-                  keyboardType="numeric"
-                />
-              );
-            }}
-          />
-        </View>
-      </KeyboardAwareScrollView>
+      <View style={styles.scrollContent}>
+        <RenderTable
+          tableWidths={TABLE_WIDTH}
+          headerColumns={PLOT_AREA_UNIT_DETAILS.map(i => i.label)}
+          data={sheetData}
+          renderCell={(cellData, cellIndex, rowId) => {
+            return (
+              <TextInput
+                value={cellData?.toString()}
+                style={styles.textInput}
+                onChangeText={text => updateValue(rowId, cellIndex, text)}
+                keyboardType="numeric"
+              />
+            );
+          }}
+        />
+      </View>
     </View>
   );
 }
@@ -189,13 +184,8 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   scrollContent: {
-    paddingBottom: 50,
+    flexGrow: 1,
   },
-  tableContainer: {
-    borderColor: '#C3C3C3',
-    alignItems: 'center',
-  },
-
   backButton: {
     borderRadius: 50,
     marginRight: 7,

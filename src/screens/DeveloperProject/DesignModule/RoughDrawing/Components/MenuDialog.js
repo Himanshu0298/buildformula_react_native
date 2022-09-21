@@ -7,8 +7,7 @@ import {
   Image,
 } from 'react-native';
 import {Button, IconButton, Subheading, Text} from 'react-native-paper';
-import {useSnackbar} from 'components/Atoms/Snackbar';
-import {checkDownloaded, downloadFile, getDownloadUrl} from 'utils/download';
+import {checkDownloaded} from 'utils/download';
 import {theme} from 'styles/theme';
 import FileViewer from 'react-native-file-viewer';
 import FolderIcon from 'assets/images/folder_icon.png';
@@ -22,10 +21,9 @@ function MenuDialog(props) {
     toggleMenu,
     versionDataHandler,
     activityDataHandler,
+    downloadFile,
   } = props;
   const {id, row_type, is_preset, title} = modalContent;
-
-  const snackbar = useSnackbar();
 
   const fileType = row_type ? 'folder' : 'file';
 
@@ -33,7 +31,7 @@ function MenuDialog(props) {
   const [downloaded, setDownloaded] = useState(false);
 
   useEffect(() => {
-    if (modalContent?.file_name) {
+    if (modalContent?.title) {
       setDownloading(false);
       checkDownloaded(modalContent).then(result => {
         setDownloaded(result);
@@ -46,19 +44,14 @@ function MenuDialog(props) {
   const handleDownload = async () => {
     try {
       toggleDownloading();
-      const fileUrl = getDownloadUrl(modalContent);
-      const {dir} = await downloadFile(modalContent, fileUrl);
-      snackbar.showMessage({
-        message: 'File Downloaded Successfully!',
-        variant: 'success',
-      });
-      setDownloaded(dir);
+      const dir = downloadFile(modalContent);
       toggleDownloading();
     } catch (error) {
       toggleDownloading();
       console.log('----->erorr', error);
     }
   };
+
   const openFile = filePath => {
     filePath = filePath || downloaded;
     console.log('-----> open path', filePath);
@@ -74,18 +67,9 @@ function MenuDialog(props) {
         />
         <Subheading style={styles.title}>{title}</Subheading>
       </View>
-      {/* <TouchableOpacity onPress={handleDownload}>
-        <View style={styles.viewDirection}>
-          <IconButton icon="download" />
-          <View>
-            <Text style={styles.ModalText}>Download1</Text>
-          </View>
-        </View>
-      </TouchableOpacity> */}
 
-      {/* {defaultFolderCheck(folder_name) ? ( */}
       <View>
-        <TouchableOpacity onPress={handleDownload}>
+        {/* <TouchableOpacity onPress={handleDownload}>
           <View style={styles.viewDirection}>
             <IconButton icon="download" />
             <View style={styles.rowBetween}>
@@ -99,12 +83,13 @@ function MenuDialog(props) {
               ) : null}
             </View>
           </View>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         {is_preset === 'no' ? (
           <>
             {row_type === 'file' ? (
-              <TouchableOpacity onPress={() => versionDataHandler(id)}>
+              <TouchableOpacity
+                onPress={() => versionDataHandler(id, fileType)}>
                 <View style={styles.viewDirection}>
                   <IconButton icon="file-multiple" />
                   <Text style={styles.ModalText}>Manage version</Text>
@@ -124,7 +109,7 @@ function MenuDialog(props) {
             </TouchableOpacity>
             {/* ) : null} */}
 
-            <TouchableOpacity onPress={() => activityDataHandler(fileType, id)}>
+            <TouchableOpacity onPress={() => activityDataHandler(id, fileType)}>
               <View style={styles.viewDirection}>
                 <IconButton icon="information" />
                 <Text style={styles.ModalText}>Activity</Text>
@@ -164,7 +149,7 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   PdfIcon: {
-    width: 38,
+    width: 32,
     height: 38,
     paddingLeft: 10,
     marginLeft: 10,

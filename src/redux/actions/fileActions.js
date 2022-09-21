@@ -184,6 +184,7 @@ export default function useFileActions() {
           }
         },
       }),
+
     shareFolder: params =>
       dispatch({
         type: types.SHARE_FOLDER_WITH_USERS,

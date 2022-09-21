@@ -1,8 +1,6 @@
-import {instance, useConfig} from './init';
+import {instance, config} from './init';
 
 export default function useMaterialManagement() {
-  const {config} = useConfig();
-
   const params = config({multipart: false});
   return {
     getMaterialOrderList: data => {

@@ -20,7 +20,12 @@ import ScreenTitle from 'components/Atoms/ScreenTitle';
 import ActionButtons from 'components/Atoms/ActionButtons';
 
 // TODO: Add schema for customer
-const schema = Yup.object().shape({});
+
+const schema = Yup.object().shape({
+  customer_full_name: Yup.string('Invalid').required('Required'),
+  customer_email: Yup.string('Invalid').required('Required'),
+  customer_phone: Yup.number('Invalid').required('Required'),
+});
 
 function ProfileUpload({profilePic, onSelect}) {
   const {t} = useTranslation();
@@ -72,12 +77,14 @@ function RenderForm({formikProps, navigation}) {
   const occupationRef = React.useRef();
   const panRef = React.useRef();
   const aadharRef = React.useRef();
+  const profilePicRef = React.useRef();
 
   return (
     <>
       <View style={styles.inputsContainer}>
         <ProfileUpload
           profilePic={values.profile_pic}
+          ref={profilePicRef}
           onSelect={v => setFieldValue('profile_pic', v)}
         />
         <RenderInput
@@ -217,7 +224,6 @@ function AddCustomer(props) {
   const {unit, edit, customer} = params;
 
   const {t} = useTranslation();
-  const {user} = useSelector(s => s.user);
   const {selectedProject} = useSelector(s => s.project);
   const {loading} = useSelector(s => s.customer);
 
@@ -275,9 +281,7 @@ function AddCustomer(props) {
 
             await addCustomer(formData);
 
-            await addCustomer(formData);
             getCustomerDetails({
-              user_id: user.id,
               project_id: selectedProject.id,
               unit_id: unit.unit_id,
             });
