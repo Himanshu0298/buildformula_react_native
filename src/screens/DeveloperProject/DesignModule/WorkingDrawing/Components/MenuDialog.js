@@ -23,7 +23,7 @@ function MenuDialog(props) {
     versionDataHandler,
     activityDataHandler,
   } = props;
-  const {id, row_type, is_preset, file_type, title} = modalContent;
+  const {id, is_preset, file_type, title} = modalContent;
 
   const snackbar = useSnackbar();
 
@@ -65,27 +65,21 @@ function MenuDialog(props) {
     FileViewer.open(filePath);
   };
 
+  const fixedFolder =
+    fileType === 'folder' || ['Architech', 'Structure', 'MEP'].includes(title);
+
   return (
     <View>
       <View style={styles.viewDirection}>
         <Image
-          source={row_type === 'folder' ? FolderIcon : FileIcon}
+          source={is_preset && !file_type ? FolderIcon : FileIcon}
           style={styles.PdfIcon}
         />
         <Subheading style={styles.title}>{title}</Subheading>
       </View>
-      {/* <TouchableOpacity onPress={handleDownload}>
-        <View style={styles.viewDirection}>
-          <IconButton icon="download" />
-          <View>
-            <Text style={styles.ModalText}>Download1</Text>
-          </View>
-        </View>
-      </TouchableOpacity> */}
 
-      {/* {defaultFolderCheck(folder_name) ? ( */}
       <View>
-        <TouchableOpacity onPress={handleDownload}>
+        {/* <TouchableOpacity onPress={handleDownload}>
           <View style={styles.viewDirection}>
             <IconButton icon="download" />
             <View style={styles.rowBetween}>
@@ -99,51 +93,51 @@ function MenuDialog(props) {
               ) : null}
             </View>
           </View>
-        </TouchableOpacity>
-        {/* {is_preset === 'no' ? (
-          <> */}
-        {row_type === 'file' ? (
-          <TouchableOpacity onPress={() => versionDataHandler(id)}>
-            <View style={styles.viewDirection}>
-              <IconButton icon="file-multiple" />
-              <Text style={styles.ModalText}>Manage version</Text>
-            </View>
-          </TouchableOpacity>
-        ) : null}
-        {/* {modulePermissions?.editor || modulePermissions?.admin ? ( */}
-        <TouchableOpacity
-          onPress={() => {
-            toggleDialog('renameFile');
-            toggleMenu();
-          }}>
-          <View style={styles.viewDirection}>
-            <IconButton icon="pencil" />
-            <Text style={styles.ModalText}>Rename</Text>
-          </View>
-        </TouchableOpacity>
-        {/* ) : null} */}
+        </TouchableOpacity> */}
+        {!fixedFolder ? (
+          <>
+            {file_type === 'image/jpeg' ? (
+              <TouchableOpacity onPress={() => versionDataHandler(id)}>
+                <View style={styles.viewDirection}>
+                  <IconButton icon="file-multiple" />
+                  <Text style={styles.ModalText}>Manage version</Text>
+                </View>
+              </TouchableOpacity>
+            ) : null}
+            {/* {modulePermissions?.editor || modulePermissions?.admin ? ( */}
+            <TouchableOpacity
+              onPress={() => {
+                toggleDialog('renameFile');
+                toggleMenu();
+              }}>
+              <View style={styles.viewDirection}>
+                <IconButton icon="pencil" />
+                <Text style={styles.ModalText}>Rename</Text>
+              </View>
+            </TouchableOpacity>
+            {/* ) : null} */}
 
-        <TouchableOpacity onPress={() => activityDataHandler(fileType, id)}>
-          <View style={styles.viewDirection}>
-            <IconButton icon="information" />
-            <Text style={styles.ModalText}>Activity</Text>
-          </View>
-        </TouchableOpacity>
+            <TouchableOpacity onPress={() => activityDataHandler(fileType, id)}>
+              <View style={styles.viewDirection}>
+                <IconButton icon="information" />
+                <Text style={styles.ModalText}>Activity</Text>
+              </View>
+            </TouchableOpacity>
 
-        {modulePermissions?.editor || modulePermissions?.admin ? (
-          <TouchableOpacity
-            onPress={() => {
-              toggleDialog('deleteFileFolder');
-              toggleMenu();
-            }}>
-            <View style={styles.viewDirection}>
-              <IconButton icon="delete" />
-              <Text style={styles.ModalText}>Delete</Text>
-            </View>
-          </TouchableOpacity>
+            {modulePermissions?.editor || modulePermissions?.admin ? (
+              <TouchableOpacity
+                onPress={() => {
+                  toggleDialog('deleteFileFolder');
+                  toggleMenu();
+                }}>
+                <View style={styles.viewDirection}>
+                  <IconButton icon="delete" />
+                  <Text style={styles.ModalText}>Delete</Text>
+                </View>
+              </TouchableOpacity>
+            ) : null}
+          </>
         ) : null}
-        {/* </>
-        ) : null} */}
       </View>
       {/* ) : null} */}
     </View>
@@ -163,7 +157,7 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   PdfIcon: {
-    width: 38,
+    width: 32,
     height: 38,
     paddingLeft: 10,
     marginLeft: 10,

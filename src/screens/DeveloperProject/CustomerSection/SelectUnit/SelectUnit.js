@@ -6,7 +6,7 @@ import UnitSelector from 'components/Molecules/UnitSelector';
 import {getFloorNumber} from 'utils';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {IconButton, Subheading} from 'react-native-paper';
-import {STRUCTURE_TYPE_LABELS} from 'utils/constant';
+import {STRUCTURE_TYPE, STRUCTURE_TYPE_LABELS} from 'utils/constant';
 import {useSalesLoading} from 'redux/selectors';
 
 function SelectUnit(props) {
@@ -112,7 +112,7 @@ function SelectUnit(props) {
         refreshing={unitBookingStatus.length > 0 && loading}
         floorNumber={floor}
         units={processedUnits}
-        showBhkFilters
+        showBhkFilters={selectedStructure !== STRUCTURE_TYPE.PLOT}
         floorType={structureType || selectedStructure}
         isUnitDisabled={checkUnitDisability}
         onRefresh={fetchUnitsBookingStatus}

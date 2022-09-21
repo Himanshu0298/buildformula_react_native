@@ -56,7 +56,9 @@ const RenderDatePicker = React.forwardRef((props, ref) => {
           right={
             <TextInput.Icon
               name={
-                mode === 'date' ? 'calendar-blank' : 'clock-time-three-outline'
+                mode === 'date'
+                  ? 'calendar-blank'
+                  : 'clock-time-three-outline' && 'calendar-clock-outline'
               }
               onPress={togglePicker}
             />

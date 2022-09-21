@@ -1154,7 +1154,7 @@ function BookingPayments(props) {
         unit_id,
       });
     } else {
-      navigation.popToTop();
+      navigation.navigate('BC_Step_One');
     }
   };
 

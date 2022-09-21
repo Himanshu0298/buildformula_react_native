@@ -1,8 +1,6 @@
-import {instance, useConfig} from './init';
+import {instance, config} from './init';
 
 export default function useRole() {
-  const {config} = useConfig();
-
   const params = config({multipart: false});
   return {
     getAllNotifications: () => {

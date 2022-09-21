@@ -58,11 +58,11 @@ function Details(props) {
   const ContainerView = isCustomer ? ScrollView : Tabs.ScrollView;
 
   return (
-    <ContainerView contentContainerStyle={{flexGrow: 1}}>
+    <ContainerView contentContainerStyle={styles.contentContainerStyle}>
       <View style={styles.container}>
         {customerData?.members?.map((customer, index) => (
           <RenderCustomer
-            key={index}
+            key={customer.id}
             index={index}
             customer={customer}
             navToDetails={navToDetails}
@@ -89,6 +89,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 20,
     paddingVertical: 5,
+    marginTop: 5,
   },
   customerContainer: {
     flexDirection: 'row',
@@ -112,6 +113,9 @@ const styles = StyleSheet.create({
   },
   addButton: {
     padding: 5,
+  },
+  contentContainerStyle: {
+    flexGrow: 1,
   },
 });
 

@@ -7,6 +7,7 @@ import {
   VERIFY_OTP,
   SEND_FORGET_PASSWORD_OTP,
   UPDATE_USER,
+  REFRESH_TOKEN,
 } from '../actions/actionTypes';
 
 const persistConfig = {
@@ -54,6 +55,12 @@ const reducer = (state = initialState, action = {}) => {
       return {
         ...state,
         loading: false,
+      };
+
+    case `${REFRESH_TOKEN}_FULFILLED`:
+      return {
+        ...state,
+        token: payload,
       };
 
     case `${SIGN_UP}_PENDING`:

@@ -17,10 +17,8 @@ import {
   Divider,
   Caption,
 } from 'react-native-paper';
-import useFileActions from 'redux/actions/fileActions';
 import FolderIcon from 'assets/images/folder_icon.png';
 import {useSelector} from 'react-redux';
-import useImagePicker from 'hooks/useImagePicker';
 import Spinner from 'react-native-loading-spinner-overlay';
 import BottomSheet from 'reanimated-bottom-sheet';
 import {getPermissions, getShadow} from 'utils';
@@ -40,7 +38,6 @@ import DeleteDialog from '../Components/DeleteDialog';
 import RenameDialogue from '../Components/RenameDialog';
 import CreateFolderDialogue from '../Components/CreateFolderDialog';
 import MenuDialog from '../Components/MenuDialog';
-import VersionDialog from '../Components/VersionDialog';
 import FolderSectionGridView from '../Components/FolderSectionGridView';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -112,7 +109,7 @@ function FolderSection(props) {
         }
         data={data}
         extraData={data}
-        keyExtractor={i => i.toString()}
+        keyExtractor={i => i.id}
         contentContainerStyle={styles.contentContainerStyle}
         ListEmptyComponent={<NoResult title="No Data found!" />}
         renderItem={({item, index}) => (
@@ -214,7 +211,7 @@ function ActivityModal(props) {
         sections={processedActivities}
         extraData={processedActivities}
         showsVerticalScrollIndicator={false}
-        keyExtractor={(item, index) => index?.toString()}
+        keyExtractor={i => i.id}
         ItemSeparatorComponent={renderSeparator}
         contentContainerStyle={styles.activityScrollContainer}
         stickySectionHeadersEnabled={false}
@@ -286,9 +283,6 @@ function RenderMenuModal(props) {
             {modelContentType === 'activity' ? (
               <ActivityModal {...props} />
             ) : null}
-            {modelContentType === 'version' ? (
-              <VersionDialog {...props} />
-            ) : null}
           </View>
         )}
       />
@@ -320,10 +314,6 @@ const ListViewControl = props => {
 };
 
 function RoughDrawingFolder(props) {
-  const {route, navigation} = props;
-  const {folder_name: folderName, index_of: folderDepth = 0} =
-    route?.params || {};
-
   const modulePermissions = getPermissions('Files');
   const snackbar = useSnackbar();
 
@@ -333,7 +323,6 @@ function RoughDrawingFolder(props) {
 
   const project_id = selectedProject.id;
 
-  const {getVersion, addVersion} = useFileActions();
   const {
     getRDFolders,
     createRDFolder,
@@ -341,8 +330,6 @@ function RoughDrawingFolder(props) {
     deleteRDFolder,
     getRDActivities,
   } = useDesignModuleActions();
-
-  const {openImagePicker} = useImagePicker();
 
   const [menuId, setMenuId] = React.useState();
   const [modelContentType, setModalContentType] = React.useState('menu');
@@ -390,61 +377,17 @@ function RoughDrawingFolder(props) {
     await deleteRDFolder({rough_drawing_id: id, project_id});
     getRDFolders({project_id, mode: 'folder', default_folders: 'no'});
     toggleDialog();
-    snackbar.showMessage({
-      message: 'Folder Deleted!',
-      variant: 'success',
-    });
-  };
-
-  const versionDataHandler = fileId => {
-    setModalContentType('version');
-    getVersion({project_id, file_id: fileId});
+    snackbar.showMessage({message: 'Folder Deleted!', variant: 'success'});
   };
 
   const activityDataHandler = (action_type, id) => {
     setModalContentType('activity');
-    getRDActivities({project_id, rough_drawing_id: id, action_type: 'file'});
-  };
-
-  const handleNewVersionUpload = file_id => {
-    openImagePicker({
-      type: 'file',
-      onChoose: async v => {
-        const formData = new FormData();
-
-        formData.append('file_id', file_id);
-        formData.append('file_upload', v);
-        formData.append('project_id', project_id);
-
-        await addVersion(formData);
-        getVersion({project_id, file_id});
-      },
-    });
+    getRDActivities({project_id, rough_drawing_id: id, action_type: 'folder'});
   };
 
   return (
     <View style={styles.container}>
       <Spinner visible={loading} textContent="" />
-      {/* <RefreshControl refreshing={false} onRefresh={loadData} /> */}
-      {folderName ? (
-        <View style={styles.backNavigation}>
-          <TouchableOpacity
-            style={styles.viewDirection}
-            onPress={navigation.goBack}>
-            <IconButton icon="arrow-left" onPress={navigation.goBack} />
-            <Subheading style={styles.backNavHeading} numberOfLines={1}>
-              {folderName}
-            </Subheading>
-          </TouchableOpacity>
-          <IconButton
-            icon="information"
-            onPress={() => {
-              setModalContentType('parentActivity');
-              toggleMenu(folderDepth);
-            }}
-          />
-        </View>
-      ) : null}
       <View style={styles.headerContainer}>
         <Subheading>Rough Drawing</Subheading>
         <ListViewControl {...props} {...{listMode, setListMode}} />
@@ -494,10 +437,8 @@ function RoughDrawingFolder(props) {
           toggleMenu,
           setModalContentType,
           toggleDialog,
-          versionDataHandler,
           activityDataHandler,
           toggleShareDialog,
-          handleNewVersionUpload,
         }}
       />
 
@@ -555,20 +496,6 @@ const styles = StyleSheet.create({
   },
   closeContainer: {
     alignItems: 'flex-end',
-  },
-  backNavigation: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  viewDirection: {
-    alignItems: 'center',
-    flexDirection: 'row',
-  },
-  backNavHeading: {
-    maxWidth: 200,
-    paddingHorizontal: 10,
-    paddingVertical: 15,
   },
   activityContainer: {
     alignItems: 'center',

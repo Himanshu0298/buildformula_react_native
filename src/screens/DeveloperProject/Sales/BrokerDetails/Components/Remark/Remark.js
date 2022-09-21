@@ -5,9 +5,10 @@ import useSalesActions from 'redux/actions/salesActions';
 import {useSelector} from 'react-redux';
 import {theme} from 'styles/theme';
 import RichTextEditor from 'components/Atoms/RichTextEditor';
-import RenderInput from 'components/Atoms/RenderInput';
 import * as Yup from 'yup';
 import {Formik} from 'formik';
+import Spinner from 'react-native-loading-spinner-overlay';
+import {useSalesLoading} from 'redux/selectors';
 
 const schema = Yup.object().shape({
   remark: Yup.string('Invalid').required('Required'),
@@ -21,51 +22,37 @@ function Remark(props) {
   const isHtml = remark?.includes('<') && remark?.includes('>');
 
   const {selectedProject} = useSelector(s => s.project);
-  const {deleteBroker} = useSalesActions();
+  const loading = useSalesLoading();
+
+  const {updateBrokerRemark} = useSalesActions();
 
   const projectId = selectedProject.id;
 
+  // TO DO required changes
+
   const onSubmit = values => {
-    console.log('----->values', values);
+    updateBrokerRemark({
+      project_id: projectId,
+      // project_bookings_id: 23,
+      broker_remark: values.remark,
+    });
+    navigation.goBack();
   };
 
-  const richText = React.createRef();
-  // || useRef();
-
   return (
-    <ScrollView style={{padding: 20}}>
-      <Text style={{color: theme.colors.primary}}>Remark</Text>
-      {/* <RichToolbar editor={richText} /> */}
+    <ScrollView style={styles.container}>
+      <Spinner visible={loading} textContent="" />
+
+      <Text style={styles.remarkText}>Remark</Text>
       <Formik
         validateOnBlur={false}
         validateOnChange={false}
         initialValues={{remark}}
         validationSchema={schema}
         onSubmit={onSubmit}>
-        {({
-          values,
-          errors,
-          setFieldValue,
-          handleChange,
-          handleBlur,
-          handleSubmit,
-        }) => {
+        {({values, setFieldValue, handleSubmit}) => {
           return (
             <View style={styles.dialogContentContainer}>
-              {console.log('----->errors', errors)}
-              {/* <RenderInput
-                name="remark"
-                multiline
-                numberOfLines={8}
-                label="Remark"
-                value={values.remark}
-                onChangeText={handleChange('remark')}
-                onBlur={handleBlur('remark')}
-                onSubmitEditing={handleSubmit}
-                returnKeyType="done"
-                error={errors.remark}
-              /> */}
-
               <RichTextEditor
                 name="remark"
                 placeholder="Remark"
@@ -77,16 +64,16 @@ function Remark(props) {
 
               <View style={styles.actionContainer}>
                 <Button
-                  style={{flex: 1, marginHorizontal: 5}}
-                  contentStyle={{padding: 3}}
+                  style={styles.button}
+                  contentStyle={styles.contentStyle}
                   theme={{roundness: 15}}
                   onPress={navigation.goBack}>
                   Back
                 </Button>
                 <Button
-                  style={{flex: 1, marginHorizontal: 5}}
+                  style={styles.button}
                   mode="contained"
-                  contentStyle={{padding: 3}}
+                  contentStyle={styles.contentStyle}
                   theme={{roundness: 15}}
                   onPress={handleSubmit}>
                   Save
@@ -108,12 +95,22 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginTop: 20,
   },
-  //   dialogActionContainer: {
-  //     flexDirection: 'row',
-  //     alignItems: 'center',
-  //     justifyContent: 'center',
-  //     marginTop: 20,
-  //   },
+  button: {
+    flex: 1,
+    marginHorizontal: 5,
+  },
+  contentStyle: {
+    padding: 3,
+  },
+  remarkText: {
+    color: theme.colors.primary,
+    margin: 5,
+    fontSize: 18,
+  },
+  container: {
+    padding: 20,
+    marginTop: 10,
+  },
 });
 
 export default withTheme(Remark);

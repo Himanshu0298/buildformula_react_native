@@ -31,7 +31,7 @@ function CategorySheet(props) {
   const [selectedSubCategory, setSelectedSubCategory] = React.useState();
 
   return (
-    <View>
+    <View style={styles.container}>
       {!selectedSubCategory ? (
         CATEGORY.map((item, index) => (
           <RenderRow
@@ -61,6 +61,9 @@ function CategorySheet(props) {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flexGrow: 1,
+  },
   optionContainer: {
     flexDirection: 'row',
     alignItems: 'center',

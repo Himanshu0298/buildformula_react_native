@@ -71,6 +71,7 @@ function UnitSelector(props) {
       {showBhkFilters ? (
         <>
           <Subheading style={styles.bhkHeading}>BHK indication</Subheading>
+
           <BhkList selectedBhk={selectedBhk} onPress={setSelectedBhk} />
         </>
       ) : null}

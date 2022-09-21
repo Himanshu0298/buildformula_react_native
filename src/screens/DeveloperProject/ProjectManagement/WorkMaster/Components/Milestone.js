@@ -166,6 +166,7 @@ function Milestone(props) {
   const handleDragEnd = (fromIndex, toIndex) => {
     // TODO: update ordering request based on changes in api by nilesh
     updateMilestoneOrder({
+      project_id: selectedProject.id,
       id: milestones[fromIndex].id,
       order_by: toIndex,
     }).then(() => {

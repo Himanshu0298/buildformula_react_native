@@ -1,7 +1,6 @@
-import {instance, useConfig} from './init';
+import {instance, config} from './init';
 
 export default function useSalesServices() {
-  const {config} = useConfig();
   return {
     getVisitorsList: data => {
       return instance.post(
@@ -20,9 +19,7 @@ export default function useSalesServices() {
     getBrokerDetails: data => {
       return instance.post('/broker_details', data, config({multipart: false}));
     },
-    getFollowUpList: data => {
-      return instance.post('/followup/get_lists', data, config());
-    },
+
     getSalesData: data => {
       return instance.post(
         '/followup/other_info',
@@ -193,6 +190,14 @@ export default function useSalesServices() {
       return instance.post('/delete_broker', data, config({multipart: false}));
     },
 
+    updateBrokerRemark: data => {
+      return instance.post(
+        '/edit_broker_remark',
+        data,
+        config({multipart: false}),
+      );
+    },
+
     getPipelinesOrderList: data => {
       return instance.post(
         '/pipeline/listrearrangesalespipeline',
@@ -232,12 +237,36 @@ export default function useSalesServices() {
       return instance.post(
         '/bookingapproval/add_approvals',
         data,
-        config({multipart: false}),
+        config({multipart: true}),
       );
     },
     approvalDetails: data => {
       return instance.post(
         '/bookingapproval/details',
+        data,
+        config({multipart: false}),
+      );
+    },
+
+    // Follow_Up Task
+
+    getFollowUpList: data => {
+      return instance.post(
+        '/visitors/list_followups',
+        data,
+        config({multipart: false}),
+      );
+    },
+    getFollowUpDetailsList: data => {
+      return instance.post(
+        '/visitors/details_followups',
+        data,
+        config({multipart: false}),
+      );
+    },
+    updateCompleteTask: data => {
+      return instance.post(
+        '/visitors/complete_followup_save_next',
         data,
         config({multipart: false}),
       );

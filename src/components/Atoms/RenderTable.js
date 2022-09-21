@@ -1,6 +1,8 @@
-import {FlatList, ScrollView, StyleSheet, View} from 'react-native';
+import {ScrollView, StyleSheet, View} from 'react-native';
 import * as React from 'react';
 import {Text} from 'react-native-paper';
+import NoResult from 'components/Atoms/NoResult';
+import {KeyboardAwareFlatList} from 'react-native-keyboard-aware-scroll-view';
 
 function RenderCell({value, width}) {
   return (
@@ -14,8 +16,11 @@ function RenderTable(props) {
   const {headerColumns, data, tableWidths, renderCell} = props;
 
   return (
-    <ScrollView horizontal>
-      <View>
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      contentContainerStyle={styles.contentContainer}>
+      <View style={styles.contentContainer}>
         <View style={styles.tableRow}>
           {headerColumns.map((cellData, cellIndex) => {
             return (
@@ -32,45 +37,53 @@ function RenderTable(props) {
             );
           })}
         </View>
-        <View style={styles.contentContainer}>
-          <FlatList
-            data={data}
-            extraData={data}
-            contentContainerStyle={styles.contentContainerStyle}
-            keyExtractor={(_, index) => index.toString()}
-            renderItem={({item}) => {
-              const {id, title, data: columnData} = item;
-              return (
-                <View style={styles.tableRow}>
-                  {title ? (
-                    <RenderCell value={title} width={tableWidths[0]} />
-                  ) : null}
-                  {columnData.map((cellData, cellIndex) => {
-                    const updatedCellIndex = title ? cellIndex + 1 : cellIndex;
-                    const width = tableWidths[updatedCellIndex];
+        <View style={styles.keyboardScrollContainer}>
+          <View style={styles.contentContainer}>
+            {data?.length ? (
+              <KeyboardAwareFlatList
+                data={data}
+                extraData={data}
+                contentContainerStyle={styles.contentContainerStyle}
+                keyExtractor={(_, index) => index.toString()}
+                renderItem={({item}) => {
+                  const {id, title, data: columnData} = item;
+                  return (
+                    <View style={styles.tableRow}>
+                      {title ? (
+                        <RenderCell value={title} width={tableWidths[0]} />
+                      ) : null}
+                      {columnData.map((cellData, cellIndex) => {
+                        const updatedCellIndex = title
+                          ? cellIndex + 1
+                          : cellIndex;
+                        const width = tableWidths[updatedCellIndex];
 
-                    if (renderCell) {
-                      return (
-                        <View
-                          key={updatedCellIndex?.toString()}
-                          style={[styles.tableRowCell, {width}]}>
-                          {renderCell(cellData, cellIndex, id)}
-                        </View>
-                      );
-                    }
+                        if (renderCell) {
+                          return (
+                            <View
+                              key={updatedCellIndex?.toString()}
+                              style={[styles.tableRowCell, {width}]}>
+                              {renderCell(cellData, cellIndex, id)}
+                            </View>
+                          );
+                        }
 
-                    return (
-                      <RenderCell
-                        key={updatedCellIndex?.toString()}
-                        value={cellData}
-                        width={width}
-                      />
-                    );
-                  })}
-                </View>
-              );
-            }}
-          />
+                        return (
+                          <RenderCell
+                            key={updatedCellIndex?.toString()}
+                            value={cellData}
+                            width={width}
+                          />
+                        );
+                      })}
+                    </View>
+                  );
+                }}
+              />
+            ) : (
+              <NoResult style={styles.noResult} title="No Data found!" />
+            )}
+          </View>
         </View>
       </View>
     </ScrollView>
@@ -78,11 +91,11 @@ function RenderTable(props) {
 }
 const styles = StyleSheet.create({
   contentContainer: {
-    flex: 1,
+    flexGrow: 1,
+    borderColor: 'red',
   },
   contentContainerStyle: {
     flexGrow: 1,
-    paddingBottom: 100,
   },
   headerRow: {
     backgroundColor: '#DEE1E7',
@@ -91,7 +104,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     justifyContent: 'center',
   },
-
   tableRow: {
     flexDirection: 'row',
     minHeight: 35,
@@ -103,6 +115,12 @@ const styles = StyleSheet.create({
   },
   tableRowCellText: {
     textAlign: 'center',
+  },
+  noResult: {
+    marginTop: 10,
+  },
+  keyboardScrollContainer: {
+    flex: 1,
   },
 });
 

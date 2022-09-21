@@ -226,13 +226,13 @@ function OtpScreen(props) {
               {/* send to {`+91 ${user.phone}`} */}
             </Text>
             <OtpInput value={phone} setValue={setPhone} />
-            <View style={[styles.row, styles.confirmContainer]}>
+            {/* <View style={[styles.row, styles.confirmContainer]}>
               <Caption>Not your Phone? </Caption>
               <TouchableOpacity onPress={toggleDialog}>
                 <Caption style={{color: theme.colors.primary}}>Update</Caption>
               </TouchableOpacity>
-            </View>
-            <View style={[styles.row, styles.codeContainer]}>
+            </View> */}
+            <View style={[styles.row, styles.formContainer]}>
               <Caption style={styles.subTitle}>Didn’t receive a code. </Caption>
               <TouchableOpacity onPress={sendBookingPhoneOtp}>
                 <Caption style={{color: theme.colors.primary}}>Resend</Caption>
@@ -263,13 +263,13 @@ function OtpScreen(props) {
               {/* send to {`+91 ${user.phone}`} */}
             </Text>
             <OtpInput value={email} setValue={setEmail} />
-            <View style={[styles.row, {marginTop: 10}]}>
+            <View style={[styles.row, styles.notYourEmail]}>
               <Caption>Not your email? </Caption>
               <TouchableOpacity onPress={toggleDialog}>
                 <Caption style={{color: theme.colors.primary}}>Update</Caption>
               </TouchableOpacity>
             </View>
-            <View style={[styles.row, {marginBottom: 20}]}>
+            <View style={[styles.row, styles.codeContainerText]}>
               <Caption style={styles.subTitle}>Didn’t receive a code. </Caption>
               <TouchableOpacity onPress={sendEmailOtp}>
                 <Caption style={{color: theme.colors.primary}}>Resend</Caption>
@@ -347,6 +347,10 @@ const styles = StyleSheet.create({
   codeContainer: {
     marginBottom: 20,
   },
+  formContainer: {
+    marginBottom: 10,
+    marginTop: 20,
+  },
   renderInput: {
     marginRight: 2,
   },
@@ -358,6 +362,12 @@ const styles = StyleSheet.create({
   },
   dialog: {
     top: -100,
+  },
+  notYourEmail: {
+    marginTop: 10,
+  },
+  codeContainerText: {
+    marginBottom: 20,
   },
 });
 

@@ -13,30 +13,79 @@ import {theme} from 'styles/theme';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import UserIcon from 'assets/images/requestedUser.png';
+import {useEffect} from 'react';
+import useSalesActions from 'redux/actions/salesActions';
+import {useSelector} from 'react-redux';
+import RenderHtml from 'react-native-render-html';
+import Layout from 'utils/Layout';
+import Spinner from 'react-native-loading-spinner-overlay';
 
-const TaskList = () => {
+const TaskList = props => {
+  const {item, navigation} = props;
+
+  const isHtml = item.f_remarks?.includes('<') && item.f_remarks?.includes('>');
+  const source = {
+    html: `<span style="color: '#DEE1E4';margin-left: 2px;font-size: 15px">
+       ${item.completed_remarks}</span>`,
+  };
+
+  const navToDetails = () => {
+    navigation.navigate('VisitorDetails', {visitorId: item.visitor_id});
+  };
+  const handleTask = () => {
+    navigation.navigate('CompleteTask', {
+      date: item.followup_date,
+      time: item.followup_time,
+      visitorID: item.visitor_followup_id,
+    });
+  };
   return (
     <View style={styles.listContainer}>
-      <Text style={styles.taskHeading}>Call Or visit Side</Text>
+      <Text style={styles.taskHeading}>{item.task_title}</Text>
       <View style={styles.listItems}>
         <MaterialCommunityIcons name="home-analytics" size={24} color="grey" />
-        <Caption style={styles.captionText}>Apr21,Block-25</Caption>
+        <Caption style={styles.captionText}>
+          {item.address ? item.address : '--'}
+        </Caption>
       </View>
       <View style={styles.listItems}>
         <MaterialIcons name="phone" size={24} color="grey" />
-        <Caption style={styles.captionText}>+91 9874563210</Caption>
+        <Caption style={styles.captionText}>+91 {item.phone}</Caption>
       </View>
       <Divider style={styles.divider} />
 
       <View style={styles.remarkContainer}>
         <Text style={styles.remarkText}>Remark</Text>
-        <Caption>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus,
-          minus beatae! Reprehenderit ex voluptate repudiandae sapiente dolorem,
-          molestiae, beatae aut fugit, doloribus dolorum ullam voluptates?
-        </Caption>
+        {!isHtml ? (
+          <Caption>{item.f_remarks}</Caption>
+        ) : (
+          <View style={styles.renderHtml}>
+            <RenderHtml
+              source={{html: item.f_remarks}}
+              contentWidth={Layout.window.width}
+            />
+          </View>
+        )}
       </View>
       <Divider style={styles.divider} />
+      {item.completed_remarks ? (
+        <>
+          <View style={styles.remarkContainer}>
+            <Text style={styles.remarkText}>Complete Remark</Text>
+            {!source ? (
+              <Caption>{source}</Caption>
+            ) : (
+              <View style={styles.renderHtml}>
+                <RenderHtml
+                  source={source}
+                  contentWidth={Layout.window.width}
+                />
+              </View>
+            )}
+          </View>
+          <Divider style={styles.divider} />
+        </>
+      ) : null}
 
       <View style={styles.userContainer}>
         <Image source={UserIcon} />
@@ -48,22 +97,48 @@ const TaskList = () => {
       <Divider style={styles.divider} />
 
       <View style={styles.taskButtonContainer}>
-        <Button style={styles.taskButton} mode="outlined">
+        <Button
+          style={styles.taskButton}
+          mode="outlined"
+          onPress={navToDetails}>
           View Details
         </Button>
-        <Button style={styles.taskButton} mode="contained">
-          Complete Task
-        </Button>
+        {item.completed === 'no' ? (
+          <Button
+            style={styles.taskButton}
+            onPress={handleTask}
+            mode="contained">
+            Complete Task
+          </Button>
+        ) : null}
       </View>
     </View>
   );
 };
 
 function FollowUpDetails(props) {
-  const {navigation} = props;
+  const {navigation, route} = props;
+  const {visitorId, date} = route?.params || {};
+
+  const {selectedProject} = useSelector(s => s.project);
+  const project_id = selectedProject.id;
+
+  const {approvalDetailsList, loading} = useSelector(s => s.sales);
+
+  const {getFollowUpDetailsList} = useSalesActions();
+
+  useEffect(() => {
+    getFollowUpDetailsList({
+      project_id,
+      visitor_followup_id: visitorId,
+      followup_date: date,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <View style={styles.container}>
+      <Spinner visible={loading} textContent="" />
       <ScrollView
         contentContainerStyle={styles.scrollView}
         showsVerticalScrollIndicator={false}>
@@ -81,7 +156,9 @@ function FollowUpDetails(props) {
           </OpacityButton>
           <Subheading>Follow-up Task Details</Subheading>
         </View>
-        <TaskList />
+        {approvalDetailsList?.map(item => {
+          return <TaskList {...props} item={item} />;
+        })}
       </ScrollView>
     </View>
   );
@@ -122,15 +199,15 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   divider: {
-    height: 2,
+    height: 1,
     marginTop: 10,
   },
   remarkContainer: {
     marginTop: 10,
   },
   remarkText: {
-    color: '#000',
-    fontWeight: '700',
+    // color: '#000',
+    // fontWeight: '700',
   },
   userContainer: {
     flexDirection: 'row',
@@ -148,6 +225,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     marginTop: 25,
     paddingHorizontal: 10,
+  },
+  renderHtml: {
+    marginTop: 10,
   },
 });
 

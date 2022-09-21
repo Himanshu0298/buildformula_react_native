@@ -16,7 +16,7 @@ if (__DEV__) {
 
 const CODE_PUSH_OPTIONS = {
   updateDialog: false,
-  checkFrequency: codePush.CheckFrequency.ON_APP_RESUME,
+  checkFrequency: codePush.CheckFrequency.ON_APP_START,
   installMode: codePush.InstallMode.ON_NEXT_RESTART,
 };
 

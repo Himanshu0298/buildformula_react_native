@@ -116,6 +116,7 @@ const Details = props => {
 
 const CommonCard = props => {
   const {navigation, materialOrderNo: orderNumber, item} = props;
+  // console.log('-------->orderNumber', orderNumber);
 
   return (
     <View style={styles.commonCard}>
@@ -147,7 +148,7 @@ const CommonCard = props => {
   );
 };
 
-const OrderDetail = props => {
+function OrderDetail(props) {
   const {navigation, route} = props;
 
   const {material_order_no, materialId} = route?.params || {};
@@ -156,8 +157,6 @@ const OrderDetail = props => {
   const {materialChallanList, materialOrderList, loading} = useSelector(
     s => s.materialManagement,
   );
-
-  console.log('-----> materialId', materialId);
 
   const {selectedProject} = useSelector(s => s.project);
 
@@ -213,7 +212,7 @@ const OrderDetail = props => {
       </ScrollView>
     </View>
   );
-};
+}
 
 export default OrderDetail;
 

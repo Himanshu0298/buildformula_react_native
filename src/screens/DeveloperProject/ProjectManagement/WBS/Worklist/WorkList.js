@@ -28,7 +28,9 @@ function RenderRow(props) {
     <View>
       <TouchableOpacity style={styles.optionContainer} onPress={onPress}>
         <View style={styles.optionBody}>
-          <Text style={styles.optionLabel}>{title || unique_id}</Text>
+          <Text numberOfLines={2} style={styles.optionLabel}>
+            {title || unique_id}
+          </Text>
           {isSubWorks ? (
             <View style={styles.workDetails}>
               <Caption>
@@ -46,7 +48,7 @@ function RenderRow(props) {
           opacity={0.1}
           style={styles.rightArrow}
           color={colors.primary}>
-          <MaterialCommunityIcons name="arrow-right" size={18} color="black" />
+          <MaterialCommunityIcons name="arrow-right" size={20} color="black" />
         </OpacityButton>
       </TouchableOpacity>
     </View>
@@ -78,8 +80,12 @@ function WorkList(props) {
 
   const {selectedProject} = useSelector(s => s.project);
 
-  React.useEffect(() => {
+  const loadData = () => {
     getWBSLevelWorks({project_id: selectedProject.id, parent_id});
+  };
+
+  React.useEffect(() => {
+    loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -118,31 +124,33 @@ function WorkList(props) {
                 />
               </OpacityButton>
             </View>
-            <Text style={styles.headerTitle}>
+            <Text numberOfLines={2} style={styles.headerTitle}>
               {pathList[pathList.length - 1]}
             </Text>
           </View>
           <WorkPath data={pathList} />
         </>
       )}
-      <FlatList
-        data={listData}
-        refreshControl={
-          <RefreshControl refreshing={false} onRefresh={getWBSLevelWorks} />
-        }
-        contentContainerStyle={styles.flatList}
-        keyExtractor={item => item.id}
-        ListEmptyComponent={renderEmpty}
-        renderItem={({item}) => {
-          return (
-            <RenderRow
-              item={item}
-              isSubWorks={isSubWorks}
-              onPress={() => navToNextLevel(item)}
-            />
-          );
-        }}
-      />
+      <View style={styles.flatListContainer}>
+        <FlatList
+          data={listData}
+          refreshControl={
+            <RefreshControl refreshing={false} onRefresh={() => loadData()} />
+          }
+          contentContainerStyle={styles.flatList}
+          keyExtractor={item => item.id}
+          ListEmptyComponent={renderEmpty}
+          renderItem={({item}) => {
+            return (
+              <RenderRow
+                item={item}
+                isSubWorks={isSubWorks}
+                onPress={() => navToNextLevel(item)}
+              />
+            );
+          }}
+        />
+      </View>
     </View>
   );
 }
@@ -164,6 +172,7 @@ const styles = StyleSheet.create({
   optionLabel: {
     color: 'black',
     fontSize: 16,
+    flex: 1,
   },
   subHeading: {
     fontSize: 17,
@@ -192,12 +201,16 @@ const styles = StyleSheet.create({
   optionBody: {
     paddingHorizontal: 10,
     paddingVertical: 7,
+    flex: 1,
   },
   rightArrow: {
     borderRadius: 25,
   },
   flatList: {
     flexGrow: 1,
+  },
+  flatListContainer: {
+    flex: 1,
   },
 });
 

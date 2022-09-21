@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
   },
   pdfIconContainer: {
-    flexGrow: 1,
+    marginRight: 5,
   },
 });
 

@@ -1,7 +1,6 @@
-import {instance, useConfig} from './init';
+import {instance, config} from './init';
 
 export default function useCustomerServices() {
-  const {config} = useConfig();
   return {
     getCustomerDetails: data => {
       return instance.post('/customers', data, config({multipart: false}));
