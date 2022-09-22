@@ -171,7 +171,6 @@ export default function useSalesActions() {
         },
       });
     },
-    // console.log('-------->params',params)
     addVisitorComment: params =>
       dispatch({
         type: types.ADD_VISITOR_COMMENT,

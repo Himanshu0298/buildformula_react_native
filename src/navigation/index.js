@@ -55,6 +55,7 @@ import HoldBookingHistory from 'screens/DeveloperProject/Sales/BookingChart/Hold
 import BookingRates from 'screens/DeveloperProject/Sales/BookingChart/BookingRates';
 import BookingPayment from 'screens/DeveloperProject/Sales/BookingChart/BookingPayment';
 import BrokerList from 'screens/DeveloperProject/Sales/BrokerList';
+// import AddBrokerPaymentDetails from 'screens/DeveloperProject/Sales/BrokerDetails/Components/AddBrokerPaymentDetails';
 import Approval from 'screens/DeveloperProject/Sales/Approval';
 import CreateApproval from 'screens/DeveloperProject/Sales/Approval/Components/CreateApproval';
 import ApprovalListing from 'screens/DeveloperProject/Sales/Approval/Components/ApprovalListing';
@@ -108,6 +109,8 @@ import AddRole from 'screens/DeveloperProject/UserRoles/AddRole';
 import SalesPipelineRearrange from 'screens/DeveloperProject/Sales/SalesPipelineRearrange';
 import BrokerDetails from 'screens/DeveloperProject/Sales/BrokerDetails';
 import AddBroker from 'screens/DeveloperProject/Sales/AddBroker';
+// import DealsClosedDetails from 'screens/DeveloperProject/Sales/BrokerDetails/Components/DealsClosedDetails';
+
 import WorkMaster from 'screens/DeveloperProject/ProjectManagement/WorkMaster';
 import WorkDetails from 'screens/DeveloperProject/ProjectManagement/WBS/WorkDetails';
 import ProgressRecords from 'screens/DeveloperProject/ProjectManagement/WBS/ProgressRecords';
@@ -124,6 +127,19 @@ import MaterialGRN from '../screens/DeveloperProject/Material/MaterialGRN';
 import OrderDetail from '../screens/DeveloperProject/Material/OrderDetail';
 import MaterialList from '../screens/DeveloperProject/Material/MaterialList';
 import DeliveryDetails from 'screens/DeveloperProject/Material/DeliveryDetails';
+// import PRListing from 'screens/DeveloperProject/Material/MaterialPR/PRListing';
+// import PIListing from 'screens/DeveloperProject/Material/MaterialPI/PIListing';
+// import CreatePR from 'screens/DeveloperProject/Material/MaterialPR/CreatePR/CreatePR';
+// import CreatePRMaterial from 'screens/DeveloperProject/Material/MaterialPR/CreatePR/CreatePRMaterial';
+// import PRPreview from 'screens/DeveloperProject/Material/MaterialPR/PRPreview/PRPreview';
+// import AddMaterialList from 'screens/DeveloperProject/Material/MaterialPR/CreatePR/AddMaterialList';
+// import CreatePI from 'screens/DeveloperProject/Material/MaterialPI/CreatePI/CreatePI';
+// import PIPreview from 'screens/DeveloperProject/Material/MaterialPI/PIPreview/PIPreview';
+// import PIRequest from 'screens/DeveloperProject/Material/MaterialPI/PIRequest/PIRequest';
+// import TermsAndConditions from 'screens/DeveloperProject/Material/MaterialPI/CreatePI/Teams&Conditions';
+// import AddPIMaterialList from 'screens/DeveloperProject/Material/MaterialPI/CreatePI/AddPIMaterialList';
+// import CreatePIMaterial from 'screens/DeveloperProject/Material/MaterialPI/CreatePI/AddPIMaterial';
+
 import AddChallan from 'screens/DeveloperProject/Material/DeliveryDetails/AddChallan';
 import SelectMaterials from 'screens/DeveloperProject/Material/DeliveryDetails/SelectMaterial';
 import AddMaterialInfo from 'screens/DeveloperProject/Material/DeliveryDetails/AddMaterialChallan';
@@ -157,6 +173,7 @@ import LanguageSelect from '../screens/Auth/LanguageSelect';
 import DrawerContent from './Components/DrawerContent';
 import DocumentGenerater from 'screens/DeveloperProject/DocumentGenerater';
 import DocumentDownload from 'screens/DeveloperProject/DocumentGenerater/Documents/DocumentDownload';
+
 /** *********** Developer Project Sub Screens End   ************ */
 
 const optionalConfigObject = {
@@ -357,6 +374,31 @@ function AppStackNavigator() {
               <Stack.Screen name="OrderDetail" component={OrderDetail} />
               <Stack.Screen name="MaterialList" component={MaterialList} />
               <Stack.Screen name="AddChallan" component={AddChallan} />
+              {/* <Stack.Screen name="PRList" component={PRListing} />
+              <Stack.Screen name="PIList" component={PIListing} />
+              <Stack.Screen name="CreatePR" component={CreatePR} />
+              <Stack.Screen name="CreatePI" component={CreatePI} />
+              <Stack.Screen name="AddPIMaterial" component={CreatePIMaterial} />
+              <Stack.Screen name="PIRequest" component={PIRequest} />
+              <Stack.Screen
+                name="AddPIMaterialList"
+                component={AddPIMaterialList}
+              />
+              <Stack.Screen
+                name="Teams&Conditions"
+                component={TermsAndConditions}
+              />
+              <Stack.Screen
+                name="CreatePRMaterial"
+                component={CreatePRMaterial}
+              />
+
+              <Stack.Screen name="PRPreview" component={PRPreview} />
+              <Stack.Screen name="PIPreview" component={PIPreview} />
+              <Stack.Screen
+                name="AddMaterialList"
+                component={AddMaterialList}
+              /> */}
               <Stack.Screen
                 name="SelectMaterials"
                 component={SelectMaterials}
@@ -395,6 +437,14 @@ function AppStackNavigator() {
               <Stack.Screen name="BrokerList" component={BrokerList} />
               <Stack.Screen name="BrokerDetails" component={BrokerDetails} />
               <Stack.Screen name="AddBroker" component={AddBroker} />
+              {/* <Stack.Screen
+                name="DealsClosedDetails"
+                component={DealsClosedDetails}
+              />
+              <Stack.Screen
+                name="AddBrokerPaymentDetails"
+                component={AddBrokerPaymentDetails}
+              /> */}
               <Stack.Screen name="Remark" component={Remark} />
             </Stack.Group>
             <Stack.Group>

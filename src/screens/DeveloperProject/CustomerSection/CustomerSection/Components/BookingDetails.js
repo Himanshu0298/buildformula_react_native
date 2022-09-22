@@ -32,7 +32,7 @@ const schema = Yup.object().shape({
     .min(10, 'Must be 10 digit'),
 });
 
-function getDocumnetCharges(bookingDetails) {
+function getDocumentCharges(bookingDetails) {
   const {
     full_payment_documentation_charges,
     installment_payment_documentation_charges,
@@ -466,7 +466,7 @@ function RenderCharges(props) {
           {
             label: 'Documentation Charges',
             labelStyle: {color: theme.colors.documentation},
-            value: `Rs.${getDocumnetCharges(bookingDetails)}`,
+            value: `Rs.${getDocumentCharges(bookingDetails)}`,
           },
         ]}
       />
@@ -501,7 +501,7 @@ function RenderDocumentCharges(props) {
           {
             label: 'Documentation charges',
             labelStyle: {color: theme.colors.documentation},
-            value: `Rs.${getDocumnetCharges(bookingDetails)}`,
+            value: `Rs.${getDocumentCharges(bookingDetails)}`,
           },
         ]}
       />

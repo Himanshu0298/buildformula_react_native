@@ -23,11 +23,16 @@ import {getCountryCode} from 'utils';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 
 const CustomerDetails = props => {
-  const {visitors_info, linkedProperty, BrokerData} = props;
+  const {visitors_info, linkedProperty, BrokerData, navigation} = props;
+
   const {first_name, last_name, email, phone, address, dob, anniversary_date} =
     visitors_info || {};
 
   const snackbar = useSnackbar();
+
+  const navToDetails = () => {
+    navigation.navigate('CS_Step_Five', {project_id: visitors_info.project_id});
+  };
 
   const phoneNumber = React.useMemo(() => {
     if (getCountryCode(phone)) {
@@ -70,7 +75,7 @@ const CustomerDetails = props => {
       </View>
       <View style={styles.phoneContainer}>
         <View>
-          <Text>Phone no.</Text>
+          <Text style={styles.label}>Phone no.</Text>
           <TouchableOpacity
             disabled={!phone}
             onPress={() => openDialScreen(phoneNumber)}>
@@ -91,7 +96,7 @@ const CustomerDetails = props => {
       </View>
       <View style={styles.valueContainer}>
         <Text style={styles.label}>Related Property</Text>
-        <TouchableOpacity onPress={() => console.log('-------->To do')}>
+        <TouchableOpacity onPress={navToDetails}>
           <Text style={styles.propLink}>{linkedProperty}</Text>
         </TouchableOpacity>
       </View>
@@ -102,7 +107,7 @@ const CustomerDetails = props => {
         </Text>
       </View>
       <View style={styles.valueContainer}>
-        <Text style={styles.label}>Birthdate</Text>
+        <Text style={styles.label}>Birth Date</Text>
         <Text style={styles.value}>
           {dob ? dayjs(dob).format('MMMM D, YYYY	') : '---'}
         </Text>
@@ -146,7 +151,6 @@ const CustomerInnerDetails = ({navigation, route: routeData}) => {
   const {customerListDetails, loading: customerLoading} = useSelector(
     s => s.customer,
   );
-
   const {visitors_info = {}, brokers = []} = customerListDetails || {};
 
   const brokerOptions = useMemo(() => {
@@ -205,6 +209,7 @@ const CustomerInnerDetails = ({navigation, route: routeData}) => {
             visitors_info={visitors_info}
             linkedProperty={linkedProperty}
             BrokerData={BrokerData}
+            navigation={navigation}
           />
         );
       case 'second':
