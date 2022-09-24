@@ -655,7 +655,11 @@ function RenderFirstBigPaymentDetails(props) {
     }));
   }, [installment_amount, installment_date, installments]);
 
-  const source = {html: installment_payment_remarks};
+  const source = {
+    html: `<p style='color:#000'>${installment_payment_remarks}</p>`,
+  };
+
+  // const source = {html: installment_payment_remarks};
 
   return (
     <View style={styles.sectionContainer}>
@@ -678,7 +682,11 @@ function RenderFirstBigPaymentDetails(props) {
 
         <View style={styles.remark}>
           <Text>Remark: </Text>
-          <RenderHtml contentWidth={width} source={source} />
+          <RenderHtml
+            contentWidth={width}
+            source={source}
+            style={{color: '#000'}}
+          />
         </View>
 
         <Text style={styles.installmentText}>INSTALLMENT</Text>
@@ -763,8 +771,15 @@ function TermsCondition({bookingDetails}) {
         Terms & Conditions
       </Subheading>
       <View style={styles.termsBody}>
-        <Text>
+        <Text style={{color: '#000'}}>
+          {console.log(
+            '----->full_payment_remark ',
+            full_payment_remark,
+            custom_payment_remark,
+            installment_payment_remarks,
+          )}
           <RenderHTML
+            style={{color: '#000'}}
             source={{
               html:
                 full_payment_remark ||
