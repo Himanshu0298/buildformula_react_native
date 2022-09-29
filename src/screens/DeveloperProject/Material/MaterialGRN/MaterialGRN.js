@@ -86,7 +86,7 @@ const OrderCard = props => {
   );
 };
 
-const MaterialGRN = props => {
+function MaterialGRN(props) {
   const {getMaterialOrderList} = useMaterialManagementActions();
 
   const {materialOrderList, loading} = useSelector(s => s.materialManagement);
@@ -122,9 +122,10 @@ const MaterialGRN = props => {
           return <OrderCard {...props} item={item} />;
         }}
       />
+      {console.log('----->materialOrderList ', materialOrderList)}
     </View>
   );
-};
+}
 
 export default MaterialGRN;
 

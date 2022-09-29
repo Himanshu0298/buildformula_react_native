@@ -62,6 +62,12 @@ export const MODIFY_REQUEST_STATUS = {
   confirmed_by_customer: {label: 'CONFIRMED BY CUSTOMER', color: '#041D36'},
 };
 
+export const PR_REQUEST_STATUS = {
+  1: {label: 'Pending', color: '#F4AF48'},
+  2: {label: 'Approved', color: '#07CA03'},
+  3: {label: 'Rejected', color: '#FF5D5D'},
+};
+
 export const KEYBOARD_SHOW =
   Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
 export const KEYBOARD_HIDE =

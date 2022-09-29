@@ -14,6 +14,13 @@ export default function useMaterialManagementActions() {
     getMaterialChallanDetails,
     addMaterialChallan,
     getSelectMaterialChallan,
+    getPRMaterialOrderList,
+    getPRMaterialDetails,
+    getPRMaterialList,
+    getVendorOrContractorsDetails,
+    addMaterialPR,
+    getWorkSubWorkList,
+    createMaterialPR,
   } = useMaterialManagement();
 
   return {
@@ -31,6 +38,35 @@ export default function useMaterialManagementActions() {
           }
         },
       }),
+    getPRMaterialOrderList: data =>
+      dispatch({
+        type: types.GET_PR_MATERIAL_ORDER_LIST,
+        payload: async () => {
+          try {
+            const response = _res(await getPRMaterialOrderList(data));
+            return Promise.resolve(response.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    getPRMaterialList: data =>
+      dispatch({
+        type: types.GET_MATERIAL_LIST,
+        payload: async () => {
+          try {
+            const response = _res(await getPRMaterialList(data));
+            return Promise.resolve(response.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
     getMaterialChallanList: data =>
       dispatch({
         type: types.GET_MATERIAL_CHALLAN_LIST,
@@ -59,6 +95,49 @@ export default function useMaterialManagementActions() {
           }
         },
       }),
+    getPRMaterialDetails: data =>
+      dispatch({
+        type: types.GET_PR_MATERIAL_DETAILS,
+        payload: async () => {
+          try {
+            const response = _res(await getPRMaterialDetails(data));
+            return Promise.resolve(response.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    getVendorOrContractorsDetails: data =>
+      dispatch({
+        type: types.GET_VENDOR_OR_CONTRACTORS_DETAILS,
+        payload: async () => {
+          try {
+            const response = _res(await getVendorOrContractorsDetails(data));
+            return Promise.resolve(response.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    getWorkSubWorkList: data =>
+      dispatch({
+        type: types.GET_WORK_SUBWORK_LIST,
+        payload: async () => {
+          try {
+            const response = _res(await getWorkSubWorkList(data));
+            return Promise.resolve(response.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
     addMaterialChallan: data =>
       dispatch({
         type: types.ADD_MATERIAL_CHALLAN,
@@ -80,6 +159,39 @@ export default function useMaterialManagementActions() {
           try {
             const response = _res(await getSelectMaterialChallan(data));
             return Promise.resolve(response.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    addMaterialPR: formData =>
+      dispatch({
+        type: types.ADD_MATERIAL_PR,
+        payload: async () => {
+          try {
+            const response = _res(await addMaterialPR(formData));
+            const {data} = response;
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    createMaterialPR: formData =>
+      dispatch({
+        type: types.CREATE_MATERIAL_PR,
+        payload: async () => {
+          try {
+            const response = _res(await createMaterialPR(formData));
+            const {data} = response;
+
+            return Promise.resolve(data);
           } catch (error) {
             const message = _err(error);
             snackbar.showMessage({message, variant: 'error'});

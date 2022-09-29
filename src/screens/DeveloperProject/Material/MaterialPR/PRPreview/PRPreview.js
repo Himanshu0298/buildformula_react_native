@@ -1,4 +1,4 @@
-import {StyleSheet, View, FlatList, Dimensions} from 'react-native';
+import {StyleSheet, View, Dimensions} from 'react-native';
 import React, {useState} from 'react';
 import ProjectHeader from 'components/Molecules/Layout/ProjectHeader';
 import {
@@ -13,22 +13,40 @@ import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import ActionButtons from 'components/Atoms/ActionButtons';
 import {useAlert} from 'components/Atoms/Alert';
 import {getShadow} from 'utils';
-import PRMaterialData from '../CreatePR/PRMaterialData';
+import useMaterialManagementActions from 'redux/actions/materialManagementActions';
+import {useSelector} from 'react-redux';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const {height} = Dimensions.get('window');
 
 const dynamicHeight = height - 245;
 
-const PRPreview = props => {
-  const {navigation} = props;
+function PRPreview(props) {
+  const {navigation, route} = props;
+  const {id} = route?.params || {};
+
   const alert = useAlert();
 
   const [status, setStatus] = useState();
+  const {getPRMaterialDetails} = useMaterialManagementActions();
+
+  const {materialPRDetails, loading} = useSelector(s => s.materialManagement);
+  const {selectedProject} = useSelector(s => s.project);
+
+  React.useEffect(() => {
+    getPRMaterialDetails({
+      project_id: selectedProject.id,
+      id,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <View style={styles.container}>
       <ProjectHeader {...props} />
       <View style={styles.mainContainer}>
+        <Spinner visible={loading} textContent="" />
+
         <View style={styles.headerContainer}>
           <View style={styles.ButtonContainer}>
             <IconButton
@@ -73,93 +91,91 @@ const PRPreview = props => {
         </View>
         <View style={styles.bodyContent}>
           <View style={styles.materialListContainer}>
-            <FlatList
-              data={PRMaterialData}
-              renderItem={({item}) => {
-                return (
+            {materialPRDetails.map(item => {
+              return (
+                <>
                   <View style={styles.cardContainer}>
                     <View style={styles.cardHeader}>
                       <View style={styles.dataRow}>
                         <Caption style={styles.lightData}>Category:</Caption>
-                        <Text>{item.category}</Text>
+                        <Text>{item.materialcategrytitle}</Text>
                       </View>
                     </View>
                     <View style={styles.dataRow}>
                       <Caption style={styles.lightData}>Sub Category:</Caption>
-                      <Text>{item.subCategory}</Text>
+                      <Text>{item.subcategorytitle}</Text>
                     </View>
                     <View style={styles.dataRow}>
                       <Caption style={styles.lightData}>Unit:</Caption>
-                      <Text>{item.unit}</Text>
+                      <Text>{item.materialunitstitle}</Text>
                     </View>
                     <View style={styles.dataRow}>
                       <Caption style={styles.lightData}>Required date:</Caption>
-                      <Text>{item.requiredDate}</Text>
+                      <Text>{item.material_dates}</Text>
                     </View>
                     <View style={styles.dataRow}>
                       <Caption style={styles.lightData}>Quantity:</Caption>
-                      <Text>{item.qty}</Text>
+                      <Text>{item.material_units_id}</Text>
                     </View>
                   </View>
-                );
-              }}
-              ListHeaderComponent={
-                <View style={styles.cardContent}>
-                  <View style={styles.headerContainer}>
+                  <View style={styles.cardContent}>
+                    <View style={styles.headerContainer}>
+                      <View style={styles.dataRow}>
+                        <Caption style={styles.lightData}>PR ID:</Caption>
+                        <Text>{item.id}</Text>
+                      </View>
+                      {status === 'PR Rejected' ? (
+                        <View style={styles.statusButton}>
+                          <MaterialIcons
+                            name="cancel"
+                            size={18}
+                            color="#FF5D5D"
+                          />
+                          <Text style={styles.reject}>PR Rejected</Text>
+                        </View>
+                      ) : status === 'PR Approved' ? (
+                        <View style={styles.statusButton}>
+                          <MaterialIcons
+                            name="check-circle"
+                            size={18}
+                            color="#07CA03"
+                          />
+                          <Text style={styles.Approved}>PR Approved</Text>
+                        </View>
+                      ) : null}
+                    </View>
                     <View style={styles.dataRow}>
-                      <Caption style={styles.lightData}>PR ID:</Caption>
-                      <Text>022</Text>
+                      <Caption style={styles.lightData}>Subject:</Caption>
+                      <Text>{item.subject}</Text>
                     </View>
-                    {status === 'PR Rejected' ? (
-                      <View style={styles.statusButton}>
-                        <MaterialIcons
-                          name="cancel"
-                          size={18}
-                          color="#FF5D5D"
-                        />
-                        <Text style={styles.reject}>PR Rejected</Text>
-                      </View>
-                    ) : status === 'PR Approved' ? (
-                      <View style={styles.statusButton}>
-                        <MaterialIcons
-                          name="check-circle"
-                          size={18}
-                          color="#07CA03"
-                        />
-                        <Text style={styles.Approved}>PR Approved</Text>
-                      </View>
-                    ) : null}
+                    <View style={styles.dataRow}>
+                      <Caption style={styles.lightData}>
+                        Required Vendor:
+                      </Caption>
+                      <Text>Hiren tarale</Text>
+                    </View>
+                    <View style={styles.dataRow}>
+                      <Caption style={styles.lightData}>Required For:</Caption>
+                      <Text>{item.required_for_data}</Text>
+                    </View>
+                    <View style={styles.dataRow}>
+                      <Caption style={styles.lightData}>Remark:</Caption>
+                      <Paragraph style={styles.input}>{item.remarks}</Paragraph>
+                    </View>
+                    <View style={styles.dataRow}>
+                      <Caption style={styles.lightData}>Creater Name:</Caption>
+                      <Text>
+                        {item.first_name} {item.last_name}
+                      </Text>
+                    </View>
+                    <View style={styles.dataRow}>
+                      <Caption style={styles.lightData}>Created on:</Caption>
+                      <Text>{item.created}</Text>
+                    </View>
                   </View>
-                  <View style={styles.dataRow}>
-                    <Caption style={styles.lightData}>Subject:</Caption>
-                    <Text>OPC</Text>
-                  </View>
-                  <View style={styles.dataRow}>
-                    <Caption style={styles.lightData}>Required Vendor:</Caption>
-                    <Text>Hiren tarale</Text>
-                  </View>
-                  <View style={styles.dataRow}>
-                    <Caption style={styles.lightData}>Required For:</Caption>
-                    <Text>(Task Link, ID, Name)</Text>
-                  </View>
-                  <View style={styles.dataRow}>
-                    <Caption style={styles.lightData}>Remark:</Caption>
-                    <Paragraph style={styles.input}>
-                      Please Soon as Possible Order it we have not enough
-                      cement.
-                    </Paragraph>
-                  </View>
-                  <View style={styles.dataRow}>
-                    <Caption style={styles.lightData}>Creater Name:</Caption>
-                    <Text>Jaismin Fataniya</Text>
-                  </View>
-                  <View style={styles.dataRow}>
-                    <Caption style={styles.lightData}>Created on:</Caption>
-                    <Text>15 April, 2022</Text>
-                  </View>
-                </View>
-              }
-            />
+                </>
+              );
+            })}
           </View>
           <View>
             <ActionButtons
@@ -173,7 +189,7 @@ const PRPreview = props => {
       </View>
     </View>
   );
-};
+}
 
 export default PRPreview;
 
