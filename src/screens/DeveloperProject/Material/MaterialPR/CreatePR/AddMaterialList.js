@@ -4,18 +4,110 @@ import {Caption, Text} from 'react-native-paper';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useAlert} from 'components/Atoms/Alert';
-import {FlatList, TouchableOpacity} from 'react-native-gesture-handler';
+import {
+  FlatList,
+  RefreshControl,
+  TouchableOpacity,
+} from 'react-native-gesture-handler';
 import ActionButtons from 'components/Atoms/ActionButtons';
 import {getShadow} from 'utils';
-import PRMaterialData from './PRMaterialData';
+import useMaterialManagementActions from 'redux/actions/materialManagementActions';
+import {useSelector} from 'react-redux';
+import NoResult from 'components/Atoms/NoResult';
+
+function CardListing(props) {
+  const {navigation, item} = props;
+
+  const {
+    materialcategrytitle,
+    subcategorytitle,
+    materialunitstitle,
+    material_dates,
+    material_quantity,
+  } = item;
+  return (
+    <View style={styles.cardContainer}>
+      <View style={styles.cardHeader}>
+        <View style={styles.dataRow}>
+          <Caption style={styles.lightData}>Category:</Caption>
+          <Text>{materialcategrytitle}</Text>
+        </View>
+        <View style={styles.buttonContainer}>
+          <View style={styles.editButton}>
+            <OpacityButton
+              color="#4872f4"
+              opacity={0.18}
+              style={styles.OpacityButton}
+              onPress={() => {
+                navigation.navigate('CreatePRMaterial');
+              }}>
+              <MaterialIcons name="edit" color="#4872f4" size={13} />
+            </OpacityButton>
+          </View>
+          <View>
+            <OpacityButton
+              color="#FF5D5D"
+              opacity={0.18}
+              onPress={() => {
+                alert.show({
+                  title: 'Alert',
+                  message: 'Are you sure want to delete this?',
+                  dismissable: false,
+                });
+              }}
+              style={styles.deleteButton}>
+              <MaterialIcons name="delete" color="#FF5D5D" size={13} />
+            </OpacityButton>
+          </View>
+        </View>
+      </View>
+      <View style={styles.dataRow}>
+        <Caption style={styles.lightData}>Sub Category:</Caption>
+        <Text>{subcategorytitle}</Text>
+      </View>
+      <View style={styles.dataRow}>
+        <Caption style={styles.lightData}>Unit:</Caption>
+        <Text>{materialunitstitle}</Text>
+      </View>
+      <View style={styles.dataRow}>
+        <Caption style={styles.lightData}>Required date:</Caption>
+        <Text>{material_dates}</Text>
+      </View>
+      <View style={styles.dataRow}>
+        <Caption style={styles.lightData}>Quantity:</Caption>
+        <Text>{material_quantity}</Text>
+      </View>
+    </View>
+  );
+}
 
 const {height} = Dimensions.get('window');
 
 const dynamicHeight = height - 250;
 
 const AddMaterialList = props => {
-  const {navigation} = props;
-  const alert = useAlert();
+  const {navigation, route} = props;
+  const {id} = route?.params || {};
+
+  const {getPRMaterialDetails} = useMaterialManagementActions();
+
+  const {materialRequestItems, loadData} = useSelector(
+    s => s.materialManagement,
+  );
+  const {selectedProject} = useSelector(s => s.project);
+
+  React.useEffect(() => {
+    getPRMaterialDetails({
+      project_id: selectedProject.id,
+      purchase_request_id: id,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const reloadOrders = () => {
+    getPRMaterialDetails({project_id: selectedProject.id});
+  };
+
+  const renderEmpty = () => <NoResult />;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -31,70 +123,14 @@ const AddMaterialList = props => {
             <Text style={styles.add}>Add Material</Text>
           </TouchableOpacity>
           <FlatList
-            data={PRMaterialData}
+            data={materialRequestItems}
+            keyExtractor={item => item.id}
+            refreshControl={
+              <RefreshControl refreshing={false} onRefresh={reloadOrders} />
+            }
+            ListEmptyComponent={renderEmpty}
             renderItem={({item}) => {
-              return (
-                <View style={styles.cardContainer}>
-                  <View style={styles.cardHeader}>
-                    <View style={styles.dataRow}>
-                      <Caption style={styles.lightData}>Category:</Caption>
-                      <Text>{item.category}</Text>
-                    </View>
-                    <View style={styles.buttonContainer}>
-                      <View style={styles.editButton}>
-                        <OpacityButton
-                          color="#4872f4"
-                          opacity={0.18}
-                          style={styles.OpacityButton}
-                          onPress={() => {
-                            navigation.navigate('CreatePRMaterial');
-                          }}>
-                          <MaterialIcons
-                            name="edit"
-                            color="#4872f4"
-                            size={13}
-                          />
-                        </OpacityButton>
-                      </View>
-                      <View>
-                        <OpacityButton
-                          color="#FF5D5D"
-                          opacity={0.18}
-                          onPress={() => {
-                            alert.show({
-                              title: 'Alert',
-                              message: 'Are you sure want to delete this?',
-                              dismissable: false,
-                            });
-                          }}
-                          style={styles.deleteButton}>
-                          <MaterialIcons
-                            name="delete"
-                            color="#FF5D5D"
-                            size={13}
-                          />
-                        </OpacityButton>
-                      </View>
-                    </View>
-                  </View>
-                  <View style={styles.dataRow}>
-                    <Caption style={styles.lightData}>Sub Category:</Caption>
-                    <Text>OPC</Text>
-                  </View>
-                  <View style={styles.dataRow}>
-                    <Caption style={styles.lightData}>Unit:</Caption>
-                    <Text>CUM or m3</Text>
-                  </View>
-                  <View style={styles.dataRow}>
-                    <Caption style={styles.lightData}>Required date:</Caption>
-                    <Text>15 July, 2022</Text>
-                  </View>
-                  <View style={styles.dataRow}>
-                    <Caption style={styles.lightData}>Quantity:</Caption>
-                    <Text>150</Text>
-                  </View>
-                </View>
-              );
+              return <CardListing {...props} item={item} />;
             }}
           />
         </View>

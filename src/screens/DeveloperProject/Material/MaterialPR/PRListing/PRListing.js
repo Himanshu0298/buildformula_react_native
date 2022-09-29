@@ -1,56 +1,90 @@
-import {StyleSheet, Text, View, TouchableOpacity, FlatList} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  FlatList,
+  RefreshControl,
+} from 'react-native';
+import NoResult from 'components/Atoms/NoResult';
+
 import React from 'react';
-import {Caption, Divider, FAB, Subheading} from 'react-native-paper';
+import {Caption, Divider, FAB, Subheading, Text} from 'react-native-paper';
 import {getShadow} from 'utils';
-import {PRList} from './PRData';
+import Spinner from 'react-native-loading-spinner-overlay';
+import {useSelector} from 'react-redux';
+import useMaterialManagementActions from 'redux/actions/materialManagementActions';
+import {PR_REQUEST_STATUS} from 'utils/constant';
+
+function ListingCard(props) {
+  const {navigation, item} = props;
+
+  const {id, status, created, approved_by, subject} = item;
+
+  const handleNav = () => navigation.navigate('PRPreview', {id});
+
+  return (
+    <TouchableOpacity onPress={handleNav}>
+      <View style={styles.cardContainer}>
+        <View style={styles.cardHeader}>
+          <Text style={styles.ID}>{id}</Text>
+          <Caption
+            style={{
+              color: PR_REQUEST_STATUS[status]?.color,
+            }}>
+            {PR_REQUEST_STATUS[status]?.label}
+          </Caption>
+        </View>
+        <Divider />
+        <View style={styles.cardDetails}>
+          <Subheading>{subject}</Subheading>
+          <View style={styles.cardContent}>
+            <Caption>Approved by:</Caption>
+            <Text style={styles.detail}>{approved_by}</Text>
+          </View>
+          <Caption>{created}</Caption>
+        </View>
+      </View>
+    </TouchableOpacity>
+  );
+}
 
 const PRListing = props => {
   const {navigation} = props;
+
+  const {getPRMaterialOrderList} = useMaterialManagementActions();
+
+  const {materialPROrderList, loading} = useSelector(s => s.materialManagement);
+  const {selectedProject} = useSelector(s => s.project);
+
+  React.useEffect(() => {
+    getPRMaterialOrderList({project_id: selectedProject.id});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const reloadOrders = () => {
+    getPRMaterialOrderList({project_id: selectedProject.id});
+  };
+
+  const renderEmpty = () => <NoResult />;
+
   return (
     <View style={styles.mainContainer}>
       <View style={styles.headerContainer}>
         <Subheading style={styles.headerText}>PR Listing</Subheading>
       </View>
       <View style={styles.bodyContainer}>
+        <Spinner visible={loading} textContent="" />
+
         <FlatList
           style={styles.flatList}
-          data={PRList}
+          data={materialPROrderList}
+          refreshControl={
+            <RefreshControl refreshing={false} onRefresh={reloadOrders} />
+          }
+          showsVerticalScrollIndicator={false}
+          ListEmptyComponent={renderEmpty}
+          keyExtractor={item => item.id}
           renderItem={({item}) => {
-            return (
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate('PRPreview');
-                }}>
-                <View style={styles.cardContainer}>
-                  <View style={styles.cardHeader}>
-                    <Text style={styles.ID}>{item.id}</Text>
-                    <Text
-                      style={
-                        item.status === 'Pending'
-                          ? styles.pending
-                          : item.status === 'Rejected'
-                          ? styles.rejected
-                          : item.status === 'Approved'
-                          ? styles.approved
-                          : null
-                      }>
-                      {item.status}
-                    </Text>
-                  </View>
-                  <Divider />
-                  <View style={styles.cardDetails}>
-                    <Subheading>{item.name}</Subheading>
-                    <View style={styles.cardContent}>
-                      <Caption>Approved by:</Caption>
-                      <Subheading style={styles.detail}>
-                        {item.approvedBy}
-                      </Subheading>
-                    </View>
-                    <Caption>{item.date}</Caption>
-                  </View>
-                </View>
-              </TouchableOpacity>
-            );
+            return <ListingCard {...props} item={item} />;
           }}
         />
       </View>
@@ -111,16 +145,6 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: 'rgba(72, 114, 244, 1)',
   },
-  pending: {
-    color: 'rgba(244, 175, 72, 1)',
-  },
-  rejected: {
-    color: 'rgba(255, 93, 93, 1)',
-  },
-  approved: {
-    color: 'rgba(7, 202, 3, 1)',
-  },
-
   detail: {
     marginLeft: 7,
   },

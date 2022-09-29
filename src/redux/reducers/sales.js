@@ -455,7 +455,6 @@ const reducer = (state = initialState, action = {}) => {
         loading: true,
       };
     case `${GET_BOOKING_FORM_OTP_STATUS}_FULFILLED`: {
-      console.log('-------->payloadBookingotp', payload);
       return {
         ...state,
         loading: false,
