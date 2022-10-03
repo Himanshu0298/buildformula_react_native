@@ -90,15 +90,17 @@ function CustomerCredLogin(props) {
     });
   };
 
-  const handleCancel = async project_bookings_id => {
+  const handleCancel = () => {
     alert.show({
       title: 'Confirm',
       message: 'Are you sure you want to Cancel?',
       confirmText: 'Yes',
       onConfirm: () => {
-        cancelBooking({project_id: projectId, project_bookings_id}).then(() => {
-          navigation.goBack();
-        });
+        cancelBooking({project_id: projectId, project_bookings_id: id}).then(
+          () => {
+            navigation.goBack();
+          },
+        );
       },
     });
   };
@@ -810,7 +812,11 @@ function BookingDetails(props) {
       contentContainerStyle={styles.scrollView}
       showsVerticalScrollIndicator={false}>
       <View style={styles.container}>
-        <CustomerCredLogin {...props} {...{bookingDetails}} unit_id={unit_id} />
+        <CustomerCredLogin
+          {...props}
+          {...{bookingDetails}}
+          unit_id={bookingDetails.id}
+        />
         <Divider />
 
         <CustomerSection {...props} {...{bookingDetails}} />

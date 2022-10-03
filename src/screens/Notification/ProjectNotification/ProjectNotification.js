@@ -30,31 +30,6 @@ const rightSwipeActions = (progress, dragX, handleRemove) => {
   );
 };
 
-function ChatActivityButton() {
-  const [selectedTab, setSelectedTab] = useState(0);
-
-  return (
-    <View style={styles.chatActivity}>
-      <View style={styles.buttonContainer}>
-        <OpacityButton
-          onPress={() => setSelectedTab(1)}
-          style={selectedTab ? styles.activeButton : styles.inactiveButton}>
-          <Text style={selectedTab ? styles.activeText : styles.inactiveText}>
-            Unread
-          </Text>
-        </OpacityButton>
-        <OpacityButton
-          onPress={() => setSelectedTab(0)}
-          style={selectedTab ? styles.inactiveButton : styles.activeButton}>
-          <Text style={!selectedTab ? styles.activeText : styles.inactiveText}>
-            Read
-          </Text>
-        </OpacityButton>
-      </View>
-    </View>
-  );
-}
-
 function RenderNotification(props) {
   const {item, handleNotification, clearNotification, actionStatus} = props;
   const {modules, receive_datetime, notifications_text} = item;
@@ -111,6 +86,9 @@ function EmptyComponent() {
 function ProjectNotification(props) {
   const {isHome, navigation} = props;
 
+  const [selectedTab, setSelectedTab] = useState(1);
+  const [notificationType, setNotificationType] = useState('');
+
   const {getProjectNotifications, removeNotification} =
     useNotificationActions();
   const {setDrawerType} = useAppActions();
@@ -123,8 +101,18 @@ function ProjectNotification(props) {
     return loadData();
   };
 
+  React.useEffect(() => {
+    // eslint-disable-next-line no-unused-expressions
+    selectedTab ? setNotificationType('read') : setNotificationType('');
+    loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedTab]);
+
   const loadData = () => {
-    getProjectNotifications({project_id: selectedProject.id});
+    getProjectNotifications({
+      project_id: selectedProject.id,
+      notification_type: notificationType,
+    });
   };
 
   const handleNotification = notification => {
@@ -148,7 +136,25 @@ function ProjectNotification(props) {
         <Text style={styles.allNotifications}>Mark all Read</Text>
       </View>
 
-      <ChatActivityButton />
+      <View style={styles.chatActivity}>
+        <View style={styles.buttonContainer}>
+          <OpacityButton
+            onPress={() => setSelectedTab(1)}
+            style={selectedTab ? styles.activeButton : styles.inactiveButton}>
+            <Text style={selectedTab ? styles.activeText : styles.inactiveText}>
+              Unread
+            </Text>
+          </OpacityButton>
+          <OpacityButton
+            onPress={() => setSelectedTab(0)}
+            style={selectedTab ? styles.inactiveButton : styles.activeButton}>
+            <Text
+              style={!selectedTab ? styles.activeText : styles.inactiveText}>
+              Read
+            </Text>
+          </OpacityButton>
+        </View>
+      </View>
       <Spinner visible={loading} textContent="" />
       <FlatList
         refreshControl={
