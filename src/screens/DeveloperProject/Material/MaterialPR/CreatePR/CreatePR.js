@@ -6,7 +6,6 @@ import RenderInput from 'components/Atoms/RenderInput';
 import RenderSelect from 'components/Atoms/RenderSelect';
 import RenderTextBox from 'components/Atoms/RenderTextbox';
 import ActionButtons from 'components/Atoms/ActionButtons';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import {Subheading} from 'react-native-paper';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 import {useSelector} from 'react-redux';
@@ -18,29 +17,24 @@ const schema = Yup.object().shape({
 
 const CreatePR = props => {
   const {navigation, route} = props;
+
   const {id} = route?.params || {};
 
-  const {
-    addMaterialPR,
-    getPRMaterialOrderList,
-    getVendorOrContractorsDetails,
-    getWorkSubWorkList,
-  } = useMaterialManagementActions();
+  const edit = Boolean(id);
 
-  const {loading, workOptions, vendorOptions} = useSelector(
+  const {addMaterialPR, getVendorList, getWorkSubWorkList, updatePR} =
+    useMaterialManagementActions();
+
+  const {loading, PRList, workOptions, vendorOptions} = useSelector(
     s => s.materialManagement,
   );
-  const {selectedProject} = useSelector(s => s.project);
 
-  const project_id = selectedProject.id;
+  const {selectedProject} = useSelector(s => s.project);
+  const projectId = selectedProject.id;
 
   React.useEffect(() => {
-    getPRMaterialOrderList({
-      project_id,
-      id,
-    });
-    getVendorOrContractorsDetails({project_id});
-    getWorkSubWorkList({project_id});
+    getVendorList({project_id: projectId});
+    getWorkSubWorkList({project_id: projectId});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -52,54 +46,68 @@ const CreatePR = props => {
   }, [vendorOptions]);
 
   const workSubWorkOptions = useMemo(() => {
-    return workOptions?.map(i => ({
-      label: `{${i.title}}`,
-      value: i.id,
-    }));
+    return workOptions?.map(i => ({label: `{${i.title}}`, value: i.id}));
   }, [workOptions]);
 
+  const initialValues = React.useMemo(() => {
+    if (id) {
+      const selected = PRList.find(i => i.id === id);
+      const {
+        subject,
+        praposal_contractor_id: contractor_id,
+        required_for,
+        remarks,
+      } = selected;
+      return {
+        subject,
+        contractor_id,
+        required_for,
+        remarks,
+      };
+    }
+    return {};
+  }, [PRList, id]);
+
   const onSubmit = async values => {
-    const formData = new FormData();
+    const data = {purchase_request_id: id, project_id: projectId, ...values};
 
-    formData.append('project_id', project_id);
-    formData.append('subject', values.subject);
-    formData.append('vendorName', values.vendorName);
-    formData.append('requiredFor', values.requiredFor);
-    formData.append('remark', values.remark);
-
-    await addMaterialPR(formData);
-    getPRMaterialOrderList({project_id});
-    navigation.goBack();
+    if (edit) {
+      await updatePR(data);
+      navigation.navigate('AddMaterialList', {id, edit});
+    } else {
+      const {value: res} = await addMaterialPR(data);
+      navigation.navigate('AddMaterialList', {id: res.id, edit});
+    }
   };
 
   return (
     <View style={styles.container}>
-      <View style={styles.mainContainer}>
-        <View style={styles.headerContainer}>
-          <Subheading style={styles.headerText}>Create PR </Subheading>
-        </View>
-        <Spinner visible={loading} textContent="" />
-        <Formik
-          validateOnBlur={false}
-          validateOnChange={false}
-          initialValues={{}}
-          validationSchema={schema}
-          onSubmit={onSubmit}>
-          {({
-            values,
-            errors,
-            handleChange,
-            handleBlur,
-            setFieldValue,
-            handleSubmit,
-          }) => {
-            return (
-              <View>
+      <View style={styles.headerContainer}>
+        <Subheading style={styles.headerText}>Create PR</Subheading>
+      </View>
+      <Spinner visible={loading} textContent="" />
+      <Formik
+        enableReinitialize
+        validateOnBlur={false}
+        validateOnChange={false}
+        initialValues={initialValues}
+        validationSchema={schema}
+        onSubmit={onSubmit}>
+        {({
+          values,
+          errors,
+          handleChange,
+          handleBlur,
+          setFieldValue,
+          handleSubmit,
+        }) => {
+          return (
+            <View style={styles.formContainer}>
+              <View style={styles.formContainer}>
                 <RenderInput
                   name="subject"
                   label="Subject"
                   containerStyles={styles.inputStyles}
-                  maxLength={10}
                   value={values.subject}
                   onChangeText={handleChange('subject')}
                   onBlur={handleBlur('subject')}
@@ -107,54 +115,50 @@ const CreatePR = props => {
                   returnKeyType="next"
                   error={errors.subject}
                 />
-                {console.log('----->values ', values)}
                 <RenderSelect
-                  name="vendorName"
+                  name="contractor_id"
                   label="Vendor Name"
-                  value={values.vendorName}
+                  value={values.contractor_id}
                   options={constructorOptions}
                   containerStyles={styles.inputStyles}
-                  onBlur={handleBlur('vendorName')}
+                  onBlur={handleBlur('contractor_id')}
                   onSelect={value => {
-                    setFieldValue('vendorName', value);
+                    setFieldValue('contractor_id', value);
                   }}
                 />
                 <RenderSelect
-                  name="requiredFor"
+                  name="required_for"
                   label="Required For"
-                  value={values.requiredFor}
+                  value={values.required_for}
                   options={workSubWorkOptions}
                   containerStyles={styles.inputStyles}
-                  onBlur={handleBlur('requiredFor')}
+                  onBlur={handleBlur('required_for')}
                   onSelect={value => {
-                    setFieldValue('requiredFor', value);
+                    setFieldValue('required_for', value);
                   }}
                 />
                 <RenderTextBox
-                  name="remark"
+                  name="remarks"
                   blurOnSubmit={false}
                   numberOfLines={7}
                   label="Remark"
                   containerStyles={styles.inputStyles}
-                  value={values.remark}
-                  onChangeText={handleChange('remark')}
-                  onBlur={handleBlur('remark')}
+                  value={values.remarks}
+                  onChangeText={handleChange('remarks')}
+                  onBlur={handleBlur('remarks')}
                   onSubmitEditing={handleSubmit}
                 />
               </View>
-            );
-          }}
-        </Formik>
-      </View>
-      <View style={styles.btnContainer}>
-        <ActionButtons
-          style={styles.actionButton}
-          cancelLabel="Cancel"
-          submitLabel="Next"
-          onCancel={navigation.goBack}
-          onSubmit={() => navigation.navigate('AddMaterialList')}
-        />
-      </View>
+              <ActionButtons
+                cancelLabel="Cancel"
+                submitLabel="Next"
+                onCancel={navigation.goBack}
+                onSubmit={handleSubmit}
+              />
+            </View>
+          );
+        }}
+      </Formik>
     </View>
   );
 };
@@ -164,12 +168,8 @@ export default CreatePR;
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    margin: 10,
+    padding: 15,
   },
-  mainContainer: {
-    padding: 5,
-  },
-
   headerContainer: {
     marginBottom: 10,
   },
@@ -179,12 +179,7 @@ const styles = StyleSheet.create({
   inputStyles: {
     marginVertical: 8,
   },
-  btnContainer: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    marginBottom: 50,
-  },
-  actionButton: {
-    justifyContent: 'flex-end',
+  formContainer: {
+    flexGrow: 1,
   },
 });

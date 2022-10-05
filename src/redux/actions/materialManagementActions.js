@@ -16,11 +16,17 @@ export default function useMaterialManagementActions() {
     getSelectMaterialChallan,
     getPRMaterialOrderList,
     getPRMaterialDetails,
-    getPRMaterialList,
-    getVendorOrContractorsDetails,
+    getPRMaterialCategories,
+    getVendorList,
     addMaterialPR,
     getWorkSubWorkList,
     createMaterialPR,
+    updatePR,
+    updateMaterialPR,
+    deleteMaterialPR,
+    deleteMaterialPRCategory,
+    deleteMaterialPRItem,
+    updatePRStatus,
   } = useMaterialManagement();
 
   return {
@@ -52,12 +58,12 @@ export default function useMaterialManagementActions() {
           }
         },
       }),
-    getPRMaterialList: data =>
+    getPRMaterialCategories: data =>
       dispatch({
         type: types.GET_MATERIAL_LIST,
         payload: async () => {
           try {
-            const response = _res(await getPRMaterialList(data));
+            const response = _res(await getPRMaterialCategories(data));
             return Promise.resolve(response.data);
           } catch (error) {
             const message = _err(error);
@@ -97,7 +103,7 @@ export default function useMaterialManagementActions() {
       }),
     getPRMaterialDetails: data =>
       dispatch({
-        type: types.GET_PR_MATERIAL_DETAILS,
+        type: types.GET_MATERIAL_PR_DETAILS,
         payload: async () => {
           try {
             const response = _res(await getPRMaterialDetails(data));
@@ -109,12 +115,12 @@ export default function useMaterialManagementActions() {
           }
         },
       }),
-    getVendorOrContractorsDetails: data =>
+    getVendorList: data =>
       dispatch({
         type: types.GET_VENDOR_OR_CONTRACTORS_DETAILS,
         payload: async () => {
           try {
-            const response = _res(await getVendorOrContractorsDetails(data));
+            const response = _res(await getVendorList(data));
             return Promise.resolve(response.data);
           } catch (error) {
             const message = _err(error);
@@ -183,12 +189,108 @@ export default function useMaterialManagementActions() {
           }
         },
       }),
-    createMaterialPR: formData =>
+    createMaterialPR: params =>
       dispatch({
         type: types.CREATE_MATERIAL_PR,
         payload: async () => {
           try {
-            const response = _res(await createMaterialPR(formData));
+            const response = _res(await createMaterialPR(params));
+            const {data} = response;
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    updatePR: params =>
+      dispatch({
+        type: types.EDIT_PR,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await updatePR(params));
+            snackbar.showMessage({message: msg});
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    updateMaterialPR: params =>
+      dispatch({
+        type: types.EDIT_MATERIAL_PR,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await updateMaterialPR(params));
+            snackbar.showMessage({message: msg});
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    deleteMaterialPR: data =>
+      dispatch({
+        type: types.DELETE_MATERIAL_PR_DETAILS,
+        payload: async () => {
+          try {
+            const res = _res(await deleteMaterialPR(data));
+            snackbar.showMessage({message: res.msg});
+            return Promise.resolve(res.data.lists);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    deleteMaterialPRItem: data =>
+      dispatch({
+        type: types.DELETE_MATERIAL_PR_ITEM,
+        payload: async () => {
+          try {
+            const res = _res(await deleteMaterialPRItem(data));
+            snackbar.showMessage({message: res.msg});
+            return Promise.resolve(res.data.lists);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    deleteMaterialPRCategory: data =>
+      dispatch({
+        type: types.DELETE_MATERIAL_PR_CATEGORY,
+        payload: async () => {
+          try {
+            const res = _res(await deleteMaterialPRCategory(data));
+            snackbar.showMessage({message: res.msg});
+            return Promise.resolve(res.data.lists);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    updatePRStatus: formData =>
+      dispatch({
+        type: types.UPDATE_MODIFY_REQUEST,
+        payload: async () => {
+          try {
+            const response = _res(await updatePRStatus(formData));
             const {data} = response;
 
             return Promise.resolve(data);

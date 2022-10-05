@@ -31,13 +31,13 @@ export default function useMaterialManagement() {
     getPRMaterialDetails: data => {
       return instance.post('/material_purchase_request/detail', data, params);
     },
-    getVendorOrContractorsDetails: data => {
+    getVendorList: data => {
       return instance.post('/getVenderList', data, params);
     },
     getWorkSubWorkList: data => {
       return instance.post('/getWorkSubWorkList', data, params);
     },
-    getPRMaterialList: data => {
+    getPRMaterialCategories: data => {
       return instance.post('/get_material', data, params);
     },
 
@@ -54,6 +54,38 @@ export default function useMaterialManagement() {
         data,
         config({multipart: false}),
       );
+    },
+
+    updatePR: data => {
+      return instance.post('material_purchase_request/edit', data, config());
+    },
+    updateMaterialPR: data => {
+      return instance.post(
+        'material_purchase_request/material_edit',
+        data,
+        config(),
+      );
+    },
+    deleteMaterialPR: data => {
+      return instance.post('/material_purchase_request/delete', data, params);
+    },
+    deleteMaterialPRItem: data => {
+      return instance.post(
+        '/material_purchase_request/delete_pr_item',
+        data,
+        params,
+        console.log('data===========> ', data),
+      );
+    },
+    deleteMaterialPRCategory: data => {
+      return instance.post(
+        '/material_purchase_request/material_pr_category_delete',
+        data,
+        params,
+      );
+    },
+    updatePRStatus: data => {
+      return instance.post('/approve_reject_pr_category', data, params);
     },
   };
 }

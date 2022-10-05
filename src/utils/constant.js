@@ -67,6 +67,14 @@ export const PR_REQUEST_STATUS = {
   2: {label: 'Approved', color: '#07CA03'},
   3: {label: 'Rejected', color: '#FF5D5D'},
 };
+export const PR_REQUEST_DETAILS_STATUS = {
+  1: {
+    label: 'PR Approved',
+    color: '#07CA03',
+    icon: 'check-circle',
+    2: {label: 'Rejected PR', color: '#FF5D5D', icon: 'cancel'},
+  },
+};
 
 export const KEYBOARD_SHOW =
   Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';

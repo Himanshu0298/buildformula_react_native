@@ -129,10 +129,10 @@ import MaterialList from '../screens/DeveloperProject/Material/MaterialList';
 import DeliveryDetails from 'screens/DeveloperProject/Material/DeliveryDetails';
 import PRListing from 'screens/DeveloperProject/Material/MaterialPR/PRListing';
 import PIListing from 'screens/DeveloperProject/Material/MaterialPI/PIListing';
-import CreatePR from 'screens/DeveloperProject/Material/MaterialPR/CreatePR/CreatePR';
-import CreatePRMaterial from 'screens/DeveloperProject/Material/MaterialPR/CreatePR/CreatePRMaterial';
-import PRPreview from 'screens/DeveloperProject/Material/MaterialPR/PRPreview/PRPreview';
-import AddMaterialList from 'screens/DeveloperProject/Material/MaterialPR/CreatePR/AddMaterialList';
+import CreatePR from 'screens/DeveloperProject/Material/MaterialPR/CreatePR';
+import PRPreview from 'screens/DeveloperProject/Material/MaterialPR/PRPreview';
+import AddMaterialList from 'screens/DeveloperProject/Material/MaterialPR/MaterialPRList';
+
 import CreatePI from 'screens/DeveloperProject/Material/MaterialPI/CreatePI/CreatePI';
 import PIPreview from 'screens/DeveloperProject/Material/MaterialPI/PIPreview/PIPreview';
 import PIRequest from 'screens/DeveloperProject/Material/MaterialPI/PIRequest/PIRequest';
@@ -388,11 +388,6 @@ function AppStackNavigator() {
                 name="Teams&Conditions"
                 component={TermsAndConditions}
               />
-              <Stack.Screen
-                name="CreatePRMaterial"
-                component={CreatePRMaterial}
-              />
-
               <Stack.Screen name="PRPreview" component={PRPreview} />
               <Stack.Screen name="PIPreview" component={PIPreview} />
               <Stack.Screen

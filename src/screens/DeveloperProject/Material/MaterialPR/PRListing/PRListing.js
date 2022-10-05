@@ -15,12 +15,12 @@ import {useSelector} from 'react-redux';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 import {PR_REQUEST_STATUS} from 'utils/constant';
 
-function ListingCard(props) {
+const ListingCard = props => {
   const {navigation, item} = props;
 
   const {id, status, created, approved_by, subject} = item;
 
-  const handleNav = () => navigation.navigate('PRPreview', {id});
+  const handleNav = () => navigation.navigate('PRPreview', {id, status});
 
   return (
     <TouchableOpacity onPress={handleNav}>
@@ -46,23 +46,23 @@ function ListingCard(props) {
       </View>
     </TouchableOpacity>
   );
-}
+};
 
-const PRListing = props => {
+function PRListing(props) {
   const {navigation} = props;
 
   const {getPRMaterialOrderList} = useMaterialManagementActions();
 
-  const {materialPROrderList, loading} = useSelector(s => s.materialManagement);
+  const {PRList = [], loading} = useSelector(s => s.materialManagement);
   const {selectedProject} = useSelector(s => s.project);
 
   React.useEffect(() => {
-    getPRMaterialOrderList({project_id: selectedProject.id});
+    getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const reloadOrders = () => {
+
+  const getData = () =>
     getPRMaterialOrderList({project_id: selectedProject.id});
-  };
 
   const renderEmpty = () => <NoResult />;
 
@@ -76,9 +76,9 @@ const PRListing = props => {
 
         <FlatList
           style={styles.flatList}
-          data={materialPROrderList}
+          data={PRList}
           refreshControl={
-            <RefreshControl refreshing={false} onRefresh={reloadOrders} />
+            <RefreshControl refreshing={false} onRefresh={getData} />
           }
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={renderEmpty}
@@ -92,11 +92,11 @@ const PRListing = props => {
         style={styles.fab}
         large
         icon="plus"
-        onPress={() => navigation.navigate('CreatePR')}
+        onPress={() => navigation.navigate('CreatePR', {PRList})}
       />
     </View>
   );
-};
+}
 
 export default PRListing;
 

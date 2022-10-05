@@ -36,6 +36,7 @@ const RenderInput = React.forwardRef((props, ref) => {
           error={error}
           mode="outlined"
           label={label}
+          disabled={false}
           value={value}
           placeholder={placeholder || label}
           style={[styles.input, style]}
