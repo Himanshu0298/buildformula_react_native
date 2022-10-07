@@ -83,7 +83,9 @@ const CreatePR = props => {
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-        <Subheading style={styles.headerText}>Create PR</Subheading>
+        <Subheading style={styles.headerText}>
+          {edit ? 'Edit PR' : 'Create PR'}
+        </Subheading>
       </View>
       <Spinner visible={loading} textContent="" />
       <Formik

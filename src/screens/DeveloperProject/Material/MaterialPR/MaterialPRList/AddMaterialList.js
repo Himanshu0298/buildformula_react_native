@@ -5,7 +5,6 @@ import React, {useEffect, useMemo} from 'react';
 import {Button, Caption, Portal, Subheading, Text} from 'react-native-paper';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {TouchableOpacity} from 'react-native-gesture-handler';
 import ActionButtons from 'components/Atoms/ActionButtons';
 import {getShadow} from 'utils';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
@@ -19,7 +18,7 @@ import RenderDatePicker from 'components/Atoms/RenderDatePicker';
 import {useAlert} from 'components/Atoms/Alert';
 
 function AddMaterialDialog(props) {
-  const {formikProps, handleClose} = props;
+  const {formikProps, handleClose, edit} = props;
 
   const {
     values,
@@ -67,9 +66,9 @@ function AddMaterialDialog(props) {
       <Modal {...props} onBackdropPress={handleClose}>
         <Portal.Host>
           <ActionSheetProvider>
-            <View style={styles.contentContainer}>
-              <Subheading> Add Material</Subheading>
-              <View style={styles.addContainer}>
+            <View style={styles.formContainer}>
+              <Subheading>{edit ? 'Edit Material' : 'Add Material'}</Subheading>
+              <View style={styles.formSubContainer}>
                 <RenderSelect
                   name="material_category_id"
                   label="Category"
@@ -99,10 +98,6 @@ function AddMaterialDialog(props) {
                   containerStyles={styles.inputStyles}
                   options={unitOptions}
                   value={values.material_unit_id}
-                  onBlur={handleBlur('material_unit_id')}
-                  onSelect={value => {
-                    setFieldValue('material_unit_id', value);
-                  }}
                 />
 
                 <RenderDatePicker
@@ -129,14 +124,13 @@ function AddMaterialDialog(props) {
                   returnKeyType="next"
                   error={errors.quantity}
                 />
-
-                <ActionButtons
-                  cancelLabel="Cancel"
-                  submitLabel="Save"
-                  onCancel={handleClose}
-                  onSubmit={handleSubmit}
-                />
               </View>
+              <ActionButtons
+                cancelLabel="Cancel"
+                submitLabel={edit ? ' Update' : 'Save'}
+                onCancel={handleClose}
+                onSubmit={handleSubmit}
+              />
             </View>
           </ActionSheetProvider>
         </Portal.Host>
@@ -146,14 +140,21 @@ function AddMaterialDialog(props) {
 }
 
 function CardListing(props) {
-  const {item, toggleAddDialog, handleDelete} = props;
+  const {item, toggleEditDialog, handleDelete} = props;
 
+  const {
+    materialcategrytitle,
+    subcategorytitle,
+    material_units_id,
+    created,
+    material_quantity,
+  } = item;
   return (
     <View style={styles.cardContainer}>
       <View style={styles.cardHeader}>
         <View style={styles.dataRow}>
           <Caption style={styles.lightData}>Category:</Caption>
-          <Text>{item.material_category_id}</Text>
+          <Text>{materialcategrytitle}</Text>
         </View>
         <View style={styles.buttonContainer}>
           <View style={styles.editButton}>
@@ -161,7 +162,7 @@ function CardListing(props) {
               color="#4872f4"
               opacity={0.18}
               style={styles.OpacityButton}
-              onPress={toggleAddDialog}>
+              onPress={toggleEditDialog}>
               <MaterialIcons name="edit" color="#4872f4" size={13} />
             </OpacityButton>
           </View>
@@ -178,19 +179,19 @@ function CardListing(props) {
       </View>
       <View style={styles.dataRow}>
         <Caption style={styles.lightData}>Sub Category:</Caption>
-        <Text>{item.sub_material_id}</Text>
+        <Text>{subcategorytitle}</Text>
       </View>
       <View style={styles.dataRow}>
         <Caption style={styles.lightData}>Unit:</Caption>
-        <Text>{item.material_unit_id}</Text>
+        <Text>{material_units_id}</Text>
       </View>
       <View style={styles.dataRow}>
         <Caption style={styles.lightData}>Required date:</Caption>
-        <Text>{item.required_date}</Text>
+        <Text>{created}</Text>
       </View>
       <View style={styles.dataRow}>
         <Caption style={styles.lightData}>Quantity:</Caption>
-        <Text>{item.quantity}</Text>
+        <Text>{material_quantity}</Text>
       </View>
     </View>
   );
@@ -207,48 +208,73 @@ function AddMaterialList(props) {
     updateMaterialPR,
     deleteMaterialPRItem,
     getPRMaterialCategories,
+    getPRMaterialDetails,
   } = useMaterialManagementActions();
 
-  const {PRDetails} = useSelector(s => s.materialManagement);
+  const {PRDetails, materialSubCategory} = useSelector(
+    s => s.materialManagement,
+  );
+
   const {selectedProject} = useSelector(s => s.project);
   const projectId = selectedProject.id;
 
   const [addDialog, setAddDialog] = React.useState(false);
-  const [materials, setMaterials] = React.useState([]);
+  const [selectedMaterial, setSelectedMaterial] = React.useState();
 
   useEffect(() => {
     getPRMaterialCategories({project_id: projectId});
+    getPRDetails();
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    if (edit) {
-      const existingMaterials = PRDetails.materialItems;
-      console.log('===========> existingMaterials', existingMaterials);
-      setMaterials(existingMaterials);
+  const initialValues = useMemo(() => {
+    if (selectedMaterial) {
+      const {
+        material_category_id,
+        material_sub_category_id: sub_material_id,
+        material_units_id,
+        created: required_date,
+        material_quantity: quantity,
+      } = selectedMaterial;
+
+      const selectedSubCategory = materialSubCategory.find(
+        i => i.id === sub_material_id,
+      );
+
+      return {
+        material_category_id,
+        sub_material_id,
+        material_units_id: material_units_id || selectedSubCategory?.unit_id,
+        required_date,
+        quantity,
+      };
     }
-  }, [PRDetails.materialItems, edit]);
+    return {};
+  }, [materialSubCategory, selectedMaterial]);
+
+  const getPRDetails = () => {
+    getPRMaterialDetails({project_id: projectId, purchase_request_id: id});
+  };
 
   const toggleAddDialog = () => setAddDialog(v => !v);
 
-  const handleSave = value => {
-    setMaterials(v => [...v, value]);
-    toggleAddDialog();
-  };
-
-  const saveMaterials = async () => {
+  const handleSave = async values => {
     const restData = {
       project_id: projectId,
       purchase_request_id: id,
-      material_data: materials,
+      material_data: [values],
     };
-
     if (edit) {
-      updateMaterialPR(restData);
+      await updateMaterialPR({
+        ...restData,
+        material_purchase_request_items_id: selectedMaterial.id,
+      });
     } else {
-      createMaterialPR(restData);
+      await createMaterialPR(restData);
     }
-    navigation.navigate('PRPreview', {id});
+    getPRDetails();
+    toggleAddDialog();
   };
 
   const handleDelete = item => {
@@ -263,67 +289,76 @@ function AddMaterialList(props) {
           project_id: projectId,
         };
         await deleteMaterialPRItem(deleteData);
+        getPRDetails();
       },
     });
   };
 
+  const navToPreview = () => navigation.navigate('PRPreview', {id});
+
   return (
     <View style={styles.container}>
-      <View style={styles.mainContainer}>
-        <ScrollView
-          style={styles.materialListContainer}
-          showsVerticalScrollIndicator={false}>
-          <View style={styles.headerContainer}>
-            <Text style={styles.headerText}>Add Material</Text>
-          </View>
+      <View style={{flexGrow: 1}}>
+        <View style={styles.headerContainer}>
+          <Text style={styles.headerText}>
+            {edit ? ' Edit Material' : 'Add Material'}
+          </Text>
+        </View>
+        <View style={styles.bodyContent}>
+          <Button
+            icon="plus"
+            mode="outlined"
+            onPress={toggleAddDialog}
+            contentStyle={{paddingVertical: 10, borderColor: '#4872f4'}}>
+            Add Material
+          </Button>
+        </View>
 
-          <View style={styles.bodyContent}>
-            <Button
-              icon="plus"
-              mode="outlined"
-              onPress={toggleAddDialog}
-              contentStyle={{paddingVertical: 10}}>
-              Add Material
-            </Button>
-
-            {materials.map((item, index) => {
+        <View style={{flexGrow: 1, flex: 1}}>
+          <ScrollView showsVerticalScrollIndicator={false}>
+            {PRDetails?.materialItems?.map(item => {
               return (
                 <CardListing
-                  key={index.toString()}
+                  key={item.id.toString()}
                   item={item}
-                  toggleAddDialog={toggleAddDialog}
+                  toggleEditDialog={() => {
+                    setSelectedMaterial(item);
+                    toggleAddDialog();
+                  }}
                   handleDelete={handleDelete}
                 />
               );
             })}
-            <ActionButtons
-              cancelLabel="Previous"
-              submitLabel="Save"
-              onCancel={navigation.goBack}
-              onSubmit={saveMaterials}
-            />
-          </View>
-        </ScrollView>
-
-        {addDialog ? (
-          <Formik
-            enableReinitialize
-            validateOnBlur={false}
-            validateOnChange={false}
-            initialValues={{}}
-            onSubmit={handleSave}>
-            {formikProps => (
-              <AddMaterialDialog
-                {...props}
-                visible={addDialog}
-                toggleDialog={toggleAddDialog}
-                handleClose={toggleAddDialog}
-                formikProps={formikProps}
-              />
-            )}
-          </Formik>
-        ) : null}
+          </ScrollView>
+        </View>
       </View>
+
+      <ActionButtons
+        cancelLabel="Previous"
+        submitLabel={edit ? 'Update' : 'Save'}
+        onCancel={navigation.goBack}
+        onSubmit={navToPreview}
+      />
+
+      {addDialog ? (
+        <Formik
+          enableReinitialize
+          validateOnBlur={false}
+          validateOnChange={false}
+          initialValues={initialValues}
+          onSubmit={handleSave}>
+          {formikProps => (
+            <AddMaterialDialog
+              {...props}
+              visible={addDialog}
+              toggleDialog={toggleAddDialog}
+              handleClose={toggleAddDialog}
+              formikProps={formikProps}
+              edit={edit}
+            />
+          )}
+        </Formik>
+      ) : null}
     </View>
   );
 }
@@ -335,14 +370,16 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     margin: 10,
   },
-  contentContainer: {
-    marginTop: 30,
-    padding: 15,
+  formSubContainer: {
     flexGrow: 1,
   },
-  mainContainer: {
-    margin: 10,
+
+  formContainer: {
+    flexGrow: 1,
+    margin: 15,
+    paddingVertical: 20,
   },
+
   headerText: {
     fontSize: 18,
   },
@@ -353,9 +390,6 @@ const styles = StyleSheet.create({
 
   deleteButton: {
     borderRadius: 20,
-  },
-  materialListContainer: {
-    marginTop: 10,
   },
 
   bodyContent: {
@@ -385,25 +419,12 @@ const styles = StyleSheet.create({
   lightData: {
     fontSize: 13,
   },
-  btnAddMore: {
-    borderWidth: 0.4,
-    color: 'blue',
-    padding: 19,
-    marginTop: 15,
-    borderRadius: 5,
-    flexDirection: 'row',
-    justifyContent: 'center',
-  },
+
   OpacityButton: {
     borderRadius: 20,
     marginLeft: 10,
   },
-  add: {
-    color: '#4872f4',
-  },
-  addContainer: {
-    flexGrow: 1,
-  },
+
   inputStyles: {
     marginVertical: 8,
   },

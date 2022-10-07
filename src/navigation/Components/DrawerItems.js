@@ -71,6 +71,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
     title: 'TODO LIST',
     routes: [
       {
+        id: 67,
         route: 'TaskList',
         label: 'Task List',
         icon: ({color, size}) => (
@@ -242,6 +243,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
         ),
       },
       {
+        id: 62,
         route: 'PRList',
         label: 'PR List',
         icon: ({color, size}) => (
@@ -249,6 +251,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
         ),
       },
       {
+        id: 27,
         route: 'PIList',
         label: 'PI List',
         icon: ({color, size}) => (

@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View, Dimensions} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import React, {useEffect} from 'react';
 import {IconButton, Caption, Subheading} from 'react-native-paper';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -9,7 +9,7 @@ import {useSelector} from 'react-redux';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 import {ScrollView} from 'react-native-gesture-handler';
 import Spinner from 'react-native-loading-spinner-overlay';
-import {getShadow} from 'utils';
+import {getPermissions, getShadow} from 'utils';
 
 function RenderHeaderBar(props) {
   const {goBack, navToEdit, showStatus, handleDelete} = props;
@@ -101,7 +101,7 @@ function RenderPRHeaderCard(props) {
         <Text style={styles.text}>{remarks}</Text>
       </View>
       <View style={styles.dataRow}>
-        <Caption style={styles.lightData}>Creater Name:</Caption>
+        <Caption style={styles.lightData}>Creator Name:</Caption>
         <Text>{`${first_name} ${last_name}`}</Text>
       </View>
       <View style={styles.dataRow}>
@@ -156,8 +156,12 @@ const PRPreview = props => {
 
   const alert = useAlert();
 
-  const {getPRMaterialDetails, deleteMaterialPR, updatePRStatus} =
-    useMaterialManagementActions();
+  const {
+    getPRMaterialDetails,
+    deleteMaterialPR,
+    updatePRStatus,
+    getPRMaterialOrderList,
+  } = useMaterialManagementActions();
 
   const {selectedProject} = useSelector(s => s.project);
   const {PRDetails, loading} = useSelector(s => s.materialManagement);
@@ -165,14 +169,18 @@ const PRPreview = props => {
 
   useEffect(() => {
     getPRDetails();
+    getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const goBack = () => navigation.goBack();
+  const modulePermission = getPermissions('PR List');
 
   const getPRDetails = () => {
     getPRMaterialDetails({project_id: projectId, purchase_request_id: id});
   };
+  const getData = () =>
+    getPRMaterialOrderList({project_id: selectedProject.id});
 
   const navToEdit = () => navigation.navigate('CreatePR', {id});
 
@@ -187,7 +195,6 @@ const PRPreview = props => {
   };
 
   const handleDelete = i => {
-    navigation.goBack();
     alert.show({
       title: 'Confirm',
       message: 'Are you sure you want to delete?',
@@ -197,6 +204,8 @@ const PRPreview = props => {
           purchase_request_id: id,
           project_id: selectedProject.id,
         });
+        getData();
+        navigation.goBack();
       },
     });
   };
@@ -222,16 +231,16 @@ const PRPreview = props => {
           })}
         </View>
       </ScrollView>
-      <View>
-        {PRDetails?.details?.status === 1 ? (
+      {modulePermission?.editor || modulePermission?.admin ? (
+        PRDetails?.details?.status === 1 ? (
           <ActionButtons
             cancelLabel=" Reject"
             submitLabel="Approve"
             onCancel={() => updateStatus('rejected')}
             onSubmit={() => updateStatus('approved')}
           />
-        ) : null}
-      </View>
+        ) : null
+      ) : null}
     </View>
   );
 };
@@ -240,6 +249,7 @@ const styles = StyleSheet.create({
   mainContainer: {
     margin: 10,
     flexGrow: 1,
+    flex: 1,
   },
 
   headerText: {

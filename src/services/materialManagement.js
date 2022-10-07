@@ -2,6 +2,7 @@ import {instance, config} from './init';
 
 export default function useMaterialManagement() {
   const params = config({multipart: false});
+
   return {
     getMaterialOrderList: data => {
       return instance.post('/material/utilityDelivered', data, params);
@@ -42,28 +43,23 @@ export default function useMaterialManagement() {
     },
 
     addMaterialPR: data => {
-      return instance.post(
-        '/material_purchase_request/add',
-        data,
-        config({multipart: false}),
-      );
+      return instance.post('/material_purchase_request/add', data, params);
     },
     createMaterialPR: data => {
       return instance.post(
         '/material_purchase_request/material_add',
         data,
-        config({multipart: false}),
+        params,
       );
     },
-
     updatePR: data => {
-      return instance.post('material_purchase_request/edit', data, config());
+      return instance.post('material_purchase_request/edit', data, params);
     },
     updateMaterialPR: data => {
       return instance.post(
         'material_purchase_request/material_edit',
         data,
-        config(),
+        params,
       );
     },
     deleteMaterialPR: data => {
@@ -74,7 +70,6 @@ export default function useMaterialManagement() {
         '/material_purchase_request/delete_pr_item',
         data,
         params,
-        console.log('data===========> ', data),
       );
     },
     deleteMaterialPRCategory: data => {
