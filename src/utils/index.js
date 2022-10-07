@@ -1,6 +1,7 @@
 import {debounce} from 'lodash';
 import {Platform} from 'react-native';
 import {store} from 'redux/store';
+import {DEFAULT_ADMIN_PERMISSIONS} from './constant';
 
 const shadowsArray = {
   0: {
@@ -157,11 +158,11 @@ export function handleDebounce(func) {
 }
 
 export function getPermissions(moduleTitle) {
-  const {permissions, commonData} = store.getState().project;
+  const {permissions, isProjectAdmin, commonData} = store.getState().project;
   const {submodules = []} = commonData || {};
 
-  if (permissions.admin) {
-    return permissions;
+  if (isProjectAdmin) {
+    return DEFAULT_ADMIN_PERMISSIONS;
   }
 
   const moduleData = submodules.find(i => i.title === moduleTitle);
