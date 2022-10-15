@@ -160,7 +160,8 @@ const DealsClosed = props => {
       project_bookings_id: projectBookingId,
       broker_amount: values.brokerage,
     });
-    navigation.goBack();
+    hideDialog();
+    loadData();
   };
 
   return (
