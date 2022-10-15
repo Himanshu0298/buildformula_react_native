@@ -233,7 +233,7 @@ const AddBrokerPaymentDetails = props => {
               </View>
               <ActionButtons
                 cancelLabel="Cancel"
-                submitLabel="Save"
+                submitLabel={edit ? 'Update' : 'Save'}
                 onCancel={navigation.goBack}
                 onSubmit={handleSubmit}
               />
