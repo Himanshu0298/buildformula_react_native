@@ -90,15 +90,23 @@ const PaymentDetails = props => {
     <View style={styles.bottomContainer}>
       <View style={styles.bottomSubContainer}>
         <View style={styles.paymentContainer}>
-          <Text>Total Brokerage</Text>
-          <OpacityButton
-            color={theme.colors.primary}
-            opacity={0.18}
-            style={styles.paymentSubContainer}
-            onPress={showModal}>
-            <MaterialIcons name="edit" color={theme.colors.primary} size={10} />
-          </OpacityButton>
-          <Text style={styles.amount}>{brokerage}</Text>
+          <View style={styles.inputContainer}>
+            <Text>Total Brokerage</Text>
+            <OpacityButton
+              color={theme.colors.primary}
+              opacity={0.18}
+              style={styles.paymentSubContainer}
+              onPress={showModal}>
+              <MaterialIcons
+                name="edit"
+                color={theme.colors.primary}
+                size={10}
+              />
+            </OpacityButton>
+          </View>
+          <View>
+            <Text style={styles.amount}>{brokerage}</Text>
+          </View>
         </View>
         <View>
           <Text>Total Paid</Text>
@@ -265,7 +273,7 @@ const styles = StyleSheet.create({
     height: 2,
   },
   paymentContainer: {
-    flexDirection: 'row',
+    flexDirection: 'column',
   },
 
   unitLabelContainer: {
