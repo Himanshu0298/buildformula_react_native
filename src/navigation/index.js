@@ -133,12 +133,22 @@ import CreatePR from 'screens/DeveloperProject/Material/MaterialPR/CreatePR';
 import PRPreview from 'screens/DeveloperProject/Material/MaterialPR/PRPreview';
 import AddMaterialList from 'screens/DeveloperProject/Material/MaterialPR/MaterialPRList';
 
+import MaterialIndentListing from 'screens/DeveloperProject/Material/MaterialIndent/MaterialIndentList';
 import CreatePI from 'screens/DeveloperProject/Material/MaterialPI/CreatePI/CreatePI';
+import CreatePIMaterial from 'screens/DeveloperProject/Material/MaterialPI/CreatePI/AddPIMaterial';
 import PIPreview from 'screens/DeveloperProject/Material/MaterialPI/PIPreview/PIPreview';
 import PIRequest from 'screens/DeveloperProject/Material/MaterialPI/PIRequest/PIRequest';
 import TermsAndConditions from 'screens/DeveloperProject/Material/MaterialPI/CreatePI/Teams&Conditions';
 import AddPIMaterialList from 'screens/DeveloperProject/Material/MaterialPI/CreatePI/AddPIMaterialList';
 import AddChallan from 'screens/DeveloperProject/Material/DeliveryDetails/AddChallan';
+
+import AddMaterialIndent from 'screens/DeveloperProject/Material/MaterialIndent/IssueIndent/IssueMaterialIndent/AddMaterialIndent';
+import CreateIssueIndent from 'screens/DeveloperProject/Material/MaterialIndent/IssueIndent/AddIssueIndent';
+import CreateReturnIndent from 'screens/DeveloperProject/Material/MaterialIndent/ReturnIndent/AddReturnIndent/CreateReturnIndent';
+
+import IssueIndentPreview from 'screens/DeveloperProject/Material/MaterialIndent/MaterialPreview/IssueIndentPreview';
+import ReturnIndentPreview from 'screens/DeveloperProject/Material/MaterialIndent/MaterialPreview/ReturnIndentPreview';
+
 import SelectMaterials from 'screens/DeveloperProject/Material/DeliveryDetails/SelectMaterial';
 import AddMaterialInfo from 'screens/DeveloperProject/Material/DeliveryDetails/AddMaterialChallan';
 import AddVehicleInfo from 'screens/DeveloperProject/Material/DeliveryDetails/AddVehicleChallan';
@@ -171,8 +181,10 @@ import LanguageSelect from '../screens/Auth/LanguageSelect';
 import DrawerContent from './Components/DrawerContent';
 import DocumentGenerater from 'screens/DeveloperProject/DocumentGenerater';
 import DocumentDownload from 'screens/DeveloperProject/DocumentGenerater/Documents/DocumentDownload';
-
-import CreatePIMaterial from 'screens/DeveloperProject/Material/MaterialPI/CreatePI/AddPIMaterial';
+import AddReturnMaterialIndent from 'screens/DeveloperProject/Material/MaterialIndent/ReturnIndent/ReturnMaterialIndent/AddReturnMaterial';
+import AddMaterialIndentList from 'screens/DeveloperProject/Material/MaterialIndent/IssueIndent/IssueMaterialIndent';
+import AddReturnMaterialList from 'screens/DeveloperProject/Material/MaterialIndent/ReturnIndent/ReturnMaterialIndent/AddReturnMaterialList';
+import AddAttachments from 'screens/DeveloperProject/Material/MaterialIndent/ReturnIndent/AddAttachments/AddAttachments';
 
 /** *********** Developer Project Sub Screens End   ************ */
 
@@ -375,10 +387,38 @@ function AppStackNavigator() {
               <Stack.Screen name="MaterialList" component={MaterialList} />
               <Stack.Screen name="AddChallan" component={AddChallan} />
               <Stack.Screen name="PRList" component={PRListing} />
+              <Stack.Screen
+                name="MaterialIndent"
+                component={MaterialIndentListing}
+              />
               <Stack.Screen name="PIList" component={PIListing} />
               <Stack.Screen name="CreatePR" component={CreatePR} />
               <Stack.Screen name="CreatePI" component={CreatePI} />
+              <Stack.Screen
+                name="CreateIssueIndent"
+                component={CreateIssueIndent}
+              />
+              <Stack.Screen
+                name="CreateReturnIndent"
+                component={CreateReturnIndent}
+              />
               <Stack.Screen name="AddPIMaterial" component={CreatePIMaterial} />
+              <Stack.Screen
+                name="AddMaterialIndentList"
+                component={AddMaterialIndentList}
+              />
+              <Stack.Screen
+                name="AddReturnMaterialList"
+                component={AddReturnMaterialList}
+              />
+              <Stack.Screen
+                name="AddMaterialIndent"
+                component={AddMaterialIndent}
+              />
+              <Stack.Screen
+                name="AddReturnMaterial"
+                component={AddReturnMaterialIndent}
+              />
               <Stack.Screen name="PIRequest" component={PIRequest} />
               <Stack.Screen
                 name="AddPIMaterialList"
@@ -389,11 +429,20 @@ function AppStackNavigator() {
                 component={TermsAndConditions}
               />
               <Stack.Screen name="PRPreview" component={PRPreview} />
+              <Stack.Screen
+                name="IssueIndentPreview"
+                component={IssueIndentPreview}
+              />
+              <Stack.Screen
+                name="ReturnIndentPreview"
+                component={ReturnIndentPreview}
+              />
               <Stack.Screen name="PIPreview" component={PIPreview} />
               <Stack.Screen
                 name="AddMaterialList"
                 component={AddMaterialList}
               />
+              <Stack.Screen name="AddAttachments" component={AddAttachments} />
               <Stack.Screen
                 name="SelectMaterials"
                 component={SelectMaterials}
