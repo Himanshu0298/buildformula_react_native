@@ -75,17 +75,23 @@ const Updated = props => {
 };
 
 const Details = props => {
-  const {navigation, materialOrderNo, summaryData} = props;
-  const {damage, delivered, ordered, remaining} = summaryData;
+  const {navigation, materialOrderNo, materialChallanList} = props;
+  const {damaged_quentity, delivered_quentity, total_quentity, remaining} =
+    materialChallanList;
+
+  const {damage} = damaged_quentity;
+  const {quantity} = delivered_quentity;
+  const {material_quantity} = total_quentity;
+
   return (
     <View style={styles.orderedContainer}>
       <View style={styles.orderedItem}>
         <RenderRow
-          item={{label: 'Ordered', value: ordered}}
+          item={{label: 'Ordered', value: material_quantity}}
           containerStyle={styles.orderedListValue}
         />
         <RenderRow
-          item={{label: 'Delivered', value: delivered}}
+          item={{label: 'Delivered', value: quantity}}
           containerStyle={styles.orderedListValue}
         />
         <RenderRow
@@ -116,7 +122,6 @@ const Details = props => {
 
 const CommonCard = props => {
   const {navigation, materialOrderNo: orderNumber, item} = props;
-  // console.log('-------->orderNumber', orderNumber);
 
   return (
     <View style={styles.commonCard}>
@@ -158,6 +163,8 @@ function OrderDetail(props) {
     s => s.materialManagement,
   );
 
+  const materialDeliveryChallan =
+    materialChallanList?.material_delivery_challan;
   const {selectedProject} = useSelector(s => s.project);
 
   React.useEffect(() => {
@@ -170,13 +177,13 @@ function OrderDetail(props) {
       i => i.material_order_no === material_order_no,
     );
   }, [materialOrderList, material_order_no]);
-
   return (
     <View style={styles.headerContainer}>
       <Header title={`M.O. No. : ${material_order_no}`} {...props} />
       <Details
         {...props}
         materialOrderNo={material_order_no}
+        materialChallanList={materialChallanList}
         summaryData={selectedMaterial?.summary || []}
       />
       <Spinner visible={loading} textContent="" />
@@ -198,7 +205,7 @@ function OrderDetail(props) {
             <Text style={{color: theme.colors.primary}}>Add Challan</Text>
           </OpacityButton>
         </View>
-        {materialChallanList.map(item => {
+        {materialDeliveryChallan?.map(item => {
           return (
             <CommonCard
               {...props}

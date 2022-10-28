@@ -122,7 +122,6 @@ function MaterialGRN(props) {
           return <OrderCard {...props} item={item} />;
         }}
       />
-      {console.log('----->materialOrderList ', materialOrderList)}
     </View>
   );
 }
