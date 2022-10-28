@@ -374,7 +374,7 @@ function AppStackNavigator() {
                 component={DeliveryDetails}
               />
               <Stack.Screen name="OrderDetail" component={OrderDetail} />
-              <Stack.Screen name="StoreKeeper" component={StoreKeeperList} />
+              {/* <Stack.Screen name="StoreKeeper" component={StoreKeeperList} /> */}
               <Stack.Screen name="MaterialList" component={MaterialList} />
               <Stack.Screen name="AddChallan" component={AddChallan} />
               <Stack.Screen
