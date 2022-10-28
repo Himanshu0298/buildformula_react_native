@@ -79,23 +79,19 @@ const Details = props => {
   const {damaged_quentity, delivered_quentity, total_quentity, remaining} =
     materialChallanList;
 
-  const {damage} = damaged_quentity;
-  const {quantity} = delivered_quentity;
-  const {material_quantity} = total_quentity;
-
   return (
     <View style={styles.orderedContainer}>
       <View style={styles.orderedItem}>
         <RenderRow
-          item={{label: 'Ordered', value: material_quantity}}
+          item={{label: 'Ordered', value: total_quentity?.material_quantity}}
           containerStyle={styles.orderedListValue}
         />
         <RenderRow
-          item={{label: 'Delivered', value: quantity}}
+          item={{label: 'Delivered', value: delivered_quentity?.quantity}}
           containerStyle={styles.orderedListValue}
         />
         <RenderRow
-          item={{label: 'Damage', value: damage}}
+          item={{label: 'Damage', value: damaged_quentity?.damage}}
           containerStyle={styles.orderedListValue}
         />
         <RenderRow

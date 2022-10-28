@@ -1,5 +1,5 @@
 import NoResult from 'components/Atoms/NoResult';
-import React, {useMemo} from 'react';
+import React from 'react';
 import {FlatList, RefreshControl, StyleSheet, View} from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {Text, Divider, Caption} from 'react-native-paper';
@@ -23,62 +23,66 @@ const RenderRow = props => {
 };
 
 const Quantity = props => {
-  const {item} = props;
-  const {quantity: summary} = item;
-
+  const {materialChallanList} = props;
+  const {damaged_quentity, delivered_quentity, total_quentity, remaining} =
+    materialChallanList;
   return (
     <View style={styles.quantityContainer}>
       <Text>Quantity</Text>
 
       <View style={styles.itemContainer}>
-        <RenderRow item={{label: 'Ordered: ', value: summary.ordered}} />
-        <RenderRow item={{label: 'Remaining: ', value: summary.remaining}} />
+        <RenderRow
+          item={{label: 'Ordered: ', value: total_quentity?.material_quantity}}
+        />
+        <RenderRow item={{label: 'Remaining: ', value: remaining}} />
       </View>
       <View style={styles.itemContainer}>
-        <RenderRow item={{label: 'Delivered: ', value: summary.delivered}} />
-        <RenderRow item={{label: 'Damage: ', value: summary.damage}} />
+        <RenderRow
+          item={{label: 'Delivered: ', value: delivered_quentity?.quantity}}
+        />
+        <RenderRow
+          item={{label: 'Damage: ', value: damaged_quentity?.damage}}
+        />
       </View>
     </View>
   );
 };
 
 const DetailsCard = props => {
-  const {item} = props;
-  const {material, sub_material, unit} = item;
+  const {item, materialChallanList} = props;
+  const {category_title, sub_category_title, work_units_title} = item;
 
   return (
     <View style={styles.detailsContainer}>
       <View style={styles.subHeading}>
-        <Text style={{color: theme.colors.primary}}>{material}</Text>
+        <Text style={{color: theme.colors.primary}}>{category_title}</Text>
         <MaterialCommunityIcons
           name="label"
           size={20}
           style={[styles.labelIcon, {color: theme.colors.primary}]}
         />
         <Text style={{color: theme.colors.primary}}>
-          {`${sub_material} ${unit}`}
+          {`${sub_category_title} ${work_units_title}`}
         </Text>
       </View>
       <Divider style={styles.divider} />
-      <Quantity {...props} />
+      <Quantity {...props} materialChallanList={materialChallanList} />
     </View>
   );
 };
 
 const MaterialList = props => {
-  const {route} = props;
-  const {materialOrderNo} = route?.params || {};
-
   const {getMaterialOrderList} = useMaterialManagementActions();
 
-  const {materialOrderList, loading} = useSelector(s => s.materialManagement);
-  const {selectedProject} = useSelector(s => s.project);
+  const {loading, materialChallanList, materialChallanDetails} = useSelector(
+    s => s.materialManagement,
+  );
 
-  const {summary} = useMemo(() => {
-    return materialOrderList?.find(
-      i => i.material_order_no === materialOrderNo,
-    );
-  }, [materialOrderList, materialOrderNo]);
+  const {materila_info} = materialChallanDetails || {};
+
+  const {materials = []} = materila_info;
+
+  const {selectedProject} = useSelector(s => s.project);
 
   const reloadOrders = () => {
     getMaterialOrderList({project_id: selectedProject.id});
@@ -90,10 +94,9 @@ const MaterialList = props => {
     <View style={styles.materialContainer}>
       <Header title="List" {...props} />
       <Spinner visible={loading} textContent="" />
-
       <FlatList
-        data={summary?.summaryDetails || []}
-        extraData={summary?.summaryDetails || []}
+        data={materials}
+        extraData={materials}
         refreshControl={
           <RefreshControl refreshing={false} onRefresh={reloadOrders} />
         }
@@ -102,7 +105,13 @@ const MaterialList = props => {
         keyExtractor={item => item.id}
         ListEmptyComponent={renderEmpty}
         renderItem={({item}) => {
-          return <DetailsCard {...props} item={item} />;
+          return (
+            <DetailsCard
+              {...props}
+              item={item}
+              materialChallanList={materialChallanList}
+            />
+          );
         }}
       />
     </View>
