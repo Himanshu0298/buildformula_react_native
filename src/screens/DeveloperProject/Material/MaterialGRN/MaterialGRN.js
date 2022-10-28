@@ -23,11 +23,10 @@ const OrderCard = props => {
     total_amount,
     company_name,
     supplier_name,
+    percentage,
   } = item;
 
-  const {ordered, delivered} = item.summary;
-
-  const progressBar = Math.round((delivered / ordered) * 100) / 100;
+  const progressBar = Math.round(percentage) / 100;
 
   const materialId = Number(material_request_id || materialrequesttitle);
 
@@ -53,7 +52,7 @@ const OrderCard = props => {
           <View />
           <View style={styles.cardHeader}>
             <Text style={styles.supplierName}>{supplier_name}</Text>
-            <Text>{`${progressBar} %`}</Text>
+            <Text>{`${percentage} %`}</Text>
           </View>
         </View>
         <ProgressBar progress={progressBar} color={theme.colors.success} />
