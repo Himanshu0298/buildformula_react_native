@@ -163,6 +163,7 @@ import LanguageSelect from '../screens/Auth/LanguageSelect';
 import DrawerContent from './Components/DrawerContent';
 import DocumentGenerater from 'screens/DeveloperProject/DocumentGenerater';
 import DocumentDownload from 'screens/DeveloperProject/DocumentGenerater/Documents/DocumentDownload';
+import StoreKeeperList from 'screens/DeveloperProject/Material/StoreKeeper/StoreKeeperList';
 /** *********** Developer Project Sub Screens End   ************ */
 
 const optionalConfigObject = {
@@ -373,6 +374,7 @@ function AppStackNavigator() {
                 component={DeliveryDetails}
               />
               <Stack.Screen name="OrderDetail" component={OrderDetail} />
+              <Stack.Screen name="StoreKeeper" component={StoreKeeperList} />
               <Stack.Screen name="MaterialList" component={MaterialList} />
               <Stack.Screen name="AddChallan" component={AddChallan} />
               <Stack.Screen

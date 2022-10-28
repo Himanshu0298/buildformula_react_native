@@ -241,6 +241,16 @@ export const DEVELOPER_DRAWER_ITEMS = [
           <MaterialCommunityIcons name="wall" {...{color, size}} />
         ),
       },
+      {
+        route: 'StoreKeeper',
+        label: 'StoreKeeper',
+        icon: ({color, size}) => (
+          <MaterialCommunityIcons
+            name="storefront-outline"
+            {...{color, size}}
+          />
+        ),
+      },
     ],
   },
   // {
