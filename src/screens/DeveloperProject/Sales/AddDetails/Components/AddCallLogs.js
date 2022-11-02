@@ -80,7 +80,6 @@ function AddCallLogs(props) {
                       containerStyles={styles.input}
                       value={values.last_date}
                       error={errors.last_date}
-                      min={new Date()}
                       onChange={date => {
                         setFieldValue('last_date', date);
                         followUpTimeRef?.current?.focus?.();

@@ -209,7 +209,11 @@ const CustomerInnerDetails = ({navigation, route: routeData}) => {
         );
       case 'second':
         return (
-          <Activities filter={activityFilter} setFilter={setActivityFilter} />
+          <Activities
+            filter={activityFilter}
+            setFilter={setActivityFilter}
+            visitorId={visitorId}
+          />
         );
 
       default:

@@ -65,7 +65,12 @@ function VisitorDetails(props) {
         );
       case 1:
         return (
-          <Activities filter={activityFilter} setFilter={setActivityFilter} />
+          <Activities
+            {...props}
+            filter={activityFilter}
+            setFilter={setActivityFilter}
+            visitorId={visitorId}
+          />
         );
       default:
         return null;
@@ -122,7 +127,7 @@ function VisitorDetails(props) {
             onStateChange={onStateChange}
             actions={[
               {
-                icon: 'file_icon',
+                icon: 'message',
                 label: 'Add comment',
                 onPress: () =>
                   navigation.navigate('AddDetails', {

@@ -31,7 +31,10 @@ const defaultPriority = ['none'];
 
 const schema = Yup.object().shape({
   first_name: Yup.string('Invalid').required('Required'),
-  priority: Yup.string().notOneOf(defaultPriority, 'Select an option'),
+  priority: Yup.string('Invalid')
+    .required('Required')
+    .notOneOf(defaultPriority, 'Select an option'),
+
   last_name: Yup.string('Invalid').required('Required'),
   email: Yup.string('Invalid').email('Invalid'),
   phone: Yup.string()
@@ -46,13 +49,21 @@ const schema = Yup.object().shape({
     then: Yup.string('Invalid'),
   }),
   current_locality: Yup.string('Invalid'),
-  budget_from: Yup.number('Invalid'),
-  budget_to: Yup.number('Invalid'),
-  assign_to: Yup.string('Invalid'),
-  inquiry_for: Yup.string('Invalid').required('Required'),
+
+  budget_from: Yup.string(),
+
   bhk: Yup.string('Invalid').when('bhk_required', {
     is: true,
     then: Yup.string('Invalid').required('Required'),
+  }),
+  assign_to: Yup.string('Invalid'),
+  inquiry_for: Yup.string('Invalid').required('Required'),
+  remarks: Yup.string('Invalid').required('Required'),
+
+  budget_to: Yup.string().when(['budget_From'], (budget_to, Schema) => {
+    return budget_to > 'budget_from'
+      ? Schema.required('Budget To is less then  Budget From')
+      : Schema;
   }),
 });
 
@@ -551,6 +562,7 @@ export default withTheme(AddVisitor);
 
 const styles = StyleSheet.create({
   container: {
+    margin: 10,
     flex: 1,
   },
   headerContainer: {
@@ -567,7 +579,6 @@ const styles = StyleSheet.create({
   inputsContainer: {
     width: '100%',
     flex: 1,
-    paddingHorizontal: 20,
     paddingTop: 5,
   },
   input: {

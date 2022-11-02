@@ -92,7 +92,6 @@ function AddFollowUp(props) {
                     containerStyles={styles.input}
                     value={values.followup_date}
                     error={errors.followup_date}
-                    min={new Date()}
                     onChange={date => {
                       setFieldValue('followup_date', date);
                       followUpTimeRef?.current?.focus?.();

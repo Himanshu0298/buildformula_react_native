@@ -108,7 +108,7 @@ export default AddMaterialIndent;
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    margin: 12,
+    margin: 10,
   },
 
   mainContainer: {
