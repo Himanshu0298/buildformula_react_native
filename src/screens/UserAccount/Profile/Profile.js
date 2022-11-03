@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, View, Image} from 'react-native';
 import {
   Caption,
   IconButton,
@@ -9,9 +9,11 @@ import {
 } from 'react-native-paper';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import {useSelector} from 'react-redux';
-import UserAvatar from 'components/Atoms/UserAvatar';
 import ScreenTitle from 'components/Atoms/ScreenTitle';
 import useAppActions from 'redux/actions/appActions';
+import userProfile from 'assets/images/customer.png';
+import ImageProgress from 'react-native-image-progress';
+import * as Progress from 'react-native-progress';
 
 function Profile(props) {
   const {theme, navigation} = props;
@@ -29,7 +31,26 @@ function Profile(props) {
     <View style={styles.contentContainer}>
       <ScreenTitle title="Profile" backIcon />
       <View style={styles.headerContainer}>
-        <UserAvatar size={150} uri={profile_url} />
+        {/* {profile_url ? (
+          <UserAvatar size={150} uri={profile_url} />
+        ) : (
+          <UserAvatar size={150} uri={userProfile} />
+        )} */}
+        {profile_url ? (
+          <ImageProgress
+            source={{uri: profile_url}}
+            indicator={Progress.Pie}
+            indicatorProps={{
+              size: 80,
+              borderWidth: 0,
+              color: 'rgba(234,236,241,1)',
+              unfilledColor: 'rgba(211,218,239,1)',
+            }}
+            style={styles.profileIMG}
+          />
+        ) : (
+          <Image source={userProfile} style={styles.profileIMG} />
+        )}
         <Subheading style={styles.subheading}>
           {first_name} {last_name}
         </Subheading>
@@ -57,7 +78,7 @@ function Profile(props) {
           color="#FF5D5D"
           style={styles.buttonContainer}
           onPress={logout}>
-          <IconButton color={theme.colors.primary} icon="logout" size={20} />
+          <IconButton color={theme.colors.red} icon="logout" size={20} />
           <Text>Logout</Text>
         </OpacityButton>
       </View>
@@ -89,6 +110,12 @@ const styles = StyleSheet.create({
   },
   email: {
     marginTop: 10,
+  },
+  profileIMG: {
+    width: 150,
+    height: 150,
+    borderRadius: 100,
+    overflow: 'hidden',
   },
 });
 

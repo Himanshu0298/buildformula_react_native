@@ -121,7 +121,7 @@ const schema = Yup.object().shape({
   password: Yup.string()
     .label('Password')
     .required('Please enter a valid password')
-    .min(6, 'Password must have at least 6 characters '),
+    .min(8, 'Password must have at least 8 characters '),
 });
 
 function Login(props) {
