@@ -31,12 +31,12 @@ const Quantity = props => {
       <Text>Quantity</Text>
 
       <View style={styles.itemContainer}>
-        <RenderRow item={{label: 'Ordered: ', value: summary.ordered}} />
-        <RenderRow item={{label: 'Remaining: ', value: summary.remaining}} />
+        <RenderRow item={{label: 'Ordered: ', value: summary?.ordered}} />
+        <RenderRow item={{label: 'Remaining: ', value: summary?.remaining}} />
       </View>
       <View style={styles.itemContainer}>
-        <RenderRow item={{label: 'Delivered: ', value: summary.delivered}} />
-        <RenderRow item={{label: 'Damage: ', value: summary.damage}} />
+        <RenderRow item={{label: 'Delivered: ', value: summary?.delivered}} />
+        <RenderRow item={{label: 'Damage: ', value: summary?.damage}} />
       </View>
     </View>
   );

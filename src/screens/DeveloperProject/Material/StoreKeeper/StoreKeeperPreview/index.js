@@ -1,11 +1,11 @@
 import React from 'react';
 import ProjectLayout from 'components/Molecules/Layout/ProjectLayout';
-import StoreKeeperList from './storeKeeperList';
+import StoreKeeperPreview from './StoreKeeperPreview';
 
 export default props => {
   return (
     <ProjectLayout {...props} header>
-      <StoreKeeperList {...props} />
+      <StoreKeeperPreview {...props} />
     </ProjectLayout>
   );
 };

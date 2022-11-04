@@ -1,11 +1,11 @@
 import React from 'react';
 import ProjectLayout from 'components/Molecules/Layout/ProjectLayout';
-import StoreKeeperList from './storeKeeperList';
+import IssueIndent from './IssueIndent';
 
 export default props => {
   return (
     <ProjectLayout {...props} header>
-      <StoreKeeperList {...props} />
+      <IssueIndent {...props} />
     </ProjectLayout>
   );
 };
