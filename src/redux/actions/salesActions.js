@@ -51,6 +51,11 @@ export default function useSalesActions() {
     getFollowUpList,
     getFollowUpDetailsList,
     updateCompleteTask,
+    getBrokerageDealDetails,
+    addBrokeragePayment,
+    updateBrokeragePayment,
+    deleteBrokeragePayment,
+    editBrokerage,
   } = useSalesServices();
 
   return {
@@ -290,7 +295,6 @@ export default function useSalesActions() {
         payload: async () => {
           try {
             await Promise.all(list.map(item => updatePipelineOrder(item)));
-            console.log('----->Reducer called in pipelineorderLit');
             return Promise.resolve();
           } catch (error) {
             const message = _err(error);
@@ -783,6 +787,91 @@ export default function useSalesActions() {
             const response = _res(await updateCompleteTask(params));
             const {data, msg} = response;
             snackbar.showMessage({message: msg});
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    getBrokerageDealDetails: params =>
+      dispatch({
+        type: types.GET_BROKERAGE_DEAL_DETAILS,
+        payload: async () => {
+          try {
+            const response = _res(await getBrokerageDealDetails(params));
+            const {data} = response;
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    addBrokeragePayment: formData =>
+      dispatch({
+        type: types.ADD_BROKERAGE_PAYMENT,
+        payload: async () => {
+          try {
+            const response = _res(await addBrokeragePayment(formData));
+            const {data} = response;
+
+            return Promise.resolve(data.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    updateBrokeragePayment: params =>
+      dispatch({
+        type: types.UPDATE_BROKERAGE_PAYMENT,
+        payload: async () => {
+          try {
+            const response = _res(await updateBrokeragePayment(params));
+            const {data, msg} = response;
+            snackbar.showMessage({message: msg});
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    editBrokerage: params =>
+      dispatch({
+        type: types.EDIT_BROKERAGE,
+        payload: async () => {
+          try {
+            const response = _res(await editBrokerage(params));
+            const {data, msg} = response;
+            snackbar.showMessage({message: msg});
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    deleteBrokeragePayment: params =>
+      dispatch({
+        type: types.DELETE_BROKERAGE_PAYMENT,
+        payload: async () => {
+          try {
+            const response = _res(await deleteBrokeragePayment(params));
+            const {data} = response;
 
             return Promise.resolve(data);
           } catch (error) {

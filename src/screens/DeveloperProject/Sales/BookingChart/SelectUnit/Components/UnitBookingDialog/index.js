@@ -54,7 +54,7 @@ function UnitBookingDialog(props) {
             data={{
               title: 'Hold',
               subTitle:
-                "Great! You've got new customer who is excited to buy this property.",
+                'Keep your Property for hold for specific period of time by getting sold.',
               image: HoldBanner,
             }}
             onPress={handleHold}

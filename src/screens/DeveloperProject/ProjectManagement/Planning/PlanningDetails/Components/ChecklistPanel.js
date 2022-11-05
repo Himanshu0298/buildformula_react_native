@@ -24,6 +24,8 @@ function AddChecklistDialog(props) {
   const [itemName, setItemName] = useState();
   const [addItemIndex, setAddItemIndex] = useState();
 
+  const [selectedUsers, setSelectedUsers] = useState([]);
+
   const submitForm = () => handleSubmit(checklists);
   const toggleAddItem = v => setAddItemIndex(v);
 

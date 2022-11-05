@@ -609,13 +609,13 @@ function FormContent(props) {
 
   return (
     <TouchableWithoutFeedback
-      style={{flexGrow: 1}}
+      style={{flexGrow: 1, margin: 10}}
       onPress={() => Keyboard.dismiss()}>
       <KeyboardAwareScrollView
         keyboardShouldPersistTaps="handled"
         extraScrollHeight={30}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{flexGrow: 1, paddingVertical: 10}}>
+        contentContainerStyle={{flexGrow: 1, margin: 10}}>
         <View style={styles.container}>
           <Subheading style={{color: theme.colors.primary}}>
             2. Booking Rate
@@ -740,8 +740,7 @@ function BookingRates(props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 20,
-    paddingVertical: 10,
+    margin: 15,
   },
   ratesContainer: {
     marginHorizontal: -5,

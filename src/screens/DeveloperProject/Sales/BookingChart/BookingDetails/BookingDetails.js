@@ -253,7 +253,7 @@ function FormContent(props) {
                   label={t('label_phone')}
                   ref={phoneRef}
                   keyboardType="number-pad"
-                  maxLength={10}
+                  maxLength={12}
                   containerStyles={styles.input}
                   value={values.customer_phone}
                   onChangeText={handleChange('customer_phone')}
@@ -410,11 +410,12 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     flexGrow: 1,
+    margin: 10,
     paddingBottom: 10,
   },
   contentContainer: {
     flex: 1,
-    paddingHorizontal: 20,
+    padding: 10,
   },
   headingContainer: {
     flexDirection: 'row',

@@ -1,10 +1,11 @@
-import React, {useMemo} from 'react';
+import React, {useEffect, useMemo} from 'react';
 import {Divider, Text, withTheme, Button, Caption} from 'react-native-paper';
-import {StyleSheet, View, ScrollView} from 'react-native';
+import {StyleSheet, View, ScrollView, RefreshControl} from 'react-native';
 import {useSelector} from 'react-redux';
 import dayjs from 'dayjs';
 import Layout from 'utils/Layout';
 import RenderHtml from 'react-native-render-html';
+import useSalesActions from 'redux/actions/salesActions';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const relativeTime = require('dayjs/plugin/relativeTime');
@@ -141,8 +142,27 @@ function FilterPanel(props) {
 }
 
 function Activities(props) {
+  const {visitorId} = props;
+
   const {visitorActivities} = useSelector(s => s.sales);
   const {user} = useSelector(s => s.user);
+
+  const {getVisitorActivities} = useSalesActions();
+
+  const {selectedProject} = useSelector(s => s.project);
+
+  useEffect(() => {
+    loadData();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const loadData = () => {
+    getVisitorActivities({
+      project_id: selectedProject.id,
+      visitor_id: visitorId,
+    });
+  };
 
   const activities = useMemo(() => {
     const data = {};
@@ -162,7 +182,11 @@ function Activities(props) {
   return (
     <View style={styles.mainContainer}>
       <FilterPanel {...props} />
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContainer}
+        refreshControl={
+          <RefreshControl refreshing={false} onRefresh={loadData} />
+        }>
         {Object.keys(activities).map((key, index) => (
           <RenderSection
             {...props}

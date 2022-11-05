@@ -21,7 +21,7 @@ import RenderTextBox from 'components/Atoms/RenderTextbox';
 import _ from 'lodash';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import ActionButtons from 'components/Atoms/ActionButtons';
-import RenderSelcetMultiple from 'components/Atoms/RenderSelectMultiple';
+import RenderSelectMultiple from 'components/Atoms/RenderSelectMultiple';
 
 const customParseFormat = require('dayjs/plugin/customParseFormat');
 
@@ -31,7 +31,10 @@ const defaultPriority = ['none'];
 
 const schema = Yup.object().shape({
   first_name: Yup.string('Invalid').required('Required'),
-  priority: Yup.string().notOneOf(defaultPriority, 'Select an option'),
+  priority: Yup.string('Invalid')
+    .required('Required')
+    .notOneOf(defaultPriority, 'Select an option'),
+
   last_name: Yup.string('Invalid').required('Required'),
   email: Yup.string('Invalid').email('Invalid'),
   phone: Yup.string()
@@ -46,13 +49,22 @@ const schema = Yup.object().shape({
     then: Yup.string('Invalid'),
   }),
   current_locality: Yup.string('Invalid'),
-  budget_from: Yup.number('Invalid'),
-  budget_to: Yup.number('Invalid'),
-  assign_to: Yup.string('Invalid'),
-  inquiry_for: Yup.string('Invalid').required('Required'),
+
   bhk: Yup.string('Invalid').when('bhk_required', {
     is: true,
     then: Yup.string('Invalid').required('Required'),
+  }),
+  assign_to: Yup.string('Invalid'),
+  inquiry_for: Yup.string('Invalid').required('Required'),
+  remarks: Yup.string('Invalid').required('Required'),
+  budget_from: Yup.number('Invalid').required('Required'),
+  budget_to: Yup.number('Invalid').when('budget_from', (budgetFrom, Schema) => {
+    return budgetFrom
+      ? Schema.min(
+          Number(budgetFrom),
+          'Budget To is less then Budget From',
+        ).required('Budget To is less then Budget From')
+      : Schema;
   }),
 });
 
@@ -290,7 +302,7 @@ function InquiryTab(props) {
               setFieldValue('inquiry_for', value);
             }}
           />
-          <RenderSelcetMultiple
+          <RenderSelectMultiple
             name="interested_property"
             label="Interested Property"
             options={interestedOptions}
@@ -328,7 +340,7 @@ function InquiryTab(props) {
             onBlur={handleBlur('remarks')}
             onSubmitEditing={handleSubmit}
             returnKeyType="done"
-            error={errors.remark}
+            error={errors.remarks}
           />
         </View>
         <ActionButtons
@@ -551,6 +563,7 @@ export default withTheme(AddVisitor);
 
 const styles = StyleSheet.create({
   container: {
+    margin: 10,
     flex: 1,
   },
   headerContainer: {
@@ -567,7 +580,6 @@ const styles = StyleSheet.create({
   inputsContainer: {
     width: '100%',
     flex: 1,
-    paddingHorizontal: 20,
     paddingTop: 5,
   },
   input: {
