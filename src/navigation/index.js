@@ -123,7 +123,6 @@ import ProcessChart from '../screens/DeveloperProject/ProjectManagement/ProcessC
 import Estimation from '../screens/DeveloperProject/MaterialManagement/Estimation';
 import RequestForPrice from '../screens/DeveloperProject/MaterialManagement/RequestForPrice';
 import PurchaseOrders from '../screens/DeveloperProject/MaterialManagement/PurchaseOrders';
-import MaterialGRN from '../screens/DeveloperProject/Material/MaterialGRN';
 import OrderDetail from '../screens/DeveloperProject/Material/OrderDetail';
 import MaterialList from '../screens/DeveloperProject/Material/MaterialList';
 import DeliveryDetails from 'screens/DeveloperProject/Material/DeliveryDetails';
@@ -144,6 +143,13 @@ import AddChallan from 'screens/DeveloperProject/Material/DeliveryDetails/AddCha
 import SelectMaterials from 'screens/DeveloperProject/Material/DeliveryDetails/SelectMaterial';
 import AddMaterialInfo from 'screens/DeveloperProject/Material/DeliveryDetails/AddMaterialChallan';
 import AddVehicleInfo from 'screens/DeveloperProject/Material/DeliveryDetails/AddVehicleChallan';
+import MaterialGRNListing from 'screens/DeveloperProject/Material/MaterialGRN/MaterialGRNListing';
+import MaterialGRN from '../screens/DeveloperProject/Material/MaterialGRN';
+import DirectGRNPreview from 'screens/DeveloperProject/Material/MaterialGRN/DirectGRNPreview';
+import AddDirectGRN from 'screens/DeveloperProject/Material/MaterialGRN/Components/AddDirectGRN';
+import GRNMaterial from 'screens/DeveloperProject/Material/MaterialGRN/Components/GRNMaterial';
+import AddMaterial from 'screens/DeveloperProject/Material/MaterialGRN/Components/AddMaterial';
+import VehicleInfo from 'screens/DeveloperProject/Material/MaterialGRN/Components/VehicleInfo';
 
 // Project : Files screens
 import Files from '../screens/DeveloperProject/Files';
@@ -366,7 +372,19 @@ function AppStackNavigator() {
               <Stack.Screen name="CustomerFiles" component={CustomerFiles} />
             </Stack.Group>
             <Stack.Group>
+              <Stack.Screen
+                name="MaterialGRNListing"
+                component={MaterialGRNListing}
+              />
               <Stack.Screen name="MaterialGRN" component={MaterialGRN} />
+              <Stack.Screen
+                name="DirectGRNPreview"
+                component={DirectGRNPreview}
+              />
+              <Stack.Screen name="AddDirectGRN" component={AddDirectGRN} />
+              <Stack.Screen name="GRNMaterial" component={GRNMaterial} />
+              <Stack.Screen name="AddMaterial" component={AddMaterial} />
+              <Stack.Screen name="VehicleInfo" component={VehicleInfo} />
               <Stack.Screen
                 name="DeliveryDetails"
                 component={DeliveryDetails}

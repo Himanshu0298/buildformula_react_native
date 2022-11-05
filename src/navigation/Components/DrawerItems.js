@@ -235,7 +235,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
     routes: [
       {
         id: 20,
-        route: 'MaterialGRN',
+        route: 'MaterialGRNListing',
         label: 'GRN',
         icon: ({color, size}) => (
           <MaterialCommunityIcons name="wall" {...{color, size}} />
