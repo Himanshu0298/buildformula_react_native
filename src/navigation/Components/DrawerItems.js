@@ -268,7 +268,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
       },
       {
         id: 27,
-        route: 'StoreKeeper',
+        route: 'StoreKeeperList',
         label: 'StoreKeeper',
         icon: ({color, size}) => (
           <MaterialCommunityIcons

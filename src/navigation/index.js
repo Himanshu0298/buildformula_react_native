@@ -158,6 +158,8 @@ import DirectGRNPreview from 'screens/DeveloperProject/Material/MaterialGRN/Dire
 import AddDirectGRN from 'screens/DeveloperProject/Material/MaterialGRN/Components/AddDirectGRN';
 import GRNMaterial from 'screens/DeveloperProject/Material/MaterialGRN/Components/GRNMaterial';
 import AddMaterial from 'screens/DeveloperProject/Material/MaterialGRN/Components/AddMaterial';
+import StoreKeeperPreview from 'screens/DeveloperProject/Material/StoreKeeper/StoreKeeperPreview';
+import IssueIndent from 'screens/DeveloperProject/Material/StoreKeeper/IssueIndent';
 import VehicleInfo from 'screens/DeveloperProject/Material/MaterialGRN/Components/VehicleInfo';
 
 // Project : Files screens
@@ -192,6 +194,7 @@ import AddReturnMaterialIndent from 'screens/DeveloperProject/Material/MaterialI
 import AddMaterialIndentList from 'screens/DeveloperProject/Material/MaterialIndent/IssueIndent/IssueMaterialIndent';
 import AddReturnMaterialList from 'screens/DeveloperProject/Material/MaterialIndent/ReturnIndent/ReturnMaterialIndent/AddReturnMaterialList';
 import AddAttachments from 'screens/DeveloperProject/Material/MaterialIndent/ReturnIndent/AddAttachments/AddAttachments';
+import StoreKeeperList from 'screens/DeveloperProject/Material/StoreKeeper/StoreKeeperList';
 
 /** *********** Developer Project Sub Screens End   ************ */
 
@@ -403,6 +406,15 @@ function AppStackNavigator() {
                 component={DeliveryDetails}
               />
               <Stack.Screen name="OrderDetail" component={OrderDetail} />
+              <Stack.Screen
+                name="StoreKeeperList"
+                component={StoreKeeperList}
+              />
+              <Stack.Screen name="IssueIndent" component={IssueIndent} />
+              <Stack.Screen
+                name="StoreKeeperPreview"
+                component={StoreKeeperPreview}
+              />
               <Stack.Screen name="MaterialList" component={MaterialList} />
               <Stack.Screen name="AddChallan" component={AddChallan} />
               <Stack.Screen name="PRList" component={PRListing} />
