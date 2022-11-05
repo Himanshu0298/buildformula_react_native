@@ -138,7 +138,7 @@ import CreatePI from 'screens/DeveloperProject/Material/MaterialPI/CreatePI/Crea
 import CreatePIMaterial from 'screens/DeveloperProject/Material/MaterialPI/CreatePI/AddPIMaterial';
 import PIPreview from 'screens/DeveloperProject/Material/MaterialPI/PIPreview/PIPreview';
 import PIRequest from 'screens/DeveloperProject/Material/MaterialPI/PIRequest/PIRequest';
-import TermsAndConditions from 'screens/DeveloperProject/Material/MaterialPI/CreatePI/Teams&Conditions';
+import TermsAndConditions from 'screens/DeveloperProject/Material/MaterialPI/CreatePI/Terms&Conditions';
 import AddPIMaterialList from 'screens/DeveloperProject/Material/MaterialPI/CreatePI/AddPIMaterialList';
 import AddChallan from 'screens/DeveloperProject/Material/DeliveryDetails/AddChallan';
 
@@ -425,7 +425,7 @@ function AppStackNavigator() {
                 component={AddPIMaterialList}
               />
               <Stack.Screen
-                name="Teams&Conditions"
+                name="Terms&Conditions"
                 component={TermsAndConditions}
               />
               <Stack.Screen name="PRPreview" component={PRPreview} />

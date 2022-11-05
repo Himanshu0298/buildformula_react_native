@@ -102,7 +102,7 @@ const CustomerDetails = props => {
         </Text>
       </View>
       <View style={styles.valueContainer}>
-        <Text style={styles.label}>Birthdate</Text>
+        <Text style={styles.label}>BirthDate</Text>
         <Text style={styles.value}>
           {dob ? dayjs(dob).format('MMMM D, YYYY	') : '---'}
         </Text>
@@ -170,7 +170,7 @@ const CustomerInnerDetails = ({navigation, route: routeData}) => {
   useEffect(() => {
     getVisitorActivities({
       project_id: selectedProject.id,
-      visitor_id: visitorId,
+      visitor_id: visitorId || customerId,
       filter_mode: activityFilter,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -205,9 +205,11 @@ const CustomerInnerDetails = ({navigation, route: routeData}) => {
             visitors_info={visitors_info}
             linkedProperty={linkedProperty}
             BrokerData={BrokerData}
+            visitorId={visitorId}
           />
         );
       case 'second':
+        console.log('===========>suman phogat ', visitorId);
         return (
           <Activities
             filter={activityFilter}

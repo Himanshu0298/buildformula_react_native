@@ -173,12 +173,12 @@ export default function useMaterialManagementActions() {
         },
       }),
 
-    addMaterialPR: formData =>
+    addMaterialPR: params =>
       dispatch({
         type: types.ADD_MATERIAL_PR,
         payload: async () => {
           try {
-            const response = _res(await addMaterialPR(formData));
+            const response = _res(await addMaterialPR(params));
             const {data} = response;
 
             return Promise.resolve(data);
@@ -285,12 +285,12 @@ export default function useMaterialManagementActions() {
         },
       }),
 
-    updatePRStatus: formData =>
+    updatePRStatus: params =>
       dispatch({
         type: types.UPDATE_MODIFY_REQUEST,
         payload: async () => {
           try {
-            const response = _res(await updatePRStatus(formData));
+            const response = _res(await updatePRStatus(params));
             const {data} = response;
 
             return Promise.resolve(data);

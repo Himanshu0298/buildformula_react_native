@@ -50,8 +50,6 @@ const schema = Yup.object().shape({
   }),
   current_locality: Yup.string('Invalid'),
 
-  budget_from: Yup.string(),
-
   bhk: Yup.string('Invalid').when('bhk_required', {
     is: true,
     then: Yup.string('Invalid').required('Required'),
@@ -59,10 +57,13 @@ const schema = Yup.object().shape({
   assign_to: Yup.string('Invalid'),
   inquiry_for: Yup.string('Invalid').required('Required'),
   remarks: Yup.string('Invalid').required('Required'),
-
-  budget_to: Yup.string().when(['budget_From'], (budget_to, Schema) => {
-    return budget_to > 'budget_from'
-      ? Schema.required('Budget To is less then  Budget From')
+  budget_from: Yup.number('Invalid').required('Required'),
+  budget_to: Yup.number('Invalid').when('budget_from', (budgetFrom, Schema) => {
+    return budgetFrom
+      ? Schema.min(
+          Number(budgetFrom),
+          'Budget To is less then Budget From',
+        ).required('Budget To is less then Budget From')
       : Schema;
   }),
 });
@@ -339,7 +340,7 @@ function InquiryTab(props) {
             onBlur={handleBlur('remarks')}
             onSubmitEditing={handleSubmit}
             returnKeyType="done"
-            error={errors.remark}
+            error={errors.remarks}
           />
         </View>
         <ActionButtons

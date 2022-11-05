@@ -1,6 +1,5 @@
 import React from 'react';
 import {StyleSheet, View, Text} from 'react-native';
-import PropTypes from 'prop-types';
 import {TextInput, withTheme} from 'react-native-paper';
 import _ from 'lodash';
 
@@ -62,12 +61,6 @@ RenderInput.defaultProps = {
   autoCapitalize: 'none',
   containerStyles: {},
   roundness: 10,
-};
-
-RenderInput.prototype = {
-  error: PropTypes.string,
-  containerStyles: PropTypes.object,
-  ...TextInput.PropTypes,
 };
 
 const styles = StyleSheet.create({

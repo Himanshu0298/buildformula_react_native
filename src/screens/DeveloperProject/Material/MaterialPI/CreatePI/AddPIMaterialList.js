@@ -132,7 +132,7 @@ function AddPIMaterialList(props) {
             cancelLabel="Previous"
             submitLabel="Next"
             onCancel={navigation.goBack}
-            onSubmit={() => navigation.navigate('Teams&Conditions')}
+            onSubmit={() => navigation.navigate('Terms&Conditions')}
           />
         </View>
       </View>

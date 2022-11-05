@@ -119,6 +119,7 @@ function AddFollowUp(props) {
                 placeholder="Response"
                 height={200}
                 value={values.remarks}
+                error={errors.remarks}
                 onChangeText={value => {
                   setFieldValue('remarks', value);
                 }}

@@ -42,63 +42,28 @@ const reducer = (state = initialState, action = {}) => {
   const {type, payload} = action;
   switch (type) {
     // RESET data on project change
-    // case `${GET_SELECTED_PROJECT}_PENDING`:
-    //   return {
-    //     ...initialState,
-    //   };
-    case `${GET_MATERIAL_ORDER_LIST}_PENDING`:
-      return {
-        ...state,
-        loading: true,
-      };
+
     case `${GET_MATERIAL_ORDER_LIST}_FULFILLED`:
       return {
         ...state,
         loading: false,
         materialOrderList: payload,
       };
-    case `${GET_MATERIAL_ORDER_LIST}_REJECTED`:
-      return {
-        ...state,
-        loading: false,
-      };
-    case `${GET_VENDOR_OR_CONTRACTORS_DETAILS}_PENDING`:
-      return {
-        ...state,
-        loading: true,
-      };
+
     case `${GET_VENDOR_OR_CONTRACTORS_DETAILS}_FULFILLED`:
       return {
         ...state,
         loading: false,
         vendorOptions: payload,
       };
-    case `${GET_VENDOR_OR_CONTRACTORS_DETAILS}_REJECTED`:
-      return {
-        ...state,
-        loading: false,
-      };
-    case `${GET_WORK_SUBWORK_LIST}_PENDING`:
-      return {
-        ...state,
-        loading: true,
-      };
+
     case `${GET_WORK_SUBWORK_LIST}_FULFILLED`:
       return {
         ...state,
         loading: false,
         workOptions: payload,
       };
-    case `${GET_WORK_SUBWORK_LIST}_REJECTED`:
-      return {
-        ...state,
-        loading: false,
-      };
-    case `${GET_MATERIAL_LIST}_PENDING`:
-      return {
-        ...state,
-        loading: true,
-      };
+
     case `${GET_MATERIAL_LIST}_FULFILLED`: {
       const {material_category_data, material_subCategory_data} =
         payload?.[0] || {};
@@ -109,52 +74,21 @@ const reducer = (state = initialState, action = {}) => {
         materialSubCategory: material_subCategory_data,
       };
     }
-    case `${GET_MATERIAL_LIST}_REJECTED`:
-      return {
-        ...state,
-        loading: false,
-      };
 
-    case `${GET_MATERIAL_CHALLAN_LIST}_PENDING`:
-      return {
-        ...state,
-        loading: true,
-      };
     case `${GET_MATERIAL_CHALLAN_LIST}_FULFILLED`:
       return {
         ...state,
         loading: false,
         materialChallanList: payload,
       };
-    case `${GET_MATERIAL_CHALLAN_LIST}_REJECTED`:
-      return {
-        ...state,
-        loading: false,
-      };
 
-    case `${GET_MATERIAL_CHALLAN_DETAILS}_PENDING`:
-      return {
-        ...state,
-        loading: true,
-      };
     case `${GET_MATERIAL_CHALLAN_DETAILS}_FULFILLED`:
       return {
         ...state,
         loading: false,
         materialChallanDetails: payload,
       };
-    // PR Details
-    case `${GET_MATERIAL_CHALLAN_DETAILS}_REJECTED`:
-      return {
-        ...state,
-        loading: false,
-      };
 
-    case `${GET_MATERIAL_PR_DETAILS}_PENDING`:
-      return {
-        ...state,
-        loading: true,
-      };
     case `${GET_MATERIAL_PR_DETAILS}_FULFILLED`: {
       const {
         record_data,
@@ -173,18 +107,6 @@ const reducer = (state = initialState, action = {}) => {
       };
     }
 
-    case `${GET_MATERIAL_PR_DETAILS}_REJECTED`:
-      return {
-        ...state,
-        loading: false,
-      };
-
-    // PR List
-    case `${GET_PR_MATERIAL_ORDER_LIST}_PENDING`:
-      return {
-        ...state,
-        loading: true,
-      };
     case `${GET_PR_MATERIAL_ORDER_LIST}_FULFILLED`: {
       const PRList = payload;
       const sortedPR = PRList.sort().reverse();
@@ -195,164 +117,75 @@ const reducer = (state = initialState, action = {}) => {
       };
     }
 
-    case `${GET_PR_MATERIAL_ORDER_LIST}_REJECTED`:
-      return {
-        ...state,
-        loading: false,
-      };
-
-    case `${GET_SELECT_MATERIAL_CHALLAN}_PENDING`:
-      return {
-        ...state,
-        loading: true,
-      };
     case `${GET_SELECT_MATERIAL_CHALLAN}_FULFILLED`:
       return {
         ...state,
         loading: false,
         selectedMaterialChallan: payload,
       };
-    case `${GET_SELECT_MATERIAL_CHALLAN}_REJECTED`:
-      return {
-        ...state,
-        loading: false,
-      };
-    case `${ADD_MATERIAL_CHALLAN}_PENDING`:
-      return {
-        ...state,
-        loading: true,
-      };
-    case `${ADD_MATERIAL_CHALLAN}_FULFILLED`:
-      return {
-        ...state,
-        loading: false,
-      };
-    case `${ADD_MATERIAL_CHALLAN}_REJECTED`:
-      return {
-        ...state,
-        loading: false,
-      };
-    case `${ADD_MATERIAL_PR}_PENDING`:
-      return {
-        ...state,
-        loading: true,
-      };
-    case `${ADD_MATERIAL_PR}_FULFILLED`:
-      return {
-        ...state,
-        loading: false,
-      };
-    case `${ADD_MATERIAL_PR}_REJECTED`:
-      return {
-        ...state,
-        loading: false,
-      };
-    case `${CREATE_MATERIAL_PR}_PENDING`:
-      return {
-        ...state,
-        loading: true,
-      };
-    case `${CREATE_MATERIAL_PR}_FULFILLED`:
-      return {
-        ...state,
-        loading: false,
-      };
-    case `${CREATE_MATERIAL_PR}_REJECTED`:
-      return {
-        ...state,
-        loading: false,
-      };
-    case `${EDIT_PR}_PENDING`:
-      return {
-        ...state,
-        loading: true,
-      };
-    case `${EDIT_PR}_FULFILLED`:
-      return {
-        ...state,
-        loading: false,
-      };
-    case `${EDIT_PR}_REJECTED`:
-      return {
-        ...state,
-        loading: false,
-      };
-    case `${EDIT_MATERIAL_PR}_PENDING`:
-      return {
-        ...state,
-        loading: true,
-      };
-    case `${EDIT_MATERIAL_PR}_FULFILLED`:
-      return {
-        ...state,
-        loading: false,
-      };
-    case `${EDIT_MATERIAL_PR}_REJECTED`:
-      return {
-        ...state,
-        loading: false,
-      };
-    case `${DELETE_MATERIAL_PR_DETAILS}_PENDING`:
-      return {
-        ...state,
-        loading: true,
-      };
-    case `${DELETE_MATERIAL_PR_DETAILS}_FULFILLED`:
-      return {
-        ...state,
-        loading: false,
-      };
-    case `${DELETE_MATERIAL_PR_DETAILS}_REJECTED`:
-      return {
-        ...state,
-        loading: false,
-      };
-    case `${DELETE_MATERIAL_PR_ITEM}_PENDING`:
-      return {
-        ...state,
-        loading: true,
-      };
-    case `${DELETE_MATERIAL_PR_ITEM}_FULFILLED`:
-      return {
-        ...state,
-        loading: false,
-      };
-    case `${DELETE_MATERIAL_PR_ITEM}_REJECTED`:
-      return {
-        ...state,
-        loading: false,
-      };
-    case `${DELETE_MATERIAL_PR_CATEGORY}_PENDING`:
-      return {
-        ...state,
-        loading: true,
-      };
-    case `${DELETE_MATERIAL_PR_CATEGORY}_FULFILLED`:
-      return {
-        ...state,
-        loading: false,
-      };
-    case `${DELETE_MATERIAL_PR_CATEGORY}_REJECTED`:
-      return {
-        ...state,
-        loading: false,
-      };
 
-    case `${UPDATE_PR_STATUS}_PENDING`:
+    case `${DELETE_MATERIAL_PR_CATEGORY}_PENDING`:
+    case `${DELETE_MATERIAL_PR_ITEM}_PENDING`:
+    case `${DELETE_MATERIAL_PR_DETAILS}_PENDING`:
+    case `${EDIT_MATERIAL_PR}_PENDING`:
+    case `${EDIT_PR}_PENDING`:
+    case `${CREATE_MATERIAL_PR}_PENDING`:
+    case `${ADD_MATERIAL_PR}_PENDING`:
+    case `${ADD_MATERIAL_CHALLAN}_PENDING`:
+    case `${GET_SELECT_MATERIAL_CHALLAN}_PENDING`:
+    case `${GET_PR_MATERIAL_ORDER_LIST}_PENDING`:
+    case `${GET_MATERIAL_PR_DETAILS}_PENDING`:
+    case `${GET_MATERIAL_CHALLAN_DETAILS}_PENDING`:
+    case `${GET_MATERIAL_CHALLAN_LIST}_PENDING`:
+    case `${GET_MATERIAL_LIST}_PENDING`:
+    case `${GET_WORK_SUBWORK_LIST}_PENDING`:
+    case `${GET_VENDOR_OR_CONTRACTORS_DETAILS}_PENDING`:
+    case `${GET_MATERIAL_ORDER_LIST}_PENDING`:
+    case `${UPDATE_PR_STATUS}_PENDING`: {
       return {
         ...state,
         loading: true,
       };
-    case `${UPDATE_PR_STATUS}_FULFILLED`:
+    }
+
+    case `${ADD_MATERIAL_CHALLAN}_FULFILLED`:
+    case `${ADD_MATERIAL_PR}_FULFILLED`:
+    case `${CREATE_MATERIAL_PR}_FULFILLED`:
+    case `${EDIT_PR}_FULFILLED`:
+    case `${EDIT_MATERIAL_PR}_FULFILLED`:
+    case `${DELETE_MATERIAL_PR_CATEGORY}_FULFILLED`:
+    case `${DELETE_MATERIAL_PR_ITEM}_FULFILLED`:
+    case `${DELETE_MATERIAL_PR_DETAILS}_FULFILLED`:
+    case `${UPDATE_PR_STATUS}_FULFILLED`: {
       return {
         ...state,
         loading: false,
       };
-    case `${UPDATE_PR_STATUS}_REJECTED`:
+    }
+    case `${GET_MATERIAL_ORDER_LIST}_REJECTED`:
+    case `${GET_VENDOR_OR_CONTRACTORS_DETAILS}_REJECTED`:
+    case `${GET_WORK_SUBWORK_LIST}_REJECTED`:
+    case `${GET_MATERIAL_LIST}_REJECTED`:
+    case `${GET_PR_MATERIAL_ORDER_LIST}_REJECTED`:
+    case `${GET_SELECT_MATERIAL_CHALLAN}_REJECTED`:
+    case `${GET_MATERIAL_CHALLAN_LIST}_REJECTED`:
+    case `${GET_MATERIAL_PR_DETAILS}_REJECTED`:
+    case `${GET_MATERIAL_CHALLAN_DETAILS}_REJECTED`:
+    case `${ADD_MATERIAL_CHALLAN}_REJECTED`:
+    case `${ADD_MATERIAL_PR}_REJECTED`:
+    case `${CREATE_MATERIAL_PR}_REJECTED`:
+    case `${EDIT_PR}_REJECTED`:
+    case `${EDIT_MATERIAL_PR}_REJECTED`:
+    case `${DELETE_MATERIAL_PR_DETAILS}_REJECTED`:
+    case `${DELETE_MATERIAL_PR_ITEM}_REJECTED`:
+    case `${DELETE_MATERIAL_PR_CATEGORY}_REJECTED`:
+    case `${UPDATE_PR_STATUS}_REJECTED`: {
       return {
         ...state,
         loading: false,
+        errorMessage: payload,
       };
+    }
 
     default:
       return state;

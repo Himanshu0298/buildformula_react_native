@@ -142,8 +142,7 @@ function FilterPanel(props) {
 }
 
 function Activities(props) {
-  const {route} = props;
-  const {visitorId} = route?.params || {};
+  const {visitorId} = props;
 
   const {visitorActivities} = useSelector(s => s.sales);
   const {user} = useSelector(s => s.user);
