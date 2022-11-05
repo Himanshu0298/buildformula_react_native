@@ -15,8 +15,8 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 const schema = Yup.object().shape({
   followup_date: Yup.date('Invalid').required('Required'),
   followup_time: Yup.date('Invalid').required('Required'),
-  task_title: Yup.string('Invalid').required('Required'),
   remarks: Yup.string('Invalid').required('Required'),
+  task_title: Yup.string('Invalid').required('Required'),
 });
 
 function AddFollowUp(props) {
@@ -107,6 +107,7 @@ function AddFollowUp(props) {
                     name="followup_time"
                     containerStyles={styles.input}
                     value={values.followup_time}
+                    error={errors.followup_time}
                     onChange={date => {
                       setFieldValue('followup_time', date);
                       assignToRef?.current?.focus?.();
@@ -120,6 +121,7 @@ function AddFollowUp(props) {
                 placeholder="Response"
                 height={200}
                 value={values.remarks}
+                error={errors.remarks}
                 onChangeText={value => {
                   setFieldValue('remarks', value);
                 }}

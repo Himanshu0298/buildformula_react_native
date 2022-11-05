@@ -40,7 +40,7 @@ function StepOne(props) {
   return (
     <>
       <StatusBar
-        barStyle="light-content"
+        barStyle="dark-content"
         backgroundColor={theme.colors.primary}
       />
       <FormTitle title={t('StepOneTitle')} subTitle={t('StepOneSubTitle')} />
