@@ -447,6 +447,10 @@ function AppStackNavigator() {
                 name="SelectMaterials"
                 component={SelectMaterials}
               />
+              {/* <Stack.Screen
+                name="SelectMaterials"
+                component={SelectMaterials}
+              /> */}
               <Stack.Screen
                 name="AddMaterialInfo"
                 component={AddMaterialInfo}

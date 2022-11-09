@@ -277,6 +277,18 @@ export const DEVELOPER_DRAWER_ITEMS = [
           />
         ),
       },
+      {
+        // id: 27,
+        route: 'MaterialInventory',
+        label: 'MaterialInventory',
+        icon: ({color, size}) => (
+          <MaterialCommunityIcons
+            name="view-dashboard-outline"
+            color={color}
+            size={size}
+          />
+        ),
+      },
     ],
   },
   // {
