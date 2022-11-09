@@ -153,6 +153,16 @@ import SelectMaterials from 'screens/DeveloperProject/Material/DeliveryDetails/S
 import AddMaterialInfo from 'screens/DeveloperProject/Material/DeliveryDetails/AddMaterialChallan';
 import AddVehicleInfo from 'screens/DeveloperProject/Material/DeliveryDetails/AddVehicleChallan';
 
+import AddReturnMaterialIndent from 'screens/DeveloperProject/Material/MaterialIndent/ReturnIndent/ReturnMaterialIndent/AddReturnMaterial';
+import AddMaterialIndentList from 'screens/DeveloperProject/Material/MaterialIndent/IssueIndent/IssueMaterialIndent';
+import AddReturnMaterialList from 'screens/DeveloperProject/Material/MaterialIndent/ReturnIndent/ReturnMaterialIndent/AddReturnMaterialList';
+import AddAttachments from 'screens/DeveloperProject/Material/MaterialIndent/ReturnIndent/AddAttachments/AddAttachments';
+import MaterialInventoryList from 'screens/DeveloperProject/Material/MaterialInventory/MaterialInventoryList';
+import MaterialInventorySubList from 'screens/DeveloperProject/Material/MaterialInventory/MaterialInventorySubList';
+import InventorySubListPreview from 'screens/DeveloperProject/Material/MaterialInventory/InventorySubListPreview';
+import MaterialPreview from 'screens/DeveloperProject/Material/MaterialInventory/MaterialPreview';
+import SubListPreview from 'screens/DeveloperProject/Material/MaterialInventory/SubListPreview';
+
 // Project : Files screens
 import Files from '../screens/DeveloperProject/Files';
 // Project : Role screens
@@ -181,10 +191,6 @@ import LanguageSelect from '../screens/Auth/LanguageSelect';
 import DrawerContent from './Components/DrawerContent';
 import DocumentGenerater from 'screens/DeveloperProject/DocumentGenerater';
 import DocumentDownload from 'screens/DeveloperProject/DocumentGenerater/Documents/DocumentDownload';
-import AddReturnMaterialIndent from 'screens/DeveloperProject/Material/MaterialIndent/ReturnIndent/ReturnMaterialIndent/AddReturnMaterial';
-import AddMaterialIndentList from 'screens/DeveloperProject/Material/MaterialIndent/IssueIndent/IssueMaterialIndent';
-import AddReturnMaterialList from 'screens/DeveloperProject/Material/MaterialIndent/ReturnIndent/ReturnMaterialIndent/AddReturnMaterialList';
-import AddAttachments from 'screens/DeveloperProject/Material/MaterialIndent/ReturnIndent/AddAttachments/AddAttachments';
 
 /** *********** Developer Project Sub Screens End   ************ */
 
@@ -447,10 +453,23 @@ function AppStackNavigator() {
                 name="SelectMaterials"
                 component={SelectMaterials}
               />
-              {/* <Stack.Screen
-                name="SelectMaterials"
-                component={SelectMaterials}
-              /> */}
+              <Stack.Screen
+                name="MaterialInventory"
+                component={MaterialInventoryList}
+              />
+              <Stack.Screen
+                name="MaterialPreview"
+                component={MaterialPreview}
+              />
+              <Stack.Screen
+                name="MaterialInventorySubList"
+                component={MaterialInventorySubList}
+              />
+              <Stack.Screen
+                name="InventorySubListPreview"
+                component={InventorySubListPreview}
+              />
+              <Stack.Screen name="SubListPreview" component={SubListPreview} />
               <Stack.Screen
                 name="AddMaterialInfo"
                 component={AddMaterialInfo}

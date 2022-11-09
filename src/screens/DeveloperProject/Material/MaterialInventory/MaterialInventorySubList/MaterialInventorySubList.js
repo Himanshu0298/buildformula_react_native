@@ -1,17 +1,16 @@
 import React from 'react';
 import {StyleSheet, View, TouchableOpacity} from 'react-native';
-import {Text, Divider, Subheading} from 'react-native-paper';
+import {Text, Divider, Subheading, IconButton} from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {theme} from 'styles/theme';
 
 const arr = [
-  {title: 'Cement', name: 'calendar'},
-  {title: 'Bricks/ Blocks', name: 'star-circle-outline'},
-  {title: 'Steel bar', name: 'note-outline'},
-  {title: 'Ready Mix Concrete', name: 'chevron-right'},
-  {title: 'Cement Test', name: 'chevron-right'},
-  {title: 'Glass', name: 'chevron-right'},
+  {title: 'OPC - 43 Grade'},
+  {title: 'OPC - 53 Grade'},
+  {title: 'PSC'},
+  {title: 'PPC'},
+  {title: 'White Cement'},
 ];
 
 const MC = () => {
@@ -22,20 +21,27 @@ const MC = () => {
   );
 };
 
-function MaterialInventory(props) {
+function MaterialSubList(props) {
   const {navigation} = props;
 
-  const NavToSubList = () => navigation.navigate('MaterialInventorySubList');
+  const NavToPreview = () => navigation.navigate('MaterialPreview');
 
   return (
     <View style={styles.container}>
-      <View style={styles.titleContainer}>
-        <Subheading style={styles.subContainer}>Inventory</Subheading>
+      <View style={styles.dataRow}>
+        <IconButton
+          icon="keyboard-backspace"
+          size={18}
+          color={theme.colors.primary}
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+        />
+        <Subheading style={styles.headerText}>Cement</Subheading>
       </View>
       {arr.map(ele => {
         return (
           <View>
-            <TouchableOpacity onPress={NavToSubList}>
+            <TouchableOpacity onPress={NavToPreview}>
               <View style={styles.sectionContainer}>
                 <View style={styles.taskContainer}>
                   <View style={styles.calenderIcon}>
@@ -58,15 +64,23 @@ function MaterialInventory(props) {
   );
 }
 
-export default MaterialInventory;
+export default MaterialSubList;
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     margin: 10,
   },
 
-  subContainer: {
+  dataRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  headerText: {
+    padding: 10,
     fontSize: 18,
+  },
+  backButton: {
+    backgroundColor: 'rgba(72, 114, 244, 0.1)',
   },
 
   sectionContainer: {

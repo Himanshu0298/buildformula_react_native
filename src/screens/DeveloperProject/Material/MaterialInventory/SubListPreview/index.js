@@ -1,11 +1,11 @@
 import React from 'react';
 import ProjectLayout from 'components/Molecules/Layout/ProjectLayout';
-import MaterialInventory from './MaterialInventoryList';
+import SubListPreview from './SubListPreview';
 
 export default props => {
   return (
     <ProjectLayout {...props} header>
-      <MaterialInventory {...props} />
+      <SubListPreview {...props} />
     </ProjectLayout>
   );
 };

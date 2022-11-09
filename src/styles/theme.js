@@ -53,6 +53,8 @@ export const theme = {
     warning: Colors.orange500,
     red: '#FF5D5D',
     white: '#fff',
+    grey: '#808080',
+    silver: '#C0C0C0',
     documentation: 'rgba(243, 122, 80, 1)',
   },
   fonts: configureFonts(fontConfig),
