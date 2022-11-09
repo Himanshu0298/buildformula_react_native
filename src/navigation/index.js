@@ -111,7 +111,6 @@ import SalesPipelineRearrange from 'screens/DeveloperProject/Sales/SalesPipeline
 import BrokerDetails from 'screens/DeveloperProject/Sales/BrokerDetails';
 import AddBroker from 'screens/DeveloperProject/Sales/AddBroker';
 import DealsClosedDetails from 'screens/DeveloperProject/Sales/BrokerDetails/Components/DealsClosedDetails';
-
 import WorkMaster from 'screens/DeveloperProject/ProjectManagement/WorkMaster';
 import WorkDetails from 'screens/DeveloperProject/ProjectManagement/WBS/WorkDetails';
 import ProgressRecords from 'screens/DeveloperProject/ProjectManagement/WBS/ProgressRecords';
@@ -417,6 +416,7 @@ function AppStackNavigator() {
               />
               <Stack.Screen name="MaterialList" component={MaterialList} />
               <Stack.Screen name="AddChallan" component={AddChallan} />
+
               <Stack.Screen name="PRList" component={PRListing} />
               <Stack.Screen
                 name="MaterialIndent"
@@ -473,11 +473,26 @@ function AppStackNavigator() {
                 name="AddMaterialList"
                 component={AddMaterialList}
               />
-              <Stack.Screen name="AddAttachments" component={AddAttachments} />
+
+              {/* <Stack.Screen name="PILisitng" component={PILisitng} /> */}
+
+              {/* <Stack.Screen name="FROMPR" component={FROMPR} /> */}
+
+              <Stack.Screen name="CreatePI" component={CreatePI} />
+
+              {/* <Stack.Screen name="PIMaterialList" component={PIMaterialList} /> */}
+
+              {/* <Stack.Screen name="PIAddMaterial" component={PIAddMaterial} /> */}
+
+              {/* <Stack.Screen name="PITnC" component={PITnC} /> */}
+
+              <Stack.Screen name="PIPreview" component={PIPreview} />
+
               <Stack.Screen
                 name="SelectMaterials"
                 component={SelectMaterials}
               />
+
               <Stack.Screen
                 name="AddMaterialInfo"
                 component={AddMaterialInfo}

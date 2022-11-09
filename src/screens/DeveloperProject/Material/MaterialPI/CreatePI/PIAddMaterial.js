@@ -1,4 +1,4 @@
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, View, SafeAreaView} from 'react-native';
 import React from 'react';
 
 import {Formik} from 'formik';
@@ -6,36 +6,41 @@ import RenderInput from 'components/Atoms/RenderInput';
 import RenderSelect from 'components/Atoms/RenderSelect';
 import RenderDatePicker from 'components/Atoms/RenderDatePicker';
 import ActionButtons from 'components/Atoms/ActionButtons';
-
-import {Subheading} from 'react-native-paper';
+import {Title} from 'react-native-paper';
+import RenderSelcetMultiple from 'components/Atoms/RenderSelectMultiple';
 
 const onSubmit = () => {
-  console.log('AddMaterialIndentList');
+  console.log('Create PR');
 };
 
 const options = ['A', 'B', 'C'];
 
-function AddMaterialIndent(props) {
+const PIAddMaterial = props => {
   const {navigation} = props;
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={{flexGrow: 1}}>
       <View style={styles.mainContainer}>
-        <View style={styles.headerContainer}>
-          <Subheading style={styles.headerText}>Add Material</Subheading>
-        </View>
+        <Title style={styles.headerText}>Add Material</Title>
         <Formik
           validateOnBlur={false}
           validateOnChange={false}
-          formikProps={props}
           initialValues={{
             category: '',
             subCategory: '',
-            requireddate: '',
+            requiredDate: '',
             qty: '',
+            lom: '',
           }}
           onSubmit={onSubmit}>
-          {({values, errors, handleChange, handleBlur, setFieldValue}) => {
+          {({
+            values,
+            errors,
+            handleChange,
+            handleBlur,
+            handleSubmit,
+            setFieldValue,
+          }) => {
             return (
               <View style={{flexGrow: 1}}>
                 <RenderSelect
@@ -58,19 +63,18 @@ function AddMaterialIndent(props) {
                     console.log('Select Box');
                   }}
                 />
-
                 <RenderInput
                   name="unit"
                   label="Unit"
                   containerStyles={styles.inputStyles}
-                  style={styles.input}
+                  style={{backgroundColor: 'rgba(0, 0, 0, 0.1);'}}
                   error={errors.subject}
                   editable={false}
                 />
                 <RenderDatePicker
-                  name="requireddate"
-                  label="Required Date"
+                  name="requiredDate"
                   style={styles.inputStyles}
+                  label="Required Date"
                   value={values.start_date}
                   error={errors.start_date}
                   onChange={() => console.log('date')}
@@ -78,7 +82,6 @@ function AddMaterialIndent(props) {
                 <RenderInput
                   name="qty"
                   label="Quantity"
-                  containerStyles={styles.inputStyles}
                   maxLength={10}
                   value={values.subject}
                   onChangeText={handleChange('qty')}
@@ -86,13 +89,26 @@ function AddMaterialIndent(props) {
                   autoCapitalize="none"
                   returnKeyType="next"
                   error={errors.subject}
+                  style={styles.inputStyles}
+                />
+
+                <RenderSelcetMultiple
+                  name="lom"
+                  label="List of Makes"
+                  options={options}
+                  value={values.interested_property}
+                  containerStyles={styles.input}
+                  error={errors.interested_property}
+                  onSelect={v => {
+                    setFieldValue('interested_property', v);
+                  }}
                 />
                 <View style={styles.btnContainer}>
                   <ActionButtons
                     cancelLabel="Cancel"
                     submitLabel="Save"
                     onCancel={navigation.goBack}
-                    onSubmit={() => navigation.navigate('AddMaterialList')}
+                    onSubmit={() => navigation.navigate('PIMaterialList')}
                   />
                 </View>
               </View>
@@ -100,48 +116,27 @@ function AddMaterialIndent(props) {
           }}
         </Formik>
       </View>
-      <View style={styles.btnContainer}>
-        <ActionButtons
-          cancelLabel="Cancel"
-          submitLabel="Save"
-          onCancel={navigation.goBack}
-          onSubmit={() => navigation.navigate('AddMaterialIndentList')}
-        />
-      </View>
-    </View>
+    </SafeAreaView>
   );
-}
+};
 
-export default AddMaterialIndent;
+export default PIAddMaterial;
 
 const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    margin: 10,
-  },
-
   mainContainer: {
     padding: 5,
     flexGrow: 1,
   },
   headerText: {
-    fontSize: 18,
+    fontSize: 22,
+    fontWeight: '400',
   },
   inputStyles: {
     marginVertical: 8,
   },
-
-  input: {
-    backgroundColor: 'rgba(0, 0, 0, 0.1);',
-  },
-
-  headerContainer: {
-    marginTop: 25,
-    marginBottom: 10,
-  },
   btnContainer: {
-    flex: 1,
+    flexGrow: 1,
     justifyContent: 'flex-end',
-    marginBottom: 50,
+    marginBottom: 20,
   },
 });

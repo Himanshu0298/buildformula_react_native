@@ -22,6 +22,12 @@ export default function useMaterialManagement() {
         config({multipart: true}),
       );
     },
+    getMaterialPR: data => {
+      return instance.post('/material_purchase_request/list', data, params);
+    },
+    getMaterialPRDetails: data => {
+      return instance.post('/material_purchase_request/detail', data, params);
+    },
 
     getSelectMaterialChallan: data => {
       return instance.post('/getChallanMaterial', data, params);

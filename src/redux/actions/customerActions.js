@@ -389,6 +389,7 @@ export default function useCustomerActions() {
         payload: async () => {
           try {
             const {data, msg} = _res(await getVisitorCustomerList(params));
+            console.log(data);
             return Promise.resolve(data);
           } catch (error) {
             const message = _err(error);

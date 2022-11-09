@@ -259,7 +259,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
         ),
       },
       {
-        id: 27,
+        // id: 27,
         route: 'MaterialIndent',
         label: 'Material Indent',
         icon: ({color, size}) => (
@@ -267,7 +267,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
         ),
       },
       {
-        id: 27,
+        // id: 27,
         route: 'StoreKeeperList',
         label: 'StoreKeeper',
         icon: ({color, size}) => (
