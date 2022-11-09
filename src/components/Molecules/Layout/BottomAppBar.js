@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, Text} from 'react-native';
 import {withTheme, Button} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import useAppActions from 'redux/actions/appActions';
@@ -29,10 +29,10 @@ function BottomAppBar(props) {
             icon="format-list-bulleted"
             mode="text"
             uppercase={false}
-            color="rgba(4, 29, 54, 0.4)"
+            color="rgb(4, 29, 54)"
             contentStyle={{paddingVertical: 5}}
             onPress={navigation.toggleDrawer}>
-            Menu
+            <Text style={{color: '#041d36'}}>Menu</Text>
           </Button>
           {/* <Button
             icon="magnify"
@@ -49,7 +49,7 @@ function BottomAppBar(props) {
             mode="text"
             uppercase={false}
             accessibilityRole="button"
-            color="rgba(4, 29, 54, 0.4)"
+            color="rgb(4, 29, 54)"
             onPress={onPressSwitch}
             contentStyle={{paddingVertical: 5}}>
             Switch
@@ -62,7 +62,7 @@ function BottomAppBar(props) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#fff',
+    backgroundColor: '#f9f9f9',
     ...getShadow(5),
   },
   contentContainer: {

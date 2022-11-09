@@ -14,6 +14,7 @@ import UserAvatar from 'components/Atoms/UserAvatar';
 import {PHONE_REGEX} from 'utils/constant';
 import ActionButtons from 'components/Atoms/ActionButtons';
 import ScreenTitle from 'components/Atoms/ScreenTitle';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 const schema = Yup.object().shape({
   first_name: Yup.string('Invalid').required('First name is required'),
@@ -139,7 +140,7 @@ function EditProfile(props) {
           const {profile_url} = formikProps.values;
 
           return (
-            <View style={styles.contentContainer}>
+            <KeyboardAwareScrollView style={styles.contentContainer}>
               <ScreenTitle title="Edit Profile Details" backIcon />
               <View style={styles.headerContainer}>
                 <View>
@@ -168,7 +169,7 @@ function EditProfile(props) {
               </View>
 
               <RenderForm {...props} {...{formikProps}} />
-            </View>
+            </KeyboardAwareScrollView>
           );
         }}
       </Formik>

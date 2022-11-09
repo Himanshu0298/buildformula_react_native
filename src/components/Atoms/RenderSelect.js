@@ -73,11 +73,12 @@ const RenderSelect = React.forwardRef((props, ref) => {
   return (
     <TouchableOpacity disabled={disabled} onPress={toggleOptions}>
       <RenderInput
+        ref={ref}
         editable={false}
         disabled={disabled}
         pointerEvents="none"
+        multiline
         keyboardShouldPersistTaps="always"
-        ref={ref}
         {...rest}
         value={value}
         right={

@@ -1,7 +1,6 @@
-import {StyleSheet, Text, View, Dimensions} from 'react-native';
-import React, {useState, useEffect} from 'react';
-import ProjectHeader from 'components/Molecules/Layout/ProjectHeader';
-import {IconButton, Caption} from 'react-native-paper';
+import {StyleSheet, Text, View} from 'react-native';
+import React, {useEffect} from 'react';
+import {IconButton, Caption, Subheading} from 'react-native-paper';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import ActionButtons from 'components/Atoms/ActionButtons';
@@ -10,39 +9,30 @@ import {useSelector} from 'react-redux';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 import {ScrollView} from 'react-native-gesture-handler';
 import Spinner from 'react-native-loading-spinner-overlay';
-import {getShadow} from 'utils';
-
-const {height} = Dimensions.get('window');
-
-const dynamicHeight = height - 245;
+import {getPermissions, getShadow} from 'utils';
 
 function RenderHeaderBar(props) {
-  console.log(
-    '🚀 ~ file: PRPreview.js ~ line 20 ~ RenderHeaderBar ~ props',
-    props,
-  );
-  const alert = useAlert();
-  const {goBack, NavigatetoCreatePR, status} = props;
+  const {goBack, navToEdit, showStatus, handleDelete} = props;
   return (
     <View style={styles.headerContainer}>
-      <View style={{flexDirection: 'row', alignItems: 'center'}}>
+      <View style={styles.container}>
         <IconButton
           icon="keyboard-backspace"
           size={22}
           color="#4872f4"
-          style={{backgroundColor: 'rgba(72, 114, 244, 0.1)'}}
+          style={styles.backIcon}
           onPress={() => goBack()}
         />
-        <Text style={styles.headerText}>PR Preview</Text>
+        <Subheading style={styles.headerText}>PR Preview</Subheading>
       </View>
-      <View style={{flexDirection: 'row', marginEnd: 10, alignSelf: 'center'}}>
-        {status == null ? (
-          <View style={{marginRight: 15}}>
+      <View style={styles.headerSubContainer}>
+        {showStatus == null ? (
+          <View style={styles.editIconContainer}>
             <OpacityButton
               color="#4872f4"
               opacity={0.18}
-              style={{borderRadius: 20, marginLeft: 15}}
-              onPress={NavigatetoCreatePR}>
+              style={styles.editIcon}
+              onPress={navToEdit}>
               <MaterialIcons name="edit" color="#4872f4" size={13} />
             </OpacityButton>
           </View>
@@ -51,14 +41,8 @@ function RenderHeaderBar(props) {
           <OpacityButton
             color="#FF5D5D"
             opacity={0.18}
-            onPress={() => {
-              alert.show({
-                title: 'Alert',
-                message: 'Are you sure want to delete this?',
-                dismissable: false,
-              });
-            }}
-            style={{borderRadius: 20}}>
+            onPress={handleDelete}
+            style={styles.deleteIcon}>
             <MaterialIcons name="delete" color="#FF5D5D" size={13} />
           </OpacityButton>
         </View>
@@ -68,49 +52,35 @@ function RenderHeaderBar(props) {
 }
 
 function RenderPRHeaderCard(props) {
+  const {PRDetails} = props;
+  const {details, requiredData} = PRDetails;
   const {
     id,
     subject,
     contractor_name,
-    required_for_data,
     remarks,
     first_name,
     last_name,
     created,
     status,
-  } = props;
+  } = details || {};
+
   return (
     <>
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-        }}>
+      <View style={styles.headerContainer}>
         <View style={styles.dataRow}>
           <Caption style={styles.lightData}>PR ID:</Caption>
           <Text>{id}</Text>
         </View>
-        {status === 'PR Rejected' ? (
-          <View style={{alignSelf: 'center', flexDirection: 'row'}}>
+        {status === 3 ? (
+          <View style={styles.statusContainer}>
             <MaterialIcons name="cancel" size={18} color="#FF5D5D" />
-            <Text
-              style={{
-                color: '#FF5D5D',
-                marginLeft: 5,
-              }}>
-              PR Rejected
-            </Text>
+            <Text style={styles.rejectedStatus}>PR Rejected</Text>
           </View>
-        ) : status === 'PR Approved' ? (
-          <View style={{alignSelf: 'center', flexDirection: 'row'}}>
+        ) : status === 2 ? (
+          <View style={styles.checkIcon}>
             <MaterialIcons name="check-circle" size={18} color="#07CA03" />
-            <Text
-              style={{
-                color: '#07CA03',
-                marginLeft: 5,
-              }}>
-              PR Approved
-            </Text>
+            <Text style={styles.approvedStatus}>PR Approved</Text>
           </View>
         ) : null}
       </View>
@@ -124,14 +94,14 @@ function RenderPRHeaderCard(props) {
       </View>
       <View style={styles.dataRow}>
         <Caption style={styles.lightData}>Required For:</Caption>
-        <Text style={{flexShrink: 1}}>{required_for_data}</Text>
+        <Text style={styles.text}>{requiredData}</Text>
       </View>
       <View style={styles.dataRow}>
         <Caption style={styles.lightData}>Remark:</Caption>
-        <Text style={{flexShrink: 1}}>{remarks}</Text>
+        <Text style={styles.text}>{remarks}</Text>
       </View>
       <View style={styles.dataRow}>
-        <Caption style={styles.lightData}>Creater Name:</Caption>
+        <Caption style={styles.lightData}>Creator Name:</Caption>
         <Text>{`${first_name} ${last_name}`}</Text>
       </View>
       <View style={styles.dataRow}>
@@ -143,13 +113,15 @@ function RenderPRHeaderCard(props) {
 }
 
 function RenderMaterialCard(props) {
+  const {item} = props;
   const {
     materialcategrytitle,
     subcategorytitle,
     materialunitstitle,
     created,
     material_quantity,
-  } = props;
+  } = item;
+
   return (
     <View style={styles.cardContainer}>
       <View style={styles.cardHeader}>
@@ -180,94 +152,108 @@ function RenderMaterialCard(props) {
 
 const PRPreview = props => {
   const {navigation, route} = props;
-  const goBack = () => {
-    navigation.goBack();
-  };
+  const {id} = route?.params || {};
 
-  const NavigatetoCreatePR = () => {
-    navigation.navigate('CreatePR');
-  };
-
-  const {purchase_request_id} = route?.params || {};
-
-  const {selectedProject} = useSelector(s => s.project);
-  const {prDetails, loading} = useSelector(s => s.materialManagement);
-  const project_id = selectedProject.id;
-
-  const {getMaterialPRDetails} = useMaterialManagementActions();
+  const alert = useAlert();
 
   const {
-    record_data = {},
-    material_request_items = {},
-    required_for_data = [],
-  } = prDetails[0] || {};
+    getPRMaterialDetails,
+    deleteMaterialPR,
+    updatePRStatus,
+    getPRMaterialOrderList,
+  } = useMaterialManagementActions();
+
+  const {selectedProject} = useSelector(s => s.project);
+  const {PRDetails, loading} = useSelector(s => s.materialManagement);
+  const projectId = selectedProject.id;
 
   useEffect(() => {
-    getMaterialPRDetails({project_id, purchase_request_id});
+    getPRDetails();
+    getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const [status, setStatus] = useState();
+  const goBack = () => navigation.goBack();
+  const modulePermission = getPermissions('PR List');
 
-  const materialIndex = Object.keys(material_request_items);
+  const getPRDetails = () => {
+    getPRMaterialDetails({project_id: projectId, purchase_request_id: id});
+  };
+  const getData = () =>
+    getPRMaterialOrderList({project_id: selectedProject.id});
+
+  const navToEdit = () => navigation.navigate('CreatePR', {id});
+
+  const updateStatus = async pr_status => {
+    const restData = {
+      project_id: projectId,
+      purchase_request_id: id,
+      pr_status,
+    };
+    await updatePRStatus(restData);
+    getPRDetails();
+  };
+
+  const handleDelete = i => {
+    alert.show({
+      title: 'Confirm',
+      message: 'Are you sure you want to delete?',
+      confirmText: 'Delete',
+      onConfirm: () => {
+        deleteMaterialPR({
+          purchase_request_id: id,
+          project_id: selectedProject.id,
+        });
+        getData();
+        navigation.goBack();
+      },
+    });
+  };
 
   return (
-    <View>
-      <ProjectHeader {...props} />
+    <View style={styles.mainContainer}>
       <Spinner visible={loading} textContent="" />
-      <View style={styles.mainContainer}>
+      <ScrollView>
         <RenderHeaderBar
           goBack={goBack}
-          NavigatetoCreatePR={NavigatetoCreatePR}
-          {...status}
+          navToEdit={navToEdit}
+          handleDelete={handleDelete}
         />
+
         <View style={styles.bodyContent}>
-          <ScrollView
-            style={styles.materialListContainer}
-            showsVerticalScrollIndicator={false}>
-            <RenderPRHeaderCard
-              {...record_data}
-              {...required_for_data}
-              {...status}
-            />
-            {materialIndex.map(key => {
-              const subCat = material_request_items[key];
-              return (
-                <>
-                  {subCat.map(item => {
-                    return <RenderMaterialCard {...item} />;
-                  })}
-                </>
-              );
-            })}
-          </ScrollView>
-          {status == null ? (
-            <ActionButtons
-              cancelLabel="Reject"
-              submitLabel="Approve"
-              onCancel={() => setStatus('PR Rejected')}
-              onSubmit={() => setStatus('PR Approved')}
-            />
-          ) : null}
+          <RenderPRHeaderCard {...props} PRDetails={PRDetails} />
+          {PRDetails?.materialItems?.map(item => {
+            return (
+              <View style={styles.cardSubContainer}>
+                <RenderMaterialCard {...props} item={item} />
+              </View>
+            );
+          })}
         </View>
-      </View>
+      </ScrollView>
+      {modulePermission?.editor || modulePermission?.admin ? (
+        PRDetails?.details?.status === 1 ? (
+          <ActionButtons
+            cancelLabel=" Reject"
+            submitLabel="Approve"
+            onCancel={() => updateStatus('rejected')}
+            onSubmit={() => updateStatus('approved')}
+          />
+        ) : null
+      ) : null}
     </View>
   );
 };
 
-export default PRPreview;
-
 const styles = StyleSheet.create({
   mainContainer: {
-    paddingHorizontal: 15,
+    margin: 10,
+    flexGrow: 1,
+    flex: 1,
   },
-  headerContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
+
   headerText: {
-    fontSize: 21,
-    fontWeight: '400',
+    fontSize: 18,
   },
   lightData: {
     fontSize: 13,
@@ -278,23 +264,74 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginVertical: 0.5,
   },
-  materialListContainer: {
-    marginTop: 10,
-    height: dynamicHeight,
-  },
+  // materialListContainer: {
+  //   marginTop: 10,
+  //   height: dynamicHeight,
+  // },
   cardContainer: {
-    marginVertical: 10,
-    borderWidth: 0.5,
+    padding: 10,
+    marginBottom: 10,
+    backgroundColor: '#fff',
     borderRadius: 5,
-    borderColor: 'rgba(0, 0, 0, 0.3)',
+    paddingHorizontal: 10,
     ...getShadow(2),
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-    padding: 12,
   },
   cardHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
+  container: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  statusContainer: {
+    alignSelf: 'center',
+    flexDirection: 'row',
+  },
+  rejectedStatus: {
+    color: '#FF5D5D',
+    marginLeft: 5,
+  },
+  checkIcon: {
+    alignSelf: 'center',
+    flexDirection: 'row',
+  },
+  approvedStatus: {
+    color: '#07CA03',
+    marginLeft: 5,
+  },
+  backIcon: {
+    backgroundColor: 'rgba(72, 114, 244, 0.1)',
+  },
+
+  headerSubContainer: {
+    flexDirection: 'row',
+    marginEnd: 10,
+    alignSelf: 'center',
+  },
+  deleteIcon: {
+    borderRadius: 20,
+  },
+  editIcon: {
+    borderRadius: 20,
+    marginLeft: 15,
+  },
+  editIconContainer: {
+    marginRight: 15,
+  },
+  text: {
+    flexShrink: 1,
+  },
+  cardSubContainer: {
+    marginTop: 10,
+  },
+  // subContainer: {
+  //   margin: 10,
+  // },
 });
+
+export default PRPreview;

@@ -170,11 +170,6 @@ const styles = StyleSheet.create({
   inputStyles: {
     marginVertical: 4,
   },
-  dialogActionContainer: {
-    marginTop: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
 });
 
 export default UpdateBillingInfo;

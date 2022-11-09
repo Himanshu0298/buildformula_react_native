@@ -5,77 +5,78 @@ import * as Yup from 'yup';
 import RenderInput from 'components/Atoms/RenderInput';
 import RenderSelect from 'components/Atoms/RenderSelect';
 import ActionButtons from 'components/Atoms/ActionButtons';
+import {Subheading} from 'react-native-paper';
 import RenderDatePicker from 'components/Atoms/RenderDatePicker';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {Title} from 'react-native-paper';
 
 const schema = Yup.object().shape({
-  inquiry_date: Yup.string()
-    .label('Inquiry Date')
-    .required('Inquiry Date is Required'),
-  validity_date: Yup.string()
-    .label('Inquiry Date')
-    .required('Validity Date is Required'),
+  subject: Yup.string().label('subject').required('Subject is Required'),
 });
 
 const onSubmit = () => {
-  console.log('Create PI');
+  console.log('Create PR');
 };
 
 const options = ['A', 'B', 'C'];
 
-const CreatePI = props => {
-  const {navigation, route} = props;
-  const {PO_Type} = route.params;
+function CreatePI(props) {
+  const {navigation} = props;
   return (
-    <SafeAreaView style={{flexGrow: 1}}>
+    <View style={styles.container}>
       <View style={styles.mainContainer}>
-        <Title>Create PI</Title>
+        <View style={styles.headerContainer}>
+          <Subheading style={styles.headerText}>Create PI </Subheading>
+        </View>
         <Formik
           validateOnBlur={false}
           validateOnChange={false}
           initialValues={{
-            inquiry_date: '',
-            validity_date: '',
-            contactPerson: '',
-            contactPersonNum: '',
+            subject: '',
+            vendorName: '',
+            requiredFor: '',
+            Remark: '',
           }}
           validationSchema={schema}
           onSubmit={onSubmit}>
-          {({values, errors, handleChange, handleBlur, handleSubmit}) => {
+          {({values, errors, handleChange, handleBlur}) => {
             return (
-              <View style={{flexGrow: 1}}>
+              <View>
                 <RenderInput
-                  name="inquiryNo"
-                  label="Inquiry No"
+                  name="inquiryNumber"
+                  label="Inquiry Number"
                   containerStyles={styles.inputStyles}
-                  style={{backgroundColor: 'rgba(0, 0, 0, 0.1);'}}
-                  editable={false}
+                  style={styles.input}
+                  maxLength={10}
+                  value={values.subject}
+                  onChangeText={handleChange('inquiryNumber')}
+                  onBlur={handleBlur('inquiryNumber')}
+                  autoCapitalize="none"
+                  returnKeyType="next"
+                  error={errors.inquiryNumber}
                 />
-
-                {PO_Type === 'FROMPO' ? (
-                  <RenderInput
-                    name="prID"
-                    label="PR ID"
-                    containerStyles={styles.inputStyles}
-                    style={{backgroundColor: 'rgba(0, 0, 0, 0.1);'}}
-                    editable={false}
-                  />
-                ) : null}
-
+                <RenderInput
+                  name="prId"
+                  label="PR ID"
+                  containerStyles={styles.inputStyles}
+                  style={styles.input}
+                  onBlur={handleBlur('prId')}
+                  value={values.subject}
+                  onChangeText={handleChange('prId')}
+                  autoCapitalize="none"
+                  returnKeyType="next"
+                  error={errors.prId}
+                />
                 <RenderDatePicker
-                  name="validity_date"
-                  style={styles.inputStyles}
+                  name="inquiry_date"
                   label="Inquiry Date"
-                  value={values.validity_date}
-                  error={errors.validity_date}
+                  containerStyles={styles.inputStyles}
+                  value={values.inquiry_date}
+                  error={errors.inquiry_date}
                   onChange={() => console.log('date')}
                 />
-
                 <RenderDatePicker
                   name="validity_date"
-                  style={styles.inputStyles}
-                  label="Validity Date"
+                  label="validity Date"
+                  containerStyles={styles.inputStyles}
                   value={values.validity_date}
                   error={errors.validity_date}
                   onChange={() => console.log('date')}
@@ -91,46 +92,65 @@ const CreatePI = props => {
                     console.log('Select Box');
                   }}
                 />
-
                 <RenderInput
-                  name="contactPersonNum"
-                  label="Contact Person Number"
+                  name="contactPersonNub"
+                  label="Contact person Number"
                   containerStyles={styles.inputStyles}
-                  style={{backgroundColor: 'rgba(0, 0, 0, 0.1);'}}
-                  editable={false}
+                  style={styles.input}
+                  onBlur={handleBlur('contactPersonNub')}
+                  value={values.subject}
+                  onChangeText={handleChange('contactPersonNub')}
+                  autoCapitalize="none"
+                  returnKeyType="next"
+                  error={errors.contactPersonNub}
                 />
-
-                <View style={styles.btnContainer}>
-                  <ActionButtons
-                    style={{justifyContent: 'flex-end'}}
-                    cancelLabel="Cancel"
-                    submitLabel="Next"
-                    onCancel={navigation.goBack}
-                    onSubmit={() => navigation.navigate('PIMaterialList')}
-                  />
-                </View>
               </View>
             );
           }}
         </Formik>
       </View>
-    </SafeAreaView>
+      <View style={styles.btnContainer}>
+        <ActionButtons
+          style={styles.actionButton}
+          cancelLabel="Cancel"
+          submitLabel="Next"
+          onCancel={navigation.goBack}
+          onSubmit={() => navigation.navigate('AddPIMaterial')}
+        />
+      </View>
+    </View>
   );
-};
+}
 
 export default CreatePI;
 
 const styles = StyleSheet.create({
+  container: {
+    flexGrow: 1,
+    margin: 10,
+  },
   mainContainer: {
     padding: 5,
-    flexGrow: 1,
+  },
+  input: {
+    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+  },
+
+  headerContainer: {
+    marginBottom: 10,
+  },
+  headerText: {
+    fontSize: 18,
   },
   inputStyles: {
     marginVertical: 8,
   },
   btnContainer: {
-    flexGrow: 1,
+    flex: 1,
     justifyContent: 'flex-end',
-    marginBottom: 20,
+    marginBottom: 50,
+  },
+  actionButton: {
+    justifyContent: 'flex-end',
   },
 });

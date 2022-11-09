@@ -33,11 +33,11 @@ function ActionButtons(props) {
 const styles = StyleSheet.create({
   actionContainer: {
     marginTop: 25,
-    paddingHorizontal: 10,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
     paddingBottom: 2,
+    marginHorizontal: -5,
   },
   actionButton: {
     flex: 1,

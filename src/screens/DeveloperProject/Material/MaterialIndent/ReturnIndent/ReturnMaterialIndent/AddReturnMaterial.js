@@ -1,39 +1,42 @@
-import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
-import React, {useState} from 'react';
+import {StyleSheet, View} from 'react-native';
+import React from 'react';
 
 import {Formik} from 'formik';
 import RenderInput from 'components/Atoms/RenderInput';
 import RenderSelect from 'components/Atoms/RenderSelect';
-import RenderDatePicker from 'components/Atoms/RenderDatePicker';
 import ActionButtons from 'components/Atoms/ActionButtons';
 
+import {Subheading} from 'react-native-paper';
+
 const onSubmit = () => {
-  console.log('Create PR');
+  console.log('AddReturnMaterialList');
 };
 
 const options = ['A', 'B', 'C'];
 
-const CreatePRMaterial = props => {
+function AddReturnMaterial(props) {
   const {navigation} = props;
+
   return (
-    <View style={{flexGrow: 1, paddingTop: 50}}>
+    <View style={styles.container}>
       <View style={styles.mainContainer}>
         <View style={styles.headerContainer}>
-          <Text style={styles.headerText}>Add Material</Text>
+          <Subheading style={styles.headerText}>Add Material</Subheading>
         </View>
         <Formik
           validateOnBlur={false}
           validateOnChange={false}
+          formikProps={props}
           initialValues={{
-            category: '',
-            subCategory: '',
-            requireddate: '',
-            qty: '',
+            subject: '',
+            vendorName: '',
+            requiredFor: '',
+            Remark: '',
           }}
           onSubmit={onSubmit}>
-          {({values, errors, handleChange, handleBlur, handleSubmit}) => {
+          {({values, errors, handleChange, handleBlur, setFieldValue}) => {
             return (
-              <View style={{flexGrow: 1}}>
+              <View>
                 <RenderSelect
                   name="category"
                   label="Category"
@@ -54,64 +57,69 @@ const CreatePRMaterial = props => {
                     console.log('Select Box');
                   }}
                 />
+
                 <RenderInput
-                  name="unit"
-                  label="Unit"
-                  containerStyles={styles.inputStyles}
-                  style={{backgroundColor: 'rgba(0, 0, 0, 0.1);'}}
-                  error={errors.subject}
-                  editable={false}
-                />
-                <RenderDatePicker
-                  name="requireddate"
-                  label="Required Date"
-                  style={styles.inputStyles}
-                  value={values.start_date}
-                  error={errors.start_date}
-                  onChange={() => console.log('date')}
-                />
-                <RenderInput
-                  name="qty"
-                  label="Quantity"
+                  name="fineQty"
+                  label="Fine Quantity"
                   containerStyles={styles.inputStyles}
                   maxLength={10}
-                  value={values.subject}
-                  onChangeText={handleChange('qty')}
-                  onBlur={handleBlur('qty')}
+                  value={values.fineQty}
+                  onChangeText={handleChange('fineQty')}
+                  onBlur={handleBlur('fineQty')}
                   autoCapitalize="none"
                   returnKeyType="next"
-                  error={errors.subject}
+                  error={errors.fineQty}
                 />
-                <View style={styles.btnContainer}>
-                  <ActionButtons
-                    cancelLabel="Cancel"
-                    submitLabel="Save"
-                    onCancel={navigation.goBack}
-                    onSubmit={() => navigation.navigate('AddMaterialList')}
-                  />
-                </View>
+                <RenderInput
+                  name="damageQty"
+                  label=" Damage Quantity"
+                  containerStyles={styles.inputStyles}
+                  maxLength={10}
+                  value={values.damageQty}
+                  onChangeText={handleChange('damageQty')}
+                  onBlur={handleBlur('damageQty')}
+                  autoCapitalize="none"
+                  returnKeyType="next"
+                  error={errors.damageQty}
+                />
               </View>
             );
           }}
         </Formik>
       </View>
+      <View style={styles.btnContainer}>
+        <ActionButtons
+          cancelLabel="Cancel"
+          submitLabel="Save"
+          onCancel={navigation.goBack}
+          onSubmit={() => navigation.navigate('AddReturnMaterialList')}
+        />
+      </View>
     </View>
   );
-};
+}
 
-export default CreatePRMaterial;
+export default AddReturnMaterial;
 
 const styles = StyleSheet.create({
+  container: {
+    flexGrow: 1,
+    margin: 12,
+  },
+
   mainContainer: {
     padding: 5,
-    flexGrow: 1,
   },
   headerText: {
-    fontSize: 22,
-    fontWeight: '400',
+    fontSize: 18,
   },
   inputStyles: {
     marginVertical: 8,
+  },
+
+  headerContainer: {
+    marginTop: 30,
+    marginBottom: 10,
   },
   btnContainer: {
     flex: 1,

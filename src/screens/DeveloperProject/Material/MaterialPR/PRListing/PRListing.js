@@ -1,113 +1,138 @@
-import {StyleSheet, Text, View, TouchableOpacity, FlatList} from 'react-native';
-import React, {useEffect} from 'react';
-import {Caption, Divider, FAB} from 'react-native-paper';
+import {
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  FlatList,
+  RefreshControl,
+} from 'react-native';
+import NoResult from 'components/Atoms/NoResult';
+
+import React from 'react';
+import {Caption, Divider, FAB, Subheading, Text} from 'react-native-paper';
+import {getShadow} from 'utils';
+import Spinner from 'react-native-loading-spinner-overlay';
 import {useSelector} from 'react-redux';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
-import {COMMON_STATUS} from 'utils/constant';
-import {getShadow} from 'utils';
+import {PR_REQUEST_STATUS} from 'utils/constant';
 
-function RenderPRCard(props) {
-  const {navPRDetails, prData} = props;
-  const {id, status, subject, approved_by, created} = prData;
+const ListingCard = props => {
+  const {navigation, item} = props;
+
+  const {id, status, created, approved_by, subject} = item;
+
+  const handleNav = () => navigation.navigate('PRPreview', {id, status});
+
   return (
-    <TouchableOpacity
-      style={{...getShadow(2)}}
-      onPress={() => {
-        navPRDetails(id);
-      }}>
+    <TouchableOpacity onPress={handleNav}>
       <View style={styles.cardContainer}>
         <View style={styles.cardHeader}>
           <Text style={styles.ID}>{id}</Text>
           <Caption
             style={{
-              color: COMMON_STATUS[status]?.color,
+              color: PR_REQUEST_STATUS[status]?.color,
             }}>
-            {COMMON_STATUS[status]?.label}
+            {PR_REQUEST_STATUS[status]?.label}
           </Caption>
         </View>
-        <Divider style={{color: 'rgba(0, 0, 0, 0.2)', height: 1}} />
-        <View>
-          <Text style={{marginTop: 5}}>{subject}</Text>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              marginTop: 10,
-            }}>
+        <Divider />
+        <View style={styles.cardDetails}>
+          <Subheading>{subject}</Subheading>
+          <View style={styles.cardContent}>
             <Caption>Approved by:</Caption>
-            <Text style={{marginLeft: 5}}>{approved_by}</Text>
+            <Text style={styles.detail}>{approved_by}</Text>
           </View>
           <Caption>{created}</Caption>
         </View>
       </View>
     </TouchableOpacity>
   );
-}
+};
 
-const PRListing = props => {
+function PRListing(props) {
   const {navigation} = props;
-  const navPRDetails = id => {
-    navigation.navigate('PRPreview', {purchase_request_id: id});
-  };
 
+  const {getPRMaterialOrderList} = useMaterialManagementActions();
+
+  const {PRList = [], loading} = useSelector(s => s.materialManagement);
   const {selectedProject} = useSelector(s => s.project);
-  const project_id = selectedProject.id;
 
-  const {getMaterialPR} = useMaterialManagementActions();
-
-  const {prList = []} = useSelector(s => s.materialManagement);
-
-  useEffect(() => {
-    getMaterialPR({project_id});
+  React.useEffect(() => {
+    getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const getData = () =>
+    getPRMaterialOrderList({project_id: selectedProject.id});
+
+  const renderEmpty = () => <NoResult />;
 
   return (
     <View style={styles.mainContainer}>
       <View style={styles.headerContainer}>
-        <Text style={styles.headerText}>PR Listing</Text>
+        <Subheading style={styles.headerText}>PR Listing</Subheading>
       </View>
       <View style={styles.bodyContainer}>
+        <Spinner visible={loading} textContent="" />
+
         <FlatList
+          style={styles.flatList}
+          data={PRList}
+          refreshControl={
+            <RefreshControl refreshing={false} onRefresh={getData} />
+          }
           showsVerticalScrollIndicator={false}
-          data={prList}
+          ListEmptyComponent={renderEmpty}
           keyExtractor={item => item.id}
           renderItem={({item}) => {
-            return <RenderPRCard navPRDetails={navPRDetails} prData={item} />;
+            return <ListingCard {...props} item={item} />;
           }}
         />
       </View>
       <FAB
-        style={[styles.fab, {backgroundColor: '#4872f4'}]}
+        style={styles.fab}
         large
         icon="plus"
-        onPress={() => navigation.navigate('CreatePR')}
+        onPress={() => navigation.navigate('CreatePR', {PRList})}
       />
     </View>
   );
-};
+}
 
 export default PRListing;
 
 const styles = StyleSheet.create({
   mainContainer: {
-    padding: 5,
-    paddingHorizontal: 15,
-    flex: 1,
+    margin: 20,
+    flexGrow: 1,
+  },
+
+  headerContainer: {
+    marginBottom: 10,
+  },
+  flatList: {
+    height: '96%',
   },
   headerText: {
-    fontSize: 22,
-    fontWeight: '400',
+    fontSize: 18,
+  },
+  cardContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 10,
   },
   bodyContainer: {
     flex: 1,
   },
   cardContainer: {
-    marginTop: 15,
-    borderWidth: 1,
-    borderColor: '#e5eafa',
+    marginBottom: 10,
+    backgroundColor: '#fff',
     borderRadius: 5,
     paddingHorizontal: 10,
+    ...getShadow(2),
+  },
+
+  cardDetails: {
+    padding: 5,
   },
   cardHeader: {
     padding: 10,
@@ -118,13 +143,18 @@ const styles = StyleSheet.create({
   },
   ID: {
     backgroundColor: '#E5EAFA',
-    padding: 5,
-    borderRadius: 3,
+    padding: 7,
+    borderRadius: 5,
+    fontSize: 10,
     color: 'rgba(72, 114, 244, 1)',
+  },
+  detail: {
+    marginLeft: 7,
   },
   fab: {
     position: 'absolute',
     right: 20,
     bottom: 20,
+    backgroundColor: '#4872f4',
   },
 });

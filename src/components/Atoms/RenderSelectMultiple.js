@@ -4,7 +4,7 @@ import {Chip} from 'react-native-paper';
 
 import RenderSelect from './RenderSelect';
 
-const RenderSelcetMultiple = props => {
+const RenderSelectMultiple = props => {
   const {value = [], onSelect, ...rest} = props;
 
   const handleSelect = v => {
@@ -60,4 +60,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RenderSelcetMultiple;
+export default RenderSelectMultiple;

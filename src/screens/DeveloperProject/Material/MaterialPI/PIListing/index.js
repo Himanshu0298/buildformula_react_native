@@ -1,11 +1,11 @@
 import React from 'react';
 import ProjectLayout from 'components/Molecules/Layout/ProjectLayout';
-import PILisitng from './PILisitng';
+import PIListing from './PIListing';
 
 export default props => {
   return (
     <ProjectLayout {...props} header>
-      <PILisitng {...props} />
+      <PIListing {...props} />
     </ProjectLayout>
   );
 };

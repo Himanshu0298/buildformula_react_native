@@ -1,8 +1,8 @@
 import {Platform} from 'react-native';
 import {theme} from 'styles/theme';
 
-// export const SITE_URL = 'http://104.198.176.6';
-export const SITE_URL = 'https://portal.buildformula.com';
+export const SITE_URL = 'http://104.198.176.6';
+// export const SITE_URL = 'https://portal.buildformula.com';
 export const BASE_API_URL = `${SITE_URL}/api/`;
 
 export const PHONE_REGEX =
@@ -62,10 +62,18 @@ export const MODIFY_REQUEST_STATUS = {
   confirmed_by_customer: {label: 'CONFIRMED BY CUSTOMER', color: '#041D36'},
 };
 
-export const COMMON_STATUS = {
+export const PR_REQUEST_STATUS = {
   1: {label: 'Pending', color: '#F4AF48'},
   2: {label: 'Approved', color: '#07CA03'},
   3: {label: 'Rejected', color: '#FF5D5D'},
+};
+export const PR_REQUEST_DETAILS_STATUS = {
+  1: {
+    label: 'PR Approved',
+    color: '#07CA03',
+    icon: 'check-circle',
+    2: {label: 'Rejected PR', color: '#FF5D5D', icon: 'cancel'},
+  },
 };
 
 export const KEYBOARD_SHOW =
@@ -74,3 +82,11 @@ export const KEYBOARD_HIDE =
   Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
 
 export const STRUCTURE_TYPE = {PLOT: 5, BUNGALOW: 4};
+
+export const DEFAULT_ADMIN_PERMISSIONS = {
+  admin: 1,
+  approval: 1,
+  editor: 1,
+  view: 1,
+  none: 0,
+};

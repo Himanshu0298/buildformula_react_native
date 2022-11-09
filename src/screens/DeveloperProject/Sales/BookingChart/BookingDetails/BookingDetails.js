@@ -410,11 +410,12 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     flexGrow: 1,
+    margin: 10,
     paddingBottom: 10,
   },
   contentContainer: {
     flex: 1,
-    paddingHorizontal: 20,
+    padding: 10,
   },
   headingContainer: {
     flexDirection: 'row',

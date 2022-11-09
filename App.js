@@ -28,7 +28,8 @@ import AlertProvider from './src/components/Atoms/Alert/AlertProvider';
 Sentry.init({
   environment: __DEV__ ? 'development' : 'release',
   dsn: 'https://9f461e9c89264233b4b5ed91e2882497@o523674.ingest.sentry.io/6256539',
-  tracesSampleRate: 1,
+  tracesSampleRate: __DEV__ ? 0 : 1,
+  sampleRate: __DEV__ ? 0 : 1,
 });
 
 const languageDetector = {
@@ -88,7 +89,7 @@ function App() {
 
   return (
     <>
-      <StatusBar barStyle="light-content" />
+      <StatusBar barStyle="dark-content" />
       <StoreProvider store={store}>
         <PersistGate loading={null} persistor={persistor}>
           <PaperProvider theme={theme}>
