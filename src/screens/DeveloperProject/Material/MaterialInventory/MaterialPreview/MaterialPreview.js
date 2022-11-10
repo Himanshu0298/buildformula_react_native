@@ -1,3 +1,4 @@
+import PostContent from 'components/Atoms/RenderSeeMore';
 import React from 'react';
 import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {
@@ -16,7 +17,7 @@ import {CardData} from '../Component/CardData';
 const InventoryCard = props => {
   const {navigation, ele} = props;
 
-  const {date, utility, Description, Quantity, Stock} = ele;
+  const {date, utility, description, Quantity, Stock} = ele;
 
   const navToSubListPreview = () => navigation.navigate('SubListPreview', ele);
   return (
@@ -31,15 +32,8 @@ const InventoryCard = props => {
           <Text>{utility}</Text>
         </View>
       </View>
-      <View>
-        <Caption>Description</Caption>
-        <Text>
-          {Description}
-          <TouchableOpacity>
-            <Text style={{color: theme.colors.primary}}> see more... </Text>
-          </TouchableOpacity>
-        </Text>
-      </View>
+
+      <PostContent description={description}>{description}</PostContent>
 
       <View style={styles.quantity}>
         <View>
@@ -133,6 +127,7 @@ function MaterialPreview(props) {
 }
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     flexGrow: 1,
     margin: 10,
   },
@@ -178,7 +173,7 @@ const styles = StyleSheet.create({
     backgroundColor: ' rgba(72, 114, 244, 0.2)',
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 10,
+    padding: 8,
     alignSelf: 'flex-end',
     borderRadius: 10,
   },

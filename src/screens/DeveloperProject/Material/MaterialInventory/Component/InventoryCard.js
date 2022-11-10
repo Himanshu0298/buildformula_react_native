@@ -1,22 +1,15 @@
+import PostContent from 'components/Atoms/RenderSeeMore';
 import React from 'react';
-import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
-import {
-  Text,
-  Divider,
-  Subheading,
-  IconButton,
-  Caption,
-} from 'react-native-paper';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {StyleSheet, View} from 'react-native';
+import {Text, Caption} from 'react-native-paper';
 
-import {theme} from 'styles/theme';
 import {getShadow} from 'utils';
 import {CardData} from './CardData';
 
-const InventoryCard = props => {
+const InventoryCard = () => {
   const [data] = CardData;
 
-  const {date, utility, Description, Quantity, Stock} = data;
+  const {date, utility, description, Quantity, Stock} = data;
 
   return (
     <View style={styles.cardContainer}>
@@ -31,13 +24,8 @@ const InventoryCard = props => {
         </View>
       </View>
       <View>
-        <Caption>Description</Caption>
-        <Text>
-          {Description}
-          <TouchableOpacity>
-            <Text style={{color: theme.colors.primary}}> see more... </Text>
-          </TouchableOpacity>
-        </Text>
+        <Caption> Description</Caption>
+        <PostContent description={description}>{description}</PostContent>
       </View>
 
       <View style={styles.quantity}>
@@ -73,14 +61,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 10,
-  },
-  button: {
-    backgroundColor: ' rgba(72, 114, 244, 0.2)',
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 10,
-    alignSelf: 'flex-end',
-    borderRadius: 10,
   },
 });
 
