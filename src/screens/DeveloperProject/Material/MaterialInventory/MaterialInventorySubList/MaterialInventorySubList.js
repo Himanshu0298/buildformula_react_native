@@ -2,7 +2,6 @@ import React from 'react';
 import {StyleSheet, View, TouchableOpacity} from 'react-native';
 import {Text, Divider, Subheading, IconButton} from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-
 import {theme} from 'styles/theme';
 
 const arr = [

@@ -543,7 +543,7 @@ function AddVisitor(props) {
   return (
     <View style={styles.container}>
       <Spinner visible={loading} textContent="" />
-      <StatusBar barStyle="light-content" />
+      <StatusBar barStyle="dark-content" />
       <View style={styles.body}>
         <Formik
           validateOnBlur={false}

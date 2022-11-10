@@ -111,7 +111,7 @@ function EmptyComponent() {
 function ProjectNotification(props) {
   const {isHome, navigation} = props;
 
-  const {getProjectNotifications, removeNotification} =
+  const {getProjectNotifications, removeNotification, removeAllNotifications} =
     useNotificationActions();
   const {setDrawerType} = useAppActions();
 
@@ -120,6 +120,11 @@ function ProjectNotification(props) {
 
   const clearNotification = async id => {
     await removeNotification(id, {project_id: selectedProject.id});
+    return loadData();
+  };
+
+  const clearAllNotifications = () => {
+    removeAllNotifications({project_id: selectedProject.id});
     return loadData();
   };
 
@@ -145,7 +150,11 @@ function ProjectNotification(props) {
     <View style={styles.container}>
       <View style={styles.rowBetween}>
         <ScreenTitle title="Notifications" backIcon />
-        <Text style={styles.allNotifications}>Mark all Read</Text>
+        <TouchableOpacity
+          style={styles.allNotifications}
+          onPress={clearAllNotifications}>
+          <Text>Mark all Read</Text>
+        </TouchableOpacity>
       </View>
 
       <ChatActivityButton />

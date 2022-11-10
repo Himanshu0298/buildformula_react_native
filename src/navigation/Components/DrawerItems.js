@@ -236,7 +236,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
     routes: [
       {
         id: 20,
-        route: 'MaterialGRN',
+        route: 'MaterialGRNListing',
         label: 'GRN',
         icon: ({color, size}) => (
           <MaterialCommunityIcons name="wall" {...{color, size}} />
@@ -259,7 +259,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
         ),
       },
       {
-        id: 27,
+        // id: 27,
         route: 'MaterialIndent',
         label: 'Material Indent',
         icon: ({color, size}) => (
@@ -267,8 +267,8 @@ export const DEVELOPER_DRAWER_ITEMS = [
         ),
       },
       {
-        id: 27,
-        route: 'StoreKeeper',
+        // id: 27,
+        route: 'StoreKeeperList',
         label: 'StoreKeeper',
         icon: ({color, size}) => (
           <MaterialCommunityIcons

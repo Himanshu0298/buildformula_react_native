@@ -221,6 +221,10 @@ function RenderForm({formikProps, navigation}) {
 function AddCustomer(props) {
   const {navigation, route} = props;
   const {params} = route;
+  console.log(
+    '🚀 ~ file: AddCustomer.js ~ line 224 ~ AddCustomer ~ params',
+    params,
+  );
   const {unit, edit, customer} = params;
 
   const {t} = useTranslation();
@@ -276,7 +280,7 @@ function AddCustomer(props) {
             );
 
             if (edit) {
-              formData.append('user_id', customer.user_id);
+              formData.append('user_id', customer.id);
             }
 
             await addCustomer(formData);

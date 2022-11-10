@@ -15,7 +15,7 @@ import Header from '../../CommonComponents/Header';
 import Pagination from '../../CommonComponents/Pagination';
 
 const schema = Yup.object().shape({
-  challan: Yup.number('Required').required('Required'),
+  challan: Yup.string('Required').required('Required'),
   attachments: Yup.mixed().required('File is required'),
 });
 

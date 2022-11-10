@@ -9,8 +9,8 @@ import {
   Caption,
   Button,
 } from 'react-native-paper';
-
 import {theme} from 'styles/theme';
+
 import InventoryCard from '../Component/InventoryCard';
 
 const FILTERS = [

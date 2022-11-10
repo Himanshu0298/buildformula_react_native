@@ -38,6 +38,7 @@ function Details(props) {
     remarks,
     inquiry_status_id,
     intrestedIn,
+    broker_name,
   } = visitor;
 
   const snackbar = useSnackbar();
@@ -169,6 +170,10 @@ function Details(props) {
               style={styles.badge}
             />
           </Caption>
+        </View>
+        <View style={styles.detailRow}>
+          <Paragraph>Broker</Paragraph>
+          <Caption style={styles.value}>{broker_name || 'NA'}</Caption>
         </View>
         <View style={styles.detailRow}>
           <Paragraph>Status</Paragraph>

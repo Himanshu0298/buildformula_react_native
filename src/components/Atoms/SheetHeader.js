@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
-import {theme} from 'styles/theme';
 import PropType from 'prop-types';
+import {theme} from 'styles/theme';
 
 function SheetHeader({panelColor, color}) {
   return (

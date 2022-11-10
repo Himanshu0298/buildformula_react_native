@@ -183,7 +183,6 @@ function OrderDetail(props) {
         summaryData={selectedMaterial?.summary || []}
       />
       <Spinner visible={loading} textContent="" />
-
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.subheadingContainer}>
           <Subheading>Challans</Subheading>

@@ -120,6 +120,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 10,
   },
+  bodyContainer: {
+    flex: 1,
+  },
   cardContainer: {
     marginBottom: 10,
     backgroundColor: '#fff',

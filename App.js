@@ -89,7 +89,7 @@ function App() {
 
   return (
     <>
-      <StatusBar barStyle="light-content" />
+      <StatusBar barStyle="dark-content" />
       <StoreProvider store={store}>
         <PersistGate loading={null} persistor={persistor}>
           <PaperProvider theme={theme}>

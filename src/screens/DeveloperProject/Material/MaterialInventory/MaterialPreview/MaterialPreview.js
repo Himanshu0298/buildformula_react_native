@@ -9,8 +9,8 @@ import {
   Caption,
 } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-
 import {theme} from 'styles/theme';
+
 import {getShadow} from 'utils';
 import {CardData} from '../Component/CardData';
 

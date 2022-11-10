@@ -38,6 +38,7 @@ function AddMaterialIndentList(props) {
           <FlatList
             data={PIMaterialList}
             renderItem={({item}) => {
+              console.log(item);
               return (
                 <View style={styles.cardContainer}>
                   <View style={styles.cardHeader}>
@@ -103,7 +104,6 @@ function AddMaterialIndentList(props) {
             }}
           />
         </View>
-
         <View>
           <ActionButtons
             cancelLabel="Previous"

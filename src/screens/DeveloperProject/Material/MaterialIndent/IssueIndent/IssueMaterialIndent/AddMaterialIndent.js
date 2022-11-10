@@ -29,15 +29,15 @@ function AddMaterialIndent(props) {
           validateOnChange={false}
           formikProps={props}
           initialValues={{
-            subject: '',
-            vendorName: '',
-            requiredFor: '',
-            Remark: '',
+            category: '',
+            subCategory: '',
+            requireddate: '',
+            qty: '',
           }}
           onSubmit={onSubmit}>
           {({values, errors, handleChange, handleBlur, setFieldValue}) => {
             return (
-              <View>
+              <View style={{flexGrow: 1}}>
                 <RenderSelect
                   name="category"
                   label="Category"
@@ -68,8 +68,9 @@ function AddMaterialIndent(props) {
                   editable={false}
                 />
                 <RenderDatePicker
-                  name="start_date"
+                  name="requireddate"
                   label="Required Date"
+                  style={styles.inputStyles}
                   value={values.start_date}
                   error={errors.start_date}
                   onChange={() => console.log('date')}
@@ -86,6 +87,14 @@ function AddMaterialIndent(props) {
                   returnKeyType="next"
                   error={errors.subject}
                 />
+                <View style={styles.btnContainer}>
+                  <ActionButtons
+                    cancelLabel="Cancel"
+                    submitLabel="Save"
+                    onCancel={navigation.goBack}
+                    onSubmit={() => navigation.navigate('AddMaterialList')}
+                  />
+                </View>
               </View>
             );
           }}
@@ -113,6 +122,7 @@ const styles = StyleSheet.create({
 
   mainContainer: {
     padding: 5,
+    flexGrow: 1,
   },
   headerText: {
     fontSize: 18,

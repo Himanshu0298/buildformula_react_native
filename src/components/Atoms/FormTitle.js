@@ -29,10 +29,10 @@ FormTitle.defaultProps = {
   subTitle: 'subTitle',
 };
 
-FormTitle.propTypes = {
-  title: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]).isRequired,
-  renderTitle: PropTypes.func,
-  subTitle: PropTypes.string.isRequired,
-};
+// FormTitle.propTypes = {
+//   title: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]).isRequired,
+//   renderTitle: PropTypes.func,
+//   subTitle: PropTypes.string.isRequired,
+// };
 
 export default withTheme(FormTitle);
