@@ -7,8 +7,8 @@ import {
   IconButton,
   Text,
   Caption,
+  Button,
 } from 'react-native-paper';
-import {Button} from 'react-native-share';
 
 import {theme} from 'styles/theme';
 import InventoryCard from '../Component/InventoryCard';
@@ -21,24 +21,24 @@ const FILTERS = [
 
 const ChallanDetails = () => {
   return (
-    <View>
-      <View>
+    <View style={styles.detailsContainer}>
+      <View style={styles.details}>
         <Caption> Delivery Date</Caption>
         <Text>6 Oct, 2022</Text>
       </View>
-      <View>
+      <View style={styles.details}>
         <Caption> Challan No</Caption>
         <Text>A - 33458</Text>
       </View>
-      <View>
+      <View style={styles.details}>
         <Caption> Driver Name</Caption>
         <Text>Himanshu Patel</Text>
       </View>
-      <View>
+      <View style={styles.details}>
         <Caption> Vehical No</Caption>
         <Text>GJ - 11 - HS - 4347</Text>
       </View>
-      <View>
+      <View style={styles.details}>
         <Caption>Created by</Caption>
         <Text>Chirag Pithadiya</Text>
         <Caption>chiragpithadiya@buildformula.com</Caption>
@@ -50,23 +50,23 @@ const ChallanDetails = () => {
 const RequestDetail = () => {
   return (
     <View>
-      <View>
+      <View style={styles.details}>
         <Caption> Request Date</Caption>
         <Text>6 Oct, 2022</Text>
       </View>
-      <View>
+      <View style={styles.details}>
         <Caption> Request No</Caption>
         <Text>A - 33458</Text>
       </View>
-      <View>
+      <View style={styles.details}>
         <Caption> Proposal Name</Caption>
         <Text>Himanshu Patel</Text>
       </View>
-      <View>
+      <View style={styles.details}>
         <Caption> Request No</Caption>
         <Text>A - 33458</Text>
       </View>
-      <View>
+      <View style={styles.details}>
         <Caption>Requested by</Caption>
         <Text>Chirag Pithadiya</Text>
         <Caption>chiragpithadiya@buildformula.com</Caption>
@@ -78,24 +78,24 @@ const RequestDetail = () => {
 const OrderDetails = () => {
   return (
     <View>
-      <View>
+      <View style={styles.details}>
         <Caption> Request Date</Caption>
         <Text>6 Oct, 2022</Text>
       </View>
-      <View>
+      <View style={styles.details}>
         <Caption> Request No</Caption>
         <Text>A - 33458</Text>
       </View>
-      <View>
+      <View style={styles.details}>
         <Caption> Company Name</Caption>
         <Text>Himanshu Patel</Text>
       </View>
 
-      <View>
+      <View style={styles.details}>
         <Caption> Supplier Name</Caption>
         <Text>Himanshu Patel</Text>
       </View>
-      <View>
+      <View style={styles.details}>
         <Caption>Order Amount</Caption>
         <Text>33458</Text>
       </View>
@@ -111,11 +111,13 @@ const OrderDetails = () => {
 const DetailCard = props => {
   const {contentType} = props;
   return (
-    <View>
-      {contentType === 'challan_details' ? <ChallanDetails /> : null}
-      {contentType === 'order_details' ? <OrderDetails /> : null}
-      {contentType === 'request_details' ? <RequestDetail /> : null}
-    </View>
+    <ScrollView>
+      <View style={{margin: 10}}>
+        {contentType === 'challan_details' ? <ChallanDetails /> : null}
+        {contentType === 'order_details' ? <OrderDetails /> : null}
+        {contentType === 'request_details' ? <RequestDetail /> : null}
+      </View>
+    </ScrollView>
   );
 };
 function FilterPanel(props) {
@@ -173,13 +175,17 @@ function SubListPreview(props) {
       <Divider />
 
       <FilterPanel setFilter={setFilter} filter={filter} />
-      <DetailCard contentType={filter} />
+
+      <View>
+        <DetailCard contentType={filter} />
+      </View>
     </View>
   );
 }
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
+    flex: 1,
     margin: 10,
   },
 
@@ -195,22 +201,14 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(72, 114, 244, 0.1)',
   },
   filter: {
-    marginHorizontal: 10,
+    marginHorizontal: 5,
     borderRadius: 20,
   },
   filterContainer: {
     marginTop: 10,
-    marginHorizontal: 30,
-
-    flexDirection: 'row',
-    // justifyContent: 'center',
-    // alignItems: 'baseline',
   },
-  filterSubContainer: {
-    marginHorizontal: 100,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
+  detailsContainer: {margin: 10},
+  details: {marginTop: 5},
 });
 
 export default SubListPreview;

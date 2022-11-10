@@ -6,8 +6,8 @@ import {
   IconButton,
   Text,
   Caption,
+  Button,
 } from 'react-native-paper';
-import {Button} from 'react-native-share';
 
 import {theme} from 'styles/theme';
 import InventoryCard from '../Component/InventoryCard';
@@ -20,11 +20,11 @@ const FILTERS = [
 const IndentDetail = () => {
   return (
     <View>
-      <View>
+      <View style={styles.details}>
         <Caption> Date</Caption>
         <Text>6 Oct, 2022</Text>
       </View>
-      <View>
+      <View style={styles.details}>
         <Caption> Indent Number</Caption>
         <Text>18</Text>
       </View>
@@ -35,15 +35,15 @@ const IndentDetail = () => {
 const OrderDetails = () => {
   return (
     <View>
-      <View>
+      <View style={styles.details}>
         <Caption> Date</Caption>
         <Text>6 Oct, 2022</Text>
       </View>
-      <View>
+      <View style={styles.details}>
         <Caption> Company Name</Caption>
         <Text>Tata steel pvt limited</Text>
       </View>
-      <View>
+      <View style={styles.details}>
         <Caption> Supplier Name</Caption>
         <Text>Himanshu Patel</Text>
       </View>
@@ -64,26 +64,24 @@ function FilterPanel(props) {
   const {filter, setFilter} = props;
 
   return (
-    <View style={styles.filterContainer}>
-      <View style={styles.filterSubContainer}>
-        {FILTERS.map(i => {
-          const active = filter === i.value;
-          return (
-            <Button
-              mode="outlined"
-              onPress={() => {
-                setFilter(i.value);
-              }}
-              color={active ? 'white' : null}
-              style={[
-                styles.filter,
-                active ? {backgroundColor: theme.colors.primary} : {},
-              ]}>
-              {i.label}
-            </Button>
-          );
-        })}
-      </View>
+    <View style={styles.filterSubContainer}>
+      {FILTERS.map(i => {
+        const active = filter === i.value;
+        return (
+          <Button
+            mode="outlined"
+            onPress={() => {
+              setFilter(i.value);
+            }}
+            color={active ? 'white' : null}
+            style={[
+              styles.filter,
+              active ? {backgroundColor: theme.colors.primary} : {},
+            ]}>
+            {i.label}
+          </Button>
+        );
+      })}
     </View>
   );
 }
@@ -137,18 +135,14 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     borderRadius: 20,
   },
-  filterContainer: {
+
+  filterSubContainer: {
     marginTop: 10,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  filterSubContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginRight: 60,
-  },
+  details: {marginTop: 5},
 });
 
 export default InventorySubListPreview;
