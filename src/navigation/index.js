@@ -134,12 +134,12 @@ import PRPreview from 'screens/DeveloperProject/Material/MaterialPR/PRPreview';
 import AddMaterialList from 'screens/DeveloperProject/Material/MaterialPR/MaterialPRList';
 
 import MaterialIndentListing from 'screens/DeveloperProject/Material/MaterialIndent/MaterialIndentList';
-import CreatePI from 'screens/DeveloperProject/Material/MaterialPI/CreatePI/CreatePI';
-import CreatePIMaterial from 'screens/DeveloperProject/Material/MaterialPI/CreatePI/AddPIMaterial';
+import CreatePI from 'screens/DeveloperProject/Material/MaterialPI/CreatePI';
+import CreatePIMaterial from 'screens/DeveloperProject/Material/MaterialPI/MaterialList';
 import PIPreview from 'screens/DeveloperProject/Material/MaterialPI/PIPreview/PIPreview';
 import PIRequest from 'screens/DeveloperProject/Material/MaterialPI/PIRequest/PIRequest';
-import TermsAndConditions from 'screens/DeveloperProject/Material/MaterialPI/CreatePI/Terms&Conditions';
-import AddPIMaterialList from 'screens/DeveloperProject/Material/MaterialPI/CreatePI/AddPIMaterialList';
+import TermsAndConditions from 'screens/DeveloperProject/Material/MaterialPI/TermsAndConditions';
+import AddPIMaterialList from 'screens/DeveloperProject/Material/MaterialPI/MaterialList/AddPIMaterialList';
 import AddChallan from 'screens/DeveloperProject/Material/DeliveryDetails/AddChallan';
 
 import AddMaterialIndent from 'screens/DeveloperProject/Material/MaterialIndent/IssueIndent/IssueMaterialIndent/AddMaterialIndent';
