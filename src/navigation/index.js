@@ -480,20 +480,6 @@ function AppStackNavigator() {
                 component={AddMaterialList}
               />
 
-              {/* <Stack.Screen name="PILisitng" component={PILisitng} /> */}
-
-              {/* <Stack.Screen name="FROMPR" component={FROMPR} /> */}
-
-              {/* <Stack.Screen name="CreatePI" component={CreatePI} /> */}
-
-              {/* <Stack.Screen name="PIMaterialList" component={PIMaterialList} /> */}
-
-              {/* <Stack.Screen name="PIAddMaterial" component={PIAddMaterial} /> */}
-
-              {/* <Stack.Screen name="PITnC" component={PITnC} /> */}
-
-              {/* <Stack.Screen name="PIPreview" component={PIPreview} /> */}
-
               <Stack.Screen
                 name="SelectMaterials"
                 component={SelectMaterials}
