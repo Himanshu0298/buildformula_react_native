@@ -12,8 +12,9 @@ import {useSelector} from 'react-redux';
 import ScreenTitle from 'components/Atoms/ScreenTitle';
 import useAppActions from 'redux/actions/appActions';
 import userProfile from 'assets/images/customer.png';
-import ImageProgress from 'react-native-image-progress';
+
 import * as Progress from 'react-native-progress';
+import ImageProgress from 'react-native-image-progress';
 
 function Profile(props) {
   const {theme, navigation} = props;

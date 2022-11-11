@@ -7,7 +7,7 @@ import ProjectHeader from 'components/Molecules/Layout/ProjectHeader';
 import {getShadow} from 'utils';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
-import RenderInput from 'components/Atoms/RenderInput';
+import RenderInput, {RenderError} from 'components/Atoms/RenderInput';
 import {useTranslation} from 'react-i18next';
 import RenderSelect from 'components/Atoms/RenderSelect';
 import {BHK_OPTIONS, PHONE_REGEX, PRIORITY_COLORS} from 'utils/constant';
@@ -290,6 +290,7 @@ function InquiryTab(props) {
               />
             </View>
           </View>
+          <RenderError error={errors.priority} />
 
           <RenderSelect
             name="inquiry_for"

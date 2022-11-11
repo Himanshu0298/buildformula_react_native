@@ -33,6 +33,7 @@
     "axios": "^0.27.2",
     "dayjs": "^1.11.1",
     "deepmerge": "^4.2.2",
+    "expo-linear-gradient": "^12.0.1",
     "formik": "^2.2.9",
     "i18next": "^21.6.16",
     "lodash": "^4.17.21",
@@ -109,6 +110,7 @@
     "redux-persist-transform-encrypt": "^3.0.1",
     "redux-promise-middleware": "^6.1.2",
     "redux-thunk": "^2.4.1",
+    "v8-compile-cache": "^2.3.0",
     "yup": "^0.32.11"
   },
   "devDependencies": {

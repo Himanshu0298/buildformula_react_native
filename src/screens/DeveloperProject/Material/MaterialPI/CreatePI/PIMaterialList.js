@@ -6,7 +6,7 @@ import {Caption} from 'react-native-paper';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useAlert} from 'components/Atoms/Alert';
-import PRMaterialData from '../../MaterialPR/CreatePR/PRMaterialData';
+import PRMaterialData from './PIMaterialData';
 
 const {height} = Dimensions.get('window');
 

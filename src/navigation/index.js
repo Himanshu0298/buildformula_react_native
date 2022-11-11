@@ -133,12 +133,12 @@ import PRPreview from 'screens/DeveloperProject/Material/MaterialPR/PRPreview';
 import AddMaterialList from 'screens/DeveloperProject/Material/MaterialPR/MaterialPRList';
 
 import MaterialIndentListing from 'screens/DeveloperProject/Material/MaterialIndent/MaterialIndentList';
-import CreatePI from 'screens/DeveloperProject/Material/MaterialPI/CreatePI/CreatePI';
-import CreatePIMaterial from 'screens/DeveloperProject/Material/MaterialPI/CreatePI/AddPIMaterial';
+import CreatePI from 'screens/DeveloperProject/Material/MaterialPI/CreatePI';
+import CreatePIMaterial from 'screens/DeveloperProject/Material/MaterialPI/MaterialList';
 import PIPreview from 'screens/DeveloperProject/Material/MaterialPI/PIPreview/PIPreview';
 import PIRequest from 'screens/DeveloperProject/Material/MaterialPI/PIRequest/PIRequest';
-import TermsAndConditions from 'screens/DeveloperProject/Material/MaterialPI/CreatePI/Terms&Conditions';
-import AddPIMaterialList from 'screens/DeveloperProject/Material/MaterialPI/CreatePI/AddPIMaterialList';
+import TermsAndConditions from 'screens/DeveloperProject/Material/MaterialPI/TermsAndConditions';
+import AddPIMaterialList from 'screens/DeveloperProject/Material/MaterialPI/MaterialList/AddPIMaterialList';
 import AddChallan from 'screens/DeveloperProject/Material/DeliveryDetails/AddChallan';
 
 import AddMaterialIndent from 'screens/DeveloperProject/Material/MaterialIndent/IssueIndent/IssueMaterialIndent/AddMaterialIndent';
@@ -160,6 +160,16 @@ import AddMaterial from 'screens/DeveloperProject/Material/MaterialGRN/Component
 import StoreKeeperPreview from 'screens/DeveloperProject/Material/StoreKeeper/StoreKeeperPreview';
 import IssueIndent from 'screens/DeveloperProject/Material/StoreKeeper/IssueIndent';
 import VehicleInfo from 'screens/DeveloperProject/Material/MaterialGRN/Components/VehicleInfo';
+
+import AddReturnMaterialIndent from 'screens/DeveloperProject/Material/MaterialIndent/ReturnIndent/ReturnMaterialIndent/AddReturnMaterial';
+import AddMaterialIndentList from 'screens/DeveloperProject/Material/MaterialIndent/IssueIndent/IssueMaterialIndent';
+import AddReturnMaterialList from 'screens/DeveloperProject/Material/MaterialIndent/ReturnIndent/ReturnMaterialIndent/AddReturnMaterialList';
+import AddAttachments from 'screens/DeveloperProject/Material/MaterialIndent/ReturnIndent/AddAttachments/AddAttachments';
+import MaterialInventoryList from 'screens/DeveloperProject/Material/MaterialInventory/MaterialInventoryList';
+import MaterialInventorySubList from 'screens/DeveloperProject/Material/MaterialInventory/MaterialInventorySubList';
+import InventorySubListPreview from 'screens/DeveloperProject/Material/MaterialInventory/InventorySubListPreview';
+import MaterialPreview from 'screens/DeveloperProject/Material/MaterialInventory/MaterialPreview';
+import SubListPreview from 'screens/DeveloperProject/Material/MaterialInventory/SubListPreview';
 
 // Project : Files screens
 import Files from '../screens/DeveloperProject/Files';
@@ -189,10 +199,6 @@ import LanguageSelect from '../screens/Auth/LanguageSelect';
 import DrawerContent from './Components/DrawerContent';
 import DocumentGenerater from 'screens/DeveloperProject/DocumentGenerater';
 import DocumentDownload from 'screens/DeveloperProject/DocumentGenerater/Documents/DocumentDownload';
-import AddReturnMaterialIndent from 'screens/DeveloperProject/Material/MaterialIndent/ReturnIndent/ReturnMaterialIndent/AddReturnMaterial';
-import AddMaterialIndentList from 'screens/DeveloperProject/Material/MaterialIndent/IssueIndent/IssueMaterialIndent';
-import AddReturnMaterialList from 'screens/DeveloperProject/Material/MaterialIndent/ReturnIndent/ReturnMaterialIndent/AddReturnMaterialList';
-import AddAttachments from 'screens/DeveloperProject/Material/MaterialIndent/ReturnIndent/AddAttachments/AddAttachments';
 import StoreKeeperList from 'screens/DeveloperProject/Material/StoreKeeper/StoreKeeperList';
 
 /** *********** Developer Project Sub Screens End   ************ */
@@ -474,25 +480,28 @@ function AppStackNavigator() {
                 component={AddMaterialList}
               />
 
-              {/* <Stack.Screen name="PILisitng" component={PILisitng} /> */}
-
-              {/* <Stack.Screen name="FROMPR" component={FROMPR} /> */}
-
-              <Stack.Screen name="CreatePI" component={CreatePI} />
-
-              {/* <Stack.Screen name="PIMaterialList" component={PIMaterialList} /> */}
-
-              {/* <Stack.Screen name="PIAddMaterial" component={PIAddMaterial} /> */}
-
-              {/* <Stack.Screen name="PITnC" component={PITnC} /> */}
-
-              <Stack.Screen name="PIPreview" component={PIPreview} />
-
               <Stack.Screen
                 name="SelectMaterials"
                 component={SelectMaterials}
               />
 
+              <Stack.Screen
+                name="MaterialInventory"
+                component={MaterialInventoryList}
+              />
+              <Stack.Screen
+                name="MaterialPreview"
+                component={MaterialPreview}
+              />
+              <Stack.Screen
+                name="MaterialInventorySubList"
+                component={MaterialInventorySubList}
+              />
+              <Stack.Screen
+                name="InventorySubListPreview"
+                component={InventorySubListPreview}
+              />
+              <Stack.Screen name="SubListPreview" component={SubListPreview} />
               <Stack.Screen
                 name="AddMaterialInfo"
                 component={AddMaterialInfo}

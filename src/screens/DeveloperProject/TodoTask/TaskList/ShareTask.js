@@ -30,7 +30,7 @@ function RenderUser(props) {
   const selected = selectedUsers.find(i => i.userId === id);
 
   const selectedRole = selected
-    ? USER_ROLES.find(i => i.id === selected.roleId)
+    ? USER_ROLES.find(i => i.id === selected?.roleId)
     : USER_ROLES[0];
 
   return (

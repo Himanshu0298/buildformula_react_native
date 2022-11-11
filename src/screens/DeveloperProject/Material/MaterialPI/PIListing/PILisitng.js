@@ -10,7 +10,7 @@ import React, {useState} from 'react';
 import {theme} from 'styles/theme';
 import {Title, Divider, FAB, Caption} from 'react-native-paper';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {PIData} from './PIData';
+import {PIList} from './PIData';
 
 const PILisitng = props => {
   const {navigation} = props;
@@ -27,7 +27,7 @@ const PILisitng = props => {
       <View style={styles.piContainer}>
         <FlatList
           style={{height: '93%'}}
-          data={PIData}
+          data={PIList}
           renderItem={({item}) => {
             return (
               <TouchableOpacity
