@@ -12,7 +12,7 @@ const arr = [
   {title: 'White Cement'},
 ];
 
-const MC = () => {
+const MCIcon = () => {
   return (
     <View style={styles.mcContainer}>
       <Text style={{color: theme.colors.white}}> MC</Text>
@@ -44,7 +44,7 @@ function MaterialSubList(props) {
               <View style={styles.sectionContainer}>
                 <View style={styles.taskContainer}>
                   <View style={styles.calenderIcon}>
-                    <MC />
+                    <MCIcon />
                   </View>
                   <Text style={styles.subHeading}>{ele.title}</Text>
                 </View>

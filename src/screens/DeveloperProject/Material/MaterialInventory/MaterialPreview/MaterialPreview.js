@@ -33,7 +33,7 @@ const InventoryCard = props => {
         </View>
       </View>
 
-      <PostContent description={description}>{description}</PostContent>
+      <PostContent description={description} />
 
       <View style={styles.quantity}>
         <View>

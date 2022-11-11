@@ -25,7 +25,7 @@ const InventoryCard = () => {
       </View>
       <View>
         <Caption> Description</Caption>
-        <PostContent description={description}>{description}</PostContent>
+        <PostContent description={description} />
       </View>
 
       <View style={styles.quantity}>
