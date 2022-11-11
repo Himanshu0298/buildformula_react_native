@@ -10,22 +10,20 @@ const PostContent = props => {
   const toggleShowMore = () => setShowMore(v => !v);
 
   if (description?.length <= 80) {
-    return <Text style={styles.description}>{description}</Text>;
+    return <Text>{description}</Text>;
   }
 
   return (
-    <View style={styles.postContentContainer}>
+    <View>
       <TouchableOpacity onPress={toggleShowMore}>
         {showMore ? (
           <>
-            <Text style={styles.description}>{description}</Text>
+            <Text>{description}</Text>
             <Text style={{color: theme.colors.warning}}>see less</Text>
           </>
         ) : (
           <>
-            <Text style={styles.description}>
-              {`${description.slice(0, 80)}... `}
-            </Text>
+            <Text>{`${description.slice(0, 80)}... `}</Text>
             <Text style={{color: theme.colors.primary}}>see more...</Text>
           </>
         )}
@@ -35,8 +33,3 @@ const PostContent = props => {
 };
 
 export default PostContent;
-
-const styles = StyleSheet.create({
-  postContentContainer: {},
-  description: {},
-});
