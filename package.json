@@ -33,6 +33,7 @@
     "axios": "^0.27.2",
     "dayjs": "^1.11.1",
     "deepmerge": "^4.2.2",
+    "expo-linear-gradient": "^12.0.1",
     "formik": "^2.2.9",
     "i18next": "^21.6.16",
     "lodash": "^4.17.21",

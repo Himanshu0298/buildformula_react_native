@@ -484,7 +484,7 @@ function AppStackNavigator() {
 
               {/* <Stack.Screen name="FROMPR" component={FROMPR} /> */}
 
-              <Stack.Screen name="CreatePI" component={CreatePI} />
+              {/* <Stack.Screen name="CreatePI" component={CreatePI} /> */}
 
               {/* <Stack.Screen name="PIMaterialList" component={PIMaterialList} /> */}
 
@@ -492,7 +492,7 @@ function AppStackNavigator() {
 
               {/* <Stack.Screen name="PITnC" component={PITnC} /> */}
 
-              <Stack.Screen name="PIPreview" component={PIPreview} />
+              {/* <Stack.Screen name="PIPreview" component={PIPreview} /> */}
 
               <Stack.Screen
                 name="SelectMaterials"
