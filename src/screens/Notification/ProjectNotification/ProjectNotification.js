@@ -133,7 +133,11 @@ function ProjectNotification(props) {
     <View style={styles.container}>
       <View style={styles.rowBetween}>
         <ScreenTitle title="Notifications" backIcon />
-        <Text style={styles.allNotifications}>Mark all Read</Text>
+        <TouchableOpacity
+          style={styles.allNotifications}
+          onPress={clearNotification}>
+          <Text>Mark all Read</Text>
+        </TouchableOpacity>
       </View>
 
       <View style={styles.chatActivity}>

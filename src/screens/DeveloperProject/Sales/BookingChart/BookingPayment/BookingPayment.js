@@ -731,6 +731,7 @@ function RenderPaymentForm(props) {
               name="end_date"
               label={t('label_end_date')}
               value={values.end_date}
+              min={new Date()}
               error={errors.end_date}
               onChange={v => {
                 setFieldValue('end_date', dayjs(v).format('YYYY-MM-DD'));
@@ -854,7 +855,7 @@ function FormContent(props) {
               color={theme.colors.primary}
             />
             <Subheading style={{color: theme.colors.primary}}>
-              3. Payment Installment
+              3. Payment Schedule
             </Subheading>
           </TouchableOpacity>
 
@@ -935,23 +936,21 @@ function FormContent(props) {
             </View>
           ) : null}
 
-          {values.payment_type === 1 ? (
-            <>
-              <RenderSelect
-                name="payment_type"
-                label={t('label_payment_method')}
-                options={PAYMENT_METHODS}
-                containerStyles={styles.rateInput}
-                value={values.payment_type}
-                error={errors.payment_type}
-                onSelect={value => {
-                  formikProps.setFieldValue('payment_type', value);
-                  formikProps.setErrors({});
-                }}
-              />
-              <RenderPaymentForm {...props} {...{formikProps, t}} />
-            </>
-          ) : null}
+          <>
+            <RenderSelect
+              name="payment_type"
+              label={t('label_payment_method')}
+              options={PAYMENT_METHODS}
+              containerStyles={styles.rateInput}
+              value={values.payment_type}
+              error={errors.payment_type}
+              onSelect={value => {
+                formikProps.setFieldValue('payment_type', value);
+                formikProps.setErrors({});
+              }}
+            />
+            <RenderPaymentForm {...props} {...{formikProps, t}} />
+          </>
         </View>
 
         <View style={styles.buttonContainer}>
@@ -1185,11 +1184,12 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     flexGrow: 1,
+    margin: 10,
     paddingBottom: 10,
   },
   contentContainer: {
     flexGrow: 1,
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
   },
   headingContainer: {
     marginLeft: -10,

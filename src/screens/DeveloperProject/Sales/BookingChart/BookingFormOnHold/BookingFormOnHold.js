@@ -115,8 +115,11 @@ function BookingFormOnHold(props) {
 
   const {bookingHoldDetails} = useSelector(s => s.sales);
   const loading = useSalesLoading();
-  const {current_Hold_By_User_Details: userInfo, holdHistoryList} =
-    bookingHoldDetails || {};
+  const {
+    current_Hold_By_User_Details: userInfo,
+    holdHistoryList,
+    unitDetails,
+  } = bookingHoldDetails || {};
 
   const {getHoldBookingDetails, unitHoldBooking, unitUnHoldBooking} =
     useSalesActions();
@@ -135,16 +138,22 @@ function BookingFormOnHold(props) {
   const navToHistory = () =>
     navigation.navigate('HoldBookingHistory', {history: holdHistoryList});
 
+  const getBookingUnix = item => {
+    const {hold_till_date, hold_till_time} = item;
+    return dayjs(
+      `${hold_till_date} ${hold_till_time}`,
+      'YYYY-MM-DD hh:mm:ss',
+    ).unix();
+  };
+
   const propertyBooked = useMemo(() => {
-    return Array.isArray(holdHistoryList)
-      ? holdHistoryList?.find(i =>
-          dayjs(
-            `${i.hold_till_date} ${i.hold_till_time}`,
-            'YYYY-MM-DD hh:mm:ss',
-          ).isAfter(dayjs()),
-        )
-      : false;
-  }, [holdHistoryList]);
+    if (unitDetails?.status === 5 && Array.isArray(holdHistoryList)) {
+      return holdHistoryList?.reduce((prev, current) => {
+        return getBookingUnix(prev) > getBookingUnix(current) ? prev : current;
+      });
+    }
+    return false;
+  }, [holdHistoryList, unitDetails?.status]);
 
   const handleHold = async values => {
     const {date, time, remark} = values;

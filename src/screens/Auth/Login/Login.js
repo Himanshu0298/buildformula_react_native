@@ -117,11 +117,12 @@ const schema = Yup.object().shape({
   email: Yup.string()
     .email('Please enter a valid email')
     .label('email')
+    .trim()
     .required('Please enter a valid email'),
   password: Yup.string()
     .label('Password')
     .required('Please enter a valid password')
-    .min(6, 'Password must have at least 6 characters '),
+    .min(8, 'Password must have at least 8 characters '),
 });
 
 function Login(props) {
@@ -134,7 +135,6 @@ function Login(props) {
   const snackbar = useSnackbar();
 
   const {loading} = useSelector(s => s.user);
-  const {project} = useSelector(s => s.addProject);
 
   React.useEffect(() => {
     const focusUnsubscribe = navigation.addListener('focus', () => {

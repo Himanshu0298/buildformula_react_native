@@ -49,12 +49,12 @@ function RenderContacts({item}) {
           <Caption>+91 {item.phone}</Caption>
         </View>
       </View>
-      <View style={styles.rightContainer}>
+      {/* <View style={styles.rightContainer}>
         <Subheading>
           {get_user?.first_name} {get_user?.last_name}
         </Subheading>
         <Caption>{get_role?.role_name}</Caption>
-      </View>
+      </View> */}
     </View>
   );
 }

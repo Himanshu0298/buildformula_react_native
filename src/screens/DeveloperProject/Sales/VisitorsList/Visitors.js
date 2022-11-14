@@ -225,8 +225,8 @@ function Visitors(props) {
   const filteredVisitors = useMemo(() => {
     return visitors.filter(
       i =>
-        i.first_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        i.last_name.toLowerCase().includes(searchQuery.toLowerCase()),
+        i?.first_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        i?.last_name?.toLowerCase().includes(searchQuery.toLowerCase()),
     );
   }, [visitors, searchQuery]);
 

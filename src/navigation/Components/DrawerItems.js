@@ -71,6 +71,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
     title: 'TODO LIST',
     routes: [
       {
+        id: 67,
         route: 'TaskList',
         label: 'Task List',
         icon: ({color, size}) => (
@@ -235,10 +236,45 @@ export const DEVELOPER_DRAWER_ITEMS = [
     routes: [
       {
         id: 20,
-        route: 'MaterialGRN',
+        route: 'MaterialGRNListing',
         label: 'GRN',
         icon: ({color, size}) => (
           <MaterialCommunityIcons name="wall" {...{color, size}} />
+        ),
+      },
+      {
+        id: 62,
+        route: 'PRList',
+        label: 'PR List',
+        icon: ({color, size}) => (
+          <MaterialCommunityIcons name="format-list-text" {...{color, size}} />
+        ),
+      },
+      {
+        // id: 27,
+        route: 'PIList',
+        label: 'PI List',
+        icon: ({color, size}) => (
+          <MaterialIcons name="chat" {...{color, size}} />
+        ),
+      },
+      {
+        // id: 27,
+        route: 'MaterialIndent',
+        label: 'Material Indent',
+        icon: ({color, size}) => (
+          <MaterialCommunityIcons name="text-short" {...{color, size}} />
+        ),
+      },
+      {
+        // id: 27,
+        route: 'StoreKeeperList',
+        label: 'StoreKeeper',
+        icon: ({color, size}) => (
+          <MaterialCommunityIcons
+            name="storefront-outline"
+            {...{color, size}}
+          />
         ),
       },
     ],

@@ -14,7 +14,6 @@ import NoResult from 'components/Atoms/NoResult';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {useDownload} from 'components/Atoms/Download';
 import FileViewer from 'react-native-file-viewer';
-import Header from '../CommonComponents/Header';
 import MaterialInfo from './Components/MaterialInfo';
 import VehicleInfo from './Components/VehicleInfo';
 
@@ -86,7 +85,6 @@ const DeliverDetails = props => {
   }, []);
   return (
     <View style={styles.mainContainer}>
-      <Header title={`Challan No: ${challanNumber}`} {...props} />
       <Spinner visible={loading} textContent="" />
       <ScrollView showsVerticalScrollIndicator={false}>
         <View>

@@ -43,6 +43,12 @@ import {
   UPDATE_BROKER_REMARK,
   GET_FOLLOWUP_DETAILS_LIST,
   UPDATE_COMPLETE_TASK,
+  ADD_BROKERAGE_PAYMENT,
+  GET_BROKERAGE_DEAL_DETAILS,
+  UPDATE_BROKERAGE_PAYMENT,
+  EDIT_BROKERAGE,
+  DELETE_BROKERAGE_PAYMENT,
+  EDIT_REMARK,
 } from '../actions/actionTypes';
 
 const initialState = {
@@ -88,6 +94,7 @@ const initialState = {
   approversList: [],
   approvalsDetails: {},
   approvalDetailsList: [],
+  brokageDealDetails: {},
 };
 
 const reducer = (state = initialState, action = {}) => {
@@ -455,7 +462,6 @@ const reducer = (state = initialState, action = {}) => {
         loading: true,
       };
     case `${GET_BOOKING_FORM_OTP_STATUS}_FULFILLED`: {
-      console.log('-------->payloadBookingotp', payload);
       return {
         ...state,
         loading: false,
@@ -554,6 +560,27 @@ const reducer = (state = initialState, action = {}) => {
         errorMessage: payload,
       };
 
+    // Closed Deal Details
+
+    case `${GET_BROKERAGE_DEAL_DETAILS}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+    case `${GET_BROKERAGE_DEAL_DETAILS}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+        brokageDealDetails: payload,
+      };
+    }
+    case `${GET_BROKERAGE_DEAL_DETAILS}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+        errorMessage: action.payload,
+      };
+
     case `${MOVE_VISITOR}_FULFILLED`: {
       const {visitorId, pipelineId} = payload;
       let pipelines = _.cloneDeep(state.pipelines);
@@ -609,17 +636,22 @@ const reducer = (state = initialState, action = {}) => {
 
     case `${ADD_VISITOR}_PENDING`:
     case `${ADD_BROKER}_PENDING`:
+    case `${ADD_BROKERAGE_PAYMENT}_PENDING`:
     case `${ADD_VISITOR_COMMENT}_PENDING`:
     case `${ADD_VISITOR_CALL_LOGS}_PENDING`:
     case `${ADD_VISITOR_FOLLOW_UP}_PENDING`:
     case `${CREATE_BOOKING}_PENDING`:
     case `${UPDATE_BROKER}_PENDING`:
+    case `${UPDATE_BROKERAGE_PAYMENT}_PENDING`:
+    case `${EDIT_BROKERAGE}_PENDING`:
+    case `${EDIT_REMARK}_PENDING`:
     case `${UPDATE_PIPELINE_ORDER_LIST}_PENDING`:
     case `${HOLD_UNIT_BOOKING}_PENDING`:
     case `${UN_HOLD_UNIT_BOOKING}_PENDING`:
     case `${CONFIRM_BOOKING_OTP}_PENDING`:
     case `${SET_BOOKING_OTP_STATUS}_PENDING`:
     case `${DELETE_BROKER}_PENDING`:
+    case `${DELETE_BROKERAGE_PAYMENT}_PENDING`:
     case `${UPDATE_BROKER_REMARK}_PENDING`:
     case `${RESEND_BOOKING_OTP}_PENDING`:
     case `${CREATE_APPROVAL}_PENDING`:
@@ -632,17 +664,22 @@ const reducer = (state = initialState, action = {}) => {
     }
     case `${ADD_VISITOR}_FULFILLED`:
     case `${ADD_BROKER}_FULFILLED`:
+    case `${ADD_BROKERAGE_PAYMENT}_FULFILLED`:
     case `${ADD_VISITOR_COMMENT}_FULFILLED`:
     case `${ADD_VISITOR_CALL_LOGS}_FULFILLED`:
     case `${ADD_VISITOR_FOLLOW_UP}_FULFILLED`:
     case `${UPDATE_PIPELINE_ORDER_LIST}_FULFILLED`:
     case `${UPDATE_BROKER}_FULFILLED`:
+    case `${UPDATE_BROKERAGE_PAYMENT}_FULFILLED`:
+    case `${EDIT_BROKERAGE}_FULFILLED`:
+    case `${EDIT_REMARK}_FULFILLED`:
     case `${CREATE_BOOKING}_FULFILLED`:
     case `${HOLD_UNIT_BOOKING}_FULFILLED`:
     case `${UN_HOLD_UNIT_BOOKING}_FULFILLED`:
     case `${CONFIRM_BOOKING_OTP}_FULFILLED`:
     case `${SET_BOOKING_OTP_STATUS}_FULFILLED`:
     case `${DELETE_BROKER}_FULFILLED`:
+    case `${DELETE_BROKERAGE_PAYMENT}_FULFILLED`:
     case `${UPDATE_BROKER_REMARK}_FULFILLED`:
     case `${RESEND_BOOKING_OTP}_FULFILLED`:
     case `${CREATE_APPROVAL}_FULFILLED`:
@@ -656,10 +693,14 @@ const reducer = (state = initialState, action = {}) => {
 
     case `${ADD_VISITOR}_REJECTED`:
     case `${ADD_BROKER}_REJECTED`:
+    case `${ADD_BROKERAGE_PAYMENT}_REJECTED`:
     case `${ADD_VISITOR_COMMENT}_REJECTED`:
     case `${ADD_VISITOR_CALL_LOGS}_REJECTED`:
     case `${ADD_VISITOR_FOLLOW_UP}_REJECTED`:
     case `${UPDATE_BROKER}_REJECTED`:
+    case `${UPDATE_BROKERAGE_PAYMENT}_REJECTED`:
+    case `${EDIT_BROKERAGE}_REJECTED`:
+    case `${EDIT_REMARK}_REJECTED`:
     case `${UPDATE_PIPELINE_ORDER_LIST}_REJECTED`:
     case `${CREATE_BOOKING}_REJECTED`:
     case `${HOLD_UNIT_BOOKING}_REJECTED`:
@@ -667,6 +708,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${SET_BOOKING_OTP_STATUS}_REJECTED`:
     case `${UN_HOLD_UNIT_BOOKING}_REJECTED`:
     case `${DELETE_BROKER}_REJECTED`:
+    case `${DELETE_BROKERAGE_PAYMENT}_REJECTED`:
     case `${UPDATE_BROKER_REMARK}_REJECTED`:
     case `${RESEND_BOOKING_OTP}_REJECTED`:
     case `${CREATE_APPROVAL}_REJECTED`:

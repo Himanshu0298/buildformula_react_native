@@ -161,7 +161,7 @@ function Home(props) {
     <>
       <View style={styles.container}>
         <Spinner visible={loading} textContent="" />
-        <StatusBar barStyle="light-content" />
+        <StatusBar barStyle="dark-content" />
         <View style={styles.headerContainer}>
           <ProjectHeader {...props} showLogo />
           {/* TODO: update tab implementation */}

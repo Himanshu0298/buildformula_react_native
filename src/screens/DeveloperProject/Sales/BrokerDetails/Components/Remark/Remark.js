@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useMemo} from 'react';
 import {StyleSheet, View, ScrollView} from 'react-native';
 import {withTheme, Text, Button} from 'react-native-paper';
 import useSalesActions from 'redux/actions/salesActions';
@@ -14,12 +14,13 @@ const schema = Yup.object().shape({
   remark: Yup.string('Invalid').required('Required'),
 });
 
-// TODO: review this
 function Remark(props) {
   const {navigation, route} = props;
-  const {remark} = route?.params || {};
+  const {remark, userData} = route?.params || {};
 
-  const isHtml = remark?.includes('<') && remark?.includes('>');
+  const {getBrokerDetails} = useSalesActions();
+
+  const {brokerDetails} = useSelector(s => s.sales);
 
   const {selectedProject} = useSelector(s => s.project);
   const loading = useSalesLoading();
@@ -28,14 +29,30 @@ function Remark(props) {
 
   const projectId = selectedProject.id;
 
-  // TO DO required changes
+  const {dealClosedInfo} = brokerDetails;
+
+  useEffect(() => {
+    loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [projectId, userData.id]);
+
+  const loadData = async () => {
+    await getBrokerDetails({project_id: projectId, broker_id: userData.id});
+  };
+
+  const bookingId = useMemo(() => {
+    return dealClosedInfo?.find(i => i.id === bookingId);
+  }, [dealClosedInfo]);
+
+  const projectBookingId = bookingId?.booking_id;
 
   const onSubmit = values => {
     updateBrokerRemark({
       project_id: projectId,
-      // project_bookings_id: 23,
+      project_bookings_id: projectBookingId,
       broker_remark: values.remark,
     });
+    loadData();
     navigation.goBack();
   };
 

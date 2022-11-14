@@ -23,11 +23,16 @@ import {getCountryCode} from 'utils';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 
 const CustomerDetails = props => {
-  const {visitors_info, linkedProperty, BrokerData} = props;
+  const {visitors_info, linkedProperty, BrokerData, navigation} = props;
+
   const {first_name, last_name, email, phone, address, dob, anniversary_date} =
     visitors_info || {};
 
   const snackbar = useSnackbar();
+
+  const navToDetails = () => {
+    navigation.navigate('CS_Step_Five', {project_id: visitors_info.project_id});
+  };
 
   const phoneNumber = React.useMemo(() => {
     if (getCountryCode(phone)) {
@@ -70,7 +75,7 @@ const CustomerDetails = props => {
       </View>
       <View style={styles.phoneContainer}>
         <View>
-          <Text>Phone no.</Text>
+          <Text style={styles.label}>Phone no.</Text>
           <TouchableOpacity
             disabled={!phone}
             onPress={() => openDialScreen(phoneNumber)}>
@@ -91,7 +96,7 @@ const CustomerDetails = props => {
       </View>
       <View style={styles.valueContainer}>
         <Text style={styles.label}>Related Property</Text>
-        <TouchableOpacity onPress={() => console.log('-------->To do')}>
+        <TouchableOpacity onPress={navToDetails}>
           <Text style={styles.propLink}>{linkedProperty}</Text>
         </TouchableOpacity>
       </View>
@@ -102,7 +107,7 @@ const CustomerDetails = props => {
         </Text>
       </View>
       <View style={styles.valueContainer}>
-        <Text style={styles.label}>Birthdate</Text>
+        <Text style={styles.label}>BirthDate</Text>
         <Text style={styles.value}>
           {dob ? dayjs(dob).format('MMMM D, YYYY	') : '---'}
         </Text>
@@ -146,7 +151,6 @@ const CustomerInnerDetails = ({navigation, route: routeData}) => {
   const {customerListDetails, loading: customerLoading} = useSelector(
     s => s.customer,
   );
-
   const {visitors_info = {}, brokers = []} = customerListDetails || {};
 
   const brokerOptions = useMemo(() => {
@@ -170,7 +174,7 @@ const CustomerInnerDetails = ({navigation, route: routeData}) => {
   useEffect(() => {
     getVisitorActivities({
       project_id: selectedProject.id,
-      visitor_id: visitorId,
+      visitor_id: visitorId || customerId,
       filter_mode: activityFilter,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -205,11 +209,16 @@ const CustomerInnerDetails = ({navigation, route: routeData}) => {
             visitors_info={visitors_info}
             linkedProperty={linkedProperty}
             BrokerData={BrokerData}
+            visitorId={visitorId}
           />
         );
       case 'second':
         return (
-          <Activities filter={activityFilter} setFilter={setActivityFilter} />
+          <Activities
+            filter={activityFilter}
+            setFilter={setActivityFilter}
+            visitorId={visitorId}
+          />
         );
 
       default:
@@ -331,9 +340,6 @@ const styles = StyleSheet.create({
   },
   renderTab: {
     backgroundColor: 'transparent',
-  },
-  tabStyle: {
-    borderBottomColor: 'red',
   },
   indicatorStyle: {
     backgroundColor: '#4872f4',
