@@ -88,10 +88,7 @@ const TaskList = props => {
       ) : null}
 
       <View style={styles.userContainer}>
-        <Image
-          source={UserIcon}
-          style={{borderRadius: 50, height: 42, width: 42}}
-        />
+        <Image source={UserIcon} style={styles.userIcon} />
         <View style={styles.userDetails}>
           <Caption>Assigned to</Caption>
           <Text>{`${item.assign_first_name} ${item.assign_last_name}`}</Text>
@@ -231,6 +228,11 @@ const styles = StyleSheet.create({
   },
   renderHtml: {
     marginTop: 10,
+  },
+  userIcon: {
+    borderRadius: 50,
+    height: 42,
+    width: 42,
   },
 });
 

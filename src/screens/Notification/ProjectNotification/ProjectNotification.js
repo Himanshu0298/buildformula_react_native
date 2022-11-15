@@ -30,6 +30,30 @@ const rightSwipeActions = (progress, dragX, handleRemove) => {
   );
 };
 
+const ChatActivityBTN = props => {
+  const {selectedTab, setSelectedTab} = props;
+  return (
+    <View style={styles.chatActivity}>
+      <View style={styles.buttonContainer}>
+        <OpacityButton
+          onPress={() => setSelectedTab(1)}
+          style={selectedTab ? styles.activeButton : styles.inactiveButton}>
+          <Text style={selectedTab ? styles.activeText : styles.inactiveText}>
+            Unread
+          </Text>
+        </OpacityButton>
+        <OpacityButton
+          onPress={() => setSelectedTab(0)}
+          style={selectedTab ? styles.inactiveButton : styles.activeButton}>
+          <Text style={!selectedTab ? styles.activeText : styles.inactiveText}>
+            Read
+          </Text>
+        </OpacityButton>
+      </View>
+    </View>
+  );
+};
+
 function RenderNotification(props) {
   const {item, handleNotification, clearNotification, actionStatus} = props;
   const {modules, receive_datetime, notifications_text} = item;
@@ -140,25 +164,11 @@ function ProjectNotification(props) {
         </TouchableOpacity>
       </View>
 
-      <View style={styles.chatActivity}>
-        <View style={styles.buttonContainer}>
-          <OpacityButton
-            onPress={() => setSelectedTab(1)}
-            style={selectedTab ? styles.activeButton : styles.inactiveButton}>
-            <Text style={selectedTab ? styles.activeText : styles.inactiveText}>
-              Unread
-            </Text>
-          </OpacityButton>
-          <OpacityButton
-            onPress={() => setSelectedTab(0)}
-            style={selectedTab ? styles.inactiveButton : styles.activeButton}>
-            <Text
-              style={!selectedTab ? styles.activeText : styles.inactiveText}>
-              Read
-            </Text>
-          </OpacityButton>
-        </View>
-      </View>
+      <ChatActivityBTN
+        selectedTab={selectedTab}
+        setSelectedTab={setSelectedTab}
+      />
+
       <Spinner visible={loading} textContent="" />
       <FlatList
         refreshControl={
