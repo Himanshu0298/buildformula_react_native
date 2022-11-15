@@ -30,9 +30,8 @@ const rightSwipeActions = (progress, dragX, handleRemove) => {
   );
 };
 
-function ChatActivityButton() {
-  const [selectedTab, setSelectedTab] = useState(0);
-
+const ChatActivityBTN = props => {
+  const {selectedTab, setSelectedTab} = props;
   return (
     <View style={styles.chatActivity}>
       <View style={styles.buttonContainer}>
@@ -53,7 +52,7 @@ function ChatActivityButton() {
       </View>
     </View>
   );
-}
+};
 
 function RenderNotification(props) {
   const {item, handleNotification, clearNotification, actionStatus} = props;
@@ -111,7 +110,10 @@ function EmptyComponent() {
 function ProjectNotification(props) {
   const {isHome, navigation} = props;
 
-  const {getProjectNotifications, removeNotification, removeAllNotifications} =
+  const [selectedTab, setSelectedTab] = useState(1);
+  const [notificationType, setNotificationType] = useState('');
+
+  const {getProjectNotifications, removeNotification} =
     useNotificationActions();
   const {setDrawerType} = useAppActions();
 
@@ -123,13 +125,18 @@ function ProjectNotification(props) {
     return loadData();
   };
 
-  const clearAllNotifications = () => {
-    removeAllNotifications({project_id: selectedProject.id});
-    return loadData();
-  };
+  React.useEffect(() => {
+    // eslint-disable-next-line no-unused-expressions
+    selectedTab ? setNotificationType('read') : setNotificationType('');
+    loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedTab]);
 
   const loadData = () => {
-    getProjectNotifications({project_id: selectedProject.id});
+    getProjectNotifications({
+      project_id: selectedProject.id,
+      notification_type: notificationType,
+    });
   };
 
   const handleNotification = notification => {
@@ -152,12 +159,16 @@ function ProjectNotification(props) {
         <ScreenTitle title="Notifications" backIcon />
         <TouchableOpacity
           style={styles.allNotifications}
-          onPress={clearAllNotifications}>
+          onPress={clearNotification}>
           <Text>Mark all Read</Text>
         </TouchableOpacity>
       </View>
 
-      <ChatActivityButton />
+      <ChatActivityBTN
+        selectedTab={selectedTab}
+        setSelectedTab={setSelectedTab}
+      />
+
       <Spinner visible={loading} textContent="" />
       <FlatList
         refreshControl={
