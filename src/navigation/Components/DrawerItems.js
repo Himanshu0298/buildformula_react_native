@@ -82,6 +82,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
   },
   {
     title: 'CUSTOMER SECTION',
+    id: 7,
     routes: [
       {
         route: 'CustomerList',
@@ -235,7 +236,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
     title: 'MATERIAL',
     routes: [
       {
-        id: 20,
+        id: 31,
         route: 'MaterialGRNListing',
         label: 'GRN',
         icon: ({color, size}) => (
