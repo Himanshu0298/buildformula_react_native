@@ -9,14 +9,25 @@ import {
 import React from 'react';
 import {Caption, Divider, Subheading, Text} from 'react-native-paper';
 import {getShadow} from 'utils';
-import {STORE_KEEPER_DATA} from './StoreKeeperData';
+import NoResult from 'components/Atoms/NoResult';
+import {theme} from 'styles/theme';
+import {useSelector} from 'react-redux';
+import useMaterialManagementActions from 'redux/actions/materialManagementActions';
+
+const STORE_KEEPER_STATUS = {
+  pending: {label: 'Pending', color: '#F4AF48'},
+  approved: {label: 'Approved', color: '#07CA03'},
+  issued: {label: 'Issued', color: '#07CA03'},
+  inspected: {label: 'Inspected', color: '#07CA03'},
+};
 
 const ListingCard = props => {
   const {item, navigation} = props;
 
-  const {id, validityDate, createdBy, createrEmail: creatorEmail, query} = item;
+  const {id, email, type, authorizedstatus, first_name, last_name, created} =
+    item;
 
-  const navToPreview = () => navigation.navigate('StoreKeeperPreview');
+  const navToPreview = () => navigation.navigate('StoreKeeperPreview', id);
   return (
     <TouchableOpacity onPress={navToPreview}>
       <View style={styles.cardContainer}>
@@ -33,25 +44,32 @@ const ListingCard = props => {
               <Text> Type</Text>
             </View>
 
-            <Text>{query}</Text>
+            <Text>{type}</Text>
           </View>
           <View>
             <View style={styles.subContainer}>
               <Text> Status</Text>
             </View>
 
-            <Text style={styles.subContainer}>Pending</Text>
+            <Text
+              style={{
+                color: STORE_KEEPER_STATUS[authorizedstatus]?.color,
+              }}>
+              {STORE_KEEPER_STATUS[authorizedstatus]?.label}
+            </Text>
           </View>
         </View>
         <Divider />
         <View style={styles.cardDetails}>
           <Text> Create Details:</Text>
-          <Subheading>{createdBy}</Subheading>
+          <Subheading>
+            {first_name}-{last_name}
+          </Subheading>
           <View style={styles.cardContent}>
-            <Caption>{creatorEmail}</Caption>
+            <Caption>{email}</Caption>
           </View>
           <View style={styles.cardHeader}>
-            <Text>{validityDate}</Text>
+            <Text>{created}</Text>
           </View>
           <Divider />
           <AuthorizedDetails item={item} />
@@ -64,32 +82,55 @@ const ListingCard = props => {
 const AuthorizedDetails = props => {
   const {item} = props;
 
-  const {authorizedEmail, authorizedName, authorizedDate} = item;
+  const {
+    authorizedby_email,
+    authorizeddate,
+    authorizedby_fname,
+    authorizedby_lname,
+  } = item;
   return (
     <View>
       <View style={styles.authorizedDetails}>
         <Text> Authorized Details:</Text>
       </View>
-      <Subheading>{authorizedName}</Subheading>
+      <Subheading>
+        {authorizedby_fname} {authorizedby_lname}
+      </Subheading>
       <View style={styles.cardContent}>
-        <Caption>{authorizedEmail}</Caption>
+        <Caption>{authorizedby_email}</Caption>
       </View>
       <View style={styles.cardHeader}>
-        <Text>{authorizedDate}</Text>
+        <Text>{authorizeddate}</Text>
       </View>
     </View>
   );
 };
 
 function StoreKeeperList(props) {
-  //   const {navigation} = props;
-  //   const [selectDialog, setSelectDialog] = React.useState(false);
+  const {navigation} = props;
+  // const [selectDialog, setSelectDialog] = React.useState(false);
 
-  //   const {colors} = theme;
+  const {colors} = theme;
 
-  //   const toggleSelectDialog = () => setSelectDialog(v => !v);
+  const {getStoreKeeperList} = useMaterialManagementActions();
 
-  //   const renderEmpty = () => <NoResult />;
+  const {storeKeeperList, loading} = useSelector(s => s.materialManagement);
+  const {selectedProject} = useSelector(s => s.project);
+
+  const material = storeKeeperList.storekeeperlist;
+
+  React.useEffect(() => {
+    getStoreKeeperList({project_id: selectedProject.id});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const renderEmpty = () => (
+    <View style={styles.emptyContainer}>
+      <Text>No Data found</Text>
+    </View>
+  );
+
+  // const toggleSelectDialog = () => setSelectDialog(v => !v);
 
   return (
     <View style={styles.mainContainer}>
@@ -99,12 +140,14 @@ function StoreKeeperList(props) {
       <View style={styles.bodyContainer}>
         <FlatList
           style={styles.flatList}
-          data={STORE_KEEPER_DATA}
+          data={material}
+          extraData={material}
           refreshControl={<RefreshControl refreshing={false} />}
           showsVerticalScrollIndicator={false}
-          keyExtractor={item => item.id}
+          keyExtractor={i => i.id}
+          ListEmptyComponent={renderEmpty}
           renderItem={({item}) => {
-            return <ListingCard {...props} item={item} />;
+            return <ListingCard {...{props, item, navigation}} />;
           }}
         />
       </View>
@@ -157,7 +200,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 0,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    // alignItems: 'center',
   },
   ID: {
     backgroundColor: '#E5EAFA',
@@ -165,5 +207,9 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     fontSize: 10,
     color: 'rgba(72, 114, 244, 1)',
+  },
+  emptyContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

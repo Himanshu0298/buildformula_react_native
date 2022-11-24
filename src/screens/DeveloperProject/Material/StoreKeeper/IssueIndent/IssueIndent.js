@@ -14,9 +14,16 @@ import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import ActionButtons from 'components/Atoms/ActionButtons';
 import RenderInput, {RenderError} from 'components/Atoms/RenderInput';
 import {useImagePicker} from 'hooks';
+import {useSelector} from 'react-redux';
+import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 
 const schema = Yup.object().shape({
-  Remark: Yup.string().label('Remark').required('Remark is Required'),
+  // storekeeper_remark: Yup.string()
+  //   .label('storekeeper_remark')
+  //   .required('Remark is Required'),
+  verification_code: Yup.string()
+    .label('verification code')
+    .required('verification code is Required'),
 });
 
 const RenderAttachments = props => {
@@ -71,6 +78,8 @@ function AttachmentsForm(props) {
     handleBlur,
   } = formikProps;
 
+  console.log('===========> values', values);
+
   const {openImagePicker} = useImagePicker();
 
   const handleUpload = () => {
@@ -112,14 +121,14 @@ function AttachmentsForm(props) {
           <Text> 10 Dec 2022, 05:02 PM</Text>
         </View>
         <RenderTextBox
-          name="remarks"
+          name="storekeeper_remark"
           blurOnSubmit={false}
           numberOfLines={7}
           label="Remark"
           containerStyles={styles.inputStyles}
-          value={values.remarks}
-          onChangeText={handleChange('remarks')}
-          onBlur={handleBlur('remarks')}
+          value={values.storekeeper_remark}
+          onChangeText={handleChange('storekeeper_remark')}
+          onBlur={handleBlur('storekeeper_remark')}
           onSubmitEditing={handleSubmit}
         />
         <View>
@@ -145,15 +154,15 @@ function AttachmentsForm(props) {
         </View>
 
         <RenderInput
-          name="email"
+          name="verification_code"
           label="Enter Verification Code"
           containerStyles={styles.inputStyles}
-          value={values.email}
-          onChangeText={handleChange('email')}
-          onBlur={handleBlur('email')}
+          value={values.verification_code}
+          onChangeText={handleChange('verification_code')}
+          onBlur={handleBlur('verification_code')}
           autoCapitalize="none"
           returnKeyType="next"
-          error={errors.email}
+          error={errors.verification_code}
         />
       </View>
       <ActionButtons
@@ -166,9 +175,28 @@ function AttachmentsForm(props) {
 }
 
 const IssueIndent = props => {
-  const {navigation} = props;
+  const {navigation, route} = props;
 
-  const navToPreview = () => navigation.navigate('StoreKeeperPreview');
+  const id = route.params;
+
+  const {CreateStoreKeeperOrder} = useMaterialManagementActions();
+
+  const {selectedProject} = useSelector(s => s.project);
+
+  const handleIssueOrder = async values => {
+    const formData = new FormData();
+
+    formData.append('project_id', selectedProject.id);
+    formData.append('material_indent_id', id);
+    formData.append('verification_code', Number(values.verification_code));
+    formData.append('storekeeper_remark', values.storekeeper_remark);
+    formData.append('attachmentFile', values.file);
+
+    await CreateStoreKeeperOrder(formData);
+    navToPreview();
+  };
+
+  const navToPreview = () => navigation.navigate('StoreKeeperList');
 
   return (
     <Formik
@@ -176,7 +204,7 @@ const IssueIndent = props => {
       validateOnChange={false}
       initialValues={{attachments: []}}
       validationSchema={schema}
-      onSubmit={navToPreview}>
+      onSubmit={handleIssueOrder}>
       {formikProps => <AttachmentsForm {...{formikProps}} {...props} />}
     </Formik>
   );

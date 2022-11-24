@@ -85,6 +85,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
     id: 7,
     routes: [
       {
+        id: 16,
         route: 'CustomerList',
         label: 'Customer List',
         icon: ({color, size}) => (
@@ -93,6 +94,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
       },
 
       {
+        id: 16,
         route: 'CS_Step_One',
         label: 'Customer Section',
         icon: ({color, size}) => (
@@ -104,6 +106,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
       },
 
       {
+        id: 19,
         route: 'DocumentGenerater',
         label: 'Document Generator',
         icon: ({color, size}) => (
@@ -234,6 +237,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
   },
   {
     title: 'MATERIAL',
+    id: 4,
     routes: [
       {
         id: 31,
@@ -252,7 +256,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
         ),
       },
       {
-        // id: 27,
+        id: 27,
         route: 'PIList',
         label: 'PI List',
         icon: ({color, size}) => (
@@ -260,7 +264,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
         ),
       },
       {
-        // id: 27,
+        id: 58,
         route: 'MaterialIndent',
         label: 'Material Indent',
         icon: ({color, size}) => (
@@ -268,7 +272,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
         ),
       },
       {
-        // id: 27,
+        id: 67,
         route: 'StoreKeeperList',
         label: 'StoreKeeper',
         icon: ({color, size}) => (
@@ -279,7 +283,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
         ),
       },
       {
-        // id: 27,
+        id: 32,
         route: 'MaterialInventory',
         label: 'Material Inventory',
         icon: ({color, size}) => (
