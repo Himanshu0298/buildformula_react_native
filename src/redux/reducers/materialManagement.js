@@ -17,6 +17,8 @@ import {
   DELETE_MATERIAL_PR_ITEM,
   DELETE_MATERIAL_PR_CATEGORY,
   UPDATE_PR_STATUS,
+  GET_DIRECT_GRN_LIST,
+  GET_DIRECT_GRN_DETAILS,
 } from '../actions/actionTypes';
 
 const initialState = {
@@ -36,6 +38,8 @@ const initialState = {
   recordData: [],
   PRList: [],
   PRDetails: [],
+  directGRNList: [],
+  directGRNDetails: {},
 };
 
 const reducer = (state = initialState, action = {}) => {
@@ -187,6 +191,38 @@ const reducer = (state = initialState, action = {}) => {
       };
     }
 
+    case `${GET_DIRECT_GRN_LIST}_PENDING`:
+      return {
+        ...state,
+        loading: false,
+      };
+    case `${GET_DIRECT_GRN_LIST}_FULFILLED`:
+      return {
+        ...state,
+        loading: false,
+        directGRNList: payload,
+      };
+    case `${GET_DIRECT_GRN_LIST}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+      };
+    case `${GET_DIRECT_GRN_DETAILS}_PENDING`:
+      return {
+        ...state,
+        loading: false,
+      };
+    case `${GET_DIRECT_GRN_DETAILS}_FULFILLED`:
+      return {
+        ...state,
+        loading: false,
+        directGRNDetails: payload,
+      };
+    case `${GET_DIRECT_GRN_DETAILS}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+      };
     default:
       return state;
   }

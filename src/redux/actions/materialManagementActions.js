@@ -27,6 +27,8 @@ export default function useMaterialManagementActions() {
     deleteMaterialPRCategory,
     deleteMaterialPRItem,
     updatePRStatus,
+    getDirectMaterialGRNList,
+    getDirectMaterialGRNDetails,
   } = useMaterialManagement();
 
   return {
@@ -317,5 +319,36 @@ export default function useMaterialManagementActions() {
     //       }
     //     },
     //   }),
+
+    // Direct MaterialGRN
+
+    getDirectMaterialGRNList: data =>
+      dispatch({
+        type: types.GET_DIRECT_GRN_LIST,
+        payload: async () => {
+          try {
+            const response = _res(await getDirectMaterialGRNList(data));
+            return Promise.resolve(response.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    getDirectMaterialGRNDetails: data =>
+      dispatch({
+        type: types.GET_DIRECT_GRN_DETAILS,
+        payload: async () => {
+          try {
+            const response = _res(await getDirectMaterialGRNDetails(data));
+            return Promise.resolve(response.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
   };
 }

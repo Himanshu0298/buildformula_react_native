@@ -6,35 +6,44 @@ import {
   FlatList,
   RefreshControl,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {getShadow} from 'utils';
 import {theme} from 'styles/theme';
 import NoResult from 'components/Atoms/NoResult';
 import {Caption, Searchbar, FAB} from 'react-native-paper';
-import DirectGRNData from './DirectGRNData';
+import {useSelector} from 'react-redux';
+import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 
 const renderEmpty = () => <NoResult />;
 
 const OrderCard = props => {
-  const {handleNav, item} = props;
+  const {navigation, item} = props;
+
+  const {id, delivery_date, created, first_name, last_name} = item;
+
+  const handleNav = () => {
+    navigation.navigate('DirectGRNPreview', {id});
+  };
 
   return (
     <TouchableOpacity style={styles.cardContainer} onPress={handleNav}>
       <View style={styles.bodyContent}>
         <View style={styles.idBox}>
-          <Text style={{color: theme.colors.primary}}>{item.id}</Text>
+          <Text style={{color: theme.colors.primary}}>{id}</Text>
         </View>
         <View style={styles.row}>
           <Caption>GRN Date: </Caption>
-          <Text>{item.date}</Text>
+          <Text>{delivery_date}</Text>
         </View>
         <View style={styles.row}>
           <Caption>Created by: </Caption>
-          <Text>{item.created}</Text>
+          <Text>
+            {first_name} {last_name}
+          </Text>
         </View>
         <View style={styles.row}>
           <Caption>Created Date: </Caption>
-          <Text>{item.createdDate}</Text>
+          <Text>{created}</Text>
         </View>
       </View>
     </TouchableOpacity>
@@ -44,8 +53,20 @@ const OrderCard = props => {
 const DirectGRN = props => {
   const {navigation} = props;
 
-  const handleNav = () => {
-    navigation.navigate('DirectGRNPreview');
+  const {getDirectMaterialGRNList} = useMaterialManagementActions();
+
+  const {selectedProject} = useSelector(s => s.project);
+  const {directGRNList} = useSelector(s => s.materialManagement);
+
+  useEffect(() => {
+    getCategories();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const getCategories = () => {
+    getDirectMaterialGRNList({
+      project_id: selectedProject.id,
+    });
   };
 
   const [searchQuery, setSearchQuery] = React.useState('');
@@ -58,14 +79,14 @@ const DirectGRN = props => {
         style={styles.search}
       />
       <FlatList
-        data={DirectGRNData}
+        data={directGRNList}
         refreshControl={<RefreshControl refreshing={false} />}
         contentContainerStyle={styles.contentContainerStyle}
         showsVerticalScrollIndicator={false}
         keyExtractor={item => item.material_order_no}
         ListEmptyComponent={renderEmpty}
         renderItem={({item}) => {
-          return <OrderCard handleNav={handleNav} item={item} />;
+          return <OrderCard navigation={navigation} item={item} />;
         }}
       />
       <FAB
@@ -95,13 +116,13 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     flex: 1,
   },
+
   idBox: {
     backgroundColor: 'rgba(72, 114, 244, 0.1)',
     padding: 5,
     borderRadius: 5,
     marginRight: 5,
-    width: 20,
-    alignItems: 'center',
+    alignSelf: 'flex-start',
   },
   row: {
     flexDirection: 'row',

@@ -88,5 +88,14 @@ export default function useMaterialManagement() {
     updatePRStatus: data => {
       return instance.post('/approve_reject_pr_category', data, params);
     },
+
+    // Direct Material GRN
+
+    getDirectMaterialGRNList: data => {
+      return instance.post('/material/directgrnlist', data, params);
+    },
+    getDirectMaterialGRNDetails: data => {
+      return instance.post('/material/directgrnpreview', data, params);
+    },
   };
 }

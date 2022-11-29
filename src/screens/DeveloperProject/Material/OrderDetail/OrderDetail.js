@@ -200,7 +200,7 @@ function OrderDetail(props) {
             <Text style={{color: theme.colors.primary}}>Add Challan</Text>
           </OpacityButton>
         </View>
-        {materialDeliveryChallan?.map(item => {
+        {materialChallanList?.map(item => {
           return (
             <CommonCard
               {...props}

@@ -6,7 +6,7 @@ import {
   Image,
   ScrollView,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Caption, Subheading} from 'react-native-paper';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -15,11 +15,15 @@ import NoResult from 'components/Atoms/NoResult';
 import FileIcon from 'assets/images/file_icon.png';
 import Spinner from 'react-native-loading-spinner-overlay';
 import ActionButtons from 'components/Atoms/ActionButtons';
+import useMaterialManagementActions from 'redux/actions/materialManagementActions';
+import {useSelector} from 'react-redux';
 import Header from '../../CommonComponents/Header';
 import MaterialInfo from '../../DeliveryDetails/Components/MaterialInfo';
 import VehicleInfo from '../../DeliveryDetails/Components/VehicleInfo';
 
 const HeaderDetails = props => {
+  const {directGRNDetails} = props;
+
   return (
     <>
       <View style={styles.row}>
@@ -99,6 +103,31 @@ const challan_image = props => {
 };
 
 const DirectGRNPreview = props => {
+  const {route, navigation} = props;
+
+  const {id} = route?.params || {};
+
+  const {getDirectMaterialGRNDetails} = useMaterialManagementActions();
+
+  const {selectedProject} = useSelector(s => s.project);
+  const {directGRNDetails} = useSelector(s => s.materialManagement);
+
+  console.log('===========>challan info ', directGRNDetails.challan_info);
+
+  console.log('===========>directGRNDetails ', directGRNDetails);
+
+  useEffect(() => {
+    getCategories();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const getCategories = () => {
+    getDirectMaterialGRNDetails({
+      project_id: selectedProject.id,
+      grn_id: id,
+    });
+  };
+
   const alert = useAlert();
   return (
     <View style={styles.mainContainer}>
@@ -129,7 +158,7 @@ const DirectGRNPreview = props => {
             </OpacityButton>
           </View>
         </View>
-        <HeaderDetails />
+        <HeaderDetails directGRNDetails={directGRNDetails} />
         <Attachments />
         <MaterialInfo />
         <VehicleInfo />
