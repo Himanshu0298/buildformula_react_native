@@ -16,11 +16,9 @@ import RenderInput, {RenderError} from 'components/Atoms/RenderInput';
 import {useImagePicker} from 'hooks';
 import {useSelector} from 'react-redux';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
+import moment from 'moment/moment';
 
 const schema = Yup.object().shape({
-  // storekeeper_remark: Yup.string()
-  //   .label('storekeeper_remark')
-  //   .required('Remark is Required'),
   verification_code: Yup.string()
     .label('verification code')
     .required('verification code is Required'),
@@ -68,7 +66,7 @@ const RenderAttachments = props => {
 };
 
 function AttachmentsForm(props) {
-  const {formikProps} = props;
+  const {formikProps, date} = props;
   const {
     values,
     setFieldValue,
@@ -77,8 +75,6 @@ function AttachmentsForm(props) {
     handleChange,
     handleBlur,
   } = formikProps;
-
-  console.log('===========> values', values);
 
   const {openImagePicker} = useImagePicker();
 
@@ -118,7 +114,7 @@ function AttachmentsForm(props) {
         </View>
         <View style={styles.issueTime}>
           <Text>Issue Time: </Text>
-          <Text> 10 Dec 2022, 05:02 PM</Text>
+          <Text> {date}</Text>
         </View>
         <RenderTextBox
           name="storekeeper_remark"
@@ -132,7 +128,7 @@ function AttachmentsForm(props) {
           onSubmitEditing={handleSubmit}
         />
         <View>
-          <View style={{marginTop: 20}}>
+          <View style={styles.imageInput}>
             <Text style={{color: theme.colors.primary}}>
               Upload Material Image
             </Text>
@@ -177,19 +173,22 @@ function AttachmentsForm(props) {
 const IssueIndent = props => {
   const {navigation, route} = props;
 
-  const id = route.params;
+  const {ID} = route.params;
 
   const {CreateStoreKeeperOrder} = useMaterialManagementActions();
 
   const {selectedProject} = useSelector(s => s.project);
 
+  const date = moment().utcOffset('+05:30').format(' hh:mm a , YYYY-MM-DD ');
+
   const handleIssueOrder = async values => {
     const formData = new FormData();
 
     formData.append('project_id', selectedProject.id);
-    formData.append('material_indent_id', id);
+    formData.append('material_indent_id', ID);
     formData.append('verification_code', Number(values.verification_code));
     formData.append('storekeeper_remark', values.storekeeper_remark);
+    formData.append('date', values.date);
     formData.append('attachmentFile', values.file);
 
     await CreateStoreKeeperOrder(formData);
@@ -205,7 +204,9 @@ const IssueIndent = props => {
       initialValues={{attachments: []}}
       validationSchema={schema}
       onSubmit={handleIssueOrder}>
-      {formikProps => <AttachmentsForm {...{formikProps}} {...props} />}
+      {formikProps => (
+        <AttachmentsForm {...{formikProps}} {...props} date={date} />
+      )}
     </Formik>
   );
 };
@@ -302,6 +303,10 @@ const styles = StyleSheet.create({
   dataRow: {
     flexDirection: 'row',
     alignItems: 'center',
+  },
+
+  imageInput: {
+    marginTop: 20,
   },
 });
 

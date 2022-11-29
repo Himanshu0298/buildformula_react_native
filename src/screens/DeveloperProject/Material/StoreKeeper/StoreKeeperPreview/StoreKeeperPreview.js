@@ -23,14 +23,14 @@ import FileIcon from 'assets/images/file_icon.png';
 
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
-import {useDownload} from 'components/Atoms/Download';
-import ApproveButtons from 'components/Atoms/ApprovalButtons';
+import Spinner from 'react-native-loading-spinner-overlay';
+import ApproveButtons from '../components/ApprovalButtons';
 
 const STORE_KEEPER_STATUS = {
   pending: {label: 'Pending', color: '#F4AF48'},
   approved: {label: 'Approved', color: '#07CA03'},
   issued: {label: 'Issued', color: '#07CA03'},
-  inspected: {label: 'Inspected', color: '#07CA03'},
+  inspected: {label: 'Inspected', color: '#4872F4'},
 };
 
 const STORE_KEEPER_DETAIL_STATUS = {
@@ -38,8 +38,9 @@ const STORE_KEEPER_DETAIL_STATUS = {
 };
 
 const STORE_KEEPER_DETAILS_STATUS = {
-  1: {label: 'Approved', color: '#4872F4'},
-  2: {label: 'Rejected', color: '#FF5D5D'},
+  approved: {label: 'Approved', color: '#4872F4'},
+  rejected: {label: 'Rejected', color: '#FF5D5D'},
+  pending: {label: 'Pending', color: '#F4AF48'},
 };
 
 const RenderAttachments = props => {
@@ -48,6 +49,8 @@ const RenderAttachments = props => {
   const attachments = storeKeeperDetails?.indent_details?.storekeeper_files;
 
   // const download = useDownload();
+
+  // TODO download file remaining
 
   return (
     <View>
@@ -74,7 +77,6 @@ const RenderAttachments = props => {
                     ( {attachment.file_size})kb
                   </Text>
                 </View>
-
                 <OpacityButton opacity={0.0} style={styles.closeButton}>
                   <MaterialCommunityIcons
                     name="download"
@@ -198,11 +200,13 @@ const MaterialCard = props => {
     subcategorytitle,
     damaged_qty,
     materialunitstitle,
-    status,
     quantity,
+    id,
+    rm_status,
   } = item;
 
   const requestStatus = STORE_KEEPER_STATUS[authorizedstatus]?.label;
+  const {label, color} = STORE_KEEPER_DETAILS_STATUS[rm_status] || {};
 
   return (
     <View style={styles.cardContainer}>
@@ -227,25 +231,22 @@ const MaterialCard = props => {
         <Text style={styles.title}>{damaged_qty}</Text>
       </View>
 
-      {requestStatus === 'Issued' ? (
+      {rm_status !== 'pending' ? (
         <View style={styles.dataRow}>
-          <Caption style={styles.lightData}> Status:</Caption>
-          <Text
-            style={{
-              color: STORE_KEEPER_DETAILS_STATUS[status]?.color,
-            }}>
-            {STORE_KEEPER_DETAILS_STATUS[status]?.label}
-          </Text>
+          <Caption style={styles.lightData}>Status:</Caption>
+          <Text style={[styles.title, {color}]}>{label}</Text>
         </View>
       ) : null}
       {modulePermission?.editor || modulePermission?.admin ? (
         requestStatus === 'Pending' ? (
-          <ApproveButtons
-            cancelLabel="Reject"
-            submitLabel="Approve"
-            onCancel={() => updateStatus('rejected')}
-            onSubmit={() => updateStatus('approved')}
-          />
+          rm_status === 'pending' ? (
+            <ApproveButtons
+              rejectLabel="Reject"
+              approvedLabel="Approved"
+              onReject={() => updateStatus('rejected', id)}
+              onApprove={() => updateStatus('approved', id)}
+            />
+          ) : null
         ) : null
       ) : null}
     </View>
@@ -254,18 +255,19 @@ const MaterialCard = props => {
 
 function StoreKeeperPreview(props) {
   const {navigation, route} = props;
-  const id = route.params;
+  const {id: ID} = route?.params || {};
 
   const {getStoreKeeperDetails, updateStoreKeeperStatus} =
     useMaterialManagementActions();
 
-  const {storeKeeperDetails} = useSelector(s => s.materialManagement);
+  const {storeKeeperDetails, loading} = useSelector(s => s.materialManagement);
   const {selectedProject} = useSelector(s => s.project);
 
   const modulePermission = getPermissions('StoreKeeper List');
 
   const projectId = selectedProject.id;
   const {material_indent_details} = storeKeeperDetails?.indent_details || [];
+
   const {authorizedstatus} =
     storeKeeperDetails?.indent_details?.material_indent || {};
 
@@ -279,11 +281,11 @@ function StoreKeeperPreview(props) {
   const getStoreDetails = () => {
     getStoreKeeperDetails({
       project_id: projectId,
-      material_indent_id: id,
+      material_indent_id: ID,
     });
   };
 
-  const updateStatus = async type => {
+  const updateStatus = async (type, id) => {
     const restData = {
       project_id: projectId,
       material_indent_details_id: id,
@@ -293,12 +295,9 @@ function StoreKeeperPreview(props) {
     getStoreDetails();
   };
 
-  const navToIssue = () => navigation.navigate('IssueIndent', id);
+  const navToIssue = () => navigation.navigate('IssueIndent', {ID});
 
-  const requestStatusLabel =
-    STORE_KEEPER_DETAIL_STATUS[authorizedstatus]?.label;
-  const requestStatusColor =
-    STORE_KEEPER_DETAIL_STATUS[authorizedstatus]?.color;
+  const {label, color} = STORE_KEEPER_DETAIL_STATUS[authorizedstatus] || {};
 
   return (
     <View style={styles.mainContainer}>
@@ -313,8 +312,10 @@ function StoreKeeperPreview(props) {
           />
           <Subheading style={styles.headerText}>Issue Request</Subheading>
         </View>
+        <Spinner visible={loading} textContent="" />
+
         <View style={styles.dataRow}>
-          {requestStatusLabel === 'Issued' ? (
+          {label === 'Issued' ? (
             <>
               <MaterialCommunityIcons
                 style={styles.storeIcon}
@@ -322,41 +323,43 @@ function StoreKeeperPreview(props) {
                 color={theme.colors.primary}
                 size={22}
               />
-              <Text style={[{color: requestStatusColor}, styles.status]}>
-                {requestStatusLabel}
-              </Text>
+              <Text style={[{color}, styles.status]}>{label}</Text>
             </>
           ) : null}
         </View>
       </View>
       <ScrollView showsVerticalScrollIndicator={false}>
-        {requestStatusLabel === 'Issued' ? (
+        {label === 'Issued' ? (
           <IssuedCard storeKeeperDetails={storeKeeperDetails} />
         ) : null}
         <ListingCard storeKeeperDetails={storeKeeperDetails} />
         <RequiredVendor storeKeeperDetails={storeKeeperDetails} />
-        <View style={styles.textContainer}>
-          <Subheading style={styles.textSubContainer}>
-            Material Request
-          </Subheading>
-        </View>
+        {material_indent_details?.length ? (
+          <>
+            <View style={styles.textContainer}>
+              <Subheading style={styles.textSubContainer}>
+                Material Request
+              </Subheading>
+            </View>
 
-        <View style={styles.materialCardContainer}>
-          {material_indent_details?.map(item => {
-            return (
-              <MaterialCard
-                item={item}
-                navigation={navigation}
-                updateStatus={updateStatus}
-                authorizedstatus={authorizedstatus}
-                modulePermission={modulePermission}
-              />
-            );
-          })}
-        </View>
+            <View style={styles.materialCardContainer}>
+              {material_indent_details?.map(item => {
+                return (
+                  <MaterialCard
+                    item={item}
+                    navigation={navigation}
+                    updateStatus={updateStatus}
+                    authorizedstatus={authorizedstatus}
+                    modulePermission={modulePermission}
+                  />
+                );
+              })}
+            </View>
+          </>
+        ) : null}
 
         {attachments?.length ? (
-          requestStatusLabel === 'Issued' ? null : (
+          label === 'Issued' ? null : (
             <>
               <View style={styles.textContainer}>
                 <Subheading style={styles.textSubContainer}>
@@ -368,7 +371,7 @@ function StoreKeeperPreview(props) {
           )
         ) : null}
       </ScrollView>
-      {requestStatusLabel === 'Issued' ? null : (
+      {label === 'Issued' ? null : (
         <Button color="white" onPress={navToIssue} style={styles.button}>
           Issue Order
         </Button>
@@ -396,8 +399,7 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: theme.colors.primary,
     position: 'absolute',
-    // zIndex: 2,
-    top: '95%',
+    top: '97%',
     width: '100%',
   },
 
@@ -423,7 +425,7 @@ const styles = StyleSheet.create({
   },
   cardContainer: {
     padding: 15,
-    marginBottom: 10,
+    marginBottom: 20,
     backgroundColor: '#fff',
     borderRadius: 5,
     paddingHorizontal: 10,
@@ -536,7 +538,6 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     marginBottom: 10,
   },
-
   title: {
     marginLeft: 10,
   },

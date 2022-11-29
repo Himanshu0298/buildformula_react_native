@@ -9,10 +9,9 @@ import {
 import React from 'react';
 import {Caption, Divider, Subheading, Text} from 'react-native-paper';
 import {getShadow} from 'utils';
-import NoResult from 'components/Atoms/NoResult';
-import {theme} from 'styles/theme';
 import {useSelector} from 'react-redux';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const STORE_KEEPER_STATUS = {
   pending: {label: 'Pending', color: '#F4AF48'},
@@ -27,14 +26,14 @@ const ListingCard = props => {
   const {id, email, type, authorizedstatus, first_name, last_name, created} =
     item;
 
-  const navToPreview = () => navigation.navigate('StoreKeeperPreview', id);
+  const navToPreview = () => navigation.navigate('StoreKeeperPreview', {id});
   return (
     <TouchableOpacity onPress={navToPreview}>
       <View style={styles.cardContainer}>
         <View style={styles.cardHeader}>
           <View>
             <View style={styles.subContainer}>
-              <Text> ID</Text>
+              <Text>Indent ID</Text>
             </View>
 
             <Text style={styles.ID}>{id}</Text>
@@ -108,9 +107,6 @@ const AuthorizedDetails = props => {
 
 function StoreKeeperList(props) {
   const {navigation} = props;
-  // const [selectDialog, setSelectDialog] = React.useState(false);
-
-  const {colors} = theme;
 
   const {getStoreKeeperList} = useMaterialManagementActions();
 
@@ -130,13 +126,13 @@ function StoreKeeperList(props) {
     </View>
   );
 
-  // const toggleSelectDialog = () => setSelectDialog(v => !v);
-
   return (
     <View style={styles.mainContainer}>
       <View style={styles.headerContainer}>
         <Subheading style={styles.headerText}>Material Indent</Subheading>
       </View>
+      <Spinner visible={loading} textContent="" />
+
       <View style={styles.bodyContainer}>
         <FlatList
           style={styles.flatList}
@@ -202,10 +198,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   ID: {
+    width: 30,
     backgroundColor: '#E5EAFA',
     padding: 5,
     borderRadius: 10,
-    fontSize: 10,
+    fontSize: 13,
     color: 'rgba(72, 114, 244, 1)',
   },
   emptyContainer: {
