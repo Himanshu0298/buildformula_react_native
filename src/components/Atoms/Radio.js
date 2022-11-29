@@ -1,25 +1,40 @@
 import React from 'react';
-import {StyleSheet, TouchableOpacity} from 'react-native';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import PropTypes from 'prop-types';
 import {RadioButton, Text, withTheme} from 'react-native-paper';
 import {theme} from 'styles/theme';
 
+export function RadioError({error, style}) {
+  return (
+    <View style={[styles.errorContainer, style]}>
+      <Text style={styles.errorStyles}>{error}</Text>
+    </View>
+  );
+}
+
 const Radio = React.forwardRef((props, ref) => {
-  const {value, checked, onChange, label, style, color, ...rest} = props;
+  const {value, checked, onChange, label, style, color, error, ...rest} = props;
 
   return (
-    <TouchableOpacity
-      onPress={() => onChange(value)}
-      style={[styles.container, style]}>
-      <RadioButton.Android
-        {...rest}
-        value={value}
-        color={color}
-        status={checked ? 'checked' : 'unchecked'}
+    <View>
+      <TouchableOpacity
         onPress={() => onChange(value)}
-      />
-      <Text style={[styles.caption, checked ? {color} : {}]}>{label}</Text>
-    </TouchableOpacity>
+        style={
+          ([styles.container, style],
+          error ? {borderColor: theme.colors.error} : {})
+        }>
+        <RadioButton.Android
+          {...rest}
+          value={value}
+          color={color}
+          status={checked ? 'checked' : 'unchecked'}
+          onPress={() => onChange(value)}
+        />
+        <Text style={[styles.caption, checked ? {color} : {}]}>{label}</Text>
+      </TouchableOpacity>
+
+      {error && <RadioError error={error} />}
+    </View>
   );
 });
 
@@ -45,6 +60,15 @@ const styles = StyleSheet.create({
   caption: {
     marginLeft: 5,
     flexShrink: 1,
+  },
+
+  // Errors
+  errorContainer: {
+    marginLeft: 15,
+  },
+  errorStyles: {
+    borderColor: 'red',
+    color: 'red',
   },
 });
 

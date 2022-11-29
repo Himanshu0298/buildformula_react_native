@@ -20,7 +20,7 @@ function RenderHistory(props) {
 
   const title =
     type === 'hold'
-      ? `${name} just have put this project On-hold for ${days} days`
+      ? `${name} , just have put this project On-hold for ${days} days`
       : `${name} have put this project Un-hold`;
 
   return (
@@ -39,9 +39,6 @@ function HoldBookingHistory(props) {
   const {navigation, route} = props;
   const {history} = route?.params || {};
 
-  const {commonData} = useSelector(s => s.project);
-  const {all_users_belongs_to_projects} = commonData;
-
   const historyData = useMemo(() => {
     const data = [];
 
@@ -51,29 +48,22 @@ function HoldBookingHistory(props) {
         date: i.created,
         holdTill: `${i.hold_till_date} ${i.hold_till_time}`,
         remark: i.remark,
-        user: all_users_belongs_to_projects.find(
-          user => user.id === i.hold_user_id,
-        ),
+        user: i.hold_user_id,
       });
-
       if (i.unhold_datetime) {
         data.push({
           type: 'unHold',
           date: i.unhold_datetime,
-          user: all_users_belongs_to_projects.find(
-            user => user.id === i.unhold_user_id,
-          ),
+          unHoldUser: i.unhold_user_id,
         });
       }
-
       return i;
     });
 
     return data;
-  }, [all_users_belongs_to_projects, history]);
+  }, [history]);
 
   const renderDivider = () => <Divider style={styles.divider} />;
-
   return (
     <View style={styles.container}>
       <TouchableOpacity

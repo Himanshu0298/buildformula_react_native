@@ -1,8 +1,8 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
-import {secondaryTheme, theme} from 'styles/theme';
 import PropTypes from 'prop-types';
 import {Text} from 'react-native-paper';
+import {secondaryTheme, theme} from 'styles/theme';
 
 function CustomBadge(props) {
   const {color: backgroundColor, style, label, labelStyles} = props;
@@ -22,10 +22,10 @@ CustomBadge.defaultProps = {
   color: theme.colors.primary,
 };
 
-CustomBadge.propTypes = {
-  color: PropTypes.string.isRequired,
-  label: PropTypes.string,
-};
+// CustomBadge.propTypes = {
+//   color: PropTypes.string.isRequired,
+//   label: PropTypes.string,
+// };
 
 const styles = StyleSheet.create({
   badge: {

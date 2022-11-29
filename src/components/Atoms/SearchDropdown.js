@@ -53,7 +53,7 @@ function SearchDropdown(props) {
                     onChangeText(label);
                     onSelect(value);
                   }}>
-                  <Menu.Item icon="account-question-outline" title={label} />
+                  {/* <Menu.Item icon="account-question-outline" title={label} /> */}
                   <Divider />
                 </TouchableOpacity>
               );

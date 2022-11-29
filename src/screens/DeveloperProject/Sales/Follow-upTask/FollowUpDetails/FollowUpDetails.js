@@ -12,7 +12,7 @@ import {
 import {theme} from 'styles/theme';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import UserIcon from 'assets/images/requestedUser.png';
+import UserIcon from 'assets/images/customer.png';
 import {useEffect} from 'react';
 import useSalesActions from 'redux/actions/salesActions';
 import {useSelector} from 'react-redux';
@@ -24,7 +24,6 @@ const TaskList = props => {
   const {item, navigation} = props;
 
   const isHtml = item.f_remarks?.includes('<') && item.f_remarks?.includes('>');
-
   const source = {
     html: `<span style="color: '#DEE1E4';margin-left: 2px;font-size: 15px">
        ${item.completed_remarks}</span>`,
@@ -33,7 +32,6 @@ const TaskList = props => {
   const navToDetails = () => {
     navigation.navigate('VisitorDetails', {visitorId: item.visitor_id});
   };
-
   const handleTask = () => {
     navigation.navigate('CompleteTask', {
       date: item.followup_date,
@@ -90,10 +88,10 @@ const TaskList = props => {
       ) : null}
 
       <View style={styles.userContainer}>
-        <Image source={UserIcon} />
+        <Image source={UserIcon} style={styles.userIcon} />
         <View style={styles.userDetails}>
           <Caption>Assigned to</Caption>
-          <Text>Sanaya Patel</Text>
+          <Text>{`${item.assign_first_name} ${item.assign_last_name}`}</Text>
         </View>
       </View>
       <Divider style={styles.divider} />
@@ -230,6 +228,11 @@ const styles = StyleSheet.create({
   },
   renderHtml: {
     marginTop: 10,
+  },
+  userIcon: {
+    borderRadius: 50,
+    height: 42,
+    width: 42,
   },
 });
 

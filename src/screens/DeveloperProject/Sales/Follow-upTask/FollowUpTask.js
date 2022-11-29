@@ -42,9 +42,9 @@ const Calendar = props => {
                 }>{`${item.first_name} ${item.last_name}`}</Text>
               <Caption style={styles.taskText}>{item.task_title}</Caption>
             </View>
-            <View style={styles.avatarText}>
+            {/* <View style={styles.avatarText}>
               <Text style={styles.avatarTextStyle}>DT</Text>
-            </View>
+            </View> */}
           </View>
         </TouchableOpacity>
       </View>
@@ -146,16 +146,16 @@ const styles = StyleSheet.create({
     fontSize: 15,
     marginTop: 5,
   },
-  avatarText: {
-    backgroundColor: '#A020F0',
-    borderRadius: 30,
-    padding: 10,
-    marginRight: 10,
-  },
-  avatarTextStyle: {
-    color: '#fff',
-    fontSize: 25,
-  },
+  // avatarText: {
+  //   backgroundColor: '#A020F0',
+  //   borderRadius: 30,
+  //   padding: 10,
+  //   marginRight: 10,
+  // },
+  // avatarTextStyle: {
+  //   color: '#fff',
+  //   fontSize: 25,
+  // },
   agenda: {
     flex: 1,
   },

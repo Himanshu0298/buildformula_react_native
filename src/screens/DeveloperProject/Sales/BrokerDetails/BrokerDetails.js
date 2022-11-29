@@ -52,17 +52,11 @@ function BrokerDetails(props) {
           />
         );
       case 1:
-        return (
-          <DealsClosed
-            {...props}
-            dealsClosed={brokerDetails.dealClosedInfo || []}
-          />
-        );
+        return <DealsClosed {...props} userData={userData} />;
       default:
         return <View />;
     }
   };
-
   return (
     <>
       <Spinner visible={loading} textContent="" />

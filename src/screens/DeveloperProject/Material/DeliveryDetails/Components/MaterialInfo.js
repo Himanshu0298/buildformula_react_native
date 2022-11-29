@@ -85,7 +85,6 @@ const MaterialInfo = props => {
   const {materialInfo = {}} = props;
   const {materials = [], material_images} = materialInfo;
   const {loading} = useSelector(s => s.materialManagement);
-
   return (
     <View style={styles.container}>
       <Subheading>Material Info</Subheading>

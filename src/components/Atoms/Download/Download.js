@@ -23,7 +23,7 @@ function DownloadPrompt(props) {
 }
 
 DownloadPrompt.defaultProps = {
-  message: 'This is a snackbar',
+  // message: 'This is a snackbar',
   open: false,
   variant: 'warning',
 };

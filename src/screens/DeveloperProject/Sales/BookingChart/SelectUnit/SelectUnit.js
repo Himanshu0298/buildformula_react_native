@@ -120,17 +120,18 @@ function SelectUnit(props) {
     }
   };
 
-  const handleHold = () => {
+  const handleHold = holdUnit => {
     toggleDialog();
     navigation.navigate('BookingFormOnHold', {
       ...route?.params,
       ...selectedUnit,
+      ...holdUnit,
     });
   };
 
   const handleSelectUnit = unit => {
     if (unit.status === 5) {
-      handleHold();
+      handleHold(unit);
     } else {
       toggleDialog(unit);
     }

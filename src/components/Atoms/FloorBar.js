@@ -1,13 +1,13 @@
 import React from 'react';
 import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
 import PropTypes from 'prop-types';
-import {theme} from 'styles/theme';
 import Layout from 'utils/Layout';
 import {Badge, Caption, TextInput} from 'react-native-paper';
 import {getFloorNumber, getShadow} from 'utils';
 import {STRUCTURE_TYPE_LABELS} from 'utils/constant';
 import floorSlab from 'assets/images/slab.png';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {theme} from 'styles/theme';
 import OpacityButton from './Buttons/OpacityButton';
 
 function FloorBar(props) {

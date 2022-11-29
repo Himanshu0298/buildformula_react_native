@@ -230,26 +230,6 @@ function CreateTask(props) {
             onBlur={handleBlur('selectCategory')}
             error={errors.selectCategory}
           />
-          <RenderTextBox
-            name="description"
-            label="Description"
-            containerStyles={styles.input}
-            value={values.description}
-            onChangeText={handleChange('description')}
-            numberOfLines={4}
-            onBlur={handleBlur('description')}
-            error={errors.description}
-          />
-
-          <RenderDatePicker
-            mode="calendar-clock-outline"
-            name="date"
-            label="Add Reminder"
-            containerStyles={styles.input}
-            value={values.date}
-            onChange={v => setFieldValue('date', v)}
-            error={errors.date}
-          />
           <RenderDatePicker
             name="date"
             label=" Due date"
@@ -259,6 +239,16 @@ function CreateTask(props) {
             onChange={v => setFieldValue('date', v)}
             error={errors.date}
           />
+          <RenderDatePicker
+            mode="calendar-clock-outline"
+            name="date"
+            label="Add Reminder"
+            containerStyles={styles.input}
+            value={values.date}
+            onChange={v => setFieldValue('date', v)}
+            error={errors.date}
+          />
+
           <RenderInput
             name="enterAssigneeName"
             label="Assign"
@@ -299,6 +289,16 @@ function CreateTask(props) {
               onSubmit={handleSave}
             />
           </View>
+          <RenderTextBox
+            name="description"
+            label="Description"
+            containerStyles={styles.input}
+            value={values.description}
+            onChangeText={handleChange('description')}
+            numberOfLines={4}
+            onBlur={handleBlur('description')}
+            error={errors.description}
+          />
           {type === 'edit' ? (
             <RenderSubTask
               tasks={values.tasks}
@@ -306,7 +306,9 @@ function CreateTask(props) {
             />
           ) : null}
           <View>
-            <Text style={{color: theme.colors.primary}}>Attachment</Text>
+            <Text style={[{color: theme.colors.primary}, styles.attachmentBox]}>
+              Attachment
+            </Text>
             <OpacityButton
               onPress={handleUpload}
               opacity={0.1}
@@ -396,6 +398,10 @@ const styles = StyleSheet.create({
   },
 
   text: {fontSize: 15, marginTop: 10},
+
+  attachmentBox: {
+    marginTop: 20,
+  },
 
   headingContainer2: {
     flexDirection: 'row',

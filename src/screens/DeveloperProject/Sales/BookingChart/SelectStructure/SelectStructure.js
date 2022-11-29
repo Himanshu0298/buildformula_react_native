@@ -34,7 +34,7 @@ function SelectStructure(props) {
   return (
     <>
       <StatusBar
-        barStyle="light-content"
+        barStyle="dark-content"
         backgroundColor={theme.colors.primary}
       />
       <Spinner visible={loading} textContent="" />

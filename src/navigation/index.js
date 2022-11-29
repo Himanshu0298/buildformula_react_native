@@ -55,6 +55,8 @@ import HoldBookingHistory from 'screens/DeveloperProject/Sales/BookingChart/Hold
 import BookingRates from 'screens/DeveloperProject/Sales/BookingChart/BookingRates';
 import BookingPayment from 'screens/DeveloperProject/Sales/BookingChart/BookingPayment';
 import BrokerList from 'screens/DeveloperProject/Sales/BrokerList';
+// import AddBrokerPaymentDetails from 'screens/DeveloperProject/Sales/BrokerDetails/Components/AddBrokerPaymentDetails';
+import AddBrokerPaymentDetails from 'screens/DeveloperProject/Sales/BrokerDetails/Components/AddBrokerPaymentDetails';
 import Approval from 'screens/DeveloperProject/Sales/Approval';
 import CreateApproval from 'screens/DeveloperProject/Sales/Approval/Components/CreateApproval';
 import ApprovalListing from 'screens/DeveloperProject/Sales/Approval/Components/ApprovalListing';
@@ -108,6 +110,7 @@ import AddRole from 'screens/DeveloperProject/UserRoles/AddRole';
 import SalesPipelineRearrange from 'screens/DeveloperProject/Sales/SalesPipelineRearrange';
 import BrokerDetails from 'screens/DeveloperProject/Sales/BrokerDetails';
 import AddBroker from 'screens/DeveloperProject/Sales/AddBroker';
+import DealsClosedDetails from 'screens/DeveloperProject/Sales/BrokerDetails/Components/DealsClosedDetails';
 import WorkMaster from 'screens/DeveloperProject/ProjectManagement/WorkMaster';
 import WorkDetails from 'screens/DeveloperProject/ProjectManagement/WBS/WorkDetails';
 import ProgressRecords from 'screens/DeveloperProject/ProjectManagement/WBS/ProgressRecords';
@@ -123,7 +126,28 @@ import PurchaseOrders from '../screens/DeveloperProject/MaterialManagement/Purch
 import OrderDetail from '../screens/DeveloperProject/Material/OrderDetail';
 import MaterialList from '../screens/DeveloperProject/Material/MaterialList';
 import DeliveryDetails from 'screens/DeveloperProject/Material/DeliveryDetails';
+import PRListing from 'screens/DeveloperProject/Material/MaterialPR/PRListing';
+import PIListing from 'screens/DeveloperProject/Material/MaterialPI/PIListing';
+import CreatePR from 'screens/DeveloperProject/Material/MaterialPR/CreatePR';
+import PRPreview from 'screens/DeveloperProject/Material/MaterialPR/PRPreview';
+import AddMaterialList from 'screens/DeveloperProject/Material/MaterialPR/MaterialPRList';
+
+import MaterialIndentListing from 'screens/DeveloperProject/Material/MaterialIndent/MaterialIndentList';
+import CreatePI from 'screens/DeveloperProject/Material/MaterialPI/CreatePI';
+import CreatePIMaterial from 'screens/DeveloperProject/Material/MaterialPI/MaterialList';
+import PIPreview from 'screens/DeveloperProject/Material/MaterialPI/PIPreview/PIPreview';
+import PIRequest from 'screens/DeveloperProject/Material/MaterialPI/PIRequest/PIRequest';
+import TermsAndConditions from 'screens/DeveloperProject/Material/MaterialPI/TermsAndConditions';
+import AddPIMaterialList from 'screens/DeveloperProject/Material/MaterialPI/MaterialList/AddPIMaterialList';
 import AddChallan from 'screens/DeveloperProject/Material/DeliveryDetails/AddChallan';
+
+import AddMaterialIndent from 'screens/DeveloperProject/Material/MaterialIndent/IssueIndent/IssueMaterialIndent/AddMaterialIndent';
+import CreateIssueIndent from 'screens/DeveloperProject/Material/MaterialIndent/IssueIndent/AddIssueIndent';
+import CreateReturnIndent from 'screens/DeveloperProject/Material/MaterialIndent/ReturnIndent/AddReturnIndent/CreateReturnIndent';
+
+import IssueIndentPreview from 'screens/DeveloperProject/Material/MaterialIndent/MaterialPreview/IssueIndentPreview';
+import ReturnIndentPreview from 'screens/DeveloperProject/Material/MaterialIndent/MaterialPreview/ReturnIndentPreview';
+
 import SelectMaterials from 'screens/DeveloperProject/Material/DeliveryDetails/SelectMaterial';
 import AddMaterialInfo from 'screens/DeveloperProject/Material/DeliveryDetails/AddMaterialChallan';
 import AddVehicleInfo from 'screens/DeveloperProject/Material/DeliveryDetails/AddVehicleChallan';
@@ -133,7 +157,19 @@ import DirectGRNPreview from 'screens/DeveloperProject/Material/MaterialGRN/Dire
 import AddDirectGRN from 'screens/DeveloperProject/Material/MaterialGRN/Components/AddDirectGRN';
 import GRNMaterial from 'screens/DeveloperProject/Material/MaterialGRN/Components/GRNMaterial';
 import AddMaterial from 'screens/DeveloperProject/Material/MaterialGRN/Components/AddMaterial';
+import StoreKeeperPreview from 'screens/DeveloperProject/Material/StoreKeeper/StoreKeeperPreview';
+import IssueIndent from 'screens/DeveloperProject/Material/StoreKeeper/IssueIndent';
 import VehicleInfo from 'screens/DeveloperProject/Material/MaterialGRN/Components/VehicleInfo';
+
+import AddReturnMaterialIndent from 'screens/DeveloperProject/Material/MaterialIndent/ReturnIndent/ReturnMaterialIndent/AddReturnMaterial';
+import AddMaterialIndentList from 'screens/DeveloperProject/Material/MaterialIndent/IssueIndent/IssueMaterialIndent';
+import AddReturnMaterialList from 'screens/DeveloperProject/Material/MaterialIndent/ReturnIndent/ReturnMaterialIndent/AddReturnMaterialList';
+import AddAttachments from 'screens/DeveloperProject/Material/MaterialIndent/ReturnIndent/AddAttachments/AddAttachments';
+import MaterialInventoryList from 'screens/DeveloperProject/Material/MaterialInventory/MaterialInventoryList';
+import MaterialInventorySubList from 'screens/DeveloperProject/Material/MaterialInventory/MaterialInventorySubList';
+import InventorySubListPreview from 'screens/DeveloperProject/Material/MaterialInventory/InventorySubListPreview';
+import MaterialPreview from 'screens/DeveloperProject/Material/MaterialInventory/MaterialPreview';
+import SubListPreview from 'screens/DeveloperProject/Material/MaterialInventory/SubListPreview';
 
 // Project : Files screens
 import Files from '../screens/DeveloperProject/Files';
@@ -163,6 +199,8 @@ import LanguageSelect from '../screens/Auth/LanguageSelect';
 import DrawerContent from './Components/DrawerContent';
 import DocumentGenerater from 'screens/DeveloperProject/DocumentGenerater';
 import DocumentDownload from 'screens/DeveloperProject/DocumentGenerater/Documents/DocumentDownload';
+import StoreKeeperList from 'screens/DeveloperProject/Material/StoreKeeper/StoreKeeperList';
+
 /** *********** Developer Project Sub Screens End   ************ */
 
 const optionalConfigObject = {
@@ -373,12 +411,97 @@ function AppStackNavigator() {
                 component={DeliveryDetails}
               />
               <Stack.Screen name="OrderDetail" component={OrderDetail} />
+              <Stack.Screen
+                name="StoreKeeperList"
+                component={StoreKeeperList}
+              />
+              <Stack.Screen name="IssueIndent" component={IssueIndent} />
+              <Stack.Screen
+                name="StoreKeeperPreview"
+                component={StoreKeeperPreview}
+              />
               <Stack.Screen name="MaterialList" component={MaterialList} />
               <Stack.Screen name="AddChallan" component={AddChallan} />
+
+              <Stack.Screen name="PRList" component={PRListing} />
+              <Stack.Screen
+                name="MaterialIndent"
+                component={MaterialIndentListing}
+              />
+              <Stack.Screen name="PIList" component={PIListing} />
+              <Stack.Screen name="CreatePR" component={CreatePR} />
+              <Stack.Screen name="CreatePI" component={CreatePI} />
+              <Stack.Screen
+                name="CreateIssueIndent"
+                component={CreateIssueIndent}
+              />
+              <Stack.Screen
+                name="CreateReturnIndent"
+                component={CreateReturnIndent}
+              />
+              <Stack.Screen name="AddPIMaterial" component={CreatePIMaterial} />
+              <Stack.Screen
+                name="AddMaterialIndentList"
+                component={AddMaterialIndentList}
+              />
+              <Stack.Screen
+                name="AddReturnMaterialList"
+                component={AddReturnMaterialList}
+              />
+              <Stack.Screen
+                name="AddMaterialIndent"
+                component={AddMaterialIndent}
+              />
+              <Stack.Screen
+                name="AddReturnMaterial"
+                component={AddReturnMaterialIndent}
+              />
+              <Stack.Screen name="PIRequest" component={PIRequest} />
+              <Stack.Screen
+                name="AddPIMaterialList"
+                component={AddPIMaterialList}
+              />
+              <Stack.Screen
+                name="Terms&Conditions"
+                component={TermsAndConditions}
+              />
+              <Stack.Screen name="PRPreview" component={PRPreview} />
+              <Stack.Screen
+                name="IssueIndentPreview"
+                component={IssueIndentPreview}
+              />
+              <Stack.Screen
+                name="ReturnIndentPreview"
+                component={ReturnIndentPreview}
+              />
+              <Stack.Screen name="PIPreview" component={PIPreview} />
+              <Stack.Screen
+                name="AddMaterialList"
+                component={AddMaterialList}
+              />
+
               <Stack.Screen
                 name="SelectMaterials"
                 component={SelectMaterials}
               />
+
+              <Stack.Screen
+                name="MaterialInventory"
+                component={MaterialInventoryList}
+              />
+              <Stack.Screen
+                name="MaterialPreview"
+                component={MaterialPreview}
+              />
+              <Stack.Screen
+                name="MaterialInventorySubList"
+                component={MaterialInventorySubList}
+              />
+              <Stack.Screen
+                name="InventorySubListPreview"
+                component={InventorySubListPreview}
+              />
+              <Stack.Screen name="SubListPreview" component={SubListPreview} />
               <Stack.Screen
                 name="AddMaterialInfo"
                 component={AddMaterialInfo}
@@ -413,6 +536,14 @@ function AppStackNavigator() {
               <Stack.Screen name="BrokerList" component={BrokerList} />
               <Stack.Screen name="BrokerDetails" component={BrokerDetails} />
               <Stack.Screen name="AddBroker" component={AddBroker} />
+              <Stack.Screen
+                name="DealsClosedDetails"
+                component={DealsClosedDetails}
+              />
+              <Stack.Screen
+                name="AddBrokerPaymentDetails"
+                component={AddBrokerPaymentDetails}
+              />
               <Stack.Screen name="Remark" component={Remark} />
             </Stack.Group>
             <Stack.Group>
