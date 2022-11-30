@@ -1,14 +1,27 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {FlatList, View, StyleSheet, TouchableOpacity} from 'react-native';
 import FloorBar from 'components/Atoms/FloorBar';
-import {IconButton, Subheading, withTheme} from 'react-native-paper';
+import {
+  IconButton,
+  Subheading,
+  ToggleButton,
+  withTheme,
+} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import {RenderTowerBox} from 'components/Molecules/TowerSelector';
 import NoResult from 'components/Atoms/NoResult';
+import {SelectUnit} from '../SelectUnit/SelectUnit';
 
 function SelectFloor(props) {
   const {route, navigation} = props;
-  const {selectedStructure, towerType, towerId} = route?.params || {};
+  const {selectedStructure, towerType, towerId, project_id} =
+    route?.params || {};
+
+  const [selectedFloor, setSelectedFloor] = useState();
+
+  const onSelectFloor = floorId => {
+    setSelectedFloor(v => (v === floorId ? undefined : floorId));
+  };
 
   const {selectedProject} = useSelector(s => s.project);
 
@@ -47,22 +60,38 @@ function SelectFloor(props) {
           const {structureType} = floors[floorId];
 
           return (
-            <FloorBar
-              {...props}
-              {...{floorId, index, towerId, floorData: floors}}
-              inputProps={{
-                value: floors?.[floorId]?.unitCount?.toString() || '',
-                disabled: true,
-              }}
-              buttonProps={{color: '#5B6F7C'}}
-              onPressNext={() =>
-                navigation.navigate('BC_Step_Four', {
+            <>
+              <FloorBar
+                {...props}
+                {...{
                   floorId,
+                  index,
+                  towerId,
+                  floorData: floors,
+                  toggle: true,
                   structureType,
-                  ...route.params,
-                })
-              }
-            />
+                }}
+                inputProps={{
+                  value: floors?.[floorId]?.unitCount?.toString() || '',
+                  disabled: true,
+                }}
+                buttonProps={{color: '#5B6F7C'}}
+                onSelectFloor={onSelectFloor}
+              />
+              {selectedFloor === floorId ? (
+                <SelectUnit
+                  floorId={floorId}
+                  structureType={structureType}
+                  project_id={project_id}
+                  towerId={towerId}
+                  selectedStructure={selectedStructure}
+                  towerType={towerType}
+                  navigation={navigation}
+                  route={route}
+                  // propertyLabel={propertyLabel}
+                />
+              ) : null}
+            </>
           );
         }}
       />

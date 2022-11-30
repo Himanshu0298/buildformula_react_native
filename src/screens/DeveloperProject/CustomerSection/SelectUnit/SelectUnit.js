@@ -9,7 +9,7 @@ import {IconButton, Subheading} from 'react-native-paper';
 import {STRUCTURE_TYPE, STRUCTURE_TYPE_LABELS} from 'utils/constant';
 import {useSalesLoading} from 'redux/selectors';
 
-function SelectUnit(props) {
+export const SelectUnit = props => {
   const {navigation, route} = props;
   const {
     project_id,
@@ -18,7 +18,9 @@ function SelectUnit(props) {
     structureType,
     selectedStructure,
     towerType,
-  } = route?.params || {};
+  } = props || {};
+
+  const propertyLabel = STRUCTURE_TYPE_LABELS?.[structureType]?.toString();
 
   const {getUnitsBookingStatus} = useSalesActions();
 
@@ -112,13 +114,42 @@ function SelectUnit(props) {
         refreshing={unitBookingStatus.length > 0 && loading}
         floorNumber={floor}
         units={processedUnits}
-        showBhkFilters={selectedStructure !== STRUCTURE_TYPE.PLOT}
+        showBhkFilters={
+          selectedStructure !== STRUCTURE_TYPE.PLOT &&
+          propertyLabel !== 'Shops' &&
+          propertyLabel !== 'Offices'
+        }
         floorType={structureType || selectedStructure}
         isUnitDisabled={checkUnitDisability}
         onRefresh={fetchUnitsBookingStatus}
         onSelectUnit={handleSelectUnit}
       />
     </View>
+  );
+};
+
+function SelectUnitContainer(props) {
+  const {navigation, route} = props;
+
+  const {
+    project_id,
+    floorId,
+    towerId,
+    structureType,
+    selectedStructure,
+    towerType,
+  } = route?.params || {};
+
+  return (
+    <SelectUnit
+      project_id={project_id}
+      floorId={floorId}
+      towerId={towerId}
+      structureType={structureType}
+      selectedStructure={selectedStructure}
+      towerType={towerType}
+      navigation={navigation}
+    />
   );
 }
 
@@ -139,4 +170,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SelectUnit;
+export default SelectUnitContainer;

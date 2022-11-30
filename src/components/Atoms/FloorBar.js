@@ -1,5 +1,5 @@
 import React from 'react';
-import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {Image, StyleSheet, TouchableOpacity, View, Text} from 'react-native';
 import PropTypes from 'prop-types';
 import Layout from 'utils/Layout';
 import {Badge, Caption, TextInput} from 'react-native-paper';
@@ -19,7 +19,7 @@ function FloorBar(props) {
     showBadge,
     inputProps,
     onPressLabel,
-    onPressNext,
+    onSelectFloor,
   } = props;
 
   const {structureType} = floorData?.[index] || {};
@@ -27,66 +27,68 @@ function FloorBar(props) {
   const LabelContainer = onPressLabel ? TouchableOpacity : View;
 
   return (
-    <View style={styles.floorContainer}>
-      {showBadge ? (
-        <View style={styles.badgeContainer}>
-          <View>
-            <Badge style={styles.badge} visible={badgeActive} />
+    <View>
+      <View style={styles.floorContainer}>
+        {showBadge ? (
+          <View style={styles.badgeContainer}>
+            <View>
+              <Badge style={styles.badge} visible={badgeActive} />
+            </View>
           </View>
-        </View>
-      ) : null}
-      <View style={styles.floorContent}>
-        <View style={styles.rowContainer}>
-          <LabelContainer
-            style={styles.floorLabelContainer}
-            onPress={() => onPressLabel?.(floorId)}>
-            <Caption>{getFloorNumber(floorId)}</Caption>
-          </LabelContainer>
-          <View style={styles.rightSection}>
-            <TextInput
-              dense
-              blurOnSubmit
-              disabled
-              value={STRUCTURE_TYPE_LABELS?.[structureType]?.toString()}
-              placeholder=""
-              style={styles.structureInput}
-              keyboardType="decimal-pad"
-              theme={{
-                colors: {
-                  underlineColor: 'transparent',
-                  text: '#000',
-                  accent: theme.colors.primary,
-                },
-              }}
-            />
-            <TextInput
-              dense
-              blurOnSubmit
-              placeholder=""
-              style={styles.unitsInput}
-              keyboardType="decimal-pad"
-              theme={{
-                colors: {
-                  underlineColor: 'transparent',
-                  text: '#000',
-                  accent: theme.colors.primary,
-                },
-              }}
-              {...inputProps}
-            />
-            <OpacityButton
-              opacity={1}
-              onPress={onPressNext}
-              style={styles.button}>
-              <MaterialCommunityIcons
-                name="arrow-right"
-                size={20}
-                color="#fff"
+        ) : null}
+        <View style={styles.floorContent}>
+          <View style={styles.rowContainer}>
+            <LabelContainer
+              style={styles.floorLabelContainer}
+              onPress={() => onPressLabel?.(floorId)}>
+              <Caption>{getFloorNumber(floorId)}</Caption>
+            </LabelContainer>
+            <View style={styles.rightSection}>
+              <TextInput
+                dense
+                blurOnSubmit
+                disabled
+                value={STRUCTURE_TYPE_LABELS?.[structureType]?.toString()}
+                placeholder=""
+                style={styles.structureInput}
+                keyboardType="decimal-pad"
+                theme={{
+                  colors: {
+                    underlineColor: 'transparent',
+                    text: '#000',
+                    accent: theme.colors.primary,
+                  },
+                }}
               />
-            </OpacityButton>
+              <TextInput
+                dense
+                blurOnSubmit
+                placeholder=""
+                style={styles.unitsInput}
+                keyboardType="decimal-pad"
+                theme={{
+                  colors: {
+                    underlineColor: 'transparent',
+                    text: '#000',
+                    accent: theme.colors.primary,
+                  },
+                }}
+                {...inputProps}
+              />
+              <OpacityButton
+                opacity={1}
+                onPress={() => onSelectFloor(floorId)}
+                style={styles.button}>
+                <MaterialCommunityIcons
+                  name="chevron-down"
+                  size={20}
+                  color="#fff"
+                />
+              </OpacityButton>
+            </View>
           </View>
+          <Image source={floorSlab} style={styles.slabImage} />
         </View>
-        <Image source={floorSlab} style={styles.slabImage} />
       </View>
     </View>
   );

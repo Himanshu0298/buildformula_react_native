@@ -8,11 +8,13 @@ import {getFloorNumber, getPermissions} from 'utils';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {IconButton, Subheading} from 'react-native-paper';
-import SelectHoldOrBook from 'screens/DeveloperProject/Sales/BookingChart/SelectUnit/Components/UnitBookingDialog';
+import SelectHoldOrBook from 'screens/DeveloperProject/Sales/BookingChart/SelectTower/Components/UnitBookingDialog';
 import {STRUCTURE_TYPE, STRUCTURE_TYPE_LABELS} from 'utils/constant';
 import {useSalesLoading} from 'redux/selectors';
+import StoreKeeperList from 'screens/DeveloperProject/Material/StoreKeeper/StoreKeeperList/storeKeeperList';
 
-export const SelectUnit = props => {
+function SelectUnit(props) {
+  const {navigation, route} = props;
   const {
     project_id,
     floorId,
@@ -20,9 +22,7 @@ export const SelectUnit = props => {
     structureType,
     selectedStructure,
     towerType,
-    navigation,
-    route,
-  } = props || {};
+  } = route?.params || {};
 
   const modulePermission = getPermissions('Booking Chart');
   const snackbar = useSnackbar();
@@ -36,7 +36,6 @@ export const SelectUnit = props => {
   const loading = useSalesLoading();
 
   const [selectedUnit, setSelectedUnit] = useState();
-  const propertyLabel = STRUCTURE_TYPE_LABELS?.[structureType]?.toString();
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -175,42 +174,13 @@ export const SelectUnit = props => {
         refreshing={unitBookingStatus.length > 0 && loading}
         floorNumber={floor}
         units={processedUnits}
-        showBhkFilters={
-          selectedStructure !== STRUCTURE_TYPE.PLOT &&
-          propertyLabel !== 'Shops' &&
-          propertyLabel !== 'Offices'
-        }
+        showBhkFilters={selectedStructure !== STRUCTURE_TYPE.PLOT}
         floorType={structureType || selectedStructure}
         isUnitDisabled={checkUnitDisability}
         onRefresh={fetchUnitsBookingStatus}
         onSelectUnit={handleSelectUnit}
       />
     </View>
-  );
-};
-
-function SelectUnitContainer(props) {
-  const {navigation, route} = props;
-  const {
-    project_id,
-    floorId,
-    towerId,
-    structureType,
-    selectedStructure,
-    towerType,
-  } = route?.params || {};
-
-  return (
-    <SelectUnit
-      project_id={project_id}
-      floorId={floorId}
-      towerId={towerId}
-      structureType={structureType}
-      selectedStructure={selectedStructure}
-      towerType={towerType}
-      navigation={navigation}
-      props={props}
-    />
   );
 }
 
@@ -231,4 +201,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SelectUnitContainer;
+export default SelectUnit;
