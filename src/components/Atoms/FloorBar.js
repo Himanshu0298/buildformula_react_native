@@ -1,5 +1,5 @@
 import React from 'react';
-import {Image, StyleSheet, TouchableOpacity, View, Text} from 'react-native';
+import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
 import PropTypes from 'prop-types';
 import Layout from 'utils/Layout';
 import {Badge, Caption, TextInput} from 'react-native-paper';

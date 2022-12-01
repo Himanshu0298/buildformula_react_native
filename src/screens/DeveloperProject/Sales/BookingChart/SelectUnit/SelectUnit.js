@@ -22,6 +22,7 @@ export const SelectUnit = props => {
     towerType,
     navigation,
     route,
+    displayHeader,
   } = props || {};
 
   const modulePermission = getPermissions('Booking Chart');
@@ -154,32 +155,31 @@ export const SelectUnit = props => {
       />
       <Spinner visible={loading} textContent="" />
 
-      {towerType ? (
+      {towerType && displayHeader ? (
         <Subheading>
           {towerType}
           {structureType ? ` - ${STRUCTURE_TYPE_LABELS[structureType]}` : ''}
         </Subheading>
       ) : null}
 
-      <View style={styles.headerContainer}>
-        <TouchableOpacity
-          style={styles.titleContainer}
-          onPress={navigation.goBack}>
-          <IconButton icon="keyboard-backspace" />
-          <Subheading>{floor}</Subheading>
-        </TouchableOpacity>
-      </View>
+      {displayHeader ? (
+        <View style={styles.headerContainer}>
+          <TouchableOpacity
+            style={styles.titleContainer}
+            onPress={navigation.goBack}>
+            <IconButton icon="keyboard-backspace" />
+            <Subheading>{floor}</Subheading>
+          </TouchableOpacity>
+        </View>
+      ) : null}
 
       <UnitSelector
         {...props}
         refreshing={unitBookingStatus.length > 0 && loading}
         floorNumber={floor}
         units={processedUnits}
-        showBhkFilters={
-          selectedStructure !== STRUCTURE_TYPE.PLOT &&
-          propertyLabel !== 'Shops' &&
-          propertyLabel !== 'Offices'
-        }
+        showBhkFilters={false}
+        displayHeader={displayHeader}
         floorType={structureType || selectedStructure}
         isUnitDisabled={checkUnitDisability}
         onRefresh={fetchUnitsBookingStatus}

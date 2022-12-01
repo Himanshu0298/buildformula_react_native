@@ -7,7 +7,7 @@ import {
   RefreshControl,
   FlatList,
 } from 'react-native';
-import {Subheading} from 'react-native-paper';
+import {Divider, Subheading} from 'react-native-paper';
 import {BHK_OPTIONS} from 'utils/constant';
 import PropTypes from 'prop-types';
 import NoResult from 'components/Atoms/NoResult';
@@ -49,6 +49,7 @@ function UnitSelector(props) {
     onSelectUnit,
     floorType,
     isUnitDisabled,
+    displayHeader,
   } = props;
 
   const [selectedBhk, setSelectedBhk] = React.useState();
@@ -70,7 +71,7 @@ function UnitSelector(props) {
     <View style={styles.container}>
       {showBhkFilters ? (
         <>
-          <Subheading style={styles.bhkHeading}>BHK indication</Subheading>
+          <Subheading style={styles.bhkHeading}>BHK Indication</Subheading>
 
           <BhkList selectedBhk={selectedBhk} onPress={setSelectedBhk} />
         </>
@@ -98,6 +99,7 @@ function UnitSelector(props) {
           />
         )}
       />
+      {displayHeader ? null : <Divider style={styles.divider} />}
     </View>
   );
 }
@@ -105,6 +107,7 @@ function UnitSelector(props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginBottom: 15,
   },
   bhkHeading: {
     marginTop: 5,
@@ -117,6 +120,9 @@ const styles = StyleSheet.create({
   },
   floorTitle: {
     marginVertical: 5,
+  },
+  divider: {
+    marginTop: 10,
   },
 });
 

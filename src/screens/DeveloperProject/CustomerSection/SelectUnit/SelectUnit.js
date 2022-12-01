@@ -114,11 +114,7 @@ export const SelectUnit = props => {
         refreshing={unitBookingStatus.length > 0 && loading}
         floorNumber={floor}
         units={processedUnits}
-        showBhkFilters={
-          selectedStructure !== STRUCTURE_TYPE.PLOT &&
-          propertyLabel !== 'Shops' &&
-          propertyLabel !== 'Offices'
-        }
+        showBhkFilters={false}
         floorType={structureType || selectedStructure}
         isUnitDisabled={checkUnitDisability}
         onRefresh={fetchUnitsBookingStatus}
