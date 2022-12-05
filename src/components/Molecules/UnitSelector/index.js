@@ -99,7 +99,7 @@ function UnitSelector(props) {
           />
         )}
       />
-      {displayHeader ? null : <Divider style={styles.divider} />}
+      {!displayHeader ? <Divider style={styles.divider} /> : null}
     </View>
   );
 }
@@ -117,9 +117,6 @@ const styles = StyleSheet.create({
   },
   towerList: {
     flexDirection: 'row',
-  },
-  floorTitle: {
-    marginVertical: 5,
   },
   divider: {
     marginTop: 10,

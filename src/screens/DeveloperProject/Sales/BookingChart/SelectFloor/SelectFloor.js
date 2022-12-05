@@ -13,6 +13,7 @@ import {RenderTowerBox} from 'components/Molecules/TowerSelector';
 import NoResult from 'components/Atoms/NoResult';
 import {BHK_OPTIONS} from 'utils/constant';
 import BhkButton from 'components/Atoms/Buttons/BhkButton';
+import {pickBy} from 'lodash';
 import {SelectUnit} from '../SelectUnit/SelectUnit';
 
 function BhkList({onPress, selectedBhk}) {
@@ -20,11 +21,11 @@ function BhkList({onPress, selectedBhk}) {
     <View>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         <View style={styles.towerList}>
-          {BHK_OPTIONS.map((bhk, i) => {
+          {BHK_OPTIONS.map(bhk => {
             return (
               <BhkButton
                 bhk={bhk}
-                key={i.toString()}
+                key={String(bhk.type)}
                 selected={bhk.type === selectedBhk}
                 onPress={onPress}
               />
@@ -57,6 +58,27 @@ function SelectFloor(props) {
   const {floors = {}} =
     structureData?.towers.find(i => i.tower_id === towerId) || {};
 
+  const showBhkIndicator = useMemo(() => {
+    return Boolean(
+      Object.values(floors).filter(i => i.structureType === 1)?.length,
+    );
+  }, [floors]);
+
+  const filteredFloors = useMemo(() => {
+    return pickBy(floors, (floorData, floorId) => {
+      const units =
+        ([4, 5].includes(selectedStructure)
+          ? structureData.units
+          : floors?.[floorId]?.units) || [];
+
+      if (selectedBhk && floorData.structureType === 1) {
+        return Boolean(units.filter(i => i.bhk === selectedBhk)?.length);
+      }
+
+      return true;
+    });
+  }, [floors, selectedBhk, selectedStructure, structureData.units]);
+
   const renderNoFloor = () => <NoResult title="No Floors available" />;
 
   return (
@@ -72,24 +94,26 @@ function SelectFloor(props) {
         </TouchableOpacity>
       </View>
 
-      <View>
-        <Subheading style={styles.bhkHeading}>BHK indication</Subheading>
+      {showBhkIndicator ? (
+        <View>
+          <Subheading style={styles.bhkHeading}>BHK indication</Subheading>
 
-        <BhkList selectedBhk={selectedBhk} onPress={setSelectedBhk} />
-      </View>
+          <BhkList selectedBhk={selectedBhk} onPress={setSelectedBhk} />
+        </View>
+      ) : null}
 
       <Subheading style={styles.floorsTitle}>Floors</Subheading>
 
       <FlatList
-        data={Object.keys(floors)}
+        data={Object.keys(filteredFloors)}
         contentContainerStyle={styles.contentContainerStyle}
-        extraData={{...floors}}
+        extraData={{...filteredFloors}}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
         keyExtractor={item => item.toString()}
         ListEmptyComponent={renderNoFloor}
         renderItem={({item: floorId, index}) => {
-          const {structureType} = floors[floorId];
+          const {structureType} = filteredFloors[floorId];
 
           return (
             <>
@@ -99,12 +123,12 @@ function SelectFloor(props) {
                   floorId,
                   index,
                   towerId,
-                  floorData: floors,
+                  floorData: filteredFloors,
                   toggle: true,
                   structureType,
                 }}
                 inputProps={{
-                  value: floors?.[floorId]?.unitCount?.toString() || '',
+                  value: filteredFloors?.[floorId]?.unitCount?.toString() || '',
                   disabled: true,
                 }}
                 buttonProps={{color: '#5B6F7C'}}
@@ -120,6 +144,7 @@ function SelectFloor(props) {
                   towerType={towerType}
                   navigation={navigation}
                   route={route}
+                  showBhkFilters={false}
                   displayHeader={false}
                 />
               ) : null}

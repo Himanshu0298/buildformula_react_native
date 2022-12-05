@@ -9,7 +9,7 @@ import {useSnackbar} from 'components/Atoms/Snackbar';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {IconButton, Subheading} from 'react-native-paper';
 import SelectHoldOrBook from 'screens/DeveloperProject/Sales/BookingChart/SelectUnit/Components/UnitBookingDialog';
-import {STRUCTURE_TYPE, STRUCTURE_TYPE_LABELS} from 'utils/constant';
+import {STRUCTURE_TYPE_LABELS} from 'utils/constant';
 import {useSalesLoading} from 'redux/selectors';
 
 export const SelectUnit = props => {
@@ -21,6 +21,7 @@ export const SelectUnit = props => {
     selectedStructure,
     towerType,
     navigation,
+    showBhkFilters,
     route,
     displayHeader,
   } = props || {};
@@ -61,11 +62,6 @@ export const SelectUnit = props => {
 
     return floors?.[floorId]?.units || [];
   }, [floorId, selectedProject, selectedStructure, towerId]);
-
-  console.log(
-    '-------->',
-    units?.filter(i => i.unitLabel.includes('304')),
-  );
 
   const processedUnits = useMemo(() => {
     const updatedUnits = units?.map(unit => {
@@ -178,7 +174,7 @@ export const SelectUnit = props => {
         refreshing={unitBookingStatus.length > 0 && loading}
         floorNumber={floor}
         units={processedUnits}
-        showBhkFilters={false}
+        showBhkFilters={showBhkFilters}
         displayHeader={displayHeader}
         floorType={structureType || selectedStructure}
         isUnitDisabled={checkUnitDisability}
@@ -210,6 +206,8 @@ function SelectUnitContainer(props) {
       towerType={towerType}
       navigation={navigation}
       props={props}
+      displayHeader
+      showBhkFilters={selectedStructure === 4}
     />
   );
 }
