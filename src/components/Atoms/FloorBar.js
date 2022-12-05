@@ -20,6 +20,7 @@ function FloorBar(props) {
     inputProps,
     onPressLabel,
     onSelectFloor,
+    selectedFloor,
   } = props;
 
   const {structureType} = floorData?.[index] || {};
@@ -80,7 +81,9 @@ function FloorBar(props) {
                 onPress={() => onSelectFloor(floorId)}
                 style={styles.button}>
                 <MaterialCommunityIcons
-                  name="chevron-down"
+                  name={
+                    selectedFloor === floorId ? 'chevron-up' : 'chevron-down'
+                  }
                   size={20}
                   color="#fff"
                 />

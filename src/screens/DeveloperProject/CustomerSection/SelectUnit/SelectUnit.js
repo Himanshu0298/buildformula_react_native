@@ -18,9 +18,9 @@ export const SelectUnit = props => {
     structureType,
     selectedStructure,
     towerType,
+    displayHeader,
+    showBhkFilters,
   } = props || {};
-
-  const propertyLabel = STRUCTURE_TYPE_LABELS?.[structureType]?.toString();
 
   const {getUnitsBookingStatus} = useSalesActions();
 
@@ -93,28 +93,31 @@ export const SelectUnit = props => {
     <View style={styles.container}>
       <Spinner visible={loading} textContent="" />
 
-      {towerType ? (
+      {towerType && displayHeader ? (
         <Subheading>
           {towerType}
           {structureType ? ` - ${STRUCTURE_TYPE_LABELS[structureType]}` : ''}
         </Subheading>
       ) : null}
 
-      <View style={styles.headerContainer}>
-        <TouchableOpacity
-          style={styles.titleContainer}
-          onPress={navigation.goBack}>
-          <IconButton icon="keyboard-backspace" />
-          <Subheading>{floor}</Subheading>
-        </TouchableOpacity>
-      </View>
+      {displayHeader ? (
+        <View style={styles.headerContainer}>
+          <TouchableOpacity
+            style={styles.titleContainer}
+            onPress={navigation.goBack}>
+            <IconButton icon="keyboard-backspace" />
+            <Subheading>{floor}</Subheading>
+          </TouchableOpacity>
+        </View>
+      ) : null}
 
       <UnitSelector
         {...props}
         refreshing={unitBookingStatus.length > 0 && loading}
         floorNumber={floor}
         units={processedUnits}
-        showBhkFilters={false}
+        showBhkFilters={showBhkFilters}
+        displayHeader={displayHeader}
         floorType={structureType || selectedStructure}
         isUnitDisabled={checkUnitDisability}
         onRefresh={fetchUnitsBookingStatus}
@@ -145,6 +148,8 @@ function SelectUnitContainer(props) {
       selectedStructure={selectedStructure}
       towerType={towerType}
       navigation={navigation}
+      displayHeader
+      showBhkFilters={selectedStructure === 4}
     />
   );
 }

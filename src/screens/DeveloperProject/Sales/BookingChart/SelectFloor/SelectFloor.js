@@ -133,6 +133,7 @@ function SelectFloor(props) {
                 }}
                 buttonProps={{color: '#5B6F7C'}}
                 onSelectFloor={onSelectFloor}
+                selectedFloor={selectedFloor}
               />
               {selectedFloor === floorId ? (
                 <SelectUnit

@@ -38,7 +38,6 @@ export const SelectUnit = props => {
   const loading = useSalesLoading();
 
   const [selectedUnit, setSelectedUnit] = useState();
-  const propertyLabel = STRUCTURE_TYPE_LABELS?.[structureType]?.toString();
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {

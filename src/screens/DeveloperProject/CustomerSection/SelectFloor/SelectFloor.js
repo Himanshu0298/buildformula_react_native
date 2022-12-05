@@ -1,16 +1,54 @@
-import React, {useState} from 'react';
-import {FlatList, View, StyleSheet, TouchableOpacity} from 'react-native';
+import React, {useState, useMemo} from 'react';
+import {
+  FlatList,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
 import FloorBar from 'components/Atoms/FloorBar';
 import {IconButton, Subheading, withTheme} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import {RenderTowerBox} from 'components/Molecules/TowerSelector';
+import {BHK_OPTIONS} from 'utils/constant';
+import BhkButton from 'components/Atoms/Buttons/BhkButton';
+import {pickBy} from 'lodash';
 import NoResult from 'components/Atoms/NoResult';
 import {SelectUnit} from '../SelectUnit/SelectUnit';
+
+function BhkList({onPress, selectedBhk}) {
+  return (
+    <View>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+        <View style={styles.towerList}>
+          {BHK_OPTIONS.map(bhk => {
+            return (
+              <BhkButton
+                bhk={bhk}
+                key={String(bhk.type)}
+                selected={bhk.type === selectedBhk}
+                onPress={onPress}
+              />
+            );
+          })}
+        </View>
+      </ScrollView>
+    </View>
+  );
+}
 
 function SelectFloor(props) {
   const {route, navigation} = props;
   const {selectedStructure, towerType, towerId, project_id} =
     route?.params || {};
+
+  const [selectedFloor, setSelectedFloor] = useState();
+
+  const [selectedBhk, setSelectedBhk] = React.useState();
+
+  const onSelectFloor = floorId => {
+    setSelectedFloor(v => (v === floorId ? undefined : floorId));
+  };
 
   const {selectedProject} = useSelector(s => s.project);
 
@@ -20,13 +58,28 @@ function SelectFloor(props) {
   const {floors = {}} =
     structureData?.towers.find(i => i.tower_id === towerId) || {};
 
+  const showBhkIndicator = useMemo(() => {
+    return Boolean(
+      Object.values(floors).filter(i => i.structureType === 1)?.length,
+    );
+  }, [floors]);
+
+  const filteredFloors = useMemo(() => {
+    return pickBy(floors, (floorData, floorId) => {
+      const units =
+        ([4, 5].includes(selectedStructure)
+          ? structureData.units
+          : floors?.[floorId]?.units) || [];
+
+      if (selectedBhk && floorData.structureType === 1) {
+        return Boolean(units.filter(i => i.bhk === selectedBhk)?.length);
+      }
+
+      return true;
+    });
+  }, [floors, selectedBhk, selectedStructure, structureData.units]);
+
   const renderNoFloor = () => <NoResult title="No Floors available" />;
-
-  const [selectedFloor, setSelectedFloor] = useState();
-
-  const onSelectFloor = floorId => {
-    setSelectedFloor(v => (v === floorId ? undefined : floorId));
-  };
 
   return (
     <View style={styles.container}>
@@ -41,18 +94,26 @@ function SelectFloor(props) {
         </TouchableOpacity>
       </View>
 
+      {showBhkIndicator ? (
+        <View>
+          <Subheading style={styles.bhkHeading}>BHK indication</Subheading>
+
+          <BhkList selectedBhk={selectedBhk} onPress={setSelectedBhk} />
+        </View>
+      ) : null}
+
       <Subheading style={styles.floorsTitle}>Floors</Subheading>
 
       <FlatList
-        data={Object.keys(floors)}
+        data={Object.keys(filteredFloors)}
         contentContainerStyle={styles.contentContainerStyle}
-        extraData={{...floors}}
+        extraData={{...filteredFloors}}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
         keyExtractor={item => item.toString()}
         ListEmptyComponent={renderNoFloor}
         renderItem={({item: floorId, index}) => {
-          const {structureType} = floors[floorId];
+          const {structureType} = filteredFloors[floorId];
           return (
             <>
               <FloorBar
@@ -61,16 +122,17 @@ function SelectFloor(props) {
                   floorId,
                   index,
                   towerId,
-                  floorData: floors,
+                  floorData: filteredFloors,
                   ...route.params,
                   structureType,
                 }}
                 inputProps={{
-                  value: floors?.[floorId]?.unitCount?.toString() || '',
+                  value: filteredFloors?.[floorId]?.unitCount?.toString() || '',
                   disabled: true,
                 }}
                 buttonProps={{color: '#5B6F7C'}}
                 onSelectFloor={onSelectFloor}
+                selectedFloor={selectedFloor}
               />
               {selectedFloor === floorId ? (
                 <SelectUnit
@@ -82,6 +144,8 @@ function SelectFloor(props) {
                   towerType={towerType}
                   navigation={navigation}
                   route={route}
+                  showBhkFilters={false}
+                  displayHeader={false}
                 />
               ) : null}
             </>
@@ -114,6 +178,9 @@ const styles = StyleSheet.create({
   },
   floorsTitle: {
     marginVertical: 10,
+  },
+  towerList: {
+    flexDirection: 'row',
   },
 });
 
