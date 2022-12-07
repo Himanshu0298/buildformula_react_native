@@ -14,9 +14,14 @@ import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import ActionButtons from 'components/Atoms/ActionButtons';
 import RenderInput, {RenderError} from 'components/Atoms/RenderInput';
 import {useImagePicker} from 'hooks';
+import {useSelector} from 'react-redux';
+import useMaterialManagementActions from 'redux/actions/materialManagementActions';
+import moment from 'moment/moment';
 
 const schema = Yup.object().shape({
-  Remark: Yup.string().label('Remark').required('Remark is Required'),
+  verification_code: Yup.string()
+    .label('verification code')
+    .required('verification code is Required'),
 });
 
 const RenderAttachments = props => {
@@ -61,7 +66,7 @@ const RenderAttachments = props => {
 };
 
 function AttachmentsForm(props) {
-  const {formikProps} = props;
+  const {formikProps, date} = props;
   const {
     values,
     setFieldValue,
@@ -109,21 +114,21 @@ function AttachmentsForm(props) {
         </View>
         <View style={styles.issueTime}>
           <Text>Issue Time: </Text>
-          <Text> 10 Dec 2022, 05:02 PM</Text>
+          <Text> {date}</Text>
         </View>
         <RenderTextBox
-          name="remarks"
+          name="storekeeper_remark"
           blurOnSubmit={false}
           numberOfLines={7}
           label="Remark"
           containerStyles={styles.inputStyles}
-          value={values.remarks}
-          onChangeText={handleChange('remarks')}
-          onBlur={handleBlur('remarks')}
+          value={values.storekeeper_remark}
+          onChangeText={handleChange('storekeeper_remark')}
+          onBlur={handleBlur('storekeeper_remark')}
           onSubmitEditing={handleSubmit}
         />
         <View>
-          <View style={{marginTop: 20}}>
+          <View style={styles.imageInput}>
             <Text style={{color: theme.colors.primary}}>
               Upload Material Image
             </Text>
@@ -145,15 +150,15 @@ function AttachmentsForm(props) {
         </View>
 
         <RenderInput
-          name="email"
+          name="verification_code"
           label="Enter Verification Code"
           containerStyles={styles.inputStyles}
-          value={values.email}
-          onChangeText={handleChange('email')}
-          onBlur={handleBlur('email')}
+          value={values.verification_code}
+          onChangeText={handleChange('verification_code')}
+          onBlur={handleBlur('verification_code')}
           autoCapitalize="none"
           returnKeyType="next"
-          error={errors.email}
+          error={errors.verification_code}
         />
       </View>
       <ActionButtons
@@ -166,9 +171,31 @@ function AttachmentsForm(props) {
 }
 
 const IssueIndent = props => {
-  const {navigation} = props;
+  const {navigation, route} = props;
 
-  const navToPreview = () => navigation.navigate('StoreKeeperPreview');
+  const {ID} = route.params;
+
+  const {CreateStoreKeeperOrder} = useMaterialManagementActions();
+
+  const {selectedProject} = useSelector(s => s.project);
+
+  const date = moment().utcOffset('+05:30').format(' hh:mm a , YYYY-MM-DD ');
+
+  const handleIssueOrder = async values => {
+    const formData = new FormData();
+
+    formData.append('project_id', selectedProject.id);
+    formData.append('material_indent_id', ID);
+    formData.append('verification_code', Number(values.verification_code));
+    formData.append('storekeeper_remark', values.storekeeper_remark);
+    formData.append('date', values.date);
+    formData.append('attachmentFile', values.file);
+
+    await CreateStoreKeeperOrder(formData);
+    navToPreview();
+  };
+
+  const navToPreview = () => navigation.navigate('StoreKeeperList');
 
   return (
     <Formik
@@ -176,8 +203,10 @@ const IssueIndent = props => {
       validateOnChange={false}
       initialValues={{attachments: []}}
       validationSchema={schema}
-      onSubmit={navToPreview}>
-      {formikProps => <AttachmentsForm {...{formikProps}} {...props} />}
+      onSubmit={handleIssueOrder}>
+      {formikProps => (
+        <AttachmentsForm {...{formikProps}} {...props} date={date} />
+      )}
     </Formik>
   );
 };
@@ -274,6 +303,10 @@ const styles = StyleSheet.create({
   dataRow: {
     flexDirection: 'row',
     alignItems: 'center',
+  },
+
+  imageInput: {
+    marginTop: 20,
   },
 });
 
