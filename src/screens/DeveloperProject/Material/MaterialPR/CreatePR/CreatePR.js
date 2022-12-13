@@ -106,53 +106,51 @@ const CreatePR = props => {
           return (
             <View style={styles.formContainer}>
               <ScrollView>
-                <View style={styles.fomContainer}>
-                  <RenderInput
-                    name="subject"
-                    label="Subject"
-                    containerStyles={styles.inputStyles}
-                    value={values.subject}
-                    onChangeText={handleChange('subject')}
-                    onBlur={handleBlur('subject')}
-                    autoCapitalize="none"
-                    returnKeyType="next"
-                    error={errors.subject}
-                  />
-                  <RenderSelect
-                    name="contractor_id"
-                    label="Vendor Name"
-                    value={values.contractor_id}
-                    options={constructorOptions}
-                    containerStyles={styles.inputStyles}
-                    onBlur={handleBlur('contractor_id')}
-                    onSelect={value => {
-                      setFieldValue('contractor_id', value);
-                    }}
-                  />
-                  <RenderSelect
-                    name="required_for"
-                    label="Required For"
-                    value={values.required_for}
-                    options={workSubWorkOptions}
-                    containerStyles={styles.inputStyles}
-                    onBlur={handleBlur('required_for')}
-                    onSelect={value => {
-                      setFieldValue('required_for', value);
-                    }}
-                  />
-                  <RenderTextBox
-                    name="remarks"
-                    blurOnSubmit={false}
-                    numberOfLines={7}
-                    label="Remark"
-                    containerStyles={styles.inputStyles}
-                    value={values.remarks}
-                    onChangeText={handleChange('remarks')}
-                    onBlur={handleBlur('remarks')}
-                    onSubmitEditing={handleSubmit}
-                    error={errors.remarks}
-                  />
-                </View>
+                <RenderInput
+                  name="subject"
+                  label="Subject"
+                  containerStyles={styles.inputStyles}
+                  value={values.subject}
+                  onChangeText={handleChange('subject')}
+                  onBlur={handleBlur('subject')}
+                  autoCapitalize="none"
+                  returnKeyType="next"
+                  error={errors.subject}
+                />
+                <RenderSelect
+                  name="contractor_id"
+                  label="Vendor Name"
+                  value={values.contractor_id}
+                  options={constructorOptions}
+                  containerStyles={styles.inputStyles}
+                  onBlur={handleBlur('contractor_id')}
+                  onSelect={value => {
+                    setFieldValue('contractor_id', value);
+                  }}
+                />
+                <RenderSelect
+                  name="required_for"
+                  label="Required For"
+                  value={values.required_for}
+                  options={workSubWorkOptions}
+                  containerStyles={styles.inputStyles}
+                  onBlur={handleBlur('required_for')}
+                  onSelect={value => {
+                    setFieldValue('required_for', value);
+                  }}
+                />
+                <RenderTextBox
+                  name="remarks"
+                  blurOnSubmit={false}
+                  numberOfLines={7}
+                  label="Remark"
+                  containerStyles={styles.inputStyles}
+                  value={values.remarks}
+                  onChangeText={handleChange('remarks')}
+                  onBlur={handleBlur('remarks')}
+                  onSubmitEditing={handleSubmit}
+                  error={errors.remarks}
+                />
               </ScrollView>
               <ActionButtons
                 cancelLabel="Cancel"

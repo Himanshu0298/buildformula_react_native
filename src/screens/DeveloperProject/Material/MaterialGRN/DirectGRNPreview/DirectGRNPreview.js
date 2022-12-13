@@ -88,21 +88,6 @@ const Attachments = props => {
   );
 };
 
-// const challan_image = props => {
-//   return (
-//     <View style={styles.mainContainer}>
-//       <Header title="Challan No: 123" {...props} />
-//       {/* <Spinner visible={loading} textContent="" /> */}
-//       <ScrollView showsVerticalScrollIndicator={false}>
-//         <View>
-//           <Subheading style={styles.challanHeading}>Challan Images</Subheading>
-//           <Attachments />
-//         </View>
-//       </ScrollView>
-//     </View>
-//   );
-// };
-
 const DirectGRNPreview = props => {
   const {route, navigation} = props;
 
