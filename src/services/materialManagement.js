@@ -147,5 +147,24 @@ export default function useMaterialManagement() {
     deleteIssue: data => {
       return instance.post('/material/issuedelete', data, params);
     },
+    // Material StoreKeeper
+
+    getStoreKeeperList: data => {
+      return instance.post('/material/storekeeperlist', data, params);
+    },
+    getStoreKeeperDetails: data => {
+      return instance.post('/material/indent_details', data, params);
+    },
+    CreateStoreKeeperOrder: data => {
+      return instance.post('/material/storekeeper_orderconfirm', data, params);
+    },
+
+    updateStoreKeeperStatus: data => {
+      return instance.post(
+        '/material/storekeeper_return_status_update',
+        data,
+        params,
+      );
+    },
   };
 }

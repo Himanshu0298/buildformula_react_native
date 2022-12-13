@@ -75,6 +75,17 @@ export const PR_REQUEST_DETAILS_STATUS = {
     2: {label: 'Rejected PR', color: '#FF5D5D', icon: 'cancel'},
   },
 };
+export const STORE_KEEPER_STATUS = {
+  pending: {label: 'Pending', color: '#F4AF48'},
+  approved: {label: 'Approved', color: '#07CA03'},
+  issued: {label: 'Issued', color: '#07CA03', icon: 'storefront-outline'},
+  inspected: {label: 'Inspected', color: '#07CA03'},
+};
+
+export const STORE_KEEPER_DETAILS_STATUS = {
+  1: {label: 'Approved', color: '#4872F4'},
+  2: {label: 'Rejected', color: '#FF5D5D'},
+};
 
 export const KEYBOARD_SHOW =
   Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';

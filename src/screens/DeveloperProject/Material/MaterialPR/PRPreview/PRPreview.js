@@ -270,10 +270,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginVertical: 0.5,
   },
-  // materialListContainer: {
-  //   marginTop: 10,
-  //   height: dynamicHeight,
-  // },
+
   cardContainer: {
     padding: 10,
     marginBottom: 10,

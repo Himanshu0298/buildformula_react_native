@@ -1,4 +1,10 @@
-import {StyleSheet, View, TouchableOpacity, ScrollView} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+} from 'react-native';
 
 import React from 'react';
 import {
@@ -10,64 +16,144 @@ import {
   Text,
 } from 'react-native-paper';
 import {theme} from 'styles/theme';
-import {getShadow} from 'utils';
-import ActionButtons from 'components/Atoms/ActionButtons';
+import {getPermissions, getShadow} from 'utils';
+import {useSelector} from 'react-redux';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import FileIcon from 'assets/images/file_icon.png';
 
-const MATERIAL_DATA = [
-  {
-    category: 'Cement',
-    subCategory: 'OPC',
-    unit: 'CUM or m³',
-    requestedQty: '150.00',
-    assignQty: '150.00',
-    status: 'Approved',
-  },
-  {
-    category: 'Cement',
-    subCategory: 'OPC',
-    unit: 'CUM or m³',
-    requestedQty: '150.00',
-    assignQty: '150.00',
-    status: 'Rejected',
-  },
-  {
-    category: 'Cement',
-    subCategory: 'OPC',
-    unit: 'CUM or m³',
-    requestedQty: '150.00',
-    assignQty: '150.00',
-    status: 'Rejected',
-  },
-];
+import useMaterialManagementActions from 'redux/actions/materialManagementActions';
+import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
+import Spinner from 'react-native-loading-spinner-overlay';
+import ApproveButtons from '../components/ApprovalButtons';
+
+const STORE_KEEPER_STATUS = {
+  pending: {label: 'Pending', color: '#F4AF48'},
+  approved: {label: 'Approved', color: '#07CA03'},
+  issued: {label: 'Issued', color: '#07CA03'},
+  inspected: {label: 'Inspected', color: '#4872F4'},
+};
+
+const STORE_KEEPER_DETAIL_STATUS = {
+  issued: {label: 'Issued', color: '#4872F4'},
+};
+
+const STORE_KEEPER_DETAILS_STATUS = {
+  approved: {label: 'Approved', color: '#4872F4'},
+  rejected: {label: 'Rejected', color: '#FF5D5D'},
+  pending: {label: 'Pending', color: '#F4AF48'},
+};
+
+const RenderAttachments = props => {
+  const {storeKeeperDetails} = props;
+
+  const attachments = storeKeeperDetails?.indent_details?.storekeeper_files;
+
+  // const download = useDownload();
+
+  // TODO download file remaining
+
+  return (
+    <View>
+      <View style={styles.cardContainer1}>
+        <View style={styles.renderFileContainer}>
+          <Text style={styles.attachmentFileHeader}>Attachments</Text>
+        </View>
+
+        {attachments?.map(attachment => {
+          return (
+            <View key={attachment.file_name}>
+              <View style={styles.sectionContainer}>
+                <Image source={FileIcon} style={styles.fileIcon} />
+
+                <View>
+                  <Text
+                    style={(styles.verticalFlex, styles.text)}
+                    numberOfLines={1}>
+                    {attachment.file_name}
+                  </Text>
+                  <Text
+                    style={(styles.verticalFlex, styles.text)}
+                    numberOfLines={1}>
+                    ( {attachment.file_size})kb
+                  </Text>
+                </View>
+                <OpacityButton opacity={0.0} style={styles.closeButton}>
+                  <MaterialCommunityIcons
+                    name="download"
+                    color={theme.colors.primary}
+                    size={25}
+                  />
+                </OpacityButton>
+              </View>
+            </View>
+          );
+        })}
+      </View>
+    </View>
+  );
+};
+
+const IssuedCard = props => {
+  const {storeKeeperDetails} = props;
+
+  const {created, contractor_name, storekeeper_remark} =
+    storeKeeperDetails?.indent_details?.material_indent || {};
+
+  return (
+    <View style={styles.cardContainer}>
+      <View style={styles.dataRow}>
+        <Subheading> Issue Time:</Subheading>
+        <Text style={styles.title}> {created}</Text>
+      </View>
+
+      <View style={styles.dataRow}>
+        <Subheading> Issue by:</Subheading>
+        <Text style={styles.title}> {contractor_name}</Text>
+      </View>
+      <View style={styles.title}>
+        <Subheading> Remark</Subheading>
+        <Caption> {storekeeper_remark}</Caption>
+      </View>
+      <RenderAttachments storeKeeperDetails={storeKeeperDetails} />
+    </View>
+  );
+};
 
 const ListingCard = props => {
-  const {status} = props;
+  const {storeKeeperDetails} = props;
+
+  const indent_id = storeKeeperDetails?.indent_details?.material_indent_id;
+
+  const {email, first_name, last_name, created, authorizedstatus} =
+    storeKeeperDetails?.indent_details?.material_indent || {};
+
+  const {label, color} = STORE_KEEPER_STATUS[authorizedstatus] || {};
+
   return (
     <TouchableOpacity>
       <View style={styles.cardContainer}>
         <View style={styles.cardHeader}>
-          <Text style={styles.ID}>13</Text>
-          {/* <Caption
-              style={{
-                color: PR_REQUEST_STATUS[status]?.color,
-              }}>
-              {PR_REQUEST_STATUS[status]?.label}
-            </Caption> */}
-          <Text style={styles.pending}>Pending</Text>
+          <Text style={styles.ID}>{indent_id}</Text>
+          <View style={styles.statusContainer}>
+            <Text style={[{color}, styles.status]}>{label}</Text>
+          </View>
         </View>
         <Divider />
         <View style={styles.cardDetails}>
           <View style={styles.dataRow}>
             <Subheading>Create by:</Subheading>
-            <Subheading>Ronak Vagehni</Subheading>
+            <Text style={styles.title}>
+              {first_name}
+              {last_name}
+            </Text>
           </View>
           <View style={styles.cardContent}>
-            <Caption>ronak@buildformula.com</Caption>
+            <Caption>{email}</Caption>
           </View>
           <View style={styles.createdOn}>
-            <Text> Created on:</Text>
+            <Subheading> Created on:</Subheading>
 
-            <Text>3rd Sep, 2022 15:33 PM</Text>
+            <Text style={styles.title}>{created}</Text>
           </View>
         </View>
       </View>
@@ -75,103 +161,148 @@ const ListingCard = props => {
   );
 };
 
-const RequiredVendor = () => {
+const RequiredVendor = props => {
+  const {storeKeeperDetails} = props;
+
+  const {contractor_name, contractor_email, remark, requred_date, requiredfor} =
+    storeKeeperDetails?.indent_details?.material_indent || {};
+
   return (
     <View style={styles.vendorContainer}>
       <View>
         <Subheading> Required For Vendor</Subheading>
       </View>
       <View style={styles.vendorSubContainer}>
-        <Text> Ronak Patel</Text>
-        <Caption>ronak@buildformula.com</Caption>
+        <Text> {contractor_name}</Text>
+        <Caption>{contractor_email}</Caption>
       </View>
       <View style={styles.card}>
         <Text> Required Date</Text>
-        <Caption>03 Sep, 2022 </Caption>
+        <Caption>{requred_date} </Caption>
       </View>
       <View style={styles.card}>
         <Text> Required For(Work)</Text>
-        <Caption>tower D RCC Floor 1 Estimation</Caption>
+        <Caption>{requiredfor}</Caption>
       </View>
       <View style={styles.card}>
         <Text> Remark</Text>
-        <Caption>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Risus,
-          aliquam enim vivamus dui. Quis aliquam a morbi ut iaculis cursus proin
-          amet. Hendrerit odio convallis lacus, non est. Vestibulum ac
-          curabitur.
-        </Caption>
+        <Caption>{remark}</Caption>
       </View>
     </View>
   );
 };
 
 const MaterialCard = props => {
-  const {item, navigation} = props;
+  const {item, updateStatus, authorizedstatus, modulePermission} = props;
 
-  const {category, subCategory, requestedQty, unit, status} = item;
+  const {
+    materialcategrytitle,
+    subcategorytitle,
+    damaged_qty,
+    materialunitstitle,
+    quantity,
+    id,
+    rm_status,
+  } = item;
 
-  // const updateStatus = async status => {
-
-  //   await updatePRStatus(status);
-  // };
+  const requestStatus = STORE_KEEPER_STATUS[authorizedstatus]?.label;
+  const {label, color} = STORE_KEEPER_DETAILS_STATUS[rm_status] || {};
 
   return (
     <View style={styles.cardContainer}>
       <View style={styles.dataRow}>
         <Caption style={styles.lightData}>Category:</Caption>
-        <Text>{category}</Text>
+        <Text style={styles.title}>{materialcategrytitle}</Text>
       </View>
       <View style={styles.dataRow}>
         <Caption style={styles.lightData}>Sub Category:</Caption>
-        <Text>{subCategory}</Text>
+        <Text style={styles.title}>{subcategorytitle}</Text>
       </View>
       <View style={styles.dataRow}>
         <Caption style={styles.lightData}>Unit:</Caption>
-        <Text>{unit}</Text>
+        <Text style={styles.title}>{materialunitstitle}</Text>
       </View>
       <View style={styles.dataRow}>
-        <Caption style={styles.lightData}>Requested Qty:</Caption>
-        <Text>{requestedQty}</Text>
+        <Caption style={styles.lightData}>Fine Qty:</Caption>
+        <Text style={styles.title}>{quantity}</Text>
       </View>
       <View style={styles.dataRow}>
-        <Caption style={styles.lightData}>assign Qty:</Caption>
-        <Text>{requestedQty}</Text>
+        <Caption style={styles.lightData}>Demage Qty:</Caption>
+        <Text style={styles.title}>{damaged_qty}</Text>
       </View>
 
-      <View style={styles.dataRow}>
-        <Caption style={styles.lightData}> Status:</Caption>
-        <Text
-          style={
-            status === 'Rejected'
-              ? styles.rejected
-              : status === 'Approved'
-              ? styles.approved
-              : null
-          }>
-          {status}
-        </Text>
-      </View>
-
-      <ActionButtons
-        onSubmit={console.log('===========> approve')}
-        submitLabel="Approved"
-        cancelLabel="Rejected"
-        onCancel={console.log('===========> Reject')}
-      />
+      {rm_status !== 'pending' ? (
+        <View style={styles.dataRow}>
+          <Caption style={styles.lightData}>Status:</Caption>
+          <Text style={[styles.title, {color}]}>{label}</Text>
+        </View>
+      ) : null}
+      {modulePermission?.editor || modulePermission?.admin ? (
+        requestStatus === 'Pending' ? (
+          rm_status === 'pending' ? (
+            <ApproveButtons
+              rejectLabel="Reject"
+              approvedLabel="Approved"
+              onReject={() => updateStatus('rejected', id)}
+              onApprove={() => updateStatus('approved', id)}
+            />
+          ) : null
+        ) : null
+      ) : null}
     </View>
   );
 };
 
 function StoreKeeperPreview(props) {
-  const {navigation} = props;
+  const {navigation, route} = props;
+  const {id: ID} = route?.params || {};
 
-  const navToIssue = () => navigation.navigate('IssueIndent');
+  const {getStoreKeeperDetails, updateStoreKeeperStatus} =
+    useMaterialManagementActions();
+
+  const {storeKeeperDetails, loading} = useSelector(s => s.materialManagement);
+  const {selectedProject} = useSelector(s => s.project);
+
+  const modulePermission = getPermissions('StoreKeeper List');
+
+  const projectId = selectedProject.id;
+  const {material_indent_details} = storeKeeperDetails?.indent_details || [];
+
+  const {authorizedstatus} =
+    storeKeeperDetails?.indent_details?.material_indent || {};
+
+  const attachments = storeKeeperDetails?.indent_details?.storekeeper_files;
+
+  React.useEffect(() => {
+    getStoreDetails();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const getStoreDetails = () => {
+    getStoreKeeperDetails({
+      project_id: projectId,
+      material_indent_id: ID,
+    });
+  };
+
+  const updateStatus = async (type, id) => {
+    const restData = {
+      project_id: projectId,
+      material_indent_details_id: id,
+      type,
+    };
+    await updateStoreKeeperStatus(restData);
+    getStoreDetails();
+  };
+
+  const navToIssue = () => navigation.navigate('IssueIndent', {ID});
+
+  const {label, color} = STORE_KEEPER_DETAIL_STATUS[authorizedstatus] || {};
 
   return (
     <View style={styles.mainContainer}>
       <View style={styles.headerContainer}>
-        <View style={styles.dataRow}>
+        <View style={styles.subContainer}>
           <IconButton
             icon="keyboard-backspace"
             size={22}
@@ -181,33 +312,70 @@ function StoreKeeperPreview(props) {
           />
           <Subheading style={styles.headerText}>Issue Request</Subheading>
         </View>
+        <Spinner visible={loading} textContent="" />
+
+        <View style={styles.dataRow}>
+          {label === 'Issued' ? (
+            <>
+              <MaterialCommunityIcons
+                style={styles.storeIcon}
+                name="storefront-outline"
+                color={theme.colors.primary}
+                size={22}
+              />
+              <Text style={[{color}, styles.status]}>{label}</Text>
+            </>
+          ) : null}
+        </View>
       </View>
-      <ScrollView>
-        <View>
-          <ListingCard />
-        </View>
-        <View>
-          <RequiredVendor />
-        </View>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        {label === 'Issued' ? (
+          <IssuedCard storeKeeperDetails={storeKeeperDetails} />
+        ) : null}
+        <ListingCard storeKeeperDetails={storeKeeperDetails} />
+        <RequiredVendor storeKeeperDetails={storeKeeperDetails} />
+        {material_indent_details?.length ? (
+          <>
+            <View style={styles.textContainer}>
+              <Subheading style={styles.textSubContainer}>
+                Material Request
+              </Subheading>
+            </View>
 
-        <View style={styles.textContainer}>
-          <Subheading style={styles.textSubContainer}>
-            Material Request
-          </Subheading>
-        </View>
+            <View style={styles.materialCardContainer}>
+              {material_indent_details?.map(item => {
+                return (
+                  <MaterialCard
+                    item={item}
+                    navigation={navigation}
+                    updateStatus={updateStatus}
+                    authorizedstatus={authorizedstatus}
+                    modulePermission={modulePermission}
+                  />
+                );
+              })}
+            </View>
+          </>
+        ) : null}
 
-        <View>
-          {MATERIAL_DATA.map(item => {
-            return <MaterialCard item={item} navigation={navigation} />;
-          })}
-        </View>
+        {attachments?.length ? (
+          label === 'Issued' ? null : (
+            <>
+              <View style={styles.textContainer}>
+                <Subheading style={styles.textSubContainer}>
+                  Material Image
+                </Subheading>
+              </View>
+              <RenderAttachments storeKeeperDetails={storeKeeperDetails} />
+            </>
+          )
+        ) : null}
       </ScrollView>
-      <Button
-        color={theme.colors.white}
-        onPress={navToIssue}
-        style={styles.button}>
-        Issue Order
-      </Button>
+      {label === 'Issued' ? null : (
+        <Button color="white" onPress={navToIssue} style={styles.button}>
+          Issue Order
+        </Button>
+      )}
     </View>
   );
 }
@@ -218,6 +386,7 @@ const styles = StyleSheet.create({
   mainContainer: {
     margin: 20,
     flexGrow: 1,
+    flex: 1,
   },
 
   headerContainer: {
@@ -230,8 +399,7 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: theme.colors.primary,
     position: 'absolute',
-    zIndex: 2,
-    top: '89%',
+    top: '97%',
     width: '100%',
   },
 
@@ -256,8 +424,8 @@ const styles = StyleSheet.create({
     paddingLeft: 50,
   },
   cardContainer: {
-    padding: 10,
-    marginBottom: 10,
+    padding: 15,
+    marginBottom: 20,
     backgroundColor: '#fff',
     borderRadius: 5,
     paddingHorizontal: 10,
@@ -288,6 +456,12 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: 'rgba(72, 114, 244, 1)',
   },
+
+  subContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
   dataRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -307,15 +481,70 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
 
-  pending: {
-    color: '#F4AF48',
+  status: {
+    fontSize: 16,
   },
 
-  approved: {
-    color: 'rgba(72, 114, 244, 1)',
+  cardContainer1: {
+    padding: 10,
+    backgroundColor: '#F2F4F5',
+    borderRadius: 5,
+    marginVertical: 7,
   },
 
-  rejected: {
-    color: '#FF5E5E',
+  renderFileContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  attachmentFileHeader: {
+    color: '#000',
+    fontSize: 15,
+  },
+
+  sectionContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    padding: 10,
+    display: 'flex',
+    borderRadius: 5,
+    marginVertical: 7,
+    marginHorizontal: 7,
+    flexGrow: 1,
+    position: 'relative',
+  },
+  fileIcon: {
+    width: 32,
+    height: 38,
+    paddingLeft: 10,
+  },
+
+  verticalFlex: {
+    flexDirection: 'column',
+  },
+  text: {
+    color: '#080707',
+    paddingHorizontal: 10,
+    fontSize: 14,
+    alignItems: 'center',
+    maxWidth: 170,
+    flex: 1,
+  },
+
+  closeButton: {
+    marginLeft: 40,
+  },
+  materialCardContainer: {
+    flexGrow: 1,
+    marginBottom: 10,
+  },
+  title: {
+    marginLeft: 10,
+  },
+  statusContainer: {
+    flexDirection: 'row',
+  },
+  storeIcon: {
+    marginRight: 10,
   },
 });

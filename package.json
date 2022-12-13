@@ -11,6 +11,7 @@
     "prepare": "husky install",
     "podinstall": "run-script-os",
     "podinstall:macos": "cd ios && pod install && cd ..",
+    "dev-release": "cd android && fastlane distribute",
     "podinstall:windows:linux": "echo god",
     "postinstall": "patch-package &&  npx jetify ; npm run podinstall;",
     "postuninstall": "patch-package && npx jetify ; npm run podinstall;"
