@@ -59,11 +59,11 @@ const DirectGRN = props => {
   const {directGRNList} = useSelector(s => s.materialManagement);
 
   useEffect(() => {
-    getCategories();
+    getList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const getCategories = () => {
+  const getList = () => {
     getDirectMaterialGRNList({
       project_id: selectedProject.id,
     });

@@ -158,7 +158,9 @@ function OrderDetail(props) {
   const {materialChallanList, materialOrderList, loading} = useSelector(
     s => s.materialManagement,
   );
+  console.log('===========> materialChallanList', materialChallanList);
 
+  console.log('===========>materialOrderList ', materialOrderList);
   const materialDeliveryChallan =
     materialChallanList?.material_delivery_challan;
   const {selectedProject} = useSelector(s => s.project);
@@ -200,13 +202,13 @@ function OrderDetail(props) {
             <Text style={{color: theme.colors.primary}}>Add Challan</Text>
           </OpacityButton>
         </View>
-        {materialChallanList?.map(item => {
+        {materialOrderList?.map(item => {
           return (
             <CommonCard
               {...props}
               item={item}
               key={item.id}
-              challanList={materialChallanList}
+              challanList={materialOrderList}
               materialOrderNo={material_order_no}
             />
           );

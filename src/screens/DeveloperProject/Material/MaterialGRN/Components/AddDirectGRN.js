@@ -14,6 +14,9 @@ import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useImagePicker} from 'hooks';
 import ActionButtons from 'components/Atoms/ActionButtons';
 import {useAlert} from 'components/Atoms/Alert';
+import useMaterialManagementActions from 'redux/actions/materialManagementActions';
+import {useSelector} from 'react-redux';
+import dayjs from 'dayjs';
 import Header from '../../CommonComponents/Header';
 import Pagination from '../../CommonComponents/Pagination';
 
@@ -65,7 +68,6 @@ const RenderAttachments = props => {
 
 function ChallanForm(props) {
   const alert = useAlert();
-  const options = ['Add Company', 'One', 'Two', 'Three'];
   const [company, setCompany] = React.useState('');
 
   const addCompany = () => {
@@ -80,13 +82,13 @@ function ChallanForm(props) {
     addCompany();
   }
 
-  const suppName = {
-    One: {name: 'Himanshu'},
-    Two: {name: 'James'},
-    Three: {name: 'Parker'},
-  };
-
-  const {formikProps, navigation} = props;
+  const {
+    formikProps,
+    navigation,
+    supplierOptions,
+    companyOptions,
+    vendorOptions,
+  } = props;
   const {
     values,
     errors,
@@ -114,6 +116,16 @@ function ChallanForm(props) {
     setFieldValue('attachments', values.attachments);
   };
 
+  const handleSubMaterialChange = value => {
+    setFieldValue('company', value);
+    const supplierName = vendorOptions.find(
+      i => i.id === value,
+    )?.contractor_name;
+    if (supplierName) {
+      setFieldValue('supplier', supplierName);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.mainContainer}>
       <View style={styles.headerContainer}>
@@ -126,24 +138,20 @@ function ChallanForm(props) {
           <View>
             <RenderSelect
               name="company"
-              options={options}
+              options={companyOptions}
               containerStyles={styles.input}
-              value={company}
-              placeholder="Select Company"
+              value={values.company}
+              label="Select Company"
               error={errors.company}
-              onSelect={value => {
-                setCompany(value);
-              }}
+              onSelect={handleSubMaterialChange}
             />
-            <RenderInput
+            <RenderSelect
               name="supplier"
-              label="Supplier Name"
+              disabled
+              options={supplierOptions}
               containerStyles={styles.input}
-              value={suppName[company]?.name}
-              onChangeText={handleChange('challan')}
-              onBlur={handleBlur('challan')}
-              error={errors.supplier}
-              editable={false}
+              value={values.supplier}
+              label="Select Supplier"
             />
             <RenderInput
               name="challan"
@@ -155,15 +163,19 @@ function ChallanForm(props) {
               onBlur={handleBlur('challan')}
               error={errors.challan}
             />
-
             <RenderDatePicker
               name="delivery_date"
               label="Delivery Date"
+              value={values.delivery_date}
               containerStyles={styles.input}
-              onChange={() => console.log('Dated')}
+              onChange={value => {
+                setFieldValue(
+                  'delivery_date',
+                  dayjs(value).format('YYYY-MM-DD'),
+                );
+              }}
               error={errors.delivery_date}
             />
-
             <View>
               <Text style={{color: theme.colors.primary}}>Attachment</Text>
               <OpacityButton
@@ -196,10 +208,55 @@ function ChallanForm(props) {
 
 const AddDirectGRN = props => {
   const {route, navigation} = props;
+  const {id = 0} = route?.params || {};
 
-  const navToStepTwo = values => {
-    navigation.navigate('GRNMaterial', {...values, ...route.params});
+  const edit = Boolean(id);
+
+  const {addDirectGRN, getVendorList} = useMaterialManagementActions();
+  const {selectedProject} = useSelector(s => s.project);
+
+  const {vendorOptions} = useSelector(s => s.materialManagement);
+
+  React.useEffect(() => {
+    getVendorList({project_id: selectedProject.id});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const supplierOptions = React.useMemo(() => {
+    return vendorOptions?.map(i => ({
+      label: `${i.contractor_name}`,
+      value: i.id,
+    }));
+  }, [vendorOptions]);
+
+  const companyOptions = React.useMemo(() => {
+    return vendorOptions?.map(i => ({
+      label: `${i.company_name} `,
+      value: i.id,
+    }));
+  }, [vendorOptions]);
+
+  const onSubmit = async values => {
+    const formData = new FormData();
+
+    formData.append('project_id', selectedProject.id);
+    formData.append('challan_id', id);
+    formData.append('challan_number', values.challan);
+    formData.append('delivery_date', values.delivery_date);
+    formData.append('company', values.company);
+    formData.append('supplier', values.supplier);
+    formData.append('file_upload', values.attachments);
+
+    addDirectGRN(formData);
+    navigation.navigate('GRNMaterial', {...values, challan_id: id});
   };
+
+  // const navToStepTwo = values => {
+  //   navigation.navigate('GRNMaterial', {
+  //     ...values,
+  //     ...route.params,
+  //   });
+  // };
 
   return (
     <Formik
@@ -207,8 +264,16 @@ const AddDirectGRN = props => {
       validateOnChange={false}
       initialValues={{attachments: []}}
       validationSchema={schema}
-      onSubmit={navToStepTwo}>
-      {formikProps => <ChallanForm {...{formikProps}} {...props} />}
+      onSubmit={onSubmit}>
+      {formikProps => (
+        <ChallanForm
+          {...{formikProps}}
+          {...props}
+          supplierOptions={supplierOptions}
+          companyOptions={companyOptions}
+          vendorOptions={vendorOptions}
+        />
+      )}
     </Formik>
   );
 };
@@ -216,6 +281,7 @@ const AddDirectGRN = props => {
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
+    margin: 10,
   },
   dialogContent: {
     paddingHorizontal: 15,
