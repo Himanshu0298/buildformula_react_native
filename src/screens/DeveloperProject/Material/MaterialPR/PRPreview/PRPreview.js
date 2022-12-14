@@ -12,7 +12,9 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import {getPermissions, getShadow} from 'utils';
 
 function RenderHeaderBar(props) {
-  const {goBack, navToEdit, showStatus, handleDelete} = props;
+  const {goBack, navToEdit, handleDelete, PRDetails} = props;
+
+  const showStatus = PRDetails?.details?.status;
   return (
     <View style={styles.headerContainer}>
       <View style={styles.container}>
@@ -26,7 +28,7 @@ function RenderHeaderBar(props) {
         <Subheading style={styles.headerText}>PR Preview</Subheading>
       </View>
       <View style={styles.headerSubContainer}>
-        {showStatus == null ? (
+        {showStatus === 1 ? (
           <View style={styles.editIconContainer}>
             <OpacityButton
               color="#4872f4"
@@ -37,6 +39,7 @@ function RenderHeaderBar(props) {
             </OpacityButton>
           </View>
         ) : null}
+        {/* {showStatus === 1 ? ( */}
         <View>
           <OpacityButton
             color="#FF5D5D"
@@ -46,6 +49,7 @@ function RenderHeaderBar(props) {
             <MaterialIcons name="delete" color="#FF5D5D" size={13} />
           </OpacityButton>
         </View>
+        {/* ) : null} */}
       </View>
     </View>
   );
@@ -169,7 +173,7 @@ const PRPreview = props => {
 
   useEffect(() => {
     getPRDetails();
-    getData();
+    getList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -179,8 +183,9 @@ const PRPreview = props => {
   const getPRDetails = () => {
     getPRMaterialDetails({project_id: projectId, purchase_request_id: id});
   };
-  const getData = () =>
+  const getList = () => {
     getPRMaterialOrderList({project_id: selectedProject.id});
+  };
 
   const navToEdit = () => navigation.navigate('CreatePR', {id});
 
@@ -204,7 +209,7 @@ const PRPreview = props => {
           purchase_request_id: id,
           project_id: selectedProject.id,
         });
-        getData();
+        getList();
         navigation.goBack();
       },
     });
@@ -218,6 +223,7 @@ const PRPreview = props => {
           goBack={goBack}
           navToEdit={navToEdit}
           handleDelete={handleDelete}
+          PRDetails={PRDetails}
         />
 
         <View style={styles.bodyContent}>

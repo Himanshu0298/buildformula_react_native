@@ -37,9 +37,15 @@ const ListingCard = props => {
         <Divider />
         <View style={styles.cardDetails}>
           <Subheading>{subject}</Subheading>
+
           <View style={styles.cardContent}>
-            <Caption>Approved by:</Caption>
-            <Text style={styles.detail}>{approved_by}</Text>
+            {status === 2 ? (
+              <>
+                <Caption>Approved by:</Caption>
+
+                <Text style={styles.detail}>{approved_by}</Text>
+              </>
+            ) : null}
           </View>
           <Caption>{created}</Caption>
         </View>

@@ -89,6 +89,64 @@ export default function useMaterialManagement() {
       return instance.post('/approve_reject_pr_category', data, params);
     },
 
+    // Direct Material GRN
+
+    getDirectMaterialGRNList: data => {
+      return instance.post('/material/directgrnlist', data, params);
+    },
+    getDirectMaterialGRNItemList: data => {
+      return instance.post('/material/directgrndetailspreview', data, params);
+    },
+    getDirectMaterialGRNDetails: data => {
+      return instance.post('/material/directgrnpreview', data, params);
+    },
+    deleteDirectMaterialGRN: data => {
+      return instance.post('/material/deletedirectgrn', data, params);
+    },
+
+    updateDirectGRNStatus: data => {
+      return instance.post('/material/approverejectdirectgrn', data, params);
+    },
+
+    addDirectGRNFirst: data => {
+      return instance.post('/material/directgrnadd_first', data, params);
+    },
+    addDirectGRNSecond: data => {
+      return instance.post('/material/directgrnadd_second', data, params);
+    },
+    addDirectGRNThird: data => {
+      return instance.post('/material/directgrnaddedit_third', data, params);
+    },
+
+    // Material Indent
+
+    getMaterialIndentList: data => {
+      return instance.post('/material/indentlist', data, params);
+    },
+    getIssueRequestDetails: data => {
+      return instance.post('/material/issuereuestdetails', data, params);
+    },
+    getMaterialIssueIndentList: data => {
+      return instance.post('/material/issuereuest', data, params);
+    },
+    addIssueRequest: data => {
+      return instance.post('/material/addissuereuest', data, params);
+    },
+    addMaterialIssueRequest: data => {
+      return instance.post('/material/addmaterialissuereuest', data, params);
+    },
+    updateIssueQuantity: data => {
+      return instance.post('/material/issueassignqtyupdate', data, params);
+    },
+    addReturnMaterialIndent: data => {
+      return instance.post('/material/returnaddedit', data, params);
+    },
+    addReturnMaterial: data => {
+      return instance.post('/material/returnmaterialaddedit', data, params);
+    },
+    deleteIssue: data => {
+      return instance.post('/material/issuedelete', data, params);
+    },
     // Material StoreKeeper
 
     getStoreKeeperList: data => {

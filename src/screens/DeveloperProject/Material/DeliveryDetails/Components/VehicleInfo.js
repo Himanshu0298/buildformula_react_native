@@ -2,11 +2,77 @@ import * as React from 'react';
 import {Caption, Subheading, Text, withTheme} from 'react-native-paper';
 import {StyleSheet, View, TouchableOpacity, Image} from 'react-native';
 import FileIcon from 'assets/images/file_icon.png';
-import NoResult from 'components/Atoms/NoResult';
+import {getShadow} from 'utils';
+import {getFileName} from 'utils/constant';
+
+const InvoiceAttachments = props => {
+  const {invoiceImages = []} = props;
+
+  const onPressFile = async fileUrl => {
+    const name = fileUrl.split('/').pop();
+  };
+
+  return (
+    <>
+      <Subheading style={styles.challanHeading}> Invoice Images</Subheading>
+
+      {invoiceImages?.map((file, index) => {
+        return (
+          <TouchableOpacity
+            style={styles.sectionContainer}
+            onPress={() => onPressFile(file.image_url)}>
+            <Image source={FileIcon} style={styles.fileIcon} />
+            <View>
+              <Text
+                style={[styles.verticalFlex, styles.text]}
+                numberOfLines={2}>
+                {getFileName(file?.image_url)}
+                {index + 1}
+              </Text>
+            </View>
+          </TouchableOpacity>
+        );
+      })}
+    </>
+  );
+};
+
+const VehicleImages = props => {
+  const {vehicleAttachments = []} = props;
+
+  const onPressFile = async fileUrl => {
+    const name = fileUrl.split('/').pop();
+  };
+
+  return (
+    <>
+      <Subheading style={styles.challanHeading}> Vehicle Images</Subheading>
+
+      {vehicleAttachments?.map((file, index) => {
+        return (
+          <TouchableOpacity
+            style={styles.sectionContainer}
+            onPress={() => onPressFile(file.image_url)}>
+            <Image source={FileIcon} style={styles.fileIcon} />
+            <View>
+              <Text
+                style={[styles.verticalFlex, styles.text]}
+                numberOfLines={2}>
+                {getFileName(file?.image_url)}
+                {index + 1}
+              </Text>
+            </View>
+          </TouchableOpacity>
+        );
+      })}
+    </>
+  );
+};
 
 const VehicleInfo = props => {
-  const {vehicleInfo, vehicleAttachments} = props;
+  const {vehicleInfo, vehicleAttachments, invoiceImages} = props;
   const {driver_name, vehicle_number, challan_remark} = vehicleInfo || {};
+
   return (
     <View style={styles.infoContainer}>
       <Subheading style={styles.infoHeading}>Vehicle Info</Subheading>
@@ -26,28 +92,13 @@ const VehicleInfo = props => {
           <Caption style={styles.captions}>Challan Remark</Caption>
           <Text>{challan_remark}</Text>
         </View>
+        {vehicleAttachments?.length ? (
+          <VehicleImages vehicleAttachments={vehicleAttachments} />
+        ) : null}
 
-        <TouchableOpacity
-          style={styles.sectionContainer}
-          // onPress={() => onPressFile(file)}
-        >
-          <Image source={FileIcon} style={styles.fileIcon} />
-          {vehicleAttachments?.length ? (
-            vehicleAttachments?.map((item, index) => {
-              return (
-                <View key={item.id}>
-                  <Text
-                    style={(styles.verticalFlex, styles.text)}
-                    numberOfLines={2}>
-                    Vehicle File {index + 1}
-                  </Text>
-                </View>
-              );
-            })
-          ) : (
-            <NoResult title="No Files" />
-          )}
-        </TouchableOpacity>
+        {invoiceImages?.length ? (
+          <InvoiceAttachments invoiceImages={invoiceImages} />
+        ) : null}
       </View>
     </View>
   );
@@ -79,6 +130,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F2F4F5',
     borderRadius: 5,
     margin: 10,
+    ...getShadow(2),
   },
 
   sectionContainer: {
@@ -95,6 +147,11 @@ const styles = StyleSheet.create({
     height: 38,
     paddingLeft: 10,
     marginLeft: 10,
+  },
+  challanHeading: {
+    padding: 10,
+    marginTop: 10,
+    paddingBottom: 0,
   },
 });
 

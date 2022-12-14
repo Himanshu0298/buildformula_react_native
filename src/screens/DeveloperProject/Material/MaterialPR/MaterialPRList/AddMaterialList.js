@@ -145,7 +145,7 @@ function CardListing(props) {
   const {
     materialcategrytitle,
     subcategorytitle,
-    material_units_id,
+    materialunitstitle,
     created,
     material_quantity,
   } = item;
@@ -183,7 +183,7 @@ function CardListing(props) {
       </View>
       <View style={styles.dataRow}>
         <Caption style={styles.lightData}>Unit:</Caption>
-        <Text>{material_units_id}</Text>
+        <Text>{materialunitstitle}</Text>
       </View>
       <View style={styles.dataRow}>
         <Caption style={styles.lightData}>Required date:</Caption>
