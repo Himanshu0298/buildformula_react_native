@@ -142,7 +142,7 @@ const DirectGRNPreview = props => {
     getLoadData();
   };
 
-  const handleDelete = i => {
+  const handleDelete = () => {
     alert.show({
       title: 'Confirm',
       message: 'Are you sure you want to delete?',
@@ -177,7 +177,7 @@ const DirectGRNPreview = props => {
       </View>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.subheadingContainer}>
-          <View style={{marginVertical: 10}}>
+          <View style={styles.challanHeader}>
             <Subheading>Challan Info</Subheading>
           </View>
           <View style={styles.btnContainer}>
@@ -313,5 +313,8 @@ const styles = StyleSheet.create({
   approvedStatus: {
     color: '#07CA03',
     marginLeft: 5,
+  },
+  challanHeader: {
+    marginVertical: 10,
   },
 });
