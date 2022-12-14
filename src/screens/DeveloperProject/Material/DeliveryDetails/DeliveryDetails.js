@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Subheading, Text, withTheme} from 'react-native-paper';
+import {IconButton, Subheading, Text, withTheme} from 'react-native-paper';
 import {
   StyleSheet,
   View,
@@ -7,6 +7,8 @@ import {
   Image,
   ScrollView,
 } from 'react-native';
+import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FileIcon from 'assets/images/file_icon.png';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 import {useSelector} from 'react-redux';
@@ -62,7 +64,7 @@ const Attachments = props => {
 };
 
 const DeliverDetails = props => {
-  const {route} = props;
+  const {route, navigation} = props;
   const {item, orderNumber} = route?.params || {};
   const {id: challanId, challan_number: challanNumber} = item;
 
@@ -88,7 +90,19 @@ const DeliverDetails = props => {
       <Spinner visible={loading} textContent="" />
       <ScrollView showsVerticalScrollIndicator={false}>
         <View>
-          <Subheading style={styles.challanHeading}>Challan Images</Subheading>
+          <View style={styles.headerWrap}>
+            <View style={styles.BackBTNContainer}>
+              <OpacityButton
+                opacity={0.18}
+                style={styles.button}
+                onPress={() => navigation.goBack()}>
+                <MaterialCommunityIcons name="arrow-left" size={18} />
+              </OpacityButton>
+            </View>
+            <Subheading style={styles.challanHeading}>
+              Challan Images
+            </Subheading>
+          </View>
           <Attachments challanImages={challan_images} />
         </View>
         <MaterialInfo materialInfo={materila_info} />
@@ -135,6 +149,16 @@ const styles = StyleSheet.create({
   attachmentsText: {
     fontSize: 15,
     paddingBottom: 10,
+  },
+  button: {
+    marginRight: 3,
+    borderRadius: 20,
+  },
+  headerWrap: {
+    flexDirection: 'row',
+  },
+  BackBTNContainer: {
+    alignSelf: 'center',
   },
 });
 

@@ -108,7 +108,7 @@ function MaterialIndentListing(props) {
       <View style={styles.bodyContainer}>
         <FlatList
           style={styles.flatList}
-          data={MaterialIndentData}
+          data={MaterialIndentData.sort().reverse()}
           refreshControl={<RefreshControl refreshing={false} />}
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={renderEmpty}

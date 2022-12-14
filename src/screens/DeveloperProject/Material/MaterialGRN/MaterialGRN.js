@@ -43,7 +43,7 @@ const OrderCard = props => {
           <Text style={{color: theme.colors.primary}}>{material_order_no}</Text>
         </View>
         <View style={styles.amountBox}>
-          <Text>{`₹ ${total_amount}`}</Text>
+          <Text>{total_amount === null ? '₹ 0' : `₹ ${total_amount}`}</Text>
         </View>
       </View>
       <View style={styles.bodyContent}>

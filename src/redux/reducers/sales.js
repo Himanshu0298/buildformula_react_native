@@ -207,15 +207,17 @@ const reducer = (state = initialState, action = {}) => {
         ...state,
         loadingVisitors: true,
       };
-    case `${GET_VISITORS}_FULFILLED`:
+    case `${GET_VISITORS}_FULFILLED`: {
+      const FilteredVisitors = payload.filter(v => v.title !== 'Book(won)');
       return {
         ...state,
         loadingVisitors: false,
-        visitors: payload.sort(
+        visitors: FilteredVisitors.sort(
           (a, b) =>
             dayjs(b.follow_up_date).unix() - dayjs(a.follow_up_date).unix(),
         ),
       };
+    }
     case `${GET_VISITORS}_REJECTED`:
       return {
         ...state,
