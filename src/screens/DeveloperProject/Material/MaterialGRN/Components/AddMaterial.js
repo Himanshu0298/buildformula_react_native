@@ -14,8 +14,6 @@ const schema = Yup.object().shape({
   category: Yup.string('Required').required('Required'),
 });
 
-const options = ['1', '2', '3'];
-
 function MaterialForm(props) {
   const {formikProps, navigation, directGRNMaterialDetails} = props;
   const {
@@ -31,27 +29,11 @@ function MaterialForm(props) {
     s => s.materialManagement,
   );
 
-  console.log(
-    '===========>directGRNMaterialDetails ',
-    directGRNMaterialDetails,
-  );
-  // const materialCategory =
-  //   directGRNMaterialDetails?.directGRNMaterialDetails
-  //     ?.master_material_category;
-
-  // const materialSubCategory =
-  //   directGRNMaterialDetails?.directGRNMaterialDetails?.tmp_subcategory_lists;
-
   const {commonData} = useSelector(s => s.project);
   const {units} = commonData;
 
-  // const units =
-  //   directGRNMaterialDetails?.directGRNMaterialDetails?.master_units;
-
   const lom =
     directGRNMaterialDetails?.directGRNMaterialDetails?.material_request_items;
-
-  console.log('===========> lom', lom);
 
   const categoryOptions = useMemo(() => {
     return materialCategory?.map(i => ({
