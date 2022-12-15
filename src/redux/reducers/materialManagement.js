@@ -9,7 +9,6 @@ import {
   ADD_MATERIAL_CHALLAN,
   ADD_MATERIAL_PR,
   CREATE_MATERIAL_PR,
-  GET_WORK_SUBWORK_LIST,
   GET_SELECT_MATERIAL_CHALLAN,
   EDIT_PR,
   EDIT_MATERIAL_PR,
@@ -17,6 +16,11 @@ import {
   DELETE_MATERIAL_PR_ITEM,
   DELETE_MATERIAL_PR_CATEGORY,
   UPDATE_PR_STATUS,
+  GET_STORE_KEEPER_LIST,
+  GET_STORE_KEEPER_DETAILS,
+  CREATE_STOREKEEPER_ORDER,
+  GET_WORK_SUB_WORK_LIST,
+  UPDATE_STORE_KEEPER_STATUS,
 } from '../actions/actionTypes';
 
 const initialState = {
@@ -36,6 +40,8 @@ const initialState = {
   recordData: [],
   PRList: [],
   PRDetails: [],
+  storeKeeperList: {},
+  storeKeeperDetails: {},
 };
 
 const reducer = (state = initialState, action = {}) => {
@@ -57,7 +63,7 @@ const reducer = (state = initialState, action = {}) => {
         vendorOptions: payload,
       };
 
-    case `${GET_WORK_SUBWORK_LIST}_FULFILLED`:
+    case `${GET_WORK_SUB_WORK_LIST}_FULFILLED`:
       return {
         ...state,
         loading: false,
@@ -124,6 +130,20 @@ const reducer = (state = initialState, action = {}) => {
         selectedMaterialChallan: payload,
       };
 
+    case `${GET_STORE_KEEPER_LIST}_FULFILLED`:
+      return {
+        ...state,
+        loading: false,
+        storeKeeperList: payload,
+      };
+
+    case `${GET_STORE_KEEPER_DETAILS}_FULFILLED`:
+      return {
+        ...state,
+        loading: false,
+        storeKeeperDetails: payload,
+      };
+
     case `${DELETE_MATERIAL_PR_CATEGORY}_PENDING`:
     case `${DELETE_MATERIAL_PR_ITEM}_PENDING`:
     case `${DELETE_MATERIAL_PR_DETAILS}_PENDING`:
@@ -138,9 +158,13 @@ const reducer = (state = initialState, action = {}) => {
     case `${GET_MATERIAL_CHALLAN_DETAILS}_PENDING`:
     case `${GET_MATERIAL_CHALLAN_LIST}_PENDING`:
     case `${GET_MATERIAL_LIST}_PENDING`:
-    case `${GET_WORK_SUBWORK_LIST}_PENDING`:
+    case `${GET_WORK_SUB_WORK_LIST}_PENDING`:
     case `${GET_VENDOR_OR_CONTRACTORS_DETAILS}_PENDING`:
     case `${GET_MATERIAL_ORDER_LIST}_PENDING`:
+    case `${GET_STORE_KEEPER_LIST}_PENDING`:
+    case `${GET_STORE_KEEPER_DETAILS}_PENDING`:
+    case `${CREATE_STOREKEEPER_ORDER}_PENDING`:
+    case `${UPDATE_STORE_KEEPER_STATUS}_PENDING`:
     case `${UPDATE_PR_STATUS}_PENDING`: {
       return {
         ...state,
@@ -156,6 +180,8 @@ const reducer = (state = initialState, action = {}) => {
     case `${DELETE_MATERIAL_PR_CATEGORY}_FULFILLED`:
     case `${DELETE_MATERIAL_PR_ITEM}_FULFILLED`:
     case `${DELETE_MATERIAL_PR_DETAILS}_FULFILLED`:
+    case `${CREATE_STOREKEEPER_ORDER}_FULFILLED`:
+    case `${UPDATE_STORE_KEEPER_STATUS}_FULFILLED`:
     case `${UPDATE_PR_STATUS}_FULFILLED`: {
       return {
         ...state,
@@ -164,7 +190,7 @@ const reducer = (state = initialState, action = {}) => {
     }
     case `${GET_MATERIAL_ORDER_LIST}_REJECTED`:
     case `${GET_VENDOR_OR_CONTRACTORS_DETAILS}_REJECTED`:
-    case `${GET_WORK_SUBWORK_LIST}_REJECTED`:
+    case `${GET_WORK_SUB_WORK_LIST}_REJECTED`:
     case `${GET_MATERIAL_LIST}_REJECTED`:
     case `${GET_PR_MATERIAL_ORDER_LIST}_REJECTED`:
     case `${GET_SELECT_MATERIAL_CHALLAN}_REJECTED`:
@@ -179,6 +205,10 @@ const reducer = (state = initialState, action = {}) => {
     case `${DELETE_MATERIAL_PR_DETAILS}_REJECTED`:
     case `${DELETE_MATERIAL_PR_ITEM}_REJECTED`:
     case `${DELETE_MATERIAL_PR_CATEGORY}_REJECTED`:
+    case `${GET_STORE_KEEPER_LIST}_REJECTED`:
+    case `${GET_STORE_KEEPER_DETAILS}_REJECTED`:
+    case `${CREATE_STOREKEEPER_ORDER}_REJECTED`:
+    case `${UPDATE_STORE_KEEPER_STATUS}_REJECTED`:
     case `${UPDATE_PR_STATUS}_REJECTED`: {
       return {
         ...state,

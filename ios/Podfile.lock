@@ -1,8 +1,8 @@
 PODS:
   - Base64 (1.1.2)
   - boost (1.76.0)
-  - BVLinearGradient (2.5.6):
-    - React
+  - BVLinearGradient (2.6.2):
+    - React-Core
   - CodePush (7.0.5):
     - Base64 (~> 1.1)
     - JWT (~> 3.0.0-beta.12)
@@ -298,7 +298,7 @@ PODS:
     - react-native-config/App (= 1.4.5)
   - react-native-config/App (1.4.5):
     - React-Core
-  - react-native-date-picker (4.2.5):
+  - react-native-date-picker (4.2.6):
     - React-Core
   - react-native-document-picker (7.1.3):
     - React-Core
@@ -322,7 +322,7 @@ PODS:
     - InputMask (~> 6.1.0)
     - React-Core
     - React-RCTText
-  - react-native-webview (11.23.0):
+  - react-native-webview (11.24.0):
     - React-Core
   - React-perflogger (0.66.4)
   - React-RCTActionSheet (0.66.4):
@@ -391,13 +391,13 @@ PODS:
     - React-perflogger (= 0.66.4)
   - ReactNativeAutogrowTextinput (5.4.0):
     - React
-  - RNBootSplash (4.3.0):
+  - RNBootSplash (4.3.3):
     - React-Core
-  - RNCAsyncStorage (1.17.8):
+  - RNCAsyncStorage (1.17.11):
     - React-Core
   - RNCMaskedView (0.1.11):
     - React
-  - RNDateTimePicker (6.3.1):
+  - RNDateTimePicker (6.7.0):
     - React-Core
   - RNFastImage (8.6.3):
     - React-Core
@@ -414,13 +414,13 @@ PODS:
     - React-Core
   - RNFS (2.20.0):
     - React-Core
-  - RNGestureHandler (2.5.0):
+  - RNGestureHandler (2.8.0):
     - React-Core
   - RNLocalize (2.2.1):
     - React-Core
   - RNPermissions (3.3.1):
     - React-Core
-  - RNReanimated (2.9.1):
+  - RNReanimated (2.13.0):
     - DoubleConversion
     - FBLazyVector
     - FBReactNativeSpec
@@ -447,13 +447,13 @@ PODS:
     - React-RCTText
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNScreens (3.15.0):
+  - RNScreens (3.18.2):
     - React-Core
     - React-RCTImage
   - RNSentry (3.4.3):
     - React-Core
     - Sentry (= 7.11.0)
-  - RNShare (7.8.0):
+  - RNShare (7.9.1):
     - React-Core
   - RNSVG (12.4.4):
     - React-Core
@@ -727,8 +727,8 @@ SPEC CHECKSUMS:
   lottie-ios: 69495122151a378fdc7d1bb4c5930347e37baf1f
   lottie-react-native: b702fab740cdb952a8e2354713d3beda63ff97b0
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
-  Permission-MediaLibrary: cbc1ee191cf0fe73282d2b3f197714941783d99d
-  Permission-PhotoLibrary: ddb5a158725b29cb12e9e477e8a5f5151c66cc3c
+  Permission-MediaLibrary: a994236bae41b3597a376ff08298fb1c6d84729b
+  Permission-PhotoLibrary: 5b34ca67279f7201ae109cef36f9806a6596002d
   PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
   RCT-Folly: a21c126816d8025b547704b777a2ba552f3d9fa9
   RCTRequired: 4bf86c70714490bca4bf2696148638284622644b
@@ -753,7 +753,7 @@ SPEC CHECKSUMS:
   react-native-safe-area-context: ebf8c413eb8b5f7c392a036a315eb7b46b96845f
   react-native-signature-capture: 416a3947684e049a5b012cdd6496f878dc797f16
   react-native-text-input-mask: 36a546b378fadd2efe1b7484a859d34bc2c80395
-  react-native-webview: e771bc375f789ebfa02a26939a57dbc6fa897336
+  react-native-webview: 6408bc328e65042d240d0ebd62baa76ffd23b1aa
   React-perflogger: 93075d8931c32cd1fce8a98c15d2d5ccc4d891bd
   React-RCTActionSheet: 7d3041e6761b4f3044a37079ddcb156575fb6d89
   React-RCTAnimation: 743e88b55ac62511ae5c2e22803d4f503f2a3a13
@@ -767,10 +767,10 @@ SPEC CHECKSUMS:
   React-runtimeexecutor: dec32ee6f2e2a26e13e58152271535fadff5455a
   ReactCommon: 57b69f6383eafcbd7da625bfa6003810332313c4
   ReactNativeAutogrowTextinput: 571f3260e200d91ea22fab160452f26d2fd5d55b
-  RNBootSplash: 5e9f4de41371f3fdbcca556672b7f4714a12fd40
-  RNCAsyncStorage: 7cbd0d823dbb0e415d40a7e77fea2292483c8bdb
+  RNBootSplash: 7e91ea56c7010aae487489789dbe212e8c905a0c
+  RNCAsyncStorage: 8616bd5a58af409453ea4e1b246521bb76578d60
   RNCMaskedView: 0e1bc4bfa8365eba5fbbb71e07fbdc0555249489
-  RNDateTimePicker: 95e0cb71cba4c2f08c62444029f834e6168a2b96
+  RNDateTimePicker: c6b404647f45472443b0fdcdd31296fc3516b0eb
   RNFastImage: 5c9c9fed9c076e521b3f509fe79e790418a544e8
   RNFBApp: d3a0f69a3cc67c609f962acf67f483a841ffc49f
   RNFBMessaging: fefc7807402d03f418bdc5e80c60fbc91d943c50
@@ -782,7 +782,7 @@ SPEC CHECKSUMS:
   RNReanimated: 11e6e30bbc49079b7f0c321ac5830e6d113d0224
   RNScreens: 4a1af06327774490d97342c00aee0c2bafb497b7
   RNSentry: 85f6525b5fe8d2ada065858026b338605b3c09da
-  RNShare: 31b418e3ff2084712f0f39618bafa5f97a322c0e
+  RNShare: a5dc3b9c53ddc73e155b8cd9a94c70c91913c43c
   RNSVG: ecd661f380a07ba690c9c5929c475a44f432d674
   RNVectorIcons: fcc2f6cb32f5735b586e66d14103a74ce6ad61f8
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
