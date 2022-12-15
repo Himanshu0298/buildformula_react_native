@@ -27,71 +27,69 @@ function FloorBar(props) {
 
   const LabelContainer = onPressLabel ? TouchableOpacity : View;
 
+  const isSelectedFloor = selectedFloor === floorId;
+
   return (
-    <View>
-      <View style={styles.floorContainer}>
-        {showBadge ? (
-          <View style={styles.badgeContainer}>
-            <View>
-              <Badge style={styles.badge} visible={badgeActive} />
-            </View>
+    <View style={styles.floorContainer}>
+      {showBadge ? (
+        <View style={styles.badgeContainer}>
+          <View>
+            <Badge style={styles.badge} visible={badgeActive} />
           </View>
-        ) : null}
-        <View style={styles.floorContent}>
-          <View style={styles.rowContainer}>
-            <LabelContainer
-              style={styles.floorLabelContainer}
-              onPress={() => onPressLabel?.(floorId)}>
-              <Caption>{getFloorNumber(floorId)}</Caption>
-            </LabelContainer>
-            <View style={styles.rightSection}>
-              <TextInput
-                dense
-                blurOnSubmit
-                disabled
-                value={STRUCTURE_TYPE_LABELS?.[structureType]?.toString()}
-                placeholder=""
-                style={styles.structureInput}
-                keyboardType="decimal-pad"
-                theme={{
-                  colors: {
-                    underlineColor: 'transparent',
-                    text: '#000',
-                    accent: theme.colors.primary,
-                  },
-                }}
-              />
-              <TextInput
-                dense
-                blurOnSubmit
-                placeholder=""
-                style={styles.unitsInput}
-                keyboardType="decimal-pad"
-                theme={{
-                  colors: {
-                    underlineColor: 'transparent',
-                    text: '#000',
-                    accent: theme.colors.primary,
-                  },
-                }}
-                {...inputProps}
-              />
-              <OpacityButton
-                opacity={1}
-                onPress={() => onSelectFloor(floorId)}
-                style={styles.button}>
-                <MaterialCommunityIcons
-                  name={
-                    selectedFloor === floorId ? 'chevron-up' : 'chevron-down'
-                  }
-                  size={20}
-                  color="#fff"
-                />
-              </OpacityButton>
-            </View>
-          </View>
-          <Image source={floorSlab} style={styles.slabImage} />
         </View>
+      ) : null}
+      <View style={styles.floorContent}>
+        <View style={styles.rowContainer}>
+          <LabelContainer
+            style={styles.floorLabelContainer}
+            onPress={() => onPressLabel?.(floorId)}>
+            <Caption>{getFloorNumber(floorId)}</Caption>
+          </LabelContainer>
+          <View style={styles.rightSection}>
+            <TextInput
+              dense
+              blurOnSubmit
+              disabled
+              value={STRUCTURE_TYPE_LABELS?.[structureType]?.toString()}
+              placeholder=""
+              style={styles.structureInput}
+              keyboardType="decimal-pad"
+              theme={{
+                colors: {
+                  underlineColor: 'transparent',
+                  text: '#000',
+                  accent: theme.colors.primary,
+                },
+              }}
+            />
+            <TextInput
+              dense
+              blurOnSubmit
+              placeholder=""
+              style={styles.unitsInput}
+              keyboardType="decimal-pad"
+              theme={{
+                colors: {
+                  underlineColor: 'transparent',
+                  text: '#000',
+                  accent: theme.colors.primary,
+                },
+              }}
+              {...inputProps}
+            />
+            <OpacityButton
+              opacity={1}
+              onPress={() => onSelectFloor(floorId)}
+              style={styles.button}>
+              <MaterialCommunityIcons
+                name={isSelectedFloor ? 'chevron-up' : 'chevron-down'}
+                size={20}
+                color="#fff"
+              />
+            </OpacityButton>
+          </View>
+        </View>
+        <Image source={floorSlab} style={styles.slabImage} />
       </View>
     </View>
   );
