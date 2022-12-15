@@ -22,46 +22,33 @@ import store_keeper from 'assets/images/store_keeper.png';
 import reload from 'assets/images/reload.png';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 import {useSelector} from 'react-redux';
-import {MaterialIndentData} from './MaterialIndentData';
+import moment from 'moment';
 
 const ListingCard = props => {
-  const {item} = props;
+  const {item, navigation} = props;
 
-  console.log('===========> item', item);
+  const {id, created, email, type, first_name, last_name, status} = item;
 
-  const {
-    id,
-    authorizedstatus,
-    created,
-    createdBy,
-    email,
-    type,
-    first_name,
-    last_name,
-  } = item;
+  const date = moment(created).format('ll');
+
+  const navToPreview = () => navigation.navigate('IssueIndentPreview', {id});
 
   return (
-    <TouchableOpacity>
+    <TouchableOpacity onPress={navToPreview}>
       <View style={styles.cardContainer}>
         <View style={styles.cardHeader}>
           <Text style={styles.ID}>{id}</Text>
-          {/* <Caption
-            style={{
-              color: PR_REQUEST_STATUS[status]?.color,
-            }}>
-            {PR_REQUEST_STATUS[status]?.label}
-          </Caption> */}
           <Text
             style={
-              authorizedstatus === 'Pending'
+              status === 'pending'
                 ? styles.pending
-                : authorizedstatus === 'Rejected'
+                : status === 'rejected'
                 ? styles.rejected
-                : authorizedstatus === 'Approved'
+                : status === 'approved'
                 ? styles.approved
                 : null
             }>
-            {authorizedstatus}
+            {status}
           </Text>
         </View>
         <Divider />
@@ -73,7 +60,7 @@ const ListingCard = props => {
             <Text style={styles.detail}>{email}</Text>
           </View>
           <View style={styles.cardHeader}>
-            <Caption>{created}</Caption>
+            <Caption>{date}</Caption>
             <Caption> {type}</Caption>
           </View>
         </View>
@@ -139,7 +126,9 @@ function MaterialIndentListing(props) {
           ListEmptyComponent={renderEmpty}
           keyExtractor={item => item.id}
           renderItem={({item}) => {
-            return <ListingCard {...props} item={item} />;
+            return (
+              <ListingCard {...props} item={item} navigation={navigation} />
+            );
           }}
         />
       </View>

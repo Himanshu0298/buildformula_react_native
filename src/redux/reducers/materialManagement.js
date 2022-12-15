@@ -29,6 +29,7 @@ import {
   CREATE_STOREKEEPER_ORDER,
   GET_WORK_SUB_WORK_LIST,
   UPDATE_STORE_KEEPER_STATUS,
+  GET_MATERIAL_INDENT_DETAILS,
 } from '../actions/actionTypes';
 
 const initialState = {
@@ -54,6 +55,7 @@ const initialState = {
   materialIndentList: [],
   storeKeeperList: {},
   storeKeeperDetails: {},
+  indentDetails: {},
 };
 
 const reducer = (state = initialState, action = {}) => {
@@ -154,6 +156,12 @@ const reducer = (state = initialState, action = {}) => {
         loading: false,
         directGRNMaterialDetails: payload,
       };
+    case `${GET_MATERIAL_INDENT_DETAILS}_FULFILLED`:
+      return {
+        ...state,
+        loading: false,
+        indentDetails: payload,
+      };
 
     case `${GET_DIRECT_GRN_DETAILS}_FULFILLED`: {
       const directGRNDetails = {
@@ -215,6 +223,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${UPDATE_DIRECT_GRN_STATUS}_PENDING`:
     case `${GET_MATERIAL_GRN_DETAILS}_PENDING`:
     case `${GET_MATERIAL_INDENT_LIST}_PENDING`:
+    case `${GET_MATERIAL_INDENT_DETAILS}_PENDING`:
     case `${GET_STORE_KEEPER_LIST}_PENDING`:
     case `${GET_STORE_KEEPER_DETAILS}_PENDING`:
     case `${CREATE_STOREKEEPER_ORDER}_PENDING`:
@@ -271,6 +280,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${UPDATE_DIRECT_GRN_STATUS}_REJECTED`:
     case `${GET_MATERIAL_GRN_DETAILS}_REJECTED`:
     case `${GET_MATERIAL_INDENT_LIST}_REJECTED`:
+    case `${GET_MATERIAL_INDENT_DETAILS}_REJECTED`:
     case `${GET_STORE_KEEPER_LIST}_REJECTED`:
     case `${GET_STORE_KEEPER_DETAILS}_REJECTED`:
     case `${CREATE_STOREKEEPER_ORDER}_REJECTED`:

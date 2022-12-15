@@ -1,6 +1,6 @@
 import {StyleSheet, View, TouchableOpacity, ScrollView} from 'react-native';
 
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   Caption,
   Divider,
@@ -13,41 +13,22 @@ import {getShadow} from 'utils';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
-
-const MATERIAL_DATA = [
-  {
-    category: 'Cement',
-    subCategory: 'OPC',
-    unit: 'CUM or m³',
-    requestedQty: '150.00',
-    assignQty: '150.00',
-    status: 'Approved',
-  },
-  {
-    category: 'Cement',
-    subCategory: 'OPC',
-    unit: 'CUM or m³',
-    requestedQty: '150.00',
-    assignQty: '150.00',
-    status: 'Rejected',
-  },
-  {
-    category: 'Cement',
-    subCategory: 'OPC',
-    unit: 'CUM or m³',
-    requestedQty: '150.00',
-    assignQty: '150.00',
-    status: 'Pending',
-  },
-];
+import useMaterialManagementActions from 'redux/actions/materialManagementActions';
+import {useSelector} from 'react-redux';
+import moment from 'moment';
 
 const ListingCard = props => {
-  const {status} = props;
+  const {details} = props;
+
+  const {id, status, email, first_name, last_name, created} = details || {};
+
+  const date = moment(created).format('llll');
+
   return (
     <TouchableOpacity>
       <View style={styles.cardContainer}>
         <View style={styles.cardHeader}>
-          <Text style={styles.ID}>13</Text>
+          <Text style={styles.ID}>{id}</Text>
           {/* <Caption
               style={{
                 color: PR_REQUEST_STATUS[status]?.color,
@@ -56,30 +37,33 @@ const ListingCard = props => {
             </Caption> */}
           <Text
             style={
-              status === 'Pending'
+              status === 'pending'
                 ? styles.pending
-                : status === 'Rejected'
+                : status === 'rejected'
                 ? styles.rejected
-                : status === 'Approved'
+                : status === 'approved'
                 ? styles.approved
                 : null
             }>
-            Pending
+            {status}
           </Text>
         </View>
         <Divider />
         <View style={styles.cardDetails}>
           <View style={styles.dataRow}>
             <Subheading>Create by:</Subheading>
-            <Subheading>Ronak Vagehni</Subheading>
+            <Subheading>
+              {first_name}
+              {last_name}
+            </Subheading>
           </View>
           <View style={styles.cardContent}>
-            <Caption>ronak@buildformula.com</Caption>
+            <Caption>{email}</Caption>
           </View>
           <View style={styles.createdOn}>
             <Text> Created on:</Text>
 
-            <Text>3rd Sep, 2022 15:33 PM</Text>
+            <Text> {date} </Text>
           </View>
         </View>
       </View>
@@ -87,19 +71,26 @@ const ListingCard = props => {
   );
 };
 
-const RequiredVendor = () => {
+const RequiredVendor = props => {
+  const {details} = props;
+
+  const {contractor_name, contractor_email, requred_date, remark} =
+    details || {};
+
+  const date = moment(requred_date).format('D-MMM-YYYY, LT');
+
   return (
     <View style={styles.vendorContainer}>
       <View>
         <Subheading> Required For Vendor</Subheading>
       </View>
       <View style={styles.vendorSubContainer}>
-        <Text> Ronak Patel</Text>
-        <Caption>ronak@buildformula.com</Caption>
+        <Text>{contractor_name}</Text>
+        <Caption>{contractor_email}</Caption>
       </View>
       <View style={styles.card}>
         <Text> Required Date</Text>
-        <Caption>03 Sep, 2022 </Caption>
+        <Caption>{date}</Caption>
       </View>
       <View style={styles.card}>
         <Text> Required For(Work)</Text>
@@ -107,12 +98,7 @@ const RequiredVendor = () => {
       </View>
       <View style={styles.card}>
         <Text> Remark</Text>
-        <Caption>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Risus,
-          aliquam enim vivamus dui. Quis aliquam a morbi ut iaculis cursus proin
-          amet. Hendrerit odio convallis lacus, non est. Vestibulum ac
-          curabitur.
-        </Caption>
+        <Caption>{remark}</Caption>
       </View>
     </View>
   );
@@ -121,32 +107,65 @@ const RequiredVendor = () => {
 const MaterialCard = props => {
   const {item} = props;
 
-  const {category, subCategory, requestedQty, unit} = item;
+  const {
+    materialcategrytitle,
+    materialunitstitle,
+    subcategorytitle,
+    quantity,
+    damaged_qty,
+  } = item;
+
   return (
     <View style={styles.cardContainer}>
       <View style={styles.dataRow}>
         <Caption style={styles.lightData}>Category:</Caption>
-        <Text>{category}</Text>
+        <Text>{materialcategrytitle}</Text>
       </View>
-
       <View style={styles.dataRow}>
         <Caption style={styles.lightData}>Sub Category:</Caption>
-        <Text>{subCategory}</Text>
+        <Text>{subcategorytitle}</Text>
       </View>
       <View style={styles.dataRow}>
         <Caption style={styles.lightData}>Unit:</Caption>
-        <Text>{unit}</Text>
+        <Text>{materialunitstitle}</Text>
       </View>
       <View style={styles.dataRow}>
         <Caption style={styles.lightData}>Requested Quantity:</Caption>
-        <Text>{requestedQty}</Text>
+        <Text>{quantity}</Text>
+      </View>
+      <View style={styles.dataRow}>
+        <Caption style={styles.lightData}>Assign Quantity:</Caption>
+        <Text>{damaged_qty}</Text>
       </View>
     </View>
   );
 };
 
 function IssueIndentPreview(props) {
-  const {navigation} = props;
+  const {navigation, route} = props;
+
+  const {id} = route?.params || {};
+
+  const {getIndentDetails} = useMaterialManagementActions();
+
+  const {selectedProject} = useSelector(s => s.project);
+  const {indentDetails} = useSelector(s => s.materialManagement);
+
+  const details = indentDetails?.material_indent;
+
+  const materialData = indentDetails?.material_indent_details;
+
+  useEffect(() => {
+    getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const getData = () => {
+    getIndentDetails({
+      project_id: selectedProject.id,
+      material_indent_id: id,
+    });
+  };
 
   return (
     <View style={styles.mainContainer}>
@@ -175,22 +194,26 @@ function IssueIndentPreview(props) {
       </View>
       <ScrollView>
         <View>
-          <ListingCard />
+          <ListingCard details={details} />
         </View>
         <View>
-          <RequiredVendor />
+          <RequiredVendor details={details} />
         </View>
-        <View style={styles.textContainer}>
-          <Subheading style={styles.textSubContainer}>
-            Material Request
-          </Subheading>
-        </View>
+        {materialData?.length ? (
+          <>
+            <View style={styles.textContainer}>
+              <Subheading style={styles.textSubContainer}>
+                Material Request
+              </Subheading>
+            </View>
 
-        <View>
-          {MATERIAL_DATA.map(item => {
-            return <MaterialCard item={item} navigation={navigation} />;
-          })}
-        </View>
+            <View>
+              {materialData?.map(item => {
+                return <MaterialCard item={item} navigation={navigation} />;
+              })}
+            </View>
+          </>
+        ) : null}
       </ScrollView>
     </View>
   );

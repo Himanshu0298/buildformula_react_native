@@ -38,6 +38,7 @@ export default function useMaterialManagementActions() {
     getWorkSubWorkList,
     getPRMaterialOrderList,
     updateStoreKeeperStatus,
+    getIndentDetails,
   } = useMaterialManagement();
 
   return {
@@ -359,88 +360,6 @@ export default function useMaterialManagementActions() {
         },
       }),
 
-    // Material StoreKeeper
-
-    getStoreKeeperList: data =>
-      dispatch({
-        type: types.GET_STORE_KEEPER_LIST,
-        payload: async () => {
-          try {
-            const response = _res(await getStoreKeeperList(data));
-            return Promise.resolve(response.data);
-          } catch (error) {
-            const message = _err(error);
-            snackbar.showMessage({message, variant: 'error'});
-            return Promise.reject(message);
-          }
-        },
-      }),
-
-    deleteDirectMaterialGRN: data =>
-      dispatch({
-        type: types.DELETE_MATERIAL_DIRECT_GRN,
-        payload: async () => {
-          try {
-            const res = _res(await deleteDirectMaterialGRN(data));
-            snackbar.showMessage({message: res.msg});
-            return Promise.resolve(res.data.lists);
-          } catch (error) {
-            const message = _err(error);
-            snackbar.showMessage({message, variant: 'error'});
-            return Promise.reject(message);
-          }
-        },
-      }),
-
-    getStoreKeeperDetails: data =>
-      dispatch({
-        type: types.GET_STORE_KEEPER_DETAILS,
-        payload: async () => {
-          try {
-            const response = _res(await getStoreKeeperDetails(data));
-            return Promise.resolve(response.data);
-          } catch (error) {
-            const message = _err(error);
-            snackbar.showMessage({message, variant: 'error'});
-            return Promise.reject(message);
-          }
-        },
-      }),
-
-    updateDirectGRNStatus: params =>
-      dispatch({
-        type: types.UPDATE_DIRECT_GRN_STATUS,
-        payload: async () => {
-          try {
-            const response = _res(await updateDirectGRNStatus(params));
-            const {data} = response;
-
-            return Promise.resolve(data);
-          } catch (error) {
-            const message = _err(error);
-            snackbar.showMessage({message, variant: 'error'});
-            return Promise.reject(message);
-          }
-        },
-      }),
-
-    CreateStoreKeeperOrder: formData =>
-      dispatch({
-        type: types.CREATE_STOREKEEPER_ORDER,
-        payload: async () => {
-          try {
-            const response = _res(await CreateStoreKeeperOrder(formData));
-            const {data} = response;
-
-            return Promise.resolve(data);
-          } catch (error) {
-            const message = _err(error);
-            snackbar.showMessage({message, variant: 'error'});
-            return Promise.reject(message);
-          }
-        },
-      }),
-
     addDirectGRN: data =>
       dispatch({
         type: types.ADD_DIRECT_GRN,
@@ -470,6 +389,104 @@ export default function useMaterialManagementActions() {
         },
       }),
 
+    updateDirectGRNStatus: params =>
+      dispatch({
+        type: types.UPDATE_DIRECT_GRN_STATUS,
+        payload: async () => {
+          try {
+            const response = _res(await updateDirectGRNStatus(params));
+            const {data} = response;
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    deleteDirectMaterialGRN: data =>
+      dispatch({
+        type: types.DELETE_MATERIAL_DIRECT_GRN,
+        payload: async () => {
+          try {
+            const res = _res(await deleteDirectMaterialGRN(data));
+            snackbar.showMessage({message: res.msg});
+            return Promise.resolve(res.data.lists);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    // Material StoreKeeper
+
+    getStoreKeeperList: data =>
+      dispatch({
+        type: types.GET_STORE_KEEPER_LIST,
+        payload: async () => {
+          try {
+            const response = _res(await getStoreKeeperList(data));
+            return Promise.resolve(response.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    getStoreKeeperDetails: data =>
+      dispatch({
+        type: types.GET_STORE_KEEPER_DETAILS,
+        payload: async () => {
+          try {
+            const response = _res(await getStoreKeeperDetails(data));
+            return Promise.resolve(response.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    CreateStoreKeeperOrder: formData =>
+      dispatch({
+        type: types.CREATE_STOREKEEPER_ORDER,
+        payload: async () => {
+          try {
+            const response = _res(await CreateStoreKeeperOrder(formData));
+            const {data} = response;
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    updateStoreKeeperStatus: formData =>
+      dispatch({
+        type: types.UPDATE_STORE_KEEPER_STATUS,
+        payload: async () => {
+          try {
+            const response = _res(await updateStoreKeeperStatus(formData));
+            const {data} = response;
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
     // Material Indent
 
     getMaterialIndentList: data =>
@@ -486,16 +503,13 @@ export default function useMaterialManagementActions() {
           }
         },
       }),
-
-    updateStoreKeeperStatus: formData =>
+    getIndentDetails: data =>
       dispatch({
-        type: types.UPDATE_STORE_KEEPER_STATUS,
+        type: types.GET_MATERIAL_INDENT_DETAILS,
         payload: async () => {
           try {
-            const response = _res(await updateStoreKeeperStatus(formData));
-            const {data} = response;
-
-            return Promise.resolve(data);
+            const response = _res(await getIndentDetails(data));
+            return Promise.resolve(response.data);
           } catch (error) {
             const message = _err(error);
             snackbar.showMessage({message, variant: 'error'});

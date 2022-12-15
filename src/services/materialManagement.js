@@ -123,7 +123,7 @@ export default function useMaterialManagement() {
     getMaterialIndentList: data => {
       return instance.post('/material/indentlist', data, params);
     },
-    getIssueRequestDetails: data => {
+    getIndentDetails: data => {
       return instance.post('/material/issuereuestdetails', data, params);
     },
     getMaterialIssueIndentList: data => {
