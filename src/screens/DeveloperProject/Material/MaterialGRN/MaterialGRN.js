@@ -24,6 +24,7 @@ const OrderCard = props => {
     company_name,
     supplier_name,
     percentage,
+    finalized_amount,
   } = item;
 
   const progressBar = Math.round(percentage) / 100;
@@ -43,7 +44,7 @@ const OrderCard = props => {
           <Text style={{color: theme.colors.primary}}>{material_order_no}</Text>
         </View>
         <View style={styles.amountBox}>
-          <Text>{`₹ ${total_amount}`}</Text>
+          <Text>{`₹ ${finalized_amount}`}</Text>
         </View>
       </View>
       <View style={styles.bodyContent}>

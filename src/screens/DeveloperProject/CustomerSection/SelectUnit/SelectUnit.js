@@ -9,7 +9,7 @@ import {IconButton, Subheading} from 'react-native-paper';
 import {STRUCTURE_TYPE, STRUCTURE_TYPE_LABELS} from 'utils/constant';
 import {useSalesLoading} from 'redux/selectors';
 
-function SelectUnit(props) {
+export const SelectUnit = props => {
   const {navigation, route} = props;
   const {
     project_id,
@@ -18,7 +18,9 @@ function SelectUnit(props) {
     structureType,
     selectedStructure,
     towerType,
-  } = route?.params || {};
+    displayHeader,
+    showBhkFilters,
+  } = props || {};
 
   const {getUnitsBookingStatus} = useSalesActions();
 
@@ -80,7 +82,15 @@ function SelectUnit(props) {
   };
 
   const handleSelectUnit = unit => {
-    navigation.navigate('CS_Step_Five', {...route?.params, unit});
+    navigation.navigate('CS_Step_Five', {
+      project_id,
+      floorId,
+      towerId,
+      structureType,
+      selectedStructure,
+      towerType,
+      unit,
+    });
   };
 
   const floor = floorId
@@ -91,34 +101,64 @@ function SelectUnit(props) {
     <View style={styles.container}>
       <Spinner visible={loading} textContent="" />
 
-      {towerType ? (
+      {towerType && displayHeader ? (
         <Subheading>
           {towerType}
           {structureType ? ` - ${STRUCTURE_TYPE_LABELS[structureType]}` : ''}
         </Subheading>
       ) : null}
 
-      <View style={styles.headerContainer}>
-        <TouchableOpacity
-          style={styles.titleContainer}
-          onPress={navigation.goBack}>
-          <IconButton icon="keyboard-backspace" />
-          <Subheading>{floor}</Subheading>
-        </TouchableOpacity>
-      </View>
+      {displayHeader ? (
+        <View style={styles.headerContainer}>
+          <TouchableOpacity
+            style={styles.titleContainer}
+            onPress={navigation.goBack}>
+            <IconButton icon="keyboard-backspace" />
+            <Subheading>{floor}</Subheading>
+          </TouchableOpacity>
+        </View>
+      ) : null}
 
       <UnitSelector
         {...props}
         refreshing={unitBookingStatus.length > 0 && loading}
         floorNumber={floor}
         units={processedUnits}
-        showBhkFilters={selectedStructure !== STRUCTURE_TYPE.PLOT}
+        showBhkFilters={showBhkFilters}
+        displayHeader={displayHeader}
         floorType={structureType || selectedStructure}
         isUnitDisabled={checkUnitDisability}
         onRefresh={fetchUnitsBookingStatus}
         onSelectUnit={handleSelectUnit}
       />
     </View>
+  );
+};
+
+function SelectUnitContainer(props) {
+  const {navigation, route} = props;
+
+  const {
+    project_id,
+    floorId,
+    towerId,
+    structureType,
+    selectedStructure,
+    towerType,
+  } = route?.params || {};
+
+  return (
+    <SelectUnit
+      project_id={project_id}
+      floorId={floorId}
+      towerId={towerId}
+      structureType={structureType}
+      selectedStructure={selectedStructure}
+      towerType={towerType}
+      navigation={navigation}
+      displayHeader
+      showBhkFilters={selectedStructure === 4}
+    />
   );
 }
 
@@ -139,4 +179,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SelectUnit;
+export default SelectUnitContainer;
