@@ -599,10 +599,6 @@ function AppStackNavigator() {
                 name="DocumentDownload"
                 component={DocumentDownload}
               />
-              {/* <Stack.Screen
-name="CustomerSectionSettings"
-component={CustomerSectionSettings}
-/> */}
               <Stack.Screen
                 name="ProjectSchedule"
                 component={ProjectSchedule}

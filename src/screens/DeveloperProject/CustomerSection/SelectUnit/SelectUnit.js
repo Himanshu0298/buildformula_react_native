@@ -82,7 +82,15 @@ export const SelectUnit = props => {
   };
 
   const handleSelectUnit = unit => {
-    navigation.navigate('CS_Step_Five', {...route?.params, unit});
+    navigation.navigate('CS_Step_Five', {
+      project_id,
+      floorId,
+      towerId,
+      structureType,
+      selectedStructure,
+      towerType,
+      unit,
+    });
   };
 
   const floor = floorId
