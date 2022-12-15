@@ -50,12 +50,10 @@ const reducer = (state = initialState, action = {}) => {
     // RESET data on project change
 
     case `${GET_MATERIAL_ORDER_LIST}_FULFILLED`: {
-      const orderList = payload;
-      const sortedorderList = orderList.sort();
       return {
         ...state,
         loading: false,
-        materialOrderList: sortedorderList.sort(
+        materialOrderList: payload.sort(
           (a, b) => b.material_order_no - a.material_order_no,
         ),
       };
