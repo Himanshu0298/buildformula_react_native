@@ -19,12 +19,15 @@ function FloorBar(props) {
     showBadge,
     inputProps,
     onPressLabel,
-    onPressNext,
+    onSelectFloor,
+    selectedFloor,
   } = props;
 
   const {structureType} = floorData?.[index] || {};
 
   const LabelContainer = onPressLabel ? TouchableOpacity : View;
+
+  const isSelectedFloor = selectedFloor === floorId;
 
   return (
     <View style={styles.floorContainer}>
@@ -76,10 +79,10 @@ function FloorBar(props) {
             />
             <OpacityButton
               opacity={1}
-              onPress={onPressNext}
+              onPress={() => onSelectFloor(floorId)}
               style={styles.button}>
               <MaterialCommunityIcons
-                name="arrow-right"
+                name={isSelectedFloor ? 'chevron-up' : 'chevron-down'}
                 size={20}
                 color="#fff"
               />
