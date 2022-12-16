@@ -173,9 +173,11 @@ function MaterialForm(props) {
     openImagePicker({
       type: 'file',
       onChoose: file => {
-        const attachments = values.materialAttachments || [];
-        attachments.push(file);
-        setFieldValue('materialAttachments', attachments);
+        if (file.uri) {
+          const attachments = values.materialAttachments || [];
+          attachments.push(file);
+          setFieldValue('materialAttachments', attachments);
+        }
       },
     });
   };
@@ -184,9 +186,11 @@ function MaterialForm(props) {
     openImagePicker({
       type: 'file',
       onChoose: file => {
-        const attachments = values.damageAttachments || [];
-        attachments.push(file);
-        setFieldValue('damageAttachments', attachments);
+        if (file.uri) {
+          const attachments = values.damageAttachments || [];
+          attachments.push(file);
+          setFieldValue('damageAttachments', attachments);
+        }
       },
     });
   };

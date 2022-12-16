@@ -84,9 +84,11 @@ function ChallanForm(props) {
     openImagePicker({
       type: 'file',
       onChoose: file => {
-        const attachments = values.vehicleAttachments || [];
-        attachments.push(file);
-        setFieldValue('vehicleAttachments', attachments);
+        if (file.uri) {
+          const attachments = values.vehicleAttachments || [];
+          attachments.push(file);
+          setFieldValue('vehicleAttachments', attachments);
+        }
       },
     });
   };
@@ -171,16 +173,19 @@ const AddVehicleInfo = props => {
   const {navigation, route} = props;
 
   const {
-    material_order_no,
     attachments,
     damageAttachments,
     materialAttachments,
     challan,
     materials,
+    challanId,
+    orderNumber,
+    item: vehicleInfo,
   } = route?.params || {};
 
   const {loading} = useSelector(s => s.materialManagement);
   const {selectedProject} = useSelector(s => s.project);
+  const edit = Boolean(vehicleInfo);
 
   const {addMaterialChallan, getMaterialChallanList} =
     useMaterialManagementActions();
@@ -192,9 +197,31 @@ const AddVehicleInfo = props => {
   const loadData = () => {
     return getMaterialChallanList({
       project_id: selectedProject.id,
-      material_order_no,
+      material_order_no: orderNumber,
     });
   };
+
+  const initialValues = React.useMemo(() => {
+    if (edit) {
+      const {
+        vehicle_number,
+        driver_challan_file,
+        driver_name,
+        challan_remark,
+        ...restData
+      } = vehicleInfo;
+      return {
+        vehicleNo: vehicle_number,
+        attachments: driver_challan_file,
+        driverName: driver_name,
+        remark: challan_remark,
+        ...restData,
+      };
+    }
+    return {
+      attachments: [],
+    };
+  }, [edit, vehicleInfo]);
 
   const navToSubmit = async values => {
     const formData = new FormData();
@@ -223,7 +250,7 @@ const AddVehicleInfo = props => {
     });
 
     formData.append('project_id', selectedProject.id);
-    formData.append('material_order_no', material_order_no);
+    formData.append('material_order_no', orderNumber);
     formData.append('challan_no', challan);
     formData.append('driver_name', values.driverName);
     formData.append('materials', JSON.stringify(materialData));
@@ -231,7 +258,12 @@ const AddVehicleInfo = props => {
     formData.append('challan_remark', values.remark);
     formData.append('edit_challan_id', 0);
 
-    await addMaterialChallan(formData);
+    if (edit) {
+      await addMaterialChallan(challanId, formData);
+    } else {
+      await addMaterialChallan(formData);
+    }
+
     loadData();
 
     navigation.dispatch(StackActions.pop(4));
@@ -243,7 +275,8 @@ const AddVehicleInfo = props => {
       <Formik
         validateOnBlur={false}
         validateOnChange={false}
-        initialValues={{}}
+        initialValues={initialValues}
+        enableReinitialize
         validationSchema={schema}
         onSubmit={navToSubmit}>
         {formikProps => <ChallanForm {...{formikProps}} {...props} />}

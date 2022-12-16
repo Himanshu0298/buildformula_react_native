@@ -1,5 +1,5 @@
 import NoResult from 'components/Atoms/NoResult';
-import React from 'react';
+import React, {useMemo} from 'react';
 import {
   StyleSheet,
   View,
@@ -79,6 +79,19 @@ function MaterialGRN(props) {
 
   const [searchQuery, setSearchQuery] = React.useState('');
 
+  const filteredUsers = useMemo(() => {
+    return materialOrderList.filter(
+      i =>
+        i?.supplier_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        i?.company_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        i?.materialrequesttitle
+          ?.toLowerCase()
+          .includes(searchQuery.toLowerCase()),
+    );
+  }, [materialOrderList, searchQuery]);
+
+  const onSearch = v => setSearchQuery(v);
+
   const renderEmpty = () => <NoResult />;
 
   return (
@@ -86,12 +99,13 @@ function MaterialGRN(props) {
       <Searchbar
         placeholder="Search"
         value={searchQuery}
+        onChangeText={onSearch}
         style={styles.search}
       />
       <View style={[styles.orderContainer, styles.orderMainBox]}>
         <Spinner visible={loading} textContent="" />
         <FlatList
-          data={materialOrderList}
+          data={filteredUsers}
           refreshControl={
             <RefreshControl refreshing={false} onRefresh={reloadOrders} />
           }

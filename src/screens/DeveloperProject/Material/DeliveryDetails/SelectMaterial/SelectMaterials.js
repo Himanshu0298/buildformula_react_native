@@ -42,7 +42,7 @@ const MaterialData = props => {
 
 function SelectMaterials(props) {
   const {navigation, route} = props;
-  const {materialId} = route?.params || {};
+  const {challanId: materialId} = route?.params || {};
 
   const snackbar = useSnackbar();
   const {getSelectMaterialChallan} = useMaterialManagementActions();
@@ -50,6 +50,7 @@ function SelectMaterials(props) {
   const {selectedMaterialChallan, loading} = useSelector(
     s => s.materialManagement,
   );
+
   const {selectedProject} = useSelector(s => s.project);
 
   const [selectedMaterial, setSelectedMaterial] = useState([]);
@@ -91,7 +92,10 @@ function SelectMaterials(props) {
   };
 
   const reloadOrders = () => {
-    getSelectMaterialChallan({project_id: selectedProject.id});
+    getSelectMaterialChallan({
+      project_id: selectedProject.id,
+      material_request_id: materialId,
+    });
   };
 
   const renderEmpty = () => <NoResult />;

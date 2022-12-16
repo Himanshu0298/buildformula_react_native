@@ -9,8 +9,10 @@ import useMaterialManagementActions from 'redux/actions/materialManagementAction
 import {getShadow} from 'utils';
 import {MODIFY_REQUEST_STATUS} from 'utils/constant';
 import dayjs from 'dayjs';
+import {useAlert} from 'components/Atoms/Alert';
 import {theme} from '../../../../styles/theme';
 import Header from '../CommonComponents/Header';
+import MenuDialog from '../MaterialGRN/Components/MenuDialog';
 
 const RenderRow = props => {
   const {item, containerStyle} = props;
@@ -24,8 +26,16 @@ const RenderRow = props => {
 };
 
 const ChallanSection = props => {
-  const {item} = props;
+  const {item, onDelete, toggleModal, navigation, orderNumber} = props;
+
   const {created} = item;
+
+  const challanId = item.id;
+
+  const onUpdate = () => {
+    navigation.navigate('AddChallan', {challanId, item, orderNumber});
+  };
+
   return (
     <View style={styles.challanContainer}>
       <View style={styles.challanSection}>
@@ -37,6 +47,11 @@ const ChallanSection = props => {
             label: 'Delivery Date',
             value: dayjs(created).format('DD MMM YYYY'),
           }}
+        />
+        <MenuDialog
+          onUpdate={onUpdate}
+          onDelete={() => onDelete(challanId)}
+          onShare={toggleModal}
         />
       </View>
     </View>
@@ -117,11 +132,23 @@ const Details = props => {
 };
 
 const CommonCard = props => {
-  const {navigation, materialOrderNo: orderNumber, item} = props;
+  const {
+    navigation,
+    materialOrderNo: orderNumber,
+    item,
+    toggleModal,
+    onDelete,
+  } = props;
 
   return (
     <View style={styles.commonCard}>
-      <ChallanSection item={item} />
+      <ChallanSection
+        item={item}
+        toggleModal={toggleModal}
+        onDelete={onDelete}
+        navigation={navigation}
+        orderNumber={orderNumber}
+      />
       <Created item={item} />
       <Divider style={styles.divider} />
       <View style={styles.statusContainer}>
@@ -154,7 +181,8 @@ function OrderDetail(props) {
 
   const {material_order_no, materialId} = route?.params || {};
 
-  const {getMaterialChallanList} = useMaterialManagementActions();
+  const {getMaterialChallanList, deleteChallan} =
+    useMaterialManagementActions();
   const {materialChallanList, materialOrderList, loading} = useSelector(
     s => s.materialManagement,
   );
@@ -163,9 +191,12 @@ function OrderDetail(props) {
     materialChallanList?.material_delivery_challan;
   const {selectedProject} = useSelector(s => s.project);
 
+  const project_id = selectedProject?.id;
+
+  const alert = useAlert();
+
   React.useEffect(() => {
-    getMaterialChallanList({project_id: selectedProject.id, material_order_no});
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    getList(); // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const selectedMaterial = useMemo(() => {
@@ -173,6 +204,29 @@ function OrderDetail(props) {
       i => i.material_order_no === material_order_no,
     );
   }, [materialOrderList, material_order_no]);
+
+  const [dialog, setDialog] = React.useState(false);
+
+  const toggleModal = () => setDialog(v => !v);
+
+  const getList = () => getMaterialChallanList({project_id, material_order_no});
+
+  const onDelete = challanId => {
+    alert.show({
+      title: 'Confirm',
+      message: 'Are you sure you want to delete?',
+      confirmText: 'Delete',
+      onConfirm: () => {
+        deleteChallan({
+          project_id,
+          material_order_no,
+          material_delivery_challan_id: challanId,
+        }).then(() => {
+          getList();
+        });
+      },
+    });
+  };
   return (
     <View style={styles.headerContainer}>
       <Header title={`M.O. No. : ${material_order_no}`} {...props} />
@@ -208,6 +262,8 @@ function OrderDetail(props) {
               key={item.id}
               challanList={materialChallanList}
               materialOrderNo={material_order_no}
+              onDelete={onDelete}
+              toggleModal={toggleModal}
             />
           );
         })}

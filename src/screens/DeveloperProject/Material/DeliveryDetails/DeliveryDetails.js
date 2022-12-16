@@ -16,6 +16,7 @@ import {useDownload} from 'components/Atoms/Download';
 import FileViewer from 'react-native-file-viewer';
 import MaterialInfo from './Components/MaterialInfo';
 import VehicleInfo from './Components/VehicleInfo';
+import Header from '../CommonComponents/Header';
 
 const Attachments = props => {
   const {challanImages = []} = props;
@@ -85,6 +86,8 @@ const DeliverDetails = props => {
   }, []);
   return (
     <View style={styles.mainContainer}>
+      <Header title={`Challan No. : ${challanNumber}`} {...props} />
+
       <Spinner visible={loading} textContent="" />
       <ScrollView showsVerticalScrollIndicator={false}>
         <View>
