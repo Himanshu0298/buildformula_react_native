@@ -200,14 +200,13 @@ const reducer = (state = initialState, action = {}) => {
         errorMessage: payload,
       };
 
-    //
-
     case `${GET_VISITORS}_PENDING`:
       return {
         ...state,
         loadingVisitors: true,
       };
     case `${GET_VISITORS}_FULFILLED`: {
+      // If visitor status is Book(won), he/she will be considered as a customer. And should not be displayed in visitor list.
       const FilteredVisitors = payload.filter(v => v.title !== 'Book(won)');
       return {
         ...state,

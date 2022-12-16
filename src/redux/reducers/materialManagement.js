@@ -120,7 +120,7 @@ const reducer = (state = initialState, action = {}) => {
       return {
         ...state,
         loading: false,
-        PRList: payload.sort(),
+        PRList: payload.sort((a, b) => b.id - a.id),
       };
     }
 
@@ -135,7 +135,7 @@ const reducer = (state = initialState, action = {}) => {
       return {
         ...state,
         loading: false,
-        storeKeeperList: payload?.storekeeperlist.sort().reverse(),
+        storeKeeperList: payload.storekeeperlist?.sort((a, b) => b.id - a.id),
       };
 
     case `${GET_STORE_KEEPER_DETAILS}_FULFILLED`:
