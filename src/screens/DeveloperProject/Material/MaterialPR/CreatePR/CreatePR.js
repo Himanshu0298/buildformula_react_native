@@ -10,6 +10,7 @@ import {Subheading} from 'react-native-paper';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
+import {ScrollView} from 'react-native-gesture-handler';
 
 const schema = Yup.object().shape({
   subject: Yup.string().label('subject').required('Subject is Required'),
@@ -105,7 +106,7 @@ const CreatePR = props => {
         }) => {
           return (
             <View style={styles.formContainer}>
-              <View style={styles.formContainer}>
+              <ScrollView>
                 <RenderInput
                   name="subject"
                   label="Subject"
@@ -150,7 +151,7 @@ const CreatePR = props => {
                   onBlur={handleBlur('remarks')}
                   onSubmitEditing={handleSubmit}
                 />
-              </View>
+              </ScrollView>
               <ActionButtons
                 cancelLabel="Cancel"
                 submitLabel="Next"
@@ -182,6 +183,7 @@ const styles = StyleSheet.create({
     marginVertical: 8,
   },
   formContainer: {
-    flexGrow: 1,
+    // flexGrow: 1,
+    flex: 1,
   },
 });
