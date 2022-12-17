@@ -257,7 +257,7 @@ const MaterialCard = props => {
 
 function StoreKeeperPreview(props) {
   const {navigation, route} = props;
-  const {id: ID, type: TYPE} = route?.params || {};
+  const {id: ID, type} = route?.params || {};
 
   const {getStoreKeeperDetails, updateStoreKeeperStatus} =
     useMaterialManagementActions();
@@ -287,11 +287,11 @@ function StoreKeeperPreview(props) {
     });
   };
 
-  const updateStatus = async (type, id) => {
+  const updateStatus = async (status, id) => {
     const restData = {
       project_id: projectId,
       material_indent_details_id: id,
-      type,
+      type: status,
     };
     await updateStoreKeeperStatus(restData);
     getStoreDetails();
@@ -313,7 +313,7 @@ function StoreKeeperPreview(props) {
             onPress={() => navigation.goBack()}
           />
           <Subheading style={styles.headerText}>
-            {TYPE === 'afm' ? 'Issue Request' : 'Return Request'}
+            {type === 'afm' ? 'Issue Request' : 'Return Request'}
           </Subheading>
         </View>
         <Spinner visible={loading} textContent="" />
@@ -337,7 +337,7 @@ function StoreKeeperPreview(props) {
           <IssuedCard storeKeeperDetails={storeKeeperDetails} />
         ) : null}
         <ListingCard storeKeeperDetails={storeKeeperDetails} />
-        <RequiredVendor storeKeeperDetails={storeKeeperDetails} TYPE={TYPE} />
+        <RequiredVendor storeKeeperDetails={storeKeeperDetails} type={type} />
         {material_indent_details?.length ? (
           <>
             <View style={styles.textContainer}>
