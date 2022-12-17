@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import * as React from 'react';
 import {
   Caption,
@@ -18,7 +17,7 @@ import NoResult from 'components/Atoms/NoResult';
 import {useDownload} from 'components/Atoms/Download';
 import FileViewer from 'react-native-file-viewer';
 
-const renderImage = (item, index, type) => {
+const RenderImage = ({item, index, type}) => {
   const label =
     type === 'normal'
       ? `Material image ${index + 1}`
@@ -63,12 +62,12 @@ const RenderMaterialAttachments = props => {
       <Text style={styles.attachmentsText}>Attachments</Text>
       {materialImages?.length ? (
         <>
-          {normalImages?.map((item, index) =>
-            renderImage(item, index, 'normal'),
-          )}
-          {damagedImages?.map((item, index) =>
-            renderImage(item, index, 'damage'),
-          )}
+          {normalImages?.map((item, index) => (
+            <RenderImage item={item} index={index} type="normal" />
+          ))}
+          {damagedImages?.map((item, index) => (
+            <RenderImage item={item} index={index} type="damage" />
+          ))}
         </>
       ) : (
         <NoResult />
