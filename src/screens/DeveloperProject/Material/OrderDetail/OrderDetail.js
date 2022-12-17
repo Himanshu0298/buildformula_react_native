@@ -175,7 +175,7 @@ function OrderDetail(props) {
   }, [materialOrderList, material_order_no]);
   return (
     <View style={styles.headerContainer}>
-      <Header title={`M.O. No. : ${material_order_no}`} {...props} />
+      <Header title={`PO ID : ${material_order_no}`} {...props} />
       <Details
         {...props}
         materialOrderNo={material_order_no}

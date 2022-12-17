@@ -49,12 +49,15 @@ const reducer = (state = initialState, action = {}) => {
   switch (type) {
     // RESET data on project change
 
-    case `${GET_MATERIAL_ORDER_LIST}_FULFILLED`:
+    case `${GET_MATERIAL_ORDER_LIST}_FULFILLED`: {
       return {
         ...state,
         loading: false,
-        materialOrderList: payload,
+        materialOrderList: payload.sort(
+          (a, b) => b.material_order_no - a.material_order_no,
+        ),
       };
+    }
 
     case `${GET_VENDOR_OR_CONTRACTORS_DETAILS}_FULFILLED`:
       return {
@@ -114,12 +117,10 @@ const reducer = (state = initialState, action = {}) => {
     }
 
     case `${GET_PR_MATERIAL_ORDER_LIST}_FULFILLED`: {
-      const PRList = payload;
-      const sortedPR = PRList.sort().reverse();
       return {
         ...state,
         loading: false,
-        PRList: sortedPR,
+        PRList: payload.sort((a, b) => b.id - a.id),
       };
     }
 
@@ -134,7 +135,7 @@ const reducer = (state = initialState, action = {}) => {
       return {
         ...state,
         loading: false,
-        storeKeeperList: payload,
+        storeKeeperList: payload.storekeeperlist?.sort((a, b) => b.id - a.id),
       };
 
     case `${GET_STORE_KEEPER_DETAILS}_FULFILLED`:

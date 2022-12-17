@@ -74,8 +74,12 @@ const MaterialData = props => {
   return (
     <View style={styles.quantityContainer}>
       <View style={styles.itemContainer}>
-        <RenderRow item={{label: 'Fine Qantity: ', value: item.quantity}} />
+        <RenderRow item={{label: 'LOM: ', value: item.lomtitle}} />
+        <RenderRow
+          item={{label: 'Delivered Qantity: ', value: item.quantity}}
+        />
         <RenderRow item={{label: 'Damage Qantity: ', value: item.damage}} />
+        <RenderRow item={{label: 'Missing Qantity: ', value: item.missing}} />
       </View>
     </View>
   );
@@ -106,7 +110,8 @@ const MaterialInfo = props => {
                 style={{
                   color: theme.colors.primary,
                 }}>
-                {item.sub_category_title && item.work_units_title
+                {/* {item.sub_category_title && item.work_units_title */}
+                {item.sub_category_title
                   ? ` ${item.sub_category_title} ${item.work_units_title}`
                   : ' NA'}
               </Text>
