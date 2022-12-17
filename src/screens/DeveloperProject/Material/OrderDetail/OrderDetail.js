@@ -25,8 +25,8 @@ const RenderRow = props => {
   );
 };
 
-const ChallanSection = props => {
-  const {item, onDelete, toggleModal, navigation, orderNumber} = props;
+function ChallanSection(props) {
+  const {item, onDelete, navigation, orderNumber} = props;
 
   const {created} = item;
 
@@ -48,15 +48,11 @@ const ChallanSection = props => {
             value: dayjs(created).format('DD MMM YYYY'),
           }}
         />
-        <MenuDialog
-          onUpdate={onUpdate}
-          onDelete={() => onDelete(challanId)}
-          onShare={toggleModal}
-        />
+        <MenuDialog onUpdate={onUpdate} onDelete={() => onDelete(challanId)} />
       </View>
     </View>
   );
-};
+}
 
 const Created = props => {
   const {item} = props;
@@ -131,20 +127,13 @@ const Details = props => {
   );
 };
 
-const CommonCard = props => {
-  const {
-    navigation,
-    materialOrderNo: orderNumber,
-    item,
-    toggleModal,
-    onDelete,
-  } = props;
+function CommonCard(props) {
+  const {navigation, materialOrderNo: orderNumber, item, onDelete} = props;
 
   return (
     <View style={styles.commonCard}>
       <ChallanSection
         item={item}
-        toggleModal={toggleModal}
         onDelete={onDelete}
         navigation={navigation}
         orderNumber={orderNumber}
@@ -174,7 +163,7 @@ const CommonCard = props => {
       </Button>
     </View>
   );
-};
+}
 
 function OrderDetail(props) {
   const {navigation, route} = props;
@@ -204,10 +193,6 @@ function OrderDetail(props) {
       i => i.material_order_no === material_order_no,
     );
   }, [materialOrderList, material_order_no]);
-
-  const [dialog, setDialog] = React.useState(false);
-
-  const toggleModal = () => setDialog(v => !v);
 
   const getList = () => getMaterialChallanList({project_id, material_order_no});
 
@@ -263,7 +248,6 @@ function OrderDetail(props) {
               challanList={materialChallanList}
               materialOrderNo={material_order_no}
               onDelete={onDelete}
-              toggleModal={toggleModal}
             />
           );
         })}
