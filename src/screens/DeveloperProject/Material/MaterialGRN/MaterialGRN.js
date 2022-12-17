@@ -1,5 +1,5 @@
 import NoResult from 'components/Atoms/NoResult';
-import React from 'react';
+import React, {useMemo} from 'react';
 import {
   StyleSheet,
   View,
@@ -14,7 +14,7 @@ import {getShadow} from 'utils';
 import {theme} from 'styles/theme';
 import Spinner from 'react-native-loading-spinner-overlay';
 
-const OrderCard = props => {
+function OrderCard(props) {
   const {navigation, item} = props;
   const {
     material_order_no,
@@ -59,25 +59,36 @@ const OrderCard = props => {
       </View>
     </TouchableOpacity>
   );
-};
+}
 
 function MaterialGRN(props) {
   const {getMaterialOrderList} = useMaterialManagementActions();
 
   const {materialOrderList, loading} = useSelector(s => s.materialManagement);
-
   const {selectedProject} = useSelector(s => s.project);
+
+  const [searchQuery, setSearchQuery] = React.useState('');
 
   React.useEffect(() => {
     getMaterialOrderList({project_id: selectedProject.id});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const filteredUsers = useMemo(() => {
+    const query = searchQuery.toLowerCase();
+    return materialOrderList.filter(
+      i =>
+        i?.supplier_name?.toLowerCase().includes(query) ||
+        i?.company_name?.toLowerCase().includes(query) ||
+        i?.materialrequesttitle?.toLowerCase().includes(query),
+    );
+  }, [materialOrderList, searchQuery]);
+
   const reloadOrders = () => {
     getMaterialOrderList({project_id: selectedProject.id});
   };
 
-  const [searchQuery, setSearchQuery] = React.useState('');
+  const onSearch = v => setSearchQuery(v);
 
   const renderEmpty = () => <NoResult />;
 
@@ -86,12 +97,13 @@ function MaterialGRN(props) {
       <Searchbar
         placeholder="Search"
         value={searchQuery}
+        onChangeText={onSearch}
         style={styles.search}
       />
       <View style={[styles.orderContainer, styles.orderMainBox]}>
         <Spinner visible={loading} textContent="" />
         <FlatList
-          data={materialOrderList}
+          data={filteredUsers}
           refreshControl={
             <RefreshControl refreshing={false} onRefresh={reloadOrders} />
           }

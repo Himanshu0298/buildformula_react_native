@@ -14,17 +14,34 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import {useSelector} from 'react-redux';
 import FileIcon from 'assets/images/file_icon.png';
 import NoResult from 'components/Atoms/NoResult';
+import {useDownload} from 'components/Atoms/Download';
+import FileViewer from 'react-native-file-viewer';
 
-const renderImage = (item, index, type) => {
+const RenderImage = ({item, index, type}) => {
   const label =
     type === 'normal'
       ? `Material image ${index + 1}`
       : `Damaged image ${index + 1}`;
 
+  const download = useDownload();
+
+  const onPressFile = async fileUrl => {
+    const name = fileUrl.split('/').pop();
+
+    download.link({
+      name,
+      link: fileUrl,
+      showAction: false,
+      onFinish: ({dir}) => {
+        FileViewer.open(`file://${dir}`);
+      },
+    });
+  };
+
   return (
     <TouchableOpacity
       style={styles.sectionContainer}
-      // onPress={() => onPressFile(file)}
+      onPress={() => onPressFile(item?.image_url)}
       key={item.id}>
       <Image source={FileIcon} style={styles.fileIcon} />
       <View>
@@ -45,12 +62,12 @@ const RenderMaterialAttachments = props => {
       <Text style={styles.attachmentsText}>Attachments</Text>
       {materialImages?.length ? (
         <>
-          {normalImages?.map((item, index) =>
-            renderImage(item, index, 'normal'),
-          )}
-          {damagedImages?.map((item, index) =>
-            renderImage(item, index, 'damage'),
-          )}
+          {normalImages?.map((item, index) => (
+            <RenderImage item={item} index={index} type="normal" />
+          ))}
+          {damagedImages?.map((item, index) => (
+            <RenderImage item={item} index={index} type="damage" />
+          ))}
         </>
       ) : (
         <NoResult />
@@ -167,7 +184,6 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: '#F2F4F5',
     borderRadius: 5,
-    marginTop: 10,
   },
   attachmentsText: {
     fontSize: 15,
@@ -180,6 +196,7 @@ const styles = StyleSheet.create({
     padding: 10,
     display: 'flex',
     borderRadius: 5,
+    marginVertical: 5,
   },
   text: {
     marginLeft: 5,

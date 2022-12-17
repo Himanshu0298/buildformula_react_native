@@ -1,11 +1,11 @@
 import NoResult from 'components/Atoms/NoResult';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {FlatList, RefreshControl, StyleSheet, View} from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {Text, Divider, Caption} from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector} from 'react-redux';
-import useMaterialManagementActions from 'redux/actions/materialManagementActions';
+import useMaterialManagement from 'services/materialManagement';
 import {theme} from 'styles/theme';
 import {getShadow} from 'utils';
 import Header from '../CommonComponents/Header';
@@ -50,7 +50,13 @@ const Quantity = props => {
 
 const DetailsCard = props => {
   const {item, materialChallanList} = props;
-  const {category_title, sub_category_title, work_units_title} = item;
+  const {
+    category_title,
+    sub_category_title,
+    subcategory_title,
+    work_units_title,
+    unit_title,
+  } = item;
 
   return (
     <View style={styles.detailsContainer}>
@@ -62,7 +68,9 @@ const DetailsCard = props => {
           style={[styles.labelIcon, {color: theme.colors.primary}]}
         />
         <Text style={{color: theme.colors.primary}}>
-          {`${sub_category_title} ${work_units_title}`}
+          {`${sub_category_title || subcategory_title} ${
+            work_units_title || unit_title || ''
+          }`}
         </Text>
       </View>
       <Divider style={styles.divider} />
@@ -72,20 +80,34 @@ const DetailsCard = props => {
 };
 
 const MaterialList = props => {
-  const {getMaterialOrderList} = useMaterialManagementActions();
+  const {getSelectMaterialChallan} = useMaterialManagement();
 
-  const {loading, materialChallanList, materialChallanDetails} = useSelector(
-    s => s.materialManagement,
-  );
-
-  const {materila_info} = materialChallanDetails || {};
-
-  const {materials = []} = materila_info;
-
+  const {materialChallanList} = useSelector(s => s.materialManagement);
   const {selectedProject} = useSelector(s => s.project);
 
-  const reloadOrders = () => {
-    getMaterialOrderList({project_id: selectedProject.id});
+  const [materialList, setMaterialList] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [materialChallanList]);
+
+  const loadData = async () => {
+    setLoading(true);
+    const resList = await Promise.all(
+      materialChallanList?.material_delivery_challan?.map(async i => {
+        const {data} = await getSelectMaterialChallan({
+          project_id: selectedProject.id,
+          material_request_id: i.id,
+        });
+
+        return data?.data || [];
+      }),
+    );
+
+    setMaterialList(resList.flat());
+    setLoading(false);
   };
 
   const renderEmpty = () => <NoResult />;
@@ -95,10 +117,10 @@ const MaterialList = props => {
       <Header title="List" {...props} />
       <Spinner visible={loading} textContent="" />
       <FlatList
-        data={materials}
-        extraData={materials}
+        data={materialList}
+        extraData={materialList}
         refreshControl={
-          <RefreshControl refreshing={false} onRefresh={reloadOrders} />
+          <RefreshControl refreshing={false} onRefresh={loadData} />
         }
         contentContainerStyle={styles.contentContainerStyle}
         showsVerticalScrollIndicator={false}

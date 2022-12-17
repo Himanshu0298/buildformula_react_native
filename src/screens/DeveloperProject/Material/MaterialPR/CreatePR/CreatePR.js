@@ -1,4 +1,4 @@
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, View, ScrollView} from 'react-native';
 import React, {useMemo} from 'react';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
@@ -105,7 +105,7 @@ const CreatePR = props => {
         }) => {
           return (
             <View style={styles.formContainer}>
-              <View style={styles.formContainer}>
+              <ScrollView contentContainerStyle={styles.scrollView}>
                 <RenderInput
                   name="subject"
                   label="Subject"
@@ -150,7 +150,7 @@ const CreatePR = props => {
                   onBlur={handleBlur('remarks')}
                   onSubmitEditing={handleSubmit}
                 />
-              </View>
+              </ScrollView>
               <ActionButtons
                 cancelLabel="Cancel"
                 submitLabel="Next"
@@ -182,6 +182,9 @@ const styles = StyleSheet.create({
     marginVertical: 8,
   },
   formContainer: {
+    flex: 1,
+  },
+  scrollView: {
     flexGrow: 1,
   },
 });

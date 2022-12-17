@@ -2,11 +2,39 @@ import * as React from 'react';
 import {Caption, Subheading, Text, withTheme} from 'react-native-paper';
 import {StyleSheet, View, TouchableOpacity, Image} from 'react-native';
 import FileIcon from 'assets/images/file_icon.png';
+import FileViewer from 'react-native-file-viewer';
+
 import NoResult from 'components/Atoms/NoResult';
+import {useDownload} from 'components/Atoms/Download';
 
 const VehicleInfo = props => {
   const {vehicleInfo, vehicleAttachments} = props;
   const {driver_name, vehicle_number, challan_remark} = vehicleInfo || {};
+
+  const download = useDownload();
+
+  const onPressFile = async fileUrl => {
+    const name = fileUrl.split('/').pop();
+
+    download.link({
+      name,
+      link: fileUrl,
+      showAction: false,
+      onFinish: ({dir}) => {
+        FileViewer.open(`file://${dir}`);
+      },
+    });
+  };
+
+  function getFileName(string) {
+    if (string.includes('/')) {
+      const splits = string.split('/');
+      return splits[splits.length - 1];
+    }
+
+    return string;
+  }
+
   return (
     <View style={styles.infoContainer}>
       <Subheading style={styles.infoHeading}>Vehicle Info</Subheading>
@@ -26,28 +54,28 @@ const VehicleInfo = props => {
           <Caption style={styles.captions}>Challan Remark</Caption>
           <Text>{challan_remark}</Text>
         </View>
+        {vehicleAttachments?.length ? (
+          vehicleAttachments?.map(item => {
+            return (
+              <TouchableOpacity
+                style={styles.sectionContainer}
+                onPress={() => onPressFile(item?.image_url)}>
+                <Image source={FileIcon} style={styles.fileIcon} />
 
-        <TouchableOpacity
-          style={styles.sectionContainer}
-          // onPress={() => onPressFile(file)}
-        >
-          <Image source={FileIcon} style={styles.fileIcon} />
-          {vehicleAttachments?.length ? (
-            vehicleAttachments?.map((item, index) => {
-              return (
                 <View key={item.id}>
                   <Text
                     style={(styles.verticalFlex, styles.text)}
                     numberOfLines={2}>
-                    Vehicle File {index + 1}
+                    {/* Vehicle File {index + 1} */}
+                    {getFileName(item.image_url)}
                   </Text>
                 </View>
-              );
-            })
-          ) : (
-            <NoResult title="No Files" />
-          )}
-        </TouchableOpacity>
+              </TouchableOpacity>
+            );
+          })
+        ) : (
+          <NoResult title="No Files" />
+        )}
       </View>
     </View>
   );

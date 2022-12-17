@@ -275,6 +275,7 @@ const styles = StyleSheet.create({
   contentContainerStyle: {
     flexGrow: 1,
     paddingHorizontal: 5,
+    marginBottom: 10,
   },
   uploadButton: {
     borderWidth: 1,
