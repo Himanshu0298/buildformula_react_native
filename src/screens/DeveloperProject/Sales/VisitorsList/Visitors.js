@@ -75,6 +75,7 @@ function RenderVisitorItem(props) {
     priority = 'low',
     inquiry_for,
     created,
+    title,
   } = data;
 
   return (
@@ -102,7 +103,7 @@ function RenderVisitorItem(props) {
           </Subheading>
           <CustomBadge
             color="rgba(72,114,244,0.15)"
-            label={data.title || 'NEW VISITOR'}
+            label={title || 'NEW VISITOR'}
             labelStyles={[styles.statusLabel, {color: theme.colors.primary}]}
             style={styles.badge}
           />

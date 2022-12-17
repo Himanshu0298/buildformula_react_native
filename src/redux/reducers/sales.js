@@ -200,22 +200,23 @@ const reducer = (state = initialState, action = {}) => {
         errorMessage: payload,
       };
 
-    //
-
     case `${GET_VISITORS}_PENDING`:
       return {
         ...state,
         loadingVisitors: true,
       };
-    case `${GET_VISITORS}_FULFILLED`:
+    case `${GET_VISITORS}_FULFILLED`: {
+      // If visitor status is Book(won), he/she will be considered as a customer. And should not be displayed in visitor list.
+      const filteredVisitors = payload.filter(v => v.title !== 'Book(won)');
       return {
         ...state,
         loadingVisitors: false,
-        visitors: payload.sort(
+        visitors: filteredVisitors.sort(
           (a, b) =>
             dayjs(b.follow_up_date).unix() - dayjs(a.follow_up_date).unix(),
         ),
       };
+    }
     case `${GET_VISITORS}_REJECTED`:
       return {
         ...state,
