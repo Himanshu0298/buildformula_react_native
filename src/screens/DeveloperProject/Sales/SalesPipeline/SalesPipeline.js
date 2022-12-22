@@ -90,7 +90,7 @@ function RenderHeader(props) {
           <TouchableOpacity style={styles.icon}>
             <MaterialIcons name="search" color="rgba(4,29,54,0.6)" size={19} />
           </TouchableOpacity>
-          {id !== 1 && modulePermission?.editor && modulePermission?.admin ? (
+          {modulePermission?.editor && modulePermission?.admin ? (
             <OpacityButton
               color={theme.colors.red}
               opacity={0.2}

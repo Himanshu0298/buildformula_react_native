@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import * as React from 'react';
 import {
   Caption,
@@ -18,7 +17,7 @@ import NoResult from 'components/Atoms/NoResult';
 import {useDownload} from 'components/Atoms/Download';
 import FileViewer from 'react-native-file-viewer';
 
-const renderImage = (item, index, type) => {
+const RenderImage = ({item, index, type}) => {
   const label =
     type === 'normal'
       ? `Material image ${index + 1}`
@@ -63,12 +62,12 @@ const RenderMaterialAttachments = props => {
       <Text style={styles.attachmentsText}>Attachments</Text>
       {materialImages?.length ? (
         <>
-          {normalImages?.map((item, index) =>
-            renderImage(item, index, 'normal'),
-          )}
-          {damagedImages?.map((item, index) =>
-            renderImage(item, index, 'damage'),
-          )}
+          {normalImages?.map((item, index) => (
+            <RenderImage item={item} index={index} type="normal" />
+          ))}
+          {damagedImages?.map((item, index) => (
+            <RenderImage item={item} index={index} type="damage" />
+          ))}
         </>
       ) : (
         <NoResult />
@@ -92,8 +91,12 @@ const MaterialData = props => {
   return (
     <View style={styles.quantityContainer}>
       <View style={styles.itemContainer}>
-        <RenderRow item={{label: 'Fine Qantity: ', value: item.quantity}} />
+        <RenderRow item={{label: 'LOM: ', value: item.lomtitle}} />
+        <RenderRow
+          item={{label: 'Delivered Qantity: ', value: item.quantity}}
+        />
         <RenderRow item={{label: 'Damage Qantity: ', value: item.damage}} />
+        <RenderRow item={{label: 'Missing Qantity: ', value: item.missing}} />
       </View>
     </View>
   );
@@ -124,7 +127,8 @@ const MaterialInfo = props => {
                 style={{
                   color: theme.colors.primary,
                 }}>
-                {item.sub_category_title && item.work_units_title
+                {/* {item.sub_category_title && item.work_units_title */}
+                {item.sub_category_title
                   ? ` ${item.sub_category_title} ${item.work_units_title}`
                   : ' NA'}
               </Text>

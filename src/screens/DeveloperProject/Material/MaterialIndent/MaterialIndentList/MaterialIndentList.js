@@ -133,7 +133,7 @@ function MaterialIndentListing(props) {
       <View style={styles.bodyContainer}>
         <FlatList
           style={styles.flatList}
-          data={indent}
+          data={MaterialIndentData.sort((a, b) => b.id - a.id)}
           refreshControl={<RefreshControl refreshing={false} />}
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={renderEmpty}

@@ -14,7 +14,7 @@ import {getShadow} from 'utils';
 import {theme} from 'styles/theme';
 import Spinner from 'react-native-loading-spinner-overlay';
 
-const OrderCard = props => {
+function OrderCard(props) {
   const {navigation, item} = props;
   const {
     material_order_no,
@@ -43,7 +43,7 @@ const OrderCard = props => {
           <Text style={{color: theme.colors.primary}}>{material_order_no}</Text>
         </View>
         <View style={styles.amountBox}>
-          <Text>{`₹ ${finalized_amount}`}</Text>
+          <Text>{`₹ ${finalized_amount || 0}`}</Text>
         </View>
       </View>
       <View style={styles.bodyContent}>
@@ -59,36 +59,34 @@ const OrderCard = props => {
       </View>
     </TouchableOpacity>
   );
-};
+}
 
 function MaterialGRN(props) {
   const {getMaterialOrderList} = useMaterialManagementActions();
 
   const {materialOrderList, loading} = useSelector(s => s.materialManagement);
-
   const {selectedProject} = useSelector(s => s.project);
+
+  const [searchQuery, setSearchQuery] = React.useState('');
 
   React.useEffect(() => {
     getMaterialOrderList({project_id: selectedProject.id});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const filteredUsers = useMemo(() => {
+    const query = searchQuery.toLowerCase();
+    return materialOrderList.filter(
+      i =>
+        i?.supplier_name?.toLowerCase().includes(query) ||
+        i?.company_name?.toLowerCase().includes(query) ||
+        i?.materialrequesttitle?.toLowerCase().includes(query),
+    );
+  }, [materialOrderList, searchQuery]);
+
   const reloadOrders = () => {
     getMaterialOrderList({project_id: selectedProject.id});
   };
-
-  const [searchQuery, setSearchQuery] = React.useState('');
-
-  const filteredUsers = useMemo(() => {
-    return materialOrderList.filter(
-      i =>
-        i?.supplier_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        i?.company_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        i?.materialrequesttitle
-          ?.toLowerCase()
-          .includes(searchQuery.toLowerCase()),
-    );
-  }, [materialOrderList, searchQuery]);
 
   const onSearch = v => setSearchQuery(v);
 

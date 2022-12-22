@@ -26,7 +26,8 @@ const ListingCard = props => {
   const {id, email, type, authorizedstatus, first_name, last_name, created} =
     item;
 
-  const navToPreview = () => navigation.navigate('StoreKeeperPreview', {id});
+  const navToPreview = () =>
+    navigation.navigate('StoreKeeperPreview', {id, type});
   return (
     <TouchableOpacity onPress={navToPreview}>
       <View style={styles.cardContainer}>
@@ -113,7 +114,7 @@ function StoreKeeperList(props) {
   const {storeKeeperList, loading} = useSelector(s => s.materialManagement);
   const {selectedProject} = useSelector(s => s.project);
 
-  const material = storeKeeperList.storekeeperlist;
+  const material = storeKeeperList;
 
   React.useEffect(() => {
     getStoreKeeperList({project_id: selectedProject.id});

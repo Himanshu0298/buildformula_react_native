@@ -105,7 +105,7 @@ const CreatePR = props => {
         }) => {
           return (
             <View style={styles.formContainer}>
-              <ScrollView>
+              <ScrollView contentContainerStyle={styles.scrollView}>
                 <RenderInput
                   name="subject"
                   label="Subject"
@@ -184,5 +184,8 @@ const styles = StyleSheet.create({
   },
   formContainer: {
     flex: 1,
+  },
+  scrollView: {
+    flexGrow: 1,
   },
 });

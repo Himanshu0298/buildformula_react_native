@@ -143,24 +143,16 @@ function ChallanForm(props) {
 
 function AddChallan(props) {
   const {route, navigation} = props;
-
   const {item} = route?.params || {};
 
-  const edit = Boolean(item);
-
   const initialValues = React.useMemo(() => {
-    if (edit) {
-      const {challan_number, challan_file, ...restData} = item;
-      return {
-        challan: challan_number,
-        attachments: challan_file,
-        ...restData,
-      };
-    }
+    const {challan_number, challan_file, ...restData} = item || {};
     return {
-      attachments: [],
+      attachments: challan_file || [],
+      challan: challan_number,
+      ...restData,
     };
-  }, [edit, item]);
+  }, [item]);
 
   const navToStepTwo = values => {
     navigation.navigate('SelectMaterials', {...values, ...route.params});

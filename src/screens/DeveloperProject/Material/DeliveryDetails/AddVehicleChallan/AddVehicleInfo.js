@@ -182,9 +182,10 @@ const AddVehicleInfo = props => {
     item: vehicleInfo,
   } = route?.params || {};
 
+  const edit = Boolean(vehicleInfo);
+
   const {loading} = useSelector(s => s.materialManagement);
   const {selectedProject} = useSelector(s => s.project);
-  const edit = Boolean(vehicleInfo);
 
   const {addMaterialChallan, getMaterialChallanList} =
     useMaterialManagementActions();
@@ -201,28 +202,23 @@ const AddVehicleInfo = props => {
   };
 
   const initialValues = React.useMemo(() => {
-    if (edit) {
-      const {
-        vehicle_number,
-        driver_challan_file,
-        driver_name,
-        challan_remark,
-        ...restData
-      } = vehicleInfo;
-      return {
-        vehicleNo: vehicle_number,
-        attachments: driver_challan_file,
-        driverName: driver_name,
-        remark: challan_remark,
-        ...restData,
-      };
-    }
+    const {
+      vehicle_number,
+      driver_challan_file,
+      driver_name,
+      challan_remark,
+      ...restData
+    } = vehicleInfo || {};
     return {
-      attachments: [],
+      vehicleNo: vehicle_number,
+      attachments: driver_challan_file || [],
+      driverName: driver_name,
+      remark: challan_remark,
+      ...restData,
     };
-  }, [edit, vehicleInfo]);
+  }, [vehicleInfo]);
 
-  const navToSubmit = async values => {
+  const handleSubmit = async values => {
     const formData = new FormData();
 
     const materialData = materials.map(i => ({
@@ -270,7 +266,7 @@ const AddVehicleInfo = props => {
         initialValues={initialValues}
         enableReinitialize
         validationSchema={schema}
-        onSubmit={navToSubmit}>
+        onSubmit={handleSubmit}>
         {formikProps => <ChallanForm {...{formikProps}} {...props} />}
       </Formik>
     </>

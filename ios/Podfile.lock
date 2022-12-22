@@ -89,9 +89,9 @@ PODS:
     - nanopb/encode (= 2.30908.0)
   - nanopb/decode (2.30908.0)
   - nanopb/encode (2.30908.0)
-  - Permission-MediaLibrary (3.3.1):
+  - Permission-MediaLibrary (3.6.1):
     - RNPermissions
-  - Permission-PhotoLibrary (3.3.1):
+  - Permission-PhotoLibrary (3.6.1):
     - RNPermissions
   - PromisesObjC (2.1.1)
   - RCT-Folly (2021.06.28.00-v2):
@@ -292,23 +292,23 @@ PODS:
   - React-jsinspector (0.66.4)
   - React-logger (0.66.4):
     - glog
-  - react-native-blob-util (0.16.2):
+  - react-native-blob-util (0.16.4):
     - React-Core
-  - react-native-config (1.4.5):
-    - react-native-config/App (= 1.4.5)
-  - react-native-config/App (1.4.5):
+  - react-native-config (1.4.11):
+    - react-native-config/App (= 1.4.11)
+  - react-native-config/App (1.4.11):
     - React-Core
   - react-native-date-picker (4.2.5):
     - React-Core
   - react-native-document-picker (7.1.3):
     - React-Core
-  - react-native-image-picker (4.7.3):
+  - react-native-image-picker (4.10.2):
     - React-Core
   - react-native-image-resizer (1.4.5):
     - React-Core
-  - react-native-netinfo (9.3.0):
+  - react-native-netinfo (9.3.7):
     - React-Core
-  - react-native-pager-view (5.4.15):
+  - react-native-pager-view (5.4.25):
     - React-Core
   - react-native-safe-area-context (4.4.1):
     - RCT-Folly
@@ -403,10 +403,10 @@ PODS:
     - React-Core
     - SDWebImage (~> 5.11.1)
     - SDWebImageWebPCoder (~> 0.8.4)
-  - RNFBApp (14.9.0):
+  - RNFBApp (14.12.0):
     - Firebase/CoreOnly (= 8.15.0)
     - React-Core
-  - RNFBMessaging (14.9.0):
+  - RNFBMessaging (14.12.0):
     - Firebase/Messaging (= 8.15.0)
     - React-Core
     - RNFBApp
@@ -416,9 +416,9 @@ PODS:
     - React-Core
   - RNGestureHandler (2.5.0):
     - React-Core
-  - RNLocalize (2.2.1):
+  - RNLocalize (2.2.4):
     - React-Core
-  - RNPermissions (3.3.1):
+  - RNPermissions (3.6.1):
     - React-Core
   - RNReanimated (2.9.1):
     - DoubleConversion
@@ -455,7 +455,7 @@ PODS:
     - Sentry (= 7.11.0)
   - RNShare (7.8.0):
     - React-Core
-  - RNSVG (12.4.4):
+  - RNSVG (12.5.0):
     - React-Core
   - RNVectorIcons (9.2.0):
     - React-Core
@@ -707,7 +707,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Base64: cecfb41a004124895a7bcee567a89bae5a89d49b
   boost: a7c83b31436843459a1961bfd74b96033dc77234
-  BVLinearGradient: e3aad03778a456d77928f594a649e96995f1c872
+  BVLinearGradient: 34a999fda29036898a09c6a6b728b0b4189e1a44
   CodePush: ef496b6fd053012e985e3d4a0ab9f9dbf2739eac
   DoubleConversion: 831926d9b8bf8166fd87886c4abab286c2422662
   FBLazyVector: e5569e42a1c79ca00521846c223173a57aca1fe1
@@ -742,11 +742,11 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 94ce921e1d8ce7023366873ec371f3441383b396
   React-jsinspector: d0374f7509d407d2264168b6d0fad0b54e300b85
   React-logger: 933f80c97c633ee8965d609876848148e3fef438
-  react-native-blob-util: c3b0faecd2919db568e9d552084396f3e50b57c7
-  react-native-config: 6502b1879f97ed5ac570a029961fc35ea606cd14
-  react-native-date-picker: 55193347d8d0f40948f441ffd4e5db6f0a8fbe13
+  react-native-blob-util: 60453b777610c87a22b3524032c0214e8db555db
+  react-native-config: bcafda5b4c51491ee1b0e1d0c4e3905bc7b56c1b
+  react-native-date-picker: 93e43b3084cea595b4d68b1405d6d99849663bd6
   react-native-document-picker: ec07866a30707f23660c0f3ae591d669d3e89096
-  react-native-image-picker: 4e6008ad8c2321622affa2c85432a5ebd02d480c
+  react-native-image-picker: bf34f3f516d139ed3e24c5f5a381a91819e349ea
   react-native-image-resizer: d9fb629a867335bdc13230ac2a58702bb8c8828f
   react-native-netinfo: 129bd99f607a2dc5bb096168f3e5c150fd1f1c95
   react-native-pager-view: b1914469643f40042e65d78cbf3d3dfebd6fb0d9
@@ -772,15 +772,15 @@ SPEC CHECKSUMS:
   RNCMaskedView: 0e1bc4bfa8365eba5fbbb71e07fbdc0555249489
   RNDateTimePicker: 95e0cb71cba4c2f08c62444029f834e6168a2b96
   RNFastImage: 5c9c9fed9c076e521b3f509fe79e790418a544e8
-  RNFBApp: d3a0f69a3cc67c609f962acf67f483a841ffc49f
-  RNFBMessaging: fefc7807402d03f418bdc5e80c60fbc91d943c50
+  RNFBApp: e4439717c23252458da2b41b81b4b475c86f90c4
+  RNFBMessaging: 40dac204b4197a2661dec5be964780c6ec39bf65
   RNFileViewer: ce7ca3ac370e18554d35d6355cffd7c30437c592
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
-  RNGestureHandler: bad495418bcbd3ab47017a38d93d290ebd406f50
-  RNLocalize: cbcb55d0e19c78086ea4eea20e03fe8000bbbced
-  RNPermissions: 34d678157c800b25b22a488e4d8babb57456e796
-  RNReanimated: 11e6e30bbc49079b7f0c321ac5830e6d113d0224
-  RNScreens: 4a1af06327774490d97342c00aee0c2bafb497b7
+  RNGestureHandler: 62232ba8f562f7dea5ba1b3383494eb5bf97a4d3
+  RNLocalize: 0df7970cfc60389f00eb62fd7c097dc75af3fb4f
+  RNPermissions: dcdb7b99796bbeda6975a6e79ad519c41b251b1c
+  RNReanimated: 81ae02204392903240908ab05385e178b4f88690
+  RNScreens: 34cc502acf1b916c582c60003dc3089fa01dc66d
   RNSentry: 85f6525b5fe8d2ada065858026b338605b3c09da
   RNShare: 31b418e3ff2084712f0f39618bafa5f97a322c0e
   RNSVG: ecd661f380a07ba690c9c5929c475a44f432d674
@@ -792,6 +792,6 @@ SPEC CHECKSUMS:
   TouchID: ba4c656d849cceabc2e4eef722dea5e55959ecf4
   Yoga: e7dc4e71caba6472ff48ad7d234389b91dadc280
 
-PODFILE CHECKSUM: c17f75c289d0734494e90fbbd101a1b810ef87d7
+PODFILE CHECKSUM: 6c3a3b6a9ccc35c3e197a096537a43abe5e7a35e
 
 COCOAPODS: 1.11.3
