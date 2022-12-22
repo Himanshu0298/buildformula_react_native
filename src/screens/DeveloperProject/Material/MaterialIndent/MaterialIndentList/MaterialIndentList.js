@@ -22,23 +22,12 @@ import store_keeper from 'assets/images/store_keeper.png';
 import reload from 'assets/images/reload.png';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 import {useSelector} from 'react-redux';
-import {MaterialIndentData} from './MaterialIndentData';
 
 const ListingCard = props => {
   const {item} = props;
 
-  console.log('===========> item', item);
-
-  const {
-    id,
-    authorizedstatus,
-    created,
-    createdBy,
-    email,
-    type,
-    first_name,
-    last_name,
-  } = item;
+  const {id, authorizedstatus, created, email, type, first_name, last_name} =
+    item;
 
   return (
     <TouchableOpacity>
@@ -145,7 +134,6 @@ function MaterialIndentListing(props) {
       </View>
       <FAB.Group
         open={selectDialog}
-        // style={styles.fab}
         fabStyle={{
           backgroundColor: selectDialog ? Colors.white : colors.primary,
         }}

@@ -30,6 +30,7 @@ import {
   GET_WORK_SUB_WORK_LIST,
   UPDATE_STORE_KEEPER_STATUS,
   ADD_DIRECT_GRN_VEHICLE_INFO,
+  DELETE_CHALLAN,
 } from '../actions/actionTypes';
 
 const initialState = {
@@ -62,12 +63,15 @@ const reducer = (state = initialState, action = {}) => {
   switch (type) {
     // RESET data on project change
 
-    case `${GET_MATERIAL_ORDER_LIST}_FULFILLED`:
+    case `${GET_MATERIAL_ORDER_LIST}_FULFILLED`: {
       return {
         ...state,
         loading: false,
-        materialOrderList: payload,
+        materialOrderList: payload.sort(
+          (a, b) => b.material_order_no - a.material_order_no,
+        ),
       };
+    }
 
     case `${GET_VENDOR_OR_CONTRACTORS_DETAILS}_FULFILLED`:
       return {
@@ -127,12 +131,10 @@ const reducer = (state = initialState, action = {}) => {
     }
 
     case `${GET_PR_MATERIAL_ORDER_LIST}_FULFILLED`: {
-      const PRList = payload;
-      const sortedPR = PRList.sort().reverse();
       return {
         ...state,
         loading: false,
-        PRList: sortedPR,
+        PRList: payload.sort((a, b) => b.id - a.id),
       };
     }
 
@@ -181,7 +183,7 @@ const reducer = (state = initialState, action = {}) => {
       return {
         ...state,
         loading: false,
-        storeKeeperList: payload,
+        storeKeeperList: payload.storekeeperlist?.sort((a, b) => b.id - a.id),
       };
 
     case `${GET_STORE_KEEPER_DETAILS}_FULFILLED`:
@@ -198,6 +200,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${DELETE_MATERIAL_PR_DETAILS}_PENDING`:
     case `${EDIT_MATERIAL_PR}_PENDING`:
     case `${EDIT_PR}_PENDING`:
+    case `${DELETE_CHALLAN}_PENDING`:
     case `${CREATE_MATERIAL_PR}_PENDING`:
     case `${ADD_MATERIAL_PR}_PENDING`:
     case `${ADD_MATERIAL_CHALLAN}_PENDING`:
@@ -235,6 +238,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${ADD_DIRECT_GRN_VEHICLE_INFO}_FULFILLED`:
     case `${CREATE_MATERIAL_PR}_FULFILLED`:
     case `${EDIT_PR}_FULFILLED`:
+    case `${DELETE_CHALLAN}_FULFILLED`:
     case `${EDIT_MATERIAL_PR}_FULFILLED`:
     case `${DELETE_MATERIAL_PR_CATEGORY}_FULFILLED`:
     case `${DELETE_MATERIAL_DIRECT_GRN}_FULFILLED`:
@@ -251,6 +255,7 @@ const reducer = (state = initialState, action = {}) => {
     }
     case `${GET_MATERIAL_ORDER_LIST}_REJECTED`:
     case `${GET_VENDOR_OR_CONTRACTORS_DETAILS}_REJECTED`:
+    case `${DELETE_CHALLAN}_REJECTED`:
     case `${GET_WORK_SUB_WORK_LIST}_REJECTED`:
     case `${GET_MATERIAL_LIST}_REJECTED`:
     case `${ADD_DIRECT_GRN}_REJECTED`:

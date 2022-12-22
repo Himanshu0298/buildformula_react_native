@@ -147,14 +147,11 @@ const RenderCard = props => {
   const {navigation, item, categoryLabel, subCategoryLabel} = props;
 
   const {
-    material_sub_category_id,
     material_units_id,
     missing,
     quantity,
-    material_category_id,
     master_list_of_makes_id,
     damage,
-    invoice_remaining_qty,
   } = item;
   return (
     <View style={styles.materialContainer}>

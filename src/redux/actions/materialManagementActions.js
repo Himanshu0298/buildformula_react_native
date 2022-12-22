@@ -38,8 +38,9 @@ export default function useMaterialManagementActions() {
     getWorkSubWorkList,
     getPRMaterialOrderList,
     updateStoreKeeperStatus,
-    addMaterialPR,
+    AddPR,
     addDirectGRNVehicleInfo,
+    deleteChallan,
   } = useMaterialManagement();
 
   return {
@@ -99,9 +100,25 @@ export default function useMaterialManagementActions() {
           }
         },
       }),
+
+    deleteChallan: data =>
+      dispatch({
+        type: types.DELETE_CHALLAN,
+        payload: async () => {
+          try {
+            const res = _res(await deleteChallan(data));
+            snackbar.showMessage({message: res.msg});
+            return Promise.resolve(res.data.lists);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
     getSelectMaterialChallan: data =>
       dispatch({
-        type: types.GET_STORE_KEEPER_LIST,
+        type: types.GET_SELECT_MATERIAL_CHALLAN,
         payload: async () => {
           try {
             const response = _res(await getSelectMaterialChallan(data));
@@ -207,12 +224,12 @@ export default function useMaterialManagementActions() {
           }
         },
       }),
-    addMaterialPR: params =>
+    AddPR: params =>
       dispatch({
         type: types.ADD_MATERIAL_PR,
         payload: async () => {
           try {
-            const response = _res(await addMaterialPR(params));
+            const response = _res(await AddPR(params));
             const {data} = response;
 
             return Promise.resolve(data);

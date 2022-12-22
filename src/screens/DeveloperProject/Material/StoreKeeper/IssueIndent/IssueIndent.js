@@ -20,8 +20,11 @@ import moment from 'moment/moment';
 
 const schema = Yup.object().shape({
   verification_code: Yup.string()
-    .label('verification code')
-    .required('verification code is Required'),
+    .label('Verification Code')
+    .required('Verification Code is Required'),
+  storekeeper_remark: Yup.string()
+    .label('Remark')
+    .required('Remark is Required'),
 });
 
 const RenderAttachments = props => {
@@ -125,6 +128,7 @@ function AttachmentsForm(props) {
           value={values.storekeeper_remark}
           onChangeText={handleChange('storekeeper_remark')}
           onBlur={handleBlur('storekeeper_remark')}
+          error={errors.storekeeper_remark}
           onSubmitEditing={handleSubmit}
         />
         <View>

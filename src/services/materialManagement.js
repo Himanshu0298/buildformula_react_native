@@ -11,6 +11,9 @@ export default function useMaterialManagement() {
     getMaterialChallanList: data => {
       return instance.post('/materialDelivery/details', data, params);
     },
+    deleteChallan: data => {
+      return instance.post('/material/deleteChallan', data, params);
+    },
     getMaterialChallanDetails: data => {
       return instance.post('/materialChallanDetails', data, params);
     },
@@ -48,7 +51,7 @@ export default function useMaterialManagement() {
       return instance.post('/get_material', data, params);
     },
 
-    addMaterialPR: data => {
+    AddPR: data => {
       return instance.post('/material_purchase_request/add', data, params);
     },
     createMaterialPR: data => {
