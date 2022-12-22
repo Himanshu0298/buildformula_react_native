@@ -9,11 +9,10 @@ import {useSnackbar} from 'components/Atoms/Snackbar';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {IconButton, Subheading} from 'react-native-paper';
 import SelectHoldOrBook from 'screens/DeveloperProject/Sales/BookingChart/SelectUnit/Components/UnitBookingDialog';
-import {STRUCTURE_TYPE, STRUCTURE_TYPE_LABELS} from 'utils/constant';
+import {STRUCTURE_TYPE_LABELS} from 'utils/constant';
 import {useSalesLoading} from 'redux/selectors';
 
-function SelectUnit(props) {
-  const {navigation, route} = props;
+export const SelectUnit = props => {
   const {
     project_id,
     floorId,
@@ -21,7 +20,11 @@ function SelectUnit(props) {
     structureType,
     selectedStructure,
     towerType,
-  } = route?.params || {};
+    navigation,
+    showBhkFilters,
+    route,
+    displayHeader,
+  } = props || {};
 
   const modulePermission = getPermissions('Booking Chart');
   const snackbar = useSnackbar();
@@ -58,11 +61,6 @@ function SelectUnit(props) {
 
     return floors?.[floorId]?.units || [];
   }, [floorId, selectedProject, selectedStructure, towerId]);
-
-  console.log(
-    '-------->',
-    units?.filter(i => i.unitLabel.includes('304')),
-  );
 
   const processedUnits = useMemo(() => {
     const updatedUnits = units?.map(unit => {
@@ -152,34 +150,64 @@ function SelectUnit(props) {
       />
       <Spinner visible={loading} textContent="" />
 
-      {towerType ? (
+      {towerType && displayHeader ? (
         <Subheading>
           {towerType}
           {structureType ? ` - ${STRUCTURE_TYPE_LABELS[structureType]}` : ''}
         </Subheading>
       ) : null}
 
-      <View style={styles.headerContainer}>
-        <TouchableOpacity
-          style={styles.titleContainer}
-          onPress={navigation.goBack}>
-          <IconButton icon="keyboard-backspace" />
-          <Subheading>{floor}</Subheading>
-        </TouchableOpacity>
-      </View>
+      {displayHeader ? (
+        <View style={styles.headerContainer}>
+          <TouchableOpacity
+            style={styles.titleContainer}
+            onPress={navigation.goBack}>
+            <IconButton icon="keyboard-backspace" />
+            <Subheading>{floor}</Subheading>
+          </TouchableOpacity>
+        </View>
+      ) : null}
 
       <UnitSelector
         {...props}
         refreshing={unitBookingStatus.length > 0 && loading}
         floorNumber={floor}
         units={processedUnits}
-        showBhkFilters={selectedStructure !== STRUCTURE_TYPE.PLOT}
+        showBhkFilters={showBhkFilters}
+        displayHeader={displayHeader}
         floorType={structureType || selectedStructure}
         isUnitDisabled={checkUnitDisability}
         onRefresh={fetchUnitsBookingStatus}
         onSelectUnit={handleSelectUnit}
       />
     </View>
+  );
+};
+
+function SelectUnitContainer(props) {
+  const {navigation, route} = props;
+  const {
+    project_id,
+    floorId,
+    towerId,
+    structureType,
+    selectedStructure,
+    towerType,
+  } = route?.params || {};
+
+  return (
+    <SelectUnit
+      project_id={project_id}
+      floorId={floorId}
+      towerId={towerId}
+      structureType={structureType}
+      selectedStructure={selectedStructure}
+      towerType={towerType}
+      navigation={navigation}
+      props={props}
+      displayHeader
+      showBhkFilters={selectedStructure === 4}
+    />
   );
 }
 
@@ -200,4 +228,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SelectUnit;
+export default SelectUnitContainer;

@@ -6,40 +6,51 @@ import {
   Image,
   ScrollView,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Caption, Subheading} from 'react-native-paper';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useAlert} from 'components/Atoms/Alert';
-import NoResult from 'components/Atoms/NoResult';
 import FileIcon from 'assets/images/file_icon.png';
-import Spinner from 'react-native-loading-spinner-overlay';
 import ActionButtons from 'components/Atoms/ActionButtons';
+import {useSelector} from 'react-redux';
+import useMaterialManagementActions from 'redux/actions/materialManagementActions';
+import {getPermissions, getShadow} from 'utils';
+import {getFileName} from 'utils/constant';
+import FileViewer from 'react-native-file-viewer';
+import {useDownload} from 'components/Atoms/Download';
+import {theme} from 'styles/theme';
 import Header from '../../CommonComponents/Header';
-import MaterialInfo from '../../DeliveryDetails/Components/MaterialInfo';
+
 import VehicleInfo from '../../DeliveryDetails/Components/VehicleInfo';
+import DirectMaterialInfo from '../Components/DirectMaterialInfo';
 
 const HeaderDetails = props => {
+  const {challanInfo} = props;
+
+  const {challan_number, delivery_date, company_name, supplier} =
+    challanInfo || {};
+
   return (
     <>
       <View style={styles.row}>
         <View>
           <Caption>Challan No.</Caption>
-          <Text>MM-01-MM-5151</Text>
+          <Text>{challan_number}</Text>
         </View>
         <View>
           <Caption>Delivery Date</Caption>
-          <Text>12 Jun, 2022</Text>
+          <Text>{delivery_date}</Text>
         </View>
       </View>
       <View style={styles.row}>
         <View>
           <Caption>Company Name</Caption>
-          <Text>Jai Shree Ram</Text>
+          <Text>{company_name}</Text>
         </View>
         <View>
           <Caption>Supplier Name</Caption>
-          <Text>Hiren Jaisurwal</Text>
+          <Text>{supplier}</Text>
         </View>
       </View>
     </>
@@ -47,99 +58,200 @@ const HeaderDetails = props => {
 };
 
 const Attachments = props => {
-  const {challanImages = []} = props;
+  const {damageImage = []} = props;
+
+  const download = useDownload();
 
   const onPressFile = async fileUrl => {
     const name = fileUrl.split('/').pop();
-  };
 
+    download.link({
+      name,
+      link: fileUrl,
+      showAction: false,
+      onFinish: ({dir}) => {
+        FileViewer.open(`file://${dir}`);
+      },
+    });
+  };
   return (
     <>
-      <Subheading style={styles.challanHeading}>Challan Images</Subheading>
+      <Caption style={styles.challanHeading}>Challan Images</Caption>
       <View style={styles.container}>
         <Text style={styles.attachmentsText}>Attachments</Text>
-        {challanImages?.length ? (
-          challanImages?.map((file, index) => {
-            return (
-              <TouchableOpacity
-                style={styles.sectionContainer}
-                onPress={() => onPressFile(file.challan_image)}>
-                <Image source={FileIcon} style={styles.fileIcon} />
-                <View>
-                  <Text
-                    style={[styles.verticalFlex, styles.text]}
-                    numberOfLines={2}>
-                    Challan Image {index + 1}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            );
-          })
-        ) : (
-          <NoResult />
-        )}
+
+        {damageImage?.map((file, index) => {
+          return (
+            <TouchableOpacity
+              style={styles.sectionContainer}
+              onPress={() => onPressFile(file.image_url)}>
+              <Image source={FileIcon} style={styles.fileIcon} />
+              <View>
+                <Text
+                  style={[styles.verticalFlex, styles.text]}
+                  numberOfLines={2}>
+                  {getFileName(file?.image_url)}
+                  {index + 1}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          );
+        })}
       </View>
     </>
   );
 };
 
-const challan_image = props => {
-  return (
-    <View style={styles.mainContainer}>
-      <Header title="Challan No: 123" {...props} />
-      {/* <Spinner visible={loading} textContent="" /> */}
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View>
-          <Subheading style={styles.challanHeading}>Challan Images</Subheading>
-          <Attachments />
-        </View>
-      </ScrollView>
-    </View>
-  );
-};
-
 const DirectGRNPreview = props => {
+  const {route, navigation} = props;
+
+  const {id} = route?.params || {};
+
   const alert = useAlert();
+
+  const {
+    getDirectMaterialGRNDetails,
+    deleteDirectMaterialGRN,
+    getDirectMaterialGRNList,
+    updateDirectGRNStatus,
+  } = useMaterialManagementActions();
+
+  const {selectedProject} = useSelector(s => s.project);
+  const {directGRNDetails} = useSelector(s => s.materialManagement);
+  const modulePermission = getPermissions('DirectGRNPreview');
+
+  const {challan_status} = directGRNDetails?.challanInfo || {};
+
+  const materialItem = directGRNDetails?.material_request_items;
+
+  const {challanInfo} = directGRNDetails;
+
+  const vehicleImage = directGRNDetails?.challan_material_damage_image;
+  const invoiceImages = directGRNDetails?.challan_material_invoice_image;
+
+  useEffect(() => {
+    getLoadData();
+    getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const getLoadData = () => {
+    getDirectMaterialGRNDetails({
+      project_id: selectedProject.id,
+      grn_id: id,
+    });
+  };
+
+  const getData = () => {
+    getDirectMaterialGRNList({
+      project_id: selectedProject.id,
+    });
+  };
+
+  const updateStatus = async status => {
+    const restData = {
+      project_id: selectedProject.id,
+      challan_id: id,
+      status,
+    };
+    await updateDirectGRNStatus(restData);
+    getLoadData();
+  };
+
+  const handleDelete = () => {
+    alert.show({
+      title: 'Confirm',
+      message: 'Are you sure you want to delete?',
+      confirmText: 'Delete',
+      onConfirm: () => {
+        deleteDirectMaterialGRN({
+          challan_id: id,
+          project_id: selectedProject.id,
+        });
+        getData();
+        navigation.goBack();
+      },
+    });
+  };
+
+  const navToEdit = () => {
+    navigation.navigate('AddDirectGRN', {id});
+  };
+
   return (
     <View style={styles.mainContainer}>
-      <Header title="GRN Preview" {...props} />
+      <View style={styles.headerContainer}>
+        <Header title="GRN Preview" {...props} />
+        {challan_status === 'rejected' ? (
+          <View style={styles.statusContainer}>
+            <MaterialIcons name="cancel" size={18} color={theme.colors.error} />
+            <Text style={styles.rejectedStatus}>Rejected GRN</Text>
+          </View>
+        ) : challan_status === 'approved' ? (
+          <View style={styles.checkIcon}>
+            <MaterialIcons
+              name="check-circle"
+              size={18}
+              color={theme.colors.success}
+            />
+            <Text style={styles.approvedStatus}>Approved GRN</Text>
+          </View>
+        ) : null}
+      </View>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.subheadingContainer}>
-          <Subheading>Challan Info</Subheading>
+          <View style={styles.challanHeader}>
+            <Subheading>Challan Info</Subheading>
+          </View>
           <View style={styles.btnContainer}>
+            {challan_status === 'approved' ? null : (
+              <OpacityButton
+                color={theme.colors.primary}
+                opacity={0.18}
+                style={styles.btnRadius}
+                onPress={navToEdit}>
+                <MaterialIcons
+                  name="edit"
+                  color={theme.colors.primary}
+                  size={15}
+                />
+              </OpacityButton>
+            )}
+
             <OpacityButton
-              color="#4872f4"
+              color={theme.colors.error}
               opacity={0.18}
-              style={styles.btnRadius}
-              onPress={() => alert.show('edit')}>
-              <MaterialIcons name="edit" color="#4872f4" size={17} />
-            </OpacityButton>
-            <OpacityButton
-              color="#FF5D5D"
-              opacity={0.18}
-              onPress={() => {
-                alert.show({
-                  title: 'Alert',
-                  message: 'Are you sure want to delete this?',
-                  dismissable: false,
-                });
-              }}
+              onPress={handleDelete}
               style={styles.btnRadius}>
-              <MaterialIcons name="delete" color="#FF5D5D" size={17} />
+              <MaterialIcons name="delete" color={theme.colors.red} size={15} />
             </OpacityButton>
           </View>
         </View>
-        <HeaderDetails />
-        <Attachments />
-        <MaterialInfo />
-        <VehicleInfo />
+        <View style={styles.detailContainer}>
+          <HeaderDetails challanInfo={challanInfo} />
+          {vehicleImage?.length ? (
+            <Attachments damageImage={vehicleImage} />
+          ) : null}
+        </View>
+        {materialItem?.length ? (
+          <DirectMaterialInfo materialInfo={directGRNDetails} />
+        ) : null}
+        <VehicleInfo
+          vehicleInfo={challanInfo}
+          vehicleAttachments={vehicleImage}
+          invoiceImages={invoiceImages}
+        />
       </ScrollView>
-      <ActionButtons
-        cancelLabel="Reject"
-        submitLabel="Approve"
-        onCancel={() => alert.show({title: 'Reject', message: 'Reject'})}
-        onSubmit={() => alert.show({title: 'Approve', message: 'Approved'})}
-      />
+      {modulePermission?.editor || modulePermission?.admin ? (
+        challan_status === 'pending' ? (
+          <ActionButtons
+            cancelLabel="Reject"
+            submitLabel="Approve"
+            onCancel={() => updateStatus('rejected')}
+            onSubmit={() => updateStatus('approved')}
+          />
+        ) : null
+      ) : null}
     </View>
   );
 };
@@ -151,11 +263,23 @@ const styles = StyleSheet.create({
     padding: 10,
     flex: 1,
   },
+
+  headerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
   subheadingContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginVertical: 5,
+  },
+
+  detailContainer: {
+    borderRadius: 10,
+    backgroundColor: '#F2F4F5',
+    ...getShadow(3),
+    padding: 10,
   },
   btnContainer: {
     flexDirection: 'row',
@@ -176,8 +300,8 @@ const styles = StyleSheet.create({
   container: {
     padding: 10,
     backgroundColor: '#F2F4F5',
+    ...getShadow(3),
     borderRadius: 5,
-    margin: 10,
   },
   sectionContainer: {
     alignItems: 'center',
@@ -186,6 +310,7 @@ const styles = StyleSheet.create({
     padding: 10,
     display: 'flex',
     borderRadius: 5,
+    marginVertical: 5,
   },
   fileIcon: {
     width: 32,
@@ -196,10 +321,30 @@ const styles = StyleSheet.create({
   challanHeading: {
     padding: 10,
     marginTop: 10,
-    paddingBottom: 0,
+    paddingBottom: 5,
   },
   attachmentsText: {
     fontSize: 15,
     paddingBottom: 10,
+  },
+
+  statusContainer: {
+    alignSelf: 'center',
+    flexDirection: 'row',
+  },
+  rejectedStatus: {
+    color: '#FF5D5D',
+    marginLeft: 5,
+  },
+  checkIcon: {
+    alignSelf: 'center',
+    flexDirection: 'row',
+  },
+  approvedStatus: {
+    color: '#07CA03',
+    marginLeft: 5,
+  },
+  challanHeader: {
+    marginVertical: 10,
   },
 });

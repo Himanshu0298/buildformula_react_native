@@ -14,12 +14,14 @@ import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useImagePicker} from 'hooks';
 import ActionButtons from 'components/Atoms/ActionButtons';
 import {useAlert} from 'components/Atoms/Alert';
+import useMaterialManagementActions from 'redux/actions/materialManagementActions';
+import {useSelector} from 'react-redux';
+import dayjs from 'dayjs';
 import Header from '../../CommonComponents/Header';
 import Pagination from '../../CommonComponents/Pagination';
 
 const schema = Yup.object().shape({
   challan: Yup.string('Required').required('Required'),
-  attachments: Yup.mixed().required('File is required'),
 });
 
 const RenderAttachments = props => {
@@ -65,7 +67,6 @@ const RenderAttachments = props => {
 
 function ChallanForm(props) {
   const alert = useAlert();
-  const options = ['Add Company', 'One', 'Two', 'Three'];
   const [company, setCompany] = React.useState('');
 
   const addCompany = () => {
@@ -80,13 +81,14 @@ function ChallanForm(props) {
     addCompany();
   }
 
-  const suppName = {
-    One: {name: 'Himanshu'},
-    Two: {name: 'James'},
-    Three: {name: 'Parker'},
-  };
-
-  const {formikProps, navigation} = props;
+  const {
+    formikProps,
+    navigation,
+    supplierOptions,
+    companyOptions,
+    vendorOptions,
+    edit,
+  } = props;
   const {
     values,
     errors,
@@ -102,9 +104,11 @@ function ChallanForm(props) {
     openImagePicker({
       type: 'file',
       onChoose: file => {
-        const attachments = values.attachments || [];
-        attachments.push(file);
-        setFieldValue('attachments', attachments);
+        if (file.uri) {
+          const attachments = values.attachments || [];
+          attachments.push(file);
+          setFieldValue('attachments', attachments);
+        }
       },
     });
   };
@@ -114,37 +118,29 @@ function ChallanForm(props) {
     setFieldValue('attachments', values.attachments);
   };
 
+  const handleSubMaterialChange = value => {
+    setFieldValue('company', value);
+    const supplierName = vendorOptions.find(
+      i => i.id === value,
+    )?.contractor_name;
+    if (supplierName) {
+      setFieldValue('supplier', supplierName);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.mainContainer}>
       <View style={styles.headerContainer}>
-        <Header title="Challan Info" {...props} />
+        <Header
+          title={edit ? 'Edit Challan Info' : 'Challan Info'}
+          {...props}
+        />
         <Pagination title="Page 1 of 3" />
       </View>
       <KeyboardAwareScrollView
         contentContainerStyle={styles.contentContainerStyle}>
         <View style={styles.dialogContent}>
           <View>
-            <RenderSelect
-              name="company"
-              options={options}
-              containerStyles={styles.input}
-              value={company}
-              placeholder="Select Company"
-              error={errors.company}
-              onSelect={value => {
-                setCompany(value);
-              }}
-            />
-            <RenderInput
-              name="supplier"
-              label="Supplier Name"
-              containerStyles={styles.input}
-              value={suppName[company]?.name}
-              onChangeText={handleChange('challan')}
-              onBlur={handleBlur('challan')}
-              error={errors.supplier}
-              editable={false}
-            />
             <RenderInput
               name="challan"
               label="Challan No"
@@ -155,15 +151,37 @@ function ChallanForm(props) {
               onBlur={handleBlur('challan')}
               error={errors.challan}
             />
+            <RenderSelect
+              name="company"
+              options={companyOptions}
+              containerStyles={styles.input}
+              value={values.company}
+              label="Select Company"
+              error={errors.company}
+              onSelect={handleSubMaterialChange}
+            />
+            <RenderSelect
+              name="supplier"
+              disabled
+              options={supplierOptions}
+              containerStyles={styles.input}
+              value={values.supplier}
+              label="Select Supplier"
+            />
 
             <RenderDatePicker
               name="delivery_date"
               label="Delivery Date"
+              value={values.delivery_date}
               containerStyles={styles.input}
-              onChange={() => console.log('Dated')}
+              onChange={value => {
+                setFieldValue(
+                  'delivery_date',
+                  dayjs(value).format('YYYY-MM-DD'),
+                );
+              }}
               error={errors.delivery_date}
             />
-
             <View>
               <Text style={{color: theme.colors.primary}}>Attachment</Text>
               <OpacityButton
@@ -196,19 +214,94 @@ function ChallanForm(props) {
 
 const AddDirectGRN = props => {
   const {route, navigation} = props;
+  const {id: challan_id = 0} = route?.params || {};
 
-  const navToStepTwo = values => {
-    navigation.navigate('GRNMaterial', {...values, ...route.params});
+  const edit = Boolean(challan_id);
+
+  const {addDirectGRN, getVendorList} = useMaterialManagementActions();
+  const {selectedProject} = useSelector(s => s.project);
+
+  const {vendorOptions, directGRNDetails} = useSelector(
+    s => s.materialManagement,
+  );
+
+  React.useEffect(() => {
+    getVendorList({project_id: selectedProject.id});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const supplierOptions = React.useMemo(() => {
+    return vendorOptions?.map(i => ({
+      label: `${i.contractor_name}`,
+      value: i.id,
+    }));
+  }, [vendorOptions]);
+
+  const companyOptions = React.useMemo(() => {
+    return vendorOptions?.map(i => ({
+      label: `${i.company_name} `,
+      value: i.id,
+    }));
+  }, [vendorOptions]);
+
+  const initialValues = React.useMemo(() => {
+    if (edit) {
+      const {
+        challan_number: challan,
+        delivery_date,
+        company,
+        supplier,
+        challan_file: attachments,
+      } = directGRNDetails.challanInfo;
+      return {
+        challan,
+        delivery_date,
+        supplier,
+        company,
+        attachments,
+        ...directGRNDetails.challanInfo,
+      };
+    }
+    return {};
+  }, [directGRNDetails, edit]);
+
+  const onSubmit = async values => {
+    const formData = new FormData();
+
+    formData.append('project_id', selectedProject.id);
+    formData.append('challan_id', challan_id);
+    formData.append('challan_number', values.challan);
+    formData.append('delivery_date', values.delivery_date);
+    formData.append('company', values.company);
+    formData.append('supplier', values.supplier);
+    formData.append('file_upload', values.attachments);
+
+    const {value} = await addDirectGRN(formData);
+    navigation.navigate('DirectGRNChallanMaterial', {
+      challan_id: challan_id || value?.challan_id,
+      edit,
+      challan_number: values.challan,
+    });
   };
 
   return (
     <Formik
       validateOnBlur={false}
       validateOnChange={false}
-      initialValues={{attachments: []}}
+      enableReinitialize
+      initialValues={initialValues}
       validationSchema={schema}
-      onSubmit={navToStepTwo}>
-      {formikProps => <ChallanForm {...{formikProps}} {...props} />}
+      onSubmit={onSubmit}>
+      {formikProps => (
+        <ChallanForm
+          {...{formikProps}}
+          {...props}
+          supplierOptions={supplierOptions}
+          companyOptions={companyOptions}
+          vendorOptions={vendorOptions}
+          edit={edit}
+        />
+      )}
     </Formik>
   );
 };
@@ -216,6 +309,7 @@ const AddDirectGRN = props => {
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
+    margin: 10,
   },
   dialogContent: {
     paddingHorizontal: 15,

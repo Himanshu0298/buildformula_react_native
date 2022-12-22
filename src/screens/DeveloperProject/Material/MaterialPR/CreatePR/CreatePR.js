@@ -1,4 +1,4 @@
-import {StyleSheet, View} from 'react-native';
+import {ScrollView, StyleSheet, View} from 'react-native';
 import React, {useMemo} from 'react';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
@@ -10,7 +10,6 @@ import {Subheading} from 'react-native-paper';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
-import {ScrollView} from 'react-native-gesture-handler';
 
 const schema = Yup.object().shape({
   subject: Yup.string().label('subject').required('Subject is Required'),
@@ -150,6 +149,7 @@ const CreatePR = props => {
                   onChangeText={handleChange('remarks')}
                   onBlur={handleBlur('remarks')}
                   onSubmitEditing={handleSubmit}
+                  error={errors.remarks}
                 />
               </ScrollView>
               <ActionButtons
@@ -183,7 +183,6 @@ const styles = StyleSheet.create({
     marginVertical: 8,
   },
   formContainer: {
-    // flexGrow: 1,
     flex: 1,
   },
 });

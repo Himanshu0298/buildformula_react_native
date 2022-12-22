@@ -25,6 +25,14 @@ export default function useMaterialManagementActions() {
     deleteMaterialPRCategory,
     deleteMaterialPRItem,
     updatePRStatus,
+    getDirectMaterialGRNList,
+    getDirectMaterialGRNDetails,
+    deleteDirectMaterialGRN,
+    updateDirectGRNStatus,
+    addDirectGRNFirst,
+    getDirectMaterialGRNItemList,
+    addDirectGRNMaterialInfo,
+    getMaterialIndentList,
     createMaterialPR,
     getPRMaterialDetails,
     getWorkSubWorkList,
@@ -32,6 +40,7 @@ export default function useMaterialManagementActions() {
     updateStoreKeeperStatus,
     deleteChallan,
     addMaterialPR,
+    addDirectGRNVehicleInfo,
   } = useMaterialManagement();
 
   return {
@@ -230,6 +239,7 @@ export default function useMaterialManagementActions() {
           }
         },
       }),
+
     updatePR: params =>
       dispatch({
         type: types.GET_STORE_KEEPER_DETAILS,
@@ -307,13 +317,173 @@ export default function useMaterialManagementActions() {
       }),
     updatePRStatus: formData =>
       dispatch({
-        type: types.UPDATE_MODIFY_REQUEST,
+        type: types.UPDATE_PR_STATUS,
         payload: async () => {
           try {
             const response = _res(await updatePRStatus(formData));
             const {data} = response;
 
             return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    // addProgressRecord: data =>
+    //   dispatch({
+    //     type: types.ADD_PROGRESS_RECORD,
+    //     payload: async () => {
+    //       try {
+    //         const res = _res(await addProgressRecord(data));
+    //         snackbar.showMessage({message: res.msg});
+    //         return Promise.resolve(res.data.lists);
+    //       } catch (error) {
+    //         const message = _err(error);
+    //         snackbar.showMessage({message, variant: 'error'});
+    //         return Promise.reject(message);
+    //       }
+    //     },
+    //   }),
+
+    // Direct MaterialGRN
+
+    getDirectMaterialGRNList: data =>
+      dispatch({
+        type: types.GET_DIRECT_GRN_LIST,
+        payload: async () => {
+          try {
+            const response = _res(await getDirectMaterialGRNList(data));
+            return Promise.resolve(response.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    getDirectMaterialGRNDetails: data =>
+      dispatch({
+        type: types.GET_DIRECT_GRN_DETAILS,
+        payload: async () => {
+          try {
+            const response = _res(await getDirectMaterialGRNDetails(data));
+            return Promise.resolve(response.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    getDirectMaterialGRNItemList: data =>
+      dispatch({
+        type: types.GET_MATERIAL_GRN_DETAILS,
+        payload: async () => {
+          try {
+            const response = _res(await getDirectMaterialGRNItemList(data));
+            return Promise.resolve(response.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    updateDirectGRNStatus: params =>
+      dispatch({
+        type: types.UPDATE_DIRECT_GRN_STATUS,
+        payload: async () => {
+          try {
+            const response = _res(await updateDirectGRNStatus(params));
+            const {data} = response;
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    addDirectGRN: formData =>
+      dispatch({
+        type: types.ADD_DIRECT_GRN,
+        payload: async () => {
+          try {
+            const response = _res(await addDirectGRNFirst(formData));
+            return Promise.resolve(response);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    deleteDirectMaterialGRN: data =>
+      dispatch({
+        type: types.DELETE_MATERIAL_DIRECT_GRN,
+        payload: async () => {
+          try {
+            const res = _res(await deleteDirectMaterialGRN(data));
+            snackbar.showMessage({message: res.msg});
+            return Promise.resolve(res.data.lists);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    // addDirectGRNMaterialInfo: formData =>
+    //   dispatch({
+    //     type: types.ADD_DIRECT_GRN_MATERIAL_INFO,
+    //     payload: async () => {
+    //       try {
+    //         const response = _res(await addDirectGRNMaterialInfo(formData));
+    //         return Promise.resolve(response.data);
+    //       } catch (error) {
+    //         const message = _err(error);
+    //         snackbar.showMessage({message, variant: 'error'});
+    //         return Promise.reject(message);
+    //       }
+    //     },
+    //   }),
+
+    addDirectGRNMaterialInfo: formData =>
+      dispatch({
+        type: types.ADD_DIRECT_GRN_MATERIAL_INFO,
+        payload: async () => {
+          try {
+            const response = _res(await addDirectGRNMaterialInfo(formData));
+            const {data, msg} = response;
+            snackbar.showMessage({message: msg});
+
+            return Promise.resolve(data.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    addDirectGRNVehicleInfo: formData =>
+      dispatch({
+        type: types.ADD_DIRECT_GRN_VEHICLE_INFO,
+        payload: async () => {
+          try {
+            const response = _res(await addDirectGRNVehicleInfo(formData));
+            const {data, msg} = response;
+            snackbar.showMessage({message: msg});
+
+            return Promise.resolve(data.data);
           } catch (error) {
             const message = _err(error);
             snackbar.showMessage({message, variant: 'error'});
@@ -380,6 +550,23 @@ export default function useMaterialManagementActions() {
             const {data} = response;
 
             return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    // Material Indent
+
+    getMaterialIndentList: data =>
+      dispatch({
+        type: types.GET_MATERIAL_INDENT_LIST,
+        payload: async () => {
+          try {
+            const response = _res(await getMaterialIndentList(data));
+            return Promise.resolve(response.data);
           } catch (error) {
             const message = _err(error);
             snackbar.showMessage({message, variant: 'error'});

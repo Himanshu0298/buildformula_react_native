@@ -97,7 +97,7 @@ function Account(props) {
     };
   }, [paymentCollection]);
 
-  const CollectionTypes = React.useMemo(() => {
+  const collectionTypes = React.useMemo(() => {
     return [
       {
         key: 'document',
@@ -120,7 +120,7 @@ function Account(props) {
     ];
   }, [paymentCollection, theme]);
 
-  const PaymentScheduleTypes = React.useMemo(() => {
+  const paymentScheduleTypes = React.useMemo(() => {
     return [
       {
         key: 'document',
@@ -286,7 +286,7 @@ function Account(props) {
           </View>
 
           <View style={styles.cardItemsContainer}>
-            {CollectionTypes.map((item, index) => (
+            {collectionTypes.map((item, index) => (
               <React.Fragment key={index.toString()}>
                 <TouchableOpacity
                   style={styles.cardItem}
@@ -327,8 +327,8 @@ function Account(props) {
           </View>
 
           <View style={styles.cardItemsContainer}>
-            {PaymentScheduleTypes.map(item => (
-              <>
+            {paymentScheduleTypes.map(item => (
+              <React.Fragment key={item.key}>
                 <TouchableOpacity
                   style={styles.cardItem}
                   onPress={() => navToSchedule(item.key)}>
@@ -354,7 +354,7 @@ function Account(props) {
                   </View>
                 </TouchableOpacity>
                 <Divider />
-              </>
+              </React.Fragment>
             ))}
           </View>
         </View>
