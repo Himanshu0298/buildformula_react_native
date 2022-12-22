@@ -39,7 +39,7 @@ export default function useMaterialManagementActions() {
     getPRMaterialOrderList,
     updateStoreKeeperStatus,
     deleteChallan,
-    addMaterialPR,
+    AddPR,
     addDirectGRNVehicleInfo,
   } = useMaterialManagement();
 
@@ -133,12 +133,12 @@ export default function useMaterialManagementActions() {
 
     // Material PR
 
-    addMaterialPR: data =>
+    AddPR: data =>
       dispatch({
         type: types.ADD_MATERIAL_PR,
         payload: async () => {
           try {
-            const response = _res(await addMaterialPR(data));
+            const response = _res(await AddPR(data));
             return Promise.resolve(response.data);
           } catch (error) {
             const message = _err(error);

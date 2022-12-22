@@ -23,7 +23,7 @@ import useMaterialManagementActions from 'redux/actions/materialManagementAction
 import Header from '../../CommonComponents/Header';
 
 import VehicleInfo from '../../DeliveryDetails/Components/VehicleInfo';
-import DirectMaterialInfo from '../Components/DirectMaterialInfo';
+import DirectMaterialInfo from '../DirectGRNComponents/DirectMaterialInfo';
 
 const HeaderDetails = props => {
   const {challanInfo} = props;

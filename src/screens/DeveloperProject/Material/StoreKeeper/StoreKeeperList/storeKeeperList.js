@@ -129,7 +129,7 @@ function StoreKeeperList(props) {
   return (
     <View style={styles.mainContainer}>
       <View style={styles.headerContainer}>
-        <Subheading style={styles.headerText}>Material Indent</Subheading>
+        <Subheading style={styles.headerText}>StoreKeeper List</Subheading>
       </View>
       <Spinner visible={loading} textContent="" />
 

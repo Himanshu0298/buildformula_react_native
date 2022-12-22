@@ -51,7 +51,7 @@ export default function useMaterialManagement() {
       return instance.post('/get_material', data, params);
     },
 
-    addMaterialPR: data => {
+    AddPR: data => {
       return instance.post('/material_purchase_request/add', data, params);
     },
     createMaterialPR: data => {

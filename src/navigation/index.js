@@ -125,7 +125,7 @@ import RequestForPrice from '../screens/DeveloperProject/MaterialManagement/Requ
 import PurchaseOrders from '../screens/DeveloperProject/MaterialManagement/PurchaseOrders';
 import OrderDetail from '../screens/DeveloperProject/Material/OrderDetail';
 import MaterialList from '../screens/DeveloperProject/Material/MaterialList';
-import DeliveryDetails from 'screens/DeveloperProject/Material/DeliveryDetails';
+import DeliveryDetails from 'screens/DeveloperProject/Material/DeliveryDetails/Components/DeliveryDetails';
 import PRListing from 'screens/DeveloperProject/Material/MaterialPR/PRListing';
 import PIListing from 'screens/DeveloperProject/Material/MaterialPI/PIListing';
 import CreatePR from 'screens/DeveloperProject/Material/MaterialPR/CreatePR';
@@ -152,14 +152,14 @@ import SelectMaterials from 'screens/DeveloperProject/Material/DeliveryDetails/S
 import AddMaterialInfo from 'screens/DeveloperProject/Material/DeliveryDetails/AddMaterialChallan';
 import AddVehicleInfo from 'screens/DeveloperProject/Material/DeliveryDetails/AddVehicleChallan';
 import MaterialGRNListing from 'screens/DeveloperProject/Material/MaterialGRN/MaterialGRNListing';
-import MaterialGRN from '../screens/DeveloperProject/Material/MaterialGRN';
+import MaterialGRN from '../screens/DeveloperProject/Material/MaterialGRN/FromPoGRNList';
 import DirectGRNPreview from 'screens/DeveloperProject/Material/MaterialGRN/DirectGRNPreview';
-import AddDirectGRN from 'screens/DeveloperProject/Material/MaterialGRN/Components/AddDirectGRN';
-import DirectGRNChallanMaterial from 'screens/DeveloperProject/Material/MaterialGRN/Components/DirectGRNChallanMaterial';
-import AddMaterial from 'screens/DeveloperProject/Material/MaterialGRN/Components/AddMaterial';
+import AddDirectGRN from 'screens/DeveloperProject/Material/MaterialGRN/DirectGRNComponents/AddDirectGRN';
+import DirectGRNChallanMaterial from 'screens/DeveloperProject/Material/MaterialGRN/DirectGRNComponents/DirectGRNChallanMaterial';
+import AddMaterial from 'screens/DeveloperProject/Material/MaterialGRN/DirectGRNComponents/AddMaterial';
 import StoreKeeperPreview from 'screens/DeveloperProject/Material/StoreKeeper/StoreKeeperPreview';
 import IssueIndent from 'screens/DeveloperProject/Material/StoreKeeper/IssueIndent';
-import VehicleInfo from 'screens/DeveloperProject/Material/MaterialGRN/Components/VehicleInfo';
+import VehicleInfo from 'screens/DeveloperProject/Material/MaterialGRN/DirectGRNComponents/VehicleInfo';
 
 import AddReturnMaterialIndent from 'screens/DeveloperProject/Material/MaterialIndent/ReturnIndent/ReturnMaterialIndent/AddReturnMaterial';
 import AddMaterialIndentList from 'screens/DeveloperProject/Material/MaterialIndent/IssueIndent/IssueMaterialIndent';
