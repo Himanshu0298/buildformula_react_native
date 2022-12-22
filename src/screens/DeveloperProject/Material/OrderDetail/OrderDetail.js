@@ -12,7 +12,7 @@ import dayjs from 'dayjs';
 import {useAlert} from 'components/Atoms/Alert';
 import {theme} from '../../../../styles/theme';
 import Header from '../CommonComponents/Header';
-import MenuDialog from '../MaterialGRN/Components/MenuDialog';
+import MenuDialog from '../MaterialGRN/DirectGRNComponents/MenuDialog';
 
 const RenderRow = props => {
   const {item, containerStyle} = props;
@@ -30,10 +30,10 @@ const ChallanSection = props => {
 
   const {created} = item;
 
-  const challanId = item.id;
+  const materialId = item.id;
 
   const onUpdate = () => {
-    navigation.navigate('AddChallan', {challanId, item, orderNumber});
+    navigation.navigate('AddChallan', {materialId, item, orderNumber});
   };
 
   return (
@@ -50,7 +50,7 @@ const ChallanSection = props => {
         />
         <MenuDialog
           onUpdate={onUpdate}
-          onDelete={() => onDelete(challanId)}
+          onDelete={() => onDelete(materialId)}
           onShare={toggleModal}
         />
       </View>
@@ -186,9 +186,7 @@ function OrderDetail(props) {
   const {materialChallanList, materialOrderList, loading} = useSelector(
     s => s.materialManagement,
   );
-  console.log('===========> materialChallanList', materialChallanList);
 
-  console.log('===========>materialOrderList ', materialOrderList);
   const materialDeliveryChallan =
     materialChallanList?.material_delivery_challan;
   const {selectedProject} = useSelector(s => s.project);
@@ -256,7 +254,7 @@ function OrderDetail(props) {
             <Text style={{color: theme.colors.primary}}>Add Challan</Text>
           </OpacityButton>
         </View>
-        {materialOrderList?.map(item => {
+        {materialDeliveryChallan?.map(item => {
           return (
             <CommonCard
               {...props}

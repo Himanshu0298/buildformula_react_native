@@ -14,9 +14,9 @@ import NoResult from 'components/Atoms/NoResult';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {useDownload} from 'components/Atoms/Download';
 import FileViewer from 'react-native-file-viewer';
-import MaterialInfo from './Components/MaterialInfo';
-import VehicleInfo from './Components/VehicleInfo';
-import Header from '../CommonComponents/Header';
+import MaterialInfo from '../MaterialInfo';
+import VehicleInfo from '../VehicleInfo';
+import Header from '../../../CommonComponents/Header';
 
 const Attachments = props => {
   const {challanImages = []} = props;
@@ -90,10 +90,14 @@ const DeliverDetails = props => {
 
       <Spinner visible={loading} textContent="" />
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View>
-          <Subheading style={styles.challanHeading}>Challan Images</Subheading>
-          <Attachments challanImages={challan_images} />
-        </View>
+        {challan_images?.length ? (
+          <View>
+            <Subheading style={styles.challanHeading}>
+              Challan Images
+            </Subheading>
+            <Attachments challanImages={challan_images} />
+          </View>
+        ) : null}
         <MaterialInfo materialInfo={materila_info} />
         <VehicleInfo
           vehicleInfo={challan_info}

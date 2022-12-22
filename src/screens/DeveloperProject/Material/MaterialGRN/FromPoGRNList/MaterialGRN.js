@@ -20,7 +20,6 @@ const OrderCard = props => {
     material_order_no,
     material_request_id,
     materialrequesttitle,
-    total_amount,
     company_name,
     supplier_name,
     percentage,
