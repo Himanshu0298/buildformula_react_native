@@ -5,7 +5,7 @@ import {TabView} from 'react-native-tab-view';
 import {getShadow} from 'utils';
 import MaterialTabBar from 'components/Atoms/MaterialTabBar';
 import MaterialGRN from '../FromPoGRNList/MaterialGRN';
-import DirectGRN from '../DirectGRNList';
+import DirectGRN from '../DirectGRN';
 
 const MaterialGRNListing = props => {
   const [selectedTab, setSelectedTab] = useState(0);
