@@ -77,9 +77,11 @@ function ChallanForm(props) {
     openImagePicker({
       type: 'file',
       onChoose: file => {
-        const attachments = values.attachments || [];
-        attachments.push(file);
-        setFieldValue('attachments', attachments);
+        if (file.uri) {
+          const attachments = values.attachments || [];
+          attachments.push(file);
+          setFieldValue('attachments', attachments);
+        }
       },
     });
   };

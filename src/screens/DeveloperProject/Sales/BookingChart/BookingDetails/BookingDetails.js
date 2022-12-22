@@ -433,6 +433,7 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   radioContainer: {
+    justifyContent: 'space-between',
     flexDirection: 'row',
   },
   visitorContainer: {

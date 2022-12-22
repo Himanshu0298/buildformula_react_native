@@ -22,13 +22,14 @@ import {
   UPDATE_DIRECT_GRN_STATUS,
   ADD_DIRECT_GRN,
   GET_MATERIAL_GRN_DETAILS,
-  ADD_DIRECT_GRN_SECOND,
+  ADD_DIRECT_GRN_MATERIAL_INFO,
   GET_MATERIAL_INDENT_LIST,
   GET_STORE_KEEPER_LIST,
   GET_STORE_KEEPER_DETAILS,
   CREATE_STOREKEEPER_ORDER,
   GET_WORK_SUB_WORK_LIST,
   UPDATE_STORE_KEEPER_STATUS,
+  ADD_DIRECT_GRN_VEHICLE_INFO,
 } from '../actions/actionTypes';
 
 const initialState = {
@@ -42,8 +43,8 @@ const initialState = {
   materialPRDetails: {},
   selectedMaterialChallan: [],
   data: [],
-  materialCategory: [],
-  materialSubCategory: [],
+  materialCategories: [],
+  materialSubCategories: [],
   materialRequestItems: [],
   recordData: [],
   PRList: [],
@@ -88,8 +89,8 @@ const reducer = (state = initialState, action = {}) => {
       return {
         ...state,
         loading: false,
-        materialCategory: material_category_data,
-        materialSubCategory: material_subCategory_data,
+        materialCategories: material_category_data,
+        materialSubCategories: material_subCategory_data,
       };
     }
 
@@ -201,7 +202,8 @@ const reducer = (state = initialState, action = {}) => {
     case `${ADD_MATERIAL_PR}_PENDING`:
     case `${ADD_MATERIAL_CHALLAN}_PENDING`:
     case `${ADD_DIRECT_GRN}_PENDING`:
-    case `${ADD_DIRECT_GRN_SECOND}_PENDING`:
+    case `${ADD_DIRECT_GRN_MATERIAL_INFO}_PENDING`:
+    case `${ADD_DIRECT_GRN_VEHICLE_INFO}_PENDING`:
     case `${GET_SELECT_MATERIAL_CHALLAN}_PENDING`:
     case `${GET_PR_MATERIAL_ORDER_LIST}_PENDING`:
     case `${GET_MATERIAL_PR_DETAILS}_PENDING`:
@@ -229,7 +231,8 @@ const reducer = (state = initialState, action = {}) => {
     case `${ADD_MATERIAL_CHALLAN}_FULFILLED`:
     case `${ADD_MATERIAL_PR}_FULFILLED`:
     case `${ADD_DIRECT_GRN}_FULFILLED`:
-    case `${ADD_DIRECT_GRN_SECOND}_FULFILLED`:
+    case `${ADD_DIRECT_GRN_MATERIAL_INFO}_FULFILLED`:
+    case `${ADD_DIRECT_GRN_VEHICLE_INFO}_FULFILLED`:
     case `${CREATE_MATERIAL_PR}_FULFILLED`:
     case `${EDIT_PR}_FULFILLED`:
     case `${EDIT_MATERIAL_PR}_FULFILLED`:
@@ -251,7 +254,8 @@ const reducer = (state = initialState, action = {}) => {
     case `${GET_WORK_SUB_WORK_LIST}_REJECTED`:
     case `${GET_MATERIAL_LIST}_REJECTED`:
     case `${ADD_DIRECT_GRN}_REJECTED`:
-    case `${ADD_DIRECT_GRN_SECOND}_REJECTED`:
+    case `${ADD_DIRECT_GRN_MATERIAL_INFO}_REJECTED`:
+    case `${ADD_DIRECT_GRN_VEHICLE_INFO}_REJECTED`:
     case `${GET_PR_MATERIAL_ORDER_LIST}_REJECTED`:
     case `${GET_SELECT_MATERIAL_CHALLAN}_REJECTED`:
     case `${GET_MATERIAL_CHALLAN_LIST}_REJECTED`:

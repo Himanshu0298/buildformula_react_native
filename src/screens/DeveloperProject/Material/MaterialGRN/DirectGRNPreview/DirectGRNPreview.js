@@ -17,14 +17,18 @@ import {useSelector} from 'react-redux';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 import {getPermissions, getShadow} from 'utils';
 import {getFileName} from 'utils/constant';
+import FileViewer from 'react-native-file-viewer';
+import {useDownload} from 'components/Atoms/Download';
+import {theme} from 'styles/theme';
 import Header from '../../CommonComponents/Header';
+
 import VehicleInfo from '../../DeliveryDetails/Components/VehicleInfo';
 import DirectMaterialInfo from '../Components/DirectMaterialInfo';
 
 const HeaderDetails = props => {
   const {challanInfo} = props;
 
-  const {challan_number, delivery_date, company_name, supplier_name} =
+  const {challan_number, delivery_date, company_name, supplier} =
     challanInfo || {};
 
   return (
@@ -46,7 +50,7 @@ const HeaderDetails = props => {
         </View>
         <View>
           <Caption>Supplier Name</Caption>
-          <Text>{supplier_name}</Text>
+          <Text>{supplier}</Text>
         </View>
       </View>
     </>
@@ -56,13 +60,23 @@ const HeaderDetails = props => {
 const Attachments = props => {
   const {damageImage = []} = props;
 
-  const onPressFile = async challan_image => {
-    const name = challan_image.split('/').pop();
-  };
+  const download = useDownload();
 
+  const onPressFile = async fileUrl => {
+    const name = fileUrl.split('/').pop();
+
+    download.link({
+      name,
+      link: fileUrl,
+      showAction: false,
+      onFinish: ({dir}) => {
+        FileViewer.open(`file://${dir}`);
+      },
+    });
+  };
   return (
     <>
-      <Subheading style={styles.challanHeading}>Challan Images</Subheading>
+      <Caption style={styles.challanHeading}>Challan Images</Caption>
       <View style={styles.container}>
         <Text style={styles.attachmentsText}>Attachments</Text>
 
@@ -70,13 +84,13 @@ const Attachments = props => {
           return (
             <TouchableOpacity
               style={styles.sectionContainer}
-              onPress={() => onPressFile(file.challan_image)}>
+              onPress={() => onPressFile(file.image_url)}>
               <Image source={FileIcon} style={styles.fileIcon} />
               <View>
                 <Text
                   style={[styles.verticalFlex, styles.text]}
                   numberOfLines={2}>
-                  {getFileName(file.image_url)}
+                  {getFileName(file?.image_url)}
                   {index + 1}
                 </Text>
               </View>
@@ -92,6 +106,8 @@ const DirectGRNPreview = props => {
   const {route, navigation} = props;
 
   const {id} = route?.params || {};
+
+  const alert = useAlert();
 
   const {
     getDirectMaterialGRNDetails,
@@ -158,19 +174,26 @@ const DirectGRNPreview = props => {
     });
   };
 
-  const alert = useAlert();
+  const navToEdit = () => {
+    navigation.navigate('AddDirectGRN', {id});
+  };
+
   return (
     <View style={styles.mainContainer}>
       <View style={styles.headerContainer}>
         <Header title="GRN Preview" {...props} />
         {challan_status === 'rejected' ? (
           <View style={styles.statusContainer}>
-            <MaterialIcons name="cancel" size={18} color="#FF5D5D" />
+            <MaterialIcons name="cancel" size={18} color={theme.colors.error} />
             <Text style={styles.rejectedStatus}>Rejected GRN</Text>
           </View>
         ) : challan_status === 'approved' ? (
           <View style={styles.checkIcon}>
-            <MaterialIcons name="check-circle" size={18} color="#07CA03" />
+            <MaterialIcons
+              name="check-circle"
+              size={18}
+              color={theme.colors.success}
+            />
             <Text style={styles.approvedStatus}>Approved GRN</Text>
           </View>
         ) : null}
@@ -181,19 +204,26 @@ const DirectGRNPreview = props => {
             <Subheading>Challan Info</Subheading>
           </View>
           <View style={styles.btnContainer}>
+            {challan_status === 'approved' ? null : (
+              <OpacityButton
+                color={theme.colors.primary}
+                opacity={0.18}
+                style={styles.btnRadius}
+                onPress={navToEdit}>
+                <MaterialIcons
+                  name="edit"
+                  color={theme.colors.primary}
+                  size={15}
+                />
+              </OpacityButton>
+            )}
+
             <OpacityButton
-              color="#4872f4"
-              opacity={0.18}
-              style={styles.btnRadius}
-              onPress={() => alert.show('edit')}>
-              <MaterialIcons name="edit" color="#4872f4" size={17} />
-            </OpacityButton>
-            <OpacityButton
-              color="#FF5D5D"
+              color={theme.colors.error}
               opacity={0.18}
               onPress={handleDelete}
               style={styles.btnRadius}>
-              <MaterialIcons name="delete" color="#FF5D5D" size={17} />
+              <MaterialIcons name="delete" color={theme.colors.red} size={15} />
             </OpacityButton>
           </View>
         </View>
@@ -270,8 +300,8 @@ const styles = StyleSheet.create({
   container: {
     padding: 10,
     backgroundColor: '#F2F4F5',
+    ...getShadow(3),
     borderRadius: 5,
-    margin: 10,
   },
   sectionContainer: {
     alignItems: 'center',
@@ -291,7 +321,7 @@ const styles = StyleSheet.create({
   challanHeading: {
     padding: 10,
     marginTop: 10,
-    paddingBottom: 0,
+    paddingBottom: 5,
   },
   attachmentsText: {
     fontSize: 15,

@@ -1,6 +1,6 @@
-import {StyleSheet, View} from 'react-native';
-import React, {useEffect, useMemo} from 'react';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import {ScrollView, StyleSheet, View} from 'react-native';
+import React, {useEffect, useMemo, useState} from 'react';
+import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 import * as Yup from 'yup';
 import {Formik} from 'formik';
 import ActionButtons from 'components/Atoms/ActionButtons';
@@ -8,14 +8,24 @@ import RenderInput from 'components/Atoms/RenderInput';
 import RenderSelect from 'components/Atoms/RenderSelect';
 import {useSelector} from 'react-redux';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
+import Modal from 'react-native-modal';
+import InputSearchDropdown from 'components/Atoms/InputSearchDropdown';
 import Header from '../../CommonComponents/Header';
 
 const schema = Yup.object().shape({
   category: Yup.string('Required').required('Required'),
 });
 
+const lomOptions = [
+  {label: 'Test1', value: 'Test1'},
+  {label: 'Test2', value: 'Test2'},
+  {label: 'Test3', value: 'Test3'},
+  {label: 'Test4', value: 'Test4'},
+  {label: 'Test5', value: 'Test5'},
+];
+
 function MaterialForm(props) {
-  const {formikProps, navigation, directGRNMaterialDetails} = props;
+  const {formikProps, handleClose} = props;
   const {
     values,
     errors,
@@ -25,35 +35,26 @@ function MaterialForm(props) {
     handleSubmit,
   } = formikProps;
 
-  const {materialCategory, materialSubCategory} = useSelector(
+  const [lomSearchText, setLomSearchText] = useState('');
+
+  const setSelectedLom = v => setFieldValue('master_list_of_makes_id', v);
+
+  const {materialCategories, materialSubCategories} = useSelector(
     s => s.materialManagement,
   );
 
   const {commonData} = useSelector(s => s.project);
   const {units} = commonData;
 
-  const lom =
-    directGRNMaterialDetails?.directGRNMaterialDetails?.material_request_items;
-
   const categoryOptions = useMemo(() => {
-    return materialCategory?.map(i => ({
-      label: `${i.title}`,
-      value: i.id,
-    }));
-  }, [materialCategory]);
-
-  const lomOptions = useMemo(() => {
-    return lom?.map(i => ({
-      label: `${i.title}`,
-      value: i.id,
-    }));
-  }, [lom]);
+    return materialCategories?.map(i => ({label: `${i.title}`, value: i.id}));
+  }, [materialCategories]);
 
   const subCategoryOptions = useMemo(() => {
-    return materialSubCategory
-      ?.filter(i => i.category_id === values.material_category_id)
+    return materialSubCategories
+      .filter(i => i.category_id === values.category)
       ?.map(i => ({label: `${i.title}`, value: i.id}));
-  }, [materialSubCategory, values.material_category_id]);
+  }, [materialSubCategories, values.category]);
 
   const unitOptions = useMemo(() => {
     return units?.map(i => ({label: `${i.title}`, value: i.id}));
@@ -61,7 +62,7 @@ function MaterialForm(props) {
 
   const handleSubMaterialChange = value => {
     setFieldValue('sub_material_id', value);
-    const unitId = materialSubCategory.find(i => i.id === value)?.unit_id;
+    const unitId = materialSubCategories?.find(i => i.id === value)?.unit_id;
     if (unitId) {
       setFieldValue('material_unit_id', unitId);
     }
@@ -70,15 +71,15 @@ function MaterialForm(props) {
   return (
     <View style={styles.formContainer}>
       <RenderSelect
-        name="material_category_id"
+        name="category"
         label="Category"
         containerStyles={styles.input}
         options={categoryOptions}
-        value={values.material_category_id}
+        value={values.category}
         onSelect={value => {
-          setFieldValue('material_category_id', value);
+          setFieldValue('category', value);
         }}
-        error={errors.material_category_id}
+        error={errors.category}
       />
       <RenderSelect
         name="sub_material_id"
@@ -97,16 +98,16 @@ function MaterialForm(props) {
         options={unitOptions}
         value={values.material_unit_id}
       />
-      <RenderSelect
-        name="lom"
-        label="List of Makes"
-        containerStyles={styles.input}
+
+      <InputSearchDropdown
+        placeholder="List of Makes"
         options={lomOptions}
-        value={values.lom}
-        onSelect={value => {
-          setFieldValue('lom', value);
-        }}
-        error={errors.lom}
+        icon={<View />}
+        searchQuery={lomSearchText}
+        selected={values.master_list_of_makes_id}
+        style={styles.search}
+        onSelect={setSelectedLom}
+        onChangeText={setLomSearchText}
       />
 
       <RenderInput
@@ -145,22 +146,45 @@ function MaterialForm(props) {
       <ActionButtons
         cancelLabel="Cancel"
         submitLabel="Save"
-        onSubmit={handleSubmit}
-        onCancel={navigation.goBack}
+        onSubmit={() => handleSubmit(values)}
+        onCancel={handleClose}
       />
     </View>
   );
 }
 
-const AddMaterial = props => {
-  const {navigation, route, edit} = props;
-  const {directGRNMaterialDetails, challan_id} = route?.params || {};
+function AddMaterialDialog(props) {
+  const {toggleDialog, visible, handleSave, material_request_items, id} = props;
 
-  const {addDirectGRNSecond, getPRMaterialCategories} =
-    useMaterialManagementActions();
+  const {getPRMaterialCategories} = useMaterialManagementActions();
 
   const {selectedProject} = useSelector(s => s.project);
   const projectId = selectedProject.id;
+  const {directGRNDetails} = useSelector(s => s.materialManagement);
+
+  const {directGRNMaterialDetails = []} = directGRNDetails;
+
+  const initialValues = React.useMemo(() => {
+    const {
+      category,
+      sub_material_id,
+      material_unit_id,
+      master_list_of_makes_id,
+      damage_qty,
+      fineQty,
+      missing_qty,
+    } = material_request_items || [];
+    return {
+      category,
+      sub_material_id,
+      material_unit_id,
+      master_list_of_makes_id,
+      damage_qty,
+      fineQty,
+      missing_qty,
+      ...material_request_items,
+    };
+  }, [material_request_items]);
 
   useEffect(() => {
     getPRMaterialCategories({project_id: projectId});
@@ -168,58 +192,56 @@ const AddMaterial = props => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleSave = async values => {
-    const restData = {
-      project_id: projectId,
-      challan_id,
-      data: [values],
-    };
-    if (edit) {
-      await addDirectGRNSecond({
-        ...restData,
-        // material_purchase_request_items_id: selectedMaterial.id,
-      });
-    } else {
-      await addDirectGRNSecond(restData);
-      navigation.navigate('GRNMaterial');
-    }
-  };
-
   return (
-    <SafeAreaView style={styles.mainContainer}>
-      <Header title="Material Info" {...props} />
-      <Formik
-        validateOnBlur={false}
-        validateOnChange={false}
-        initialValues={{attachments: []}}
-        validationSchema={schema}
-        onSubmit={handleSave}>
-        {formikProps => (
-          <MaterialForm
-            {...{formikProps}}
-            {...props}
-            directGRNMaterialDetails={directGRNMaterialDetails}
-          />
-        )}
-      </Formik>
-    </SafeAreaView>
+    <Modal
+      isVisible={visible}
+      onBackButtonPress={toggleDialog}
+      style={styles.modal}>
+      <SafeAreaProvider>
+        <SafeAreaView style={styles.mainContainer} edges={['top']}>
+          <ScrollView>
+            <Header title="Material Info" {...props} />
+            <Formik
+              validateOnBlur={false}
+              validateOnChange={false}
+              initialValues={initialValues}
+              validationSchema={schema}
+              onSubmit={handleSave}>
+              {formikProps => (
+                <MaterialForm
+                  {...{formikProps}}
+                  handleClose={toggleDialog}
+                  directGRNMaterialDetails={directGRNMaterialDetails}
+                />
+              )}
+            </Formik>
+          </ScrollView>
+        </SafeAreaView>
+      </SafeAreaProvider>
+    </Modal>
   );
-};
+}
 
-export default AddMaterial;
+export default AddMaterialDialog;
 
 const styles = StyleSheet.create({
   mainContainer: {
+    backgroundColor: '#fff',
     flex: 1,
-    flexGrow: 1,
-    margin: 10,
   },
   formContainer: {
-    flex: 1,
     flexGrow: 1,
-    margin: 10,
+    margin: 15,
+    paddingVertical: 20,
   },
   input: {
     paddingVertical: 7,
+  },
+  search: {
+    marginVertical: 20,
+  },
+  modal: {
+    margin: 0,
+    justifyContent: 'flex-start',
   },
 });

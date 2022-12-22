@@ -3,13 +3,27 @@ import {Caption, Subheading, Text, withTheme} from 'react-native-paper';
 import {StyleSheet, View, TouchableOpacity, Image} from 'react-native';
 import FileIcon from 'assets/images/file_icon.png';
 import {getShadow} from 'utils';
+import FileViewer from 'react-native-file-viewer';
+
 import {getFileName} from 'utils/constant';
+import {useDownload} from 'components/Atoms/Download';
 
 const InvoiceAttachments = props => {
   const {invoiceImages = []} = props;
 
+  const download = useDownload();
+
   const onPressFile = async fileUrl => {
     const name = fileUrl.split('/').pop();
+
+    download.link({
+      name,
+      link: fileUrl,
+      showAction: false,
+      onFinish: ({dir}) => {
+        FileViewer.open(`file://${dir}`);
+      },
+    });
   };
 
   return (
@@ -40,8 +54,19 @@ const InvoiceAttachments = props => {
 const VehicleImages = props => {
   const {vehicleAttachments = []} = props;
 
+  const download = useDownload();
+
   const onPressFile = async fileUrl => {
     const name = fileUrl.split('/').pop();
+
+    download.link({
+      name,
+      link: fileUrl,
+      showAction: false,
+      onFinish: ({dir}) => {
+        FileViewer.open(`file://${dir}`);
+      },
+    });
   };
 
   return (

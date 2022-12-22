@@ -111,10 +111,10 @@ export default function useMaterialManagement() {
     addDirectGRNFirst: data => {
       return instance.post('/material/directgrnadd_first', data, params);
     },
-    addDirectGRNSecond: data => {
+    addDirectGRNMaterialInfo: data => {
       return instance.post('/material/directgrnadd_second', data, params);
     },
-    addDirectGRNThird: data => {
+    addDirectGRNVehicleInfo: data => {
       return instance.post('/material/directgrnaddedit_third', data, params);
     },
 

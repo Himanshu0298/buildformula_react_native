@@ -13,12 +13,55 @@ import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import RenderTextBox from 'components/Atoms/RenderTextbox';
 import {useImagePicker} from 'hooks';
 import {ScrollView} from 'react-native-gesture-handler';
+import useMaterialManagementActions from 'redux/actions/materialManagementActions';
+import {useSelector} from 'react-redux';
+import Spinner from 'react-native-loading-spinner-overlay';
 import Header from '../../CommonComponents/Header';
 import Pagination from '../../CommonComponents/Pagination';
 
 const schema = Yup.object().shape({
   driver_name: Yup.string('Required').required('Required'),
+  vehicleNo: Yup.string('Required').required('Required'),
 });
+
+const RenderDamageAttachments = props => {
+  const {attachments, handleDelete} = props;
+
+  return (
+    <View style={styles.cardContainer}>
+      <View style={styles.renderFileContainer}>
+        <Text style={styles.attachmentFileHeader}>Attachments</Text>
+      </View>
+      {attachments?.map((attachment, i) => {
+        return (
+          <View key={attachment.name}>
+            <View style={styles.sectionContainer}>
+              <Image source={FileIcon} style={styles.fileIcon} />
+              <View>
+                <Text
+                  style={(styles.verticalFlex, styles.text)}
+                  numberOfLines={1}>
+                  {attachment.name}
+                </Text>
+              </View>
+            </View>
+            <OpacityButton
+              opacity={0.1}
+              color={theme.colors.error}
+              style={styles.closeButton}
+              onPress={() => handleDelete(i)}>
+              <MaterialIcons
+                name="close"
+                color={theme.colors.error}
+                size={17}
+              />
+            </OpacityButton>
+          </View>
+        );
+      })}
+    </View>
+  );
+};
 
 const RenderAttachments = props => {
   const {attachments, handleDelete} = props;
@@ -62,8 +105,8 @@ const RenderAttachments = props => {
 };
 
 function VehicleForm(props) {
-  const {formikProps, navigation} = props;
-  const {values, errors, setFieldValue, handleBlur, handleSubmit} = formikProps;
+  const {formikProps} = props;
+  const {values, errors, setFieldValue, handleBlur, handleChange} = formikProps;
 
   const {openImagePicker} = useImagePicker();
 
@@ -83,6 +126,22 @@ function VehicleForm(props) {
     setFieldValue('attachments', values.attachments);
   };
 
+  const handleUploadInvoiceImages = () => {
+    openImagePicker({
+      type: 'file',
+      onChoose: file => {
+        const attachments = values.invoiceAttachments || [];
+        attachments.push(file);
+        setFieldValue('invoiceAttachments', attachments);
+      },
+    });
+  };
+
+  const handleDeleteInvoiceImages = i => {
+    values.invoiceAttachments.splice(i, 1);
+    setFieldValue('invoiceAttachments', values.invoiceAttachments);
+  };
+
   return (
     <ScrollView style={styles.formContainer}>
       <RenderInput
@@ -90,7 +149,8 @@ function VehicleForm(props) {
         label="Driver Name"
         containerStyles={styles.input}
         value={values.driver_name}
-        onBlur={handleBlur('unit')}
+        onChangeText={handleChange('driver_name')}
+        onBlur={handleBlur('driver_name')}
         error={errors.driver_name}
       />
       <RenderInput
@@ -99,6 +159,7 @@ function VehicleForm(props) {
         containerStyles={styles.input}
         value={values.vehicleNo}
         onBlur={handleBlur('vehicleNo')}
+        onChangeText={handleChange('vehicleNo')}
         error={errors.vehicleNo}
         render={inputProps => (
           <TextInputMask {...inputProps} mask="[AA]-[00]-[AA]-[0000]" />
@@ -110,6 +171,7 @@ function VehicleForm(props) {
         containerStyles={styles.input}
         value={values.remark}
         numberOfLines={4}
+        onChangeText={handleChange('remark')}
         onBlur={handleBlur('remark')}
         error={errors.remark}
       />
@@ -143,18 +205,18 @@ function VehicleForm(props) {
               Upload Invoice Image
             </Text>
             <OpacityButton
-              onPress={handleUpload}
+              onPress={handleUploadInvoiceImages}
               opacity={0.1}
               style={styles.uploadButton}
               color="#fff">
               <Text style={{color: theme.colors.primary}}>Upload File</Text>
             </OpacityButton>
-            <RenderError error={errors.attachments} />
+            <RenderError error={errors.invoiceAttachments} />
           </View>
-          {values.attachments?.length ? (
-            <RenderAttachments
-              attachments={values.attachments}
-              handleDelete={i => handleDelete(i)}
+          {values.invoiceAttachments?.length ? (
+            <RenderDamageAttachments
+              attachments={values.invoiceAttachments}
+              handleDelete={i => handleDeleteInvoiceImages(i)}
             />
           ) : null}
         </View>
@@ -164,30 +226,83 @@ function VehicleForm(props) {
 }
 
 const VehicleInfo = props => {
-  const {navigation} = props;
+  const {navigation, route} = props;
+
+  const {challan_number, challan_id, id, edit} = route?.params || {};
+
+  const {addDirectGRNVehicleInfo} = useMaterialManagementActions();
+
+  const {loading, directGRNDetails} = useSelector(s => s.materialManagement);
+  const {selectedProject} = useSelector(s => s.project);
+
+  const initialValues = React.useMemo(() => {
+    if (edit) {
+      const {
+        driver_name,
+        vehicle_number,
+        challan_remark,
+        challan_file,
+        ...restData
+      } = directGRNDetails.challanInfo;
+      return {
+        driver_name,
+        vehicleNo: vehicle_number,
+        remark: challan_remark,
+        challan_file,
+        ...restData,
+        ...directGRNDetails.challanInfo,
+      };
+    }
+    return {};
+  }, [directGRNDetails.challanInfo, edit]);
+
+  const handleSubmit = async values => {
+    const formData = new FormData();
+
+    formData.append('project_id', selectedProject.id);
+    formData.append('challan_id', challan_id);
+    formData.append('challan_no', challan_number);
+    formData.append('driver_name', values.driver_name);
+    formData.append('vehicle_number', values.vehicleNo);
+    formData.append('challan_remark', values.remark);
+    formData.append('edit_challan_id', challan_id);
+
+    await addDirectGRNVehicleInfo(formData);
+    navigation.navigate('DirectGRNPreview', {challan_id: id});
+  };
+
   return (
-    <SafeAreaView style={styles.mainContainer}>
-      <View style={styles.headerContainer}>
-        <Header title="Vehicle Info" {...props} />
-        <Pagination title="Page 3 of 3" />
-      </View>
-      <Formik
-        validateOnBlur={false}
-        validateOnChange={false}
-        initialValues={{attachments: []}}
-        validationSchema={schema}
-        onSubmit={() => console.log('test')}>
-        {formikProps => <VehicleForm {...{formikProps}} {...props} />}
-      </Formik>
-      <ActionButtons
-        cancelLabel="Preview"
-        submitLabel="Save"
-        onSubmit={() => {
-          navigation.navigate('DirectGRNPreview');
-        }}
-        onCancel={navigation.goBack}
-      />
-    </SafeAreaView>
+    <>
+      <Spinner visible={loading} textContent="" />
+
+      <SafeAreaView style={styles.mainContainer}>
+        <View style={styles.headerContainer}>
+          <Header
+            title={edit ? ' Edit Vehicle Info' : 'Vehicle Info'}
+            {...props}
+          />
+          <Pagination title="Page 3 of 3" />
+        </View>
+        <Formik
+          validateOnBlur={false}
+          validateOnChange={false}
+          initialValues={initialValues}
+          validationSchema={schema}
+          onSubmit={handleSubmit}>
+          {formikProps => (
+            <>
+              <VehicleForm {...props} formikProps={formikProps} edit={edit} />
+              <ActionButtons
+                cancelLabel="Preview"
+                submitLabel="Save"
+                onSubmit={formikProps.handleSubmit}
+                onCancel={navigation.goBack}
+              />
+            </>
+          )}
+        </Formik>
+      </SafeAreaView>
+    </>
   );
 };
 
@@ -197,7 +312,6 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     flexGrow: 1,
-
     paddingHorizontal: 10,
   },
   formContainer: {
