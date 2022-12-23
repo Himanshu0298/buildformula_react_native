@@ -1,5 +1,5 @@
 import {StyleSheet, View, Text, Image} from 'react-native';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import * as Yup from 'yup';
 import {Formik} from 'formik';
@@ -228,12 +228,18 @@ function VehicleForm(props) {
 const VehicleInfo = props => {
   const {navigation, route} = props;
 
-  const {challan_number, challan_id, id, edit} = route?.params || {};
+  const {challan_number, challan_id, edit} = route?.params || {};
 
-  const {addDirectGRNVehicleInfo} = useMaterialManagementActions();
+  const {addDirectGRNVehicleInfo, getDirectMaterialGRNDetails} =
+    useMaterialManagementActions();
 
   const {loading, directGRNDetails} = useSelector(s => s.materialManagement);
   const {selectedProject} = useSelector(s => s.project);
+
+  useEffect(() => {
+    getLoadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const initialValues = React.useMemo(() => {
     if (edit) {
@@ -256,6 +262,13 @@ const VehicleInfo = props => {
     return {};
   }, [directGRNDetails.challanInfo, edit]);
 
+  const getLoadData = () => {
+    getDirectMaterialGRNDetails({
+      project_id: selectedProject.id,
+      grn_id: challan_id,
+    });
+  };
+
   const handleSubmit = async values => {
     const formData = new FormData();
 
@@ -266,9 +279,11 @@ const VehicleInfo = props => {
     formData.append('vehicle_number', values.vehicleNo);
     formData.append('challan_remark', values.remark);
     formData.append('edit_challan_id', challan_id);
+    formData.append('upload_vehicle_image', values.attachments);
+    formData.append('upload_invoice_file', values.invoiceAttachments);
 
     await addDirectGRNVehicleInfo(formData);
-    navigation.navigate('DirectGRNPreview', {challan_id: id});
+    navigation.navigate('DirectGRNPreview', {id: challan_id});
   };
 
   return (

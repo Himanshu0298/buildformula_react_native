@@ -6,7 +6,7 @@ import {
   View,
   ScrollView,
 } from 'react-native';
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import ActionButtons from 'components/Atoms/ActionButtons';
 import {Caption} from 'react-native-paper';
 import {RenderError} from 'components/Atoms/RenderInput';
@@ -22,13 +22,14 @@ import useMaterialManagementActions from 'redux/actions/materialManagementAction
 import {useSelector} from 'react-redux';
 import {isEqual} from 'lodash';
 import {useAlert} from 'components/Atoms/Alert';
+import useMaterialManagement from 'services/materialManagement';
 import Header from '../../CommonComponents/Header';
 import Pagination from '../../CommonComponents/Pagination';
 import AddMaterialModal from './AddMaterial';
 
 const schema = Yup.object().shape({
   challan: Yup.number('Required').required('Required'),
-  // attachments: Yup.mixed().required('File is required'),
+  challan_material_image: Yup.mixed().required('File is required'),
 });
 
 const RenderAttachments = props => {
@@ -124,9 +125,9 @@ function UploadForm(props) {
       type: 'file',
       onChoose: file => {
         if (file.uri) {
-          const attachments = values.attachments || [];
-          attachments.push(file);
-          setFieldValue('attachments', attachments);
+          const challan_material_image = values.challan_material_image || [];
+          challan_material_image.push(file);
+          setFieldValue('challan_material_image', challan_material_image);
         }
       },
     });
@@ -136,21 +137,28 @@ function UploadForm(props) {
       type: 'file',
       onChoose: file => {
         if (file.uri) {
-          const attachments = values.damageAttachments || [];
-          attachments.push(file);
-          setFieldValue('damageAttachments', attachments);
+          const challan_material_damage_image =
+            values.challan_material_damage_image || [];
+          challan_material_damage_image.push(file);
+          setFieldValue(
+            'challan_material_damage_image',
+            challan_material_damage_image,
+          );
         }
       },
     });
   };
 
   const handleDelete = i => {
-    values.attachments?.splice(i, 1);
-    setFieldValue('attachments', values.attachments);
+    values.challan_material_image?.splice(i, 1);
+    setFieldValue('challan_material_image', values.challan_material_image);
   };
   const handleDamageDelete = i => {
-    values.damageAttachments?.splice(i, 1);
-    setFieldValue('damageAttachments', values.damageAttachments);
+    values.challan_material_damage_image?.splice(i, 1);
+    setFieldValue(
+      'challan_material_damage_image',
+      values.challan_material_damage_image,
+    );
   };
 
   return (
@@ -168,11 +176,11 @@ function UploadForm(props) {
               color="#fff">
               <Text style={{color: theme.colors.primary}}>Upload File</Text>
             </OpacityButton>
-            <RenderError error={errors.attachments} />
+            <RenderError error={errors.challan_material_image} />
           </View>
-          {values.attachments?.length ? (
+          {values.challan_material_image?.length ? (
             <RenderAttachments
-              attachments={values.attachments}
+              attachments={values.challan_material_image}
               handleDelete={i => handleDelete(i)}
             />
           ) : null}
@@ -192,11 +200,11 @@ function UploadForm(props) {
               color="#fff">
               <Text style={{color: theme.colors.red}}>Upload File</Text>
             </OpacityButton>
-            <RenderError error={errors.damageAttachments} />
+            <RenderError error={errors.challan_material_damage_image} />
           </View>
-          {values.damageAttachments?.length ? (
+          {values.challan_material_damage_image?.length ? (
             <RenderDamageAttachments
-              attachments={values.damageAttachments}
+              attachments={values.challan_material_damage_image}
               handleDelete={i => handleDamageDelete(i)}
             />
           ) : null}
@@ -207,12 +215,11 @@ function UploadForm(props) {
 }
 
 const RenderCard = props => {
-  const {item, toggleEditDialog, handleDelete} = props;
+  const {item, editDialog, index, handleDelete} = props;
 
-  const {master_list_of_makes_id, damage_qty, missing_qty, fineQty, id} =
-    item || {};
+  const {damage, missing, material_quantity} = item || {};
 
-  const {materialCategories, materialSubCategories} = useSelector(
+  const {materialCategories, materialSubCategories, makeOfLists} = useSelector(
     s => s.materialManagement,
   );
 
@@ -221,20 +228,28 @@ const RenderCard = props => {
 
   const categoryTitle = React.useMemo(() => {
     return (
-      materialCategories?.find(i => i.id === item?.category)?.title || 'NA'
+      materialCategories?.find(i => i.id === item?.material_category_id)
+        ?.title || 'NA'
     );
-  }, [item?.category, materialCategories]);
+  }, [item?.material_category_id, materialCategories]);
 
   const subCategoryTitle = React.useMemo(() => {
     return (
-      materialSubCategories?.find(i => i.id === item?.sub_material_id)?.title ||
-      'NA'
+      materialSubCategories?.find(i => i.id === item?.material_sub_category_id)
+        ?.title || 'NA'
     );
-  }, [item?.sub_material_id, materialSubCategories]);
+  }, [item?.material_sub_category_id, materialSubCategories]);
 
   const unitTitle = React.useMemo(() => {
-    return units?.find(i => i.id === item?.material_unit_id)?.title || 'NA';
-  }, [item?.material_unit_id, units]);
+    return units?.find(i => i.id === item?.material_units_id)?.title || 'NA';
+  }, [item?.material_units_id, units]);
+
+  const makeOfListTitle = React.useMemo(() => {
+    return (
+      makeOfLists?.find(i => i.id === item?.master_list_of_makes_id)?.title ||
+      'NA'
+    );
+  }, [item?.master_list_of_makes_id, makeOfLists]);
 
   return (
     <View style={styles.materialContainer}>
@@ -248,13 +263,13 @@ const RenderCard = props => {
             color={theme.colors.primary}
             opacity={0.18}
             style={styles.OpacityButton}
-            onPress={() => toggleEditDialog(id)}>
+            onPress={() => editDialog(index)}>
             <MaterialIcons name="edit" color={theme.colors.primary} size={15} />
           </OpacityButton>
           <OpacityButton
             color={theme.colors.error}
             opacity={0.18}
-            onPress={handleDelete}
+            onPress={() => handleDelete(index)}
             style={styles.OpacityButton}>
             <MaterialIcons name="delete" color={theme.colors.error} size={15} />
           </OpacityButton>
@@ -271,18 +286,18 @@ const RenderCard = props => {
       </View>
       <View style={styles.row}>
         <Caption>List of Makes: </Caption>
-        <Text style={styles.companyName}>{master_list_of_makes_id}</Text>
+        <Text style={styles.companyName}>{makeOfListTitle}</Text>
       </View>
       <View style={styles.row}>
         <Caption>Fine Qty: </Caption>
-        <Text>{fineQty}</Text>
+        <Text>{material_quantity}</Text>
       </View>
       <View style={styles.row}>
-        <Text style={styles.damage}>Damage Qty :{damage_qty} </Text>
+        <Text style={styles.damage}>Damage Qty :{damage} </Text>
       </View>
       <View style={styles.row}>
         <Caption>Missing Qty: </Caption>
-        <Text>{missing_qty}</Text>
+        <Text>{missing}</Text>
       </View>
     </View>
   );
@@ -290,28 +305,22 @@ const RenderCard = props => {
 
 const DirectGRNChallanMaterial = props => {
   const {navigation, route} = props;
-  const {challan_id, id, edit, challan_number} = route?.params || {};
+  const {challan_id, edit, challan_number} = route?.params || {};
 
   const alert = useAlert();
 
-  const {
-    getPRMaterialCategories,
-    getDirectMaterialGRNDetails,
-    addDirectGRNMaterialInfo,
-    deleteDirectMaterialGRN,
-  } = useMaterialManagementActions();
+  const {getPRMaterialCategories, addDirectGRNMaterialInfo} =
+    useMaterialManagementActions();
+
+  const {getDirectMaterialGRNDetails} = useMaterialManagement();
 
   const {selectedProject} = useSelector(s => s.project);
-  const {directGRNDetails, materialSubCategories} = useSelector(
-    s => s.materialManagement,
+  const [directGRNDetails, setDirectGrnDetails] = useState(
+    material_request_items || [],
   );
 
   const {material_request_items, challan_material_image = []} =
     directGRNDetails;
-
-  const [materialRequestItem, setMaterialRequestItem] = useState(
-    material_request_items || [],
-  );
 
   const projectId = selectedProject.id;
 
@@ -319,17 +328,14 @@ const DirectGRNChallanMaterial = props => {
   const [materials, setMaterials] = React.useState(
     material_request_items || [],
   );
-
-  const [selectedMaterial, setSelectedMaterial] = React.useState(
-    material_request_items || [],
-  );
+  const [selectedMaterialIndex, setSelectedMaterialIndex] = React.useState();
 
   useEffect(() => {
-    if (!isEqual(materialRequestItem, materials)) {
-      setMaterials(materialRequestItem);
+    if (!isEqual(material_request_items, materials)) {
+      setMaterials(material_request_items);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [materialRequestItem]);
+  }, [material_request_items]);
 
   useEffect(() => {
     getLoadData();
@@ -338,58 +344,38 @@ const DirectGRNChallanMaterial = props => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const getLoadData = () => {
-    if (id) {
-      getDirectMaterialGRNDetails({project_id: projectId, grn_id: challan_id});
-    }
+  const getLoadData = async () => {
+    const {data: res} = await getDirectMaterialGRNDetails({
+      project_id: projectId,
+      grn_id: challan_id,
+    });
+
+    setDirectGrnDetails(res.data);
   };
 
   const toggleAddDialog = () => setAddDialog(v => !v);
 
-  const initialValues = useMemo(() => {
-    if (selectedMaterial) {
-      const {
-        material_category_id: categoryTitle,
-        material_sub_category_id: subCategoryTitle,
-        material_units_id: unitTitle,
-        damage: damage_qty,
-        missing_qty,
-        fineQty,
-        master_list_of_makes_id,
-      } = selectedMaterial;
-
-      const selectedSubCategory = materialSubCategories.find(
-        i => i.id === subCategoryTitle,
-      );
-
-      return {
-        categoryTitle,
-        subCategoryTitle,
-        material_units_id: unitTitle || selectedSubCategory?.unit_id,
-        damage_qty,
-        missing_qty,
-        fineQty,
-        master_list_of_makes_id,
-      };
-    }
-    return {};
-  }, [materialSubCategories, selectedMaterial]);
-
   const onSubmit = async values => {
     const formData = new FormData();
 
-    const materialData = materials.map((item, i) => ({
-      categoryTitle: item.category,
-      subCategoryTitle: item.sub_material_id,
-      material_requests_items_id: selectedMaterial.id,
-      damage_qty: item.damage_qty,
-      master_list_of_makes_id: item.master_list_of_makes_id,
-      missing_qty: item.missing_qty,
-      fineQty: item.fineQty,
+    const materialData = materials.map(item => ({
+      material_category_id: item.material_category_id,
+      sub_material_id: item.material_sub_category_id,
+      material_unit_id: item.material_units_id,
+      damage: item.damage_qty,
+      lom: item.master_list_of_makes_id,
+      missing: item.missing,
+      quantity: item.material_quantity,
     }));
+
     formData.append('project_id', selectedProject.id);
     formData.append('challan_id', challan_id);
     formData.append('data', JSON.stringify(materialData));
+    formData.append('upload_challan_image', values.challan_material_image);
+    formData.append(
+      'upload_damage_challan_image',
+      values.challan_material_damage_image,
+    );
 
     await addDirectGRNMaterialInfo(formData);
     navigation.navigate('VehicleInfo', {
@@ -399,97 +385,97 @@ const DirectGRNChallanMaterial = props => {
     });
   };
 
-  const handleDelete = item => {
+  const handleDelete = index => {
     alert.show({
       title: 'Confirm',
       message: 'Are you sure you want to delete?',
       confirmText: 'Delete',
       onConfirm: () => {
-        deleteDirectMaterialGRN({
-          challan_id: item.id,
-          project_id: selectedProject.id,
-        });
-        getLoadData();
+        const _materials = [...materials];
+        _materials?.splice(index, 1);
+        setMaterials(_materials);
       },
     });
   };
 
-  const handleAddMaterial = values => {
-    toggleAddDialog();
+  const handleSaveMaterial = values => {
     const _materials = [...materials];
-    _materials.push(values);
+    if (!isNaN(selectedMaterialIndex)) {
+      _materials[selectedMaterialIndex] = values;
+    } else {
+      _materials.push(values);
+    }
     setMaterials(_materials);
+    toggleAddDialog();
+  };
+
+  const editDialog = index => {
+    setSelectedMaterialIndex(index);
+    toggleAddDialog();
   };
 
   return (
-    <SafeAreaView style={styles.mainContainer}>
-      <View style={styles.headerContainer}>
-        <Header
-          title={edit ? ' Edit Material Info' : 'Material Info'}
-          {...props}
-        />
-        <Pagination title="Page 2 of 3" />
-      </View>
-      <ScrollView style={styles.bodyContainer}>
-        {materials?.length
-          ? materials?.map(item => {
-              return (
-                <RenderCard
-                  navigation={navigation}
-                  item={item}
-                  toggleEditDialog={() => {
-                    setSelectedMaterial(item);
-                    toggleAddDialog();
-                  }}
-                  handleDelete={handleDelete}
+    <>
+      <AddMaterialModal
+        visible={addDialog}
+        handleClose={toggleAddDialog}
+        handleSave={handleSaveMaterial}
+        material={materials?.[selectedMaterialIndex]}
+      />
+      <SafeAreaView style={styles.mainContainer}>
+        <View style={styles.headerContainer}>
+          <Header
+            title={edit ? ' Edit Material Info' : 'Material Info'}
+            {...props}
+          />
+          <Pagination title="Page 2 of 3" />
+        </View>
+        <ScrollView style={styles.bodyContainer}>
+          {materials?.map((item, index) => {
+            return (
+              <RenderCard
+                navigation={navigation}
+                index={index}
+                item={item}
+                handleDelete={handleDelete}
+                editDialog={editDialog}
+              />
+            );
+          })}
+
+          <OpacityButton
+            onPress={toggleAddDialog}
+            opacity={0.1}
+            style={styles.uploadButton}
+            color="#fff">
+            <MaterialIcons name="add" color="#4872f4" size={17} />
+            <Text style={{color: theme.colors.primary}}>Add Material</Text>
+          </OpacityButton>
+          <Formik
+            validateOnBlur={false}
+            validateOnChange={false}
+            initialValues={{}}
+            validationSchema={schema}
+            onSubmit={onSubmit}>
+            {formikProps => (
+              <>
+                <UploadForm
+                  {...{formikProps}}
+                  {...props}
+                  challan_material_image={challan_material_image}
                 />
-              );
-            })
-          : null}
-
-        <OpacityButton
-          onPress={toggleAddDialog}
-          opacity={0.1}
-          style={styles.uploadButton}
-          color="#fff">
-          <MaterialIcons name="add" color="#4872f4" size={17} />
-          <Text style={{color: theme.colors.primary}}>Add Material</Text>
-        </OpacityButton>
-
-        <AddMaterialModal
-          {...props}
-          visible={addDialog}
-          toggleDialog={toggleAddDialog}
-          handleClose={toggleAddDialog}
-          edit={edit}
-          handleSave={handleAddMaterial}
-          material_request_items={material_request_items}
-        />
-
-        <Formik
-          validateOnBlur={false}
-          validateOnChange={false}
-          initialValues={initialValues}
-          // validationSchema={schema}
-          onSubmit={onSubmit}>
-          {formikProps => (
-            <>
-              <UploadForm
-                {...{formikProps}}
-                {...props}
-                challan_material_image={challan_material_image}
-              />
-              <ActionButtons
-                onSubmit={formikProps.handleSubmit}
-                submitLabel="Next"
-                cancelLabel="Previous"
-                onCancel={() => navigation.goBack()}
-              />
-            </>
-          )}
-        </Formik>
-      </ScrollView>
-    </SafeAreaView>
+                <ActionButtons
+                  onSubmit={formikProps.handleSubmit}
+                  submitLabel="Next"
+                  cancelLabel="Previous"
+                  onCancel={() => navigation.goBack()}
+                />
+              </>
+            )}
+          </Formik>
+        </ScrollView>
+      </SafeAreaView>
+    </>
   );
 };
 

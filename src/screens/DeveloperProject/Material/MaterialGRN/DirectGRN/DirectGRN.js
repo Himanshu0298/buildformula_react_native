@@ -6,7 +6,7 @@ import {
   FlatList,
   RefreshControl,
 } from 'react-native';
-import React, {useEffect} from 'react';
+import React, {useEffect, useMemo} from 'react';
 import {getShadow} from 'utils';
 import {theme} from 'styles/theme';
 import NoResult from 'components/Atoms/NoResult';
@@ -55,6 +55,8 @@ const DirectGRN = props => {
 
   const {getDirectMaterialGRNList} = useMaterialManagementActions();
 
+  const [searchQuery, setSearchQuery] = React.useState('');
+
   const {selectedProject} = useSelector(s => s.project);
   const {directGRNList} = useSelector(s => s.materialManagement);
 
@@ -69,17 +71,27 @@ const DirectGRN = props => {
     });
   };
 
-  const [searchQuery, setSearchQuery] = React.useState('');
+  const filteredUsers = useMemo(() => {
+    const query = searchQuery.toLowerCase();
+    return directGRNList.filter(
+      i =>
+        i?.first_name?.toLowerCase().includes(query) ||
+        i?.last_name?.toLowerCase().includes(query),
+    );
+  }, [directGRNList, searchQuery]);
+
+  const onSearch = v => setSearchQuery(v);
 
   return (
     <View style={styles.mainContainer}>
       <Searchbar
         placeholder="Search"
         value={searchQuery}
+        onChangeText={onSearch}
         style={styles.search}
       />
       <FlatList
-        data={directGRNList}
+        data={filteredUsers}
         refreshControl={<RefreshControl refreshing={false} />}
         contentContainerStyle={styles.contentContainerStyle}
         showsVerticalScrollIndicator={false}

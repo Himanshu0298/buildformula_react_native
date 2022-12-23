@@ -20,6 +20,7 @@ import {getFileName} from 'utils/constant';
 import FileViewer from 'react-native-file-viewer';
 import {useDownload} from 'components/Atoms/Download';
 import {theme} from 'styles/theme';
+import dayjs from 'dayjs';
 import Header from '../../CommonComponents/Header';
 
 import VehicleInfo from '../../DeliveryDetails/Components/VehicleInfo';
@@ -40,7 +41,8 @@ const HeaderDetails = props => {
         </View>
         <View>
           <Caption>Delivery Date</Caption>
-          <Text>{delivery_date}</Text>
+
+          <Text>{dayjs(delivery_date).format('MMM D, YYYY , hh:mm a')}</Text>
         </View>
       </View>
       <View style={styles.row}>
@@ -204,7 +206,7 @@ const DirectGRNPreview = props => {
             <Subheading>Challan Info</Subheading>
           </View>
           <View style={styles.btnContainer}>
-            {challan_status === 'approved' ? null : (
+            {challan_status === 'pending' ? (
               <OpacityButton
                 color={theme.colors.primary}
                 opacity={0.18}
@@ -216,7 +218,7 @@ const DirectGRNPreview = props => {
                   size={15}
                 />
               </OpacityButton>
-            )}
+            ) : null}
 
             <OpacityButton
               color={theme.colors.error}

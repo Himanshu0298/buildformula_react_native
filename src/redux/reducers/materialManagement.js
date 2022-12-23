@@ -46,6 +46,7 @@ const initialState = {
   data: [],
   materialCategories: [],
   materialSubCategories: [],
+  makeOfLists: [],
   materialRequestItems: [],
   recordData: [],
   PRList: [],
@@ -88,13 +89,14 @@ const reducer = (state = initialState, action = {}) => {
       };
 
     case `${GET_MATERIAL_LIST}_FULFILLED`: {
-      const {material_category_data, material_subCategory_data} =
+      const {material_category_data, material_subCategory_data, list_of_make} =
         payload?.[0] || {};
       return {
         ...state,
         loading: false,
         materialCategories: material_category_data,
         materialSubCategories: material_subCategory_data,
+        makeOfLists: list_of_make,
       };
     }
 

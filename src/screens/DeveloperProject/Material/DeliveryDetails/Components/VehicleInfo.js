@@ -8,8 +8,6 @@ import FileViewer from 'react-native-file-viewer';
 import {getFileName} from 'utils/constant';
 import {useDownload} from 'components/Atoms/Download';
 
-import NoResult from 'components/Atoms/NoResult';
-
 const InvoiceAttachments = props => {
   const {invoiceImages = []} = props;
 
@@ -132,7 +130,7 @@ const VehicleInfo = props => {
         </View>
         <View>
           <Caption style={styles.captions}>Challan Remark</Caption>
-          <Text>{challan_remark}</Text>
+          <Text>{challan_remark || ''}</Text>
         </View>
         {vehicleAttachments?.length ? (
           <VehicleImages vehicleAttachments={vehicleAttachments} />

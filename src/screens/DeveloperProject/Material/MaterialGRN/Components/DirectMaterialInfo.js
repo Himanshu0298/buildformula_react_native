@@ -23,7 +23,7 @@ import useMaterialManagementActions from 'redux/actions/materialManagementAction
 const MaterialInfoHeader = props => {
   const {item} = props;
 
-  const {materialCategories, materialSubCategories} = useSelector(
+  const {materialCategories, materialSubCategories, makeOfLists} = useSelector(
     s => s.materialManagement,
   );
 
@@ -48,21 +48,33 @@ const MaterialInfoHeader = props => {
     return units?.find(i => i.id === item.material_units_id)?.title || 'NA';
   }, [item.material_units_id, units]);
 
+  const makeOfListTitle = React.useMemo(() => {
+    return (
+      makeOfLists?.find(i => i.id === item?.master_list_of_makes_id)?.status ||
+      'NA'
+    );
+  }, [item?.master_list_of_makes_id, makeOfLists]);
+
   return (
-    <View style={styles.subHeading}>
-      <Text style={{color: theme.colors.primary}}>{categoryTitle}</Text>
-      <MaterialCommunityIcons
-        name="label"
-        size={15}
-        style={[styles.labelIcon, {color: theme.colors.primary}]}
-      />
-      <Text
-        style={{
-          color: theme.colors.primary,
-        }}>
-        {subCategoryTitle} , {unitTitle}
-      </Text>
-    </View>
+    <>
+      <View style={styles.subHeading}>
+        <Text style={{color: theme.colors.primary}}>{categoryTitle}</Text>
+        <MaterialCommunityIcons
+          name="label"
+          size={15}
+          style={[styles.labelIcon, {color: theme.colors.primary}]}
+        />
+        <Text
+          style={{
+            color: theme.colors.primary,
+          }}>
+          {subCategoryTitle} , {unitTitle}
+        </Text>
+      </View>
+      <View style={styles.lomContainer}>
+        <Text style={styles.renderText}>{makeOfListTitle}</Text>
+      </View>
+    </>
   );
 };
 
@@ -165,8 +177,6 @@ const DirectMaterialInfo = props => {
 
   const {loading} = useSelector(s => s.materialManagement);
 
-  const {company_name} = materialInfo?.challanInfo || {};
-
   return (
     <View style={styles.container}>
       <Subheading>Material Info</Subheading>
@@ -177,9 +187,7 @@ const DirectMaterialInfo = props => {
           <View style={styles.detailsContainer}>
             <MaterialInfoHeader item={item} />
             <Divider style={styles.divider} />
-            <View style={styles.headerContainer}>
-              <Text style={styles.renderText}>{company_name}</Text>
-            </View>
+
             <MaterialData item={item} />
           </View>
         );
@@ -250,8 +258,7 @@ const styles = StyleSheet.create({
   text: {
     marginLeft: 5,
   },
-
-  headerContainer: {
+  lomContainer: {
     backgroundColor: '#4872F4',
     padding: 5,
     borderRadius: 5,

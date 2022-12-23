@@ -175,9 +175,7 @@ function OrderDetail(props) {
   const {materialChallanList, materialOrderList, loading} = useSelector(
     s => s.materialManagement,
   );
-  console.log('===========> materialChallanList', materialChallanList);
 
-  console.log('===========>materialOrderList ', materialOrderList);
   const materialDeliveryChallan =
     materialChallanList?.material_delivery_challan;
   const {selectedProject} = useSelector(s => s.project);

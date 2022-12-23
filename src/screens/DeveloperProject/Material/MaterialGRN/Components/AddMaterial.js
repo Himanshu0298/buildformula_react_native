@@ -1,5 +1,5 @@
 import {ScrollView, StyleSheet, View} from 'react-native';
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useMemo, useState} from 'react';
 import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 import * as Yup from 'yup';
 import {Formik} from 'formik';
@@ -7,22 +7,13 @@ import ActionButtons from 'components/Atoms/ActionButtons';
 import RenderInput from 'components/Atoms/RenderInput';
 import RenderSelect from 'components/Atoms/RenderSelect';
 import {useSelector} from 'react-redux';
-import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 import Modal from 'react-native-modal';
 import InputSearchDropdown from 'components/Atoms/InputSearchDropdown';
 import Header from '../../CommonComponents/Header';
 
 const schema = Yup.object().shape({
-  category: Yup.string('Required').required('Required'),
+  material_category_id: Yup.string('Required').required('Required'),
 });
-
-const lomOptions = [
-  {label: 'Test1', value: 'Test1'},
-  {label: 'Test2', value: 'Test2'},
-  {label: 'Test3', value: 'Test3'},
-  {label: 'Test4', value: 'Test4'},
-  {label: 'Test5', value: 'Test5'},
-];
 
 function MaterialForm(props) {
   const {formikProps, handleClose} = props;
@@ -39,7 +30,7 @@ function MaterialForm(props) {
 
   const setSelectedLom = v => setFieldValue('master_list_of_makes_id', v);
 
-  const {materialCategories, materialSubCategories} = useSelector(
+  const {materialCategories, materialSubCategories, makeOfLists} = useSelector(
     s => s.materialManagement,
   );
 
@@ -52,56 +43,60 @@ function MaterialForm(props) {
 
   const subCategoryOptions = useMemo(() => {
     return materialSubCategories
-      .filter(i => i.category_id === values.category)
+      .filter(i => i.category_id === values.material_category_id)
       ?.map(i => ({label: `${i.title}`, value: i.id}));
-  }, [materialSubCategories, values.category]);
+  }, [materialSubCategories, values.material_category_id]);
 
   const unitOptions = useMemo(() => {
     return units?.map(i => ({label: `${i.title}`, value: i.id}));
   }, [units]);
 
+  const listOfMakesOptions = useMemo(() => {
+    return makeOfLists?.map(i => ({label: `${i.title}`, value: i.id}));
+  }, [makeOfLists]);
+
   const handleSubMaterialChange = value => {
-    setFieldValue('sub_material_id', value);
+    setFieldValue('material_sub_category_id', value);
     const unitId = materialSubCategories?.find(i => i.id === value)?.unit_id;
     if (unitId) {
-      setFieldValue('material_unit_id', unitId);
+      setFieldValue('material_units_id', unitId);
     }
   };
 
   return (
     <View style={styles.formContainer}>
       <RenderSelect
-        name="category"
+        name="material_category_id"
         label="Category"
         containerStyles={styles.input}
         options={categoryOptions}
-        value={values.category}
+        value={values.material_category_id}
         onSelect={value => {
-          setFieldValue('category', value);
+          setFieldValue('material_category_id', value);
         }}
         error={errors.category}
       />
       <RenderSelect
-        name="sub_material_id"
+        name="material_sub_category_id"
         label="Subcategory"
         containerStyles={styles.input}
         options={subCategoryOptions}
-        value={values.sub_material_id}
+        value={values.material_sub_category_id}
         onSelect={handleSubMaterialChange}
-        error={errors.sub_material_id}
+        error={errors.material_sub_category_id}
       />
       <RenderSelect
-        name="material_unit_id"
+        name="material_units_id"
         disabled
         label="Unit"
         containerStyles={styles.input}
         options={unitOptions}
-        value={values.material_unit_id}
+        value={values.material_units_id}
       />
 
       <InputSearchDropdown
         placeholder="List of Makes"
-        options={lomOptions}
+        options={listOfMakesOptions}
         icon={<View />}
         searchQuery={lomSearchText}
         selected={values.master_list_of_makes_id}
@@ -121,26 +116,25 @@ function MaterialForm(props) {
       />
 
       <RenderInput
-        name="fineQty"
+        name="material_quantity"
         label="Fine Quantity"
         containerStyles={styles.input}
-        maxLength={10}
-        value={values.fineQty}
-        onChangeText={handleChange('fineQty')}
-        onBlur={handleBlur('fineQty')}
+        value={values.material_quantity}
+        onChangeText={handleChange('material_quantity')}
+        onBlur={handleBlur('material_quantity')}
         autoCapitalize="none"
         returnKeyType="next"
-        error={errors.fineQty}
+        error={errors.material_quantity}
       />
 
       <RenderInput
-        name="missing_qty"
+        name="missing"
         label="Missing Qty"
         containerStyles={styles.input}
-        value={values.missing_qty}
-        onChangeText={handleChange('missing_qty')}
-        onBlur={handleBlur('missing_qty')}
-        error={errors.missing_qty}
+        value={values.missing}
+        onChangeText={handleChange('missing')}
+        onBlur={handleBlur('missing')}
+        error={errors.missing}
       />
 
       <ActionButtons
@@ -154,65 +148,57 @@ function MaterialForm(props) {
 }
 
 function AddMaterialDialog(props) {
-  const {toggleDialog, visible, handleSave, material_request_items, id} = props;
+  const {material, visible, handleSave, handleClose} = props;
 
-  const {getPRMaterialCategories} = useMaterialManagementActions();
+  const {materialSubCategories} = useSelector(s => s.materialManagement);
 
-  const {selectedProject} = useSelector(s => s.project);
-  const projectId = selectedProject.id;
-  const {directGRNDetails} = useSelector(s => s.materialManagement);
+  const initialValues = useMemo(() => {
+    if (material) {
+      const {
+        material_category_id,
+        material_sub_category_id: sub_material_id,
+        material_units_id: material_unit_id,
+        damage: damage_qty,
+        missing_qty,
+        fineQty,
+        master_list_of_makes_id,
+      } = material;
 
-  const {directGRNMaterialDetails = []} = directGRNDetails;
+      const selectedSubCategory = materialSubCategories.find(
+        i => i.id === sub_material_id,
+      );
 
-  const initialValues = React.useMemo(() => {
-    const {
-      category,
-      sub_material_id,
-      material_unit_id,
-      master_list_of_makes_id,
-      damage_qty,
-      fineQty,
-      missing_qty,
-    } = material_request_items || [];
-    return {
-      category,
-      sub_material_id,
-      material_unit_id,
-      master_list_of_makes_id,
-      damage_qty,
-      fineQty,
-      missing_qty,
-      ...material_request_items,
-    };
-  }, [material_request_items]);
-
-  useEffect(() => {
-    getPRMaterialCategories({project_id: projectId});
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+      return {
+        material_category_id,
+        sub_material_id,
+        material_units_id: material_unit_id || selectedSubCategory?.unit_id,
+        damage_qty,
+        missing_qty,
+        fineQty,
+        master_list_of_makes_id,
+      };
+    }
+    return {};
+  }, [materialSubCategories, material]);
 
   return (
     <Modal
       isVisible={visible}
-      onBackButtonPress={toggleDialog}
+      onBackButtonPress={handleClose}
       style={styles.modal}>
       <SafeAreaProvider>
         <SafeAreaView style={styles.mainContainer} edges={['top']}>
           <ScrollView>
-            <Header title="Material Info" {...props} />
+            <Header title="Material Info" onPressBack={handleClose} />
             <Formik
               validateOnBlur={false}
               validateOnChange={false}
               initialValues={initialValues}
               validationSchema={schema}
+              enableReinitialize
               onSubmit={handleSave}>
               {formikProps => (
-                <MaterialForm
-                  {...{formikProps}}
-                  handleClose={toggleDialog}
-                  directGRNMaterialDetails={directGRNMaterialDetails}
-                />
+                <MaterialForm {...{formikProps}} handleClose={handleClose} />
               )}
             </Formik>
           </ScrollView>
