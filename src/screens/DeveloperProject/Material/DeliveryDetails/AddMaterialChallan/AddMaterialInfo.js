@@ -227,7 +227,7 @@ function MaterialForm(props) {
 
         <View style={styles.attachmentContainer}>
           <View>
-            <Text style={styles.attachmentHeading}>Attachment</Text>
+            <Text style={styles.attachmentHeading}>Attachment </Text>
             <OpacityButton
               onPress={handleUpload}
               opacity={0.1}

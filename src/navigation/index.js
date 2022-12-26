@@ -125,7 +125,7 @@ import RequestForPrice from '../screens/DeveloperProject/MaterialManagement/Requ
 import PurchaseOrders from '../screens/DeveloperProject/MaterialManagement/PurchaseOrders';
 import OrderDetail from '../screens/DeveloperProject/Material/OrderDetail';
 import MaterialList from '../screens/DeveloperProject/Material/MaterialList';
-import DeliveryDetails from 'screens/DeveloperProject/Material/DeliveryDetails';
+import DeliveryDetails from 'screens/DeveloperProject/Material/DeliveryDetails/Components/DeliveryDetails';
 import PRListing from 'screens/DeveloperProject/Material/MaterialPR/PRListing';
 import PIListing from 'screens/DeveloperProject/Material/MaterialPI/PIListing';
 import CreatePR from 'screens/DeveloperProject/Material/MaterialPR/CreatePR';
@@ -152,10 +152,10 @@ import SelectMaterials from 'screens/DeveloperProject/Material/DeliveryDetails/S
 import AddMaterialInfo from 'screens/DeveloperProject/Material/DeliveryDetails/AddMaterialChallan';
 import AddVehicleInfo from 'screens/DeveloperProject/Material/DeliveryDetails/AddVehicleChallan';
 import MaterialGRNListing from 'screens/DeveloperProject/Material/MaterialGRN/MaterialGRNListing';
-import MaterialGRN from '../screens/DeveloperProject/Material/MaterialGRN';
+import MaterialGRN from '../screens/DeveloperProject/Material/MaterialGRN/FromPoGRNList';
 import DirectGRNPreview from 'screens/DeveloperProject/Material/MaterialGRN/DirectGRNPreview';
 import AddDirectGRN from 'screens/DeveloperProject/Material/MaterialGRN/Components/AddDirectGRN';
-import GRNMaterial from 'screens/DeveloperProject/Material/MaterialGRN/Components/GRNMaterial';
+import DirectGRNChallanMaterial from 'screens/DeveloperProject/Material/MaterialGRN/Components/DirectGRNChallanMaterial';
 import AddMaterial from 'screens/DeveloperProject/Material/MaterialGRN/Components/AddMaterial';
 import StoreKeeperPreview from 'screens/DeveloperProject/Material/StoreKeeper/StoreKeeperPreview';
 import IssueIndent from 'screens/DeveloperProject/Material/StoreKeeper/IssueIndent';
@@ -403,7 +403,10 @@ function AppStackNavigator() {
                 component={DirectGRNPreview}
               />
               <Stack.Screen name="AddDirectGRN" component={AddDirectGRN} />
-              <Stack.Screen name="GRNMaterial" component={GRNMaterial} />
+              <Stack.Screen
+                name="DirectGRNChallanMaterial"
+                component={DirectGRNChallanMaterial}
+              />
               <Stack.Screen name="AddMaterial" component={AddMaterial} />
               <Stack.Screen name="VehicleInfo" component={VehicleInfo} />
               <Stack.Screen

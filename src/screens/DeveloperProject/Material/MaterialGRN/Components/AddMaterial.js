@@ -1,135 +1,233 @@
-import {StyleSheet, View} from 'react-native';
-import React from 'react';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import {ScrollView, StyleSheet, View} from 'react-native';
+import React, {useMemo, useState} from 'react';
+import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 import * as Yup from 'yup';
 import {Formik} from 'formik';
 import ActionButtons from 'components/Atoms/ActionButtons';
 import RenderInput from 'components/Atoms/RenderInput';
 import RenderSelect from 'components/Atoms/RenderSelect';
+import {useSelector} from 'react-redux';
+import Modal from 'react-native-modal';
+import InputSearchDropdown from 'components/Atoms/InputSearchDropdown';
 import Header from '../../CommonComponents/Header';
 
 const schema = Yup.object().shape({
-  category: Yup.string('Required').required('Required'),
+  material_category_id: Yup.string('Required').required('Required'),
 });
 
-const options = ['1', '2', '3'];
-
 function MaterialForm(props) {
-  const {formikProps, navigation} = props;
-  const {values, errors, setFieldValue, handleBlur, handleSubmit} = formikProps;
+  const {formikProps, handleClose} = props;
+  const {
+    values,
+    errors,
+    setFieldValue,
+    handleBlur,
+    handleChange,
+    handleSubmit,
+  } = formikProps;
+
+  const [lomSearchText, setLomSearchText] = useState('');
+
+  const setSelectedLom = v => setFieldValue('master_list_of_makes_id', v);
+
+  const {materialCategories, materialSubCategories, makeOfLists} = useSelector(
+    s => s.materialManagement,
+  );
+
+  const {commonData} = useSelector(s => s.project);
+  const {units} = commonData;
+
+  const categoryOptions = useMemo(() => {
+    return materialCategories?.map(i => ({label: `${i.title}`, value: i.id}));
+  }, [materialCategories]);
+
+  const subCategoryOptions = useMemo(() => {
+    return materialSubCategories
+      .filter(i => i.category_id === values.material_category_id)
+      ?.map(i => ({label: `${i.title}`, value: i.id}));
+  }, [materialSubCategories, values.material_category_id]);
+
+  const unitOptions = useMemo(() => {
+    return units?.map(i => ({label: `${i.title}`, value: i.id}));
+  }, [units]);
+
+  const listOfMakesOptions = useMemo(() => {
+    return makeOfLists?.map(i => ({label: `${i.title}`, value: i.id}));
+  }, [makeOfLists]);
+
+  const handleSubMaterialChange = value => {
+    setFieldValue('material_sub_category_id', value);
+    const unitId = materialSubCategories?.find(i => i.id === value)?.unit_id;
+    if (unitId) {
+      setFieldValue('material_units_id', unitId);
+    }
+  };
 
   return (
     <View style={styles.formContainer}>
       <RenderSelect
-        name="category"
+        name="material_category_id"
         label="Category"
         containerStyles={styles.input}
-        options={options}
-        value={values.category}
+        options={categoryOptions}
+        value={values.material_category_id}
         onSelect={value => {
-          setFieldValue('category', value);
+          setFieldValue('material_category_id', value);
         }}
         error={errors.category}
       />
       <RenderSelect
-        name="subcategory"
+        name="material_sub_category_id"
         label="Subcategory"
         containerStyles={styles.input}
-        options={options}
-        value={values.subcategory}
-        onSelect={value => {
-          setFieldValue('subcategory', value);
-        }}
-        error={errors.subcategory}
+        options={subCategoryOptions}
+        value={values.material_sub_category_id}
+        onSelect={handleSubMaterialChange}
+        error={errors.material_sub_category_id}
       />
-      <RenderInput
-        name="unit"
+      <RenderSelect
+        name="material_units_id"
+        disabled
         label="Unit"
         containerStyles={styles.input}
-        value="Bags"
-        onBlur={handleBlur('unit')}
-        error={errors.other_occupation}
-        disabled
+        options={unitOptions}
+        value={values.material_units_id}
       />
-      {/* Search Box input */}
-      <RenderSelect
-        name="lom"
-        label="List of Makes"
-        containerStyles={styles.input}
-        options={options}
-        value={values.lom}
-        onSelect={value => {
-          setFieldValue('lom', value);
-        }}
-        error={errors.lom}
+
+      <InputSearchDropdown
+        placeholder="List of Makes"
+        options={listOfMakesOptions}
+        icon={<View />}
+        searchQuery={lomSearchText}
+        selected={values.master_list_of_makes_id}
+        style={styles.search}
+        onSelect={setSelectedLom}
+        onChangeText={setLomSearchText}
       />
-      <RenderInput
-        name="fine_qty"
-        label="Fine Qty"
-        containerStyles={styles.input}
-        value={values.fine_qty}
-        onBlur={handleBlur('fine_qty')}
-        error={errors.fine_qty}
-      />
+
       <RenderInput
         name="damage_qty"
         label="Damage Qty"
         containerStyles={styles.input}
         value={values.damage_qty}
+        onChangeText={handleChange('damage_qty')}
         onBlur={handleBlur('damage_qty')}
         error={errors.damage_qty}
       />
+
       <RenderInput
-        name="missing_qty"
+        name="material_quantity"
+        label="Fine Quantity"
+        containerStyles={styles.input}
+        value={values.material_quantity}
+        onChangeText={handleChange('material_quantity')}
+        onBlur={handleBlur('material_quantity')}
+        autoCapitalize="none"
+        returnKeyType="next"
+        error={errors.material_quantity}
+      />
+
+      <RenderInput
+        name="missing"
         label="Missing Qty"
         containerStyles={styles.input}
-        value={values.missing_qty}
-        onBlur={handleBlur('missing_qty')}
-        error={errors.missing_qty}
+        value={values.missing}
+        onChangeText={handleChange('missing')}
+        onBlur={handleBlur('missing')}
+        error={errors.missing}
+      />
+
+      <ActionButtons
+        cancelLabel="Cancel"
+        submitLabel="Save"
+        onSubmit={() => handleSubmit(values)}
+        onCancel={handleClose}
       />
     </View>
   );
 }
 
-const AddMaterial = props => {
-  const {navigation} = props;
-  return (
-    <SafeAreaView style={styles.mainContainer}>
-      <Header title="Material Info" {...props} />
-      <Formik
-        validateOnBlur={false}
-        validateOnChange={false}
-        initialValues={{attachments: []}}
-        validationSchema={schema}
-        onSubmit={() => console.log('test')}>
-        {formikProps => <MaterialForm {...{formikProps}} {...props} />}
-      </Formik>
-      <ActionButtons
-        cancelLabel="Cancel"
-        submitLabel="Save"
-        onSubmit={() => {
-          navigation.navigate('GRNMaterial');
-        }}
-        onCancel={navigation.goBack}
-      />
-    </SafeAreaView>
-  );
-};
+function AddMaterialDialog(props) {
+  const {material, visible, handleSave, handleClose} = props;
 
-export default AddMaterial;
+  const {materialSubCategories} = useSelector(s => s.materialManagement);
+
+  const initialValues = useMemo(() => {
+    if (material) {
+      const {
+        material_category_id,
+        material_sub_category_id: sub_material_id,
+        material_units_id: material_unit_id,
+        damage: damage_qty,
+        missing_qty,
+        fineQty,
+        master_list_of_makes_id,
+      } = material;
+
+      const selectedSubCategory = materialSubCategories.find(
+        i => i.id === sub_material_id,
+      );
+
+      return {
+        material_category_id,
+        sub_material_id,
+        material_units_id: material_unit_id || selectedSubCategory?.unit_id,
+        damage_qty,
+        missing_qty,
+        fineQty,
+        master_list_of_makes_id,
+      };
+    }
+    return {};
+  }, [materialSubCategories, material]);
+
+  return (
+    <Modal
+      isVisible={visible}
+      onBackButtonPress={handleClose}
+      style={styles.modal}>
+      <SafeAreaProvider>
+        <SafeAreaView style={styles.mainContainer} edges={['top']}>
+          <ScrollView>
+            <Header title="Material Info" onPressBack={handleClose} />
+            <Formik
+              validateOnBlur={false}
+              validateOnChange={false}
+              initialValues={initialValues}
+              validationSchema={schema}
+              enableReinitialize
+              onSubmit={handleSave}>
+              {formikProps => (
+                <MaterialForm {...{formikProps}} handleClose={handleClose} />
+              )}
+            </Formik>
+          </ScrollView>
+        </SafeAreaView>
+      </SafeAreaProvider>
+    </Modal>
+  );
+}
+
+export default AddMaterialDialog;
 
 const styles = StyleSheet.create({
   mainContainer: {
+    backgroundColor: '#fff',
     flex: 1,
-    flexGrow: 1,
-
-    paddingHorizontal: 10,
   },
   formContainer: {
-    flex: 1,
     flexGrow: 1,
+    margin: 15,
+    paddingVertical: 20,
   },
   input: {
     paddingVertical: 7,
+  },
+  search: {
+    marginVertical: 20,
+  },
+  modal: {
+    margin: 0,
+    justifyContent: 'flex-start',
   },
 });

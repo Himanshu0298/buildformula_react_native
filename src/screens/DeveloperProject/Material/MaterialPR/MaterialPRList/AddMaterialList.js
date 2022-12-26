@@ -7,7 +7,6 @@ import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import ActionButtons from 'components/Atoms/ActionButtons';
 import {getShadow} from 'utils';
-import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 import {useSelector} from 'react-redux';
 import {Formik} from 'formik';
 import RenderSelect from 'components/Atoms/RenderSelect';
@@ -16,6 +15,7 @@ import {ActionSheetProvider} from '@expo/react-native-action-sheet';
 import dayjs from 'dayjs';
 import RenderDatePicker from 'components/Atoms/RenderDatePicker';
 import {useAlert} from 'components/Atoms/Alert';
+import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 
 function AddMaterialDialog(props) {
   const {formikProps, handleClose, edit} = props;
@@ -29,7 +29,7 @@ function AddMaterialDialog(props) {
     handleSubmit,
   } = formikProps;
 
-  const {materialCategory, materialSubCategory} = useSelector(
+  const {materialCategories, materialSubCategories} = useSelector(
     s => s.materialManagement,
   );
 
@@ -37,17 +37,17 @@ function AddMaterialDialog(props) {
   const {units} = commonData;
 
   const categoryOptions = useMemo(() => {
-    return materialCategory?.map(i => ({
+    return materialCategories?.map(i => ({
       label: `${i.title}`,
       value: i.id,
     }));
-  }, [materialCategory]);
+  }, [materialCategories]);
 
   const subCategoryOptions = useMemo(() => {
-    return materialSubCategory
+    return materialSubCategories
       .filter(i => i.category_id === values.material_category_id)
       ?.map(i => ({label: `${i.title}`, value: i.id}));
-  }, [materialSubCategory, values.material_category_id]);
+  }, [materialSubCategories, values.material_category_id]);
 
   const unitOptions = useMemo(() => {
     return units?.map(i => ({label: `${i.title}`, value: i.id}));
@@ -55,7 +55,7 @@ function AddMaterialDialog(props) {
 
   const handleSubMaterialChange = value => {
     setFieldValue('sub_material_id', value);
-    const unitId = materialSubCategory.find(i => i.id === value)?.unit_id;
+    const unitId = materialSubCategories.find(i => i.id === value)?.unit_id;
     if (unitId) {
       setFieldValue('material_unit_id', unitId);
     }
@@ -145,7 +145,7 @@ function CardListing(props) {
   const {
     materialcategrytitle,
     subcategorytitle,
-    material_units_id,
+    materialunitstitle,
     created,
     material_quantity,
   } = item;
@@ -162,7 +162,7 @@ function CardListing(props) {
               color="#4872f4"
               opacity={0.18}
               style={styles.OpacityButton}
-              onPress={toggleEditDialog}>
+              onPress={() => toggleEditDialog(item.id)}>
               <MaterialIcons name="edit" color="#4872f4" size={13} />
             </OpacityButton>
           </View>
@@ -183,7 +183,7 @@ function CardListing(props) {
       </View>
       <View style={styles.dataRow}>
         <Caption style={styles.lightData}>Unit:</Caption>
-        <Text>{material_units_id}</Text>
+        <Text>{materialunitstitle}</Text>
       </View>
       <View style={styles.dataRow}>
         <Caption style={styles.lightData}>Required date:</Caption>
@@ -211,7 +211,7 @@ function AddMaterialList(props) {
     getPRMaterialDetails,
   } = useMaterialManagementActions();
 
-  const {PRDetails, materialSubCategory} = useSelector(
+  const {PRDetails, materialSubCategories} = useSelector(
     s => s.materialManagement,
   );
 
@@ -238,7 +238,7 @@ function AddMaterialList(props) {
         material_quantity: quantity,
       } = selectedMaterial;
 
-      const selectedSubCategory = materialSubCategory.find(
+      const selectedSubCategory = materialSubCategories.find(
         i => i.id === sub_material_id,
       );
 
@@ -251,7 +251,7 @@ function AddMaterialList(props) {
       };
     }
     return {};
-  }, [materialSubCategory, selectedMaterial]);
+  }, [materialSubCategories, selectedMaterial]);
 
   const getPRDetails = () => {
     getPRMaterialDetails({project_id: projectId, purchase_request_id: id});

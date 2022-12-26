@@ -32,17 +32,14 @@ const MaterialData = props => {
       />
       <Text style={styles.values}>{item.category_title}</Text>
       <Text style={styles.values}>{item.subcategory_title}</Text>
-      <Text style={styles.values}>
-        {'    '}
-        {item.unit_title}
-      </Text>
+      <Text style={styles.values}>{item.unit_title}</Text>
     </View>
   );
 };
 
 function SelectMaterials(props) {
   const {navigation, route} = props;
-  const {challanId: materialId} = route?.params || {};
+  const {materialId} = route?.params || {};
 
   const snackbar = useSnackbar();
   const {getSelectMaterialChallan} = useMaterialManagementActions();
@@ -84,7 +81,6 @@ function SelectMaterials(props) {
 
       return;
     }
-
     navigation.navigate('AddMaterialInfo', {
       selectedMaterial,
       ...route.params,

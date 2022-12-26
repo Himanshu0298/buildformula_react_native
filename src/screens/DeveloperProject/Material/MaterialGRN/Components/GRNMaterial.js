@@ -6,7 +6,7 @@ import {
   View,
   ScrollView,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect, useMemo} from 'react';
 import ActionButtons from 'components/Atoms/ActionButtons';
 import {Caption} from 'react-native-paper';
 import {RenderError} from 'components/Atoms/RenderInput';
@@ -18,6 +18,8 @@ import {useImagePicker} from 'hooks';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import * as Yup from 'yup';
 import {Formik} from 'formik';
+import useMaterialManagementActions from 'redux/actions/materialManagementActions';
+import {useSelector} from 'react-redux';
 import Header from '../../CommonComponents/Header';
 import Pagination from '../../CommonComponents/Pagination';
 
@@ -142,13 +144,21 @@ function UploadForm(props) {
 }
 
 const RenderCard = props => {
-  const {navigation} = props;
+  const {navigation, item, categoryLabel, subCategoryLabel} = props;
+
+  const {
+    material_units_id,
+    missing,
+    quantity,
+    master_list_of_makes_id,
+    damage,
+  } = item;
   return (
     <View style={styles.materialContainer}>
       <View style={styles.cardHeader}>
         <View style={styles.row}>
           <Caption>Category: </Caption>
-          <Text>Cement</Text>
+          <Text>{categoryLabel}</Text>
         </View>
         <View style={styles.btnContainer}>
           <OpacityButton
@@ -169,39 +179,83 @@ const RenderCard = props => {
           </OpacityButton>
         </View>
       </View>
-      <View style={styles.row}>
-        <Caption>Category: </Caption>
-        <Text>Cement</Text>
-      </View>
+
       <View style={styles.row}>
         <Caption>Sub Category: </Caption>
-        <Text>OPC</Text>
+        <Text>{subCategoryLabel}</Text>
       </View>
       <View style={styles.row}>
         <Caption>Unit: </Caption>
-        <Text>CUM or m3</Text>
+        <Text>{material_units_id}</Text>
       </View>
       <View style={styles.row}>
         <Caption>List of Makes: </Caption>
-        <Text style={styles.companyName}>Company Name</Text>
+        <Text style={styles.companyName}>{master_list_of_makes_id}</Text>
       </View>
       <View style={styles.row}>
         <Caption>Fine Qty: </Caption>
-        <Text>150</Text>
+        <Text>{quantity}</Text>
       </View>
       <View style={styles.row}>
-        <Text style={styles.damage}>Damage Qty: 40</Text>
+        <Text style={styles.damage}>Damage Qty :{damage} </Text>
       </View>
       <View style={styles.row}>
         <Caption>Missing Qty: </Caption>
-        <Text>10</Text>
+        <Text>{missing}</Text>
       </View>
     </View>
   );
 };
 
 const GRNMaterial = props => {
-  const {navigation} = props;
+  const {navigation, route} = props;
+  const {challan_id, edit} = route?.params || {};
+
+  const {getDirectMaterialGRNItemList} = useMaterialManagementActions();
+  const {directGRNMaterialDetails} = useSelector(s => s.materialManagement);
+
+  const materialCategory = directGRNMaterialDetails?.master_material_category;
+
+  const materialSubCategory = directGRNMaterialDetails?.tmp_subcategory_lists;
+
+  const subCategoryTitle = useMemo(() => {
+    return materialSubCategory?.map(i => ({
+      label: `${i.title}`,
+      value: i.id,
+    }));
+  }, [materialSubCategory]);
+
+  const categoryTitle = useMemo(() => {
+    return materialCategory?.map(i => ({
+      label: `${i.title}`,
+      value: i.id,
+    }));
+  }, [materialCategory]);
+
+  const category = categoryTitle?.find(i => i.id === categoryTitle.id);
+
+  const subCategory = subCategoryTitle?.find(i => i.id === subCategoryTitle.id);
+
+  const categoryLabel = category?.label;
+
+  const subCategoryLabel = subCategory?.label;
+
+  const {selectedProject} = useSelector(s => s.project);
+
+  const material = directGRNMaterialDetails?.master_material_category;
+
+  useEffect(() => {
+    getLoadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const getLoadData = () => {
+    getDirectMaterialGRNItemList({
+      project_id: selectedProject.id,
+      challan_id,
+    });
+  };
+
   return (
     <SafeAreaView style={styles.mainContainer}>
       <View style={styles.headerContainer}>
@@ -209,9 +263,26 @@ const GRNMaterial = props => {
         <Pagination title="Page 2 of 3" />
       </View>
       <ScrollView style={styles.bodyContainer}>
-        <RenderCard navigation={navigation} />
+        {material?.length
+          ? material?.map((item, index) => {
+              return (
+                <RenderCard
+                  navigation={navigation}
+                  item={item}
+                  categoryLabel={categoryLabel}
+                  subCategoryLabel={subCategoryLabel}
+                />
+              );
+            })
+          : null}
+
         <OpacityButton
-          onPress={() => navigation.navigate('AddMaterial')}
+          onPress={() =>
+            navigation.navigate('AddMaterial', {
+              directGRNMaterialDetails,
+              challan_id,
+            })
+          }
           opacity={0.1}
           style={styles.uploadButton}
           color="#fff">
@@ -242,6 +313,7 @@ export default GRNMaterial;
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
+    margin: 10,
   },
   bodyContainer: {
     padding: 10,

@@ -22,7 +22,7 @@ const CreatePR = props => {
 
   const edit = Boolean(id);
 
-  const {addMaterialPR, getVendorList, getWorkSubWorkList, updatePR} =
+  const {AddPR, getVendorList, getWorkSubWorkList, updatePR} =
     useMaterialManagementActions();
 
   const {loading, PRList, workOptions, vendorOptions} = useSelector(
@@ -75,7 +75,7 @@ const CreatePR = props => {
       await updatePR(data);
       navigation.navigate('AddMaterialList', {id, edit});
     } else {
-      const {value: res} = await addMaterialPR(data);
+      const {value: res} = await AddPR(data);
       navigation.navigate('AddMaterialList', {id: res.id, edit});
     }
   };
@@ -149,6 +149,7 @@ const CreatePR = props => {
                   onChangeText={handleChange('remarks')}
                   onBlur={handleBlur('remarks')}
                   onSubmitEditing={handleSubmit}
+                  error={errors.remarks}
                 />
               </ScrollView>
               <ActionButtons

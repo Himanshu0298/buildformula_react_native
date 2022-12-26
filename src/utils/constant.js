@@ -101,3 +101,12 @@ export const DEFAULT_ADMIN_PERMISSIONS = {
   view: 1,
   none: 0,
 };
+
+export function getFileName(string) {
+  if (string?.includes('/')) {
+    const splits = string?.split('/');
+    return splits[splits.length - 1];
+  }
+
+  return string;
+}

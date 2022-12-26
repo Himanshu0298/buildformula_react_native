@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import NoResult from 'components/Atoms/NoResult';
 
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   Caption,
   Colors,
@@ -18,22 +18,16 @@ import {
 } from 'react-native-paper';
 import {theme} from 'styles/theme';
 import {getShadow} from 'utils';
-import {PR_REQUEST_STATUS} from 'utils/constant';
 import store_keeper from 'assets/images/store_keeper.png';
 import reload from 'assets/images/reload.png';
-import {MaterialIndentData} from './MaterialIndentData';
+import useMaterialManagementActions from 'redux/actions/materialManagementActions';
+import {useSelector} from 'react-redux';
 
 const ListingCard = props => {
   const {item} = props;
 
-  const {
-    id,
-    status,
-    validityDate,
-    createdBy,
-    createrEmail: creatorEmail,
-    query,
-  } = item;
+  const {id, authorizedstatus, created, email, type, first_name, last_name} =
+    item;
 
   return (
     <TouchableOpacity>
@@ -48,26 +42,28 @@ const ListingCard = props => {
           </Caption> */}
           <Text
             style={
-              item.status === 'Pending'
+              authorizedstatus === 'Pending'
                 ? styles.pending
-                : item.status === 'Rejected'
+                : authorizedstatus === 'Rejected'
                 ? styles.rejected
-                : item.status === 'Approved'
+                : authorizedstatus === 'Approved'
                 ? styles.approved
                 : null
             }>
-            {item.status}
+            {authorizedstatus}
           </Text>
         </View>
         <Divider />
         <View style={styles.cardDetails}>
-          <Subheading>{createdBy}</Subheading>
+          <Subheading>
+            {first_name}-{last_name}
+          </Subheading>
           <View style={styles.cardContent}>
-            <Text style={styles.detail}>{creatorEmail}</Text>
+            <Text style={styles.detail}>{email}</Text>
           </View>
           <View style={styles.cardHeader}>
-            <Caption>{validityDate}</Caption>
-            <Caption> {query}</Caption>
+            <Caption>{created}</Caption>
+            <Caption> {type}</Caption>
           </View>
         </View>
       </View>
@@ -80,6 +76,24 @@ function MaterialIndentListing(props) {
   const [selectDialog, setSelectDialog] = React.useState(false);
 
   const {colors} = theme;
+
+  const {getMaterialIndentList} = useMaterialManagementActions();
+
+  const {selectedProject} = useSelector(s => s.project);
+  const {materialIndentList} = useSelector(s => s.materialManagement);
+
+  const indent = materialIndentList?.indentlist.sort((a, b) => b.id - a.id);
+
+  useEffect(() => {
+    getList();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const getList = () => {
+    getMaterialIndentList({
+      project_id: selectedProject.id,
+    });
+  };
 
   const toggleSelectDialog = () => setSelectDialog(v => !v);
 
@@ -108,7 +122,7 @@ function MaterialIndentListing(props) {
       <View style={styles.bodyContainer}>
         <FlatList
           style={styles.flatList}
-          data={MaterialIndentData.sort((a, b) => b.id - a.id)}
+          data={indent}
           refreshControl={<RefreshControl refreshing={false} />}
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={renderEmpty}
@@ -120,16 +134,12 @@ function MaterialIndentListing(props) {
       </View>
       <FAB.Group
         open={selectDialog}
-        // style={styles.fab}
         fabStyle={{
           backgroundColor: selectDialog ? Colors.white : colors.primary,
         }}
         icon={selectDialog ? 'window-close' : 'plus'}
         small
         onPress={toggleSelectDialog}
-        onStateChange={() => {
-          console.log('-----> onStateChange');
-        }}
         actions={FAB_ACTIONS}
       />
     </View>
