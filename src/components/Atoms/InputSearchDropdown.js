@@ -26,10 +26,6 @@ function InputSearchDropdown(props) {
 
   const [isFocused, setFocused] = useState(false);
 
-  // const [close, setClose] = useState(false);
-
-  // const toggleCloseDialog = () => setClose(v => !v);
-
   const updatedOptions = useMemo(() => {
     if (searchQuery) {
       const _options = [...options];
