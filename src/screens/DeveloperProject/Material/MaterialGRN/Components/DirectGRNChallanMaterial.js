@@ -28,7 +28,6 @@ import Pagination from '../../CommonComponents/Pagination';
 import AddMaterialModal from './AddMaterial';
 
 const schema = Yup.object().shape({
-  challan: Yup.number('Required').required('Required'),
   challan_material_image: Yup.mixed().required('File is required'),
 });
 
