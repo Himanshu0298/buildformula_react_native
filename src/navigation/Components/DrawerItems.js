@@ -17,6 +17,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
   },
   {
     title: 'SALES',
+    id: 1,
     routes: [
       {
         id: 1,
@@ -69,6 +70,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
 
   {
     title: 'TODO LIST',
+    id: 15,
     routes: [
       {
         id: 67,
@@ -132,6 +134,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
 
   {
     title: 'DESIGN MODULE',
+    id: 12,
     routes: [
       {
         id: 39,
@@ -183,6 +186,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
   },
   {
     title: 'PROJECT MANAGEMENT',
+    id: 8,
     routes: [
       {
         id: 20,
@@ -376,6 +380,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
   // },
   {
     title: 'FILES',
+    id: 5,
     routes: [
       {
         id: 12,
@@ -403,6 +408,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
 export const CUSTOMER_DRAWER_ITEMS = [
   {
     title: 'CUSTOMER SECTION',
+    id: 7,
     routes: [
       {
         id: 14,
@@ -420,6 +426,7 @@ export const CUSTOMER_DRAWER_ITEMS = [
         ),
       },
       {
+        id: 16,
         route: 'LoanDetails',
         label: 'Bank Loan',
         icon: ({color, size}) => (
@@ -427,6 +434,7 @@ export const CUSTOMER_DRAWER_ITEMS = [
         ),
       },
       {
+        id: 17,
         route: 'CustomerAccount',
         label: 'Account',
         icon: ({color, size}) => (
@@ -434,6 +442,7 @@ export const CUSTOMER_DRAWER_ITEMS = [
         ),
       },
       {
+        id: 18,
         route: 'ModifyRequest',
         label: 'Modify Request',
         icon: ({color, size}) => (
@@ -441,6 +450,7 @@ export const CUSTOMER_DRAWER_ITEMS = [
         ),
       },
       {
+        id: 19,
         route: 'CustomerFiles',
         label: 'Files',
         icon: ({color, size}) => (
