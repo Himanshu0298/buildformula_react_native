@@ -82,7 +82,7 @@ function MaterialIndentListing(props) {
   const {selectedProject} = useSelector(s => s.project);
   const {materialIndentList} = useSelector(s => s.materialManagement);
 
-  const indent = materialIndentList?.indentlist;
+  const indent = materialIndentList?.indentlist.sort((a, b) => b.id - a.id);
 
   useEffect(() => {
     getList();
@@ -140,9 +140,6 @@ function MaterialIndentListing(props) {
         icon={selectDialog ? 'window-close' : 'plus'}
         small
         onPress={toggleSelectDialog}
-        onStateChange={() => {
-          console.log('-----> onStateChange');
-        }}
         actions={FAB_ACTIONS}
       />
     </View>

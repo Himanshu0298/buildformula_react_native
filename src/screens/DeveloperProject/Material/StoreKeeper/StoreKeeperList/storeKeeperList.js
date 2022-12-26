@@ -114,8 +114,6 @@ function StoreKeeperList(props) {
   const {storeKeeperList, loading} = useSelector(s => s.materialManagement);
   const {selectedProject} = useSelector(s => s.project);
 
-  const material = storeKeeperList;
-
   React.useEffect(() => {
     getStoreKeeperList({project_id: selectedProject.id});
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -130,15 +128,15 @@ function StoreKeeperList(props) {
   return (
     <View style={styles.mainContainer}>
       <View style={styles.headerContainer}>
-        <Subheading style={styles.headerText}>Material Indent</Subheading>
+        <Subheading style={styles.headerText}>StoreKeeper List</Subheading>
       </View>
       <Spinner visible={loading} textContent="" />
 
       <View style={styles.bodyContainer}>
         <FlatList
           style={styles.flatList}
-          data={material}
-          extraData={material}
+          data={storeKeeperList}
+          extraData={storeKeeperList}
           refreshControl={<RefreshControl refreshing={false} />}
           showsVerticalScrollIndicator={false}
           keyExtractor={i => i.id}

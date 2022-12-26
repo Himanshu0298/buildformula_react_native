@@ -24,6 +24,10 @@ import FileIcon from 'assets/images/file_icon.png';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import Spinner from 'react-native-loading-spinner-overlay';
+import dayjs from 'dayjs';
+import FileViewer from 'react-native-file-viewer';
+
+import {useDownload} from 'components/Atoms/Download';
 import ApproveButtons from '../components/ApprovalButtons';
 
 const STORE_KEEPER_STATUS = {
@@ -48,7 +52,20 @@ const RenderAttachments = props => {
 
   const attachments = storeKeeperDetails?.indent_details?.storekeeper_files;
 
-  // const download = useDownload();
+  const download = useDownload();
+
+  const onPressFile = async file_name => {
+    const name = file_name.split('/').pop();
+
+    download.link({
+      name,
+      link: file_name,
+      showAction: false,
+      onFinish: ({dir}) => {
+        FileViewer.open(`file://${dir}`);
+      },
+    });
+  };
 
   // TODO download file remaining
 
@@ -61,31 +78,36 @@ const RenderAttachments = props => {
 
         {attachments?.map(attachment => {
           return (
-            <View key={attachment.file_name}>
-              <View style={styles.sectionContainer}>
-                <Image source={FileIcon} style={styles.fileIcon} />
+            <TouchableOpacity onPress={onPressFile}>
+              <View key={attachment.file_name}>
+                <View style={styles.sectionContainer}>
+                  <Image source={FileIcon} style={styles.fileIcon} />
 
-                <View>
-                  <Text
-                    style={(styles.verticalFlex, styles.text)}
-                    numberOfLines={1}>
-                    {attachment.file_name}
-                  </Text>
-                  <Text
-                    style={(styles.verticalFlex, styles.text)}
-                    numberOfLines={1}>
-                    ( {attachment.file_size})kb
-                  </Text>
+                  <View>
+                    <Text
+                      style={(styles.verticalFlex, styles.text)}
+                      numberOfLines={1}>
+                      {attachment.file_name}
+                    </Text>
+                    <Text
+                      style={(styles.verticalFlex, styles.text)}
+                      numberOfLines={1}>
+                      ( {attachment.file_size})kb
+                    </Text>
+                  </View>
+                  <OpacityButton
+                    opacity={0.0}
+                    style={styles.closeButton}
+                    onPress={onPressFile}>
+                    <MaterialCommunityIcons
+                      name="download"
+                      color={theme.colors.primary}
+                      size={25}
+                    />
+                  </OpacityButton>
                 </View>
-                <OpacityButton opacity={0.0} style={styles.closeButton}>
-                  <MaterialCommunityIcons
-                    name="download"
-                    color={theme.colors.primary}
-                    size={25}
-                  />
-                </OpacityButton>
               </View>
-            </View>
+            </TouchableOpacity>
           );
         })}
       </View>
@@ -96,14 +118,14 @@ const RenderAttachments = props => {
 const IssuedCard = props => {
   const {storeKeeperDetails} = props;
 
-  const {created, contractor_name, storekeeper_remark, first_name, last_name} =
+  const {authorizeddate, storekeeper_remark, first_name, last_name} =
     storeKeeperDetails?.indent_details?.material_indent || {};
 
   return (
     <View style={styles.cardContainer}>
       <View style={styles.dataRow}>
         <Subheading> Issue Time:</Subheading>
-        <Text style={styles.title}> {created}</Text>
+        <Text>{dayjs(authorizeddate).format('  MMM D, YYYY,hh:mm A')}</Text>
       </View>
 
       <View style={styles.dataRow}>
@@ -133,7 +155,7 @@ const ListingCard = props => {
     <TouchableOpacity>
       <View style={styles.cardContainer}>
         <View style={styles.cardHeader}>
-          <Text style={styles.ID}>{indent_id}</Text>
+          <Text style={styles.ID}>Request ID :{indent_id}</Text>
           <View style={styles.statusContainer}>
             <Text style={[{color}, styles.status]}>{label}</Text>
           </View>
@@ -152,8 +174,7 @@ const ListingCard = props => {
           </View>
           <View style={styles.createdOn}>
             <Subheading> Created on:</Subheading>
-
-            <Text style={styles.title}>{created}</Text>
+            <Text>{dayjs(created).format('  MMM D, YYYY ,hh:mm A')}</Text>
           </View>
         </View>
       </View>

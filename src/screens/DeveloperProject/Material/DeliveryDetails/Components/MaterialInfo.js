@@ -138,7 +138,9 @@ const MaterialInfo = props => {
           </View>
         );
       })}
-      <RenderMaterialAttachments materialImages={material_images} />
+      {material_images?.length ? (
+        <RenderMaterialAttachments materialImages={material_images} />
+      ) : null}
     </View>
   );
 };

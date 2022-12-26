@@ -224,15 +224,14 @@ export default function useMaterialManagementActions() {
           }
         },
       }),
-    AddPR: params =>
+
+    AddPR: data =>
       dispatch({
         type: types.ADD_MATERIAL_PR,
         payload: async () => {
           try {
-            const response = _res(await AddPR(params));
-            const {data} = response;
-
-            return Promise.resolve(data);
+            const response = _res(await AddPR(data));
+            return Promise.resolve(response.data);
           } catch (error) {
             const message = _err(error);
             snackbar.showMessage({message, variant: 'error'});
@@ -240,6 +239,7 @@ export default function useMaterialManagementActions() {
           }
         },
       }),
+
     updatePR: params =>
       dispatch({
         type: types.GET_STORE_KEEPER_DETAILS,

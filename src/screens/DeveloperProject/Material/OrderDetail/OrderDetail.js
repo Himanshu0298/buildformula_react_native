@@ -30,10 +30,10 @@ function ChallanSection(props) {
 
   const {created} = item;
 
-  const challanId = item.id;
+  const materialId = item.id;
 
   const onUpdate = () => {
-    navigation.navigate('AddChallan', {challanId, item, orderNumber});
+    navigation.navigate('AddChallan', {materialId, item, orderNumber});
   };
 
   return (
@@ -48,7 +48,7 @@ function ChallanSection(props) {
             value: dayjs(created).format('DD MMM YYYY'),
           }}
         />
-        <MenuDialog onUpdate={onUpdate} onDelete={() => onDelete(challanId)} />
+        <MenuDialog onUpdate={onUpdate} onDelete={() => onDelete(materialId)} />
       </View>
     </View>
   );
@@ -239,7 +239,7 @@ function OrderDetail(props) {
             <Text style={{color: theme.colors.primary}}>Add Challan</Text>
           </OpacityButton>
         </View>
-        {materialOrderList?.map(item => {
+        {materialDeliveryChallan?.map(item => {
           return (
             <CommonCard
               {...props}
