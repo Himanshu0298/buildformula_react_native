@@ -30,6 +30,9 @@ import {
   GET_WORK_SUB_WORK_LIST,
   UPDATE_STORE_KEEPER_STATUS,
   GET_MATERIAL_INDENT_DETAILS,
+  DELETE_ISSUE,
+  ADD_ISSUE_REQUEST,
+  ADD_MATERIAL_ISSUE_REQUEST,
 } from '../actions/actionTypes';
 
 const initialState = {
@@ -205,8 +208,11 @@ const reducer = (state = initialState, action = {}) => {
     case `${DELETE_MATERIAL_PR_DETAILS}_PENDING`:
     case `${EDIT_MATERIAL_PR}_PENDING`:
     case `${EDIT_PR}_PENDING`:
+    case `${DELETE_ISSUE}_PENDING`:
     case `${CREATE_MATERIAL_PR}_PENDING`:
     case `${ADD_MATERIAL_PR}_PENDING`:
+    case `${ADD_ISSUE_REQUEST}_PENDING`:
+    case `${ADD_MATERIAL_ISSUE_REQUEST}_PENDING`:
     case `${ADD_MATERIAL_CHALLAN}_PENDING`:
     case `${ADD_DIRECT_GRN}_PENDING`:
     case `${ADD_DIRECT_GRN_SECOND}_PENDING`:
@@ -240,12 +246,15 @@ const reducer = (state = initialState, action = {}) => {
     case `${ADD_DIRECT_GRN}_FULFILLED`:
     case `${ADD_DIRECT_GRN_SECOND}_FULFILLED`:
     case `${CREATE_MATERIAL_PR}_FULFILLED`:
+    case `${ADD_ISSUE_REQUEST}_FULFILLED`:
+    case `${ADD_MATERIAL_ISSUE_REQUEST}_FULFILLED`:
     case `${EDIT_PR}_FULFILLED`:
     case `${EDIT_MATERIAL_PR}_FULFILLED`:
     case `${DELETE_MATERIAL_PR_CATEGORY}_FULFILLED`:
     case `${DELETE_MATERIAL_DIRECT_GRN}_FULFILLED`:
     case `${DELETE_MATERIAL_PR_ITEM}_FULFILLED`:
     case `${DELETE_MATERIAL_PR_DETAILS}_FULFILLED`:
+    case `${DELETE_ISSUE}_FULFILLED`:
     case `${UPDATE_DIRECT_GRN_STATUS}_FULFILLED`:
     case `${CREATE_STOREKEEPER_ORDER}_FULFILLED`:
     case `${UPDATE_STORE_KEEPER_STATUS}_FULFILLED`:
@@ -270,6 +279,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${ADD_MATERIAL_PR}_REJECTED`:
     case `${CREATE_MATERIAL_PR}_REJECTED`:
     case `${EDIT_PR}_REJECTED`:
+    case `${DELETE_ISSUE}_REJECTED`:
     case `${EDIT_MATERIAL_PR}_REJECTED`:
     case `${DELETE_MATERIAL_PR_DETAILS}_REJECTED`:
     case `${DELETE_MATERIAL_PR_ITEM}_REJECTED`:
@@ -285,6 +295,8 @@ const reducer = (state = initialState, action = {}) => {
     case `${GET_STORE_KEEPER_DETAILS}_REJECTED`:
     case `${CREATE_STOREKEEPER_ORDER}_REJECTED`:
     case `${UPDATE_STORE_KEEPER_STATUS}_REJECTED`:
+    case `${ADD_ISSUE_REQUEST}_REJECTED`:
+    case `${ADD_MATERIAL_ISSUE_REQUEST}_REJECTED`:
     case `${UPDATE_PR_STATUS}_REJECTED`: {
       return {
         ...state,

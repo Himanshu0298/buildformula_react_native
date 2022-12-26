@@ -24,10 +24,24 @@ import useMaterialManagementActions from 'redux/actions/materialManagementAction
 import {useSelector} from 'react-redux';
 import moment from 'moment';
 
+const INDENT_STATUS = {
+  pending: {label: 'Pending', color: 'rgba(72, 114, 244, 1)'},
+  approved: {label: 'Approved', color: '#07CA03'},
+  rejected: {label: 'Rejected', color: '#FF5D5D'},
+};
+const INDENT_TYPE = {
+  afm: {title: 'Issue Material'},
+  rm: {title: 'Return Material'},
+};
+
 const ListingCard = props => {
   const {item, navigation} = props;
 
   const {id, created, email, type, first_name, last_name, status} = item;
+
+  const {label, color} = INDENT_STATUS[status] || {};
+
+  const {title} = INDENT_TYPE[type] || {};
 
   const date = moment(created).format('ll');
 
@@ -38,18 +52,7 @@ const ListingCard = props => {
       <View style={styles.cardContainer}>
         <View style={styles.cardHeader}>
           <Text style={styles.ID}>{id}</Text>
-          <Text
-            style={
-              status === 'pending'
-                ? styles.pending
-                : status === 'rejected'
-                ? styles.rejected
-                : status === 'approved'
-                ? styles.approved
-                : null
-            }>
-            {status}
-          </Text>
+          <Caption style={{color}}>{label}</Caption>
         </View>
         <Divider />
         <View style={styles.cardDetails}>
@@ -61,7 +64,7 @@ const ListingCard = props => {
           </View>
           <View style={styles.cardHeader}>
             <Caption>{date}</Caption>
-            <Caption> {type}</Caption>
+            <Text> {title}</Text>
           </View>
         </View>
       </View>
@@ -199,15 +202,5 @@ const styles = StyleSheet.create({
   },
   detail: {
     marginLeft: 7,
-  },
-
-  pending: {
-    color: 'rgba(72, 114, 244, 1)',
-  },
-  rejected: {
-    color: 'rgba(255, 93, 93, 1)',
-  },
-  approved: {
-    color: 'rgba(7, 202, 3, 1)',
   },
 });

@@ -39,6 +39,9 @@ export default function useMaterialManagementActions() {
     getPRMaterialOrderList,
     updateStoreKeeperStatus,
     getIndentDetails,
+    deleteIssue,
+    addIssueRequest,
+    addMaterialIssueRequest,
   } = useMaterialManagement();
 
   return {
@@ -509,6 +512,51 @@ export default function useMaterialManagementActions() {
         payload: async () => {
           try {
             const response = _res(await getIndentDetails(data));
+            return Promise.resolve(response.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    deleteIssue: data =>
+      dispatch({
+        type: types.DELETE_ISSUE,
+        payload: async () => {
+          try {
+            const res = _res(await deleteIssue(data));
+            snackbar.showMessage({message: res.msg});
+            return Promise.resolve(res.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    addIssueRequest: data =>
+      dispatch({
+        type: types.ADD_ISSUE_REQUEST,
+        payload: async () => {
+          try {
+            const response = _res(await addIssueRequest(data));
+            return Promise.resolve(response);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    addMaterialIssueRequest: data =>
+      dispatch({
+        type: types.ADD_ISSUE_REQUEST,
+        payload: async () => {
+          try {
+            const response = _res(await addMaterialIssueRequest(data));
             return Promise.resolve(response.data);
           } catch (error) {
             const message = _err(error);

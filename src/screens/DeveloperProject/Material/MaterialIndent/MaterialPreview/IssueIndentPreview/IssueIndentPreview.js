@@ -16,6 +16,13 @@ import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 import {useSelector} from 'react-redux';
 import moment from 'moment';
+import {useAlert} from 'components/Atoms/Alert';
+
+const INDENT_STATUS = {
+  pending: {label: 'Pending', color: 'rgba(72, 114, 244, 1)'},
+  approved: {label: 'Approved', color: '#07CA03'},
+  rejected: {label: 'Rejected', color: '#FF5D5D'},
+};
 
 const ListingCard = props => {
   const {details} = props;
@@ -24,29 +31,14 @@ const ListingCard = props => {
 
   const date = moment(created).format('llll');
 
+  const {label, color} = INDENT_STATUS[status] || {};
+
   return (
     <TouchableOpacity>
       <View style={styles.cardContainer}>
         <View style={styles.cardHeader}>
           <Text style={styles.ID}>{id}</Text>
-          {/* <Caption
-              style={{
-                color: PR_REQUEST_STATUS[status]?.color,
-              }}>
-              {PR_REQUEST_STATUS[status]?.label}
-            </Caption> */}
-          <Text
-            style={
-              status === 'pending'
-                ? styles.pending
-                : status === 'rejected'
-                ? styles.rejected
-                : status === 'approved'
-                ? styles.approved
-                : null
-            }>
-            {status}
-          </Text>
+          <Caption style={{color}}>{label}</Caption>
         </View>
         <Divider />
         <View style={styles.cardDetails}>
@@ -146,12 +138,17 @@ function IssueIndentPreview(props) {
 
   const {id} = route?.params || {};
 
-  const {getIndentDetails} = useMaterialManagementActions();
+  const alert = useAlert();
+
+  const {getIndentDetails, deleteIssue, getMaterialIndentList} =
+    useMaterialManagementActions();
 
   const {selectedProject} = useSelector(s => s.project);
   const {indentDetails} = useSelector(s => s.materialManagement);
 
   const details = indentDetails?.material_indent;
+
+  const {status, verification_code} = details || {};
 
   const materialData = indentDetails?.material_indent_details;
 
@@ -164,6 +161,28 @@ function IssueIndentPreview(props) {
     getIndentDetails({
       project_id: selectedProject.id,
       material_indent_id: id,
+    });
+  };
+
+  const getList = () => {
+    getMaterialIndentList({
+      project_id: selectedProject.id,
+    });
+  };
+
+  const handleDelete = i => {
+    alert.show({
+      title: 'Confirm',
+      message: 'Are you sure you want to delete?',
+      confirmText: 'Delete',
+      onConfirm: () => {
+        deleteIssue({
+          material_indent_id: id,
+          project_id: selectedProject.id,
+        });
+        getList();
+        navigation.goBack();
+      },
     });
   };
 
@@ -180,19 +199,49 @@ function IssueIndentPreview(props) {
           />
           <Subheading style={styles.headerText}>Issue Request</Subheading>
         </View>
-        <View style={styles.statusContainer}>
-          <OpacityButton
-            color={theme.colors.primary}
-            style={styles.opacity}
-            opacity={0.18}
-            onPress={() => {
-              navigation.navigate('CreateIssueIndent');
-            }}>
-            <MaterialIcons name="edit" color={theme.colors.primary} size={13} />
-          </OpacityButton>
-        </View>
+        {verification_code ? (
+          <View style={styles.statusContainer}>
+            <OpacityButton
+              color={theme.colors.error}
+              style={styles.opacity}
+              opacity={0.18}
+              onPress={handleDelete}>
+              <MaterialIcons
+                name="delete"
+                color={theme.colors.error}
+                size={13}
+              />
+            </OpacityButton>
+          </View>
+        ) : null}
+
+        {status === 'pending' ? (
+          <View style={styles.statusContainer}>
+            <OpacityButton
+              color={theme.colors.primary}
+              style={styles.opacity}
+              opacity={0.18}
+              onPress={() => {
+                navigation.navigate('CreateIssueIndent', {id});
+              }}>
+              <MaterialIcons
+                name="edit"
+                color={theme.colors.primary}
+                size={13}
+              />
+            </OpacityButton>
+          </View>
+        ) : null}
       </View>
-      <ScrollView>
+      {status === 'approved' ? (
+        <View style={styles.verificationContainer}>
+          <Subheading style={{color: theme.colors.primary}}>
+            Verification Code :
+          </Subheading>
+          <Text style={{color: theme.colors.primary}}>{verification_code}</Text>
+        </View>
+      ) : null}
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View>
           <ListingCard details={details} />
         </View>
@@ -316,13 +365,11 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     justifyContent: 'flex-end',
   },
-  pending: {
-    color: 'rgba(72, 114, 244, 1)',
-  },
-  rejected: {
-    color: 'rgba(255, 93, 93, 1)',
-  },
-  approved: {
-    color: 'rgba(7, 202, 3, 1)',
+
+  verificationContainer: {
+    alignSelf: 'flex-end',
+    flexDirection: 'row',
+    marginBottom: 10,
+    alignItems: 'center',
   },
 });

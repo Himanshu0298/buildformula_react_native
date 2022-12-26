@@ -141,7 +141,6 @@ import TermsAndConditions from 'screens/DeveloperProject/Material/MaterialPI/Ter
 import AddPIMaterialList from 'screens/DeveloperProject/Material/MaterialPI/MaterialList/AddPIMaterialList';
 import AddChallan from 'screens/DeveloperProject/Material/DeliveryDetails/AddChallan';
 
-import AddMaterialIndent from 'screens/DeveloperProject/Material/MaterialIndent/IssueIndent/IssueMaterialIndent/AddMaterialIndent';
 import CreateIssueIndent from 'screens/DeveloperProject/Material/MaterialIndent/IssueIndent/AddIssueIndent';
 import CreateReturnIndent from 'screens/DeveloperProject/Material/MaterialIndent/ReturnIndent/AddReturnIndent/CreateReturnIndent';
 
@@ -448,10 +447,7 @@ function AppStackNavigator() {
                 name="AddReturnMaterialList"
                 component={AddReturnMaterialList}
               />
-              <Stack.Screen
-                name="AddMaterialIndent"
-                component={AddMaterialIndent}
-              />
+
               <Stack.Screen
                 name="AddReturnMaterial"
                 component={AddReturnMaterialIndent}
