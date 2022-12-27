@@ -3,7 +3,9 @@ import ProjectLayout from 'components/Molecules/Layout/ProjectLayout';
 import AddReturnMaterialList from './AddReturnMaterialList';
 
 export default props => {
-  <ProjectLayout {...props} header>
-    <AddReturnMaterialList {...props} />
-  </ProjectLayout>;
+  return (
+    <ProjectLayout {...props} header>
+      <AddReturnMaterialList {...props} />
+    </ProjectLayout>
+  );
 };

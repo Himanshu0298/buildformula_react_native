@@ -42,6 +42,8 @@ export default function useMaterialManagementActions() {
     deleteIssue,
     addIssueRequest,
     addMaterialIssueRequest,
+    addReturnMaterialIndent,
+    addReturnMaterial,
   } = useMaterialManagement();
 
   return {
@@ -557,6 +559,35 @@ export default function useMaterialManagementActions() {
         payload: async () => {
           try {
             const response = _res(await addMaterialIssueRequest(data));
+            return Promise.resolve(response.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    addReturnMaterialIndent: data =>
+      dispatch({
+        type: types.ADD_RETURN_REQUEST,
+        payload: async () => {
+          try {
+            const response = _res(await addReturnMaterialIndent(data));
+            return Promise.resolve(response);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    addReturnMaterial: data =>
+      dispatch({
+        type: types.ADD_MATERIAL_ISSUE_REQUEST,
+        payload: async () => {
+          try {
+            const response = _res(await addReturnMaterial(data));
             return Promise.resolve(response.data);
           } catch (error) {
             const message = _err(error);

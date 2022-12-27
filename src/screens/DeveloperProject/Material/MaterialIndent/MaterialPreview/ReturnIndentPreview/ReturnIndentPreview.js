@@ -19,11 +19,18 @@ import {getShadow} from 'utils';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FileIcon from 'assets/images/file_icon.png';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
+import moment from 'moment';
 
 const attachments = [
   {label: 'filename-apartment-2.pdf'},
   {label: 'filename-apartment-2.pdf'},
 ];
+
+const INDENT_STATUS = {
+  pending: {label: 'Pending', color: 'rgba(72, 114, 244, 1)'},
+  approved: {label: 'Approved', color: '#07CA03'},
+  rejected: {label: 'Rejected', color: '#FF5D5D'},
+};
 
 const MATERIAL_DATA = [
   {
@@ -53,44 +60,37 @@ const MATERIAL_DATA = [
 ];
 
 const ListingCard = props => {
-  const {status} = props;
+  const {details} = props;
+
+  const {id, status, email, first_name, last_name, created} = details || {};
+
+  const {label, color} = INDENT_STATUS[status] || {};
+
+  const date = moment(created).format('llll');
+
   return (
     <TouchableOpacity>
       <View style={styles.cardContainer}>
         <View style={styles.cardHeader}>
-          <Text style={styles.ID}>13</Text>
-          {/* <Caption
-              style={{
-                color: PR_REQUEST_STATUS[status]?.color,
-              }}>
-              {PR_REQUEST_STATUS[status]?.label}
-            </Caption> */}
-          <Text
-            style={
-              status === 'Pending'
-                ? styles.pending
-                : status === 'Rejected'
-                ? styles.rejected
-                : status === 'Approved'
-                ? styles.approved
-                : null
-            }>
-            Pending
-          </Text>
+          <Text style={styles.ID}>{id}</Text>
+          <Caption style={{color}}>{label}</Caption>
         </View>
         <Divider />
         <View style={styles.cardDetails}>
           <View style={styles.dataRow}>
             <Subheading>Create by:</Subheading>
-            <Subheading>Ronak Vagehni</Subheading>
+            <Subheading>
+              {first_name}
+              {last_name}
+            </Subheading>
           </View>
           <View style={styles.cardContent}>
-            <Caption>ronak@buildformula.com</Caption>
+            <Caption>{email}</Caption>
           </View>
           <View style={styles.createdOn}>
             <Text> Created on:</Text>
 
-            <Text>3rd Sep, 2022 15:33 PM</Text>
+            <Text>{date}</Text>
           </View>
         </View>
       </View>

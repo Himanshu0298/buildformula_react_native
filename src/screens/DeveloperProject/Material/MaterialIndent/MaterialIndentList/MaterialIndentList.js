@@ -137,7 +137,6 @@ function MaterialIndentListing(props) {
       </View>
       <FAB.Group
         open={selectDialog}
-        // style={styles.fab}
         fabStyle={{
           backgroundColor: selectDialog ? Colors.white : colors.primary,
         }}

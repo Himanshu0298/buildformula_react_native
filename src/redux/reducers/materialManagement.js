@@ -32,6 +32,7 @@ import {
   GET_MATERIAL_INDENT_DETAILS,
   DELETE_ISSUE,
   ADD_ISSUE_REQUEST,
+  ADD_RETURN_REQUEST,
   ADD_MATERIAL_ISSUE_REQUEST,
 } from '../actions/actionTypes';
 
@@ -212,6 +213,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${CREATE_MATERIAL_PR}_PENDING`:
     case `${ADD_MATERIAL_PR}_PENDING`:
     case `${ADD_ISSUE_REQUEST}_PENDING`:
+    case `${ADD_RETURN_REQUEST}_PENDING`:
     case `${ADD_MATERIAL_ISSUE_REQUEST}_PENDING`:
     case `${ADD_MATERIAL_CHALLAN}_PENDING`:
     case `${ADD_DIRECT_GRN}_PENDING`:
@@ -247,6 +249,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${ADD_DIRECT_GRN_SECOND}_FULFILLED`:
     case `${CREATE_MATERIAL_PR}_FULFILLED`:
     case `${ADD_ISSUE_REQUEST}_FULFILLED`:
+    case `${ADD_RETURN_REQUEST}_FULFILLED`:
     case `${ADD_MATERIAL_ISSUE_REQUEST}_FULFILLED`:
     case `${EDIT_PR}_FULFILLED`:
     case `${EDIT_MATERIAL_PR}_FULFILLED`:
@@ -278,6 +281,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${ADD_MATERIAL_CHALLAN}_REJECTED`:
     case `${ADD_MATERIAL_PR}_REJECTED`:
     case `${CREATE_MATERIAL_PR}_REJECTED`:
+    case `${ADD_MATERIAL_ISSUE_REQUEST}_REJECTED`:
     case `${EDIT_PR}_REJECTED`:
     case `${DELETE_ISSUE}_REJECTED`:
     case `${EDIT_MATERIAL_PR}_REJECTED`:
@@ -296,7 +300,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${CREATE_STOREKEEPER_ORDER}_REJECTED`:
     case `${UPDATE_STORE_KEEPER_STATUS}_REJECTED`:
     case `${ADD_ISSUE_REQUEST}_REJECTED`:
-    case `${ADD_MATERIAL_ISSUE_REQUEST}_REJECTED`:
+    case `${ADD_RETURN_REQUEST}_REJECTED`:
     case `${UPDATE_PR_STATUS}_REJECTED`: {
       return {
         ...state,

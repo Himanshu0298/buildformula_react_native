@@ -141,8 +141,8 @@ import TermsAndConditions from 'screens/DeveloperProject/Material/MaterialPI/Ter
 import AddPIMaterialList from 'screens/DeveloperProject/Material/MaterialPI/MaterialList/AddPIMaterialList';
 import AddChallan from 'screens/DeveloperProject/Material/DeliveryDetails/AddChallan';
 
-import CreateIssueIndent from 'screens/DeveloperProject/Material/MaterialIndent/IssueIndent/AddIssueIndent';
-import CreateReturnIndent from 'screens/DeveloperProject/Material/MaterialIndent/ReturnIndent/AddReturnIndent/CreateReturnIndent';
+import CreateIssueIndent from 'screens/DeveloperProject/Material/MaterialIndent/IssueIndent/CreateIssueIndent';
+import CreateReturnIndent from 'screens/DeveloperProject/Material/MaterialIndent/ReturnIndent/AddReturnIndent';
 
 import IssueIndentPreview from 'screens/DeveloperProject/Material/MaterialIndent/MaterialPreview/IssueIndentPreview';
 import ReturnIndentPreview from 'screens/DeveloperProject/Material/MaterialIndent/MaterialPreview/ReturnIndentPreview';
@@ -162,8 +162,7 @@ import VehicleInfo from 'screens/DeveloperProject/Material/MaterialGRN/Component
 
 import AddReturnMaterialIndent from 'screens/DeveloperProject/Material/MaterialIndent/ReturnIndent/ReturnMaterialIndent/AddReturnMaterial';
 import AddMaterialIndentList from 'screens/DeveloperProject/Material/MaterialIndent/IssueIndent/IssueMaterialIndent';
-import AddReturnMaterialList from 'screens/DeveloperProject/Material/MaterialIndent/ReturnIndent/ReturnMaterialIndent/AddReturnMaterialList';
-import AddAttachments from 'screens/DeveloperProject/Material/MaterialIndent/ReturnIndent/AddAttachments/AddAttachments';
+import AddAttachments from 'screens/DeveloperProject/Material/MaterialIndent/ReturnIndent/AddAttachments';
 import MaterialInventoryList from 'screens/DeveloperProject/Material/MaterialInventory/MaterialInventoryList';
 import MaterialInventorySubList from 'screens/DeveloperProject/Material/MaterialInventory/MaterialInventorySubList';
 import InventorySubListPreview from 'screens/DeveloperProject/Material/MaterialInventory/InventorySubListPreview';
@@ -199,6 +198,7 @@ import DrawerContent from './Components/DrawerContent';
 import DocumentGenerater from 'screens/DeveloperProject/DocumentGenerater';
 import DocumentDownload from 'screens/DeveloperProject/DocumentGenerater/Documents/DocumentDownload';
 import StoreKeeperList from 'screens/DeveloperProject/Material/StoreKeeper/StoreKeeperList';
+import AddReturnMaterialList from 'screens/DeveloperProject/Material/MaterialIndent/ReturnIndent/ReturnMaterialIndent';
 
 /** *********** Developer Project Sub Screens End   ************ */
 
@@ -447,6 +447,7 @@ function AppStackNavigator() {
                 name="AddReturnMaterialList"
                 component={AddReturnMaterialList}
               />
+              <Stack.Screen name="AddAttachments" component={AddAttachments} />
 
               <Stack.Screen
                 name="AddReturnMaterial"

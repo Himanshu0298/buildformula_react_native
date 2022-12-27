@@ -1,13 +1,7 @@
-import {
-  StyleSheet,
-  View,
-  SafeAreaView,
-  Modal,
-  ScrollView,
-  TouchableOpacity,
-} from 'react-native';
+/* eslint-disable react-native/no-inline-styles */
+import {StyleSheet, View, SafeAreaView, Modal, ScrollView} from 'react-native';
 import React, {useEffect, useMemo} from 'react';
-import {Caption, Subheading, Text} from 'react-native-paper';
+import {Button, Caption, Subheading, Text} from 'react-native-paper';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useAlert} from 'components/Atoms/Alert';
@@ -147,7 +141,7 @@ function CardListing(props) {
               color="#4872f4"
               opacity={0.18}
               style={styles.OpacityButton}
-              onPress={() => toggleEditDialog(index)}>
+              onPress={toggleEditDialog}>
               <MaterialIcons name="edit" color="#4872f4" size={13} />
             </OpacityButton>
           </View>
@@ -155,7 +149,7 @@ function CardListing(props) {
             <OpacityButton
               color="#FF5D5D"
               opacity={0.18}
-              onPress={() => handleDelete(index)}
+              onPress={() => handleDelete(index, item)}
               style={styles.OpacityButton}>
               <MaterialIcons name="delete" color="#FF5D5D" size={13} />
             </OpacityButton>
@@ -192,7 +186,9 @@ function AddMaterialIndentList(props) {
   const [addDialog, setAddDialog] = React.useState(false);
   const [selectedMaterial, setSelectedMaterial] = React.useState();
 
-  const {indentDetails} = useSelector(s => s.materialManagement);
+  const {indentDetails, materialSubCategory} = useSelector(
+    s => s.materialManagement,
+  );
 
   const materials = indentDetails?.material_indent_details;
 
@@ -210,6 +206,29 @@ function AddMaterialIndentList(props) {
       project_id: selectedProject.id,
       material_indent_id: id,
     });
+
+  const initialValues = useMemo(() => {
+    if (selectedMaterial) {
+      const {
+        material_category_id,
+        material_sub_category_id,
+        material_units_id,
+        quantity,
+      } = selectedMaterial;
+
+      const selectedSubCategory = materialSubCategory?.find(
+        i => i.id === material_sub_category_id,
+      );
+
+      return {
+        material_category_id,
+        material_sub_category_id,
+        material_units_id: material_units_id || selectedSubCategory?.unit_id,
+        quantity,
+      };
+    }
+    return {};
+  }, [materialSubCategory, selectedMaterial]);
 
   const handleSave = async values => {
     const restData = {
@@ -229,90 +248,94 @@ function AddMaterialIndentList(props) {
 
   const navToPreview = () => navigation.navigate('IssueIndentPreview', {id});
 
-  const editDialog = index => {
-    setSelectedMaterial(index);
+  const editDialog = item => {
+    setSelectedMaterial(item);
     toggleAddDialog();
   };
 
-  const handleDelete = index => {
+  const handleDelete = (index, item) => {
     alert.show({
       title: 'Confirm',
       message: 'Are you sure you want to delete?',
       confirmText: 'Delete',
       onConfirm: () => {
-        const _materials = [...selectedMaterial];
+        const _materials = [...materials];
         _materials?.splice(index, 1);
         setSelectedMaterial(_materials);
+        // getDetails();
       },
     });
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.mainContainer}>
+    <View style={styles.container}>
+      <View style={{flexGrow: 1}}>
         <View style={styles.headerContainer}>
-          <Text style={styles.headerText}>Add Material</Text>
+          <Text style={styles.headerText}>
+            {edit ? ' Edit Material' : 'Add Material'}
+          </Text>
         </View>
         <View style={styles.bodyContent}>
-          <TouchableOpacity style={styles.btnAddMore} onPress={toggleAddDialog}>
-            <MaterialIcons name="add" color="#4872f4" size={17} />
-            <Text style={styles.add}>Add Material</Text>
-          </TouchableOpacity>
-
-          <View style={styles.listContainer}>
-            <ScrollView showsVerticalScrollIndicator={false}>
-              {materials?.map((item, index) => {
-                return (
-                  <CardListing
-                    item={item}
-                    index={index}
-                    toggleEditDialog={editDialog}
-                    handleDelete={handleDelete}
-                  />
-                );
-              })}
-            </ScrollView>
-          </View>
+          <Button
+            icon="plus"
+            mode="outlined"
+            onPress={toggleAddDialog}
+            contentStyle={{paddingVertical: 10, borderColor: '#4872f4'}}>
+            Add Material
+          </Button>
         </View>
 
-        <ActionButtons
-          cancelLabel="Previous"
-          submitLabel="Next"
-          onCancel={navigation.goBack}
-          onSubmit={navToPreview}
-        />
-
-        {addDialog ? (
-          <Formik
-            enableReinitialize
-            validateOnBlur={false}
-            validateOnChange={false}
-            initialValues={{}}
-            onSubmit={handleSave}>
-            {formikProps => (
-              <AddMaterialDialog
-                visible={addDialog}
-                handleClose={toggleAddDialog}
-                formikProps={formikProps}
-                edit={edit}
-              />
-            )}
-          </Formik>
-        ) : null}
+        <View style={{flexGrow: 1, flex: 1}}>
+          <ScrollView showsVerticalScrollIndicator={false}>
+            {materials?.map((item, index) => {
+              return (
+                <CardListing
+                  key={item.id.toString()}
+                  item={item}
+                  index={index}
+                  toggleEditDialog={editDialog}
+                  handleDelete={handleDelete}
+                />
+              );
+            })}
+          </ScrollView>
+        </View>
       </View>
-    </SafeAreaView>
+
+      <ActionButtons
+        cancelLabel="Previous"
+        submitLabel="Next"
+        onCancel={navigation.goBack}
+        onSubmit={navToPreview}
+      />
+
+      {addDialog ? (
+        <Formik
+          enableReinitialize
+          validateOnBlur={false}
+          validateOnChange={false}
+          initialValues={initialValues}
+          onSubmit={handleSave}>
+          {formikProps => (
+            <AddMaterialDialog
+              visible={addDialog}
+              handleClose={toggleAddDialog}
+              formikProps={formikProps}
+              edit={edit}
+            />
+          )}
+        </Formik>
+      ) : null}
+    </View>
   );
 }
 
 export default AddMaterialIndentList;
 
 const styles = StyleSheet.create({
-  mainContainer: {
-    margin: 10,
-  },
-
   container: {
     flexGrow: 1,
+    margin: 10,
   },
   headerText: {
     fontSize: 18,
@@ -338,36 +361,18 @@ const styles = StyleSheet.create({
   lightData: {
     fontSize: 13,
   },
-  btnAddMore: {
-    borderWidth: 0.4,
-    borderColor: 'rgba(72, 114, 244, 1)',
-    color: 'blue',
-    padding: 19,
-    marginTop: 15,
-    borderRadius: 5,
-    flexDirection: 'row',
-    justifyContent: 'center',
-  },
-  add: {
-    color: '#4872f4',
-  },
-
   buttonContainer: {
     flexDirection: 'row',
     marginRight: 10,
     alignItems: 'center',
   },
-  listContainer: {
-    flexGrow: 1,
-  },
+
   inputStyles: {
     marginVertical: 8,
   },
 
   formContainer: {
-    flexGrow: 1,
-    margin: 15,
-    paddingVertical: 20,
+    margin: 10,
   },
   formSubContainer: {
     flexGrow: 1,
@@ -376,5 +381,8 @@ const styles = StyleSheet.create({
   OpacityButton: {
     borderRadius: 20,
     marginLeft: 10,
+  },
+  headerContainer: {
+    marginBottom: 10,
   },
 });

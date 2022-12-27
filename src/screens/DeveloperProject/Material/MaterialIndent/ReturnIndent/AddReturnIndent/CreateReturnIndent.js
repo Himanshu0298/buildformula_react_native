@@ -1,19 +1,60 @@
 import {StyleSheet, View} from 'react-native';
-import React from 'react';
+import React, {useMemo} from 'react';
+import * as Yup from 'yup';
+
 import {Formik} from 'formik';
 import RenderSelect from 'components/Atoms/RenderSelect';
 import RenderTextBox from 'components/Atoms/RenderTextbox';
 import ActionButtons from 'components/Atoms/ActionButtons';
 import {Subheading} from 'react-native-paper';
+import {useSelector} from 'react-redux';
+import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 
-// const schema = Yup.object().shape({
-//   subject: Yup.string().label('subject').required('Subject is Required'),
-// });
+const schema = Yup.object().shape({
+  vendor_id: Yup.string().label('vendor_id').required('Vendor is Required'),
+  remark: Yup.string().label('remark').required('Remark is Required'),
+});
 
 function CreateReturnIndent(props) {
-  const {navigation} = props;
+  const {navigation, id} = props;
 
-  const onSubmit = () => console.log('===========> ');
+  const edit = Boolean(id);
+
+  const {getVendorList, addReturnMaterialIndent} =
+    useMaterialManagementActions();
+
+  const {vendorOptions} = useSelector(s => s.materialManagement);
+
+  const {selectedProject} = useSelector(s => s.project);
+  const projectId = selectedProject.id;
+
+  React.useEffect(() => {
+    getVendorList({project_id: projectId});
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const constructorOptions = useMemo(() => {
+    return vendorOptions?.map(i => ({
+      label: `${i.contractor_name} - [${i.contractor_email}]`,
+      value: i.id,
+    }));
+  }, [vendorOptions]);
+
+  const onSubmit = async values => {
+    const data = {
+      project_id: projectId,
+      remark: values.remark,
+      vendor_id: values.vendor_id,
+    };
+
+    const {value} = await addReturnMaterialIndent(data);
+
+    navigation.navigate('AddReturnMaterialList', {
+      edit,
+      id: value.material_indent_id,
+    });
+  };
 
   return (
     <View style={styles.container}>
@@ -25,33 +66,33 @@ function CreateReturnIndent(props) {
         validateOnBlur={false}
         validateOnChange={false}
         initialValues={{}}
-        // validationSchema={schema}
+        validationSchema={schema}
         onSubmit={onSubmit}>
         {({values, handleChange, handleBlur, setFieldValue, handleSubmit}) => {
           return (
             <View style={styles.formContainer}>
-              <View style={styles.formContainer}>
+              <View style={styles.formSubContainer}>
                 <RenderSelect
-                  name="contractor_id"
+                  name="vendor_id"
                   label="Requirement For Vendor"
-                  value={values.contractor_id}
-                  options={{}}
+                  value={values.vendor_id}
+                  options={constructorOptions}
                   containerStyles={styles.inputStyles}
-                  onBlur={handleBlur('contractor_id')}
+                  onBlur={handleBlur('vendor_id')}
                   onSelect={value => {
-                    setFieldValue('contractor_id', value);
+                    setFieldValue('vendor_id', value);
                   }}
                 />
 
                 <RenderTextBox
-                  name="remarks"
+                  name="remark"
                   blurOnSubmit={false}
                   numberOfLines={10}
                   label="Remark"
                   containerStyles={styles.inputStyles}
-                  value={values.remarks}
-                  onChangeText={handleChange('remarks')}
-                  onBlur={handleBlur('remarks')}
+                  value={values.remark}
+                  onChangeText={handleChange('remark')}
+                  onBlur={handleBlur('remark')}
                   onSubmitEditing={handleSubmit}
                 />
               </View>
@@ -59,7 +100,7 @@ function CreateReturnIndent(props) {
                 cancelLabel="Cancel"
                 submitLabel="Next"
                 onCancel={navigation.goBack}
-                onSubmit={() => navigation.navigate('AddReturnMaterialList')}
+                onSubmit={handleSubmit}
               />
             </View>
           );
@@ -75,19 +116,22 @@ const styles = StyleSheet.create({
   container: {
     margin: 10,
     flexGrow: 1,
-    padding: 15,
   },
-  headerContainer: {
-    marginTop: 30,
-    marginBottom: 10,
-  },
+  // headerContainer: {
+  //   margin: 10,
+  // },
   headerText: {
     fontSize: 18,
   },
   inputStyles: {
     marginVertical: 8,
   },
+
   formContainer: {
+    flexGrow: 1,
+    marginBottom: 10,
+  },
+  formSubContainer: {
     flexGrow: 1,
   },
 });
