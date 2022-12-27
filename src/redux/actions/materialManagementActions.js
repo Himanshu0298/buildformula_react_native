@@ -41,6 +41,13 @@ export default function useMaterialManagementActions() {
     AddPR,
     addDirectGRNVehicleInfo,
     deleteChallan,
+    getIndentDetails,
+    deleteIssue,
+    addIssueRequest,
+    addMaterialIssueRequest,
+    addReturnMaterialIndent,
+    addReturnMaterial,
+    addReturnAttachment,
   } = useMaterialManagement();
 
   return {
@@ -567,6 +574,111 @@ export default function useMaterialManagementActions() {
           try {
             const response = _res(await getMaterialIndentList(data));
             return Promise.resolve(response.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    getIndentDetails: data =>
+      dispatch({
+        type: types.GET_MATERIAL_INDENT_DETAILS,
+        payload: async () => {
+          try {
+            const response = _res(await getIndentDetails(data));
+            return Promise.resolve(response.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    deleteIssue: data =>
+      dispatch({
+        type: types.DELETE_ISSUE,
+        payload: async () => {
+          try {
+            const res = _res(await deleteIssue(data));
+            snackbar.showMessage({message: res.msg});
+            return Promise.resolve(res.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    addIssueRequest: data =>
+      dispatch({
+        type: types.ADD_ISSUE_REQUEST,
+        payload: async () => {
+          try {
+            const response = _res(await addIssueRequest(data));
+            return Promise.resolve(response);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    addMaterialIssueRequest: data =>
+      dispatch({
+        type: types.ADD_ISSUE_REQUEST,
+        payload: async () => {
+          try {
+            const response = _res(await addMaterialIssueRequest(data));
+            return Promise.resolve(response.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    addReturnMaterialIndent: data =>
+      dispatch({
+        type: types.ADD_RETURN_REQUEST,
+        payload: async () => {
+          try {
+            const response = _res(await addReturnMaterialIndent(data));
+            return Promise.resolve(response);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    addReturnMaterial: data =>
+      dispatch({
+        type: types.ADD_MATERIAL_ISSUE_REQUEST,
+        payload: async () => {
+          try {
+            const response = _res(await addReturnMaterial(data));
+            return Promise.resolve(response.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    addReturnAttachment: formData =>
+      dispatch({
+        type: types.UPDATE_PR_STATUS,
+        payload: async () => {
+          try {
+            const response = _res(await addReturnAttachment(formData));
+            const {data} = response;
+
+            return Promise.resolve(data);
           } catch (error) {
             const message = _err(error);
             snackbar.showMessage({message, variant: 'error'});
