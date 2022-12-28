@@ -45,7 +45,11 @@ const ListingCard = props => {
 
   const date = moment(created).format('ll');
 
-  const navToPreview = () => navigation.navigate('IssueIndentPreview', {id});
+  const navToPreview = () => {
+    if (type === 'rm') {
+      navigation.navigate('ReturnIndentPreview', {id});
+    } else navigation.navigate('IssueIndentPreview', {id});
+  };
 
   return (
     <TouchableOpacity onPress={navToPreview}>
@@ -83,7 +87,7 @@ function MaterialIndentListing(props) {
   const {selectedProject} = useSelector(s => s.project);
   const {materialIndentList} = useSelector(s => s.materialManagement);
 
-  const indent = materialIndentList?.indentlist.sort((a, b) => b.id - a.id);
+  const indent = materialIndentList?.indentlist?.sort((a, b) => b.id - a.id);
 
   useEffect(() => {
     getList();
@@ -144,6 +148,9 @@ function MaterialIndentListing(props) {
         small
         onPress={toggleSelectDialog}
         actions={FAB_ACTIONS}
+        onStateChange={() => {
+          console.log('-----> onStateChange');
+        }}
       />
     </View>
   );

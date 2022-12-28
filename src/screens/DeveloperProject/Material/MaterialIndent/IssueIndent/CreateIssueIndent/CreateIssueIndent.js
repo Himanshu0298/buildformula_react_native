@@ -7,9 +7,9 @@ import RenderTextBox from 'components/Atoms/RenderTextbox';
 import ActionButtons from 'components/Atoms/ActionButtons';
 import RenderDatePicker from 'components/Atoms/RenderDatePicker';
 import {useSelector} from 'react-redux';
-import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 import dayjs from 'dayjs';
 import Header from 'screens/DeveloperProject/Material/CommonComponents/Header';
+import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 
 const schema = Yup.object().shape({
   vendor_id: Yup.string().label('vendor_id').required('Vendor is Required'),
@@ -17,7 +17,11 @@ const schema = Yup.object().shape({
 });
 
 const CreateIssueIndent = props => {
-  const {navigation, id} = props;
+  const {navigation, route} = props;
+
+  const {id, indentDetails} = route.params || {};
+
+  const details = indentDetails?.material_indent;
 
   const edit = Boolean(id);
 
@@ -47,6 +51,18 @@ const CreateIssueIndent = props => {
     return workOptions?.map(i => ({label: `{${i.title}}`, value: i.id}));
   }, [workOptions]);
 
+  const initialValues = React.useMemo(() => {
+    if (edit) {
+      const {contractor_name: vendor_id, requred_date, remark} = details;
+      return {
+        vendor_id,
+        requred_date,
+        remark,
+      };
+    }
+    return {};
+  }, [details, edit]);
+
   const onSubmit = async values => {
     const data = {material_indent_id: id, project_id: projectId, ...values};
 
@@ -66,7 +82,7 @@ const CreateIssueIndent = props => {
         enableReinitialize
         validateOnBlur={false}
         validateOnChange={false}
-        initialValues={{}}
+        initialValues={initialValues}
         validationSchema={schema}
         onSubmit={onSubmit}>
         {({
@@ -117,14 +133,14 @@ const CreateIssueIndent = props => {
                   }}
                 />
                 <RenderTextBox
-                  name="remarks"
+                  name="remark"
                   blurOnSubmit={false}
                   numberOfLines={7}
                   label="Remark"
                   containerStyles={styles.inputStyles}
-                  value={values.remarks}
-                  onChangeText={handleChange('remarks')}
-                  onBlur={handleBlur('remarks')}
+                  value={values.remark}
+                  onChangeText={handleChange('remark')}
+                  onBlur={handleBlur('remark')}
                   onSubmitEditing={handleSubmit}
                 />
               </View>

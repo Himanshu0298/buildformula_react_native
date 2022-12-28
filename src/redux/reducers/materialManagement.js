@@ -36,6 +36,7 @@ import {
   ADD_MATERIAL_ISSUE_REQUEST,
   ADD_DIRECT_GRN_VEHICLE_INFO,
   DELETE_CHALLAN,
+  ADD_ATTACHMENT,
 } from '../actions/actionTypes';
 
 const initialState = {
@@ -214,6 +215,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${DELETE_MATERIAL_PR_DETAILS}_PENDING`:
     case `${EDIT_MATERIAL_PR}_PENDING`:
     case `${EDIT_PR}_PENDING`:
+    case `${ADD_ATTACHMENT}_PENDING`:
     case `${DELETE_ISSUE}_PENDING`:
     case `${DELETE_CHALLAN}_PENDING`:
     case `${CREATE_MATERIAL_PR}_PENDING`:
@@ -261,6 +263,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${ADD_MATERIAL_ISSUE_REQUEST}_FULFILLED`:
     case `${EDIT_PR}_FULFILLED`:
     case `${DELETE_CHALLAN}_FULFILLED`:
+    case `${ADD_ATTACHMENT}_FULFILLED`:
     case `${EDIT_MATERIAL_PR}_FULFILLED`:
     case `${DELETE_MATERIAL_PR_CATEGORY}_FULFILLED`:
     case `${DELETE_MATERIAL_DIRECT_GRN}_FULFILLED`:
@@ -294,6 +297,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${CREATE_MATERIAL_PR}_REJECTED`:
     case `${ADD_MATERIAL_ISSUE_REQUEST}_REJECTED`:
     case `${EDIT_PR}_REJECTED`:
+    case `${ADD_ATTACHMENT}_REJECTED`:
     case `${DELETE_ISSUE}_REJECTED`:
     case `${EDIT_MATERIAL_PR}_REJECTED`:
     case `${DELETE_MATERIAL_PR_DETAILS}_REJECTED`:

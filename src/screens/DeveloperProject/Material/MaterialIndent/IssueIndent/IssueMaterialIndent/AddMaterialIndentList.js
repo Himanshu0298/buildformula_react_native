@@ -26,7 +26,7 @@ function AddMaterialDialog(props) {
     handleSubmit,
   } = formikProps;
 
-  const {materialCategory, materialSubCategory} = useSelector(
+  const {materialCategories, materialSubCategories} = useSelector(
     s => s.materialManagement,
   );
 
@@ -34,17 +34,17 @@ function AddMaterialDialog(props) {
   const {units} = commonData;
 
   const categoryOptions = useMemo(() => {
-    return materialCategory?.map(i => ({
+    return materialCategories?.map(i => ({
       label: `${i.title}`,
       value: i.id,
     }));
-  }, [materialCategory]);
+  }, [materialCategories]);
 
   const subCategoryOptions = useMemo(() => {
-    return materialSubCategory
-      .filter(i => i.category_id === values.material_category_id)
+    return materialSubCategories
+      ?.filter(i => i.category_id === values.material_category_id)
       ?.map(i => ({label: `${i.title}`, value: i.id}));
-  }, [materialSubCategory, values.material_category_id]);
+  }, [materialSubCategories, values.material_category_id]);
 
   const unitOptions = useMemo(() => {
     return units?.map(i => ({label: `${i.title}`, value: i.id}));
@@ -52,7 +52,7 @@ function AddMaterialDialog(props) {
 
   const handleSubMaterialChange = value => {
     setFieldValue('material_sub_category_id', value);
-    const unitId = materialSubCategory.find(i => i.id === value)?.unit_id;
+    const unitId = materialSubCategories?.find(i => i.id === value)?.unit_id;
     if (unitId) {
       setFieldValue('material_units_id', unitId);
     }
@@ -61,10 +61,10 @@ function AddMaterialDialog(props) {
   return (
     <Modal {...props} onBackdropPress={handleClose}>
       <SafeAreaProvider>
-        <SafeAreaView edges={['top']}>
+        <SafeAreaView edges={['top']} style={{flexGrow: 1}}>
           <View style={styles.formContainer}>
-            <Subheading>{edit ? 'Edit Material' : 'Add Material'}</Subheading>
             <View style={styles.formSubContainer}>
+              <Subheading>{edit ? 'Edit Material' : 'Add Material'}</Subheading>
               <RenderSelect
                 name="material_category_id"
                 label="Category"
@@ -186,7 +186,7 @@ function AddMaterialIndentList(props) {
   const [addDialog, setAddDialog] = React.useState(false);
   const [selectedMaterial, setSelectedMaterial] = React.useState();
 
-  const {indentDetails, materialSubCategory} = useSelector(
+  const {indentDetails, materialSubCategories} = useSelector(
     s => s.materialManagement,
   );
 
@@ -216,7 +216,7 @@ function AddMaterialIndentList(props) {
         quantity,
       } = selectedMaterial;
 
-      const selectedSubCategory = materialSubCategory?.find(
+      const selectedSubCategory = materialSubCategories?.find(
         i => i.id === material_sub_category_id,
       );
 
@@ -228,7 +228,7 @@ function AddMaterialIndentList(props) {
       };
     }
     return {};
-  }, [materialSubCategory, selectedMaterial]);
+  }, [materialSubCategories, selectedMaterial]);
 
   const handleSave = async values => {
     const restData = {
@@ -366,18 +366,17 @@ const styles = StyleSheet.create({
     marginRight: 10,
     alignItems: 'center',
   },
-
   inputStyles: {
     marginVertical: 8,
   },
-
   formContainer: {
-    margin: 10,
+    flexGrow: 1,
+    margin: 15,
+    justifyContent: 'space-between',
   },
   formSubContainer: {
     flexGrow: 1,
   },
-
   OpacityButton: {
     borderRadius: 20,
     marginLeft: 10,

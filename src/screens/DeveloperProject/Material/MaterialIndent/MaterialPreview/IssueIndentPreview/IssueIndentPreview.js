@@ -13,10 +13,10 @@ import {getShadow} from 'utils';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
-import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 import {useSelector} from 'react-redux';
 import moment from 'moment';
 import {useAlert} from 'components/Atoms/Alert';
+import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 
 const INDENT_STATUS = {
   pending: {label: 'Pending', color: 'rgba(72, 114, 244, 1)'},
@@ -170,7 +170,7 @@ function IssueIndentPreview(props) {
     });
   };
 
-  const handleDelete = i => {
+  const handleDelete = () => {
     alert.show({
       title: 'Confirm',
       message: 'Are you sure you want to delete?',
@@ -197,7 +197,7 @@ function IssueIndentPreview(props) {
             style={styles.backButton}
             onPress={() => navigation.goBack()}
           />
-          <Subheading style={styles.headerText}>Issue Request</Subheading>
+          <Subheading style={styles.headerText}>Issue Material</Subheading>
         </View>
         {verification_code ? (
           <View style={styles.statusContainer}>
@@ -222,7 +222,7 @@ function IssueIndentPreview(props) {
               style={styles.opacity}
               opacity={0.18}
               onPress={() => {
-                navigation.navigate('CreateIssueIndent', {id});
+                navigation.navigate('CreateIssueIndent', {id, indentDetails});
               }}>
               <MaterialIcons
                 name="edit"

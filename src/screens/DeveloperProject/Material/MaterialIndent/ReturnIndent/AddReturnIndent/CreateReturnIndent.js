@@ -16,7 +16,10 @@ const schema = Yup.object().shape({
 });
 
 function CreateReturnIndent(props) {
-  const {navigation, id} = props;
+  const {navigation, route} = props;
+  const {id, indentDetails} = route?.params || {};
+
+  const details = indentDetails?.material_indent;
 
   const edit = Boolean(id);
 
@@ -41,6 +44,17 @@ function CreateReturnIndent(props) {
     }));
   }, [vendorOptions]);
 
+  const initialValues = React.useMemo(() => {
+    if (edit) {
+      const {contractor_name: vendor_id, remark} = details;
+      return {
+        vendor_id,
+        remark,
+      };
+    }
+    return {};
+  }, [details, edit]);
+
   const onSubmit = async values => {
     const data = {
       project_id: projectId,
@@ -52,20 +66,22 @@ function CreateReturnIndent(props) {
 
     navigation.navigate('AddReturnMaterialList', {
       edit,
-      id: value.material_indent_id,
+      id: value.material_indent_id || id,
     });
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-        <Subheading style={styles.headerText}>Return Request</Subheading>
+        <Subheading style={styles.headerText}>
+          {edit ? 'Edit Return Request' : 'Create Return Request'}
+        </Subheading>
       </View>
       <Formik
         enableReinitialize
         validateOnBlur={false}
         validateOnChange={false}
-        initialValues={{}}
+        initialValues={initialValues}
         validationSchema={schema}
         onSubmit={onSubmit}>
         {({values, handleChange, handleBlur, setFieldValue, handleSubmit}) => {

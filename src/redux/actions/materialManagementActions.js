@@ -47,6 +47,7 @@ export default function useMaterialManagementActions() {
     AddPR,
     addDirectGRNVehicleInfo,
     deleteChallan,
+    addReturnAttachment,
   } = useMaterialManagement();
 
   return {
@@ -612,6 +613,23 @@ export default function useMaterialManagementActions() {
           try {
             const response = _res(await addReturnMaterial(data));
             return Promise.resolve(response.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    addReturnAttachment: formData =>
+      dispatch({
+        type: types.UPDATE_PR_STATUS,
+        payload: async () => {
+          try {
+            const response = _res(await addReturnAttachment(formData));
+            const {data} = response;
+
+            return Promise.resolve(data);
           } catch (error) {
             const message = _err(error);
             snackbar.showMessage({message, variant: 'error'});

@@ -11,8 +11,8 @@ import {SafeAreaProvider} from 'react-native-safe-area-context';
 import RenderSelect from 'components/Atoms/RenderSelect';
 import RenderInput from 'components/Atoms/RenderInput';
 import {Formik} from 'formik';
-import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 import {theme} from 'styles/theme';
+import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 
 function AddMaterialDialog(props) {
   const {formikProps, handleClose, edit} = props;
@@ -26,26 +26,26 @@ function AddMaterialDialog(props) {
     handleSubmit,
   } = formikProps;
 
-  const {materialCategory, materialSubCategory} = useSelector(
+  const {materialCategories, materialSubCategories} = useSelector(
     s => s.materialManagement,
   );
 
   const categoryOptions = useMemo(() => {
-    return materialCategory?.map(i => ({
+    return materialCategories?.map(i => ({
       label: `${i.title}`,
       value: i.id,
     }));
-  }, [materialCategory]);
+  }, [materialCategories]);
 
   const subCategoryOptions = useMemo(() => {
-    return materialSubCategory
-      .filter(i => i.category_id === values.material_category_id)
+    return materialSubCategories
+      ?.filter(i => i.category_id === values.material_category_id)
       ?.map(i => ({label: `${i.title}`, value: i.id}));
-  }, [materialSubCategory, values.material_category_id]);
+  }, [materialSubCategories, values.material_category_id]);
 
   const handleSubMaterialChange = value => {
     setFieldValue('material_sub_category_id', value);
-    const unitId = materialSubCategory.find(i => i.id === value)?.unit_id;
+    const unitId = materialSubCategories.find(i => i.id === value)?.unit_id;
     if (unitId) {
       setFieldValue('material_units_id', unitId);
     }
@@ -54,10 +54,11 @@ function AddMaterialDialog(props) {
   return (
     <Modal {...props} onBackdropPress={handleClose}>
       <SafeAreaProvider>
-        <SafeAreaView edges={['top']}>
+        <SafeAreaView edges={['top']} style={{flexGrow: 1}}>
           <View style={styles.formContainer}>
-            <Subheading>{edit ? 'Edit Material' : 'Add Material'}</Subheading>
             <View style={styles.formSubContainer}>
+              <Subheading>{edit ? 'Edit Material' : 'Add Material'}</Subheading>
+
               <RenderSelect
                 name="material_category_id"
                 label="Category"
@@ -119,7 +120,7 @@ function AddMaterialDialog(props) {
 }
 
 function MaterialList(props) {
-  const {item, handleDelete, toggleEditDialog} = props;
+  const {item, handleDelete, toggleEditDialog, index} = props;
 
   const {damaged_qty, materialcategrytitle, subcategorytitle, quantity} = item;
 
@@ -148,7 +149,7 @@ function MaterialList(props) {
             <OpacityButton
               color={theme.colors.error}
               opacity={0.18}
-              onPress={handleDelete}
+              onPress={() => handleDelete(index)}
               style={styles.deleteButton}>
               <MaterialIcons
                 name="delete"
@@ -186,6 +187,8 @@ function AddReturnMaterialList(props) {
   const [addDialog, setAddDialog] = React.useState(false);
   const [selectedMaterial, setSelectedMaterial] = React.useState();
 
+  const [materials, setMaterials] = React.useState(materialsList || []);
+
   const {addReturnMaterial, getIndentDetails, getPRMaterialCategories} =
     useMaterialManagementActions();
 
@@ -193,7 +196,8 @@ function AddReturnMaterialList(props) {
   const projectId = selectedProject.id;
 
   const {indentDetails} = useSelector(s => s.materialManagement);
-  const materials = indentDetails?.material_indent_details;
+
+  const materialsList = indentDetails?.material_indent_details;
 
   useEffect(() => {
     getPRMaterialCategories({project_id: projectId});
@@ -247,13 +251,28 @@ function AddReturnMaterialList(props) {
 
   const toggleAddDialog = () => setAddDialog(v => !v);
 
-  const navToPreview = () => navigation.navigate('ReturnIndentPreview', {id});
+  const navToPreview = () => navigation.navigate('AddAttachments', {id, edit});
+
+  const handleDelete = index => {
+    alert.show({
+      title: 'Confirm',
+      message: 'Are you sure you want to delete?',
+      confirmText: 'Delete',
+      onConfirm: () => {
+        const _materials = [...materials];
+        _materials?.splice(index, 1);
+        setMaterials(_materials);
+      },
+    });
+  };
 
   return (
     <View style={styles.container}>
       <View style={styles.bodyContent}>
         <View style={styles.headerContainer}>
-          <Text style={styles.headerText}>Add Material</Text>
+          <Text style={styles.headerText}>
+            {edit ? 'Edit Material' : 'Add Material'}
+          </Text>
         </View>
         <View style={styles.button}>
           <Button
@@ -265,16 +284,16 @@ function AddReturnMaterialList(props) {
           </Button>
         </View>
 
-        <View style={{flexGrow: 1, flex: 1}}>
+        <View style={styles.listContainer}>
           <ScrollView showsVerticalScrollIndicator={false}>
-            {materials?.map((item, index) => {
+            {materialsList?.map((item, index) => {
               return (
                 <MaterialList
                   key={item.id.toString()}
                   item={item}
                   index={index}
                   toggleEditDialog={editDialog}
-                  // handleDelete={handleDelete}
+                  handleDelete={handleDelete}
                 />
               );
             })}
@@ -283,7 +302,7 @@ function AddReturnMaterialList(props) {
       </View>
       <ActionButtons
         cancelLabel="Previous"
-        submitLabel="Next"
+        submitLabel={edit ? 'Update' : 'Next'}
         onCancel={navigation.goBack}
         onSubmit={navToPreview}
       />
@@ -357,6 +376,7 @@ const styles = StyleSheet.create({
   },
 
   formContainer: {
+    flexGrow: 1,
     margin: 10,
   },
   formSubContainer: {
@@ -374,5 +394,10 @@ const styles = StyleSheet.create({
 
   button: {
     marginVertical: 10,
+  },
+
+  listContainer: {
+    flexGrow: 1,
+    flex: 1,
   },
 });
