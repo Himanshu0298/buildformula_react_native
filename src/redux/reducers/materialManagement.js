@@ -36,6 +36,8 @@ import {
   ADD_MATERIAL_ISSUE_REQUEST,
   ADD_ATTACHMENT,
   DELETE_ISSUE,
+  GET_SUPPLIERS_LIST,
+  ADD_SUPPLIER,
 } from '../actions/actionTypes';
 
 const initialState = {
@@ -44,6 +46,7 @@ const initialState = {
   materialOrderList: [],
   materialChallanList: [],
   vendorOptions: [],
+  suppliersList: [],
   workOptions: [],
   materialChallanDetails: {},
   materialPRDetails: {},
@@ -84,6 +87,12 @@ const reducer = (state = initialState, action = {}) => {
         ...state,
         loading: false,
         vendorOptions: payload,
+      };
+    case `${GET_SUPPLIERS_LIST}_FULFILLED`:
+      return {
+        ...state,
+        loading: false,
+        suppliersList: payload,
       };
 
     case `${GET_WORK_SUB_WORK_LIST}_FULFILLED`:
@@ -202,11 +211,13 @@ const reducer = (state = initialState, action = {}) => {
 
     case `${DELETE_MATERIAL_PR_CATEGORY}_PENDING`:
     case `${GET_DIRECT_GRN_LIST}_PENDING`:
+    case `${GET_SUPPLIERS_LIST}_PENDING`:
     case `${DELETE_MATERIAL_DIRECT_GRN}_PENDING`:
     case `${DELETE_MATERIAL_PR_ITEM}_PENDING`:
     case `${DELETE_MATERIAL_PR_DETAILS}_PENDING`:
     case `${EDIT_MATERIAL_PR}_PENDING`:
     case `${EDIT_PR}_PENDING`:
+    case `${ADD_SUPPLIER}_PENDING`:
     case `${ADD_RETURN_REQUEST}_PENDING`:
     case `${DELETE_CHALLAN}_PENDING`:
     case `${ADD_ISSUE_REQUEST}_PENDING`:
@@ -251,6 +262,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${ADD_MATERIAL_ISSUE_REQUEST}_FULFILLED`:
     case `${CREATE_MATERIAL_PR}_FULFILLED`:
     case `${EDIT_PR}_FULFILLED`:
+    case `${ADD_SUPPLIER}_FULFILLED`:
     case `${ADD_RETURN_REQUEST}_FULFILLED`:
     case `${ADD_ISSUE_REQUEST}_FULFILLED`:
     case `${DELETE_ISSUE}_FULFILLED`:
@@ -271,6 +283,7 @@ const reducer = (state = initialState, action = {}) => {
       };
     }
     case `${GET_MATERIAL_ORDER_LIST}_REJECTED`:
+    case `${GET_SUPPLIERS_LIST}_REJECTED`:
     case `${GET_VENDOR_OR_CONTRACTORS_DETAILS}_REJECTED`:
     case `${DELETE_CHALLAN}_REJECTED`:
     case `${GET_WORK_SUB_WORK_LIST}_REJECTED`:
@@ -289,6 +302,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${ADD_MATERIAL_PR}_REJECTED`:
     case `${CREATE_MATERIAL_PR}_REJECTED`:
     case `${EDIT_PR}_REJECTED`:
+    case `${ADD_SUPPLIER}_REJECTED`:
     case `${ADD_ISSUE_REQUEST}_REJECTED`:
     case `${ADD_ATTACHMENT}_REJECTED`:
     case `${DELETE_ISSUE}_REJECTED`:

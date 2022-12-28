@@ -41,13 +41,15 @@ export default function useMaterialManagementActions() {
     AddPR,
     addDirectGRNVehicleInfo,
     deleteChallan,
-    getIndentDetails,
+    getIssueRequestDetails,
     deleteIssue,
     addIssueRequest,
     addMaterialIssueRequest,
     addReturnMaterialIndent,
     addReturnMaterial,
     addReturnAttachment,
+    getSupplier,
+    addSupplier,
   } = useMaterialManagement();
 
   return {
@@ -65,6 +67,36 @@ export default function useMaterialManagementActions() {
           }
         },
       }),
+    getSupplier: data =>
+      dispatch({
+        type: types.GET_SUPPLIERS_LIST,
+        payload: async () => {
+          try {
+            const response = _res(await getSupplier(data));
+            return Promise.resolve(response.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    addSupplier: data =>
+      dispatch({
+        type: types.ADD_SUPPLIER,
+        payload: async () => {
+          try {
+            const response = _res(await addSupplier(data));
+            return Promise.resolve(response.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
     getMaterialChallanList: data =>
       dispatch({
         type: types.GET_MATERIAL_CHALLAN_LIST,
@@ -586,7 +618,7 @@ export default function useMaterialManagementActions() {
         type: types.GET_MATERIAL_INDENT_DETAILS,
         payload: async () => {
           try {
-            const response = _res(await getIndentDetails(data));
+            const response = _res(await getIssueRequestDetails(data));
             return Promise.resolve(response.data);
           } catch (error) {
             const message = _err(error);
