@@ -72,6 +72,7 @@ const RenderDatePicker = React.forwardRef((props, ref) => {
               style={{width: Layout.window.width * 0.8}}
               date={dayjs(date).toDate()}
               mode={mode}
+              theme="light"
               onDateChange={setDate}
               minimumDate={min}
               maximumDate={max}

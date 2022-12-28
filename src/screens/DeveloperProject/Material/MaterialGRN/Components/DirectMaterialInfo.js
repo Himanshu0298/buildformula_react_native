@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import * as React from 'react';
 import {
   Caption,
@@ -14,19 +15,97 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import {useSelector} from 'react-redux';
 import FileIcon from 'assets/images/file_icon.png';
 import NoResult from 'components/Atoms/NoResult';
-import {getFileName} from 'utils/download';
+import FileViewer from 'react-native-file-viewer';
 
-const renderImage = item => {
+import {useDownload} from 'components/Atoms/Download';
+import useMaterialManagementActions from 'redux/actions/materialManagementActions';
+
+const MaterialInfoHeader = props => {
+  const {item} = props;
+
+  const {materialCategories, materialSubCategories, makeOfLists} = useSelector(
+    s => s.materialManagement,
+  );
+
+  const {commonData} = useSelector(s => s.project);
+  const {units} = commonData;
+
+  const categoryTitle = React.useMemo(() => {
+    return (
+      materialCategories?.find(i => i.id === item.material_category_id)
+        ?.title || 'NA'
+    );
+  }, [item.material_category_id, materialCategories]);
+
+  const subCategoryTitle = React.useMemo(() => {
+    return (
+      materialSubCategories?.find(i => i.id === item.material_sub_category_id)
+        ?.title || 'NA'
+    );
+  }, [item.material_sub_category_id, materialSubCategories]);
+
+  const unitTitle = React.useMemo(() => {
+    return units?.find(i => i.id === item.material_units_id)?.title || 'NA';
+  }, [item.material_units_id, units]);
+
+  const makeOfListTitle = React.useMemo(() => {
+    return (
+      makeOfLists?.find(i => i.id === item?.master_list_of_makes_id)?.status ||
+      'NA'
+    );
+  }, [item?.master_list_of_makes_id, makeOfLists]);
+
+  return (
+    <>
+      <View style={styles.subHeading}>
+        <Text style={{color: theme.colors.primary}}>{categoryTitle}</Text>
+        <MaterialCommunityIcons
+          name="label"
+          size={15}
+          style={[styles.labelIcon, {color: theme.colors.primary}]}
+        />
+        <Text
+          style={{
+            color: theme.colors.primary,
+          }}>
+          {subCategoryTitle} , {unitTitle}
+        </Text>
+      </View>
+      <View style={styles.lomContainer}>
+        <Text style={styles.renderText}>{makeOfListTitle}</Text>
+      </View>
+    </>
+  );
+};
+
+const renderImage = (item, index, type) => {
+  const label =
+    type === 'normal'
+      ? `Material image ${index + 1}`
+      : `Damaged image ${index + 1}`;
+
+  const download = useDownload();
+
+  const onPressFile = async fileUrl => {
+    const name = fileUrl.split('/').pop();
+
+    download.link({
+      name,
+      link: fileUrl,
+      showAction: false,
+      onFinish: ({dir}) => {
+        FileViewer.open(`file://${dir}`);
+      },
+    });
+  };
   return (
     <TouchableOpacity
       style={styles.sectionContainer}
-      // onPress={() => onPressFile(file)}
-      key={item.id}>
+      onPress={() => onPressFile(item?.image_url)}
+      key={item?.id}>
       <Image source={FileIcon} style={styles.fileIcon} />
       <View>
-        <Text style={[styles.verticalFlex, styles.text]}>
-          {getFileName(item.image_url)}
-        </Text>
+        <Text style={[styles.verticalFlex, styles.text]}>{label}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -40,7 +119,7 @@ const RenderMaterialAttachments = props => {
 
   return (
     <View style={styles.imageContainer}>
-      <Text style={styles.attachmentsText}>Attachments</Text>
+      <Text style={styles.attachmentsText}>Material Images</Text>
       {materialImages?.length ? (
         <>
           {normalImages?.map((item, index) =>
@@ -72,8 +151,9 @@ const MaterialData = props => {
   return (
     <View style={styles.quantityContainer}>
       <View style={styles.itemContainer}>
-        <RenderRow item={{label: 'Fine Qantity: ', value: item.quantity}} />
-        <RenderRow item={{label: 'Damage Qantity: ', value: item.damage}} />
+        <RenderRow item={{label: 'Fine Quantity: ', value: item.quantity}} />
+        <RenderRow item={{label: 'Damage Quantity: ', value: item.damage}} />
+        <RenderRow item={{label: 'Missing Quantity: ', value: item.missing}} />
       </View>
     </View>
   );
@@ -83,9 +163,19 @@ const DirectMaterialInfo = props => {
   const {materialInfo = {}} = props;
   const {material_request_items = [], challan_material_image = []} =
     materialInfo;
-  const {loading} = useSelector(s => s.materialManagement);
 
-  const {company_name} = materialInfo?.challanInfo || {};
+  const {getPRMaterialCategories} = useMaterialManagementActions();
+
+  const {selectedProject} = useSelector(s => s.project);
+  const projectId = selectedProject.id;
+
+  React.useEffect(() => {
+    getPRMaterialCategories({project_id: projectId});
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const {loading} = useSelector(s => s.materialManagement);
 
   return (
     <View style={styles.container}>
@@ -95,28 +185,9 @@ const DirectMaterialInfo = props => {
       {material_request_items?.map(item => {
         return (
           <View style={styles.detailsContainer}>
-            <View style={styles.subHeading}>
-              <Text style={{color: theme.colors.primary}}>
-                {item.category_title}
-              </Text>
-              <MaterialCommunityIcons
-                name="label"
-                size={20}
-                style={[styles.labelIcon, {color: theme.colors.primary}]}
-              />
-              <Text
-                style={{
-                  color: theme.colors.primary,
-                }}>
-                {item.sub_category_title && item.work_units_title
-                  ? ` ${item.sub_category_title} ${item.work_units_title}`
-                  : ' NA'}
-              </Text>
-            </View>
+            <MaterialInfoHeader item={item} />
             <Divider style={styles.divider} />
-            <View style={styles.headerContainer}>
-              <Text style={styles.renderText}>{company_name}</Text>
-            </View>
+
             <MaterialData item={item} />
           </View>
         );
@@ -187,8 +258,7 @@ const styles = StyleSheet.create({
   text: {
     marginLeft: 5,
   },
-
-  headerContainer: {
+  lomContainer: {
     backgroundColor: '#4872F4',
     padding: 5,
     borderRadius: 5,
@@ -198,6 +268,9 @@ const styles = StyleSheet.create({
   renderText: {
     color: 'white',
     fontSize: 12,
+  },
+  labelIcon: {
+    marginHorizontal: 5,
   },
 });
 

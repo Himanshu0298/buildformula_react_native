@@ -4,7 +4,7 @@ import {Title} from 'react-native-paper';
 import {TabView} from 'react-native-tab-view';
 import {getShadow} from 'utils';
 import MaterialTabBar from 'components/Atoms/MaterialTabBar';
-import MaterialGRN from '../MaterialGRN';
+import MaterialGRN from '../FromPoGRNList/MaterialGRN';
 import DirectGRN from '../DirectGRN';
 
 const MaterialGRNListing = props => {
@@ -35,7 +35,7 @@ const MaterialGRNListing = props => {
 
   return (
     <View style={styles.mainContainer}>
-      <Title style={{paddingLeft: 15}}>Good Received Note</Title>
+      <Title style={styles.header}>Good Received Note</Title>
       <View style={styles.mainContainer}>
         <TabView
           navigationState={{index: selectedTab, routes}}
@@ -57,5 +57,8 @@ const styles = StyleSheet.create({
   headerContainer: {
     ...getShadow(5),
     backgroundColor: '#fff',
+  },
+  header: {
+    paddingLeft: 15,
   },
 });

@@ -6,7 +6,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 // import {theme} from './src/styles/theme';
 
 const Header = props => {
-  const {navigation, title} = props;
+  const {navigation, title, onPressBack} = props;
 
   const onPress = () => {
     navigation.goBack();
@@ -14,7 +14,10 @@ const Header = props => {
 
   return (
     <View style={styles.header}>
-      <OpacityButton opacity={0.18} style={styles.button} onPress={onPress}>
+      <OpacityButton
+        opacity={0.18}
+        style={styles.button}
+        onPress={onPressBack || onPress}>
         <MaterialCommunityIcons name="arrow-left" size={18} />
       </OpacityButton>
       <Subheading>{title}</Subheading>

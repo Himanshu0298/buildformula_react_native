@@ -1,4 +1,4 @@
-import {ScrollView, StyleSheet, View} from 'react-native';
+import {StyleSheet, View, ScrollView} from 'react-native';
 import React, {useMemo} from 'react';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
@@ -22,7 +22,7 @@ const CreatePR = props => {
 
   const edit = Boolean(id);
 
-  const {addMaterialPR, getVendorList, getWorkSubWorkList, updatePR} =
+  const {AddPR, getVendorList, getWorkSubWorkList, updatePR} =
     useMaterialManagementActions();
 
   const {loading, PRList, workOptions, vendorOptions} = useSelector(
@@ -75,7 +75,7 @@ const CreatePR = props => {
       await updatePR(data);
       navigation.navigate('AddMaterialList', {id, edit});
     } else {
-      const {value: res} = await addMaterialPR(data);
+      const {value: res} = await AddPR(data);
       navigation.navigate('AddMaterialList', {id: res.id, edit});
     }
   };
@@ -105,7 +105,7 @@ const CreatePR = props => {
         }) => {
           return (
             <View style={styles.formContainer}>
-              <ScrollView>
+              <ScrollView contentContainerStyle={styles.scrollView}>
                 <RenderInput
                   name="subject"
                   label="Subject"
@@ -184,5 +184,8 @@ const styles = StyleSheet.create({
   },
   formContainer: {
     flex: 1,
+  },
+  scrollView: {
+    flexGrow: 1,
   },
 });

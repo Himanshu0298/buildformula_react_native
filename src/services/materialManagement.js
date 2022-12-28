@@ -11,6 +11,9 @@ export default function useMaterialManagement() {
     getMaterialChallanList: data => {
       return instance.post('/materialDelivery/details', data, params);
     },
+    deleteChallan: data => {
+      return instance.post('/material/deleteChallan', data, params);
+    },
     getMaterialChallanDetails: data => {
       return instance.post('/materialChallanDetails', data, params);
     },
@@ -48,7 +51,7 @@ export default function useMaterialManagement() {
       return instance.post('/get_material', data, params);
     },
 
-    addMaterialPR: data => {
+    AddPR: data => {
       return instance.post('/material_purchase_request/add', data, params);
     },
     createMaterialPR: data => {
@@ -111,10 +114,10 @@ export default function useMaterialManagement() {
     addDirectGRNFirst: data => {
       return instance.post('/material/directgrnadd_first', data, params);
     },
-    addDirectGRNSecond: data => {
+    addDirectGRNMaterialInfo: data => {
       return instance.post('/material/directgrnadd_second', data, params);
     },
-    addDirectGRNThird: data => {
+    addDirectGRNVehicleInfo: data => {
       return instance.post('/material/directgrnaddedit_third', data, params);
     },
 

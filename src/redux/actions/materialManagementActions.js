@@ -31,7 +31,7 @@ export default function useMaterialManagementActions() {
     updateDirectGRNStatus,
     addDirectGRNFirst,
     getDirectMaterialGRNItemList,
-    addDirectGRNSecond,
+    addDirectGRNMaterialInfo,
     getMaterialIndentList,
     createMaterialPR,
     getPRMaterialDetails,
@@ -44,6 +44,9 @@ export default function useMaterialManagementActions() {
     addMaterialIssueRequest,
     addReturnMaterialIndent,
     addReturnMaterial,
+    AddPR,
+    addDirectGRNVehicleInfo,
+    deleteChallan,
   } = useMaterialManagement();
 
   return {
@@ -103,9 +106,25 @@ export default function useMaterialManagementActions() {
           }
         },
       }),
+
+    deleteChallan: data =>
+      dispatch({
+        type: types.DELETE_CHALLAN,
+        payload: async () => {
+          try {
+            const res = _res(await deleteChallan(data));
+            snackbar.showMessage({message: res.msg});
+            return Promise.resolve(res.data.lists);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
     getSelectMaterialChallan: data =>
       dispatch({
-        type: types.GET_STORE_KEEPER_LIST,
+        type: types.GET_SELECT_MATERIAL_CHALLAN,
         payload: async () => {
           try {
             const response = _res(await getSelectMaterialChallan(data));
@@ -211,6 +230,22 @@ export default function useMaterialManagementActions() {
           }
         },
       }),
+
+    AddPR: data =>
+      dispatch({
+        type: types.ADD_MATERIAL_PR,
+        payload: async () => {
+          try {
+            const response = _res(await AddPR(data));
+            return Promise.resolve(response.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
     updatePR: params =>
       dispatch({
         type: types.GET_STORE_KEEPER_DETAILS,
@@ -365,27 +400,15 @@ export default function useMaterialManagementActions() {
         },
       }),
 
-    addDirectGRN: data =>
+    addDirectGRN: formData =>
       dispatch({
-        type: types.ADD_DIRECT_GRN,
+        type: types.UPDATE_STORE_KEEPER_STATUS,
         payload: async () => {
           try {
-            const response = _res(await addDirectGRNFirst(data));
-            return Promise.resolve(response.data);
-          } catch (error) {
-            const message = _err(error);
-            snackbar.showMessage({message, variant: 'error'});
-            return Promise.reject(message);
-          }
-        },
-      }),
-    addDirectGRNSecond: data =>
-      dispatch({
-        type: types.ADD_DIRECT_GRN,
-        payload: async () => {
-          try {
-            const response = _res(await addDirectGRNSecond(data));
-            return Promise.resolve(response.data);
+            const response = _res(await updateStoreKeeperStatus(formData));
+            const {data} = response;
+
+            return Promise.resolve(data);
           } catch (error) {
             const message = _err(error);
             snackbar.showMessage({message, variant: 'error'});

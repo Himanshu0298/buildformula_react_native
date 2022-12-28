@@ -3,13 +3,27 @@ import {Caption, Subheading, Text, withTheme} from 'react-native-paper';
 import {StyleSheet, View, TouchableOpacity, Image} from 'react-native';
 import FileIcon from 'assets/images/file_icon.png';
 import {getShadow} from 'utils';
+import FileViewer from 'react-native-file-viewer';
+
 import {getFileName} from 'utils/constant';
+import {useDownload} from 'components/Atoms/Download';
 
 const InvoiceAttachments = props => {
   const {invoiceImages = []} = props;
 
+  const download = useDownload();
+
   const onPressFile = async fileUrl => {
     const name = fileUrl.split('/').pop();
+
+    download.link({
+      name,
+      link: fileUrl,
+      showAction: false,
+      onFinish: ({dir}) => {
+        FileViewer.open(`file://${dir}`);
+      },
+    });
   };
 
   return (
@@ -40,8 +54,19 @@ const InvoiceAttachments = props => {
 const VehicleImages = props => {
   const {vehicleAttachments = []} = props;
 
+  const download = useDownload();
+
   const onPressFile = async fileUrl => {
     const name = fileUrl.split('/').pop();
+
+    download.link({
+      name,
+      link: fileUrl,
+      showAction: false,
+      onFinish: ({dir}) => {
+        FileViewer.open(`file://${dir}`);
+      },
+    });
   };
 
   return (
@@ -73,6 +98,21 @@ const VehicleInfo = props => {
   const {vehicleInfo, vehicleAttachments, invoiceImages} = props;
   const {driver_name, vehicle_number, challan_remark} = vehicleInfo || {};
 
+  const download = useDownload();
+
+  const onPressFile = async fileUrl => {
+    const name = fileUrl.split('/').pop();
+
+    download.link({
+      name,
+      link: fileUrl,
+      showAction: false,
+      onFinish: ({dir}) => {
+        FileViewer.open(`file://${dir}`);
+      },
+    });
+  };
+
   return (
     <View style={styles.infoContainer}>
       <Subheading style={styles.infoHeading}>Vehicle Info</Subheading>
@@ -90,7 +130,7 @@ const VehicleInfo = props => {
         </View>
         <View>
           <Caption style={styles.captions}>Challan Remark</Caption>
-          <Text>{challan_remark}</Text>
+          <Text>{challan_remark || ''}</Text>
         </View>
         {vehicleAttachments?.length ? (
           <VehicleImages vehicleAttachments={vehicleAttachments} />
@@ -99,6 +139,24 @@ const VehicleInfo = props => {
         {invoiceImages?.length ? (
           <InvoiceAttachments invoiceImages={invoiceImages} />
         ) : null}
+        {vehicleAttachments?.map(item => {
+          return (
+            <TouchableOpacity
+              style={styles.sectionContainer}
+              onPress={() => onPressFile(item?.image_url)}>
+              <Image source={FileIcon} style={styles.fileIcon} />
+
+              <View key={item.id}>
+                <Text
+                  style={(styles.verticalFlex, styles.text)}
+                  numberOfLines={2}>
+                  {/* Vehicle File {index + 1} */}
+                  {getFileName(item.image_url)}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          );
+        })}
       </View>
     </View>
   );

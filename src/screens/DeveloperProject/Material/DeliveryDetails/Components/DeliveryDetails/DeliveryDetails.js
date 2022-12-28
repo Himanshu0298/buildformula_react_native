@@ -14,8 +14,9 @@ import NoResult from 'components/Atoms/NoResult';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {useDownload} from 'components/Atoms/Download';
 import FileViewer from 'react-native-file-viewer';
-import MaterialInfo from './Components/MaterialInfo';
-import VehicleInfo from './Components/VehicleInfo';
+import MaterialInfo from '../MaterialInfo';
+import VehicleInfo from '../VehicleInfo';
+import Header from '../../../CommonComponents/Header';
 
 const Attachments = props => {
   const {challanImages = []} = props;
@@ -64,7 +65,9 @@ const Attachments = props => {
 const DeliverDetails = props => {
   const {route} = props;
   const {item, orderNumber} = route?.params || {};
-  const {id: challanId, challan_number: challanNumber} = item;
+
+  const {material_purchase_request_version_id, challan_number: challanNumber} =
+    item;
 
   const {getMaterialChallanDetails} = useMaterialManagementActions();
 
@@ -79,16 +82,30 @@ const DeliverDetails = props => {
     getMaterialChallanDetails({
       project_id: selectedProject.id,
       material_order_no: orderNumber,
-      material_delivery_challan_id: challanId,
+      material_delivery_challan_id: material_purchase_request_version_id,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <View style={styles.mainContainer}>
+      <Header title={`Challan No. : ${challanNumber}`} {...props} />
+
       <Spinner visible={loading} textContent="" />
       <ScrollView showsVerticalScrollIndicator={false}>
+        {challan_images?.length ? (
+          <View>
+            <Subheading style={styles.challanHeading}>
+              Challan Images
+            </Subheading>
+            <Attachments challanImages={challan_images} />
+          </View>
+        ) : null}
         <View>
-          <Subheading style={styles.challanHeading}>Challan Images</Subheading>
+          <View style={styles.headerWrap}>
+            <Subheading style={styles.challanHeading}>
+              Challan Images
+            </Subheading>
+          </View>
           <Attachments challanImages={challan_images} />
         </View>
         <MaterialInfo materialInfo={materila_info} />
@@ -135,6 +152,9 @@ const styles = StyleSheet.create({
   attachmentsText: {
     fontSize: 15,
     paddingBottom: 10,
+  },
+  headerWrap: {
+    flexDirection: 'row',
   },
 });
 

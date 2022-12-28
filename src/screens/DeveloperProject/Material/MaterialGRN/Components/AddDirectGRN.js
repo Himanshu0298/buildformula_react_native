@@ -14,15 +14,14 @@ import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useImagePicker} from 'hooks';
 import ActionButtons from 'components/Atoms/ActionButtons';
 import {useAlert} from 'components/Atoms/Alert';
-import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 import {useSelector} from 'react-redux';
 import dayjs from 'dayjs';
+import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 import Header from '../../CommonComponents/Header';
 import Pagination from '../../CommonComponents/Pagination';
 
 const schema = Yup.object().shape({
   challan: Yup.string('Required').required('Required'),
-  attachments: Yup.mixed().required('File is required'),
 });
 
 const RenderAttachments = props => {
@@ -88,6 +87,7 @@ function ChallanForm(props) {
     supplierOptions,
     companyOptions,
     vendorOptions,
+    edit,
   } = props;
   const {
     values,
@@ -104,9 +104,11 @@ function ChallanForm(props) {
     openImagePicker({
       type: 'file',
       onChoose: file => {
-        const attachments = values.attachments || [];
-        attachments.push(file);
-        setFieldValue('attachments', attachments);
+        if (file.uri) {
+          const attachments = values.attachments || [];
+          attachments.push(file);
+          setFieldValue('attachments', attachments);
+        }
       },
     });
   };
@@ -129,13 +131,26 @@ function ChallanForm(props) {
   return (
     <SafeAreaView style={styles.mainContainer}>
       <View style={styles.headerContainer}>
-        <Header title="Challan Info" {...props} />
+        <Header
+          title={edit ? 'Edit Challan Info' : 'Challan Info'}
+          {...props}
+        />
         <Pagination title="Page 1 of 3" />
       </View>
       <KeyboardAwareScrollView
         contentContainerStyle={styles.contentContainerStyle}>
         <View style={styles.dialogContent}>
           <View>
+            <RenderInput
+              name="challan"
+              label="Challan No"
+              numberOfLines={3}
+              containerStyles={styles.input}
+              value={values.challan}
+              onChangeText={handleChange('challan')}
+              onBlur={handleBlur('challan')}
+              error={errors.challan}
+            />
             <RenderSelect
               name="company"
               options={companyOptions}
@@ -153,16 +168,7 @@ function ChallanForm(props) {
               value={values.supplier}
               label="Select Supplier"
             />
-            <RenderInput
-              name="challan"
-              label="Challan No"
-              numberOfLines={3}
-              containerStyles={styles.input}
-              value={values.challan}
-              onChangeText={handleChange('challan')}
-              onBlur={handleBlur('challan')}
-              error={errors.challan}
-            />
+
             <RenderDatePicker
               name="delivery_date"
               label="Delivery Date"
@@ -208,14 +214,16 @@ function ChallanForm(props) {
 
 const AddDirectGRN = props => {
   const {route, navigation} = props;
-  const {id = 0} = route?.params || {};
+  const {id: challan_id = 0} = route?.params || {};
 
-  const edit = Boolean(id);
+  const edit = Boolean(challan_id);
 
   const {addDirectGRN, getVendorList} = useMaterialManagementActions();
   const {selectedProject} = useSelector(s => s.project);
 
-  const {vendorOptions} = useSelector(s => s.materialManagement);
+  const {vendorOptions, directGRNDetails} = useSelector(
+    s => s.materialManagement,
+  );
 
   React.useEffect(() => {
     getVendorList({project_id: selectedProject.id});
@@ -236,33 +244,52 @@ const AddDirectGRN = props => {
     }));
   }, [vendorOptions]);
 
+  const initialValues = React.useMemo(() => {
+    if (edit) {
+      const {
+        challan_number: challan,
+        delivery_date,
+        company,
+        supplier,
+        challan_file: attachments,
+      } = directGRNDetails.challanInfo;
+      return {
+        challan,
+        delivery_date,
+        supplier,
+        company,
+        attachments,
+        ...directGRNDetails.challanInfo,
+      };
+    }
+    return {};
+  }, [directGRNDetails, edit]);
+
   const onSubmit = async values => {
     const formData = new FormData();
 
     formData.append('project_id', selectedProject.id);
-    formData.append('challan_id', id);
+    formData.append('challan_id', challan_id);
     formData.append('challan_number', values.challan);
     formData.append('delivery_date', values.delivery_date);
     formData.append('company', values.company);
     formData.append('supplier', values.supplier);
     formData.append('file_upload', values.attachments);
 
-    addDirectGRN(formData);
-    navigation.navigate('GRNMaterial', {...values, challan_id: id});
+    const {value} = await addDirectGRN(formData);
+    navigation.navigate('DirectGRNChallanMaterial', {
+      challan_id: challan_id || value?.challan_id,
+      edit,
+      challan_number: values.challan,
+    });
   };
-
-  // const navToStepTwo = values => {
-  //   navigation.navigate('GRNMaterial', {
-  //     ...values,
-  //     ...route.params,
-  //   });
-  // };
 
   return (
     <Formik
       validateOnBlur={false}
       validateOnChange={false}
-      initialValues={{attachments: []}}
+      enableReinitialize
+      initialValues={initialValues}
       validationSchema={schema}
       onSubmit={onSubmit}>
       {formikProps => (
@@ -272,6 +299,7 @@ const AddDirectGRN = props => {
           supplierOptions={supplierOptions}
           companyOptions={companyOptions}
           vendorOptions={vendorOptions}
+          edit={edit}
         />
       )}
     </Formik>

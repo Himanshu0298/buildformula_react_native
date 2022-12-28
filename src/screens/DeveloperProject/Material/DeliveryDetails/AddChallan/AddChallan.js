@@ -77,9 +77,11 @@ function ChallanForm(props) {
     openImagePicker({
       type: 'file',
       onChoose: file => {
-        const attachments = values.attachments || [];
-        attachments.push(file);
-        setFieldValue('attachments', attachments);
+        if (file.uri) {
+          const attachments = values.attachments || [];
+          attachments.push(file);
+          setFieldValue('attachments', attachments);
+        }
       },
     });
   };
@@ -139,8 +141,18 @@ function ChallanForm(props) {
   );
 }
 
-const AddChallan = props => {
+function AddChallan(props) {
   const {route, navigation} = props;
+  const {item} = route?.params || {};
+
+  const initialValues = React.useMemo(() => {
+    const {challan_number, challan_file, ...restData} = item || {};
+    return {
+      attachments: challan_file || [],
+      challan: challan_number,
+      ...restData,
+    };
+  }, [item]);
 
   const navToStepTwo = values => {
     navigation.navigate('SelectMaterials', {...values, ...route.params});
@@ -150,13 +162,14 @@ const AddChallan = props => {
     <Formik
       validateOnBlur={false}
       validateOnChange={false}
-      initialValues={{attachments: []}}
+      initialValues={initialValues}
       validationSchema={schema}
+      enableReinitialize
       onSubmit={navToStepTwo}>
       {formikProps => <ChallanForm {...{formikProps}} {...props} />}
     </Formik>
   );
-};
+}
 
 const styles = StyleSheet.create({
   dialogContent: {

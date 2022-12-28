@@ -32,10 +32,7 @@ const MaterialData = props => {
       />
       <Text style={styles.values}>{item.category_title}</Text>
       <Text style={styles.values}>{item.subcategory_title}</Text>
-      <Text style={styles.values}>
-        {'    '}
-        {item.unit_title}
-      </Text>
+      <Text style={styles.values}>{item.unit_title}</Text>
     </View>
   );
 };
@@ -50,6 +47,7 @@ function SelectMaterials(props) {
   const {selectedMaterialChallan, loading} = useSelector(
     s => s.materialManagement,
   );
+
   const {selectedProject} = useSelector(s => s.project);
 
   const [selectedMaterial, setSelectedMaterial] = useState([]);
@@ -83,7 +81,6 @@ function SelectMaterials(props) {
 
       return;
     }
-
     navigation.navigate('AddMaterialInfo', {
       selectedMaterial,
       ...route.params,
@@ -91,7 +88,10 @@ function SelectMaterials(props) {
   };
 
   const reloadOrders = () => {
-    getSelectMaterialChallan({project_id: selectedProject.id});
+    getSelectMaterialChallan({
+      project_id: selectedProject.id,
+      material_request_id: materialId,
+    });
   };
 
   const renderEmpty = () => <NoResult />;

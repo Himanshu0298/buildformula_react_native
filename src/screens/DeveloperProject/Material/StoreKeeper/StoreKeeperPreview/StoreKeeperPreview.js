@@ -24,6 +24,10 @@ import FileIcon from 'assets/images/file_icon.png';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import Spinner from 'react-native-loading-spinner-overlay';
+import dayjs from 'dayjs';
+import FileViewer from 'react-native-file-viewer';
+
+import {useDownload} from 'components/Atoms/Download';
 import ApproveButtons from '../components/ApprovalButtons';
 
 const STORE_KEEPER_STATUS = {
@@ -48,7 +52,20 @@ const RenderAttachments = props => {
 
   const attachments = storeKeeperDetails?.indent_details?.storekeeper_files;
 
-  // const download = useDownload();
+  const download = useDownload();
+
+  const onPressFile = async file_name => {
+    const name = file_name.split('/').pop();
+
+    download.link({
+      name,
+      link: file_name,
+      showAction: false,
+      onFinish: ({dir}) => {
+        FileViewer.open(`file://${dir}`);
+      },
+    });
+  };
 
   // TODO download file remaining
 
@@ -61,31 +78,36 @@ const RenderAttachments = props => {
 
         {attachments?.map(attachment => {
           return (
-            <View key={attachment.file_name}>
-              <View style={styles.sectionContainer}>
-                <Image source={FileIcon} style={styles.fileIcon} />
+            <TouchableOpacity onPress={onPressFile}>
+              <View key={attachment.file_name}>
+                <View style={styles.sectionContainer}>
+                  <Image source={FileIcon} style={styles.fileIcon} />
 
-                <View>
-                  <Text
-                    style={(styles.verticalFlex, styles.text)}
-                    numberOfLines={1}>
-                    {attachment.file_name}
-                  </Text>
-                  <Text
-                    style={(styles.verticalFlex, styles.text)}
-                    numberOfLines={1}>
-                    ( {attachment.file_size})kb
-                  </Text>
+                  <View>
+                    <Text
+                      style={(styles.verticalFlex, styles.text)}
+                      numberOfLines={1}>
+                      {attachment.file_name}
+                    </Text>
+                    <Text
+                      style={(styles.verticalFlex, styles.text)}
+                      numberOfLines={1}>
+                      ( {attachment.file_size})kb
+                    </Text>
+                  </View>
+                  <OpacityButton
+                    opacity={0.0}
+                    style={styles.closeButton}
+                    onPress={onPressFile}>
+                    <MaterialCommunityIcons
+                      name="download"
+                      color={theme.colors.primary}
+                      size={25}
+                    />
+                  </OpacityButton>
                 </View>
-                <OpacityButton opacity={0.0} style={styles.closeButton}>
-                  <MaterialCommunityIcons
-                    name="download"
-                    color={theme.colors.primary}
-                    size={25}
-                  />
-                </OpacityButton>
               </View>
-            </View>
+            </TouchableOpacity>
           );
         })}
       </View>
@@ -96,19 +118,19 @@ const RenderAttachments = props => {
 const IssuedCard = props => {
   const {storeKeeperDetails} = props;
 
-  const {created, contractor_name, storekeeper_remark} =
+  const {authorizeddate, storekeeper_remark, first_name, last_name} =
     storeKeeperDetails?.indent_details?.material_indent || {};
 
   return (
     <View style={styles.cardContainer}>
       <View style={styles.dataRow}>
         <Subheading> Issue Time:</Subheading>
-        <Text style={styles.title}> {created}</Text>
+        <Text>{dayjs(authorizeddate).format('  MMM D, YYYY,hh:mm A')}</Text>
       </View>
 
       <View style={styles.dataRow}>
         <Subheading> Issue by:</Subheading>
-        <Text style={styles.title}> {contractor_name}</Text>
+        <Text style={styles.title}> {`${first_name} ${last_name}`}</Text>
       </View>
       <View style={styles.title}>
         <Subheading> Remark</Subheading>
@@ -133,7 +155,7 @@ const ListingCard = props => {
     <TouchableOpacity>
       <View style={styles.cardContainer}>
         <View style={styles.cardHeader}>
-          <Text style={styles.ID}>{indent_id}</Text>
+          <Text style={styles.ID}>Request ID :{indent_id}</Text>
           <View style={styles.statusContainer}>
             <Text style={[{color}, styles.status]}>{label}</Text>
           </View>
@@ -152,8 +174,7 @@ const ListingCard = props => {
           </View>
           <View style={styles.createdOn}>
             <Subheading> Created on:</Subheading>
-
-            <Text style={styles.title}>{created}</Text>
+            <Text>{dayjs(created).format('  MMM D, YYYY ,hh:mm A')}</Text>
           </View>
         </View>
       </View>
@@ -162,7 +183,7 @@ const ListingCard = props => {
 };
 
 const RequiredVendor = props => {
-  const {storeKeeperDetails} = props;
+  const {storeKeeperDetails, TYPE} = props;
 
   const {contractor_name, contractor_email, remark, requred_date, requiredfor} =
     storeKeeperDetails?.indent_details?.material_indent || {};
@@ -176,10 +197,12 @@ const RequiredVendor = props => {
         <Text> {contractor_name}</Text>
         <Caption>{contractor_email}</Caption>
       </View>
-      <View style={styles.card}>
-        <Text> Required Date</Text>
-        <Caption>{requred_date} </Caption>
-      </View>
+      {TYPE === 'afm' ? (
+        <View style={styles.card}>
+          <Text> Required Date</Text>
+          <Caption>{requred_date} </Caption>
+        </View>
+      ) : null}
       <View style={styles.card}>
         <Text> Required For(Work)</Text>
         <Caption>{requiredfor}</Caption>
@@ -223,11 +246,11 @@ const MaterialCard = props => {
         <Text style={styles.title}>{materialunitstitle}</Text>
       </View>
       <View style={styles.dataRow}>
-        <Caption style={styles.lightData}>Fine Qty:</Caption>
+        <Caption style={styles.lightData}>Request Qty:</Caption>
         <Text style={styles.title}>{quantity}</Text>
       </View>
       <View style={styles.dataRow}>
-        <Caption style={styles.lightData}>Demage Qty:</Caption>
+        <Caption style={styles.lightData}>Assigned Qty:</Caption>
         <Text style={styles.title}>{damaged_qty}</Text>
       </View>
 
@@ -255,7 +278,7 @@ const MaterialCard = props => {
 
 function StoreKeeperPreview(props) {
   const {navigation, route} = props;
-  const {id: ID} = route?.params || {};
+  const {id: ID, type} = route?.params || {};
 
   const {getStoreKeeperDetails, updateStoreKeeperStatus} =
     useMaterialManagementActions();
@@ -285,11 +308,11 @@ function StoreKeeperPreview(props) {
     });
   };
 
-  const updateStatus = async (type, id) => {
+  const updateStatus = async (status, id) => {
     const restData = {
       project_id: projectId,
       material_indent_details_id: id,
-      type,
+      type: status,
     };
     await updateStoreKeeperStatus(restData);
     getStoreDetails();
@@ -310,7 +333,9 @@ function StoreKeeperPreview(props) {
             style={styles.backButton}
             onPress={() => navigation.goBack()}
           />
-          <Subheading style={styles.headerText}>Issue Request</Subheading>
+          <Subheading style={styles.headerText}>
+            {type === 'afm' ? 'Issue Request' : 'Return Request'}
+          </Subheading>
         </View>
         <Spinner visible={loading} textContent="" />
 
@@ -333,7 +358,7 @@ function StoreKeeperPreview(props) {
           <IssuedCard storeKeeperDetails={storeKeeperDetails} />
         ) : null}
         <ListingCard storeKeeperDetails={storeKeeperDetails} />
-        <RequiredVendor storeKeeperDetails={storeKeeperDetails} />
+        <RequiredVendor storeKeeperDetails={storeKeeperDetails} type={type} />
         {material_indent_details?.length ? (
           <>
             <View style={styles.textContainer}>
