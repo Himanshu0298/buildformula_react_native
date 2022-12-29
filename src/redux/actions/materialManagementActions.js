@@ -281,7 +281,7 @@ export default function useMaterialManagementActions() {
 
     updatePR: params =>
       dispatch({
-        type: types.GET_STORE_KEEPER_DETAILS,
+        type: types.UPDATE_PR,
         payload: async () => {
           try {
             const response = _res(await updatePR(params));

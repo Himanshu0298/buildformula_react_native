@@ -65,8 +65,6 @@ function AttachmentsForm(props) {
   const {formikProps} = props;
   const {values, setFieldValue, errors, handleSubmit} = formikProps;
 
-  console.log('===========> values', values);
-
   const {openImagePicker} = useImagePicker();
 
   const handleUpload = () => {
@@ -95,7 +93,7 @@ function AttachmentsForm(props) {
           <Text style={styles.headerText}>Return Request</Text>
         </View>
         <View>
-          <View style={{marginTop: 20}}>
+          <View style={styles.imageContainer}>
             <Text style={{color: theme.colors.primary}}>
               Upload Material Image
             </Text>
@@ -127,7 +125,7 @@ function AttachmentsForm(props) {
 
 const AddAttachments = props => {
   const {route, navigation} = props;
-  const {id, edit} = route.params;
+  const {id} = route.params;
 
   const {addReturnAttachment} = useMaterialManagementActions();
 
@@ -141,13 +139,7 @@ const AddAttachments = props => {
     formData.append('material_indent_id', id);
     formData.append('attachmentFile[]', values.attachments);
 
-    console.log('===========> formData', formData);
-
     await addReturnAttachment(formData);
-    navigation.navigate('ReturnIndentPreview', {...values, ...route.params});
-  };
-
-  const navToPreview = values => {
     navigation.navigate('ReturnIndentPreview', {...values, ...route.params});
   };
 
@@ -240,6 +232,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     maxWidth: 170,
     flex: 1,
+  },
+
+  imageContainer: {
+    marginTop: 20,
   },
 });
 

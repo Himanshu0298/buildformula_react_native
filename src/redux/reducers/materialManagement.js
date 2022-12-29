@@ -38,6 +38,7 @@ import {
   DELETE_ISSUE,
   GET_SUPPLIERS_LIST,
   ADD_SUPPLIER,
+  UPDATE_PR,
 } from '../actions/actionTypes';
 
 const initialState = {
@@ -58,7 +59,7 @@ const initialState = {
   materialRequestItems: [],
   recordData: [],
   PRList: [],
-  PRDetails: [],
+  PRDetails: {},
   directGRNList: [],
   directGRNDetails: {},
   directGRNMaterialDetails: [],
@@ -217,6 +218,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${DELETE_MATERIAL_PR_DETAILS}_PENDING`:
     case `${EDIT_MATERIAL_PR}_PENDING`:
     case `${EDIT_PR}_PENDING`:
+    case `${UPDATE_PR}_PENDING`:
     case `${ADD_SUPPLIER}_PENDING`:
     case `${ADD_RETURN_REQUEST}_PENDING`:
     case `${DELETE_CHALLAN}_PENDING`:
@@ -262,6 +264,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${ADD_MATERIAL_ISSUE_REQUEST}_FULFILLED`:
     case `${CREATE_MATERIAL_PR}_FULFILLED`:
     case `${EDIT_PR}_FULFILLED`:
+    case `${UPDATE_PR}_FULFILLED`:
     case `${ADD_SUPPLIER}_FULFILLED`:
     case `${ADD_RETURN_REQUEST}_FULFILLED`:
     case `${ADD_ISSUE_REQUEST}_FULFILLED`:
@@ -302,6 +305,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${ADD_MATERIAL_PR}_REJECTED`:
     case `${CREATE_MATERIAL_PR}_REJECTED`:
     case `${EDIT_PR}_REJECTED`:
+    case `${UPDATE_PR}_REJECTED`:
     case `${ADD_SUPPLIER}_REJECTED`:
     case `${ADD_ISSUE_REQUEST}_REJECTED`:
     case `${ADD_ATTACHMENT}_REJECTED`:
