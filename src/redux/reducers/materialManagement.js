@@ -55,7 +55,7 @@ const initialState = {
   directGRNDetails: {},
   directGRNMaterialDetails: [],
   materialIndentList: [],
-  storeKeeperList: {},
+  storeKeeperList: [],
   storeKeeperDetails: {},
 };
 
