@@ -93,7 +93,7 @@ function AttachmentsForm(props) {
           <Text style={styles.headerText}>Return Request</Text>
         </View>
         <View>
-          <View style={{marginTop: 20}}>
+          <View style={styles.imageContainer}>
             <Text style={{color: theme.colors.primary}}>
               {edit ? 'Upload New Material Image' : 'Upload Material Image'}
             </Text>
@@ -115,7 +115,7 @@ function AttachmentsForm(props) {
         </View>
       </View>
       <ActionButtons
-        onSubmit={handleSubmit}
+        onSubmit={() => handleSubmit(values)}
         submitLabel="Next"
         onCancel={() => navigation.goBack()}
       />
@@ -233,6 +233,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     maxWidth: 170,
     flex: 1,
+  },
+
+  imageContainer: {
+    marginTop: 20,
   },
 });
 

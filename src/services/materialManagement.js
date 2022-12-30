@@ -11,6 +11,13 @@ export default function useMaterialManagement() {
     getMaterialChallanList: data => {
       return instance.post('/materialDelivery/details', data, params);
     },
+    getSupplier: data => {
+      return instance.post('/getSupplier', data, params);
+    },
+    addSupplier: data => {
+      return instance.post('/addSupplier', data, params);
+    },
+
     deleteChallan: data => {
       return instance.post('/material/deleteChallan', data, params);
     },

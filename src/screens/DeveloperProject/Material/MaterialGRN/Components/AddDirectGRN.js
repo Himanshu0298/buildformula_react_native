@@ -22,6 +22,8 @@ import Pagination from '../../CommonComponents/Pagination';
 
 const schema = Yup.object().shape({
   challan: Yup.string('Required').required('Required'),
+  delivery_date: Yup.string('Required').required('Required'),
+  company: Yup.string('Required').required('Required'),
 });
 
 const RenderAttachments = props => {
@@ -86,7 +88,7 @@ function ChallanForm(props) {
     navigation,
     supplierOptions,
     companyOptions,
-    vendorOptions,
+    suppliersList,
     edit,
   } = props;
   const {
@@ -120,9 +122,7 @@ function ChallanForm(props) {
 
   const handleSubMaterialChange = value => {
     setFieldValue('company', value);
-    const supplierName = vendorOptions.find(
-      i => i.id === value,
-    )?.contractor_name;
+    const supplierName = suppliersList.find(i => i.id === value)?.supplier_name;
     if (supplierName) {
       setFieldValue('supplier', supplierName);
     }
@@ -140,66 +140,71 @@ function ChallanForm(props) {
       <KeyboardAwareScrollView
         contentContainerStyle={styles.contentContainerStyle}>
         <View style={styles.dialogContent}>
-          <View>
-            <RenderInput
-              name="challan"
-              label="Challan No"
-              numberOfLines={3}
-              containerStyles={styles.input}
-              value={values.challan}
-              onChangeText={handleChange('challan')}
-              onBlur={handleBlur('challan')}
-              error={errors.challan}
-            />
-            <RenderSelect
-              name="company"
-              options={companyOptions}
-              containerStyles={styles.input}
-              value={values.company}
-              label="Select Company"
-              error={errors.company}
-              onSelect={handleSubMaterialChange}
-            />
-            <RenderSelect
-              name="supplier"
-              disabled
-              options={supplierOptions}
-              containerStyles={styles.input}
-              value={values.supplier}
-              label="Select Supplier"
-            />
+          <RenderInput
+            name="challan"
+            label="Challan No"
+            numberOfLines={3}
+            containerStyles={styles.input}
+            value={values.challan}
+            onChangeText={handleChange('challan')}
+            onBlur={handleBlur('challan')}
+            error={errors.challan}
+          />
+          <RenderSelect
+            name="company"
+            options={companyOptions}
+            containerStyles={styles.input}
+            value={values.company}
+            label="Select Company"
+            error={errors.company}
+            onSelect={handleSubMaterialChange}
+          />
+          {/* <TouchableOpacity
+            style={{
+              backgroundColor: 'blue',
+              padding: 10,
+              borderRadius: 10,
+              width: '35%',
+            }}
+            opacity={0.2}>
+            <Text style={{color: 'white'}}> Add Supplier</Text>
+          </TouchableOpacity> */}
+          <RenderSelect
+            name="supplier"
+            disabled
+            options={supplierOptions}
+            containerStyles={styles.input}
+            value={values.supplier}
+            label="Select Supplier"
+          />
 
-            <RenderDatePicker
-              name="delivery_date"
-              label="Delivery Date"
-              value={values.delivery_date}
-              containerStyles={styles.input}
-              onChange={value => {
-                setFieldValue(
-                  'delivery_date',
-                  dayjs(value).format('YYYY-MM-DD'),
-                );
-              }}
-              error={errors.delivery_date}
-            />
-            <View>
-              <Text style={{color: theme.colors.primary}}>Attachment</Text>
-              <OpacityButton
-                onPress={handleUpload}
-                opacity={0.1}
-                style={styles.uploadButton}
-                color="#fff">
-                <Text style={{color: theme.colors.primary}}>Upload File</Text>
-              </OpacityButton>
-              <RenderError error={errors.attachments} />
-            </View>
-            {values.attachments?.length ? (
-              <RenderAttachments
-                attachments={values.attachments}
-                handleDelete={i => handleDelete(i)}
-              />
-            ) : null}
+          <RenderDatePicker
+            name="delivery_date"
+            label="Delivery Date"
+            value={values.delivery_date}
+            containerStyles={styles.input}
+            onChange={value => {
+              setFieldValue('delivery_date', dayjs(value).format('YYYY-MM-DD'));
+            }}
+            error={errors.delivery_date}
+          />
+          <View>
+            <Text style={{color: theme.colors.primary}}>Attachment</Text>
+            <OpacityButton
+              onPress={handleUpload}
+              opacity={0.1}
+              style={styles.uploadButton}
+              color="#fff">
+              <Text style={{color: theme.colors.primary}}>Upload File</Text>
+            </OpacityButton>
+            <RenderError error={errors.attachments} />
           </View>
+          {values.attachments?.length ? (
+            <RenderAttachments
+              attachments={values.attachments}
+              handleDelete={i => handleDelete(i)}
+            />
+          ) : null}
         </View>
       </KeyboardAwareScrollView>
       <ActionButtons
@@ -218,31 +223,33 @@ const AddDirectGRN = props => {
 
   const edit = Boolean(challan_id);
 
-  const {addDirectGRN, getVendorList} = useMaterialManagementActions();
+  const {addDirectGRN, getVendorList, getSupplier} =
+    useMaterialManagementActions();
   const {selectedProject} = useSelector(s => s.project);
 
-  const {vendorOptions, directGRNDetails} = useSelector(
+  const {directGRNDetails, suppliersList} = useSelector(
     s => s.materialManagement,
   );
 
   React.useEffect(() => {
     getVendorList({project_id: selectedProject.id});
+    getSupplier({project_id: selectedProject.id});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const supplierOptions = React.useMemo(() => {
-    return vendorOptions?.map(i => ({
-      label: `${i.contractor_name}`,
+    return suppliersList?.map(i => ({
+      label: `${i.supplier_name}`,
       value: i.id,
     }));
-  }, [vendorOptions]);
+  }, [suppliersList]);
 
   const companyOptions = React.useMemo(() => {
-    return vendorOptions?.map(i => ({
+    return suppliersList?.map(i => ({
       label: `${i.company_name} `,
       value: i.id,
     }));
-  }, [vendorOptions]);
+  }, [suppliersList]);
 
   const initialValues = React.useMemo(() => {
     if (edit) {
@@ -298,7 +305,7 @@ const AddDirectGRN = props => {
           {...props}
           supplierOptions={supplierOptions}
           companyOptions={companyOptions}
-          vendorOptions={vendorOptions}
+          suppliersList={suppliersList}
           edit={edit}
         />
       )}
@@ -312,9 +319,7 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   dialogContent: {
-    paddingHorizontal: 15,
     flexGrow: 1,
-    justifyContent: 'space-between',
   },
   input: {
     marginVertical: 10,
