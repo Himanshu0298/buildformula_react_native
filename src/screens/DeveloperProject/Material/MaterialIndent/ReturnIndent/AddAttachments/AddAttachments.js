@@ -1,5 +1,6 @@
 import {Image, StyleSheet, View} from 'react-native';
 import React from 'react';
+import * as Yup from 'yup';
 
 import {RenderError} from 'components/Atoms/RenderInput';
 
@@ -12,6 +13,12 @@ import {theme} from 'styles/theme';
 import {useImagePicker} from 'hooks';
 import ActionButtons from 'components/Atoms/ActionButtons';
 import {Formik} from 'formik';
+import useMaterialManagementActions from 'redux/actions/materialManagementActions';
+import {useSelector} from 'react-redux';
+
+const schema = Yup.object().shape({
+  attachments: Yup.mixed().required('File is required'),
+});
 
 const RenderAttachments = props => {
   const {attachments, handleDelete} = props;
@@ -64,9 +71,11 @@ function AttachmentsForm(props) {
     openImagePicker({
       type: 'file',
       onChoose: file => {
-        const attachments = values.attachments || [];
-        attachments.push(file);
-        setFieldValue('attachments', attachments);
+        if (file.uri) {
+          const attachments = values.attachments || [];
+          attachments.push(file);
+          setFieldValue('attachments', attachments);
+        }
       },
     });
   };
@@ -84,7 +93,7 @@ function AttachmentsForm(props) {
           <Text style={styles.headerText}>Return Request</Text>
         </View>
         <View>
-          <View style={{marginTop: 20}}>
+          <View style={styles.imageContainer}>
             <Text style={{color: theme.colors.primary}}>
               Upload Material Image
             </Text>
@@ -106,7 +115,7 @@ function AttachmentsForm(props) {
         </View>
       </View>
       <ActionButtons
-        onSubmit={handleSubmit}
+        onSubmit={() => handleSubmit(values)}
         submitLabel="Next"
         onCancel={() => navigation.goBack()}
       />
@@ -116,8 +125,21 @@ function AttachmentsForm(props) {
 
 const AddAttachments = props => {
   const {route, navigation} = props;
+  const {id} = route.params;
 
-  const navToPreview = values => {
+  const {addReturnAttachment} = useMaterialManagementActions();
+
+  const {selectedProject} = useSelector(s => s.project);
+  const projectId = selectedProject.id;
+
+  const onSubmit = async values => {
+    const formData = new FormData();
+
+    formData.append('project_id', projectId);
+    formData.append('material_indent_id', id);
+    formData.append('attachmentFile[]', values.attachments);
+
+    await addReturnAttachment(formData);
     navigation.navigate('ReturnIndentPreview', {...values, ...route.params});
   };
 
@@ -126,8 +148,8 @@ const AddAttachments = props => {
       validateOnBlur={false}
       validateOnChange={false}
       initialValues={{attachments: []}}
-      // validationSchema={schema}
-      onSubmit={navToPreview}>
+      validationSchema={schema}
+      onSubmit={onSubmit}>
       {formikProps => <AttachmentsForm {...{formikProps}} {...props} />}
     </Formik>
   );
@@ -210,6 +232,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     maxWidth: 170,
     flex: 1,
+  },
+
+  imageContainer: {
+    marginTop: 20,
   },
 });
 

@@ -22,10 +22,15 @@ const CreatePR = props => {
 
   const edit = Boolean(id);
 
-  const {AddPR, getVendorList, getWorkSubWorkList, updatePR} =
-    useMaterialManagementActions();
+  const {
+    AddPR,
+    getVendorList,
+    getWorkSubWorkList,
+    updatePR,
+    getPRMaterialDetails,
+  } = useMaterialManagementActions();
 
-  const {loading, PRList, workOptions, vendorOptions} = useSelector(
+  const {loading, workOptions, vendorOptions, PRDetails} = useSelector(
     s => s.materialManagement,
   );
 
@@ -34,9 +39,19 @@ const CreatePR = props => {
 
   React.useEffect(() => {
     getVendorList({project_id: projectId});
+    getPRDetails();
     getWorkSubWorkList({project_id: projectId});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const getPRDetails = async () => {
+    if (id) {
+      await getPRMaterialDetails({
+        project_id: projectId,
+        purchase_request_id: id,
+      });
+    }
+  };
 
   const constructorOptions = useMemo(() => {
     return vendorOptions?.map(i => ({
@@ -50,33 +65,42 @@ const CreatePR = props => {
   }, [workOptions]);
 
   const initialValues = React.useMemo(() => {
-    if (id) {
-      const selected = PRList.find(i => i.id === id);
+    if (edit) {
       const {
         subject,
         praposal_contractor_id: contractor_id,
         required_for,
         remarks,
-      } = selected;
+        materialsItems,
+      } = PRDetails.details;
       return {
         subject,
         contractor_id,
         required_for,
         remarks,
+        materialsItems,
       };
     }
     return {};
-  }, [PRList, id]);
+  }, [PRDetails, edit]);
 
   const onSubmit = async values => {
-    const data = {purchase_request_id: id, project_id: projectId, ...values};
+    const data = {
+      purchase_request_id: id,
+      project_id: projectId,
+      material_data: PRDetails.materialItems,
+      ...values,
+    };
 
     if (edit) {
       await updatePR(data);
       navigation.navigate('AddMaterialList', {id, edit});
     } else {
       const {value: res} = await AddPR(data);
-      navigation.navigate('AddMaterialList', {id: res.id, edit});
+      navigation.navigate('AddMaterialList', {
+        id: res.id,
+        edit,
+      });
     }
   };
 
