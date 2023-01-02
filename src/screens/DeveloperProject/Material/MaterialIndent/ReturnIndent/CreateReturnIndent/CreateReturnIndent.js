@@ -23,7 +23,7 @@ function CreateReturnIndent(props) {
 
   const edit = Boolean(id);
 
-  const {getVendorList, addReturnMaterialIndent} =
+  const {getVendorList, AddReturnIndentMaterials} =
     useMaterialManagementActions();
 
   const {vendorOptions} = useSelector(s => s.materialManagement);
@@ -62,9 +62,9 @@ function CreateReturnIndent(props) {
       vendor_id: values.vendor_id,
     };
 
-    const {value} = await addReturnMaterialIndent(data);
+    const {value} = await AddReturnIndentMaterials(data);
 
-    navigation.navigate('AddReturnMaterialList', {
+    navigation.navigate('AddReturnIndentMaterials', {
       edit,
       id: value.material_indent_id || id,
     });
@@ -126,8 +126,6 @@ function CreateReturnIndent(props) {
   );
 }
 
-export default CreateReturnIndent;
-
 const styles = StyleSheet.create({
   container: {
     margin: 10,
@@ -151,3 +149,5 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
 });
+
+export default CreateReturnIndent;

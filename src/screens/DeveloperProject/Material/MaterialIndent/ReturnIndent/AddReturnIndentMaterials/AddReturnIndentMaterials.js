@@ -108,6 +108,18 @@ function AddMaterialDialog(props) {
                 returnKeyType="next"
                 error={errors.quantity}
               />
+              <RenderInput
+                name="damaged_qty"
+                label=" Damage Quantity"
+                containerStyles={styles.inputStyles}
+                maxLength={10}
+                value={values.damaged_qty}
+                onChangeText={handleChange('damaged_qty')}
+                onBlur={handleBlur('damaged_qty')}
+                autoCapitalize="none"
+                returnKeyType="next"
+                error={errors.damaged_qty}
+              />
             </View>
             <ActionButtons
               cancelLabel="Cancel"
@@ -125,8 +137,13 @@ function AddMaterialDialog(props) {
 function CardListing(props) {
   const {item, toggleEditDialog, handleDelete, index} = props;
 
-  const {materialcategrytitle, materialunitstitle, subcategorytitle, quantity} =
-    item;
+  const {
+    materialcategrytitle,
+    materialunitstitle,
+    subcategorytitle,
+    quantity,
+    damaged_qty,
+  } = item;
 
   return (
     <View style={styles.cardContainer}>
@@ -169,11 +186,15 @@ function CardListing(props) {
         <Caption style={styles.lightData}>Quantity:</Caption>
         <Text>{quantity}</Text>
       </View>
+      <View style={styles.dataRow}>
+        <Caption style={styles.lightData}> Damage Qty:</Caption>
+        <Text>{damaged_qty}</Text>
+      </View>
     </View>
   );
 }
 
-function AddMaterialIndentList(props) {
+function AddReturnIndentMaterials(props) {
   const {navigation, route} = props;
 
   const {id, edit} = route?.params || {};
@@ -185,12 +206,13 @@ function AddMaterialIndentList(props) {
 
   const [addDialog, setAddDialog] = React.useState(false);
   const [selectedMaterial, setSelectedMaterial] = React.useState();
+  const [materials, setMaterial] = React.useState(materialsItems || []);
 
   const {indentDetails, materialSubCategories} = useSelector(
     s => s.materialManagement,
   );
 
-  const materials = indentDetails?.material_indent_details;
+  const materialsItems = indentDetails?.material_indent_details;
 
   const {selectedProject} = useSelector(s => s.project);
   const projectId = selectedProject.id;
@@ -238,6 +260,7 @@ function AddMaterialIndentList(props) {
       material_sub_category_id: values.material_sub_category_id,
       material_units_id: values.material_units_id,
       quantity: values.quantity,
+      damaged_qty: values.damaged_qty,
     };
     await addMaterialIssueRequest(restData);
     getDetails();
@@ -246,7 +269,7 @@ function AddMaterialIndentList(props) {
 
   const toggleAddDialog = () => setAddDialog(v => !v);
 
-  const navToPreview = () => navigation.navigate('IssueIndentPreview', {id});
+  const navToPreview = () => navigation.navigate('AddAttachments', {id});
 
   const editDialog = item => {
     setSelectedMaterial(item);
@@ -262,7 +285,7 @@ function AddMaterialIndentList(props) {
         const _materials = [...materials];
         _materials?.splice(index, 1);
         setSelectedMaterial(_materials);
-        // getDetails();
+        getDetails();
       },
     });
   };
@@ -287,7 +310,7 @@ function AddMaterialIndentList(props) {
 
         <View style={{flexGrow: 1, flex: 1}}>
           <ScrollView showsVerticalScrollIndicator={false}>
-            {materials?.map((item, index) => {
+            {materialsItems?.map((item, index) => {
               return (
                 <CardListing
                   key={item.id.toString()}
@@ -329,8 +352,6 @@ function AddMaterialIndentList(props) {
     </View>
   );
 }
-
-export default AddMaterialIndentList;
 
 const styles = StyleSheet.create({
   container: {
@@ -385,3 +406,5 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
 });
+
+export default AddReturnIndentMaterials;

@@ -41,15 +41,15 @@ export default function useMaterialManagementActions() {
     AddPR,
     addDirectGRNVehicleInfo,
     deleteChallan,
-    getIssueRequestDetails,
     deleteIssue,
     addIssueRequest,
     addMaterialIssueRequest,
-    addReturnMaterialIndent,
+    AddReturnIndentMaterials,
     addReturnMaterial,
     addReturnAttachment,
     getSupplier,
     addSupplier,
+    updateIssueQuantity,
   } = useMaterialManagement();
 
   return {
@@ -569,7 +569,7 @@ export default function useMaterialManagementActions() {
         type: types.GET_MATERIAL_INDENT_DETAILS,
         payload: async () => {
           try {
-            const response = _res(await getIssueRequestDetails(data));
+            const response = _res(await getIndentDetails(data));
             return Promise.resolve(response.data);
           } catch (error) {
             const message = _err(error);
@@ -623,12 +623,12 @@ export default function useMaterialManagementActions() {
           }
         },
       }),
-    addReturnMaterialIndent: data =>
+    AddReturnIndentMaterials: data =>
       dispatch({
         type: types.ADD_RETURN_REQUEST,
         payload: async () => {
           try {
-            const response = _res(await addReturnMaterialIndent(data));
+            const response = _res(await AddReturnIndentMaterials(data));
             return Promise.resolve(response);
           } catch (error) {
             const message = _err(error);
@@ -662,6 +662,21 @@ export default function useMaterialManagementActions() {
             const {data} = response;
 
             return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    updateIssueQuantity: formData =>
+      dispatch({
+        type: types.UPDATE_ISSUE_ASSIGN_QUANTITY,
+        payload: async () => {
+          try {
+            const response = _res(await updateIssueQuantity(formData));
+            return Promise.resolve(response.data);
           } catch (error) {
             const message = _err(error);
             snackbar.showMessage({message, variant: 'error'});

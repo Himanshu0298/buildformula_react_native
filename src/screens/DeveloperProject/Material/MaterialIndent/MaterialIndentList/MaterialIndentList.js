@@ -47,8 +47,8 @@ const ListingCard = props => {
 
   const navToPreview = () => {
     if (type === 'rm') {
-      navigation.navigate('ReturnIndentPreview', {id});
-    } else navigation.navigate('IssueIndentPreview', {id});
+      navigation.navigate('ReturnIndentPreview', {id, type});
+    } else navigation.navigate('IssueIndentPreview', {id, type});
   };
 
   return (

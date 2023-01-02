@@ -67,7 +67,7 @@ const CreateIssueIndent = props => {
     const data = {material_indent_id: id, project_id: projectId, ...values};
 
     const {value} = await addIssueRequest(data);
-    navigation.navigate('AddMaterialIndentList', {
+    navigation.navigate('AddIssueIndentMaterials', {
       edit,
       id: value.indent_id,
     });

@@ -21,8 +21,8 @@ import FileIcon from 'assets/images/file_icon.png';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import moment from 'moment';
 import {useAlert} from 'components/Atoms/Alert';
-import {useSelector} from 'react-redux';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
+import {useSelector} from 'react-redux';
 
 const INDENT_STATUS = {
   pending: {label: 'Pending', color: 'rgba(72, 114, 244, 1)'},
@@ -255,7 +255,7 @@ function ReturnIndentPreview(props) {
           </View>
         </View>
       </View>
-      <ScrollView>
+      <ScrollView style={{marginBottom: 15}}>
         <View>
           <ListingCard details={details} />
         </View>
@@ -273,9 +273,11 @@ function ReturnIndentPreview(props) {
             return <MaterialCard item={item} navigation={navigation} />;
           })}
         </View>
-        <View>
-          <MaterialAttachments returnAttachments={returnAttachments} />
-        </View>
+        {returnAttachments?.length ? (
+          <View>
+            <MaterialAttachments returnAttachments={returnAttachments} />
+          </View>
+        ) : null}
       </ScrollView>
     </View>
   );
@@ -428,15 +430,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginLeft: 10,
     justifyContent: 'flex-end',
-  },
-  pending: {
-    color: 'rgba(72, 114, 244, 1)',
-  },
-  rejected: {
-    color: 'rgba(255, 93, 93, 1)',
-  },
-  approved: {
-    color: 'rgba(7, 202, 3, 1)',
   },
   text: {
     color: '#080707',
