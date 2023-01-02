@@ -43,6 +43,13 @@ import CustomerFiles from 'screens/CustomerProject/CustomerFiles';
 /** *********** Customer Project Sub Screens End   ************ */
 
 /** *********** Developer Project Sub Screens    ************ */
+// Project Structure
+import ProjectListing from 'screens/DeveloperProject/ProjectStructure/ProjectListing';
+import ProjectFilter from 'screens/DeveloperProject/ProjectStructure/ProjectListing/ProjectFilter';
+import AddProject from 'screens/DeveloperProject/ProjectStructure/AddProject/AddProject';
+import ProjectStructureDetails from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/ProjectStructureDetails';
+import ProjectHistory from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/Components/ProjectHistory';
+
 // Project : Sales Screens
 import BC_SelectStructure from 'screens/DeveloperProject/Sales/BookingChart/SelectStructure';
 import BC_SelectFloor from 'screens/DeveloperProject/Sales/BookingChart/SelectFloor';
@@ -295,6 +302,16 @@ function AppStackNavigator() {
           {/* DEVELOPER STACK START */}
           <Stack.Group>
             <Stack.Screen name="DeveloperHome" component={DeveloperDashboard} />
+            <Stack.Group>
+              <Stack.Screen name="ProjectList" component={ProjectListing} />
+              <Stack.Screen name="ProjectFilter" component={ProjectFilter} />
+              <Stack.Screen name="AddProject" component={AddProject} />
+              <Stack.Screen
+                name="ProjectStructureDetails"
+                component={ProjectStructureDetails}
+              />
+              <Stack.Screen name="ProjectHistory" component={ProjectHistory} />
+            </Stack.Group>
             <Stack.Group>
               <Stack.Screen name="VisitorsHome" component={Visitors} />
               <Stack.Screen name="VisitorDetails" component={VisitorDetails} />
