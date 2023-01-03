@@ -9,6 +9,7 @@ import projectManagement from './projectManagement';
 import role from './role';
 import notification from './notification';
 import materialManagement from './materialManagement';
+import projectStructure from './projectStructure';
 import designModule from './designModule';
 
 const reducers = {
@@ -24,6 +25,7 @@ const reducers = {
   notification,
   materialManagement,
   designModule,
+  projectStructure,
 };
 
 export default reducers;

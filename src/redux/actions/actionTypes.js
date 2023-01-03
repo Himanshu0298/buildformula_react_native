@@ -265,3 +265,7 @@ export const ADD_ROLE = 'ADD_ROLE';
 export const EDIT_USERS = 'EDIT_USERS';
 export const DELETE_ROLE = 'DELETE_ROLE';
 export const DELETE_MEMBER = 'DELETE_MEMBER';
+
+// Project Structure
+
+export const GET_PROJECT_LIST = 'GET_PROJECT_LIST';
