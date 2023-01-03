@@ -17,6 +17,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
   },
   {
     title: 'PROJECT STRUCTURE',
+    id: 11,
     routes: [
       {
         route: 'ProjectList',
@@ -29,7 +30,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
         icon: 'menu-open',
       },
       {
-        // route: 'ProjectListing',
+        route: 'AreaList',
         label: 'Area List',
         icon: 'map-marker',
       },

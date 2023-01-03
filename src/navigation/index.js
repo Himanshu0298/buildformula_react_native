@@ -43,12 +43,21 @@ import CustomerFiles from 'screens/CustomerProject/CustomerFiles';
 /** *********** Customer Project Sub Screens End   ************ */
 
 /** *********** Developer Project Sub Screens    ************ */
+
 // Project Structure
 import ProjectListing from 'screens/DeveloperProject/ProjectStructure/ProjectListing';
 import ProjectFilter from 'screens/DeveloperProject/ProjectStructure/ProjectListing/ProjectFilter';
-import AddProject from 'screens/DeveloperProject/ProjectStructure/AddProject/AddProject';
-import ProjectStructureDetails from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/ProjectStructureDetails';
-import ProjectHistory from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/Components/ProjectHistory';
+import ProjectStructureDetails from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/Components/ProjectStructureDetails';
+import AddProject from 'screens/DeveloperProject/ProjectStructure/AddProject';
+import ProjectHistory from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/ProjectHistory';
+import ProjectStructure from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/ProjectStructure';
+import ProjectBrief from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/ProjectBrief';
+import ProjectOwner from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/ProjectOwner';
+import ProjectSecurity from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/ProjectSecurity';
+import ProjectFiles from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/ProjectFiles';
+import AreaList from 'screens/DeveloperProject/ProjectStructure/AreaList';
+import AddArea from 'screens/DeveloperProject/ProjectStructure/AddArea';
+import ProjectAmenities from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/ProjectAmenities';
 
 // Project : Sales Screens
 import BC_SelectStructure from 'screens/DeveloperProject/Sales/BookingChart/SelectStructure';
@@ -302,6 +311,7 @@ function AppStackNavigator() {
           {/* DEVELOPER STACK START */}
           <Stack.Group>
             <Stack.Screen name="DeveloperHome" component={DeveloperDashboard} />
+
             <Stack.Group>
               <Stack.Screen name="ProjectList" component={ProjectListing} />
               <Stack.Screen name="ProjectFilter" component={ProjectFilter} />
@@ -632,6 +642,34 @@ function AppStackNavigator() {
               <Stack.Screen name="PurchaseOrders" component={PurchaseOrders} />
             </Stack.Group>
           </Stack.Group>
+
+          {/* PROJECT STRUCTURE */}
+
+          <Stack.Group>
+            <Stack.Screen name="ProjectList" component={ProjectListing} />
+            <Stack.Screen name="ProjectFilter" component={ProjectFilter} />
+            <Stack.Screen name="AddProject" component={AddProject} />
+            <Stack.Screen
+              name="ProjectStructureDetails"
+              component={ProjectStructureDetails}
+            />
+            <Stack.Screen name="ProjectHistory" component={ProjectHistory} />
+            <Stack.Screen name="ProjectBrief" component={ProjectBrief} />
+            <Stack.Screen name="ProjectOwner" component={ProjectOwner} />
+            <Stack.Screen name="ProjectSecurity" component={ProjectSecurity} />
+            <Stack.Screen name="ProjectFiles" component={ProjectFiles} />
+            <Stack.Screen name="AreaList" component={AreaList} />
+            <Stack.Screen name="AddArea" component={AddArea} />
+            <Stack.Screen
+              name="ProjectAmenities"
+              component={ProjectAmenities}
+            />
+            <Stack.Screen
+              name="ProjectStructure"
+              component={ProjectStructure}
+            />
+          </Stack.Group>
+
           {/* DEVELOPER STACK END */}
           {/* CUSTOMER STACK START */}
           <Stack.Group>
