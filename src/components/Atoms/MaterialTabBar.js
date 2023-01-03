@@ -29,7 +29,6 @@ const styles = StyleSheet.create({
     elevation: 0,
   },
   label: {
-    margin: 8,
     fontSize: 15,
   },
 });

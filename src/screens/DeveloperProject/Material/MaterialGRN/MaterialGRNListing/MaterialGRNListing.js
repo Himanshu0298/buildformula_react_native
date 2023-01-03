@@ -1,6 +1,6 @@
-import {StyleSheet, View, useWindowDimensions} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import React, {useState} from 'react';
-import {Title} from 'react-native-paper';
+import {Subheading} from 'react-native-paper';
 import {TabView} from 'react-native-tab-view';
 import {getShadow} from 'utils';
 import MaterialTabBar from 'components/Atoms/MaterialTabBar';
@@ -35,7 +35,7 @@ const MaterialGRNListing = props => {
 
   return (
     <View style={styles.mainContainer}>
-      <Title style={styles.header}>Good Received Note</Title>
+      <Subheading style={styles.header}>Goods Received Note</Subheading>
       <View style={styles.mainContainer}>
         <TabView
           navigationState={{index: selectedTab, routes}}
@@ -60,5 +60,6 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingLeft: 15,
+    marginBottom: 10,
   },
 });
