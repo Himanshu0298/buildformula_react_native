@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import {TextInput} from 'react-native-paper';
 import {useActionSheet} from '@expo/react-native-action-sheet';
 import truncate from 'lodash/truncate';
-import _ from 'lodash';
 import RenderInput from './RenderInput';
 
 const RenderSelect = React.forwardRef((props, ref) => {
@@ -100,7 +99,6 @@ RenderSelect.defaultProps = {
 };
 
 RenderSelect.prototype = {
-  options: PropTypes.array,
   destructiveButtonIndex: PropTypes.number,
   onSelect: PropTypes.func,
 };

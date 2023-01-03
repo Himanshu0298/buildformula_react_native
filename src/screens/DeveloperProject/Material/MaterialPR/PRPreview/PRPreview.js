@@ -1,6 +1,6 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import React, {useEffect} from 'react';
-import {IconButton, Caption, Subheading} from 'react-native-paper';
+import {IconButton, Caption, Subheading, Text} from 'react-native-paper';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import ActionButtons from 'components/Atoms/ActionButtons';
@@ -10,6 +10,8 @@ import useMaterialManagementActions from 'redux/actions/materialManagementAction
 import {ScrollView} from 'react-native-gesture-handler';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {getPermissions, getShadow} from 'utils';
+import {isNumber} from 'lodash';
+import {AddMaterialDialog} from '../MaterialPRList/AddMaterialList';
 
 function RenderHeaderBar(props) {
   const {goBack, navToEdit, handleDelete, PRDetails} = props;
@@ -39,7 +41,6 @@ function RenderHeaderBar(props) {
             </OpacityButton>
           </View>
         ) : null}
-        {/* {showStatus === 1 ? ( */}
         <View>
           <OpacityButton
             color="#FF5D5D"
@@ -49,7 +50,6 @@ function RenderHeaderBar(props) {
             <MaterialIcons name="delete" color="#FF5D5D" size={13} />
           </OpacityButton>
         </View>
-        {/* ) : null} */}
       </View>
     </View>
   );
@@ -117,7 +117,8 @@ function RenderPRHeaderCard(props) {
 }
 
 function RenderMaterialCard(props) {
-  const {item} = props;
+  const {item, handleDelete, handleEdit, index, showStatus} = props;
+
   const {
     materialcategrytitle,
     subcategorytitle,
@@ -128,11 +129,37 @@ function RenderMaterialCard(props) {
 
   return (
     <View style={styles.cardContainer}>
-      <View style={styles.cardHeader}>
-        <View style={styles.dataRow}>
-          <Caption style={styles.lightData}>Category:</Caption>
-          <Text>{materialcategrytitle}</Text>
+      <View style={styles.card}>
+        <View style={styles.cardHeader}>
+          <View style={styles.dataRow}>
+            <Caption style={styles.lightData}>Category:</Caption>
+            <Text>{materialcategrytitle}</Text>
+          </View>
         </View>
+
+        {showStatus === 1 ? (
+          <View style={styles.headerSubContainer}>
+            <View style={styles.editIconContainer}>
+              <OpacityButton
+                color="#4872f4"
+                opacity={0.18}
+                style={styles.editIcon}
+                onPress={() => handleEdit(index)}>
+                <MaterialIcons name="edit" color="#4872f4" size={13} />
+              </OpacityButton>
+            </View>
+
+            <View>
+              <OpacityButton
+                color="#FF5D5D"
+                opacity={0.18}
+                onPress={() => handleDelete(item)}
+                style={styles.deleteIcon}>
+                <MaterialIcons name="delete" color="#FF5D5D" size={13} />
+              </OpacityButton>
+            </View>
+          </View>
+        ) : null}
       </View>
       <View style={styles.dataRow}>
         <Caption style={styles.lightData}>Sub Category:</Caption>
@@ -165,15 +192,29 @@ const PRPreview = props => {
     deleteMaterialPR,
     updatePRStatus,
     getPRMaterialOrderList,
+    deleteMaterialPRItem,
+    updatePR,
   } = useMaterialManagementActions();
 
   const {selectedProject} = useSelector(s => s.project);
   const {PRDetails, loading} = useSelector(s => s.materialManagement);
   const projectId = selectedProject.id;
 
+  const {materialItems} = PRDetails || {};
+
+  const showStatus = PRDetails?.details?.status;
+
+  const {
+    praposal_contractor_id: contractor_id,
+    required_for,
+    subject,
+    remarks,
+  } = PRDetails.details || {};
+
+  const [selectedMaterialIndex, setSelectedMaterialIndex] = React.useState();
+
   useEffect(() => {
     getPRDetails();
-    getList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -183,11 +224,15 @@ const PRPreview = props => {
   const getPRDetails = () => {
     getPRMaterialDetails({project_id: projectId, purchase_request_id: id});
   };
+
   const getList = () => {
     getPRMaterialOrderList({project_id: selectedProject.id});
   };
 
   const navToEdit = () => navigation.navigate('CreatePR', {id});
+
+  const toggleAddDialog = v =>
+    setSelectedMaterialIndex(isNumber(v) ? v : undefined);
 
   const updateStatus = async pr_status => {
     const restData = {
@@ -199,13 +244,13 @@ const PRPreview = props => {
     getPRDetails();
   };
 
-  const handleDelete = i => {
+  const handleDelete = () => {
     alert.show({
       title: 'Confirm',
-      message: 'Are you sure you want to delete?',
+      message: 'Are you sure you want to delete the PR?',
       confirmText: 'Delete',
-      onConfirm: () => {
-        deleteMaterialPR({
+      onConfirm: async () => {
+        await deleteMaterialPR({
           purchase_request_id: id,
           project_id: selectedProject.id,
         });
@@ -215,8 +260,50 @@ const PRPreview = props => {
     });
   };
 
+  const handleRemove = item => {
+    alert.show({
+      title: 'Confirm',
+      message: 'Are you sure you want to delete?',
+      confirmText: 'Delete',
+      onConfirm: async () => {
+        const deleteData = {
+          purchase_request_id: id,
+          material_purchase_request_items_id: item.id,
+          project_id: projectId,
+        };
+        await deleteMaterialPRItem(deleteData);
+        getPRDetails();
+      },
+    });
+  };
+
+  const handleSave = async values => {
+    toggleAddDialog();
+    const materialData = [...materialItems];
+    materialData[selectedMaterialIndex] = values;
+    const restData = {
+      project_id: projectId,
+      purchase_request_id: id,
+      material_data: materialData,
+      contractor_id,
+      required_for,
+      subject,
+      remarks,
+    };
+    await updatePR(restData);
+    getPRDetails();
+  };
+
   return (
     <View style={styles.mainContainer}>
+      <AddMaterialDialog
+        {...props}
+        visible={isNumber(selectedMaterialIndex)}
+        handleClose={toggleAddDialog}
+        material={materialItems?.[selectedMaterialIndex]}
+        id={id}
+        handleSave={handleSave}
+      />
       <Spinner visible={loading} textContent="" />
       <ScrollView>
         <RenderHeaderBar
@@ -228,10 +315,18 @@ const PRPreview = props => {
 
         <View style={styles.bodyContent}>
           <RenderPRHeaderCard {...props} PRDetails={PRDetails} />
-          {PRDetails?.materialItems?.map(item => {
+          {materialItems?.map((item, index) => {
             return (
               <View style={styles.cardSubContainer}>
-                <RenderMaterialCard {...props} item={item} />
+                <RenderMaterialCard
+                  {...props}
+                  item={item}
+                  index={index}
+                  showStatus={showStatus}
+                  navigation={navigation}
+                  handleDelete={handleRemove}
+                  handleEdit={toggleAddDialog}
+                />
               </View>
             );
           })}
@@ -332,9 +427,11 @@ const styles = StyleSheet.create({
   cardSubContainer: {
     marginTop: 10,
   },
-  // subContainer: {
-  //   margin: 10,
-  // },
+
+  card: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
 });
 
 export default PRPreview;

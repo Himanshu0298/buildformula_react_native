@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable react-native/no-inline-styles */
-import {Modal, ScrollView, StyleSheet, View} from 'react-native';
+import {Modal, ScrollView, StyleSheet, View, SafeAreaView} from 'react-native';
 import React, {useEffect, useMemo} from 'react';
 import {Button, Caption, Portal, Subheading, Text} from 'react-native-paper';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
@@ -8,33 +8,80 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import ActionButtons from 'components/Atoms/ActionButtons';
 import {getShadow} from 'utils';
 import {useSelector} from 'react-redux';
-import {Formik} from 'formik';
+import {useFormik} from 'formik';
 import RenderSelect from 'components/Atoms/RenderSelect';
 import RenderInput from 'components/Atoms/RenderInput';
-import {ActionSheetProvider} from '@expo/react-native-action-sheet';
 import dayjs from 'dayjs';
 import RenderDatePicker from 'components/Atoms/RenderDatePicker';
 import {useAlert} from 'components/Atoms/Alert';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {ActionSheetProvider} from '@expo/react-native-action-sheet';
 
-function AddMaterialDialog(props) {
-  const {formikProps, handleClose, edit} = props;
+export function AddMaterialDialog(props) {
+  const {handleClose, material, handleSave} = props;
 
-  const {
-    values,
-    errors,
-    handleChange,
-    handleBlur,
-    setFieldValue,
-    handleSubmit,
-  } = formikProps;
+  const edit = Boolean(material?.id);
 
   const {materialCategories, materialSubCategories} = useSelector(
     s => s.materialManagement,
   );
 
+  const {getPRMaterialCategories} = useMaterialManagementActions();
+
+  const {selectedProject} = useSelector(s => s.project);
+  const projectId = selectedProject.id;
+
   const {commonData} = useSelector(s => s.project);
   const {units} = commonData;
+
+  const initialValues = useMemo(() => {
+    if (material) {
+      const {
+        material_category_id,
+        material_sub_category_id,
+        sub_material_id,
+        material_unit_id,
+        material_dates,
+        required_date,
+        material_quantity,
+        quantity,
+      } = material;
+
+      const selectedSubCategory = materialSubCategories.find(
+        i => i.id === sub_material_id,
+      );
+
+      return {
+        material_category_id,
+        sub_material_id: material_sub_category_id || sub_material_id,
+        material_unit_id: material_unit_id || selectedSubCategory?.unit_id,
+        required_date: material_dates || required_date,
+        quantity: material_quantity || quantity,
+      };
+    }
+    return {};
+  }, [materialSubCategories, material]);
+
+  useEffect(() => {
+    getPRMaterialCategories({project_id: projectId});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const {
+    values,
+    errors,
+    handleChange,
+    setFieldValue,
+    handleSubmit,
+    handleBlur,
+  } = useFormik({
+    enableReinitialize: true,
+    validateOnBlur: false,
+    validateOnChange: false,
+    initialValues,
+    onSubmit: handleSave,
+  });
 
   const categoryOptions = useMemo(() => {
     return materialCategories?.map(i => ({
@@ -45,9 +92,9 @@ function AddMaterialDialog(props) {
 
   const subCategoryOptions = useMemo(() => {
     return materialSubCategories
-      .filter(i => i.category_id === values.material_category_id)
+      ?.filter(i => i.category_id === values?.material_category_id)
       ?.map(i => ({label: `${i.title}`, value: i.id}));
-  }, [materialSubCategories, values.material_category_id]);
+  }, [materialSubCategories, values?.material_category_id]);
 
   const unitOptions = useMemo(() => {
     return units?.map(i => ({label: `${i.title}`, value: i.id}));
@@ -62,99 +109,120 @@ function AddMaterialDialog(props) {
   };
 
   return (
-    <Portal>
-      <Modal {...props} onBackdropPress={handleClose}>
-        <Portal.Host>
-          <ActionSheetProvider>
-            <View style={styles.formContainer}>
-              <Subheading>{edit ? 'Edit Material' : 'Add Material'}</Subheading>
-              <View style={styles.formSubContainer}>
-                <RenderSelect
-                  name="material_category_id"
-                  label="Category"
-                  options={categoryOptions}
-                  value={values.material_category_id}
-                  containerStyles={styles.inputStyles}
-                  onBlur={handleBlur('material_category_id')}
-                  onSelect={value => {
-                    setFieldValue('material_category_id', value);
-                  }}
-                />
-
-                <RenderSelect
-                  name="sub_material_id"
-                  label="Sub Category"
-                  options={subCategoryOptions}
-                  value={values.sub_material_id}
-                  containerStyles={styles.inputStyles}
-                  onBlur={handleBlur('sub_material_id')}
-                  onSelect={handleSubMaterialChange}
-                />
-
-                <RenderSelect
-                  name="material_unit_id"
-                  label="Unit"
-                  disabled
-                  containerStyles={styles.inputStyles}
-                  options={unitOptions}
-                  value={values.material_unit_id}
-                />
-
-                <RenderDatePicker
-                  name="required_date"
-                  label="Required Date"
-                  value={values.required_date}
-                  error={errors.required_date}
-                  onChange={v => {
-                    setFieldValue(
-                      'required_date',
-                      dayjs(v).format('YYYY-MM-DD'),
-                    );
-                  }}
-                />
-                <RenderInput
-                  name="quantity"
-                  label="Quantity"
-                  containerStyles={styles.inputStyles}
-                  maxLength={10}
-                  value={values.quantity}
-                  onChangeText={handleChange('quantity')}
-                  onBlur={handleBlur('quantity')}
-                  autoCapitalize="none"
-                  returnKeyType="next"
-                  error={errors.quantity}
+    <Modal {...props} onBackdropPress={handleClose}>
+      <Portal.Host>
+        <ActionSheetProvider>
+          <SafeAreaProvider>
+            <SafeAreaView edges={['top']} style={{flexGrow: 1}}>
+              <View style={styles.formContainer}>
+                <Subheading>
+                  {edit ? 'Edit Material' : 'Add Material'}
+                </Subheading>
+                <View style={styles.formSubContainer}>
+                  <RenderSelect
+                    name="material_category_id"
+                    label="Category"
+                    options={categoryOptions}
+                    value={values.material_category_id}
+                    containerStyles={styles.inputStyles}
+                    onBlur={handleBlur('material_category_id')}
+                    onSelect={value => {
+                      setFieldValue('material_category_id', value);
+                    }}
+                  />
+                  <RenderSelect
+                    name="sub_material_id"
+                    label="Sub Category"
+                    options={subCategoryOptions}
+                    value={values.sub_material_id}
+                    containerStyles={styles.inputStyles}
+                    onBlur={handleBlur('sub_material_id')}
+                    onSelect={handleSubMaterialChange}
+                  />
+                  <RenderSelect
+                    name="material_unit_id"
+                    label="Unit"
+                    disabled
+                    containerStyles={styles.inputStyles}
+                    options={unitOptions}
+                    value={values.material_unit_id}
+                  />
+                  <RenderDatePicker
+                    name="required_date"
+                    label="Required Date"
+                    value={values.required_date}
+                    error={errors.required_date}
+                    onChange={v => {
+                      setFieldValue(
+                        'required_date',
+                        dayjs(v).format('YYYY-MM-DD'),
+                      );
+                    }}
+                  />
+                  <RenderInput
+                    name="quantity"
+                    label="Quantity"
+                    containerStyles={styles.inputStyles}
+                    maxLength={10}
+                    value={values.quantity}
+                    onChangeText={handleChange('quantity')}
+                    onBlur={handleBlur('quantity')}
+                    autoCapitalize="none"
+                    returnKeyType="next"
+                    error={errors.quantity}
+                  />
+                </View>
+                <ActionButtons
+                  cancelLabel="Cancel"
+                  submitLabel={edit ? ' Update' : 'Save'}
+                  onCancel={handleClose}
+                  onSubmit={handleSubmit}
                 />
               </View>
-              <ActionButtons
-                cancelLabel="Cancel"
-                submitLabel={edit ? ' Update' : 'Save'}
-                onCancel={handleClose}
-                onSubmit={handleSubmit}
-              />
-            </View>
-          </ActionSheetProvider>
-        </Portal.Host>
-      </Modal>
-    </Portal>
+            </SafeAreaView>
+          </SafeAreaProvider>
+        </ActionSheetProvider>
+      </Portal.Host>
+    </Modal>
   );
 }
 
 function CardListing(props) {
-  const {item, toggleEditDialog, handleDelete} = props;
+  const {item, toggleEditDialog, handleDelete, index} = props;
 
-  const {
-    materialcategrytitle,
-    subcategorytitle,
-    materialunitstitle,
-    created,
-    material_quantity,
-  } = item;
+  const {materialCategories, materialSubCategories} = useSelector(
+    s => s.materialManagement,
+  );
+
+  const {commonData} = useSelector(s => s.project);
+  const {units} = commonData;
+
+  const categoryTitle = React.useMemo(() => {
+    return (
+      materialCategories?.find(i => i.id === item?.material_category_id)
+        ?.title || 'NA'
+    );
+  }, [item?.material_category_id, materialCategories]);
+
+  const subCategoryTitle = React.useMemo(() => {
+    return (
+      materialSubCategories?.find(i => i.id === item?.sub_material_id)?.title ||
+      'NA'
+    );
+  }, [item?.sub_material_id, materialSubCategories]);
+
+  const unitTitle = React.useMemo(() => {
+    return units?.find(i => i.id === item?.material_unit_id)?.title || 'NA';
+  }, [item?.material_unit_id, units]);
+
+  const {required_date, quantity} = item;
+
   return (
     <View style={styles.cardContainer}>
       <View style={styles.cardHeader}>
         <View style={styles.dataRow}>
           <Caption style={styles.lightData}>Category:</Caption>
-          <Text>{materialcategrytitle}</Text>
+          <Text>{categoryTitle}</Text>
         </View>
         <View style={styles.buttonContainer}>
           <View style={styles.editButton}>
@@ -162,7 +230,7 @@ function CardListing(props) {
               color="#4872f4"
               opacity={0.18}
               style={styles.OpacityButton}
-              onPress={() => toggleEditDialog(item.id)}>
+              onPress={() => toggleEditDialog(index)}>
               <MaterialIcons name="edit" color="#4872f4" size={13} />
             </OpacityButton>
           </View>
@@ -179,19 +247,19 @@ function CardListing(props) {
       </View>
       <View style={styles.dataRow}>
         <Caption style={styles.lightData}>Sub Category:</Caption>
-        <Text>{subcategorytitle}</Text>
+        <Text>{subCategoryTitle}</Text>
       </View>
       <View style={styles.dataRow}>
         <Caption style={styles.lightData}>Unit:</Caption>
-        <Text>{materialunitstitle}</Text>
+        <Text>{unitTitle}</Text>
       </View>
       <View style={styles.dataRow}>
         <Caption style={styles.lightData}>Required date:</Caption>
-        <Text>{created}</Text>
+        <Text>{required_date}</Text>
       </View>
       <View style={styles.dataRow}>
         <Caption style={styles.lightData}>Quantity:</Caption>
-        <Text>{material_quantity}</Text>
+        <Text>{quantity}</Text>
       </View>
     </View>
   );
@@ -202,79 +270,32 @@ function AddMaterialList(props) {
   const {id, edit} = route?.params || {};
 
   const alert = useAlert();
+  const {PRDetails} = useSelector(s => s.materialManagement);
 
-  const {
-    createMaterialPR,
-    updateMaterialPR,
-    deleteMaterialPRItem,
-    getPRMaterialCategories,
-    getPRMaterialDetails,
-  } = useMaterialManagementActions();
-
-  const {PRDetails, materialSubCategories} = useSelector(
-    s => s.materialManagement,
-  );
-
-  const {selectedProject} = useSelector(s => s.project);
-  const projectId = selectedProject.id;
+  const materialItems = PRDetails?.materialItems;
 
   const [addDialog, setAddDialog] = React.useState(false);
-  const [selectedMaterial, setSelectedMaterial] = React.useState();
+  const [selectedMaterialIndex, setSelectedMaterialIndex] = React.useState();
+  const [materials, setMaterials] = React.useState(materialItems || []);
+
+  const {deleteMaterialPRItem, getPRMaterialDetails, createMaterialPR} =
+    useMaterialManagementActions();
+
+  const {selectedProject} = useSelector(s => s.project);
 
   useEffect(() => {
-    getPRMaterialCategories({project_id: projectId});
     getPRDetails();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const initialValues = useMemo(() => {
-    if (selectedMaterial) {
-      const {
-        material_category_id,
-        material_sub_category_id: sub_material_id,
-        material_units_id,
-        created: required_date,
-        material_quantity: quantity,
-      } = selectedMaterial;
-
-      const selectedSubCategory = materialSubCategories.find(
-        i => i.id === sub_material_id,
-      );
-
-      return {
-        material_category_id,
-        sub_material_id,
-        material_units_id: material_units_id || selectedSubCategory?.unit_id,
-        required_date,
-        quantity,
-      };
-    }
-    return {};
-  }, [materialSubCategories, selectedMaterial]);
-
-  const getPRDetails = () => {
-    getPRMaterialDetails({project_id: projectId, purchase_request_id: id});
-  };
-
   const toggleAddDialog = () => setAddDialog(v => !v);
 
-  const handleSave = async values => {
-    const restData = {
-      project_id: projectId,
+  const getPRDetails = () => {
+    getPRMaterialDetails({
+      project_id: selectedProject.id,
       purchase_request_id: id,
-      material_data: [values],
-    };
-    if (edit) {
-      await updateMaterialPR({
-        ...restData,
-        material_purchase_request_items_id: selectedMaterial.id,
-      });
-    } else {
-      await createMaterialPR(restData);
-    }
-    getPRDetails();
-    toggleAddDialog();
+    });
   };
 
   const handleDelete = item => {
@@ -286,80 +307,93 @@ function AddMaterialList(props) {
         const deleteData = {
           purchase_request_id: id,
           material_purchase_request_items_id: item.id,
-          project_id: projectId,
+          project_id: selectedProject.id,
         };
         await deleteMaterialPRItem(deleteData);
-        getPRDetails();
+        await getPRDetails();
       },
     });
   };
 
-  const navToPreview = () => navigation.navigate('PRPreview', {id});
+  const handleSave = async () => {
+    const restData = {
+      purchase_request_id: id,
+      project_id: selectedProject.id,
+      material_data: materials,
+    };
+    await createMaterialPR(restData);
+    await getPRDetails();
+    navigation.navigate('PRPreview', {id});
+  };
+
+  const handleSaveMaterial = values => {
+    const _materials = [...materials];
+    if (!isNaN(selectedMaterialIndex)) {
+      _materials[selectedMaterialIndex] = values;
+    } else {
+      _materials.push(values);
+    }
+    setMaterials(_materials);
+    toggleAddDialog();
+  };
+
+  const toggleEditDialog = index => {
+    setSelectedMaterialIndex(index);
+    toggleAddDialog();
+  };
 
   return (
-    <View style={styles.container}>
-      <View style={{flexGrow: 1}}>
-        <View style={styles.headerContainer}>
-          <Text style={styles.headerText}>
-            {edit ? ' Edit Material' : 'Add Material'}
-          </Text>
-        </View>
-        <View style={styles.bodyContent}>
-          <Button
-            icon="plus"
-            mode="outlined"
-            onPress={toggleAddDialog}
-            contentStyle={{paddingVertical: 10, borderColor: '#4872f4'}}>
-            Add Material
-          </Button>
-        </View>
-
-        <View style={{flexGrow: 1, flex: 1}}>
-          <ScrollView showsVerticalScrollIndicator={false}>
-            {PRDetails?.materialItems?.map(item => {
-              return (
-                <CardListing
-                  key={item.id.toString()}
-                  item={item}
-                  toggleEditDialog={() => {
-                    setSelectedMaterial(item);
-                    toggleAddDialog();
-                  }}
-                  handleDelete={handleDelete}
-                />
-              );
-            })}
-          </ScrollView>
-        </View>
-      </View>
-
-      <ActionButtons
-        cancelLabel="Previous"
-        submitLabel={edit ? 'Update' : 'Save'}
-        onCancel={navigation.goBack}
-        onSubmit={navToPreview}
-      />
-
+    <>
       {addDialog ? (
-        <Formik
-          enableReinitialize
-          validateOnBlur={false}
-          validateOnChange={false}
-          initialValues={initialValues}
-          onSubmit={handleSave}>
-          {formikProps => (
-            <AddMaterialDialog
-              {...props}
-              visible={addDialog}
-              toggleDialog={toggleAddDialog}
-              handleClose={toggleAddDialog}
-              formikProps={formikProps}
-              edit={edit}
-            />
-          )}
-        </Formik>
+        <AddMaterialDialog
+          {...props}
+          visible={addDialog}
+          handleClose={toggleAddDialog}
+          material={materials?.[selectedMaterialIndex]}
+          handleSave={handleSaveMaterial}
+        />
       ) : null}
-    </View>
+      <View style={styles.container}>
+        <View style={{flexGrow: 1}}>
+          <View style={styles.headerContainer}>
+            <Text style={styles.headerText}>
+              {edit ? ' Edit Material' : 'Add Material'}
+            </Text>
+          </View>
+          <View style={styles.bodyContent}>
+            <Button
+              icon="plus"
+              mode="outlined"
+              onPress={toggleAddDialog}
+              contentStyle={{paddingVertical: 10, borderColor: '#4872f4'}}>
+              Add Material
+            </Button>
+          </View>
+
+          <View style={{flexGrow: 1, flex: 1}}>
+            <ScrollView showsVerticalScrollIndicator={false}>
+              {materials?.map((item, index) => {
+                return (
+                  <CardListing
+                    item={item}
+                    index={index}
+                    toggleEditDialog={toggleEditDialog}
+                    handleDelete={handleDelete}
+                  />
+                );
+              })}
+            </ScrollView>
+          </View>
+        </View>
+
+        <ActionButtons
+          cancelLabel="Previous"
+          submitLabel={edit ? 'Update' : 'Save'}
+          onCancel={navigation.goBack}
+          onSubmit={handleSave}
+        />
+      </View>
+    </>
   );
 }
 
@@ -373,28 +407,22 @@ const styles = StyleSheet.create({
   formSubContainer: {
     flexGrow: 1,
   },
-
   formContainer: {
     flexGrow: 1,
-    margin: 15,
-    paddingVertical: 20,
+    margin: 10,
+    justifyContent: 'space-between',
   },
-
   headerText: {
     fontSize: 18,
   },
-
   editButton: {
     marginRight: 10,
   },
-
   deleteButton: {
     borderRadius: 20,
   },
-
   bodyContent: {
     marginVertical: 10,
-    // height: dynamicHeight,
   },
   cardContainer: {
     marginTop: 10,

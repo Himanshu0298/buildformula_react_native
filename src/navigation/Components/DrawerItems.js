@@ -55,7 +55,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
         ),
       },
       {
-        id: 58,
+        id: 56,
         route: 'Approval',
         label: 'Approval',
         icon: ({color, size}) => (
@@ -63,7 +63,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
         ),
       },
       {
-        id: 57,
+        id: 54,
         route: 'FollowUpTask',
         label: 'Follow-up Task',
         icon: ({color, size}) => (
@@ -79,7 +79,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
         ),
       },
       {
-        id: 3,
+        id: 38,
         route: 'BrokerList',
         label: 'Broker List',
         icon: ({color, size}) => (
@@ -117,7 +117,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
       },
 
       {
-        id: 16,
+        id: 17,
         route: 'CS_Step_One',
         label: 'Customer Section',
         icon: ({color, size}) => (

@@ -74,7 +74,7 @@ function MaterialGRN(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const filteredUsers = useMemo(() => {
+  const filteredOrders = useMemo(() => {
     const query = searchQuery.toLowerCase();
     return materialOrderList.filter(
       i =>
@@ -103,7 +103,7 @@ function MaterialGRN(props) {
       <View style={[styles.orderContainer, styles.orderMainBox]}>
         <Spinner visible={loading} textContent="" />
         <FlatList
-          data={filteredUsers}
+          data={filteredOrders}
           refreshControl={
             <RefreshControl refreshing={false} onRefresh={reloadOrders} />
           }
@@ -119,8 +119,6 @@ function MaterialGRN(props) {
     </View>
   );
 }
-
-export default MaterialGRN;
 
 const styles = StyleSheet.create({
   cardContainer: {
@@ -174,3 +172,5 @@ const styles = StyleSheet.create({
     color: theme.colors.primary,
   },
 });
+
+export default MaterialGRN;
