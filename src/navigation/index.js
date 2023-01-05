@@ -57,6 +57,12 @@ import ProjectOwner from 'screens/DeveloperProject/ProjectStructure/ProjectStruc
 import ProjectSecurity from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/ProjectSecurity';
 import ProjectFiles from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/ProjectFiles';
 import ProjectDetail from 'screens/DeveloperProject/ProjectStructure/ProjectDetail';
+import ProjectPreview from 'screens/DeveloperProject/ProjectStructure/ProjectDetail/ProjectPreview';
+import FloorPreview from 'screens/DeveloperProject/ProjectStructure/ProjectDetail/SelectFloor/FloorPreview';
+import TowerPreview from 'screens/DeveloperProject/ProjectStructure/ProjectDetail/SelectTower/TowerPreview';
+import TowerList from 'screens/DeveloperProject/ProjectStructure/ProjectDetail/SelectTower/TowerList';
+import FloorList from 'screens/DeveloperProject/ProjectStructure/ProjectDetail/SelectFloor/FloorList';
+import Description from 'screens/DeveloperProject/ProjectStructure/ProjectDetail/ProjectPreview/Description';
 
 // Area
 import AreaList from 'screens/DeveloperProject/ProjectStructure/AreaList';
@@ -223,7 +229,6 @@ import DrawerContent from './Components/DrawerContent';
 import DocumentGenerater from 'screens/DeveloperProject/DocumentGenerater';
 import DocumentDownload from 'screens/DeveloperProject/DocumentGenerater/Documents/DocumentDownload';
 import StoreKeeperList from 'screens/DeveloperProject/Material/StoreKeeper/StoreKeeperList';
-import ProjectPreview from 'screens/DeveloperProject/ProjectStructure/ProjectDetail/ProjectPreview';
 
 /** *********** Developer Project Sub Screens End   ************ */
 
@@ -660,6 +665,11 @@ function AppStackNavigator() {
             <Stack.Screen name="AddArea" component={AddArea} />
             <Stack.Screen name="ProjectDetail" component={ProjectDetail} />
             <Stack.Screen name="ProjectPreview" component={ProjectPreview} />
+            <Stack.Screen name="TowerPreview" component={TowerPreview} />
+            <Stack.Screen name="FloorPreview" component={FloorPreview} />
+            <Stack.Screen name="TowerList" component={TowerList} />
+            <Stack.Screen name="FloorList" component={FloorList} />
+            <Stack.Screen name="Description" component={Description} />
             <Stack.Screen
               name="SearchPickUpList"
               component={SearchPickUpList}

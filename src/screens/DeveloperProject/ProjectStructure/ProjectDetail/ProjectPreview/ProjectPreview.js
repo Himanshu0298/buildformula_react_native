@@ -22,6 +22,7 @@ import {useDownload} from 'components/Atoms/Download';
 import {getFileName} from 'utils/constant';
 import {getDownloadUrl} from 'utils/download';
 import {getShadow} from 'utils';
+import {theme} from 'styles/theme';
 import {DATA, FILES_DATA, OWNER_DATA, SECURITY_DATA} from './Data';
 
 function Files() {
@@ -159,7 +160,8 @@ function Animates() {
   );
 }
 
-function Configuration() {
+function Configuration(props) {
+  const {navigation} = props;
   return (
     <View>
       <Subheading>Configuration </Subheading>
@@ -196,6 +198,9 @@ function Configuration() {
           It offers apartments, independent floors and villas in varied budget
           range Wave It offers apartments, independent floors and villas in
           varied budget range Wave housing society floors ran...
+          <TouchableOpacity onPress={() => navigation.navigate('Description')}>
+            <Text style={{color: theme.colors.primary}}> more</Text>
+          </TouchableOpacity>
         </Caption>
       </View>
     </View>
@@ -271,7 +276,8 @@ function StatusField() {
   );
 }
 
-function ProjectPreview() {
+function ProjectPreview(props) {
+  const {navigation} = props;
   return (
     <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
       <Image source={stock_image} />
@@ -289,7 +295,7 @@ function ProjectPreview() {
         </View>
         <Divider style={{borderWidth: 0.5}} />
         <View style={styles.statusField}>
-          <Configuration />
+          <Configuration navigation={navigation} />
         </View>
         <View style={styles.statusField}>
           <Animates />

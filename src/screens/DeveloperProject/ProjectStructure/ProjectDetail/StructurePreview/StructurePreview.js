@@ -8,9 +8,7 @@ function StructurePreview(props) {
     <View>
       <StructureSelector
         hideTitle
-        // title="label_project_structure"
-        // subtitle="label_select_appropriate_option"
-        onSelectStructure={() => navigation.navigate('ProjectOwner')}
+        onSelectStructure={() => navigation.navigate('TowerPreview')}
         projectTypes={[1, 2, 3, 4, 5, 6]}
         // activeTypes={activeTypes}
       />
