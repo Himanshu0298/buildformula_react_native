@@ -34,6 +34,11 @@ export const DEVELOPER_DRAWER_ITEMS = [
         label: 'Area List',
         icon: 'map-marker',
       },
+      {
+        route: 'UnitList',
+        label: 'Unit List',
+        icon: 'home-city-outline',
+      },
     ],
   },
   {

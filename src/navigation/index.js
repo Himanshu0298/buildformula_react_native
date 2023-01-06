@@ -72,6 +72,21 @@ import AddArea from 'screens/DeveloperProject/ProjectStructure/AddArea';
 import PickUpListing from 'screens/DeveloperProject/ProjectStructure/PickUp/PickUpListing';
 import SearchPickUpList from 'screens/DeveloperProject/ProjectStructure/PickUp/SearchPickUpList';
 
+// Unit
+import UnitList from 'screens/DeveloperProject/ProjectStructure/UnitList/Index';
+import AddUnit from 'screens/DeveloperProject/ProjectStructure/AddUnit';
+import UnitDetails from 'screens/DeveloperProject/ProjectStructure/ProjectUnitDetails/UnitDetails';
+import ProjectUnitDetails from 'screens/DeveloperProject/ProjectStructure/ProjectUnitDetails/ProjectUnitDetails';
+import LocationInfo from 'screens/DeveloperProject/ProjectStructure/ProjectUnitDetails/LocationInfo';
+import UnitAreaSheet from 'screens/DeveloperProject/ProjectStructure/ProjectUnitDetails/UnitAreaSheet';
+import InfrastructureInfo from 'screens/DeveloperProject/ProjectStructure/ProjectUnitDetails/InfrastructureInfo';
+import ProjectStructureUnitDetails from 'screens/DeveloperProject/ProjectStructure/ProjectUnitDetails/UnitInformation';
+import ProjectUnitOwner from 'screens/DeveloperProject/ProjectStructure/ProjectUnitDetails/UnitOwnerInfo';
+import UnitSecurityInfo from 'screens/DeveloperProject/ProjectStructure/ProjectUnitDetails/UnitSecurityInfo';
+import UnitFiles from 'screens/DeveloperProject/ProjectStructure/ProjectUnitDetails/UnitFiles';
+import UnitPricing from 'screens/DeveloperProject/ProjectStructure/ProjectUnitDetails/UnitPricing';
+import UnitPreview from 'screens/DeveloperProject/ProjectStructure/UnitPreview';
+
 // Project : Sales Screens
 import BC_SelectStructure from 'screens/DeveloperProject/Sales/BookingChart/SelectStructure';
 import BC_SelectFloor from 'screens/DeveloperProject/Sales/BookingChart/SelectFloor';
@@ -683,6 +698,33 @@ function AppStackNavigator() {
               name="ProjectStructure"
               component={ProjectStructure}
             />
+            <Stack.Screen name="UnitList" component={UnitList} />
+            <Stack.Screen name="AddUnit" component={AddUnit} />
+            <Stack.Screen
+              name="ProjectUnitDetails"
+              component={ProjectUnitDetails}
+            />
+            <Stack.Screen name="UnitDetails" component={UnitDetails} />
+            <Stack.Screen name="LocationInfo" component={LocationInfo} />
+            <Stack.Screen name="UnitFiles" component={UnitFiles} />
+            <Stack.Screen name="UnitPricing" component={UnitPricing} />
+            <Stack.Screen name="UnitPreview" component={UnitPreview} />
+            <Stack.Screen
+              name="UnitSecurityInfo"
+              component={UnitSecurityInfo}
+            />
+            <Stack.Screen
+              name="ProjectUnitOwner"
+              component={ProjectUnitOwner}
+            />
+            <Stack.Screen
+              name="UnitInformation"
+              component={ProjectStructureUnitDetails}
+            />
+            <Stack.Screen
+              name="InfrastructureInfo"
+              component={InfrastructureInfo}
+            />
           </Stack.Group>
 
           {/* DEVELOPER STACK END */}
@@ -692,6 +734,8 @@ function AppStackNavigator() {
               <Stack.Screen name="Ownership" component={CustomerHome} />
               <Stack.Screen name="BookingDetails" component={CustomerBooking} />
               <Stack.Screen name="LoanDetails" component={CustomerBankLoan} />
+              <Stack.Screen name="UnitAreaSheet" component={UnitAreaSheet} />
+
               <Stack.Screen
                 name="CustomerAccount"
                 component={CustomerAccount}

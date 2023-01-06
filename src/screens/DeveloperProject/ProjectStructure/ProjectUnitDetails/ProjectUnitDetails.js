@@ -5,6 +5,34 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 
+const ROUTE = [
+  {screenName: 'Unit Details', route: 'UnitDetails', key: 'UnitDetails'},
+  {screenName: 'Location Info', route: 'LocationInfo', key: 'Location Info'},
+  {screenName: 'Area Sheet', route: 'UnitAreaSheet', key: 'Area Sheet'},
+  {
+    screenName: 'Infrastructure Info',
+    route: 'InfrastructureInfo',
+    key: 'Infrastructure Info',
+  },
+  {screenName: 'Details', route: 'UnitInformation', key: 'Details'},
+  {screenName: 'Unit Pricing', route: 'UnitPricing', key: 'Unit Pricing'},
+  {
+    screenName: 'Unit Owner Info',
+    route: 'ProjectUnitOwner',
+    key: 'Unit Owner Info',
+  },
+  {
+    screenName: 'Security/ Caretaker Info',
+    route: 'UnitSecurityInfo',
+    key: 'Security/ Caretaker Info',
+  },
+  {
+    screenName: 'Files/ Attachments',
+    route: 'UnitFiles',
+    key: 'Files/ Attachments',
+  },
+];
+
 const RenderRow = props => {
   const {navigation, screenName, route} = props;
   return (
@@ -24,7 +52,7 @@ const RenderRow = props => {
   );
 };
 
-const ProjectStructureDetails = props => {
+const ProjectUnitDetails = props => {
   const {navigation} = props;
   return (
     <SafeAreaView style={styles.mainContainer}>
@@ -36,53 +64,26 @@ const ProjectStructureDetails = props => {
           style={styles.backIcon}
           onPress={() => navigation.goBack()}
         />
-        <Title>Add Project</Title>
+        <Title>Add Unit </Title>
       </View>
       <Divider />
       <View style={styles.bodyWrap}>
-        <RenderRow
-          {...props}
-          key="AddProject"
-          screenName="Project Details"
-          route="AddProject"
-        />
-        <RenderRow
-          {...props}
-          screenName="Project History"
-          route="ProjectHistory"
-        />
-        <RenderRow
-          {...props}
-          screenName="Project Structure"
-          route="ProjectStructure"
-        />
-        <RenderRow {...props} screenName="Project Brief" route="ProjectBrief" />
-        <RenderRow
-          {...props}
-          screenName="Project Amenities"
-          route="ProjectAmenities"
-        />
-        <RenderRow
-          {...props}
-          screenName="Project Owner Info"
-          route="ProjectOwner"
-        />
-        <RenderRow
-          {...props}
-          screenName="Security/ Caretaker Info"
-          route="ProjectSecurity"
-        />
-        <RenderRow
-          {...props}
-          screenName="Files/ Attachments"
-          route="ProjectFiles"
-        />
+        {ROUTE.map(item => {
+          return (
+            <RenderRow
+              {...props}
+              key={item.key}
+              screenName={item.screenName}
+              route={item.route}
+            />
+          );
+        })}
       </View>
     </SafeAreaView>
   );
 };
 
-export default ProjectStructureDetails;
+export default ProjectUnitDetails;
 
 const styles = StyleSheet.create({
   headerWrapper: {
@@ -104,12 +105,12 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   bodyWrap: {
-    paddingHorizontal: 10,
+    paddingHorizontal: 5,
     marginTop: 10,
   },
   seperator: {
     height: 1,
-    marginVertical: 10,
+    marginVertical: 5,
   },
   navBTN: {
     borderRadius: 50,
