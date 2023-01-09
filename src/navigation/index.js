@@ -187,12 +187,12 @@ import CreatePIMaterial from 'screens/DeveloperProject/Material/MaterialPI/Mater
 // MaterialIndent
 import MaterialIndentListing from 'screens/DeveloperProject/Material/MaterialIndent/MaterialIndentList';
 import CreateIssueIndent from 'screens/DeveloperProject/Material/MaterialIndent/IssueIndent/CreateIssueIndent';
-import AddIssueIndentMaterials from 'screens/DeveloperProject/Material/MaterialIndent/IssueIndent/AddIssueIndentMaterials';
 import CreateReturnIndent from 'screens/DeveloperProject/Material/MaterialIndent/ReturnIndent/CreateReturnIndent';
 import IssueIndentPreview from 'screens/DeveloperProject/Material/MaterialIndent/IssueIndent/IssueIndentPreview';
 import ReturnIndentPreview from 'screens/DeveloperProject/Material/MaterialIndent/ReturnIndent/ReturnIndentPreview';
 import AddReturnIndentMaterials from 'screens/DeveloperProject/Material/MaterialIndent/ReturnIndent/AddReturnIndentMaterials';
 import AddAttachments from 'screens/DeveloperProject/Material/MaterialIndent/ReturnIndent/AddAttachments';
+import AddIssueIndentMaterials from 'screens/DeveloperProject/Material/MaterialIndent/IssueIndent/AddIssueIndentMaterials';
 
 // StoreKeeper
 import IssueIndent from 'screens/DeveloperProject/Material/StoreKeeper/IssueIndent';

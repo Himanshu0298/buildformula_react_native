@@ -1,4 +1,3 @@
-/* eslint-disable react-native/no-inline-styles */
 import {StyleSheet, View, SafeAreaView, Modal, ScrollView} from 'react-native';
 import React, {useEffect, useMemo} from 'react';
 import {Button, Caption, Subheading, Text} from 'react-native-paper';
@@ -10,13 +9,20 @@ import {getShadow} from 'utils';
 import RenderSelect from 'components/Atoms/RenderSelect';
 import RenderInput from 'components/Atoms/RenderInput';
 import {useSelector} from 'react-redux';
-import {Formik} from 'formik';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {isEqual, isNumber} from 'lodash';
+import {Formik} from 'formik';
 
 function AddMaterialDialog(props) {
-  const {formikProps, handleClose, edit} = props;
+  const {handleClose, edit, formikProps} = props;
+
+  const {materialCategories, materialSubCategories} = useSelector(
+    s => s.materialManagement,
+  );
+
+  const {commonData} = useSelector(s => s.project);
+  const {units} = commonData;
 
   const {
     values,
@@ -26,13 +32,6 @@ function AddMaterialDialog(props) {
     setFieldValue,
     handleSubmit,
   } = formikProps;
-
-  const {materialCategories, materialSubCategories} = useSelector(
-    s => s.materialManagement,
-  );
-
-  const {commonData} = useSelector(s => s.project);
-  const {units} = commonData;
 
   const categoryOptions = useMemo(() => {
     return materialCategories?.map(i => ({
@@ -62,7 +61,7 @@ function AddMaterialDialog(props) {
   return (
     <Modal {...props} onBackdropPress={handleClose}>
       <SafeAreaProvider>
-        <SafeAreaView edges={['top']} style={{flexGrow: 1}}>
+        <SafeAreaView edges={['top']} style={styles.modelContainer}>
           <View style={styles.formContainer}>
             <View style={styles.formSubContainer}>
               <Subheading>{edit ? 'Edit Material' : 'Add Material'}</Subheading>
@@ -109,18 +108,6 @@ function AddMaterialDialog(props) {
                 returnKeyType="next"
                 error={errors.quantity}
               />
-              <RenderInput
-                name="damaged_qty"
-                label=" Damage Quantity"
-                containerStyles={styles.inputStyles}
-                maxLength={10}
-                value={values.damaged_qty}
-                onChangeText={handleChange('damaged_qty')}
-                onBlur={handleBlur('damaged_qty')}
-                autoCapitalize="none"
-                returnKeyType="next"
-                error={errors.damaged_qty}
-              />
             </View>
             <ActionButtons
               cancelLabel="Cancel"
@@ -138,13 +125,8 @@ function AddMaterialDialog(props) {
 function CardListing(props) {
   const {item, toggleEditDialog, handleDelete, index} = props;
 
-  const {
-    materialcategrytitle,
-    materialunitstitle,
-    subcategorytitle,
-    quantity,
-    damaged_qty,
-  } = item;
+  const {subcategorytitle, materialcategrytitle, materialunitstitle, quantity} =
+    item;
 
   const {materialCategories, materialSubCategories} = useSelector(
     s => s.materialManagement,
@@ -183,7 +165,7 @@ function CardListing(props) {
               color="#4872f4"
               opacity={0.18}
               style={styles.OpacityButton}
-              onPress={() => toggleEditDialog(index)}>
+              onPress={() => toggleEditDialog(index, item)}>
               <MaterialIcons name="edit" color="#4872f4" size={13} />
             </OpacityButton>
           </View>
@@ -204,22 +186,18 @@ function CardListing(props) {
       </View>
       <View style={styles.dataRow}>
         <Caption style={styles.lightData}>Unit:</Caption>
-        <Text>{materialunitstitle || unitTitle}</Text>
+        <Text>{unitTitle || materialunitstitle}</Text>
       </View>
 
       <View style={styles.dataRow}>
         <Caption style={styles.lightData}>Quantity:</Caption>
         <Text>{quantity}</Text>
       </View>
-      <View style={styles.dataRow}>
-        <Caption style={styles.lightData}> Damage Qty:</Caption>
-        <Text>{damaged_qty}</Text>
-      </View>
     </View>
   );
 }
 
-function AddReturnIndentMaterials(props) {
+function AddIssueIndentMaterials(props) {
   const {navigation, route} = props;
 
   const {id, edit} = route?.params || {};
@@ -236,7 +214,6 @@ function AddReturnIndentMaterials(props) {
   const {indentDetails, materialSubCategories} = useSelector(
     s => s.materialManagement,
   );
-
   const materialsItems = indentDetails?.material_indent_details;
 
   const {selectedProject} = useSelector(s => s.project);
@@ -268,7 +245,6 @@ function AddReturnIndentMaterials(props) {
         material_sub_category_id,
         material_units_id,
         quantity,
-        damaged_qty,
       } = materials[selectedMaterialIndex];
 
       const selectedSubCategory = materialSubCategories?.find(
@@ -280,7 +256,6 @@ function AddReturnIndentMaterials(props) {
         material_sub_category_id,
         material_units_id: material_units_id || selectedSubCategory?.unit_id,
         quantity,
-        damaged_qty,
       };
     }
     return {};
@@ -293,15 +268,14 @@ function AddReturnIndentMaterials(props) {
     const restData = {
       project_id: projectId,
       material_indent_id: id,
-      material_category_id: materialCard.material_category_id,
-      material_sub_category_id: materialCard.material_sub_category_id,
-      material_units_id: materialCard.material_units_id,
-      quantity: materialCard.quantity,
-      damaged_qty: materialCard.damaged_qty,
+      material_category_id: materialCard?.material_category_id,
+      material_sub_category_id: materialCard?.material_sub_category_id,
+      material_units_id: materialCard?.material_units_id,
+      quantity: materialCard?.quantity,
     };
     await addMaterialIssueRequest(restData);
     getDetails();
-    navigation.navigate('AddAttachments', {id});
+    navigation.navigate('IssueIndentPreview', {id});
   };
 
   const handleSaveMaterial = values => {
@@ -330,14 +304,14 @@ function AddReturnIndentMaterials(props) {
       onConfirm: () => {
         const _materials = [...materials];
         _materials?.splice(index, 1);
-        setSelectedMaterialIndex(_materials);
+        setMaterials(_materials);
         getDetails();
       },
     });
   };
 
   return (
-    <View style={styles.container}>
+    <>
       {addDialog ? (
         <Formik
           enableReinitialize
@@ -355,47 +329,52 @@ function AddReturnIndentMaterials(props) {
           )}
         </Formik>
       ) : null}
-      <View style={{flexGrow: 1}}>
-        <View style={styles.headerContainer}>
-          <Text style={styles.headerText}>
-            {edit ? ' Edit Material' : 'Add Material'}
-          </Text>
-        </View>
-        <View style={styles.bodyContent}>
-          <Button
-            icon="plus"
-            mode="outlined"
-            onPress={toggleAddDialog}
-            contentStyle={{paddingVertical: 10, borderColor: '#4872f4'}}>
-            Add Material
-          </Button>
+      <View style={styles.container}>
+        <View style={styles.subContainer}>
+          <View style={styles.headerContainer}>
+            <Text style={styles.headerText}>
+              {edit ? ' Edit Material' : 'Add Material'}
+            </Text>
+          </View>
+          <View style={styles.bodyContent}>
+            <Button
+              icon="plus"
+              mode="outlined"
+              onPress={toggleAddDialog}
+              contentStyle={styles.addButton}>
+              Add Material
+            </Button>
+          </View>
+
+          <View style={styles.cardSubContainer}>
+            <ScrollView showsVerticalScrollIndicator={false}>
+              {materials?.map((item, index) => {
+                return (
+                  <CardListing
+                    key={item?.id?.toString()}
+                    item={item}
+                    index={index}
+                    toggleEditDialog={editDialog}
+                    handleDelete={handleDelete}
+                  />
+                );
+              })}
+            </ScrollView>
+          </View>
         </View>
 
-        <View style={{flexGrow: 1, flex: 1}}>
-          <ScrollView showsVerticalScrollIndicator={false}>
-            {materials?.map((item, index) => {
-              return (
-                <CardListing
-                  item={item}
-                  index={index}
-                  toggleEditDialog={editDialog}
-                  handleDelete={handleDelete}
-                />
-              );
-            })}
-          </ScrollView>
-        </View>
+        <ActionButtons
+          cancelLabel="Previous"
+          submitLabel="Next"
+          onCancel={navigation.goBack}
+          onSubmit={handleSave}
+        />
       </View>
-
-      <ActionButtons
-        cancelLabel="Previous"
-        submitLabel="Next"
-        onCancel={navigation.goBack}
-        onSubmit={handleSave}
-      />
-    </View>
+    </>
   );
 }
+
+export default AddIssueIndentMaterials;
 
 const styles = StyleSheet.create({
   container: {
@@ -449,6 +428,18 @@ const styles = StyleSheet.create({
   headerContainer: {
     marginBottom: 10,
   },
+  modelContainer: {
+    flexGrow: 1,
+  },
+  addButton: {
+    paddingVertical: 10,
+    borderColor: '#4872f4',
+  },
+  cardSubContainer: {
+    flexGrow: 1,
+    flex: 1,
+  },
+  subContainer: {
+    flexGrow: 1,
+  },
 });
-
-export default AddReturnIndentMaterials;

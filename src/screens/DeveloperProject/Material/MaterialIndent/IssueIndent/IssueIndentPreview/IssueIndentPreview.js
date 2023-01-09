@@ -24,6 +24,8 @@ import {Formik} from 'formik';
 import RenderInput from 'components/Atoms/RenderInput';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import ActionButtons from 'components/Atoms/ActionButtons';
+import {isNumber, pick} from 'lodash';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const INDENT_STATUS = {
   pending: {label: 'Pending', color: 'rgba(72, 114, 244, 1)'},
@@ -32,7 +34,7 @@ const INDENT_STATUS = {
 };
 
 const AssignQtyDialog = props => {
-  const {visible, toggleDialog, onSubmit} = props;
+  const {item, visible, toggleDialog, onSubmit} = props;
 
   return (
     <Portal>
@@ -46,8 +48,8 @@ const AssignQtyDialog = props => {
             enableReinitialize
             validateOnBlur={false}
             validateOnChange={false}
-            initialValues={{}}
-            onSubmit={onSubmit}>
+            initialValues={{assigned_quantity: item?.assigned_quantity || 0}}
+            onSubmit={values => onSubmit(values?.assigned_quantity)}>
             {({values, errors, handleChange, handleBlur, handleSubmit}) => {
               return (
                 <>
@@ -156,7 +158,7 @@ const RequiredVendor = props => {
 };
 
 function AssignMaterialCard(props) {
-  const {item, toggleDialog, showDetail} = props;
+  const {item, index, showEdit, showDetail, toggleDialog} = props;
 
   const {
     materialcategrytitle,
@@ -206,17 +208,19 @@ function AssignMaterialCard(props) {
           <View style={styles.dataRow}>
             <Caption style={styles.lightData}>Assign Quantity:</Caption>
             <Text>{assigned_quantity}</Text>
-            <OpacityButton
-              color={theme.colors.primary}
-              opacity={0.18}
-              style={styles.paymentSubContainer}
-              onPress={() => toggleDialog(item)}>
-              <MaterialIcons
-                name="edit"
+            {showEdit ? (
+              <OpacityButton
                 color={theme.colors.primary}
-                size={10}
-              />
-            </OpacityButton>
+                opacity={0.18}
+                style={styles.paymentSubContainer}
+                onPress={() => toggleDialog(index)}>
+                <MaterialIcons
+                  name="edit"
+                  color={theme.colors.primary}
+                  size={10}
+                />
+              </OpacityButton>
+            ) : null}
           </View>
         </>
       ) : null}
@@ -239,22 +243,33 @@ function IssueIndentPreview(props) {
   } = useMaterialManagementActions();
 
   const {selectedProject} = useSelector(s => s.project);
-  const {indentDetails} = useSelector(s => s.materialManagement);
+  const {indentDetails, loading} = useSelector(s => s.materialManagement);
 
   const details = indentDetails?.material_indent;
   const {status, verification_code} = details || {};
   const materialData = indentDetails?.material_indent_details;
 
-  const [selectedItem, setSelectedItem] = React.useState();
-  const [showDetail, setShowDetail] = React.useState(false);
+  const [selectedItemIndex, setSelectedItemIndex] = React.useState();
+  const [showDetail, setShowDetail] = React.useState();
+  const [materials, setMaterials] = React.useState(materialData);
+
+  useEffect(() => {
+    if (materialData?.length) setMaterials(materialData);
+  }, [materialData]);
 
   useEffect(() => {
     getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const disableApprove = React.useMemo(() => {
+    return Boolean(
+      materials?.filter(i => !isNumber(i.assigned_quantity))?.length,
+    );
+  }, [materials]);
+
   const toggleDetail = () => setShowDetail(v => !v);
-  const toggleDialog = v => setSelectedItem(v);
+  const toggleDialog = v => setSelectedItemIndex(v);
 
   const getData = () => {
     getIndentDetails({
@@ -285,10 +300,14 @@ function IssueIndentPreview(props) {
     });
   };
 
-  const onSubmit = values => {
-    const {available_quantity} = selectedItem;
+  const navToCreate = () => {
+    navigation.navigate('CreateIssueIndent', {id, indentDetails});
+  };
 
-    if (values.assigned_quantity >= available_quantity) {
+  const handleSaveMaterialQuantity = value => {
+    const _materials = [...materials];
+
+    if (value > _materials[selectedItemIndex]?.available_quantity) {
       snackbar.showMessage({
         message: 'Assign Quantity can not be more then Available Quantity',
         variant: 'error',
@@ -296,33 +315,42 @@ function IssueIndentPreview(props) {
       return;
     }
 
-    const restData = {
-      project_id: selectedProject.id,
-      material_indent_id: id,
-      type,
-      assigned_quantity: [
-        {
-          material_indent_id: id,
-          material_indent_details_id: selectedItem.id,
-          assigned_quantity: values.assigned_quantity,
-        },
-      ],
-    };
-
-    updateIssueQuantity(restData);
+    _materials[selectedItemIndex].assigned_quantity = value;
+    setMaterials(_materials);
     toggleDialog();
+  };
+
+  const updateStatus = async approveStatus => {
+    const formData = new FormData();
+
+    const quantityData = materials.map(item => {
+      const keys = ['material_indent_id', 'assigned_quantity'];
+      return {...pick(item, keys), material_indent_details_id: item.id};
+    });
+
+    formData.append('project_id', selectedProject.id);
+    formData.append('material_indent_id', id);
+    formData.append('type', approveStatus);
+    formData.append('assigned_quantity', JSON.stringify(quantityData));
+
+    await updateIssueQuantity(formData);
     getData();
   };
 
+  const isPending = status === 'pending';
+  const isApproved = status === 'approved';
+
   return (
     <>
+      <Spinner visible={loading || details} textContent="" />
+
       <AssignQtyDialog
         {...props}
-        visible={Boolean(selectedItem)}
+        visible={isNumber(selectedItemIndex)}
+        item={materials[selectedItemIndex]}
         toggleDialog={toggleDialog}
-        onSubmit={onSubmit}
+        onSubmit={handleSaveMaterialQuantity}
       />
-
       <View style={styles.mainContainer}>
         <View style={styles.headerContainer}>
           <View style={styles.dataRow}>
@@ -351,30 +379,23 @@ function IssueIndentPreview(props) {
             </View>
           ) : null}
 
-          {status === 'pending' ? (
-            !showDetail ? (
-              <View style={styles.statusContainer}>
-                <OpacityButton
+          {isPending && !showDetail ? (
+            <View style={styles.statusContainer}>
+              <OpacityButton
+                color={theme.colors.primary}
+                style={styles.opacity}
+                opacity={0.18}
+                onPress={navToCreate}>
+                <MaterialIcons
+                  name="edit"
                   color={theme.colors.primary}
-                  style={styles.opacity}
-                  opacity={0.18}
-                  onPress={() => {
-                    navigation.navigate('CreateIssueIndent', {
-                      id,
-                      indentDetails,
-                    });
-                  }}>
-                  <MaterialIcons
-                    name="edit"
-                    color={theme.colors.primary}
-                    size={13}
-                  />
-                </OpacityButton>
-              </View>
-            ) : null
+                  size={13}
+                />
+              </OpacityButton>
+            </View>
           ) : null}
         </View>
-        {status === 'approved' ? (
+        {isApproved ? (
           <View style={styles.verificationContainer}>
             <Subheading style={{color: theme.colors.primary}}>
               Verification Code :
@@ -387,12 +408,8 @@ function IssueIndentPreview(props) {
         <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.scrollView}>
-          <View>
-            <ListingCard details={details} />
-          </View>
-          <View>
-            <RequiredVendor details={details} />
-          </View>
+          <ListingCard details={details} />
+          <RequiredVendor details={details} />
           {materialData?.length ? (
             <>
               <View style={styles.textContainer}>
@@ -401,32 +418,33 @@ function IssueIndentPreview(props) {
                 </Subheading>
               </View>
 
-              <View>
-                {materialData?.map(item => {
-                  return (
-                    <AssignMaterialCard
-                      item={item}
-                      toggleDialog={toggleDialog}
-                      showDetail={showDetail}
-                    />
-                  );
-                })}
-              </View>
+              {materials?.map((item, index) => {
+                return (
+                  <AssignMaterialCard
+                    item={item}
+                    index={index}
+                    toggleDialog={toggleDialog}
+                    showDetail={showDetail}
+                    showEdit={isPending}
+                  />
+                );
+              })}
             </>
           ) : null}
         </ScrollView>
 
-        {!showDetail ? (
+        {!showDetail && isPending ? (
           <Button color="white" onPress={toggleDetail} style={styles.button}>
             Assign Material
           </Button>
         ) : null}
-        {showDetail ? (
+        {showDetail && isPending ? (
           <ActionButtons
             cancelLabel="Reject"
             submitLabel=" Approve"
-            onCancel={navigation.goBack}
-            onSubmit={{}}
+            submitDisabled={disableApprove}
+            onCancel={() => updateStatus('rejected')}
+            onSubmit={() => updateStatus('approved')}
           />
         ) : null}
       </View>
