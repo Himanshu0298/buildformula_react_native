@@ -44,7 +44,7 @@ export default function useMaterialManagementActions() {
     deleteIssue,
     addIssueRequest,
     addMaterialIssueRequest,
-    AddReturnIndentMaterials,
+    addReturnIndentMaterials,
     addReturnMaterial,
     addReturnAttachment,
     getSupplier,
@@ -623,12 +623,12 @@ export default function useMaterialManagementActions() {
           }
         },
       }),
-    AddReturnIndentMaterials: data =>
+    addReturnIndentMaterials: data =>
       dispatch({
         type: types.ADD_RETURN_REQUEST,
         payload: async () => {
           try {
-            const response = _res(await AddReturnIndentMaterials(data));
+            const response = _res(await addReturnIndentMaterials(data));
             return Promise.resolve(response);
           } catch (error) {
             const message = _err(error);

@@ -148,7 +148,7 @@ export default function useMaterialManagement() {
     updateIssueQuantity: data => {
       return instance.post('/material/issueassignqtyupdate', data, params);
     },
-    AddReturnIndentMaterials: data => {
+    addReturnIndentMaterials: data => {
       return instance.post('/material/returnaddedit', data, params);
     },
     addReturnMaterial: data => {

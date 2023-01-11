@@ -23,7 +23,7 @@ function CreateReturnIndent(props) {
 
   const edit = Boolean(id);
 
-  const {getVendorList, AddReturnIndentMaterials} =
+  const {getVendorList, addReturnIndentMaterials} =
     useMaterialManagementActions();
 
   const {vendorOptions} = useSelector(s => s.materialManagement);
@@ -62,7 +62,7 @@ function CreateReturnIndent(props) {
       vendor_id: values.vendor_id,
     };
 
-    const {value} = await AddReturnIndentMaterials(data);
+    const {value} = await addReturnIndentMaterials(data);
 
     navigation.navigate('AddReturnIndentMaterials', {
       edit,
