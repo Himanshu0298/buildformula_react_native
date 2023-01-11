@@ -1,11 +1,11 @@
 import React from 'react';
 import ProjectLayout from 'components/Molecules/Layout/ProjectLayout';
-import AddMaterialIndentList from './AddMaterialIndentList';
+import AddIssueIndentMaterials from './AddIssueIndentMaterials';
 
 export default props => {
   return (
     <ProjectLayout {...props} header>
-      <AddMaterialIndentList {...props} />
+      <AddIssueIndentMaterials {...props} />
     </ProjectLayout>
   );
 };

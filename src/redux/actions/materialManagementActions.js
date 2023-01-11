@@ -29,7 +29,6 @@ export default function useMaterialManagementActions() {
     getDirectMaterialGRNDetails,
     deleteDirectMaterialGRN,
     updateDirectGRNStatus,
-    addDirectGRNFirst,
     getDirectMaterialGRNItemList,
     addDirectGRNMaterialInfo,
     getMaterialIndentList,
@@ -38,18 +37,19 @@ export default function useMaterialManagementActions() {
     getWorkSubWorkList,
     getPRMaterialOrderList,
     updateStoreKeeperStatus,
+    getIndentDetails,
     AddPR,
     addDirectGRNVehicleInfo,
     deleteChallan,
-    getIssueRequestDetails,
     deleteIssue,
     addIssueRequest,
     addMaterialIssueRequest,
-    addReturnMaterialIndent,
+    addReturnIndentMaterials,
     addReturnMaterial,
     addReturnAttachment,
     getSupplier,
     addSupplier,
+    updateIssueQuantity,
   } = useMaterialManagement();
 
   return {
@@ -433,6 +433,23 @@ export default function useMaterialManagementActions() {
         },
       }),
 
+    addDirectGRN: formData =>
+      dispatch({
+        type: types.UPDATE_STORE_KEEPER_STATUS,
+        payload: async () => {
+          try {
+            const response = _res(await updateStoreKeeperStatus(formData));
+            const {data} = response;
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
     updateDirectGRNStatus: params =>
       dispatch({
         type: types.UPDATE_DIRECT_GRN_STATUS,
@@ -450,21 +467,6 @@ export default function useMaterialManagementActions() {
         },
       }),
 
-    addDirectGRN: formData =>
-      dispatch({
-        type: types.ADD_DIRECT_GRN,
-        payload: async () => {
-          try {
-            const response = _res(await addDirectGRNFirst(formData));
-            return Promise.resolve(response);
-          } catch (error) {
-            const message = _err(error);
-            snackbar.showMessage({message, variant: 'error'});
-            return Promise.reject(message);
-          }
-        },
-      }),
-
     deleteDirectMaterialGRN: data =>
       dispatch({
         type: types.DELETE_MATERIAL_DIRECT_GRN,
@@ -473,56 +475,6 @@ export default function useMaterialManagementActions() {
             const res = _res(await deleteDirectMaterialGRN(data));
             snackbar.showMessage({message: res.msg});
             return Promise.resolve(res.data.lists);
-          } catch (error) {
-            const message = _err(error);
-            snackbar.showMessage({message, variant: 'error'});
-            return Promise.reject(message);
-          }
-        },
-      }),
-
-    // addDirectGRNMaterialInfo: formData =>
-    //   dispatch({
-    //     type: types.ADD_DIRECT_GRN_MATERIAL_INFO,
-    //     payload: async () => {
-    //       try {
-    //         const response = _res(await addDirectGRNMaterialInfo(formData));
-    //         return Promise.resolve(response.data);
-    //       } catch (error) {
-    //         const message = _err(error);
-    //         snackbar.showMessage({message, variant: 'error'});
-    //         return Promise.reject(message);
-    //       }
-    //     },
-    //   }),
-
-    addDirectGRNMaterialInfo: formData =>
-      dispatch({
-        type: types.ADD_DIRECT_GRN_MATERIAL_INFO,
-        payload: async () => {
-          try {
-            const response = _res(await addDirectGRNMaterialInfo(formData));
-            const {data, msg} = response;
-            snackbar.showMessage({message: msg});
-
-            return Promise.resolve(data.data);
-          } catch (error) {
-            const message = _err(error);
-            snackbar.showMessage({message, variant: 'error'});
-            return Promise.reject(message);
-          }
-        },
-      }),
-    addDirectGRNVehicleInfo: formData =>
-      dispatch({
-        type: types.ADD_DIRECT_GRN_VEHICLE_INFO,
-        payload: async () => {
-          try {
-            const response = _res(await addDirectGRNVehicleInfo(formData));
-            const {data, msg} = response;
-            snackbar.showMessage({message: msg});
-
-            return Promise.resolve(data.data);
           } catch (error) {
             const message = _err(error);
             snackbar.showMessage({message, variant: 'error'});
@@ -579,7 +531,6 @@ export default function useMaterialManagementActions() {
           }
         },
       }),
-
     updateStoreKeeperStatus: formData =>
       dispatch({
         type: types.UPDATE_STORE_KEEPER_STATUS,
@@ -618,7 +569,7 @@ export default function useMaterialManagementActions() {
         type: types.GET_MATERIAL_INDENT_DETAILS,
         payload: async () => {
           try {
-            const response = _res(await getIssueRequestDetails(data));
+            const response = _res(await getIndentDetails(data));
             return Promise.resolve(response.data);
           } catch (error) {
             const message = _err(error);
@@ -672,12 +623,12 @@ export default function useMaterialManagementActions() {
           }
         },
       }),
-    addReturnMaterialIndent: data =>
+    addReturnIndentMaterials: data =>
       dispatch({
         type: types.ADD_RETURN_REQUEST,
         payload: async () => {
           try {
-            const response = _res(await addReturnMaterialIndent(data));
+            const response = _res(await addReturnIndentMaterials(data));
             return Promise.resolve(response);
           } catch (error) {
             const message = _err(error);
@@ -711,6 +662,21 @@ export default function useMaterialManagementActions() {
             const {data} = response;
 
             return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    updateIssueQuantity: formData =>
+      dispatch({
+        type: types.UPDATE_ISSUE_ASSIGN_QUANTITY,
+        payload: async () => {
+          try {
+            const response = _res(await updateIssueQuantity(formData));
+            return Promise.resolve(response.data);
           } catch (error) {
             const message = _err(error);
             snackbar.showMessage({message, variant: 'error'});

@@ -6,7 +6,7 @@ import {
   Image,
 } from 'react-native';
 
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   Caption,
   Divider,
@@ -19,78 +19,49 @@ import {getShadow} from 'utils';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FileIcon from 'assets/images/file_icon.png';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
+import moment from 'moment';
+import {useAlert} from 'components/Atoms/Alert';
+import useMaterialManagementActions from 'redux/actions/materialManagementActions';
+import {useSelector} from 'react-redux';
 
-const attachments = [
-  {label: 'filename-apartment-2.pdf'},
-  {label: 'filename-apartment-2.pdf'},
-];
-
-const MATERIAL_DATA = [
-  {
-    category: 'Cement',
-    subCategory: 'OPC',
-    unit: 'CUM or m³',
-    requestedQty: '150.00',
-    assignQty: '150.00',
-    status: 'Approved',
-  },
-  {
-    category: 'Cement',
-    subCategory: 'OPC',
-    unit: 'CUM or m³',
-    requestedQty: '150.00',
-    assignQty: '150.00',
-    status: 'Rejected',
-  },
-  {
-    category: 'Cement',
-    subCategory: 'OPC',
-    unit: 'CUM or m³',
-    requestedQty: '150.00',
-    assignQty: '150.00',
-    status: 'Pending',
-  },
-];
+const INDENT_STATUS = {
+  pending: {label: 'Pending', color: 'rgba(72, 114, 244, 1)'},
+  approved: {label: 'Approved', color: '#07CA03'},
+  rejected: {label: 'Rejected', color: '#FF5D5D'},
+};
 
 const ListingCard = props => {
-  const {status} = props;
+  const {details} = props;
+
+  const {id, status, email, first_name, last_name, created} = details || {};
+
+  const {label, color} = INDENT_STATUS[status] || {};
+
+  const date = moment(created).format('llll');
+
   return (
     <TouchableOpacity>
       <View style={styles.cardContainer}>
         <View style={styles.cardHeader}>
-          <Text style={styles.ID}>13</Text>
-          {/* <Caption
-              style={{
-                color: PR_REQUEST_STATUS[status]?.color,
-              }}>
-              {PR_REQUEST_STATUS[status]?.label}
-            </Caption> */}
-          <Text
-            style={
-              status === 'Pending'
-                ? styles.pending
-                : status === 'Rejected'
-                ? styles.rejected
-                : status === 'Approved'
-                ? styles.approved
-                : null
-            }>
-            Pending
-          </Text>
+          <Text style={styles.ID}>{id}</Text>
+          <Caption style={{color}}>{label}</Caption>
         </View>
         <Divider />
         <View style={styles.cardDetails}>
           <View style={styles.dataRow}>
             <Subheading>Create by:</Subheading>
-            <Subheading>Ronak Vagehni</Subheading>
+            <Subheading>
+              {first_name}
+              {last_name}
+            </Subheading>
           </View>
           <View style={styles.cardContent}>
-            <Caption>ronak@buildformula.com</Caption>
+            <Caption>{email}</Caption>
           </View>
           <View style={styles.createdOn}>
             <Text> Created on:</Text>
 
-            <Text>3rd Sep, 2022 15:33 PM</Text>
+            <Text>{date}</Text>
           </View>
         </View>
       </View>
@@ -98,32 +69,24 @@ const ListingCard = props => {
   );
 };
 
-const RequiredVendor = () => {
+const RequiredVendor = props => {
+  const {details} = props;
+
+  const {contractor_name, contractor_email, requred_date, remark} =
+    details || {};
+
   return (
     <View style={styles.vendorContainer}>
       <View>
         <Subheading> Required For Vendor</Subheading>
       </View>
       <View style={styles.vendorSubContainer}>
-        <Text> Ronak Patel</Text>
-        <Caption>ronak@buildformula.com</Caption>
-      </View>
-      <View style={styles.card}>
-        <Text> Required Date</Text>
-        <Caption>03 Sep, 2022 </Caption>
-      </View>
-      <View style={styles.card}>
-        <Text> Required For(Work)</Text>
-        <Caption>tower D RCC Floor 1 Estimation</Caption>
+        <Text>{contractor_name}</Text>
+        <Caption>{contractor_email}</Caption>
       </View>
       <View style={styles.card}>
         <Text> Remark</Text>
-        <Caption>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Risus,
-          aliquam enim vivamus dui. Quis aliquam a morbi ut iaculis cursus proin
-          amet. Hendrerit odio convallis lacus, non est. Vestibulum ac
-          curabitur.
-        </Caption>
+        <Caption>{remark}</Caption>
       </View>
     </View>
   );
@@ -132,51 +95,58 @@ const RequiredVendor = () => {
 const MaterialCard = props => {
   const {item} = props;
 
-  const {category, subCategory, requestedQty, unit} = item;
+  const {
+    materialcategrytitle,
+    subcategorytitle,
+    quantity,
+    materialunitstitle,
+    assigned_quantity,
+  } = item;
   return (
     <View style={styles.cardContainer}>
       <View style={styles.dataRow}>
         <Caption style={styles.lightData}>Category:</Caption>
-        <Text>{category}</Text>
+        <Text>{materialcategrytitle}</Text>
       </View>
 
       <View style={styles.dataRow}>
         <Caption style={styles.lightData}>Sub Category:</Caption>
-        <Text>{subCategory}</Text>
+        <Text>{subcategorytitle}</Text>
       </View>
       <View style={styles.dataRow}>
         <Caption style={styles.lightData}>Unit:</Caption>
-        <Text>{unit}</Text>
+        <Text>{materialunitstitle}</Text>
       </View>
       <View style={styles.dataRow}>
         <Caption style={styles.lightData}>assign Qty:</Caption>
-        <Text>{requestedQty}</Text>
+        <Text>{assigned_quantity}</Text>
       </View>
       <View style={styles.dataRow}>
         <Caption style={styles.lightData}>Requested Qty:</Caption>
-        <Text>{requestedQty}</Text>
+        <Text>{quantity}</Text>
       </View>
     </View>
   );
 };
 
-const MaterialAttachments = () => {
+const MaterialAttachments = props => {
+  const {returnAttachments} = props;
   return (
     <View>
       <View style={styles.attachmentContainer}>
         <View style={styles.renderFileContainer}>
           <Text style={styles.attachmentFileHeader}>Material Images</Text>
         </View>
-        {attachments?.map(attachment => {
+        {returnAttachments?.map(attachment => {
           return (
-            <View key={attachment.label}>
+            <View key={attachment.file_name}>
               <View style={styles.sectionContainer}>
                 <Image source={FileIcon} style={styles.fileIcon} />
                 <View>
                   <Text
                     style={(styles.verticalFlex, styles.text)}
                     numberOfLines={1}>
-                    {attachment.label}
+                    {attachment.file_name}
                   </Text>
                 </View>
               </View>
@@ -189,7 +159,57 @@ const MaterialAttachments = () => {
 };
 
 function ReturnIndentPreview(props) {
-  const {navigation} = props;
+  const {navigation, route} = props;
+
+  const {id} = route?.params || {};
+
+  const alert = useAlert();
+
+  const {getIndentDetails, deleteIssue, getMaterialIndentList} =
+    useMaterialManagementActions();
+
+  const {selectedProject} = useSelector(s => s.project);
+  const {indentDetails} = useSelector(s => s.materialManagement);
+
+  const details = indentDetails?.material_indent;
+
+  const returnAttachments = indentDetails.return_indent_files || [];
+
+  const materialData = indentDetails?.material_indent_details;
+
+  useEffect(() => {
+    getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const getData = () => {
+    getIndentDetails({
+      project_id: selectedProject.id,
+      material_indent_id: id,
+    });
+  };
+
+  const getList = () => {
+    getMaterialIndentList({
+      project_id: selectedProject.id,
+    });
+  };
+
+  const handleDelete = () => {
+    alert.show({
+      title: 'Confirm',
+      message: 'Are you sure you want to delete?',
+      confirmText: 'Delete',
+      onConfirm: () => {
+        deleteIssue({
+          material_indent_id: id,
+          project_id: selectedProject.id,
+        });
+        getList();
+        navigation.goBack();
+      },
+    });
+  };
 
   return (
     <View style={styles.mainContainer}>
@@ -202,7 +222,7 @@ function ReturnIndentPreview(props) {
             style={styles.backButton}
             onPress={() => navigation.goBack()}
           />
-          <Subheading style={styles.headerText}>Issue Request</Subheading>
+          <Subheading style={styles.headerText}>Return Material</Subheading>
         </View>
         <View style={styles.buttonContainer}>
           <View style={styles.statusContainer}>
@@ -211,7 +231,7 @@ function ReturnIndentPreview(props) {
               style={styles.opacity}
               opacity={0.18}
               onPress={() => {
-                navigation.navigate('CreateReturnIndent');
+                navigation.navigate('CreateReturnIndent', {id, indentDetails});
               }}>
               <MaterialIcons
                 name="edit"
@@ -222,27 +242,25 @@ function ReturnIndentPreview(props) {
           </View>
           <View>
             <OpacityButton
-              color="#FF5D5D"
+              color={theme.colors.error}
               opacity={0.18}
-              onPress={() => {
-                alert.show({
-                  title: 'Alert',
-                  message: 'Are you sure want to delete this?',
-                  dismissable: false,
-                });
-              }}
+              onPress={handleDelete}
               style={styles.button}>
-              <MaterialIcons name="delete" color="#FF5D5D" size={13} />
+              <MaterialIcons
+                name="delete"
+                color={theme.colors.error}
+                size={13}
+              />
             </OpacityButton>
           </View>
         </View>
       </View>
-      <ScrollView>
+      <ScrollView style={{marginBottom: 15}}>
         <View>
-          <ListingCard />
+          <ListingCard details={details} />
         </View>
         <View>
-          <RequiredVendor />
+          <RequiredVendor details={details} />
         </View>
         <View style={styles.textContainer}>
           <Subheading style={styles.textSubContainer}>
@@ -251,13 +269,15 @@ function ReturnIndentPreview(props) {
         </View>
 
         <View>
-          {MATERIAL_DATA.map(item => {
+          {materialData?.map(item => {
             return <MaterialCard item={item} navigation={navigation} />;
           })}
         </View>
-        <View>
-          <MaterialAttachments />
-        </View>
+        {returnAttachments?.length ? (
+          <View>
+            <MaterialAttachments returnAttachments={returnAttachments} />
+          </View>
+        ) : null}
       </ScrollView>
     </View>
   );
@@ -401,7 +421,6 @@ const styles = StyleSheet.create({
     ...getShadow(2),
     backgroundColor: '#fff',
     borderRadius: 5,
-    paddingHorizontal: 10,
     padding: 10,
   },
   lightData: {
@@ -411,15 +430,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginLeft: 10,
     justifyContent: 'flex-end',
-  },
-  pending: {
-    color: 'rgba(72, 114, 244, 1)',
-  },
-  rejected: {
-    color: 'rgba(255, 93, 93, 1)',
-  },
-  approved: {
-    color: 'rgba(7, 202, 3, 1)',
   },
   text: {
     color: '#080707',

@@ -1,11 +1,11 @@
 import React from 'react';
 import ProjectLayout from 'components/Molecules/Layout/ProjectLayout';
-import AddAttachments from './AddAttachments';
+import AddReturnIndentMaterials from './AddReturnIndentMaterials';
 
 export default props => {
   return (
     <ProjectLayout {...props} header>
-      <AddAttachments {...props} />
+      <AddReturnIndentMaterials {...props} />
     </ProjectLayout>
   );
 };

@@ -10,27 +10,45 @@ import {useSelector} from 'react-redux';
 import {getInitialScreen} from 'utils';
 import RNBootSplash from 'react-native-bootsplash';
 
-// Auth Screens
+// * App : Auth Screens
 import ForgotPassword from 'screens/Auth/ForgotPassword';
 import ForgotPasswordOtp from 'screens/Auth/ForgotPasswordOtp';
 import ResetPassword from 'screens/Auth/ResetPassword';
+import OtpScreen from '../screens/Auth/OtpScreen';
+import SignUp from '../screens/Auth/SignUp';
+import Login from '../screens/Auth/Login';
+import LanguageSelect from '../screens/Auth/LanguageSelect';
 
-// Project Creation Screens
+// * App : Project Creation Screens
+import PlanSelect from '../screens/CreateProject/PlanSelect';
+import PS_StepTwo from '../screens/CreateProject/ProjectStructure/StepTwo';
+import PS_StepOne from '../screens/CreateProject/ProjectStructure/StepOne';
+import PC_StepTwo from '../screens/CreateProject/ProjectCreation/StepTwo';
+import PC_StepOne from '../screens/CreateProject/ProjectCreation/StepOne';
 
-// Home Screen
-// User Purchased PRoject Screens
-// Notification Screen
-import ProjectNotification from 'screens/Notification/ProjectNotification';
+// * App : Home Screen
+import Home from '../screens/Home';
+import DrawerContent from './Components/DrawerContent';
+
+// * App : User Purchased Project Screens
+import UpdateBillingInfo from '../screens/PurchaseDetails/UpdateBillingInfo/index';
+import ProjectDetails from '../screens/PurchaseDetails/ProjectDetails';
+import PurchasedProjects from '../screens/PurchaseDetails/PurchasedProjects';
+
+// * App : Notification Screen
 import GlobalNotification from 'screens/Notification/GlobalNotification';
 
-// Profile Screen
+// * App : Profile Screen
 import Profile from 'screens/UserAccount/Profile';
 import EditProfile from 'screens/UserAccount/EditProfile';
-// Change Password Screen
+
+// * App : Change Password Screen
 import StepOne from 'screens/UserAccount/ChangePassword/StepOne';
 import StepTwo from 'screens/UserAccount/ChangePassword/StepTwo';
 import StepThree from 'screens/UserAccount/ChangePassword/StepThree';
-// Project Search Screen
+
+// * App : Search Screen
+import SearchScreen from '../screens/Search';
 
 /** *********** Customer Project Sub Screens    ************ */
 import CustomerHome from 'screens/CustomerProject/Ownership';
@@ -39,11 +57,16 @@ import CustomerBankLoan from 'screens/CustomerProject/CustomerBankLoan';
 import CustomerAccount from 'screens/CustomerProject/CustomerAccount';
 import CustomerModifyRequest from 'screens/CustomerProject/CustomerModifyRequest';
 import CustomerFiles from 'screens/CustomerProject/CustomerFiles';
-
 /** *********** Customer Project Sub Screens End   ************ */
 
 /** *********** Developer Project Sub Screens    ************ */
-// Project : Sales Screens
+// * Developer : Dashboard
+import DeveloperDashboard from '../screens/DeveloperProject/Dashboard';
+
+// * Developer : Notification
+import ProjectNotification from 'screens/Notification/ProjectNotification';
+
+// * Developer : Sales Screens
 import BC_SelectStructure from 'screens/DeveloperProject/Sales/BookingChart/SelectStructure';
 import BC_SelectFloor from 'screens/DeveloperProject/Sales/BookingChart/SelectFloor';
 import BC_SelectTower from 'screens/DeveloperProject/Sales/BookingChart/SelectTower';
@@ -55,6 +78,13 @@ import HoldBookingHistory from 'screens/DeveloperProject/Sales/BookingChart/Hold
 import BookingRates from 'screens/DeveloperProject/Sales/BookingChart/BookingRates';
 import BookingPayment from 'screens/DeveloperProject/Sales/BookingChart/BookingPayment';
 import BrokerList from 'screens/DeveloperProject/Sales/BrokerList';
+import AddDetails from '../screens/DeveloperProject/Sales/AddDetails/index';
+import AddFollowUp from '../screens/DeveloperProject/Sales/AddDetails/Components/AddFollowUp';
+import AddVisitor from '../screens/DeveloperProject/Sales/AddVisitor';
+import Payment from '../screens/DeveloperProject/Sales/Payment';
+import SalesPipeline from '../screens/DeveloperProject/Sales/SalesPipeline';
+import VisitorDetails from '../screens/DeveloperProject/Sales/VisitorDetails';
+import Visitors from '../screens/DeveloperProject/Sales/VisitorsList';
 // import AddBrokerPaymentDetails from 'screens/DeveloperProject/Sales/BrokerDetails/Components/AddBrokerPaymentDetails';
 import AddBrokerPaymentDetails from 'screens/DeveloperProject/Sales/BrokerDetails/Components/AddBrokerPaymentDetails';
 import Approval from 'screens/DeveloperProject/Sales/Approval';
@@ -65,13 +95,13 @@ import FollowUpDetails from 'screens/DeveloperProject/Sales/Follow-upTask/Follow
 import Remark from 'screens/DeveloperProject/Sales/BrokerDetails/Components/Remark';
 import CompleteTask from 'screens/DeveloperProject/Sales/Follow-upTask/FollowUpDetails/CompleteTask';
 
-// Project : Todo List
+// * Developer : Todo List
 import TaskList from 'screens/DeveloperProject/TodoTask/TaskList';
 import SubTaskList from 'screens/DeveloperProject/TodoTask/SubTaskList';
 import AddTask from 'screens/DeveloperProject/TodoTask/AddTask';
 import TaskDetails from 'screens/DeveloperProject/TodoTask/TaskDetails';
 
-// Project : Customer Section
+// * Developer : Customer Section
 import CS_SelectStructure from 'screens/DeveloperProject/CustomerSection/SelectStructure';
 import CS_SelectTower from 'screens/DeveloperProject/CustomerSection/SelectTower';
 import CS_SelectFloor from 'screens/DeveloperProject/CustomerSection/SelectFloor';
@@ -89,17 +119,17 @@ import CustomerList from 'screens/DeveloperProject/CustomerSection/CustomerList'
 import CustomerInnerDetails from 'screens/DeveloperProject/CustomerSection/CustomerInnerDetails';
 import EditCustomerDetails from 'screens/DeveloperProject/CustomerSection/CustomerInnerDetails/EditDetails/';
 
-// Project : Design Modules
+// * Developer : Design Modules
 import RoughDrawingFiles from 'screens/DeveloperProject/DesignModule/RoughDrawing/RoughDrawingFiles';
 import RoughDrawingFolders from 'screens/DeveloperProject/DesignModule/RoughDrawing/RoughDrawingFolders';
 import FinalDrawingFolders from 'screens/DeveloperProject/DesignModule/FinalDrawing/FinalDrawingFolders';
 import FinalDrawingFiles from 'screens/DeveloperProject/DesignModule/FinalDrawing/FinalDrawingFiles';
 import WorkingDrawingFolders from 'screens/DeveloperProject/DesignModule/WorkingDrawing/WorkingDrawingFolders/';
 import WorkingDrawingFiles from 'screens/DeveloperProject/DesignModule/WorkingDrawing/WorkingDrawingFiles/';
-
 import AreaSheet from 'screens/DeveloperProject/DesignModule/AreaSheet';
 import Parking from 'screens/DeveloperProject/DesignModule/Parking';
-// Project : Project management screens
+
+// * Developer : Project management screens
 import Phases from 'screens/DeveloperProject/ProjectManagement/Planning/Phases';
 import SubPhases from 'screens/DeveloperProject/ProjectManagement/Planning/SubPhases';
 import SubPhaseActivity from 'screens/DeveloperProject/ProjectManagement/Planning/SubPhaseActivity';
@@ -119,35 +149,21 @@ import SubWorkCategory from 'screens/DeveloperProject/ProjectManagement/SubWorkC
 import ProjectSchedule from '../screens/DeveloperProject/ProjectManagement/ProjectSchedule';
 import ProcessChart from '../screens/DeveloperProject/ProjectManagement/ProcessChart/ProcessChart';
 
-// Project : Material management screens
+// * Developer : Material management screens
+// MaterialPR
+import PRListing from 'screens/DeveloperProject/Material/MaterialPR/PRListing';
+import CreatePR from 'screens/DeveloperProject/Material/MaterialPR/CreatePR';
+import PRPreview from 'screens/DeveloperProject/Material/MaterialPR/PRPreview';
+import AddMaterialList from 'screens/DeveloperProject/Material/MaterialPR/AddMaterialList';
+
+// MaterialGRN
 import Estimation from '../screens/DeveloperProject/MaterialManagement/Estimation';
 import RequestForPrice from '../screens/DeveloperProject/MaterialManagement/RequestForPrice';
 import PurchaseOrders from '../screens/DeveloperProject/MaterialManagement/PurchaseOrders';
 import OrderDetail from '../screens/DeveloperProject/Material/OrderDetail';
 import MaterialList from '../screens/DeveloperProject/Material/MaterialList';
 import DeliveryDetails from 'screens/DeveloperProject/Material/DeliveryDetails/Components/DeliveryDetails';
-import PRListing from 'screens/DeveloperProject/Material/MaterialPR/PRListing';
-import PIListing from 'screens/DeveloperProject/Material/MaterialPI/PIListing';
-import CreatePR from 'screens/DeveloperProject/Material/MaterialPR/CreatePR';
-import PRPreview from 'screens/DeveloperProject/Material/MaterialPR/PRPreview';
-import AddMaterialList from 'screens/DeveloperProject/Material/MaterialPR/MaterialPRList';
-
-import MaterialIndentListing from 'screens/DeveloperProject/Material/MaterialIndent/MaterialIndentList';
-import CreatePI from 'screens/DeveloperProject/Material/MaterialPI/CreatePI';
-import CreatePIMaterial from 'screens/DeveloperProject/Material/MaterialPI/MaterialList';
-import PIPreview from 'screens/DeveloperProject/Material/MaterialPI/PIPreview/PIPreview';
-import PIRequest from 'screens/DeveloperProject/Material/MaterialPI/PIRequest/PIRequest';
-import TermsAndConditions from 'screens/DeveloperProject/Material/MaterialPI/TermsAndConditions';
-import AddPIMaterialList from 'screens/DeveloperProject/Material/MaterialPI/MaterialList/AddPIMaterialList';
 import AddChallan from 'screens/DeveloperProject/Material/DeliveryDetails/AddChallan';
-
-import AddMaterialIndent from 'screens/DeveloperProject/Material/MaterialIndent/IssueIndent/IssueMaterialIndent/AddMaterialIndent';
-import CreateIssueIndent from 'screens/DeveloperProject/Material/MaterialIndent/IssueIndent/AddIssueIndent';
-import CreateReturnIndent from 'screens/DeveloperProject/Material/MaterialIndent/ReturnIndent/AddReturnIndent/CreateReturnIndent';
-
-import IssueIndentPreview from 'screens/DeveloperProject/Material/MaterialIndent/MaterialPreview/IssueIndentPreview';
-import ReturnIndentPreview from 'screens/DeveloperProject/Material/MaterialIndent/MaterialPreview/ReturnIndentPreview';
-
 import SelectMaterials from 'screens/DeveloperProject/Material/DeliveryDetails/SelectMaterial';
 import AddMaterialInfo from 'screens/DeveloperProject/Material/DeliveryDetails/AddMaterialChallan';
 import AddVehicleInfo from 'screens/DeveloperProject/Material/DeliveryDetails/AddVehicleChallan';
@@ -157,49 +173,47 @@ import DirectGRNPreview from 'screens/DeveloperProject/Material/MaterialGRN/Dire
 import AddDirectGRN from 'screens/DeveloperProject/Material/MaterialGRN/Components/AddDirectGRN';
 import DirectGRNChallanMaterial from 'screens/DeveloperProject/Material/MaterialGRN/Components/DirectGRNChallanMaterial';
 import AddMaterial from 'screens/DeveloperProject/Material/MaterialGRN/Components/AddMaterial';
-import StoreKeeperPreview from 'screens/DeveloperProject/Material/StoreKeeper/StoreKeeperPreview';
-import IssueIndent from 'screens/DeveloperProject/Material/StoreKeeper/IssueIndent';
 import VehicleInfo from 'screens/DeveloperProject/Material/MaterialGRN/Components/VehicleInfo';
 
-import AddReturnMaterialIndent from 'screens/DeveloperProject/Material/MaterialIndent/ReturnIndent/ReturnMaterialIndent/AddReturnMaterial';
-import AddMaterialIndentList from 'screens/DeveloperProject/Material/MaterialIndent/IssueIndent/IssueMaterialIndent';
-import AddReturnMaterialList from 'screens/DeveloperProject/Material/MaterialIndent/ReturnIndent/ReturnMaterialIndent/AddReturnMaterialList';
-import AddAttachments from 'screens/DeveloperProject/Material/MaterialIndent/ReturnIndent/AddAttachments/AddAttachments';
+// MaterialPI
+import PIListing from 'screens/DeveloperProject/Material/MaterialPI/PIListing';
+import CreatePI from 'screens/DeveloperProject/Material/MaterialPI/CreatePI';
+import PIPreview from 'screens/DeveloperProject/Material/MaterialPI/PIPreview/PIPreview';
+import PIRequest from 'screens/DeveloperProject/Material/MaterialPI/PIRequest/PIRequest';
+import TermsAndConditions from 'screens/DeveloperProject/Material/MaterialPI/TermsAndConditions';
+import AddPIMaterialList from 'screens/DeveloperProject/Material/MaterialPI/MaterialList/AddPIMaterialList';
+import CreatePIMaterial from 'screens/DeveloperProject/Material/MaterialPI/MaterialList';
+
+// MaterialIndent
+import MaterialIndentListing from 'screens/DeveloperProject/Material/MaterialIndent/MaterialIndentList';
+import CreateIssueIndent from 'screens/DeveloperProject/Material/MaterialIndent/IssueIndent/CreateIssueIndent';
+import CreateReturnIndent from 'screens/DeveloperProject/Material/MaterialIndent/ReturnIndent/CreateReturnIndent';
+import IssueIndentPreview from 'screens/DeveloperProject/Material/MaterialIndent/IssueIndent/IssueIndentPreview';
+import ReturnIndentPreview from 'screens/DeveloperProject/Material/MaterialIndent/ReturnIndent/ReturnIndentPreview';
+import AddReturnIndentMaterials from 'screens/DeveloperProject/Material/MaterialIndent/ReturnIndent/AddReturnIndentMaterials';
+import AddAttachments from 'screens/DeveloperProject/Material/MaterialIndent/ReturnIndent/AddAttachments';
+import AddIssueIndentMaterials from 'screens/DeveloperProject/Material/MaterialIndent/IssueIndent/AddIssueIndentMaterials';
+
+// StoreKeeper
+import IssueIndent from 'screens/DeveloperProject/Material/StoreKeeper/IssueIndent';
+import StoreKeeperPreview from 'screens/DeveloperProject/Material/StoreKeeper/StoreKeeperPreview';
+import StoreKeeperList from 'screens/DeveloperProject/Material/StoreKeeper/StoreKeeperList';
+
+// MaterialInventory
 import MaterialInventoryList from 'screens/DeveloperProject/Material/MaterialInventory/MaterialInventoryList';
 import MaterialInventorySubList from 'screens/DeveloperProject/Material/MaterialInventory/MaterialInventorySubList';
 import InventorySubListPreview from 'screens/DeveloperProject/Material/MaterialInventory/InventorySubListPreview';
 import MaterialPreview from 'screens/DeveloperProject/Material/MaterialInventory/MaterialPreview';
 import SubListPreview from 'screens/DeveloperProject/Material/MaterialInventory/SubListPreview';
 
-// Project : Files screens
+// * Developer : Files screens
 import Files from '../screens/DeveloperProject/Files';
-// Project : Role screens
-import AddDetails from '../screens/DeveloperProject/Sales/AddDetails/index';
-import AddFollowUp from '../screens/DeveloperProject/Sales/AddDetails/Components/AddFollowUp';
-import AddVisitor from '../screens/DeveloperProject/Sales/AddVisitor';
-import Payment from '../screens/DeveloperProject/Sales/Payment';
-import SalesPipeline from '../screens/DeveloperProject/Sales/SalesPipeline';
-import VisitorDetails from '../screens/DeveloperProject/Sales/VisitorDetails';
-import Visitors from '../screens/DeveloperProject/Sales/VisitorsList';
-import DeveloperDashboard from '../screens/DeveloperProject/Dashboard';
-import SearchScreen from '../screens/Search';
-import UpdateBillingInfo from '../screens/PurchaseDetails/UpdateBillingInfo/index';
-import ProjectDetails from '../screens/PurchaseDetails/ProjectDetails';
-import PurchasedProjects from '../screens/PurchaseDetails/PurchasedProjects';
-import Home from '../screens/Home';
-import PlanSelect from '../screens/CreateProject/PlanSelect';
-import PS_StepTwo from '../screens/CreateProject/ProjectStructure/StepTwo';
-import PS_StepOne from '../screens/CreateProject/ProjectStructure/StepOne';
-import PC_StepTwo from '../screens/CreateProject/ProjectCreation/StepTwo';
-import PC_StepOne from '../screens/CreateProject/ProjectCreation/StepOne';
-import OtpScreen from '../screens/Auth/OtpScreen';
-import SignUp from '../screens/Auth/SignUp';
-import Login from '../screens/Auth/Login';
-import LanguageSelect from '../screens/Auth/LanguageSelect';
-import DrawerContent from './Components/DrawerContent';
+
+// * Developer : Role screens
+
+// * Document Generator
 import DocumentGenerater from 'screens/DeveloperProject/DocumentGenerater';
 import DocumentDownload from 'screens/DeveloperProject/DocumentGenerater/Documents/DocumentDownload';
-import StoreKeeperList from 'screens/DeveloperProject/Material/StoreKeeper/StoreKeeperList';
 
 /** *********** Developer Project Sub Screens End   ************ */
 
@@ -444,20 +458,14 @@ function AppStackNavigator() {
               />
               <Stack.Screen name="AddPIMaterial" component={CreatePIMaterial} />
               <Stack.Screen
-                name="AddMaterialIndentList"
-                component={AddMaterialIndentList}
+                name="AddIssueIndentMaterials"
+                component={AddIssueIndentMaterials}
               />
+              <Stack.Screen name="AddAttachments" component={AddAttachments} />
+
               <Stack.Screen
-                name="AddReturnMaterialList"
-                component={AddReturnMaterialList}
-              />
-              <Stack.Screen
-                name="AddMaterialIndent"
-                component={AddMaterialIndent}
-              />
-              <Stack.Screen
-                name="AddReturnMaterial"
-                component={AddReturnMaterialIndent}
+                name="AddReturnIndentMaterials"
+                component={AddReturnIndentMaterials}
               />
               <Stack.Screen name="PIRequest" component={PIRequest} />
               <Stack.Screen

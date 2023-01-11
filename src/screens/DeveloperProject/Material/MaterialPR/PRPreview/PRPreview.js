@@ -11,7 +11,7 @@ import {ScrollView} from 'react-native-gesture-handler';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {getPermissions, getShadow} from 'utils';
 import {isNumber} from 'lodash';
-import {AddMaterialDialog} from '../MaterialPRList/AddMaterialList';
+import {AddMaterialDialog} from '../AddMaterialList/AddMaterialList';
 
 function RenderHeaderBar(props) {
   const {goBack, navToEdit, handleDelete, PRDetails} = props;
