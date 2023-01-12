@@ -22,36 +22,41 @@ import store_keeper from 'assets/images/store_keeper.png';
 import reload from 'assets/images/reload.png';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 import {useSelector} from 'react-redux';
+import moment from 'moment';
+
+const INDENT_STATUS = {
+  pending: {label: 'Pending', color: 'rgba(72, 114, 244, 1)'},
+  approved: {label: 'Approved', color: '#07CA03'},
+  rejected: {label: 'Rejected', color: '#FF5D5D'},
+};
+const INDENT_TYPE = {
+  afm: {title: 'Issue Material'},
+  rm: {title: 'Return Material'},
+};
 
 const ListingCard = props => {
-  const {item} = props;
+  const {item, navigation} = props;
 
-  const {id, authorizedstatus, created, email, type, first_name, last_name} =
-    item;
+  const {id, created, email, type, first_name, last_name, status} = item;
+
+  const {label, color} = INDENT_STATUS[status] || {};
+
+  const {title} = INDENT_TYPE[type] || {};
+
+  const date = moment(created).format('ll');
+
+  const navToPreview = () => {
+    if (type === 'rm') {
+      navigation.navigate('ReturnIndentPreview', {id, type});
+    } else navigation.navigate('IssueIndentPreview', {id, type});
+  };
 
   return (
-    <TouchableOpacity>
+    <TouchableOpacity onPress={navToPreview}>
       <View style={styles.cardContainer}>
         <View style={styles.cardHeader}>
           <Text style={styles.ID}>{id}</Text>
-          {/* <Caption
-            style={{
-              color: PR_REQUEST_STATUS[status]?.color,
-            }}>
-            {PR_REQUEST_STATUS[status]?.label}
-          </Caption> */}
-          <Text
-            style={
-              authorizedstatus === 'Pending'
-                ? styles.pending
-                : authorizedstatus === 'Rejected'
-                ? styles.rejected
-                : authorizedstatus === 'Approved'
-                ? styles.approved
-                : null
-            }>
-            {authorizedstatus}
-          </Text>
+          <Caption style={{color}}>{label}</Caption>
         </View>
         <Divider />
         <View style={styles.cardDetails}>
@@ -62,8 +67,8 @@ const ListingCard = props => {
             <Text style={styles.detail}>{email}</Text>
           </View>
           <View style={styles.cardHeader}>
-            <Caption>{created}</Caption>
-            <Caption> {type}</Caption>
+            <Caption>{date}</Caption>
+            <Text> {title}</Text>
           </View>
         </View>
       </View>
@@ -82,7 +87,7 @@ function MaterialIndentListing(props) {
   const {selectedProject} = useSelector(s => s.project);
   const {materialIndentList} = useSelector(s => s.materialManagement);
 
-  const indent = materialIndentList?.indentlist.sort((a, b) => b.id - a.id);
+  const indent = materialIndentList?.indentlist?.sort((a, b) => b.id - a.id);
 
   useEffect(() => {
     getList();
@@ -128,7 +133,9 @@ function MaterialIndentListing(props) {
           ListEmptyComponent={renderEmpty}
           keyExtractor={item => item.id}
           renderItem={({item}) => {
-            return <ListingCard {...props} item={item} />;
+            return (
+              <ListingCard {...props} item={item} navigation={navigation} />
+            );
           }}
         />
       </View>
@@ -141,6 +148,9 @@ function MaterialIndentListing(props) {
         small
         onPress={toggleSelectDialog}
         actions={FAB_ACTIONS}
+        onStateChange={() => {
+          console.log('-----> onStateChange');
+        }}
       />
     </View>
   );
@@ -195,15 +205,5 @@ const styles = StyleSheet.create({
   },
   detail: {
     marginLeft: 7,
-  },
-
-  pending: {
-    color: 'rgba(72, 114, 244, 1)',
-  },
-  rejected: {
-    color: 'rgba(255, 93, 93, 1)',
-  },
-  approved: {
-    color: 'rgba(7, 202, 3, 1)',
   },
 });

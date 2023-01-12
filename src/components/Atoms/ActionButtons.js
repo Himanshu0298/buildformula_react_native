@@ -4,8 +4,15 @@ import {Button} from 'react-native-paper';
 import PropTypes from 'prop-types';
 
 function ActionButtons(props) {
-  const {cancelLabel, submitLabel, submitDisabled, style, onCancel, onSubmit} =
-    props;
+  const {
+    cancelLabel,
+    submitLabel,
+    cancelDisabled,
+    submitDisabled,
+    style,
+    onCancel,
+    onSubmit,
+  } = props;
 
   return (
     <View style={[styles.actionContainer, style]}>
@@ -13,6 +20,7 @@ function ActionButtons(props) {
         style={styles.actionButton}
         contentStyle={styles.buttonLabel}
         theme={{roundness: 15}}
+        disabled={cancelDisabled}
         mode="outlined"
         onPress={onCancel}>
         {cancelLabel || 'Cancel'}
