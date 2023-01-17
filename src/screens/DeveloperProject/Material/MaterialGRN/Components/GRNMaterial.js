@@ -214,23 +214,23 @@ const GRNMaterial = props => {
   const {getDirectMaterialGRNItemList} = useMaterialManagementActions();
   const {directGRNMaterialDetails} = useSelector(s => s.materialManagement);
 
-  const materialCategory = directGRNMaterialDetails?.master_material_category;
+  const materialCategories = directGRNMaterialDetails?.master_material_category;
 
-  const materialSubCategory = directGRNMaterialDetails?.tmp_subcategory_lists;
+  const materialSubCategories = directGRNMaterialDetails?.tmp_subcategory_lists;
 
   const subCategoryTitle = useMemo(() => {
-    return materialSubCategory?.map(i => ({
+    return materialSubCategories?.map(i => ({
       label: `${i.title}`,
       value: i.id,
     }));
-  }, [materialSubCategory]);
+  }, [materialSubCategories]);
 
   const categoryTitle = useMemo(() => {
-    return materialCategory?.map(i => ({
+    return materialCategories?.map(i => ({
       label: `${i.title}`,
       value: i.id,
     }));
-  }, [materialCategory]);
+  }, [materialCategories]);
 
   const category = categoryTitle?.find(i => i.id === categoryTitle.id);
 

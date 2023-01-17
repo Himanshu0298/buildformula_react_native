@@ -133,7 +133,7 @@ export default function useMaterialManagement() {
     getMaterialIndentList: data => {
       return instance.post('/material/indentlist', data, params);
     },
-    getIssueRequestDetails: data => {
+    getIndentDetails: data => {
       return instance.post('/material/issuereuestdetails', data, params);
     },
     getMaterialIssueIndentList: data => {
@@ -148,7 +148,7 @@ export default function useMaterialManagement() {
     updateIssueQuantity: data => {
       return instance.post('/material/issueassignqtyupdate', data, params);
     },
-    addReturnMaterialIndent: data => {
+    addReturnIndentMaterials: data => {
       return instance.post('/material/returnaddedit', data, params);
     },
     addReturnMaterial: data => {

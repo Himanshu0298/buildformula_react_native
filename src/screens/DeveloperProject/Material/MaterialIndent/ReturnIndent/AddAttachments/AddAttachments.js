@@ -62,7 +62,7 @@ const RenderAttachments = props => {
 };
 
 function AttachmentsForm(props) {
-  const {formikProps} = props;
+  const {formikProps, edit} = props;
   const {values, setFieldValue, errors, handleSubmit} = formikProps;
 
   const {openImagePicker} = useImagePicker();
@@ -95,7 +95,7 @@ function AttachmentsForm(props) {
         <View>
           <View style={styles.imageContainer}>
             <Text style={{color: theme.colors.primary}}>
-              Upload Material Image
+              {edit ? 'Upload New Material Image' : 'Upload Material Image'}
             </Text>
             <OpacityButton
               onPress={handleUpload}
@@ -125,7 +125,7 @@ function AttachmentsForm(props) {
 
 const AddAttachments = props => {
   const {route, navigation} = props;
-  const {id} = route.params;
+  const {id, edit} = route?.params || {};
 
   const {addReturnAttachment} = useMaterialManagementActions();
 
@@ -140,7 +140,7 @@ const AddAttachments = props => {
     formData.append('attachmentFile[]', values.attachments);
 
     await addReturnAttachment(formData);
-    navigation.navigate('ReturnIndentPreview', {...values, ...route.params});
+    navigation.navigate('ReturnIndentPreview', {id});
   };
 
   return (
@@ -150,7 +150,9 @@ const AddAttachments = props => {
       initialValues={{attachments: []}}
       validationSchema={schema}
       onSubmit={onSubmit}>
-      {formikProps => <AttachmentsForm {...{formikProps}} {...props} />}
+      {formikProps => (
+        <AttachmentsForm {...{formikProps}} {...props} edit={edit} />
+      )}
     </Formik>
   );
 };
@@ -168,7 +170,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   headerContainer: {
-    marginTop: 50,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
