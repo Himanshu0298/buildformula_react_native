@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {IconButton, Subheading, Switch, Title} from 'react-native-paper';
@@ -59,117 +59,119 @@ const RenderForm = props => {
   const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
 
   return (
-    <View style={styles.formContainer}>
-      <RenderInput
-        name="projectName"
-        label="Project Name"
-        containerStyles={styles.inputStyles}
-        value={values.projectName}
-        onChangeText={handleChange('projectName')}
-        onBlur={handleBlur('projectName')}
-        autoCapitalize="none"
-        returnKeyType="next"
-        error={errors.projectName}
-      />
-      <RenderInput
-        name="builderName"
-        label="Builder Name"
-        containerStyles={styles.inputStyles}
-        value={values.builderName}
-        onChangeText={handleChange('builderName')}
-        onBlur={handleBlur('builderName')}
-        autoCapitalize="none"
-        returnKeyType="next"
-        error={errors.builderName}
-      />
-      {/* Search with select will be applied here */}
-      <RenderSelect
-        name="area"
-        label="Select Area"
-        value={values.area}
-        options={options}
-        containerStyles={styles.inputStyles}
-        onBlur={handleBlur('area')}
-        onSelect={value => {
-          setFieldValue('area', value);
-        }}
-      />
-      <RenderInput
-        containerStyles={styles.inputStyles}
-        label="Address"
-        value={AddressData[values.area]?.address}
-        autoCapitalize="none"
-        returnKeyType="next"
-        editable={false}
-        style={styles.readOnly}
-      />
-      <RenderInput
-        containerStyles={styles.inputStyles}
-        label="City"
-        value={AddressData[values.area]?.city}
-        autoCapitalize="none"
-        returnKeyType="next"
-        editable={false}
-        style={styles.readOnly}
-      />
-      <RenderInput
-        containerStyles={styles.inputStyles}
-        label="State"
-        value={AddressData[values.area]?.state}
-        autoCapitalize="none"
-        returnKeyType="next"
-        editable={false}
-        style={styles.readOnly}
-      />
-      <RenderInput
-        containerStyles={styles.inputStyles}
-        label="Country"
-        value={AddressData[values.area]?.country}
-        autoCapitalize="none"
-        returnKeyType="next"
-        editable={false}
-        style={styles.readOnly}
-      />
-      <RenderInput
-        containerStyles={styles.inputStyles}
-        label="Pincode"
-        value={AddressData[values.area]?.pincode}
-        autoCapitalize="none"
-        returnKeyType="next"
-        editable={false}
-        style={styles.readOnly}
-      />
-      <View style={styles.extraDetailsRow}>
-        <Subheading>Status</Subheading>
-        <View style={styles.extraDetailsSwitchWrap}>
-          <Switch
-            value={isSwitchOn}
-            onValueChange={onToggleSwitch}
-            color="#77E675"
-          />
-          {isSwitchOn ? <Text style={styles.switchtxt}>Active</Text> : null}
-        </View>
-      </View>
-      <View style={styles.extraDetailsRow}>
-        <Subheading>Premium Project</Subheading>
-        <View style={styles.extraDetailsSwitchWrap}>
-          <Switch
-            value={isSwitchOn}
-            onValueChange={onToggleSwitch}
-            color="#77E675"
-          />
-          {isSwitchOn ? <Text style={styles.switchtxt}>Yes</Text> : null}
-        </View>
-      </View>
-      <View style={styles.filterBTN}>
-        <ActionButtons
-          cancelLabel="Add Details"
-          submitLabel="Save"
-          onCancel={() => navigation.navigate('ProjectStructureDetails')}
-          onSubmit={navigation.goBack}
+    <ScrollView style={{marginBottom: 30}} showsVerticalScrollIndicator={false}>
+      <View style={styles.formContainer}>
+        <RenderInput
+          name="projectName"
+          label="Project Name"
+          containerStyles={styles.inputStyles}
+          value={values.projectName}
+          onChangeText={handleChange('projectName')}
+          onBlur={handleBlur('projectName')}
+          autoCapitalize="none"
+          returnKeyType="next"
+          error={errors.projectName}
         />
+        <RenderInput
+          name="builderName"
+          label="Builder Name"
+          containerStyles={styles.inputStyles}
+          value={values.builderName}
+          onChangeText={handleChange('builderName')}
+          onBlur={handleBlur('builderName')}
+          autoCapitalize="none"
+          returnKeyType="next"
+          error={errors.builderName}
+        />
+        {/* Search with select will be applied here */}
+        <RenderSelect
+          name="area"
+          label="Select Area"
+          value={values.area}
+          options={options}
+          containerStyles={styles.inputStyles}
+          onBlur={handleBlur('area')}
+          onSelect={value => {
+            setFieldValue('area', value);
+          }}
+        />
+        <RenderInput
+          containerStyles={styles.inputStyles}
+          label="Address"
+          value={AddressData[values.area]?.address}
+          autoCapitalize="none"
+          returnKeyType="next"
+          editable={false}
+          style={styles.readOnly}
+        />
+        <RenderInput
+          containerStyles={styles.inputStyles}
+          label="City"
+          value={AddressData[values.area]?.city}
+          autoCapitalize="none"
+          returnKeyType="next"
+          editable={false}
+          style={styles.readOnly}
+        />
+        <RenderInput
+          containerStyles={styles.inputStyles}
+          label="State"
+          value={AddressData[values.area]?.state}
+          autoCapitalize="none"
+          returnKeyType="next"
+          editable={false}
+          style={styles.readOnly}
+        />
+        <RenderInput
+          containerStyles={styles.inputStyles}
+          label="Country"
+          value={AddressData[values.area]?.country}
+          autoCapitalize="none"
+          returnKeyType="next"
+          editable={false}
+          style={styles.readOnly}
+        />
+        <RenderInput
+          containerStyles={styles.inputStyles}
+          label="Pincode"
+          value={AddressData[values.area]?.pincode}
+          autoCapitalize="none"
+          returnKeyType="next"
+          editable={false}
+          style={styles.readOnly}
+        />
+        <View style={styles.extraDetailsRow}>
+          <Subheading>Status</Subheading>
+          <View style={styles.extraDetailsSwitchWrap}>
+            <Switch
+              value={isSwitchOn}
+              onValueChange={onToggleSwitch}
+              color="#77E675"
+            />
+            {isSwitchOn ? <Text style={styles.switchtxt}>Active</Text> : null}
+          </View>
+        </View>
+        <View style={styles.extraDetailsRow}>
+          <Subheading>Premium Project</Subheading>
+          <View style={styles.extraDetailsSwitchWrap}>
+            <Switch
+              value={isSwitchOn}
+              onValueChange={onToggleSwitch}
+              color="#77E675"
+            />
+            {isSwitchOn ? <Text style={styles.switchtxt}>Yes</Text> : null}
+          </View>
+        </View>
+        <View style={styles.filterBTN}>
+          <ActionButtons
+            cancelLabel="Add Details"
+            submitLabel="Save"
+            onCancel={() => navigation.navigate('ProjectStructureDetails')}
+            onSubmit={navigation.goBack}
+          />
+        </View>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -181,7 +183,7 @@ const AddProject = props => {
     console.log(values);
   };
   return (
-    <SafeAreaView style={styles.mainContainer}>
+    <View style={styles.mainContainer}>
       <View style={styles.headerWrapper}>
         <IconButton
           icon="keyboard-backspace"
@@ -213,7 +215,7 @@ const AddProject = props => {
           )}
         </Formik>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 

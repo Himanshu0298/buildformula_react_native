@@ -20,12 +20,12 @@ export const DEVELOPER_DRAWER_ITEMS = [
     id: 11,
     routes: [
       {
-        route: 'ProjectList',
+        route: 'ProjectListing',
         label: 'Project List',
         icon: 'office-building',
       },
       {
-        // route: 'ProjectListing',
+        route: 'SearchPickUpList',
         label: 'Pickup List',
         icon: 'menu-open',
       },
