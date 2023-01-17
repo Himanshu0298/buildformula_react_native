@@ -1,25 +1,34 @@
 import {StyleSheet, View} from 'react-native';
-import React from 'react';
+import React, {useMemo} from 'react';
 import {IconButton, Title} from 'react-native-paper';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import RenderInput from 'components/Atoms/RenderInput';
 import RenderSelect from 'components/Atoms/RenderSelect';
 import ActionButtons from 'components/Atoms/ActionButtons';
+import useProjectStructureActions from 'redux/actions/projectStructureActions';
+import {useSelector} from 'react-redux';
 
-const schema = Yup.object().shape({
-  projectName: Yup.string()
-    .label('projectName')
-    .required('Project Name is Required'),
-  builderName: Yup.string()
-    .label('builderName')
-    .required('Builder Name is Required'),
-  area: Yup.string().label('area').required('Area is Required'),
-});
+// const schema = Yup.object().shape({
+//   projectName: Yup.string()
+//     .label('projectName')
+//     .required('Project Name is Required'),
+//   builderName: Yup.string()
+//     .label('builderName')
+//     .required('Builder Name is Required'),
+//   area: Yup.string().label('area').required('Area is Required'),
+// });
 
 const RenderForm = props => {
   const {options, navigation, formikProps} = props;
-  const {values, errors, handleChange, handleBlur, setFieldValue} = formikProps;
+  const {
+    values,
+    errors,
+    handleChange,
+    handleBlur,
+    setFieldValue,
+    handleSubmit,
+  } = formikProps;
 
   return (
     <View style={styles.formContainer}>
@@ -96,18 +105,57 @@ const RenderForm = props => {
         cancelLabel="Cancel"
         submitLabel="Save"
         onCancel={navigation.goBack}
-        onSubmit={navigation.goBack}
+        onSubmit={handleSubmit}
       />
     </View>
   );
 };
 
 const AddArea = props => {
-  const {navigation} = props;
-  const onSubmit = values => {
-    console.log(values);
+  const {navigation, route} = props;
+
+  const {id, item: areaData} = route?.params || {};
+
+  const edit = Boolean(id);
+
+  const {addArea, getAreaList, updateArea} = useProjectStructureActions();
+
+  const {selectedProject} = useSelector(s => s.project);
+
+  React.useEffect(() => {
+    getList();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const getList = () => getAreaList({project_id: selectedProject.id});
+
+  const initialValues = useMemo(() => {
+    const {area, pincode, city, state, country, status} = areaData || {};
+    return {area, pincode, city, state, country, status};
+  }, [areaData]);
+
+  const onSubmit = async values => {
+    const restData = {
+      project_id: selectedProject.id,
+      area: values.area,
+      pincode: values.pincode,
+      city: values.city,
+      state: values.state,
+      country: values.country,
+      status: values.status,
+    };
+
+    if (edit) {
+      await updateArea({id, ...restData});
+    } else {
+      await addArea(restData);
+    }
+    getList();
+    navigation.goBack();
   };
-  const options = [];
+
+  const options = ['1', '2', '3', '4', '5'];
+
   return (
     <View style={styles.mainContainer}>
       <View style={styles.headerWrapper}>
@@ -124,12 +172,7 @@ const AddArea = props => {
         enableReinitialize
         validateOnBlur={false}
         validateOnChange={false}
-        initialValues={{
-          projectName: '',
-          builderName: '',
-          area: '',
-        }}
-        validationSchema={schema}
+        initialValues={initialValues}
         onSubmit={onSubmit}>
         {formikProps => (
           <RenderForm formikProps={formikProps} {...props} options={options} />

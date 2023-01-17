@@ -76,6 +76,21 @@ import AreaList from 'screens/DeveloperProject/ProjectStructure/AreaList';
 import AddArea from 'screens/DeveloperProject/ProjectStructure/AddArea';
 import ProjectAmenities from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/ProjectAmenities';
 
+// Unit
+import UnitList from 'screens/DeveloperProject/ProjectStructure/UnitList/Index';
+import AddUnit from 'screens/DeveloperProject/ProjectStructure/AddUnit';
+import UnitDetails from 'screens/DeveloperProject/ProjectStructure/ProjectUnitDetails/UnitDetails';
+import ProjectUnitDetails from 'screens/DeveloperProject/ProjectStructure/ProjectUnitDetails/ProjectUnitDetails';
+import LocationInfo from 'screens/DeveloperProject/ProjectStructure/ProjectUnitDetails/LocationInfo';
+import UnitAreaSheet from 'screens/DeveloperProject/ProjectStructure/ProjectUnitDetails/UnitAreaSheet';
+import InfrastructureInfo from 'screens/DeveloperProject/ProjectStructure/ProjectUnitDetails/InfrastructureInfo';
+import ProjectStructureUnitDetails from 'screens/DeveloperProject/ProjectStructure/ProjectUnitDetails/UnitInformation';
+import ProjectUnitOwner from 'screens/DeveloperProject/ProjectStructure/ProjectUnitDetails/UnitOwnerInfo';
+import UnitSecurityInfo from 'screens/DeveloperProject/ProjectStructure/ProjectUnitDetails/UnitSecurityInfo';
+import UnitFiles from 'screens/DeveloperProject/ProjectStructure/ProjectUnitDetails/UnitFiles';
+import UnitPricing from 'screens/DeveloperProject/ProjectStructure/ProjectUnitDetails/UnitPricing';
+import UnitPreview from 'screens/DeveloperProject/ProjectStructure/UnitPreview';
+
 // Project : Sales Screens
 // * Developer : Dashboard
 import DeveloperDashboard from '../screens/DeveloperProject/Dashboard';
@@ -231,6 +246,9 @@ import Files from '../screens/DeveloperProject/Files';
 // * Document Generator
 import DocumentGenerater from 'screens/DeveloperProject/DocumentGenerater';
 import DocumentDownload from 'screens/DeveloperProject/DocumentGenerater/Documents/DocumentDownload';
+import UpdateProjectDetails from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/ProjectUpdateDetails';
+import AddProjectSecurity from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/ProjectSecurity/AddProjectSecurity';
+import AddProjectOwner from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/ProjectOwner/AddProjectOwner';
 
 /** *********** Developer Project Sub Screens End   ************ */
 
@@ -662,10 +680,19 @@ function AppStackNavigator() {
               name="ProjectStructureDetails"
               component={ProjectStructureDetails}
             />
+            <Stack.Screen
+              name="UpdateProjectDetails"
+              component={UpdateProjectDetails}
+            />
             <Stack.Screen name="ProjectHistory" component={ProjectHistory} />
             <Stack.Screen name="ProjectBrief" component={ProjectBrief} />
             <Stack.Screen name="ProjectOwner" component={ProjectOwner} />
+            <Stack.Screen name="AddProjectOwner" component={AddProjectOwner} />
             <Stack.Screen name="ProjectSecurity" component={ProjectSecurity} />
+            <Stack.Screen
+              name="AddProjectSecurity"
+              component={AddProjectSecurity}
+            />
             <Stack.Screen name="ProjectFiles" component={ProjectFiles} />
             <Stack.Screen name="AreaList" component={AreaList} />
             <Stack.Screen name="AddArea" component={AddArea} />
@@ -677,6 +704,33 @@ function AppStackNavigator() {
               name="ProjectStructure"
               component={ProjectStructure}
             />
+            <Stack.Screen name="UnitList" component={UnitList} />
+            <Stack.Screen name="AddUnit" component={AddUnit} />
+            <Stack.Screen
+              name="ProjectUnitDetails"
+              component={ProjectUnitDetails}
+            />
+            <Stack.Screen name="UnitDetails" component={UnitDetails} />
+            <Stack.Screen name="LocationInfo" component={LocationInfo} />
+            <Stack.Screen name="UnitFiles" component={UnitFiles} />
+            <Stack.Screen name="UnitPricing" component={UnitPricing} />
+            <Stack.Screen name="UnitPreview" component={UnitPreview} />
+            <Stack.Screen
+              name="UnitSecurityInfo"
+              component={UnitSecurityInfo}
+            />
+            <Stack.Screen
+              name="ProjectUnitOwner"
+              component={ProjectUnitOwner}
+            />
+            <Stack.Screen
+              name="UnitInformation"
+              component={ProjectStructureUnitDetails}
+            />
+            <Stack.Screen
+              name="InfrastructureInfo"
+              component={InfrastructureInfo}
+            />
           </Stack.Group>
 
           {/* DEVELOPER STACK END */}
@@ -686,6 +740,8 @@ function AppStackNavigator() {
               <Stack.Screen name="Ownership" component={CustomerHome} />
               <Stack.Screen name="BookingDetails" component={CustomerBooking} />
               <Stack.Screen name="LoanDetails" component={CustomerBankLoan} />
+              <Stack.Screen name="UnitAreaSheet" component={UnitAreaSheet} />
+
               <Stack.Screen
                 name="CustomerAccount"
                 component={CustomerAccount}

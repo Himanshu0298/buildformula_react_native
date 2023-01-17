@@ -1,14 +1,13 @@
-import {StyleSheet, Text, View} from 'react-native';
-import React from 'react';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {IconButton, Subheading, Switch, Title} from 'react-native-paper';
-import {Formik} from 'formik';
+import {ScrollView, StyleSheet, View} from 'react-native';
+import React, {useMemo, useRef} from 'react';
+import {IconButton, Title} from 'react-native-paper';
+import {useFormik} from 'formik';
 import * as Yup from 'yup';
 import RenderInput from 'components/Atoms/RenderInput';
 import RenderSelect from 'components/Atoms/RenderSelect';
 import ActionButtons from 'components/Atoms/ActionButtons';
-
-// =======> User will be redirected to this page from ProjectStructureDetails screen also <==========
+import useProjectStructureActions from 'redux/actions/projectStructureActions';
+import {useSelector} from 'react-redux';
 
 const schema = Yup.object().shape({
   projectName: Yup.string()
@@ -20,135 +19,92 @@ const schema = Yup.object().shape({
   area: Yup.string().label('area').required('Area is Required'),
 });
 
-const AddressData = {
-  'Science City Rd': {
-    address: 'SATYAMEV EMINENCE',
-    city: 'Ahmedabad',
-    state: 'Gujarat',
-    country: 'India',
-    pincode: 380013,
-  },
-  'Sola Rd': {
-    address: 'Vraj Valencia',
-    city: 'Ahmedabad',
-    state: 'Gujarat',
-    country: 'India',
-    pincode: 380060,
-  },
-  Bhadaj: {
-    address: 'Tri',
-    city: 'Ahmedabad',
-    state: 'Gujarat',
-    country: 'India',
-    pincode: 380020,
-  },
-};
-
 const RenderForm = props => {
-  const {options, navigation, formikProps} = props;
-  const {
-    values,
-    errors,
-    handleChange,
-    handleBlur,
-    setFieldValue,
-    handleSubmit,
-  } = formikProps;
+  const {areaOptions, formikProps, areaList} = props;
+  const {values, errors, handleChange, handleBlur, setFieldValue} = formikProps;
 
-  const [isSwitchOn, setIsSwitchOn] = React.useState(false);
-  const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
+  const handleAreaSelect = value => {
+    setFieldValue('area', value);
+    const option = areaList.find(i => i.id === value);
+    if (option) {
+      setFieldValue('city', option.city);
+      setFieldValue('pincode', option.pincode);
+      setFieldValue('state', option.state);
+      setFieldValue('country', option.country);
+    }
+  };
 
   return (
-    <View style={styles.formContainer}>
-      <RenderInput
-        name="projectName"
-        label="Project Name"
-        containerStyles={styles.inputStyles}
-        value={values.projectName}
-        onChangeText={handleChange('projectName')}
-        onBlur={handleBlur('projectName')}
-        autoCapitalize="none"
-        returnKeyType="next"
-        error={errors.projectName}
-      />
-      <RenderInput
-        name="builderName"
-        label="Builder Name"
-        containerStyles={styles.inputStyles}
-        value={values.builderName}
-        onChangeText={handleChange('builderName')}
-        onBlur={handleBlur('builderName')}
-        autoCapitalize="none"
-        returnKeyType="next"
-        error={errors.builderName}
-      />
-      {/* Search with select will be applied here */}
-      <RenderSelect
-        name="area"
-        label="Select Area"
-        value={values.area}
-        options={options}
-        containerStyles={styles.inputStyles}
-        onBlur={handleBlur('area')}
-        onSelect={value => {
-          setFieldValue('area', value);
-        }}
-      />
-      <RenderInput
-        containerStyles={styles.inputStyles}
-        label="Address"
-        value={AddressData[values.area]?.address}
-        autoCapitalize="none"
-        returnKeyType="next"
-        editable={false}
-        style={styles.readOnly}
-      />
-      <RenderInput
-        containerStyles={styles.inputStyles}
-        label="City"
-        value={AddressData[values.area]?.city}
-        autoCapitalize="none"
-        returnKeyType="next"
-        editable={false}
-        style={styles.readOnly}
-      />
-      <RenderInput
-        containerStyles={styles.inputStyles}
-        label="State"
-        value={AddressData[values.area]?.state}
-        autoCapitalize="none"
-        returnKeyType="next"
-        editable={false}
-        style={styles.readOnly}
-      />
-      <RenderInput
-        containerStyles={styles.inputStyles}
-        label="Country"
-        value={AddressData[values.area]?.country}
-        autoCapitalize="none"
-        returnKeyType="next"
-        editable={false}
-        style={styles.readOnly}
-      />
-      <RenderInput
-        containerStyles={styles.inputStyles}
-        label="Pincode"
-        value={AddressData[values.area]?.pincode}
-        autoCapitalize="none"
-        returnKeyType="next"
-        editable={false}
-        style={styles.readOnly}
-      />
-      <View style={styles.extraDetailsRow}>
-        <Subheading>Status</Subheading>
-        <View style={styles.extraDetailsSwitchWrap}>
-          <Switch
-            value={isSwitchOn}
-            onValueChange={onToggleSwitch}
-            color="#77E675"
-          />
-          {isSwitchOn ? <Text style={styles.switchtxt}>Active</Text> : null}
-        </View>
+    <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+      <View style={styles.formContainer}>
+        <RenderInput
+          name="projectName"
+          label="Project Name"
+          containerStyles={styles.inputStyles}
+          value={values.projectName}
+          onChangeText={handleChange('projectName')}
+          onBlur={handleBlur('projectName')}
+          autoCapitalize="none"
+          returnKeyType="next"
+          error={errors.projectName}
+        />
+        <RenderInput
+          name="builderName"
+          label="Builder Name"
+          containerStyles={styles.inputStyles}
+          value={values.builderName}
+          onChangeText={handleChange('builderName')}
+          onBlur={handleBlur('builderName')}
+          autoCapitalize="none"
+          returnKeyType="next"
+          error={errors.builderName}
+        />
+        <RenderSelect
+          name="area"
+          label="Select Area"
+          value={values.area}
+          options={areaOptions}
+          containerStyles={styles.inputStyles}
+          onBlur={handleBlur('area')}
+          onSelect={handleAreaSelect}
+        />
+
+        <RenderInput
+          containerStyles={styles.inputStyles}
+          label="City"
+          value={values.city}
+          autoCapitalize="none"
+          returnKeyType="next"
+          editable={false}
+          style={styles.readOnly}
+        />
+        <RenderInput
+          containerStyles={styles.inputStyles}
+          label="State"
+          value={values?.state}
+          autoCapitalize="none"
+          returnKeyType="next"
+          editable={false}
+          style={styles.readOnly}
+        />
+        <RenderInput
+          containerStyles={styles.inputStyles}
+          label="Country"
+          value={values?.country}
+          autoCapitalize="none"
+          returnKeyType="next"
+          editable={false}
+          style={styles.readOnly}
+        />
+        <RenderInput
+          containerStyles={styles.inputStyles}
+          label="Pincode"
+          value={values.pincode}
+          autoCapitalize="none"
+          returnKeyType="next"
+          editable={false}
+          style={styles.readOnly}
+        />
       </View>
       <View style={styles.extraDetailsRow}>
         <Subheading>Premium Project</Subheading>
@@ -169,17 +125,70 @@ const RenderForm = props => {
           onSubmit={navigation.goBack}
         />
       </View>
-    </View>
+     </ScrollView>
   );
 };
 
 const AddProject = props => {
   const {navigation} = props;
-  const options = ['Science City Rd', 'Sola Rd', 'Bhadaj'];
 
-  const onSubmit = values => {
-    console.log(values);
+  // const {id} = route?.params || {};
+
+  const submitTypeRef = useRef();
+
+  const {addProject, getAreaList} = useProjectStructureActions();
+
+  const {selectedProject} = useSelector(s => s.project);
+
+  const {areaList} = useSelector(s => s.projectStructure);
+
+  const areaOptions = useMemo(() => {
+    return areaList?.map(i => ({label: i.area, value: i.id}));
+  }, [areaList]);
+
+  React.useEffect(() => {
+    getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const getData = () => getAreaList({project_id: selectedProject.id});
+
+  const onSubmit = async values => {
+    const restData = {
+      project_id: selectedProject.id,
+      project_name: values.projectName,
+      developer_name: values.builderName,
+      area: values.area,
+    };
+    const res = await addProject(restData);
+
+    if (submitTypeRef.current === 'save') {
+      navigation.goBack();
+    } else if (submitTypeRef.current === 'details') {
+      navigation.navigate('ProjectStructureDetails', {
+        projectId: res.value.id,
+      });
+    }
+
+    return res;
   };
+
+  const onSave = async type => {
+    submitTypeRef.current = type;
+    handleSubmit();
+  };
+
+  const formikProps = useFormik({
+    enableReinitialize: true,
+    validateOnBlur: false,
+    validateOnChange: false,
+    validationSchema: schema,
+    initialValues: {},
+    onSubmit,
+  });
+
+  const {handleSubmit} = formikProps;
+
   return (
     <SafeAreaView style={styles.mainContainer}>
       <View style={styles.headerWrapper}>
@@ -188,36 +197,29 @@ const AddProject = props => {
           size={18}
           color="#4872f4"
           style={styles.backIcon}
-          onPress={() => navigation.goBack()}
+          onPress={navigation.goBack}
         />
         <Title>Add Project</Title>
       </View>
       <View style={styles.formContainer}>
-        <Formik
-          enableReinitialize
-          validateOnBlur={false}
-          validateOnChange={false}
-          initialValues={{
-            projectName: '',
-            builderName: '',
-            area: '',
-          }}
-          validationSchema={schema}
-          onSubmit={onSubmit}>
-          {formikProps => (
-            <RenderForm
-              formikProps={formikProps}
-              {...props}
-              options={options}
-            />
-          )}
-        </Formik>
+        <RenderForm
+          {...props}
+          formikProps={formikProps}
+          areaOptions={areaOptions}
+          areaList={areaList}
+        />
+        <View style={styles.filterBTN}>
+          <ActionButtons
+            cancelLabel="Add Details"
+            submitLabel="Save"
+            onCancel={() => onSave('details')}
+            onSubmit={() => onSave('save')}
+          />
+        </View>
       </View>
     </SafeAreaView>
   );
 };
-
-export default AddProject;
 
 const styles = StyleSheet.create({
   headerWrapper: {
@@ -229,8 +231,8 @@ const styles = StyleSheet.create({
     marginRight: 11,
   },
   mainContainer: {
-    paddingHorizontal: 10,
     flex: 1,
+    margin: 10,
   },
   inputStyles: {
     marginVertical: 8,
@@ -239,27 +241,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#EAECF1',
   },
   filterBTN: {
-    flex: 1,
     justifyContent: 'flex-end',
   },
   formContainer: {
     flex: 1,
   },
-  extraDetailsRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginVertical: 10,
-    alignItems: 'center',
-  },
-  extraDetailsSwitchWrap: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: 100,
-    marginVertical: 5,
-  },
-  switchtxt: {
-    color: '#07CA03',
-    marginLeft: 10,
-    width: 60,
+
+  scrollView: {
+    marginBottom: 30,
   },
 });
+
+export default AddProject;

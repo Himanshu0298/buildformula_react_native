@@ -1,98 +1,33 @@
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
-import React, {useState} from 'react';
-import {StyleSheet, View, ScrollView, SafeAreaView, Modal} from 'react-native';
+import React from 'react';
+import {StyleSheet, View, ScrollView} from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import {FAB, IconButton, Text, Title} from 'react-native-paper';
 import {theme} from 'styles/theme';
-import ActionButtons from 'components/Atoms/ActionButtons';
-import RenderInput from 'components/Atoms/RenderInput';
-import {SafeAreaProvider} from 'react-native-safe-area-context';
-import {Formik} from 'formik';
-
-const DATA = [
-  {
-    name: 'Preeti kuar',
-    no: +912001244481,
-  },
-  {
-    name: 'jasline Jain',
-    no: +912001244481,
-  },
-  {
-    name: 'Ramesh rathod',
-    no: +912001244481,
-  },
-  {
-    name: 'Himanshu Jain',
-    no: +912001244481,
-  },
-];
-
-function AddProjectSecurity(props) {
-  const {handleClose, visible, formikProps} = props;
-
-  const {values, errors, handleChange, handleBlur, handleSubmit} = formikProps;
-
-  return (
-    <Modal
-      isVisible={visible}
-      style={styles.modal}
-      onBackdropPress={handleClose}>
-      <SafeAreaProvider style={{flexGrow: 1}}>
-        <SafeAreaView style={{margin: 10, flexGrow: 1}}>
-          <Title>Add Security/ Caretaker Info</Title>
-          <View style={{flexGrow: 1}}>
-            <RenderInput
-              name="name"
-              label="Enter Full Name"
-              containerStyles={styles.inputStyles}
-              value={values.name}
-              onChangeText={handleChange('name')}
-              onBlur={handleBlur('name')}
-              autoCapitalize="none"
-              returnKeyType="next"
-              error={errors.name}
-            />
-            <RenderInput
-              name="phone_number"
-              label="Enter Phone Number"
-              containerStyles={styles.inputStyles}
-              value={values.phone_number}
-              onChangeText={handleChange('phone_number')}
-              onBlur={handleBlur('phone_number')}
-              returnKeyType="next"
-              error={errors.phone_number}
-            />
-          </View>
-
-          <ActionButtons
-            cancelLabel="Cancel"
-            submitLabel="Save"
-            onCancel={handleClose}
-            onSubmit={handleSubmit}
-          />
-        </SafeAreaView>
-      </SafeAreaProvider>
-    </Modal>
-  );
-}
+import useProjectStructureActions from 'redux/actions/projectStructureActions';
+import {useSelector} from 'react-redux';
+import {useAlert} from 'components/Atoms/Alert';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 function ProjectSecurityDetails(props) {
-  const {item} = props;
+  const {item, handleDelete, navigation, projectId} = props;
 
-  const {name, no} = item;
+  const {contact_person_name, contact_person_number, id} = item;
+
+  const navToEdit = () =>
+    navigation.navigate('AddProjectSecurity', {projectId, item});
   return (
     <View style={styles.container}>
       <View style={styles.subContainer}>
-        <Text>{name.toUpperCase()}</Text>
+        <Text>{contact_person_name?.toUpperCase()}</Text>
         <View style={styles.headerSubContainer}>
           <View style={styles.editIconContainer}>
             <OpacityButton
               color="#4872f4"
               opacity={0.18}
               style={styles.editIcon}
-              onPress={{}}>
+              onPress={navToEdit}>
               <MaterialIcons name="edit" color="#4872f4" size={13} />
             </OpacityButton>
           </View>
@@ -100,7 +35,7 @@ function ProjectSecurityDetails(props) {
             <OpacityButton
               color="#FF5D5D"
               opacity={0.18}
-              onPress={{}}
+              onPress={() => handleDelete(id)}
               style={styles.deleteIcon}>
               <MaterialIcons name="delete" color="#FF5D5D" size={13} />
             </OpacityButton>
@@ -110,7 +45,7 @@ function ProjectSecurityDetails(props) {
       <View style={styles.phoneContainer}>
         <MaterialIcons name="phone" color="#4872f4" size={18} />
         <View style={styles.rowData}>
-          <Text style={styles.number}> {no}</Text>
+          <Text style={styles.number}> {contact_person_number}</Text>
         </View>
       </View>
     </View>
@@ -118,59 +53,81 @@ function ProjectSecurityDetails(props) {
 }
 
 function ProjectSecurity(props) {
-  const {navigation} = props;
+  const {navigation, route} = props;
 
-  const [addDialog, setAddDialog] = useState();
+  const {projectId} = route?.params || {};
 
-  const toggleAddDialog = () => setAddDialog(v => !v);
+  const alert = useAlert();
 
-  const handleSave = () => console.log('===========> ');
+  const {getProjectDetails, deleteProjectSecurity} =
+    useProjectStructureActions();
+
+  const {projectDetails, loading} = useSelector(s => s.projectStructure);
+
+  const {security_info} = projectDetails;
+
+  const {selectedProject} = useSelector(s => s.project);
+  React.useEffect(() => {
+    getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const getData = async () => {
+    await getProjectDetails({project_id: selectedProject.id, id: projectId});
+  };
+
+  const handleDelete = async security_id => {
+    alert.show({
+      title: 'Confirm',
+      message: 'Are you sure you want to delete?',
+      confirmText: 'Delete',
+      onConfirm: async () => {
+        await deleteProjectSecurity({
+          project_id: selectedProject.id,
+          id: projectId,
+          security_id,
+        });
+        getData();
+      },
+    });
+  };
+
+  const navToAdd = () => navigation.navigate('AddProjectSecurity', {projectId});
 
   return (
-    <>
-      {addDialog ? (
-        <Formik
-          enableReinitialize
-          validateOnBlur={false}
-          validateOnChange={false}
-          initialValues={{}}
-          onSubmit={handleSave}>
-          {formikProps => (
-            <AddProjectSecurity
-              {...props}
-              visible={addDialog}
-              toggleDialog={toggleAddDialog}
-              handleClose={toggleAddDialog}
-              formikProps={formikProps}
-            />
-          )}
-        </Formik>
-      ) : null}
-      <View style={styles.mainContainer}>
-        <View style={styles.headerWrapper}>
-          <IconButton
-            icon="keyboard-backspace"
-            size={18}
-            color="#4872f4"
-            style={styles.backIcon}
-            onPress={() => navigation.goBack()}
-          />
-          <Title> Project Security/ Caretaker Info</Title>
-        </View>
-        <ScrollView style={styles.scrollView}>
-          <View style={{marginVertical: 20}}>
-            {DATA.map(item => {
-              return <ProjectSecurityDetails item={item} />;
-            })}
-          </View>
-        </ScrollView>
-        <FAB
-          style={[styles.fab, {backgroundColor: theme.colors.primary}]}
-          icon="plus"
-          onPress={toggleAddDialog}
+    <View style={styles.mainContainer}>
+      <Spinner visible={loading} textContent="" />
+
+      <View style={styles.headerWrapper}>
+        <IconButton
+          icon="keyboard-backspace"
+          size={18}
+          color="#4872f4"
+          style={styles.backIcon}
+          onPress={() => navigation.goBack()}
         />
+        <Title> Project Security/ Caretaker Info</Title>
       </View>
-    </>
+      <ScrollView style={styles.scrollView}>
+        <View style={styles.cardContainer}>
+          {security_info?.map(item => {
+            return (
+              <ProjectSecurityDetails
+                item={item}
+                handleDelete={handleDelete}
+                navigation={navigation}
+                projectId={projectId}
+              />
+            );
+          })}
+        </View>
+      </ScrollView>
+      <FAB
+        style={[styles.fab, {backgroundColor: theme.colors.primary}]}
+        icon="plus"
+        onPress={navToAdd}
+      />
+    </View>
   );
 }
 
@@ -236,8 +193,8 @@ const styles = StyleSheet.create({
   rowData: {
     marginVertical: 8,
   },
-  inputStyles: {
-    marginVertical: 8,
+  cardContainer: {
+    marginVertical: 20,
   },
 });
 
