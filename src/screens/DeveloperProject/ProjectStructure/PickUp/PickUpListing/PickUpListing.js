@@ -2,7 +2,7 @@ import ActionButtons from 'components/Atoms/ActionButtons';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import RenderInput from 'components/Atoms/RenderInput';
 import {Formik} from 'formik';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import BottomSheet from 'reanimated-bottom-sheet';
 
@@ -10,22 +10,18 @@ import {Button, Divider, FAB, IconButton, Subheading} from 'react-native-paper';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {theme} from 'styles/theme';
 import Animated from 'react-native-reanimated';
-import {TouchableOpacity} from 'react-native-gesture-handler';
 import {getShadow} from 'utils';
+import useProjectStructureActions from 'redux/actions/projectStructureActions';
+import {useSelector} from 'react-redux';
+import {useAlert} from 'components/Atoms/Alert';
+import {isEqual} from 'lodash';
 
 const SNAP_POINTS = [0, '25%'];
-
-const DATA = [
-  {name: 'Very Good'},
-  {name: 'Good'},
-  {name: 'Medium'},
-  {name: 'Bad'},
-];
 
 function AddField(props) {
   const {formikProps, dialog, onClose} = props;
 
-  const {values, errors, handleChange, handleBlur, setFieldValue} = formikProps;
+  const {values, errors, handleChange, handleBlur, handleSubmit} = formikProps;
 
   const bottomSheetRef = useRef();
   const fall = new Animated.Value(1);
@@ -69,21 +65,21 @@ function AddField(props) {
             <Subheading> Add Field</Subheading>
 
             <RenderInput
-              name="fieldName"
+              name="title"
               label="Field Name"
               containerStyles={styles.inputStyles}
-              value={values.fieldName}
-              onChangeText={handleChange('fieldName')}
-              onBlur={handleBlur('fieldName')}
+              value={values.title}
+              onChangeText={handleChange('title')}
+              onBlur={handleBlur('title')}
               autoCapitalize="none"
-              returnKeyType="fieldName"
-              error={errors.fieldName}
+              returnKeyType="next"
+              error={errors.title}
             />
             <Button
               style={styles.button}
               theme={{roundness: 10}}
               mode="contained"
-              onPress={() => console.log('===========> ')}>
+              onPress={handleSubmit}>
               Add
             </Button>
           </View>
@@ -94,17 +90,102 @@ function AddField(props) {
 }
 
 function PickUpListing(props) {
-  const {navigation} = props;
+  const {navigation, route} = props;
+
+  const {fieldId} = route?.params || {};
+
+  const alert = useAlert();
 
   const [dialog, setDialog] = useState();
+
+  const [selectedList, setSelectedList] = useState();
+  const [pickUpsList, setPickUpsList] = React.useState(pickUpList || []);
+
+  const field_id = fieldId;
+
+  const {getPickUpList, addPickUp, updatePickUp, deletePickUp} =
+    useProjectStructureActions();
+
+  const {selectedProject} = useSelector(s => s.project);
+
+  const {pickUpList} = useSelector(s => s.projectStructure);
+
+  useEffect(() => {
+    if ((pickUpList, pickUpsList)) {
+      setPickUpsList(pickUpList);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pickUpList]);
+
+  React.useEffect(() => {
+    getList();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const getList = () =>
+    getPickUpList({project_id: selectedProject.id, field_id});
+
+  const initialValues = useMemo(() => {
+    if (selectedList) {
+      const {title} = pickUpsList[selectedList];
+      return {
+        title,
+      };
+    }
+    return {};
+  }, [pickUpsList, selectedList]);
+
+  const onSubmit = async values => {
+    const pickUpCard = pickUpsList.find(i => i.id === values.title);
+    const data = {
+      project_id: selectedProject.id,
+      field_id,
+      title: pickUpCard.title,
+    };
+
+    await addPickUp(data);
+
+    getList();
+    toggleAdd();
+  };
+
+  const handleDelete = async id => {
+    alert.show({
+      title: 'Confirm',
+      message: 'Are you sure you want to delete?',
+      confirmText: 'Delete',
+      onConfirm: async () => {
+        await deletePickUp({
+          project_id: selectedProject.id,
+          id,
+          field_id,
+        });
+        getList();
+      },
+    });
+  };
+
+  const editDialog = index => {
+    setSelectedList(index);
+    toggleAdd();
+  };
+
+  const handleSaveMaterial = values => {
+    const _pickups = [...pickUpsList];
+    if (!isNaN(selectedList)) {
+      _pickups[selectedList] = values;
+    } else {
+      _pickups.push(values);
+    }
+    setPickUpsList(_pickups);
+    toggleAdd();
+  };
 
   const toggleAdd = () => setDialog(v => !v);
 
   const onClose = () => toggleAdd();
 
-  const handleSave = () => {
-    console.log('===========> ');
-  };
   return (
     <>
       {dialog ? (
@@ -112,8 +193,8 @@ function PickUpListing(props) {
           enableReinitialize
           validateOnBlur={false}
           validateOnChange={false}
-          initialValues={{}}
-          onSubmit={handleSave}>
+          initialValues={initialValues}
+          onSubmit={handleSaveMaterial}>
           {formikProps => (
             <AddField
               {...props}
@@ -139,7 +220,7 @@ function PickUpListing(props) {
         </View>
 
         <View style={styles.listContainer}>
-          {DATA.map(item => {
+          {pickUpsList.map((item, index) => {
             return (
               <>
                 <Divider style={styles.divider} />
@@ -150,7 +231,7 @@ function PickUpListing(props) {
                       size={24}
                       color="rgba(4, 29, 54, 0.15)"
                     />
-                    <Subheading> {item.name} </Subheading>
+                    <Subheading> {item.title} </Subheading>
                   </View>
 
                   <View style={styles.headerSubContainer}>
@@ -159,7 +240,7 @@ function PickUpListing(props) {
                         color="#4872f4"
                         opacity={0.18}
                         style={styles.editIcon}
-                        onPress={{}}>
+                        onPress={() => editDialog(index)}>
                         <MaterialIcons name="edit" color="#4872f4" size={13} />
                       </OpacityButton>
                     </View>
@@ -167,7 +248,7 @@ function PickUpListing(props) {
                       <OpacityButton
                         color="#FF5D5D"
                         opacity={0.18}
-                        onPress={{}}
+                        onPress={() => handleDelete(item.id)}
                         style={styles.deleteIcon}>
                         <MaterialIcons
                           name="delete"
@@ -194,7 +275,7 @@ function PickUpListing(props) {
           cancelLabel="Cancel"
           submitLabel="Save"
           onCancel={navigation.goBack}
-          onSubmit={{}}
+          onSubmit={onSubmit}
         />
       </View>
     </>

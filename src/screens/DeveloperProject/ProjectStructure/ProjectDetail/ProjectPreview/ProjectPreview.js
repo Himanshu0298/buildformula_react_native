@@ -5,12 +5,13 @@ import stock_image from 'assets/images/stock_image.png';
 import PdfIcon from 'assets/images/pdf_icon.png';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {
   Caption,
   Divider,
-  IconButton,
+  Menu,
   Subheading,
   Text,
   Title,
@@ -23,10 +24,22 @@ import {getFileName} from 'utils/constant';
 import {getDownloadUrl} from 'utils/download';
 import {getShadow} from 'utils';
 import {theme} from 'styles/theme';
-import {DATA, FILES_DATA, OWNER_DATA, SECURITY_DATA} from './Data';
+import useProjectStructureActions from 'redux/actions/projectStructureActions';
+import {useSelector} from 'react-redux';
+import Spinner from 'react-native-loading-spinner-overlay';
+import dayjs from 'dayjs';
+import {SvgXml} from 'react-native-svg';
+import {useAlert} from 'components/Atoms/Alert';
+import RenderHTML from 'react-native-render-html';
+import Layout from 'utils/Layout';
 
-function Files() {
+function Files(props) {
+  const {projectDetails, handleDelete} = props;
+  const {attachment_file} = projectDetails || {};
+
   const download = useDownload();
+
+  const [visible, setVisible] = React.useState(false);
 
   const onPressFile = async file => {
     const fileUrl = getDownloadUrl(file);
@@ -41,10 +54,13 @@ function Files() {
       },
     });
   };
+
+  const toggleMenu = () => setVisible(v => !v);
+
   return (
     <View>
       <Subheading> File's/ Attachments </Subheading>
-      {FILES_DATA.map(item => {
+      {attachment_file?.map(item => {
         return (
           <View style={styles.recentFiles}>
             <TouchableOpacity
@@ -55,26 +71,36 @@ function Files() {
                 <Text
                   style={(styles.verticalFlex, styles.text)}
                   numberOfLines={2}>
-                  {item.name}
+                  {item?.file_name}
                 </Text>
                 <View style={styles.type}>
-                  <Text style={styles.date}>{item.type}</Text>
+                  <Text style={styles.date}>{item.title}</Text>
                 </View>
                 <View style={styles.dateContainer}>
                   <Text style={styles.date}>
-                    {/* {dayjs(created).format('DD MMM YYYY')} */}
-                    {item.date}
+                    {dayjs(item?.created_at).format('DD MMM YYYY')}
                   </Text>
                 </View>
               </View>
             </TouchableOpacity>
 
-            <View>
-              <IconButton
-                icon="dots-vertical"
-                onPress={() => console.log('===========> ')}
+            <Menu
+              visible={visible}
+              onDismiss={() => toggleMenu()}
+              anchor={
+                <TouchableOpacity style={styles.editIcon} onPress={toggleMenu}>
+                  <Entypo name="dots-three-vertical" size={15} />
+                </TouchableOpacity>
+              }>
+              <Menu.Item
+                onPress={() => {
+                  toggleMenu();
+                }}
+                title="Rename"
               />
-            </View>
+              <Menu.Item onPress={() => handleDelete(item.id)} title="Delete" />
+              <Menu.Item onPress={{}} title="Share" />
+            </Menu>
           </View>
         );
       })}
@@ -82,20 +108,26 @@ function Files() {
   );
 }
 
-function ProjectSecurityDetails() {
+function ProjectSecurityDetails(props) {
+  const {projectDetails} = props;
+  const {security_info} = projectDetails || {};
+
   return (
     <View>
-      <Subheading>Project Owner Info</Subheading>
-      {SECURITY_DATA.map(item => {
+      <Subheading>Project Security/ Caretaker info</Subheading>
+      {security_info?.map(item => {
         return (
           <View style={styles.container}>
             <View style={styles.subContainer}>
-              <Text>{item.name.toUpperCase()}</Text>
+              <Text>{item?.contact_person_name?.toUpperCase()}</Text>
             </View>
             <View style={styles.phoneContainer}>
               <MaterialIcons name="phone" color="#4872f4" size={18} />
               <View style={styles.rowData}>
-                <Text style={styles.number}> {item.no}</Text>
+                <Text style={styles.number}>
+                  {' '}
+                  {item?.contact_person_number}
+                </Text>
               </View>
             </View>
           </View>
@@ -106,28 +138,31 @@ function ProjectSecurityDetails() {
 }
 
 function ProjectOwnerDetails(props) {
+  const {projectDetails} = props;
+
+  const {owner_info} = projectDetails || {};
+
   return (
     <>
       <Subheading>Project Owner Info</Subheading>
-
-      {OWNER_DATA.map(item => {
+      {owner_info?.map(item => {
         return (
           <View style={styles.container}>
             <View style={styles.subContainer}>
-              <Text>{item.name.toUpperCase()}</Text>
+              <Text>{item?.name?.toUpperCase()}</Text>
             </View>
             <View>
-              <Text>({item.type.toUpperCase()})</Text>
+              <Text>({item?.title?.toUpperCase()})</Text>
             </View>
             <View style={styles.phoneContainer}>
               <MaterialIcons name="phone" color="#4872f4" size={18} />
               <View style={styles.rowData}>
-                <Text style={styles.number}> {item.no}</Text>
+                <Text style={styles.number}> {item?.phone_number}</Text>
               </View>
             </View>
             <View style={styles.phoneContainer}>
               <MaterialIcons name="email" color="#4872f4" size={18} />
-              <Text style={styles.number}> {item.email} </Text>
+              <Text style={styles.number}> {item?.email} </Text>
             </View>
           </View>
         );
@@ -136,24 +171,32 @@ function ProjectOwnerDetails(props) {
   );
 }
 
-function Animates() {
+function Animates(props) {
+  const {projectDetails} = props;
+  const {building_amenities} = projectDetails || {};
+
   return (
     <View>
       <Subheading>Building Amenities</Subheading>
+
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        <View style={{flexDirection: 'row', marginRight: 10}}>
-          {DATA.map(item => {
-            return (
-              <View style={styles.amenitiesContainer}>
-                <View style={{alignSelf: 'center'}}>
-                  <Image source={item.image} />
+        <View style={styles.animatesContainer}>
+          {building_amenities
+            ?.filter(i => i.status)
+            .map(item => {
+              return (
+                <View style={styles.amenitiesContainer}>
+                  <View style={styles.svgContainer}>
+                    {item?.svg ? (
+                      <SvgXml width="100%" height="100%" xml={item?.svg} />
+                    ) : null}
+                  </View>
+                  <View style={styles.rawData}>
+                    <Text numberOfLines={1}>{item.title}</Text>
+                  </View>
                 </View>
-                <View style={{marginVertical: 5}}>
-                  <Text>{item.title}</Text>
-                </View>
-              </View>
-            );
-          })}
+              );
+            })}
         </View>
       </ScrollView>
     </View>
@@ -161,7 +204,9 @@ function Animates() {
 }
 
 function Configuration(props) {
-  const {navigation} = props;
+  const {navigation, projectDetails} = props;
+  const {description, configurtion} = projectDetails || {};
+
   return (
     <View>
       <Subheading>Configuration </Subheading>
@@ -172,142 +217,197 @@ function Configuration(props) {
             size={18}
             color="#4872F4"
           />
-          <Text style={styles.configurationIcon}>Spacious</Text>
-        </View>
-        <View style={styles.configurationSubContainer}>
-          <MaterialIcons
-            name="check-circle-outline"
-            size={18}
-            color="#4872F4"
-          />
-          <Text style={styles.configurationIcon}>Luxury</Text>
-        </View>
-        <View style={styles.configurationSubContainer}>
-          <MaterialIcons
-            name="check-circle-outline"
-            size={18}
-            color="#4872F4"
-          />
-          <Text style={styles.configurationIcon}>Royal</Text>
+          <Text style={styles.configurationIcon}>{configurtion}</Text>
         </View>
       </View>
-      <View style={{marginVertical: 5}}>
+      <View style={styles.descriptionContainer}>
         <Subheading> Description</Subheading>
-        <Caption>
-          Wave Estate in Sector-85, Mohali is a ready-to-move housing society.
-          It offers apartments, independent floors and villas in varied budget
-          range Wave It offers apartments, independent floors and villas in
-          varied budget range Wave housing society floors ran...
-          <TouchableOpacity onPress={() => navigation.navigate('Description')}>
-            <Text style={{color: theme.colors.primary}}> more</Text>
-          </TouchableOpacity>
-        </Caption>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Description', {description})}>
+          <RenderHTML
+            style={styles.html}
+            source={{
+              html: description,
+            }}
+            contentWidth={Layout.window.width - 20}
+          />
+          <Text style={{color: theme.colors.primary}}> more</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
 }
 
-function Details() {
+function Details(props) {
+  const {projectDetails} = props;
+  const {
+    project_category_title,
+    total_no_of_units,
+    total_no_of_towers,
+    bhk_configuration,
+    total_no_of_bunglows,
+    total_no_of_plots,
+  } = projectDetails;
+
   return (
     <>
       <View style={styles.detailContainer}>
         <View>
           <Caption>Project Category </Caption>
-          <Text>Towers, Bungalows</Text>
+          <Text style={styles.rawData}>{project_category_title}</Text>
         </View>
         <View>
           <Caption>No of Towers Units</Caption>
-          <Text>210 Units</Text>
+          <Text style={styles.rawData}>{total_no_of_units}</Text>
         </View>
       </View>
       <View style={styles.detailContainer}>
         <View>
           <Caption>No of Tower</Caption>
-          <Text>04 Towers</Text>
+          <Text style={styles.rawData}>{total_no_of_towers}</Text>
         </View>
         <View>
           <Caption>Configurations</Caption>
-          <Text>2BHK, 4BHK, 6BHK</Text>
+          <Text style={styles.rawData}>{bhk_configuration}</Text>
         </View>
       </View>
       <View style={styles.detailContainer}>
         <View>
           <Caption>No Of bungalows</Caption>
-          <Text>15 Bungalows</Text>
+          <Text style={styles.rawData}>{total_no_of_bunglows}</Text>
         </View>
         <View>
           <Caption>No of Plots</Caption>
-          <Text>10 Plots</Text>
+          <Text style={styles.rawData}> {total_no_of_plots}</Text>
         </View>
       </View>
     </>
   );
 }
 
-function StatusField() {
+function StatusField(props) {
+  const {projectDetails} = props;
+  const {
+    project_type_title,
+    project_quality_title,
+    possesion_year,
+    premium_project,
+    rera_no,
+  } = projectDetails;
   return (
     <View>
       <View>
-        <View style={styles.checkIcon}>
-          <MaterialIcons
-            name="check-circle-outline"
-            size={18}
-            color="#1E9400"
-          />
-          <Text style={styles.approvedStatus}>Rera Approved</Text>
-        </View>
+        {rera_no ? (
+          <View style={styles.checkIcon}>
+            <MaterialIcons
+              name="check-circle-outline"
+              size={18}
+              color="#1E9400"
+            />
+            <Text style={styles.approvedStatus}>Rera Approved</Text>
+          </View>
+        ) : null}
+
         <View style={styles.statusSubContainer}>
           <View style={styles.thumbIcon}>
             <MaterialIcons name="thumb-up-off-alt" size={18} />
-            <Text>Good Quality</Text>
+            <Text style={styles.textValue}>{project_quality_title}</Text>
           </View>
-          <View style={styles.buildingIcon}>
-            <MaterialCommunityIcons name="office-building-outline" size={18} />
-            <Text>Prime Building</Text>
-          </View>
+          {premium_project ? (
+            <View style={styles.buildingIcon}>
+              <MaterialCommunityIcons
+                name="office-building-outline"
+                size={18}
+              />
+              <Text style={styles.textValue}>Prime Building</Text>
+            </View>
+          ) : null}
         </View>
       </View>
       <View style={styles.statusContainer}>
         <Subheading>Status</Subheading>
-        <Text>Under Construction</Text>
-        <Caption>Possession by Dec, 2022</Caption>
+        <Text>{project_type_title}</Text>
+        <Caption> Possession by: {possesion_year}</Caption>
       </View>
     </View>
   );
 }
 
 function ProjectPreview(props) {
-  const {navigation} = props;
+  const {navigation, route} = props;
+  const {id: listId} = route?.params || {};
+
+  const alert = useAlert();
+
+  const {getProjectDetails, deleteProjectFile} = useProjectStructureActions();
+  const {projectDetails, loading} = useSelector(s => s.projectStructure);
+  const {selectedProject} = useSelector(s => s.project);
+  const {area, project_name, city, state, country} = projectDetails;
+
+  React.useEffect(() => {
+    getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const getData = () =>
+    getProjectDetails({project_id: selectedProject.id, id: listId});
+
+  const handleDelete = async attachment_id => {
+    alert.show({
+      title: 'Confirm',
+      message: 'Are you sure you want to delete?',
+      confirmText: 'Delete',
+      onConfirm: async () => {
+        await deleteProjectFile({
+          project_id: selectedProject.id,
+          id: listId,
+          attachment_id,
+        });
+        getData();
+      },
+    });
+  };
+
   return (
     <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+      <Spinner visible={loading} textContent="" />
+
       <Image source={stock_image} />
       <View style={styles.mainContainer}>
         <View>
-          <Title>Emaar The View</Title>
-          <Text>Sector-105, Mohali</Text>
-          <Text>Residential</Text>
+          <Title>{project_name?.toUpperCase()} </Title>
+
+          <Text>
+            {area} , {city}
+          </Text>
+          <Text>
+            {state} , {country}
+          </Text>
         </View>
         <View style={styles.statusField}>
-          <StatusField />
+          <StatusField projectDetails={projectDetails} />
         </View>
         <View style={styles.statusField}>
-          <Details />
+          <Details projectDetails={projectDetails} />
         </View>
-        <Divider style={{borderWidth: 0.5}} />
+        <Divider style={styles.divider} />
         <View style={styles.statusField}>
-          <Configuration navigation={navigation} />
-        </View>
-        <View style={styles.statusField}>
-          <Animates />
-        </View>
-        <View style={styles.statusField}>
-          <ProjectOwnerDetails />
+          <Configuration
+            navigation={navigation}
+            projectDetails={projectDetails}
+          />
         </View>
         <View style={styles.statusField}>
-          <ProjectSecurityDetails />
+          <Animates projectDetails={projectDetails} />
         </View>
         <View style={styles.statusField}>
-          <Files />
+          <ProjectOwnerDetails projectDetails={projectDetails} />
+        </View>
+        <View style={styles.statusField}>
+          <ProjectSecurityDetails projectDetails={projectDetails} />
+        </View>
+        <View style={styles.statusField}>
+          <Files projectDetails={projectDetails} handleDelete={handleDelete} />
         </View>
       </View>
     </ScrollView>
@@ -339,7 +439,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     padding: 10,
     backgroundColor: '#B5EAEA',
-    marginRight: 10,
+    marginRight: 15,
   },
 
   buildingIcon: {
@@ -363,6 +463,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     marginRight: 10,
+    width: 100,
   },
   scrollView: {
     marginBottom: 20,
@@ -408,7 +509,7 @@ const styles = StyleSheet.create({
     color: '#4872f4',
   },
   rowData: {
-    marginVertical: 8,
+    marginVertical: 10,
   },
   recentFiles: {
     margin: 10,
@@ -435,6 +536,36 @@ const styles = StyleSheet.create({
   },
   dateContainer: {
     marginLeft: 8,
+  },
+  animatesContainer: {
+    flexDirection: 'row',
+  },
+  text: {
+    marginLeft: 10,
+  },
+  rawData: {
+    alignSelf: 'center',
+  },
+  svgContainer: {
+    alignSelf: 'center',
+    width: 50,
+    height: 50,
+  },
+  editIcon: {
+    borderRadius: 20,
+    alignItems: 'center',
+  },
+  descriptionContainer: {
+    marginVertical: 5,
+  },
+  divider: {
+    borderWidth: 0.5,
+  },
+  textValue: {
+    marginLeft: 5,
+  },
+  html: {
+    color: '#000',
   },
 });
 

@@ -1,12 +1,5 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  TouchableOpacity,
-  FlatList,
-} from 'react-native';
-import React from 'react';
+import {StyleSheet, Text, View, TouchableOpacity, FlatList} from 'react-native';
+import React, {useMemo} from 'react';
 import {
   Caption,
   Divider,
@@ -20,7 +13,10 @@ import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {getShadow} from 'utils';
 import BuilderIcon from 'assets/images/projectHouseOwner.svg';
 import PrimeIcon from 'assets/images/primeBuilding.svg';
-import {ProjectData} from './ProjectData';
+import useProjectStructureActions from 'redux/actions/projectStructureActions';
+import {useSelector} from 'react-redux';
+import Spinner from 'react-native-loading-spinner-overlay';
+import {useAlert} from 'components/Atoms/Alert';
 
 const PROJECT_STATUS = {
   0: {label: 'Inactive', color: '#FF5E5E'},
@@ -44,7 +40,8 @@ const Header = ({navToFilter}) => {
   );
 };
 
-const ProjectCard = ({item, navigation}) => {
+const ProjectCard = props => {
+  const {item, navigation, handleDelete} = props;
   const [visible, setVisible] = React.useState(false);
   const toggleMenu = () => setVisible(v => !v);
 
@@ -60,10 +57,20 @@ const ProjectCard = ({item, navigation}) => {
     status,
     premium_project,
   } = item;
+
+  const navToEdit = () => {
+    navigation.navigate('ProjectStructureDetails', {id});
+    toggleMenu();
+  };
+
+  const deleteProject = () => {
+    handleDelete(id);
+    toggleMenu();
+  };
   return (
     <TouchableOpacity
       style={styles.projectCardWrapper}
-      onPress={() => navigation.navigate('ProjectDetail')}>
+      onPress={() => navigation.navigate('ProjectDetail', {id})}>
       <View style={styles.headerWrapper}>
         <View style={styles.idBox}>
           <Text style={styles.idText}>{id}</Text>
@@ -90,25 +97,15 @@ const ProjectCard = ({item, navigation}) => {
                 <MaterialIcon name="dots-vertical" color="#4872f4" size={15} />
               </OpacityButton>
             }>
-            <Menu.Item
-              onPress={() => {
-                toggleMenu();
-              }}
-              title="Edit"
-            />
-            <Menu.Item
-              onPress={() => {
-                toggleMenu();
-              }}
-              title="Delete"
-            />
+            <Menu.Item onPress={navToEdit} title="Edit" />
+            <Menu.Item onPress={deleteProject} title="Delete" />
           </Menu>
         </View>
       </View>
       <Divider />
       <View style={styles.bodyWrapper}>
-        <Text>{project_name}</Text>
-        <Caption>{`${area} ${city} ${state} ${country} ${pincode}`}</Caption>
+        <Text>{project_name?.toUpperCase()}</Text>
+        <Caption>{`${area} ,${city} ,${state} ,${country} ,${pincode}`}</Caption>
         <View style={styles.builderDetail}>
           <Text>
             <BuilderIcon fill="#041d36" style={styles.builderdetailIcon} />
@@ -127,7 +124,52 @@ const ProjectCard = ({item, navigation}) => {
 };
 
 function ProjectListing(props) {
-  const {theme, navigation} = props;
+  const {navigation} = props;
+
+  const alert = useAlert();
+
+  const {getProjectList, deleteProject} = useProjectStructureActions();
+  const [searchQuery, setSearchQuery] = React.useState('');
+
+  const {projectList = [], loading} = useSelector(s => s.projectStructure);
+  const {selectedProject} = useSelector(s => s.project);
+
+  React.useEffect(() => {
+    getList();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const getList = () => getProjectList({project_id: selectedProject.id});
+
+  const filteredProject = useMemo(() => {
+    const query = searchQuery.toLowerCase();
+    return projectList.filter(
+      i =>
+        i?.project_name?.toLowerCase().includes(query) ||
+        i?.developer_name?.toLowerCase().includes(query) ||
+        i?.city?.toLowerCase().includes(query) ||
+        i?.state?.toLowerCase().includes(query) ||
+        i?.country?.toLowerCase().includes(query) ||
+        i?.area?.toLowerCase().includes(query),
+    );
+  }, [projectList, searchQuery]);
+
+  const onSearch = v => setSearchQuery(v);
+
+  const handleDelete = async projectId => {
+    alert.show({
+      title: 'Confirm',
+      message: 'Are you sure you want to delete?',
+      confirmText: 'Delete',
+      onConfirm: () => {
+        deleteProject({
+          project_id: selectedProject.id,
+          id: projectId,
+        });
+        getList();
+      },
+    });
+  };
 
   const navToFilter = () => {
     navigation.navigate('ProjectFilter');
@@ -135,19 +177,28 @@ function ProjectListing(props) {
 
   return (
     <View style={styles.mainContainer}>
+      <Spinner visible={loading} textContent="" />
+
       <Header navToFilter={navToFilter} />
       <Searchbar
         style={styles.searchBar}
+        value={searchQuery}
         placeholder="Search Project"
-        onChangeText={() => console.log('Search')}
+        onChangeText={onSearch}
       />
       <View style={styles.bodyWrapper}>
         <FlatList
-          data={ProjectData}
+          data={filteredProject}
           keyExtractor={item => item.id}
           showsVerticalScrollIndicator={false}
           renderItem={({item}) => {
-            return <ProjectCard item={item} navigation={navigation} />;
+            return (
+              <ProjectCard
+                item={item}
+                navigation={navigation}
+                handleDelete={handleDelete}
+              />
+            );
           }}
         />
         <FAB

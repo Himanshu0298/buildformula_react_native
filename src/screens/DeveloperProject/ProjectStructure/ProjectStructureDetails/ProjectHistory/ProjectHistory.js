@@ -1,5 +1,5 @@
 import {StyleSheet, View} from 'react-native';
-import React from 'react';
+import React, {useMemo} from 'react';
 import {IconButton, Title} from 'react-native-paper';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
@@ -8,20 +8,70 @@ import RenderSelect from 'components/Atoms/RenderSelect';
 import ActionButtons from 'components/Atoms/ActionButtons';
 import RenderDatePicker from 'components/Atoms/RenderDatePicker';
 import dayjs from 'dayjs';
+import useProjectStructureActions from 'redux/actions/projectStructureActions';
+import {useSelector} from 'react-redux';
 
-const schema = Yup.object().shape({
-  projectName: Yup.string()
-    .label('projectName')
-    .required('Project Name is Required'),
-  builderName: Yup.string()
-    .label('builderName')
-    .required('Builder Name is Required'),
-  area: Yup.string().label('area').required('Area is Required'),
-});
+// const schema = Yup.object().shape({
+//   projectName: Yup.string()
+//     .label('projectName')
+//     .required('Project Name is Required'),
+//   builderName: Yup.string()
+//     .label('builderName')
+//     .required('Builder Name is Required'),
+//   area: Yup.string().label('area').required('Area is Required'),
+// });
 
 const RenderForm = props => {
-  const {options, navigation, formikProps} = props;
-  const {values, errors, handleChange, handleBlur, setFieldValue} = formikProps;
+  const {masterList, navigation, formikProps} = props;
+  const {
+    values,
+    errors,
+    handleChange,
+    handleBlur,
+    setFieldValue,
+    handleSubmit,
+  } = formikProps;
+
+  const {
+    project_structure_project_type,
+    project_structure_restricted_user,
+    project_structure_project_status,
+    project_structure_project_quality,
+  } = masterList;
+  console.log('===========> masterList', masterList);
+
+  const typeOptions = useMemo(() => {
+    return project_structure_project_type?.map(i => ({
+      label: i.title,
+      value: i.id,
+    }));
+  }, [project_structure_project_type]);
+
+  const restrictedOptions = useMemo(() => {
+    return project_structure_restricted_user?.map(i => ({
+      label: i.title,
+      value: i.id,
+    }));
+  }, [project_structure_restricted_user]);
+
+  const statusOptions = useMemo(() => {
+    return project_structure_project_status?.map(i => ({
+      label: i.title,
+      value: i.id,
+    }));
+  }, [project_structure_project_status]);
+
+  const qualityOptions = useMemo(() => {
+    return project_structure_project_quality?.map(i => ({
+      label: i.title,
+      value: i.id,
+    }));
+  }, [project_structure_project_quality]);
+
+  console.log(
+    '===========> project_structure_project_quantity',
+    project_structure_project_quality,
+  );
 
   return (
     <View style={styles.formContainer}>
@@ -51,7 +101,7 @@ const RenderForm = props => {
           name="project_type"
           label="Project Type"
           value={values.project_type}
-          options={options}
+          options={typeOptions}
           containerStyles={styles.inputStyles}
           onBlur={handleBlur('project_type')}
           onSelect={value => {
@@ -62,7 +112,7 @@ const RenderForm = props => {
           name="restricted_user"
           label="Restricted User"
           value={values.restricted_user}
-          options={options}
+          options={restrictedOptions}
           containerStyles={styles.inputStyles}
           onBlur={handleBlur('restricted_user')}
           onSelect={value => {
@@ -73,7 +123,7 @@ const RenderForm = props => {
           name="project_status"
           label="Project Status"
           value={values.project_status}
-          options={options}
+          options={statusOptions}
           containerStyles={styles.inputStyles}
           onBlur={handleBlur('project_status')}
           onSelect={value => {
@@ -84,7 +134,7 @@ const RenderForm = props => {
           name="project_quality"
           label="Project Quality"
           value={values.project_quality}
-          options={options}
+          options={qualityOptions}
           containerStyles={styles.inputStyles}
           onBlur={handleBlur('project_quality')}
           onSelect={value => {
@@ -92,23 +142,49 @@ const RenderForm = props => {
           }}
         />
       </View>
-
       <ActionButtons
         cancelLabel="Cancel"
         submitLabel="Save"
-        onCancel={() => navigation.navigate('ProjectStructureDetails')}
-        onSubmit={navigation.goBack}
+        onCancel={navigation.goBack}
+        onSubmit={handleSubmit}
       />
     </View>
   );
 };
 
 const ProjectHistory = props => {
-  const {navigation} = props;
+  const {navigation, route} = props;
+
+  const {projectId: id} = route?.params || {};
+
+  const {getProjectMasterList, updateProjectHistory} =
+    useProjectStructureActions();
+
+  const {selectedProject} = useSelector(s => s.project);
+  const {masterList} = useSelector(s => s.projectStructure);
+
+  React.useEffect(() => {
+    getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const getData = () => getProjectMasterList({project_id: selectedProject.id});
+
   const onSubmit = values => {
-    console.log(values);
+    const data = {
+      project_id: selectedProject.id,
+      id,
+      possesion_year: values.possesion_year,
+      rera_no: values.rera_no,
+      project_type: values.project_type,
+      restricted_user: values.restricted_user,
+      project_status: values.project_status,
+      project_quality: values.project_quality,
+    };
+    updateProjectHistory(data);
+    navigation.navigate('ProjectStructureDetails');
   };
-  const options = [];
+
   return (
     <View style={styles.mainContainer}>
       <View style={styles.headerWrapper}>
@@ -130,10 +206,14 @@ const ProjectHistory = props => {
           builderName: '',
           area: '',
         }}
-        validationSchema={schema}
+        // validationSchema={schema}
         onSubmit={onSubmit}>
         {formikProps => (
-          <RenderForm formikProps={formikProps} {...props} options={options} />
+          <RenderForm
+            formikProps={formikProps}
+            {...props}
+            masterList={masterList}
+          />
         )}
       </Formik>
     </View>

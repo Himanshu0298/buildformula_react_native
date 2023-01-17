@@ -1,7 +1,7 @@
-import {ScrollView, StyleSheet, View} from 'react-native';
-import React, {useMemo, useRef} from 'react';
-import {IconButton, Title} from 'react-native-paper';
-import {useFormik} from 'formik';
+import {ScrollView, StyleSheet, Text, View} from 'react-native';
+import React, {useMemo} from 'react';
+import {IconButton, Subheading, Switch, Title} from 'react-native-paper';
+import {Formik} from 'formik';
 import * as Yup from 'yup';
 import RenderInput from 'components/Atoms/RenderInput';
 import RenderSelect from 'components/Atoms/RenderSelect';
@@ -20,13 +20,24 @@ const schema = Yup.object().shape({
 });
 
 const RenderForm = props => {
-  const {areaOptions, formikProps, areaList} = props;
-  const {values, errors, handleChange, handleBlur, setFieldValue} = formikProps;
+  const {areaOptions, navigation, formikProps, areaList} = props;
+  const {
+    values,
+    errors,
+    handleChange,
+    handleBlur,
+    setFieldValue,
+    handleSubmit,
+  } = formikProps;
+
+  const [active, setActive] = React.useState(false);
+  const [premium, setPremium] = React.useState(false);
 
   const handleAreaSelect = value => {
     setFieldValue('area', value);
-    const option = areaList.find(i => i.id === value);
+    const option = areaList?.find(i => i.id === value);
     if (option) {
+      setFieldValue('area', option.area);
       setFieldValue('city', option.city);
       setFieldValue('pincode', option.pincode);
       setFieldValue('state', option.state);
@@ -34,8 +45,13 @@ const RenderForm = props => {
     }
   };
 
+  const onToggleStatus = () => setActive(!active);
+  const onTogglePremium = () => setPremium(!premium);
+
   return (
-    <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+    <ScrollView
+      style={styles.formSubContainer}
+      showsVerticalScrollIndicator={false}>
       <View style={styles.formContainer}>
         <RenderInput
           name="projectName"
@@ -68,7 +84,6 @@ const RenderForm = props => {
           onBlur={handleBlur('area')}
           onSelect={handleAreaSelect}
         />
-
         <RenderInput
           containerStyles={styles.inputStyles}
           label="City"
@@ -81,7 +96,7 @@ const RenderForm = props => {
         <RenderInput
           containerStyles={styles.inputStyles}
           label="State"
-          value={values?.state}
+          value={values.state}
           autoCapitalize="none"
           returnKeyType="next"
           editable={false}
@@ -90,7 +105,7 @@ const RenderForm = props => {
         <RenderInput
           containerStyles={styles.inputStyles}
           label="Country"
-          value={values?.country}
+          value={values.country}
           autoCapitalize="none"
           returnKeyType="next"
           editable={false}
@@ -105,19 +120,53 @@ const RenderForm = props => {
           editable={false}
           style={styles.readOnly}
         />
+        <View style={styles.extraDetailsRow}>
+          <Subheading>Status</Subheading>
+          <View style={styles.extraDetailsSwitchWrap}>
+            <Switch
+              value={active}
+              onValueChange={onToggleStatus}
+              color="#77E675"
+              style={{
+                transform: [{scaleX: 0.8}, {scaleY: 0.8}],
+              }}
+            />
+            {active ? <Text style={styles.switch}>Active</Text> : null}
+          </View>
+        </View>
+        <View style={styles.extraDetailsRow}>
+          <Subheading>Premium Project</Subheading>
+          <View style={styles.extraDetailsSwitchWrap}>
+            <Switch
+              value={premium}
+              onValueChange={onTogglePremium}
+              color="#77E675"
+              style={{
+                transform: [{scaleX: 0.8}, {scaleY: 0.8}],
+              }}
+            />
+            {premium ? <Text style={styles.switch}>Yes</Text> : null}
+          </View>
+        </View>
+        <View style={styles.filterBTN}>
+          <ActionButtons
+            cancelLabel="cancel"
+            submitLabel="Save"
+            onCancel={navigation.goBack}
+            onSubmit={handleSubmit}
+          />
+        </View>
       </View>
     </ScrollView>
   );
 };
 
-const AddProject = props => {
-  const {navigation} = props;
+const UpdateProjectDetails = props => {
+  const {navigation, route} = props;
 
-  // const {id} = route?.params || {};
+  const {projectId: id} = route?.params || {};
 
-  const submitTypeRef = useRef();
-
-  const {addProject, getAreaList} = useProjectStructureActions();
+  const {updateProjectDetails, getAreaList} = useProjectStructureActions();
 
   const {selectedProject} = useSelector(s => s.project);
 
@@ -134,42 +183,23 @@ const AddProject = props => {
 
   const getData = () => getAreaList({project_id: selectedProject.id});
 
-  const onSubmit = async values => {
-    const restData = {
+  const onSubmit = values => {
+    const data = {
       project_id: selectedProject.id,
+      id,
       project_name: values.projectName,
       developer_name: values.builderName,
       area: values.area,
+      city: values.city,
+      state: values.state,
+      pincode: values.pincode,
+      country: values.country,
+      status: values.status,
+      premium_project: values.premium_project,
     };
-    const res = await addProject(restData);
-
-    if (submitTypeRef.current === 'save') {
-      navigation.goBack();
-    } else if (submitTypeRef.current === 'details') {
-      navigation.navigate('ProjectStructureDetails', {
-        projectId: res.value.id,
-      });
-    }
-
-    return res;
+    updateProjectDetails(data);
+    navigation.navigate('ProjectStructureDetails');
   };
-
-  const onSave = async type => {
-    submitTypeRef.current = type;
-    handleSubmit();
-  };
-
-  const formikProps = useFormik({
-    enableReinitialize: true,
-    validateOnBlur: false,
-    validateOnChange: false,
-    validationSchema: schema,
-    initialValues: {},
-    onSubmit,
-  });
-
-  const {handleSubmit} = formikProps;
-
   return (
     <View style={styles.mainContainer}>
       <View style={styles.headerWrapper}>
@@ -178,25 +208,27 @@ const AddProject = props => {
           size={18}
           color="#4872f4"
           style={styles.backIcon}
-          onPress={navigation.goBack}
+          onPress={() => navigation.goBack()}
         />
-        <Title>Add Project</Title>
+        <Title>Project Details</Title>
       </View>
       <View style={styles.formContainer}>
-        <RenderForm
-          {...props}
-          formikProps={formikProps}
-          areaOptions={areaOptions}
-          areaList={areaList}
-        />
-        <View style={styles.filterBTN}>
-          <ActionButtons
-            cancelLabel="Add Details"
-            submitLabel="Save"
-            onCancel={() => onSave('details')}
-            onSubmit={() => onSave('save')}
-          />
-        </View>
+        <Formik
+          enableReinitialize
+          validateOnBlur={false}
+          validateOnChange={false}
+          initialValues={{}}
+          validationSchema={schema}
+          onSubmit={onSubmit}>
+          {formikProps => (
+            <RenderForm
+              formikProps={formikProps}
+              {...props}
+              areaOptions={areaOptions}
+              areaList={areaList}
+            />
+          )}
+        </Formik>
       </View>
     </View>
   );
@@ -212,8 +244,8 @@ const styles = StyleSheet.create({
     marginRight: 11,
   },
   mainContainer: {
+    paddingHorizontal: 10,
     flex: 1,
-    margin: 10,
   },
   inputStyles: {
     marginVertical: 8,
@@ -222,15 +254,33 @@ const styles = StyleSheet.create({
     backgroundColor: '#EAECF1',
   },
   filterBTN: {
+    flex: 1,
     justifyContent: 'flex-end',
   },
   formContainer: {
     flex: 1,
   },
+  extraDetailsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginVertical: 10,
+    alignItems: 'center',
+  },
+  extraDetailsSwitchWrap: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: 100,
+    marginVertical: 5,
+  },
+  switch: {
+    color: '#07CA03',
+    marginLeft: 10,
+    width: 60,
+  },
 
-  scrollView: {
+  formSubContainer: {
     marginBottom: 30,
   },
 });
 
-export default AddProject;
+export default UpdateProjectDetails;

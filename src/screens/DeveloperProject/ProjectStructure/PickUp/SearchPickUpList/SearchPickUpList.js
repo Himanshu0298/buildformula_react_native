@@ -1,12 +1,20 @@
 import ActionButtons from 'components/Atoms/ActionButtons';
 import RenderSelect from 'components/Atoms/RenderSelect';
 import {Formik} from 'formik';
-import React from 'react';
+import React, {useMemo} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {IconButton, Subheading} from 'react-native-paper';
+import {useSelector} from 'react-redux';
+import useProjectStructureActions from 'redux/actions/projectStructureActions';
 
 const RenderForm = props => {
-  const {options, navigation, formikProps} = props;
+  const {
+    navigation,
+    formikProps,
+    moduleOptions,
+    subModuleOptions,
+    fieldOptions,
+  } = props;
   const {values, handleBlur, setFieldValue, handleSubmit} = formikProps;
 
   return (
@@ -16,7 +24,7 @@ const RenderForm = props => {
           name="module"
           label="Module"
           value={values.module}
-          options={options}
+          options={moduleOptions}
           containerStyles={styles.inputStyles}
           onBlur={handleBlur('module')}
           onSelect={value => {
@@ -27,7 +35,7 @@ const RenderForm = props => {
           name="subModule"
           label="SubModule"
           value={values.subModule}
-          options={options}
+          options={subModuleOptions}
           containerStyles={styles.inputStyles}
           onBlur={handleBlur('subModule')}
           onSelect={value => {
@@ -38,7 +46,7 @@ const RenderForm = props => {
           name="selectField"
           label="Select Field "
           value={values.selectField}
-          options={options}
+          options={fieldOptions}
           containerStyles={styles.inputStyles}
           onBlur={handleBlur('selectField')}
           onSelect={value => {
@@ -60,9 +68,65 @@ const RenderForm = props => {
 function SearchPickUpList(props) {
   const {navigation} = props;
 
-  const options = [];
+  const {getModuleList, getSubModuleList, getFieldList} =
+    useProjectStructureActions();
+
+  const {selectedProject} = useSelector(s => s.project);
+
+  const {moduleList, subModuleList, fieldList} = useSelector(
+    s => s.projectStructure,
+  );
+
+  const moduleOptions = useMemo(() => {
+    return moduleList?.map(i => ({
+      label: i.title,
+      value: i.id,
+    }));
+  }, [moduleList]);
+
+  const moduleId = useMemo(() => {
+    return moduleList?.find(i => i.id)?.id;
+  }, [moduleList]);
+
+  const subModuleId = useMemo(() => {
+    return moduleList?.find(i => i.id)?.id;
+  }, [moduleList]);
+
+  const fieldId = useMemo(() => {
+    return fieldList?.find(i => i.id)?.id;
+  }, [fieldList]);
+
+  const subModuleOptions = useMemo(() => {
+    return subModuleList?.map(i => ({
+      label: i.title,
+      value: i.id,
+    }));
+  }, [subModuleList]);
+
+  const fieldOptions = useMemo(() => {
+    return fieldList?.map(i => ({
+      label: i.title,
+      value: i.id,
+    }));
+  }, [fieldList]);
+
+  React.useEffect(() => {
+    getModule();
+    getSubModule();
+    getField();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const getModule = () => getModuleList({project_id: selectedProject.id});
+
+  const getSubModule = () =>
+    getSubModuleList({project_id: selectedProject.id, module_id: moduleId});
+
+  const getField = () =>
+    getFieldList({project_id: selectedProject.id, submodule_id: subModuleId});
+
   const onSubmit = () => {
-    navigation.navigate('PickUpListing');
+    navigation.navigate('PickUpListing', {fieldId});
   };
   return (
     <View style={styles.mainContainer}>
@@ -84,7 +148,13 @@ function SearchPickUpList(props) {
         initialValues={{}}
         onSubmit={onSubmit}>
         {formikProps => (
-          <RenderForm formikProps={formikProps} {...props} options={options} />
+          <RenderForm
+            formikProps={formikProps}
+            {...props}
+            moduleOptions={moduleOptions}
+            subModuleOptions={subModuleOptions}
+            fieldOptions={fieldOptions}
+          />
         )}
       </Formik>
     </View>

@@ -1,11 +1,13 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
-import {Chip} from 'react-native-paper';
+import {Chip, useTheme} from 'react-native-paper';
 
 import RenderSelect from './RenderSelect';
 
 const RenderSelectMultiple = props => {
   const {value = [], onSelect, ...rest} = props;
+
+  const theme = useTheme();
 
   const handleSelect = v => {
     const index = value.indexOf(v);
@@ -33,10 +35,7 @@ const RenderSelectMultiple = props => {
           {value.map((item, index) => {
             return (
               <View style={styles.chipContainer} key={item}>
-                <Chip
-                  onClose={() => handleClose(index)}
-                  mode="flat"
-                  selectedColor="blue">
+                <Chip onClose={() => handleClose(index)} mode="outlined">
                   <Text>{item} </Text>
                 </Chip>
               </View>
@@ -53,7 +52,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     flexWrap: 'wrap',
-    flex: 1,
+    flexGrow: 1,
   },
   chipContainer: {
     margin: 2,

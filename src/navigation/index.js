@@ -259,6 +259,9 @@ import Files from '../screens/DeveloperProject/Files';
 // * Document Generator
 import DocumentGenerater from 'screens/DeveloperProject/DocumentGenerater';
 import DocumentDownload from 'screens/DeveloperProject/DocumentGenerater/Documents/DocumentDownload';
+import UpdateProjectDetails from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/ProjectUpdateDetails';
+import AddProjectSecurity from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/ProjectSecurity/AddProjectSecurity';
+import AddProjectOwner from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/ProjectOwner/AddProjectOwner';
 
 /** *********** Developer Project Sub Screens End   ************ */
 
@@ -680,10 +683,19 @@ function AppStackNavigator() {
               name="ProjectStructureDetails"
               component={ProjectStructureDetails}
             />
+            <Stack.Screen
+              name="UpdateProjectDetails"
+              component={UpdateProjectDetails}
+            />
             <Stack.Screen name="ProjectHistory" component={ProjectHistory} />
             <Stack.Screen name="ProjectBrief" component={ProjectBrief} />
             <Stack.Screen name="ProjectOwner" component={ProjectOwner} />
+            <Stack.Screen name="AddProjectOwner" component={AddProjectOwner} />
             <Stack.Screen name="ProjectSecurity" component={ProjectSecurity} />
+            <Stack.Screen
+              name="AddProjectSecurity"
+              component={AddProjectSecurity}
+            />
             <Stack.Screen name="ProjectFiles" component={ProjectFiles} />
             <Stack.Screen name="AreaList" component={AreaList} />
             <Stack.Screen name="AddArea" component={AddArea} />
