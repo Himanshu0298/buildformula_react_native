@@ -19,7 +19,7 @@ function OrderCard(props) {
   const {
     material_order_no,
     material_request_id,
-    materialrequestid,
+    materialrequesttitle,
     company_name,
     supplier_name,
     percentage,
@@ -28,10 +28,12 @@ function OrderCard(props) {
 
   const progressBar = Math.round(percentage) / 100;
 
-  const materialId = Number(material_request_id || materialrequestid);
+  const materialId = Number(material_request_id || materialrequesttitle);
 
   const handleNav = () => {
-    navigation.navigate('OrderDetail', {material_order_no, materialId});
+    if (materialId) {
+      navigation.navigate('OrderDetail', {material_order_no, materialId});
+    }
   };
 
   return (

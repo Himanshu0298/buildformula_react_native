@@ -53,7 +53,10 @@ function SelectMaterials(props) {
   const [selectedMaterial, setSelectedMaterial] = useState([]);
 
   React.useEffect(() => {
-    loadOrders();
+    getSelectMaterialChallan({
+      project_id: selectedProject.id,
+      material_request_id: materialId,
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -84,7 +87,7 @@ function SelectMaterials(props) {
     });
   };
 
-  const loadOrders = () => {
+  const reloadOrders = () => {
     getSelectMaterialChallan({
       project_id: selectedProject.id,
       material_order_no,
@@ -104,7 +107,7 @@ function SelectMaterials(props) {
         data={selectedMaterialChallan}
         extraData={selectedMaterialChallan}
         refreshControl={
-          <RefreshControl refreshing={false} onRefresh={loadOrders} />
+          <RefreshControl refreshing={false} onRefresh={reloadOrders} />
         }
         contentContainerStyle={styles.contentContainerStyle}
         showsVerticalScrollIndicator={false}

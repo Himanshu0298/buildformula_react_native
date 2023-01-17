@@ -44,7 +44,7 @@ const Header = ({navToFilter}) => {
   );
 };
 
-const ProjectCard = ({item, navigation}) => {
+const ProjectCard = ({item}) => {
   const [visible, setVisible] = React.useState(false);
   const toggleMenu = () => setVisible(v => !v);
 
@@ -61,9 +61,7 @@ const ProjectCard = ({item, navigation}) => {
     premium_project,
   } = item;
   return (
-    <TouchableOpacity
-      style={styles.projectCardWrapper}
-      onPress={() => navigation.navigate('ProjectDetail')}>
+    <TouchableOpacity style={styles.projectCardWrapper}>
       <View style={styles.headerWrapper}>
         <View style={styles.idBox}>
           <Text style={styles.idText}>{id}</Text>
@@ -147,7 +145,7 @@ function ProjectListing(props) {
           keyExtractor={item => item.id}
           showsVerticalScrollIndicator={false}
           renderItem={({item}) => {
-            return <ProjectCard item={item} navigation={navigation} />;
+            return <ProjectCard item={item} />;
           }}
         />
         <FAB

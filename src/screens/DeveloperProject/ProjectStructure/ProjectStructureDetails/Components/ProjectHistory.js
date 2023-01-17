@@ -1,14 +1,11 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import {IconButton, Subheading, Switch, Title} from 'react-native-paper';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import RenderInput from 'components/Atoms/RenderInput';
 import RenderSelect from 'components/Atoms/RenderSelect';
 import ActionButtons from 'components/Atoms/ActionButtons';
-
-// =======> User will be redirected to this page from ProjectStructureDetails screen also <==========
 
 const schema = Yup.object().shape({
   projectName: Yup.string()
@@ -19,30 +16,6 @@ const schema = Yup.object().shape({
     .required('Builder Name is Required'),
   area: Yup.string().label('area').required('Area is Required'),
 });
-
-const AddressData = {
-  'Science City Rd': {
-    address: 'SATYAMEV EMINENCE',
-    city: 'Ahmedabad',
-    state: 'Gujarat',
-    country: 'India',
-    pincode: 380013,
-  },
-  'Sola Rd': {
-    address: 'Vraj Valencia',
-    city: 'Ahmedabad',
-    state: 'Gujarat',
-    country: 'India',
-    pincode: 380060,
-  },
-  Bhadaj: {
-    address: 'Tri',
-    city: 'Ahmedabad',
-    state: 'Gujarat',
-    country: 'India',
-    pincode: 380020,
-  },
-};
 
 const RenderForm = props => {
   const {options, navigation, formikProps} = props;
@@ -94,51 +67,6 @@ const RenderForm = props => {
           setFieldValue('area', value);
         }}
       />
-      <RenderInput
-        containerStyles={styles.inputStyles}
-        label="Address"
-        value={AddressData[values.area]?.address}
-        autoCapitalize="none"
-        returnKeyType="next"
-        editable={false}
-        style={styles.readOnly}
-      />
-      <RenderInput
-        containerStyles={styles.inputStyles}
-        label="City"
-        value={AddressData[values.area]?.city}
-        autoCapitalize="none"
-        returnKeyType="next"
-        editable={false}
-        style={styles.readOnly}
-      />
-      <RenderInput
-        containerStyles={styles.inputStyles}
-        label="State"
-        value={AddressData[values.area]?.state}
-        autoCapitalize="none"
-        returnKeyType="next"
-        editable={false}
-        style={styles.readOnly}
-      />
-      <RenderInput
-        containerStyles={styles.inputStyles}
-        label="Country"
-        value={AddressData[values.area]?.country}
-        autoCapitalize="none"
-        returnKeyType="next"
-        editable={false}
-        style={styles.readOnly}
-      />
-      <RenderInput
-        containerStyles={styles.inputStyles}
-        label="Pincode"
-        value={AddressData[values.area]?.pincode}
-        autoCapitalize="none"
-        returnKeyType="next"
-        editable={false}
-        style={styles.readOnly}
-      />
       <View style={styles.extraDetailsRow}>
         <Subheading>Status</Subheading>
         <View style={styles.extraDetailsSwitchWrap}>
@@ -173,24 +101,22 @@ const RenderForm = props => {
   );
 };
 
-const AddProject = props => {
+const ProjectHistory = props => {
   const {navigation} = props;
-  const options = ['Science City Rd', 'Sola Rd', 'Bhadaj'];
-
   const onSubmit = values => {
     console.log(values);
   };
   return (
     <SafeAreaView style={styles.mainContainer}>
       <View style={styles.headerWrapper}>
-        <IconButton
+        {/* <IconButton
           icon="keyboard-backspace"
           size={18}
           color="#4872f4"
           style={styles.backIcon}
           onPress={() => navigation.goBack()}
-        />
-        <Title>Add Project</Title>
+        /> */}
+        <Title>Project History</Title>
       </View>
       <View style={styles.formContainer}>
         <Formik
@@ -208,7 +134,7 @@ const AddProject = props => {
             <RenderForm
               formikProps={formikProps}
               {...props}
-              options={options}
+              //   options={options}
             />
           )}
         </Formik>
@@ -217,7 +143,7 @@ const AddProject = props => {
   );
 };
 
-export default AddProject;
+export default ProjectHistory;
 
 const styles = StyleSheet.create({
   headerWrapper: {
@@ -229,37 +155,10 @@ const styles = StyleSheet.create({
     marginRight: 11,
   },
   mainContainer: {
-    paddingHorizontal: 10,
+    marginHorizontal: 10,
     flex: 1,
   },
   inputStyles: {
     marginVertical: 8,
-  },
-  readOnly: {
-    backgroundColor: '#EAECF1',
-  },
-  filterBTN: {
-    flex: 1,
-    justifyContent: 'flex-end',
-  },
-  formContainer: {
-    flex: 1,
-  },
-  extraDetailsRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginVertical: 10,
-    alignItems: 'center',
-  },
-  extraDetailsSwitchWrap: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: 100,
-    marginVertical: 5,
-  },
-  switchtxt: {
-    color: '#07CA03',
-    marginLeft: 10,
-    width: 60,
   },
 });
