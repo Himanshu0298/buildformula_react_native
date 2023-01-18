@@ -249,6 +249,13 @@ import DocumentDownload from 'screens/DeveloperProject/DocumentGenerater/Documen
 import UpdateProjectDetails from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/ProjectUpdateDetails';
 import AddProjectSecurity from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/ProjectSecurity/AddProjectSecurity';
 import AddProjectOwner from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/ProjectOwner/AddProjectOwner';
+import ProjectPreview from 'screens/DeveloperProject/ProjectStructure/ProjectDetail/ProjectPreview';
+import StructurePreview from 'screens/DeveloperProject/ProjectStructure/ProjectDetail/StructurePreview';
+import TowerPreview from 'screens/DeveloperProject/ProjectStructure/ProjectDetail/SelectTower/TowerPreview';
+import TowerList from 'screens/DeveloperProject/ProjectStructure/ProjectDetail/SelectTower/TowerList';
+import FloorPreview from 'screens/DeveloperProject/ProjectStructure/ProjectDetail/SelectFloor/FloorPreview';
+import FloorList from 'screens/DeveloperProject/ProjectStructure/ProjectDetail/SelectFloor/FloorList';
+import ProjectDetail from 'screens/DeveloperProject/ProjectStructure/ProjectDetail';
 
 /** *********** Developer Project Sub Screens End   ************ */
 
@@ -345,16 +352,6 @@ function AppStackNavigator() {
           <Stack.Group>
             <Stack.Screen name="DeveloperHome" component={DeveloperDashboard} />
 
-            <Stack.Group>
-              <Stack.Screen name="ProjectList" component={ProjectListing} />
-              <Stack.Screen name="ProjectFilter" component={ProjectFilter} />
-              <Stack.Screen name="AddProject" component={AddProject} />
-              <Stack.Screen
-                name="ProjectStructureDetails"
-                component={ProjectStructureDetails}
-              />
-              <Stack.Screen name="ProjectHistory" component={ProjectHistory} />
-            </Stack.Group>
             <Stack.Group>
               <Stack.Screen name="VisitorsHome" component={Visitors} />
               <Stack.Screen name="VisitorDetails" component={VisitorDetails} />
@@ -676,6 +673,7 @@ function AppStackNavigator() {
             <Stack.Screen name="ProjectList" component={ProjectListing} />
             <Stack.Screen name="ProjectFilter" component={ProjectFilter} />
             <Stack.Screen name="AddProject" component={AddProject} />
+            <Stack.Screen name="ProjectDetail" component={ProjectDetail} />
             <Stack.Screen
               name="ProjectStructureDetails"
               component={ProjectStructureDetails}
@@ -696,6 +694,7 @@ function AppStackNavigator() {
             <Stack.Screen name="ProjectFiles" component={ProjectFiles} />
             <Stack.Screen name="AreaList" component={AreaList} />
             <Stack.Screen name="AddArea" component={AddArea} />
+            <Stack.Screen name="ProjectPreview" component={ProjectPreview} />
             <Stack.Screen
               name="ProjectAmenities"
               component={ProjectAmenities}
@@ -731,6 +730,14 @@ function AppStackNavigator() {
               name="InfrastructureInfo"
               component={InfrastructureInfo}
             />
+            <Stack.Screen
+              name="StructurePreview"
+              component={StructurePreview}
+            />
+            <Stack.Screen name="TowerPreview" component={TowerPreview} />
+            <Stack.Screen name="TowerList" component={TowerList} />
+            <Stack.Screen name="FloorPreview" component={FloorPreview} />
+            <Stack.Screen name="FloorList" component={FloorList} />
           </Stack.Group>
 
           {/* DEVELOPER STACK END */}

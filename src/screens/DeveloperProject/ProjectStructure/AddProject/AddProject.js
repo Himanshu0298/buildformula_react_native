@@ -20,9 +20,8 @@ const schema = Yup.object().shape({
 });
 
 const RenderForm = props => {
-  const {areaOptions, formikProps, areaList} = props;
+  const {areaOptions, formikProps, areaList, navigation} = props;
   const {values, errors, handleChange, handleBlur, setFieldValue} = formikProps;
-
   const handleAreaSelect = value => {
     setFieldValue('area', value);
     const option = areaList.find(i => i.id === value);
@@ -106,26 +105,7 @@ const RenderForm = props => {
           style={styles.readOnly}
         />
       </View>
-      <View style={styles.extraDetailsRow}>
-        <Subheading>Premium Project</Subheading>
-        <View style={styles.extraDetailsSwitchWrap}>
-          <Switch
-            value={isSwitchOn}
-            onValueChange={onToggleSwitch}
-            color="#77E675"
-          />
-          {isSwitchOn ? <Text style={styles.switchtxt}>Yes</Text> : null}
-        </View>
-      </View>
-      <View style={styles.filterBTN}>
-        <ActionButtons
-          cancelLabel="Add Details"
-          submitLabel="Save"
-          onCancel={() => navigation.navigate('ProjectStructureDetails')}
-          onSubmit={navigation.goBack}
-        />
-      </View>
-     </ScrollView>
+    </ScrollView>
   );
 };
 
@@ -190,7 +170,7 @@ const AddProject = props => {
   const {handleSubmit} = formikProps;
 
   return (
-    <SafeAreaView style={styles.mainContainer}>
+    <View style={styles.mainContainer}>
       <View style={styles.headerWrapper}>
         <IconButton
           icon="keyboard-backspace"
@@ -217,7 +197,7 @@ const AddProject = props => {
           />
         </View>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 
