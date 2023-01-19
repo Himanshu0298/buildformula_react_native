@@ -80,7 +80,7 @@ const ProjectStructureDetails = props => {
           size={18}
           color="#4872f4"
           style={styles.backIcon}
-          onPress={() => navigation.goBack()}
+          onPress={navigation.goBack}
         />
         <Title>Add Project</Title>
       </View>

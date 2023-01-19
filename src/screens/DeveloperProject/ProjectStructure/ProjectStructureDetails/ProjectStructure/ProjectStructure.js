@@ -26,7 +26,7 @@ function RenderForm(props) {
   const bhkOptions = useMemo(() => {
     return master_bhks?.map(i => ({
       label: i.bhk_title,
-      value: i.id,
+      value: i.bhk_title,
     }));
   }, [master_bhks]);
 
@@ -124,6 +124,7 @@ function ProjectStructure(props) {
   const {navigation, route} = props;
 
   const {projectId} = route?.params || {};
+  console.log('===========> projectId', projectId);
 
   const {updateProjectStructure, getProjectMasterList} =
     useProjectStructureActions();

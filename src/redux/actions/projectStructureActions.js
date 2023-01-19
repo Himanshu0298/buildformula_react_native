@@ -25,6 +25,7 @@ export default function useProjectStructureActions() {
     addProjectSecurity,
     updateProjectSecurity,
     deleteProjectSecurity,
+    deleteProjectFile,
     addProjectFile,
     getTowerList,
     addTower,
@@ -286,7 +287,7 @@ export default function useProjectStructureActions() {
         type: types.DELETE_PROJECT_FILE,
         payload: async () => {
           try {
-            const res = _res(await deleteProjectSecurity(data));
+            const res = _res(await deleteProjectFile(data));
             snackbar.showMessage({message: res.msg});
             return Promise.resolve(res.data.lists);
           } catch (error) {

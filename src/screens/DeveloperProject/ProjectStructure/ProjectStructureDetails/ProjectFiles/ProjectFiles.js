@@ -17,6 +17,7 @@ import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import PdfIcon from 'assets/images/pdf_icon.png';
 import {getDownloadUrl, getFileName} from 'utils/download';
 import FileViewer from 'react-native-file-viewer';
+import Share from 'react-native-share';
 
 import {useDownload} from 'components/Atoms/Download';
 import {getShadow} from 'utils';
@@ -27,8 +28,8 @@ import RenderSelect from 'components/Atoms/RenderSelect';
 import useProjectStructureActions from 'redux/actions/projectStructureActions';
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
-import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import dayjs from 'dayjs';
+import {useAlert} from 'components/Atoms/Alert';
 
 const SNAP_POINTS = [0, '40%'];
 
@@ -81,9 +82,23 @@ function RenderForm(props) {
 }
 
 function RenderFile(props) {
-  const {file, onPressFile, handleDelete, visible, toggleMenu} = props;
+  const {file, onPressFile, handleDelete, handleShare} = props;
 
   const {file_name, created_at, title, id} = file;
+
+  const [visible, setVisible] = React.useState(false);
+
+  const toggleMenu = () => setVisible(v => !v);
+
+  const onDelete = () => {
+    handleDelete(id);
+    toggleMenu();
+  };
+
+  const onShare = () => {
+    handleShare(file);
+    toggleMenu();
+  };
 
   return (
     <View style={styles.recentFiles}>
@@ -92,7 +107,7 @@ function RenderFile(props) {
         onPress={() => onPressFile(file)}>
         <Image source={PdfIcon} style={styles.fileIcon} />
         <View>
-          <Text style={(styles.verticalFlex, styles.text)} numberOfLines={2}>
+          <Text style={(styles.verticalFlex, styles.text)} numberOfLines={3}>
             {file_name}
           </Text>
           <View style={styles.type}>
@@ -110,22 +125,12 @@ function RenderFile(props) {
         visible={visible}
         onDismiss={() => toggleMenu()}
         anchor={
-          <OpacityButton
-            opacity={0.1}
-            color="#4872f4"
-            style={styles.editIcon}
-            onPress={toggleMenu}>
-            <MaterialIcon name="dots-vertical" color="#4872f4" size={15} />
-          </OpacityButton>
+          <TouchableOpacity style={styles.editIcon} onPress={toggleMenu}>
+            <MaterialIcon name="dots-vertical" size={18} />
+          </TouchableOpacity>
         }>
-        <Menu.Item
-          onPress={() => {
-            toggleMenu();
-          }}
-          title="Rename"
-        />
-        <Menu.Item onPress={() => handleDelete(id)} title="Delete" />
-        <Menu.Item onPress={{}} title="Share" />
+        <Menu.Item onPress={onDelete} title="Delete" />
+        <Menu.Item onPress={onShare} title="Share" />
       </Menu>
     </View>
   );
@@ -208,14 +213,13 @@ function AddAttachments(props) {
 
 function ProjectFiles(props) {
   const {navigation, route} = props;
-
   const {projectId} = route?.params || {};
 
   const download = useDownload();
+  const alert = useAlert();
 
   const [dialog, setDialog] = useState();
-
-  const [visible, setVisible] = React.useState(false);
+  const [sharing, setSharing] = useState(false);
 
   const {
     getProjectDetails,
@@ -223,15 +227,14 @@ function ProjectFiles(props) {
     deleteProjectFile,
     getProjectMasterList,
   } = useProjectStructureActions();
+
+  const {selectedProject} = useSelector(s => s.project);
   const {projectDetails, loading, masterList} = useSelector(
     s => s.projectStructure,
   );
 
   const {attachment_file} = projectDetails || {};
-
   const {project_structure_file_category: fileCategory} = masterList;
-
-  const {selectedProject} = useSelector(s => s.project);
 
   React.useEffect(() => {
     getData();
@@ -263,23 +266,52 @@ function ProjectFiles(props) {
       },
     });
   };
-
   const toggleAddFile = () => setDialog(v => !v);
-  const toggleMenu = () => setVisible(v => !v);
-
   const onClose = () => toggleAddFile();
-  const onCloseMenu = () => toggleMenu();
+  const toggleSharing = () => setSharing(v => !v);
+
+  const handleShare = async file => {
+    try {
+      toggleSharing();
+      const fileUrl = getDownloadUrl(file);
+      const name = getFileName(file);
+
+      return download.link({
+        name,
+        link: fileUrl,
+        showAction: false,
+        base64: true,
+        onFinish: ({base64}) => {
+          const options = {
+            title: 'Share',
+            message: `Share ${file.file_name} :`,
+            url: base64,
+          };
+          toggleSharing();
+
+          return Share.open(options);
+        },
+      });
+    } catch (error) {
+      console.log('-----> error', error);
+      return error;
+    }
+  };
 
   const onSubmit = async values => {
     toggleAddFile();
-    const data = {
-      project_id: selectedProject.id,
-      file_name: values.name,
-      id: projectId,
-      file_category: values.file_category,
-    };
+    const formData = new FormData();
+    values.attachments.map(item => {
+      formData.append('myfile[]', item);
+      return item;
+    });
 
-    await addProjectFile(data);
+    formData.append('project_id', selectedProject.id);
+    formData.append('file_name', [values.name]);
+    formData.append('id', projectId);
+    formData.append('file_category', [values.file_category]);
+
+    await addProjectFile(formData);
     getData();
   };
 
@@ -288,14 +320,13 @@ function ProjectFiles(props) {
       title: 'Confirm',
       message: 'Are you sure you want to delete?',
       confirmText: 'Delete',
-      onConfirm: () => {
-        deleteProjectFile({
+      onConfirm: async () => {
+        await deleteProjectFile({
           project_id: selectedProject.id,
           id: projectId,
           attachment_id,
         });
         getData();
-        onCloseMenu();
       },
     });
   };
@@ -343,8 +374,8 @@ function ProjectFiles(props) {
                   key={index?.toString()}
                   onPressFile={onPressFile}
                   handleDelete={handleDelete}
-                  visible={visible}
-                  toggleMenu={toggleMenu}
+                  toggleAddFile={toggleAddFile}
+                  handleShare={handleShare}
                 />
               );
             })}
@@ -458,6 +489,9 @@ const styles = StyleSheet.create({
   formContainer: {
     flexGrow: 1,
   },
+  // editIcon: {
+  //   borderRadius: 10,
+  // },
 });
 
 export default ProjectFiles;

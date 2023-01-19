@@ -92,10 +92,6 @@ function SearchPickUpList(props) {
     return moduleList?.find(i => i.id)?.id;
   }, [moduleList]);
 
-  const fieldId = useMemo(() => {
-    return fieldList?.find(i => i.id)?.id;
-  }, [fieldList]);
-
   const subModuleOptions = useMemo(() => {
     return subModuleList?.map(i => ({
       label: i.title,
@@ -125,7 +121,9 @@ function SearchPickUpList(props) {
   const getField = () =>
     getFieldList({project_id: selectedProject.id, submodule_id: subModuleId});
 
-  const onSubmit = () => {
+  const onSubmit = values => {
+    const fieldId = values.selectField;
+
     navigation.navigate('PickUpListing', {fieldId});
   };
   return (

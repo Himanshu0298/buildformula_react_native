@@ -14,7 +14,6 @@ import {getShadow} from 'utils';
 import useProjectStructureActions from 'redux/actions/projectStructureActions';
 import {useSelector} from 'react-redux';
 import {useAlert} from 'components/Atoms/Alert';
-import {isEqual} from 'lodash';
 
 const SNAP_POINTS = [0, '25%'];
 
@@ -231,7 +230,7 @@ function PickUpListing(props) {
                       size={24}
                       color="rgba(4, 29, 54, 0.15)"
                     />
-                    <Subheading> {item.title} </Subheading>
+                    <Subheading> {item.title || item.bhk_title} </Subheading>
                   </View>
 
                   <View style={styles.headerSubContainer}>

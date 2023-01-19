@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import React from 'react';
+import React, {useState} from 'react';
 import {Image, View, StyleSheet, ScrollView} from 'react-native';
 import stock_image from 'assets/images/stock_image.png';
 import PdfIcon from 'assets/images/pdf_icon.png';
@@ -7,6 +7,7 @@ import PdfIcon from 'assets/images/pdf_icon.png';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Share from 'react-native-share';
 
 import {
   Caption,
@@ -34,8 +35,7 @@ import RenderHTML from 'react-native-render-html';
 import Layout from 'utils/Layout';
 
 function Files(props) {
-  const {projectDetails, handleDelete} = props;
-  const {attachment_file} = projectDetails || {};
+  const {item, handleDelete, handleShare} = props;
 
   const download = useDownload();
 
@@ -57,53 +57,50 @@ function Files(props) {
 
   const toggleMenu = () => setVisible(v => !v);
 
+  const onDelete = () => {
+    handleDelete(item.id);
+    toggleMenu();
+  };
+
+  const onShare = () => {
+    handleShare(item);
+    toggleMenu();
+  };
+
   return (
     <View>
-      <Subheading> File's/ Attachments </Subheading>
-      {attachment_file?.map(item => {
-        return (
-          <View style={styles.recentFiles}>
-            <TouchableOpacity
-              style={styles.sectionContainer}
-              onPress={() => onPressFile(item)}>
-              <Image source={PdfIcon} style={styles.fileIcon} />
-              <View>
-                <Text
-                  style={(styles.verticalFlex, styles.text)}
-                  numberOfLines={2}>
-                  {item?.file_name}
-                </Text>
-                <View style={styles.type}>
-                  <Text style={styles.date}>{item.title}</Text>
-                </View>
-                <View style={styles.dateContainer}>
-                  <Text style={styles.date}>
-                    {dayjs(item?.created_at).format('DD MMM YYYY')}
-                  </Text>
-                </View>
-              </View>
-            </TouchableOpacity>
-
-            <Menu
-              visible={visible}
-              onDismiss={() => toggleMenu()}
-              anchor={
-                <TouchableOpacity style={styles.editIcon} onPress={toggleMenu}>
-                  <Entypo name="dots-three-vertical" size={15} />
-                </TouchableOpacity>
-              }>
-              <Menu.Item
-                onPress={() => {
-                  toggleMenu();
-                }}
-                title="Rename"
-              />
-              <Menu.Item onPress={() => handleDelete(item.id)} title="Delete" />
-              <Menu.Item onPress={{}} title="Share" />
-            </Menu>
+      <View style={styles.recentFiles}>
+        <TouchableOpacity
+          style={styles.sectionContainer}
+          onPress={() => onPressFile(item)}>
+          <Image source={PdfIcon} style={styles.fileIcon} />
+          <View>
+            <Text style={(styles.verticalFlex, styles.text)} numberOfLines={2}>
+              {item?.file_name}
+            </Text>
+            <View style={styles.type}>
+              <Text style={styles.date}>{item.title}</Text>
+            </View>
+            <View style={styles.dateContainer}>
+              <Text style={styles.date}>
+                {dayjs(item?.created_at).format('DD MMM YYYY')}
+              </Text>
+            </View>
           </View>
-        );
-      })}
+        </TouchableOpacity>
+
+        <Menu
+          visible={visible}
+          onDismiss={() => toggleMenu()}
+          anchor={
+            <TouchableOpacity style={styles.editIcon} onPress={toggleMenu}>
+              <Entypo name="dots-three-vertical" size={15} />
+            </TouchableOpacity>
+          }>
+          <Menu.Item onPress={onDelete} title="Delete" />
+          <Menu.Item onPress={onShare} title="Share" />
+        </Menu>
+      </View>
     </View>
   );
 }
@@ -338,6 +335,9 @@ function ProjectPreview(props) {
   const {id: listId} = route?.params || {};
 
   const alert = useAlert();
+  const download = useDownload();
+
+  const [sharing, setSharing] = useState(false);
 
   const {getProjectDetails, deleteProjectFile} = useProjectStructureActions();
   const {projectDetails, loading} = useSelector(s => s.projectStructure);
@@ -352,10 +352,38 @@ function ProjectPreview(props) {
   const getData = () =>
     getProjectDetails({project_id: selectedProject.id, id: listId});
 
+  const handleShare = async file => {
+    try {
+      toggleSharing();
+      const fileUrl = getDownloadUrl(file);
+      const name = getFileName(file);
+
+      return download.link({
+        name,
+        link: fileUrl,
+        showAction: false,
+        base64: true,
+        onFinish: ({base64}) => {
+          const options = {
+            title: 'Share',
+            message: `Share ${file.file_name} :`,
+            url: base64,
+          };
+          toggleSharing();
+
+          return Share.open(options);
+        },
+      });
+    } catch (error) {
+      console.log('-----> error', error);
+      return error;
+    }
+  };
+
   const handleDelete = async attachment_id => {
     alert.show({
       title: 'Confirm',
-      message: 'Are you sure you want to delete?',
+      message: 'Are you sure you want to delete this file?',
       confirmText: 'Delete',
       onConfirm: async () => {
         await deleteProjectFile({
@@ -367,6 +395,8 @@ function ProjectPreview(props) {
       },
     });
   };
+
+  const toggleSharing = () => setSharing(v => !v);
 
   return (
     <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
@@ -407,7 +437,16 @@ function ProjectPreview(props) {
           <ProjectSecurityDetails projectDetails={projectDetails} />
         </View>
         <View style={styles.statusField}>
-          <Files projectDetails={projectDetails} handleDelete={handleDelete} />
+          <Subheading> File's/ Attachments </Subheading>
+          {projectDetails?.attachment_file?.map(file => {
+            return (
+              <Files
+                item={file}
+                handleDelete={handleDelete}
+                handleShare={handleShare}
+              />
+            );
+          })}
         </View>
       </View>
     </ScrollView>

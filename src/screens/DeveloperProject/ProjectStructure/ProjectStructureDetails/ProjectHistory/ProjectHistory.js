@@ -38,7 +38,6 @@ const RenderForm = props => {
     project_structure_project_status,
     project_structure_project_quality,
   } = masterList;
-  console.log('===========> masterList', masterList);
 
   const typeOptions = useMemo(() => {
     return project_structure_project_type?.map(i => ({
@@ -67,11 +66,6 @@ const RenderForm = props => {
       value: i.id,
     }));
   }, [project_structure_project_quality]);
-
-  console.log(
-    '===========> project_structure_project_quantity',
-    project_structure_project_quality,
-  );
 
   return (
     <View style={styles.formContainer}>

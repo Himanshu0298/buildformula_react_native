@@ -107,15 +107,16 @@ const ProjectCard = props => {
         <Text>{project_name?.toUpperCase()}</Text>
         <Caption>{`${area} ,${city} ,${state} ,${country} ,${pincode}`}</Caption>
         <View style={styles.builderDetail}>
-          <Text>
+          <View style={styles.row}>
             <BuilderIcon fill="#041d36" style={styles.builderdetailIcon} />
-            {developer_name}
-          </Text>
+            <Text style={styles.developer}>{developer_name}</Text>
+          </View>
+
           {premium_project ? (
-            <Text>
+            <View style={styles.row}>
               <PrimeIcon fill="#041d36" style={styles.builderdetailIcon} />
-              Prime Building
-            </Text>
+              <Text>Prime Building</Text>
+            </View>
           ) : null}
         </View>
       </View>
@@ -286,5 +287,12 @@ const styles = StyleSheet.create({
     right: 5,
     bottom: 15,
     backgroundColor: '#4872f4',
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  developer: {
+    textTransform: 'capitalize',
   },
 });
