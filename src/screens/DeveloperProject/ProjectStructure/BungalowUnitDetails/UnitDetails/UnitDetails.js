@@ -1,7 +1,7 @@
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {IconButton, Subheading, Switch} from 'react-native-paper';
+import {IconButton, Subheading, Switch, Title} from 'react-native-paper';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import RenderInput from 'components/Atoms/RenderInput';
@@ -14,10 +14,6 @@ const schema = Yup.object().shape({
   projectName: Yup.string()
     .label('projectName')
     .required('Project Name is Required'),
-  builderName: Yup.string()
-    .label('builderName')
-    .required('Builder Name is Required'),
-  area: Yup.string().label('area').required('Area is Required'),
 });
 
 const AddressData = {
@@ -81,28 +77,6 @@ const RenderForm = props => {
           onBlur={handleBlur('projectCategory')}
           onSelect={value => {
             setFieldValue('projectCategory', value);
-          }}
-        />
-        <RenderSelect
-          name="selectTower"
-          label="Select Tower"
-          value={values.selectTower}
-          options={options}
-          containerStyles={styles.inputStyles}
-          onBlur={handleBlur('selectTower')}
-          onSelect={value => {
-            setFieldValue('selectTower', value);
-          }}
-        />
-        <RenderSelect
-          name="selectFloor"
-          label="Select Floor"
-          value={values.selectFloor}
-          options={options}
-          containerStyles={styles.inputStyles}
-          onBlur={handleBlur('selectFloor')}
-          onSelect={value => {
-            setFieldValue('selectFloor', value);
           }}
         />
         <RenderInput

@@ -89,7 +89,7 @@ import AddArea from 'screens/DeveloperProject/ProjectStructure/AddArea';
 import PickUpListing from 'screens/DeveloperProject/ProjectStructure/PickUp/PickUpListing';
 import SearchPickUpList from 'screens/DeveloperProject/ProjectStructure/PickUp/SearchPickUpList';
 
-// Unit
+// Tower Unit
 import UnitList from 'screens/DeveloperProject/ProjectStructure/UnitList/Index';
 import AddUnit from 'screens/DeveloperProject/ProjectStructure/AddUnit';
 import UnitDetails from 'screens/DeveloperProject/ProjectStructure/ProjectUnitDetails/UnitDetails';
@@ -98,11 +98,25 @@ import LocationInfo from 'screens/DeveloperProject/ProjectStructure/ProjectUnitD
 import UnitAreaSheet from 'screens/DeveloperProject/ProjectStructure/ProjectUnitDetails/UnitAreaSheet';
 import InfrastructureInfo from 'screens/DeveloperProject/ProjectStructure/ProjectUnitDetails/InfrastructureInfo';
 import ProjectStructureUnitDetails from 'screens/DeveloperProject/ProjectStructure/ProjectUnitDetails/UnitInformation';
+import UnitPricing from 'screens/DeveloperProject/ProjectStructure/ProjectUnitDetails/UnitPricing';
 import ProjectUnitOwner from 'screens/DeveloperProject/ProjectStructure/ProjectUnitDetails/UnitOwnerInfo';
 import UnitSecurityInfo from 'screens/DeveloperProject/ProjectStructure/ProjectUnitDetails/UnitSecurityInfo';
 import UnitFiles from 'screens/DeveloperProject/ProjectStructure/ProjectUnitDetails/UnitFiles';
-import UnitPricing from 'screens/DeveloperProject/ProjectStructure/ProjectUnitDetails/UnitPricing';
 import UnitPreview from 'screens/DeveloperProject/ProjectStructure/UnitPreview';
+
+// Bungalow Unit
+import AddBungalowUnit from 'screens/DeveloperProject/ProjectStructure/AddBungalowUnit';
+import BungalowDetails from 'screens/DeveloperProject/ProjectStructure/BungalowUnitDetails/ProjectUnitDetails';
+import BungalowUnitDetails from 'screens/DeveloperProject/ProjectStructure/BungalowUnitDetails/UnitDetails';
+import BungalowLocationInfo from 'screens/DeveloperProject/ProjectStructure/BungalowUnitDetails/LocationInfo';
+import BungalowUnitAreaSheet from 'screens/DeveloperProject/ProjectStructure/BungalowUnitDetails/UnitAreaSheet';
+import BungalowInfrastructureInfo from 'screens/DeveloperProject/ProjectStructure/BungalowUnitDetails/InfrastructureInfo';
+import BungalowStructureUnitDetails from 'screens/DeveloperProject/ProjectStructure/BungalowUnitDetails/UnitInformation';
+import BungalowUnitPricing from 'screens/DeveloperProject/ProjectStructure/BungalowUnitDetails/UnitPricing';
+import BungalowUnitOwner from 'screens/DeveloperProject/ProjectStructure/BungalowUnitDetails/UnitOwnerInfo';
+import BungalowUnitSecurityInfo from 'screens/DeveloperProject/ProjectStructure/BungalowUnitDetails/UnitSecurityInfo';
+import BungalowUnitFiles from 'screens/DeveloperProject/ProjectStructure/BungalowUnitDetails/UnitFiles';
+import BungalowUnitPreview from 'screens/DeveloperProject/ProjectStructure/BungalowUnitPreview';
 
 // Project : Sales Screens
 // * Developer : Dashboard
@@ -709,26 +723,68 @@ function AppStackNavigator() {
             />
             <Stack.Screen name="UnitList" component={UnitList} />
             <Stack.Screen name="AddUnit" component={AddUnit} />
+            <Stack.Screen name="AddBungalowUnit" component={AddBungalowUnit} />
             <Stack.Screen
               name="ProjectUnitDetails"
               component={ProjectUnitDetails}
             />
+            <Stack.Screen name="BungalowDetails" component={BungalowDetails} />
             <Stack.Screen name="UnitDetails" component={UnitDetails} />
+            <Stack.Screen
+              name="BungalowUnitDetails"
+              component={BungalowUnitDetails}
+            />
             <Stack.Screen name="LocationInfo" component={LocationInfo} />
+            <Stack.Screen
+              name="BungalowLocationInfo"
+              component={BungalowLocationInfo}
+            />
+            <Stack.Screen
+              name="BungalowAreaSheet"
+              component={BungalowUnitAreaSheet}
+            />
+            <Stack.Screen
+              name="BungalowInfrastructureInfo"
+              component={BungalowInfrastructureInfo}
+            />
             <Stack.Screen name="UnitFiles" component={UnitFiles} />
+            <Stack.Screen
+              name="BungalowUnitFiles"
+              component={BungalowUnitFiles}
+            />
             <Stack.Screen name="UnitPricing" component={UnitPricing} />
+            <Stack.Screen
+              name="BungalowUnitPricing"
+              component={BungalowUnitPricing}
+            />
             <Stack.Screen name="UnitPreview" component={UnitPreview} />
+            <Stack.Screen
+              name="BungalowUnitPreview"
+              component={BungalowUnitPreview}
+            />
             <Stack.Screen
               name="UnitSecurityInfo"
               component={UnitSecurityInfo}
+            />
+            <Stack.Screen
+              name="BungalowSecurityInfo"
+              component={BungalowUnitSecurityInfo}
             />
             <Stack.Screen
               name="ProjectUnitOwner"
               component={ProjectUnitOwner}
             />
             <Stack.Screen
+              name="BungalowUnitOwner"
+              component={BungalowUnitOwner}
+            />
+            <Stack.Screen
               name="UnitInformation"
               component={ProjectStructureUnitDetails}
+            />
+            <Stack.Screen
+              name="BungalowUnitInformation"
+              component={BungalowStructureUnitDetails}
             />
             <Stack.Screen
               name="InfrastructureInfo"

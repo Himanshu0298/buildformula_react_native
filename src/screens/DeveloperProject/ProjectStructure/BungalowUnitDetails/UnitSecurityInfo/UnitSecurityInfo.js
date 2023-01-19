@@ -5,60 +5,34 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import {FAB, IconButton, Text, Title} from 'react-native-paper';
 import {theme} from 'styles/theme';
+import ActionButtons from 'components/Atoms/ActionButtons';
+import RenderInput from 'components/Atoms/RenderInput';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {Formik} from 'formik';
-import RenderSelect from 'components/Atoms/RenderSelect';
-import RenderInput from 'components/Atoms/RenderInput';
-import ActionButtons from 'components/Atoms/ActionButtons';
-
-const options = [
-  {title: 'A', value: 1},
-  {title: 'b', value: 2},
-  {title: 'C', value: 3},
-  {title: 'D', value: 4},
-  {title: 'E', value: 5},
-  {title: 'F', value: 6},
-  {title: 'G', value: 7},
-];
 
 const DATA = [
   {
-    name: 'Himanshu Jain',
+    name: 'Preeti kuar',
     no: +912001244481,
-    email: 'jainhimanshu@gmail.com',
-    type: 'owner',
+  },
+  {
+    name: 'jasline Jain',
+    no: +912001244481,
+  },
+  {
+    name: 'Ramesh rathod',
+    no: +912001244481,
   },
   {
     name: 'Himanshu Jain',
     no: +912001244481,
-    email: 'jainhimanshu@gmail.com',
-    type: 'owner',
-  },
-  {
-    name: 'Himanshu Jain',
-    no: +912001244481,
-    email: 'jainhimanshu@gmail.com',
-    type: 'owner',
-  },
-  {
-    name: 'Himanshu Jain',
-    no: +912001244481,
-    email: 'jainhimanshu@gmail.com',
-    type: 'owner',
   },
 ];
 
 function RenderForm(props) {
   const {handleClose, visible, formikProps} = props;
 
-  const {
-    values,
-    errors,
-    handleChange,
-    setFieldValue,
-    handleSubmit,
-    handleBlur,
-  } = formikProps;
+  const {values, errors, handleChange, handleBlur, handleSubmit} = formikProps;
 
   return (
     <Modal
@@ -67,22 +41,11 @@ function RenderForm(props) {
       onBackdropPress={handleClose}>
       <SafeAreaProvider style={{flexGrow: 1}}>
         <SafeAreaView style={{margin: 10, flexGrow: 1}}>
-          <Title> Add Unit Owner</Title>
+          <Title>Add Security/ Caretaker Info</Title>
           <View style={{flexGrow: 1}}>
-            <RenderSelect
-              name="contact_type"
-              label="Contact Type"
-              value={values.contact_type}
-              options={options}
-              containerStyles={styles.inputStyles}
-              onBlur={handleBlur('contact_type')}
-              onSelect={value => {
-                setFieldValue('contact_type', value);
-              }}
-            />
             <RenderInput
               name="name"
-              label="Full Name"
+              label="Enter Full Name"
               containerStyles={styles.inputStyles}
               value={values.name}
               onChangeText={handleChange('name')}
@@ -101,17 +64,6 @@ function RenderForm(props) {
               returnKeyType="next"
               error={errors.phone_number}
             />
-            <RenderInput
-              name="email"
-              label="Enter Email"
-              containerStyles={styles.inputStyles}
-              value={values.email}
-              onChangeText={handleChange('email')}
-              onBlur={handleBlur('email')}
-              autoCapitalize="none"
-              returnKeyType="next"
-              error={errors.email}
-            />
           </View>
 
           <ActionButtons
@@ -126,10 +78,10 @@ function RenderForm(props) {
   );
 }
 
-function ProjectUnitOwnerDetails(props) {
+function UnitSecurityDetails(props) {
   const {item} = props;
 
-  const {name, no, email, type} = item;
+  const {name, no} = item;
   return (
     <View style={styles.container}>
       <View style={styles.subContainer}>
@@ -155,33 +107,24 @@ function ProjectUnitOwnerDetails(props) {
           </View>
         </View>
       </View>
-      <View>
-        <Text>({type.toUpperCase()})</Text>
-      </View>
       <View style={styles.phoneContainer}>
         <MaterialIcons name="phone" color="#4872f4" size={18} />
         <View style={styles.rowData}>
           <Text style={styles.number}> {no}</Text>
         </View>
       </View>
-      <View style={styles.phoneContainer}>
-        <MaterialIcons name="email" color="#4872f4" size={18} />
-        <Text style={styles.number}> {email} </Text>
-      </View>
     </View>
   );
 }
 
-function ProjectUnitOwner(props) {
+function UnitSecurityInfo(props) {
   const {navigation} = props;
 
   const [addDialog, setAddDialog] = useState();
 
   const toggleAddDialog = () => setAddDialog(v => !v);
 
-  const handleSave = () => {
-    console.log('===========> ');
-  };
+  const handleSave = () => console.log('===========> ');
 
   return (
     <>
@@ -203,7 +146,6 @@ function ProjectUnitOwner(props) {
           )}
         </Formik>
       ) : null}
-
       <View style={styles.mainContainer}>
         <View style={styles.headerWrapper}>
           <IconButton
@@ -213,12 +155,12 @@ function ProjectUnitOwner(props) {
             style={styles.backIcon}
             onPress={() => navigation.goBack()}
           />
-          <Title>Unit Owner Info</Title>
+          <Title>Unit Security/ Caretaker Info</Title>
         </View>
         <ScrollView style={styles.scrollView}>
           <View style={{marginVertical: 20}}>
             {DATA.map(item => {
-              return <ProjectUnitOwnerDetails item={item} />;
+              return <UnitSecurityDetails item={item} />;
             })}
           </View>
         </ScrollView>
@@ -294,14 +236,9 @@ const styles = StyleSheet.create({
   rowData: {
     marginVertical: 8,
   },
-  modal: {
-    margin: 0,
-    justifyContent: 'flex-start',
-  },
-
   inputStyles: {
     marginVertical: 8,
   },
 });
 
-export default ProjectUnitOwner;
+export default UnitSecurityInfo;

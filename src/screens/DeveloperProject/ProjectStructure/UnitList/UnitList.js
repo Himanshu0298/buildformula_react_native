@@ -4,6 +4,11 @@ import {FlatList, StyleSheet, View} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
+import towerunit from 'assets/images/towerunit.png';
+import plot from 'assets/images/plot.png';
+import bungalow from 'assets/images/bungalow.png';
+import industrial from 'assets/images/industrial.png';
+
 import {
   Caption,
   Divider,
@@ -14,17 +19,22 @@ import {
   Text,
 } from 'react-native-paper';
 import {getShadow} from 'utils';
-import {ProjectData} from '../ProjectListing/ProjectData';
+import {theme} from 'styles/theme';
+import {UnitData} from './UnitData';
 
 const UnitCard = ({item, navigation}) => {
   const [visible, setVisible] = React.useState(false);
   const toggleMenu = () => setVisible(v => !v);
 
-  const {id, project_name, area, pincode, city, state, country} = item;
+  const {id, project_name, unit, category, status} = item;
   return (
     <TouchableOpacity
       style={styles.projectCardWrapper}
-      onPress={() => navigation.navigate('UnitPreview')}>
+      onPress={() =>
+        category === 'Bungalow'
+          ? navigation.navigate('BungalowUnitPreview')
+          : navigation.navigate('UnitPreview')
+      }>
       <View style={styles.headerWrapper}>
         <View style={styles.idBox}>
           <Text style={styles.idText}>{id}</Text>
@@ -60,11 +70,11 @@ const UnitCard = ({item, navigation}) => {
       </View>
       <Divider />
       <View style={styles.bodyWrapper}>
-        <Text>{project_name}</Text>
-        <Caption>{`${area} ${city} ${state} ${country} ${pincode}`}</Caption>
+        <Text>{`${category} - Unit No. ${unit}`}</Text>
+        <Caption>{project_name}</Caption>
       </View>
       <View style={{marginVertical: 10}}>
-        <Text> Rent</Text>
+        <Text>{status}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -72,6 +82,40 @@ const UnitCard = ({item, navigation}) => {
 
 function UnitList(props) {
   const {navigation} = props;
+
+  const {colors} = theme;
+
+  const [selectDialog, setSelectDialog] = React.useState(false);
+
+  const toggleSelectDialog = () => setSelectDialog(v => !v);
+
+  const FAB_ACTIONS = [
+    {
+      icon: towerunit,
+      color: theme.colors.primary,
+      label: 'Add Tower Unit',
+      onPress: () => navigation.navigate('AddUnit'),
+    },
+    {
+      icon: bungalow,
+      color: theme.colors.primary,
+      label: 'Add Bungalow',
+      onPress: () => navigation.navigate('AddBungalowUnit'),
+    },
+    {
+      icon: plot,
+      color: theme.colors.primary,
+      label: 'Add Plot',
+      onPress: () => console.log('AddPlotUnit'),
+    },
+    {
+      icon: industrial,
+      color: theme.colors.primary,
+      label: 'Add Industrial Unit',
+      onPress: () => console.log('AddIndustrialUnit'),
+    },
+  ];
+
   return (
     <View style={styles.mainContainer}>
       <Subheading> Unit List</Subheading>
@@ -83,27 +127,34 @@ function UnitList(props) {
 
       <View style={styles.bodyWrapper}>
         <FlatList
-          data={ProjectData}
+          data={UnitData}
           keyExtractor={item => item.id}
           showsVerticalScrollIndicator={false}
           renderItem={({item}) => {
             return <UnitCard item={item} navigation={navigation} />;
           }}
         />
-        <FAB
-          style={styles.fab}
-          large
-          icon="plus"
-          onPress={() => navigation.navigate('AddUnit')}
-        />
       </View>
+      <FAB.Group
+        open={selectDialog}
+        fabStyle={{
+          backgroundColor: colors.primary,
+        }}
+        icon={selectDialog ? 'window-close' : 'plus'}
+        small
+        onPress={toggleSelectDialog}
+        actions={FAB_ACTIONS}
+        onStateChange={() => {
+          console.log('-----> onStateChange');
+        }}
+      />
     </View>
   );
 }
 const styles = StyleSheet.create({
   mainContainer: {
-    margin: 10,
-    flex: 1,
+    padding: 10,
+    flexGrow: 1,
   },
   headerWrapper: {
     flexDirection: 'row',

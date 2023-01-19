@@ -1,14 +1,12 @@
 import ActionButtons from 'components/Atoms/ActionButtons';
 import RenderInput from 'components/Atoms/RenderInput';
-import RenderSelect from 'components/Atoms/RenderSelect';
-import RichTextEditor from 'components/Atoms/RichTextEditor';
 import {Formik} from 'formik';
 import React from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
 import {IconButton, Subheading} from 'react-native-paper';
 
 function RenderForm(props) {
-  const {navigation, formikProps, options} = props;
+  const {navigation, formikProps} = props;
   const {
     values,
     errors,
@@ -21,72 +19,74 @@ function RenderForm(props) {
   return (
     <View style={styles.formContainer}>
       <View style={styles.formSubContainer}>
-        <RenderSelect
-          name="priceType"
-          label="Price Type"
-          value={values.priceType}
-          options={options}
-          containerStyles={styles.inputStyles}
-          onBlur={handleBlur('priceType')}
-          onSelect={value => {
-            setFieldValue('priceType', value);
-          }}
-        />
         <RenderInput
-          name="bundlePrice"
-          label="Bundle Price"
+          name="netLandArea"
+          label="Net Land Area"
           containerStyles={styles.inputStyles}
-          value={values.bundlePrice}
-          onChangeText={handleChange('bundlePrice')}
-          onBlur={handleBlur('bundlePrice')}
+          value={values.netLandArea}
+          onChangeText={handleChange('netLandArea')}
+          onBlur={handleBlur('netLandArea')}
           autoCapitalize="none"
           returnKeyType="next"
-          error={errors.bundlePrice}
+          error={errors.netLandArea}
         />
         <RenderInput
-          name="preAreaPrice"
-          label="Pre Area Price"
+          name="undividedLandArea"
+          label="Undivided Land Area"
           containerStyles={styles.inputStyles}
-          value={values.preAreaPrice}
-          onChangeText={handleChange('preAreaPrice')}
-          onBlur={handleBlur('preAreaPrice')}
+          value={values.undividedLandArea}
+          onChangeText={handleChange('undividedLandArea')}
+          onBlur={handleBlur('undividedLandArea')}
           autoCapitalize="none"
           returnKeyType="next"
-          error={errors.preAreaPrice}
-        />
-        <RenderSelect
-          name="commissionIn"
-          label="Commission In"
-          value={values.commissionIn}
-          options={options}
-          containerStyles={styles.inputStyles}
-          onBlur={handleBlur('commissionIn')}
-          onSelect={value => {
-            setFieldValue('commissionIn', value);
-          }}
+          error={errors.undividedLandArea}
         />
         <RenderInput
-          name="commission"
-          label="Commission"
+          name="superBuildupArea"
+          label="Super Buildup Area"
           containerStyles={styles.inputStyles}
-          value={values.commission}
-          onChangeText={handleChange('commission')}
-          onBlur={handleBlur('commission')}
+          value={values.superBuildupArea}
+          onChangeText={handleChange('superBuildupArea')}
+          onBlur={handleBlur('superBuildupArea')}
           autoCapitalize="none"
           returnKeyType="next"
-          error={errors.commission}
+          error={errors.superBuildupArea}
         />
-        <RichTextEditor
-          name="remark"
-          placeholder="Remark"
-          style={styles.inputStyles}
-          value={values.remark}
-          height={160}
-          onChangeText={value => {
-            setFieldValue('remark', value);
-          }}
+        <RenderInput
+          name="constructionBuildupArea"
+          label="Construction Buildup Area"
+          containerStyles={styles.inputStyles}
+          value={values.constructionBuildupArea}
+          onChangeText={handleChange('constructionBuildupArea')}
+          onBlur={handleBlur('constructionBuildupArea')}
+          autoCapitalize="none"
+          returnKeyType="next"
+          error={errors.constructionBuildupArea}
+        />
+        <RenderInput
+          name="constructionSuperBuildupArea"
+          label="Construction Super Buildup Area"
+          containerStyles={styles.inputStyles}
+          value={values.constructionSuperBuildupArea}
+          onChangeText={handleChange('constructionSuperBuildupArea')}
+          onBlur={handleBlur('constructionSuperBuildupArea')}
+          autoCapitalize="none"
+          returnKeyType="next"
+          error={errors.constructionSuperBuildupArea}
+        />
+        <RenderInput
+          name="carpetArea"
+          label="Carpet Area"
+          containerStyles={styles.inputStyles}
+          value={values.carpetArea}
+          onChangeText={handleChange('carpetArea')}
+          onBlur={handleBlur('carpetArea')}
+          autoCapitalize="none"
+          returnKeyType="next"
+          error={errors.carpetArea}
         />
       </View>
+
       <ActionButtons
         cancelLabel="Cancel"
         submitLabel="Save"
@@ -97,26 +97,23 @@ function RenderForm(props) {
   );
 }
 
-function UnitPricing(props) {
+function UnitAreaSheet(props) {
   const {navigation} = props;
-
-  const options = ['Science City Rd', 'Sola Rd', 'Bhadaj'];
 
   const onSubmit = values => {
     console.log(values);
   };
-
   return (
     <View style={styles.mainContainer}>
       <View style={styles.headerWrapper}>
         <IconButton
           icon="keyboard-backspace"
-          size={18}
+          size={15}
           color="#4872f4"
           style={styles.backIcon}
           onPress={navigation.goBack}
         />
-        <Subheading>Unit Pricing</Subheading>
+        <Subheading>Area Sheet</Subheading>
       </View>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.formContainer}>
@@ -126,13 +123,7 @@ function UnitPricing(props) {
             validateOnChange={false}
             initialValues={{}}
             onSubmit={onSubmit}>
-            {formikProps => (
-              <RenderForm
-                formikProps={formikProps}
-                {...props}
-                options={options}
-              />
-            )}
+            {formikProps => <RenderForm formikProps={formikProps} {...props} />}
           </Formik>
         </View>
       </ScrollView>
@@ -150,20 +141,19 @@ const styles = StyleSheet.create({
     marginRight: 11,
   },
   mainContainer: {
-    margin: 10,
     flex: 1,
+    margin: 10,
   },
   inputStyles: {
     marginVertical: 8,
   },
-
   formContainer: {
     flexGrow: 1,
   },
 
   formSubContainer: {
-    marginBottom: 90,
+    margin: 10,
     flexGrow: 1,
   },
 });
-export default UnitPricing;
+export default UnitAreaSheet;

@@ -1,7 +1,6 @@
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {IconButton, Subheading, Switch} from 'react-native-paper';
+import {IconButton, Subheading, Switch, Title} from 'react-native-paper';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import RenderInput from 'components/Atoms/RenderInput';
@@ -14,10 +13,6 @@ const schema = Yup.object().shape({
   projectName: Yup.string()
     .label('projectName')
     .required('Project Name is Required'),
-  builderName: Yup.string()
-    .label('builderName')
-    .required('Builder Name is Required'),
-  area: Yup.string().label('area').required('Area is Required'),
 });
 
 const AddressData = {
@@ -83,28 +78,6 @@ const RenderForm = props => {
             setFieldValue('projectCategory', value);
           }}
         />
-        <RenderSelect
-          name="selectTower"
-          label="Select Tower"
-          value={values.selectTower}
-          options={options}
-          containerStyles={styles.inputStyles}
-          onBlur={handleBlur('selectTower')}
-          onSelect={value => {
-            setFieldValue('selectTower', value);
-          }}
-        />
-        <RenderSelect
-          name="selectFloor"
-          label="Select Floor"
-          value={values.selectFloor}
-          options={options}
-          containerStyles={styles.inputStyles}
-          onBlur={handleBlur('selectFloor')}
-          onSelect={value => {
-            setFieldValue('selectFloor', value);
-          }}
-        />
         <RenderInput
           name="unitNo"
           label="Enter Unit no."
@@ -161,88 +134,12 @@ const RenderForm = props => {
           editable={false}
           style={styles.readOnly}
         />
-        <RenderSelect
-          name="unitFor"
-          label="Unit For"
-          value={values.unitFor}
-          options={options}
-          containerStyles={styles.inputStyles}
-          onBlur={handleBlur('unitFor')}
-          onSelect={value => {
-            setFieldValue('unitFor', value);
-          }}
-        />
-        <RenderSelect
-          name="unitType"
-          label="Unit Type"
-          value={values.unitType}
-          options={options}
-          containerStyles={styles.inputStyles}
-          onBlur={handleBlur('unitType')}
-          onSelect={value => {
-            setFieldValue('unitType', value);
-          }}
-        />
-        <RenderSelect
-          name="specificType"
-          label="Specific Type"
-          value={values.specificType}
-          options={options}
-          containerStyles={styles.inputStyles}
-          onBlur={handleBlur('specificType')}
-          onSelect={value => {
-            setFieldValue('specificType', value);
-          }}
-        />
-        <RenderSelect
-          name="noOfBhk"
-          label="No of BHK"
-          value={values.noOfBhk}
-          options={options}
-          containerStyles={styles.inputStyles}
-          onBlur={handleBlur('noOfBhk')}
-          onSelect={value => {
-            setFieldValue('noOfBhk', value);
-          }}
-        />
-        <RenderSelect
-          name="status"
-          label="Status"
-          value={values.status}
-          options={options}
-          containerStyles={styles.inputStyles}
-          onBlur={handleBlur('status')}
-          onSelect={value => {
-            setFieldValue('status', value);
-          }}
-        />
-        <View style={styles.extraDetailsRow}>
-          <Subheading>Prime Location</Subheading>
-          <View style={styles.extraDetailsSwitchWrap}>
-            <Switch
-              value={isSwitchOn}
-              onValueChange={onToggleSwitch}
-              color="#07CA03"
-            />
-            {isSwitchOn ? <Text style={styles.switchtxt}>Yes</Text> : null}
-          </View>
-        </View>
-        <View style={styles.extraDetailsRow}>
-          <Subheading>Share with other broker</Subheading>
-          <View style={styles.extraDetailsSwitchWrap}>
-            <Switch
-              value={isSwitchOn}
-              onValueChange={onToggleSwitch}
-              color="#07CA03"
-            />
-            {isSwitchOn ? <Text style={styles.switchtxt}>Yes</Text> : null}
-          </View>
-        </View>
+
         <View style={styles.filterBTN}>
           <ActionButtons
-            cancelLabel="Cancel"
+            cancelLabel="Add Details"
             submitLabel="Save"
-            onCancel={navigation.goBack}
+            onCancel={() => navigation.navigate('BungalowDetails')}
             onSubmit={handleSubmit}
           />
         </View>
@@ -251,15 +148,13 @@ const RenderForm = props => {
   );
 };
 
-const UnitDetails = props => {
+const AddUnit = props => {
   const {navigation} = props;
-
   const options = ['Science City Rd', 'Sola Rd', 'Bhadaj'];
 
   const onSubmit = values => {
     console.log(values);
   };
-
   return (
     <View style={styles.mainContainer}>
       <View style={styles.headerWrapper}>
@@ -268,9 +163,9 @@ const UnitDetails = props => {
           size={18}
           color="#4872f4"
           style={styles.backIcon}
-          onPress={navigation.goBack}
+          onPress={() => navigation.goBack()}
         />
-        <Subheading>Unit Details</Subheading>
+        <Title>Add Unit </Title>
       </View>
       <View style={styles.formContainer}>
         <Formik
@@ -296,6 +191,8 @@ const UnitDetails = props => {
     </View>
   );
 };
+
+export default AddUnit;
 
 const styles = StyleSheet.create({
   headerWrapper: {
@@ -341,4 +238,3 @@ const styles = StyleSheet.create({
     width: 60,
   },
 });
-export default UnitDetails;

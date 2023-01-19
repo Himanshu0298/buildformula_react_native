@@ -67,7 +67,7 @@ function RenderForm(props) {
       onBackdropPress={handleClose}>
       <SafeAreaProvider style={{flexGrow: 1}}>
         <SafeAreaView style={{margin: 10, flexGrow: 1}}>
-          <Title> Add Unit Owner</Title>
+          <Title> Add Owner</Title>
           <View style={{flexGrow: 1}}>
             <RenderSelect
               name="contact_type"

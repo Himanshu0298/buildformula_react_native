@@ -115,18 +115,6 @@ const RenderForm = props => {
           returnKeyType="next"
           error={errors.unitNo}
         />
-        {/* Search with select will be applied here */}
-        <RenderSelect
-          name="area"
-          label="Select Area"
-          value={values.area}
-          options={options}
-          containerStyles={styles.inputStyles}
-          onBlur={handleBlur('area')}
-          onSelect={value => {
-            setFieldValue('area', value);
-          }}
-        />
         <RenderInput
           containerStyles={styles.inputStyles}
           label="Address"

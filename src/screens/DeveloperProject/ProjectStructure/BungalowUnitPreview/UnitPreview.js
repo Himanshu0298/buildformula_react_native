@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import unit_image from 'assets/images/unit_image.png';
+import bungalow_image from 'assets/images/bungalow_img.png';
 import {
   Caption,
   Divider,
@@ -15,8 +15,6 @@ import {
   Text,
   Title,
 } from 'react-native-paper';
-import Carousel from 'react-native-reanimated-carousel';
-
 import {theme} from 'styles/theme';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -34,6 +32,9 @@ import {getDownloadUrl} from 'utils/download';
 import {getShadow} from 'utils';
 import PostContent from 'components/Atoms/RenderSeeMore';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
+
+import Carousel from 'react-native-reanimated-carousel';
+
 import {
   FILES_DATA,
   OWNER_DATA,
@@ -257,63 +258,31 @@ function Details() {
     <View>
       <View style={styles.detailContainer}>
         <View>
-          <Caption>SUPER BUILDUP AREA</Caption>
+          <Caption>Net Land Area</Caption>
           <Text>1000 SQFT</Text>
         </View>
         <View>
-          <Caption>BUILDUP AREA</Caption>
+          <Caption>Undivided Land Area</Caption>
           <Text>1160 SQFT</Text>
         </View>
       </View>
       <View style={styles.detailContainer}>
         <View>
-          <Caption>CARPET</Caption>
+          <Caption>Super Buildup Area</Caption>
           <Text>110 SQFT</Text>
         </View>
         <View>
-          <Caption>WASH AREA</Caption>
+          <Caption>Carpet Area</Caption>
           <Text>200 SQFT</Text>
         </View>
       </View>
-      <View style={styles.detailContainer}>
-        <View>
-          <Caption>BALCONY AREA</Caption>
-          <Text>100 SQFT</Text>
-        </View>
-        <View>
-          <Caption>TOTAL AREA</Caption>
-          <Text>1160 SQFT</Text>
-        </View>
+      <View style={styles.detailSingle}>
+        <Caption>Construction super Build-up Area</Caption>
+        <Text>100 SQFT</Text>
       </View>
-      <View style={styles.detailContainer}>
-        <View>
-          <Caption>NORTH</Caption>
-          <Text>100 SQFT</Text>
-        </View>
-        <View>
-          <Caption>SOUTH</Caption>
-          <Text>1160 SQFT</Text>
-        </View>
-      </View>
-      <View style={styles.detailContainer}>
-        <View>
-          <Caption>EAST</Caption>
-          <Text>100 SQFT</Text>
-        </View>
-        <View>
-          <Caption>WEST</Caption>
-          <Text>1160 SQFT</Text>
-        </View>
-      </View>
-      <View style={styles.detailContainer}>
-        <View>
-          <Caption>OPEN TERRACE AREA</Caption>
-          <Text>100 SQFT</Text>
-        </View>
-        <View>
-          <Caption>UNDIVIDED LAND</Caption>
-          <Text>220 SQFT</Text>
-        </View>
+      <View style={styles.detailSingle}>
+        <Caption>Construction Build-up Area</Caption>
+        <Text>1160 SQFT</Text>
       </View>
     </View>
   );
@@ -384,13 +353,13 @@ function UnitPreview(props) {
             scrollAnimationDuration={10000}
             onSnapToItem={index => console.log('current index:', index)}
             renderItem={({index}) => {
-              return <Image source={unit_image} />;
+              return <Image source={bungalow_image} />;
             }}
           />
           <View style={styles.sliderWrap}>
             <Title style={styles.sliderText}>3BHK</Title>
             <Subheading style={styles.sliderText}>
-              Residential Apartment for Rent
+              Residential Bungalow for Rent
             </Subheading>
           </View>
         </View>
@@ -415,7 +384,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-
   mainContainer: {
     margin: 10,
     flexGrow: 1,
@@ -553,6 +521,9 @@ const styles = StyleSheet.create({
   sliderText: {
     color: '#fff',
     fontWeight: '800',
+  },
+  detailSingle: {
+    marginVertical: 7,
   },
 });
 
