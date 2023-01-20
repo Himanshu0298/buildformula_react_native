@@ -1,6 +1,6 @@
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
-import React, {useEffect, useRef, useState} from 'react';
-import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
+import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Button, Caption, FAB, IconButton, Subheading} from 'react-native-paper';
 import Animated from 'react-native-reanimated';
 import BottomSheet from 'reanimated-bottom-sheet';
@@ -10,16 +10,12 @@ import RenderInput from 'components/Atoms/RenderInput';
 import {Formik} from 'formik';
 import {getShadow} from 'utils';
 import RenderSelect from 'components/Atoms/RenderSelect';
+import {useAlert} from 'components/Atoms/Alert';
+import useProjectStructureActions from 'redux/actions/projectStructureActions';
+import {useSelector} from 'react-redux';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const SNAP_POINTS = [0, '25%'];
-
-const DATA = [
-  {name: 'Ground Floor'},
-  {name: '1st Floor'},
-  {name: '2nd Floor'},
-  {name: '3rd Floor'},
-  {name: '4th Floor'},
-];
 
 function AddFloor(props) {
   const {formikProps, dialog, onClose} = props;
@@ -74,7 +70,7 @@ function AddFloor(props) {
               onChangeText={handleChange('floorName')}
               onBlur={handleBlur('floorName')}
               autoCapitalize="none"
-              returnKeyType="floorName"
+              returnKeyType="next"
               error={errors.floorName}
             />
             <Button
@@ -92,25 +88,31 @@ function AddFloor(props) {
 }
 
 function ListData(props) {
-  const {formikProps} = props;
+  const {formikProps, handleDelete, floorList, towerList} = props;
 
   const {values, handleBlur, setFieldValue} = formikProps;
 
-  const options = [];
+  const towerOptions = useMemo(() => {
+    return towerList?.map(i => ({
+      label: i.label,
+      value: i.id,
+    }));
+  }, [towerList]);
+
   return (
     <View>
       <RenderSelect
         name="selectTower"
         label="Select Tower"
         value={values.selectTower}
-        options={options}
+        options={towerOptions}
         containerStyles={styles.inputStyles}
         onBlur={handleBlur('selectTower')}
         onSelect={value => {
           setFieldValue('selectTower', value);
         }}
       />
-      {DATA.map(item => {
+      {floorList.map(item => {
         return (
           <View style={styles.listContainer}>
             <View style={styles.subContainer}>
@@ -121,13 +123,13 @@ function ListData(props) {
               />
             </View>
             <View style={styles.listSubContainer}>
-              <Caption>{item.name}</Caption>
+              <Caption>{item.floor}</Caption>
             </View>
             <View>
               <OpacityButton
                 color="#FF5D5D"
                 opacity={0.18}
-                onPress={{}}
+                onPress={() => handleDelete(item.id)}
                 style={styles.deleteIcon}>
                 <MaterialIcons name="delete" color="#FF5D5D" size={13} />
               </OpacityButton>
@@ -140,63 +142,111 @@ function ListData(props) {
 }
 
 function FloorList(props) {
-  const {navigation} = props;
+  const {navigation, route} = props;
+  const {id, towerId} = route?.params || {};
+
+  const alert = useAlert();
 
   const [dialog, setDialog] = useState();
+
+  const {getFloorList, addFloor, deleteFloor, getTowerList} =
+    useProjectStructureActions();
+  const {selectedProject} = useSelector(s => s.project);
+  const {floorList, loading, towerList} = useSelector(s => s.projectStructure);
+
+  React.useEffect(() => {
+    getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const getData = async () => {
+    await getFloorList({
+      project_id: selectedProject.id,
+      id,
+      tower_id: towerId,
+    });
+    await getTowerList({project_id: selectedProject.id, id});
+  };
 
   const toggleAdd = () => setDialog(v => !v);
 
   const onClose = () => toggleAdd();
+  const onSubmit = async values => {
+    const data = {
+      project_id: selectedProject.id,
+      id,
+      tower_id: values.selectTower,
+      contact_type: values.contact_type,
+      name: values.floorName,
+    };
 
-  const handleSave = () => {
-    console.log('===========> ');
+    await addFloor(data);
+    toggleAdd();
+    getData();
+  };
+
+  const handleDelete = async floor_id => {
+    alert.show({
+      title: 'Confirm',
+      message: 'Are you sure you want to delete?',
+      confirmText: 'Delete',
+      onConfirm: async () => {
+        await deleteFloor({
+          project_id: selectedProject.id,
+          floor_id,
+          id,
+        });
+        getData();
+      },
+    });
   };
 
   return (
-    <>
-      {dialog ? (
-        <Formik
-          enableReinitialize
-          validateOnBlur={false}
-          validateOnChange={false}
-          initialValues={{}}
-          onSubmit={handleSave}>
-          {formikProps => (
-            <AddFloor
-              {...props}
-              dialog={dialog}
-              toggleDialog={toggleAdd}
-              onClose={onClose}
-              formikProps={formikProps}
-            />
-          )}
-        </Formik>
-      ) : null}
+    <View style={styles.container}>
+      <Spinner visible={loading} textContent="" />
 
-      <View style={styles.container}>
-        <View style={styles.titleContainer}>
-          <TouchableOpacity
-            style={styles.titleContainer}
-            onPress={navigation.goBack}>
-            <IconButton
-              icon="keyboard-backspace"
-              style={styles.backIcon}
-              size={18}
-            />
-          </TouchableOpacity>
-          <Subheading>Floor List</Subheading>
-        </View>
-        <Formik
-          enableReinitialize
-          validateOnBlur={false}
-          validateOnChange={false}
-          initialValues={{}}
-          onSubmit={handleSave}>
-          {formikProps => <ListData formikProps={formikProps} />}
-        </Formik>
-        <FAB style={styles.fab} large icon="plus" onPress={toggleAdd} />
+      <View style={styles.titleContainer}>
+        <TouchableOpacity
+          style={styles.titleContainer}
+          onPress={navigation.goBack}>
+          <IconButton
+            icon="keyboard-backspace"
+            style={styles.backIcon}
+            size={18}
+          />
+        </TouchableOpacity>
+        <Subheading>Floor List</Subheading>
       </View>
-    </>
+      <Formik
+        enableReinitialize
+        validateOnBlur={false}
+        validateOnChange={false}
+        initialValues={{}}
+        onSubmit={onSubmit}>
+        {formikProps => (
+          <>
+            <ScrollView>
+              <ListData
+                formikProps={formikProps}
+                handleDelete={handleDelete}
+                floorList={floorList}
+                towerList={towerList}
+              />
+            </ScrollView>
+            {dialog ? (
+              <AddFloor
+                {...props}
+                dialog={dialog}
+                toggleDialog={toggleAdd}
+                onClose={onClose}
+                formikProps={formikProps}
+              />
+            ) : null}
+          </>
+        )}
+      </Formik>
+      <FAB style={styles.fab} large icon="plus" onPress={toggleAdd} />
+    </View>
   );
 }
 
