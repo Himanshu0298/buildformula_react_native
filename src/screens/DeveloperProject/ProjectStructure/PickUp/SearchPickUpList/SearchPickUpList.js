@@ -91,7 +91,7 @@ function SearchPickUpList(props) {
 
   React.useEffect(() => {
     if (values.subModule) {
-      getFields();
+      getFields(values.subModule);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [values.subModule]);
