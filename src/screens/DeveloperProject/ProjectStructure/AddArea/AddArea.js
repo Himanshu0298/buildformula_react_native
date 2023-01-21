@@ -7,6 +7,16 @@ import RenderSelect from 'components/Atoms/RenderSelect';
 import ActionButtons from 'components/Atoms/ActionButtons';
 import useProjectStructureActions from 'redux/actions/projectStructureActions';
 import {useSelector} from 'react-redux';
+import * as Yup from 'yup';
+
+const schema = Yup.object().shape({
+  area: Yup.string('Invalid').required('Required'),
+  pincode: Yup.string('Invalid').required('Required'),
+  city: Yup.string('Invalid').required('Required'),
+  state: Yup.string('Invalid').required('Required'),
+  country: Yup.string('Invalid').required('Required'),
+  status: Yup.string('Invalid').required('Required'),
+});
 
 const RenderForm = props => {
   const {navigation, formikProps, masterList} = props;
@@ -202,6 +212,7 @@ const AddArea = props => {
         enableReinitialize
         validateOnBlur={false}
         validateOnChange={false}
+        validationSchema={schema}
         initialValues={initialValues}
         onSubmit={onSubmit}>
         {formikProps => (

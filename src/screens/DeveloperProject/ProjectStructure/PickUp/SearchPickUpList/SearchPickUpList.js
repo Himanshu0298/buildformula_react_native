@@ -77,6 +77,13 @@ function SearchPickUpList(props) {
     s => s.projectStructure,
   );
 
+  React.useEffect(() => {
+    getModule();
+    getSubModule();
+    getField();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const moduleOptions = useMemo(() => {
     return moduleList?.map(i => ({
       label: i.title,
@@ -106,21 +113,23 @@ function SearchPickUpList(props) {
     }));
   }, [fieldList]);
 
-  React.useEffect(() => {
-    getModule();
-    getSubModule();
-    getField();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const getModule = async () => {
+    await getModuleList({project_id: selectedProject.id});
+  };
 
-  const getModule = () => getModuleList({project_id: selectedProject.id});
+  const getSubModule = async () => {
+    await getSubModuleList({
+      project_id: selectedProject.id,
+      module_id: moduleId,
+    });
+  };
 
-  const getSubModule = () =>
-    getSubModuleList({project_id: selectedProject.id, module_id: moduleId});
-
-  const getField = () =>
-    getFieldList({project_id: selectedProject.id, submodule_id: subModuleId});
-
+  const getField = async () => {
+    await getFieldList({
+      project_id: selectedProject.id,
+      submodule_id: subModuleId,
+    });
+  };
   const onSubmit = values => {
     const fieldId = values.selectField;
 

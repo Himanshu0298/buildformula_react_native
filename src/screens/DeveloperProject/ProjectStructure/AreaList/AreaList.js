@@ -17,8 +17,8 @@ import {useAlert} from 'components/Atoms/Alert';
 import Spinner from 'react-native-loading-spinner-overlay';
 
 const PROJECT_STATUS = {
-  0: {label: 'Inactive', color: '#FF5E5E'},
   1: {label: 'Active', color: '#07CA03'},
+  2: {label: 'Inactive', color: '#FF5E5E'},
 };
 
 const AreaCard = props => {
@@ -69,16 +69,17 @@ const AreaCard = props => {
         <Text>{area}</Text>
         <Caption>{`${city} ,${state} ,${country}`}</Caption>
         <Text>{pincode}</Text>
-
-        <View style={styles.status}>
-          <View
-            style={[
-              styles.statusIndicator,
-              {backgroundColor: PROJECT_STATUS[status]?.color},
-            ]}
-          />
-          <Caption>{PROJECT_STATUS[status]?.label}</Caption>
-        </View>
+        {status === 0 ? null : (
+          <View style={styles.status}>
+            <View
+              style={[
+                styles.statusIndicator,
+                {backgroundColor: PROJECT_STATUS[status]?.color},
+              ]}
+            />
+            <Caption>{PROJECT_STATUS[status]?.label}</Caption>
+          </View>
+        )}
       </View>
     </TouchableOpacity>
   );
