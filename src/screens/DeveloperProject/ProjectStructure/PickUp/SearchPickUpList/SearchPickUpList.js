@@ -77,25 +77,6 @@ function SearchPickUpList(props) {
     s => s.projectStructure,
   );
 
-  React.useEffect(() => {
-    getModules();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  React.useEffect(() => {
-    if (values.module) {
-      getSubModules(values.module);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [values.module]);
-
-  React.useEffect(() => {
-    if (values.subModule) {
-      getFields(values.subModule);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [values.subModule]);
-
   const moduleOptions = useMemo(() => {
     return moduleList?.map(i => ({
       label: i.title,
@@ -130,8 +111,11 @@ function SearchPickUpList(props) {
   };
 
   const onSubmit = values => {
-    const fieldId = values.field;
-    navigation.navigate('PickUpListing', {fieldId});
+    const fieldId = values?.field;
+
+    const fieldLabel = fieldList.find(i => i.id === values?.field).title;
+
+    navigation.navigate('PickUpListing', {fieldId, fieldLabel});
   };
 
   const formikProps = useFormik({
@@ -143,6 +127,25 @@ function SearchPickUpList(props) {
   });
 
   const {values} = formikProps;
+
+  React.useEffect(() => {
+    getModules();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  React.useEffect(() => {
+    if (values?.module) {
+      getSubModules(values?.module);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [values?.module]);
+
+  React.useEffect(() => {
+    if (values?.subModule) {
+      getFields(values?.subModule);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [values?.subModule]);
 
   return (
     <View style={styles.mainContainer}>

@@ -91,7 +91,7 @@ function AddField(props) {
 function PickUpListing(props) {
   const {navigation, route} = props;
 
-  const {fieldId} = route?.params || {};
+  const {fieldId, fieldLabel} = route?.params || {};
 
   const alert = useAlert();
 
@@ -215,7 +215,7 @@ function PickUpListing(props) {
             style={styles.backIcon}
             onPress={() => navigation.goBack()}
           />
-          <Subheading>Quality Building </Subheading>
+          <Subheading>{fieldLabel}</Subheading>
         </View>
 
         <View style={styles.listContainer}>
