@@ -1,6 +1,6 @@
 import ActionButtons from 'components/Atoms/ActionButtons';
 import RenderSelect from 'components/Atoms/RenderSelect';
-import {Formik} from 'formik';
+import {useFormik} from 'formik';
 import React, {useMemo} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {IconButton, Subheading} from 'react-native-paper';
@@ -43,14 +43,14 @@ const RenderForm = props => {
           }}
         />
         <RenderSelect
-          name="selectField"
-          label="Select Field "
-          value={values.selectField}
+          name="field"
+          label="Select Field"
+          value={values.field}
           options={fieldOptions}
           containerStyles={styles.inputStyles}
-          onBlur={handleBlur('selectField')}
+          onBlur={handleBlur('field')}
           onSelect={value => {
-            setFieldValue('selectField', value);
+            setFieldValue('field', value);
           }}
         />
       </View>
@@ -78,25 +78,29 @@ function SearchPickUpList(props) {
   );
 
   React.useEffect(() => {
-    getModule();
-    getSubModule();
-    getField();
+    getModules();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  React.useEffect(() => {
+    if (values.module) {
+      getSubModules(values.module);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [values.module]);
+
+  React.useEffect(() => {
+    if (values.subModule) {
+      getFields();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [values.subModule]);
 
   const moduleOptions = useMemo(() => {
     return moduleList?.map(i => ({
       label: i.title,
       value: i.id,
     }));
-  }, [moduleList]);
-
-  const moduleId = useMemo(() => {
-    return moduleList?.find(i => i.id)?.id;
-  }, [moduleList]);
-
-  const subModuleId = useMemo(() => {
-    return moduleList?.find(i => i.id)?.id;
   }, [moduleList]);
 
   const subModuleOptions = useMemo(() => {
@@ -113,28 +117,33 @@ function SearchPickUpList(props) {
     }));
   }, [fieldList]);
 
-  const getModule = async () => {
-    await getModuleList({project_id: selectedProject.id});
+  const getModules = async () => {
+    getModuleList({project_id: selectedProject.id});
   };
 
-  const getSubModule = async () => {
-    await getSubModuleList({
-      project_id: selectedProject.id,
-      module_id: moduleId,
-    });
+  const getSubModules = async module_id => {
+    getSubModuleList({project_id: selectedProject.id, module_id});
   };
 
-  const getField = async () => {
-    await getFieldList({
-      project_id: selectedProject.id,
-      submodule_id: subModuleId,
-    });
+  const getFields = async submodule_id => {
+    getFieldList({project_id: selectedProject.id, submodule_id});
   };
+
   const onSubmit = values => {
-    const fieldId = values.selectField;
-
+    const fieldId = values.field;
     navigation.navigate('PickUpListing', {fieldId});
   };
+
+  const formikProps = useFormik({
+    enableReinitialize: true,
+    validateOnBlur: false,
+    validateOnChange: false,
+    initialValues: {},
+    onSubmit,
+  });
+
+  const {values} = formikProps;
+
   return (
     <View style={styles.mainContainer}>
       <View style={styles.headerWrapper}>
@@ -148,22 +157,13 @@ function SearchPickUpList(props) {
         <Subheading>PickUp List</Subheading>
       </View>
 
-      <Formik
-        enableReinitialize
-        validateOnBlur={false}
-        validateOnChange={false}
-        initialValues={{}}
-        onSubmit={onSubmit}>
-        {formikProps => (
-          <RenderForm
-            formikProps={formikProps}
-            {...props}
-            moduleOptions={moduleOptions}
-            subModuleOptions={subModuleOptions}
-            fieldOptions={fieldOptions}
-          />
-        )}
-      </Formik>
+      <RenderForm
+        {...props}
+        formikProps={formikProps}
+        moduleOptions={moduleOptions}
+        subModuleOptions={subModuleOptions}
+        fieldOptions={fieldOptions}
+      />
     </View>
   );
 }
