@@ -5,6 +5,8 @@ import {TabView} from 'react-native-tab-view';
 import {getShadow} from 'utils';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import {useSelector} from 'react-redux';
+import useProjectStructureActions from 'redux/actions/projectStructureActions';
 import ProjectPreview from './ProjectPreview';
 import StructurePreview from './StructurePreview';
 
@@ -15,6 +17,10 @@ function ProjectDetail(props) {
   const {id: projectId} = route.params;
 
   const [selectedTab, setSelectedTab] = useState(0);
+
+  const {selectedProject} = useSelector(s => s.project);
+
+  const {createProjectDuplicate} = useProjectStructureActions();
 
   const [routes] = useState([
     {key: 'first', title: 'Details'},
@@ -39,8 +45,19 @@ function ProjectDetail(props) {
         return null;
     }
   };
+
+  const onMakeDuplicate = async () => {
+    const data = {
+      project_id: selectedProject.id,
+      id: projectId,
+    };
+
+    await createProjectDuplicate(data);
+  };
+
   const navToEdit = () =>
     navigation.navigate('ProjectStructureDetails', {projectId});
+
   return (
     <View style={styles.mainContainer}>
       <View style={styles.headerWrapper}>
@@ -66,7 +83,7 @@ function ProjectDetail(props) {
             color="#4872f4"
             opacity={0.18}
             style={styles.editIcon}
-            onPress={navToEdit}>
+            onPress={onMakeDuplicate}>
             <MaterialIcons name="content-copy" color="#4872f4" size={13} />
           </OpacityButton>
         </View>

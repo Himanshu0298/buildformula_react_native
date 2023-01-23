@@ -81,6 +81,20 @@ export default function useProjectStructureActions() {
           }
         },
       }),
+    createProjectDuplicate: data =>
+      dispatch({
+        type: types.CREATE_PROJECT_DUPLICATE,
+        payload: async () => {
+          try {
+            const response = _res(await getProjectDetails(data));
+            return Promise.resolve(response.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
 
     deleteProject: data =>
       dispatch({

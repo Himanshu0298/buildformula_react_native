@@ -14,6 +14,13 @@ export default function useProjectStructure() {
         params,
       );
     },
+    createProjectDuplicate: data => {
+      return instance.post(
+        '/projectstructure/project/projectDuplicate',
+        data,
+        params,
+      );
+    },
     deleteProject: data => {
       return instance.post(
         '/projectstructure/project/projectRemove',
