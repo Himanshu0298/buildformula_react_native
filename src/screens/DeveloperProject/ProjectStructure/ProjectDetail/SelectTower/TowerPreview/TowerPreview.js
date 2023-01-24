@@ -17,7 +17,7 @@ function TowerPreview(props) {
   const {towerList, loading} = useSelector(s => s.projectStructure);
   const {selectedProject} = useSelector(s => s.project);
 
-  const towerCount = towerList?.length || {};
+  const towerCount = towerList?.length || 0;
 
   const towers = towerList;
 
@@ -48,7 +48,7 @@ function TowerPreview(props) {
             onPress={navigation.goBack}>
             <IconButton icon="keyboard-backspace" />
           </TouchableOpacity>
-          <Subheading>Towers</Subheading>
+          <Subheading>{towerType}</Subheading>
         </View>
         <View>
           <OpacityButton

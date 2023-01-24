@@ -25,8 +25,6 @@ function StructurePreview(props) {
     navigation.navigate(nextStep, params);
   };
 
-  // const next=() => navigation.navigate('TowerPreview', {id})
-
   return (
     <View>
       <Spinner visible={loading} textContent="" />
@@ -34,7 +32,6 @@ function StructurePreview(props) {
         hideTitle
         onSelectStructure={handlePress}
         projectTypes={projectTypes}
-        // activeTypes={activeTypes}
       />
     </View>
   );

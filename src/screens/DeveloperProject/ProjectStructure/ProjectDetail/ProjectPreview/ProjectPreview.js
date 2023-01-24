@@ -339,8 +339,7 @@ function ProjectPreview(props) {
 
   const [sharing, setSharing] = useState(false);
 
-  const {getProjectDetails, deleteProjectFile, createProjectDuplicate} =
-    useProjectStructureActions();
+  const {getProjectDetails, deleteProjectFile} = useProjectStructureActions();
   const {projectDetails, loading} = useSelector(s => s.projectStructure);
   const {selectedProject} = useSelector(s => s.project);
   const {area, project_name, city, state, country} = projectDetails;

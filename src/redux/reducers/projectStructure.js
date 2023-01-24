@@ -67,7 +67,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${GET_PROJECT_LIST}_FULFILLED`: {
       return {
         ...state,
-        projectList: payload,
+        projectList: payload.sort((a, b) => b.id - a.id),
         loading: false,
       };
     }
@@ -123,7 +123,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${GET_AREA_LIST}_FULFILLED`: {
       return {
         ...state,
-        areaList: payload,
+        areaList: payload.sort((a, b) => b.id - a.id),
         loading: false,
       };
     }

@@ -113,8 +113,6 @@ const RenderForm = props => {
 const AddProject = props => {
   const {navigation} = props;
 
-  // const {id} = route?.params || {};
-
   const submitTypeRef = useRef();
 
   const {addProject, getAreaList, getProjectList} =
@@ -125,7 +123,9 @@ const AddProject = props => {
   const {areaList} = useSelector(s => s.projectStructure);
 
   const areaOptions = useMemo(() => {
-    return areaList?.map(i => ({label: i.area, value: i.id}));
+    return areaList
+      ?.filter(i => i.status === 1)
+      ?.map(i => ({label: i.area, value: i.id}));
   }, [areaList]);
 
   React.useEffect(() => {

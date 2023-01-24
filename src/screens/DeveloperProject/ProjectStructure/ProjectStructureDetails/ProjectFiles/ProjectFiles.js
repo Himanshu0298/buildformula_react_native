@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useRef, useState} from 'react';
+import React, {useMemo, useState} from 'react';
 import {
   StyleSheet,
   View,
@@ -7,11 +7,18 @@ import {
   Image,
 } from 'react-native';
 
-import {Button, FAB, IconButton, Menu, Text, Title} from 'react-native-paper';
+import {
+  Button,
+  Dialog,
+  FAB,
+  IconButton,
+  Menu,
+  Portal,
+  Text,
+  Title,
+} from 'react-native-paper';
 import {theme} from 'styles/theme';
-import BottomSheet from 'reanimated-bottom-sheet';
-import Animated from 'react-native-reanimated';
-import _ from 'lodash';
+
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import PdfIcon from 'assets/images/pdf_icon.png';
@@ -30,8 +37,60 @@ import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
 import dayjs from 'dayjs';
 import {useAlert} from 'components/Atoms/Alert';
+import {ActionSheetProvider} from '@expo/react-native-action-sheet';
 
-const SNAP_POINTS = [0, '40%'];
+function AddAttachmentModel(props) {
+  const {visible, fileCategoryOptions, formikProps, onClose} = props;
+
+  const {values, setFieldValue} = formikProps;
+
+  const {openImagePicker} = useImagePicker();
+
+  const handleUpload = () => {
+    openImagePicker({
+      type: 'file',
+      onChoose: file => {
+        if (file.uri) {
+          const attachments = values.attachments || [];
+          attachments.push(file);
+          setFieldValue('attachments', attachments);
+        }
+      },
+    });
+  };
+
+  return (
+    <Portal>
+      <Dialog
+        visible={visible}
+        onDismiss={onClose}
+        style={styles.dialogContainer}>
+        <ActionSheetProvider>
+          <View style={styles.sheetContentContainer}>
+            <View style={styles.closeContainer}>
+              <IconButton
+                icon="close-circle"
+                size={25}
+                onPress={onClose}
+                color="grey"
+              />
+            </View>
+            <Title>Upload</Title>
+            <TouchableOpacity opacity={0.5} onPress={handleUpload}>
+              <View style={styles.uploadFileContainer}>
+                <Text style={{color: theme.colors.primary}}>Choose file</Text>
+              </View>
+            </TouchableOpacity>
+            <RenderForm
+              formikProps={formikProps}
+              fileCategoryOptions={fileCategoryOptions}
+            />
+          </View>
+        </ActionSheetProvider>
+      </Dialog>
+    </Portal>
+  );
+}
 
 function RenderForm(props) {
   const {formikProps, fileCategoryOptions} = props;
@@ -136,81 +195,6 @@ function RenderFile(props) {
   );
 }
 
-function AddAttachments(props) {
-  const {dialog, onClose, formikProps, fileCategoryOptions} = props;
-
-  const {values, setFieldValue} = formikProps;
-
-  const bottomSheetRef = useRef();
-  const fall = new Animated.Value(1);
-
-  useEffect(() => {
-    if (dialog) {
-      bottomSheetRef?.current?.snapTo(1);
-    } else {
-      bottomSheetRef?.current?.snapTo(0);
-    }
-  }, [dialog]);
-
-  const {openImagePicker} = useImagePicker();
-
-  const handleUpload = () => {
-    openImagePicker({
-      type: 'file',
-      onChoose: file => {
-        if (file.uri) {
-          const attachments = values.attachments || [];
-          attachments.push(file);
-          setFieldValue('attachments', attachments);
-        }
-      },
-    });
-  };
-
-  return (
-    <>
-      {dialog ? (
-        <Animated.View
-          style={[
-            styles.backdrop,
-            {opacity: Animated.sub(1, Animated.multiply(fall, 0.9))},
-          ]}
-        />
-      ) : null}
-      <BottomSheet
-        ref={bottomSheetRef}
-        snapPoints={SNAP_POINTS}
-        initialSnap={0}
-        borderRadius={30}
-        callbackNode={fall}
-        renderHeader={() => <View />}
-        renderContent={() => (
-          <View style={styles.sheetContentContainer}>
-            <View style={styles.closeContainer}>
-              <IconButton
-                icon="close-circle"
-                size={25}
-                onPress={onClose}
-                color="grey"
-              />
-            </View>
-            <Title>Upload</Title>
-            <TouchableOpacity opacity={0.5} onPress={handleUpload}>
-              <View style={styles.uploadFileContainer}>
-                <Text style={{color: theme.colors.primary}}> Choose file</Text>
-              </View>
-            </TouchableOpacity>
-            <RenderForm
-              formikProps={formikProps}
-              fileCategoryOptions={fileCategoryOptions}
-            />
-          </View>
-        )}
-      />
-    </>
-  );
-}
-
 function ProjectFiles(props) {
   const {navigation, route} = props;
   const {projectId} = route?.params || {};
@@ -267,7 +251,6 @@ function ProjectFiles(props) {
     });
   };
   const toggleAddFile = () => setDialog(v => !v);
-  const onClose = () => toggleAddFile();
   const toggleSharing = () => setSharing(v => !v);
 
   const handleShare = async file => {
@@ -340,11 +323,10 @@ function ProjectFiles(props) {
           initialValues={{}}
           onSubmit={onSubmit}>
           {formikProps => (
-            <AddAttachments
+            <AddAttachmentModel
               {...props}
-              dialog={dialog}
-              toggleDialog={toggleAddFile}
-              onClose={onClose}
+              visible={dialog}
+              onClose={toggleAddFile}
               formikProps={formikProps}
               fileCategoryOptions={fileCategoryOptions}
             />
@@ -354,7 +336,6 @@ function ProjectFiles(props) {
 
       <View style={styles.mainContainer}>
         <Spinner visible={loading} textContent="" />
-
         <View style={styles.headerWrapper}>
           <IconButton
             icon="keyboard-backspace"
@@ -367,7 +348,7 @@ function ProjectFiles(props) {
         </View>
         <ScrollView style={styles.scrollView}>
           <View style={styles.fileContainer}>
-            {attachment_file.map((file, index) => {
+            {attachment_file?.map((file, index) => {
               return (
                 <RenderFile
                   file={file}
@@ -436,10 +417,10 @@ const styles = StyleSheet.create({
     margin: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    backgroundColor: '#FFFFFFFF',
+    backgroundColor: '#fff',
     ...getShadow(3),
     padding: 10,
-    borderRadius: 10,
+    // borderRadius: 10,
   },
   sectionContainer: {
     alignItems: 'center',
@@ -454,13 +435,14 @@ const styles = StyleSheet.create({
   dateContainer: {
     marginLeft: 8,
   },
-  backdrop: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.3)',
+  dialogContainer: {
+    flex: 0.6,
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    top: 200,
+    width: '100%',
+    left: -25,
   },
   sheetContentContainer: {
     backgroundColor: '#fff',

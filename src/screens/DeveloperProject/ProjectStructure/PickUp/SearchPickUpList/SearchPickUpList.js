@@ -3,6 +3,7 @@ import RenderSelect from 'components/Atoms/RenderSelect';
 import {useFormik} from 'formik';
 import React, {useMemo} from 'react';
 import {StyleSheet, View} from 'react-native';
+import Spinner from 'react-native-loading-spinner-overlay';
 import {IconButton, Subheading} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import useProjectStructureActions from 'redux/actions/projectStructureActions';
@@ -73,7 +74,7 @@ function SearchPickUpList(props) {
 
   const {selectedProject} = useSelector(s => s.project);
 
-  const {moduleList, subModuleList, fieldList} = useSelector(
+  const {loading, moduleList, subModuleList, fieldList} = useSelector(
     s => s.projectStructure,
   );
 
@@ -149,6 +150,7 @@ function SearchPickUpList(props) {
 
   return (
     <View style={styles.mainContainer}>
+      <Spinner visible={loading} textContent="" />
       <View style={styles.headerWrapper}>
         <IconButton
           icon="keyboard-backspace"

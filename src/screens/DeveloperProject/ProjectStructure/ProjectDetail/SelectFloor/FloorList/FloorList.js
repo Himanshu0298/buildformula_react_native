@@ -88,31 +88,32 @@ function AddFloor(props) {
 }
 
 function ListData(props) {
-  const {formikProps, handleDelete, floorList, towerList} = props;
+  const {formikProps, handleDelete, floorList} = props;
 
   const {values, handleBlur, setFieldValue} = formikProps;
 
-  const towerOptions = useMemo(() => {
-    return towerList?.map(i => ({
-      label: i.label,
+  const floorOptions = useMemo(() => {
+    return floorList?.map(i => ({
+      label: i.floor,
       value: i.id,
     }));
-  }, [towerList]);
+  }, [floorList]);
 
   return (
     <View>
       <RenderSelect
-        name="selectTower"
-        label="Select Tower"
-        value={values.selectTower}
-        options={towerOptions}
+        name="selectFloor"
+        label="Select Floor"
+        value={values.selectFloor}
+        options={floorOptions}
         containerStyles={styles.inputStyles}
-        onBlur={handleBlur('selectTower')}
+        onBlur={handleBlur('selectFloor')}
         onSelect={value => {
-          setFieldValue('selectTower', value);
+          setFieldValue('selectFloor', value);
         }}
       />
-      {floorList.map(item => {
+
+      {floorList?.map(item => {
         return (
           <View style={styles.listContainer}>
             <View style={styles.subContainer}>
@@ -149,10 +150,9 @@ function FloorList(props) {
 
   const [dialog, setDialog] = useState();
 
-  const {getFloorList, addFloor, deleteFloor, getTowerList} =
-    useProjectStructureActions();
+  const {getFloorList, addFloor, deleteFloor} = useProjectStructureActions();
   const {selectedProject} = useSelector(s => s.project);
-  const {floorList, loading, towerList} = useSelector(s => s.projectStructure);
+  const {floorList, loading} = useSelector(s => s.projectStructure);
 
   React.useEffect(() => {
     getData();
@@ -165,12 +165,10 @@ function FloorList(props) {
       id,
       tower_id: towerId,
     });
-    await getTowerList({project_id: selectedProject.id, id});
   };
 
   const toggleAdd = () => setDialog(v => !v);
 
-  const onClose = () => toggleAdd();
   const onSubmit = async values => {
     const data = {
       project_id: selectedProject.id,
@@ -230,15 +228,13 @@ function FloorList(props) {
                 formikProps={formikProps}
                 handleDelete={handleDelete}
                 floorList={floorList}
-                towerList={towerList}
               />
             </ScrollView>
             {dialog ? (
               <AddFloor
                 {...props}
                 dialog={dialog}
-                toggleDialog={toggleAdd}
-                onClose={onClose}
+                onClose={toggleAdd}
                 formikProps={formikProps}
               />
             ) : null}

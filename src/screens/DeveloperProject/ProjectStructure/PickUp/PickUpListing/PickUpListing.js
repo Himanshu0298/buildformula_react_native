@@ -1,30 +1,31 @@
-import ActionButtons from 'components/Atoms/ActionButtons';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import RenderInput from 'components/Atoms/RenderInput';
 import {Formik} from 'formik';
-import React, {useEffect, useMemo, useRef, useState} from 'react';
-import {Dimensions, ScrollView, StyleSheet, View} from 'react-native';
-import BottomSheet from 'reanimated-bottom-sheet';
+import React, {useMemo, useState} from 'react';
+import {ScrollView, StyleSheet, View} from 'react-native';
 
-import {Button, Divider, FAB, IconButton, Subheading} from 'react-native-paper';
+import {
+  Button,
+  Dialog,
+  Divider,
+  FAB,
+  IconButton,
+  Portal,
+  Subheading,
+} from 'react-native-paper';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {theme} from 'styles/theme';
-import Animated from 'react-native-reanimated';
 import {getShadow} from 'utils';
 import useProjectStructureActions from 'redux/actions/projectStructureActions';
 import {useSelector} from 'react-redux';
 import {useAlert} from 'components/Atoms/Alert';
 import Spinner from 'react-native-loading-spinner-overlay';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {ActionSheetProvider} from '@expo/react-native-action-sheet';
 import * as Yup from 'yup';
 
 const schema = Yup.object().shape({
   title: Yup.string('Invalid').required('Required'),
 });
-
-const SNAP_POINTS = [0, '70%'];
 
 function PickUpList(props) {
   const {item, index, handleDelete, editDialog} = props;
@@ -47,20 +48,28 @@ function PickUpList(props) {
         <View style={styles.headerSubContainer}>
           <View style={styles.editIconContainer}>
             <OpacityButton
-              color="#4872f4"
+              color={theme.colors.primary}
               opacity={0.18}
               style={styles.editIcon}
               onPress={() => editDialog(index, item)}>
-              <MaterialIcons name="edit" color="#4872f4" size={13} />
+              <MaterialIcons
+                name="edit"
+                color={theme.colors.primary}
+                size={13}
+              />
             </OpacityButton>
           </View>
           <View>
             <OpacityButton
-              color="#FF5D5D"
+              color={theme.colors.error}
               opacity={0.18}
               onPress={() => handleDelete(id)}
               style={styles.deleteIcon}>
-              <MaterialIcons name="delete" color="#FF5D5D" size={13} />
+              <MaterialIcons
+                name="delete"
+                color={theme.colors.error}
+                size={13}
+              />
             </OpacityButton>
           </View>
         </View>
@@ -69,157 +78,106 @@ function PickUpList(props) {
   );
 }
 
-function RenderForm(props) {
-  const {formikProps} = props;
-  const {values, handleChange, handleBlur, errors, handleSubmit} = formikProps;
-  return (
-    <KeyboardAwareScrollView>
-      <RenderInput
-        name="title"
-        label="Field Name"
-        containerStyles={styles.inputStyles}
-        value={values.title}
-        onChangeText={handleChange('title')}
-        onBlur={handleBlur('title')}
-        autoCapitalize="none"
-        returnKeyType="next"
-        error={errors.title}
-      />
-      <Button
-        style={styles.button}
-        theme={{roundness: 10}}
-        mode="contained"
-        onPress={handleSubmit}>
-        Add
-      </Button>
-    </KeyboardAwareScrollView>
-  );
-}
+function AddFieldModel(props) {
+  const {visible, pickUp, onClose, onSubmit} = props;
 
-function AddField(props) {
-  const {formikProps, dialog, onClose} = props;
+  const initialValues = useMemo(() => {
+    return {title: pickUp?.title || ''};
+  }, [pickUp]);
 
-  const bottomSheetRef = useRef();
-  const fall = new Animated.Value(1);
-  const {height} = Dimensions.get('screen');
-
-  useEffect(() => {
-    if (dialog) {
-      bottomSheetRef?.current?.snapTo(1);
-    } else {
-      bottomSheetRef?.current?.snapTo(0);
-    }
-  }, [dialog]);
+  const edit = Boolean(pickUp);
 
   return (
-    <>
-      {dialog ? (
-        <Animated.View
-          style={[
-            styles.backdrop,
-            {opacity: Animated.sub(1, Animated.multiply(fall, 0.9))},
-          ]}
-        />
-      ) : null}
-      <View style={{height}}>
-        <BottomSheet
-          ref={bottomSheetRef}
-          snapPoints={SNAP_POINTS}
-          initialSnap={0}
-          borderRadius={30}
-          callbackNode={fall}
-          renderHeader={() => <View />}
-          renderContent={() => (
-            <View style={styles.sheetContentContainer}>
-              <View style={styles.closeContainer}>
-                <IconButton
-                  icon="close-circle"
-                  size={25}
-                  onPress={onClose}
-                  color="grey"
-                />
+    <Formik
+      enableReinitialize
+      validateOnBlur={false}
+      validateOnChange={false}
+      validationSchema={schema}
+      initialValues={initialValues}
+      onSubmit={onSubmit}>
+      {({values, handleChange, handleBlur, errors, handleSubmit}) => {
+        return (
+          <Portal>
+            <Dialog
+              visible={visible}
+              onDismiss={onClose}
+              style={styles.dialogContainer}>
+              <View>
+                <View style={styles.sheetContentContainer}>
+                  <View style={styles.closeContainer}>
+                    <IconButton
+                      icon="close-circle"
+                      size={25}
+                      onPress={onClose}
+                      color="grey"
+                    />
+                  </View>
+                  <Subheading> Add Field</Subheading>
+                  <RenderInput
+                    name="title"
+                    label="Field Name"
+                    containerStyles={styles.inputStyles}
+                    value={values.title}
+                    onChangeText={handleChange('title')}
+                    onBlur={handleBlur('title')}
+                    autoCapitalize="none"
+                    returnKeyType="next"
+                    error={errors.title}
+                  />
+                  <Button
+                    style={styles.button}
+                    theme={{roundness: 10}}
+                    mode="contained"
+                    onPress={handleSubmit}>
+                    {edit ? 'Update' : 'Add'}
+                  </Button>
+                </View>
               </View>
-              <Subheading> Add Field</Subheading>
-
-              <RenderForm formikProps={formikProps} />
-            </View>
-          )}
-        />
-      </View>
-    </>
+            </Dialog>
+          </Portal>
+        );
+      }}
+    </Formik>
   );
 }
 
 function PickUpListing(props) {
   const {navigation, route} = props;
-
-  const {fieldId, fieldLabel} = route?.params || {};
+  const {fieldId: field_id, fieldLabel} = route?.params || {};
 
   const alert = useAlert();
-
-  const [dialog, setDialog] = useState();
-
-  const [selectedList, setSelectedList] = useState();
-  const [pickUpsList, setPickUpsList] = React.useState(pickUpList || []);
-
-  const field_id = fieldId;
 
   const {getPickUpList, addPickUp, updatePickUp, deletePickUp} =
     useProjectStructureActions();
 
   const {selectedProject} = useSelector(s => s.project);
+  const {pickUpList = [], loading} = useSelector(s => s.projectStructure);
 
-  const {pickUpList, loading} = useSelector(s => s.projectStructure);
-
-  useEffect(() => {
-    if ((pickUpList, pickUpsList)) {
-      setPickUpsList(pickUpList);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pickUpList]);
+  const [dialog, setDialog] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState();
 
   React.useEffect(() => {
     getList();
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const getList = () =>
+  const getList = () => {
     getPickUpList({project_id: selectedProject.id, field_id});
-
-  const pickUp = pickUpsList?.[selectedList];
-
-  const {id} = pickUp || {};
-
-  const initialValues = useMemo(() => {
-    if (selectedList) {
-      const {title} = pickUpsList[selectedList];
-      return {
-        title,
-      };
-    }
-    return {};
-  }, [pickUpsList, selectedList]);
+  };
 
   const onSubmit = async values => {
-    const pickUpCard = pickUpsList?.find(i => i.id === values?.title);
     const data = {
       project_id: selectedProject.id,
       field_id,
-      title: pickUpCard.title,
+      title: values.title,
     };
-    if (id) {
-      updatePickUp({
-        project_id: selectedProject.id,
-        field_id,
-        title: pickUpCard.title,
-        id,
-      });
+    if (selectedIndex) {
+      await updatePickUp({id: pickUpList?.[selectedIndex].id, ...data});
     } else {
       await addPickUp(data);
     }
-
     getList();
+    toggleAddDialog();
   };
 
   const handleDelete = async pick_up_id => {
@@ -238,49 +196,21 @@ function PickUpListing(props) {
     });
   };
 
-  const editDialog = (index, item) => {
-    setSelectedList(index, item);
-    toggleAdd();
+  const editDialog = index => {
+    setSelectedIndex(index);
+    toggleAddDialog();
   };
 
-  const handleSave = values => {
-    const _pickups = [...pickUpsList];
-    if (!isNaN(selectedList)) {
-      _pickups[selectedList] = values;
-    } else {
-      _pickups.push(values);
-    }
-    setPickUpsList(_pickups);
-    toggleAdd();
+  const toggleAddDialog = () => {
+    setDialog(v => {
+      if (v) setSelectedIndex();
+      return !v;
+    });
   };
-
-  const toggleAdd = () => setDialog(v => !v);
-
-  const onClose = () => toggleAdd();
 
   return (
     <ActionSheetProvider>
-      <SafeAreaProvider style={{flexGrow: 1, margin: 10}}>
-        {dialog ? (
-          <Formik
-            enableReinitialize
-            validateOnBlur={false}
-            validateOnChange={false}
-            validationSchema={schema}
-            initialValues={initialValues}
-            onSubmit={handleSave}>
-            {formikProps => (
-              <AddField
-                {...props}
-                dialog={dialog}
-                toggleDialog={toggleAdd}
-                onClose={onClose}
-                formikProps={formikProps}
-              />
-            )}
-          </Formik>
-        ) : null}
-
+      <>
         <View style={styles.mainContainer}>
           <Spinner visible={loading} textContent="" />
 
@@ -295,7 +225,7 @@ function PickUpListing(props) {
             <Subheading>{fieldLabel}</Subheading>
           </View>
           <ScrollView>
-            {pickUpsList.map((item, index) => {
+            {pickUpList?.map((item, index) => {
               return (
                 <PickUpList
                   item={item}
@@ -308,15 +238,19 @@ function PickUpListing(props) {
             <Divider style={styles.divider} />
           </ScrollView>
 
-          <FAB style={styles.fab} icon="plus" onPress={toggleAdd} />
+          <FAB style={styles.fab} icon="plus" onPress={toggleAddDialog} />
         </View>
-        <ActionButtons
-          cancelLabel="Cancel"
-          submitLabel="Save"
-          onCancel={navigation.goBack}
-          onSubmit={onSubmit}
-        />
-      </SafeAreaProvider>
+
+        {dialog ? (
+          <AddFieldModel
+            {...props}
+            visible={dialog}
+            pickUp={pickUpList?.[selectedIndex]}
+            onClose={toggleAddDialog}
+            onSubmit={onSubmit}
+          />
+        ) : null}
+      </>
     </ActionSheetProvider>
   );
 }
@@ -324,7 +258,6 @@ function PickUpListing(props) {
 const styles = StyleSheet.create({
   mainContainer: {
     flexGrow: 1,
-    // flex: 1,
   },
   headerWrapper: {
     flexDirection: 'row',
@@ -371,14 +304,6 @@ const styles = StyleSheet.create({
     borderWidth: 0.4,
   },
 
-  backdrop: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.3)',
-  },
   sheetContentContainer: {
     backgroundColor: '#fff',
     borderTopLeftRadius: 30,
@@ -395,9 +320,14 @@ const styles = StyleSheet.create({
   inputStyles: {
     marginVertical: 10,
   },
-  scrollContent: {
-    paddingBottom: 50,
-    flexGrow: 1,
+  dialogContainer: {
+    flex: 0.3,
+    backgroundColor: 'grey',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    top: 280,
+    width: '100%',
+    left: -25,
   },
 });
 
