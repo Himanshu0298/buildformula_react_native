@@ -117,7 +117,8 @@ const AddProject = props => {
 
   const submitTypeRef = useRef();
 
-  const {addProject, getAreaList} = useProjectStructureActions();
+  const {addProject, getAreaList, getProjectList} =
+    useProjectStructureActions();
 
   const {selectedProject} = useSelector(s => s.project);
 
@@ -129,10 +130,12 @@ const AddProject = props => {
 
   React.useEffect(() => {
     getData();
+    getList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getData = () => getAreaList({project_id: selectedProject.id});
+  const getList = () => getProjectList({project_id: selectedProject.id});
 
   const onSubmit = async values => {
     const restData = {
@@ -142,6 +145,7 @@ const AddProject = props => {
       area: values.area,
     };
     const res = await addProject(restData);
+    await getList();
 
     if (submitTypeRef.current === 'save') {
       navigation.goBack();

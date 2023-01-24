@@ -21,19 +21,19 @@ function RenderForm(props) {
     handleSubmit,
   } = formikProps;
 
-  const {master_bhks, project_structure_project_category} = masterList;
+  const {master_bhks, project_structure_project_category} = masterList || [];
 
   const bhkOptions = useMemo(() => {
     return master_bhks?.map(i => ({
-      label: i.bhk_title,
-      value: i.bhk_title,
+      label: i?.bhk_title,
+      value: i?.bhk_title,
     }));
   }, [master_bhks]);
 
   const categoryOptions = useMemo(() => {
     return project_structure_project_category?.map(i => ({
-      label: i.title,
-      value: i.id,
+      label: i?.title,
+      value: i?.id,
     }));
   }, [project_structure_project_category]);
 
@@ -123,8 +123,9 @@ function RenderForm(props) {
 function ProjectStructure(props) {
   const {navigation, route} = props;
 
-  const {projectId} = route?.params || {};
-  console.log('===========> projectId', projectId);
+  const {projectId, projectDetails} = route?.params || {};
+
+  const edit = Boolean(projectId);
 
   const {updateProjectStructure, getProjectMasterList} =
     useProjectStructureActions();
@@ -138,6 +139,26 @@ function ProjectStructure(props) {
   }, []);
 
   const getData = () => getProjectMasterList({project_id: selectedProject.id});
+
+  const initialValues = React.useMemo(() => {
+    if (edit) {
+      const {
+        project_category,
+        total_no_of_towers,
+        total_no_of_units,
+        total_no_of_bunglows,
+        total_no_of_plots,
+      } = projectDetails || {};
+      return {
+        project_category,
+        total_no_of_towers,
+        total_no_of_units,
+        total_no_of_bunglows,
+        total_no_of_plots,
+      };
+    }
+    return {};
+  }, [edit, projectDetails]);
 
   const onSubmit = values => {
     const arrString = values?.bhk_configuration?.join(',') || undefined;
@@ -173,7 +194,7 @@ function ProjectStructure(props) {
         enableReinitialize
         validateOnBlur={false}
         validateOnChange={false}
-        initialValues={{}}
+        initialValues={initialValues || {}}
         onSubmit={onSubmit}>
         {formikProps => (
           <RenderForm

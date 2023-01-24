@@ -149,7 +149,9 @@ const RenderForm = props => {
 const ProjectHistory = props => {
   const {navigation, route} = props;
 
-  const {projectId: id} = route?.params || {};
+  const {projectId: id, projectDetails} = route?.params || {};
+
+  const edit = Boolean(id);
 
   const {getProjectMasterList, updateProjectHistory} =
     useProjectStructureActions();
@@ -163,6 +165,28 @@ const ProjectHistory = props => {
   }, []);
 
   const getData = () => getProjectMasterList({project_id: selectedProject.id});
+
+  const initialValues = React.useMemo(() => {
+    if (edit) {
+      const {
+        possesion_year,
+        rera_no,
+        project_type,
+        restricted_user,
+        project_status,
+        project_quality,
+      } = projectDetails || {};
+      return {
+        possesion_year,
+        rera_no,
+        project_type,
+        restricted_user,
+        project_status,
+        project_quality,
+      };
+    }
+    return {};
+  }, [edit, projectDetails]);
 
   const onSubmit = values => {
     const data = {
@@ -195,11 +219,7 @@ const ProjectHistory = props => {
         enableReinitialize
         validateOnBlur={false}
         validateOnChange={false}
-        initialValues={{
-          projectName: '',
-          builderName: '',
-          area: '',
-        }}
+        initialValues={initialValues || {}}
         // validationSchema={schema}
         onSubmit={onSubmit}>
         {formikProps => (

@@ -47,6 +47,7 @@ export default function useProjectStructureActions() {
     addFloor,
     updateFloor,
     deleteFloor,
+    createProjectDuplicate,
   } = useProjectStructure();
 
   return {
@@ -86,7 +87,7 @@ export default function useProjectStructureActions() {
         type: types.CREATE_PROJECT_DUPLICATE,
         payload: async () => {
           try {
-            const response = _res(await getProjectDetails(data));
+            const response = _res(await createProjectDuplicate(data));
             return Promise.resolve(response.data);
           } catch (error) {
             const message = _err(error);

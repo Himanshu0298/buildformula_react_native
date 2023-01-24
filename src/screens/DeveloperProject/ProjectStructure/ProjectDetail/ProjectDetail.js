@@ -7,6 +7,7 @@ import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useSelector} from 'react-redux';
 import useProjectStructureActions from 'redux/actions/projectStructureActions';
+import {cloneDeep} from 'lodash';
 import ProjectPreview from './ProjectPreview';
 import StructurePreview from './StructurePreview';
 
@@ -19,13 +20,28 @@ function ProjectDetail(props) {
   const [selectedTab, setSelectedTab] = useState(0);
 
   const {selectedProject} = useSelector(s => s.project);
+  const {projectDetails, loading} = useSelector(s => s.projectStructure);
 
-  const {createProjectDuplicate} = useProjectStructureActions();
+  const {createProjectDuplicate, getProjectDetails, getProjectList} =
+    useProjectStructureActions();
 
   const [routes] = useState([
     {key: 'first', title: 'Details'},
     {key: 'second', title: 'Structure'},
   ]);
+
+  React.useEffect(() => {
+    getList();
+    getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const getData = async () => {
+    await getProjectDetails({project_id: selectedProject.id, id: projectId});
+  };
+  const getList = async () => {
+    await getProjectList({project_id: selectedProject.id});
+  };
 
   const renderTabBar = prop => (
     <View style={styles.headerContainer}>
@@ -53,10 +69,19 @@ function ProjectDetail(props) {
     };
 
     await createProjectDuplicate(data);
+    navToNext();
   };
 
   const navToEdit = () =>
-    navigation.navigate('ProjectStructureDetails', {projectId});
+    navigation.navigate('ProjectStructureDetails', {projectId, projectDetails});
+
+  const navToNext = values => {
+    const _projectDetails = cloneDeep(projectDetails);
+    _projectDetails.push(values);
+    const params = {projectDetails: _projectDetails};
+
+    navigation.push('ProjectStructureDetails', params);
+  };
 
   return (
     <View style={styles.mainContainer}>
