@@ -22,6 +22,7 @@ import {useAlert} from 'components/Atoms/Alert';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {ActionSheetProvider} from '@expo/react-native-action-sheet';
 import * as Yup from 'yup';
+import {isNumber} from 'lodash';
 
 const schema = Yup.object().shape({
   title: Yup.string('Invalid').required('Required'),
@@ -171,7 +172,7 @@ function PickUpListing(props) {
       field_id,
       title: values.title,
     };
-    if (selectedIndex) {
+    if (isNumber(selectedIndex)) {
       await updatePickUp({id: pickUpList?.[selectedIndex].id, ...data});
     } else {
       await addPickUp(data);

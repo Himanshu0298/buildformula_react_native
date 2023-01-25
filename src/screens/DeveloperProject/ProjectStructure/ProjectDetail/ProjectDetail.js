@@ -18,6 +18,7 @@ function ProjectDetail(props) {
   const {id: projectId} = route.params;
 
   const [selectedTab, setSelectedTab] = useState(0);
+  const [details, setDetails] = useState(projectDetails || {});
 
   const {selectedProject} = useSelector(s => s.project);
   const {projectDetails, loading} = useSelector(s => s.projectStructure);
@@ -70,15 +71,16 @@ function ProjectDetail(props) {
 
     await createProjectDuplicate(data);
     navToNext();
+    getList();
   };
 
   const navToEdit = () =>
     navigation.navigate('ProjectStructureDetails', {projectId, projectDetails});
 
   const navToNext = values => {
-    const _projectDetails = cloneDeep(projectDetails);
+    const _projectDetails = cloneDeep(details);
     _projectDetails.push(values);
-    const params = {projectDetails: _projectDetails};
+    const params = {details: _projectDetails};
 
     navigation.push('ProjectStructureDetails', params);
   };

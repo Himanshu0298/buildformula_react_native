@@ -217,20 +217,22 @@ function Configuration(props) {
           <Text style={styles.configurationIcon}>{configurtion}</Text>
         </View>
       </View>
-      <View style={styles.descriptionContainer}>
-        <Subheading> Description</Subheading>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('Description', {description})}>
-          <RenderHTML
-            style={styles.html}
-            source={{
-              html: description,
-            }}
-            contentWidth={Layout.window.width - 20}
-          />
-          <Text style={{color: theme.colors.primary}}> more</Text>
-        </TouchableOpacity>
-      </View>
+      {description.length ? (
+        <View style={styles.descriptionContainer}>
+          <Subheading> Description</Subheading>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Description', {description})}>
+            <RenderHTML
+              style={styles.html}
+              source={{
+                html: description,
+              }}
+              contentWidth={Layout.window.width - 20}
+            />
+            <Text style={{color: theme.colors.primary}}>more</Text>
+          </TouchableOpacity>
+        </View>
+      ) : null}
     </View>
   );
 }
@@ -306,10 +308,13 @@ function StatusField(props) {
         ) : null}
 
         <View style={styles.statusSubContainer}>
-          <View style={styles.thumbIcon}>
-            <MaterialIcons name="thumb-up-off-alt" size={18} />
-            <Text style={styles.textValue}>{project_quality_title}</Text>
-          </View>
+          {project_quality_title ? (
+            <View style={styles.thumbIcon}>
+              <MaterialIcons name="thumb-up-off-alt" size={18} />
+              <Text style={styles.textValue}>{project_quality_title}</Text>
+            </View>
+          ) : null}
+
           {premium_project ? (
             <View style={styles.buildingIcon}>
               <MaterialCommunityIcons
@@ -321,11 +326,13 @@ function StatusField(props) {
           ) : null}
         </View>
       </View>
-      <View style={styles.statusContainer}>
-        <Subheading>Status</Subheading>
-        <Text>{project_type_title}</Text>
-        <Caption> Possession by: {possesion_year}</Caption>
-      </View>
+      {projectDetails?.length ? (
+        <View style={styles.statusContainer}>
+          <Subheading>Status</Subheading>
+          <Text>{project_type_title}</Text>
+          <Caption> Possession by: {possesion_year}</Caption>
+        </View>
+      ) : null}
     </View>
   );
 }
@@ -396,6 +403,13 @@ function ProjectPreview(props) {
     });
   };
 
+  const file = projectDetails?.attachment_file;
+  const projectSecurity = projectDetails?.security_info;
+  const projectAmenities = projectDetails?.building_amenities;
+  const configuration = projectDetails?.configurtion;
+  const projectOwner = projectDetails?.owner_info;
+  const details = projectDetails?.projectDetails;
+
   const toggleSharing = () => setSharing(v => !v);
 
   return (
@@ -417,37 +431,53 @@ function ProjectPreview(props) {
         <View style={styles.statusField}>
           <StatusField projectDetails={projectDetails} />
         </View>
-        <View style={styles.statusField}>
-          <Details projectDetails={projectDetails} />
-        </View>
+        {details?.length ? (
+          <View style={styles.statusField}>
+            <Details projectDetails={projectDetails} />
+          </View>
+        ) : null}
+
         <Divider style={styles.divider} />
-        <View style={styles.statusField}>
-          <Configuration
-            navigation={navigation}
-            projectDetails={projectDetails}
-          />
-        </View>
-        <View style={styles.statusField}>
-          <Animates projectDetails={projectDetails} />
-        </View>
-        <View style={styles.statusField}>
-          <ProjectOwnerDetails projectDetails={projectDetails} />
-        </View>
-        <View style={styles.statusField}>
-          <ProjectSecurityDetails projectDetails={projectDetails} />
-        </View>
-        <View style={styles.statusField}>
-          <Subheading> File's/ Attachments </Subheading>
-          {projectDetails?.attachment_file?.map(file => {
-            return (
-              <Files
-                item={file}
-                handleDelete={handleDelete}
-                handleShare={handleShare}
-              />
-            );
-          })}
-        </View>
+        {configuration?.length ? (
+          <View style={styles.statusField}>
+            <Configuration
+              navigation={navigation}
+              projectDetails={projectDetails}
+            />
+          </View>
+        ) : null}
+
+        {projectAmenities?.length ? (
+          <View style={styles.statusField}>
+            <Animates projectDetails={projectDetails} />
+          </View>
+        ) : null}
+        {projectOwner?.length ? (
+          <View style={styles.statusField}>
+            <ProjectOwnerDetails projectDetails={projectDetails} />
+          </View>
+        ) : null}
+
+        {projectSecurity?.length ? (
+          <View style={styles.statusField}>
+            <ProjectSecurityDetails projectDetails={projectDetails} />
+          </View>
+        ) : null}
+
+        {file?.length ? (
+          <View style={styles.statusField}>
+            <Subheading> File's/ Attachments </Subheading>
+            {file?.map(item => {
+              return (
+                <Files
+                  item={item}
+                  handleDelete={handleDelete}
+                  handleShare={handleShare}
+                />
+              );
+            })}
+          </View>
+        ) : null}
       </View>
     </ScrollView>
   );
