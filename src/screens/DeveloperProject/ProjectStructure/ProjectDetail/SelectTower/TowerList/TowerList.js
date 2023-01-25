@@ -1,28 +1,29 @@
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import React, {useEffect, useRef, useState} from 'react';
-import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Button, Caption, FAB, IconButton, Subheading} from 'react-native-paper';
 import Animated from 'react-native-reanimated';
 import BottomSheet from 'reanimated-bottom-sheet';
+
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import RenderInput from 'components/Atoms/RenderInput';
 import {Formik} from 'formik';
 import {getShadow} from 'utils';
-// import {useSelector} from 'react-redux';
+import useProjectStructureActions from 'redux/actions/projectStructureActions';
+import {useSelector} from 'react-redux';
+import {useAlert} from 'components/Atoms/Alert';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const SNAP_POINTS = [0, '25%'];
-const DATA = [
-  {name: 'Aradhya'},
-  {name: 'Conva'},
-  {name: 'Kalpya'},
-  {name: 'Vishakha'},
-  {name: 'Aradhya'},
-];
+
 function AddTower(props) {
   const {formikProps, dialog, onClose} = props;
+
   const {values, errors, handleChange, handleBlur, handleSubmit} = formikProps;
+
   const bottomSheetRef = useRef();
   const fall = new Animated.Value(1);
+
   useEffect(() => {
     if (dialog) {
       bottomSheetRef?.current?.snapTo(1);
@@ -30,6 +31,7 @@ function AddTower(props) {
       bottomSheetRef?.current?.snapTo(0);
     }
   }, [dialog]);
+
   return (
     <>
       {dialog ? (
@@ -40,6 +42,7 @@ function AddTower(props) {
           ]}
         />
       ) : null}
+
       <BottomSheet
         ref={bottomSheetRef}
         snapPoints={SNAP_POINTS}
@@ -58,6 +61,7 @@ function AddTower(props) {
               />
             </View>
             <Subheading> Add Field</Subheading>
+
             <RenderInput
               name="towerName"
               label="Tower Name"
@@ -66,7 +70,7 @@ function AddTower(props) {
               onChangeText={handleChange('towerName')}
               onBlur={handleBlur('towerName')}
               autoCapitalize="none"
-              returnKeyType="towerName"
+              returnKeyType="next"
               error={errors.towerName}
             />
             <Button
@@ -82,12 +86,13 @@ function AddTower(props) {
     </>
   );
 }
-function ListData() {
-  // const test = useSelector(s => s.projectStucture);
+
+function ListData(props) {
+  const {towerList, handleDelete} = props;
 
   return (
     <View>
-      {DATA.map(item => {
+      {towerList.map(item => {
         return (
           <View style={styles.listContainer}>
             <View style={styles.subContainer}>
@@ -98,13 +103,13 @@ function ListData() {
               />
             </View>
             <View style={styles.listSubContainer}>
-              <Caption>{item.name}</Caption>
+              <Caption>{item.label}</Caption>
             </View>
             <View>
               <OpacityButton
                 color="#FF5D5D"
                 opacity={0.18}
-                onPress={{}}
+                onPress={() => handleDelete(item.id)}
                 style={styles.deleteIcon}>
                 <MaterialIcons name="delete" color="#FF5D5D" size={13} />
               </OpacityButton>
@@ -115,14 +120,61 @@ function ListData() {
     </View>
   );
 }
+
 function TowerList(props) {
-  const {navigation} = props;
+  const {navigation, route} = props;
+  const {id} = route?.params || {};
+
+  const alert = useAlert();
+
   const [dialog, setDialog] = useState();
-  const toggleAdd = () => setDialog(v => !v);
-  const onClose = () => toggleAdd();
-  const handleSave = () => {
-    console.log('===========> ');
+
+  const {getTowerList, addTower, deleteTower} = useProjectStructureActions();
+  const {selectedProject} = useSelector(s => s.project);
+  const {towerList, loading} = useSelector(s => s.projectStructure);
+
+  React.useEffect(() => {
+    getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const getData = async () => {
+    await getTowerList({project_id: selectedProject.id, id});
   };
+
+  const toggleAdd = () => setDialog(v => !v);
+
+  const onClose = () => toggleAdd();
+
+  const onSubmit = async values => {
+    const data = {
+      project_id: selectedProject.id,
+      id,
+      contact_type: values.contact_type,
+      name: values.towerName,
+    };
+
+    await addTower(data);
+    toggleAdd();
+    getData();
+  };
+
+  const handleDelete = async tower_id => {
+    alert.show({
+      title: 'Confirm',
+      message: 'Are you sure you want to delete this tower?',
+      confirmText: 'Delete',
+      onConfirm: async () => {
+        await deleteTower({
+          project_id: selectedProject.id,
+          tower_id,
+          id,
+        });
+        getData();
+      },
+    });
+  };
+
   return (
     <>
       {dialog ? (
@@ -131,7 +183,7 @@ function TowerList(props) {
           validateOnBlur={false}
           validateOnChange={false}
           initialValues={{}}
-          onSubmit={handleSave}>
+          onSubmit={onSubmit}>
           {formikProps => (
             <AddTower
               {...props}
@@ -143,7 +195,10 @@ function TowerList(props) {
           )}
         </Formik>
       ) : null}
+
       <View style={styles.container}>
+        <Spinner visible={loading} textContent="" />
+
         <View style={styles.titleContainer}>
           <TouchableOpacity
             style={styles.titleContainer}
@@ -156,12 +211,17 @@ function TowerList(props) {
           </TouchableOpacity>
           <Subheading>Tower List</Subheading>
         </View>
-        <ListData />
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          style={styles.scrollView}>
+          <ListData towerList={towerList} handleDelete={handleDelete} />
+        </ScrollView>
         <FAB style={styles.fab} large icon="plus" onPress={toggleAdd} />
       </View>
     </>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -177,6 +237,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(72, 114, 244, 0.1)',
     marginRight: 11,
   },
+
   subContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -201,8 +262,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 5,
     bottom: 1,
-    backgroundColor: '#4872F4',
+    backgroundColor: '#4872f4',
   },
+
   backdrop: {
     position: 'absolute',
     left: 0,
@@ -227,5 +289,9 @@ const styles = StyleSheet.create({
   inputStyles: {
     marginVertical: 10,
   },
+  scrollView: {
+    marginBottom: 20,
+  },
 });
+
 export default TowerList;

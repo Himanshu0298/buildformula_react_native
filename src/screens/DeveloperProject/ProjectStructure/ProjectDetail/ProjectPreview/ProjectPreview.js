@@ -1,12 +1,13 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import React from 'react';
+import React, {useState} from 'react';
 import {Image, View, StyleSheet, ScrollView} from 'react-native';
-import stockImage from 'assets/images/stock_image.png';
+import stock_image from 'assets/images/stock_image.png';
 import PdfIcon from 'assets/images/pdf_icon.png';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Share from 'react-native-share';
 
 import {
   Caption,
@@ -34,8 +35,7 @@ import RenderHTML from 'react-native-render-html';
 import Layout from 'utils/Layout';
 
 function Files(props) {
-  const {projectDetails, handleDelete} = props;
-  const {attachment_file} = projectDetails || {};
+  const {item, handleDelete, handleShare} = props;
 
   const download = useDownload();
 
@@ -57,53 +57,50 @@ function Files(props) {
 
   const toggleMenu = () => setVisible(v => !v);
 
+  const onDelete = () => {
+    handleDelete(item.id);
+    toggleMenu();
+  };
+
+  const onShare = () => {
+    handleShare(item);
+    toggleMenu();
+  };
+
   return (
     <View>
-      <Subheading> File's/ Attachments </Subheading>
-      {attachment_file?.map(item => {
-        return (
-          <View style={styles.recentFiles}>
-            <TouchableOpacity
-              style={styles.sectionContainer}
-              onPress={() => onPressFile(item)}>
-              <Image source={PdfIcon} style={styles.fileIcon} />
-              <View>
-                <Text
-                  style={(styles.verticalFlex, styles.text)}
-                  numberOfLines={2}>
-                  {item?.file_name}
-                </Text>
-                <View style={styles.type}>
-                  <Text style={styles.date}>{item.title}</Text>
-                </View>
-                <View style={styles.dateContainer}>
-                  <Text style={styles.date}>
-                    {dayjs(item?.created_at).format('DD MMM YYYY')}
-                  </Text>
-                </View>
-              </View>
-            </TouchableOpacity>
-
-            <Menu
-              visible={visible}
-              onDismiss={() => toggleMenu()}
-              anchor={
-                <TouchableOpacity style={styles.editIcon} onPress={toggleMenu}>
-                  <Entypo name="dots-three-vertical" size={15} />
-                </TouchableOpacity>
-              }>
-              <Menu.Item
-                onPress={() => {
-                  toggleMenu();
-                }}
-                title="Rename"
-              />
-              <Menu.Item onPress={() => handleDelete(item.id)} title="Delete" />
-              <Menu.Item onPress={{}} title="Share" />
-            </Menu>
+      <View style={styles.recentFiles}>
+        <TouchableOpacity
+          style={styles.sectionContainer}
+          onPress={() => onPressFile(item)}>
+          <Image source={PdfIcon} style={styles.fileIcon} />
+          <View>
+            <Text style={(styles.verticalFlex, styles.text)} numberOfLines={2}>
+              {item?.file_name}
+            </Text>
+            <View style={styles.type}>
+              <Text style={styles.date}>{item.title}</Text>
+            </View>
+            <View style={styles.dateContainer}>
+              <Text style={styles.date}>
+                {dayjs(item?.created_at).format('DD MMM YYYY')}
+              </Text>
+            </View>
           </View>
-        );
-      })}
+        </TouchableOpacity>
+
+        <Menu
+          visible={visible}
+          onDismiss={() => toggleMenu()}
+          anchor={
+            <TouchableOpacity style={styles.editIcon} onPress={toggleMenu}>
+              <Entypo name="dots-three-vertical" size={15} />
+            </TouchableOpacity>
+          }>
+          <Menu.Item onPress={onDelete} title="Delete" />
+          <Menu.Item onPress={onShare} title="Share" />
+        </Menu>
+      </View>
     </View>
   );
 }
@@ -220,20 +217,22 @@ function Configuration(props) {
           <Text style={styles.configurationIcon}>{configurtion}</Text>
         </View>
       </View>
-      <View style={styles.descriptionContainer}>
-        <Subheading> Description</Subheading>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('Description', {description})}>
-          <RenderHTML
-            style={styles.html}
-            source={{
-              html: description,
-            }}
-            contentWidth={Layout.window.width - 20}
-          />
-          <Text style={{color: theme.colors.primary}}> more</Text>
-        </TouchableOpacity>
-      </View>
+      {description.length ? (
+        <View style={styles.descriptionContainer}>
+          <Subheading> Description</Subheading>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Description', {description})}>
+            <RenderHTML
+              style={styles.html}
+              source={{
+                html: description,
+              }}
+              contentWidth={Layout.window.width - 20}
+            />
+            <Text style={{color: theme.colors.primary}}>more</Text>
+          </TouchableOpacity>
+        </View>
+      ) : null}
     </View>
   );
 }
@@ -309,10 +308,13 @@ function StatusField(props) {
         ) : null}
 
         <View style={styles.statusSubContainer}>
-          <View style={styles.thumbIcon}>
-            <MaterialIcons name="thumb-up-off-alt" size={18} />
-            <Text style={styles.textValue}>{project_quality_title}</Text>
-          </View>
+          {project_quality_title ? (
+            <View style={styles.thumbIcon}>
+              <MaterialIcons name="thumb-up-off-alt" size={18} />
+              <Text style={styles.textValue}>{project_quality_title}</Text>
+            </View>
+          ) : null}
+
           {premium_project ? (
             <View style={styles.buildingIcon}>
               <MaterialCommunityIcons
@@ -324,11 +326,13 @@ function StatusField(props) {
           ) : null}
         </View>
       </View>
-      <View style={styles.statusContainer}>
-        <Subheading>Status</Subheading>
-        <Text>{project_type_title}</Text>
-        <Caption> Possession by: {possesion_year}</Caption>
-      </View>
+      {projectDetails?.length ? (
+        <View style={styles.statusContainer}>
+          <Subheading>Status</Subheading>
+          <Text>{project_type_title}</Text>
+          <Caption> Possession by: {possesion_year}</Caption>
+        </View>
+      ) : null}
     </View>
   );
 }
@@ -338,6 +342,9 @@ function ProjectPreview(props) {
   const {id: listId} = route?.params || {};
 
   const alert = useAlert();
+  const download = useDownload();
+
+  const [sharing, setSharing] = useState(false);
 
   const {getProjectDetails, deleteProjectFile} = useProjectStructureActions();
   const {projectDetails, loading} = useSelector(s => s.projectStructure);
@@ -352,10 +359,38 @@ function ProjectPreview(props) {
   const getData = () =>
     getProjectDetails({project_id: selectedProject.id, id: listId});
 
+  const handleShare = async file => {
+    try {
+      toggleSharing();
+      const fileUrl = getDownloadUrl(file);
+      const name = getFileName(file);
+
+      return download.link({
+        name,
+        link: fileUrl,
+        showAction: false,
+        base64: true,
+        onFinish: ({base64}) => {
+          const options = {
+            title: 'Share',
+            message: `Share ${file.file_name} :`,
+            url: base64,
+          };
+          toggleSharing();
+
+          return Share.open(options);
+        },
+      });
+    } catch (error) {
+      console.log('-----> error', error);
+      return error;
+    }
+  };
+
   const handleDelete = async attachment_id => {
     alert.show({
       title: 'Confirm',
-      message: 'Are you sure you want to delete?',
+      message: 'Are you sure you want to delete this file?',
       confirmText: 'Delete',
       onConfirm: async () => {
         await deleteProjectFile({
@@ -368,11 +403,20 @@ function ProjectPreview(props) {
     });
   };
 
+  const file = projectDetails?.attachment_file;
+  const projectSecurity = projectDetails?.security_info;
+  const projectAmenities = projectDetails?.building_amenities;
+  const configuration = projectDetails?.configurtion;
+  const projectOwner = projectDetails?.owner_info;
+  const details = projectDetails?.projectDetails;
+
+  const toggleSharing = () => setSharing(v => !v);
+
   return (
     <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
       <Spinner visible={loading} textContent="" />
 
-      <Image source={stockImage} />
+      <Image source={stock_image} />
       <View style={styles.mainContainer}>
         <View>
           <Title>{project_name?.toUpperCase()} </Title>
@@ -387,28 +431,53 @@ function ProjectPreview(props) {
         <View style={styles.statusField}>
           <StatusField projectDetails={projectDetails} />
         </View>
-        <View style={styles.statusField}>
-          <Details projectDetails={projectDetails} />
-        </View>
+        {details?.length ? (
+          <View style={styles.statusField}>
+            <Details projectDetails={projectDetails} />
+          </View>
+        ) : null}
+
         <Divider style={styles.divider} />
-        <View style={styles.statusField}>
-          <Configuration
-            navigation={navigation}
-            projectDetails={projectDetails}
-          />
-        </View>
-        <View style={styles.statusField}>
-          <Animates projectDetails={projectDetails} />
-        </View>
-        <View style={styles.statusField}>
-          <ProjectOwnerDetails projectDetails={projectDetails} />
-        </View>
-        <View style={styles.statusField}>
-          <ProjectSecurityDetails projectDetails={projectDetails} />
-        </View>
-        <View style={styles.statusField}>
-          <Files projectDetails={projectDetails} handleDelete={handleDelete} />
-        </View>
+        {configuration?.length ? (
+          <View style={styles.statusField}>
+            <Configuration
+              navigation={navigation}
+              projectDetails={projectDetails}
+            />
+          </View>
+        ) : null}
+
+        {projectAmenities?.length ? (
+          <View style={styles.statusField}>
+            <Animates projectDetails={projectDetails} />
+          </View>
+        ) : null}
+        {projectOwner?.length ? (
+          <View style={styles.statusField}>
+            <ProjectOwnerDetails projectDetails={projectDetails} />
+          </View>
+        ) : null}
+
+        {projectSecurity?.length ? (
+          <View style={styles.statusField}>
+            <ProjectSecurityDetails projectDetails={projectDetails} />
+          </View>
+        ) : null}
+
+        {file?.length ? (
+          <View style={styles.statusField}>
+            <Subheading> File's/ Attachments </Subheading>
+            {file?.map(item => {
+              return (
+                <Files
+                  item={item}
+                  handleDelete={handleDelete}
+                  handleShare={handleShare}
+                />
+              );
+            })}
+          </View>
+        ) : null}
       </View>
     </ScrollView>
   );

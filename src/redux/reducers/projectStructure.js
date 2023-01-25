@@ -7,6 +7,7 @@ import {
   ADD_PROJECT_OWNER,
   ADD_PROJECT_SECURITY,
   ADD_TOWER,
+  CREATE_PROJECT_DUPLICATE,
   DELETE_AREA,
   DELETE_FLOOR,
   DELETE_PICK_UP,
@@ -66,7 +67,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${GET_PROJECT_LIST}_FULFILLED`: {
       return {
         ...state,
-        projectList: payload,
+        projectList: payload.sort((a, b) => b.id - a.id),
         loading: false,
       };
     }
@@ -122,7 +123,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${GET_AREA_LIST}_FULFILLED`: {
       return {
         ...state,
-        areaList: payload,
+        areaList: payload.sort((a, b) => b.id - a.id),
         loading: false,
       };
     }
@@ -171,6 +172,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${ADD_FLOOR}_PENDING`:
     case `${UPDATE_FLOOR}_PENDING`:
     case `${DELETE_FLOOR}_PENDING`:
+    case `${CREATE_PROJECT_DUPLICATE}_PENDING`:
       return {
         ...state,
         loading: true,
@@ -203,6 +205,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${ADD_FLOOR}_FULFILLED`:
     case `${UPDATE_FLOOR}_FULFILLED`:
     case `${DELETE_FLOOR}_FULFILLED`:
+    case `${CREATE_PROJECT_DUPLICATE}_FULFILLED`:
       return {
         ...state,
         loading: false,
@@ -245,6 +248,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${ADD_FLOOR}_REJECTED`:
     case `${UPDATE_FLOOR}_REJECTED`:
     case `${DELETE_FLOOR}_REJECTED`:
+    case `${CREATE_PROJECT_DUPLICATE}_REJECTED`:
       return {
         ...state,
         loading: false,

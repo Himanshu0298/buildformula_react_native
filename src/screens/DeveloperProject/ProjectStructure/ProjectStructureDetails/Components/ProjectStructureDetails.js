@@ -49,7 +49,7 @@ const ROUTE = [
 ];
 
 const RenderRow = props => {
-  const {navigation, screenName, route, projectId} = props;
+  const {navigation, screenName, route, projectId, projectDetails} = props;
 
   return (
     <>
@@ -59,7 +59,9 @@ const RenderRow = props => {
           opacity={0.1}
           color="#4872f4"
           style={styles.navBTN}
-          onPress={() => navigation.navigate(route, {projectId})}>
+          onPress={() =>
+            navigation.navigate(route, {projectId, projectDetails})
+          }>
           <MaterialIcon name="edit" color="#4872f4" size={15} />
         </OpacityButton>
       </View>
@@ -70,7 +72,7 @@ const RenderRow = props => {
 
 const ProjectStructureDetails = props => {
   const {navigation, route} = props;
-  const {projectId} = route?.params || {};
+  const {projectId, projectDetails} = route?.params || {};
 
   return (
     <SafeAreaView style={styles.mainContainer}>
@@ -80,7 +82,7 @@ const ProjectStructureDetails = props => {
           size={18}
           color="#4872f4"
           style={styles.backIcon}
-          onPress={() => navigation.goBack()}
+          onPress={navigation.goBack}
         />
         <Title>Add Project</Title>
       </View>
@@ -94,6 +96,7 @@ const ProjectStructureDetails = props => {
               screenName={item.screenName}
               route={item.route}
               projectId={projectId}
+              projectDetails={projectDetails}
             />
           );
         })}

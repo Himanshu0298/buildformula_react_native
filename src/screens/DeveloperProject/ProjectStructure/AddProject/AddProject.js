@@ -20,8 +20,9 @@ const schema = Yup.object().shape({
 });
 
 const RenderForm = props => {
-  const {areaOptions, formikProps, areaList, navigation} = props;
+  const {areaOptions, formikProps, areaList} = props;
   const {values, errors, handleChange, handleBlur, setFieldValue} = formikProps;
+
   const handleAreaSelect = value => {
     setFieldValue('area', value);
     const option = areaList.find(i => i.id === value);
@@ -112,26 +113,29 @@ const RenderForm = props => {
 const AddProject = props => {
   const {navigation} = props;
 
-  // const {id} = route?.params || {};
-
   const submitTypeRef = useRef();
 
-  const {addProject, getAreaList} = useProjectStructureActions();
+  const {addProject, getAreaList, getProjectList} =
+    useProjectStructureActions();
 
   const {selectedProject} = useSelector(s => s.project);
 
   const {areaList} = useSelector(s => s.projectStructure);
 
   const areaOptions = useMemo(() => {
-    return areaList?.map(i => ({label: i.area, value: i.id}));
+    return areaList
+      ?.filter(i => i.status === 1)
+      ?.map(i => ({label: i.area, value: i.id}));
   }, [areaList]);
 
   React.useEffect(() => {
     getData();
+    getList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getData = () => getAreaList({project_id: selectedProject.id});
+  const getList = () => getProjectList({project_id: selectedProject.id});
 
   const onSubmit = async values => {
     const restData = {
@@ -141,6 +145,7 @@ const AddProject = props => {
       area: values.area,
     };
     const res = await addProject(restData);
+    await getList();
 
     if (submitTypeRef.current === 'save') {
       navigation.goBack();

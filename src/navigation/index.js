@@ -61,20 +61,33 @@ import CustomerFiles from 'screens/CustomerProject/CustomerFiles';
 
 /** *********** Developer Project Sub Screens    ************ */
 
-// Project Structure
+//* Project Structure
 import ProjectListing from 'screens/DeveloperProject/ProjectStructure/ProjectListing';
 import ProjectFilter from 'screens/DeveloperProject/ProjectStructure/ProjectListing/ProjectFilter';
 import ProjectStructureDetails from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/Components/ProjectStructureDetails';
 import AddProject from 'screens/DeveloperProject/ProjectStructure/AddProject';
 import ProjectHistory from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/ProjectHistory';
 import ProjectStructure from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/ProjectStructure';
+import ProjectAmenities from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/ProjectAmenities';
 import ProjectBrief from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/ProjectBrief';
 import ProjectOwner from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/ProjectOwner';
 import ProjectSecurity from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/ProjectSecurity';
 import ProjectFiles from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/ProjectFiles';
+import ProjectDetail from 'screens/DeveloperProject/ProjectStructure/ProjectDetail';
+import ProjectPreview from 'screens/DeveloperProject/ProjectStructure/ProjectDetail/ProjectPreview';
+import FloorPreview from 'screens/DeveloperProject/ProjectStructure/ProjectDetail/SelectFloor/FloorPreview';
+import TowerPreview from 'screens/DeveloperProject/ProjectStructure/ProjectDetail/SelectTower/TowerPreview';
+import TowerList from 'screens/DeveloperProject/ProjectStructure/ProjectDetail/SelectTower/TowerList';
+import FloorList from 'screens/DeveloperProject/ProjectStructure/ProjectDetail/SelectFloor/FloorList';
+import Description from 'screens/DeveloperProject/ProjectStructure/ProjectDetail/ProjectPreview/Description';
+
+// Area
 import AreaList from 'screens/DeveloperProject/ProjectStructure/AreaList';
 import AddArea from 'screens/DeveloperProject/ProjectStructure/AddArea';
-import ProjectAmenities from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/ProjectAmenities';
+
+// PickUp
+import PickUpListing from 'screens/DeveloperProject/ProjectStructure/PickUp/PickUpListing';
+import SearchPickUpList from 'screens/DeveloperProject/ProjectStructure/PickUp/SearchPickUpList';
 
 // Unit
 import UnitList from 'screens/DeveloperProject/ProjectStructure/UnitList/Index';
@@ -249,13 +262,6 @@ import DocumentDownload from 'screens/DeveloperProject/DocumentGenerater/Documen
 import UpdateProjectDetails from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/ProjectUpdateDetails';
 import AddProjectSecurity from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/ProjectSecurity/AddProjectSecurity';
 import AddProjectOwner from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/ProjectOwner/AddProjectOwner';
-import ProjectPreview from 'screens/DeveloperProject/ProjectStructure/ProjectDetail/ProjectPreview';
-import StructurePreview from 'screens/DeveloperProject/ProjectStructure/ProjectDetail/StructurePreview';
-import TowerPreview from 'screens/DeveloperProject/ProjectStructure/ProjectDetail/SelectTower/TowerPreview';
-import TowerList from 'screens/DeveloperProject/ProjectStructure/ProjectDetail/SelectTower/TowerList';
-import FloorPreview from 'screens/DeveloperProject/ProjectStructure/ProjectDetail/SelectFloor/FloorPreview';
-import FloorList from 'screens/DeveloperProject/ProjectStructure/ProjectDetail/SelectFloor/FloorList';
-import ProjectDetail from 'screens/DeveloperProject/ProjectStructure/ProjectDetail';
 
 /** *********** Developer Project Sub Screens End   ************ */
 
@@ -670,10 +676,9 @@ function AppStackNavigator() {
           {/* PROJECT STRUCTURE */}
 
           <Stack.Group>
-            <Stack.Screen name="ProjectList" component={ProjectListing} />
+            <Stack.Screen name="ProjectListing" component={ProjectListing} />
             <Stack.Screen name="ProjectFilter" component={ProjectFilter} />
             <Stack.Screen name="AddProject" component={AddProject} />
-            <Stack.Screen name="ProjectDetail" component={ProjectDetail} />
             <Stack.Screen
               name="ProjectStructureDetails"
               component={ProjectStructureDetails}
@@ -694,7 +699,18 @@ function AppStackNavigator() {
             <Stack.Screen name="ProjectFiles" component={ProjectFiles} />
             <Stack.Screen name="AreaList" component={AreaList} />
             <Stack.Screen name="AddArea" component={AddArea} />
+            <Stack.Screen name="ProjectDetail" component={ProjectDetail} />
             <Stack.Screen name="ProjectPreview" component={ProjectPreview} />
+            <Stack.Screen name="TowerPreview" component={TowerPreview} />
+            <Stack.Screen name="FloorPreview" component={FloorPreview} />
+            <Stack.Screen name="TowerList" component={TowerList} />
+            <Stack.Screen name="FloorList" component={FloorList} />
+            <Stack.Screen name="Description" component={Description} />
+            <Stack.Screen
+              name="SearchPickUpList"
+              component={SearchPickUpList}
+            />
+            <Stack.Screen name="PickUpListing" component={PickUpListing} />
             <Stack.Screen
               name="ProjectAmenities"
               component={ProjectAmenities}
@@ -730,14 +746,6 @@ function AppStackNavigator() {
               name="InfrastructureInfo"
               component={InfrastructureInfo}
             />
-            <Stack.Screen
-              name="StructurePreview"
-              component={StructurePreview}
-            />
-            <Stack.Screen name="TowerPreview" component={TowerPreview} />
-            <Stack.Screen name="TowerList" component={TowerList} />
-            <Stack.Screen name="FloorPreview" component={FloorPreview} />
-            <Stack.Screen name="FloorList" component={FloorList} />
           </Stack.Group>
 
           {/* DEVELOPER STACK END */}

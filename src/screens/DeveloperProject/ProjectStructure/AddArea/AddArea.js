@@ -2,25 +2,24 @@ import {StyleSheet, View} from 'react-native';
 import React, {useMemo} from 'react';
 import {IconButton, Title} from 'react-native-paper';
 import {Formik} from 'formik';
-import * as Yup from 'yup';
 import RenderInput from 'components/Atoms/RenderInput';
 import RenderSelect from 'components/Atoms/RenderSelect';
 import ActionButtons from 'components/Atoms/ActionButtons';
 import useProjectStructureActions from 'redux/actions/projectStructureActions';
 import {useSelector} from 'react-redux';
+import * as Yup from 'yup';
 
-// const schema = Yup.object().shape({
-//   projectName: Yup.string()
-//     .label('projectName')
-//     .required('Project Name is Required'),
-//   builderName: Yup.string()
-//     .label('builderName')
-//     .required('Builder Name is Required'),
-//   area: Yup.string().label('area').required('Area is Required'),
-// });
+const schema = Yup.object().shape({
+  area: Yup.string('Invalid').required('Required'),
+  pincode: Yup.string('Invalid').required('Required'),
+  city: Yup.string('Invalid').required('Required'),
+  state: Yup.string('Invalid').required('Required'),
+  country: Yup.string('Invalid').required('Required'),
+  status: Yup.string('Invalid').required('Required'),
+});
 
 const RenderForm = props => {
-  const {options, navigation, formikProps} = props;
+  const {navigation, formikProps, masterList} = props;
   const {
     values,
     errors,
@@ -29,6 +28,41 @@ const RenderForm = props => {
     setFieldValue,
     handleSubmit,
   } = formikProps;
+
+  const {
+    project_structure_tbl_cities,
+    project_structure_tbl_country,
+    project_structure_tbl_state,
+    project_structure_project_status,
+  } = masterList;
+
+  const cityOptions = useMemo(() => {
+    return project_structure_tbl_cities?.map(i => ({
+      label: i.title,
+      value: i.title,
+    }));
+  }, [project_structure_tbl_cities]);
+
+  const countryOptions = useMemo(() => {
+    return project_structure_tbl_country?.map(i => ({
+      label: i.title,
+      value: i.title,
+    }));
+  }, [project_structure_tbl_country]);
+
+  const stateOptions = useMemo(() => {
+    return project_structure_tbl_state?.map(i => ({
+      label: i.title,
+      value: i.title,
+    }));
+  }, [project_structure_tbl_state]);
+
+  const statusOptions = useMemo(() => {
+    return project_structure_project_status?.map(i => ({
+      label: i.title,
+      value: i.id,
+    }));
+  }, [project_structure_project_status]);
 
   return (
     <View style={styles.formContainer}>
@@ -59,7 +93,7 @@ const RenderForm = props => {
           name="city"
           label="City"
           value={values.city}
-          options={options}
+          options={cityOptions}
           containerStyles={styles.inputStyles}
           onBlur={handleBlur('city')}
           onSelect={value => {
@@ -70,7 +104,7 @@ const RenderForm = props => {
           name="state"
           label="State"
           value={values.state}
-          options={options}
+          options={stateOptions}
           containerStyles={styles.inputStyles}
           onBlur={handleBlur('state')}
           onSelect={value => {
@@ -81,7 +115,7 @@ const RenderForm = props => {
           name="country"
           label="Country"
           value={values.country}
-          options={options}
+          options={countryOptions}
           containerStyles={styles.inputStyles}
           onBlur={handleBlur('country')}
           onSelect={value => {
@@ -92,7 +126,7 @@ const RenderForm = props => {
           name="status"
           label="Status"
           value={values.status}
-          options={options}
+          options={statusOptions}
           containerStyles={styles.inputStyles}
           onBlur={handleBlur('status')}
           onSelect={value => {
@@ -118,9 +152,17 @@ const AddArea = props => {
 
   const edit = Boolean(id);
 
-  const {addArea, getAreaList, updateArea} = useProjectStructureActions();
+  const {addArea, getAreaList, updateArea, getProjectMasterList} =
+    useProjectStructureActions();
 
   const {selectedProject} = useSelector(s => s.project);
+
+  const {masterList} = useSelector(s => s.projectStructure);
+
+  React.useEffect(() => {
+    getProjectMasterList({project_id: selectedProject.id});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   React.useEffect(() => {
     getList();
@@ -154,8 +196,6 @@ const AddArea = props => {
     navigation.goBack();
   };
 
-  const options = ['1', '2', '3', '4', '5'];
-
   return (
     <View style={styles.mainContainer}>
       <View style={styles.headerWrapper}>
@@ -172,10 +212,15 @@ const AddArea = props => {
         enableReinitialize
         validateOnBlur={false}
         validateOnChange={false}
+        validationSchema={schema}
         initialValues={initialValues}
         onSubmit={onSubmit}>
         {formikProps => (
-          <RenderForm formikProps={formikProps} {...props} options={options} />
+          <RenderForm
+            formikProps={formikProps}
+            {...props}
+            masterList={masterList}
+          />
         )}
       </Formik>
     </View>

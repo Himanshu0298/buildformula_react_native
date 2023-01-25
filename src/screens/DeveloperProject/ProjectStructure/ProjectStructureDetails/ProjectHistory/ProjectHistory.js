@@ -38,7 +38,6 @@ const RenderForm = props => {
     project_structure_project_status,
     project_structure_project_quality,
   } = masterList;
-  console.log('===========> masterList', masterList);
 
   const typeOptions = useMemo(() => {
     return project_structure_project_type?.map(i => ({
@@ -67,11 +66,6 @@ const RenderForm = props => {
       value: i.id,
     }));
   }, [project_structure_project_quality]);
-
-  console.log(
-    '===========> project_structure_project_quantity',
-    project_structure_project_quality,
-  );
 
   return (
     <View style={styles.formContainer}>
@@ -155,7 +149,9 @@ const RenderForm = props => {
 const ProjectHistory = props => {
   const {navigation, route} = props;
 
-  const {projectId: id} = route?.params || {};
+  const {projectId: id, projectDetails} = route?.params || {};
+
+  const edit = Boolean(id);
 
   const {getProjectMasterList, updateProjectHistory} =
     useProjectStructureActions();
@@ -169,6 +165,28 @@ const ProjectHistory = props => {
   }, []);
 
   const getData = () => getProjectMasterList({project_id: selectedProject.id});
+
+  const initialValues = React.useMemo(() => {
+    if (edit) {
+      const {
+        possesion_year,
+        rera_no,
+        project_type,
+        restricted_user,
+        project_status,
+        project_quality,
+      } = projectDetails || {};
+      return {
+        possesion_year,
+        rera_no,
+        project_type,
+        restricted_user,
+        project_status,
+        project_quality,
+      };
+    }
+    return {};
+  }, [edit, projectDetails]);
 
   const onSubmit = values => {
     const data = {
@@ -201,11 +219,7 @@ const ProjectHistory = props => {
         enableReinitialize
         validateOnBlur={false}
         validateOnChange={false}
-        initialValues={{
-          projectName: '',
-          builderName: '',
-          area: '',
-        }}
+        initialValues={initialValues || {}}
         // validationSchema={schema}
         onSubmit={onSubmit}>
         {formikProps => (

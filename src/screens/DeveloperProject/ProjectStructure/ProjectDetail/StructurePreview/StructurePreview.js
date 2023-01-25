@@ -1,18 +1,40 @@
 import StructureSelector from 'components/Molecules/StructureSelector';
 import React from 'react';
 import {View} from 'react-native';
+import Spinner from 'react-native-loading-spinner-overlay';
+import {useSelector} from 'react-redux';
+import {useSalesLoading} from 'redux/selectors';
 
 function StructurePreview(props) {
-  const {navigation} = props;
+  const {navigation, route} = props;
+
+  const {id} = route?.params || {};
+
+  const {selectedProject} = useSelector(s => s.project);
+  const loading = useSalesLoading();
+
+  const {project_structure = {}} = selectedProject;
+  const projectTypes =
+    Object.keys(project_structure)?.map(v => Number(v)) || [];
+
+  const handlePress = (selectedStructure, towerType) => {
+    const params = {selectedStructure, id, towerType};
+
+    const nextStep = 'TowerPreview';
+
+    navigation.navigate(nextStep, params);
+  };
+
   return (
     <View>
+      <Spinner visible={loading} textContent="" />
       <StructureSelector
         hideTitle
-        onSelectStructure={() => navigation.navigate('TowerPreview')}
-        projectTypes={[1, 2, 3, 4, 5, 6]}
-        // activeTypes={activeTypes}
+        onSelectStructure={handlePress}
+        projectTypes={projectTypes}
       />
     </View>
   );
 }
+
 export default StructurePreview;

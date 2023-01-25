@@ -1,28 +1,30 @@
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
-import React, {useEffect, useRef, useState} from 'react';
-import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
+import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Button, Caption, FAB, IconButton, Subheading} from 'react-native-paper';
 import Animated from 'react-native-reanimated';
 import BottomSheet from 'reanimated-bottom-sheet';
+
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import RenderInput from 'components/Atoms/RenderInput';
 import {Formik} from 'formik';
 import {getShadow} from 'utils';
 import RenderSelect from 'components/Atoms/RenderSelect';
+import {useAlert} from 'components/Atoms/Alert';
+import useProjectStructureActions from 'redux/actions/projectStructureActions';
+import {useSelector} from 'react-redux';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const SNAP_POINTS = [0, '25%'];
-const DATA = [
-  {name: 'Ground Floor'},
-  {name: '1st Floor'},
-  {name: '2nd Floor'},
-  {name: '3rd Floor'},
-  {name: '4th Floor'},
-];
+
 function AddFloor(props) {
   const {formikProps, dialog, onClose} = props;
+
   const {values, errors, handleChange, handleBlur, handleSubmit} = formikProps;
+
   const bottomSheetRef = useRef();
   const fall = new Animated.Value(1);
+
   useEffect(() => {
     if (dialog) {
       bottomSheetRef?.current?.snapTo(1);
@@ -30,6 +32,7 @@ function AddFloor(props) {
       bottomSheetRef?.current?.snapTo(0);
     }
   }, [dialog]);
+
   return (
     <>
       {dialog ? (
@@ -40,6 +43,7 @@ function AddFloor(props) {
           ]}
         />
       ) : null}
+
       <BottomSheet
         ref={bottomSheetRef}
         snapPoints={SNAP_POINTS}
@@ -66,7 +70,7 @@ function AddFloor(props) {
               onChangeText={handleChange('floorName')}
               onBlur={handleBlur('floorName')}
               autoCapitalize="none"
-              returnKeyType="floorName"
+              returnKeyType="next"
               error={errors.floorName}
             />
             <Button
@@ -82,26 +86,34 @@ function AddFloor(props) {
     </>
   );
 }
+
 function ListData(props) {
-  const {formikProps} = props;
+  const {formikProps, handleDelete, floorList} = props;
+
   const {values, handleBlur, setFieldValue} = formikProps;
-  const options = [];
+
+  const floorOptions = useMemo(() => {
+    return floorList?.map(i => ({
+      label: i.floor,
+      value: i.id,
+    }));
+  }, [floorList]);
 
   return (
     <View>
       <RenderSelect
-        name="selectTower"
-        label="Select Tower"
-        value={values.selectTower}
-        options={options}
+        name="selectFloor"
+        label="Select Floor"
+        value={values.selectFloor}
+        options={floorOptions}
         containerStyles={styles.inputStyles}
-        onBlur={handleBlur('selectTower')}
+        onBlur={handleBlur('selectFloor')}
         onSelect={value => {
-          setFieldValue('selectTower', value);
+          setFieldValue('selectFloor', value);
         }}
       />
-      {DATA.map(item => {
-        console.log('item is ===========>', item);
+
+      {floorList?.map(item => {
         return (
           <View style={styles.listContainer}>
             <View style={styles.subContainer}>
@@ -112,13 +124,13 @@ function ListData(props) {
               />
             </View>
             <View style={styles.listSubContainer}>
-              <Caption>{item.name}</Caption>
+              <Caption>{item.floor}</Caption>
             </View>
             <View>
               <OpacityButton
                 color="#FF5D5D"
                 opacity={0.18}
-                onPress={{}}
+                onPress={() => handleDelete(item.id)}
                 style={styles.deleteIcon}>
                 <MaterialIcons name="delete" color="#FF5D5D" size={13} />
               </OpacityButton>
@@ -129,60 +141,111 @@ function ListData(props) {
     </View>
   );
 }
+
 function FloorList(props) {
-  const {navigation} = props;
+  const {navigation, route} = props;
+  const {id, towerId} = route?.params || {};
+
+  const alert = useAlert();
+
   const [dialog, setDialog] = useState();
-  const toggleAdd = () => setDialog(v => !v);
-  const onClose = () => toggleAdd();
-  const handleSave = () => {
-    console.log('===========> ');
+
+  const {getFloorList, addFloor, deleteFloor} = useProjectStructureActions();
+  const {selectedProject} = useSelector(s => s.project);
+  const {floorList, loading} = useSelector(s => s.projectStructure);
+
+  React.useEffect(() => {
+    getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const getData = async () => {
+    await getFloorList({
+      project_id: selectedProject.id,
+      id,
+      tower_id: towerId,
+    });
   };
+
+  const toggleAdd = () => setDialog(v => !v);
+
+  const onSubmit = async values => {
+    const data = {
+      project_id: selectedProject.id,
+      id,
+      tower_id: values.selectTower,
+      contact_type: values.contact_type,
+      name: values.floorName,
+    };
+
+    await addFloor(data);
+    toggleAdd();
+    getData();
+  };
+
+  const handleDelete = async floor_id => {
+    alert.show({
+      title: 'Confirm',
+      message: 'Are you sure you want to delete?',
+      confirmText: 'Delete',
+      onConfirm: async () => {
+        await deleteFloor({
+          project_id: selectedProject.id,
+          floor_id,
+          id,
+        });
+        getData();
+      },
+    });
+  };
+
   return (
-    <>
-      {dialog ? (
-        <Formik
-          enableReinitialize
-          validateOnBlur={false}
-          validateOnChange={false}
-          initialValues={{}}
-          onSubmit={handleSave}>
-          {formikProps => (
-            <AddFloor
-              {...props}
-              dialog={dialog}
-              toggleDialog={toggleAdd}
-              onClose={onClose}
-              formikProps={formikProps}
-            />
-          )}
-        </Formik>
-      ) : null}
-      <View style={styles.container}>
-        <View style={styles.titleContainer}>
-          <TouchableOpacity
-            style={styles.titleContainer}
-            onPress={navigation.goBack}>
-            <IconButton
-              icon="keyboard-backspace"
-              style={styles.backIcon}
-              size={18}
-            />
-          </TouchableOpacity>
-          <Subheading>Floor List</Subheading>
-        </View>
-        <Formik
-          enableReinitialize
-          validateOnBlur={false}
-          validateOnChange={false}
-          initialValues={{}}
-          onSubmit={handleSave}>
-          {formikProps => <ListData formikProps={formikProps} />}
-        </Formik>
-        <FAB style={styles.fab} large icon="plus" onPress={toggleAdd} />
+    <View style={styles.container}>
+      <Spinner visible={loading} textContent="" />
+
+      <View style={styles.titleContainer}>
+        <TouchableOpacity
+          style={styles.titleContainer}
+          onPress={navigation.goBack}>
+          <IconButton
+            icon="keyboard-backspace"
+            style={styles.backIcon}
+            size={18}
+          />
+        </TouchableOpacity>
+        <Subheading>Floor List</Subheading>
       </View>
-    </>
+      <Formik
+        enableReinitialize
+        validateOnBlur={false}
+        validateOnChange={false}
+        initialValues={{}}
+        onSubmit={onSubmit}>
+        {formikProps => (
+          <>
+            <ScrollView>
+              <ListData
+                formikProps={formikProps}
+                handleDelete={handleDelete}
+                floorList={floorList}
+              />
+            </ScrollView>
+            {dialog ? (
+              <AddFloor
+                {...props}
+                dialog={dialog}
+                onClose={toggleAdd}
+                formikProps={formikProps}
+              />
+            ) : null}
+          </>
+        )}
+      </Formik>
+      <FAB style={styles.fab} large icon="plus" onPress={toggleAdd} />
+    </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -198,6 +261,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(72, 114, 244, 0.1)',
     marginRight: 11,
   },
+
   subContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -222,8 +286,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 5,
     bottom: 1,
-    backgroundColor: '#4872F4',
+    backgroundColor: '#4872f4',
   },
+
   backdrop: {
     position: 'absolute',
     left: 0,
@@ -249,4 +314,5 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
 });
+
 export default FloorList;

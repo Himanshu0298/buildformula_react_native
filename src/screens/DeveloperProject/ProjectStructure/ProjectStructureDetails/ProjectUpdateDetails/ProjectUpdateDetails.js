@@ -164,7 +164,9 @@ const RenderForm = props => {
 const UpdateProjectDetails = props => {
   const {navigation, route} = props;
 
-  const {projectId: id} = route?.params || {};
+  const {projectId: id, projectDetails} = route?.params || {};
+
+  const edit = Boolean(id);
 
   const {updateProjectDetails, getAreaList} = useProjectStructureActions();
 
@@ -182,6 +184,34 @@ const UpdateProjectDetails = props => {
   }, []);
 
   const getData = () => getAreaList({project_id: selectedProject.id});
+
+  const initialValues = React.useMemo(() => {
+    if (edit) {
+      const {
+        area,
+        project_name: projectName,
+        developer_name: builderName,
+        city,
+        state,
+        pincode,
+        country,
+        status,
+        premium_project,
+      } = projectDetails || {};
+      return {
+        projectName,
+        area,
+        builderName,
+        city,
+        state,
+        pincode,
+        country,
+        status,
+        premium_project,
+      };
+    }
+    return {};
+  }, [edit, projectDetails]);
 
   const onSubmit = values => {
     const data = {
@@ -217,7 +247,7 @@ const UpdateProjectDetails = props => {
           enableReinitialize
           validateOnBlur={false}
           validateOnChange={false}
-          initialValues={{}}
+          initialValues={initialValues || {}}
           validationSchema={schema}
           onSubmit={onSubmit}>
           {formikProps => (

@@ -59,7 +59,9 @@ function RenderForm(props) {
 function ProjectBrief(props) {
   const {navigation, route} = props;
 
-  const {projectId: id} = route?.params || {};
+  const {projectId: id, projectDetails} = route?.params || {};
+
+  const edit = Boolean(id);
 
   const {updateProjectBrief, getProjectMasterList} =
     useProjectStructureActions();
@@ -72,6 +74,16 @@ function ProjectBrief(props) {
     getProjectMasterList({project_id: selectedProject.id});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const initialValues = React.useMemo(() => {
+    if (edit) {
+      const {description} = projectDetails || {};
+      return {
+        description,
+      };
+    }
+    return {};
+  }, [edit, projectDetails]);
 
   const onSubmit = values => {
     const arrString = values?.configurtion?.join(',') || undefined;
@@ -102,7 +114,7 @@ function ProjectBrief(props) {
         enableReinitialize
         validateOnBlur={false}
         validateOnChange={false}
-        initialValues={{}}
+        initialValues={initialValues || {}}
         onSubmit={onSubmit}>
         {formikProps => (
           <RenderForm

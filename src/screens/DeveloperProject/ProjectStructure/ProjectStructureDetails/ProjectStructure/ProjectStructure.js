@@ -9,6 +9,22 @@ import ActionButtons from 'components/Atoms/ActionButtons';
 import RenderSelectMultiple from 'components/Atoms/RenderSelectMultiple';
 import useProjectStructureActions from 'redux/actions/projectStructureActions';
 import {useSelector} from 'react-redux';
+import * as Yup from 'yup';
+
+const schema = Yup.object().shape({
+  total_no_of_towers: Yup.number('Invalid')
+    .typeError('please enter number')
+    .required('Required'),
+  total_no_of_units: Yup.number('Invalid')
+    .typeError('please enter number')
+    .required('Required'),
+  total_no_of_bunglows: Yup.number('Invalid')
+    .typeError('please enter number')
+    .required('Required'),
+  total_no_of_plots: Yup.number('Invalid')
+    .typeError('please enter number')
+    .required('Required'),
+});
 
 function RenderForm(props) {
   const {navigation, formikProps, masterList} = props;
@@ -21,21 +37,27 @@ function RenderForm(props) {
     handleSubmit,
   } = formikProps;
 
-  const {master_bhks, project_structure_project_category} = masterList;
+  const {master_bhks, project_structure_project_category} = masterList || [];
 
   const bhkOptions = useMemo(() => {
     return master_bhks?.map(i => ({
-      label: i.bhk_title,
-      value: i.id,
+      label: i?.bhk_title,
+      value: i?.bhk_title,
     }));
   }, [master_bhks]);
 
   const categoryOptions = useMemo(() => {
     return project_structure_project_category?.map(i => ({
-      label: i.title,
-      value: i.id,
+      label: i?.title,
+      value: i?.id,
     }));
   }, [project_structure_project_category]);
+
+  const apartment = values.project_category === 1;
+
+  const shop = values.project_category === 2;
+
+  const offices = values.project_category === 3;
 
   return (
     <View style={styles.formContainer}>
@@ -51,50 +73,62 @@ function RenderForm(props) {
             setFieldValue('project_category', value);
           }}
         />
-        <RenderInput
-          name="total_no_of_towers"
-          label="Total Number of Tower"
-          containerStyles={styles.inputStyles}
-          value={values.total_no_of_towers}
-          onChangeText={handleChange('total_no_of_towers')}
-          onBlur={handleBlur('total_no_of_towers')}
-          autoCapitalize="none"
-          returnKeyType="next"
-          error={errors.total_no_of_towers}
-        />
-        <RenderInput
-          name="total_no_of_units"
-          label="Total Number of Unit"
-          containerStyles={styles.inputStyles}
-          value={values.total_no_of_units}
-          onChangeText={handleChange('total_no_of_units')}
-          onBlur={handleBlur('total_no_of_units')}
-          autoCapitalize="none"
-          returnKeyType="next"
-          error={errors.total_no_of_units}
-        />
-        <RenderInput
-          name="total_no_of_bunglows"
-          label="Total Number of  Banglow"
-          containerStyles={styles.inputStyles}
-          value={values.total_no_of_bunglows}
-          onChangeText={handleChange('total_no_of_bunglows')}
-          onBlur={handleBlur('total_no_of_bunglows')}
-          autoCapitalize="none"
-          returnKeyType="next"
-          error={errors.total_no_of_bunglows}
-        />
-        <RenderInput
-          name="total_no_of_plots"
-          label="Total Number of Plots"
-          containerStyles={styles.inputStyles}
-          value={values.total_no_of_plots}
-          onChangeText={handleChange('total_no_of_plots')}
-          onBlur={handleBlur('total_no_of_plots')}
-          autoCapitalize="none"
-          returnKeyType="next"
-          error={errors.total_no_of_plots}
-        />
+
+        {apartment || shop || offices ? (
+          <RenderInput
+            name="total_no_of_towers"
+            label="Total Number of Tower"
+            containerStyles={styles.inputStyles}
+            value={values.total_no_of_towers}
+            onChangeText={handleChange('total_no_of_towers')}
+            onBlur={handleBlur('total_no_of_towers')}
+            autoCapitalize="none"
+            returnKeyType="next"
+            error={errors.total_no_of_towers}
+          />
+        ) : null}
+
+        {apartment || shop || offices ? (
+          <RenderInput
+            name="total_no_of_units"
+            label="Total Number of Unit"
+            containerStyles={styles.inputStyles}
+            value={values.total_no_of_units}
+            onChangeText={handleChange('total_no_of_units')}
+            onBlur={handleBlur('total_no_of_units')}
+            autoCapitalize="none"
+            returnKeyType="next"
+            error={errors.total_no_of_units}
+          />
+        ) : null}
+
+        {values.project_category === 4 ? (
+          <RenderInput
+            name="total_no_of_bunglows"
+            label="Total Number of  Banglow"
+            containerStyles={styles.inputStyles}
+            value={values.total_no_of_bunglows}
+            onChangeText={handleChange('total_no_of_bunglows')}
+            onBlur={handleBlur('total_no_of_bunglows')}
+            autoCapitalize="none"
+            returnKeyType="next"
+            error={errors.total_no_of_bunglows}
+          />
+        ) : null}
+
+        {values.project_category === 5 ? (
+          <RenderInput
+            name="total_no_of_plots"
+            label="Total Number of Plots"
+            containerStyles={styles.inputStyles}
+            value={values.total_no_of_plots}
+            onChangeText={handleChange('total_no_of_plots')}
+            onBlur={handleBlur('total_no_of_plots')}
+            autoCapitalize="none"
+            returnKeyType="next"
+            error={errors.total_no_of_plots}
+          />
+        ) : null}
 
         <Text> BHK Configuration</Text>
         <RenderSelectMultiple
@@ -123,7 +157,9 @@ function RenderForm(props) {
 function ProjectStructure(props) {
   const {navigation, route} = props;
 
-  const {projectId} = route?.params || {};
+  const {projectId, projectDetails} = route?.params || {};
+
+  const edit = Boolean(projectId);
 
   const {updateProjectStructure, getProjectMasterList} =
     useProjectStructureActions();
@@ -137,6 +173,26 @@ function ProjectStructure(props) {
   }, []);
 
   const getData = () => getProjectMasterList({project_id: selectedProject.id});
+
+  const initialValues = React.useMemo(() => {
+    if (edit) {
+      const {
+        project_category,
+        total_no_of_towers,
+        total_no_of_units,
+        total_no_of_bunglows,
+        total_no_of_plots,
+      } = projectDetails || {};
+      return {
+        project_category,
+        total_no_of_towers,
+        total_no_of_units,
+        total_no_of_bunglows,
+        total_no_of_plots,
+      };
+    }
+    return {};
+  }, [edit, projectDetails]);
 
   const onSubmit = values => {
     const arrString = values?.bhk_configuration?.join(',') || undefined;
@@ -171,8 +227,9 @@ function ProjectStructure(props) {
       <Formik
         enableReinitialize
         validateOnBlur={false}
+        validationSchema={schema}
         validateOnChange={false}
-        initialValues={{}}
+        initialValues={initialValues || {}}
         onSubmit={onSubmit}>
         {formikProps => (
           <RenderForm

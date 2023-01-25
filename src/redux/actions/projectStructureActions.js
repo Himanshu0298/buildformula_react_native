@@ -25,6 +25,7 @@ export default function useProjectStructureActions() {
     addProjectSecurity,
     updateProjectSecurity,
     deleteProjectSecurity,
+    deleteProjectFile,
     addProjectFile,
     getTowerList,
     addTower,
@@ -46,6 +47,7 @@ export default function useProjectStructureActions() {
     addFloor,
     updateFloor,
     deleteFloor,
+    createProjectDuplicate,
   } = useProjectStructure();
 
   return {
@@ -72,6 +74,20 @@ export default function useProjectStructureActions() {
         payload: async () => {
           try {
             const response = _res(await getProjectDetails(data));
+            return Promise.resolve(response.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    createProjectDuplicate: data =>
+      dispatch({
+        type: types.CREATE_PROJECT_DUPLICATE,
+        payload: async () => {
+          try {
+            const response = _res(await createProjectDuplicate(data));
             return Promise.resolve(response.data);
           } catch (error) {
             const message = _err(error);
@@ -286,7 +302,7 @@ export default function useProjectStructureActions() {
         type: types.DELETE_PROJECT_FILE,
         payload: async () => {
           try {
-            const res = _res(await deleteProjectSecurity(data));
+            const res = _res(await deleteProjectFile(data));
             snackbar.showMessage({message: res.msg});
             return Promise.resolve(res.data.lists);
           } catch (error) {
