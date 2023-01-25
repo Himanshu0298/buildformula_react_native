@@ -36,4 +36,5 @@ function StructurePreview(props) {
     </View>
   );
 }
+
 export default StructurePreview;

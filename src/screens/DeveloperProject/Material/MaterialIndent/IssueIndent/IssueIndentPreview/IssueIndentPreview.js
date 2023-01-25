@@ -347,7 +347,7 @@ function IssueIndentPreview(props) {
       <AssignQtyDialog
         {...props}
         visible={isNumber(selectedItemIndex)}
-        item={materials?.[selectedItemIndex]}
+        item={materials[selectedItemIndex]}
         toggleDialog={toggleDialog}
         onSubmit={handleSaveMaterialQuantity}
       />

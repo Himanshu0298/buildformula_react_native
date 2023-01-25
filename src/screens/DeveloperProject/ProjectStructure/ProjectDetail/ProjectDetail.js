@@ -10,11 +10,13 @@ import useProjectStructureActions from 'redux/actions/projectStructureActions';
 import {cloneDeep} from 'lodash';
 import ProjectPreview from './ProjectPreview';
 import StructurePreview from './StructurePreview';
+
 import ProjectTabBar from './ProjectPreview/component/projectTabBar';
 
 function ProjectDetail(props) {
   const {navigation, route} = props;
   const {id: projectId} = route.params;
+
   const [selectedTab, setSelectedTab] = useState(0);
 
   const {selectedProject} = useSelector(s => s.project);
@@ -46,6 +48,7 @@ function ProjectDetail(props) {
       <ProjectTabBar {...prop} />
     </View>
   );
+
   // eslint-disable-next-line @typescript-eslint/no-shadow
   const renderScene = ({route}) => {
     switch (route.key) {
@@ -53,6 +56,7 @@ function ProjectDetail(props) {
         return <ProjectPreview {...props} />;
       case 'second':
         return <StructurePreview {...props} />;
+
       default:
         return null;
     }
@@ -86,7 +90,7 @@ function ProjectDetail(props) {
           <IconButton
             icon="keyboard-backspace"
             size={18}
-            color="#4872F4"
+            color="#4872f4"
             style={styles.backIcon}
             onPress={() => navigation.goBack()}
           />
@@ -94,14 +98,14 @@ function ProjectDetail(props) {
         </View>
         <View style={styles.editIconContainer}>
           <OpacityButton
-            color="#4872F4"
+            color="#4872f4"
             opacity={0.18}
             style={styles.editIcon}
             onPress={navToEdit}>
-            <MaterialIcons name="edit" color="#4872F4" size={13} />
+            <MaterialIcons name="edit" color="#4872f4" size={13} />
           </OpacityButton>
           <OpacityButton
-            color="#4872F4"
+            color="#4872f4"
             opacity={0.18}
             style={styles.editIcon}
             onPress={onMakeDuplicate}>
@@ -120,6 +124,7 @@ function ProjectDetail(props) {
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
@@ -156,4 +161,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
+
 export default ProjectDetail;

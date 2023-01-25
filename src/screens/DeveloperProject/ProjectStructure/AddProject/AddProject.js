@@ -20,8 +20,9 @@ const schema = Yup.object().shape({
 });
 
 const RenderForm = props => {
-  const {areaOptions, formikProps, areaList, navigation} = props;
+  const {areaOptions, formikProps, areaList} = props;
   const {values, errors, handleChange, handleBlur, setFieldValue} = formikProps;
+
   const handleAreaSelect = value => {
     setFieldValue('area', value);
     const option = areaList.find(i => i.id === value);

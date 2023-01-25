@@ -4,6 +4,7 @@ import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Button, Caption, FAB, IconButton, Subheading} from 'react-native-paper';
 import Animated from 'react-native-reanimated';
 import BottomSheet from 'reanimated-bottom-sheet';
+
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import RenderInput from 'components/Atoms/RenderInput';
 import {Formik} from 'formik';
@@ -17,9 +18,12 @@ const SNAP_POINTS = [0, '25%'];
 
 function AddTower(props) {
   const {formikProps, dialog, onClose} = props;
+
   const {values, errors, handleChange, handleBlur, handleSubmit} = formikProps;
+
   const bottomSheetRef = useRef();
   const fall = new Animated.Value(1);
+
   useEffect(() => {
     if (dialog) {
       bottomSheetRef?.current?.snapTo(1);
@@ -27,6 +31,7 @@ function AddTower(props) {
       bottomSheetRef?.current?.snapTo(0);
     }
   }, [dialog]);
+
   return (
     <>
       {dialog ? (
@@ -37,6 +42,7 @@ function AddTower(props) {
           ]}
         />
       ) : null}
+
       <BottomSheet
         ref={bottomSheetRef}
         snapPoints={SNAP_POINTS}
@@ -55,6 +61,7 @@ function AddTower(props) {
               />
             </View>
             <Subheading> Add Field</Subheading>
+
             <RenderInput
               name="towerName"
               label="Tower Name"
@@ -113,6 +120,7 @@ function ListData(props) {
     </View>
   );
 }
+
 function TowerList(props) {
   const {navigation, route} = props;
   const {id} = route?.params || {};
@@ -135,6 +143,7 @@ function TowerList(props) {
   };
 
   const toggleAdd = () => setDialog(v => !v);
+
   const onClose = () => toggleAdd();
 
   const onSubmit = async values => {
@@ -165,6 +174,7 @@ function TowerList(props) {
       },
     });
   };
+
   return (
     <>
       {dialog ? (
@@ -185,6 +195,7 @@ function TowerList(props) {
           )}
         </Formik>
       ) : null}
+
       <View style={styles.container}>
         <Spinner visible={loading} textContent="" />
 
@@ -210,6 +221,7 @@ function TowerList(props) {
     </>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -225,6 +237,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(72, 114, 244, 0.1)',
     marginRight: 11,
   },
+
   subContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -249,8 +262,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 5,
     bottom: 1,
-    backgroundColor: '#4872F4',
+    backgroundColor: '#4872f4',
   },
+
   backdrop: {
     position: 'absolute',
     left: 0,
@@ -279,4 +293,5 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
 });
+
 export default TowerList;
