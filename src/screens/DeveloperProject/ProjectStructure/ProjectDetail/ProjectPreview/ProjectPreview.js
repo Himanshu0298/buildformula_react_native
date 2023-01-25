@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import React, {useState} from 'react';
 import {Image, View, StyleSheet, ScrollView} from 'react-native';
-import stock_image from 'assets/images/stock_image.png';
+import stockImage from 'assets/images/stock_image.png';
 import PdfIcon from 'assets/images/pdf_icon.png';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -402,7 +402,7 @@ function ProjectPreview(props) {
     <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
       <Spinner visible={loading} textContent="" />
 
-      <Image source={stock_image} />
+      <Image source={stockImage} />
       <View style={styles.mainContainer}>
         <View>
           <Title>{project_name?.toUpperCase()} </Title>

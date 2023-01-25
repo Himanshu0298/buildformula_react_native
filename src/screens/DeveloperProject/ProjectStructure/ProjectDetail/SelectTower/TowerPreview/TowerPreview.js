@@ -37,7 +37,6 @@ function TowerPreview(props) {
       id,
     });
   };
-
   return (
     <View style={styles.container}>
       <Spinner visible={loading} textContent="" />
@@ -53,7 +52,7 @@ function TowerPreview(props) {
         <View>
           <OpacityButton
             opacity={0.1}
-            color="#4872f4"
+            color="#4872F4"
             style={styles.editIcon}
             onPress={() => navigation.navigate('TowerList', {id})}>
             <MaterialIcon name="edit" color="#4872f4" size={15} />
@@ -67,7 +66,6 @@ function TowerPreview(props) {
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -87,5 +85,4 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
 });
-
 export default TowerPreview;

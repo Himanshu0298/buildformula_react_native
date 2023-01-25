@@ -82,7 +82,7 @@ function FloorPreview(props) {
         <Subheading style={styles.floorsTitle}>Floors</Subheading>
         <OpacityButton
           opacity={0.1}
-          color="#4872f4"
+          color="#4872F4"
           style={styles.editIcon}
           onPress={() => navigation.navigate('FloorList', {id, towerId})}>
           <MaterialIcon name="edit" color="#4872f4" size={15} />
@@ -140,7 +140,6 @@ function FloorPreview(props) {
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,

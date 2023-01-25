@@ -4,7 +4,6 @@ import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Button, Caption, FAB, IconButton, Subheading} from 'react-native-paper';
 import Animated from 'react-native-reanimated';
 import BottomSheet from 'reanimated-bottom-sheet';
-
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import RenderInput from 'components/Atoms/RenderInput';
 import {Formik} from 'formik';
@@ -19,12 +18,9 @@ const SNAP_POINTS = [0, '25%'];
 
 function AddFloor(props) {
   const {formikProps, dialog, onClose} = props;
-
   const {values, errors, handleChange, handleBlur, handleSubmit} = formikProps;
-
   const bottomSheetRef = useRef();
   const fall = new Animated.Value(1);
-
   useEffect(() => {
     if (dialog) {
       bottomSheetRef?.current?.snapTo(1);
@@ -32,7 +28,6 @@ function AddFloor(props) {
       bottomSheetRef?.current?.snapTo(0);
     }
   }, [dialog]);
-
   return (
     <>
       {dialog ? (
@@ -43,7 +38,6 @@ function AddFloor(props) {
           ]}
         />
       ) : null}
-
       <BottomSheet
         ref={bottomSheetRef}
         snapPoints={SNAP_POINTS}
@@ -86,7 +80,6 @@ function AddFloor(props) {
     </>
   );
 }
-
 function ListData(props) {
   const {formikProps, handleDelete, floorList} = props;
 
@@ -141,7 +134,6 @@ function ListData(props) {
     </View>
   );
 }
-
 function FloorList(props) {
   const {navigation, route} = props;
   const {id, towerId} = route?.params || {};
@@ -198,7 +190,6 @@ function FloorList(props) {
       },
     });
   };
-
   return (
     <View style={styles.container}>
       <Spinner visible={loading} textContent="" />
@@ -245,7 +236,6 @@ function FloorList(props) {
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -261,7 +251,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(72, 114, 244, 0.1)',
     marginRight: 11,
   },
-
   subContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -286,9 +275,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 5,
     bottom: 1,
-    backgroundColor: '#4872f4',
+    backgroundColor: '#4872F4',
   },
-
   backdrop: {
     position: 'absolute',
     left: 0,
@@ -314,5 +302,4 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
 });
-
 export default FloorList;

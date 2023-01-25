@@ -67,6 +67,7 @@ const ProjectCard = props => {
     handleDelete(id);
     toggleMenu();
   };
+
   return (
     <TouchableOpacity
       style={styles.projectCardWrapper}
