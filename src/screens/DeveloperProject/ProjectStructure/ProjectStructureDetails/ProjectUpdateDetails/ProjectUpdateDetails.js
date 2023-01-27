@@ -30,14 +30,13 @@ const RenderForm = props => {
     handleSubmit,
   } = formikProps;
 
-  const [active, setActive] = React.useState(false);
-  const [premium, setPremium] = React.useState(false);
+  const [active, setActive] = React.useState(true);
+  const [premium, setPremium] = React.useState(true);
 
   const handleAreaSelect = value => {
     setFieldValue('area', value);
-    const option = areaList?.find(i => i.id === value);
+    const option = areaList.find(i => i.id === value);
     if (option) {
-      setFieldValue('area', option.area);
       setFieldValue('city', option.city);
       setFieldValue('pincode', option.pincode);
       setFieldValue('state', option.state);
@@ -164,15 +163,14 @@ const RenderForm = props => {
 const UpdateProjectDetails = props => {
   const {navigation, route} = props;
 
-  const {projectId: id, projectDetails} = route?.params || {};
+  const {projectId: id} = route?.params || {};
 
-  const edit = Boolean(id);
-
-  const {updateProjectDetails, getAreaList} = useProjectStructureActions();
+  const {updateProjectDetails, getAreaList, getProjectDetails} =
+    useProjectStructureActions();
 
   const {selectedProject} = useSelector(s => s.project);
 
-  const {areaList} = useSelector(s => s.projectStructure);
+  const {areaList, projectDetails} = useSelector(s => s.projectStructure);
 
   const areaOptions = useMemo(() => {
     return areaList?.map(i => ({label: i.area, value: i.id}));
@@ -180,55 +178,53 @@ const UpdateProjectDetails = props => {
 
   React.useEffect(() => {
     getData();
+    getDetails();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getData = () => getAreaList({project_id: selectedProject.id});
+  const getDetails = async () => {
+    await getProjectDetails({project_id: selectedProject.id, id});
+  };
 
   const initialValues = React.useMemo(() => {
-    if (edit) {
-      const {
-        area,
-        project_name: projectName,
-        developer_name: builderName,
-        city,
-        state,
-        pincode,
-        country,
-        status,
-        premium_project,
-      } = projectDetails || {};
-      return {
-        projectName,
-        area,
-        builderName,
-        city,
-        state,
-        pincode,
-        country,
-        status,
-        premium_project,
-      };
-    }
-    return {};
-  }, [edit, projectDetails]);
+    const {
+      area,
+      project_name: projectName,
+      developer_name: builderName,
+      city,
+      state,
+      pincode,
+      country,
+      status,
+      premium_project,
+    } = projectDetails || {};
+    return {
+      projectName,
+      area,
+      builderName,
+      city,
+      state,
+      pincode,
+      country,
+      status,
+      premium_project,
+    };
+  }, [projectDetails]);
 
-  const onSubmit = values => {
+  const onSubmit = async values => {
     const data = {
       project_id: selectedProject.id,
       id,
       project_name: values.projectName,
       developer_name: values.builderName,
       area: values.area,
-      city: values.city,
-      state: values.state,
-      pincode: values.pincode,
-      country: values.country,
       status: values.status,
       premium_project: values.premium_project,
     };
-    updateProjectDetails(data);
-    navigation.navigate('ProjectStructureDetails');
+    await updateProjectDetails(data);
+    getDetails();
+    navigation.goBack();
   };
   return (
     <View style={styles.mainContainer}>

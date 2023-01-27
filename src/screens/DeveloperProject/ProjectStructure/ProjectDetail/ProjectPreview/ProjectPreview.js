@@ -75,7 +75,9 @@ function Files(props) {
           onPress={() => onPressFile(item)}>
           <Image source={PdfIcon} style={styles.fileIcon} />
           <View>
-            <Text style={(styles.verticalFlex, styles.text)} numberOfLines={2}>
+            <Text
+              style={(styles.verticalFlex, styles.textContainer)}
+              numberOfLines={2}>
               {item?.file_name}
             </Text>
             <View style={styles.type}>
@@ -408,7 +410,6 @@ function ProjectPreview(props) {
   const projectAmenities = projectDetails?.building_amenities;
   const configuration = projectDetails?.configurtion;
   const projectOwner = projectDetails?.owner_info;
-  const details = projectDetails?.projectDetails;
 
   const toggleSharing = () => setSharing(v => !v);
 
@@ -431,11 +432,10 @@ function ProjectPreview(props) {
         <View style={styles.statusField}>
           <StatusField projectDetails={projectDetails} />
         </View>
-        {details?.length ? (
-          <View style={styles.statusField}>
-            <Details projectDetails={projectDetails} />
-          </View>
-        ) : null}
+
+        <View style={styles.statusField}>
+          <Details projectDetails={projectDetails} />
+        </View>
 
         <Divider style={styles.divider} />
         {configuration?.length ? (
@@ -635,6 +635,12 @@ const styles = StyleSheet.create({
   },
   html: {
     color: '#000',
+  },
+  textContainer: {
+    flexGrow: 1,
+    flex: 1,
+    marginRight: 30,
+    marginLeft: 5,
   },
 });
 

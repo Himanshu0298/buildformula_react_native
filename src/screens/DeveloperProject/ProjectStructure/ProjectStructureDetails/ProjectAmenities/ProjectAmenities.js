@@ -6,40 +6,70 @@ import {IconButton, Switch, Text, Title} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import useProjectStructureActions from 'redux/actions/projectStructureActions';
 
+const parseData = data =>
+  cloneDeep(data).map(i => ({
+    id: i.building_amenities_id || i.id,
+    status: i.status,
+    title: i.title,
+  }));
+
 function ProjectAmenities(props) {
   const {navigation, route} = props;
   const {projectId} = route?.params || {};
 
-  const {getProjectMasterList, updateProjectAmenities} =
+  const {getProjectMasterList, updateProjectAmenities, getProjectDetails} =
     useProjectStructureActions();
 
   const {selectedProject} = useSelector(s => s.project);
-  const {masterList} = useSelector(s => s.projectStructure);
-  const {project_structure_building_amenities = []} = masterList;
+  const {masterList, projectDetails} = useSelector(s => s.projectStructure);
 
-  const [buildingAmenities, setBuildingAmenities] = React.useState(
-    cloneDeep(project_structure_building_amenities),
+  const projectAmenities = projectDetails?.building_amenities;
+
+  const {project_structure_building_amenities: defaultAmenities = []} =
+    masterList;
+
+  const [amenities, setAmenities] = React.useState(
+    parseData(projectAmenities) || [],
   );
 
   React.useEffect(() => {
+    if (!amenities.length) {
+      if (projectAmenities?.length) {
+        setAmenities(parseData(projectAmenities));
+      }
+      setAmenities(parseData(defaultAmenities));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [projectAmenities, defaultAmenities]);
+
+  React.useEffect(() => {
     getProjectMasterList({project_id: selectedProject.id});
+    getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const getData = async () =>
+    getProjectDetails({project_id: selectedProject.id, id: projectId});
+
   const handelSaveAmenities = (itemId, updatedValue) => {
-    const _buildingAmenities = [...buildingAmenities];
+    const _buildingAmenities = [...amenities];
     const index = _buildingAmenities.findIndex(i => i.id === itemId);
     _buildingAmenities[index].status = updatedValue;
-    setBuildingAmenities(_buildingAmenities);
+    setAmenities(_buildingAmenities);
   };
 
   const handleSubmit = async () => {
-    const amenities = buildingAmenities.map(i => ({
+    const amenitiesData = amenities.map(i => ({
       id: i.id,
       status: i.status,
     }));
-    const data = {project_id: selectedProject.id, id: projectId, amenities};
+    const data = {
+      project_id: selectedProject.id,
+      id: projectId,
+      amenities: amenitiesData,
+    };
     await updateProjectAmenities(data);
+    getData();
     navigation.goBack();
   };
 
@@ -56,7 +86,7 @@ function ProjectAmenities(props) {
         <Title>Building Amenities </Title>
       </View>
       <ScrollView style={styles.cardContainer}>
-        {buildingAmenities?.map(item => {
+        {amenities?.map(item => {
           return (
             <View style={styles.extraDetailsRow}>
               <View style={styles.extraDetailsSwitchWrap}>
@@ -66,9 +96,6 @@ function ProjectAmenities(props) {
                     handelSaveAmenities(item.id, item.status ? 0 : 1)
                   }
                   color="#77E675"
-                  style={{
-                    transform: [{scaleX: 0.6}, {scaleY: 0.6}],
-                  }}
                 />
               </View>
               <View style={styles.title}>
@@ -92,7 +119,6 @@ const styles = StyleSheet.create({
   headerWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    flexGrow: 1,
   },
   backIcon: {
     backgroundColor: 'rgba(72, 114, 244, 0.1)',

@@ -1,5 +1,6 @@
 import React from 'react';
 import {StyleSheet, View, SafeAreaView} from 'react-native';
+import * as Yup from 'yup';
 
 import {Title} from 'react-native-paper';
 import ActionButtons from 'components/Atoms/ActionButtons';
@@ -8,14 +9,30 @@ import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {Formik} from 'formik';
 import {useSelector} from 'react-redux';
 import useProjectStructureActions from 'redux/actions/projectStructureActions';
+import {PHONE_REGEX} from 'utils/constant';
+import Spinner from 'react-native-loading-spinner-overlay';
+
+const schema = Yup.object().shape({
+  contact_person_name: Yup.string()
+    .label('name')
+    .required('Please enter name '),
+  contact_person_number: Yup.string()
+    .label('phone')
+    .required('required')
+    .matches(PHONE_REGEX, 'Phone number is not valid')
+    .min(10, 'to short')
+    .max(10, 'to long'),
+});
 
 function RenderForm(props) {
   const {navigation, formikProps} = props;
 
-  const {values, errors, handleChange, handleBlur, handleSubmit} = formikProps;
+  const {values, errors, handleChange, handleBlur, handleSubmit, loading} =
+    formikProps;
 
   return (
     <SafeAreaProvider style={styles.formContainer}>
+      <Spinner visible={loading} textContent="" />
       <SafeAreaView style={styles.formSubContainer}>
         <Title>Add Security/ Caretaker Info</Title>
         <View style={styles.formContainer}>
@@ -59,13 +76,14 @@ function AddProjectSecurity(props) {
 
   const {projectId, item} = route?.params || {};
 
-  const securityId = item?.id || {};
+  const securityId = item?.id;
 
-  const id = securityId || 0;
+  const id = securityId;
 
-  const {getProjectDetails, addProjectSecurity} = useProjectStructureActions();
+  const {getProjectDetails, addProjectSecurity, updateProjectSecurity} =
+    useProjectStructureActions();
 
-  const {selectedProject} = useSelector(s => s.project);
+  const {selectedProject, loading} = useSelector(s => s.project);
 
   const initialValues = React.useMemo(() => {
     const {contact_person_name, contact_person_number, ...restData} =
@@ -92,19 +110,28 @@ function AddProjectSecurity(props) {
       id: projectId,
       contact_person_name: values.contact_person_name,
       contact_person_number: values.contact_person_number,
-      owner_id: id,
     };
 
-    await addProjectSecurity(data);
+    // if (id) {
+    //   await updateProjectSecurity({security_id: id, ...data});
+    // } else {
+    //   await addProjectSecurity(data);
+    // }
 
+    if (id) {
+      await updateProjectSecurity({security_id: id, ...data});
+    } else {
+      await addProjectSecurity(data);
+    }
     getData();
-    navigation.navigate('ProjectSecurity');
+    navigation.goBack();
   };
   return (
     <Formik
       enableReinitialize
       validateOnBlur={false}
       validateOnChange={false}
+      validationSchema={schema}
       initialValues={initialValues}
       onSubmit={onSubmit}>
       {formikProps => (
@@ -112,6 +139,7 @@ function AddProjectSecurity(props) {
           {...props}
           formikProps={formikProps}
           navigation={navigation}
+          loading={loading}
         />
       )}
     </Formik>

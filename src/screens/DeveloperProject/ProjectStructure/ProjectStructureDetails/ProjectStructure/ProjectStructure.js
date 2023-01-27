@@ -12,18 +12,13 @@ import {useSelector} from 'react-redux';
 import * as Yup from 'yup';
 
 const schema = Yup.object().shape({
-  total_no_of_towers: Yup.number('Invalid')
-    .typeError('please enter number')
-    .required('Required'),
-  total_no_of_units: Yup.number('Invalid')
-    .typeError('please enter number')
-    .required('Required'),
-  total_no_of_bunglows: Yup.number('Invalid')
-    .typeError('please enter number')
-    .required('Required'),
-  total_no_of_plots: Yup.number('Invalid')
-    .typeError('please enter number')
-    .required('Required'),
+  total_no_of_towers: Yup.number('Invalid').typeError('please enter number'),
+
+  total_no_of_units: Yup.number('Invalid').typeError('please enter number'),
+
+  total_no_of_bunglows: Yup.number('Invalid').typeError('please enter number'),
+
+  total_no_of_plots: Yup.number('Invalid').typeError('please enter number'),
 });
 
 function RenderForm(props) {
@@ -157,42 +152,44 @@ function RenderForm(props) {
 function ProjectStructure(props) {
   const {navigation, route} = props;
 
-  const {projectId, projectDetails} = route?.params || {};
+  const {projectId} = route?.params || {};
 
-  const edit = Boolean(projectId);
-
-  const {updateProjectStructure, getProjectMasterList} =
+  const {updateProjectStructure, getProjectMasterList, getProjectDetails} =
     useProjectStructureActions();
 
   const {selectedProject} = useSelector(s => s.project);
-  const {masterList} = useSelector(s => s.projectStructure);
+  const {masterList, projectDetails} = useSelector(s => s.projectStructure);
 
   React.useEffect(() => {
     getData();
+    getDetails();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getData = () => getProjectMasterList({project_id: selectedProject.id});
 
+  const getDetails = async () => {
+    await getProjectDetails({project_id: selectedProject.id, id: projectId});
+  };
+
   const initialValues = React.useMemo(() => {
-    if (edit) {
-      const {
-        project_category,
-        total_no_of_towers,
-        total_no_of_units,
-        total_no_of_bunglows,
-        total_no_of_plots,
-      } = projectDetails || {};
-      return {
-        project_category,
-        total_no_of_towers,
-        total_no_of_units,
-        total_no_of_bunglows,
-        total_no_of_plots,
-      };
-    }
-    return {};
-  }, [edit, projectDetails]);
+    const {
+      project_category,
+      total_no_of_towers,
+      total_no_of_units,
+      total_no_of_bunglows,
+      total_no_of_plots,
+      bhk_configuration,
+    } = projectDetails || {};
+    return {
+      project_category,
+      total_no_of_towers,
+      total_no_of_units,
+      total_no_of_bunglows,
+      total_no_of_plots,
+      bhk_configuration: bhk_configuration.split(','),
+    };
+  }, [projectDetails]);
 
   const onSubmit = values => {
     const arrString = values?.bhk_configuration?.join(',') || undefined;
@@ -208,7 +205,8 @@ function ProjectStructure(props) {
       bhk_configuration: arrString,
     };
     updateProjectStructure(data);
-    navigation.navigate('ProjectStructureDetails');
+    getDetails();
+    navigation.goBack();
   };
 
   return (

@@ -152,6 +152,13 @@ export default function useProjectStructure() {
         params,
       );
     },
+    projectTowerRearrange: data => {
+      return instance.post(
+        '/projectstructure/project/projectTowerRearrange',
+        data,
+        params,
+      );
+    },
     // PickUp
 
     getModuleList: data => {
@@ -227,6 +234,13 @@ export default function useProjectStructure() {
     deleteFloor: data => {
       return instance.post(
         '/projectstructure/project/projectFloorRemove',
+        data,
+        params,
+      );
+    },
+    projectFloorRearrange: data => {
+      return instance.post(
+        '/projectstructure/project/projectFloorRearrange',
         data,
         params,
       );

@@ -262,6 +262,7 @@ import DocumentDownload from 'screens/DeveloperProject/DocumentGenerater/Documen
 import UpdateProjectDetails from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/ProjectUpdateDetails';
 import AddProjectSecurity from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/ProjectSecurity/AddProjectSecurity';
 import AddProjectOwner from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/ProjectOwner/AddProjectOwner';
+import AddProjectFiles from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/ProjectFiles/AddProjectFiles';
 
 /** *********** Developer Project Sub Screens End   ************ */
 
@@ -730,6 +731,7 @@ function AppStackNavigator() {
             <Stack.Screen name="UnitFiles" component={UnitFiles} />
             <Stack.Screen name="UnitPricing" component={UnitPricing} />
             <Stack.Screen name="UnitPreview" component={UnitPreview} />
+            <Stack.Screen name="AddProjectFiles" component={AddProjectFiles} />
             <Stack.Screen
               name="UnitSecurityInfo"
               component={UnitSecurityInfo}

@@ -6,7 +6,7 @@ import RichTextEditor from 'components/Atoms/RichTextEditor';
 import ActionButtons from 'components/Atoms/ActionButtons';
 import useProjectStructureActions from 'redux/actions/projectStructureActions';
 import {useSelector} from 'react-redux';
-import RenderSelectMultiple from 'components/Atoms/RenderSelectMultiple';
+import RenderSelect from 'components/Atoms/RenderSelect';
 
 function RenderForm(props) {
   const {formikProps, navigation, masterList} = props;
@@ -25,10 +25,11 @@ function RenderForm(props) {
   return (
     <View style={styles.formContainer}>
       <View style={styles.inputsContainer}>
-        <RenderSelectMultiple
+        <RenderSelect
           name="configurtion"
           label="Configuration"
           options={bhkOptions}
+          multiselect
           value={values.configurtion}
           containerStyles={styles.inputStyles}
           error={errors.configurtion}
@@ -59,31 +60,31 @@ function RenderForm(props) {
 function ProjectBrief(props) {
   const {navigation, route} = props;
 
-  const {projectId: id, projectDetails} = route?.params || {};
+  const {projectId: id} = route?.params || {};
 
-  const edit = Boolean(id);
-
-  const {updateProjectBrief, getProjectMasterList} =
+  const {updateProjectBrief, getProjectMasterList, getProjectDetails} =
     useProjectStructureActions();
 
   const {selectedProject} = useSelector(s => s.project);
-
-  const {masterList} = useSelector(s => s.projectStructure);
+  const {projectDetails, masterList} = useSelector(s => s.projectStructure);
 
   React.useEffect(() => {
     getProjectMasterList({project_id: selectedProject.id});
+    getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  const getData = async () => {
+    await getProjectDetails({project_id: selectedProject.id, id});
+  };
 
   const initialValues = React.useMemo(() => {
-    if (edit) {
-      const {description} = projectDetails || {};
-      return {
-        description,
-      };
-    }
-    return {};
-  }, [edit, projectDetails]);
+    const {description, configurtion} = projectDetails;
+
+    return {
+      description,
+      configurtion: configurtion.split(','),
+    };
+  }, [projectDetails]);
 
   const onSubmit = values => {
     const arrString = values?.configurtion?.join(',') || undefined;
@@ -95,6 +96,8 @@ function ProjectBrief(props) {
       description: values.description,
     };
     updateProjectBrief(data);
+    getData();
+
     navigation.goBack();
   };
 

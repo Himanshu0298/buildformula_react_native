@@ -1,5 +1,6 @@
 import React, {useMemo} from 'react';
 import {StyleSheet, View, SafeAreaView, Modal} from 'react-native';
+import * as Yup from 'yup';
 
 import {Title} from 'react-native-paper';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
@@ -9,6 +10,21 @@ import RenderInput from 'components/Atoms/RenderInput';
 import ActionButtons from 'components/Atoms/ActionButtons';
 import useProjectStructureActions from 'redux/actions/projectStructureActions';
 import {useSelector} from 'react-redux';
+import {PHONE_REGEX} from 'utils/constant';
+
+const schema = Yup.object().shape({
+  email: Yup.string()
+    .email('Please enter a valid email')
+    .label('email')
+    .required('Please enter a valid email'),
+  name: Yup.string().label('name').required('Please enter name '),
+  phone_number: Yup.string()
+    .label('phone')
+    .required('required')
+    .matches(PHONE_REGEX, 'Phone number is not valid')
+    .min(10, 'to short')
+    .max(10, 'to long'),
+});
 
 function RenderForm(props) {
   const {navigation, formikProps, contactTypeOptions} = props;
@@ -89,10 +105,14 @@ function AddProjectOwner(props) {
 
   const {projectId, item, ownerId} = route?.params || {};
 
-  const id = ownerId || 0;
+  const id = ownerId;
 
-  const {getProjectDetails, addProjectOwner, getProjectMasterList} =
-    useProjectStructureActions();
+  const {
+    getProjectDetails,
+    addProjectOwner,
+    getProjectMasterList,
+    updateProjectOwner,
+  } = useProjectStructureActions();
   const {masterList} = useSelector(s => s.projectStructure);
 
   const {project_structure_contact_type: contactType} = masterList;
@@ -135,13 +155,15 @@ function AddProjectOwner(props) {
       name: values.name,
       phone_number: values.phone_number,
       email: values.email,
-      owner_id: id,
     };
 
-    await addProjectOwner(data);
-
+    if (id) {
+      await updateProjectOwner({owner_id: id, ...data});
+    } else {
+      await addProjectOwner(data);
+    }
     getData();
-    navigation.navigate('ProjectOwner');
+    navigation.goBack();
   };
 
   return (
@@ -149,6 +171,7 @@ function AddProjectOwner(props) {
       enableReinitialize
       validateOnBlur={false}
       validateOnChange={false}
+      validationSchema={schema}
       initialValues={initialValues}
       onSubmit={onSubmit}>
       {formikProps => (

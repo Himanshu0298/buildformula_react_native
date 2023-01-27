@@ -58,8 +58,11 @@ const ProjectCard = props => {
     premium_project,
   } = item;
 
+  const projectDetails = item || {};
+  const projectId = item?.id || {};
+
   const navToEdit = () => {
-    navigation.navigate('ProjectStructureDetails', {id});
+    navigation.navigate('ProjectStructureDetails', {projectId, projectDetails});
     toggleMenu();
   };
 

@@ -7,16 +7,7 @@ import {
   Image,
 } from 'react-native';
 
-import {
-  Button,
-  Dialog,
-  FAB,
-  IconButton,
-  Menu,
-  Portal,
-  Text,
-  Title,
-} from 'react-native-paper';
+import {FAB, IconButton, Menu, Text, Title} from 'react-native-paper';
 import {theme} from 'styles/theme';
 
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -28,117 +19,12 @@ import Share from 'react-native-share';
 
 import {useDownload} from 'components/Atoms/Download';
 import {getShadow} from 'utils';
-import {useImagePicker} from 'hooks';
-import {Formik} from 'formik';
-import RenderInput from 'components/Atoms/RenderInput';
-import RenderSelect from 'components/Atoms/RenderSelect';
+
 import useProjectStructureActions from 'redux/actions/projectStructureActions';
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
 import dayjs from 'dayjs';
 import {useAlert} from 'components/Atoms/Alert';
-import {ActionSheetProvider} from '@expo/react-native-action-sheet';
-
-function AddAttachmentModel(props) {
-  const {visible, fileCategoryOptions, formikProps, onClose} = props;
-
-  const {values, setFieldValue} = formikProps;
-
-  const {openImagePicker} = useImagePicker();
-
-  const handleUpload = () => {
-    openImagePicker({
-      type: 'file',
-      onChoose: file => {
-        if (file.uri) {
-          const attachments = values.attachments || [];
-          attachments.push(file);
-          setFieldValue('attachments', attachments);
-        }
-      },
-    });
-  };
-
-  return (
-    <Portal>
-      <Dialog
-        visible={visible}
-        onDismiss={onClose}
-        style={styles.dialogContainer}>
-        <ActionSheetProvider>
-          <View style={styles.sheetContentContainer}>
-            <View style={styles.closeContainer}>
-              <IconButton
-                icon="close-circle"
-                size={25}
-                onPress={onClose}
-                color="grey"
-              />
-            </View>
-            <Title>Upload</Title>
-            <TouchableOpacity opacity={0.5} onPress={handleUpload}>
-              <View style={styles.uploadFileContainer}>
-                <Text style={{color: theme.colors.primary}}>Choose file</Text>
-              </View>
-            </TouchableOpacity>
-            <RenderForm
-              formikProps={formikProps}
-              fileCategoryOptions={fileCategoryOptions}
-            />
-          </View>
-        </ActionSheetProvider>
-      </Dialog>
-    </Portal>
-  );
-}
-
-function RenderForm(props) {
-  const {formikProps, fileCategoryOptions} = props;
-
-  const {
-    values,
-    errors,
-    handleChange,
-    handleBlur,
-    setFieldValue,
-    handleSubmit,
-  } = formikProps;
-
-  return (
-    <View style={styles.formContainer}>
-      <RenderInput
-        name="name"
-        label="File Name"
-        containerStyles={styles.inputStyles}
-        value={values?.name}
-        maxLength={10}
-        onChangeText={handleChange('name')}
-        onBlur={handleBlur('name')}
-        returnKeyType="next"
-        error={errors.name}
-      />
-      <RenderSelect
-        name="file_category"
-        label="File Category"
-        value={values?.file_category}
-        options={fileCategoryOptions}
-        containerStyles={styles.inputStyles}
-        onBlur={handleBlur('file_category')}
-        onSelect={value => {
-          setFieldValue('file_category', value);
-        }}
-      />
-
-      <Button
-        style={styles.button}
-        theme={{roundness: 10}}
-        mode="contained"
-        onPress={handleSubmit}>
-        Add
-      </Button>
-    </View>
-  );
-}
 
 function RenderFile(props) {
   const {file, onPressFile, handleDelete, handleShare} = props;
@@ -166,7 +52,9 @@ function RenderFile(props) {
         onPress={() => onPressFile(file)}>
         <Image source={PdfIcon} style={styles.fileIcon} />
         <View>
-          <Text style={(styles.verticalFlex, styles.text)} numberOfLines={3}>
+          <Text
+            style={(styles.verticalFlex, styles.textContainer)}
+            numberOfLines={3}>
             {file_name}
           </Text>
           <View style={styles.type}>
@@ -202,15 +90,10 @@ function ProjectFiles(props) {
   const download = useDownload();
   const alert = useAlert();
 
-  const [dialog, setDialog] = useState();
   const [sharing, setSharing] = useState(false);
 
-  const {
-    getProjectDetails,
-    addProjectFile,
-    deleteProjectFile,
-    getProjectMasterList,
-  } = useProjectStructureActions();
+  const {getProjectDetails, deleteProjectFile, getProjectMasterList} =
+    useProjectStructureActions();
 
   const {selectedProject} = useSelector(s => s.project);
   const {projectDetails, loading, masterList} = useSelector(
@@ -218,7 +101,6 @@ function ProjectFiles(props) {
   );
 
   const {attachment_file} = projectDetails || {};
-  const {project_structure_file_category: fileCategory} = masterList;
 
   React.useEffect(() => {
     getData();
@@ -229,13 +111,6 @@ function ProjectFiles(props) {
   const getData = async () => {
     await getProjectDetails({project_id: selectedProject.id, id: projectId});
   };
-
-  const fileCategoryOptions = useMemo(() => {
-    return fileCategory?.map(i => ({
-      label: i.title,
-      value: i.id,
-    }));
-  }, [fileCategory]);
 
   const onPressFile = async file => {
     const fileUrl = getDownloadUrl(file);
@@ -250,7 +125,6 @@ function ProjectFiles(props) {
       },
     });
   };
-  const toggleAddFile = () => setDialog(v => !v);
   const toggleSharing = () => setSharing(v => !v);
 
   const handleShare = async file => {
@@ -281,23 +155,6 @@ function ProjectFiles(props) {
     }
   };
 
-  const onSubmit = async values => {
-    toggleAddFile();
-    const formData = new FormData();
-    values.attachments.map(item => {
-      formData.append('myfile[]', item);
-      return item;
-    });
-
-    formData.append('project_id', selectedProject.id);
-    formData.append('file_name', [values.name]);
-    formData.append('id', projectId);
-    formData.append('file_category', [values.file_category]);
-
-    await addProjectFile(formData);
-    getData();
-  };
-
   const handleDelete = async attachment_id => {
     alert.show({
       title: 'Confirm',
@@ -313,62 +170,44 @@ function ProjectFiles(props) {
       },
     });
   };
-  return (
-    <>
-      {dialog ? (
-        <Formik
-          enableReinitialize
-          validateOnBlur={false}
-          validateOnChange={false}
-          initialValues={{}}
-          onSubmit={onSubmit}>
-          {formikProps => (
-            <AddAttachmentModel
-              {...props}
-              visible={dialog}
-              onClose={toggleAddFile}
-              formikProps={formikProps}
-              fileCategoryOptions={fileCategoryOptions}
-            />
-          )}
-        </Formik>
-      ) : null}
 
-      <View style={styles.mainContainer}>
-        <Spinner visible={loading} textContent="" />
-        <View style={styles.headerWrapper}>
-          <IconButton
-            icon="keyboard-backspace"
-            size={18}
-            color="#4872f4"
-            style={styles.backIcon}
-            onPress={() => navigation.goBack()}
-          />
-          <Title>Files/ Attachments</Title>
-        </View>
-        <ScrollView style={styles.scrollView}>
-          <View style={styles.fileContainer}>
-            {attachment_file?.map((file, index) => {
-              return (
-                <RenderFile
-                  file={file}
-                  key={index?.toString()}
-                  onPressFile={onPressFile}
-                  handleDelete={handleDelete}
-                  toggleAddFile={toggleAddFile}
-                  handleShare={handleShare}
-                />
-              );
-            })}
-          </View>
-        </ScrollView>
-        <FAB
-          style={[styles.fab, {backgroundColor: theme.colors.primary}]}
-          icon="plus"
-          onPress={toggleAddFile}
+  const navToAdd = () => {
+    navigation.navigate('AddProjectFiles', {projectId});
+  };
+  return (
+    <View style={styles.mainContainer}>
+      <Spinner visible={loading} textContent="" />
+      <View style={styles.headerWrapper}>
+        <IconButton
+          icon="keyboard-backspace"
+          size={18}
+          color="#4872f4"
+          style={styles.backIcon}
+          onPress={() => navigation.goBack()}
         />
+        <Title>Files/ Attachments</Title>
       </View>
-    </>
+      <ScrollView style={styles.scrollView}>
+        <View style={styles.fileContainer}>
+          {attachment_file?.map((file, index) => {
+            return (
+              <RenderFile
+                file={file}
+                key={index?.toString()}
+                onPressFile={onPressFile}
+                handleDelete={handleDelete}
+                handleShare={handleShare}
+              />
+            );
+          })}
+        </View>
+      </ScrollView>
+      <FAB
+        style={[styles.fab, {backgroundColor: theme.colors.primary}]}
+        icon="plus"
+        onPress={navToAdd}
+      />
+    </View>
   );
 }
 
@@ -404,12 +243,6 @@ const styles = StyleSheet.create({
     bottom: 10,
   },
 
-  text: {
-    color: '#080707',
-    paddingHorizontal: 10,
-    fontSize: 14,
-    alignItems: 'center',
-  },
   date: {
     color: '#080707',
   },
@@ -435,45 +268,15 @@ const styles = StyleSheet.create({
   dateContainer: {
     marginLeft: 8,
   },
-  dialogContainer: {
-    flex: 0.6,
-    backgroundColor: '#fff',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    top: 200,
-    width: '100%',
-    left: -25,
+  verticalFlex: {
+    flexDirection: 'column',
   },
-  sheetContentContainer: {
-    backgroundColor: '#fff',
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-    paddingHorizontal: 15,
-    paddingBottom: 20,
+  textContainer: {
     flexGrow: 1,
-    height: '100%',
-    ...getShadow(2),
+    flex: 1,
+    marginRight: 30,
+    marginLeft: 5,
   },
-  closeContainer: {
-    alignItems: 'flex-end',
-  },
-
-  uploadFileContainer: {
-    margin: 20,
-    alignItems: 'center',
-    backgroundColor: 'rgba(72, 114, 244, 0.1)',
-    padding: 10,
-  },
-
-  inputStyles: {
-    marginVertical: 8,
-  },
-  formContainer: {
-    flexGrow: 1,
-  },
-  // editIcon: {
-  //   borderRadius: 10,
-  // },
 });
 
 export default ProjectFiles;

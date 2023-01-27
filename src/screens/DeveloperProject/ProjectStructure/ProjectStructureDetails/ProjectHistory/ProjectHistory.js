@@ -10,16 +10,7 @@ import RenderDatePicker from 'components/Atoms/RenderDatePicker';
 import dayjs from 'dayjs';
 import useProjectStructureActions from 'redux/actions/projectStructureActions';
 import {useSelector} from 'react-redux';
-
-// const schema = Yup.object().shape({
-//   projectName: Yup.string()
-//     .label('projectName')
-//     .required('Project Name is Required'),
-//   builderName: Yup.string()
-//     .label('builderName')
-//     .required('Builder Name is Required'),
-//   area: Yup.string().label('area').required('Area is Required'),
-// });
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const RenderForm = props => {
   const {masterList, navigation, formikProps} = props;
@@ -149,44 +140,46 @@ const RenderForm = props => {
 const ProjectHistory = props => {
   const {navigation, route} = props;
 
-  const {projectId: id, projectDetails} = route?.params || {};
-
-  const edit = Boolean(id);
+  const {projectId: id} = route?.params || {};
 
   const {getProjectMasterList, updateProjectHistory} =
     useProjectStructureActions();
 
-  const {selectedProject} = useSelector(s => s.project);
-  const {masterList} = useSelector(s => s.projectStructure);
+  const {getProjectDetails} = useProjectStructureActions();
+  const {projectDetails, loading} = useSelector(s => s.projectStructure);
 
   React.useEffect(() => {
     getData();
+    getDetails();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const getDetails = () =>
+    getProjectDetails({project_id: selectedProject.id, id});
+
+  const {selectedProject} = useSelector(s => s.project);
+  const {masterList} = useSelector(s => s.projectStructure);
 
   const getData = () => getProjectMasterList({project_id: selectedProject.id});
 
   const initialValues = React.useMemo(() => {
-    if (edit) {
-      const {
-        possesion_year,
-        rera_no,
-        project_type,
-        restricted_user,
-        project_status,
-        project_quality,
-      } = projectDetails || {};
-      return {
-        possesion_year,
-        rera_no,
-        project_type,
-        restricted_user,
-        project_status,
-        project_quality,
-      };
-    }
-    return {};
-  }, [edit, projectDetails]);
+    const {
+      possesion_year,
+      rera_no,
+      project_type,
+      restricted_user,
+      project_status,
+      project_quality,
+    } = projectDetails || {};
+    return {
+      possesion_year,
+      rera_no,
+      project_type,
+      restricted_user,
+      project_status,
+      project_quality,
+    };
+  }, [projectDetails]);
 
   const onSubmit = values => {
     const data = {
@@ -200,11 +193,12 @@ const ProjectHistory = props => {
       project_quality: values.project_quality,
     };
     updateProjectHistory(data);
-    navigation.navigate('ProjectStructureDetails');
+    navigation.goBack();
   };
 
   return (
     <View style={styles.mainContainer}>
+      <Spinner visible={loading} />
       <View style={styles.headerWrapper}>
         <IconButton
           icon="keyboard-backspace"

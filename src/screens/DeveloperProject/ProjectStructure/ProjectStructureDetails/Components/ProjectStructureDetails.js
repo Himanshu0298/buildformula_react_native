@@ -4,6 +4,9 @@ import {Divider, IconButton, Subheading, Title} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
+import useProjectStructureActions from 'redux/actions/projectStructureActions';
+import {useSelector} from 'react-redux';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const ROUTE = [
   {
@@ -72,10 +75,24 @@ const RenderRow = props => {
 
 const ProjectStructureDetails = props => {
   const {navigation, route} = props;
-  const {projectId, projectDetails} = route?.params || {};
+  const {projectId} = route?.params || {};
+
+  const {getProjectDetails} = useProjectStructureActions();
+  const {selectedProject} = useSelector(s => s.project);
+  const {projectDetails, loading} = useSelector(s => s.projectStructure);
+
+  React.useEffect(() => {
+    getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const getData = () =>
+    getProjectDetails({project_id: selectedProject.id, id: projectId});
 
   return (
     <SafeAreaView style={styles.mainContainer}>
+      <Spinner visible={loading} textContent="" />
+
       <View style={styles.headerWrapper}>
         <IconButton
           icon="keyboard-backspace"

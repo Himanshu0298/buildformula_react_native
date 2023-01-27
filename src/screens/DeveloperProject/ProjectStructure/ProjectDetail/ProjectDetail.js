@@ -21,7 +21,7 @@ function ProjectDetail(props) {
   const [details, setDetails] = useState(projectDetails || {});
 
   const {selectedProject} = useSelector(s => s.project);
-  const {projectDetails, loading} = useSelector(s => s.projectStructure);
+  const {projectDetails} = useSelector(s => s.projectStructure);
 
   const {createProjectDuplicate, getProjectDetails, getProjectList} =
     useProjectStructureActions();
