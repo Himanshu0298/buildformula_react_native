@@ -29,7 +29,7 @@ const schema = Yup.object().shape({
 });
 
 function PickUpList(props) {
-  const {item, index, handleDelete, editDialog} = props;
+  const {item, index, handleDelete, editDialog, hideDelete} = props;
 
   const {title, bhk_title, id} = item;
 
@@ -60,19 +60,21 @@ function PickUpList(props) {
               />
             </OpacityButton>
           </View>
-          <View>
-            <OpacityButton
-              color={theme.colors.error}
-              opacity={0.18}
-              onPress={() => handleDelete(id)}
-              style={styles.deleteIcon}>
-              <MaterialIcons
-                name="delete"
+          {!hideDelete && (
+            <View>
+              <OpacityButton
                 color={theme.colors.error}
-                size={13}
-              />
-            </OpacityButton>
-          </View>
+                opacity={0.18}
+                onPress={() => handleDelete(id)}
+                style={styles.deleteIcon}>
+                <MaterialIcons
+                  name="delete"
+                  color={theme.colors.error}
+                  size={13}
+                />
+              </OpacityButton>
+            </View>
+          )}
         </View>
       </View>
     </>
@@ -162,6 +164,12 @@ function PickUpListing(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const check = useMemo(() => {
+    return (
+      fieldLabel === 'Building Amenities' || fieldLabel === 'Project Category'
+    );
+  }, [fieldLabel]);
+
   const getList = () => {
     getPickUpList({project_id: selectedProject.id, field_id});
   };
@@ -233,6 +241,7 @@ function PickUpListing(props) {
                   index={index}
                   editDialog={editDialog}
                   handleDelete={handleDelete}
+                  hideDelete={check}
                 />
               );
             })}

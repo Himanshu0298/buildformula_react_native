@@ -3,13 +3,10 @@ import {StyleSheet, View, TouchableOpacity, FlatList} from 'react-native';
 import {withTheme, Text} from 'react-native-paper';
 import PropTypes from 'prop-types';
 import TowerIcon from 'assets/images/tower.svg';
-import {getTowerLabel} from 'utils';
 import {secondaryTheme} from 'styles/theme';
 
 export function RenderTowerBox(props) {
-  const {towerId, onPress, active, theme} = props;
-
-  const towerLabel = getTowerLabel(towerId);
+  const {towerId, onPress, active, theme, label} = props;
 
   const Container = onPress ? TouchableOpacity : View;
 
@@ -28,30 +25,37 @@ export function RenderTowerBox(props) {
           styles.labelContainer,
           active ? {backgroundColor: theme.colors.primary} : {},
         ]}>
-        <Text theme={active ? secondaryTheme : undefined}>{towerLabel}</Text>
+        <Text theme={active ? secondaryTheme : undefined} numberOfLines={1}>
+          {label}
+          {label}
+        </Text>
       </View>
     </Container>
   );
 }
 
 function TowerSelector(props) {
-  const {towerCount, onSelectTower} = props;
+  const {towerCount, onSelectTower, towers} = props;
 
   return (
     <View style={styles.towerList}>
       <FlatList
-        data={new Array(towerCount).fill(0)}
+        data={towers}
+        // data={new Array(towerCount).fill(0)}
         numColumns={3}
         extraData={new Array(towerCount).fill(0)}
         contentContainerStyle={styles.scrollContainer}
-        renderItem={({index}) => (
-          <RenderTowerBox
-            {...props}
-            key={index.toString()}
-            towerId={index + 1}
-            onPress={onSelectTower}
-          />
-        )}
+        renderItem={({item, index}) => {
+          return (
+            <RenderTowerBox
+              {...props}
+              key={index.toString()}
+              towerId={item.id}
+              label={item.label}
+              onPress={onSelectTower}
+            />
+          );
+        }}
       />
     </View>
   );
@@ -85,7 +89,7 @@ const styles = StyleSheet.create({
   },
   labelContainer: {
     padding: 10,
-    flexGrow: 1,
+    flex: 1,
     backgroundColor: '#fff',
     minWidth: 50,
     borderTopRightRadius: 5,

@@ -40,8 +40,9 @@ function FloorPreview(props) {
   const structureData =
     selectedProject.project_structure?.[selectedStructure] || {};
 
-  const {floors = {}} =
+  const selectedTower =
     structureData?.towers.find(i => i.tower_id === towerId) || {};
+  const {floors = {}} = selectedTower;
 
   const onSelectFloor = floorId => {
     setSelectedFloor(v => (v === floorId ? undefined : floorId));

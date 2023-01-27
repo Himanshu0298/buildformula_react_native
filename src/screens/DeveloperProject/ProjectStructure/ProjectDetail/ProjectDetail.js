@@ -70,6 +70,8 @@ function ProjectDetail(props) {
     };
 
     await createProjectDuplicate(data);
+    getData();
+    getList();
     navToNext();
     getList();
   };
