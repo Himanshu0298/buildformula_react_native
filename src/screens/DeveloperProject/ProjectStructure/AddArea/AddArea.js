@@ -92,6 +92,7 @@ const RenderForm = props => {
         <RenderSelect
           name="city"
           label="City"
+          creatable
           value={values.city}
           options={cityOptions}
           containerStyles={styles.inputStyles}
@@ -103,6 +104,7 @@ const RenderForm = props => {
         <RenderSelect
           name="state"
           label="State"
+          creatable
           value={values.state}
           options={stateOptions}
           containerStyles={styles.inputStyles}
@@ -114,6 +116,7 @@ const RenderForm = props => {
         <RenderSelect
           name="country"
           label="Country"
+          creatable
           value={values.country}
           options={countryOptions}
           containerStyles={styles.inputStyles}
@@ -125,6 +128,7 @@ const RenderForm = props => {
         <RenderSelect
           name="status"
           label="Status"
+          creatable
           value={values.status}
           options={statusOptions}
           containerStyles={styles.inputStyles}
