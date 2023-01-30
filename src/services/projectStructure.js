@@ -112,7 +112,7 @@ export default function useProjectStructure() {
       return instance.post(
         '/projectstructure/project/updateFilesAttachmentAdd',
         data,
-        params,
+        config({multipart: true}),
       );
     },
     deleteProjectFile: data => {
@@ -152,7 +152,7 @@ export default function useProjectStructure() {
         params,
       );
     },
-    projectTowerRearrange: data => {
+    updateTowerOrder: data => {
       return instance.post(
         '/projectstructure/project/projectTowerRearrange',
         data,
@@ -238,9 +238,9 @@ export default function useProjectStructure() {
         params,
       );
     },
-    projectFloorRearrange: data => {
+    updateFloorOrder: data => {
       return instance.post(
-        '/projectstructure/project/projectFloorRearrange',
+        '/projectstructure/project/updateFloorOrder',
         data,
         params,
       );

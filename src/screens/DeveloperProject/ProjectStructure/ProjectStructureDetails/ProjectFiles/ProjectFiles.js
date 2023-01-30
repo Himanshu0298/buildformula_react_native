@@ -51,7 +51,7 @@ function RenderFile(props) {
         style={styles.sectionContainer}
         onPress={() => onPressFile(file)}>
         <Image source={PdfIcon} style={styles.fileIcon} />
-        <View>
+        <View style={{width: '70%'}}>
           <Text
             style={(styles.verticalFlex, styles.textContainer)}
             numberOfLines={3}>
@@ -96,9 +96,7 @@ function ProjectFiles(props) {
     useProjectStructureActions();
 
   const {selectedProject} = useSelector(s => s.project);
-  const {projectDetails, loading, masterList} = useSelector(
-    s => s.projectStructure,
-  );
+  const {projectDetails, loading} = useSelector(s => s.projectStructure);
 
   const {attachment_file} = projectDetails || {};
 
@@ -275,7 +273,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     flex: 1,
     marginRight: 30,
-    marginLeft: 5,
+    marginLeft: 10,
   },
 });
 

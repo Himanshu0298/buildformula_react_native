@@ -3,7 +3,7 @@ import React, {useMemo} from 'react';
 import {IconButton, Subheading, Switch, Title} from 'react-native-paper';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
-import RenderInput from 'components/Atoms/RenderInput';
+import RenderInput, {RenderError} from 'components/Atoms/RenderInput';
 import RenderSelect from 'components/Atoms/RenderSelect';
 import ActionButtons from 'components/Atoms/ActionButtons';
 import useProjectStructureActions from 'redux/actions/projectStructureActions';
@@ -16,7 +16,6 @@ const schema = Yup.object().shape({
   builderName: Yup.string()
     .label('builderName')
     .required('Builder Name is Required'),
-  area: Yup.string().label('area').required('Area is Required'),
 });
 
 const RenderForm = props => {
@@ -30,12 +29,12 @@ const RenderForm = props => {
     handleSubmit,
   } = formikProps;
 
-  const [active, setActive] = React.useState(true);
-  const [premium, setPremium] = React.useState(true);
-
   const handleAreaSelect = value => {
     setFieldValue('area', value);
     const option = areaList.find(i => i.id === value);
+
+    const area = areaList.find(i => i.id === value);
+    console.log('===========>option ', option === '');
     if (option) {
       setFieldValue('city', option.city);
       setFieldValue('pincode', option.pincode);
@@ -44,8 +43,8 @@ const RenderForm = props => {
     }
   };
 
-  const onToggleStatus = () => setActive(!active);
-  const onTogglePremium = () => setPremium(!premium);
+  const onToggleStatus = () => setFieldValue('active', !values.active);
+  const onTogglePremium = () => setFieldValue('premium', !values.premium);
 
   return (
     <ScrollView
@@ -83,6 +82,7 @@ const RenderForm = props => {
           onBlur={handleBlur('area')}
           onSelect={handleAreaSelect}
         />
+        <RenderError />
         <RenderInput
           containerStyles={styles.inputStyles}
           label="City"
@@ -123,28 +123,28 @@ const RenderForm = props => {
           <Subheading>Status</Subheading>
           <View style={styles.extraDetailsSwitchWrap}>
             <Switch
-              value={active}
+              value={Boolean(values.active)}
               onValueChange={onToggleStatus}
               color="#77E675"
               style={{
                 transform: [{scaleX: 0.8}, {scaleY: 0.8}],
               }}
             />
-            {active ? <Text style={styles.switch}>Active</Text> : null}
+            {values.active ? <Text style={styles.switch}>Active</Text> : null}
           </View>
         </View>
         <View style={styles.extraDetailsRow}>
           <Subheading>Premium Project</Subheading>
           <View style={styles.extraDetailsSwitchWrap}>
             <Switch
-              value={premium}
+              value={Boolean(values.premium)}
               onValueChange={onTogglePremium}
               color="#77E675"
               style={{
                 transform: [{scaleX: 0.8}, {scaleY: 0.8}],
               }}
             />
-            {premium ? <Text style={styles.switch}>Yes</Text> : null}
+            {values.premium ? <Text style={styles.switch}>Yes</Text> : null}
           </View>
         </View>
         <View style={styles.filterBTN}>
@@ -165,7 +165,7 @@ const UpdateProjectDetails = props => {
 
   const {projectId: id} = route?.params || {};
 
-  const {updateProjectDetails, getAreaList, getProjectDetails} =
+  const {updateProjectDetails, getAreaList, getProjectDetails, getProjectList} =
     useProjectStructureActions();
 
   const {selectedProject} = useSelector(s => s.project);
@@ -173,7 +173,9 @@ const UpdateProjectDetails = props => {
   const {areaList, projectDetails} = useSelector(s => s.projectStructure);
 
   const areaOptions = useMemo(() => {
-    return areaList?.map(i => ({label: i.area, value: i.id}));
+    return areaList
+      ?.filter(i => i.status === 1)
+      ?.map(i => ({label: i.area, value: i.id}));
   }, [areaList]);
 
   React.useEffect(() => {
@@ -187,6 +189,10 @@ const UpdateProjectDetails = props => {
     await getProjectDetails({project_id: selectedProject.id, id});
   };
 
+  const getList = async () => {
+    await getProjectList({project_id: selectedProject.id});
+  };
+
   const initialValues = React.useMemo(() => {
     const {
       area,
@@ -196,8 +202,8 @@ const UpdateProjectDetails = props => {
       state,
       pincode,
       country,
-      status,
-      premium_project,
+      status: active,
+      premium_project: premium,
     } = projectDetails || {};
     return {
       projectName,
@@ -207,8 +213,8 @@ const UpdateProjectDetails = props => {
       state,
       pincode,
       country,
-      status,
-      premium_project,
+      active,
+      premium,
     };
   }, [projectDetails]);
 
@@ -219,11 +225,12 @@ const UpdateProjectDetails = props => {
       project_name: values.projectName,
       developer_name: values.builderName,
       area: values.area,
-      status: values.status,
-      premium_project: values.premium_project,
+      status: values.active ? 1 : 0,
+      premium_project: values.premium ? 1 : 0,
     };
     await updateProjectDetails(data);
     getDetails();
+    getList();
     navigation.goBack();
   };
   return (

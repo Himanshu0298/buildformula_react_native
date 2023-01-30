@@ -1,20 +1,15 @@
 import React, {useMemo} from 'react';
-import {
-  StyleSheet,
-  View,
-  TouchableOpacity,
-  Image,
-  SafeAreaView,
-} from 'react-native';
+import {StyleSheet, View, TouchableOpacity, Image} from 'react-native';
 
 import {Text, Title} from 'react-native-paper';
 import {theme} from 'styles/theme';
+import * as Yup from 'yup';
 
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {useImagePicker} from 'hooks';
 import {Formik} from 'formik';
-import RenderInput from 'components/Atoms/RenderInput';
+import RenderInput, {RenderError} from 'components/Atoms/RenderInput';
 import RenderSelect from 'components/Atoms/RenderSelect';
 import useProjectStructureActions from 'redux/actions/projectStructureActions';
 import {useSelector} from 'react-redux';
@@ -22,45 +17,38 @@ import FileIcon from 'assets/images/file_icon.png';
 
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import ActionButtons from 'components/Atoms/ActionButtons';
-import {SafeAreaProvider} from 'react-native-safe-area-context';
 
 const RenderAttachments = props => {
   const {attachments, handleDelete} = props;
 
   return (
-    <View style={{margin: 10}}>
-      <View style={styles.cardContainer}>
-        <View style={styles.renderFileContainer}>
-          <Text style={styles.attachmentFileHeader}>Attachments</Text>
-        </View>
-        {attachments?.map((attachment, index) => {
-          return (
-            <View key={attachment.name}>
-              <View style={styles.sectionContainer}>
-                <Image source={FileIcon} style={styles.fileIconContainer} />
-                <View style={styles.textContainer}>
-                  <Text
-                    style={(styles.verticalFlex, styles.text)}
-                    numberOfLines={3}>
-                    {attachment.name}
-                  </Text>
-                </View>
-              </View>
-              <OpacityButton
-                opacity={0.1}
-                color={theme.colors.error}
-                style={styles.closeButton}
-                onPress={() => handleDelete(index)}>
-                <MaterialIcon
-                  name="close"
-                  color={theme.colors.error}
-                  size={17}
-                />
-              </OpacityButton>
-            </View>
-          );
-        })}
+    <View style={styles.cardContainer}>
+      <View style={styles.renderFileContainer}>
+        <Text style={styles.attachmentFileHeader}>Attachments</Text>
       </View>
+      {attachments?.map((attachment, index) => {
+        return (
+          <View key={attachment.name}>
+            <View style={styles.sectionContainer}>
+              <Image source={FileIcon} style={styles.fileIconContainer} />
+              <View style={styles.textContainer}>
+                <Text
+                  style={(styles.verticalFlex, styles.text)}
+                  numberOfLines={3}>
+                  {attachment.name}
+                </Text>
+              </View>
+            </View>
+            <OpacityButton
+              opacity={0.1}
+              color={theme.colors.error}
+              style={styles.closeButton}
+              onPress={() => handleDelete(index)}>
+              <MaterialIcon name="close" color={theme.colors.error} size={17} />
+            </OpacityButton>
+          </View>
+        );
+      })}
     </View>
   );
 };
@@ -96,56 +84,56 @@ function AddAttachments(props) {
   };
 
   return (
-    <SafeAreaProvider style={{margin: 10, flexGrow: 1}}>
-      <SafeAreaView>
-        <View style={styles.sheetContentContainer}>
-          <Title style={{marginVertical: 5}}>Upload File</Title>
-          <TouchableOpacity opacity={0.5} onPress={handleUpload}>
-            <View style={styles.uploadFileContainer}>
-              <Text style={{color: theme.colors.primary}}>Choose file</Text>
-            </View>
-          </TouchableOpacity>
-          {values?.attachments?.length ? (
-            <RenderAttachments
-              attachments={values.attachments}
-              handleDelete={i => handleDelete(i)}
-            />
-          ) : null}
-          <View style={styles.formContainer}>
-            <RenderInput
-              name="name"
-              label="File Name"
-              containerStyles={styles.inputStyles}
-              value={values.name}
-              maxLength={10}
-              onChangeText={handleChange('name')}
-              onBlur={handleBlur('name')}
-              returnKeyType="next"
-              error={errors.name}
-            />
-            <RenderSelect
-              name="file_category"
-              label="File Category"
-              value={values.file_category}
-              options={fileCategoryOptions}
-              containerStyles={styles.inputStyles}
-              onBlur={handleBlur('file_category')}
-              onSelect={value => {
-                setFieldValue('file_category', value);
-              }}
-            />
-
-            <ActionButtons
-              style={styles.actionButton}
-              cancelLabel="CANCEL"
-              submitLabel="SAVE"
-              onCancel={navigation.goBack}
-              onSubmit={handleSubmit}
-            />
+    <View style={{flexGrow: 1}}>
+      <View>
+        <Title style={{marginTop: 20}}>Upload File</Title>
+        <TouchableOpacity opacity={0.5} onPress={handleUpload}>
+          <View style={styles.uploadFileContainer}>
+            <Text style={{color: theme.colors.primary}}>Choose file</Text>
           </View>
-        </View>
-      </SafeAreaView>
-    </SafeAreaProvider>
+        </TouchableOpacity>
+        <RenderError error={errors.attachments} />
+      </View>
+      <View>
+        {values?.attachments?.length ? (
+          <RenderAttachments
+            attachments={values.attachments}
+            handleDelete={i => handleDelete(i)}
+          />
+        ) : null}
+      </View>
+      <View style={styles.formContainer}>
+        <RenderInput
+          name="name"
+          label="File Name"
+          containerStyles={styles.inputStyles}
+          value={values.name}
+          maxLength={10}
+          onChangeText={handleChange('name')}
+          onBlur={handleBlur('name')}
+          returnKeyType="next"
+          error={errors.name}
+        />
+        <RenderSelect
+          name="file_category"
+          label="File Category"
+          value={values.file_category}
+          options={fileCategoryOptions}
+          containerStyles={styles.inputStyles}
+          onBlur={handleBlur('file_category')}
+          onSelect={value => {
+            setFieldValue('file_category', value);
+          }}
+        />
+      </View>
+      <ActionButtons
+        style={styles.actionButton}
+        cancelLabel="CANCEL"
+        submitLabel="SAVE"
+        onCancel={navigation.goBack}
+        onSubmit={handleSubmit}
+      />
+    </View>
   );
 }
 
@@ -180,41 +168,49 @@ function AddProjectFiles(props) {
 
   const onSubmit = async values => {
     const formData = new FormData();
-    values?.attachments.map(item => {
-      formData.append('myfile[]', item);
+    values?.attachments?.map(item => {
+      formData.append('myfile', item);
       return item;
     });
-
     formData.append('project_id', selectedProject.id);
-    formData.append('file_name', [values.name]);
+    formData.append('file_name', values.name);
     formData.append('id', projectId);
-    formData.append('file_category', [values.file_category]);
+    formData.append('file_category', values.file_category);
 
     await addProjectFile(formData);
+
     navigation.goBack();
     getData();
   };
 
   return (
-    <Formik
-      enableReinitialize
-      validateOnBlur={false}
-      validateOnChange={false}
-      initialValues={{}}
-      onSubmit={onSubmit}>
-      {formikProps => (
-        <AddAttachments
-          {...props}
-          formikProps={formikProps}
-          navigation={navigation}
-          fileCategoryOptions={fileCategoryOptions}
-        />
-      )}
-    </Formik>
+    <View style={styles.mainContainer}>
+      <Formik
+        enableReinitialize
+        validateOnBlur={false}
+        validateOnChange={false}
+        // validationSchema={schema}
+        initialValues={{}}
+        onSubmit={onSubmit}>
+        {formikProps => (
+          <AddAttachments
+            {...props}
+            formikProps={formikProps}
+            navigation={navigation}
+            fileCategoryOptions={fileCategoryOptions}
+          />
+        )}
+      </Formik>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  mainContainer: {
+    margin: 20,
+    flex: 1,
+    flexGrow: 1,
+  },
   text: {
     color: '#080707',
     paddingHorizontal: 10,
@@ -248,6 +244,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F2F4F5',
     borderRadius: 5,
     marginVertical: 7,
+    flexGrow: 1,
   },
   fileIconContainer: {
     width: 32,
