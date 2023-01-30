@@ -33,7 +33,9 @@ const UnitCard = ({item, navigation}) => {
       onPress={() =>
         category === 'Bungalow'
           ? navigation.navigate('BungalowUnitPreview')
-          : navigation.navigate('UnitPreview')
+          : category === 'Tower'
+          ? navigation.navigate('UnitPreview')
+          : navigation.navigate('PlotUnitPreview')
       }>
       <View style={styles.headerWrapper}>
         <View style={styles.idBox}>
@@ -106,7 +108,7 @@ function UnitList(props) {
       icon: plot,
       color: theme.colors.primary,
       label: 'Add Plot',
-      onPress: () => console.log('AddPlotUnit'),
+      onPress: () => navigation.navigate('AddPlotUnit'),
     },
     {
       icon: industrial,

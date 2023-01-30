@@ -118,6 +118,19 @@ import BungalowUnitSecurityInfo from 'screens/DeveloperProject/ProjectStructure/
 import BungalowUnitFiles from 'screens/DeveloperProject/ProjectStructure/BungalowUnitDetails/UnitFiles';
 import BungalowUnitPreview from 'screens/DeveloperProject/ProjectStructure/BungalowUnitPreview';
 
+// Plot Unit
+import AddPlotUnit from 'screens/DeveloperProject/ProjectStructure/AddPlotUnit';
+import PlotDetails from 'screens/DeveloperProject/ProjectStructure/PlotUnitDetails/ProjectUnitDetails';
+import OtherInformation from 'screens/DeveloperProject/ProjectStructure/PlotUnitDetails/OtherInformation';
+import SurveyDetails from 'screens/DeveloperProject/ProjectStructure/PlotUnitDetails/SurveyDetails';
+import TPDetails from 'screens/DeveloperProject/ProjectStructure/PlotUnitDetails/TPDetails';
+import PlotUnitPricing from 'screens/DeveloperProject/ProjectStructure/PlotUnitDetails/UnitPricing';
+import PlotLocationInfo from 'screens/DeveloperProject/ProjectStructure/PlotUnitDetails/LocationInfo';
+import PlotUnitOwnerInfo from 'screens/DeveloperProject/ProjectStructure/PlotUnitDetails/UnitOwnerInfo';
+import PlotUnitSecurityInfo from 'screens/DeveloperProject/ProjectStructure/PlotUnitDetails/UnitSecurityInfo';
+import PlotUnitFiles from 'screens/DeveloperProject/ProjectStructure/PlotUnitDetails/UnitFiles';
+import PlotUnitPreview from 'screens/DeveloperProject/ProjectStructure/PlotUnitPreview';
+
 // Project : Sales Screens
 // * Developer : Dashboard
 import DeveloperDashboard from '../screens/DeveloperProject/Dashboard';
@@ -723,73 +736,115 @@ function AppStackNavigator() {
             />
             <Stack.Screen name="UnitList" component={UnitList} />
             <Stack.Screen name="AddUnit" component={AddUnit} />
-            <Stack.Screen name="AddBungalowUnit" component={AddBungalowUnit} />
             <Stack.Screen
               name="ProjectUnitDetails"
               component={ProjectUnitDetails}
             />
-            <Stack.Screen name="BungalowDetails" component={BungalowDetails} />
             <Stack.Screen name="UnitDetails" component={UnitDetails} />
-            <Stack.Screen
-              name="BungalowUnitDetails"
-              component={BungalowUnitDetails}
-            />
             <Stack.Screen name="LocationInfo" component={LocationInfo} />
-            <Stack.Screen
-              name="BungalowLocationInfo"
-              component={BungalowLocationInfo}
-            />
-            <Stack.Screen
-              name="BungalowAreaSheet"
-              component={BungalowUnitAreaSheet}
-            />
-            <Stack.Screen
-              name="BungalowInfrastructureInfo"
-              component={BungalowInfrastructureInfo}
-            />
             <Stack.Screen name="UnitFiles" component={UnitFiles} />
-            <Stack.Screen
-              name="BungalowUnitFiles"
-              component={BungalowUnitFiles}
-            />
             <Stack.Screen name="UnitPricing" component={UnitPricing} />
-            <Stack.Screen
-              name="BungalowUnitPricing"
-              component={BungalowUnitPricing}
-            />
             <Stack.Screen name="UnitPreview" component={UnitPreview} />
-            <Stack.Screen
-              name="BungalowUnitPreview"
-              component={BungalowUnitPreview}
-            />
             <Stack.Screen
               name="UnitSecurityInfo"
               component={UnitSecurityInfo}
-            />
-            <Stack.Screen
-              name="BungalowSecurityInfo"
-              component={BungalowUnitSecurityInfo}
             />
             <Stack.Screen
               name="ProjectUnitOwner"
               component={ProjectUnitOwner}
             />
             <Stack.Screen
-              name="BungalowUnitOwner"
-              component={BungalowUnitOwner}
-            />
-            <Stack.Screen
               name="UnitInformation"
               component={ProjectStructureUnitDetails}
-            />
-            <Stack.Screen
-              name="BungalowUnitInformation"
-              component={BungalowStructureUnitDetails}
             />
             <Stack.Screen
               name="InfrastructureInfo"
               component={InfrastructureInfo}
             />
+            {/* Bungalow Unit */}
+            <Stack.Group>
+              <Stack.Screen
+                name="AddBungalowUnit"
+                component={AddBungalowUnit}
+              />
+              <Stack.Screen
+                name="BungalowDetails"
+                component={BungalowDetails}
+              />
+              <Stack.Screen
+                name="BungalowUnitDetails"
+                component={BungalowUnitDetails}
+              />
+              <Stack.Screen
+                name="BungalowLocationInfo"
+                component={BungalowLocationInfo}
+              />
+              <Stack.Screen
+                name="BungalowAreaSheet"
+                component={BungalowUnitAreaSheet}
+              />
+              <Stack.Screen
+                name="BungalowInfrastructureInfo"
+                component={BungalowInfrastructureInfo}
+              />
+              <Stack.Screen
+                name="BungalowUnitInformation"
+                component={BungalowStructureUnitDetails}
+              />
+              <Stack.Screen
+                name="BungalowUnitPricing"
+                component={BungalowUnitPricing}
+              />
+              <Stack.Screen
+                name="BungalowUnitOwner"
+                component={BungalowUnitOwner}
+              />
+              <Stack.Screen
+                name="BungalowSecurityInfo"
+                component={BungalowUnitSecurityInfo}
+              />
+              <Stack.Screen
+                name="BungalowUnitFiles"
+                component={BungalowUnitFiles}
+              />
+              <Stack.Screen
+                name="BungalowUnitPreview"
+                component={BungalowUnitPreview}
+              />
+            </Stack.Group>
+
+            {/* Plot Unit */}
+            <Stack.Group>
+              <Stack.Screen name="AddPlotUnit" component={AddPlotUnit} />
+              <Stack.Screen name="PlotDetails" component={PlotDetails} />
+              <Stack.Screen
+                name="OtherInformation"
+                component={OtherInformation}
+              />
+              <Stack.Screen name="SurveyDetails" component={SurveyDetails} />
+              <Stack.Screen name="TPDetails" component={TPDetails} />
+              <Stack.Screen
+                name="PlotUnitPricing"
+                component={PlotUnitPricing}
+              />
+              <Stack.Screen
+                name="PlotLocationInfo"
+                component={PlotLocationInfo}
+              />
+              <Stack.Screen
+                name="PlotUnitOwnerInfo"
+                component={PlotUnitOwnerInfo}
+              />
+              <Stack.Screen
+                name="PlotUnitSecurityInfo"
+                component={PlotUnitSecurityInfo}
+              />
+              <Stack.Screen name="PlotUnitFiles" component={PlotUnitFiles} />
+              <Stack.Screen
+                name="PlotUnitPreview"
+                component={PlotUnitPreview}
+              />
+            </Stack.Group>
           </Stack.Group>
 
           {/* DEVELOPER STACK END */}
