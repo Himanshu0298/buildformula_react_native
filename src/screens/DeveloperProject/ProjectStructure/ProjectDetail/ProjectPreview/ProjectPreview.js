@@ -74,7 +74,7 @@ function Files(props) {
           style={styles.sectionContainer}
           onPress={() => onPressFile(item)}>
           <Image source={PdfIcon} style={styles.fileIcon} />
-          <View>
+          <View style={{width: '80%'}}>
             <Text
               style={(styles.verticalFlex, styles.textContainer)}
               numberOfLines={2}>
@@ -609,9 +609,7 @@ const styles = StyleSheet.create({
   animatesContainer: {
     flexDirection: 'row',
   },
-  text: {
-    marginLeft: 10,
-  },
+
   rawData: {
     alignSelf: 'center',
   },
@@ -639,8 +637,7 @@ const styles = StyleSheet.create({
   textContainer: {
     flexGrow: 1,
     flex: 1,
-    marginRight: 30,
-    marginLeft: 5,
+    marginLeft: 8,
   },
 });
 
