@@ -28,7 +28,7 @@ const RenderDatePicker = React.forwardRef((props, ref) => {
   }));
 
   const [open, setOpen] = useState(false);
-  const [date, setDate] = useState(value);
+  const [date, setDate] = useState(value || new Date());
 
   const togglePicker = () => {
     setOpen(v => !v);

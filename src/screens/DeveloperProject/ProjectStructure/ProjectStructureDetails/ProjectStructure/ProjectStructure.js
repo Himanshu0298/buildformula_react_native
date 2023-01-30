@@ -6,7 +6,6 @@ import {Formik} from 'formik';
 import RenderInput from 'components/Atoms/RenderInput';
 import RenderSelect from 'components/Atoms/RenderSelect';
 import ActionButtons from 'components/Atoms/ActionButtons';
-import RenderSelectMultiple from 'components/Atoms/RenderSelectMultiple';
 import useProjectStructureActions from 'redux/actions/projectStructureActions';
 import {useSelector} from 'react-redux';
 import * as Yup from 'yup';
@@ -126,10 +125,11 @@ function RenderForm(props) {
         ) : null}
 
         <Text> BHK Configuration</Text>
-        <RenderSelectMultiple
+        <RenderSelect
           name="bhk_configuration"
           label="Configuration"
           options={bhkOptions}
+          multiselect
           value={values.bhk_configuration}
           containerStyles={styles.inputStyles}
           error={errors.bhk_configuration}

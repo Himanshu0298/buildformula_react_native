@@ -173,7 +173,7 @@ function FloorList(props) {
     const data = {
       project_id: selectedProject.id,
       id,
-      tower_id: values.selectTower,
+      tower_id: towerId,
       contact_type: values.contact_type,
       name: values.floorName,
     };
