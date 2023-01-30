@@ -33,8 +33,6 @@ const RenderForm = props => {
     setFieldValue('area', value);
     const option = areaList.find(i => i.id === value);
 
-    const area = areaList.find(i => i.id === value);
-    console.log('===========>option ', option === '');
     if (option) {
       setFieldValue('city', option.city);
       setFieldValue('pincode', option.pincode);
@@ -174,7 +172,7 @@ const UpdateProjectDetails = props => {
 
   const areaOptions = useMemo(() => {
     return areaList
-      ?.filter(i => i.status === 1)
+      ?.filter(i => i.status)
       ?.map(i => ({label: i.area, value: i.id}));
   }, [areaList]);
 
@@ -205,9 +203,12 @@ const UpdateProjectDetails = props => {
       status: active,
       premium_project: premium,
     } = projectDetails || {};
+
+    const areaId = area && areaOptions?.find(i => i.label === area)?.value;
+
     return {
       projectName,
-      area,
+      area: areaId,
       builderName,
       city,
       state,
@@ -216,7 +217,7 @@ const UpdateProjectDetails = props => {
       active,
       premium,
     };
-  }, [projectDetails]);
+  }, [areaOptions, projectDetails]);
 
   const onSubmit = async values => {
     const data = {
