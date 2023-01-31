@@ -24,12 +24,12 @@ const ROUTE = [
   },
   {screenName: 'Details', route: 'BungalowUnitInformation', key: 'Details'},
   {
-    screenName: 'Unit Pricing',
+    screenName: 'Pricing',
     route: 'BungalowUnitPricing',
     key: 'Unit Pricing',
   },
   {
-    screenName: 'Unit Owner Info',
+    screenName: 'Owner Info',
     route: 'BungalowUnitOwner',
     key: 'Unit Owner Info',
   },

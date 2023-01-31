@@ -31,91 +31,113 @@ const RenderForm = props => {
     <ScrollView style={{marginBottom: 30}} showsVerticalScrollIndicator={false}>
       <View style={styles.formContainer}>
         <RenderInput
-          name="plotName"
-          label="Plot Name"
+          name="propertyName"
+          label="Property Name"
           containerStyles={styles.inputStyles}
-          value={values.plotName}
-          onChangeText={handleChange('plotName')}
-          onBlur={handleBlur('plotName')}
+          value={values.propertyName}
+          onChangeText={handleChange('propertyName')}
+          onBlur={handleBlur('propertyName')}
           autoCapitalize="none"
           returnKeyType="next"
-          error={errors.plotName}
+          error={errors.propertyName}
         />
         <RenderSelect
-          name="plotType"
-          label="Plot Type"
-          value={values.plotType}
+          name="propertyFor"
+          label="Property For"
+          value={values.propertyFor}
           options={options}
           containerStyles={styles.inputStyles}
-          onBlur={handleBlur('plotType')}
+          onBlur={handleBlur('propertyFor')}
           onSelect={value => {
-            setFieldValue('plotType', value);
+            setFieldValue('propertyFor', value);
           }}
         />
         <RenderSelect
-          name="district"
-          label="District"
-          value={values.district}
+          name="area"
+          label="Area"
+          value={values.area}
           options={options}
           containerStyles={styles.inputStyles}
-          onBlur={handleBlur('district')}
+          onBlur={handleBlur('area')}
           onSelect={value => {
-            setFieldValue('district', value);
+            setFieldValue('area', value);
           }}
         />
         <RenderSelect
-          name="taluka"
-          label="Taluka"
-          value={values.taluka}
+          name="address"
+          label="Address"
+          value={values.address}
           options={options}
           containerStyles={styles.inputStyles}
-          onBlur={handleBlur('taluka')}
+          onBlur={handleBlur('address')}
           onSelect={value => {
-            setFieldValue('taluka', value);
+            setFieldValue('address', value);
           }}
         />
         <RenderSelect
-          name="village"
-          label="Village"
-          value={values.village}
+          name="city"
+          label="City"
+          value={values.city}
           options={options}
           containerStyles={styles.inputStyles}
-          onBlur={handleBlur('village')}
+          onBlur={handleBlur('city')}
           onSelect={value => {
-            setFieldValue('village', value);
+            setFieldValue('city', value);
           }}
         />
         <RenderSelect
-          name="plotZone"
-          label="Plot Zone"
-          value={values.plotZone}
+          name="state"
+          label="State"
+          value={values.state}
           options={options}
           containerStyles={styles.inputStyles}
-          onBlur={handleBlur('plotZone')}
+          onBlur={handleBlur('state')}
           onSelect={value => {
-            setFieldValue('plotZone', value);
+            setFieldValue('state', value);
           }}
         />
         <RenderSelect
-          name="fsi"
-          label="FSI (Floor Space Index)"
-          value={values.fsi}
+          name="specificType"
+          label="Specific Type"
+          value={values.specificType}
           options={options}
           containerStyles={styles.inputStyles}
-          onBlur={handleBlur('fsi')}
+          onBlur={handleBlur('specificType')}
           onSelect={value => {
-            setFieldValue('fsi', value);
+            setFieldValue('specificType', value);
           }}
         />
         <RenderSelect
-          name="plotFor"
-          label="Plot For"
-          value={values.plotFor}
+          name="status"
+          label="Status"
+          value={values.status}
           options={options}
           containerStyles={styles.inputStyles}
-          onBlur={handleBlur('plotFor')}
+          onBlur={handleBlur('status')}
           onSelect={value => {
-            setFieldValue('plotFor', value);
+            setFieldValue('status', value);
+          }}
+        />
+        <RenderSelect
+          name="zone"
+          label="Zone"
+          value={values.zone}
+          options={options}
+          containerStyles={styles.inputStyles}
+          onBlur={handleBlur('zone')}
+          onSelect={value => {
+            setFieldValue('zone', value);
+          }}
+        />
+        <RenderSelect
+          name="sourceType"
+          label="Source Type"
+          value={values.sourceType}
+          options={options}
+          containerStyles={styles.inputStyles}
+          onBlur={handleBlur('sourceType')}
+          onSelect={value => {
+            setFieldValue('sourceType', value);
           }}
         />
         <RenderSelectMultiple
@@ -134,7 +156,7 @@ const RenderForm = props => {
           <ActionButtons
             cancelLabel="Add Details"
             submitLabel="Save"
-            onCancel={() => navigation.navigate('PlotDetails')}
+            onCancel={() => navigation.navigate('IndustrialDetails')}
             onSubmit={handleSubmit}
           />
         </View>
@@ -160,7 +182,7 @@ const AddUnit = props => {
           style={styles.backIcon}
           onPress={() => navigation.goBack()}
         />
-        <Title>Plot Details </Title>
+        <Title>Add Industrial Unit</Title>
       </View>
       <View style={styles.formContainer}>
         <Formik

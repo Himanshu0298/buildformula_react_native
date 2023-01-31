@@ -15,9 +15,9 @@ const ROUTE = [
     key: 'Infrastructure Info',
   },
   {screenName: 'Details', route: 'UnitInformation', key: 'Details'},
-  {screenName: 'Unit Pricing', route: 'UnitPricing', key: 'Unit Pricing'},
+  {screenName: 'Pricing', route: 'UnitPricing', key: 'Unit Pricing'},
   {
-    screenName: 'Unit Owner Info',
+    screenName: 'Owner Information',
     route: 'ProjectUnitOwner',
     key: 'Unit Owner Info',
   },

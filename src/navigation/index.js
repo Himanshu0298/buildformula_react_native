@@ -129,7 +129,21 @@ import PlotLocationInfo from 'screens/DeveloperProject/ProjectStructure/PlotUnit
 import PlotUnitOwnerInfo from 'screens/DeveloperProject/ProjectStructure/PlotUnitDetails/UnitOwnerInfo';
 import PlotUnitSecurityInfo from 'screens/DeveloperProject/ProjectStructure/PlotUnitDetails/UnitSecurityInfo';
 import PlotUnitFiles from 'screens/DeveloperProject/ProjectStructure/PlotUnitDetails/UnitFiles';
-import PlotUnitPreview from 'screens/DeveloperProject/ProjectStructure/PlotUnitPreview';
+import PlotUnitPreview from 'screens/DeveloperProject/ProjectStructure/PlotUnitPreview/';
+
+// Industrial Unit
+import AddIndustrialUnit from 'screens/DeveloperProject/ProjectStructure/AddIndustrialUnit';
+import IndustrialDetails from 'screens/DeveloperProject/ProjectStructure/IndustrialUnitDetails/ProjectUnitDetails';
+import IndustrialUnitDetails from 'screens/DeveloperProject/ProjectStructure/IndustrialUnitDetails/UnitDetails';
+import IndustrialAreaSheet from 'screens/DeveloperProject/ProjectStructure/IndustrialUnitDetails/UnitAreaSheet';
+import IndustrialUnitRemark from 'screens/DeveloperProject/ProjectStructure/IndustrialUnitDetails/UnitRemark';
+import IndustrialUnitPricing from 'screens/DeveloperProject/ProjectStructure/IndustrialUnitDetails/UnitPricing';
+import IndustrialLocationInfo from 'screens/DeveloperProject/ProjectStructure/IndustrialUnitDetails/LocationInfo';
+import IndustrialUnitOwnerInfo from 'screens/DeveloperProject/ProjectStructure/IndustrialUnitDetails/UnitOwnerInfo';
+import IndustrialUnitSecurityInfo from 'screens/DeveloperProject/ProjectStructure/IndustrialUnitDetails/UnitSecurityInfo';
+import IndustrialUnitDetailsInfo from 'screens/DeveloperProject/ProjectStructure/IndustrialUnitDetails/UnitInformation';
+import IndustrialUnitFiles from 'screens/DeveloperProject/ProjectStructure/IndustrialUnitDetails/UnitFiles';
+import IndustrialUnitPreview from 'screens/DeveloperProject/ProjectStructure/IndustrialUnitPreview';
 
 // Project : Sales Screens
 // * Developer : Dashboard
@@ -843,6 +857,58 @@ function AppStackNavigator() {
               <Stack.Screen
                 name="PlotUnitPreview"
                 component={PlotUnitPreview}
+              />
+            </Stack.Group>
+
+            {/* Industrial Unit */}
+            <Stack.Group>
+              <Stack.Screen
+                name="AddIndustrialUnit"
+                component={AddIndustrialUnit}
+              />
+              <Stack.Screen
+                name="IndustrialDetails"
+                component={IndustrialDetails}
+              />
+              <Stack.Screen
+                name="IndustrialUnitDetails"
+                component={IndustrialUnitDetails}
+              />
+              <Stack.Screen
+                name="IndustrialAreaSheet"
+                component={IndustrialAreaSheet}
+              />
+              <Stack.Screen
+                name="IndustrialUnitRemark"
+                component={IndustrialUnitRemark}
+              />
+              <Stack.Screen
+                name="IndustrialUnitPricing"
+                component={IndustrialUnitPricing}
+              />
+              <Stack.Screen
+                name="IndustrialLocationInfo"
+                component={IndustrialLocationInfo}
+              />
+              <Stack.Screen
+                name="IndustrialUnitOwnerInfo"
+                component={IndustrialUnitOwnerInfo}
+              />
+              <Stack.Screen
+                name="IndustrialUnitSecurityInfo"
+                component={IndustrialUnitSecurityInfo}
+              />
+              <Stack.Screen
+                name="IndustrialUnitDetailsInfo"
+                component={IndustrialUnitDetailsInfo}
+              />
+              <Stack.Screen
+                name="IndustrialUnitFiles"
+                component={IndustrialUnitFiles}
+              />
+              <Stack.Screen
+                name="IndustrialUnitPreview"
+                component={IndustrialUnitPreview}
               />
             </Stack.Group>
           </Stack.Group>

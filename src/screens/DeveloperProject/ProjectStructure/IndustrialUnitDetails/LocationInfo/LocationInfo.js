@@ -1,14 +1,13 @@
 import ActionButtons from 'components/Atoms/ActionButtons';
 import RenderInput from 'components/Atoms/RenderInput';
-import RenderSelect from 'components/Atoms/RenderSelect';
 import RichTextEditor from 'components/Atoms/RichTextEditor';
 import {Formik} from 'formik';
 import React from 'react';
-import {ScrollView, StyleSheet, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {IconButton, Subheading} from 'react-native-paper';
 
 function RenderForm(props) {
-  const {navigation, formikProps, options} = props;
+  const {navigation, formikProps} = props;
   const {
     values,
     errors,
@@ -22,48 +21,34 @@ function RenderForm(props) {
     <View style={styles.formContainer}>
       <View style={styles.formSubContainer}>
         <RenderInput
-          name="surveyPrice"
-          label="Enter Survey Price"
+          name="addressUrl"
+          label="Project Address URL"
           containerStyles={styles.inputStyles}
-          value={values.surveyPrice}
-          onChangeText={handleChange('surveyPrice')}
-          onBlur={handleBlur('surveyPrice')}
+          value={values.addressUrl}
+          onChangeText={handleChange('addressUrl')}
+          onBlur={handleBlur('addressUrl')}
           autoCapitalize="none"
           returnKeyType="next"
-          error={errors.surveyPrice}
+          error={errors.addressUrl}
         />
-        <RenderInput
-          name="tpPrice"
-          label="TP Price"
-          containerStyles={styles.inputStyles}
-          value={values.tpPrice}
-          onChangeText={handleChange('tpPrice')}
-          onBlur={handleBlur('tpPrice')}
-          autoCapitalize="none"
-          returnKeyType="next"
-          error={errors.tpPrice}
+        <RichTextEditor
+          name="address"
+          placeholder="Address"
+          value={values.address}
+          height={200}
+          onChangeText={value => {
+            setFieldValue('address', value);
+          }}
         />
-        <RenderInput
+        <RichTextEditor
           name="remark"
-          label="Remark"
-          containerStyles={styles.inputStyles}
+          placeholder="Remark"
+          style={styles.inputStyles}
           value={values.remark}
-          onChangeText={handleChange('remark')}
-          onBlur={handleBlur('remark')}
-          autoCapitalize="none"
-          returnKeyType="next"
-          error={errors.remark}
-        />
-        <RenderInput
-          name="commission"
-          label="Commission"
-          containerStyles={styles.inputStyles}
-          value={values.commission}
-          onChangeText={handleChange('commission')}
-          onBlur={handleBlur('commission')}
-          autoCapitalize="none"
-          returnKeyType="next"
-          error={errors.commission}
+          height={200}
+          onChangeText={value => {
+            setFieldValue('remark', value);
+          }}
         />
       </View>
       <ActionButtons
@@ -76,27 +61,28 @@ function RenderForm(props) {
   );
 }
 
-function UnitPricing(props) {
+function LocationInfo(props) {
   const {navigation} = props;
-
-  const options = ['Science City Rd', 'Sola Rd', 'Bhadaj'];
 
   const onSubmit = values => {
     console.log(values);
   };
+
+  const options = ['Science City Rd', 'Sola Rd', 'Bhadaj'];
 
   return (
     <View style={styles.mainContainer}>
       <View style={styles.headerWrapper}>
         <IconButton
           icon="keyboard-backspace"
-          size={18}
+          size={15}
           color="#4872f4"
           style={styles.backIcon}
           onPress={navigation.goBack}
         />
-        <Subheading>Pricing</Subheading>
+        <Subheading>Location Info</Subheading>
       </View>
+
       <View style={styles.formContainer}>
         <Formik
           enableReinitialize
@@ -127,20 +113,20 @@ const styles = StyleSheet.create({
     marginRight: 11,
   },
   mainContainer: {
-    margin: 10,
     flex: 1,
+    margin: 10,
   },
   inputStyles: {
     marginVertical: 8,
   },
-
   formContainer: {
     flexGrow: 1,
   },
 
   formSubContainer: {
-    marginBottom: 90,
+    margin: 10,
     flexGrow: 1,
   },
 });
-export default UnitPricing;
+
+export default LocationInfo;

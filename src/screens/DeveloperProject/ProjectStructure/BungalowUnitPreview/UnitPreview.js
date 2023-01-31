@@ -46,8 +46,10 @@ const description =
 
 function SecurityDetails() {
   return (
-    <View>
-      <Subheading>Project Owner Info</Subheading>
+    <View style={{marginBottom: 20, padding: 10}}>
+      <View style={{marginBottom: 10}}>
+        <Text>SECURITY/ CARETAKER INFO</Text>
+      </View>
       {SECURITY_DATA.map(item => {
         return (
           <View style={styles.container}>
@@ -69,8 +71,10 @@ function SecurityDetails() {
 
 function OwnerDetails(props) {
   return (
-    <>
-      <Subheading>Project Owner Info</Subheading>
+    <View style={{marginBottom: 20, padding: 10}}>
+      <View style={{marginBottom: 10}}>
+        <Text>OWNER INFO</Text>
+      </View>
 
       {OWNER_DATA.map(item => {
         return (
@@ -94,7 +98,7 @@ function OwnerDetails(props) {
           </View>
         );
       })}
-    </>
+    </View>
   );
 }
 
@@ -157,7 +161,7 @@ function Files() {
 
 function Pricing() {
   return (
-    <View style={{marginVertical: 20, padding: 10}}>
+    <View style={{marginBottom: 20, padding: 10}}>
       <View style={{marginBottom: 10}}>
         <Text>PRICING</Text>
       </View>
@@ -188,7 +192,7 @@ function Pricing() {
 
 function UnitSpecification() {
   return (
-    <>
+    <View style={{marginBottom: 20, padding: 10}}>
       <View style={styles.specification}>
         <View style={styles.specificationContainer}>
           <MaterialCommunityIcons name="bed-king-outline" size={30} />
@@ -234,7 +238,7 @@ function UnitSpecification() {
           <Text style={styles.configurationIcon}>Royal</Text>
         </View>
       </View>
-      <View style={{marginVertical: 15}}>
+      <View style={{marginTop: 30}}>
         <Text>DETAILS</Text>
       </View>
       <View>
@@ -249,13 +253,13 @@ function UnitSpecification() {
         <Caption> PRE_LEASE_REMARKS</Caption>
         <PostContent description={description} />
       </View>
-    </>
+    </View>
   );
 }
 
 function Details() {
   return (
-    <View>
+    <View style={{marginBottom: 20, padding: 10}}>
       <View style={styles.detailContainer}>
         <View>
           <Caption>Net Land Area</Caption>
@@ -290,7 +294,7 @@ function Details() {
 
 function UnitDetails() {
   return (
-    <View>
+    <View style={{marginBottom: 10, padding: 10}}>
       <View style={{flexDirection: 'row', alignItems: 'center'}}>
         <Subheading>by</Subheading>
         <View style={{marginLeft: 5}}>
@@ -386,6 +390,7 @@ const styles = StyleSheet.create({
   },
   mainContainer: {
     margin: 10,
+    marginTop: 0,
     flexGrow: 1,
   },
   backIcon: {

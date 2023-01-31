@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import industrialPreview from 'assets/images/industrialUnit.png';
 import {
   Caption,
   Divider,
@@ -15,6 +16,7 @@ import {
   Title,
 } from 'react-native-paper';
 import {theme} from 'styles/theme';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import FileViewer from 'react-native-file-viewer';
@@ -26,14 +28,13 @@ import {getDownloadUrl} from 'utils/download';
 import {getShadow} from 'utils';
 import PostContent from 'components/Atoms/RenderSeeMore';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
-import plotPreview from 'assets/images/plotPreview.png';
 
 import Carousel from 'react-native-reanimated-carousel';
 
 import {
   FILES_DATA,
-  OWNER_DATA,
   SECURITY_DATA,
+  OWNER_DATA,
 } from '../ProjectDetail/ProjectPreview/Data';
 
 const description =
@@ -41,9 +42,9 @@ const description =
 
 function OwnerDetails(props) {
   return (
-    <View style={{marginVertical: 10, padding: 10}}>
+    <View style={{marginVertical: 20, padding: 10}}>
       <View style={{marginBottom: 10}}>
-        <Text>Owner Info</Text>
+        <Text>UNIT OWNER INFO</Text>
       </View>
 
       {OWNER_DATA.map(item => {
@@ -114,10 +115,8 @@ function Files() {
     });
   };
   return (
-    <View style={{marginVertical: 10, padding: 10}}>
-      <View style={{marginBottom: 10}}>
-        <Text> File's/ Attachments </Text>
-      </View>
+    <View>
+      <Subheading> File's/ Attachments </Subheading>
       {FILES_DATA.map(item => {
         return (
           <View style={styles.recentFiles}>
@@ -164,20 +163,49 @@ function Pricing() {
       </View>
 
       <View>
-        <Caption>Survey Price</Caption>
-        <Text>₹ 2,00,000</Text>
+        <Caption>PRICE</Caption>
+        <Text>₹ 2000</Text>
       </View>
       <View>
-        <Caption>TP Price</Caption>
-        <Text>₹ 1,02,001</Text>
-      </View>
-      <View>
-        <Caption>Commission</Caption>
+        <Caption>COMMISSION</Caption>
         <Text>₹ 5,22,120</Text>
       </View>
       <View>
-        <Caption>Remarks</Caption>
+        <Caption>REMARKS</Caption>
         <PostContent description={description} />
+      </View>
+    </View>
+  );
+}
+
+function UnitDescription() {
+  return (
+    <View style={{marginVertical: 10, padding: 10}}>
+      <View style={{marginBottom: 10}}>
+        <Text>DESCRIPTION</Text>
+      </View>
+      <View>
+        <PostContent description={description} />
+      </View>
+    </View>
+  );
+}
+
+function AreaSheet() {
+  return (
+    <View style={{marginVertical: 10, padding: 10}}>
+      <View style={{marginBottom: 10}}>
+        <Text>AREA SHEET</Text>
+      </View>
+      <View style={styles.detailContainer}>
+        <View>
+          <Caption>PLOT AREA</Caption>
+          <Text>1000 SQFT</Text>
+        </View>
+        <View>
+          <Caption>Undivided Land Area</Caption>
+          <Text>1160 SQFT</Text>
+        </View>
       </View>
     </View>
   );
@@ -185,62 +213,79 @@ function Pricing() {
 
 function Details() {
   return (
-    <View style={{marginBottom: 10, padding: 10}}>
+    <View style={{marginVertical: 20, padding: 10}}>
+      <View style={{marginBottom: 10}}>
+        <Text>INDUSTRIAL DETAILS INFO</Text>
+      </View>
       <View style={styles.detailContainer}>
         <View>
-          <Caption>Plot Zone</Caption>
-          <Text>R1</Text>
+          <Caption>GCP</Caption>
+          <Text>Yes</Text>
         </View>
         <View>
-          <Caption>FSI</Caption>
-          <Text>1000 SQFT</Text>
+          <Caption>EC/ NOC</Caption>
+          <Text>No</Text>
         </View>
       </View>
       <View style={styles.detailContainer}>
         <View>
-          <Caption>Survey Number</Caption>
-          <Text>02525</Text>
+          <Caption>BAIL MEMBERSHIP</Caption>
+          <Text>Yes</Text>
         </View>
         <View>
-          <Caption>Plot/ land Size</Caption>
-          <Text>500 SQFT</Text>
+          <Caption>DISCHARGE </Caption>
+          <Text>No</Text>
         </View>
       </View>
       <View style={styles.detailContainer}>
         <View>
-          <Caption>Measurement</Caption>
-          <Text>110 SQFT</Text>
+          <Caption>GUJARAT GAS</Caption>
+          <Text>No</Text>
+        </View>
+        <View>
+          <Caption>POWER</Caption>
+          <Text>Yes</Text>
+        </View>
+      </View>
+      <View style={styles.detailContainer}>
+        <View>
+          <Caption>WATER</Caption>
+          <Text>No</Text>
+        </View>
+        <View>
+          <Caption>LIST OF MACHINERY</Caption>
+          <Text>Yes</Text>
+        </View>
+      </View>
+      <View style={styles.detailContainer}>
+        <View>
+          <Caption>ETL/ CEPT/ NLTL</Caption>
+          <Text>No</Text>
         </View>
       </View>
     </View>
   );
 }
 
-function TPDetails() {
+function LocationInfo() {
   return (
     <View style={{marginVertical: 10, padding: 10}}>
       <View style={{marginBottom: 10}}>
-        <Text>TP DETAILS</Text>
+        <Text>LOCATION INFO</Text>
       </View>
-      <View style={styles.detailContainer}>
-        <View>
-          <Caption>Tp Number</Caption>
-          <Text>2011541</Text>
-        </View>
-        <View>
-          <Caption>Fp Number</Caption>
-          <Text>5221451</Text>
-        </View>
+      <View>
+        <Caption>PROPERT LOCATION URL</Caption>
+        <Subheading style={{color: theme.colors.primary}}>
+          Satymev Residency
+        </Subheading>
       </View>
-      <View style={styles.detailContainer}>
-        <View>
-          <Caption>Plot/ land Size</Caption>
-          <Text>500 SQFT</Text>
-        </View>
-        <View>
-          <Caption>Measurement</Caption>
-          <Text>1200 FT</Text>
-        </View>
+      <View>
+        <Caption>ADDRESS</Caption>
+        <Text>Madh Street, Ambai faliyu, Keshod, Junagadh - 362001</Text>
+      </View>
+      <View>
+        <Caption>REMARKS</Caption>
+        <PostContent description={description} />
       </View>
     </View>
   );
@@ -248,17 +293,20 @@ function TPDetails() {
 
 function UnitDetails() {
   return (
-    <View>
+    <View style={{marginBottom: 20, padding: 10}}>
       <View style={{flexDirection: 'row', alignItems: 'center'}}>
         <Subheading>by</Subheading>
         <View style={{marginLeft: 5}}>
           <Subheading style={{color: theme.colors.primary}}>
-            Satymev Residency
+            Shatyabhim Builders
           </Subheading>
         </View>
       </View>
       <View>
-        <Subheading> Malad Sangata CHS, Malad West, Mumbai</Subheading>
+        <Subheading>
+          No J/201, SG Business Hub Sarkhej - Gandhinagar Hwy, Bridge, near
+          Gota, Gota, Ahmedabad, Gujarat 382481
+        </Subheading>
       </View>
       <View style={styles.configurationContainer}>
         <View style={styles.configurationSubContainer}>
@@ -286,29 +334,27 @@ function UnitDetails() {
           <Text style={styles.configurationIcon}>Royal</Text>
         </View>
       </View>
-    </View>
-  );
-}
-
-function LocationInfo() {
-  return (
-    <View style={{marginVertical: 10, padding: 10}}>
-      <View style={{marginBottom: 10}}>
-        <Text>Location Info</Text>
-      </View>
       <View>
-        <Caption>Property Location URL</Caption>
-        <Subheading style={{color: theme.colors.primary}}>
-          Satymev Residency
-        </Subheading>
-      </View>
-      <View>
-        <Caption>Address</Caption>
-        <Text>Madh Street, Ambai faliyu, Keshod, Junagadh - 362001</Text>
-      </View>
-      <View>
-        <Caption>Remarks</Caption>
-        <PostContent description={description} />
+        <View style={styles.detailContainer}>
+          <View>
+            <Caption>STATUS</Caption>
+            <Text>Active</Text>
+          </View>
+          <View>
+            <Caption>ZONE</Caption>
+            <Text>West Zone</Text>
+          </View>
+        </View>
+        <View style={styles.detailContainer}>
+          <View>
+            <Caption>SOURCE TYPE</Caption>
+            <Text>Sir’s Referrals</Text>
+          </View>
+          <View>
+            <Caption>HOT PROPERTY</Caption>
+            <Text>Yes</Text>
+          </View>
+        </View>
       </View>
     </View>
   );
@@ -328,7 +374,7 @@ function UnitPreview(props) {
               style={styles.backIcon}
               onPress={() => navigation.goBack()}
             />
-            <Subheading>Plot Details</Subheading>
+            <Subheading>Unit Details</Subheading>
           </View>
           <View style={styles.headerContainer}>
             <OpacityButton
@@ -357,20 +403,22 @@ function UnitPreview(props) {
             scrollAnimationDuration={10000}
             onSnapToItem={index => console.log('current index:', index)}
             renderItem={({index}) => {
-              return <Image source={plotPreview} />;
+              return <Image source={industrialPreview} />;
             }}
           />
           <View style={styles.sliderWrap}>
-            <Title style={styles.sliderText}>648 - 1116 SQ. FT.</Title>
-            <Subheading style={styles.sliderText}>Plot for Sold</Subheading>
+            <Title style={styles.sliderText}>648 - 2500 sq. ft.</Title>
+            <Subheading style={styles.sliderText}>
+              Industrial Land for Sold
+            </Subheading>
           </View>
         </View>
         <View style={styles.mainContainer}>
           <UnitDetails />
-          {/* <Divider style={{borderWidth: 0.5}} /> */}
-          <Details />
           <Divider style={{borderWidth: 0.5}} />
-          <TPDetails />
+          <AreaSheet />
+          <Divider style={{borderWidth: 0.5}} />
+          <UnitDescription />
           <Divider style={{borderWidth: 0.5}} />
           <Pricing />
           <Divider style={{borderWidth: 0.5}} />
@@ -378,6 +426,8 @@ function UnitPreview(props) {
           <Divider style={{borderWidth: 0.5}} />
           <OwnerDetails />
           <SecurityDetails />
+          <Divider style={{borderWidth: 0.5}} />
+          <Details />
           <Files />
         </View>
       </ScrollView>
@@ -392,6 +442,7 @@ const styles = StyleSheet.create({
   },
   mainContainer: {
     margin: 10,
+    marginTop: 0,
     flexGrow: 1,
   },
   backIcon: {
@@ -403,6 +454,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginVertical: 10,
+  },
+  configurationIcon: {
+    color: '#4872F4',
+    marginLeft: 5,
+  },
+  configurationContainer: {
+    flexDirection: 'row',
+    marginRight: 20,
+    marginVertical: 10,
+  },
+  configurationSubContainer: {
+    flexDirection: 'row',
+    padding: 10,
+    borderRadius: 10,
+    backgroundColor: '#4872f41a',
+    marginRight: 10,
+    marginTop: 10,
   },
   recentFiles: {
     margin: 10,
@@ -472,22 +540,8 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: '800',
   },
-  configurationIcon: {
-    color: '#4872F4',
-    marginLeft: 5,
-  },
-  configurationContainer: {
-    flexDirection: 'row',
-    marginRight: 20,
-    marginVertical: 10,
-  },
-  configurationSubContainer: {
-    flexDirection: 'row',
-    padding: 10,
-    borderRadius: 10,
-    backgroundColor: '#4872f41a',
-    marginRight: 10,
-    marginTop: 10,
+  detailSingle: {
+    marginVertical: 7,
   },
 });
 

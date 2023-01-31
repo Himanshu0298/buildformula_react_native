@@ -22,37 +22,26 @@ function RenderForm(props) {
     <View style={styles.formContainer}>
       <View style={styles.formSubContainer}>
         <RenderInput
-          name="surveyPrice"
-          label="Enter Survey Price"
+          name="price"
+          label="Price"
           containerStyles={styles.inputStyles}
-          value={values.surveyPrice}
-          onChangeText={handleChange('surveyPrice')}
-          onBlur={handleBlur('surveyPrice')}
+          value={values.price}
+          onChangeText={handleChange('price')}
+          onBlur={handleBlur('price')}
           autoCapitalize="none"
           returnKeyType="next"
-          error={errors.surveyPrice}
+          error={errors.price}
         />
-        <RenderInput
-          name="tpPrice"
-          label="TP Price"
+        <RenderSelect
+          name="commissionIn"
+          label="Commission In"
+          value={values.commissionIn}
+          options={options}
           containerStyles={styles.inputStyles}
-          value={values.tpPrice}
-          onChangeText={handleChange('tpPrice')}
-          onBlur={handleBlur('tpPrice')}
-          autoCapitalize="none"
-          returnKeyType="next"
-          error={errors.tpPrice}
-        />
-        <RenderInput
-          name="remark"
-          label="Remark"
-          containerStyles={styles.inputStyles}
-          value={values.remark}
-          onChangeText={handleChange('remark')}
-          onBlur={handleBlur('remark')}
-          autoCapitalize="none"
-          returnKeyType="next"
-          error={errors.remark}
+          onBlur={handleBlur('commissionIn')}
+          onSelect={value => {
+            setFieldValue('commissionIn', value);
+          }}
         />
         <RenderInput
           name="commission"
@@ -64,6 +53,16 @@ function RenderForm(props) {
           autoCapitalize="none"
           returnKeyType="next"
           error={errors.commission}
+        />
+        <RichTextEditor
+          name="remark"
+          placeholder="Remark"
+          style={styles.inputStyles}
+          value={values.remark}
+          height={160}
+          onChangeText={value => {
+            setFieldValue('remark', value);
+          }}
         />
       </View>
       <ActionButtons
@@ -95,7 +94,7 @@ function UnitPricing(props) {
           style={styles.backIcon}
           onPress={navigation.goBack}
         />
-        <Subheading>Pricing</Subheading>
+        <Subheading>Unit Pricing</Subheading>
       </View>
       <View style={styles.formContainer}>
         <Formik

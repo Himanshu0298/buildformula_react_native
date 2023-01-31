@@ -4,11 +4,14 @@ import RenderSelect from 'components/Atoms/RenderSelect';
 import RichTextEditor from 'components/Atoms/RichTextEditor';
 import {Formik} from 'formik';
 import React from 'react';
-import {ScrollView, StyleSheet, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {IconButton, Subheading} from 'react-native-paper';
 
 function RenderForm(props) {
-  const {navigation, formikProps, options} = props;
+  const {navigation, formikProps} = props;
+
+  const options = ['Science City Rd', 'Sola Rd', 'Bhadaj'];
+
   const {
     values,
     errors,
@@ -21,49 +24,15 @@ function RenderForm(props) {
   return (
     <View style={styles.formContainer}>
       <View style={styles.formSubContainer}>
-        <RenderInput
-          name="surveyPrice"
-          label="Enter Survey Price"
-          containerStyles={styles.inputStyles}
-          value={values.surveyPrice}
-          onChangeText={handleChange('surveyPrice')}
-          onBlur={handleBlur('surveyPrice')}
-          autoCapitalize="none"
-          returnKeyType="next"
-          error={errors.surveyPrice}
-        />
-        <RenderInput
-          name="tpPrice"
-          label="TP Price"
-          containerStyles={styles.inputStyles}
-          value={values.tpPrice}
-          onChangeText={handleChange('tpPrice')}
-          onBlur={handleBlur('tpPrice')}
-          autoCapitalize="none"
-          returnKeyType="next"
-          error={errors.tpPrice}
-        />
-        <RenderInput
+        <RichTextEditor
           name="remark"
-          label="Remark"
-          containerStyles={styles.inputStyles}
+          placeholder="Description"
+          style={styles.inputStyles}
           value={values.remark}
-          onChangeText={handleChange('remark')}
-          onBlur={handleBlur('remark')}
-          autoCapitalize="none"
-          returnKeyType="next"
-          error={errors.remark}
-        />
-        <RenderInput
-          name="commission"
-          label="Commission"
-          containerStyles={styles.inputStyles}
-          value={values.commission}
-          onChangeText={handleChange('commission')}
-          onBlur={handleBlur('commission')}
-          autoCapitalize="none"
-          returnKeyType="next"
-          error={errors.commission}
+          height={200}
+          onChangeText={value => {
+            setFieldValue('remark', value);
+          }}
         />
       </View>
       <ActionButtons
@@ -76,15 +45,12 @@ function RenderForm(props) {
   );
 }
 
-function UnitPricing(props) {
+function UnitRemark(props) {
   const {navigation} = props;
-
-  const options = ['Science City Rd', 'Sola Rd', 'Bhadaj'];
 
   const onSubmit = values => {
     console.log(values);
   };
-
   return (
     <View style={styles.mainContainer}>
       <View style={styles.headerWrapper}>
@@ -95,7 +61,7 @@ function UnitPricing(props) {
           style={styles.backIcon}
           onPress={navigation.goBack}
         />
-        <Subheading>Pricing</Subheading>
+        <Subheading>Property Remark</Subheading>
       </View>
       <View style={styles.formContainer}>
         <Formik
@@ -104,13 +70,7 @@ function UnitPricing(props) {
           validateOnChange={false}
           initialValues={{}}
           onSubmit={onSubmit}>
-          {formikProps => (
-            <RenderForm
-              formikProps={formikProps}
-              {...props}
-              options={options}
-            />
-          )}
+          {formikProps => <RenderForm formikProps={formikProps} {...props} />}
         </Formik>
       </View>
     </View>
@@ -133,14 +93,13 @@ const styles = StyleSheet.create({
   inputStyles: {
     marginVertical: 8,
   },
-
   formContainer: {
     flexGrow: 1,
   },
 
   formSubContainer: {
-    marginBottom: 90,
     flexGrow: 1,
   },
 });
-export default UnitPricing;
+
+export default UnitRemark;

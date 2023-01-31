@@ -1,14 +1,12 @@
 import ActionButtons from 'components/Atoms/ActionButtons';
 import RenderInput from 'components/Atoms/RenderInput';
-import RenderSelect from 'components/Atoms/RenderSelect';
-import RichTextEditor from 'components/Atoms/RichTextEditor';
 import {Formik} from 'formik';
 import React from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
 import {IconButton, Subheading} from 'react-native-paper';
 
 function RenderForm(props) {
-  const {navigation, formikProps, options} = props;
+  const {navigation, formikProps} = props;
   const {
     values,
     errors,
@@ -22,50 +20,29 @@ function RenderForm(props) {
     <View style={styles.formContainer}>
       <View style={styles.formSubContainer}>
         <RenderInput
-          name="surveyPrice"
-          label="Enter Survey Price"
+          name="plotArea"
+          label="Plot Area"
           containerStyles={styles.inputStyles}
-          value={values.surveyPrice}
-          onChangeText={handleChange('surveyPrice')}
-          onBlur={handleBlur('surveyPrice')}
+          value={values.plotArea}
+          onChangeText={handleChange('plotArea')}
+          onBlur={handleBlur('plotArea')}
           autoCapitalize="none"
           returnKeyType="next"
-          error={errors.surveyPrice}
+          error={errors.plotArea}
         />
         <RenderInput
-          name="tpPrice"
-          label="TP Price"
+          name="constructionArea"
+          label="Construction Area"
           containerStyles={styles.inputStyles}
-          value={values.tpPrice}
-          onChangeText={handleChange('tpPrice')}
-          onBlur={handleBlur('tpPrice')}
+          value={values.constructionArea}
+          onChangeText={handleChange('constructionArea')}
+          onBlur={handleBlur('constructionArea')}
           autoCapitalize="none"
           returnKeyType="next"
-          error={errors.tpPrice}
-        />
-        <RenderInput
-          name="remark"
-          label="Remark"
-          containerStyles={styles.inputStyles}
-          value={values.remark}
-          onChangeText={handleChange('remark')}
-          onBlur={handleBlur('remark')}
-          autoCapitalize="none"
-          returnKeyType="next"
-          error={errors.remark}
-        />
-        <RenderInput
-          name="commission"
-          label="Commission"
-          containerStyles={styles.inputStyles}
-          value={values.commission}
-          onChangeText={handleChange('commission')}
-          onBlur={handleBlur('commission')}
-          autoCapitalize="none"
-          returnKeyType="next"
-          error={errors.commission}
+          error={errors.constructionArea}
         />
       </View>
+
       <ActionButtons
         cancelLabel="Cancel"
         submitLabel="Save"
@@ -76,26 +53,23 @@ function RenderForm(props) {
   );
 }
 
-function UnitPricing(props) {
+function UnitAreaSheet(props) {
   const {navigation} = props;
-
-  const options = ['Science City Rd', 'Sola Rd', 'Bhadaj'];
 
   const onSubmit = values => {
     console.log(values);
   };
-
   return (
     <View style={styles.mainContainer}>
       <View style={styles.headerWrapper}>
         <IconButton
           icon="keyboard-backspace"
-          size={18}
+          size={15}
           color="#4872f4"
           style={styles.backIcon}
           onPress={navigation.goBack}
         />
-        <Subheading>Pricing</Subheading>
+        <Subheading>Area Sheet</Subheading>
       </View>
       <View style={styles.formContainer}>
         <Formik
@@ -104,13 +78,7 @@ function UnitPricing(props) {
           validateOnChange={false}
           initialValues={{}}
           onSubmit={onSubmit}>
-          {formikProps => (
-            <RenderForm
-              formikProps={formikProps}
-              {...props}
-              options={options}
-            />
-          )}
+          {formikProps => <RenderForm formikProps={formikProps} {...props} />}
         </Formik>
       </View>
     </View>
@@ -127,20 +95,19 @@ const styles = StyleSheet.create({
     marginRight: 11,
   },
   mainContainer: {
-    margin: 10,
     flex: 1,
+    margin: 10,
   },
   inputStyles: {
     marginVertical: 8,
   },
-
   formContainer: {
     flexGrow: 1,
   },
 
   formSubContainer: {
-    marginBottom: 90,
+    margin: 10,
     flexGrow: 1,
   },
 });
-export default UnitPricing;
+export default UnitAreaSheet;

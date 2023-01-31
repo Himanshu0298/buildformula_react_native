@@ -41,7 +41,7 @@ export const UnitData = [
   },
   {
     id: 6,
-    category: 'Plot',
+    category: 'Industrial',
     unit: 12,
     project_name: 'Park Ave Penthouse',
     area: 'devnagar gota',

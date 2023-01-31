@@ -7,40 +7,44 @@ import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 
 const ROUTE = [
   {
-    screenName: 'Plot Details',
-    route: 'AddPlotUnit',
-    key: 'Unit Details',
+    screenName: 'Industrial Unit Add',
+    route: 'IndustrialUnitDetails',
+    key: 'UnitAdd',
+  },
+  {screenName: 'Area Sheet', route: 'IndustrialAreaSheet', key: 'Area Sheet'},
+  {
+    screenName: 'Property Remark',
+    route: 'IndustrialUnitRemark',
+    key: 'Property Remark',
   },
   {
-    screenName: 'Other Info',
-    route: 'OtherInformation',
-    key: 'Other Information',
-  },
-  {screenName: 'Survey Details', route: 'SurveyDetails', key: 'Survey Details'},
-  {
-    screenName: 'TP Details',
-    route: 'TPDetails',
-    key: 'TP Details',
-  },
-  {screenName: 'Pricing', route: 'PlotUnitPricing', key: 'Pricing'},
-  {
-    screenName: 'Location Info',
-    route: 'PlotLocationInfo',
-    key: 'Location Information',
+    screenName: 'Pricing',
+    route: 'IndustrialUnitPricing',
+    key: 'Pricing',
   },
   {
-    screenName: 'Owner Info',
-    route: 'PlotUnitOwnerInfo',
+    screenName: 'Location Information',
+    route: 'IndustrialLocationInfo',
+    key: 'Location Info',
+  },
+  {
+    screenName: 'Unit Owner Information',
+    route: 'IndustrialUnitOwnerInfo',
     key: 'Unit Owner Info',
   },
   {
     screenName: 'Security/ Caretaker Info',
-    route: 'PlotUnitSecurityInfo',
-    key: 'Security/ Caretaker Info',
+    route: 'IndustrialUnitSecurityInfo',
+    key: 'security/caretaker info',
+  },
+  {
+    screenName: 'Industrial Details Information',
+    route: 'IndustrialUnitDetailsInfo',
+    key: 'Industrial Details Information',
   },
   {
     screenName: 'Files/ Attachments',
-    route: 'PlotUnitFiles',
+    route: 'IndustrialUnitFiles',
     key: 'Files/ Attachments',
   },
 ];
@@ -76,7 +80,7 @@ const ProjectUnitDetails = props => {
           style={styles.backIcon}
           onPress={() => navigation.goBack()}
         />
-        <Title>Add Unit</Title>
+        <Title>Add Industrial Land </Title>
       </View>
       <Divider />
       <View style={styles.bodyWrap}>
