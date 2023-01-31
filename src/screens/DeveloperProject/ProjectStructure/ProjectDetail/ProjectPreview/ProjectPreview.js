@@ -1,6 +1,13 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import React, {useState} from 'react';
-import {Image, View, StyleSheet, ScrollView} from 'react-native';
+import {
+  Image,
+  View,
+  StyleSheet,
+  ScrollView,
+  Platform,
+  Linking,
+} from 'react-native';
 import stock_image from 'assets/images/stock_image.png';
 import PdfIcon from 'assets/images/pdf_icon.png';
 
@@ -33,6 +40,7 @@ import {SvgXml} from 'react-native-svg';
 import {useAlert} from 'components/Atoms/Alert';
 import RenderHTML from 'react-native-render-html';
 import Layout from 'utils/Layout';
+import {useSnackbar} from 'components/Atoms/Snackbar';
 
 function Files(props) {
   const {item, handleDelete, handleShare} = props;
@@ -108,26 +116,24 @@ function Files(props) {
 }
 
 function ProjectSecurityDetails(props) {
-  const {projectDetails} = props;
+  const {projectDetails, openDialScreen} = props;
   const {security_info} = projectDetails || {};
 
   return (
     <View>
       <Subheading>Project Security/ Caretaker info</Subheading>
       {security_info?.map(item => {
+        const {contact_person_name, contact_person_number} = item || {};
         return (
           <View style={styles.container}>
             <View style={styles.subContainer}>
-              <Text>{item?.contact_person_name?.toUpperCase()}</Text>
+              <Text>{contact_person_name?.toUpperCase()}</Text>
             </View>
             <View style={styles.phoneContainer}>
               <MaterialIcons name="phone" color="#4872f4" size={18} />
-              <View style={styles.rowData}>
-                <Text style={styles.number}>
-                  {' '}
-                  {item?.contact_person_number}
-                </Text>
-              </View>
+              <TouchableOpacity style={styles.rowData} onPress={openDialScreen}>
+                <Text style={styles.number}>{contact_person_number}</Text>
+              </TouchableOpacity>
             </View>
           </View>
         );
@@ -137,7 +143,7 @@ function ProjectSecurityDetails(props) {
 }
 
 function ProjectOwnerDetails(props) {
-  const {projectDetails} = props;
+  const {projectDetails, openDialScreen, OpenEmail} = props;
 
   const {owner_info} = projectDetails || {};
 
@@ -145,6 +151,7 @@ function ProjectOwnerDetails(props) {
     <>
       <Subheading>Project Owner Info</Subheading>
       {owner_info?.map(item => {
+        const {phone_number, email} = item || {};
         return (
           <View style={styles.container}>
             <View style={styles.subContainer}>
@@ -155,14 +162,17 @@ function ProjectOwnerDetails(props) {
             </View>
             <View style={styles.phoneContainer}>
               <MaterialIcons name="phone" color="#4872f4" size={18} />
-              <View style={styles.rowData}>
-                <Text style={styles.number}> {item?.phone_number}</Text>
-              </View>
+              <TouchableOpacity
+                style={styles.rowData}
+                disabled={!phone_number}
+                onPress={openDialScreen}>
+                <Text style={styles.number}> {phone_number}</Text>
+              </TouchableOpacity>
             </View>
-            <View style={styles.phoneContainer}>
+            <TouchableOpacity style={styles.phoneContainer} onPress={OpenEmail}>
               <MaterialIcons name="email" color="#4872f4" size={18} />
-              <Text style={styles.number}> {item?.email} </Text>
-            </View>
+              <Text style={styles.number}> {email} </Text>
+            </TouchableOpacity>
           </View>
         );
       })}
@@ -345,6 +355,7 @@ function ProjectPreview(props) {
 
   const alert = useAlert();
   const download = useDownload();
+  const snackbar = useSnackbar();
 
   const [sharing, setSharing] = useState(false);
 
@@ -405,6 +416,28 @@ function ProjectPreview(props) {
     });
   };
 
+  const openDialScreen = value => {
+    const url =
+      Platform.OS !== 'android' ? `telprompt:${value}` : `tel:${value}`;
+
+    Linking.canOpenURL(url)
+      .then(supported => {
+        if (!supported) {
+          snackbar.showMessage({
+            message: 'Phone number is not available',
+            variant: 'error',
+          });
+          return;
+        }
+        Linking.openURL(url);
+      })
+      .catch(err =>
+        snackbar.showMessage({message: err.message, variant: 'error'}),
+      );
+  };
+
+  const OpenEmail = () => Linking.openURL('https://mail.google.com/');
+
   const file = projectDetails?.attachment_file;
   const projectSecurity = projectDetails?.security_info;
   const projectAmenities = projectDetails?.building_amenities;
@@ -454,13 +487,20 @@ function ProjectPreview(props) {
         ) : null}
         {projectOwner?.length ? (
           <View style={styles.statusField}>
-            <ProjectOwnerDetails projectDetails={projectDetails} />
+            <ProjectOwnerDetails
+              projectDetails={projectDetails}
+              openDialScreen={openDialScreen}
+              OpenEmail={OpenEmail}
+            />
           </View>
         ) : null}
 
         {projectSecurity?.length ? (
           <View style={styles.statusField}>
-            <ProjectSecurityDetails projectDetails={projectDetails} />
+            <ProjectSecurityDetails
+              projectDetails={projectDetails}
+              openDialScreen={openDialScreen}
+            />
           </View>
         ) : null}
 

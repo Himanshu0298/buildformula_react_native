@@ -1,8 +1,7 @@
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import FloorBar from 'components/Atoms/FloorBar';
 import NoResult from 'components/Atoms/NoResult';
-import {pickBy} from 'lodash';
-import React, {useMemo, useState} from 'react';
+import React, {useState} from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {FlatList} from 'react-native-gesture-handler';
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -22,7 +21,6 @@ function FloorPreview(props) {
   const {floorList, loading} = useSelector(s => s.projectStructure);
 
   const [selectedFloor, setSelectedFloor] = useState();
-  const [selectedBhk, setSelectedBhk] = React.useState();
 
   React.useEffect(() => {
     getData();
@@ -30,38 +28,16 @@ function FloorPreview(props) {
   }, []);
 
   const getData = async () => {
-    await getFloorList({
+    getFloorList({
       project_id: selectedProject.id,
       id,
       tower_id: towerId,
     });
   };
 
-  const structureData =
-    selectedProject.project_structure?.[selectedStructure] || {};
-
-  const selectedTower =
-    structureData?.towers.find(i => i.tower_id === towerId) || {};
-  const {floors = {}} = selectedTower;
-
   const onSelectFloor = floorId => {
     setSelectedFloor(v => (v === floorId ? undefined : floorId));
   };
-
-  const filteredFloors = useMemo(() => {
-    return pickBy(floors, (floorData, floorId) => {
-      const units =
-        ([4, 5].includes(selectedStructure)
-          ? structureData.units
-          : floors?.[floorId]?.units) || [];
-
-      if (selectedBhk && floorData.structureType === 1) {
-        return Boolean(units.filter(i => i.bhk === selectedBhk)?.length);
-      }
-
-      return true;
-    });
-  }, [floors, selectedBhk, selectedStructure, structureData.units]);
 
   const renderNoFloor = () => <NoResult title="No Floors available" />;
 
@@ -91,29 +67,27 @@ function FloorPreview(props) {
       </View>
 
       <FlatList
-        data={Object.keys(filteredFloors)}
+        data={floorList}
         contentContainerStyle={styles.contentContainerStyle}
-        extraData={{...filteredFloors}}
+        extraData={floorList}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
         keyExtractor={item => item.toString()}
         ListEmptyComponent={renderNoFloor}
-        renderItem={({item: floorId, index}) => {
-          const {structureType} = floors?.[floorId] || {};
+        renderItem={({item: floor, index}) => {
+          const {floor: floorId, type_id: structureType, tower} = floor;
           return (
             <>
               <FloorBar
                 {...props}
-                {...{
-                  floorId,
-                  index,
-                  towerId,
-                  floorData: filteredFloors,
-                  ...route.params,
-                  structureType,
-                }}
+                {...route.params}
+                floorId={floorId}
+                index={index}
+                towerId={towerId}
+                floorData={floor}
+                structureType={structureType}
                 inputProps={{
-                  value: filteredFloors?.[floorId]?.unitCount?.toString() || '',
+                  value: tower,
                   disabled: true,
                 }}
                 buttonProps={{color: '#5B6F7C'}}

@@ -230,7 +230,7 @@ function AssignMaterialCard(props) {
 
 function IssueIndentPreview(props) {
   const {navigation, route} = props;
-  const {id, type} = route?.params || {};
+  const {id} = route?.params || {};
 
   const alert = useAlert();
   const snackbar = useSnackbar();
@@ -347,7 +347,7 @@ function IssueIndentPreview(props) {
       <AssignQtyDialog
         {...props}
         visible={isNumber(selectedItemIndex)}
-        item={materials[selectedItemIndex]}
+        item={materials?.[selectedItemIndex]}
         toggleDialog={toggleDialog}
         onSubmit={handleSaveMaterialQuantity}
       />

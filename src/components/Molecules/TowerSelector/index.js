@@ -27,7 +27,6 @@ export function RenderTowerBox(props) {
         ]}>
         <Text theme={active ? secondaryTheme : undefined} numberOfLines={1}>
           {label}
-          {label}
         </Text>
       </View>
     </Container>

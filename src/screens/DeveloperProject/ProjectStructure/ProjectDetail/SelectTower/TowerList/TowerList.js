@@ -1,9 +1,15 @@
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useState} from 'react';
 import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
-import {Button, Caption, FAB, IconButton, Subheading} from 'react-native-paper';
-import Animated from 'react-native-reanimated';
-import BottomSheet from 'reanimated-bottom-sheet';
+import {
+  Button,
+  Caption,
+  Dialog,
+  FAB,
+  IconButton,
+  Portal,
+  Subheading,
+} from 'react-native-paper';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import RenderInput from 'components/Atoms/RenderInput';
@@ -14,76 +20,59 @@ import {useSelector} from 'react-redux';
 import {useAlert} from 'components/Atoms/Alert';
 import Spinner from 'react-native-loading-spinner-overlay';
 
-const SNAP_POINTS = [0, '25%'];
-
-function AddTower(props) {
-  const {formikProps, dialog, onClose} = props;
-
-  const {values, errors, handleChange, handleBlur, handleSubmit} = formikProps;
-
-  const bottomSheetRef = useRef();
-  const fall = new Animated.Value(1);
-
-  useEffect(() => {
-    if (dialog) {
-      bottomSheetRef?.current?.snapTo(1);
-    } else {
-      bottomSheetRef?.current?.snapTo(0);
-    }
-  }, [dialog]);
+function AddTowerModel(props) {
+  const {visible, onClose, onSubmit} = props;
 
   return (
-    <>
-      {dialog ? (
-        <Animated.View
-          style={[
-            styles.backdrop,
-            {opacity: Animated.sub(1, Animated.multiply(fall, 0.9))},
-          ]}
-        />
-      ) : null}
-
-      <BottomSheet
-        ref={bottomSheetRef}
-        snapPoints={SNAP_POINTS}
-        initialSnap={0}
-        borderRadius={30}
-        callbackNode={fall}
-        renderHeader={() => <View />}
-        renderContent={() => (
-          <View style={styles.sheetContentContainer}>
-            <View style={styles.closeContainer}>
-              <IconButton
-                icon="close-circle"
-                size={25}
-                onPress={onClose}
-                color="grey"
-              />
-            </View>
-            <Subheading> Add Field</Subheading>
-
-            <RenderInput
-              name="towerName"
-              label="Tower Name"
-              containerStyles={styles.inputStyles}
-              value={values.towerName}
-              onChangeText={handleChange('towerName')}
-              onBlur={handleBlur('towerName')}
-              autoCapitalize="none"
-              returnKeyType="next"
-              error={errors.towerName}
-            />
-            <Button
-              style={styles.button}
-              theme={{roundness: 10}}
-              mode="contained"
-              onPress={handleSubmit}>
-              Add
-            </Button>
-          </View>
-        )}
-      />
-    </>
+    <Formik
+      enableReinitialize
+      validateOnBlur={false}
+      validateOnChange={false}
+      initialValues={{}}
+      onSubmit={onSubmit}>
+      {({values, handleChange, handleBlur, errors, handleSubmit}) => {
+        return (
+          <Portal>
+            <Dialog
+              visible={visible}
+              onDismiss={onClose}
+              style={styles.dialogContainer}>
+              <View>
+                <View style={styles.sheetContentContainer}>
+                  <View style={styles.closeContainer}>
+                    <IconButton
+                      icon="close-circle"
+                      size={25}
+                      onPress={onClose}
+                      color="grey"
+                    />
+                  </View>
+                  <Subheading> Add Tower</Subheading>
+                  <RenderInput
+                    name="towerName"
+                    label="Tower Name"
+                    containerStyles={styles.inputStyles}
+                    value={values.towerName}
+                    onChangeText={handleChange('towerName')}
+                    onBlur={handleBlur('towerName')}
+                    autoCapitalize="none"
+                    returnKeyType="next"
+                    error={errors.towerName}
+                  />
+                  <Button
+                    style={styles.button}
+                    theme={{roundness: 10}}
+                    mode="contained"
+                    onPress={handleSubmit}>
+                    Add
+                  </Button>
+                </View>
+              </View>
+            </Dialog>
+          </Portal>
+        );
+      }}
+    </Formik>
   );
 }
 
@@ -129,6 +118,8 @@ function TowerList(props) {
 
   const [dialog, setDialog] = useState();
 
+  const [selectedIndex, setSelectedIndex] = useState();
+
   const {getTowerList, addTower, deleteTower} = useProjectStructureActions();
   const {selectedProject} = useSelector(s => s.project);
   const {towerList, loading} = useSelector(s => s.projectStructure);
@@ -142,9 +133,7 @@ function TowerList(props) {
     await getTowerList({project_id: selectedProject.id, id});
   };
 
-  const toggleAdd = () => setDialog(v => !v);
-
-  const onClose = () => toggleAdd();
+  const toggleAddDialog = () => setDialog(v => !v);
 
   const onSubmit = async values => {
     const data = {
@@ -155,7 +144,7 @@ function TowerList(props) {
     };
 
     await addTower(data);
-    toggleAdd();
+    toggleAddDialog();
     getData();
   };
 
@@ -178,22 +167,12 @@ function TowerList(props) {
   return (
     <>
       {dialog ? (
-        <Formik
-          enableReinitialize
-          validateOnBlur={false}
-          validateOnChange={false}
-          initialValues={{}}
-          onSubmit={onSubmit}>
-          {formikProps => (
-            <AddTower
-              {...props}
-              dialog={dialog}
-              toggleDialog={toggleAdd}
-              onClose={onClose}
-              formikProps={formikProps}
-            />
-          )}
-        </Formik>
+        <AddTowerModel
+          {...props}
+          visible={dialog}
+          onClose={toggleAddDialog}
+          onSubmit={onSubmit}
+        />
       ) : null}
 
       <View style={styles.container}>
@@ -216,7 +195,8 @@ function TowerList(props) {
           style={styles.scrollView}>
           <ListData towerList={towerList} handleDelete={handleDelete} />
         </ScrollView>
-        <FAB style={styles.fab} large icon="plus" onPress={toggleAdd} />
+
+        <FAB style={styles.fab} large icon="plus" onPress={toggleAddDialog} />
       </View>
     </>
   );
@@ -265,14 +245,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#4872f4',
   },
 
-  backdrop: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.3)',
-  },
   sheetContentContainer: {
     backgroundColor: '#fff',
     borderTopLeftRadius: 30,
@@ -283,14 +255,24 @@ const styles = StyleSheet.create({
     height: '100%',
     ...getShadow(2),
   },
-  closeContainer: {
-    alignItems: 'flex-end',
-  },
+
   inputStyles: {
     marginVertical: 10,
   },
   scrollView: {
     marginBottom: 20,
+  },
+  dialogContainer: {
+    flex: 0.3,
+    backgroundColor: 'grey',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    top: 280,
+    width: '100%',
+    left: -25,
+  },
+  closeContainer: {
+    alignItems: 'flex-end',
   },
 });
 

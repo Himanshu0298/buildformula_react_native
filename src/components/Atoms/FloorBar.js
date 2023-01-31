@@ -3,7 +3,7 @@ import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
 import PropTypes from 'prop-types';
 import Layout from 'utils/Layout';
 import {Badge, Caption, TextInput} from 'react-native-paper';
-import {getFloorNumber, getShadow} from 'utils';
+import {getShadow} from 'utils';
 import {STRUCTURE_TYPE_LABELS} from 'utils/constant';
 import floorSlab from 'assets/images/slab.png';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -43,7 +43,7 @@ function FloorBar(props) {
           <LabelContainer
             style={styles.floorLabelContainer}
             onPress={() => onPressLabel?.(floorId)}>
-            <Caption>{getFloorNumber(floorId)}</Caption>
+            <Caption>{floorId}</Caption>
           </LabelContainer>
           <View style={styles.rightSection}>
             <TextInput

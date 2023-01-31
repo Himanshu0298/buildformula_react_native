@@ -1,9 +1,15 @@
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
-import React, {useEffect, useMemo, useRef, useState} from 'react';
+import React, {useMemo, useState} from 'react';
 import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
-import {Button, Caption, FAB, IconButton, Subheading} from 'react-native-paper';
-import Animated from 'react-native-reanimated';
-import BottomSheet from 'reanimated-bottom-sheet';
+import {
+  Button,
+  Caption,
+  Dialog,
+  FAB,
+  IconButton,
+  Portal,
+  Subheading,
+} from 'react-native-paper';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import RenderInput from 'components/Atoms/RenderInput';
@@ -14,105 +20,73 @@ import {useAlert} from 'components/Atoms/Alert';
 import useProjectStructureActions from 'redux/actions/projectStructureActions';
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
+import NoResult from 'components/Atoms/NoResult';
+import {useSnackbar} from 'components/Atoms/Snackbar';
+import {ActionSheetProvider} from '@expo/react-native-action-sheet';
 
-const SNAP_POINTS = [0, '25%'];
-
-function AddFloor(props) {
-  const {formikProps, dialog, onClose} = props;
-
-  const {values, errors, handleChange, handleBlur, handleSubmit} = formikProps;
-
-  const bottomSheetRef = useRef();
-  const fall = new Animated.Value(1);
-
-  useEffect(() => {
-    if (dialog) {
-      bottomSheetRef?.current?.snapTo(1);
-    } else {
-      bottomSheetRef?.current?.snapTo(0);
-    }
-  }, [dialog]);
+function AddTowerModel(props) {
+  const {visible, onClose, onSubmit} = props;
 
   return (
-    <>
-      {dialog ? (
-        <Animated.View
-          style={[
-            styles.backdrop,
-            {opacity: Animated.sub(1, Animated.multiply(fall, 0.9))},
-          ]}
-        />
-      ) : null}
-
-      <BottomSheet
-        ref={bottomSheetRef}
-        snapPoints={SNAP_POINTS}
-        initialSnap={0}
-        borderRadius={30}
-        callbackNode={fall}
-        renderHeader={() => <View />}
-        renderContent={() => (
-          <View style={styles.sheetContentContainer}>
-            <View style={styles.closeContainer}>
-              <IconButton
-                icon="close-circle"
-                size={25}
-                onPress={onClose}
-                color="grey"
-              />
-            </View>
-            <Subheading> Add Floor</Subheading>
-            <RenderInput
-              name="floorName"
-              label="Floor Name"
-              containerStyles={styles.inputStyles}
-              value={values.floorName}
-              onChangeText={handleChange('floorName')}
-              onBlur={handleBlur('floorName')}
-              autoCapitalize="none"
-              returnKeyType="next"
-              error={errors.floorName}
-            />
-            <Button
-              style={styles.button}
-              theme={{roundness: 10}}
-              mode="contained"
-              onPress={handleSubmit}>
-              Add
-            </Button>
-          </View>
-        )}
-      />
-    </>
+    <Formik
+      enableReinitialize
+      validateOnBlur={false}
+      validateOnChange={false}
+      initialValues={{}}
+      onSubmit={onSubmit}>
+      {({values, handleChange, handleBlur, errors, handleSubmit}) => {
+        return (
+          <ActionSheetProvider>
+            <Portal>
+              <Dialog
+                visible={visible}
+                onDismiss={onClose}
+                style={styles.dialogContainer}>
+                <View>
+                  <View style={styles.sheetContentContainer}>
+                    <View style={styles.closeContainer}>
+                      <IconButton
+                        icon="close-circle"
+                        size={25}
+                        onPress={onClose}
+                        color="grey"
+                      />
+                    </View>
+                    <Subheading> Add Floor</Subheading>
+                    <RenderInput
+                      name="floorName"
+                      label="Floor Name"
+                      containerStyles={styles.inputStyles}
+                      value={values.floorName}
+                      onChangeText={handleChange('floorName')}
+                      onBlur={handleBlur('floorName')}
+                      autoCapitalize="none"
+                      returnKeyType="next"
+                      error={errors.floorName}
+                    />
+                    <Button
+                      style={styles.button}
+                      theme={{roundness: 10}}
+                      mode="contained"
+                      onPress={handleSubmit}>
+                      Add
+                    </Button>
+                  </View>
+                </View>
+              </Dialog>
+            </Portal>
+          </ActionSheetProvider>
+        );
+      }}
+    </Formik>
   );
 }
 
 function ListData(props) {
-  const {formikProps, handleDelete, floorList} = props;
-
-  const {values, handleBlur, setFieldValue} = formikProps;
-
-  const floorOptions = useMemo(() => {
-    return floorList?.map(i => ({
-      label: i.floor,
-      value: i.id,
-    }));
-  }, [floorList]);
+  const {handleDelete, floorList} = props;
 
   return (
     <View>
-      <RenderSelect
-        name="selectFloor"
-        label="Select Floor"
-        value={values.selectFloor}
-        options={floorOptions}
-        containerStyles={styles.inputStyles}
-        onBlur={handleBlur('selectFloor')}
-        onSelect={value => {
-          setFieldValue('selectFloor', value);
-        }}
-      />
-
       {floorList?.map(item => {
         return (
           <View style={styles.listContainer}>
@@ -147,29 +121,49 @@ function FloorList(props) {
   const {id, towerId} = route?.params || {};
 
   const alert = useAlert();
-
-  const [dialog, setDialog] = useState();
+  const snackbar = useSnackbar();
 
   const {getFloorList, addFloor, deleteFloor} = useProjectStructureActions();
   const {selectedProject} = useSelector(s => s.project);
-  const {floorList, loading} = useSelector(s => s.projectStructure);
+  const {towerList, floorList, loading} = useSelector(s => s.projectStructure);
+
+  const [dialog, setDialog] = useState(false);
+  const [selectedTower, setSelectedTower] = useState(towerId);
+
+  const towerOptions = useMemo(() => {
+    return towerList?.map(i => ({
+      label: i.label,
+      value: i.id,
+    }));
+  }, [towerList]);
 
   React.useEffect(() => {
     getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [selectedTower]);
 
   const getData = async () => {
     await getFloorList({
       project_id: selectedProject.id,
       id,
-      tower_id: towerId,
+      tower_id: selectedTower,
     });
   };
 
-  const toggleAdd = () => setDialog(v => !v);
+  const toggleAddDialog = () => setDialog(v => !v);
 
   const onSubmit = async values => {
+    const floors = floorList.find(i => i.floor === values.floorName);
+
+    if (floors) {
+      snackbar.showMessage({
+        message: 'Floor Already Added',
+        variant: 'warning',
+      });
+      toggleAddDialog();
+      return;
+    }
+
     const data = {
       project_id: selectedProject.id,
       id,
@@ -179,7 +173,7 @@ function FloorList(props) {
     };
 
     await addFloor(data);
-    toggleAdd();
+    toggleAddDialog();
     getData();
   };
 
@@ -215,42 +209,43 @@ function FloorList(props) {
         </TouchableOpacity>
         <Subheading>Floor List</Subheading>
       </View>
-      <Formik
-        enableReinitialize
-        validateOnBlur={false}
-        validateOnChange={false}
-        initialValues={{}}
-        onSubmit={onSubmit}>
-        {formikProps => (
-          <>
-            <ScrollView>
-              <ListData
-                formikProps={formikProps}
-                handleDelete={handleDelete}
-                floorList={floorList}
-              />
-            </ScrollView>
-            {dialog ? (
-              <AddFloor
-                {...props}
-                dialog={dialog}
-                onClose={toggleAdd}
-                formikProps={formikProps}
-              />
-            ) : null}
-          </>
+      <ScrollView
+        style={{marginBottom: 50}}
+        showsVerticalScrollIndicator={false}>
+        <RenderSelect
+          name="tower"
+          label="Select Tower"
+          value={selectedTower}
+          options={towerOptions}
+          containerStyles={styles.inputStyles}
+          onSelect={setSelectedTower}
+        />
+
+        {floorList?.length ? (
+          <ListData handleDelete={handleDelete} floorList={floorList} />
+        ) : (
+          <NoResult title="No Floor available, please first add floor" />
         )}
-      </Formik>
-      <FAB style={styles.fab} large icon="plus" onPress={toggleAdd} />
+      </ScrollView>
+
+      {dialog ? (
+        <AddTowerModel
+          {...props}
+          visible={dialog}
+          onClose={toggleAddDialog}
+          onSubmit={onSubmit}
+        />
+      ) : null}
+
+      <FAB style={styles.fab} large icon="plus" onPress={toggleAddDialog} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     flexGrow: 1,
-    margin: 20,
+    marginHorizontal: 20,
   },
   titleContainer: {
     flexDirection: 'row',
@@ -285,17 +280,20 @@ const styles = StyleSheet.create({
   fab: {
     position: 'absolute',
     right: 5,
-    bottom: 1,
+    bottom: 80,
+
     backgroundColor: '#4872f4',
+    zIndex: 1,
   },
 
-  backdrop: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.3)',
+  dialogContainer: {
+    flex: 0.3,
+    backgroundColor: 'grey',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    top: 280,
+    width: '100%',
+    left: -25,
   },
   sheetContentContainer: {
     backgroundColor: '#fff',
