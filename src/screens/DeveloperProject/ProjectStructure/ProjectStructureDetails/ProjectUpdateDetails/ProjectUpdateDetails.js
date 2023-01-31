@@ -172,7 +172,7 @@ const UpdateProjectDetails = props => {
 
   const areaOptions = useMemo(() => {
     return areaList
-      ?.filter(i => i.status)
+      ?.filter(i => i.status === 1)
       ?.map(i => ({label: i.area, value: i.id}));
   }, [areaList]);
 
