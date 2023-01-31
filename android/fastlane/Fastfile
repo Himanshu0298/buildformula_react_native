@@ -45,7 +45,7 @@ platform :android do
 
     #gradle(task: “clean assembleRelease”)
 
-    # gradle(task: 'assemble', build_type: 'Release') # build_android_app is a built-in fastlane action.
+    gradle(task: 'assemble', build_type: 'Release') # build_android_app is a built-in fastlane action.
 
     firebase_app_distribution(
         app: "1:525501768411:android:7b6f39a29fd28111ed62fe",
