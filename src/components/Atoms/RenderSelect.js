@@ -1,13 +1,7 @@
 import React, {useImperativeHandle, useMemo, useState} from 'react';
-import {
-  TouchableOpacity,
-  Text,
-  StyleSheet,
-  View,
-  ScrollView,
-} from 'react-native';
+import {TouchableOpacity, StyleSheet, View, ScrollView} from 'react-native';
 import PropTypes from 'prop-types';
-import {Chip, Searchbar, TextInput, useTheme} from 'react-native-paper';
+import {Chip, Searchbar, TextInput, useTheme, Text} from 'react-native-paper';
 import truncate from 'lodash/truncate';
 import ReactNativeModal from 'react-native-modal';
 import {
