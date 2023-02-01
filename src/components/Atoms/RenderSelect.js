@@ -90,7 +90,9 @@ const RenderSelect = React.forwardRef((props, ref) => {
     if (index > -1) {
       return options[index].label;
     }
-    return truncateLength ? truncate(value, {length: truncateLength}) : value;
+    return truncateLength
+      ? truncate(value, {length: truncateLength})
+      : value || '';
   }, [options, truncateLength, value]);
 
   const selectedOptions = useMemo(() => {

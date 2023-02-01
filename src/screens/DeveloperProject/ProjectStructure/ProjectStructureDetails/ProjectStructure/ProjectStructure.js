@@ -192,7 +192,7 @@ function ProjectStructure(props) {
   }, [projectDetails]);
 
   const onSubmit = values => {
-    const arrString = values?.bhk_configuration?.join(',') || undefined;
+    const arrString = values?.bhk_configuration?.join('') || undefined;
 
     const data = {
       project_id: selectedProject.id,

@@ -87,7 +87,7 @@ function ProjectBrief(props) {
   }, [projectDetails]);
 
   const onSubmit = values => {
-    const arrString = values?.configurtion?.join(',') || undefined;
+    const arrString = values?.configurtion?.join('') || undefined;
 
     const data = {
       project_id: selectedProject.id,

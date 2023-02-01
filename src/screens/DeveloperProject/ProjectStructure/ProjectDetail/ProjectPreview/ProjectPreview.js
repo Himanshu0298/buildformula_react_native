@@ -131,7 +131,9 @@ function ProjectSecurityDetails(props) {
             </View>
             <View style={styles.phoneContainer}>
               <MaterialIcons name="phone" color="#4872f4" size={18} />
-              <TouchableOpacity style={styles.rowData} onPress={openDialScreen}>
+              <TouchableOpacity
+                style={styles.rowData}
+                onPress={() => openDialScreen(contact_person_number)}>
                 <Text style={styles.number}>{contact_person_number}</Text>
               </TouchableOpacity>
             </View>
@@ -165,11 +167,13 @@ function ProjectOwnerDetails(props) {
               <TouchableOpacity
                 style={styles.rowData}
                 disabled={!phone_number}
-                onPress={openDialScreen}>
+                onPress={() => openDialScreen(phone_number)}>
                 <Text style={styles.number}> {phone_number}</Text>
               </TouchableOpacity>
             </View>
-            <TouchableOpacity style={styles.phoneContainer} onPress={OpenEmail}>
+            <TouchableOpacity
+              style={styles.phoneContainer}
+              onPress={() => OpenEmail(email)}>
               <MaterialIcons name="email" color="#4872f4" size={18} />
               <Text style={styles.number}> {email} </Text>
             </TouchableOpacity>
@@ -417,6 +421,7 @@ function ProjectPreview(props) {
   };
 
   const openDialScreen = value => {
+    console.log('===========> value', value);
     const url =
       Platform.OS !== 'android' ? `telprompt:${value}` : `tel:${value}`;
 
