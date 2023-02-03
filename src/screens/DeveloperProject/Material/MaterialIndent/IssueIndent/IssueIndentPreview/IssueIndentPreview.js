@@ -259,6 +259,7 @@ function IssueIndentPreview(props) {
 
   useEffect(() => {
     getData();
+    getList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -278,11 +279,10 @@ function IssueIndentPreview(props) {
     });
   };
 
-  const getList = () => {
+  const getList = () =>
     getMaterialIndentList({
       project_id: selectedProject.id,
     });
-  };
 
   const handleDelete = () => {
     alert.show({
@@ -307,7 +307,7 @@ function IssueIndentPreview(props) {
   const handleSaveMaterialQuantity = value => {
     const _materials = [...materials];
 
-    if (value >= _materials[selectedItemIndex]?.available_quantity) {
+    if (value > _materials[selectedItemIndex]?.available_quantity) {
       snackbar.showMessage({
         message: 'Assign Quantity can not be more then Available Quantity',
         variant: 'error',
@@ -322,18 +322,19 @@ function IssueIndentPreview(props) {
   };
 
   const updateStatus = async approveStatus => {
-    const formData = new FormData();
-
     const quantityData = materials.map(item => {
       const keys = ['material_indent_id', 'assigned_quantity'];
       return {...pick(item, keys), material_indent_details_id: item.id};
     });
-    formData.append('project_id', selectedProject.id);
-    formData.append('material_indent_id', id);
-    formData.append('type', approveStatus);
-    formData.append('assigned_quantity', JSON.stringify(quantityData));
 
-    await updateIssueQuantity(formData);
+    const restData = {
+      project_id: selectedProject.id,
+      material_indent_id: id,
+      type: approveStatus,
+      assigned_quantity: JSON.stringify(quantityData),
+    };
+
+    await updateIssueQuantity(restData);
     getData();
   };
 

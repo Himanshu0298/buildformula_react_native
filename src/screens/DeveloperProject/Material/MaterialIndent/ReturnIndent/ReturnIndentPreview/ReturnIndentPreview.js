@@ -23,6 +23,7 @@ import moment from 'moment';
 import {useAlert} from 'components/Atoms/Alert';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 import {useSelector} from 'react-redux';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const INDENT_STATUS = {
   pending: {label: 'Pending', color: 'rgba(72, 114, 244, 1)'},
@@ -169,7 +170,7 @@ function ReturnIndentPreview(props) {
     useMaterialManagementActions();
 
   const {selectedProject} = useSelector(s => s.project);
-  const {indentDetails} = useSelector(s => s.materialManagement);
+  const {indentDetails, loading} = useSelector(s => s.materialManagement);
 
   const details = indentDetails?.material_indent;
 
@@ -179,6 +180,7 @@ function ReturnIndentPreview(props) {
 
   useEffect(() => {
     getData();
+    getList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -213,6 +215,7 @@ function ReturnIndentPreview(props) {
 
   return (
     <View style={styles.mainContainer}>
+      <Spinner visible={loading} />
       <View style={styles.headerContainer}>
         <View style={styles.container}>
           <IconButton
@@ -255,7 +258,9 @@ function ReturnIndentPreview(props) {
           </View>
         </View>
       </View>
-      <ScrollView style={{marginBottom: 15}}>
+      <ScrollView
+        style={{marginBottom: 30}}
+        showsVerticalScrollIndicator={false}>
         <View>
           <ListingCard details={details} />
         </View>

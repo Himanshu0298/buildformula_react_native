@@ -19,8 +19,6 @@ function CreateReturnIndent(props) {
   const {navigation, route} = props;
   const {id, indentDetails} = route?.params || {};
 
-  const details = indentDetails?.material_indent;
-
   const edit = Boolean(id);
 
   const {getVendorList, addReturnIndentMaterials} =
@@ -28,12 +26,13 @@ function CreateReturnIndent(props) {
 
   const {vendorOptions} = useSelector(s => s.materialManagement);
 
+  const details = indentDetails?.material_indent;
+
   const {selectedProject} = useSelector(s => s.project);
   const projectId = selectedProject.id;
 
   React.useEffect(() => {
     getVendorList({project_id: projectId});
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -46,7 +45,7 @@ function CreateReturnIndent(props) {
 
   const initialValues = React.useMemo(() => {
     if (edit) {
-      const {contractor_name: vendor_id, remark} = details;
+      const {vendor_id, remark} = details;
       return {
         vendor_id,
         remark,

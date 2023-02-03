@@ -155,7 +155,11 @@ export default function useMaterialManagement() {
       return instance.post('/material/returnmaterialaddedit', data, params);
     },
     addReturnAttachment: data => {
-      return instance.post('/material/returnimage', data, params);
+      return instance.post(
+        '/material/returnimage',
+        data,
+        config({multipart: true}),
+      );
     },
     deleteIssue: data => {
       return instance.post('/material/issuedelete', data, params);

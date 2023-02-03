@@ -1,5 +1,5 @@
 import {Image, StyleSheet, View} from 'react-native';
-import React from 'react';
+import React, {useEffect} from 'react';
 import * as Yup from 'yup';
 
 import {RenderError} from 'components/Atoms/RenderInput';
@@ -17,7 +17,9 @@ import useMaterialManagementActions from 'redux/actions/materialManagementAction
 import {useSelector} from 'react-redux';
 
 const schema = Yup.object().shape({
-  attachments: Yup.mixed().required('File is required'),
+  attachments: Yup.array()
+    .min(2, 'Min 2 attachments are required')
+    .required('File is required'),
 });
 
 const RenderAttachments = props => {
@@ -127,22 +129,43 @@ const AddAttachments = props => {
   const {route, navigation} = props;
   const {id, edit} = route?.params || {};
 
-  const {addReturnAttachment} = useMaterialManagementActions();
+  const {addReturnAttachment, getIndentDetails} =
+    useMaterialManagementActions();
 
   const {selectedProject} = useSelector(s => s.project);
   const projectId = selectedProject.id;
 
-  const onSubmit = async values => {
-    const formData = new FormData();
-    values?.attachments?.map(item => {
-      formData.append('attachmentFile[]', item);
-      return item;
+  useEffect(() => {
+    getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const getData = async () => {
+    await getIndentDetails({
+      project_id: selectedProject.id,
+      material_indent_id: id,
     });
+  };
+
+  const onSubmit = async values => {
+    const {attachments = []} = values;
+    const formData = new FormData();
 
     formData.append('project_id', projectId);
     formData.append('material_indent_id', id);
 
+    if (attachments?.length > 1) {
+      attachments.map(item => {
+        formData.append('attachmentFile[]', item);
+        return item;
+      });
+    } else {
+      formData.append('attachmentFile', attachments);
+    }
+
     await addReturnAttachment(formData);
+    getData();
+    navigation.navigate('MaterialIndent');
     navigation.navigate('ReturnIndentPreview', {id});
   };
 

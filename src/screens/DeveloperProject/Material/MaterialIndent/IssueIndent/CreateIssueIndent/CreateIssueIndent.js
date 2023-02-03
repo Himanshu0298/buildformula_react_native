@@ -53,10 +53,11 @@ const CreateIssueIndent = props => {
 
   const initialValues = React.useMemo(() => {
     if (edit) {
-      const {contractor_name: vendor_id, requred_date, remark} = details;
+      const {vendor_id, requred_date, wbs_works_id, remark} = details;
       return {
         vendor_id,
         requred_date,
+        wbs_works_id,
         remark,
       };
     }
@@ -122,14 +123,14 @@ const CreateIssueIndent = props => {
                   error={errors.requred_date}
                 />
                 <RenderSelect
-                  name="required_for"
+                  name="wbs_works_id"
                   label="Required For"
-                  value={values.required_for}
+                  value={values.wbs_works_id}
                   options={workSubWorkOptions}
                   containerStyles={styles.inputStyles}
-                  onBlur={handleBlur('required_for')}
+                  onBlur={handleBlur('wbs_works_id')}
                   onSelect={value => {
-                    setFieldValue('required_for', value);
+                    setFieldValue('wbs_works_id', value);
                   }}
                 />
                 <RenderTextBox

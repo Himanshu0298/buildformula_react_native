@@ -23,6 +23,7 @@ import reload from 'assets/images/reload.png';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 import {useSelector} from 'react-redux';
 import moment from 'moment';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const INDENT_STATUS = {
   pending: {label: 'Pending', color: 'rgba(72, 114, 244, 1)'},
@@ -85,7 +86,7 @@ function MaterialIndentListing(props) {
   const {getMaterialIndentList} = useMaterialManagementActions();
 
   const {selectedProject} = useSelector(s => s.project);
-  const {materialIndentList} = useSelector(s => s.materialManagement);
+  const {materialIndentList, loading} = useSelector(s => s.materialManagement);
 
   const indent = materialIndentList?.indentlist?.sort((a, b) => b.id - a.id);
 
@@ -121,6 +122,7 @@ function MaterialIndentListing(props) {
 
   return (
     <View style={styles.mainContainer}>
+      <Spinner visible={loading} />
       <View style={styles.headerContainer}>
         <Subheading style={styles.headerText}>Material Indent</Subheading>
       </View>
@@ -128,7 +130,9 @@ function MaterialIndentListing(props) {
         <FlatList
           style={styles.flatList}
           data={indent}
-          refreshControl={<RefreshControl refreshing={false} />}
+          refreshControl={
+            <RefreshControl refreshing={false} onRefresh={getList} />
+          }
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={renderEmpty}
           keyExtractor={item => item.id}
