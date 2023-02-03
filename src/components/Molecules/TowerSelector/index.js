@@ -1,29 +1,31 @@
 import React from 'react';
 import {StyleSheet, View, TouchableOpacity, FlatList} from 'react-native';
-import {withTheme, Text} from 'react-native-paper';
+import {withTheme, Text, useTheme} from 'react-native-paper';
 import PropTypes from 'prop-types';
 import TowerIcon from 'assets/images/tower.svg';
 import {secondaryTheme} from 'styles/theme';
 
 export function RenderTowerBox(props) {
-  const {towerId, label, onPress, active, theme} = props;
+  const {label, onPress, active} = props;
 
   const Container = onPress ? TouchableOpacity : View;
 
+  const {colors} = useTheme();
+
   return (
-    <Container style={styles.towerContainer} onPress={() => onPress?.(towerId)}>
+    <Container style={styles.towerContainer} onPress={onPress}>
       <View style={styles.iconContainer}>
         <TowerIcon
           height={20}
           width={20}
-          fill={theme.colors.accent}
-          fillSecondary={theme.colors.primary}
+          fill={colors.accent}
+          fillSecondary={colors.primary}
         />
       </View>
       <View
         style={[
           styles.labelContainer,
-          active ? {backgroundColor: theme.colors.primary} : {},
+          active ? {backgroundColor: colors.primary} : {},
         ]}>
         <Text theme={active ? secondaryTheme : undefined} numberOfLines={1}>
           {label}
@@ -48,9 +50,8 @@ function TowerSelector(props) {
             <RenderTowerBox
               {...props}
               key={index.toString()}
-              towerId={item.id}
               label={item.label}
-              onPress={onSelectTower}
+              onPress={() => onSelectTower(item.id)}
             />
           );
         }}

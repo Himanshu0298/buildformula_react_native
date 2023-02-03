@@ -6,11 +6,11 @@ import UnitSelector from 'components/Molecules/UnitSelector';
 import {getFloorNumber} from 'utils';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {IconButton, Subheading} from 'react-native-paper';
-import {STRUCTURE_TYPE, STRUCTURE_TYPE_LABELS} from 'utils/constant';
+import {STRUCTURE_TYPE_LABELS} from 'utils/constant';
 import {useSalesLoading} from 'redux/selectors';
 
 export const SelectUnit = props => {
-  const {navigation, route} = props;
+  const {navigation} = props;
   const {
     project_id,
     floorId,
@@ -30,13 +30,10 @@ export const SelectUnit = props => {
   const loading = useSalesLoading();
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      fetchUnitsBookingStatus();
-    });
+    fetchUnitsBookingStatus();
 
-    return unsubscribe;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [towerId, floorId]);
 
   const units = useMemo(() => {
     const structureData =

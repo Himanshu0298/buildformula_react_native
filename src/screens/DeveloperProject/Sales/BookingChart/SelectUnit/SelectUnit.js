@@ -40,13 +40,10 @@ export const SelectUnit = props => {
   const [selectedUnit, setSelectedUnit] = useState();
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      fetchUnitsBookingStatus();
-    });
+    fetchUnitsBookingStatus();
 
-    return unsubscribe;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [towerId, floorId]);
 
   const units = useMemo(() => {
     const structureData =

@@ -72,11 +72,9 @@ function UnitSelector(props) {
       {showBhkFilters ? (
         <>
           <Subheading style={styles.bhkHeading}>BHK Indication</Subheading>
-
           <BhkList selectedBhk={selectedBhk} onPress={setSelectedBhk} />
         </>
       ) : null}
-      {/* <Subheading style={styles.floorTitle}>{floorNumber}</Subheading> */}
       <FlatList
         data={filteredUnits}
         extraData={filteredUnits}
