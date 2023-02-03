@@ -186,6 +186,13 @@ export default function useProjectStructure() {
     deletePickUp: data => {
       return instance.post('/projectstructure/pickuplist/delete', data, params);
     },
+    updatePickUpOrder: data => {
+      return instance.post(
+        '/projectstructure/pickuplist/rearrange',
+        data,
+        params,
+      );
+    },
     getProjectMasterList: data => {
       return instance.post(
         '/projectstructure/project/get/master',
@@ -240,7 +247,7 @@ export default function useProjectStructure() {
     },
     updateFloorOrder: data => {
       return instance.post(
-        '/projectstructure/project/updateFloorOrder',
+        '/projectstructure/project/projectFloorRearrange',
         data,
         params,
       );

@@ -9,6 +9,7 @@ import ActionButtons from 'components/Atoms/ActionButtons';
 import useProjectStructureActions from 'redux/actions/projectStructureActions';
 import {useSelector} from 'react-redux';
 import * as Yup from 'yup';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const schema = Yup.object().shape({
   total_no_of_towers: Yup.number('Invalid').typeError('please enter number'),
@@ -158,7 +159,9 @@ function ProjectStructure(props) {
     useProjectStructureActions();
 
   const {selectedProject} = useSelector(s => s.project);
-  const {masterList, projectDetails} = useSelector(s => s.projectStructure);
+  const {masterList, projectDetails, loading} = useSelector(
+    s => s.projectStructure,
+  );
 
   React.useEffect(() => {
     getData();
@@ -192,7 +195,7 @@ function ProjectStructure(props) {
   }, [projectDetails]);
 
   const onSubmit = values => {
-    const arrString = values?.bhk_configuration?.join('') || undefined;
+    const arrString = values?.bhk_configuration?.join(',') || undefined;
 
     const data = {
       project_id: selectedProject.id,
@@ -211,6 +214,7 @@ function ProjectStructure(props) {
 
   return (
     <View style={styles.mainContainer}>
+      <Spinner visible={loading} />
       <View style={styles.headerWrapper}>
         <IconButton
           icon="keyboard-backspace"

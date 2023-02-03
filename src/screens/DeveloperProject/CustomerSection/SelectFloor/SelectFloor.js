@@ -39,8 +39,15 @@ function BhkList({onPress, selectedBhk}) {
 
 function SelectFloor(props) {
   const {route, navigation} = props;
-  const {selectedStructure, towerType, towerId, project_id} =
+  const {selectedStructure, towerType, towerId, project_id, towereList} =
     route?.params || {};
+
+  console.log('===========> selectedStructure', selectedStructure);
+  console.log('===========> towerType', towerType);
+
+  console.log('===========> towerId', towerId);
+  console.log('===========>project_id ', project_id);
+  console.log('===========>towereList ', towereList);
 
   const [selectedFloor, setSelectedFloor] = useState();
 
@@ -53,10 +60,10 @@ function SelectFloor(props) {
   const {selectedProject} = useSelector(s => s.project);
 
   const structureData =
-    selectedProject.project_structure?.[selectedStructure] || {};
+    selectedProject?.project_structure?.[selectedStructure] || {};
 
   const {floors = {}} =
-    structureData?.towers.find(i => i.tower_id === towerId) || {};
+    structureData?.towers?.find(i => i.tower_id === towerId) || {};
 
   const showBhkIndicator = useMemo(() => {
     return Boolean(

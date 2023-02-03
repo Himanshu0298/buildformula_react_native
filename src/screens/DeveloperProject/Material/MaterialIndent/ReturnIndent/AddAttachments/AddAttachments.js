@@ -134,10 +134,13 @@ const AddAttachments = props => {
 
   const onSubmit = async values => {
     const formData = new FormData();
+    values?.attachments?.map(item => {
+      formData.append('attachmentFile[]', item);
+      return item;
+    });
 
     formData.append('project_id', projectId);
     formData.append('material_indent_id', id);
-    formData.append('attachmentFile[]', values.attachments);
 
     await addReturnAttachment(formData);
     navigation.navigate('ReturnIndentPreview', {id});

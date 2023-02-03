@@ -43,7 +43,6 @@ function SelectFloor(props) {
     route?.params || {};
 
   const [selectedFloor, setSelectedFloor] = useState();
-
   const [selectedBhk, setSelectedBhk] = React.useState();
 
   const onSelectFloor = floorId => {
@@ -97,7 +96,6 @@ function SelectFloor(props) {
       {showBhkIndicator ? (
         <View>
           <Subheading style={styles.bhkHeading}>BHK indication</Subheading>
-
           <BhkList selectedBhk={selectedBhk} onPress={setSelectedBhk} />
         </View>
       ) : null}

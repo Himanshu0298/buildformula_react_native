@@ -48,6 +48,9 @@ export default function useProjectStructureActions() {
     updateFloor,
     deleteFloor,
     createProjectDuplicate,
+    updateTowerOrder,
+    updateFloorOrder,
+    updatePickUpOrder,
   } = useProjectStructure();
 
   return {
@@ -369,6 +372,21 @@ export default function useProjectStructureActions() {
           }
         },
       }),
+
+    updateTowerOrder: data =>
+      dispatch({
+        type: types.PROJECT_TOWER_REARRANGE,
+        payload: async () => {
+          try {
+            const response = _res(await updateTowerOrder(data));
+            return Promise.resolve(response.data.lists);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
     getModuleList: data =>
       dispatch({
         type: types.GET_MODULE_LIST,
@@ -468,6 +486,22 @@ export default function useProjectStructureActions() {
           }
         },
       }),
+    updatePickUpOrder: data =>
+      dispatch({
+        type: types.PROJECT_FLOOR_REARRANGE,
+        payload: async () => {
+          try {
+            const res = _res(await updatePickUpOrder(data));
+            snackbar.showMessage({message: res.msg});
+            return Promise.resolve(res.data.lists);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
     getProjectMasterList: data =>
       dispatch({
         type: types.GET_PROJECT_MASTER_LIST,
@@ -587,6 +621,21 @@ export default function useProjectStructureActions() {
         payload: async () => {
           try {
             const res = _res(await deleteFloor(data));
+            snackbar.showMessage({message: res.msg});
+            return Promise.resolve(res.data.lists);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    updateFloorOrder: data =>
+      dispatch({
+        type: types.PROJECT_FLOOR_REARRANGE,
+        payload: async () => {
+          try {
+            const res = _res(await updateFloorOrder(data));
             snackbar.showMessage({message: res.msg});
             return Promise.resolve(res.data.lists);
           } catch (error) {

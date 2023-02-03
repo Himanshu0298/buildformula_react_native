@@ -193,6 +193,7 @@ const ProjectHistory = props => {
       project_quality: values.project_quality,
     };
     updateProjectHistory(data);
+    getDetails();
     navigation.goBack();
   };
 

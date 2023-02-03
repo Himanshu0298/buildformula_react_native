@@ -1,4 +1,4 @@
-import React, {useMemo, useState} from 'react';
+import React, {useState} from 'react';
 import {
   StyleSheet,
   View,
@@ -51,7 +51,7 @@ function RenderFile(props) {
         style={styles.sectionContainer}
         onPress={() => onPressFile(file)}>
         <Image source={PdfIcon} style={styles.fileIcon} />
-        <View style={{width: '70%'}}>
+        <View>
           <Text
             style={(styles.verticalFlex, styles.textContainer)}
             numberOfLines={3}>
@@ -67,7 +67,6 @@ function RenderFile(props) {
           </View>
         </View>
       </TouchableOpacity>
-
       <Menu
         visible={visible}
         onDismiss={() => toggleMenu()}
@@ -272,7 +271,6 @@ const styles = StyleSheet.create({
   textContainer: {
     flexGrow: 1,
     flex: 1,
-    marginRight: 30,
     marginLeft: 10,
   },
 });

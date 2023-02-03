@@ -6,7 +6,7 @@ import TowerIcon from 'assets/images/tower.svg';
 import {secondaryTheme} from 'styles/theme';
 
 export function RenderTowerBox(props) {
-  const {towerId, onPress, active, theme, label} = props;
+  const {towerId, label, onPress, active, theme} = props;
 
   const Container = onPress ? TouchableOpacity : View;
 
@@ -40,7 +40,6 @@ function TowerSelector(props) {
     <View style={styles.towerList}>
       <FlatList
         data={towers}
-        // data={new Array(towerCount).fill(0)}
         numColumns={3}
         extraData={new Array(towerCount).fill(0)}
         contentContainerStyle={styles.scrollContainer}

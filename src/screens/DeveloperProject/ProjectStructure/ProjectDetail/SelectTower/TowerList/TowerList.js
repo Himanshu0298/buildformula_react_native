@@ -1,6 +1,6 @@
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import React, {useState} from 'react';
-import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {
   Button,
   Caption,
@@ -19,6 +19,11 @@ import useProjectStructureActions from 'redux/actions/projectStructureActions';
 import {useSelector} from 'react-redux';
 import {useAlert} from 'components/Atoms/Alert';
 import Spinner from 'react-native-loading-spinner-overlay';
+import NoResult from 'components/Atoms/NoResult';
+import Layout from 'utils/Layout';
+import {AutoDragSortableView} from 'react-native-drag-sort';
+
+const ROW_HEIGHT = 50;
 
 function AddTowerModel(props) {
   const {visible, onClose, onSubmit} = props;
@@ -77,35 +82,27 @@ function AddTowerModel(props) {
 }
 
 function ListData(props) {
-  const {towerList, handleDelete} = props;
+  const {item, handleDelete} = props;
 
   return (
-    <View>
-      {towerList.map(item => {
-        return (
-          <View style={styles.listContainer}>
-            <View style={styles.subContainer}>
-              <MaterialIcons
-                name="drag-indicator"
-                size={24}
-                color="rgba(4, 29, 54, 0.15)"
-              />
-            </View>
-            <View style={styles.listSubContainer}>
-              <Caption>{item.label}</Caption>
-            </View>
-            <View>
-              <OpacityButton
-                color="#FF5D5D"
-                opacity={0.18}
-                onPress={() => handleDelete(item.id)}
-                style={styles.deleteIcon}>
-                <MaterialIcons name="delete" color="#FF5D5D" size={13} />
-              </OpacityButton>
-            </View>
-          </View>
-        );
-      })}
+    <View style={styles.listMainContainer}>
+      <View style={styles.subContainer}>
+        <MaterialIcons
+          name="drag-indicator"
+          size={24}
+          color="rgba(4, 29, 54, 0.15)"
+        />
+      </View>
+      <View style={styles.listSubContainer}>
+        <Caption>{item?.label}</Caption>
+      </View>
+      <OpacityButton
+        color="#FF5D5D"
+        opacity={0.18}
+        onPress={() => handleDelete(item?.id)}
+        style={styles.deleteIcon}>
+        <MaterialIcons name="delete" color="#FF5D5D" size={13} />
+      </OpacityButton>
     </View>
   );
 }
@@ -118,9 +115,8 @@ function TowerList(props) {
 
   const [dialog, setDialog] = useState();
 
-  const [selectedIndex, setSelectedIndex] = useState();
-
-  const {getTowerList, addTower, deleteTower} = useProjectStructureActions();
+  const {getTowerList, addTower, deleteTower, updateTowerOrder} =
+    useProjectStructureActions();
   const {selectedProject} = useSelector(s => s.project);
   const {towerList, loading} = useSelector(s => s.projectStructure);
 
@@ -164,6 +160,21 @@ function TowerList(props) {
     });
   };
 
+  const handleDragEnd = async data => {
+    const sortedList = {};
+
+    data.map((i, index) => {
+      sortedList[i.id] = index;
+      return i;
+    });
+
+    await updateTowerOrder({
+      project_id: selectedProject.id,
+      data: sortedList,
+    });
+    getData();
+  };
+
   return (
     <>
       {dialog ? (
@@ -190,11 +201,22 @@ function TowerList(props) {
           </TouchableOpacity>
           <Subheading>Tower List</Subheading>
         </View>
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          style={styles.scrollView}>
-          <ListData towerList={towerList} handleDelete={handleDelete} />
-        </ScrollView>
+
+        {towerList?.length ? (
+          <AutoDragSortableView
+            dataSource={towerList}
+            maxScale={1.03}
+            childrenWidth={Layout.window.width}
+            childrenHeight={ROW_HEIGHT}
+            keyExtractor={(_, i) => i.toString()}
+            renderItem={item => (
+              <ListData item={item} handleDelete={handleDelete} />
+            )}
+            onDataChange={handleDragEnd}
+          />
+        ) : (
+          <NoResult />
+        )}
 
         <FAB style={styles.fab} large icon="plus" onPress={toggleAddDialog} />
       </View>
@@ -225,11 +247,10 @@ const styles = StyleSheet.create({
   deleteIcon: {
     borderRadius: 20,
   },
-  listContainer: {
-    marginVertical: 10,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  listMainContainer: {
     alignItems: 'center',
+    flexDirection: 'row',
+    width: 300,
   },
   listSubContainer: {
     borderWidth: 1,
@@ -237,6 +258,7 @@ const styles = StyleSheet.create({
     padding: 10,
     width: '80%',
     borderColor: '#0000004d',
+    marginRight: 5,
   },
   fab: {
     position: 'absolute',
@@ -259,15 +281,13 @@ const styles = StyleSheet.create({
   inputStyles: {
     marginVertical: 10,
   },
-  scrollView: {
-    marginBottom: 20,
-  },
+
   dialogContainer: {
     flex: 0.3,
     backgroundColor: 'grey',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    top: 280,
+    top: 250,
     width: '100%',
     left: -25,
   },

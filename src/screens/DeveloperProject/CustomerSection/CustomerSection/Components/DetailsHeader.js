@@ -14,7 +14,7 @@ function renderDetailText(label, value) {
 }
 
 function DetailsHeader(props) {
-  const {towerId, floorId, structureType, selectedStructure, unit} = props;
+  const {towerId, floorId, structureType, selectedStructure, unitId} = props;
 
   return (
     <View style={styles.detailContainer}>
@@ -27,7 +27,7 @@ function DetailsHeader(props) {
       </View>
       <View style={styles.detailSubContainer}>
         {renderDetailText('Tower', getTowerLabel(towerId))}
-        {renderDetailText('Unit number', unit.unitLabel)}
+        {renderDetailText('Unit number', unitId)}
       </View>
     </View>
   );

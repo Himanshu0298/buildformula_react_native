@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View, TouchableOpacity, FlatList} from 'react-native';
+import {StyleSheet, View, TouchableOpacity, FlatList} from 'react-native';
 import React, {useMemo} from 'react';
 import {
   Caption,
@@ -6,6 +6,7 @@ import {
   FAB,
   Menu,
   Searchbar,
+  Text,
   Title,
 } from 'react-native-paper';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';

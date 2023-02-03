@@ -207,7 +207,7 @@ function CustomerDetails(props) {
 }
 
 function CustomerSection(props) {
-  const {params, submitted, navigation} = props;
+  const {submitted} = props;
 
   return (
     <View style={styles.sectionContainer}>

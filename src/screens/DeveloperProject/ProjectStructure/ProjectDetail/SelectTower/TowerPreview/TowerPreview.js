@@ -16,11 +16,6 @@ function TowerPreview(props) {
   const {getTowerList} = useProjectStructureActions();
   const {towerList, loading} = useSelector(s => s.projectStructure);
   const {selectedProject} = useSelector(s => s.project);
-
-  const towerCount = towerList?.length || 0;
-
-  const towers = towerList;
-
   React.useEffect(() => {
     getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -62,7 +57,9 @@ function TowerPreview(props) {
       </View>
       <TowerSelector
         {...props}
-        {...{towers, towerCount, towerType, onSelectTower}}
+        towers={towerList}
+        towerType={towerType}
+        onSelectTower={onSelectTower}
       />
     </View>
   );

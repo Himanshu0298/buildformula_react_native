@@ -33,14 +33,14 @@ function ProjectAmenities(props) {
   );
 
   React.useEffect(() => {
-    if (!amenities.length) {
+    if (!amenities?.length) {
       if (projectAmenities?.length) {
         setAmenities(parseData(projectAmenities));
       }
       setAmenities(parseData(defaultAmenities));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [projectAmenities, defaultAmenities]);
+  }, [projectAmenities]);
 
   React.useEffect(() => {
     getProjectMasterList({project_id: selectedProject.id});
@@ -85,7 +85,9 @@ function ProjectAmenities(props) {
         />
         <Title>Building Amenities </Title>
       </View>
-      <ScrollView style={styles.cardContainer}>
+      <ScrollView
+        style={styles.cardContainer}
+        showsVerticalScrollIndicator={false}>
         {amenities?.map(item => {
           return (
             <View style={styles.extraDetailsRow}>
@@ -127,6 +129,7 @@ const styles = StyleSheet.create({
   mainContainer: {
     flexGrow: 1,
     margin: 10,
+    flex: 1,
   },
   extraDetailsRow: {
     flexDirection: 'row',

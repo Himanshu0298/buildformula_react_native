@@ -77,17 +77,20 @@ const RenderSelect = React.forwardRef((props, ref) => {
   }, [creatable, multiselect, options, searchQuery, value]);
 
   const displayValue = useMemo(() => {
-    // if (multiselect) {
-    //   return value?.length ? `${value.length} selected` : '';
-    // }
+    if (multiselect) {
+      return value?.length ? `${value.length} selected` : '';
+    }
+
+    let inputValue = '';
+
     const index = options.findIndex(option => option.value === value);
     if (index > -1) {
-      return options[index].label;
+      inputValue = options[index].label;
     }
     return truncateLength
-      ? truncate(value, {length: truncateLength})
-      : value || '';
-  }, [options, truncateLength, value]);
+      ? truncate(inputValue, {length: truncateLength})
+      : inputValue || '';
+  }, [multiselect, options, truncateLength, value]);
 
   const selectedOptions = useMemo(() => {
     if (multiselect) {

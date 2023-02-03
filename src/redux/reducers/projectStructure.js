@@ -27,6 +27,9 @@ import {
   GET_SELECTED_PROJECT,
   GET_SUB_MODULE_LIST,
   GET_TOWER_LIST,
+  PROJECT_FLOOR_REARRANGE,
+  PROJECT_PICKUP_REARRANGE,
+  PROJECT_TOWER_REARRANGE,
   UPDATE_AREA,
   UPDATE_FLOOR,
   UPDATE_PICK_UP,
@@ -173,6 +176,9 @@ const reducer = (state = initialState, action = {}) => {
     case `${UPDATE_FLOOR}_PENDING`:
     case `${DELETE_FLOOR}_PENDING`:
     case `${CREATE_PROJECT_DUPLICATE}_PENDING`:
+    case `${PROJECT_TOWER_REARRANGE}_PENDING`:
+    case `${PROJECT_FLOOR_REARRANGE}_PENDING`:
+    case `${PROJECT_PICKUP_REARRANGE}_PENDING`:
       return {
         ...state,
         loading: true,
@@ -206,6 +212,9 @@ const reducer = (state = initialState, action = {}) => {
     case `${UPDATE_FLOOR}_FULFILLED`:
     case `${DELETE_FLOOR}_FULFILLED`:
     case `${CREATE_PROJECT_DUPLICATE}_FULFILLED`:
+    case `${PROJECT_TOWER_REARRANGE}_FULFILLED`:
+    case `${PROJECT_FLOOR_REARRANGE}_FULFILLED`:
+    case `${PROJECT_PICKUP_REARRANGE}_FULFILLED`:
       return {
         ...state,
         loading: false,
@@ -249,6 +258,9 @@ const reducer = (state = initialState, action = {}) => {
     case `${UPDATE_FLOOR}_REJECTED`:
     case `${DELETE_FLOOR}_REJECTED`:
     case `${CREATE_PROJECT_DUPLICATE}_REJECTED`:
+    case `${PROJECT_TOWER_REARRANGE}_REJECTED`:
+    case `${PROJECT_FLOOR_REARRANGE}_REJECTED`:
+    case `${PROJECT_PICKUP_REARRANGE}_REJECTED`:
       return {
         ...state,
         loading: false,

@@ -23,13 +23,18 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import {ActionSheetProvider} from '@expo/react-native-action-sheet';
 import * as Yup from 'yup';
 import {isNumber} from 'lodash';
+import NoResult from 'components/Atoms/NoResult';
+import {AutoDragSortableView} from 'react-native-drag-sort';
+import Layout from 'utils/Layout';
+
+const ROW_HEIGHT = 50;
 
 const schema = Yup.object().shape({
   title: Yup.string('Invalid').required('Required'),
 });
 
 function PickUpList(props) {
-  const {item, index, handleDelete, editDialog, hideDelete} = props;
+  const {item, index, handleDelete, editDialog, hide} = props;
 
   const {title, bhk_title, id} = item;
 
@@ -45,37 +50,35 @@ function PickUpList(props) {
           />
           <Subheading> {title || bhk_title} </Subheading>
         </View>
-
-        <View style={styles.headerSubContainer}>
-          <View style={styles.editIconContainer}>
-            <OpacityButton
-              color={theme.colors.primary}
-              opacity={0.18}
-              style={styles.editIcon}
-              onPress={() => editDialog(index, item)}>
-              <MaterialIcons
-                name="edit"
-                color={theme.colors.primary}
-                size={13}
-              />
-            </OpacityButton>
-          </View>
-          {!hideDelete && (
-            <View>
+        {!hide && (
+          <View style={styles.headerSubContainer}>
+            <View style={styles.editIconContainer}>
               <OpacityButton
-                color={theme.colors.error}
+                color={theme.colors.primary}
                 opacity={0.18}
-                onPress={() => handleDelete(id)}
-                style={styles.deleteIcon}>
+                style={styles.editIcon}
+                onPress={() => editDialog(index, item)}>
                 <MaterialIcons
-                  name="delete"
-                  color={theme.colors.error}
+                  name="edit"
+                  color={theme.colors.primary}
                   size={13}
                 />
               </OpacityButton>
             </View>
-          )}
-        </View>
+
+            <OpacityButton
+              color={theme.colors.error}
+              opacity={0.18}
+              onPress={() => handleDelete(id)}
+              style={styles.deleteIcon}>
+              <MaterialIcons
+                name="delete"
+                color={theme.colors.error}
+                size={13}
+              />
+            </OpacityButton>
+          </View>
+        )}
       </View>
     </>
   );
@@ -85,7 +88,7 @@ function AddFieldModel(props) {
   const {visible, pickUp, onClose, onSubmit} = props;
 
   const initialValues = useMemo(() => {
-    return {title: pickUp?.title || ''};
+    return {title: pickUp?.title || pickUp?.bhk_title || ''};
   }, [pickUp]);
 
   const edit = Boolean(pickUp);
@@ -150,8 +153,13 @@ function PickUpListing(props) {
 
   const alert = useAlert();
 
-  const {getPickUpList, addPickUp, updatePickUp, deletePickUp} =
-    useProjectStructureActions();
+  const {
+    getPickUpList,
+    addPickUp,
+    updatePickUp,
+    deletePickUp,
+    updatePickUpOrder,
+  } = useProjectStructureActions();
 
   const {selectedProject} = useSelector(s => s.project);
   const {pickUpList = [], loading} = useSelector(s => s.projectStructure);
@@ -217,6 +225,22 @@ function PickUpListing(props) {
     });
   };
 
+  const handleDragEnd = async data => {
+    const sortedList = {};
+
+    data.map((i, index) => {
+      sortedList[i.id] = index;
+      return i;
+    });
+
+    await updatePickUpOrder({
+      project_id: selectedProject.id,
+      data: sortedList,
+      field_id,
+    });
+    getList();
+  };
+
   return (
     <ActionSheetProvider>
       <>
@@ -233,22 +257,32 @@ function PickUpListing(props) {
             />
             <Subheading>{fieldLabel}</Subheading>
           </View>
-          <ScrollView>
-            {pickUpList?.map((item, index) => {
-              return (
+
+          {pickUpList?.length ? (
+            <AutoDragSortableView
+              dataSource={pickUpList}
+              maxScale={1.03}
+              childrenWidth={Layout.window.width}
+              childrenHeight={ROW_HEIGHT}
+              keyExtractor={(_, i) => i.toString()}
+              renderItem={(item, index) => (
                 <PickUpList
                   item={item}
                   index={index}
                   editDialog={editDialog}
                   handleDelete={handleDelete}
-                  hideDelete={check}
+                  hide={check}
                 />
-              );
-            })}
-            <Divider style={styles.divider} />
-          </ScrollView>
+              )}
+              onDataChange={handleDragEnd}
+            />
+          ) : (
+            <NoResult />
+          )}
 
-          <FAB style={styles.fab} icon="plus" onPress={toggleAddDialog} />
+          {!check && (
+            <FAB style={styles.fab} icon="plus" onPress={toggleAddDialog} />
+          )}
         </View>
 
         {dialog ? (
@@ -297,6 +331,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    width: 350,
   },
   subContainer: {
     flexDirection: 'row',
@@ -311,7 +346,8 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.primary,
   },
   divider: {
-    borderWidth: 0.4,
+    borderWidth: 0.3,
+    borderColor: '#ccc',
   },
 
   sheetContentContainer: {

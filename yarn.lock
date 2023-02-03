@@ -10326,10 +10326,10 @@
     "entities" "^1.1.1"
     "htmlparser2-without-node-native" "^3.9.2"
 
-"react-native-image-picker@^4.7.3":
-  "integrity" "sha512-3h9PrA1dQ84rVeipzQE4eWTELvflSHNtJZN6rz7NkZyaxo9YZV8H/TswBpHwiS5YWlyu+zlLzSoWVa1opSu7GA=="
-  "resolved" "https://registry.npmjs.org/react-native-image-picker/-/react-native-image-picker-4.10.2.tgz"
-  "version" "4.10.2"
+"react-native-image-picker@^5.0.1":
+  "integrity" "sha512-+poQTHOnEGrbxJnut591XA9006svFOyfPg/i5bv+fLuwoSHh5HW0E/PVhvT8lbX0Z5C108vh3DAsnrfFFnPBGw=="
+  "resolved" "https://registry.npmjs.org/react-native-image-picker/-/react-native-image-picker-5.0.1.tgz"
+  "version" "5.0.1"
 
 "react-native-image-progress@^1.2.0":
   "integrity" "sha512-RkQydqw3p0i30vHRFFhuGNT/BXWUDJtBR5/hxJbQsfI/Ziipjm5M64bpw3VQqxUcZC8HLLg+ZQtBq1mtUlWjww=="

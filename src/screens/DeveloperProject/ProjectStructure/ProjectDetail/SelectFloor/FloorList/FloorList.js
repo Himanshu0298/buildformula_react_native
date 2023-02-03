@@ -1,6 +1,6 @@
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import React, {useMemo, useState} from 'react';
-import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {
   Button,
   Caption,
@@ -10,6 +10,7 @@ import {
   Portal,
   Subheading,
 } from 'react-native-paper';
+import Layout from 'utils/Layout';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import RenderInput from 'components/Atoms/RenderInput';
@@ -23,6 +24,9 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import NoResult from 'components/Atoms/NoResult';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import {ActionSheetProvider} from '@expo/react-native-action-sheet';
+import {AutoDragSortableView} from 'react-native-drag-sort';
+
+const ROW_HEIGHT = 50;
 
 function AddTowerModel(props) {
   const {visible, onClose, onSubmit} = props;
@@ -42,36 +46,34 @@ function AddTowerModel(props) {
                 visible={visible}
                 onDismiss={onClose}
                 style={styles.dialogContainer}>
-                <View>
-                  <View style={styles.sheetContentContainer}>
-                    <View style={styles.closeContainer}>
-                      <IconButton
-                        icon="close-circle"
-                        size={25}
-                        onPress={onClose}
-                        color="grey"
-                      />
-                    </View>
-                    <Subheading> Add Floor</Subheading>
-                    <RenderInput
-                      name="floorName"
-                      label="Floor Name"
-                      containerStyles={styles.inputStyles}
-                      value={values.floorName}
-                      onChangeText={handleChange('floorName')}
-                      onBlur={handleBlur('floorName')}
-                      autoCapitalize="none"
-                      returnKeyType="next"
-                      error={errors.floorName}
+                <View style={styles.sheetContentContainer}>
+                  <View style={styles.closeContainer}>
+                    <IconButton
+                      icon="close-circle"
+                      size={25}
+                      onPress={onClose}
+                      color="grey"
                     />
-                    <Button
-                      style={styles.button}
-                      theme={{roundness: 10}}
-                      mode="contained"
-                      onPress={handleSubmit}>
-                      Add
-                    </Button>
                   </View>
+                  <Subheading> Add Floor</Subheading>
+                  <RenderInput
+                    name="floorName"
+                    label="Floor Name"
+                    containerStyles={styles.inputStyles}
+                    value={values.floorName}
+                    onChangeText={handleChange('floorName')}
+                    onBlur={handleBlur('floorName')}
+                    autoCapitalize="none"
+                    returnKeyType="next"
+                    error={errors.floorName}
+                  />
+                  <Button
+                    style={styles.button}
+                    theme={{roundness: 10}}
+                    mode="contained"
+                    onPress={handleSubmit}>
+                    Add
+                  </Button>
                 </View>
               </Dialog>
             </Portal>
@@ -83,35 +85,27 @@ function AddTowerModel(props) {
 }
 
 function ListData(props) {
-  const {handleDelete, floorList} = props;
+  const {handleDelete, item} = props;
 
   return (
-    <View>
-      {floorList?.map(item => {
-        return (
-          <View style={styles.listContainer}>
-            <View style={styles.subContainer}>
-              <MaterialIcons
-                name="drag-indicator"
-                size={24}
-                color="rgba(4, 29, 54, 0.15)"
-              />
-            </View>
-            <View style={styles.listSubContainer}>
-              <Caption>{item.floor}</Caption>
-            </View>
-            <View>
-              <OpacityButton
-                color="#FF5D5D"
-                opacity={0.18}
-                onPress={() => handleDelete(item.id)}
-                style={styles.deleteIcon}>
-                <MaterialIcons name="delete" color="#FF5D5D" size={13} />
-              </OpacityButton>
-            </View>
-          </View>
-        );
-      })}
+    <View style={styles.listMainContainer}>
+      <View style={styles.subContainer}>
+        <MaterialIcons
+          name="drag-indicator"
+          size={24}
+          color="rgba(4, 29, 54, 0.15)"
+        />
+      </View>
+      <View style={styles.listSubContainer}>
+        <Caption>{item?.floor}</Caption>
+      </View>
+      <OpacityButton
+        color="#FF5D5D"
+        opacity={0.18}
+        onPress={() => handleDelete(item.id)}
+        style={styles.deleteIcon}>
+        <MaterialIcons name="delete" color="#FF5D5D" size={13} />
+      </OpacityButton>
     </View>
   );
 }
@@ -123,7 +117,8 @@ function FloorList(props) {
   const alert = useAlert();
   const snackbar = useSnackbar();
 
-  const {getFloorList, addFloor, deleteFloor} = useProjectStructureActions();
+  const {getFloorList, addFloor, deleteFloor, updateFloorOrder} =
+    useProjectStructureActions();
   const {selectedProject} = useSelector(s => s.project);
   const {towerList, floorList, loading} = useSelector(s => s.projectStructure);
 
@@ -193,6 +188,21 @@ function FloorList(props) {
     });
   };
 
+  const handleDragEnd = async data => {
+    const sortedList = {};
+
+    data.map((i, index) => {
+      sortedList[i.id] = index;
+      return i;
+    });
+
+    await updateFloorOrder({
+      project_id: selectedProject.id,
+      data: sortedList,
+    });
+    getData();
+  };
+
   return (
     <View style={styles.container}>
       <Spinner visible={loading} textContent="" />
@@ -209,24 +219,37 @@ function FloorList(props) {
         </TouchableOpacity>
         <Subheading>Floor List</Subheading>
       </View>
-      <ScrollView
-        style={{marginBottom: 50}}
-        showsVerticalScrollIndicator={false}>
-        <RenderSelect
-          name="tower"
-          label="Select Tower"
-          value={selectedTower}
-          options={towerOptions}
-          containerStyles={styles.inputStyles}
-          onSelect={setSelectedTower}
-        />
+      {/* <ScrollView showsVerticalScrollIndicator={false}> */}
+      <RenderSelect
+        name="tower"
+        label="Select Tower"
+        value={selectedTower}
+        options={towerOptions}
+        containerStyles={styles.inputStyles}
+        onSelect={setSelectedTower}
+      />
 
+      <View style={styles.autoDragView}>
         {floorList?.length ? (
-          <ListData handleDelete={handleDelete} floorList={floorList} />
+          <AutoDragSortableView
+            dataSource={floorList}
+            maxScale={1.03}
+            childrenWidth={Layout.window.width}
+            childrenHeight={ROW_HEIGHT}
+            keyExtractor={(_, i) => i.toString()}
+            renderItem={item => (
+              <ListData
+                handleDelete={handleDelete}
+                floorList={floorList}
+                item={item}
+              />
+            )}
+            onDataChange={handleDragEnd}
+          />
         ) : (
           <NoResult title="No Floor available, please first add floor" />
         )}
-      </ScrollView>
+      </View>
 
       {dialog ? (
         <AddTowerModel
@@ -263,27 +286,22 @@ const styles = StyleSheet.create({
   },
   deleteIcon: {
     borderRadius: 20,
+    marginLeft: 10,
   },
-  listContainer: {
-    marginVertical: 10,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
+
   listSubContainer: {
     borderWidth: 1,
     borderRadius: 10,
     padding: 10,
-    width: '80%',
+    width: '100%',
     borderColor: '#0000004d',
+    flexGrow: 1,
   },
   fab: {
     position: 'absolute',
     right: 5,
     bottom: 80,
-
     backgroundColor: '#4872f4',
-    zIndex: 1,
   },
 
   dialogContainer: {
@@ -291,7 +309,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'grey',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    top: 280,
+    top: 250,
     width: '100%',
     left: -25,
   },
@@ -300,7 +318,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
     paddingHorizontal: 15,
-    paddingBottom: 20,
+    paddingBottom: 50,
     flexGrow: 1,
     height: '100%',
     ...getShadow(2),
@@ -310,6 +328,15 @@ const styles = StyleSheet.create({
   },
   inputStyles: {
     marginVertical: 10,
+  },
+  autoDragView: {
+    width: '100%',
+    flexGrow: 1,
+  },
+  listMainContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    width: 260,
   },
 });
 

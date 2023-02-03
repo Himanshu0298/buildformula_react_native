@@ -1,8 +1,9 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import {useSelector} from 'react-redux';
 import TowerSelector from 'components/Molecules/TowerSelector';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {IconButton, Subheading} from 'react-native-paper';
+import {getTowerLabel} from 'utils';
 
 function SelectTower(props) {
   const {navigation, route} = props;
@@ -15,10 +16,16 @@ function SelectTower(props) {
 
   const {towerCount, towers} = structureData;
 
+  const parsedTowers = useMemo(() => {
+    return towers?.map((i, index) => ({
+      id: i.tower_id,
+      label: getTowerLabel(index + 1),
+    }));
+  }, [towers]);
+
   const onSelectTower = towerId => {
     navigation.navigate('BC_Step_Three', {...route?.params, towerId});
   };
-
   return (
     <View style={styles.container}>
       <TouchableOpacity
@@ -29,7 +36,10 @@ function SelectTower(props) {
       </TouchableOpacity>
       <TowerSelector
         {...props}
-        {...{towers, towerCount, towerType, onSelectTower}}
+        towers={parsedTowers}
+        towerCount={towerCount}
+        towerType={towerType}
+        onSelectTower={onSelectTower}
       />
     </View>
   );

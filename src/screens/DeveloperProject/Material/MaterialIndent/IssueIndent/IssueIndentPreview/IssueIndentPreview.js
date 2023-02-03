@@ -307,11 +307,12 @@ function IssueIndentPreview(props) {
   const handleSaveMaterialQuantity = value => {
     const _materials = [...materials];
 
-    if (value > _materials[selectedItemIndex]?.available_quantity) {
+    if (value >= _materials[selectedItemIndex]?.available_quantity) {
       snackbar.showMessage({
         message: 'Assign Quantity can not be more then Available Quantity',
         variant: 'error',
       });
+      toggleDialog();
       return;
     }
 
@@ -327,7 +328,6 @@ function IssueIndentPreview(props) {
       const keys = ['material_indent_id', 'assigned_quantity'];
       return {...pick(item, keys), material_indent_details_id: item.id};
     });
-
     formData.append('project_id', selectedProject.id);
     formData.append('material_indent_id', id);
     formData.append('type', approveStatus);
