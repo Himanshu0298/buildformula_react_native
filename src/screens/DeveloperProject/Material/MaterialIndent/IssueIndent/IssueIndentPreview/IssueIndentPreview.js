@@ -326,6 +326,17 @@ function IssueIndentPreview(props) {
       const keys = ['material_indent_id', 'assigned_quantity'];
       return {...pick(item, keys), material_indent_details_id: item.id};
     });
+    const quantity = materials.find(i => i.assigned_quantity === null);
+    if (approveStatus === 'approved') {
+      if (quantity) {
+        snackbar.showMessage({
+          message: 'please add assigned quantity',
+          variant: 'warning',
+        });
+        toggleDialog();
+        return;
+      }
+    }
 
     const restData = {
       project_id: selectedProject.id,
@@ -443,7 +454,7 @@ function IssueIndentPreview(props) {
           <ActionButtons
             cancelLabel="Reject"
             submitLabel=" Approve"
-            submitDisabled={disableApprove}
+            // submitDisabled={disableApprove}
             onCancel={() => updateStatus('rejected')}
             onSubmit={() => updateStatus('approved')}
           />

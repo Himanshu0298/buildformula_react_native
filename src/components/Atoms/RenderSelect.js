@@ -81,15 +81,13 @@ const RenderSelect = React.forwardRef((props, ref) => {
       return value?.length ? `${value.length} selected` : '';
     }
 
-    let inputValue = '';
-
     const index = options.findIndex(option => option.value === value);
     if (index > -1) {
-      inputValue = options[index].label;
+      return options[index].label;
     }
     return truncateLength
-      ? truncate(inputValue, {length: truncateLength})
-      : inputValue || '';
+      ? truncate(value, {length: truncateLength})
+      : value || '';
   }, [multiselect, options, truncateLength, value]);
 
   const selectedOptions = useMemo(() => {

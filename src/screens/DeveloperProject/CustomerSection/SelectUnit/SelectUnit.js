@@ -37,14 +37,14 @@ export const SelectUnit = props => {
 
   const units = useMemo(() => {
     const structureData =
-      selectedProject.project_structure?.[selectedStructure] || {};
+      selectedProject?.project_structure?.[selectedStructure] || {};
 
     if ([4, 5].includes(selectedStructure)) {
       return structureData.units;
     }
 
     const {floors = {}} =
-      structureData?.towers.find(i => i.tower_id === towerId) || {};
+      structureData?.towers?.find(i => i.tower_id === towerId) || {};
 
     return floors?.[floorId]?.units || [];
   }, [floorId, selectedProject, selectedStructure, towerId]);

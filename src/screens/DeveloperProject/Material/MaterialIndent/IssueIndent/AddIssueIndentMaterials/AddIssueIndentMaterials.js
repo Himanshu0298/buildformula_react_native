@@ -207,10 +207,6 @@ function AddIssueIndentMaterials(props) {
   const {getPRMaterialCategories, getIndentDetails, addMaterialIssueRequest} =
     useMaterialManagementActions();
 
-  const [addDialog, setAddDialog] = React.useState(false);
-  const [selectedMaterialIndex, setSelectedMaterialIndex] = React.useState();
-  const [materials, setMaterials] = React.useState(materialsItems || []);
-
   const {indentDetails, materialSubCategories} = useSelector(
     s => s.materialManagement,
   );
@@ -218,6 +214,10 @@ function AddIssueIndentMaterials(props) {
 
   const {selectedProject} = useSelector(s => s.project);
   const projectId = selectedProject.id;
+
+  const [addDialog, setAddDialog] = React.useState(false);
+  const [selectedMaterialIndex, setSelectedMaterialIndex] = React.useState();
+  const [materials, setMaterials] = React.useState(materialsItems || []);
 
   useEffect(() => {
     getPRMaterialCategories({project_id: projectId});
@@ -275,6 +275,7 @@ function AddIssueIndentMaterials(props) {
     };
     await addMaterialIssueRequest(restData);
     getDetails();
+    navigation.navigate('MaterialIndent');
     navigation.navigate('IssueIndentPreview', {id});
   };
 

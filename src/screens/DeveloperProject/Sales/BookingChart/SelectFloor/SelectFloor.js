@@ -7,7 +7,7 @@ import {getTowerLabel} from 'utils';
 import {SelectUnit} from '../SelectUnit/SelectUnit';
 
 function SelectFloor(props) {
-  const {route, navigation} = props;
+  const {route} = props;
   const {selectedStructure, towerType, towerId, project_id} =
     route?.params || {};
 
@@ -16,10 +16,10 @@ function SelectFloor(props) {
   const {selectedProject} = useSelector(s => s.project);
 
   const structureData =
-    selectedProject.project_structure?.[selectedStructure] || {};
+    selectedProject?.project_structure?.[selectedStructure] || {};
 
   const {floors = {}} =
-    structureData?.towers.find(i => i.tower_id === towerId) || {};
+    structureData?.towers?.find(i => i.tower_id === towerId) || {};
 
   const parsedFloors = useMemo(() => {
     return Object.entries(floors).map(([key, value]) => ({id: key, ...value}));

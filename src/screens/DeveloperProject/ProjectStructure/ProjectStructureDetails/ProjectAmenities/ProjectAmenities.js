@@ -28,19 +28,17 @@ function ProjectAmenities(props) {
   const {project_structure_building_amenities: defaultAmenities = []} =
     masterList;
 
-  const [amenities, setAmenities] = React.useState(
-    parseData(projectAmenities) || [],
-  );
+  const [amenities, setAmenities] = React.useState(projectAmenities || []);
 
   React.useEffect(() => {
     if (!amenities?.length) {
       if (projectAmenities?.length) {
-        setAmenities(parseData(projectAmenities));
+        setAmenities(projectAmenities);
       }
-      setAmenities(parseData(defaultAmenities));
+      // setAmenities(defaultAmenities);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [projectAmenities]);
+  }, [projectAmenities, defaultAmenities]);
 
   React.useEffect(() => {
     getProjectMasterList({project_id: selectedProject.id});
