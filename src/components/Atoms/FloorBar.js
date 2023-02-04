@@ -43,11 +43,13 @@ function FloorBar(props) {
     selectedFloor,
   } = props;
 
-  const {structureType, unitCount} = floorData || {};
+  const {structureType, unitCount, floor} = floorData || {};
 
   const LabelContainer = onPressLabel ? TouchableOpacity : View;
 
   const isSelectedFloor = selectedFloor === floorId;
+
+  const floorNumber = getFloorNumber(floor || floorId);
 
   return (
     <View style={styles.floorContainer}>
@@ -63,7 +65,7 @@ function FloorBar(props) {
           <LabelContainer
             style={styles.floorLabelContainer}
             onPress={() => onPressLabel?.(floorId)}>
-            <Caption>{getFloorNumber(floorId)}</Caption>
+            <Caption>{floorNumber}</Caption>
           </LabelContainer>
           <View style={styles.rightSection}>
             <InputBox

@@ -112,7 +112,7 @@ function ListData(props) {
 
 function FloorList(props) {
   const {navigation, route} = props;
-  const {id, towerId} = route?.params || {};
+  const {projectId, towerId} = route?.params || {};
 
   const alert = useAlert();
   const snackbar = useSnackbar();
@@ -140,7 +140,7 @@ function FloorList(props) {
   const getData = async () => {
     await getFloorList({
       project_id: selectedProject.id,
-      id,
+      id: projectId,
       tower_id: selectedTower,
     });
   };
@@ -161,7 +161,7 @@ function FloorList(props) {
 
     const data = {
       project_id: selectedProject.id,
-      id,
+      id: projectId,
       tower_id: towerId,
       contact_type: values.contact_type,
       name: values.floorName,
@@ -181,7 +181,7 @@ function FloorList(props) {
         await deleteFloor({
           project_id: selectedProject.id,
           floor_id,
-          id,
+          id: projectId,
         });
         getData();
       },
@@ -219,7 +219,6 @@ function FloorList(props) {
         </TouchableOpacity>
         <Subheading>Floor List</Subheading>
       </View>
-      {/* <ScrollView showsVerticalScrollIndicator={false}> */}
       <RenderSelect
         name="tower"
         label="Select Tower"

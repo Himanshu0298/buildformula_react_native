@@ -83,7 +83,7 @@ import UpdateProjectDetails from 'screens/DeveloperProject/ProjectStructure/Proj
 import AddProjectSecurity from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/ProjectSecurity/AddProjectSecurity';
 import AddProjectOwner from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/ProjectOwner/AddProjectOwner';
 import AddProjectFiles from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/ProjectFiles/AddProjectFiles';
-import FloorPreview from 'screens/DeveloperProject/ProjectStructure/ProjectDetail/SelectFloor/FloorPreview/FloorPreview';
+import FloorPreview from 'screens/DeveloperProject/ProjectStructure/ProjectDetail/SelectFloor/FloorPreview';
 
 // Area
 import AreaList from 'screens/DeveloperProject/ProjectStructure/AreaList';

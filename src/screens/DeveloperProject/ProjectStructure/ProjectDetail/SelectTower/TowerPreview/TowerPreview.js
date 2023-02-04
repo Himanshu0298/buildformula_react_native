@@ -26,9 +26,11 @@ function TowerPreview(props) {
   };
 
   const onSelectTower = values => {
+    const towerLabel = towerList?.find(i => i.id === values);
     navigation.navigate('FloorPreview', {
       ...route?.params,
       towerId: values,
+      label: towerLabel?.label,
       id,
     });
   };

@@ -19,7 +19,7 @@ function SelectFloor(props) {
     selectedProject.project_structure?.[selectedStructure] || {};
 
   const {floors = {}} =
-    structureData?.towers.find(i => i.tower_id === towerId) || {};
+    structureData?.towers?.find(i => i.tower_id === towerId) || {};
 
   const parsedFloors = useMemo(() => {
     return Object.entries(floors).map(([key, value]) => ({id: key, ...value}));

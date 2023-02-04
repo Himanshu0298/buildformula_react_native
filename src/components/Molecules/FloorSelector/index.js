@@ -8,10 +8,13 @@ import {
 } from 'react-native';
 import FloorBar from 'components/Atoms/FloorBar';
 import {IconButton, Subheading, withTheme} from 'react-native-paper';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
+
 import {RenderTowerBox} from 'components/Molecules/TowerSelector';
 import NoResult from 'components/Atoms/NoResult';
 import {BHK_OPTIONS} from 'utils/constant';
 import BhkButton from 'components/Atoms/Buttons/BhkButton';
+import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 
 function BhkList({onPress, selectedBhk}) {
   return (
@@ -43,6 +46,7 @@ function FloorSelector(props) {
     towerLabel,
     towerType,
     handleBhkChange,
+    projectId,
     renderUnits,
   } = props || {};
 
@@ -56,7 +60,6 @@ function FloorSelector(props) {
   return (
     <View style={styles.container}>
       <Subheading>{towerType}</Subheading>
-
       <View style={styles.headerContainer}>
         <TouchableOpacity
           style={styles.titleContainer}
@@ -73,7 +76,20 @@ function FloorSelector(props) {
         </View>
       ) : null}
 
-      <Subheading style={styles.floorsTitle}>Floors</Subheading>
+      <View style={styles.editIconContainer}>
+        <Subheading>Floors</Subheading>
+        {projectId ? (
+          <OpacityButton
+            opacity={0.1}
+            color="#4872f4"
+            style={styles.editIcon}
+            onPress={() =>
+              navigation.navigate('FloorList', {towerId, projectId})
+            }>
+            <MaterialIcon name="edit" color="#4872f4" size={15} />
+          </OpacityButton>
+        ) : null}
+      </View>
 
       <FlatList
         data={floors}
@@ -133,11 +149,16 @@ const styles = StyleSheet.create({
     paddingBottom: 30,
     paddingTop: 5,
   },
-  floorsTitle: {
-    marginVertical: 10,
-  },
   towerList: {
     flexDirection: 'row',
+  },
+  editIcon: {
+    borderRadius: 50,
+  },
+  editIconContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginVertical: 10,
   },
 });
 

@@ -1,23 +1,27 @@
+import FloorSelector from 'components/Molecules/FloorSelector';
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {useSelector} from 'react-redux';
 import useProjectStructureActions from 'redux/actions/projectStructureActions';
-import SelectFloor from 'screens/DeveloperProject/CustomerSection/SelectFloor';
+import {SelectUnit} from './SelectUnit';
 
 function FloorPreview(props) {
-  const {route, navigation} = props;
+  const {route} = props;
   const {
     selectedStructure,
     towerType,
     towerId,
     id: projectId,
+    label,
   } = route?.params || {};
 
   const {getFloorList} = useProjectStructureActions();
 
   const {selectedProject} = useSelector(s => s.project);
   const {floorList, loading} = useSelector(s => s.projectStructure);
+
+  const [selectedBhk, setSelectedBhk] = React.useState();
 
   React.useEffect(() => {
     getData();
@@ -32,16 +36,34 @@ function FloorPreview(props) {
     });
   };
 
+  const renderUnits = params => {
+    return (
+      <SelectUnit
+        {...props}
+        {...params}
+        project_id={selectedProject.id}
+        towerId={towerId}
+        selectedStructure={selectedStructure}
+        towerType={towerType}
+        showBhkFilters={false}
+        displayHeader={false}
+      />
+    );
+  };
+
   return (
     <View style={styles.container}>
       <Spinner visible={loading} textContent="" />
-      <SelectFloor
-        selectedStructure={selectedStructure}
-        towerType={towerType}
+      <FloorSelector
+        {...props}
+        floors={floorList}
         towerId={towerId}
-        floorList={floorList}
-        navigation={navigation}
-        id={projectId}
+        towerType={towerType}
+        towerLabel={label}
+        projectId={projectId}
+        selectedBhk={selectedBhk}
+        renderUnits={renderUnits}
+        handleBhkChange={setSelectedBhk}
       />
     </View>
   );
