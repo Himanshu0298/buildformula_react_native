@@ -77,10 +77,9 @@ const RenderSelect = React.forwardRef((props, ref) => {
   }, [creatable, multiselect, options, searchQuery, value]);
 
   const displayValue = useMemo(() => {
-    if (multiselect) {
-      return value?.length ? `${value.length} selected` : '';
-    }
-
+    // if (multiselect) {
+    //   return value?.length ? `${value.length - 1} selected` : '';
+    // }
     const index = options.findIndex(option => option.value === value);
     if (index > -1) {
       return options[index].label;
@@ -88,7 +87,7 @@ const RenderSelect = React.forwardRef((props, ref) => {
     return truncateLength
       ? truncate(value, {length: truncateLength})
       : value || '';
-  }, [multiselect, options, truncateLength, value]);
+  }, [options, truncateLength, value]);
 
   const selectedOptions = useMemo(() => {
     if (multiselect) {
@@ -113,7 +112,7 @@ const RenderSelect = React.forwardRef((props, ref) => {
 
   const handleSelect = v => {
     onSelect(v);
-    setSearchQuery('');
+    setSearchQuery();
     toggleOptions();
   };
 

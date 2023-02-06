@@ -32,7 +32,6 @@ function AddMaterialDialog(props) {
     setFieldValue,
     handleSubmit,
   } = formikProps;
-
   const categoryOptions = useMemo(() => {
     return materialCategories?.map(i => ({
       label: `${i.title}`,
@@ -200,7 +199,7 @@ function CardListing(props) {
 function AddIssueIndentMaterials(props) {
   const {navigation, route} = props;
 
-  const {id, edit} = route?.params || {};
+  const {id, edit, wbs_id} = route?.params || {};
 
   const alert = useAlert();
 
@@ -326,6 +325,7 @@ function AddIssueIndentMaterials(props) {
               handleClose={toggleAddDialog}
               formikProps={formikProps}
               edit={edit}
+              wbs_id={wbs_id}
             />
           )}
         </Formik>

@@ -29,14 +29,15 @@ function RenderForm(props) {
           name="configurtion"
           label="Configuration"
           options={bhkOptions}
-          multiselect
           value={values.configurtion}
           containerStyles={styles.inputStyles}
           error={errors.configurtion}
           onSelect={v => {
             setFieldValue('configurtion', v);
           }}
+          multiselect
         />
+
         <RichTextEditor
           name="description"
           placeholder="Description "
@@ -76,18 +77,17 @@ function ProjectBrief(props) {
   const getData = async () => {
     await getProjectDetails({project_id: selectedProject.id, id});
   };
-
   const initialValues = React.useMemo(() => {
     const {description, configurtion} = projectDetails;
 
     return {
       description,
-      configurtion: configurtion.split(','),
+      configurtion: configurtion.split('  '),
     };
   }, [projectDetails]);
 
   const onSubmit = values => {
-    const arrString = values?.configurtion?.join('') || undefined;
+    const arrString = values?.configurtion?.join('  ') || [];
 
     const data = {
       project_id: selectedProject.id,

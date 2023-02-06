@@ -25,6 +25,7 @@ import NoResult from 'components/Atoms/NoResult';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import {ActionSheetProvider} from '@expo/react-native-action-sheet';
 import {AutoDragSortableView} from 'react-native-drag-sort';
+import {SafeTouchable} from 'components/Atoms/SafeTouchable';
 
 const ROW_HEIGHT = 50;
 
@@ -67,13 +68,15 @@ function AddTowerModel(props) {
                     returnKeyType="next"
                     error={errors.floorName}
                   />
-                  <Button
-                    style={styles.button}
-                    theme={{roundness: 10}}
-                    mode="contained"
-                    onPress={handleSubmit}>
-                    Add
-                  </Button>
+                  <SafeTouchable onPress={handleSubmit}>
+                    <Button
+                      style={styles.button}
+                      theme={{roundness: 10}}
+                      mode="contained"
+                      onPress={handleSubmit}>
+                      Add
+                    </Button>
+                  </SafeTouchable>
                 </View>
               </Dialog>
             </Portal>
@@ -205,8 +208,7 @@ function FloorList(props) {
 
   return (
     <View style={styles.container}>
-      <Spinner visible={loading} textContent="" />
-
+      <Spinner visible={loading} textContent="please wait" />
       <View style={styles.titleContainer}>
         <TouchableOpacity
           style={styles.titleContainer}

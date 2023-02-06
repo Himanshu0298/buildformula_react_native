@@ -18,7 +18,7 @@ import {useSelector} from 'react-redux';
 
 const schema = Yup.object().shape({
   attachments: Yup.array()
-    .min(2, 'Min 2 attachments are required')
+    // .min(2, 'Min 2 attachments are required')
     .required('File is required'),
 });
 
@@ -149,19 +149,16 @@ const AddAttachments = props => {
 
   const onSubmit = async values => {
     const {attachments = []} = values;
+
     const formData = new FormData();
+
+    attachments.map(item => {
+      formData.append('attachmentFile[]', item);
+      return item;
+    });
 
     formData.append('project_id', projectId);
     formData.append('material_indent_id', id);
-
-    if (attachments?.length > 1) {
-      attachments.map(item => {
-        formData.append('attachmentFile[]', item);
-        return item;
-      });
-    } else {
-      formData.append('attachmentFile', attachments);
-    }
 
     await addReturnAttachment(formData);
     getData();

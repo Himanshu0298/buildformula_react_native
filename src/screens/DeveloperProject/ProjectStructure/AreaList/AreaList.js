@@ -1,4 +1,11 @@
-import {StyleSheet, Text, View, TouchableOpacity, FlatList} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  FlatList,
+  RefreshControl,
+} from 'react-native';
 import React, {useMemo} from 'react';
 import {
   Caption,
@@ -19,6 +26,9 @@ import Spinner from 'react-native-loading-spinner-overlay';
 const PROJECT_STATUS = {
   1: {label: 'Active', color: '#07CA03'},
   2: {label: 'Inactive', color: '#FF5E5E'},
+  3: {label: 'Sold Out', color: 'rgba(168, 72, 244)'},
+  4: {label: 'Hold', color: '#F4AF48'},
+  5: {label: 'Rent Out', color: '#4872f4'},
 };
 
 const AreaCard = props => {
@@ -69,7 +79,7 @@ const AreaCard = props => {
         <Text>{area}</Text>
         <Caption>{`${city} ,${state} ,${country}`}</Caption>
         <Text>{pincode}</Text>
-        {status === 0 ? null : (
+        {PROJECT_STATUS ? (
           <View style={styles.status}>
             <View
               style={[
@@ -79,7 +89,7 @@ const AreaCard = props => {
             />
             <Caption>{PROJECT_STATUS[status]?.label}</Caption>
           </View>
-        )}
+        ) : null}
       </View>
     </TouchableOpacity>
   );
@@ -132,14 +142,9 @@ function AreaList(props) {
     });
   };
 
-  // const navToFilter = () => {
-  //   navigation.navigate('ProjectFilter');
-  // };
-
   return (
     <View style={styles.mainContainer}>
       <Spinner visible={loading} textContent="" />
-
       <View style={styles.headerWrapper}>
         <Title>Area Listing</Title>
       </View>
@@ -153,6 +158,9 @@ function AreaList(props) {
           data={filteredArea}
           keyExtractor={item => item.id}
           showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl refreshing={false} onRefresh={getList} />
+          }
           renderItem={({item}) => {
             return (
               <AreaCard

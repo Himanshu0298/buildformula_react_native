@@ -8,6 +8,7 @@ import ActionButtons from 'components/Atoms/ActionButtons';
 import useProjectStructureActions from 'redux/actions/projectStructureActions';
 import {useSelector} from 'react-redux';
 import * as Yup from 'yup';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const schema = Yup.object().shape({
   area: Yup.string('Invalid').required('Required'),
@@ -138,7 +139,6 @@ const RenderForm = props => {
           }}
         />
       </View>
-
       <ActionButtons
         cancelLabel="Cancel"
         submitLabel="Save"
@@ -161,7 +161,7 @@ const AddArea = props => {
 
   const {selectedProject} = useSelector(s => s.project);
 
-  const {masterList} = useSelector(s => s.projectStructure);
+  const {masterList, loading} = useSelector(s => s.projectStructure);
 
   React.useEffect(() => {
     getProjectMasterList({project_id: selectedProject.id});
@@ -202,6 +202,7 @@ const AddArea = props => {
 
   return (
     <View style={styles.mainContainer}>
+      <Spinner visible={loading} textContent="please wait" />
       <View style={styles.headerWrapper}>
         <IconButton
           icon="keyboard-backspace"

@@ -25,6 +25,8 @@ const CreateIssueIndent = props => {
 
   const edit = Boolean(id);
 
+  const wbs_id = 0;
+
   const {getVendorList, getWorkSubWorkList, addIssueRequest} =
     useMaterialManagementActions();
 
@@ -65,12 +67,18 @@ const CreateIssueIndent = props => {
   }, [details, edit]);
 
   const onSubmit = async values => {
-    const data = {material_indent_id: id, project_id: projectId, ...values};
+    const data = {
+      material_indent_id: id,
+      project_id: projectId,
+      wbs_works_id: values.wbs_works_id || wbs_id,
+      ...values,
+    };
 
     const {value} = await addIssueRequest(data);
     navigation.navigate('AddIssueIndentMaterials', {
       edit,
       id: value.indent_id,
+      wbs_id: values.wbs_works_id,
     });
   };
 

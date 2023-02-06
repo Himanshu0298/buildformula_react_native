@@ -190,12 +190,12 @@ function ProjectStructure(props) {
       total_no_of_units,
       total_no_of_bunglows,
       total_no_of_plots,
-      bhk_configuration: bhk_configuration.split(','),
+      bhk_configuration: bhk_configuration.split('  '),
     };
   }, [projectDetails]);
 
   const onSubmit = values => {
-    const arrString = values?.bhk_configuration?.join(',') || undefined;
+    const arrString = values?.bhk_configuration?.join('  ') || undefined;
 
     const data = {
       project_id: selectedProject.id,

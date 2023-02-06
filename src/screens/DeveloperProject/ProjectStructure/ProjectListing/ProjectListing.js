@@ -1,4 +1,10 @@
-import {StyleSheet, View, TouchableOpacity, FlatList} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  FlatList,
+  RefreshControl,
+} from 'react-native';
 import React, {useMemo} from 'react';
 import {
   Caption,
@@ -144,8 +150,9 @@ function ProjectListing(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const getList = () => getProjectList({project_id: selectedProject.id});
-
+  const getList = async () => {
+    await getProjectList({project_id: selectedProject.id});
+  };
   const filteredProject = useMemo(() => {
     const query = searchQuery.toLowerCase();
     return projectList.filter(
@@ -196,6 +203,9 @@ function ProjectListing(props) {
           data={filteredProject}
           keyExtractor={item => item.id}
           showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl refreshing={false} onRefresh={getList} />
+          }
           renderItem={({item}) => {
             return (
               <ProjectCard

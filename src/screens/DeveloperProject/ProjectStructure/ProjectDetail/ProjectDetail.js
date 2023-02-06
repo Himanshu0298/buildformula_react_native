@@ -8,6 +8,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useSelector} from 'react-redux';
 import useProjectStructureActions from 'redux/actions/projectStructureActions';
 import {cloneDeep} from 'lodash';
+import Spinner from 'react-native-loading-spinner-overlay';
 import ProjectPreview from './ProjectPreview';
 import StructurePreview from './StructurePreview';
 
@@ -21,7 +22,7 @@ function ProjectDetail(props) {
   const [details, setDetails] = useState(projectDetails || {});
 
   const {selectedProject} = useSelector(s => s.project);
-  const {projectDetails} = useSelector(s => s.projectStructure);
+  const {projectDetails, loading} = useSelector(s => s.projectStructure);
 
   const {createProjectDuplicate, getProjectDetails, getProjectList} =
     useProjectStructureActions();
@@ -89,6 +90,7 @@ function ProjectDetail(props) {
 
   return (
     <View style={styles.mainContainer}>
+      <Spinner visible={loading} textContent="please wait" />
       <View style={styles.headerWrapper}>
         <View style={styles.subContainer}>
           <IconButton
