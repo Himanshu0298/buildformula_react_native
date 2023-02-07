@@ -158,7 +158,7 @@ const RequiredVendor = props => {
 };
 
 function AssignMaterialCard(props) {
-  const {item, index, showEdit, showDetail, toggleDialog} = props;
+  const {item, index, showEdit, showDetail, toggleDialog, isApproved} = props;
 
   const {
     materialcategrytitle,
@@ -190,7 +190,7 @@ function AssignMaterialCard(props) {
         <Text>{quantity}</Text>
       </View>
 
-      {showDetail ? (
+      {isApproved || showDetail ? (
         <>
           <View style={styles.dataRow}>
             <Caption style={styles.lightData}>Estimated Qty:</Caption>
@@ -262,12 +262,6 @@ function IssueIndentPreview(props) {
     getList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const disableApprove = React.useMemo(() => {
-    return Boolean(
-      materials?.filter(i => !isNumber(i.assigned_quantity))?.length,
-    );
-  }, [materials]);
 
   const toggleDetail = () => setShowDetail(v => !v);
   const toggleDialog = v => setSelectedItemIndex(v);
@@ -438,6 +432,7 @@ function IssueIndentPreview(props) {
                     toggleDialog={toggleDialog}
                     showDetail={showDetail}
                     showEdit={isPending}
+                    isApproved={isApproved}
                   />
                 );
               })}

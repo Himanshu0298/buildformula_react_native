@@ -52,7 +52,9 @@ const renderTabBar = params => {
 
 function CustomerSection(props) {
   const {route, navigation} = props;
-  const {project_id, unitId} = route?.params || {};
+  const {project_id, unitId, unit} = route?.params || {};
+
+  const id = unit.unit_id;
 
   const insets = useSafeAreaInsets();
 
@@ -81,13 +83,13 @@ function CustomerSection(props) {
   }, [isProjectAdmin, permissions]);
 
   React.useEffect(() => {
-    getCustomerDetails({project_id, unit_id: unitId});
-    getBookingDetails({project_id, unit_id: unitId});
-    getBankDetails({project_id, unit_id: unitId});
-    getModifyRequests({project_id, unit_id: unitId});
-    getAccountDetails({project_id, unit_id: unitId});
-    getFolders({project_id, unit_id: unitId, index_of: 0});
-    getFiles({project_id, unit_id: unitId, folder_id: 0});
+    getCustomerDetails({project_id, unit_id: unitId || id});
+    getBookingDetails({project_id, unit_id: unitId || id});
+    getBankDetails({project_id, unit_id: unitId || id});
+    getModifyRequests({project_id, unit_id: unitId || id});
+    getAccountDetails({project_id, unit_id: unitId || id});
+    getFolders({project_id, unit_id: unitId || id, index_of: 0});
+    getFiles({project_id, unit_id: unitId || id, folder_id: 0});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

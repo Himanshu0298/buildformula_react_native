@@ -9,6 +9,7 @@ import ActionButtons from 'components/Atoms/ActionButtons';
 import {Subheading} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
+import {debounce} from 'lodash';
 
 const schema = Yup.object().shape({
   vendor_id: Yup.string().label('vendor_id').required('Vendor is Required'),
@@ -115,7 +116,7 @@ function CreateReturnIndent(props) {
                 cancelLabel="Cancel"
                 submitLabel="Next"
                 onCancel={navigation.goBack}
-                onSubmit={handleSubmit}
+                onSubmit={debounce(handleSubmit, 200)}
               />
             </View>
           );
@@ -130,9 +131,7 @@ const styles = StyleSheet.create({
     margin: 10,
     flexGrow: 1,
   },
-  // headerContainer: {
-  //   margin: 10,
-  // },
+
   headerText: {
     fontSize: 18,
   },

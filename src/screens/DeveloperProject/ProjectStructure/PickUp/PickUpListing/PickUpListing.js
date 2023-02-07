@@ -22,7 +22,9 @@ import {useAlert} from 'components/Atoms/Alert';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {ActionSheetProvider} from '@expo/react-native-action-sheet';
 import * as Yup from 'yup';
-import {isNumber} from 'lodash';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+
+import {debounce, isNumber} from 'lodash';
 import NoResult from 'components/Atoms/NoResult';
 import {AutoDragSortableView} from 'react-native-drag-sort';
 import Layout from 'utils/Layout';
@@ -39,7 +41,7 @@ function PickUpList(props) {
   const {title, bhk_title, id} = item;
 
   return (
-    <>
+    <KeyboardAwareScrollView>
       <Divider style={styles.divider} />
       <View style={styles.container}>
         <View style={styles.subContainer}>
@@ -80,7 +82,7 @@ function PickUpList(props) {
           </View>
         )}
       </View>
-    </>
+    </KeyboardAwareScrollView>
   );
 }
 
@@ -134,7 +136,7 @@ function AddFieldModel(props) {
                     style={styles.button}
                     theme={{roundness: 10}}
                     mode="contained"
-                    onPress={handleSubmit}>
+                    onPress={debounce(handleSubmit, 200)}>
                     {edit ? 'Update' : 'Add'}
                   </Button>
                 </View>
@@ -331,7 +333,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    width: 350,
+    width: 390,
   },
   subContainer: {
     flexDirection: 'row',
@@ -367,11 +369,11 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   dialogContainer: {
-    flex: 0.3,
+    flex: 0.9,
     backgroundColor: 'grey',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    top: 280,
+    top: 70,
     width: '100%',
     left: -25,
   },

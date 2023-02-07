@@ -22,6 +22,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import NoResult from 'components/Atoms/NoResult';
 import Layout from 'utils/Layout';
 import {AutoDragSortableView} from 'react-native-drag-sort';
+import {debounce} from 'lodash';
 
 const ROW_HEIGHT = 50;
 
@@ -67,8 +68,8 @@ function AddTowerModel(props) {
                   <Button
                     style={styles.button}
                     theme={{roundness: 10}}
-                    mode="contained"
-                    onPress={handleSubmit}>
+                    onPress={debounce(handleSubmit, 200)}
+                    mode="contained">
                     Add
                   </Button>
                 </View>
@@ -188,7 +189,6 @@ function TowerList(props) {
 
       <View style={styles.container}>
         <Spinner visible={loading} textContent="" />
-
         <View style={styles.titleContainer}>
           <TouchableOpacity
             style={styles.titleContainer}
@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
   listMainContainer: {
     alignItems: 'center',
     flexDirection: 'row',
-    width: 300,
+    width: 370,
   },
   listSubContainer: {
     borderWidth: 1,
@@ -283,11 +283,11 @@ const styles = StyleSheet.create({
   },
 
   dialogContainer: {
-    flex: 0.3,
+    flex: 0.9,
     backgroundColor: 'grey',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    top: 250,
+    top: 70,
     width: '100%',
     left: -25,
   },

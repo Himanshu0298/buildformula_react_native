@@ -25,7 +25,7 @@ import NoResult from 'components/Atoms/NoResult';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import {ActionSheetProvider} from '@expo/react-native-action-sheet';
 import {AutoDragSortableView} from 'react-native-drag-sort';
-import {SafeTouchable} from 'components/Atoms/SafeTouchable';
+import {debounce} from 'lodash';
 
 const ROW_HEIGHT = 50;
 
@@ -68,15 +68,13 @@ function AddTowerModel(props) {
                     returnKeyType="next"
                     error={errors.floorName}
                   />
-                  <SafeTouchable onPress={handleSubmit}>
-                    <Button
-                      style={styles.button}
-                      theme={{roundness: 10}}
-                      mode="contained"
-                      onPress={handleSubmit}>
-                      Add
-                    </Button>
-                  </SafeTouchable>
+                  <Button
+                    style={styles.button}
+                    theme={{roundness: 10}}
+                    onPress={debounce(handleSubmit, 200)}
+                    mode="contained">
+                    Add
+                  </Button>
                 </View>
               </Dialog>
             </Portal>
@@ -141,7 +139,7 @@ function FloorList(props) {
   }, [selectedTower]);
 
   const getData = async () => {
-    await getFloorList({
+    getFloorList({
       project_id: selectedProject.id,
       id: projectId,
       tower_id: selectedTower,
@@ -306,11 +304,11 @@ const styles = StyleSheet.create({
   },
 
   dialogContainer: {
-    flex: 0.3,
+    flex: 0.9,
     backgroundColor: 'grey',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    top: 250,
+    top: 70,
     width: '100%',
     left: -25,
   },
@@ -337,7 +335,7 @@ const styles = StyleSheet.create({
   listMainContainer: {
     alignItems: 'center',
     flexDirection: 'row',
-    width: 260,
+    width: 280,
   },
 });
 

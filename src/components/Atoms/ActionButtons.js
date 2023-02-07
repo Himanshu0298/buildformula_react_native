@@ -2,7 +2,6 @@ import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Button} from 'react-native-paper';
 import PropTypes from 'prop-types';
-import {SafeTouchable} from './SafeTouchable';
 
 function ActionButtons(props) {
   const {
@@ -16,28 +15,26 @@ function ActionButtons(props) {
   } = props;
 
   return (
-    <SafeTouchable>
-      <View style={[styles.actionContainer, style]}>
-        <Button
-          style={styles.actionButton}
-          contentStyle={styles.buttonLabel}
-          theme={{roundness: 15}}
-          disabled={cancelDisabled}
-          mode="outlined"
-          onPress={onCancel}>
-          {cancelLabel || 'Cancel'}
-        </Button>
-        <Button
-          style={styles.actionButton}
-          contentStyle={styles.buttonLabel}
-          disabled={submitDisabled}
-          mode="contained"
-          theme={{roundness: 15}}
-          onPress={onSubmit}>
-          {submitLabel || 'Save'}
-        </Button>
-      </View>
-    </SafeTouchable>
+    <View style={[styles.actionContainer, style]}>
+      <Button
+        style={styles.actionButton}
+        contentStyle={styles.buttonLabel}
+        theme={{roundness: 15}}
+        disabled={cancelDisabled}
+        mode="outlined"
+        onPress={onCancel}>
+        {cancelLabel || 'Cancel'}
+      </Button>
+      <Button
+        style={styles.actionButton}
+        contentStyle={styles.buttonLabel}
+        disabled={submitDisabled}
+        mode="contained"
+        theme={{roundness: 15}}
+        onPress={onSubmit}>
+        {submitLabel || 'Save'}
+      </Button>
+    </View>
   );
 }
 
