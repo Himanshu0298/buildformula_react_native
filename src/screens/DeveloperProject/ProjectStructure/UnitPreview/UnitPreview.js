@@ -10,6 +10,7 @@ import unit_image from 'assets/images/unit_image.png';
 import {
   Caption,
   Divider,
+  Headline,
   IconButton,
   Subheading,
   Text,
@@ -250,7 +251,7 @@ function UnitSpecification() {
         <Text>Sawan Patel</Text>
       </View>
       <View>
-        <Caption> PRE_LEASE_REMARKS</Caption>
+        <Caption> PRE LEASE REMARKS</Caption>
         <PostContent description={description} />
       </View>
     </View>
@@ -385,11 +386,19 @@ function UnitPreview(props) {
             width="500"
             height={'500' / 2}
             autoPlay={false}
-            data={[...new Array(2).keys()]}
-            scrollAnimationDuration={10000}
-            onSnapToItem={index => console.log('current index:', index)}
+            pagingEnabled
+            snapEnabled={false}
+            data={[...new Array(5).keys()]}
+            // onSnapToItem={index => <Text>{index}</Text>}
             renderItem={({index}) => {
-              return <Image source={unit_image} />;
+              return (
+                <>
+                  <Image source={unit_image} />
+                  <Headline style={styles.sliderIndicator}>
+                    #{index + 1}
+                  </Headline>
+                </>
+              );
             }}
           />
           <View style={styles.sliderWrap}>
@@ -555,6 +564,14 @@ const styles = StyleSheet.create({
   },
   fileWrapper: {
     marginLeft: 10,
+  },
+  sliderIndicator: {
+    textAlign: 'center',
+    color: '#fff',
+    fontWeight: 'bold',
+    top: 3,
+    position: 'absolute',
+    right: 120,
   },
 });
 

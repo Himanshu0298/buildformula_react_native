@@ -10,6 +10,7 @@ import bungalow_image from 'assets/images/bungalow_img.png';
 import {
   Caption,
   Divider,
+  Headline,
   IconButton,
   Subheading,
   Text,
@@ -250,7 +251,7 @@ function UnitSpecification() {
         <Text>Sawan Patel</Text>
       </View>
       <View>
-        <Caption> PRE_LEASE_REMARKS</Caption>
+        <Caption> PRE LEASE REMARKS</Caption>
         <PostContent description={description} />
       </View>
     </View>
@@ -354,10 +355,16 @@ function UnitPreview(props) {
             height={'500' / 2}
             autoPlay={false}
             data={[...new Array(2).keys()]}
-            scrollAnimationDuration={10000}
             onSnapToItem={index => console.log('current index:', index)}
             renderItem={({index}) => {
-              return <Image source={bungalow_image} />;
+              return (
+                <>
+                  <Image source={bungalow_image} />
+                  <Headline style={styles.sliderIndicator}>
+                    #{index + 1}
+                  </Headline>
+                </>
+              );
             }}
           />
           <View style={styles.sliderWrap}>
@@ -526,6 +533,14 @@ const styles = StyleSheet.create({
   },
   fileWrapper: {
     marginLeft: 10,
+  },
+  sliderIndicator: {
+    textAlign: 'center',
+    color: '#fff',
+    fontWeight: 'bold',
+    top: 3,
+    position: 'absolute',
+    right: 120,
   },
 });
 
