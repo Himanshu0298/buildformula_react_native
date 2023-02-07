@@ -33,6 +33,7 @@ export default function useCustomerActions() {
     getVisitorCustomerList,
     getVisitorCustomerListDetails,
     updateCustomerDetails,
+    updateCustomerLoginDetails,
   } = useCustomerServices();
 
   return {
@@ -422,6 +423,21 @@ export default function useCustomerActions() {
         payload: async () => {
           try {
             const {data, msg} = _res(await updateCustomerDetails(params));
+            snackbar.showMessage({message: msg});
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    updateCustomerLoginDetails: params =>
+      dispatch({
+        type: types.UPDATE_CUSTOMER_DETAILS,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await updateCustomerLoginDetails(params));
             snackbar.showMessage({message: msg});
             return Promise.resolve(data);
           } catch (error) {

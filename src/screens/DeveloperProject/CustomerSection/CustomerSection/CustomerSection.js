@@ -130,7 +130,7 @@ function CustomerSection(props) {
             <Details {...props} />
           </Tabs.Tab>
           <Tabs.Tab name="Booking Details">
-            <BookingDetails {...props} unit_id={unitId} />
+            <BookingDetails {...props} unit_id={unitId || id} />
           </Tabs.Tab>
           <Tabs.Tab name="Bank Loans">
             <BankLoans {...props} />

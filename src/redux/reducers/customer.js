@@ -21,6 +21,7 @@ import {
   GET_CUSTOMER_LIST,
   GET_CUSTOMER_LIST_DETAILS,
   UPDATE_CUSTOMER_DETAILS,
+  UPDATE_CUSTOMER_LOGIN_DETAILS,
 } from '../actions/actionTypes';
 
 const persistConfig = {
@@ -250,6 +251,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${DELETE_COLLECTION}_PENDING`:
     case `${UPDATE_MODIFY_REQUEST}_PENDING`:
     case `${UPDATE_CUSTOMER_DETAILS}_PENDING`:
+    case `${UPDATE_CUSTOMER_LOGIN_DETAILS}_PENDING`:
       return {
         ...state,
         loading: true,
@@ -264,6 +266,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${DELETE_COLLECTION}_FULFILLED`:
     case `${UPDATE_MODIFY_REQUEST}_FULFILLED`:
     case `${UPDATE_CUSTOMER_DETAILS}_FULFILLED`:
+    case `${UPDATE_CUSTOMER_LOGIN_DETAILS}_FULFILLED`:
       return {
         ...state,
         loading: false,
@@ -279,6 +282,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${DELETE_COLLECTION}_REJECTED`:
     case `${UPDATE_MODIFY_REQUEST}_REJECTED`:
     case `${UPDATE_CUSTOMER_DETAILS}_REJECTED`:
+    case `${UPDATE_CUSTOMER_LOGIN_DETAILS}_REJECTED`:
       return {
         ...state,
         loading: false,

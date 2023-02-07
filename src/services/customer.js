@@ -209,5 +209,12 @@ export default function useCustomerServices() {
         config({multipart: false}),
       );
     },
+    updateCustomerLoginDetails: data => {
+      return instance.post(
+        '/customers/update_customer_credentials',
+        data,
+        config({multipart: false}),
+      );
+    },
   };
 }
