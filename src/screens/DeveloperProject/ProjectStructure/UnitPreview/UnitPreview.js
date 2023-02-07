@@ -45,8 +45,10 @@ const description =
 
 function SecurityDetails() {
   return (
-    <View>
-      <Subheading>Project Owner Info</Subheading>
+    <View style={{marginVertical: 10, padding: 10}}>
+      <View style={{marginBottom: 10}}>
+        <Text>SECURITY/ CARETAKER INFO</Text>
+      </View>
       {SECURITY_DATA.map(item => {
         return (
           <View style={styles.container}>
@@ -68,9 +70,10 @@ function SecurityDetails() {
 
 function OwnerDetails(props) {
   return (
-    <>
-      <Subheading>Project Owner Info</Subheading>
-
+    <View style={{marginVertical: 10, padding: 10}}>
+      <View style={{marginBottom: 10}}>
+        <Text>OWNER INFO</Text>
+      </View>
       {OWNER_DATA.map(item => {
         return (
           <View style={styles.container}>
@@ -93,7 +96,7 @@ function OwnerDetails(props) {
           </View>
         );
       })}
-    </>
+    </View>
   );
 }
 
@@ -114,8 +117,10 @@ function Files() {
     });
   };
   return (
-    <View>
-      <Subheading> File's/ Attachments </Subheading>
+    <View style={{marginVertical: 10, padding: 10}}>
+      <View style={{marginBottom: 10}}>
+        <Text>FILE'S/ ATTACHMENTS</Text>
+      </View>
       {FILES_DATA.map(item => {
         return (
           <View style={styles.recentFiles}>
@@ -123,16 +128,16 @@ function Files() {
               style={styles.sectionContainer}
               onPress={() => onPressFile(item)}>
               <Image source={PdfIcon} style={styles.fileIcon} />
-              <View>
+              <View style={styles.fileWrapper}>
                 <Text
                   style={(styles.verticalFlex, styles.text)}
                   numberOfLines={2}>
                   {item.name}
                 </Text>
-                <View style={styles.type}>
+                <View>
                   <Text style={styles.date}>{item.type}</Text>
                 </View>
-                <View style={styles.dateContainer}>
+                <View>
                   <Text style={styles.date}>
                     {/* {dayjs(created).format('DD MMM YYYY')} */}
                     {item.date}
@@ -187,7 +192,7 @@ function Pricing() {
 
 function UnitSpecification() {
   return (
-    <>
+    <View style={{marginVertical: 10, padding: 10}}>
       <View style={styles.specification}>
         <View style={styles.specificationContainer}>
           <MaterialCommunityIcons name="bed-king-outline" size={30} />
@@ -248,13 +253,13 @@ function UnitSpecification() {
         <Caption> PRE_LEASE_REMARKS</Caption>
         <PostContent description={description} />
       </View>
-    </>
+    </View>
   );
 }
 
 function Details() {
   return (
-    <View>
+    <View style={{marginVertical: 10, padding: 10}}>
       <View style={styles.detailContainer}>
         <View>
           <Caption>SUPER BUILDUP AREA</Caption>
@@ -321,7 +326,7 @@ function Details() {
 
 function UnitDetails() {
   return (
-    <View>
+    <View style={{padding: 10, paddingTop: 0}}>
       <View style={{flexDirection: 'row', alignItems: 'center'}}>
         <Subheading>by</Subheading>
         <View style={{marginLeft: 5}}>
@@ -506,12 +511,6 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginBottom: 10,
   },
-  type: {
-    marginLeft: 10,
-  },
-  dateContainer: {
-    marginLeft: 8,
-  },
   subContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -553,6 +552,9 @@ const styles = StyleSheet.create({
   sliderText: {
     color: '#fff',
     fontWeight: '800',
+  },
+  fileWrapper: {
+    marginLeft: 10,
   },
 });
 

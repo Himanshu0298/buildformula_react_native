@@ -125,16 +125,16 @@ function Files() {
               style={styles.sectionContainer}
               onPress={() => onPressFile(item)}>
               <Image source={PdfIcon} style={styles.fileIcon} />
-              <View>
+              <View style={styles.fileWrapper}>
                 <Text
                   style={(styles.verticalFlex, styles.text)}
                   numberOfLines={2}>
                   {item.name}
                 </Text>
-                <View style={styles.type}>
+                <View>
                   <Text style={styles.date}>{item.type}</Text>
                 </View>
-                <View style={styles.dateContainer}>
+                <View>
                   <Text style={styles.date}>
                     {/* {dayjs(created).format('DD MMM YYYY')} */}
                     {item.date}
@@ -424,12 +424,6 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginBottom: 10,
   },
-  type: {
-    marginLeft: 10,
-  },
-  dateContainer: {
-    marginLeft: 8,
-  },
   subContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -488,6 +482,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#4872f41a',
     marginRight: 10,
     marginTop: 10,
+  },
+  fileWrapper: {
+    marginLeft: 10,
   },
 });
 
