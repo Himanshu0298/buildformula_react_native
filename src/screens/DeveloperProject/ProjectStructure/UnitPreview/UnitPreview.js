@@ -6,17 +6,14 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import unit_image from 'assets/images/unit_image.png';
 import {
   Caption,
   Divider,
-  Headline,
   IconButton,
   Subheading,
   Text,
   Title,
 } from 'react-native-paper';
-import Carousel from 'react-native-reanimated-carousel';
 
 import {theme} from 'styles/theme';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -35,6 +32,7 @@ import {getDownloadUrl} from 'utils/download';
 import {getShadow} from 'utils';
 import PostContent from 'components/Atoms/RenderSeeMore';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
+import CustomCarousel from 'components/Atoms/CustomCarousel';
 import {
   FILES_DATA,
   OWNER_DATA,
@@ -43,6 +41,18 @@ import {
 
 const description =
   ' Lorem ipsum dolor sit amet consectetur. Tortor adipiscing leo sempermagna ipsum. Suspendisse odio adipiscing ultrices euismod. Eleifend ut';
+
+const data = [
+  {
+    image: require('assets/images/unit_image.png'),
+  },
+  {
+    image: require('assets/images/unit_image.png'),
+  },
+  {
+    image: require('assets/images/unit_image.png'),
+  },
+];
 
 function SecurityDetails() {
   return (
@@ -381,26 +391,7 @@ function UnitPreview(props) {
           </View>
         </View>
         <View>
-          <Carousel
-            loop
-            width="500"
-            height={'500' / 2}
-            autoPlay={false}
-            pagingEnabled
-            snapEnabled={false}
-            data={[...new Array(5).keys()]}
-            // onSnapToItem={index => <Text>{index}</Text>}
-            renderItem={({index}) => {
-              return (
-                <>
-                  <Image source={unit_image} />
-                  <Headline style={styles.sliderIndicator}>
-                    #{index + 1}
-                  </Headline>
-                </>
-              );
-            }}
-          />
+          <CustomCarousel data={data} pagination />
           <View style={styles.sliderWrap}>
             <Title style={styles.sliderText}>3BHK</Title>
             <Subheading style={styles.sliderText}>
@@ -556,7 +547,7 @@ const styles = StyleSheet.create({
   sliderWrap: {
     position: 'absolute',
     left: 10,
-    bottom: 28,
+    bottom: 48,
   },
   sliderText: {
     color: '#fff',
@@ -564,14 +555,6 @@ const styles = StyleSheet.create({
   },
   fileWrapper: {
     marginLeft: 10,
-  },
-  sliderIndicator: {
-    textAlign: 'center',
-    color: '#fff',
-    fontWeight: 'bold',
-    top: 3,
-    position: 'absolute',
-    right: 120,
   },
 });
 

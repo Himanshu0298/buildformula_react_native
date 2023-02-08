@@ -27,15 +27,25 @@ import {getDownloadUrl} from 'utils/download';
 import {getShadow} from 'utils';
 import PostContent from 'components/Atoms/RenderSeeMore';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
-import plotPreview from 'assets/images/plotPreview.png';
 
-import Carousel from 'react-native-reanimated-carousel';
-
+import CustomCarousel from 'components/Atoms/CustomCarousel';
 import {
   FILES_DATA,
   OWNER_DATA,
   SECURITY_DATA,
 } from '../ProjectDetail/ProjectPreview/Data';
+
+const data = [
+  {
+    image: require('assets/images/plotPreview.png'),
+  },
+  {
+    image: require('assets/images/plotPreview.png'),
+  },
+  {
+    image: require('assets/images/plotPreview.png'),
+  },
+];
 
 const description =
   ' Lorem ipsum dolor sit amet consectetur. Tortor adipiscing leo sempermagna ipsum. Suspendisse odio adipiscing ultrices euismod. Eleifend ut';
@@ -349,24 +359,7 @@ function UnitPreview(props) {
           </View>
         </View>
         <View>
-          <Carousel
-            loop
-            width="500"
-            height={'500' / 2}
-            autoPlay={false}
-            data={[...new Array(2).keys()]}
-            onSnapToItem={index => console.log('current index:', index)}
-            renderItem={({index}) => {
-              return (
-                <>
-                  <Image source={plotPreview} />
-                  <Headline style={styles.sliderIndicator}>
-                    #{index + 1}
-                  </Headline>
-                </>
-              );
-            }}
-          />
+          <CustomCarousel data={data} pagination />
           <View style={styles.sliderWrap}>
             <Title style={styles.sliderText}>648 - 1116 SQ. FT.</Title>
             <Subheading style={styles.sliderText}>Plot for Sold</Subheading>
@@ -467,7 +460,7 @@ const styles = StyleSheet.create({
   sliderWrap: {
     position: 'absolute',
     left: 10,
-    bottom: 28,
+    bottom: 48,
   },
   sliderText: {
     color: '#fff',
@@ -492,14 +485,6 @@ const styles = StyleSheet.create({
   },
   fileWrapper: {
     marginLeft: 10,
-  },
-  sliderIndicator: {
-    textAlign: 'center',
-    color: '#fff',
-    fontWeight: 'bold',
-    top: 3,
-    position: 'absolute',
-    right: 120,
   },
 });
 
