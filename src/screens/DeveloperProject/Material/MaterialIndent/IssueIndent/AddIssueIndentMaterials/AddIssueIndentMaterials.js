@@ -1,5 +1,5 @@
 import {StyleSheet, View, SafeAreaView, Modal, ScrollView} from 'react-native';
-import React, {useEffect, useMemo} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {Button, Caption, Subheading, Text} from 'react-native-paper';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -75,7 +75,6 @@ function AddMaterialDialog(props) {
                   setFieldValue('material_category_id', value);
                 }}
               />
-
               <RenderSelect
                 name="material_sub_category_id"
                 label="Sub Category"
@@ -94,7 +93,6 @@ function AddMaterialDialog(props) {
                 options={unitOptions}
                 value={values.material_units_id}
               />
-
               <RenderInput
                 name="quantity"
                 label="Quantity"
@@ -203,12 +201,19 @@ function AddIssueIndentMaterials(props) {
 
   const alert = useAlert();
 
+  const getDetails = () =>
+    getIndentDetails({
+      project_id: selectedProject.id,
+      material_indent_id: id,
+    });
+
   const {getPRMaterialCategories, getIndentDetails, addMaterialIssueRequest} =
     useMaterialManagementActions();
 
   const {indentDetails, materialSubCategories} = useSelector(
     s => s.materialManagement,
   );
+
   const materialsItems = indentDetails?.material_indent_details;
 
   const {selectedProject} = useSelector(s => s.project);
@@ -230,12 +235,6 @@ function AddIssueIndentMaterials(props) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [materialsItems]);
-
-  const getDetails = () =>
-    getIndentDetails({
-      project_id: selectedProject.id,
-      material_indent_id: id,
-    });
 
   const initialValues = useMemo(() => {
     if (isNumber(selectedMaterialIndex)) {
@@ -260,31 +259,33 @@ function AddIssueIndentMaterials(props) {
     return {};
   }, [materialSubCategories, materials, selectedMaterialIndex]);
 
-  const handleSave = async values => {
-    const materialCard = materials.find(
-      i => i.id === values.material_category_id,
-    );
-    const restData = {
-      project_id: projectId,
-      material_indent_id: id,
-      material_category_id: materialCard?.material_category_id,
-      material_sub_category_id: materialCard?.material_sub_category_id,
-      material_units_id: materialCard?.material_units_id,
-      quantity: materialCard?.quantity,
-    };
-    await addMaterialIssueRequest(restData);
+  const handleSave = async () => {
+    materials.map(async ele => {
+      const restData = {
+        project_id: projectId,
+        material_indent_id: id,
+        material_category_id: ele?.material_category_id,
+        material_sub_category_id: ele?.material_sub_category_id,
+        material_units_id: ele?.material_units_id,
+        quantity: ele?.quantity,
+      };
+
+      await addMaterialIssueRequest(restData);
+    });
+
     getDetails();
     navigation.navigate('MaterialIndent');
     navigation.navigate('IssueIndentPreview', {id});
   };
 
-  const handleSaveMaterial = values => {
+  const handleSaveMaterial = async values => {
     const _materials = [...materials];
     if (!isNaN(selectedMaterialIndex)) {
       _materials[selectedMaterialIndex] = values;
     } else {
       _materials.push(values);
     }
+
     setMaterials(_materials);
     toggleAddDialog();
   };

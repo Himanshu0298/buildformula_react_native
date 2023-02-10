@@ -614,6 +614,7 @@ export default function useMaterialManagementActions() {
         type: types.ADD_ISSUE_REQUEST,
         payload: async () => {
           try {
+            console.log(' the api has been called ===========>');
             const response = _res(await addMaterialIssueRequest(data));
             return Promise.resolve(response.data);
           } catch (error) {
