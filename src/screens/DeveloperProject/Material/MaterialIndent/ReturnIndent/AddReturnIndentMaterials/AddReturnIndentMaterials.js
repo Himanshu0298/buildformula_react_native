@@ -229,6 +229,8 @@ function AddReturnIndentMaterials(props) {
   const {getPRMaterialCategories, getIndentDetails, addMaterialIssueRequest} =
     useMaterialManagementActions();
 
+  const materialsItems = indentDetails?.material_indent_details;
+
   const [addDialog, setAddDialog] = React.useState(false);
   const [selectedMaterialIndex, setSelectedMaterialIndex] = React.useState();
   const [materials, setMaterials] = React.useState(materialsItems || []);
@@ -236,8 +238,6 @@ function AddReturnIndentMaterials(props) {
   const {indentDetails, materialSubCategories} = useSelector(
     s => s.materialManagement,
   );
-
-  const materialsItems = indentDetails?.material_indent_details;
 
   const {selectedProject} = useSelector(s => s.project);
   const projectId = selectedProject.id;
@@ -286,20 +286,21 @@ function AddReturnIndentMaterials(props) {
     return {};
   }, [materialSubCategories, materials, selectedMaterialIndex]);
 
-  const handleSave = async values => {
-    const materialCard = materials.find(
-      i => i.id === values.material_category_id,
-    );
-    const restData = {
-      project_id: projectId,
-      material_indent_id: id,
-      material_category_id: materialCard.material_category_id,
-      material_sub_category_id: materialCard.material_sub_category_id,
-      material_units_id: materialCard.material_units_id,
-      quantity: materialCard.quantity,
-      damaged_qty: materialCard.damaged_qty,
-    };
-    await addMaterialIssueRequest(restData);
+  const handleSave = async () => {
+    materials.map(async material => {
+      const restData = {
+        project_id: projectId,
+        material_indent_id: id,
+        material_category_id: material?.material_category_id,
+        material_sub_category_id: material?.material_sub_category_id,
+        material_units_id: material?.material_units_id,
+        quantity: material?.quantity,
+        damaged_qty: material?.damaged_qty,
+      };
+
+      await addMaterialIssueRequest(restData);
+    });
+
     getDetails();
     navigation.navigate('AddAttachments', {id});
   };

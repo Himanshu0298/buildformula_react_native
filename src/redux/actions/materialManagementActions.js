@@ -50,6 +50,7 @@ export default function useMaterialManagementActions() {
     getSupplier,
     addSupplier,
     updateIssueQuantity,
+    getMaterialIndentCategoryList,
   } = useMaterialManagement();
 
   return {
@@ -570,6 +571,20 @@ export default function useMaterialManagementActions() {
         payload: async () => {
           try {
             const response = _res(await getIndentDetails(data));
+            return Promise.resolve(response.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    getMaterialIndentCategoryList: data =>
+      dispatch({
+        type: types.GET_MATERIAL_CATEGORY_LIST,
+        payload: async () => {
+          try {
+            const response = _res(await getMaterialIndentCategoryList(data));
             return Promise.resolve(response.data);
           } catch (error) {
             const message = _err(error);

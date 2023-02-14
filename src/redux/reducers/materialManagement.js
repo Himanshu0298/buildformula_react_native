@@ -41,6 +41,7 @@ import {
   ADD_SUPPLIER,
   UPDATE_PR,
   UPDATE_ISSUE_ASSIGN_QUANTITY,
+  GET_MATERIAL_CATEGORY_LIST,
 } from '../actions/actionTypes';
 
 const initialState = {
@@ -69,6 +70,7 @@ const initialState = {
   storeKeeperList: [],
   storeKeeperDetails: {},
   indentDetails: {},
+  categoryList: [],
 };
 
 const reducer = (state = initialState, action = {}) => {
@@ -187,6 +189,12 @@ const reducer = (state = initialState, action = {}) => {
         loading: false,
         indentDetails: payload,
       };
+    case `${GET_MATERIAL_CATEGORY_LIST}_FULFILLED`:
+      return {
+        ...state,
+        loading: false,
+        categoryList: payload,
+      };
 
     case `${GET_DIRECT_GRN_DETAILS}_FULFILLED`: {
       const directGRNDetails = {
@@ -257,6 +265,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${GET_MATERIAL_LIST}_PENDING`:
     case `${GET_MATERIAL_INDENT_LIST}_PENDING`:
     case `${GET_MATERIAL_INDENT_DETAILS}_PENDING`:
+    case `${GET_MATERIAL_CATEGORY_LIST}_PENDING`:
     case `${GET_STORE_KEEPER_LIST}_PENDING`:
     case `${GET_STORE_KEEPER_DETAILS}_PENDING`:
     case `${CREATE_STOREKEEPER_ORDER}_PENDING`:
@@ -340,6 +349,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${DELETE_ISSUE}_REJECTED`:
     case `${GET_MATERIAL_INDENT_LIST}_REJECTED`:
     case `${GET_MATERIAL_INDENT_DETAILS}_REJECTED`:
+    case `${GET_MATERIAL_CATEGORY_LIST}_REJECTED`:
     case `${GET_STORE_KEEPER_LIST}_REJECTED`:
     case `${GET_STORE_KEEPER_DETAILS}_REJECTED`:
     case `${CREATE_STOREKEEPER_ORDER}_REJECTED`:

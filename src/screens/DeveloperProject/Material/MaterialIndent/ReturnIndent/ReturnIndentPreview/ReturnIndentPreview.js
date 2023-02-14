@@ -191,8 +191,8 @@ function ReturnIndentPreview(props) {
     });
   };
 
-  const getList = () => {
-    getMaterialIndentList({
+  const getList = async () => {
+    await getMaterialIndentList({
       project_id: selectedProject.id,
     });
   };

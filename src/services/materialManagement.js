@@ -133,6 +133,9 @@ export default function useMaterialManagement() {
     getMaterialIndentList: data => {
       return instance.post('/material/indentlist', data, params);
     },
+    getMaterialIndentCategoryList: data => {
+      return instance.post('/get_material_by_wbs_works_id', data, params);
+    },
     getIndentDetails: data => {
       return instance.post('/material/issuereuestdetails', data, params);
     },
