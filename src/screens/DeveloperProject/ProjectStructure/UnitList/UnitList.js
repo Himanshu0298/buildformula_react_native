@@ -1,9 +1,8 @@
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {FlatList, StyleSheet, View} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-
 import {
   Caption,
   Divider,
@@ -72,6 +71,7 @@ const UnitCard = ({item, navigation}) => {
 
 function UnitList(props) {
   const {navigation} = props;
+
   return (
     <View style={styles.mainContainer}>
       <Subheading> Unit List</Subheading>

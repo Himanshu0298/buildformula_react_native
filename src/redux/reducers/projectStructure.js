@@ -23,6 +23,7 @@ import {
   GET_PICK_UP_LIST,
   GET_PROJECT_DETAILS,
   GET_PROJECT_LIST,
+  GET_PROJECT_CATEGORIES,
   GET_PROJECT_MASTER_LIST,
   GET_SELECTED_PROJECT,
   GET_SUB_MODULE_LIST,
@@ -48,6 +49,7 @@ const initialState = {
   refreshing: false,
   errorMessage: undefined,
   projectList: [],
+  categoriesList: [],
   projectDetails: {},
   towerList: [],
   moduleList: [],
@@ -71,6 +73,13 @@ const reducer = (state = initialState, action = {}) => {
       return {
         ...state,
         projectList: payload.sort((a, b) => b.id - a.id),
+        loading: false,
+      };
+    }
+    case `${GET_PROJECT_CATEGORIES}_FULFILLED`: {
+      return {
+        ...state,
+        categoriesList: payload.sort((a, b) => b.id - a.id),
         loading: false,
       };
     }
@@ -139,6 +148,7 @@ const reducer = (state = initialState, action = {}) => {
     }
 
     case `${GET_PROJECT_LIST}_PENDING`:
+    case `${GET_PROJECT_CATEGORIES}_PENDING`:
     case `${DELETE_PROJECT}_PENDING`:
     case `${ADD_PROJECT}_PENDING`:
     case `${UPDATE_PROJECT_DETAILS}_PENDING`:
@@ -221,6 +231,7 @@ const reducer = (state = initialState, action = {}) => {
       };
 
     case `${GET_PROJECT_LIST}_REJECTED`:
+    case `${GET_PROJECT_CATEGORIES}_REJECTED`:
     case `${DELETE_PROJECT}_REJECTED`:
     case `${ADD_PROJECT}_REJECTED`:
     case `${UPDATE_PROJECT_DETAILS}_REJECTED`:

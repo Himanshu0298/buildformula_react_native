@@ -1,11 +1,14 @@
-import {ScrollView, StyleSheet, Text, View} from 'react-native';
-import React from 'react';
-import {IconButton, Subheading, Switch, Title} from 'react-native-paper';
+import {ScrollView, StyleSheet, View} from 'react-native';
+import React, {useMemo, useEffect, useState} from 'react';
+import {IconButton, Title} from 'react-native-paper';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import RenderInput from 'components/Atoms/RenderInput';
 import RenderSelect from 'components/Atoms/RenderSelect';
 import ActionButtons from 'components/Atoms/ActionButtons';
+
+import useProjectStructureActions from 'redux/actions/projectStructureActions';
+import {useSelector} from 'react-redux';
 
 // =======> User will be redirected to this page from ProjectStructureDetails screen also <==========
 
@@ -44,7 +47,60 @@ const AddressData = {
 };
 
 const RenderForm = props => {
-  const {options, navigation, formikProps} = props;
+  const {
+    options,
+    navigation,
+    formikProps,
+    projectList,
+    towerList,
+    categoriesList,
+    floorList,
+    selectedProject,
+    getTowerList,
+    getFloorList,
+  } = props;
+
+  const [towerOptions, setTowerOptions] = useState([]);
+  const [towerId, setTowerId] = useState();
+
+  const projectOptions = useMemo(() => {
+    return projectList
+      ?.filter(i => i.status === 1)
+      ?.map(i => ({label: i.project_name, value: i.id}));
+  }, [projectList]);
+
+  const getTowers = async value => {
+    setFieldValue('projectName', value);
+    setTowerId(value);
+    await getTowerList({project_id: selectedProject.id, id: value});
+  };
+
+  const categoryOptions = useMemo(() => {
+    return categoriesList
+      ?.filter(i => i.status === 1)
+      ?.map(i => ({label: i.title, value: i.id}));
+  }, [categoriesList]);
+
+  const loadTowers = async value => {
+    setFieldValue('projectCategory', value);
+    return value === 1
+      ? setTowerOptions(towerList?.map(i => ({label: i.label, value: i.id})))
+      : undefined;
+  };
+
+  const loadFloors = async value => {
+    setFieldValue('selectTower', value);
+    await getFloorList({
+      project_id: selectedProject.id,
+      id: towerId,
+      tower_id: value,
+    });
+  };
+
+  const floorOptions = useMemo(() => {
+    return floorList?.map(i => ({label: i.floor, value: i.id}));
+  }, [floorList]);
+
   const {
     values,
     errors,
@@ -64,40 +120,34 @@ const RenderForm = props => {
           name="projectName"
           label="Project Name"
           value={values.projectName}
-          options={options}
+          options={projectOptions}
           containerStyles={styles.inputStyles}
           onBlur={handleBlur('projectName')}
-          onSelect={value => {
-            setFieldValue('projectName', value);
-          }}
+          onSelect={getTowers}
         />
         <RenderSelect
           name="projectCategory"
           label="Project Category"
           value={values.projectCategory}
-          options={options}
+          options={categoryOptions}
           containerStyles={styles.inputStyles}
           onBlur={handleBlur('projectCategory')}
-          onSelect={value => {
-            setFieldValue('projectCategory', value);
-          }}
+          onSelect={loadTowers}
         />
         <RenderSelect
           name="selectTower"
           label="Select Tower"
           value={values.selectTower}
-          options={options}
+          options={towerOptions}
           containerStyles={styles.inputStyles}
           onBlur={handleBlur('selectTower')}
-          onSelect={value => {
-            setFieldValue('selectTower', value);
-          }}
+          onSelect={loadFloors}
         />
         <RenderSelect
           name="selectFloor"
           label="Select Floor"
           value={values.selectFloor}
-          options={options}
+          options={floorOptions}
           containerStyles={styles.inputStyles}
           onBlur={handleBlur('selectFloor')}
           onSelect={value => {
@@ -190,6 +240,24 @@ const AddUnit = props => {
   const {navigation} = props;
   const options = ['Science City Rd', 'Sola Rd', 'Bhadaj'];
 
+  const {getProjectList, getProjectCategory, getTowerList, getFloorList} =
+    useProjectStructureActions();
+
+  const {selectedProject} = useSelector(s => s.project);
+  const {projectList, towerList, categoriesList, floorList} = useSelector(
+    s => s.projectStructure,
+  );
+
+  useEffect(() => {
+    loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const loadData = async () => {
+    await getProjectList({project_id: selectedProject.id});
+    await getProjectCategory({project_id: selectedProject.id});
+  };
+
   const onSubmit = values => {
     console.log(values);
   };
@@ -213,6 +281,8 @@ const AddUnit = props => {
           initialValues={{
             projectName: '',
             builderName: '',
+            selectTower: '',
+            selectFloor: '',
             area: '',
           }}
           validationSchema={schema}
@@ -222,6 +292,13 @@ const AddUnit = props => {
               formikProps={formikProps}
               {...props}
               options={options}
+              projectList={projectList}
+              towerList={towerList}
+              categoriesList={categoriesList}
+              floorList={floorList}
+              selectedProject={selectedProject}
+              getTowerList={getTowerList}
+              getFloorList={getFloorList}
             />
           )}
         </Formik>
@@ -257,22 +334,5 @@ const styles = StyleSheet.create({
   },
   formContainer: {
     flex: 1,
-  },
-  extraDetailsRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginVertical: 10,
-    alignItems: 'center',
-  },
-  extraDetailsSwitchWrap: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: 100,
-    marginVertical: 5,
-  },
-  switchtxt: {
-    color: '#07CA03',
-    marginLeft: 10,
-    width: 60,
   },
 });
