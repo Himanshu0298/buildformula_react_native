@@ -1,5 +1,5 @@
 import {StyleSheet, View, SafeAreaView, Modal, ScrollView} from 'react-native';
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useMemo} from 'react';
 import {Button, Caption, Subheading, Text} from 'react-native-paper';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -15,7 +15,7 @@ import {isEqual, isNumber} from 'lodash';
 import {Formik} from 'formik';
 
 function AddMaterialDialog(props) {
-  const {handleClose, edit, formikProps} = props;
+  const {handleClose, edit, formikProps, categoryList} = props;
 
   const {materialCategories, materialSubCategories} = useSelector(
     s => s.materialManagement,
@@ -32,12 +32,17 @@ function AddMaterialDialog(props) {
     setFieldValue,
     handleSubmit,
   } = formikProps;
+
   const categoryOptions = useMemo(() => {
-    return materialCategories?.map(i => ({
-      label: `${i.title}`,
-      value: i.id,
-    }));
-  }, [materialCategories]);
+    const categories = [...new Set(categoryList.map(i => i.category_id))];
+
+    return materialCategories
+      ?.filter(i => categories.includes(i.id))
+      ?.map(i => ({
+        label: `${i.title}`,
+        value: i.id,
+      }));
+  }, [categoryList, materialCategories]);
 
   const subCategoryOptions = useMemo(() => {
     return materialSubCategories
@@ -201,16 +206,21 @@ function AddIssueIndentMaterials(props) {
 
   const alert = useAlert();
 
-  const getDetails = () =>
-    getIndentDetails({
+  const getDetails = async () => {
+    await getIndentDetails({
       project_id: selectedProject.id,
       material_indent_id: id,
     });
+  };
 
-  const {getPRMaterialCategories, getIndentDetails, addMaterialIssueRequest} =
-    useMaterialManagementActions();
+  const {
+    getPRMaterialCategories,
+    getIndentDetails,
+    addMaterialIssueRequest,
+    getMaterialIndentCategoryList,
+  } = useMaterialManagementActions();
 
-  const {indentDetails, materialSubCategories} = useSelector(
+  const {indentDetails, materialSubCategories, categoryList} = useSelector(
     s => s.materialManagement,
   );
 
@@ -225,9 +235,17 @@ function AddIssueIndentMaterials(props) {
 
   useEffect(() => {
     getPRMaterialCategories({project_id: projectId});
+    getCategory();
     getDetails();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const getCategory = () => {
+    getMaterialIndentCategoryList({
+      project_id: projectId,
+      wbs_works_id: wbs_id,
+    });
+  };
 
   useEffect(() => {
     if (!isEqual(materialsItems, materials)) {
@@ -327,6 +345,7 @@ function AddIssueIndentMaterials(props) {
               formikProps={formikProps}
               edit={edit}
               wbs_id={wbs_id}
+              categoryList={categoryList}
             />
           )}
         </Formik>

@@ -30,7 +30,6 @@ import {
   GET_WORK_SUB_WORK_LIST,
   UPDATE_STORE_KEEPER_STATUS,
   GET_MATERIAL_INDENT_DETAILS,
-  DELETE_ISSUE,
   ADD_ISSUE_REQUEST,
   ADD_RETURN_REQUEST,
   ADD_MATERIAL_ISSUE_REQUEST,
@@ -42,6 +41,8 @@ import {
   UPDATE_PR,
   UPDATE_ISSUE_ASSIGN_QUANTITY,
   GET_MATERIAL_CATEGORY_LIST,
+  DELETE_INDENT_ITEM,
+  DELETE_ISSUE,
 } from '../actions/actionTypes';
 
 const initialState = {
@@ -274,6 +275,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${GET_WORK_SUB_WORK_LIST}_PENDING`:
     case `${GET_VENDOR_OR_CONTRACTORS_DETAILS}_PENDING`:
     case `${ADD_SUPPLIER}_PENDING`:
+    case `${DELETE_INDENT_ITEM}_PENDING`:
     case `${GET_SUPPLIERS_LIST}_PENDING`: {
       return {
         ...state,
@@ -305,6 +307,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${DELETE_CHALLAN}_FULFILLED`:
     case `${ADD_ATTACHMENT}_FULFILLED`:
     case `${CREATE_STOREKEEPER_ORDER}_FULFILLED`:
+    case `${DELETE_INDENT_ITEM}_FULFILLED`:
     case `${UPDATE_STORE_KEEPER_STATUS}_FULFILLED`: {
       return {
         ...state,
@@ -353,6 +356,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${GET_STORE_KEEPER_LIST}_REJECTED`:
     case `${GET_STORE_KEEPER_DETAILS}_REJECTED`:
     case `${CREATE_STOREKEEPER_ORDER}_REJECTED`:
+    case `${DELETE_INDENT_ITEM}_REJECTED`:
     case `${UPDATE_STORE_KEEPER_STATUS}_REJECTED`: {
       return {
         ...state,

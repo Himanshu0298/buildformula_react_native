@@ -1,4 +1,4 @@
-import {StyleSheet, View, Image} from 'react-native';
+import {StyleSheet, View, Image, ScrollView} from 'react-native';
 import {theme} from 'styles/theme';
 import * as Yup from 'yup';
 
@@ -31,39 +31,33 @@ const RenderAttachments = props => {
   const {attachments, handleDelete} = props;
 
   return (
-    <View>
-      <View style={styles.cardContainer}>
-        <View style={styles.renderFileContainer}>
-          <Text style={styles.attachmentFileHeader}>Attachments</Text>
-        </View>
-        {attachments?.map((attachment, index) => {
-          return (
-            <View key={attachment.name}>
-              <View style={styles.sectionContainer}>
-                <Image source={FileIcon} style={styles.fileIcon} />
-                <View>
-                  <Text
-                    style={(styles.verticalFlex, styles.text)}
-                    numberOfLines={1}>
-                    {attachment.name}
-                  </Text>
-                </View>
-              </View>
-              <OpacityButton
-                opacity={0.1}
-                color={theme.colors.error}
-                style={styles.closeButton}
-                onPress={() => handleDelete(index)}>
-                <MaterialIcon
-                  name="close"
-                  color={theme.colors.error}
-                  size={17}
-                />
-              </OpacityButton>
-            </View>
-          );
-        })}
+    <View style={styles.cardContainer}>
+      <View style={styles.renderFileContainer}>
+        <Text style={styles.attachmentFileHeader}>Attachments</Text>
       </View>
+      {attachments?.map((attachment, index) => {
+        return (
+          <View key={attachment.name}>
+            <View style={styles.sectionContainer}>
+              <Image source={FileIcon} style={styles.fileIcon} />
+              <View>
+                <Text
+                  style={(styles.verticalFlex, styles.text)}
+                  numberOfLines={1}>
+                  {attachment.name}
+                </Text>
+              </View>
+            </View>
+            <OpacityButton
+              opacity={0.1}
+              color={theme.colors.error}
+              style={styles.closeButton}
+              onPress={() => handleDelete(index)}>
+              <MaterialIcon name="close" color={theme.colors.error} size={17} />
+            </OpacityButton>
+          </View>
+        );
+      })}
     </View>
   );
 };
@@ -100,71 +94,74 @@ function AttachmentsForm(props) {
   const {navigation} = props;
   return (
     <View style={styles.container}>
-      <View style={styles.subContainer}>
-        <View style={styles.headerContainer}>
-          <View style={styles.dataRow}>
-            <IconButton
-              icon="keyboard-backspace"
-              size={22}
-              color={theme.colors.primary}
-              style={styles.backButton}
-              onPress={() => navigation.goBack()}
-            />
-            <Subheading style={styles.headerText}>
-              Issue Order Conformation
-            </Subheading>
+      <ScrollView showsVerticalScrollIndicator={false} style={{flexGrow: 1}}>
+        <View style={styles.subContainer}>
+          <View style={styles.headerContainer}>
+            <View style={styles.dataRow}>
+              <IconButton
+                icon="keyboard-backspace"
+                size={22}
+                color={theme.colors.primary}
+                style={styles.backButton}
+                onPress={() => navigation.goBack()}
+              />
+              <Subheading style={styles.headerText}>
+                Issue Order Conformation
+              </Subheading>
+            </View>
           </View>
-        </View>
-        <View style={styles.issueTime}>
-          <Text>Issue Time: </Text>
-          <Text> {date}</Text>
-        </View>
-        <RenderTextBox
-          name="storekeeper_remark"
-          blurOnSubmit={false}
-          numberOfLines={7}
-          label="Remark"
-          containerStyles={styles.inputStyles}
-          value={values.storekeeper_remark}
-          onChangeText={handleChange('storekeeper_remark')}
-          onBlur={handleBlur('storekeeper_remark')}
-          error={errors.storekeeper_remark}
-          onSubmitEditing={handleSubmit}
-        />
-        <View>
-          <View style={styles.imageInput}>
-            <Text style={{color: theme.colors.primary}}>
-              Upload Material Image
-            </Text>
-            <OpacityButton
-              onPress={handleUpload}
-              opacity={0.1}
-              style={styles.uploadButton}
-              color="#fff">
-              <Text style={{color: theme.colors.primary}}>Upload File</Text>
-            </OpacityButton>
-            <RenderError error={errors.attachments} />
+          <View style={styles.issueTime}>
+            <Text>Issue Time: </Text>
+            <Text> {date}</Text>
           </View>
-          {values.attachments?.length ? (
-            <RenderAttachments
-              attachments={values.attachments}
-              handleDelete={i => handleDelete(i)}
-            />
-          ) : null}
-        </View>
+          <RenderTextBox
+            name="storekeeper_remark"
+            blurOnSubmit={false}
+            numberOfLines={7}
+            label="Remark"
+            containerStyles={styles.inputStyles}
+            value={values.storekeeper_remark}
+            onChangeText={handleChange('storekeeper_remark')}
+            onBlur={handleBlur('storekeeper_remark')}
+            error={errors.storekeeper_remark}
+            onSubmitEditing={handleSubmit}
+          />
+          <View>
+            <View style={styles.imageInput}>
+              <Text style={{color: theme.colors.primary}}>
+                Upload Material Image
+              </Text>
+              <OpacityButton
+                onPress={handleUpload}
+                opacity={0.1}
+                style={styles.uploadButton}
+                color="#fff">
+                <Text style={{color: theme.colors.primary}}>Upload File</Text>
+              </OpacityButton>
+              <RenderError error={errors.attachments} />
+            </View>
+            {values.attachments?.length ? (
+              <RenderAttachments
+                attachments={values.attachments}
+                handleDelete={i => handleDelete(i)}
+              />
+            ) : null}
+          </View>
 
-        <RenderInput
-          name="verification_code"
-          label="Enter Verification Code"
-          containerStyles={styles.inputStyles}
-          value={values.verification_code}
-          onChangeText={handleChange('verification_code')}
-          onBlur={handleBlur('verification_code')}
-          autoCapitalize="none"
-          returnKeyType="next"
-          error={errors.verification_code}
-        />
-      </View>
+          <RenderInput
+            name="verification_code"
+            label="Enter Verification Code"
+            containerStyles={styles.inputStyles}
+            value={values.verification_code}
+            onChangeText={handleChange('verification_code')}
+            onBlur={handleBlur('verification_code')}
+            autoCapitalize="none"
+            returnKeyType="next"
+            error={errors.verification_code}
+          />
+        </View>
+      </ScrollView>
+
       <ActionButtons
         onSubmit={handleSubmit}
         submitLabel="Save"
@@ -179,11 +176,17 @@ const IssueIndent = props => {
 
   const {ID} = route.params;
 
-  const {CreateStoreKeeperOrder} = useMaterialManagementActions();
+  const {CreateStoreKeeperOrder, getStoreKeeperList} =
+    useMaterialManagementActions();
 
   const {selectedProject} = useSelector(s => s.project);
 
   const date = moment().utcOffset('+05:30').format(' hh:mm a , YYYY-MM-DD ');
+
+  React.useEffect(() => {
+    getStoreKeeperList({project_id: selectedProject.id});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleIssueOrder = async values => {
     const formData = new FormData();
@@ -225,7 +228,6 @@ const styles = StyleSheet.create({
 
   container: {
     flexGrow: 1,
-    flex: 1,
     margin: 20,
   },
   subContainer: {
@@ -236,12 +238,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    flexGrow: 1,
   },
 
   issueTime: {
     flexDirection: 'row',
     alignItems: 'center',
     marginVertical: 15,
+    flexGrow: 1,
   },
 
   uploadButton: {
@@ -311,6 +315,7 @@ const styles = StyleSheet.create({
 
   imageInput: {
     marginTop: 20,
+    flexGrow: 1,
   },
 });
 

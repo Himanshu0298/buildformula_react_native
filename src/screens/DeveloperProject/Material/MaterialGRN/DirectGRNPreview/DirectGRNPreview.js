@@ -21,6 +21,7 @@ import {useDownload} from 'components/Atoms/Download';
 import {theme} from 'styles/theme';
 import dayjs from 'dayjs';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
+import {getDownloadUrl} from 'utils/download';
 import Header from '../../CommonComponents/Header';
 
 import VehicleInfo from '../../DeliveryDetails/Components/VehicleInfo';
@@ -64,8 +65,9 @@ const Attachments = props => {
 
   const download = useDownload();
 
-  const onPressFile = async fileUrl => {
-    const name = fileUrl.split('/').pop();
+  const onPressFile = async file => {
+    const fileUrl = getDownloadUrl(file);
+    const name = getFileName(file);
 
     download.link({
       name,
@@ -86,13 +88,13 @@ const Attachments = props => {
           return (
             <TouchableOpacity
               style={styles.sectionContainer}
-              onPress={() => onPressFile(file.image_url)}>
+              onPress={() => onPressFile(file.image_type)}>
               <Image source={FileIcon} style={styles.fileIcon} />
               <View>
                 <Text
                   style={[styles.verticalFlex, styles.text]}
                   numberOfLines={2}>
-                  {getFileName(file?.image_url)}
+                  {getFileName(file?.image_type)}
                   {index + 1}
                 </Text>
               </View>

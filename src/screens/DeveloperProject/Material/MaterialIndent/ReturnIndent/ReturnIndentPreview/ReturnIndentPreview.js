@@ -94,7 +94,7 @@ const RequiredVendor = props => {
 };
 
 const MaterialCard = props => {
-  const {item} = props;
+  const {item, handleDeleteItem} = props;
 
   const {
     materialcategrytitle,
@@ -105,11 +105,21 @@ const MaterialCard = props => {
   } = item;
   return (
     <View style={styles.cardContainer}>
-      <View style={styles.dataRow}>
-        <Caption style={styles.lightData}>Category:</Caption>
-        <Text>{materialcategrytitle}</Text>
+      <View style={styles.cardHeaderStyle}>
+        <View style={styles.dataRow}>
+          <Caption style={styles.lightData}>Category:</Caption>
+          <Text>{materialcategrytitle}</Text>
+        </View>
+        <View>
+          <OpacityButton
+            color="#FF5D5D"
+            opacity={0.18}
+            onPress={() => handleDeleteItem(item)}
+            style={styles.deleteIcon}>
+            <MaterialIcons name="delete" color="#FF5D5D" size={13} />
+          </OpacityButton>
+        </View>
       </View>
-
       <View style={styles.dataRow}>
         <Caption style={styles.lightData}>Sub Category:</Caption>
         <Text>{subcategorytitle}</Text>
@@ -166,8 +176,12 @@ function ReturnIndentPreview(props) {
 
   const alert = useAlert();
 
-  const {getIndentDetails, deleteIssue, getMaterialIndentList} =
-    useMaterialManagementActions();
+  const {
+    getIndentDetails,
+    deleteIssue,
+    getMaterialIndentList,
+    deleteIndentItem,
+  } = useMaterialManagementActions();
 
   const {selectedProject} = useSelector(s => s.project);
   const {indentDetails, loading} = useSelector(s => s.materialManagement);
@@ -184,8 +198,8 @@ function ReturnIndentPreview(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const getData = () => {
-    getIndentDetails({
+  const getData = async () => {
+    await getIndentDetails({
       project_id: selectedProject.id,
       material_indent_id: id,
     });
@@ -213,6 +227,21 @@ function ReturnIndentPreview(props) {
     });
   };
 
+  const handleDeleteItem = item => {
+    alert.show({
+      title: 'Confirm',
+      message: 'Are you sure you want to delete?',
+      confirmText: 'Delete',
+      onConfirm: () => {
+        deleteIndentItem({
+          project_id: selectedProject.id,
+          material_indent_details_id: item.id,
+        });
+        getData();
+      },
+    });
+  };
+
   return (
     <View style={styles.mainContainer}>
       <Spinner visible={loading} />
@@ -220,7 +249,7 @@ function ReturnIndentPreview(props) {
         <View style={styles.container}>
           <IconButton
             icon="keyboard-backspace"
-            size={22}
+            size={16}
             color={theme.colors.primary}
             style={styles.backButton}
             onPress={() => navigation.goBack()}
@@ -275,7 +304,13 @@ function ReturnIndentPreview(props) {
 
         <View>
           {materialData?.map(item => {
-            return <MaterialCard item={item} navigation={navigation} />;
+            return (
+              <MaterialCard
+                item={item}
+                navigation={navigation}
+                handleDeleteItem={handleDeleteItem}
+              />
+            );
           })}
         </View>
         {returnAttachments?.length ? (
@@ -443,5 +478,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     maxWidth: 170,
     flex: 1,
+  },
+  deleteIcon: {
+    borderRadius: 20,
+  },
+  cardHeaderStyle: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
 });

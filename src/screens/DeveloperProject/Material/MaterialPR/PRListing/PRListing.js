@@ -57,7 +57,7 @@ const ListingCard = props => {
 function PRListing(props) {
   const {navigation} = props;
 
-  const {getPRMaterialOrderList} = useMaterialManagementActions();
+  const {getMaterialPR} = useMaterialManagementActions();
 
   const {PRList = [], loading} = useSelector(s => s.materialManagement);
   const {selectedProject} = useSelector(s => s.project);
@@ -67,8 +67,7 @@ function PRListing(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const getData = () =>
-    getPRMaterialOrderList({project_id: selectedProject.id});
+  const getData = () => getMaterialPR({project_id: selectedProject.id});
 
   const renderEmpty = () => <NoResult />;
 

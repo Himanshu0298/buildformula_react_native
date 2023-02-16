@@ -35,7 +35,7 @@ export default function useMaterialManagementActions() {
     createMaterialPR,
     getPRMaterialDetails,
     getWorkSubWorkList,
-    getPRMaterialOrderList,
+    getMaterialPR,
     updateStoreKeeperStatus,
     getIndentDetails,
     AddPR,
@@ -51,6 +51,7 @@ export default function useMaterialManagementActions() {
     addSupplier,
     updateIssueQuantity,
     getMaterialIndentCategoryList,
+    deleteIndentItem,
   } = useMaterialManagement();
 
   return {
@@ -173,12 +174,12 @@ export default function useMaterialManagementActions() {
 
     // Material PR
 
-    getPRMaterialOrderList: data =>
+    getMaterialPR: data =>
       dispatch({
         type: types.GET_PR_MATERIAL_ORDER_LIST,
         payload: async () => {
           try {
-            const response = _res(await getPRMaterialOrderList(data));
+            const response = _res(await getMaterialPR(data));
             return Promise.resolve(response.data);
           } catch (error) {
             const message = _err(error);
@@ -609,6 +610,21 @@ export default function useMaterialManagementActions() {
           }
         },
       }),
+    deleteIndentItem: data =>
+      dispatch({
+        type: types.DELETE_INDENT_ITEM,
+        payload: async () => {
+          try {
+            const res = _res(await deleteIndentItem(data));
+            snackbar.showMessage({message: res.msg});
+            return Promise.resolve(res.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
 
     addIssueRequest: data =>
       dispatch({
@@ -629,7 +645,6 @@ export default function useMaterialManagementActions() {
         type: types.ADD_ISSUE_REQUEST,
         payload: async () => {
           try {
-            console.log(' the api has been called ===========>');
             const response = _res(await addMaterialIssueRequest(data));
             return Promise.resolve(response.data);
           } catch (error) {

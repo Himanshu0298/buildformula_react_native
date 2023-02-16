@@ -226,21 +226,27 @@ function AddReturnIndentMaterials(props) {
 
   const alert = useAlert();
 
+  const getDetails = () =>
+    getIndentDetails({
+      project_id: selectedProject.id,
+      material_indent_id: id,
+    });
+
   const {getPRMaterialCategories, getIndentDetails, addMaterialIssueRequest} =
     useMaterialManagementActions();
-
-  const materialsItems = indentDetails?.material_indent_details;
-
-  const [addDialog, setAddDialog] = React.useState(false);
-  const [selectedMaterialIndex, setSelectedMaterialIndex] = React.useState();
-  const [materials, setMaterials] = React.useState(materialsItems || []);
 
   const {indentDetails, materialSubCategories} = useSelector(
     s => s.materialManagement,
   );
 
+  const materialsItems = indentDetails?.material_indent_details;
+
   const {selectedProject} = useSelector(s => s.project);
   const projectId = selectedProject.id;
+
+  const [addDialog, setAddDialog] = React.useState(false);
+  const [selectedMaterialIndex, setSelectedMaterialIndex] = React.useState();
+  const [materials, setMaterials] = React.useState(materialsItems || []);
 
   useEffect(() => {
     getPRMaterialCategories({project_id: projectId});
@@ -254,12 +260,6 @@ function AddReturnIndentMaterials(props) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [materialsItems]);
-
-  const getDetails = () =>
-    getIndentDetails({
-      project_id: selectedProject.id,
-      material_indent_id: id,
-    });
 
   const initialValues = useMemo(() => {
     if (isNumber(selectedMaterialIndex)) {

@@ -158,7 +158,15 @@ const RequiredVendor = props => {
 };
 
 function AssignMaterialCard(props) {
-  const {item, index, showEdit, showDetail, toggleDialog, isApproved} = props;
+  const {
+    item,
+    index,
+    showEdit,
+    showDetail,
+    toggleDialog,
+    isApproved,
+    handleDeleteItem,
+  } = props;
 
   const {
     materialcategrytitle,
@@ -173,9 +181,20 @@ function AssignMaterialCard(props) {
 
   return (
     <View style={styles.cardContainer}>
-      <View style={styles.dataRow}>
-        <Caption style={styles.lightData}>Category:</Caption>
-        <Text>{materialcategrytitle}</Text>
+      <View style={styles.cardHeaderStyle}>
+        <View style={styles.dataRow}>
+          <Caption style={styles.lightData}>Category:</Caption>
+          <Text>{materialcategrytitle}</Text>
+        </View>
+        <View>
+          <OpacityButton
+            color="#FF5D5D"
+            opacity={0.18}
+            onPress={() => handleDeleteItem(item)}
+            style={styles.deleteIcon}>
+            <MaterialIcons name="delete" color="#FF5D5D" size={13} />
+          </OpacityButton>
+        </View>
       </View>
       <View style={styles.dataRow}>
         <Caption style={styles.lightData}>Sub Category:</Caption>
@@ -240,6 +259,7 @@ function IssueIndentPreview(props) {
     deleteIssue,
     getMaterialIndentList,
     updateIssueQuantity,
+    deleteIndentItem,
   } = useMaterialManagementActions();
 
   const {selectedProject} = useSelector(s => s.project);
@@ -266,8 +286,8 @@ function IssueIndentPreview(props) {
   const toggleDetail = () => setShowDetail(v => !v);
   const toggleDialog = v => setSelectedItemIndex(v);
 
-  const getData = () => {
-    getIndentDetails({
+  const getData = async () => {
+    await getIndentDetails({
       project_id: selectedProject.id,
       material_indent_id: id,
     });
@@ -290,6 +310,20 @@ function IssueIndentPreview(props) {
         });
         getList();
         navigation.goBack();
+      },
+    });
+  };
+  const handleDeleteItem = item => {
+    alert.show({
+      title: 'Confirm',
+      message: 'Are you sure you want to delete?',
+      confirmText: 'Delete',
+      onConfirm: () => {
+        deleteIndentItem({
+          project_id: selectedProject.id,
+          material_indent_details_id: item.id,
+        });
+        getData();
       },
     });
   };
@@ -349,7 +383,6 @@ function IssueIndentPreview(props) {
   return (
     <>
       <Spinner visible={loading || details} textContent="" />
-
       <AssignQtyDialog
         {...props}
         visible={isNumber(selectedItemIndex)}
@@ -362,7 +395,7 @@ function IssueIndentPreview(props) {
           <View style={styles.dataRow}>
             <IconButton
               icon="keyboard-backspace"
-              size={22}
+              size={16}
               color={theme.colors.primary}
               style={styles.backButton}
               onPress={() => navigation.goBack()}
@@ -433,6 +466,7 @@ function IssueIndentPreview(props) {
                     showDetail={showDetail}
                     showEdit={isPending}
                     isApproved={isApproved}
+                    handleDeleteItem={handleDeleteItem}
                   />
                 );
               })}
@@ -594,5 +628,13 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     paddingBottom: 50,
+  },
+  deleteIcon: {
+    borderRadius: 20,
+  },
+  cardHeaderStyle: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
 });

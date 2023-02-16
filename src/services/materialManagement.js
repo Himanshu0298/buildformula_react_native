@@ -42,9 +42,6 @@ export default function useMaterialManagement() {
     getSelectMaterialChallan: data => {
       return instance.post('/getChallanMaterial', data, params);
     },
-    getPRMaterialOrderList: data => {
-      return instance.post('/material_purchase_request/list', data, params);
-    },
     getPRMaterialDetails: data => {
       return instance.post('/material_purchase_request/detail', data, params);
     },
@@ -166,6 +163,9 @@ export default function useMaterialManagement() {
     },
     deleteIssue: data => {
       return instance.post('/material/issuedelete', data, params);
+    },
+    deleteIndentItem: data => {
+      return instance.post('/indent/materialdeleteitem', data, params);
     },
     // Material StoreKeeper
 

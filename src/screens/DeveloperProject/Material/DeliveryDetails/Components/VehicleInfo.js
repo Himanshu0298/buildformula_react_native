@@ -7,14 +7,16 @@ import FileViewer from 'react-native-file-viewer';
 
 import {getFileName} from 'utils/constant';
 import {useDownload} from 'components/Atoms/Download';
+import {getDownloadUrl} from 'utils/download';
 
 const InvoiceAttachments = props => {
   const {invoiceImages = []} = props;
 
   const download = useDownload();
 
-  const onPressFile = async fileUrl => {
-    const name = fileUrl.split('/').pop();
+  const onPressFile = async file => {
+    const fileUrl = getDownloadUrl(file);
+    const name = getFileName(file);
 
     download.link({
       name,
@@ -56,8 +58,9 @@ const VehicleImages = props => {
 
   const download = useDownload();
 
-  const onPressFile = async fileUrl => {
-    const name = fileUrl.split('/').pop();
+  const onPressFile = async file => {
+    const fileUrl = getDownloadUrl(file);
+    const name = getFileName(file);
 
     download.link({
       name,
@@ -68,7 +71,6 @@ const VehicleImages = props => {
       },
     });
   };
-
   return (
     <>
       <Subheading style={styles.challanHeading}> Vehicle Images</Subheading>
@@ -83,7 +85,7 @@ const VehicleImages = props => {
               <Text
                 style={[styles.verticalFlex, styles.text]}
                 numberOfLines={2}>
-                {getFileName(file?.image_url)}
+                {file?.image_url}
                 {index + 1}
               </Text>
             </View>
@@ -151,7 +153,7 @@ const VehicleInfo = props => {
                   style={(styles.verticalFlex, styles.text)}
                   numberOfLines={2}>
                   {/* Vehicle File {index + 1} */}
-                  {getFileName(item.image_url)}
+                  {item.image_url}
                 </Text>
               </View>
             </TouchableOpacity>
@@ -182,6 +184,7 @@ const styles = StyleSheet.create({
   },
   text: {
     marginLeft: 5,
+    marginRight: 10,
   },
   container: {
     padding: 10,

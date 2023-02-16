@@ -28,6 +28,7 @@ import dayjs from 'dayjs';
 import FileViewer from 'react-native-file-viewer';
 
 import {useDownload} from 'components/Atoms/Download';
+import {getDownloadUrl, getFileName} from 'utils/download';
 import ApproveButtons from '../components/ApprovalButtons';
 
 const STORE_KEEPER_STATUS = {
@@ -48,18 +49,17 @@ const STORE_KEEPER_DETAILS_STATUS = {
 };
 
 const RenderAttachments = props => {
-  const {storeKeeperDetails} = props;
-
-  const attachments = storeKeeperDetails?.indent_details?.storekeeper_files;
+  const {attachments} = props;
 
   const download = useDownload();
 
-  const onPressFile = async file_name => {
-    const name = file_name.split('/').pop();
+  const onPressFile = async file => {
+    const fileUrl = getDownloadUrl(file);
+    const name = getFileName(file);
 
     download.link({
       name,
-      link: file_name,
+      link: fileUrl,
       showAction: false,
       onFinish: ({dir}) => {
         FileViewer.open(`file://${dir}`);
@@ -98,7 +98,7 @@ const RenderAttachments = props => {
                   <OpacityButton
                     opacity={0.0}
                     style={styles.closeButton}
-                    onPress={onPressFile}>
+                    onPress={() => onPressFile(attachment.file_name)}>
                     <MaterialCommunityIcons
                       name="download"
                       color={theme.colors.primary}
@@ -183,7 +183,7 @@ const ListingCard = props => {
 };
 
 const RequiredVendor = props => {
-  const {storeKeeperDetails, TYPE} = props;
+  const {storeKeeperDetails, type} = props;
 
   const {contractor_name, contractor_email, remark, requred_date, requiredfor} =
     storeKeeperDetails?.indent_details?.material_indent || {};
@@ -197,7 +197,7 @@ const RequiredVendor = props => {
         <Text> {contractor_name}</Text>
         <Caption>{contractor_email}</Caption>
       </View>
-      {TYPE === 'afm' ? (
+      {type === 'afm' ? (
         <View style={styles.card}>
           <Text> Required Date</Text>
           <Caption>{requred_date} </Caption>
@@ -216,7 +216,7 @@ const RequiredVendor = props => {
 };
 
 const MaterialCard = props => {
-  const {item, updateStatus, authorizedstatus, modulePermission} = props;
+  const {item, updateStatus, authorizedstatus, modulePermission, type} = props;
 
   const {
     materialcategrytitle,
@@ -253,7 +253,6 @@ const MaterialCard = props => {
         <Caption style={styles.lightData}>Assigned Qty:</Caption>
         <Text style={styles.title}>{damaged_qty}</Text>
       </View>
-
       {rm_status !== 'pending' ? (
         <View style={styles.dataRow}>
           <Caption style={styles.lightData}>Status:</Caption>
@@ -263,12 +262,14 @@ const MaterialCard = props => {
       {modulePermission?.editor || modulePermission?.admin ? (
         requestStatus === 'Pending' ? (
           rm_status === 'pending' ? (
-            <ApproveButtons
-              rejectLabel="Reject"
-              approvedLabel="Approved"
-              onReject={() => updateStatus('rejected', id)}
-              onApprove={() => updateStatus('approved', id)}
-            />
+            type === 'rm' ? (
+              <ApproveButtons
+                rejectLabel="Reject"
+                approvedLabel="Approved"
+                onReject={() => updateStatus('rejected', id)}
+                onApprove={() => updateStatus('approved', id)}
+              />
+            ) : null
           ) : null
         ) : null
       ) : null}
@@ -280,7 +281,7 @@ function StoreKeeperPreview(props) {
   const {navigation, route} = props;
   const {id: ID, type} = route?.params || {};
 
-  const {getStoreKeeperDetails, updateStoreKeeperStatus} =
+  const {getStoreKeeperDetails, updateStoreKeeperStatus, getStoreKeeperList} =
     useMaterialManagementActions();
 
   const {storeKeeperDetails, loading} = useSelector(s => s.materialManagement);
@@ -294,10 +295,12 @@ function StoreKeeperPreview(props) {
   const {authorizedstatus} =
     storeKeeperDetails?.indent_details?.material_indent || {};
 
-  const attachments = storeKeeperDetails?.indent_details?.storekeeper_files;
+  const attachments = storeKeeperDetails?.indent_details?.return_indent_files;
 
   React.useEffect(() => {
     getStoreDetails();
+    getStoreKeeperList({project_id: selectedProject.id});
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -328,7 +331,7 @@ function StoreKeeperPreview(props) {
         <View style={styles.subContainer}>
           <IconButton
             icon="keyboard-backspace"
-            size={22}
+            size={16}
             color={theme.colors.primary}
             style={styles.backButton}
             onPress={() => navigation.goBack()}
@@ -376,6 +379,7 @@ function StoreKeeperPreview(props) {
                     updateStatus={updateStatus}
                     authorizedstatus={authorizedstatus}
                     modulePermission={modulePermission}
+                    type={type}
                   />
                 );
               })}
@@ -391,16 +395,19 @@ function StoreKeeperPreview(props) {
                   Material Image
                 </Subheading>
               </View>
-              <RenderAttachments storeKeeperDetails={storeKeeperDetails} />
+              <RenderAttachments
+                storeKeeperDetails={storeKeeperDetails}
+                attachments={attachments}
+              />
             </>
           )
         ) : null}
       </ScrollView>
-      {label === 'Issued' ? null : (
+      {label === 'Issued' ? null : type === 'afm' ? (
         <Button color="white" onPress={navToIssue} style={styles.button}>
           Issue Order
         </Button>
-      )}
+      ) : null}
     </View>
   );
 }
@@ -515,6 +522,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F2F4F5',
     borderRadius: 5,
     marginVertical: 7,
+    marginBottom: 10,
   },
 
   renderFileContainer: {

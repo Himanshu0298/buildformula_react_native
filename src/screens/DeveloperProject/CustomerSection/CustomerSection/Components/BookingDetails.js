@@ -24,6 +24,7 @@ import {Tabs} from 'react-native-collapsible-tab-view';
 import {useAlert} from 'components/Atoms/Alert';
 import useCustomerServices from 'services/customer';
 import {theme} from 'styles/theme';
+import {useSnackbar} from 'components/Atoms/Snackbar';
 
 const schema = Yup.object().shape({
   email: Yup.string('Required').required('Required'),
@@ -67,6 +68,8 @@ function RenderRow({row, style}) {
 function CustomerCredLogin(props) {
   const {bookingDetails, navigation, unitId} = props;
   const alert = useAlert();
+
+  const snackbar = useSnackbar();
 
   const {customer_phone, customer_email, id} = bookingDetails;
 
@@ -117,6 +120,15 @@ function CustomerCredLogin(props) {
     };
 
     updateCustomerLoginDetails(data);
+
+    if (data) {
+      snackbar.showMessage({
+        message:
+          'We have sent you OTP to your email and Mobile, Please verify it.',
+        variant: 'warning',
+      });
+    }
+
     handleCredEdit();
   };
 

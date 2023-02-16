@@ -20,11 +20,18 @@ const STORE_KEEPER_STATUS = {
   inspected: {label: 'Inspected', color: '#07CA03'},
 };
 
+const INDENT_TYPE = {
+  afm: {title: 'Issue Material'},
+  rm: {title: 'Return Material'},
+};
+
 const ListingCard = props => {
   const {item, navigation} = props;
 
   const {id, email, type, authorizedstatus, first_name, last_name, created} =
     item;
+
+  const {title} = INDENT_TYPE[type] || {};
 
   const navToPreview = () =>
     navigation.navigate('StoreKeeperPreview', {id, type});
@@ -36,7 +43,6 @@ const ListingCard = props => {
             <View style={styles.subContainer}>
               <Text>Indent ID</Text>
             </View>
-
             <Text style={styles.ID}>{id}</Text>
           </View>
           <View>
@@ -44,7 +50,7 @@ const ListingCard = props => {
               <Text> Type</Text>
             </View>
 
-            <Text>{type}</Text>
+            <Text>{title}</Text>
           </View>
           <View>
             <View style={styles.subContainer}>
@@ -119,6 +125,9 @@ function StoreKeeperList(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const loadInitialData = () =>
+    getStoreKeeperList({project_id: selectedProject.id});
+
   const renderEmpty = () => (
     <View style={styles.emptyContainer}>
       <Text>No Data found</Text>
@@ -137,7 +146,9 @@ function StoreKeeperList(props) {
           style={styles.flatList}
           data={storeKeeperList}
           extraData={storeKeeperList}
-          refreshControl={<RefreshControl refreshing={false} />}
+          refreshControl={
+            <RefreshControl refreshing={false} onRefresh={loadInitialData} />
+          }
           showsVerticalScrollIndicator={false}
           keyExtractor={i => i.id}
           ListEmptyComponent={renderEmpty}
@@ -197,12 +208,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   ID: {
-    width: 30,
     backgroundColor: '#E5EAFA',
-    padding: 5,
-    borderRadius: 10,
-    fontSize: 13,
+    paddingVertical: 5,
+    paddingLeft: 5,
+    borderRadius: 5,
+    fontSize: 10,
     color: 'rgba(72, 114, 244, 1)',
+    width: 35,
   },
   emptyContainer: {
     justifyContent: 'center',
