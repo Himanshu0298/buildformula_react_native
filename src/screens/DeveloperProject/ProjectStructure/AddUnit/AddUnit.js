@@ -10,8 +10,6 @@ import ActionButtons from 'components/Atoms/ActionButtons';
 import useProjectStructureActions from 'redux/actions/projectStructureActions';
 import {useSelector} from 'react-redux';
 
-// =======> User will be redirected to this page from ProjectStructureDetails screen also <==========
-
 const schema = Yup.object().shape({
   projectName: Yup.string()
     .label('projectName')
@@ -48,7 +46,6 @@ const AddressData = {
 
 const RenderForm = props => {
   const {
-    options,
     navigation,
     formikProps,
     projectOptions,
@@ -125,7 +122,7 @@ const RenderForm = props => {
           name="area"
           label="Select Area"
           value={values.area}
-          options={options}
+          options={[1, 2, 3, 4, 5]}
           containerStyles={styles.inputStyles}
           onBlur={handleBlur('area')}
           onSelect={value => {
