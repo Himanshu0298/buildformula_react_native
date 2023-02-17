@@ -13,9 +13,10 @@ import useMaterialManagementActions from 'redux/actions/materialManagementAction
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {isEqual, isNumber} from 'lodash';
 import {Formik} from 'formik';
+import {useSnackbar} from 'components/Atoms/Snackbar';
 
 function AddMaterialDialog(props) {
-  const {handleClose, edit, formikProps, categoryList} = props;
+  const {handleClose, edit, formikProps, categoryList, wbs_id} = props;
 
   const {materialCategories, materialSubCategories} = useSelector(
     s => s.materialManagement,
@@ -35,14 +36,19 @@ function AddMaterialDialog(props) {
 
   const categoryOptions = useMemo(() => {
     const categories = [...new Set(categoryList.map(i => i.category_id))];
-
-    return materialCategories
-      ?.filter(i => categories.includes(i.id))
-      ?.map(i => ({
-        label: `${i.title}`,
-        value: i.id,
-      }));
-  }, [categoryList, materialCategories]);
+    if (wbs_id) {
+      return materialCategories
+        ?.filter(i => categories.includes(i.id))
+        ?.map(i => ({
+          label: `${i.title}`,
+          value: i.id,
+        }));
+    }
+    return materialCategories?.map(i => ({
+      label: `${i.title}`,
+      value: i.id,
+    }));
+  }, [categoryList, materialCategories, wbs_id]);
 
   const subCategoryOptions = useMemo(() => {
     return materialSubCategories
@@ -206,6 +212,8 @@ function AddIssueIndentMaterials(props) {
 
   const alert = useAlert();
 
+  const snackbar = useSnackbar();
+
   const getDetails = async () => {
     await getIndentDetails({
       project_id: selectedProject.id,
@@ -298,7 +306,13 @@ function AddIssueIndentMaterials(props) {
 
   const handleSaveMaterial = async values => {
     const _materials = [...materials];
-    if (!isNaN(selectedMaterialIndex)) {
+
+    if (!values.material_units_id) {
+      snackbar.showMessage({
+        message: 'This SubCategory have no unit , please select another one',
+        variant: 'warning',
+      });
+    } else if (!isNaN(selectedMaterialIndex)) {
       _materials[selectedMaterialIndex] = values;
     } else {
       _materials.push(values);

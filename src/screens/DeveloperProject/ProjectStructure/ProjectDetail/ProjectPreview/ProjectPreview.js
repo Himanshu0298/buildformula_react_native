@@ -145,7 +145,7 @@ function ProjectSecurityDetails(props) {
 }
 
 function ProjectOwnerDetails(props) {
-  const {projectDetails, openDialScreen, OpenEmail} = props;
+  const {projectDetails, openDialScreen, openEmail} = props;
 
   const {owner_info} = projectDetails || {};
 
@@ -173,7 +173,7 @@ function ProjectOwnerDetails(props) {
             </View>
             <TouchableOpacity
               style={styles.phoneContainer}
-              onPress={() => OpenEmail(email)}>
+              onPress={() => openEmail(email)}>
               <MaterialIcons name="email" color="#4872f4" size={18} />
               <Text style={styles.number}> {email} </Text>
             </TouchableOpacity>
@@ -458,7 +458,9 @@ function ProjectPreview(props) {
       );
   };
 
-  const OpenEmail = () => Linking.openURL('https://mail.google.com/');
+  const openEmail = value => {
+    Linking.openURL(`mailto:${value}`);
+  };
 
   const file = projectDetails?.attachment_file;
   const projectSecurity = projectDetails?.security_info;
@@ -509,7 +511,7 @@ function ProjectPreview(props) {
             <ProjectOwnerDetails
               projectDetails={projectDetails}
               openDialScreen={openDialScreen}
-              OpenEmail={OpenEmail}
+              openEmail={openEmail}
             />
           </View>
         ) : null}

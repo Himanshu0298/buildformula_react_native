@@ -126,8 +126,8 @@ function TowerList(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const getData = async () => {
-    await getTowerList({project_id: selectedProject.id, id});
+  const getData = () => {
+    getTowerList({project_id: selectedProject.id, id});
   };
 
   const toggleAddDialog = () => setDialog(v => !v);
