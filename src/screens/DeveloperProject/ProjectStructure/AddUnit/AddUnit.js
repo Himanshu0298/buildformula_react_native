@@ -1,7 +1,7 @@
 import {ScrollView, StyleSheet, View} from 'react-native';
 import React, {useMemo, useEffect, useState} from 'react';
 import {IconButton, Title} from 'react-native-paper';
-import {Formik} from 'formik';
+import {Formik, useFormik} from 'formik';
 import * as Yup from 'yup';
 import RenderInput from 'components/Atoms/RenderInput';
 import RenderSelect from 'components/Atoms/RenderSelect';
@@ -51,55 +51,14 @@ const RenderForm = props => {
     options,
     navigation,
     formikProps,
-    projectList,
-    towerList,
-    categoriesList,
-    floorList,
-    selectedProject,
-    getTowerList,
-    getFloorList,
+    projectOptions,
+    getTowers,
+    categoryOptions,
+    loadTowers,
+    towerOptions,
+    loadFloors,
+    floorOptions,
   } = props;
-
-  const [towerOptions, setTowerOptions] = useState([]);
-  const [towerId, setTowerId] = useState();
-
-  const projectOptions = useMemo(() => {
-    return projectList
-      ?.filter(i => i.status === 1)
-      ?.map(i => ({label: i.project_name, value: i.id}));
-  }, [projectList]);
-
-  const getTowers = async value => {
-    setFieldValue('projectName', value);
-    setTowerId(value);
-    await getTowerList({project_id: selectedProject.id, id: value});
-  };
-
-  const categoryOptions = useMemo(() => {
-    return categoriesList
-      ?.filter(i => i.status === 1)
-      ?.map(i => ({label: i.title, value: i.id}));
-  }, [categoriesList]);
-
-  const loadTowers = async value => {
-    setFieldValue('projectCategory', value);
-    return value === 1
-      ? setTowerOptions(towerList?.map(i => ({label: i.label, value: i.id})))
-      : undefined;
-  };
-
-  const loadFloors = async value => {
-    setFieldValue('selectTower', value);
-    await getFloorList({
-      project_id: selectedProject.id,
-      id: towerId,
-      tower_id: value,
-    });
-  };
-
-  const floorOptions = useMemo(() => {
-    return floorList?.map(i => ({label: i.floor, value: i.id}));
-  }, [floorList]);
 
   const {
     values,
@@ -109,9 +68,6 @@ const RenderForm = props => {
     setFieldValue,
     handleSubmit,
   } = formikProps;
-
-  const [isSwitchOn, setIsSwitchOn] = React.useState(false);
-  const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
 
   return (
     <ScrollView style={{marginBottom: 30}} showsVerticalScrollIndicator={false}>
@@ -165,7 +121,6 @@ const RenderForm = props => {
           returnKeyType="next"
           error={errors.unitNo}
         />
-        {/* Search with select will be applied here */}
         <RenderSelect
           name="area"
           label="Select Area"
@@ -238,7 +193,8 @@ const RenderForm = props => {
 
 const AddUnit = props => {
   const {navigation} = props;
-  const options = ['Science City Rd', 'Sola Rd', 'Bhadaj'];
+  const [towerOptions, setTowerOptions] = useState([]);
+  const [towerId, setTowerId] = useState();
 
   const {getProjectList, getProjectCategory, getTowerList, getFloorList} =
     useProjectStructureActions();
@@ -247,6 +203,22 @@ const AddUnit = props => {
   const {projectList, towerList, categoriesList, floorList} = useSelector(
     s => s.projectStructure,
   );
+
+  const formikProps = useFormik({
+    enableReinitialize: true,
+    validateOnBlur: false,
+    validateOnChange: false,
+    validationSchema: schema,
+    initialValues: {
+      projectName: '',
+      builderName: '',
+      selectTower: '',
+      selectFloor: '',
+      area: '',
+    },
+    setFieldValue: true,
+    onSubmit,
+  });
 
   useEffect(() => {
     loadData();
@@ -257,6 +229,44 @@ const AddUnit = props => {
     await getProjectList({project_id: selectedProject.id});
     await getProjectCategory({project_id: selectedProject.id});
   };
+
+  const projectOptions = useMemo(() => {
+    return projectList
+      ?.filter(i => i.status === 1)
+      ?.map(i => ({label: i.project_name, value: i.id}));
+  }, [projectList]);
+
+  const getTowers = async value => {
+    formikProps.setFieldValue('projectName', value);
+    setTowerId(value);
+    await getTowerList({project_id: selectedProject.id, id: value});
+  };
+
+  const categoryOptions = useMemo(() => {
+    return categoriesList
+      ?.filter(i => i.status === 1)
+      ?.map(i => ({label: i.title, value: i.id}));
+  }, [categoriesList]);
+
+  const loadTowers = async value => {
+    formikProps.setFieldValue('projectCategory', value);
+    return value === 1
+      ? setTowerOptions(towerList?.map(i => ({label: i.label, value: i.id})))
+      : undefined;
+  };
+
+  const loadFloors = async value => {
+    formikProps.setFieldValue('selectTower', value);
+    await getFloorList({
+      project_id: selectedProject.id,
+      id: towerId,
+      tower_id: value,
+    });
+  };
+
+  const floorOptions = useMemo(() => {
+    return floorList?.map(i => ({label: i.floor, value: i.id}));
+  }, [floorList]);
 
   const onSubmit = values => {
     console.log(values);
@@ -274,31 +284,23 @@ const AddUnit = props => {
         <Title>Add Unit</Title>
       </View>
       <View style={styles.formContainer}>
-        <Formik
-          enableReinitialize
-          validateOnBlur={false}
-          validateOnChange={false}
-          initialValues={{
-            projectName: '',
-            builderName: '',
-            selectTower: '',
-            selectFloor: '',
-            area: '',
-          }}
-          validationSchema={schema}
-          onSubmit={onSubmit}>
-          {formikProps => (
+        <Formik>
+          {() => (
             <RenderForm
               formikProps={formikProps}
               {...props}
-              options={options}
               projectList={projectList}
               towerList={towerList}
               categoriesList={categoriesList}
               floorList={floorList}
               selectedProject={selectedProject}
-              getTowerList={getTowerList}
-              getFloorList={getFloorList}
+              projectOptions={projectOptions}
+              getTowers={getTowers}
+              categoryOptions={categoryOptions}
+              loadTowers={loadTowers}
+              loadFloors={loadFloors}
+              towerOptions={towerOptions}
+              floorOptions={floorOptions}
             />
           )}
         </Formik>
