@@ -7,6 +7,13 @@ export default function useProjectStructure() {
     getProjectList: data => {
       return instance.post('/projectstructure/project/list', data, params);
     },
+    getProjectCategory: data => {
+      return instance.post(
+        'projectstructure/project/projectCategory',
+        data,
+        params,
+      );
+    },
     getProjectDetails: data => {
       return instance.post(
         '/projectstructure/project/previewDetails',

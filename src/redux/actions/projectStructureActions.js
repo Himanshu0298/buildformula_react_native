@@ -11,6 +11,7 @@ export default function useProjectStructureActions() {
 
   const {
     getProjectList,
+    getProjectCategory,
     getProjectDetails,
     deleteProject,
     addProject,
@@ -63,6 +64,20 @@ export default function useProjectStructureActions() {
         payload: async () => {
           try {
             const response = _res(await getProjectList(data));
+            return Promise.resolve(response.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    getProjectCategory: data =>
+      dispatch({
+        type: types.GET_PROJECT_CATEGORIES,
+        payload: async () => {
+          try {
+            const response = _res(await getProjectCategory(data));
             return Promise.resolve(response.data);
           } catch (error) {
             const message = _err(error);
