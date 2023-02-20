@@ -82,7 +82,7 @@ function RenderForm(props) {
             />
             <RenderInput
               name="name"
-              label="Name"
+              label="Full Name"
               containerStyles={styles.inputStyles}
               value={values.name}
               onChangeText={handleChange('name')}

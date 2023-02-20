@@ -13,7 +13,10 @@ import {
   IconButton,
   Subheading,
   Text,
+  Title,
 } from 'react-native-paper';
+import Carousel from 'react-native-reanimated-carousel';
+
 import {theme} from 'styles/theme';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -354,15 +357,43 @@ function UnitPreview(props) {
             />
             <Subheading>Unit Details</Subheading>
           </View>
-          <OpacityButton
-            opacity={0.1}
-            color="#4872f4"
-            style={styles.navBTN}
-            onPress={() => navigation.navigate('')}>
-            <MaterialIcons name="edit" color="#4872f4" size={15} />
-          </OpacityButton>
+          <View style={styles.headerContainer}>
+            <OpacityButton
+              opacity={0.1}
+              color="#4872f4"
+              style={styles.navBTN}
+              onPress={() => navigation.navigate('')}>
+              <MaterialIcons name="content-copy" color="#4872f4" size={15} />
+            </OpacityButton>
+            <OpacityButton
+              opacity={0.1}
+              color="#4872f4"
+              style={styles.navBTN}
+              onPress={() => navigation.navigate('')}>
+              <MaterialIcons name="edit" color="#4872f4" size={15} />
+            </OpacityButton>
+          </View>
         </View>
-        <Image source={unit_image} />
+        <View>
+          <Carousel
+            loop
+            width="500"
+            height={'500' / 2}
+            autoPlay={false}
+            data={[...new Array(2).keys()]}
+            scrollAnimationDuration={10000}
+            onSnapToItem={index => console.log('current index:', index)}
+            renderItem={({index}) => {
+              return <Image source={unit_image} />;
+            }}
+          />
+          <View style={styles.sliderWrap}>
+            <Title style={styles.sliderText}>3BHK</Title>
+            <Subheading style={styles.sliderText}>
+              Residential Apartment for Rent
+            </Subheading>
+          </View>
+        </View>
         <View style={styles.mainContainer}>
           <UnitDetails />
           <Divider style={{borderWidth: 0.5}} />
@@ -506,12 +537,22 @@ const styles = StyleSheet.create({
   },
   navBTN: {
     borderRadius: 50,
+    marginLeft: 20,
   },
   headerContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     margin: 10,
+  },
+  sliderWrap: {
+    position: 'absolute',
+    left: 10,
+    bottom: 28,
+  },
+  sliderText: {
+    color: '#fff',
+    fontWeight: '800',
   },
 });
 

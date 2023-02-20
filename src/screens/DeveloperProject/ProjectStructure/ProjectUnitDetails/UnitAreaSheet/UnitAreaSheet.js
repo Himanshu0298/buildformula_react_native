@@ -179,7 +179,7 @@ function UnitAreaSheet(props) {
           style={styles.backIcon}
           onPress={navigation.goBack}
         />
-        <Subheading>Location Info</Subheading>
+        <Subheading>Area Sheet</Subheading>
       </View>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.formContainer}>

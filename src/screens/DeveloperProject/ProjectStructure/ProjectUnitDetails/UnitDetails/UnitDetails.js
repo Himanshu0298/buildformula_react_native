@@ -1,7 +1,7 @@
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {IconButton, Subheading, Switch, Title} from 'react-native-paper';
+import {IconButton, Subheading, Switch} from 'react-native-paper';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import RenderInput from 'components/Atoms/RenderInput';
@@ -115,18 +115,6 @@ const RenderForm = props => {
           autoCapitalize="none"
           returnKeyType="next"
           error={errors.unitNo}
-        />
-        {/* Search with select will be applied here */}
-        <RenderSelect
-          name="area"
-          label="Select Area"
-          value={values.area}
-          options={options}
-          containerStyles={styles.inputStyles}
-          onBlur={handleBlur('area')}
-          onSelect={value => {
-            setFieldValue('area', value);
-          }}
         />
         <RenderInput
           containerStyles={styles.inputStyles}
@@ -282,7 +270,7 @@ const UnitDetails = props => {
           style={styles.backIcon}
           onPress={navigation.goBack}
         />
-        <Title>Unit Details</Title>
+        <Subheading>Unit Details</Subheading>
       </View>
       <View style={styles.formContainer}>
         <Formik
