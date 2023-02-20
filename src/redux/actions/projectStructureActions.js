@@ -13,6 +13,7 @@ export default function useProjectStructureActions() {
     getProjectList,
     getProjectCategory,
     getProjectDetails,
+    getUnitList,
     deleteProject,
     addProject,
     updateProjectDetails,
@@ -52,6 +53,7 @@ export default function useProjectStructureActions() {
     updateTowerOrder,
     updateFloorOrder,
     updatePickUpOrder,
+    addUnit,
   } = useProjectStructure();
 
   return {
@@ -653,6 +655,34 @@ export default function useProjectStructureActions() {
             const res = _res(await updateFloorOrder(data));
             snackbar.showMessage({message: res.msg});
             return Promise.resolve(res.data.lists);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    getUnitList: data =>
+      dispatch({
+        type: types.GET_UNIT_LIST,
+        payload: async () => {
+          try {
+            const response = _res(await getUnitList(data));
+            return Promise.resolve(response.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    addUnit: data =>
+      dispatch({
+        type: types.ADD_UNIT,
+        payload: async () => {
+          try {
+            const response = _res(await addUnit(data));
+            return Promise.resolve(response.data);
           } catch (error) {
             const message = _err(error);
             snackbar.showMessage({message, variant: 'error'});

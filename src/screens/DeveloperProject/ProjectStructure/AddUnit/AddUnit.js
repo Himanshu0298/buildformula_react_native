@@ -1,7 +1,7 @@
 import {ScrollView, StyleSheet, View} from 'react-native';
 import React, {useMemo, useEffect, useState} from 'react';
 import {IconButton, Title} from 'react-native-paper';
-import {Formik, useFormik} from 'formik';
+import {useFormik} from 'formik';
 import * as Yup from 'yup';
 import RenderInput from 'components/Atoms/RenderInput';
 import RenderSelect from 'components/Atoms/RenderSelect';
@@ -65,6 +65,7 @@ const RenderForm = props => {
     setFieldValue,
     handleSubmit,
   } = formikProps;
+  console.log('🚀 ~ file: AddUnit.js:68 ~ RenderForm ~ values', handleSubmit);
 
   return (
     <ScrollView style={{marginBottom: 30}} showsVerticalScrollIndicator={false}>
@@ -193,29 +194,18 @@ const AddUnit = props => {
   const [towerOptions, setTowerOptions] = useState([]);
   const [towerId, setTowerId] = useState();
 
-  const {getProjectList, getProjectCategory, getTowerList, getFloorList} =
-    useProjectStructureActions();
+  const {
+    getProjectList,
+    getProjectCategory,
+    getTowerList,
+    getFloorList,
+    addUnit,
+  } = useProjectStructureActions();
 
   const {selectedProject} = useSelector(s => s.project);
   const {projectList, towerList, categoriesList, floorList} = useSelector(
     s => s.projectStructure,
   );
-
-  const formikProps = useFormik({
-    enableReinitialize: true,
-    validateOnBlur: false,
-    validateOnChange: false,
-    validationSchema: schema,
-    initialValues: {
-      projectName: '',
-      builderName: '',
-      selectTower: '',
-      selectFloor: '',
-      area: '',
-    },
-    setFieldValue: true,
-    onSubmit,
-  });
 
   useEffect(() => {
     loadData();
@@ -247,7 +237,7 @@ const AddUnit = props => {
 
   const loadTowers = async value => {
     formikProps.setFieldValue('projectCategory', value);
-    return value === 1
+    return value === 1 || 2 || 3
       ? setTowerOptions(towerList?.map(i => ({label: i.label, value: i.id})))
       : undefined;
   };
@@ -265,9 +255,34 @@ const AddUnit = props => {
     return floorList?.map(i => ({label: i.floor, value: i.id}));
   }, [floorList]);
 
-  const onSubmit = values => {
-    console.log(values);
+  const onSubmit = async values => {
+    console.log('🚀 ~ file: AddUnit.js:283 ~ onSubmit ~ addUnit', values);
+    await addUnit({
+      id: selectedProject.id,
+      project_id: values.projectName,
+      project_type: values.projectCategory,
+      project_tower: values.selectTower,
+      project_floor: values.selectFloor,
+      project_unit: values.unitNo,
+    });
   };
+
+  const formikProps = useFormik({
+    enableReinitialize: true,
+    validateOnBlur: false,
+    validateOnChange: false,
+    validationSchema: schema,
+    initialValues: {
+      projectName: '',
+      builderName: '',
+      selectTower: '',
+      selectFloor: '',
+      area: '',
+    },
+    setFieldValue: true,
+    onSubmit,
+  });
+
   return (
     <View style={styles.mainContainer}>
       <View style={styles.headerWrapper}>
@@ -281,26 +296,17 @@ const AddUnit = props => {
         <Title>Add Unit</Title>
       </View>
       <View style={styles.formContainer}>
-        <Formik>
-          {() => (
-            <RenderForm
-              formikProps={formikProps}
-              {...props}
-              projectList={projectList}
-              towerList={towerList}
-              categoriesList={categoriesList}
-              floorList={floorList}
-              selectedProject={selectedProject}
-              projectOptions={projectOptions}
-              getTowers={getTowers}
-              categoryOptions={categoryOptions}
-              loadTowers={loadTowers}
-              loadFloors={loadFloors}
-              towerOptions={towerOptions}
-              floorOptions={floorOptions}
-            />
-          )}
-        </Formik>
+        <RenderForm
+          formikProps={formikProps}
+          {...props}
+          projectOptions={projectOptions}
+          getTowers={getTowers}
+          categoryOptions={categoryOptions}
+          loadTowers={loadTowers}
+          towerOptions={towerOptions}
+          loadFloors={loadFloors}
+          floorOptions={floorOptions}
+        />
       </View>
     </View>
   );

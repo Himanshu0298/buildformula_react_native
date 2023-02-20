@@ -259,5 +259,21 @@ export default function useProjectStructure() {
         params,
       );
     },
+
+    // unit
+    getUnitList: data => {
+      return instance.post(
+        'projectstructure/project/getUnitList',
+        data,
+        params,
+      );
+    },
+    addUnit: data => {
+      return instance.post(
+        'projectstructure/project/UnitDetailsAdd',
+        data,
+        params,
+      );
+    },
   };
 }

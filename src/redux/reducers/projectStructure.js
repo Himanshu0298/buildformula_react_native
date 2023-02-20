@@ -7,6 +7,7 @@ import {
   ADD_PROJECT_OWNER,
   ADD_PROJECT_SECURITY,
   ADD_TOWER,
+  ADD_UNIT,
   CREATE_PROJECT_DUPLICATE,
   DELETE_AREA,
   DELETE_FLOOR,
@@ -28,6 +29,7 @@ import {
   GET_SELECTED_PROJECT,
   GET_SUB_MODULE_LIST,
   GET_TOWER_LIST,
+  GET_UNIT_LIST,
   PROJECT_FLOOR_REARRANGE,
   PROJECT_PICKUP_REARRANGE,
   PROJECT_TOWER_REARRANGE,
@@ -52,6 +54,7 @@ const initialState = {
   categoriesList: [],
   projectDetails: {},
   towerList: [],
+  unitList: [],
   moduleList: [],
   subModuleList: [],
   fieldList: [],
@@ -94,6 +97,13 @@ const reducer = (state = initialState, action = {}) => {
       return {
         ...state,
         towerList: payload,
+        loading: false,
+      };
+    }
+    case `${GET_UNIT_LIST}_FULFILLED`: {
+      return {
+        ...state,
+        unitList: payload,
         loading: false,
       };
     }
@@ -185,6 +195,8 @@ const reducer = (state = initialState, action = {}) => {
     case `${ADD_FLOOR}_PENDING`:
     case `${UPDATE_FLOOR}_PENDING`:
     case `${DELETE_FLOOR}_PENDING`:
+    case `${GET_UNIT_LIST}_PENDING`:
+    case `${ADD_UNIT}_PENDING`:
     case `${CREATE_PROJECT_DUPLICATE}_PENDING`:
     case `${PROJECT_TOWER_REARRANGE}_PENDING`:
     case `${PROJECT_FLOOR_REARRANGE}_PENDING`:
@@ -221,6 +233,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${ADD_FLOOR}_FULFILLED`:
     case `${UPDATE_FLOOR}_FULFILLED`:
     case `${DELETE_FLOOR}_FULFILLED`:
+    case `${ADD_UNIT}_FULFILLED`:
     case `${CREATE_PROJECT_DUPLICATE}_FULFILLED`:
     case `${PROJECT_TOWER_REARRANGE}_FULFILLED`:
     case `${PROJECT_FLOOR_REARRANGE}_FULFILLED`:
@@ -268,6 +281,8 @@ const reducer = (state = initialState, action = {}) => {
     case `${ADD_FLOOR}_REJECTED`:
     case `${UPDATE_FLOOR}_REJECTED`:
     case `${DELETE_FLOOR}_REJECTED`:
+    case `${GET_UNIT_LIST}_REJECTED`:
+    case `${ADD_UNIT}_REJECTED`:
     case `${CREATE_PROJECT_DUPLICATE}_REJECTED`:
     case `${PROJECT_TOWER_REARRANGE}_REJECTED`:
     case `${PROJECT_FLOOR_REARRANGE}_REJECTED`:

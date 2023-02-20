@@ -1,7 +1,7 @@
 import {Platform} from 'react-native';
 import {theme} from 'styles/theme';
 
-export const SITE_URL = 'http://104.198.176.6';
+export const SITE_URL = 'https://8a9a-122-170-105-203.in.ngrok.io';
 // export const SITE_URL = 'https://portal.buildformula.com';
 export const BASE_API_URL = `${SITE_URL}/api/`;
 
