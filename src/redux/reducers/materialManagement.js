@@ -43,6 +43,7 @@ import {
   GET_MATERIAL_CATEGORY_LIST,
   DELETE_INDENT_ITEM,
   DELETE_ISSUE,
+  GET_COMMON_MATERIAL,
 } from '../actions/actionTypes';
 
 const initialState = {
@@ -72,6 +73,7 @@ const initialState = {
   storeKeeperDetails: {},
   indentDetails: {},
   categoryList: [],
+  commonList: [],
 };
 
 const reducer = (state = initialState, action = {}) => {
@@ -86,6 +88,13 @@ const reducer = (state = initialState, action = {}) => {
         materialOrderList: payload.sort(
           (a, b) => b.material_order_no - a.material_order_no,
         ),
+      };
+    }
+    case `${GET_COMMON_MATERIAL}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+        commonList: payload,
       };
     }
 
@@ -234,6 +243,7 @@ const reducer = (state = initialState, action = {}) => {
 
     // Material PR
     case `${DELETE_MATERIAL_PR_CATEGORY}_PENDING`:
+    case `${GET_COMMON_MATERIAL}_PENDING`:
     case `${DELETE_MATERIAL_PR_ITEM}_PENDING`:
     case `${DELETE_MATERIAL_PR_DETAILS}_PENDING`:
     case `${EDIT_MATERIAL_PR}_PENDING`:
@@ -315,6 +325,7 @@ const reducer = (state = initialState, action = {}) => {
       };
     }
     case `${GET_PR_MATERIAL_ORDER_LIST}_REJECTED`:
+    case `${GET_COMMON_MATERIAL}_REJECTED`:
     case `${GET_MATERIAL_PR_DETAILS}_REJECTED`:
     case `${ADD_MATERIAL_PR}_REJECTED`:
     case `${CREATE_MATERIAL_PR}_REJECTED`:

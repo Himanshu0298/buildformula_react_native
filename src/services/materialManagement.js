@@ -8,6 +8,10 @@ export default function useMaterialManagement() {
       return instance.post('/material/utilityDelivered', data, params);
     },
 
+    getCommonMaterial: data => {
+      return instance.post('/common_material', data, params);
+    },
+
     getMaterialChallanList: data => {
       return instance.post('/materialDelivery/details', data, params);
     },

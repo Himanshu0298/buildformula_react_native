@@ -317,8 +317,16 @@ function AddIssueIndentMaterials(props) {
     } else {
       _materials.push(values);
     }
+    const subCategoryMaterial = materials.find(
+      i => i.material_sub_category_id === values.material_sub_category_id,
+    );
 
-    setMaterials(_materials);
+    if (subCategoryMaterial) {
+      snackbar.showMessage({
+        message: 'This SubCategory already in use, please select another one',
+        variant: 'warning',
+      });
+    } else setMaterials(_materials);
     toggleAddDialog();
   };
 

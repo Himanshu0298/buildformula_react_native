@@ -14,6 +14,7 @@ import {Formik} from 'formik';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {isEqual, isNumber} from 'lodash';
+import {useSnackbar} from 'components/Atoms/Snackbar';
 
 function AddMaterialDialog(props) {
   const {formikProps, handleClose, edit} = props;
@@ -225,6 +226,7 @@ function AddReturnIndentMaterials(props) {
   const {id, edit} = route?.params || {};
 
   const alert = useAlert();
+  const snackbar = useSnackbar();
 
   const getDetails = () =>
     getIndentDetails({
@@ -305,14 +307,29 @@ function AddReturnIndentMaterials(props) {
     navigation.navigate('AddAttachments', {id});
   };
 
-  const handleSaveMaterial = values => {
+  const handleSaveMaterial = async values => {
     const _materials = [...materials];
-    if (!isNaN(selectedMaterialIndex)) {
+
+    if (!values.material_units_id) {
+      snackbar.showMessage({
+        message: 'This SubCategory have no unit , please select another one',
+        variant: 'warning',
+      });
+    } else if (!isNaN(selectedMaterialIndex)) {
       _materials[selectedMaterialIndex] = values;
     } else {
       _materials.push(values);
     }
-    setMaterials(_materials);
+    const subCategoryMaterial = materials.find(
+      i => i.material_sub_category_id === values.material_sub_category_id,
+    );
+
+    if (subCategoryMaterial) {
+      snackbar.showMessage({
+        message: 'This SubCategory already in use, please select another one',
+        variant: 'warning',
+      });
+    } else setMaterials(_materials);
     toggleAddDialog();
   };
 

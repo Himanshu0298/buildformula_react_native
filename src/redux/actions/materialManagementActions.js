@@ -52,6 +52,7 @@ export default function useMaterialManagementActions() {
     updateIssueQuantity,
     getMaterialIndentCategoryList,
     deleteIndentItem,
+    getCommonMaterial,
   } = useMaterialManagement();
 
   return {
@@ -61,6 +62,20 @@ export default function useMaterialManagementActions() {
         payload: async () => {
           try {
             const response = _res(await getMaterialOrderList(data));
+            return Promise.resolve(response.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    getCommonMaterial: data =>
+      dispatch({
+        type: types.GET_COMMON_MATERIAL,
+        payload: async () => {
+          try {
+            const response = _res(await getCommonMaterial(data));
             return Promise.resolve(response.data);
           } catch (error) {
             const message = _err(error);

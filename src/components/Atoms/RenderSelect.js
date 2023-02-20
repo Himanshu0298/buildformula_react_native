@@ -169,7 +169,9 @@ const RenderSelect = React.forwardRef((props, ref) => {
                 onChangeText={setSearchQuery}
               />
               <View style={styles.optionsContainer}>
-                <ScrollView contentContainerStyle={styles.scrollView}>
+                <ScrollView
+                  style={styles.scrollView}
+                  showsVerticalScrollIndicator={false}>
                   {parsedOptions.map(option => {
                     const {label, added, value: optionValue} = option;
 
@@ -227,7 +229,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   scrollView: {
-    paddingBottom: 50,
+    marginBottom: 100,
   },
   optionContainer: {
     flexDirection: 'row',
