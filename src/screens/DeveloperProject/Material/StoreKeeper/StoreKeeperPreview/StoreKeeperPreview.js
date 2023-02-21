@@ -226,6 +226,7 @@ const MaterialCard = props => {
     quantity,
     id,
     rm_status,
+    assigned_quantity,
   } = item;
 
   const requestStatus = STORE_KEEPER_STATUS[authorizedstatus]?.label;
@@ -251,7 +252,7 @@ const MaterialCard = props => {
       </View>
       <View style={styles.dataRow}>
         <Caption style={styles.lightData}>Assigned Qty:</Caption>
-        <Text style={styles.title}>{damaged_qty}</Text>
+        <Text style={styles.title}>{assigned_quantity}</Text>
       </View>
       {rm_status !== 'pending' ? (
         <View style={styles.dataRow}>
