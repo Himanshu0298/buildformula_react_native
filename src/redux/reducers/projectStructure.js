@@ -17,6 +17,7 @@ import {
   DELETE_PROJECT_OWNER,
   DELETE_PROJECT_SECURITY,
   DELETE_TOWER,
+  DELETE_UNIT,
   GET_AREA_LIST,
   GET_FIELD_LIST,
   GET_FLOOR_LIST,
@@ -44,6 +45,7 @@ import {
   UPDATE_PROJECT_SECURITY,
   UPDATE_PROJECT_STRUCTURE,
   UPDATE_TOWER,
+  UPDATE_UNIT,
 } from 'redux/actions/actionTypes';
 
 const initialState = {
@@ -197,6 +199,8 @@ const reducer = (state = initialState, action = {}) => {
     case `${DELETE_FLOOR}_PENDING`:
     case `${GET_UNIT_LIST}_PENDING`:
     case `${ADD_UNIT}_PENDING`:
+    case `${DELETE_UNIT}_PENDING`:
+    case `${UPDATE_UNIT}_PENDING`:
     case `${CREATE_PROJECT_DUPLICATE}_PENDING`:
     case `${PROJECT_TOWER_REARRANGE}_PENDING`:
     case `${PROJECT_FLOOR_REARRANGE}_PENDING`:
@@ -234,6 +238,8 @@ const reducer = (state = initialState, action = {}) => {
     case `${UPDATE_FLOOR}_FULFILLED`:
     case `${DELETE_FLOOR}_FULFILLED`:
     case `${ADD_UNIT}_FULFILLED`:
+    case `${DELETE_UNIT}_FULFILLED`:
+    case `${UPDATE_UNIT}_FULFILLED`:
     case `${CREATE_PROJECT_DUPLICATE}_FULFILLED`:
     case `${PROJECT_TOWER_REARRANGE}_FULFILLED`:
     case `${PROJECT_FLOOR_REARRANGE}_FULFILLED`:
@@ -283,6 +289,8 @@ const reducer = (state = initialState, action = {}) => {
     case `${DELETE_FLOOR}_REJECTED`:
     case `${GET_UNIT_LIST}_REJECTED`:
     case `${ADD_UNIT}_REJECTED`:
+    case `${DELETE_UNIT}_REJECTED`:
+    case `${UPDATE_UNIT}_REJECTED`:
     case `${CREATE_PROJECT_DUPLICATE}_REJECTED`:
     case `${PROJECT_TOWER_REARRANGE}_REJECTED`:
     case `${PROJECT_FLOOR_REARRANGE}_REJECTED`:

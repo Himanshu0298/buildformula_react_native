@@ -1,5 +1,5 @@
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {IconButton, Subheading, Switch} from 'react-native-paper';
 import {Formik} from 'formik';
@@ -8,16 +8,20 @@ import RenderInput from 'components/Atoms/RenderInput';
 import RenderSelect from 'components/Atoms/RenderSelect';
 import ActionButtons from 'components/Atoms/ActionButtons';
 
-// =======> User will be redirected to this page from ProjectStructureDetails screen also <==========
+import useProjectStructureActions from 'redux/actions/projectStructureActions';
+import {useSelector} from 'react-redux';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const schema = Yup.object().shape({
   projectName: Yup.string()
     .label('projectName')
     .required('Project Name is Required'),
-  builderName: Yup.string()
-    .label('builderName')
-    .required('Builder Name is Required'),
-  area: Yup.string().label('area').required('Area is Required'),
+  projectCategory: Yup.string()
+    .label('projectCategory')
+    .required('Category is Required'),
+  selectTower: Yup.string().label('selectTower').required('Tower is Required'),
+  selectFloor: Yup.string().label('selectFloor').required('Floor is Required'),
+  unitNo: Yup.string().label('unitNo').required('Unit No is Required'),
 });
 
 const AddressData = {
@@ -252,7 +256,13 @@ const RenderForm = props => {
 };
 
 const UnitDetails = props => {
-  const {navigation} = props;
+  const {navigation, route} = props;
+
+  const {unitId} = route.params || {};
+
+  const {getUnitList} = useProjectStructureActions();
+  const {selectedProject} = useSelector(s => s.project);
+  const {unitList = [], loading} = useSelector(s => s.projectStructure);
 
   const options = ['Science City Rd', 'Sola Rd', 'Bhadaj'];
 
@@ -260,8 +270,21 @@ const UnitDetails = props => {
     console.log(values);
   };
 
+  useEffect(() => {
+    getUnitList({project_id: selectedProject.id});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const selectedUnit = unitList?.find(i => i.id === unitId);
+  console.log(
+    '🚀 ~ file: UnitDetails.js:279 ~ UnitDetails ~ selectedUnit:',
+    selectedUnit.id,
+  );
+
   return (
     <View style={styles.mainContainer}>
+      <Spinner visible={loading} textContent="" />
+
       <View style={styles.headerWrapper}>
         <IconButton
           icon="keyboard-backspace"

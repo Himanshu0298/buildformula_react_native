@@ -21,10 +21,11 @@ import {theme} from 'styles/theme';
 import useProjectStructureActions from 'redux/actions/projectStructureActions';
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
+import {useAlert} from 'components/Atoms/Alert';
 
-const UnitCard = ({item, navigation}) => {
+const UnitCard = ({item, navigation, handleDelete}) => {
   const [visible, setVisible] = React.useState(false);
-  const toggleMenu = () => setVisible(!visible);
+  const toggleMenu = () => setVisible(v => !v);
   const {
     id,
     project_unit,
@@ -35,6 +36,17 @@ const UnitCard = ({item, navigation}) => {
     project_type,
     unit_for,
   } = item;
+
+  const navToEdit = () => {
+    navigation.navigate('UnitDetails', {unitId: id});
+    toggleMenu();
+  };
+
+  const deleteUnit = () => {
+    handleDelete(id);
+    toggleMenu();
+  };
+
   return (
     <View style={styles.projectCardWrapper}>
       <View style={styles.headerWrapper}>
@@ -55,18 +67,8 @@ const UnitCard = ({item, navigation}) => {
                 <MaterialIcon name="dots-vertical" color="#4872f4" size={15} />
               </OpacityButton>
             }>
-            <Menu.Item
-              onPress={() => {
-                toggleMenu();
-              }}
-              title="Edit"
-            />
-            <Menu.Item
-              onPress={() => {
-                toggleMenu();
-              }}
-              title="Delete"
-            />
+            <Menu.Item onPress={navToEdit} title="Edit" />
+            <Menu.Item onPress={deleteUnit} title="Delete" />
           </Menu>
         </View>
       </View>
@@ -95,7 +97,7 @@ const UnitCard = ({item, navigation}) => {
 
 function UnitList(props) {
   const {navigation} = props;
-  const {getUnitList} = useProjectStructureActions();
+  const alert = useAlert();
 
   const {colors} = theme;
   const [selectDialog, setSelectDialog] = React.useState(false);
@@ -103,6 +105,7 @@ function UnitList(props) {
 
   const [searchQuery, setSearchQuery] = React.useState('');
 
+  const {getUnitList, removeUnit} = useProjectStructureActions();
   const {unitList = [], loading} = useSelector(s => s.projectStructure);
   const {selectedProject} = useSelector(s => s.project);
 
@@ -127,6 +130,21 @@ function UnitList(props) {
     loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const handleDelete = async unit_id => {
+    alert.show({
+      title: 'Confirm',
+      message: 'Are you sure you want to delete?',
+      confirmText: 'Delete',
+      onConfirm: async () => {
+        await removeUnit({
+          project_id: selectedProject.id,
+          unit_id,
+        });
+        loadData();
+      },
+    });
+  };
 
   const FAB_ACTIONS = [
     {
@@ -178,7 +196,13 @@ function UnitList(props) {
           }
           showsVerticalScrollIndicator={false}
           renderItem={({item}) => {
-            return <UnitCard item={item} navigation={navigation} />;
+            return (
+              <UnitCard
+                item={item}
+                navigation={navigation}
+                handleDelete={handleDelete}
+              />
+            );
           }}
         />
       </View>
@@ -199,6 +223,7 @@ function UnitList(props) {
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   mainContainer: {
     padding: 10,
