@@ -90,7 +90,7 @@ const CustomerList = ({navigation}) => {
       id: `${item.visitor_id}`,
       linkedProperty: `${item.linked_property}`,
       customerId: item.id,
-      unitId: item.unitid,
+      unitId: item?.unitid,
     });
   };
 

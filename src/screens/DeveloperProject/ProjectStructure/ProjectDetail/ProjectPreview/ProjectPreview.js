@@ -50,6 +50,7 @@ function Files(props) {
   const [visible, setVisible] = React.useState(false);
 
   const onPressFile = async file => {
+    console.log('===========> file', file);
     const fileUrl = getDownloadUrl(file);
     const name = getFileName(file);
 
@@ -80,7 +81,7 @@ function Files(props) {
       <View style={styles.recentFiles}>
         <TouchableOpacity
           style={styles.sectionContainer}
-          onPress={() => onPressFile(item)}>
+          onPress={() => onPressFile(item.file_url)}>
           <Image source={PdfIcon} style={styles.fileIcon} />
           <View style={{width: '80%'}}>
             <Text

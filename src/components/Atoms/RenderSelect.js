@@ -42,8 +42,8 @@ const RenderSelect = React.forwardRef((props, ref) => {
       : [...options].map(i => ({label: i, value: i}));
 
     if (searchQuery) {
-      updatedOptions = updatedOptions.filter(i =>
-        i.label.includes(searchQuery),
+      updatedOptions = updatedOptions?.filter(i =>
+        i?.label?.includes(searchQuery),
       );
     }
 
@@ -91,7 +91,7 @@ const RenderSelect = React.forwardRef((props, ref) => {
 
   const selectedOptions = useMemo(() => {
     if (multiselect) {
-      return parsedOptions.filter(i => value.includes(i.value));
+      return parsedOptions?.filter(i => value.includes(i.value));
     }
     return [];
   }, [multiselect, parsedOptions, value]);

@@ -243,7 +243,7 @@ const CustomerInnerDetails = ({navigation, route: routeData}) => {
       <View style={styles.headerContainer}>
         <IconButton
           icon="keyboard-backspace"
-          size={25}
+          size={18}
           color="#000"
           style={styles.iconButton}
           onPress={() => navigation.goBack()}

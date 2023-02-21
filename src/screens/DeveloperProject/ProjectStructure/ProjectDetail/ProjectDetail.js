@@ -90,7 +90,7 @@ function ProjectDetail(props) {
 
   return (
     <View style={styles.mainContainer}>
-      <Spinner visible={loading} textContent="please wait" />
+      <Spinner visible={loading} textContent="" />
       <View style={styles.headerWrapper}>
         <View style={styles.subContainer}>
           <IconButton

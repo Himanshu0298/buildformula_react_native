@@ -73,8 +73,7 @@ const ListingCard = props => {
 const RequiredVendor = props => {
   const {details} = props;
 
-  const {contractor_name, contractor_email, requred_date, remark} =
-    details || {};
+  const {contractor_name, contractor_email, remark} = details || {};
 
   return (
     <View style={styles.vendorContainer}>
@@ -94,7 +93,7 @@ const RequiredVendor = props => {
 };
 
 const MaterialCard = props => {
-  const {item, handleDeleteItem} = props;
+  const {item} = props;
 
   const {
     materialcategrytitle,
@@ -109,15 +108,6 @@ const MaterialCard = props => {
         <View style={styles.dataRow}>
           <Caption style={styles.lightData}>Category:</Caption>
           <Text>{materialcategrytitle}</Text>
-        </View>
-        <View>
-          <OpacityButton
-            color="#FF5D5D"
-            opacity={0.18}
-            onPress={() => handleDeleteItem(item)}
-            style={styles.deleteIcon}>
-            <MaterialIcons name="delete" color="#FF5D5D" size={13} />
-          </OpacityButton>
         </View>
       </View>
       <View style={styles.dataRow}>
@@ -227,21 +217,6 @@ function ReturnIndentPreview(props) {
     });
   };
 
-  const handleDeleteItem = item => {
-    alert.show({
-      title: 'Confirm',
-      message: 'Are you sure you want to delete?',
-      confirmText: 'Delete',
-      onConfirm: () => {
-        deleteIndentItem({
-          project_id: selectedProject.id,
-          material_indent_details_id: item.id,
-        });
-        getData();
-      },
-    });
-  };
-
   return (
     <View style={styles.mainContainer}>
       <Spinner visible={loading} />
@@ -304,13 +279,7 @@ function ReturnIndentPreview(props) {
 
         <View>
           {materialData?.map(item => {
-            return (
-              <MaterialCard
-                item={item}
-                navigation={navigation}
-                handleDeleteItem={handleDeleteItem}
-              />
-            );
+            return <MaterialCard item={item} navigation={navigation} />;
           })}
         </View>
         {returnAttachments?.length ? (

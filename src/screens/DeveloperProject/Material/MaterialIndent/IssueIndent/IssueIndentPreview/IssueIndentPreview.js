@@ -158,15 +158,7 @@ const RequiredVendor = props => {
 };
 
 function AssignMaterialCard(props) {
-  const {
-    item,
-    index,
-    showEdit,
-    showDetail,
-    toggleDialog,
-    isApproved,
-    handleDeleteItem,
-  } = props;
+  const {item, index, showEdit, showDetail, toggleDialog, isApproved} = props;
 
   const {
     materialcategrytitle,
@@ -185,15 +177,6 @@ function AssignMaterialCard(props) {
         <View style={styles.dataRow}>
           <Caption style={styles.lightData}>Category:</Caption>
           <Text>{materialcategrytitle}</Text>
-        </View>
-        <View>
-          <OpacityButton
-            color="#FF5D5D"
-            opacity={0.18}
-            onPress={() => handleDeleteItem(item)}
-            style={styles.deleteIcon}>
-            <MaterialIcons name="delete" color="#FF5D5D" size={13} />
-          </OpacityButton>
         </View>
       </View>
       <View style={styles.dataRow}>
@@ -259,7 +242,6 @@ function IssueIndentPreview(props) {
     deleteIssue,
     getMaterialIndentList,
     updateIssueQuantity,
-    deleteIndentItem,
   } = useMaterialManagementActions();
 
   const {selectedProject} = useSelector(s => s.project);
@@ -310,20 +292,6 @@ function IssueIndentPreview(props) {
         });
         getList();
         navigation.goBack();
-      },
-    });
-  };
-  const handleDeleteItem = item => {
-    alert.show({
-      title: 'Confirm',
-      message: 'Are you sure you want to delete?',
-      confirmText: 'Delete',
-      onConfirm: () => {
-        deleteIndentItem({
-          project_id: selectedProject.id,
-          material_indent_details_id: item.id,
-        });
-        getData();
       },
     });
   };
@@ -466,7 +434,6 @@ function IssueIndentPreview(props) {
                     showDetail={showDetail}
                     showEdit={isPending}
                     isApproved={isApproved}
-                    handleDeleteItem={handleDeleteItem}
                   />
                 );
               })}

@@ -335,7 +335,7 @@ const styles = StyleSheet.create({
   listMainContainer: {
     alignItems: 'center',
     flexDirection: 'row',
-    width: 280,
+    width: 260,
   },
 });
 

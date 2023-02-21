@@ -192,7 +192,7 @@ function CardListing(props) {
             <OpacityButton
               color="#FF5D5D"
               opacity={0.18}
-              onPress={() => handleDelete(index, item)}
+              onPress={() => handleDelete(index, item.id)}
               style={styles.OpacityButton}>
               <MaterialIcons name="delete" color="#FF5D5D" size={13} />
             </OpacityButton>
@@ -234,8 +234,12 @@ function AddReturnIndentMaterials(props) {
       material_indent_id: id,
     });
 
-  const {getPRMaterialCategories, getIndentDetails, addMaterialIssueRequest} =
-    useMaterialManagementActions();
+  const {
+    getPRMaterialCategories,
+    getIndentDetails,
+    addMaterialIssueRequest,
+    deleteIndentItem,
+  } = useMaterialManagementActions();
 
   const {indentDetails, materialSubCategories} = useSelector(
     s => s.materialManagement,
@@ -340,16 +344,23 @@ function AddReturnIndentMaterials(props) {
     toggleAddDialog();
   };
 
-  const handleDelete = index => {
+  const handleDelete = (index, itemId) => {
     alert.show({
       title: 'Confirm',
       message: 'Are you sure you want to delete?',
       confirmText: 'Delete',
       onConfirm: () => {
-        const _materials = [...materials];
-        _materials?.splice(index, 1);
-        setSelectedMaterialIndex(_materials);
-        getDetails();
+        if (itemId) {
+          deleteIndentItem({
+            project_id: selectedProject.id,
+            material_indent_details_id: itemId,
+          });
+          getDetails();
+        } else {
+          const _materials = [...materials];
+          _materials?.splice(index, 1);
+          setMaterials(_materials);
+        }
       },
     });
   };

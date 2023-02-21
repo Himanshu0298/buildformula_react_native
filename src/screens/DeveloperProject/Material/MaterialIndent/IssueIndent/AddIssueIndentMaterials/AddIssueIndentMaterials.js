@@ -14,6 +14,7 @@ import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {isEqual, isNumber} from 'lodash';
 import {Formik} from 'formik';
 import {useSnackbar} from 'components/Atoms/Snackbar';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 function AddMaterialDialog(props) {
   const {handleClose, edit, formikProps, categoryList, wbs_id} = props;
@@ -181,7 +182,7 @@ function CardListing(props) {
             <OpacityButton
               color="#FF5D5D"
               opacity={0.18}
-              onPress={() => handleDelete(index, item)}
+              onPress={() => handleDelete(index, item.id)}
               style={styles.OpacityButton}>
               <MaterialIcons name="delete" color="#FF5D5D" size={13} />
             </OpacityButton>
@@ -226,11 +227,11 @@ function AddIssueIndentMaterials(props) {
     getIndentDetails,
     addMaterialIssueRequest,
     getMaterialIndentCategoryList,
+    deleteIndentItem,
   } = useMaterialManagementActions();
 
-  const {indentDetails, materialSubCategories, categoryList} = useSelector(
-    s => s.materialManagement,
-  );
+  const {indentDetails, materialSubCategories, categoryList, loading} =
+    useSelector(s => s.materialManagement);
 
   const materialsItems = indentDetails?.material_indent_details;
 
@@ -337,16 +338,23 @@ function AddIssueIndentMaterials(props) {
     toggleAddDialog();
   };
 
-  const handleDelete = index => {
+  const handleDelete = (index, itemId) => {
     alert.show({
       title: 'Confirm',
       message: 'Are you sure you want to delete?',
       confirmText: 'Delete',
       onConfirm: () => {
-        const _materials = [...materials];
-        _materials?.splice(index, 1);
-        setMaterials(_materials);
-        getDetails();
+        if (itemId) {
+          deleteIndentItem({
+            project_id: selectedProject.id,
+            material_indent_details_id: itemId,
+          });
+          getDetails();
+        } else {
+          const _materials = [...materials];
+          _materials?.splice(index, 1);
+          setMaterials(_materials);
+        }
       },
     });
   };
@@ -373,6 +381,7 @@ function AddIssueIndentMaterials(props) {
         </Formik>
       ) : null}
       <View style={styles.container}>
+        <Spinner visible={loading} />
         <View style={styles.subContainer}>
           <View style={styles.headerContainer}>
             <Text style={styles.headerText}>

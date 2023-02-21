@@ -17,7 +17,7 @@ function DetailsHeader(props) {
   const {towerId, floorId, structureType, selectedStructure, unitId, unit} =
     props;
 
-  const id = unit.unit_id;
+  const id = unit?.unit_id;
 
   return (
     <View style={styles.detailContainer}>
