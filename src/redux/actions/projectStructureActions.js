@@ -54,6 +54,8 @@ export default function useProjectStructureActions() {
     updateFloorOrder,
     updatePickUpOrder,
     addUnit,
+    updateUnit,
+    removeUnit,
   } = useProjectStructure();
 
   return {
@@ -682,6 +684,37 @@ export default function useProjectStructureActions() {
         payload: async () => {
           try {
             const response = _res(await addUnit(data));
+            snackbar.showMessage({message: 'Unit Added'});
+            return Promise.resolve(response.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    updateUnit: data =>
+      dispatch({
+        type: types.UPDATE_UNIT,
+        payload: async () => {
+          try {
+            const response = _res(await updateUnit(data));
+            snackbar.showMessage({message: response.msg});
+            return Promise.resolve(response.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    removeUnit: data =>
+      dispatch({
+        type: types.DELETE_UNIT,
+        payload: async () => {
+          try {
+            const response = _res(await removeUnit(data));
+            snackbar.showMessage({message: response.msg});
             return Promise.resolve(response.data);
           } catch (error) {
             const message = _err(error);

@@ -4,32 +4,34 @@ import {Divider, IconButton, Subheading, Title} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
+import useProjectStructureActions from 'redux/actions/projectStructureActions';
+import {useSelector} from 'react-redux';
 
 const ROUTE = [
   {screenName: 'Unit Details', route: 'UnitDetails', key: 'UnitDetails'},
-  {screenName: 'Location Info', route: 'LocationInfo', key: 'Location Info'},
-  {screenName: 'Area Sheet', route: 'UnitAreaSheet', key: 'Area Sheet'},
+  {screenName: 'Location Info', route: 'LocationInfo', key: 'LocationInfo'},
+  {screenName: 'Area Sheet', route: 'UnitAreaSheet', key: 'AreaSheet'},
   {
     screenName: 'Infrastructure Info',
     route: 'InfrastructureInfo',
-    key: 'Infrastructure Info',
+    key: 'InfrastructureInfo',
   },
   {screenName: 'Details', route: 'UnitInformation', key: 'Details'},
-  {screenName: 'Pricing', route: 'UnitPricing', key: 'Unit Pricing'},
+  {screenName: 'Pricing', route: 'UnitPricing', key: 'UnitPricing'},
   {
     screenName: 'Owner Information',
     route: 'ProjectUnitOwner',
-    key: 'Unit Owner Info',
+    key: 'UnitOwnerInfo',
   },
   {
     screenName: 'Security/ Caretaker Info',
     route: 'UnitSecurityInfo',
-    key: 'Security/ Caretaker Info',
+    key: 'Security/CaretakerInfo',
   },
   {
     screenName: 'Files/ Attachments',
     route: 'UnitFiles',
-    key: 'Files/ Attachments',
+    key: 'Files/Attachments',
   },
 ];
 
@@ -53,7 +55,24 @@ const RenderRow = props => {
 };
 
 const ProjectUnitDetails = props => {
-  const {navigation} = props;
+  const {navigation, route} = props;
+  const {projectId} = route?.params || {};
+
+  // const {getUnitList} = useProjectStructureActions();
+
+  // const {selectedProject} = useSelector(s => s.project);
+
+  // const {areaList, projectDetails} = useSelector(s => s.projectStructure);
+
+  // React.useEffect(() => {
+  //   getList();
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
+
+  // const getList = async () => {
+  //   await getUnitList({project_id: selectedProject.id});
+  // };
+
   return (
     <SafeAreaView style={styles.mainContainer}>
       <View style={styles.headerWrapper}>
@@ -64,7 +83,7 @@ const ProjectUnitDetails = props => {
           style={styles.backIcon}
           onPress={() => navigation.goBack()}
         />
-        <Title>Add Unit </Title>
+        <Title>{projectId}</Title>
       </View>
       <Divider />
       <View style={styles.bodyWrap}>
