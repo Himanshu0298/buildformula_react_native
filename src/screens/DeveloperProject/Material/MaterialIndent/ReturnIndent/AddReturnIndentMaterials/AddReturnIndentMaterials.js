@@ -137,7 +137,7 @@ function AddMaterialDialog(props) {
 }
 
 function CardListing(props) {
-  const {item, toggleEditDialog, handleDelete, index} = props;
+  const {item, toggleEditDialog, handleDelete, index, edit} = props;
 
   const {
     materialcategrytitle,
@@ -179,15 +179,18 @@ function CardListing(props) {
           <Text>{materialcategrytitle || categoryTitle}</Text>
         </View>
         <View style={styles.buttonContainer}>
-          <View style={styles.editButton}>
-            <OpacityButton
-              color="#4872f4"
-              opacity={0.18}
-              style={styles.OpacityButton}
-              onPress={() => toggleEditDialog(index)}>
-              <MaterialIcons name="edit" color="#4872f4" size={13} />
-            </OpacityButton>
-          </View>
+          {!edit ? (
+            <View style={styles.editButton}>
+              <OpacityButton
+                color="#4872f4"
+                opacity={0.18}
+                style={styles.OpacityButton}
+                onPress={() => toggleEditDialog(index)}>
+                <MaterialIcons name="edit" color="#4872f4" size={13} />
+              </OpacityButton>
+            </View>
+          ) : null}
+
           <View>
             <OpacityButton
               color="#FF5D5D"
@@ -223,7 +226,7 @@ function CardListing(props) {
 function AddReturnIndentMaterials(props) {
   const {navigation, route} = props;
 
-  const {id, edit} = route?.params || {};
+  const {id, edit, detailId} = route?.params || {};
 
   const alert = useAlert();
   const snackbar = useSnackbar();
@@ -231,13 +234,13 @@ function AddReturnIndentMaterials(props) {
   const getDetails = () =>
     getIndentDetails({
       project_id: selectedProject.id,
-      material_indent_id: id,
+      material_indent_id: detailId || id,
     });
 
   const {
     getPRMaterialCategories,
     getIndentDetails,
-    addMaterialIssueRequest,
+    addReturnMaterial,
     deleteIndentItem,
   } = useMaterialManagementActions();
 
@@ -304,9 +307,8 @@ function AddReturnIndentMaterials(props) {
         damaged_qty: material?.damaged_qty,
       };
 
-      await addMaterialIssueRequest(restData);
+      await addReturnMaterial(restData);
     });
-
     getDetails();
     navigation.navigate('AddAttachments', {id});
   };
@@ -337,7 +339,12 @@ function AddReturnIndentMaterials(props) {
     toggleAddDialog();
   };
 
-  const toggleAddDialog = () => setAddDialog(v => !v);
+  const toggleAddDialog = () => {
+    setAddDialog(v => {
+      if (v) setSelectedMaterialIndex();
+      return !v;
+    });
+  };
 
   const editDialog = index => {
     setSelectedMaterialIndex(index);
@@ -409,6 +416,7 @@ function AddReturnIndentMaterials(props) {
                   index={index}
                   toggleEditDialog={editDialog}
                   handleDelete={handleDelete}
+                  edit={edit}
                 />
               );
             })}

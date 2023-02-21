@@ -5,13 +5,13 @@ import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useAlert} from 'components/Atoms/Alert';
 import ActionButtons from 'components/Atoms/ActionButtons';
-import {getShadow} from 'utils';
+import {getShadow, onlyInLeft} from 'utils';
 import RenderSelect from 'components/Atoms/RenderSelect';
 import RenderInput from 'components/Atoms/RenderInput';
 import {useSelector} from 'react-redux';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
-import {isEqual, isNumber} from 'lodash';
+import {cloneDeep, isEqual, isNumber} from 'lodash';
 import {Formik} from 'formik';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -37,6 +37,7 @@ function AddMaterialDialog(props) {
 
   const categoryOptions = useMemo(() => {
     const categories = [...new Set(categoryList.map(i => i.category_id))];
+
     if (wbs_id) {
       return materialCategories
         ?.filter(i => categories.includes(i.id))
@@ -52,10 +53,15 @@ function AddMaterialDialog(props) {
   }, [categoryList, materialCategories, wbs_id]);
 
   const subCategoryOptions = useMemo(() => {
+    const subCategories = [
+      ...new Set(categoryList.map(i => i.master_material_subcategory_id)),
+    ];
+
     return materialSubCategories
+      ?.filter(i => subCategories.includes(i.id))
       ?.filter(i => i.category_id === values.material_category_id)
       ?.map(i => ({label: `${i.title}`, value: i.id}));
-  }, [materialSubCategories, values.material_category_id]);
+  }, [categoryList, materialSubCategories, values.material_category_id]);
 
   const unitOptions = useMemo(() => {
     return units?.map(i => ({label: `${i.title}`, value: i.id}));
@@ -132,7 +138,7 @@ function AddMaterialDialog(props) {
 }
 
 function CardListing(props) {
-  const {item, toggleEditDialog, handleDelete, index} = props;
+  const {item, toggleEditDialog, handleDelete, index, edit} = props;
 
   const {subcategorytitle, materialcategrytitle, materialunitstitle, quantity} =
     item;
@@ -169,15 +175,18 @@ function CardListing(props) {
           <Text>{materialcategrytitle || categoryTitle}</Text>
         </View>
         <View style={styles.buttonContainer}>
-          <View style={styles.editButton}>
-            <OpacityButton
-              color="#4872f4"
-              opacity={0.18}
-              style={styles.OpacityButton}
-              onPress={() => toggleEditDialog(index, item)}>
-              <MaterialIcons name="edit" color="#4872f4" size={13} />
-            </OpacityButton>
-          </View>
+          {!edit ? (
+            <View style={styles.editButton}>
+              <OpacityButton
+                color="#4872f4"
+                opacity={0.18}
+                style={styles.OpacityButton}
+                onPress={() => toggleEditDialog(index, item)}>
+                <MaterialIcons name="edit" color="#4872f4" size={13} />
+              </OpacityButton>
+            </View>
+          ) : null}
+
           <View>
             <OpacityButton
               color="#FF5D5D"
@@ -215,13 +224,6 @@ function AddIssueIndentMaterials(props) {
 
   const snackbar = useSnackbar();
 
-  const getDetails = async () => {
-    await getIndentDetails({
-      project_id: selectedProject.id,
-      material_indent_id: id,
-    });
-  };
-
   const {
     getPRMaterialCategories,
     getIndentDetails,
@@ -240,7 +242,9 @@ function AddIssueIndentMaterials(props) {
 
   const [addDialog, setAddDialog] = React.useState(false);
   const [selectedMaterialIndex, setSelectedMaterialIndex] = React.useState();
-  const [materials, setMaterials] = React.useState(materialsItems || []);
+  const [materials, setMaterials] = React.useState(
+    cloneDeep(materialsItems) || [],
+  );
 
   useEffect(() => {
     getPRMaterialCategories({project_id: projectId});
@@ -253,6 +257,13 @@ function AddIssueIndentMaterials(props) {
     getMaterialIndentCategoryList({
       project_id: projectId,
       wbs_works_id: wbs_id,
+    });
+  };
+
+  const getDetails = async () => {
+    await getIndentDetails({
+      project_id: selectedProject.id,
+      material_indent_id: id,
     });
   };
 
@@ -287,7 +298,18 @@ function AddIssueIndentMaterials(props) {
   }, [materialSubCategories, materials, selectedMaterialIndex]);
 
   const handleSave = async () => {
-    materials.map(async ele => {
+    const updatedMaterials = onlyInLeft(
+      materials,
+      materialsItems,
+      (l, r) =>
+        l.material_indent_id === r.material_indent_id &&
+        l.material_category_id === r.material_category_id &&
+        l.material_sub_category_id === r.material_sub_category_id &&
+        l.material_units_id === r.material_units_id &&
+        l.quantity === r.quantity,
+    );
+
+    updatedMaterials?.map(async ele => {
       const restData = {
         project_id: projectId,
         material_indent_id: id,
@@ -331,7 +353,12 @@ function AddIssueIndentMaterials(props) {
     toggleAddDialog();
   };
 
-  const toggleAddDialog = () => setAddDialog(v => !v);
+  const toggleAddDialog = () => {
+    setAddDialog(v => {
+      if (v) setSelectedMaterialIndex();
+      return !v;
+    });
+  };
 
   const editDialog = index => {
     setSelectedMaterialIndex(index);
@@ -349,6 +376,7 @@ function AddIssueIndentMaterials(props) {
             project_id: selectedProject.id,
             material_indent_details_id: itemId,
           });
+          getDetails();
           getDetails();
         } else {
           const _materials = [...materials];
@@ -408,6 +436,7 @@ function AddIssueIndentMaterials(props) {
                     index={index}
                     toggleEditDialog={editDialog}
                     handleDelete={handleDelete}
+                    edit={edit}
                   />
                 );
               })}

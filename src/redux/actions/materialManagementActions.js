@@ -686,7 +686,7 @@ export default function useMaterialManagementActions() {
 
     addReturnMaterial: data =>
       dispatch({
-        type: types.ADD_MATERIAL_ISSUE_REQUEST,
+        type: types.ADD_MATERIAL_RETURN_REQUEST,
         payload: async () => {
           try {
             const response = _res(await addReturnMaterial(data));

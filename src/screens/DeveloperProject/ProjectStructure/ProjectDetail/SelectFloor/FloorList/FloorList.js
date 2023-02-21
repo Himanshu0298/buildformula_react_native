@@ -29,7 +29,7 @@ import {debounce} from 'lodash';
 
 const ROW_HEIGHT = 50;
 
-function AddTowerModel(props) {
+function AddFloorModel(props) {
   const {visible, onClose, onSubmit} = props;
 
   return (
@@ -251,7 +251,7 @@ function FloorList(props) {
       </View>
 
       {dialog ? (
-        <AddTowerModel
+        <AddFloorModel
           {...props}
           visible={dialog}
           onClose={toggleAddDialog}

@@ -57,6 +57,7 @@ function CreateReturnIndent(props) {
 
   const onSubmit = async values => {
     const data = {
+      material_indent_id: id,
       project_id: projectId,
       remark: values.remark,
       vendor_id: values.vendor_id,
@@ -66,7 +67,8 @@ function CreateReturnIndent(props) {
 
     navigation.navigate('AddReturnIndentMaterials', {
       edit,
-      id: value.material_indent_id || id,
+      id: value.material_indent_id,
+      detailId: id,
     });
   };
 

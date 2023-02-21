@@ -166,12 +166,8 @@ function ReturnIndentPreview(props) {
 
   const alert = useAlert();
 
-  const {
-    getIndentDetails,
-    deleteIssue,
-    getMaterialIndentList,
-    deleteIndentItem,
-  } = useMaterialManagementActions();
+  const {getIndentDetails, deleteIssue, getMaterialIndentList} =
+    useMaterialManagementActions();
 
   const {selectedProject} = useSelector(s => s.project);
   const {indentDetails, loading} = useSelector(s => s.materialManagement);
