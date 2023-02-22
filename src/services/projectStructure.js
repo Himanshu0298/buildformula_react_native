@@ -259,5 +259,54 @@ export default function useProjectStructure() {
         params,
       );
     },
+
+    // unit
+
+    getUnitList: data => {
+      return instance.post(
+        '/projectstructure/project/getUnitList',
+        data,
+        params,
+      );
+    },
+
+    // Tower
+    addUnit: data => {
+      return instance.post(
+        '/projectstructure/project/UnitDetailsAdd',
+        data,
+        params,
+      );
+    },
+    updateUnit: data => {
+      return instance.post(
+        '/projectstructure/project/projectUnitDetailsAddUpdate',
+        data,
+        params,
+      );
+    },
+    removeUnit: data => {
+      return instance.post(
+        '/projectstructure/project/projectUnitRemove',
+        data,
+        params,
+      );
+    },
+
+    // Bungalow
+    addBungalow: data => {
+      return instance.post(
+        '/projectstructure/project/BunglowDetailsAdd',
+        data,
+        params,
+      );
+    },
+    updateBungalow: data => {
+      return instance.post(
+        '/projectstructure/project/projectBunglowDetailsAddUpdate',
+        data,
+        params,
+      );
+    },
   };
 }

@@ -9,6 +9,7 @@ import {
 import {
   Caption,
   Divider,
+  Headline,
   IconButton,
   Subheading,
   Text,
@@ -26,15 +27,25 @@ import {getDownloadUrl} from 'utils/download';
 import {getShadow} from 'utils';
 import PostContent from 'components/Atoms/RenderSeeMore';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
-import plotPreview from 'assets/images/plotPreview.png';
 
-import Carousel from 'react-native-reanimated-carousel';
-
+import CustomCarousel from 'components/Atoms/CustomCarousel';
 import {
   FILES_DATA,
   OWNER_DATA,
   SECURITY_DATA,
 } from '../ProjectDetail/ProjectPreview/Data';
+
+const data = [
+  {
+    image: require('assets/images/plotPreview.png'),
+  },
+  {
+    image: require('assets/images/plotPreview.png'),
+  },
+  {
+    image: require('assets/images/plotPreview.png'),
+  },
+];
 
 const description =
   ' Lorem ipsum dolor sit amet consectetur. Tortor adipiscing leo sempermagna ipsum. Suspendisse odio adipiscing ultrices euismod. Eleifend ut';
@@ -125,16 +136,16 @@ function Files() {
               style={styles.sectionContainer}
               onPress={() => onPressFile(item)}>
               <Image source={PdfIcon} style={styles.fileIcon} />
-              <View>
+              <View style={styles.fileWrapper}>
                 <Text
                   style={(styles.verticalFlex, styles.text)}
                   numberOfLines={2}>
                   {item.name}
                 </Text>
-                <View style={styles.type}>
+                <View>
                   <Text style={styles.date}>{item.type}</Text>
                 </View>
-                <View style={styles.dateContainer}>
+                <View>
                   <Text style={styles.date}>
                     {/* {dayjs(created).format('DD MMM YYYY')} */}
                     {item.date}
@@ -348,18 +359,7 @@ function UnitPreview(props) {
           </View>
         </View>
         <View>
-          <Carousel
-            loop
-            width="500"
-            height={'500' / 2}
-            autoPlay={false}
-            data={[...new Array(2).keys()]}
-            scrollAnimationDuration={10000}
-            onSnapToItem={index => console.log('current index:', index)}
-            renderItem={({index}) => {
-              return <Image source={plotPreview} />;
-            }}
-          />
+          <CustomCarousel data={data} pagination />
           <View style={styles.sliderWrap}>
             <Title style={styles.sliderText}>648 - 1116 SQ. FT.</Title>
             <Subheading style={styles.sliderText}>Plot for Sold</Subheading>
@@ -424,12 +424,6 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginBottom: 10,
   },
-  type: {
-    marginLeft: 10,
-  },
-  dateContainer: {
-    marginLeft: 8,
-  },
   subContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -466,7 +460,7 @@ const styles = StyleSheet.create({
   sliderWrap: {
     position: 'absolute',
     left: 10,
-    bottom: 28,
+    bottom: 48,
   },
   sliderText: {
     color: '#fff',
@@ -488,6 +482,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#4872f41a',
     marginRight: 10,
     marginTop: 10,
+  },
+  fileWrapper: {
+    marginLeft: 10,
   },
 });
 

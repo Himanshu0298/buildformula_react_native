@@ -1,40 +1,44 @@
 import {StyleSheet, View} from 'react-native';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Divider, IconButton, Subheading, Title} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 
+import useProjectStructureActions from 'redux/actions/projectStructureActions';
+import {useSelector} from 'react-redux';
+
 const ROUTE = [
   {screenName: 'Unit Details', route: 'UnitDetails', key: 'UnitDetails'},
-  {screenName: 'Location Info', route: 'LocationInfo', key: 'Location Info'},
-  {screenName: 'Area Sheet', route: 'UnitAreaSheet', key: 'Area Sheet'},
+  {screenName: 'Location Info', route: 'LocationInfo', key: 'LocationInfo'},
+  {screenName: 'Area Sheet', route: 'UnitAreaSheet', key: 'AreaSheet'},
   {
     screenName: 'Infrastructure Info',
     route: 'InfrastructureInfo',
-    key: 'Infrastructure Info',
+    key: 'InfrastructureInfo',
   },
   {screenName: 'Details', route: 'UnitInformation', key: 'Details'},
-  {screenName: 'Pricing', route: 'UnitPricing', key: 'Unit Pricing'},
+  {screenName: 'Pricing', route: 'UnitPricing', key: 'UnitPricing'},
   {
     screenName: 'Owner Information',
     route: 'ProjectUnitOwner',
-    key: 'Unit Owner Info',
+    key: 'UnitOwnerInfo',
   },
   {
     screenName: 'Security/ Caretaker Info',
     route: 'UnitSecurityInfo',
-    key: 'Security/ Caretaker Info',
+    key: 'Security/CaretakerInfo',
   },
   {
     screenName: 'Files/ Attachments',
     route: 'UnitFiles',
-    key: 'Files/ Attachments',
+    key: 'Files/Attachments',
   },
 ];
 
 const RenderRow = props => {
-  const {navigation, screenName, route} = props;
+  const {navigation, screenName, route, unitId} = props;
+
   return (
     <>
       <View style={styles.row}>
@@ -43,7 +47,7 @@ const RenderRow = props => {
           opacity={0.1}
           color="#4872f4"
           style={styles.navBTN}
-          onPress={() => navigation.navigate(route)}>
+          onPress={() => navigation.navigate(route, {unitId})}>
           <MaterialIcon name="edit" color="#4872f4" size={15} />
         </OpacityButton>
       </View>
@@ -53,7 +57,20 @@ const RenderRow = props => {
 };
 
 const ProjectUnitDetails = props => {
-  const {navigation} = props;
+  const {navigation, route} = props;
+  const {unitId} = route?.params || {};
+
+  const {getProjectList, getUnitList, getProjectMasterList} =
+    useProjectStructureActions();
+  const {selectedProject} = useSelector(s => s.project);
+
+  useEffect(() => {
+    getProjectList({project_id: selectedProject.id});
+    getUnitList({project_id: selectedProject.id});
+    getProjectMasterList({project_id: selectedProject.id});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <SafeAreaView style={styles.mainContainer}>
       <View style={styles.headerWrapper}>
@@ -64,7 +81,7 @@ const ProjectUnitDetails = props => {
           style={styles.backIcon}
           onPress={() => navigation.goBack()}
         />
-        <Title>Add Unit </Title>
+        <Title>Add Unit</Title>
       </View>
       <Divider />
       <View style={styles.bodyWrap}>
@@ -75,6 +92,7 @@ const ProjectUnitDetails = props => {
               key={item.key}
               screenName={item.screenName}
               route={item.route}
+              unitId={unitId}
             />
           );
         })}

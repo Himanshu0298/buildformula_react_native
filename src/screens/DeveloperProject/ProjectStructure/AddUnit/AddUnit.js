@@ -1,7 +1,7 @@
 import {ScrollView, StyleSheet, View} from 'react-native';
-import React, {useMemo, useEffect, useState} from 'react';
+import React, {useMemo, useEffect, useState, useRef} from 'react';
 import {IconButton, Title} from 'react-native-paper';
-import {Formik, useFormik} from 'formik';
+import {useFormik} from 'formik';
 import * as Yup from 'yup';
 import RenderInput from 'components/Atoms/RenderInput';
 import RenderSelect from 'components/Atoms/RenderSelect';
@@ -14,39 +14,16 @@ const schema = Yup.object().shape({
   projectName: Yup.string()
     .label('projectName')
     .required('Project Name is Required'),
-  builderName: Yup.string()
-    .label('builderName')
-    .required('Builder Name is Required'),
-  area: Yup.string().label('area').required('Area is Required'),
+  projectCategory: Yup.string()
+    .label('projectCategory')
+    .required('Category is Required'),
+  selectTower: Yup.string().label('selectTower').required('Tower is Required'),
+  selectFloor: Yup.string().label('selectFloor').required('Floor is Required'),
+  unitNo: Yup.string().label('unitNo').required('Unit No is Required'),
 });
-
-const AddressData = {
-  'Science City Rd': {
-    address: 'SATYAMEV EMINENCE',
-    city: 'Ahmedabad',
-    state: 'Gujarat',
-    country: 'India',
-    pincode: 380013,
-  },
-  'Sola Rd': {
-    address: 'Vraj Valencia',
-    city: 'Ahmedabad',
-    state: 'Gujarat',
-    country: 'India',
-    pincode: 380060,
-  },
-  Bhadaj: {
-    address: 'Tri',
-    city: 'Ahmedabad',
-    state: 'Gujarat',
-    country: 'India',
-    pincode: 380020,
-  },
-};
 
 const RenderForm = props => {
   const {
-    navigation,
     formikProps,
     projectOptions,
     getTowers,
@@ -57,17 +34,10 @@ const RenderForm = props => {
     floorOptions,
   } = props;
 
-  const {
-    values,
-    errors,
-    handleChange,
-    handleBlur,
-    setFieldValue,
-    handleSubmit,
-  } = formikProps;
+  const {values, errors, handleChange, handleBlur, setFieldValue} = formikProps;
 
   return (
-    <ScrollView style={{marginBottom: 30}} showsVerticalScrollIndicator={false}>
+    <ScrollView showsVerticalScrollIndicator={false}>
       <View style={styles.formContainer}>
         <RenderSelect
           name="projectName"
@@ -77,6 +47,7 @@ const RenderForm = props => {
           containerStyles={styles.inputStyles}
           onBlur={handleBlur('projectName')}
           onSelect={getTowers}
+          error={errors.projectName}
         />
         <RenderSelect
           name="projectCategory"
@@ -86,6 +57,7 @@ const RenderForm = props => {
           containerStyles={styles.inputStyles}
           onBlur={handleBlur('projectCategory')}
           onSelect={loadTowers}
+          error={errors.projectCategory}
         />
         <RenderSelect
           name="selectTower"
@@ -95,6 +67,7 @@ const RenderForm = props => {
           containerStyles={styles.inputStyles}
           onBlur={handleBlur('selectTower')}
           onSelect={loadFloors}
+          error={errors.selectTower}
         />
         <RenderSelect
           name="selectFloor"
@@ -106,6 +79,7 @@ const RenderForm = props => {
           onSelect={value => {
             setFieldValue('selectFloor', value);
           }}
+          error={errors.selectFloor}
         />
         <RenderInput
           name="unitNo"
@@ -118,21 +92,10 @@ const RenderForm = props => {
           returnKeyType="next"
           error={errors.unitNo}
         />
-        <RenderSelect
-          name="area"
-          label="Select Area"
-          value={values.area}
-          options={[1, 2, 3, 4, 5]}
-          containerStyles={styles.inputStyles}
-          onBlur={handleBlur('area')}
-          onSelect={value => {
-            setFieldValue('area', value);
-          }}
-        />
         <RenderInput
           containerStyles={styles.inputStyles}
           label="Address"
-          value={AddressData[values.area]?.address}
+          value={values.address}
           autoCapitalize="none"
           returnKeyType="next"
           editable={false}
@@ -141,7 +104,7 @@ const RenderForm = props => {
         <RenderInput
           containerStyles={styles.inputStyles}
           label="City"
-          value={AddressData[values.area]?.city}
+          value={values.city}
           autoCapitalize="none"
           returnKeyType="next"
           editable={false}
@@ -150,7 +113,7 @@ const RenderForm = props => {
         <RenderInput
           containerStyles={styles.inputStyles}
           label="State"
-          value={AddressData[values.area]?.state}
+          value={values.state}
           autoCapitalize="none"
           returnKeyType="next"
           editable={false}
@@ -159,7 +122,7 @@ const RenderForm = props => {
         <RenderInput
           containerStyles={styles.inputStyles}
           label="Country"
-          value={AddressData[values.area]?.country}
+          value={values.country}
           autoCapitalize="none"
           returnKeyType="next"
           editable={false}
@@ -168,21 +131,12 @@ const RenderForm = props => {
         <RenderInput
           containerStyles={styles.inputStyles}
           label="Pincode"
-          value={AddressData[values.area]?.pincode}
+          value={values.pincode}
           autoCapitalize="none"
           returnKeyType="next"
           editable={false}
           style={styles.readOnly}
         />
-
-        <View style={styles.filterBTN}>
-          <ActionButtons
-            cancelLabel="Add Details"
-            submitLabel="Save"
-            onCancel={() => navigation.navigate('ProjectUnitDetails')}
-            onSubmit={handleSubmit}
-          />
-        </View>
       </View>
     </ScrollView>
   );
@@ -193,29 +147,21 @@ const AddUnit = props => {
   const [towerOptions, setTowerOptions] = useState([]);
   const [towerId, setTowerId] = useState();
 
-  const {getProjectList, getProjectCategory, getTowerList, getFloorList} =
-    useProjectStructureActions();
+  const submitTypeRef = useRef();
+
+  const {
+    getUnitList,
+    getProjectList,
+    getProjectCategory,
+    getTowerList,
+    getFloorList,
+    addUnit,
+  } = useProjectStructureActions();
 
   const {selectedProject} = useSelector(s => s.project);
   const {projectList, towerList, categoriesList, floorList} = useSelector(
     s => s.projectStructure,
   );
-
-  const formikProps = useFormik({
-    enableReinitialize: true,
-    validateOnBlur: false,
-    validateOnChange: false,
-    validationSchema: schema,
-    initialValues: {
-      projectName: '',
-      builderName: '',
-      selectTower: '',
-      selectFloor: '',
-      area: '',
-    },
-    setFieldValue: true,
-    onSubmit,
-  });
 
   useEffect(() => {
     loadData();
@@ -235,21 +181,33 @@ const AddUnit = props => {
 
   const getTowers = async value => {
     formikProps.setFieldValue('projectName', value);
+
+    const option = projectList.find(i => {
+      return i.id === value;
+    });
+
+    if (option) {
+      formikProps.setFieldValue('address', option.area);
+      formikProps.setFieldValue('city', option.city);
+      formikProps.setFieldValue('state', option.state);
+      formikProps.setFieldValue('country', option.country);
+      formikProps.setFieldValue('pincode', option.pincode);
+    }
     setTowerId(value);
     await getTowerList({project_id: selectedProject.id, id: value});
   };
 
   const categoryOptions = useMemo(() => {
     return categoriesList
-      ?.filter(i => i.status === 1)
+      ?.filter(i => (i.status === 1 && i.id === 1) || i.id === 2 || i.id === 3)
       ?.map(i => ({label: i.title, value: i.id}));
   }, [categoriesList]);
 
   const loadTowers = async value => {
     formikProps.setFieldValue('projectCategory', value);
-    return value === 1
-      ? setTowerOptions(towerList?.map(i => ({label: i.label, value: i.id})))
-      : undefined;
+    return setTowerOptions(
+      towerList?.map(i => ({label: i.label, value: i.id})),
+    );
   };
 
   const loadFloors = async value => {
@@ -265,9 +223,53 @@ const AddUnit = props => {
     return floorList?.map(i => ({label: i.floor, value: i.id}));
   }, [floorList]);
 
-  const onSubmit = values => {
-    console.log(values);
+  const onSubmit = async values => {
+    const {projectName, projectCategory, selectTower, selectFloor, unitNo} =
+      values;
+    const res = await addUnit({
+      id: projectName,
+      project_id: selectedProject.id,
+      project_type: projectCategory,
+      project_tower: selectTower,
+      project_floor: selectFloor,
+      project_unit: unitNo,
+    });
+
+    getUnitList({project_id: selectedProject.id});
+
+    if (submitTypeRef.current === 'save') {
+      navigation.goBack();
+    } else if (submitTypeRef.current === 'details') {
+      navigation.navigate('ProjectUnitDetails', {
+        unitId: res.value.id,
+      });
+    }
+    return res;
   };
+
+  const onSave = async type => {
+    submitTypeRef.current = type;
+    handleSubmit();
+  };
+
+  const formikProps = useFormik({
+    enableReinitialize: true,
+    validateOnBlur: false,
+    validateOnChange: false,
+    validationSchema: schema,
+    setFieldValue: true,
+    initialValues: {
+      projectName: '',
+      builderName: '',
+      selectTower: '',
+      selectFloor: '',
+      area: '',
+    },
+    onSubmit,
+  });
+
+  const {handleSubmit} = formikProps;
+
   return (
     <View style={styles.mainContainer}>
       <View style={styles.headerWrapper}>
@@ -281,26 +283,25 @@ const AddUnit = props => {
         <Title>Add Unit</Title>
       </View>
       <View style={styles.formContainer}>
-        <Formik>
-          {() => (
-            <RenderForm
-              formikProps={formikProps}
-              {...props}
-              projectList={projectList}
-              towerList={towerList}
-              categoriesList={categoriesList}
-              floorList={floorList}
-              selectedProject={selectedProject}
-              projectOptions={projectOptions}
-              getTowers={getTowers}
-              categoryOptions={categoryOptions}
-              loadTowers={loadTowers}
-              loadFloors={loadFloors}
-              towerOptions={towerOptions}
-              floorOptions={floorOptions}
-            />
-          )}
-        </Formik>
+        <RenderForm
+          {...props}
+          formikProps={formikProps}
+          projectOptions={projectOptions}
+          getTowers={getTowers}
+          categoryOptions={categoryOptions}
+          loadTowers={loadTowers}
+          towerOptions={towerOptions}
+          loadFloors={loadFloors}
+          floorOptions={floorOptions}
+        />
+      </View>
+      <View style={styles.filterBTN}>
+        <ActionButtons
+          cancelLabel="Add Details"
+          submitLabel="Save"
+          onCancel={() => onSave('details')}
+          onSubmit={() => onSave('save')}
+        />
       </View>
     </View>
   );
@@ -328,8 +329,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#EAECF1',
   },
   filterBTN: {
-    flex: 1,
     justifyContent: 'flex-end',
+    marginBottom: 10,
   },
   formContainer: {
     flex: 1,

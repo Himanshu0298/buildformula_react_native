@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import unit_image from 'assets/images/unit_image.png';
 import {
   Caption,
   Divider,
@@ -15,7 +14,6 @@ import {
   Text,
   Title,
 } from 'react-native-paper';
-import Carousel from 'react-native-reanimated-carousel';
 
 import {theme} from 'styles/theme';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -34,6 +32,8 @@ import {getDownloadUrl} from 'utils/download';
 import {getShadow} from 'utils';
 import PostContent from 'components/Atoms/RenderSeeMore';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
+import CustomCarousel from 'components/Atoms/CustomCarousel';
+import {useSelector} from 'react-redux';
 import {
   FILES_DATA,
   OWNER_DATA,
@@ -43,10 +43,24 @@ import {
 const description =
   ' Lorem ipsum dolor sit amet consectetur. Tortor adipiscing leo sempermagna ipsum. Suspendisse odio adipiscing ultrices euismod. Eleifend ut';
 
+const data = [
+  {
+    image: require('assets/images/unit_image.png'),
+  },
+  {
+    image: require('assets/images/unit_image.png'),
+  },
+  {
+    image: require('assets/images/unit_image.png'),
+  },
+];
+
 function SecurityDetails() {
   return (
-    <View>
-      <Subheading>Project Owner Info</Subheading>
+    <View style={{marginVertical: 10, padding: 10}}>
+      <View style={{marginBottom: 10}}>
+        <Text>SECURITY/ CARETAKER INFO</Text>
+      </View>
       {SECURITY_DATA.map(item => {
         return (
           <View style={styles.container}>
@@ -68,9 +82,10 @@ function SecurityDetails() {
 
 function OwnerDetails(props) {
   return (
-    <>
-      <Subheading>Project Owner Info</Subheading>
-
+    <View style={{marginVertical: 10, padding: 10}}>
+      <View style={{marginBottom: 10}}>
+        <Text>OWNER INFO</Text>
+      </View>
       {OWNER_DATA.map(item => {
         return (
           <View style={styles.container}>
@@ -93,7 +108,7 @@ function OwnerDetails(props) {
           </View>
         );
       })}
-    </>
+    </View>
   );
 }
 
@@ -114,8 +129,10 @@ function Files() {
     });
   };
   return (
-    <View>
-      <Subheading> File's/ Attachments </Subheading>
+    <View style={{marginVertical: 10, padding: 10}}>
+      <View style={{marginBottom: 10}}>
+        <Text>FILE'S/ ATTACHMENTS</Text>
+      </View>
       {FILES_DATA.map(item => {
         return (
           <View style={styles.recentFiles}>
@@ -123,16 +140,16 @@ function Files() {
               style={styles.sectionContainer}
               onPress={() => onPressFile(item)}>
               <Image source={PdfIcon} style={styles.fileIcon} />
-              <View>
+              <View style={styles.fileWrapper}>
                 <Text
                   style={(styles.verticalFlex, styles.text)}
                   numberOfLines={2}>
                   {item.name}
                 </Text>
-                <View style={styles.type}>
+                <View>
                   <Text style={styles.date}>{item.type}</Text>
                 </View>
-                <View style={styles.dateContainer}>
+                <View>
                   <Text style={styles.date}>
                     {/* {dayjs(created).format('DD MMM YYYY')} */}
                     {item.date}
@@ -187,7 +204,7 @@ function Pricing() {
 
 function UnitSpecification() {
   return (
-    <>
+    <View style={{marginVertical: 10, padding: 10}}>
       <View style={styles.specification}>
         <View style={styles.specificationContainer}>
           <MaterialCommunityIcons name="bed-king-outline" size={30} />
@@ -245,16 +262,16 @@ function UnitSpecification() {
         <Text>Sawan Patel</Text>
       </View>
       <View>
-        <Caption> PRE_LEASE_REMARKS</Caption>
+        <Caption> PRE LEASE REMARKS</Caption>
         <PostContent description={description} />
       </View>
-    </>
+    </View>
   );
 }
 
 function Details() {
   return (
-    <View>
+    <View style={{marginVertical: 10, padding: 10}}>
       <View style={styles.detailContainer}>
         <View>
           <Caption>SUPER BUILDUP AREA</Caption>
@@ -319,30 +336,57 @@ function Details() {
   );
 }
 
-function UnitDetails() {
+function UnitDetails(props) {
+  const {premium_location, selected_project, project_name} = props;
+
+  const {area, city, state, country, pincode} = selected_project;
+
   return (
-    <View>
+    <View style={{padding: 10, paddingTop: 0}}>
       <View style={{flexDirection: 'row', alignItems: 'center'}}>
         <Subheading>by</Subheading>
         <View style={{marginLeft: 5}}>
           <Subheading style={{color: theme.colors.primary}}>
-            Satymev Residency
+            {project_name}
           </Subheading>
         </View>
       </View>
       <View>
-        <Subheading> Malad Sangata CHS, Malad West, Mumbai</Subheading>
+        <Subheading>
+          {`${area} ${city}, ${state}, ${country} -${pincode}`}
+        </Subheading>
       </View>
-      <View style={styles.buildingIcon}>
-        <PrimeIcon fill="#041d36" style={styles.builderdetailIcon} />
-        <Text> Prime Location</Text>
-      </View>
+      {premium_location ? (
+        <View style={styles.buildingIcon}>
+          <PrimeIcon fill="#041d36" style={styles.builderdetailIcon} />
+          <Text> Prime Location</Text>
+        </View>
+      ) : undefined}
     </View>
   );
 }
 
 function UnitPreview(props) {
-  const {navigation} = props;
+  const {navigation, route} = props;
+
+  const {unitData} = route.params;
+  const {
+    id,
+    no_of_bhk_name,
+    premium_location,
+    project_id,
+    unit_type_name,
+    unit_for,
+    unit_category,
+    project_name,
+  } = unitData;
+
+  const {projectList = []} = useSelector(s => {
+    return s.projectStructure;
+  });
+
+  const selected_project = projectList?.find(i => i.project_id === project_id);
+
   return (
     <View>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -358,52 +402,48 @@ function UnitPreview(props) {
             <Subheading>Unit Details</Subheading>
           </View>
           <View style={styles.headerContainer}>
-            <OpacityButton
+            {/* <OpacityButton
               opacity={0.1}
               color="#4872f4"
               style={styles.navBTN}
               onPress={() => navigation.navigate('')}>
               <MaterialIcons name="content-copy" color="#4872f4" size={15} />
-            </OpacityButton>
+            </OpacityButton> */}
             <OpacityButton
               opacity={0.1}
               color="#4872f4"
               style={styles.navBTN}
-              onPress={() => navigation.navigate('')}>
+              onPress={() =>
+                navigation.navigate('ProjectUnitDetails', {unitId: id})
+              }>
               <MaterialIcons name="edit" color="#4872f4" size={15} />
             </OpacityButton>
           </View>
         </View>
         <View>
-          <Carousel
-            loop
-            width="500"
-            height={'500' / 2}
-            autoPlay={false}
-            data={[...new Array(2).keys()]}
-            scrollAnimationDuration={10000}
-            onSnapToItem={index => console.log('current index:', index)}
-            renderItem={({index}) => {
-              return <Image source={unit_image} />;
-            }}
-          />
+          <CustomCarousel data={data} pagination />
           <View style={styles.sliderWrap}>
-            <Title style={styles.sliderText}>3BHK</Title>
-            <Subheading style={styles.sliderText}>
-              Residential Apartment for Rent
-            </Subheading>
+            <Title style={styles.sliderText}>{no_of_bhk_name}</Title>
+            <Subheading
+              style={
+                styles.sliderText
+              }>{`${unit_type_name} ${unit_category} for ${unit_for}`}</Subheading>
           </View>
         </View>
         <View style={styles.mainContainer}>
-          <UnitDetails />
+          <UnitDetails
+            premium_location={premium_location}
+            selected_project={selected_project}
+            project_name={project_name}
+          />
           <Divider style={{borderWidth: 0.5}} />
-          <Details />
+          {/* <Details />
           <Divider style={{borderWidth: 0.5}} />
           <UnitSpecification />
           <Pricing />
           <OwnerDetails />
           <SecurityDetails />
-          <Files />
+          <Files /> */}
         </View>
       </ScrollView>
     </View>
@@ -506,12 +546,6 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginBottom: 10,
   },
-  type: {
-    marginLeft: 10,
-  },
-  dateContainer: {
-    marginLeft: 8,
-  },
   subContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -548,11 +582,14 @@ const styles = StyleSheet.create({
   sliderWrap: {
     position: 'absolute',
     left: 10,
-    bottom: 28,
+    bottom: 48,
   },
   sliderText: {
     color: '#fff',
     fontWeight: '800',
+  },
+  fileWrapper: {
+    marginLeft: 10,
   },
 });
 

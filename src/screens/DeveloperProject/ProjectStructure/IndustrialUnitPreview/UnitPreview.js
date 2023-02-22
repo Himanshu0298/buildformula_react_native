@@ -10,6 +10,7 @@ import industrialPreview from 'assets/images/industrialUnit.png';
 import {
   Caption,
   Divider,
+  Headline,
   IconButton,
   Subheading,
   Text,
@@ -28,14 +29,25 @@ import {getDownloadUrl} from 'utils/download';
 import {getShadow} from 'utils';
 import PostContent from 'components/Atoms/RenderSeeMore';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
-
-import Carousel from 'react-native-reanimated-carousel';
+import CustomCarousel from 'components/Atoms/CustomCarousel';
 
 import {
   FILES_DATA,
   SECURITY_DATA,
   OWNER_DATA,
 } from '../ProjectDetail/ProjectPreview/Data';
+
+const data = [
+  {
+    image: require('assets/images/bungalow_img.png'),
+  },
+  {
+    image: require('assets/images/bungalow_img.png'),
+  },
+  {
+    image: require('assets/images/bungalow_img.png'),
+  },
+];
 
 const description =
   ' Lorem ipsum dolor sit amet consectetur. Tortor adipiscing leo sempermagna ipsum. Suspendisse odio adipiscing ultrices euismod. Eleifend ut';
@@ -124,13 +136,13 @@ function Files() {
               style={styles.sectionContainer}
               onPress={() => onPressFile(item)}>
               <Image source={PdfIcon} style={styles.fileIcon} />
-              <View>
+              <View style={styles.fileWrapper}>
                 <Text
                   style={(styles.verticalFlex, styles.text)}
                   numberOfLines={2}>
                   {item.name}
                 </Text>
-                <View style={styles.type}>
+                <View>
                   <Text style={styles.date}>{item.type}</Text>
                 </View>
                 <View style={styles.dateContainer}>
@@ -217,50 +229,58 @@ function Details() {
       <View style={{marginBottom: 10}}>
         <Text>INDUSTRIAL DETAILS INFO</Text>
       </View>
-      <View style={styles.detailContainer}>
+      <View style={styles.detailsContainer}>
         <View>
           <Caption>GCP</Caption>
-          <Text>Yes</Text>
+          <Text>{description}</Text>
         </View>
+      </View>
+      <View style={styles.detailsContainer}>
         <View>
           <Caption>EC/ NOC</Caption>
-          <Text>No</Text>
+          <Text>{description}</Text>
         </View>
       </View>
-      <View style={styles.detailContainer}>
+      <View style={styles.detailsContainer}>
         <View>
           <Caption>BAIL MEMBERSHIP</Caption>
-          <Text>Yes</Text>
+          <Text>{description}</Text>
         </View>
+      </View>
+      <View style={styles.detailsContainer}>
         <View>
           <Caption>DISCHARGE </Caption>
-          <Text>No</Text>
+          <Text>{description}</Text>
         </View>
       </View>
-      <View style={styles.detailContainer}>
+      <View style={styles.detailsContainer}>
         <View>
           <Caption>GUJARAT GAS</Caption>
-          <Text>No</Text>
+          <Text>{description}</Text>
         </View>
+      </View>
+      <View style={styles.detailsContainer}>
         <View>
           <Caption>POWER</Caption>
-          <Text>Yes</Text>
+          <Text>{description}</Text>
         </View>
       </View>
-      <View style={styles.detailContainer}>
+      <View style={styles.detailsContainer}>
         <View>
           <Caption>WATER</Caption>
-          <Text>No</Text>
-        </View>
-        <View>
-          <Caption>LIST OF MACHINERY</Caption>
-          <Text>Yes</Text>
+          <Text>{description}</Text>
         </View>
       </View>
-      <View style={styles.detailContainer}>
+      <View style={styles.detailsContainer}>
+        <View>
+          <Caption>LIST OF MACHINERY</Caption>
+          <Text>{description}</Text>
+        </View>
+      </View>
+      <View style={styles.detailsContainer}>
         <View>
           <Caption>ETL/ CEPT/ NLTL</Caption>
-          <Text>No</Text>
+          <Text>{description}</Text>
         </View>
       </View>
     </View>
@@ -394,18 +414,7 @@ function UnitPreview(props) {
           </View>
         </View>
         <View>
-          <Carousel
-            loop
-            width="500"
-            height={'500' / 2}
-            autoPlay={false}
-            data={[...new Array(2).keys()]}
-            scrollAnimationDuration={10000}
-            onSnapToItem={index => console.log('current index:', index)}
-            renderItem={({index}) => {
-              return <Image source={industrialPreview} />;
-            }}
-          />
+          <CustomCarousel data={data} pagination />
           <View style={styles.sliderWrap}>
             <Title style={styles.sliderText}>648 - 2500 sq. ft.</Title>
             <Subheading style={styles.sliderText}>
@@ -492,12 +501,6 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginBottom: 10,
   },
-  type: {
-    marginLeft: 10,
-  },
-  dateContainer: {
-    marginLeft: 8,
-  },
   subContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -534,14 +537,17 @@ const styles = StyleSheet.create({
   sliderWrap: {
     position: 'absolute',
     left: 10,
-    bottom: 28,
+    bottom: 48,
   },
   sliderText: {
     color: '#fff',
     fontWeight: '800',
   },
-  detailSingle: {
+  detailsContainer: {
     marginVertical: 7,
+  },
+  fileWrapper: {
+    marginLeft: 10,
   },
 });
 
