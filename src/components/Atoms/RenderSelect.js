@@ -91,7 +91,7 @@ const RenderSelect = React.forwardRef((props, ref) => {
 
   const selectedOptions = useMemo(() => {
     if (multiselect) {
-      return parsedOptions?.filter(i => value.includes(i.value));
+      return parsedOptions?.filter(i => value?.includes(i.value));
     }
     return [];
   }, [multiselect, parsedOptions, value]);
@@ -139,7 +139,7 @@ const RenderSelect = React.forwardRef((props, ref) => {
       </TouchableOpacity>
       {selectedOptions?.length ? (
         <View style={styles.valueContainer}>
-          {selectedOptions.map(item => {
+          {selectedOptions?.map(item => {
             return (
               <View style={styles.chipContainer} key={item.label}>
                 <Chip

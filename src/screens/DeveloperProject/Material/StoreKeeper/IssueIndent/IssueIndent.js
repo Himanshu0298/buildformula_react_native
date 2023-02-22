@@ -147,7 +147,6 @@ function AttachmentsForm(props) {
               />
             ) : null}
           </View>
-
           <RenderInput
             name="verification_code"
             label="Enter Verification Code"
@@ -189,16 +188,23 @@ const IssueIndent = props => {
   }, []);
 
   const handleIssueOrder = async values => {
-    const formData = new FormData();
+    const {attachments = []} = values;
+    try {
+      const formData = new FormData();
 
-    formData.append('project_id', selectedProject.id);
-    formData.append('material_indent_id', ID);
-    formData.append('verification_code', Number(values.verification_code));
-    formData.append('storekeeper_remark', values.storekeeper_remark);
-    formData.append('date', values.date);
-    formData.append('attachmentFile', values.file);
+      formData.append('project_id', selectedProject.id);
+      formData.append('material_indent_id', ID);
+      formData.append('verification_code', Number(values.verification_code));
+      formData.append('storekeeper_remark', values.storekeeper_remark);
+      attachments.map(item => {
+        formData.append('attachmentFile[]', item);
+        return item;
+      });
 
-    await CreateStoreKeeperOrder(formData);
+      await CreateStoreKeeperOrder(formData);
+    } catch (error) {
+      console.log('===========> error', error);
+    }
     navToPreview();
   };
 

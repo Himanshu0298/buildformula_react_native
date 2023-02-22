@@ -56,12 +56,21 @@ function AddMaterialDialog(props) {
     const subCategories = [
       ...new Set(categoryList.map(i => i.master_material_subcategory_id)),
     ];
-
+    if (wbs_id) {
+      return materialSubCategories
+        ?.filter(i => subCategories.includes(i.id))
+        ?.filter(i => i.category_id === values.material_category_id)
+        ?.map(i => ({label: `${i.title}`, value: i.id}));
+    }
     return materialSubCategories
-      ?.filter(i => subCategories.includes(i.id))
       ?.filter(i => i.category_id === values.material_category_id)
       ?.map(i => ({label: `${i.title}`, value: i.id}));
-  }, [categoryList, materialSubCategories, values.material_category_id]);
+  }, [
+    categoryList,
+    materialSubCategories,
+    values.material_category_id,
+    wbs_id,
+  ]);
 
   const unitOptions = useMemo(() => {
     return units?.map(i => ({label: `${i.title}`, value: i.id}));

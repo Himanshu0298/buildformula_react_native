@@ -701,7 +701,7 @@ export default function useMaterialManagementActions() {
 
     addReturnAttachment: formData =>
       dispatch({
-        type: types.UPDATE_PR_STATUS,
+        type: types.ADD_RETURN_ATTACHMENT,
         payload: async () => {
           try {
             const response = _res(await addReturnAttachment(formData));

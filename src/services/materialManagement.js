@@ -180,7 +180,11 @@ export default function useMaterialManagement() {
       return instance.post('/material/indent_details', data, params);
     },
     CreateStoreKeeperOrder: data => {
-      return instance.post('/material/storekeeper_orderconfirm', data, params);
+      return instance.post(
+        '/material/storekeeper_orderconfirm',
+        data,
+        config({multipart: true}),
+      );
     },
 
     updateStoreKeeperStatus: data => {

@@ -13,11 +13,8 @@ import Spinner from 'react-native-loading-spinner-overlay';
 
 const schema = Yup.object().shape({
   total_no_of_towers: Yup.number('Invalid').typeError('please enter number'),
-
   total_no_of_units: Yup.number('Invalid').typeError('please enter number'),
-
   total_no_of_bunglows: Yup.number('Invalid').typeError('please enter number'),
-
   total_no_of_plots: Yup.number('Invalid').typeError('please enter number'),
 });
 
@@ -44,15 +41,15 @@ function RenderForm(props) {
   const categoryOptions = useMemo(() => {
     return project_structure_project_category?.map(i => ({
       label: i?.title,
-      value: i?.id,
+      value: i?.title,
     }));
   }, [project_structure_project_category]);
 
-  const apartment = values.project_category === 1;
+  // const apartment = values.project_category === 'Apartment';
 
-  const shop = values.project_category === 2;
+  // const shop = values.project_category === 'Shop';
 
-  const offices = values.project_category === 3;
+  // const offices = values.project_category === 'Offices';
 
   return (
     <View style={styles.formContainer}>
@@ -62,6 +59,7 @@ function RenderForm(props) {
           label="Project Category"
           value={values.project_category}
           options={categoryOptions}
+          multiselect
           containerStyles={styles.inputStyles}
           onBlur={handleBlur('project_category')}
           onSelect={value => {
@@ -69,61 +67,52 @@ function RenderForm(props) {
           }}
         />
 
-        {apartment || shop || offices ? (
-          <RenderInput
-            name="total_no_of_towers"
-            label="Total Number of Tower"
-            containerStyles={styles.inputStyles}
-            value={values.total_no_of_towers}
-            onChangeText={handleChange('total_no_of_towers')}
-            onBlur={handleBlur('total_no_of_towers')}
-            autoCapitalize="none"
-            returnKeyType="next"
-            error={errors.total_no_of_towers}
-          />
-        ) : null}
+        <RenderInput
+          name="total_no_of_towers"
+          label="Total Number of Towers"
+          containerStyles={styles.inputStyles}
+          value={values.total_no_of_towers}
+          onChangeText={handleChange('total_no_of_towers')}
+          onBlur={handleBlur('total_no_of_towers')}
+          autoCapitalize="none"
+          returnKeyType="next"
+          error={errors.total_no_of_towers}
+        />
+        <RenderInput
+          name="total_no_of_units"
+          label="Total Number of Unit"
+          containerStyles={styles.inputStyles}
+          value={values.total_no_of_units}
+          onChangeText={handleChange('total_no_of_units')}
+          onBlur={handleBlur('total_no_of_units')}
+          autoCapitalize="none"
+          returnKeyType="next"
+          error={errors.total_no_of_units}
+        />
 
-        {apartment || shop || offices ? (
-          <RenderInput
-            name="total_no_of_units"
-            label="Total Number of Unit"
-            containerStyles={styles.inputStyles}
-            value={values.total_no_of_units}
-            onChangeText={handleChange('total_no_of_units')}
-            onBlur={handleBlur('total_no_of_units')}
-            autoCapitalize="none"
-            returnKeyType="next"
-            error={errors.total_no_of_units}
-          />
-        ) : null}
+        <RenderInput
+          name="total_no_of_bunglows"
+          label="Total Number of  Banglow"
+          containerStyles={styles.inputStyles}
+          value={values.total_no_of_bunglows}
+          onChangeText={handleChange('total_no_of_bunglows')}
+          onBlur={handleBlur('total_no_of_bunglows')}
+          autoCapitalize="none"
+          returnKeyType="next"
+          error={errors.total_no_of_bunglows}
+        />
 
-        {values.project_category === 4 ? (
-          <RenderInput
-            name="total_no_of_bunglows"
-            label="Total Number of  Banglow"
-            containerStyles={styles.inputStyles}
-            value={values.total_no_of_bunglows}
-            onChangeText={handleChange('total_no_of_bunglows')}
-            onBlur={handleBlur('total_no_of_bunglows')}
-            autoCapitalize="none"
-            returnKeyType="next"
-            error={errors.total_no_of_bunglows}
-          />
-        ) : null}
-
-        {values.project_category === 5 ? (
-          <RenderInput
-            name="total_no_of_plots"
-            label="Total Number of Plots"
-            containerStyles={styles.inputStyles}
-            value={values.total_no_of_plots}
-            onChangeText={handleChange('total_no_of_plots')}
-            onBlur={handleBlur('total_no_of_plots')}
-            autoCapitalize="none"
-            returnKeyType="next"
-            error={errors.total_no_of_plots}
-          />
-        ) : null}
+        <RenderInput
+          name="total_no_of_plots"
+          label="Total Number of Plots"
+          containerStyles={styles.inputStyles}
+          value={values.total_no_of_plots}
+          onChangeText={handleChange('total_no_of_plots')}
+          onBlur={handleBlur('total_no_of_plots')}
+          autoCapitalize="none"
+          returnKeyType="next"
+          error={errors.total_no_of_plots}
+        />
 
         <Text> BHK Configuration</Text>
         <RenderSelect
@@ -177,19 +166,25 @@ function ProjectStructure(props) {
 
   const initialValues = React.useMemo(() => {
     const {
-      project_category,
+      project_category_title: project_category,
       total_no_of_towers,
       total_no_of_units,
       total_no_of_bunglows,
       total_no_of_plots,
       bhk_configuration,
     } = projectDetails || {};
+
+    const category =
+      typeof project_category === 'number'
+        ? [project_category]
+        : project_category;
+
     return {
-      project_category,
       total_no_of_towers,
       total_no_of_units,
       total_no_of_bunglows,
       total_no_of_plots,
+      project_category: category,
       bhk_configuration: bhk_configuration.split('  '),
     };
   }, [projectDetails]);
@@ -197,10 +192,12 @@ function ProjectStructure(props) {
   const onSubmit = values => {
     const arrString = values?.bhk_configuration?.join('  ') || undefined;
 
+    const arrCategory = values?.project_category?.join(',') || undefined;
+
     const data = {
       project_id: selectedProject.id,
       id: projectId,
-      project_category: values.project_category,
+      project_category: [arrCategory],
       total_no_of_towers: values.total_no_of_towers,
       total_no_of_units: values.total_no_of_units,
       total_no_of_bunglows: values.total_no_of_bunglows,
