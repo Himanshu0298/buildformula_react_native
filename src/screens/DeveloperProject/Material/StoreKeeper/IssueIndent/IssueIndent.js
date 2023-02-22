@@ -175,7 +175,7 @@ const IssueIndent = props => {
 
   const {ID} = route.params;
 
-  const {CreateStoreKeeperOrder, getStoreKeeperList} =
+  const {CreateStoreKeeperOrder, getStoreKeeperList, getStoreKeeperDetails} =
     useMaterialManagementActions();
 
   const {selectedProject} = useSelector(s => s.project);
@@ -186,6 +186,17 @@ const IssueIndent = props => {
     getStoreKeeperList({project_id: selectedProject.id});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const getList = async () => {
+    await getStoreKeeperList({project_id: selectedProject.id});
+  };
+
+  const getStoreDetails = async () => {
+    await getStoreKeeperDetails({
+      project_id: selectedProject.id,
+      material_indent_id: ID,
+    });
+  };
 
   const handleIssueOrder = async values => {
     const {attachments = []} = values;
@@ -202,13 +213,16 @@ const IssueIndent = props => {
       });
 
       await CreateStoreKeeperOrder(formData);
+      getStoreDetails();
+      getStoreDetails();
+      getList();
     } catch (error) {
       console.log('===========> error', error);
     }
     navToPreview();
   };
 
-  const navToPreview = () => navigation.navigate('StoreKeeperList');
+  const navToPreview = () => navigation.navigate('StoreKeeperPreview');
 
   return (
     <Formik

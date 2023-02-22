@@ -305,6 +305,7 @@ function AddReturnIndentMaterials(props) {
         material_units_id: material?.material_units_id,
         quantity: material?.quantity,
         damaged_qty: material?.damaged_qty,
+        material_indent_details_id: detailId,
       };
 
       await addReturnMaterial(restData);

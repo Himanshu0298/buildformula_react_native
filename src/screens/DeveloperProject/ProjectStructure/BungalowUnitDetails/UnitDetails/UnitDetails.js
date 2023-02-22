@@ -14,6 +14,7 @@ const schema = Yup.object().shape({
   projectName: Yup.string()
     .label('projectName')
     .required('Project Name is Required'),
+  unitType: Yup.string().label('unitType').required('unitType is Required'),
 });
 
 const RenderForm = props => {

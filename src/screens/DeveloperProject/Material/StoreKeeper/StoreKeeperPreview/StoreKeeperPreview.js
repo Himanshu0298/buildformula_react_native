@@ -301,6 +301,10 @@ function StoreKeeperPreview(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const getList = async () => {
+    await getStoreKeeperList({project_id: selectedProject.id});
+  };
+
   const getStoreDetails = () => {
     getStoreKeeperDetails({
       project_id: projectId,
@@ -316,6 +320,7 @@ function StoreKeeperPreview(props) {
     };
     await updateStoreKeeperStatus(restData);
     getStoreDetails();
+    getList();
   };
 
   const navToIssue = () => navigation.navigate('IssueIndent', {ID});
