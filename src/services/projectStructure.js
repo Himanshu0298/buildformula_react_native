@@ -269,6 +269,8 @@ export default function useProjectStructure() {
         params,
       );
     },
+
+    // Tower
     addUnit: data => {
       return instance.post(
         '/projectstructure/project/UnitDetailsAdd',
@@ -278,7 +280,7 @@ export default function useProjectStructure() {
     },
     updateUnit: data => {
       return instance.post(
-        'projectstructure/project/UnitDetailsUpdate',
+        '/projectstructure/project/projectUnitDetailsAddUpdate',
         data,
         params,
       );
@@ -286,6 +288,22 @@ export default function useProjectStructure() {
     removeUnit: data => {
       return instance.post(
         '/projectstructure/project/projectUnitRemove',
+        data,
+        params,
+      );
+    },
+
+    // Bungalow
+    addBungalow: data => {
+      return instance.post(
+        '/projectstructure/project/BunglowDetailsAdd',
+        data,
+        params,
+      );
+    },
+    updateBungalow: data => {
+      return instance.post(
+        '/projectstructure/project/projectBunglowDetailsAddUpdate',
         data,
         params,
       );

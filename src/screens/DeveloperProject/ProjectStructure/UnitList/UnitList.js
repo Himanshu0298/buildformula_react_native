@@ -32,13 +32,20 @@ const UnitCard = ({item, navigation, handleDelete}) => {
     project_name,
     tower_name,
     floor_name,
-    unit_type,
+    unit_category,
     project_type,
     unit_for,
   } = item;
 
   const navToEdit = () => {
-    navigation.navigate('UnitDetails', {unitId: id});
+    navigation.navigate(
+      project_type === 1 || project_type === 2 || project_type === 3
+        ? 'ProjectUnitDetails'
+        : project_type === 4
+        ? 'BungalowDetails'
+        : 'PlotDetails',
+      {unitId: id},
+    );
     toggleMenu();
   };
 
@@ -75,17 +82,21 @@ const UnitCard = ({item, navigation, handleDelete}) => {
       <Divider />
       <TouchableOpacity
         onPress={() =>
-          project_type === 1 || 2 || 3
-            ? navigation.navigate('UnitPreview')
+          project_type === 1 || project_type === 2 || project_type === 3
+            ? navigation.navigate('UnitPreview', {unitData: item})
             : project_type === 4
-            ? navigation.navigate('BungalowUnitPreview')
+            ? navigation.navigate('BungalowUnitPreview', {unitData: item})
             : project_type === 5
             ? navigation.navigate('PlotUnitPreview')
             : navigation.navigate('IndustrialUnitPreview')
         }>
         <View style={styles.bodyWrapper}>
-          <Text>{`${unit_type} - ${project_unit}`}</Text>
-          <Caption>{`${project_name} > ${tower_name} > ${floor_name}`}</Caption>
+          <Text>{`${unit_category} - ${project_unit}`}</Text>
+          <Caption>
+            {project_type === 1 || project_type === 2 || project_type === 3
+              ? `${project_name} > ${tower_name} > ${floor_name} Floor`
+              : `${project_name}`}
+          </Caption>
         </View>
         <View style={{marginVertical: 10}}>
           <Text>{unit_for}</Text>
@@ -105,12 +116,14 @@ function UnitList(props) {
 
   const [searchQuery, setSearchQuery] = React.useState('');
 
-  const {getUnitList, removeUnit} = useProjectStructureActions();
+  const {getUnitList, removeUnit, getProjectList} =
+    useProjectStructureActions();
   const {unitList = [], loading} = useSelector(s => s.projectStructure);
   const {selectedProject} = useSelector(s => s.project);
 
   const loadData = async () => {
     await getUnitList({project_id: selectedProject.id});
+    await getProjectList({project_id: selectedProject.id});
   };
 
   const filteredUnit = useMemo(() => {
@@ -119,7 +132,7 @@ function UnitList(props) {
       i =>
         i?.project_unit?.toLowerCase().includes(query) ||
         i?.project_name?.toLowerCase().includes(query) ||
-        i?.unit_type?.toLowerCase().includes(query) ||
+        i?.unit_category?.toLowerCase().includes(query) ||
         i?.tower_name?.toLowerCase().includes(query) ||
         i?.floor_name?.toLowerCase().includes(query) ||
         i?.unit_for?.toLowerCase().includes(query),

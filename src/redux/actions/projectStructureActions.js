@@ -54,7 +54,9 @@ export default function useProjectStructureActions() {
     updateFloorOrder,
     updatePickUpOrder,
     addUnit,
+    addBungalow,
     updateUnit,
+    updateBungalow,
     removeUnit,
   } = useProjectStructure();
 
@@ -684,7 +686,22 @@ export default function useProjectStructureActions() {
         payload: async () => {
           try {
             const response = _res(await addUnit(data));
-            snackbar.showMessage({message: 'Unit Added'});
+            snackbar.showMessage({message: response.msg});
+            return Promise.resolve(response.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    addBungalow: data =>
+      dispatch({
+        type: types.ADD_BUNGALOW,
+        payload: async () => {
+          try {
+            const response = _res(await addBungalow(data));
+            snackbar.showMessage({message: response.msg});
             return Promise.resolve(response.data);
           } catch (error) {
             const message = _err(error);
@@ -699,6 +716,21 @@ export default function useProjectStructureActions() {
         payload: async () => {
           try {
             const response = _res(await updateUnit(data));
+            snackbar.showMessage({message: response.msg});
+            return Promise.resolve(response.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    updateBungalow: data =>
+      dispatch({
+        type: types.UPDATE_BUNGALOW,
+        payload: async () => {
+          try {
+            const response = _res(await updateBungalow(data));
             snackbar.showMessage({message: response.msg});
             return Promise.resolve(response.data);
           } catch (error) {

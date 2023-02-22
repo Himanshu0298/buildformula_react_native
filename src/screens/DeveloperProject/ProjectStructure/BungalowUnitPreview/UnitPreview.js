@@ -33,6 +33,7 @@ import PostContent from 'components/Atoms/RenderSeeMore';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import CustomCarousel from 'components/Atoms/CustomCarousel';
 
+import {useSelector} from 'react-redux';
 import {
   FILES_DATA,
   OWNER_DATA,
@@ -302,30 +303,57 @@ function Details() {
   );
 }
 
-function UnitDetails() {
+function UnitDetails(props) {
+  const {premium_location, selected_project, project_name} = props;
+
+  const {area, city, state, country, pincode} = selected_project;
+
   return (
-    <View style={{marginBottom: 10, padding: 10}}>
+    <View style={{padding: 10, paddingTop: 0}}>
       <View style={{flexDirection: 'row', alignItems: 'center'}}>
         <Subheading>by</Subheading>
         <View style={{marginLeft: 5}}>
           <Subheading style={{color: theme.colors.primary}}>
-            Satymev Residency
+            {project_name}
           </Subheading>
         </View>
       </View>
       <View>
-        <Subheading> Malad Sangata CHS, Malad West, Mumbai</Subheading>
+        <Subheading>
+          {`${area} ${city}, ${state}, ${country} -${pincode}`}
+        </Subheading>
       </View>
-      <View style={styles.buildingIcon}>
-        <PrimeIcon fill="#041d36" style={styles.builderdetailIcon} />
-        <Text> Prime Location</Text>
-      </View>
+      {premium_location ? (
+        <View style={styles.buildingIcon}>
+          <PrimeIcon fill="#041d36" style={styles.builderdetailIcon} />
+          <Text> Prime Location</Text>
+        </View>
+      ) : undefined}
     </View>
   );
 }
 
 function UnitPreview(props) {
-  const {navigation} = props;
+  const {navigation, route} = props;
+  const {unitData} = route.params;
+
+  const {
+    id,
+    no_of_bhk_name,
+    premium_location,
+    project_id,
+    unit_type_name,
+    unit_for,
+    unit_category,
+    project_name,
+  } = unitData;
+
+  const {projectList = []} = useSelector(s => {
+    return s.projectStructure;
+  });
+
+  const selected_project = projectList?.find(i => i.project_id === project_id);
+
   return (
     <View>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -341,18 +369,20 @@ function UnitPreview(props) {
             <Subheading>Unit Details</Subheading>
           </View>
           <View style={styles.headerContainer}>
-            <OpacityButton
+            {/* <OpacityButton
               opacity={0.1}
               color="#4872f4"
               style={styles.navBTN}
               onPress={() => navigation.navigate('')}>
               <MaterialIcons name="content-copy" color="#4872f4" size={15} />
-            </OpacityButton>
+            </OpacityButton> */}
             <OpacityButton
               opacity={0.1}
               color="#4872f4"
               style={styles.navBTN}
-              onPress={() => navigation.navigate('')}>
+              onPress={() =>
+                navigation.navigate('BungalowDetails', {unitId: id})
+              }>
               <MaterialIcons name="edit" color="#4872f4" size={15} />
             </OpacityButton>
           </View>
@@ -360,22 +390,26 @@ function UnitPreview(props) {
         <View>
           <CustomCarousel data={data} pagination />
           <View style={styles.sliderWrap}>
-            <Title style={styles.sliderText}>3BHK</Title>
+            <Title style={styles.sliderText}>{no_of_bhk_name}</Title>
             <Subheading style={styles.sliderText}>
-              Residential Bungalow for Rent
+              {`${unit_type_name} ${unit_category} for ${unit_for}`}
             </Subheading>
           </View>
         </View>
         <View style={styles.mainContainer}>
-          <UnitDetails />
+          <UnitDetails
+            premium_location={premium_location}
+            selected_project={selected_project}
+            project_name={project_name}
+          />
           <Divider style={{borderWidth: 0.5}} />
-          <Details />
+          {/* <Details />
           <Divider style={{borderWidth: 0.5}} />
           <UnitSpecification />
           <Pricing />
           <OwnerDetails />
           <SecurityDetails />
-          <Files />
+          <Files /> */}
         </View>
       </ScrollView>
     </View>

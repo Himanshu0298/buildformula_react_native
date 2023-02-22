@@ -240,9 +240,9 @@ const AddUnit = props => {
     if (submitTypeRef.current === 'save') {
       navigation.goBack();
     } else if (submitTypeRef.current === 'details') {
-      // navigation.navigate('ProjectUnitDetails', {
-      //   projectId: res.value.id,
-      // });
+      navigation.navigate('ProjectUnitDetails', {
+        unitID: res.value.id,
+      });
     }
     return res;
   };

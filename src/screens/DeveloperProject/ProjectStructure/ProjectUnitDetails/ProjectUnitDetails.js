@@ -1,9 +1,10 @@
 import {StyleSheet, View} from 'react-native';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Divider, IconButton, Subheading, Title} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
+
 import useProjectStructureActions from 'redux/actions/projectStructureActions';
 import {useSelector} from 'react-redux';
 
@@ -36,7 +37,8 @@ const ROUTE = [
 ];
 
 const RenderRow = props => {
-  const {navigation, screenName, route} = props;
+  const {navigation, screenName, route, unitId} = props;
+
   return (
     <>
       <View style={styles.row}>
@@ -45,7 +47,7 @@ const RenderRow = props => {
           opacity={0.1}
           color="#4872f4"
           style={styles.navBTN}
-          onPress={() => navigation.navigate(route)}>
+          onPress={() => navigation.navigate(route, {unitId})}>
           <MaterialIcon name="edit" color="#4872f4" size={15} />
         </OpacityButton>
       </View>
@@ -56,22 +58,18 @@ const RenderRow = props => {
 
 const ProjectUnitDetails = props => {
   const {navigation, route} = props;
-  const {projectId} = route?.params || {};
+  const {unitId} = route?.params || {};
 
-  // const {getUnitList} = useProjectStructureActions();
+  const {getProjectList, getUnitList, getProjectMasterList} =
+    useProjectStructureActions();
+  const {selectedProject} = useSelector(s => s.project);
 
-  // const {selectedProject} = useSelector(s => s.project);
-
-  // const {areaList, projectDetails} = useSelector(s => s.projectStructure);
-
-  // React.useEffect(() => {
-  //   getList();
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
-
-  // const getList = async () => {
-  //   await getUnitList({project_id: selectedProject.id});
-  // };
+  useEffect(() => {
+    getProjectList({project_id: selectedProject.id});
+    getUnitList({project_id: selectedProject.id});
+    getProjectMasterList({project_id: selectedProject.id});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <SafeAreaView style={styles.mainContainer}>
@@ -83,7 +81,7 @@ const ProjectUnitDetails = props => {
           style={styles.backIcon}
           onPress={() => navigation.goBack()}
         />
-        <Title>{projectId}</Title>
+        <Title>Add Unit</Title>
       </View>
       <Divider />
       <View style={styles.bodyWrap}>
@@ -94,6 +92,7 @@ const ProjectUnitDetails = props => {
               key={item.key}
               screenName={item.screenName}
               route={item.route}
+              unitId={unitId}
             />
           );
         })}

@@ -1,9 +1,12 @@
 import {StyleSheet, View} from 'react-native';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Divider, IconButton, Subheading, Title} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
+
+import useProjectStructureActions from 'redux/actions/projectStructureActions';
+import {useSelector} from 'react-redux';
 
 const ROUTE = [
   {
@@ -46,7 +49,7 @@ const ROUTE = [
 ];
 
 const RenderRow = props => {
-  const {navigation, screenName, route} = props;
+  const {navigation, screenName, route, unitId} = props;
   return (
     <>
       <View style={styles.row}>
@@ -55,7 +58,7 @@ const RenderRow = props => {
           opacity={0.1}
           color="#4872f4"
           style={styles.navBTN}
-          onPress={() => navigation.navigate(route)}>
+          onPress={() => navigation.navigate(route, {unitId})}>
           <MaterialIcon name="edit" color="#4872f4" size={15} />
         </OpacityButton>
       </View>
@@ -65,7 +68,17 @@ const RenderRow = props => {
 };
 
 const ProjectUnitDetails = props => {
-  const {navigation} = props;
+  const {navigation, route} = props;
+  const {unitId} = route.params;
+
+  const {getProjectMasterList} = useProjectStructureActions();
+  const {selectedProject} = useSelector(s => s.project);
+
+  useEffect(() => {
+    getProjectMasterList({project_id: selectedProject.id});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <SafeAreaView style={styles.mainContainer}>
       <View style={styles.headerWrapper}>
@@ -87,6 +100,7 @@ const ProjectUnitDetails = props => {
               key={item.key}
               screenName={item.screenName}
               route={item.route}
+              unitId={unitId}
             />
           );
         })}
