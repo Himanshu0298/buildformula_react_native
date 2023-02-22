@@ -60,6 +60,96 @@ import CustomerFiles from 'screens/CustomerProject/CustomerFiles';
 /** *********** Customer Project Sub Screens End   ************ */
 
 /** *********** Developer Project Sub Screens    ************ */
+
+//* Project Structure
+import ProjectListing from 'screens/DeveloperProject/ProjectStructure/ProjectListing';
+import ProjectFilter from 'screens/DeveloperProject/ProjectStructure/ProjectListing/ProjectFilter';
+import ProjectStructureDetails from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/Components/ProjectStructureDetails';
+import AddProject from 'screens/DeveloperProject/ProjectStructure/AddProject';
+import ProjectHistory from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/ProjectHistory';
+import ProjectStructure from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/ProjectStructure';
+import ProjectAmenities from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/ProjectAmenities';
+import ProjectBrief from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/ProjectBrief';
+import ProjectOwner from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/ProjectOwner';
+import ProjectSecurity from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/ProjectSecurity';
+import ProjectFiles from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/ProjectFiles';
+import ProjectDetail from 'screens/DeveloperProject/ProjectStructure/ProjectDetail';
+import ProjectPreview from 'screens/DeveloperProject/ProjectStructure/ProjectDetail/ProjectPreview';
+import TowerPreview from 'screens/DeveloperProject/ProjectStructure/ProjectDetail/SelectTower/TowerPreview';
+import TowerList from 'screens/DeveloperProject/ProjectStructure/ProjectDetail/SelectTower/TowerList';
+import FloorList from 'screens/DeveloperProject/ProjectStructure/ProjectDetail/SelectFloor/FloorList';
+import Description from 'screens/DeveloperProject/ProjectStructure/ProjectDetail/ProjectPreview/Description';
+import UpdateProjectDetails from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/ProjectUpdateDetails';
+import AddProjectSecurity from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/ProjectSecurity/AddProjectSecurity';
+import AddProjectOwner from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/ProjectOwner/AddProjectOwner';
+import AddProjectFiles from 'screens/DeveloperProject/ProjectStructure/ProjectStructureDetails/ProjectFiles/AddProjectFiles';
+import FloorPreview from 'screens/DeveloperProject/ProjectStructure/ProjectDetail/SelectFloor/FloorPreview';
+
+// Area
+import AreaList from 'screens/DeveloperProject/ProjectStructure/AreaList';
+import AddArea from 'screens/DeveloperProject/ProjectStructure/AddArea';
+
+// PickUp
+import PickUpListing from 'screens/DeveloperProject/ProjectStructure/PickUp/PickUpListing';
+import SearchPickUpList from 'screens/DeveloperProject/ProjectStructure/PickUp/SearchPickUpList';
+
+// Tower Unit
+import UnitList from 'screens/DeveloperProject/ProjectStructure/UnitList/Index';
+import AddUnit from 'screens/DeveloperProject/ProjectStructure/AddUnit';
+import UnitDetails from 'screens/DeveloperProject/ProjectStructure/ProjectUnitDetails/UnitDetails';
+import ProjectUnitDetails from 'screens/DeveloperProject/ProjectStructure/ProjectUnitDetails/ProjectUnitDetails';
+import LocationInfo from 'screens/DeveloperProject/ProjectStructure/ProjectUnitDetails/LocationInfo';
+import UnitAreaSheet from 'screens/DeveloperProject/ProjectStructure/ProjectUnitDetails/UnitAreaSheet';
+import InfrastructureInfo from 'screens/DeveloperProject/ProjectStructure/ProjectUnitDetails/InfrastructureInfo';
+import ProjectStructureUnitDetails from 'screens/DeveloperProject/ProjectStructure/ProjectUnitDetails/UnitInformation';
+import UnitPricing from 'screens/DeveloperProject/ProjectStructure/ProjectUnitDetails/UnitPricing';
+import ProjectUnitOwner from 'screens/DeveloperProject/ProjectStructure/ProjectUnitDetails/UnitOwnerInfo';
+import UnitSecurityInfo from 'screens/DeveloperProject/ProjectStructure/ProjectUnitDetails/UnitSecurityInfo';
+import UnitFiles from 'screens/DeveloperProject/ProjectStructure/ProjectUnitDetails/UnitFiles';
+import UnitPreview from 'screens/DeveloperProject/ProjectStructure/UnitPreview';
+
+// Bungalow Unit
+import AddBungalowUnit from 'screens/DeveloperProject/ProjectStructure/AddBungalowUnit';
+import BungalowDetails from 'screens/DeveloperProject/ProjectStructure/BungalowUnitDetails/ProjectUnitDetails';
+import BungalowUnitDetails from 'screens/DeveloperProject/ProjectStructure/BungalowUnitDetails/UnitDetails';
+import BungalowLocationInfo from 'screens/DeveloperProject/ProjectStructure/BungalowUnitDetails/LocationInfo';
+import BungalowUnitAreaSheet from 'screens/DeveloperProject/ProjectStructure/BungalowUnitDetails/UnitAreaSheet';
+import BungalowInfrastructureInfo from 'screens/DeveloperProject/ProjectStructure/BungalowUnitDetails/InfrastructureInfo';
+import BungalowStructureUnitDetails from 'screens/DeveloperProject/ProjectStructure/BungalowUnitDetails/UnitInformation';
+import BungalowUnitPricing from 'screens/DeveloperProject/ProjectStructure/BungalowUnitDetails/UnitPricing';
+import BungalowUnitOwner from 'screens/DeveloperProject/ProjectStructure/BungalowUnitDetails/UnitOwnerInfo';
+import BungalowUnitSecurityInfo from 'screens/DeveloperProject/ProjectStructure/BungalowUnitDetails/UnitSecurityInfo';
+import BungalowUnitFiles from 'screens/DeveloperProject/ProjectStructure/BungalowUnitDetails/UnitFiles';
+import BungalowUnitPreview from 'screens/DeveloperProject/ProjectStructure/BungalowUnitPreview';
+
+// Plot Unit
+import AddPlotUnit from 'screens/DeveloperProject/ProjectStructure/AddPlotUnit';
+import PlotDetails from 'screens/DeveloperProject/ProjectStructure/PlotUnitDetails/ProjectUnitDetails';
+import OtherInformation from 'screens/DeveloperProject/ProjectStructure/PlotUnitDetails/OtherInformation';
+import SurveyDetails from 'screens/DeveloperProject/ProjectStructure/PlotUnitDetails/SurveyDetails';
+import TPDetails from 'screens/DeveloperProject/ProjectStructure/PlotUnitDetails/TPDetails';
+import PlotUnitPricing from 'screens/DeveloperProject/ProjectStructure/PlotUnitDetails/UnitPricing';
+import PlotLocationInfo from 'screens/DeveloperProject/ProjectStructure/PlotUnitDetails/LocationInfo';
+import PlotUnitOwnerInfo from 'screens/DeveloperProject/ProjectStructure/PlotUnitDetails/UnitOwnerInfo';
+import PlotUnitSecurityInfo from 'screens/DeveloperProject/ProjectStructure/PlotUnitDetails/UnitSecurityInfo';
+import PlotUnitFiles from 'screens/DeveloperProject/ProjectStructure/PlotUnitDetails/UnitFiles';
+import PlotUnitPreview from 'screens/DeveloperProject/ProjectStructure/PlotUnitPreview/';
+
+// Industrial Unit
+import AddIndustrialUnit from 'screens/DeveloperProject/ProjectStructure/AddIndustrialUnit';
+import IndustrialDetails from 'screens/DeveloperProject/ProjectStructure/IndustrialUnitDetails/ProjectUnitDetails';
+import IndustrialUnitDetails from 'screens/DeveloperProject/ProjectStructure/IndustrialUnitDetails/UnitDetails';
+import IndustrialAreaSheet from 'screens/DeveloperProject/ProjectStructure/IndustrialUnitDetails/UnitAreaSheet';
+import IndustrialUnitRemark from 'screens/DeveloperProject/ProjectStructure/IndustrialUnitDetails/UnitRemark';
+import IndustrialUnitPricing from 'screens/DeveloperProject/ProjectStructure/IndustrialUnitDetails/UnitPricing';
+import IndustrialLocationInfo from 'screens/DeveloperProject/ProjectStructure/IndustrialUnitDetails/LocationInfo';
+import IndustrialUnitOwnerInfo from 'screens/DeveloperProject/ProjectStructure/IndustrialUnitDetails/UnitOwnerInfo';
+import IndustrialUnitSecurityInfo from 'screens/DeveloperProject/ProjectStructure/IndustrialUnitDetails/UnitSecurityInfo';
+import IndustrialUnitDetailsInfo from 'screens/DeveloperProject/ProjectStructure/IndustrialUnitDetails/UnitInformation';
+import IndustrialUnitFiles from 'screens/DeveloperProject/ProjectStructure/IndustrialUnitDetails/UnitFiles';
+import IndustrialUnitPreview from 'screens/DeveloperProject/ProjectStructure/IndustrialUnitPreview';
+
+// Project : Sales Screens
 // * Developer : Dashboard
 import DeveloperDashboard from '../screens/DeveloperProject/Dashboard';
 
@@ -309,6 +399,7 @@ function AppStackNavigator() {
           {/* DEVELOPER STACK START */}
           <Stack.Group>
             <Stack.Screen name="DeveloperHome" component={DeveloperDashboard} />
+
             <Stack.Group>
               <Stack.Screen name="VisitorsHome" component={Visitors} />
               <Stack.Screen name="VisitorDetails" component={VisitorDetails} />
@@ -623,6 +714,219 @@ function AppStackNavigator() {
               <Stack.Screen name="PurchaseOrders" component={PurchaseOrders} />
             </Stack.Group>
           </Stack.Group>
+
+          {/* PROJECT STRUCTURE */}
+
+          <Stack.Group>
+            <Stack.Screen name="ProjectListing" component={ProjectListing} />
+            <Stack.Screen name="ProjectFilter" component={ProjectFilter} />
+            <Stack.Screen name="AddProject" component={AddProject} />
+            <Stack.Screen
+              name="ProjectStructureDetails"
+              component={ProjectStructureDetails}
+            />
+            <Stack.Screen
+              name="UpdateProjectDetails"
+              component={UpdateProjectDetails}
+            />
+            <Stack.Screen name="ProjectHistory" component={ProjectHistory} />
+            <Stack.Screen name="ProjectBrief" component={ProjectBrief} />
+            <Stack.Screen name="ProjectOwner" component={ProjectOwner} />
+            <Stack.Screen name="AddProjectOwner" component={AddProjectOwner} />
+            <Stack.Screen name="ProjectSecurity" component={ProjectSecurity} />
+            <Stack.Screen
+              name="AddProjectSecurity"
+              component={AddProjectSecurity}
+            />
+            <Stack.Screen name="ProjectFiles" component={ProjectFiles} />
+            <Stack.Screen name="AreaList" component={AreaList} />
+            <Stack.Screen name="AddArea" component={AddArea} />
+            <Stack.Screen name="ProjectDetail" component={ProjectDetail} />
+            <Stack.Screen name="ProjectPreview" component={ProjectPreview} />
+            <Stack.Screen name="TowerPreview" component={TowerPreview} />
+            <Stack.Screen name="FloorPreview" component={FloorPreview} />
+            <Stack.Screen name="TowerList" component={TowerList} />
+            <Stack.Screen name="FloorList" component={FloorList} />
+            <Stack.Screen name="Description" component={Description} />
+            <Stack.Screen
+              name="SearchPickUpList"
+              component={SearchPickUpList}
+            />
+            <Stack.Screen name="PickUpListing" component={PickUpListing} />
+            <Stack.Screen
+              name="ProjectAmenities"
+              component={ProjectAmenities}
+            />
+            <Stack.Screen
+              name="ProjectStructure"
+              component={ProjectStructure}
+            />
+            <Stack.Screen name="UnitList" component={UnitList} />
+            <Stack.Screen name="AddUnit" component={AddUnit} />
+            <Stack.Screen
+              name="ProjectUnitDetails"
+              component={ProjectUnitDetails}
+            />
+            <Stack.Screen name="UnitDetails" component={UnitDetails} />
+            <Stack.Screen name="LocationInfo" component={LocationInfo} />
+            <Stack.Screen name="UnitFiles" component={UnitFiles} />
+            <Stack.Screen name="UnitPricing" component={UnitPricing} />
+            <Stack.Screen name="UnitPreview" component={UnitPreview} />
+            <Stack.Screen name="AddProjectFiles" component={AddProjectFiles} />
+            <Stack.Screen
+              name="UnitSecurityInfo"
+              component={UnitSecurityInfo}
+            />
+            <Stack.Screen
+              name="ProjectUnitOwner"
+              component={ProjectUnitOwner}
+            />
+            <Stack.Screen
+              name="UnitInformation"
+              component={ProjectStructureUnitDetails}
+            />
+            <Stack.Screen
+              name="InfrastructureInfo"
+              component={InfrastructureInfo}
+            />
+            {/* Bungalow Unit */}
+            <Stack.Group>
+              <Stack.Screen
+                name="AddBungalowUnit"
+                component={AddBungalowUnit}
+              />
+              <Stack.Screen
+                name="BungalowDetails"
+                component={BungalowDetails}
+              />
+              <Stack.Screen
+                name="BungalowUnitDetails"
+                component={BungalowUnitDetails}
+              />
+              <Stack.Screen
+                name="BungalowLocationInfo"
+                component={BungalowLocationInfo}
+              />
+              <Stack.Screen
+                name="BungalowAreaSheet"
+                component={BungalowUnitAreaSheet}
+              />
+              <Stack.Screen
+                name="BungalowInfrastructureInfo"
+                component={BungalowInfrastructureInfo}
+              />
+              <Stack.Screen
+                name="BungalowUnitInformation"
+                component={BungalowStructureUnitDetails}
+              />
+              <Stack.Screen
+                name="BungalowUnitPricing"
+                component={BungalowUnitPricing}
+              />
+              <Stack.Screen
+                name="BungalowUnitOwner"
+                component={BungalowUnitOwner}
+              />
+              <Stack.Screen
+                name="BungalowSecurityInfo"
+                component={BungalowUnitSecurityInfo}
+              />
+              <Stack.Screen
+                name="BungalowUnitFiles"
+                component={BungalowUnitFiles}
+              />
+              <Stack.Screen
+                name="BungalowUnitPreview"
+                component={BungalowUnitPreview}
+              />
+            </Stack.Group>
+
+            {/* Plot Unit */}
+            <Stack.Group>
+              <Stack.Screen name="AddPlotUnit" component={AddPlotUnit} />
+              <Stack.Screen name="PlotDetails" component={PlotDetails} />
+              <Stack.Screen
+                name="OtherInformation"
+                component={OtherInformation}
+              />
+              <Stack.Screen name="SurveyDetails" component={SurveyDetails} />
+              <Stack.Screen name="TPDetails" component={TPDetails} />
+              <Stack.Screen
+                name="PlotUnitPricing"
+                component={PlotUnitPricing}
+              />
+              <Stack.Screen
+                name="PlotLocationInfo"
+                component={PlotLocationInfo}
+              />
+              <Stack.Screen
+                name="PlotUnitOwnerInfo"
+                component={PlotUnitOwnerInfo}
+              />
+              <Stack.Screen
+                name="PlotUnitSecurityInfo"
+                component={PlotUnitSecurityInfo}
+              />
+              <Stack.Screen name="PlotUnitFiles" component={PlotUnitFiles} />
+              <Stack.Screen
+                name="PlotUnitPreview"
+                component={PlotUnitPreview}
+              />
+            </Stack.Group>
+
+            {/* Industrial Unit */}
+            <Stack.Group>
+              <Stack.Screen
+                name="AddIndustrialUnit"
+                component={AddIndustrialUnit}
+              />
+              <Stack.Screen
+                name="IndustrialDetails"
+                component={IndustrialDetails}
+              />
+              <Stack.Screen
+                name="IndustrialUnitDetails"
+                component={IndustrialUnitDetails}
+              />
+              <Stack.Screen
+                name="IndustrialAreaSheet"
+                component={IndustrialAreaSheet}
+              />
+              <Stack.Screen
+                name="IndustrialUnitRemark"
+                component={IndustrialUnitRemark}
+              />
+              <Stack.Screen
+                name="IndustrialUnitPricing"
+                component={IndustrialUnitPricing}
+              />
+              <Stack.Screen
+                name="IndustrialLocationInfo"
+                component={IndustrialLocationInfo}
+              />
+              <Stack.Screen
+                name="IndustrialUnitOwnerInfo"
+                component={IndustrialUnitOwnerInfo}
+              />
+              <Stack.Screen
+                name="IndustrialUnitSecurityInfo"
+                component={IndustrialUnitSecurityInfo}
+              />
+              <Stack.Screen
+                name="IndustrialUnitDetailsInfo"
+                component={IndustrialUnitDetailsInfo}
+              />
+              <Stack.Screen
+                name="IndustrialUnitFiles"
+                component={IndustrialUnitFiles}
+              />
+              <Stack.Screen
+                name="IndustrialUnitPreview"
+                component={IndustrialUnitPreview}
+              />
+            </Stack.Group>
+          </Stack.Group>
+
           {/* DEVELOPER STACK END */}
           {/* CUSTOMER STACK START */}
           <Stack.Group>
@@ -630,6 +934,8 @@ function AppStackNavigator() {
               <Stack.Screen name="Ownership" component={CustomerHome} />
               <Stack.Screen name="BookingDetails" component={CustomerBooking} />
               <Stack.Screen name="LoanDetails" component={CustomerBankLoan} />
+              <Stack.Screen name="UnitAreaSheet" component={UnitAreaSheet} />
+
               <Stack.Screen
                 name="CustomerAccount"
                 component={CustomerAccount}

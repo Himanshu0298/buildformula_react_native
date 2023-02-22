@@ -25,6 +25,8 @@ const CreateIssueIndent = props => {
 
   const edit = Boolean(id);
 
+  const wbs_id = 0;
+
   const {getVendorList, getWorkSubWorkList, addIssueRequest} =
     useMaterialManagementActions();
 
@@ -53,10 +55,11 @@ const CreateIssueIndent = props => {
 
   const initialValues = React.useMemo(() => {
     if (edit) {
-      const {contractor_name: vendor_id, requred_date, remark} = details;
+      const {vendor_id, requred_date, wbs_works_id, remark} = details;
       return {
         vendor_id,
         requred_date,
+        wbs_works_id,
         remark,
       };
     }
@@ -64,12 +67,18 @@ const CreateIssueIndent = props => {
   }, [details, edit]);
 
   const onSubmit = async values => {
-    const data = {material_indent_id: id, project_id: projectId, ...values};
+    const data = {
+      material_indent_id: id,
+      project_id: projectId,
+      wbs_works_id: values.wbs_works_id || wbs_id,
+      ...values,
+    };
 
     const {value} = await addIssueRequest(data);
     navigation.navigate('AddIssueIndentMaterials', {
       edit,
       id: value.indent_id,
+      wbs_id: values.wbs_works_id,
     });
   };
 
@@ -122,14 +131,14 @@ const CreateIssueIndent = props => {
                   error={errors.requred_date}
                 />
                 <RenderSelect
-                  name="required_for"
+                  name="wbs_works_id"
                   label="Required For"
-                  value={values.required_for}
+                  value={values.wbs_works_id}
                   options={workSubWorkOptions}
                   containerStyles={styles.inputStyles}
-                  onBlur={handleBlur('required_for')}
+                  onBlur={handleBlur('wbs_works_id')}
                   onSelect={value => {
-                    setFieldValue('required_for', value);
+                    setFieldValue('wbs_works_id', value);
                   }}
                 />
                 <RenderTextBox

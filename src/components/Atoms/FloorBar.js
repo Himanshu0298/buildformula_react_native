@@ -10,11 +10,31 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import {theme} from 'styles/theme';
 import OpacityButton from './Buttons/OpacityButton';
 
+function InputBox(props) {
+  return (
+    <TextInput
+      dense
+      blurOnSubmit
+      disabled
+      placeholder=""
+      style={styles.structureInput}
+      keyboardType="decimal-pad"
+      theme={{
+        colors: {
+          underlineColor: 'transparent',
+          text: '#000',
+          accent: theme.colors.primary,
+        },
+      }}
+      {...props}
+    />
+  );
+}
+
 function FloorBar(props) {
   const {
     floorId,
     floorData,
-    index,
     badgeActive,
     showBadge,
     inputProps,
@@ -23,11 +43,13 @@ function FloorBar(props) {
     selectedFloor,
   } = props;
 
-  const {structureType} = floorData?.[index] || {};
+  const {structureType, unitCount, floor} = floorData || {};
 
   const LabelContainer = onPressLabel ? TouchableOpacity : View;
 
   const isSelectedFloor = selectedFloor === floorId;
+
+  const floorNumber = getFloorNumber(floor || floorId);
 
   return (
     <View style={styles.floorContainer}>
@@ -43,38 +65,17 @@ function FloorBar(props) {
           <LabelContainer
             style={styles.floorLabelContainer}
             onPress={() => onPressLabel?.(floorId)}>
-            <Caption>{getFloorNumber(floorId)}</Caption>
+            <Caption>{floorNumber}</Caption>
           </LabelContainer>
           <View style={styles.rightSection}>
-            <TextInput
-              dense
-              blurOnSubmit
-              disabled
+            <InputBox
               value={STRUCTURE_TYPE_LABELS?.[structureType]?.toString()}
-              placeholder=""
               style={styles.structureInput}
-              keyboardType="decimal-pad"
-              theme={{
-                colors: {
-                  underlineColor: 'transparent',
-                  text: '#000',
-                  accent: theme.colors.primary,
-                },
-              }}
+              {...inputProps}
             />
-            <TextInput
-              dense
-              blurOnSubmit
-              placeholder=""
+            <InputBox
               style={styles.unitsInput}
-              keyboardType="decimal-pad"
-              theme={{
-                colors: {
-                  underlineColor: 'transparent',
-                  text: '#000',
-                  accent: theme.colors.primary,
-                },
-              }}
+              value={unitCount}
               {...inputProps}
             />
             <OpacityButton

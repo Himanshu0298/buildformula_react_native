@@ -30,7 +30,6 @@ import {
   GET_WORK_SUB_WORK_LIST,
   UPDATE_STORE_KEEPER_STATUS,
   GET_MATERIAL_INDENT_DETAILS,
-  DELETE_ISSUE,
   ADD_ISSUE_REQUEST,
   ADD_RETURN_REQUEST,
   ADD_MATERIAL_ISSUE_REQUEST,
@@ -41,6 +40,12 @@ import {
   ADD_SUPPLIER,
   UPDATE_PR,
   UPDATE_ISSUE_ASSIGN_QUANTITY,
+  GET_MATERIAL_CATEGORY_LIST,
+  DELETE_INDENT_ITEM,
+  DELETE_ISSUE,
+  GET_COMMON_MATERIAL,
+  ADD_RETURN_ATTACHMENT,
+  ADD_MATERIAL_RETURN_REQUEST,
 } from '../actions/actionTypes';
 
 const initialState = {
@@ -69,6 +74,8 @@ const initialState = {
   storeKeeperList: [],
   storeKeeperDetails: {},
   indentDetails: {},
+  categoryList: [],
+  commonList: [],
 };
 
 const reducer = (state = initialState, action = {}) => {
@@ -83,6 +90,13 @@ const reducer = (state = initialState, action = {}) => {
         materialOrderList: payload.sort(
           (a, b) => b.material_order_no - a.material_order_no,
         ),
+      };
+    }
+    case `${GET_COMMON_MATERIAL}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+        commonList: payload,
       };
     }
 
@@ -187,6 +201,12 @@ const reducer = (state = initialState, action = {}) => {
         loading: false,
         indentDetails: payload,
       };
+    case `${GET_MATERIAL_CATEGORY_LIST}_FULFILLED`:
+      return {
+        ...state,
+        loading: false,
+        categoryList: payload,
+      };
 
     case `${GET_DIRECT_GRN_DETAILS}_FULFILLED`: {
       const directGRNDetails = {
@@ -225,6 +245,7 @@ const reducer = (state = initialState, action = {}) => {
 
     // Material PR
     case `${DELETE_MATERIAL_PR_CATEGORY}_PENDING`:
+    case `${GET_COMMON_MATERIAL}_PENDING`:
     case `${DELETE_MATERIAL_PR_ITEM}_PENDING`:
     case `${DELETE_MATERIAL_PR_DETAILS}_PENDING`:
     case `${EDIT_MATERIAL_PR}_PENDING`:
@@ -257,14 +278,18 @@ const reducer = (state = initialState, action = {}) => {
     case `${GET_MATERIAL_LIST}_PENDING`:
     case `${GET_MATERIAL_INDENT_LIST}_PENDING`:
     case `${GET_MATERIAL_INDENT_DETAILS}_PENDING`:
+    case `${GET_MATERIAL_CATEGORY_LIST}_PENDING`:
     case `${GET_STORE_KEEPER_LIST}_PENDING`:
     case `${GET_STORE_KEEPER_DETAILS}_PENDING`:
     case `${CREATE_STOREKEEPER_ORDER}_PENDING`:
+    case `${ADD_RETURN_ATTACHMENT}_PENDING`:
     case `${UPDATE_ISSUE_ASSIGN_QUANTITY}_PENDING`:
     case `${UPDATE_STORE_KEEPER_STATUS}_PENDING`:
     case `${GET_WORK_SUB_WORK_LIST}_PENDING`:
     case `${GET_VENDOR_OR_CONTRACTORS_DETAILS}_PENDING`:
     case `${ADD_SUPPLIER}_PENDING`:
+    case `${DELETE_INDENT_ITEM}_PENDING`:
+    case `${ADD_MATERIAL_RETURN_REQUEST}_PENDING`:
     case `${GET_SUPPLIERS_LIST}_PENDING`: {
       return {
         ...state,
@@ -296,6 +321,9 @@ const reducer = (state = initialState, action = {}) => {
     case `${DELETE_CHALLAN}_FULFILLED`:
     case `${ADD_ATTACHMENT}_FULFILLED`:
     case `${CREATE_STOREKEEPER_ORDER}_FULFILLED`:
+    case `${ADD_RETURN_ATTACHMENT}_FULFILLED`:
+    case `${DELETE_INDENT_ITEM}_FULFILLED`:
+    case `${ADD_MATERIAL_RETURN_REQUEST}_FULFILLED`:
     case `${UPDATE_STORE_KEEPER_STATUS}_FULFILLED`: {
       return {
         ...state,
@@ -303,6 +331,7 @@ const reducer = (state = initialState, action = {}) => {
       };
     }
     case `${GET_PR_MATERIAL_ORDER_LIST}_REJECTED`:
+    case `${GET_COMMON_MATERIAL}_REJECTED`:
     case `${GET_MATERIAL_PR_DETAILS}_REJECTED`:
     case `${ADD_MATERIAL_PR}_REJECTED`:
     case `${CREATE_MATERIAL_PR}_REJECTED`:
@@ -340,9 +369,13 @@ const reducer = (state = initialState, action = {}) => {
     case `${DELETE_ISSUE}_REJECTED`:
     case `${GET_MATERIAL_INDENT_LIST}_REJECTED`:
     case `${GET_MATERIAL_INDENT_DETAILS}_REJECTED`:
+    case `${GET_MATERIAL_CATEGORY_LIST}_REJECTED`:
     case `${GET_STORE_KEEPER_LIST}_REJECTED`:
     case `${GET_STORE_KEEPER_DETAILS}_REJECTED`:
     case `${CREATE_STOREKEEPER_ORDER}_REJECTED`:
+    case `${ADD_RETURN_ATTACHMENT}_REJECTED`:
+    case `${DELETE_INDENT_ITEM}_REJECTED`:
+    case `${ADD_MATERIAL_RETURN_REQUEST}_REJECTED`:
     case `${UPDATE_STORE_KEEPER_STATUS}_REJECTED`: {
       return {
         ...state,

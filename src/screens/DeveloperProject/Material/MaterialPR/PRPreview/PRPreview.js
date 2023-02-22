@@ -22,7 +22,7 @@ function RenderHeaderBar(props) {
       <View style={styles.container}>
         <IconButton
           icon="keyboard-backspace"
-          size={22}
+          size={16}
           color="#4872f4"
           style={styles.backIcon}
           onPress={() => goBack()}
@@ -191,7 +191,7 @@ const PRPreview = props => {
     getPRMaterialDetails,
     deleteMaterialPR,
     updatePRStatus,
-    getPRMaterialOrderList,
+    getMaterialPR,
     deleteMaterialPRItem,
     updatePR,
   } = useMaterialManagementActions();
@@ -226,7 +226,7 @@ const PRPreview = props => {
   };
 
   const getList = () => {
-    getPRMaterialOrderList({project_id: selectedProject.id});
+    getMaterialPR({project_id: selectedProject.id});
   };
 
   const navToEdit = () => navigation.navigate('CreatePR', {id});

@@ -28,9 +28,7 @@ function OrderCard(props) {
 
   const progressBar = Math.round(percentage) / 100;
 
-  const materialId = Number(
-    material_request_id || materialrequestid || material_order_no,
-  );
+  const materialId = Number(material_request_id || materialrequestid);
 
   const handleNav = () => {
     navigation.navigate('OrderDetail', {material_order_no, materialId});

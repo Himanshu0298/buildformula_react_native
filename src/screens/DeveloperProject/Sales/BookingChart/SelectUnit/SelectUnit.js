@@ -40,24 +40,21 @@ export const SelectUnit = props => {
   const [selectedUnit, setSelectedUnit] = useState();
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      fetchUnitsBookingStatus();
-    });
+    fetchUnitsBookingStatus();
 
-    return unsubscribe;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [towerId, floorId]);
 
   const units = useMemo(() => {
     const structureData =
-      selectedProject.project_structure?.[selectedStructure] || {};
+      selectedProject?.project_structure?.[selectedStructure] || {};
 
     if ([4, 5].includes(selectedStructure)) {
-      return structureData.units;
+      return structureData?.units;
     }
 
     const {floors = {}} =
-      structureData?.towers.find(i => i.tower_id === towerId) || {};
+      structureData?.towers?.find(i => i.tower_id === towerId) || {};
 
     return floors?.[floorId]?.units || [];
   }, [floorId, selectedProject, selectedStructure, towerId]);

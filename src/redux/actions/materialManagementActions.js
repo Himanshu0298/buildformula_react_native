@@ -35,7 +35,7 @@ export default function useMaterialManagementActions() {
     createMaterialPR,
     getPRMaterialDetails,
     getWorkSubWorkList,
-    getPRMaterialOrderList,
+    getMaterialPR,
     updateStoreKeeperStatus,
     getIndentDetails,
     AddPR,
@@ -50,6 +50,9 @@ export default function useMaterialManagementActions() {
     getSupplier,
     addSupplier,
     updateIssueQuantity,
+    getMaterialIndentCategoryList,
+    deleteIndentItem,
+    getCommonMaterial,
   } = useMaterialManagement();
 
   return {
@@ -59,6 +62,20 @@ export default function useMaterialManagementActions() {
         payload: async () => {
           try {
             const response = _res(await getMaterialOrderList(data));
+            return Promise.resolve(response.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    getCommonMaterial: data =>
+      dispatch({
+        type: types.GET_COMMON_MATERIAL,
+        payload: async () => {
+          try {
+            const response = _res(await getCommonMaterial(data));
             return Promise.resolve(response.data);
           } catch (error) {
             const message = _err(error);
@@ -172,12 +189,12 @@ export default function useMaterialManagementActions() {
 
     // Material PR
 
-    getPRMaterialOrderList: data =>
+    getMaterialPR: data =>
       dispatch({
         type: types.GET_PR_MATERIAL_ORDER_LIST,
         payload: async () => {
           try {
-            const response = _res(await getPRMaterialOrderList(data));
+            const response = _res(await getMaterialPR(data));
             return Promise.resolve(response.data);
           } catch (error) {
             const message = _err(error);
@@ -578,6 +595,20 @@ export default function useMaterialManagementActions() {
           }
         },
       }),
+    getMaterialIndentCategoryList: data =>
+      dispatch({
+        type: types.GET_MATERIAL_CATEGORY_LIST,
+        payload: async () => {
+          try {
+            const response = _res(await getMaterialIndentCategoryList(data));
+            return Promise.resolve(response.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
 
     deleteIssue: data =>
       dispatch({
@@ -585,6 +616,21 @@ export default function useMaterialManagementActions() {
         payload: async () => {
           try {
             const res = _res(await deleteIssue(data));
+            snackbar.showMessage({message: res.msg});
+            return Promise.resolve(res.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    deleteIndentItem: data =>
+      dispatch({
+        type: types.DELETE_INDENT_ITEM,
+        payload: async () => {
+          try {
+            const res = _res(await deleteIndentItem(data));
             snackbar.showMessage({message: res.msg});
             return Promise.resolve(res.data);
           } catch (error) {
@@ -640,7 +686,7 @@ export default function useMaterialManagementActions() {
 
     addReturnMaterial: data =>
       dispatch({
-        type: types.ADD_MATERIAL_ISSUE_REQUEST,
+        type: types.ADD_MATERIAL_RETURN_REQUEST,
         payload: async () => {
           try {
             const response = _res(await addReturnMaterial(data));
@@ -655,7 +701,7 @@ export default function useMaterialManagementActions() {
 
     addReturnAttachment: formData =>
       dispatch({
-        type: types.UPDATE_PR_STATUS,
+        type: types.ADD_RETURN_ATTACHMENT,
         payload: async () => {
           try {
             const response = _res(await addReturnAttachment(formData));

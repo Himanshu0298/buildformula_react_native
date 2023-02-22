@@ -63,13 +63,22 @@ function ImageRender(props) {
 }
 
 function StructureSelector(props) {
-  const {title, subtitle, onSelectStructure, projectTypes, activeTypes} = props;
+  const {
+    title,
+    subtitle,
+    hideTitle,
+    onSelectStructure,
+    projectTypes,
+    activeTypes,
+  } = props;
 
   const {t} = useTranslation();
 
   return (
     <>
-      <FormTitle title={t(title)} subTitle={t(subtitle)} />
+      {!hideTitle ? (
+        <FormTitle title={t(title)} subTitle={t(subtitle)} />
+      ) : null}
 
       <View style={styles.container}>
         {getStructureItems()

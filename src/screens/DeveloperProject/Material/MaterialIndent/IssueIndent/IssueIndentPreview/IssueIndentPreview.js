@@ -158,7 +158,7 @@ const RequiredVendor = props => {
 };
 
 function AssignMaterialCard(props) {
-  const {item, index, showEdit, showDetail, toggleDialog} = props;
+  const {item, index, showEdit, showDetail, toggleDialog, isApproved} = props;
 
   const {
     materialcategrytitle,
@@ -173,9 +173,11 @@ function AssignMaterialCard(props) {
 
   return (
     <View style={styles.cardContainer}>
-      <View style={styles.dataRow}>
-        <Caption style={styles.lightData}>Category:</Caption>
-        <Text>{materialcategrytitle}</Text>
+      <View style={styles.cardHeaderStyle}>
+        <View style={styles.dataRow}>
+          <Caption style={styles.lightData}>Category:</Caption>
+          <Text>{materialcategrytitle}</Text>
+        </View>
       </View>
       <View style={styles.dataRow}>
         <Caption style={styles.lightData}>Sub Category:</Caption>
@@ -190,7 +192,7 @@ function AssignMaterialCard(props) {
         <Text>{quantity}</Text>
       </View>
 
-      {showDetail ? (
+      {isApproved || showDetail ? (
         <>
           <View style={styles.dataRow}>
             <Caption style={styles.lightData}>Estimated Qty:</Caption>
@@ -230,7 +232,7 @@ function AssignMaterialCard(props) {
 
 function IssueIndentPreview(props) {
   const {navigation, route} = props;
-  const {id, type} = route?.params || {};
+  const {id} = route?.params || {};
 
   const alert = useAlert();
   const snackbar = useSnackbar();
@@ -259,30 +261,24 @@ function IssueIndentPreview(props) {
 
   useEffect(() => {
     getData();
+    getList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const disableApprove = React.useMemo(() => {
-    return Boolean(
-      materials?.filter(i => !isNumber(i.assigned_quantity))?.length,
-    );
-  }, [materials]);
 
   const toggleDetail = () => setShowDetail(v => !v);
   const toggleDialog = v => setSelectedItemIndex(v);
 
-  const getData = () => {
-    getIndentDetails({
+  const getData = async () => {
+    await getIndentDetails({
       project_id: selectedProject.id,
       material_indent_id: id,
     });
   };
 
-  const getList = () => {
+  const getList = () =>
     getMaterialIndentList({
       project_id: selectedProject.id,
     });
-  };
 
   const handleDelete = () => {
     alert.show({
@@ -312,6 +308,7 @@ function IssueIndentPreview(props) {
         message: 'Assign Quantity can not be more then Available Quantity',
         variant: 'error',
       });
+      toggleDialog();
       return;
     }
 
@@ -321,19 +318,30 @@ function IssueIndentPreview(props) {
   };
 
   const updateStatus = async approveStatus => {
-    const formData = new FormData();
-
     const quantityData = materials.map(item => {
       const keys = ['material_indent_id', 'assigned_quantity'];
       return {...pick(item, keys), material_indent_details_id: item.id};
     });
+    const quantity = materials.find(i => i.assigned_quantity === null);
+    if (approveStatus === 'approved') {
+      if (quantity) {
+        snackbar.showMessage({
+          message: 'please add assigned quantity',
+          variant: 'warning',
+        });
+        toggleDialog();
+        return;
+      }
+    }
 
-    formData.append('project_id', selectedProject.id);
-    formData.append('material_indent_id', id);
-    formData.append('type', approveStatus);
-    formData.append('assigned_quantity', JSON.stringify(quantityData));
+    const restData = {
+      project_id: selectedProject.id,
+      material_indent_id: id,
+      type: approveStatus,
+      assigned_quantity: JSON.stringify(quantityData),
+    };
 
-    await updateIssueQuantity(formData);
+    await updateIssueQuantity(restData);
     getData();
   };
 
@@ -343,7 +351,6 @@ function IssueIndentPreview(props) {
   return (
     <>
       <Spinner visible={loading || details} textContent="" />
-
       <AssignQtyDialog
         {...props}
         visible={isNumber(selectedItemIndex)}
@@ -356,7 +363,7 @@ function IssueIndentPreview(props) {
           <View style={styles.dataRow}>
             <IconButton
               icon="keyboard-backspace"
-              size={22}
+              size={16}
               color={theme.colors.primary}
               style={styles.backButton}
               onPress={() => navigation.goBack()}
@@ -426,6 +433,7 @@ function IssueIndentPreview(props) {
                     toggleDialog={toggleDialog}
                     showDetail={showDetail}
                     showEdit={isPending}
+                    isApproved={isApproved}
                   />
                 );
               })}
@@ -442,7 +450,7 @@ function IssueIndentPreview(props) {
           <ActionButtons
             cancelLabel="Reject"
             submitLabel=" Approve"
-            submitDisabled={disableApprove}
+            // submitDisabled={disableApprove}
             onCancel={() => updateStatus('rejected')}
             onSubmit={() => updateStatus('approved')}
           />
@@ -587,5 +595,13 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     paddingBottom: 50,
+  },
+  deleteIcon: {
+    borderRadius: 20,
+  },
+  cardHeaderStyle: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
 });

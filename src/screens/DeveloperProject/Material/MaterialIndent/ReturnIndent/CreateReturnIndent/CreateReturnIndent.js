@@ -9,6 +9,7 @@ import ActionButtons from 'components/Atoms/ActionButtons';
 import {Subheading} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
+import {debounce} from 'lodash';
 
 const schema = Yup.object().shape({
   vendor_id: Yup.string().label('vendor_id').required('Vendor is Required'),
@@ -19,8 +20,6 @@ function CreateReturnIndent(props) {
   const {navigation, route} = props;
   const {id, indentDetails} = route?.params || {};
 
-  const details = indentDetails?.material_indent;
-
   const edit = Boolean(id);
 
   const {getVendorList, addReturnIndentMaterials} =
@@ -28,12 +27,13 @@ function CreateReturnIndent(props) {
 
   const {vendorOptions} = useSelector(s => s.materialManagement);
 
+  const details = indentDetails?.material_indent;
+
   const {selectedProject} = useSelector(s => s.project);
   const projectId = selectedProject.id;
 
   React.useEffect(() => {
     getVendorList({project_id: projectId});
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -46,7 +46,7 @@ function CreateReturnIndent(props) {
 
   const initialValues = React.useMemo(() => {
     if (edit) {
-      const {contractor_name: vendor_id, remark} = details;
+      const {vendor_id, remark} = details;
       return {
         vendor_id,
         remark,
@@ -57,6 +57,7 @@ function CreateReturnIndent(props) {
 
   const onSubmit = async values => {
     const data = {
+      material_indent_id: id,
       project_id: projectId,
       remark: values.remark,
       vendor_id: values.vendor_id,
@@ -66,7 +67,8 @@ function CreateReturnIndent(props) {
 
     navigation.navigate('AddReturnIndentMaterials', {
       edit,
-      id: value.material_indent_id || id,
+      id: value.material_indent_id,
+      detailId: id,
     });
   };
 
@@ -116,7 +118,7 @@ function CreateReturnIndent(props) {
                 cancelLabel="Cancel"
                 submitLabel="Next"
                 onCancel={navigation.goBack}
-                onSubmit={handleSubmit}
+                onSubmit={debounce(handleSubmit, 200)}
               />
             </View>
           );
@@ -131,9 +133,7 @@ const styles = StyleSheet.create({
     margin: 10,
     flexGrow: 1,
   },
-  // headerContainer: {
-  //   margin: 10,
-  // },
+
   headerText: {
     fontSize: 18,
   },

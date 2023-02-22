@@ -50,7 +50,8 @@ platform :android do
     firebase_app_distribution(
         app: "1:525501768411:android:7b6f39a29fd28111ed62fe",
         # service_credentials_file: './firebase-service-file.json',
-        groups: "vshwan-team"
+        groups: "vshwan-team",
+        # debug:true
     )
   end
 

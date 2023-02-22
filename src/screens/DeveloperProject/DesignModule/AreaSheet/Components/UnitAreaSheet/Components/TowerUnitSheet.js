@@ -52,7 +52,7 @@ function TowerUnitSheet(props) {
 
   const project_id = selectedProject.id;
 
-  const structureData = selectedProject.project_structure || {};
+  const structureData = selectedProject?.project_structure || {};
   const {towers} = structureData?.['6'] || {};
 
   const towerOptions = React.useMemo(() => {

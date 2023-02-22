@@ -23,6 +23,7 @@ import moment from 'moment';
 import {useAlert} from 'components/Atoms/Alert';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 import {useSelector} from 'react-redux';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const INDENT_STATUS = {
   pending: {label: 'Pending', color: 'rgba(72, 114, 244, 1)'},
@@ -72,8 +73,7 @@ const ListingCard = props => {
 const RequiredVendor = props => {
   const {details} = props;
 
-  const {contractor_name, contractor_email, requred_date, remark} =
-    details || {};
+  const {contractor_name, contractor_email, remark} = details || {};
 
   return (
     <View style={styles.vendorContainer}>
@@ -104,11 +104,12 @@ const MaterialCard = props => {
   } = item;
   return (
     <View style={styles.cardContainer}>
-      <View style={styles.dataRow}>
-        <Caption style={styles.lightData}>Category:</Caption>
-        <Text>{materialcategrytitle}</Text>
+      <View style={styles.cardHeaderStyle}>
+        <View style={styles.dataRow}>
+          <Caption style={styles.lightData}>Category:</Caption>
+          <Text>{materialcategrytitle}</Text>
+        </View>
       </View>
-
       <View style={styles.dataRow}>
         <Caption style={styles.lightData}>Sub Category:</Caption>
         <Text>{subcategorytitle}</Text>
@@ -169,7 +170,7 @@ function ReturnIndentPreview(props) {
     useMaterialManagementActions();
 
   const {selectedProject} = useSelector(s => s.project);
-  const {indentDetails} = useSelector(s => s.materialManagement);
+  const {indentDetails, loading} = useSelector(s => s.materialManagement);
 
   const details = indentDetails?.material_indent;
 
@@ -179,18 +180,19 @@ function ReturnIndentPreview(props) {
 
   useEffect(() => {
     getData();
+    getList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const getData = () => {
-    getIndentDetails({
+  const getData = async () => {
+    await getIndentDetails({
       project_id: selectedProject.id,
       material_indent_id: id,
     });
   };
 
-  const getList = () => {
-    getMaterialIndentList({
+  const getList = async () => {
+    await getMaterialIndentList({
       project_id: selectedProject.id,
     });
   };
@@ -213,11 +215,12 @@ function ReturnIndentPreview(props) {
 
   return (
     <View style={styles.mainContainer}>
+      <Spinner visible={loading} />
       <View style={styles.headerContainer}>
         <View style={styles.container}>
           <IconButton
             icon="keyboard-backspace"
-            size={22}
+            size={16}
             color={theme.colors.primary}
             style={styles.backButton}
             onPress={() => navigation.goBack()}
@@ -255,7 +258,9 @@ function ReturnIndentPreview(props) {
           </View>
         </View>
       </View>
-      <ScrollView style={{marginBottom: 15}}>
+      <ScrollView
+        style={{marginBottom: 30}}
+        showsVerticalScrollIndicator={false}>
         <View>
           <ListingCard details={details} />
         </View>
@@ -438,5 +443,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     maxWidth: 170,
     flex: 1,
+  },
+  deleteIcon: {
+    borderRadius: 20,
+  },
+  cardHeaderStyle: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
 });

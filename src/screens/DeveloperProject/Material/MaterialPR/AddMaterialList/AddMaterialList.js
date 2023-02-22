@@ -190,6 +190,15 @@ export function AddMaterialDialog(props) {
 function CardListing(props) {
   const {item, toggleEditDialog, handleDelete, index} = props;
 
+  const {
+    materialunitstitle,
+    subcategorytitle,
+    material_dates,
+    material_quantity,
+    required_date,
+    quantity,
+  } = item;
+
   const {materialCategories, materialSubCategories} = useSelector(
     s => s.materialManagement,
   );
@@ -207,15 +216,16 @@ function CardListing(props) {
   const subCategoryTitle = React.useMemo(() => {
     return (
       materialSubCategories?.find(i => i.id === item?.sub_material_id)?.title ||
-      'NA'
+      item?.subcategorytitle
     );
-  }, [item?.sub_material_id, materialSubCategories]);
+  }, [item?.sub_material_id, item?.subcategorytitle, materialSubCategories]);
 
   const unitTitle = React.useMemo(() => {
-    return units?.find(i => i.id === item?.material_unit_id)?.title || 'NA';
-  }, [item?.material_unit_id, units]);
-
-  const {required_date, quantity} = item;
+    return (
+      units?.find(i => i.id === item?.material_unit_id)?.title ||
+      item?.materialunitstitle
+    );
+  }, [item?.material_unit_id, item?.materialunitstitle, units]);
 
   return (
     <View style={styles.cardContainer}>
@@ -238,7 +248,7 @@ function CardListing(props) {
             <OpacityButton
               color="#FF5D5D"
               opacity={0.18}
-              onPress={() => handleDelete(item)}
+              onPress={() => handleDelete(index)}
               style={styles.deleteButton}>
               <MaterialIcons name="delete" color="#FF5D5D" size={13} />
             </OpacityButton>
@@ -247,19 +257,19 @@ function CardListing(props) {
       </View>
       <View style={styles.dataRow}>
         <Caption style={styles.lightData}>Sub Category:</Caption>
-        <Text>{subCategoryTitle}</Text>
+        <Text>{subCategoryTitle || subcategorytitle}</Text>
       </View>
       <View style={styles.dataRow}>
         <Caption style={styles.lightData}>Unit:</Caption>
-        <Text>{unitTitle}</Text>
+        <Text>{unitTitle || materialunitstitle}</Text>
       </View>
       <View style={styles.dataRow}>
         <Caption style={styles.lightData}>Required date:</Caption>
-        <Text>{required_date}</Text>
+        <Text>{required_date || material_dates}</Text>
       </View>
       <View style={styles.dataRow}>
         <Caption style={styles.lightData}>Quantity:</Caption>
-        <Text>{quantity}</Text>
+        <Text>{quantity || material_quantity}</Text>
       </View>
     </View>
   );
@@ -270,6 +280,14 @@ function AddMaterialList(props) {
   const {id, edit} = route?.params || {};
 
   const alert = useAlert();
+
+  const getPRDetails = () => {
+    getPRMaterialDetails({
+      project_id: selectedProject.id,
+      purchase_request_id: id,
+    });
+  };
+
   const {PRDetails} = useSelector(s => s.materialManagement);
 
   const materialItems = PRDetails?.materialItems;
@@ -278,7 +296,7 @@ function AddMaterialList(props) {
   const [selectedMaterialIndex, setSelectedMaterialIndex] = React.useState();
   const [materials, setMaterials] = React.useState(materialItems || []);
 
-  const {deleteMaterialPRItem, getPRMaterialDetails, createMaterialPR} =
+  const {getPRMaterialDetails, createMaterialPR} =
     useMaterialManagementActions();
 
   const {selectedProject} = useSelector(s => s.project);
@@ -291,26 +309,16 @@ function AddMaterialList(props) {
 
   const toggleAddDialog = () => setAddDialog(v => !v);
 
-  const getPRDetails = () => {
-    getPRMaterialDetails({
-      project_id: selectedProject.id,
-      purchase_request_id: id,
-    });
-  };
-
-  const handleDelete = item => {
+  const handleDelete = index => {
     alert.show({
       title: 'Confirm',
       message: 'Are you sure you want to delete?',
       confirmText: 'Delete',
-      onConfirm: async () => {
-        const deleteData = {
-          purchase_request_id: id,
-          material_purchase_request_items_id: item.id,
-          project_id: selectedProject.id,
-        };
-        await deleteMaterialPRItem(deleteData);
-        await getPRDetails();
+      onConfirm: () => {
+        const _materials = [...materials];
+        _materials?.splice(index, 1);
+        setMaterials(_materials);
+        getPRDetails();
       },
     });
   };

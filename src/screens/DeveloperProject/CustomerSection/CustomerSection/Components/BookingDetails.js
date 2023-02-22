@@ -24,6 +24,7 @@ import {Tabs} from 'react-native-collapsible-tab-view';
 import {useAlert} from 'components/Atoms/Alert';
 import useCustomerServices from 'services/customer';
 import {theme} from 'styles/theme';
+import {useSnackbar} from 'components/Atoms/Snackbar';
 
 const schema = Yup.object().shape({
   email: Yup.string('Required').required('Required'),
@@ -65,8 +66,10 @@ function RenderRow({row, style}) {
 }
 
 function CustomerCredLogin(props) {
-  const {bookingDetails, navigation} = props;
+  const {bookingDetails, navigation, unitId} = props;
   const alert = useAlert();
+
+  const snackbar = useSnackbar();
 
   const {customer_phone, customer_email, id} = bookingDetails;
 
@@ -74,7 +77,8 @@ function CustomerCredLogin(props) {
 
   const [editLoginCred, setEditLoginCred] = React.useState(false);
 
-  const {deleteBooking, cancelBooking} = useCustomerServices();
+  const {deleteBooking, cancelBooking, updateCustomerLoginDetails} =
+    useCustomerServices();
   // const {getBookingDetails} = useCustomerActions();
 
   const handleDelete = async project_bookings_id => {
@@ -107,6 +111,27 @@ function CustomerCredLogin(props) {
 
   const handleCredEdit = () => setEditLoginCred(true);
 
+  const handelEdit = values => {
+    const data = {
+      email: values.email,
+      phone: values.phone,
+      project_id: projectId,
+      unit_id: unitId,
+    };
+
+    updateCustomerLoginDetails(data);
+
+    if (data) {
+      snackbar.showMessage({
+        message:
+          'We have sent you OTP to your email and Mobile, Please verify it.',
+        variant: 'warning',
+      });
+    }
+
+    handleCredEdit();
+  };
+
   return (
     <View style={styles.sectionContainer}>
       <View style={styles.buttonIcon}>
@@ -134,7 +159,7 @@ function CustomerCredLogin(props) {
             <MaterialCommunityIcons
               color={theme.colors.primary}
               name="tag"
-              size={16}
+              size={10}
               style={styles.iconStyle}
             />
             <Text>Cancel & Open for re-sale</Text>
@@ -146,7 +171,7 @@ function CustomerCredLogin(props) {
           CUSTOMER LOGIN CREDENTIAL
         </Subheading>
         {/* { TO DO Api integration pending and linked with otp input screen} */}
-        {/* {!editLoginCred ? (
+        {!editLoginCred ? (
           <OpacityButton
             opacity={0.1}
             onPress={handleCredEdit}
@@ -155,11 +180,11 @@ function CustomerCredLogin(props) {
             <MaterialCommunityIcons
               color={theme.colors.primary}
               name="pencil"
-              size={20}
+              size={15}
               style={styles.iconStyle}
             />
           </OpacityButton>
-        ) : null} */}
+        ) : null}
       </View>
 
       <Formik
@@ -167,9 +192,7 @@ function CustomerCredLogin(props) {
         validateOnChange={false}
         initialValues={{email: customer_email, phone: customer_phone}}
         validationSchema={schema}
-        onSubmit={value => {
-          setEditLoginCred(false);
-        }}>
+        onSubmit={handelEdit}>
         {({values, errors, handleChange, handleSubmit}) => (
           <View style={styles.customerCredentialContainer}>
             <View style={styles.customerCredential}>
@@ -831,6 +854,7 @@ function BookingDetails(props) {
           {...props}
           {...{bookingDetails}}
           unit_id={bookingDetails.id}
+          unitId={unit_id}
         />
         <Divider />
 
@@ -935,9 +959,10 @@ const styles = StyleSheet.create({
     marginTop: 10,
     alignItems: 'center',
     marginRight: 20,
+    borderRadius: 20,
   },
   iconStyle: {
-    marginRight: 5,
+    padding: 2,
   },
   areaBuild: {
     fontWeight: 'bold',

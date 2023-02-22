@@ -3,7 +3,7 @@ import * as React from 'react';
 import {useTranslation} from 'react-i18next';
 import {StyleSheet, View} from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
-import {Divider, withTheme, Title} from 'react-native-paper';
+import {Divider, withTheme, Title, IconButton} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import useCustomerActions from 'redux/actions/customerActions';
 import {MaterialTabBar, Tabs} from 'react-native-collapsible-tab-view';
@@ -51,8 +51,10 @@ const renderTabBar = params => {
 };
 
 function CustomerSection(props) {
-  const {route} = props;
-  const {project_id, unit} = route?.params || {};
+  const {route, navigation} = props;
+  const {project_id, unitId, unit} = route?.params || {};
+
+  const id = unit?.unit_id;
 
   const insets = useSafeAreaInsets();
 
@@ -81,13 +83,13 @@ function CustomerSection(props) {
   }, [isProjectAdmin, permissions]);
 
   React.useEffect(() => {
-    getCustomerDetails({project_id, unit_id: unit.unit_id});
-    getBookingDetails({project_id, unit_id: unit.unit_id});
-    getBankDetails({project_id, unit_id: unit.unit_id});
-    getModifyRequests({project_id, unit_id: unit.unit_id});
-    getAccountDetails({project_id, unit_id: unit.unit_id});
-    getFolders({project_id, unit_id: unit.unit_id, index_of: 0});
-    getFiles({project_id, unit_id: unit.unit_id, folder_id: 0});
+    getCustomerDetails({project_id, unit_id: unitId || id});
+    getBookingDetails({project_id, unit_id: unitId || id});
+    getBankDetails({project_id, unit_id: unitId || id});
+    getModifyRequests({project_id, unit_id: unitId || id});
+    getAccountDetails({project_id, unit_id: unitId || id});
+    getFolders({project_id, unit_id: unitId || id, index_of: 0});
+    getFiles({project_id, unit_id: unitId || id, folder_id: 0});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -95,8 +97,17 @@ function CustomerSection(props) {
     return (
       <>
         <ProjectHeader {...props} />
-        <View style={styles.container}>
+        <View style={styles.mainContainer}>
+          <IconButton
+            icon="keyboard-backspace"
+            size={18}
+            color="#4872f4"
+            style={styles.backIcon}
+            onPress={() => navigation.goBack()}
+          />
           <Title>{t('title_customer_section')}</Title>
+        </View>
+        <View style={styles.container}>
           <DetailsHeader {...route?.params} />
           <Divider style={styles.divider} />
         </View>
@@ -119,7 +130,7 @@ function CustomerSection(props) {
             <Details {...props} />
           </Tabs.Tab>
           <Tabs.Tab name="Booking Details">
-            <BookingDetails {...props} unit_id={unit.unit_id} />
+            <BookingDetails {...props} unit_id={unitId || id} />
           </Tabs.Tab>
           <Tabs.Tab name="Bank Loans">
             <BankLoans {...props} />
@@ -152,6 +163,14 @@ const styles = StyleSheet.create({
   },
   tab: {
     width: 180,
+  },
+  backIcon: {
+    backgroundColor: 'rgba(72, 114, 244, 0.1)',
+    marginRight: 11,
+  },
+  mainContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 });
 

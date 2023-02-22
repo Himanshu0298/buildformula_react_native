@@ -16,6 +16,32 @@ export const DEVELOPER_DRAWER_ITEMS = [
     ),
   },
   {
+    title: 'PROJECT STRUCTURE',
+    id: 11,
+    routes: [
+      {
+        route: 'ProjectListing',
+        label: 'Project List',
+        icon: 'office-building',
+      },
+      {
+        route: 'SearchPickUpList',
+        label: 'Pickup List',
+        icon: 'menu-open',
+      },
+      {
+        route: 'AreaList',
+        label: 'Area List',
+        icon: 'map-marker',
+      },
+      {
+        route: 'UnitList',
+        label: 'Unit List',
+        icon: 'home-city-outline',
+      },
+    ],
+  },
+  {
     title: 'SALES',
     id: 1,
     routes: [

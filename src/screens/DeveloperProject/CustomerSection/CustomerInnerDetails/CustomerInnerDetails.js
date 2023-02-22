@@ -23,7 +23,7 @@ import {getCountryCode} from 'utils';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 
 const CustomerDetails = props => {
-  const {visitors_info, linkedProperty, BrokerData, navigation} = props;
+  const {visitors_info, linkedProperty, BrokerData, navigation, unitId} = props;
 
   const {first_name, last_name, email, phone, address, dob, anniversary_date} =
     visitors_info || {};
@@ -31,7 +31,10 @@ const CustomerDetails = props => {
   const snackbar = useSnackbar();
 
   const navToDetails = () => {
-    navigation.navigate('CS_Step_Five', {project_id: visitors_info.project_id});
+    navigation.navigate('CS_Step_Five', {
+      project_id: visitors_info.project_id,
+      unitId,
+    });
   };
 
   const phoneNumber = React.useMemo(() => {
@@ -129,7 +132,12 @@ const CustomerDetails = props => {
 };
 
 const CustomerInnerDetails = ({navigation, route: routeData}) => {
-  const {id: visitorId, linkedProperty, customerId} = routeData.params || {};
+  const {
+    id: visitorId,
+    linkedProperty,
+    customerId,
+    unitId,
+  } = routeData.params || {};
 
   const {selectedProject} = useSelector(s => s.project);
 
@@ -210,6 +218,8 @@ const CustomerInnerDetails = ({navigation, route: routeData}) => {
             linkedProperty={linkedProperty}
             BrokerData={BrokerData}
             visitorId={visitorId}
+            navigation={navigation}
+            unitId={unitId}
           />
         );
       case 'second':
@@ -233,7 +243,7 @@ const CustomerInnerDetails = ({navigation, route: routeData}) => {
       <View style={styles.headerContainer}>
         <IconButton
           icon="keyboard-backspace"
-          size={25}
+          size={18}
           color="#000"
           style={styles.iconButton}
           onPress={() => navigation.goBack()}

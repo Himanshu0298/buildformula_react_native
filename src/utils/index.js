@@ -182,3 +182,7 @@ export function getCountryCode(numbers) {
   }
   return false;
 }
+
+export function onlyInLeft(left = [], right = [], compare) {
+  return left.filter(l => !right.some(r => compare(l, r)));
+}

@@ -8,6 +8,10 @@ export default function useMaterialManagement() {
       return instance.post('/material/utilityDelivered', data, params);
     },
 
+    getCommonMaterial: data => {
+      return instance.post('/common_material', data, params);
+    },
+
     getMaterialChallanList: data => {
       return instance.post('/materialDelivery/details', data, params);
     },
@@ -41,9 +45,6 @@ export default function useMaterialManagement() {
 
     getSelectMaterialChallan: data => {
       return instance.post('/getChallanMaterial', data, params);
-    },
-    getPRMaterialOrderList: data => {
-      return instance.post('/material_purchase_request/list', data, params);
     },
     getPRMaterialDetails: data => {
       return instance.post('/material_purchase_request/detail', data, params);
@@ -133,6 +134,9 @@ export default function useMaterialManagement() {
     getMaterialIndentList: data => {
       return instance.post('/material/indentlist', data, params);
     },
+    getMaterialIndentCategoryList: data => {
+      return instance.post('/get_material_by_wbs_works_id', data, params);
+    },
     getIndentDetails: data => {
       return instance.post('/material/issuereuestdetails', data, params);
     },
@@ -155,10 +159,17 @@ export default function useMaterialManagement() {
       return instance.post('/material/returnmaterialaddedit', data, params);
     },
     addReturnAttachment: data => {
-      return instance.post('/material/returnimage', data, params);
+      return instance.post(
+        '/material/returnimage',
+        data,
+        config({multipart: true}),
+      );
     },
     deleteIssue: data => {
       return instance.post('/material/issuedelete', data, params);
+    },
+    deleteIndentItem: data => {
+      return instance.post('/indent/materialdeleteitem', data, params);
     },
     // Material StoreKeeper
 
@@ -169,7 +180,11 @@ export default function useMaterialManagement() {
       return instance.post('/material/indent_details', data, params);
     },
     CreateStoreKeeperOrder: data => {
-      return instance.post('/material/storekeeper_orderconfirm', data, params);
+      return instance.post(
+        '/material/storekeeper_orderconfirm',
+        data,
+        config({multipart: true}),
+      );
     },
 
     updateStoreKeeperStatus: data => {

@@ -8,15 +8,16 @@ const RenderSelectMultiple = props => {
   const {value = [], onSelect, ...rest} = props;
 
   const handleSelect = v => {
-    const index = value.indexOf(v);
+    const updatedValue = [...(value || [])];
+    const index = updatedValue.indexOf(v);
 
     if (index !== -1) {
-      value.splice(index, 1);
+      updatedValue.splice(index, 1);
     } else {
-      value.push(v);
+      updatedValue.push(v);
     }
 
-    onSelect?.(value);
+    onSelect?.(updatedValue);
   };
 
   const handleClose = index => {
@@ -30,13 +31,10 @@ const RenderSelectMultiple = props => {
       <RenderSelect {...rest} onSelect={handleSelect} />
       {value.length ? (
         <View style={styles.valueContainer}>
-          {value.map((item, index) => {
+          {value?.map((item, index) => {
             return (
               <View style={styles.chipContainer} key={item}>
-                <Chip
-                  onClose={() => handleClose(index)}
-                  mode="flat"
-                  selectedColor="blue">
+                <Chip onClose={() => handleClose(index)} mode="outlined">
                   <Text>{item} </Text>
                 </Chip>
               </View>
@@ -53,7 +51,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     flexWrap: 'wrap',
-    flex: 1,
+    flexGrow: 1,
   },
   chipContainer: {
     margin: 2,

@@ -14,6 +14,7 @@ import {Formik} from 'formik';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {isEqual, isNumber} from 'lodash';
+import {useSnackbar} from 'components/Atoms/Snackbar';
 
 function AddMaterialDialog(props) {
   const {formikProps, handleClose, edit} = props;
@@ -136,7 +137,7 @@ function AddMaterialDialog(props) {
 }
 
 function CardListing(props) {
-  const {item, toggleEditDialog, handleDelete, index} = props;
+  const {item, toggleEditDialog, handleDelete, index, edit} = props;
 
   const {
     materialcategrytitle,
@@ -178,20 +179,23 @@ function CardListing(props) {
           <Text>{materialcategrytitle || categoryTitle}</Text>
         </View>
         <View style={styles.buttonContainer}>
-          <View style={styles.editButton}>
-            <OpacityButton
-              color="#4872f4"
-              opacity={0.18}
-              style={styles.OpacityButton}
-              onPress={() => toggleEditDialog(index)}>
-              <MaterialIcons name="edit" color="#4872f4" size={13} />
-            </OpacityButton>
-          </View>
+          {!edit ? (
+            <View style={styles.editButton}>
+              <OpacityButton
+                color="#4872f4"
+                opacity={0.18}
+                style={styles.OpacityButton}
+                onPress={() => toggleEditDialog(index)}>
+                <MaterialIcons name="edit" color="#4872f4" size={13} />
+              </OpacityButton>
+            </View>
+          ) : null}
+
           <View>
             <OpacityButton
               color="#FF5D5D"
               opacity={0.18}
-              onPress={() => handleDelete(index, item)}
+              onPress={() => handleDelete(index, item.id)}
               style={styles.OpacityButton}>
               <MaterialIcons name="delete" color="#FF5D5D" size={13} />
             </OpacityButton>
@@ -222,16 +226,23 @@ function CardListing(props) {
 function AddReturnIndentMaterials(props) {
   const {navigation, route} = props;
 
-  const {id, edit} = route?.params || {};
+  const {id, edit, detailId} = route?.params || {};
 
   const alert = useAlert();
+  const snackbar = useSnackbar();
 
-  const {getPRMaterialCategories, getIndentDetails, addMaterialIssueRequest} =
-    useMaterialManagementActions();
+  const getDetails = () =>
+    getIndentDetails({
+      project_id: selectedProject.id,
+      material_indent_id: detailId || id,
+    });
 
-  const [addDialog, setAddDialog] = React.useState(false);
-  const [selectedMaterialIndex, setSelectedMaterialIndex] = React.useState();
-  const [materials, setMaterials] = React.useState(materialsItems || []);
+  const {
+    getPRMaterialCategories,
+    getIndentDetails,
+    addReturnMaterial,
+    deleteIndentItem,
+  } = useMaterialManagementActions();
 
   const {indentDetails, materialSubCategories} = useSelector(
     s => s.materialManagement,
@@ -241,6 +252,10 @@ function AddReturnIndentMaterials(props) {
 
   const {selectedProject} = useSelector(s => s.project);
   const projectId = selectedProject.id;
+
+  const [addDialog, setAddDialog] = React.useState(false);
+  const [selectedMaterialIndex, setSelectedMaterialIndex] = React.useState();
+  const [materials, setMaterials] = React.useState(materialsItems || []);
 
   useEffect(() => {
     getPRMaterialCategories({project_id: projectId});
@@ -254,12 +269,6 @@ function AddReturnIndentMaterials(props) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [materialsItems]);
-
-  const getDetails = () =>
-    getIndentDetails({
-      project_id: selectedProject.id,
-      material_indent_id: id,
-    });
 
   const initialValues = useMemo(() => {
     if (isNumber(selectedMaterialIndex)) {
@@ -286,52 +295,80 @@ function AddReturnIndentMaterials(props) {
     return {};
   }, [materialSubCategories, materials, selectedMaterialIndex]);
 
-  const handleSave = async values => {
-    const materialCard = materials.find(
-      i => i.id === values.material_category_id,
-    );
-    const restData = {
-      project_id: projectId,
-      material_indent_id: id,
-      material_category_id: materialCard.material_category_id,
-      material_sub_category_id: materialCard.material_sub_category_id,
-      material_units_id: materialCard.material_units_id,
-      quantity: materialCard.quantity,
-      damaged_qty: materialCard.damaged_qty,
-    };
-    await addMaterialIssueRequest(restData);
+  const handleSave = async () => {
+    materials.map(async material => {
+      const restData = {
+        project_id: projectId,
+        material_indent_id: id,
+        material_category_id: material?.material_category_id,
+        material_sub_category_id: material?.material_sub_category_id,
+        material_units_id: material?.material_units_id,
+        quantity: material?.quantity,
+        damaged_qty: material?.damaged_qty,
+        material_indent_details_id: detailId,
+      };
+
+      await addReturnMaterial(restData);
+    });
     getDetails();
     navigation.navigate('AddAttachments', {id});
   };
 
-  const handleSaveMaterial = values => {
+  const handleSaveMaterial = async values => {
     const _materials = [...materials];
-    if (!isNaN(selectedMaterialIndex)) {
+
+    if (!values.material_units_id) {
+      snackbar.showMessage({
+        message: 'This SubCategory have no unit , please select another one',
+        variant: 'warning',
+      });
+    } else if (!isNaN(selectedMaterialIndex)) {
       _materials[selectedMaterialIndex] = values;
     } else {
       _materials.push(values);
     }
-    setMaterials(_materials);
+    const subCategoryMaterial = materials.find(
+      i => i.material_sub_category_id === values.material_sub_category_id,
+    );
+
+    if (subCategoryMaterial) {
+      snackbar.showMessage({
+        message: 'This SubCategory already in use, please select another one',
+        variant: 'warning',
+      });
+    } else setMaterials(_materials);
     toggleAddDialog();
   };
 
-  const toggleAddDialog = () => setAddDialog(v => !v);
+  const toggleAddDialog = () => {
+    setAddDialog(v => {
+      if (v) setSelectedMaterialIndex();
+      return !v;
+    });
+  };
 
   const editDialog = index => {
     setSelectedMaterialIndex(index);
     toggleAddDialog();
   };
 
-  const handleDelete = index => {
+  const handleDelete = (index, itemId) => {
     alert.show({
       title: 'Confirm',
       message: 'Are you sure you want to delete?',
       confirmText: 'Delete',
       onConfirm: () => {
-        const _materials = [...materials];
-        _materials?.splice(index, 1);
-        setSelectedMaterialIndex(_materials);
-        getDetails();
+        if (itemId) {
+          deleteIndentItem({
+            project_id: selectedProject.id,
+            material_indent_details_id: itemId,
+          });
+          getDetails();
+        } else {
+          const _materials = [...materials];
+          _materials?.splice(index, 1);
+          setMaterials(_materials);
+        }
       },
     });
   };
@@ -380,6 +417,7 @@ function AddReturnIndentMaterials(props) {
                   index={index}
                   toggleEditDialog={editDialog}
                   handleDelete={handleDelete}
+                  edit={edit}
                 />
               );
             })}
