@@ -275,12 +275,16 @@ const UnitDetails = props => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const selectedUnit = unitList?.find(i => i.id === unitId);
+
+  const selected_project = projectList?.find(
+    i => i.project_id === selectedUnit.project_id,
+  );
+
   const onSubmit = async values => {
     const {
       noOfBhk,
       premium_location,
-      selectFloor,
-      selectTower,
       share_with_broker,
       specificType,
       status,
@@ -309,12 +313,6 @@ const UnitDetails = props => {
 
     await navigation.navigate('UnitList');
   };
-
-  const selectedUnit = unitList?.find(i => i.id === unitId);
-
-  const selected_project = projectList?.find(
-    i => i.project_id === selectedUnit.project_id,
-  );
 
   const unitForOptions = useMemo(() => {
     return masterList.project_structure_unit_for

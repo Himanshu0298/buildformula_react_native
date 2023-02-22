@@ -160,9 +160,9 @@ const AddUnit = props => {
     if (submitTypeRef.current === 'save') {
       navigation.goBack();
     } else if (submitTypeRef.current === 'details') {
-      // navigation.navigate('ProjectUnitDetails', {
-      //   projectId: res.value.id,
-      // });
+      navigation.navigate('BungalowDetails', {
+        unitId: res.value.id,
+      });
     }
     return res;
   };
@@ -242,28 +242,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#EAECF1',
   },
   filterBTN: {
-    // flex: 1,
     justifyContent: 'flex-end',
     marginBottom: 20,
   },
   formContainer: {
     flex: 1,
-  },
-  extraDetailsRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginVertical: 10,
-    alignItems: 'center',
-  },
-  extraDetailsSwitchWrap: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: 100,
-    marginVertical: 5,
-  },
-  switchtxt: {
-    color: '#07CA03',
-    marginLeft: 10,
-    width: 60,
   },
 });
