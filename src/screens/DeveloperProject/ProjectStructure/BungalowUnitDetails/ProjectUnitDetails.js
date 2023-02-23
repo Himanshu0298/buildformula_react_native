@@ -5,9 +5,6 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 
-import useProjectStructureActions from 'redux/actions/projectStructureActions';
-import {useSelector} from 'react-redux';
-
 const ROUTE = [
   {
     screenName: 'Unit Details',
@@ -70,14 +67,6 @@ const RenderRow = props => {
 const ProjectUnitDetails = props => {
   const {navigation, route} = props;
   const {unitId} = route.params;
-
-  const {getProjectMasterList} = useProjectStructureActions();
-  const {selectedProject} = useSelector(s => s.project);
-
-  useEffect(() => {
-    getProjectMasterList({project_id: selectedProject.id});
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   return (
     <SafeAreaView style={styles.mainContainer}>

@@ -6,6 +6,7 @@ import * as Yup from 'yup';
 import RenderInput from 'components/Atoms/RenderInput';
 import RenderSelect from 'components/Atoms/RenderSelect';
 import ActionButtons from 'components/Atoms/ActionButtons';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 import useProjectStructureActions from 'redux/actions/projectStructureActions';
 import {useSelector} from 'react-redux';
@@ -159,9 +160,8 @@ const AddUnit = props => {
   } = useProjectStructureActions();
 
   const {selectedProject} = useSelector(s => s.project);
-  const {projectList, towerList, categoriesList, floorList} = useSelector(
-    s => s.projectStructure,
-  );
+  const {projectList, towerList, categoriesList, floorList, loading} =
+    useSelector(s => s.projectStructure);
 
   useEffect(() => {
     loadData();
@@ -235,7 +235,7 @@ const AddUnit = props => {
       project_unit: unitNo,
     });
 
-    getUnitList({project_id: selectedProject.id});
+    await getUnitList({project_id: selectedProject.id});
 
     if (submitTypeRef.current === 'save') {
       navigation.goBack();
@@ -272,6 +272,7 @@ const AddUnit = props => {
 
   return (
     <View style={styles.mainContainer}>
+      <Spinner visible={loading} textContent="" />
       <View style={styles.headerWrapper}>
         <IconButton
           icon="keyboard-backspace"

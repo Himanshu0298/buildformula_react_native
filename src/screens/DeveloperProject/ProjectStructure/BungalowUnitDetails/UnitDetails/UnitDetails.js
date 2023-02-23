@@ -286,7 +286,7 @@ const UnitDetails = props => {
       unit_id: unitId,
     });
 
-    getUnitList({project_id: selectedProject.id});
+    await getUnitList({project_id: selectedProject.id});
 
     navigation.navigate('UnitList');
   };

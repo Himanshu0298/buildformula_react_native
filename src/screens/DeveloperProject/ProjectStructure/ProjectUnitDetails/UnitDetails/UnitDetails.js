@@ -1,5 +1,5 @@
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
-import React, {useEffect, useMemo} from 'react';
+import React, {useMemo} from 'react';
 import {IconButton, Subheading, Switch} from 'react-native-paper';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
@@ -258,8 +258,7 @@ const UnitDetails = props => {
 
   const {unitId} = route.params || {};
 
-  const {getProjectMasterList, updateUnit, getUnitList} =
-    useProjectStructureActions();
+  const {updateUnit, getUnitList} = useProjectStructureActions();
 
   const {
     unitList = [],
@@ -269,11 +268,6 @@ const UnitDetails = props => {
     return s.projectStructure;
   });
   const {selectedProject} = useSelector(s => s.project);
-
-  useEffect(() => {
-    getProjectMasterList({project_id: selectedProject.id});
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const selectedUnit = unitList?.find(i => i.id === unitId);
 
@@ -309,7 +303,7 @@ const UnitDetails = props => {
       unit_id: unitId,
     });
 
-    getUnitList({project_id: selectedProject.id});
+    await getUnitList({project_id: selectedProject.id});
 
     await navigation.navigate('UnitList');
   };

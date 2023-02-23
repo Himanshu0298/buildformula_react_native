@@ -116,7 +116,7 @@ function UnitList(props) {
 
   const [searchQuery, setSearchQuery] = React.useState('');
 
-  const {getUnitList, removeUnit, getProjectList} =
+  const {getUnitList, removeUnit, getProjectList, getProjectMasterList} =
     useProjectStructureActions();
   const {unitList = [], loading} = useSelector(s => s.projectStructure);
   const {selectedProject} = useSelector(s => s.project);
@@ -124,6 +124,7 @@ function UnitList(props) {
   const loadData = async () => {
     await getUnitList({project_id: selectedProject.id});
     await getProjectList({project_id: selectedProject.id});
+    await getProjectMasterList({project_id: selectedProject.id});
   };
 
   const filteredUnit = useMemo(() => {
