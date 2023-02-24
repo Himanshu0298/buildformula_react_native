@@ -66,16 +66,16 @@ async function processFiles(res) {
 
       return data;
     }
-    // const DEST_PATH = `${RNFS.TemporaryDirectoryPath}${name}`;
-    // const isExists = await RNFS.exists(DEST_PATH);
+    const DEST_PATH = `${RNFS.TemporaryDirectoryPath}${name}`;
+    const isExists = await RNFS.exists(DEST_PATH);
 
-    // if (isExists) {
-    //   await RNFS.unlink(DEST_PATH);
-    // }
+    if (isExists) {
+      await RNFS.unlink(DEST_PATH);
+    }
 
-    // await RNFS.copyFile(res.uri, DEST_PATH);
+    await RNFS.copyFile(res.uri, DEST_PATH);
 
-    // const stat = await RNFS.stat(DEST_PATH);
+    const stat = await RNFS.stat(DEST_PATH);
 
     const processedUri = Platform.OS === 'ios' ? res.uri : `file:///${res.uri}`;
 

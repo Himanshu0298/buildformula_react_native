@@ -10325,7 +10325,7 @@
     "entities" "^1.1.1"
     "htmlparser2-without-node-native" "^3.9.2"
 
-"react-native-image-picker@^5.0.1":
+"react-native-image-picker@^5.1.0":
   "integrity" "sha512-p506trG3PDSrdm+Yd0QolsnR3FtSe37gkP7OVsMa9UYwn1teaLGzhmx3QMZ4ZBwdV1AKBUFA5HF1ECAVSDTdQQ=="
   "resolved" "https://registry.npmjs.org/react-native-image-picker/-/react-native-image-picker-5.1.0.tgz"
   "version" "5.1.0"

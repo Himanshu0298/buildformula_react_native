@@ -307,12 +307,12 @@ export default function useProjectStructureActions() {
         },
       }),
 
-    addProjectFile: data =>
+    addProjectFile: formData =>
       dispatch({
         type: types.ADD_PROJECT_FILE,
         payload: async () => {
           try {
-            const response = _res(await addProjectFile(data));
+            const response = _res(await addProjectFile(formData));
             return Promise.resolve(response.data);
           } catch (error) {
             const message = _err(error);

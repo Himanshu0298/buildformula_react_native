@@ -785,7 +785,7 @@ function RenderPaymentForm(props) {
 }
 
 function FormContent(props) {
-  const {theme, formikProps, bankList, navigation} = props;
+  const {theme, formikProps, bankList, navigation, withRate} = props;
 
   const {handleSubmit, values, errors, setFieldValue, handleChange, resetForm} =
     formikProps;
@@ -877,25 +877,26 @@ function FormContent(props) {
               />
             </View>
           </View>
-
-          <View style={styles.radioRow}>
-            <Text>Payment Method?</Text>
-            <View style={styles.radioContainer}>
-              <Radio
-                label="Yes"
-                value="yes"
-                checked={Boolean(values.payment_type)}
-                onChange={() => setFieldValue('payment_type', 1)}
-              />
-              <Radio
-                label="No"
-                value="no"
-                color={theme.colors.error}
-                checked={!values.payment_type}
-                onChange={() => setFieldValue('payment_type', 0)}
-              />
+          {withRate === false ? (
+            <View style={styles.radioRow}>
+              <Text>Payment Method?</Text>
+              <View style={styles.radioContainer}>
+                <Radio
+                  label="Yes"
+                  value="yes"
+                  checked={Boolean(values.payment_type)}
+                  onChange={() => setFieldValue('payment_type', 1)}
+                />
+                <Radio
+                  label="No"
+                  value="no"
+                  color={theme.colors.error}
+                  checked={!values.payment_type}
+                  onChange={() => setFieldValue('payment_type', 0)}
+                />
+              </View>
             </View>
-          </View>
+          ) : null}
 
           {values.is_loan === 'yes' ? (
             <View style={styles.loadInputs}>
@@ -1170,7 +1171,13 @@ function BookingPayments(props) {
         {formikProps => (
           <FormContent
             {...props}
-            {...{formikProps, bankList, paymentMethod, setPaymentMethod}}
+            {...{
+              formikProps,
+              bankList,
+              paymentMethod,
+              setPaymentMethod,
+              withRate,
+            }}
           />
         )}
       </Formik>

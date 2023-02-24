@@ -223,7 +223,7 @@ function OtpScreen(props) {
           <>
             <Text>
               Enter the OTP send to {`${userPhone}`}
-              {/* send to {`+91 ${user.phone}`} */}
+              send to {`+91 ${user.phone}`}
             </Text>
             <OtpInput value={phone} setValue={setPhone} />
             {/* <View style={[styles.row, styles.confirmContainer]}>
