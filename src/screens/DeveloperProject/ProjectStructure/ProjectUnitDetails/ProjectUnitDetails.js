@@ -1,12 +1,9 @@
 import {StyleSheet, View} from 'react-native';
-import React, {useEffect} from 'react';
+import React from 'react';
 import {Divider, IconButton, Subheading, Title} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
-
-import useProjectStructureActions from 'redux/actions/projectStructureActions';
-import {useSelector} from 'react-redux';
 
 const ROUTE = [
   {screenName: 'Unit Details', route: 'UnitDetails', key: 'UnitDetails'},
@@ -59,17 +56,6 @@ const RenderRow = props => {
 const ProjectUnitDetails = props => {
   const {navigation, route} = props;
   const {unitId} = route?.params || {};
-
-  const {getProjectList, getUnitList, getProjectMasterList} =
-    useProjectStructureActions();
-  const {selectedProject} = useSelector(s => s.project);
-
-  useEffect(() => {
-    getProjectList({project_id: selectedProject.id});
-    getUnitList({project_id: selectedProject.id});
-    getProjectMasterList({project_id: selectedProject.id});
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   return (
     <SafeAreaView style={styles.mainContainer}>
