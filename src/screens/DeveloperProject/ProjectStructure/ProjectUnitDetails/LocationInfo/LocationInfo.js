@@ -76,11 +76,17 @@ function LocationInfo(props) {
 
   const {id, project_id, project_list_id, location_info} = selectedUnit;
 
-  const location_data = location_info.find(i => {
+  const location_data = location_info?.find(i => {
     return i;
   });
 
   const {selectedProject} = useSelector(s => s.project);
+
+  const initialValues = {
+    addressUrl: location_info?.length ? location_data.address_url : '',
+    address: location_info?.length ? location_data.address : '',
+    remark: location_info?.length ? location_data.remarks : '',
+  };
 
   const onSubmit = async values => {
     const {addressUrl, address, remark} = values;
@@ -92,7 +98,7 @@ function LocationInfo(props) {
       address_url: addressUrl,
       address,
       remarks: remark,
-      location_id: location_info.length ? location_data.id : '',
+      location_id: location_info?.length ? location_data.id : '',
     };
     await addUnitLocation(data);
 
@@ -118,11 +124,7 @@ function LocationInfo(props) {
           enableReinitialize
           validateOnBlur={false}
           validateOnChange={false}
-          initialValues={{
-            addressUrl: location_info.length ? location_data.address_url : '',
-            address: location_info.length ? location_data.address : '',
-            remark: location_info.length ? location_data.remarks : '',
-          }}
+          initialValues={initialValues}
           onSubmit={onSubmit}>
           {formikProps => <RenderForm formikProps={formikProps} {...props} />}
         </Formik>
