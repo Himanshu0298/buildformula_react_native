@@ -11,11 +11,11 @@ const ROUTE = [
     route: 'IndustrialUnitDetails',
     key: 'UnitAdd',
   },
-  {screenName: 'Area Sheet', route: 'IndustrialAreaSheet', key: 'Area Sheet'},
+  {screenName: 'Area Sheet', route: 'IndustrialAreaSheet', key: 'AreaSheet'},
   {
     screenName: 'Property Remark',
     route: 'IndustrialUnitRemark',
-    key: 'Property Remark',
+    key: 'PropertyRemark',
   },
   {
     screenName: 'Pricing',
@@ -25,27 +25,27 @@ const ROUTE = [
   {
     screenName: 'Location Information',
     route: 'IndustrialLocationInfo',
-    key: 'Location Info',
+    key: 'LocationInfo',
   },
   {
     screenName: 'Unit Owner Information',
     route: 'IndustrialUnitOwnerInfo',
-    key: 'Unit Owner Info',
+    key: 'UnitOwnerInfo',
   },
   {
     screenName: 'Security/ Caretaker Info',
     route: 'IndustrialUnitSecurityInfo',
-    key: 'security/caretaker info',
+    key: 'security/caretakerInfo',
   },
   {
     screenName: 'Industrial Details Information',
     route: 'IndustrialUnitDetailsInfo',
-    key: 'Industrial Details Information',
+    key: 'IndustrialDetailsInformation',
   },
   {
     screenName: 'Files/ Attachments',
     route: 'IndustrialUnitFiles',
-    key: 'Files/ Attachments',
+    key: 'Files/Attachments',
   },
 ];
 
