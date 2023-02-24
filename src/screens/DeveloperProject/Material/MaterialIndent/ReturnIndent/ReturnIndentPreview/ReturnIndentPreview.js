@@ -95,13 +95,8 @@ const RequiredVendor = props => {
 const MaterialCard = props => {
   const {item} = props;
 
-  const {
-    materialcategrytitle,
-    subcategorytitle,
-    quantity,
-    materialunitstitle,
-    assigned_quantity,
-  } = item;
+  const {materialcategrytitle, subcategorytitle, quantity, damaged_qty} = item;
+
   return (
     <View style={styles.cardContainer}>
       <View style={styles.cardHeaderStyle}>
@@ -114,17 +109,14 @@ const MaterialCard = props => {
         <Caption style={styles.lightData}>Sub Category:</Caption>
         <Text>{subcategorytitle}</Text>
       </View>
+
       <View style={styles.dataRow}>
-        <Caption style={styles.lightData}>Unit:</Caption>
-        <Text>{materialunitstitle}</Text>
-      </View>
-      <View style={styles.dataRow}>
-        <Caption style={styles.lightData}>assign Qty:</Caption>
-        <Text>{assigned_quantity}</Text>
-      </View>
-      <View style={styles.dataRow}>
-        <Caption style={styles.lightData}>Requested Qty:</Caption>
+        <Caption style={styles.lightData}>Fine Qty:</Caption>
         <Text>{quantity}</Text>
+      </View>
+      <View style={styles.dataRow}>
+        <Caption style={styles.lightData}>Damaged Qty:</Caption>
+        <Text>{damaged_qty}</Text>
       </View>
     </View>
   );
@@ -227,36 +219,42 @@ function ReturnIndentPreview(props) {
           />
           <Subheading style={styles.headerText}>Return Material</Subheading>
         </View>
-        <View style={styles.buttonContainer}>
-          <View style={styles.statusContainer}>
-            <OpacityButton
-              color={theme.colors.primary}
-              style={styles.opacity}
-              opacity={0.18}
-              onPress={() => {
-                navigation.navigate('CreateReturnIndent', {id, indentDetails});
-              }}>
-              <MaterialIcons
-                name="edit"
+
+        {details?.status === 'approved' ? null : (
+          <View style={styles.buttonContainer}>
+            <View style={styles.statusContainer}>
+              <OpacityButton
                 color={theme.colors.primary}
-                size={13}
-              />
-            </OpacityButton>
-          </View>
-          <View>
-            <OpacityButton
-              color={theme.colors.error}
-              opacity={0.18}
-              onPress={handleDelete}
-              style={styles.button}>
-              <MaterialIcons
-                name="delete"
+                style={styles.opacity}
+                opacity={0.18}
+                onPress={() => {
+                  navigation.navigate('CreateReturnIndent', {
+                    id,
+                    indentDetails,
+                  });
+                }}>
+                <MaterialIcons
+                  name="edit"
+                  color={theme.colors.primary}
+                  size={13}
+                />
+              </OpacityButton>
+            </View>
+            <View>
+              <OpacityButton
                 color={theme.colors.error}
-                size={13}
-              />
-            </OpacityButton>
+                opacity={0.18}
+                onPress={handleDelete}
+                style={styles.button}>
+                <MaterialIcons
+                  name="delete"
+                  color={theme.colors.error}
+                  size={13}
+                />
+              </OpacityButton>
+            </View>
           </View>
-        </View>
+        )}
       </View>
       <ScrollView
         style={{marginBottom: 30}}

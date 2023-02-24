@@ -147,10 +147,15 @@ function AddMaterialDialog(props) {
 }
 
 function CardListing(props) {
-  const {item, toggleEditDialog, handleDelete, index, edit} = props;
+  const {item, toggleEditDialog, handleDelete, index} = props;
 
-  const {subcategorytitle, materialcategrytitle, materialunitstitle, quantity} =
-    item;
+  const {
+    subcategorytitle,
+    materialcategrytitle,
+    materialunitstitle,
+    quantity,
+    id,
+  } = item;
 
   const {materialCategories, materialSubCategories} = useSelector(
     s => s.materialManagement,
@@ -184,7 +189,7 @@ function CardListing(props) {
           <Text>{materialcategrytitle || categoryTitle}</Text>
         </View>
         <View style={styles.buttonContainer}>
-          {!edit ? (
+          {!id ? (
             <View style={styles.editButton}>
               <OpacityButton
                 color="#4872f4"
@@ -327,7 +332,6 @@ function AddIssueIndentMaterials(props) {
         material_units_id: ele?.material_units_id,
         quantity: ele?.quantity,
       };
-
       await addMaterialIssueRequest(restData);
     });
 
@@ -349,16 +353,23 @@ function AddIssueIndentMaterials(props) {
     } else {
       _materials.push(values);
     }
-    const subCategoryMaterial = materials.find(
+    const subCategoryMaterial = materials?.find(
       i => i.material_sub_category_id === values.material_sub_category_id,
     );
 
-    if (subCategoryMaterial) {
+    const subCategoriesMaterial = materialsItems?.find(
+      i => i.material_sub_category_id === values.material_sub_category_id,
+    );
+
+    if (subCategoryMaterial || subCategoriesMaterial) {
       snackbar.showMessage({
         message: 'This SubCategory already in use, please select another one',
         variant: 'warning',
       });
-    } else setMaterials(_materials);
+    }
+
+    setMaterials(_materials);
+
     toggleAddDialog();
   };
 
