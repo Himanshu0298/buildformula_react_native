@@ -4,7 +4,11 @@ import RichTextEditor from 'components/Atoms/RichTextEditor';
 import {Formik} from 'formik';
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
+import Spinner from 'react-native-loading-spinner-overlay';
 import {IconButton, Subheading} from 'react-native-paper';
+
+import useProjectStructureActions from 'redux/actions/projectStructureActions';
+import {useSelector} from 'react-redux';
 
 function RenderForm(props) {
   const {navigation, formikProps} = props;
@@ -62,16 +66,42 @@ function RenderForm(props) {
 }
 
 function LocationInfo(props) {
-  const {navigation} = props;
+  const {navigation, route} = props;
 
-  const onSubmit = values => {
-    console.log(values);
+  const {unitId} = route.params || {};
+  const {unitList = [], loading} = useSelector(s => s.projectStructure);
+  const {addUnitLocation, getUnitList} = useProjectStructureActions();
+
+  const selectedUnit = unitList?.find(i => i.id === unitId);
+
+  const {id, project_id, project_list_id, location_info} = selectedUnit;
+
+  const location_data = location_info.find(i => {
+    return i;
+  });
+
+  const {selectedProject} = useSelector(s => s.project);
+
+  const onSubmit = async values => {
+    const {addressUrl, address, remark} = values;
+
+    const data = {
+      id: project_list_id,
+      project_id,
+      unit_id: id,
+      address_url: addressUrl,
+      address,
+      remarks: remark,
+      location_id: location_info.length ? location_data.id : '',
+    };
+    await addUnitLocation(data);
+
+    await getUnitList({project_id: selectedProject.id});
   };
-
-  const options = ['Science City Rd', 'Sola Rd', 'Bhadaj'];
 
   return (
     <View style={styles.mainContainer}>
+      <Spinner visible={loading} textContent="" />
       <View style={styles.headerWrapper}>
         <IconButton
           icon="keyboard-backspace"
@@ -88,15 +118,13 @@ function LocationInfo(props) {
           enableReinitialize
           validateOnBlur={false}
           validateOnChange={false}
-          initialValues={{}}
+          initialValues={{
+            addressUrl: location_info.length ? location_data.address_url : '',
+            address: location_info.length ? location_data.address : '',
+            remark: location_info.length ? location_data.remarks : '',
+          }}
           onSubmit={onSubmit}>
-          {formikProps => (
-            <RenderForm
-              formikProps={formikProps}
-              {...props}
-              options={options}
-            />
-          )}
+          {formikProps => <RenderForm formikProps={formikProps} {...props} />}
         </Formik>
       </View>
     </View>

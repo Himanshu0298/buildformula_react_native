@@ -9,6 +9,7 @@ import {
   ADD_TOWER,
   ADD_UNIT,
   ADD_BUNGALOW,
+  ADD_UNIT_LOCATION,
   CREATE_PROJECT_DUPLICATE,
   DELETE_AREA,
   DELETE_FLOOR,
@@ -202,6 +203,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${GET_UNIT_LIST}_PENDING`:
     case `${ADD_UNIT}_PENDING`:
     case `${ADD_BUNGALOW}_PENDING`:
+    case `${ADD_UNIT_LOCATION}_PENDING`:
     case `${DELETE_UNIT}_PENDING`:
     case `${UPDATE_UNIT}_PENDING`:
     case `${UPDATE_BUNGALOW}_PENDING`:
@@ -243,6 +245,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${DELETE_FLOOR}_FULFILLED`:
     case `${ADD_UNIT}_FULFILLED`:
     case `${ADD_BUNGALOW}_FULFILLED`:
+    case `${ADD_UNIT_LOCATION}_FULFILLED`:
     case `${DELETE_UNIT}_FULFILLED`:
     case `${UPDATE_UNIT}_FULFILLED`:
     case `${UPDATE_BUNGALOW}_FULFILLED`:
@@ -296,6 +299,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${GET_UNIT_LIST}_REJECTED`:
     case `${ADD_UNIT}_REJECTED`:
     case `${ADD_BUNGALOW}_REJECTED`:
+    case `${ADD_UNIT_LOCATION}_REJECTED`:
     case `${DELETE_UNIT}_REJECTED`:
     case `${UPDATE_UNIT}_REJECTED`:
     case `${UPDATE_BUNGALOW}_REJECTED`:

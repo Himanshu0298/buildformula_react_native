@@ -58,6 +58,7 @@ export default function useProjectStructureActions() {
     updateUnit,
     updateBungalow,
     removeUnit,
+    addUnitLocation,
   } = useProjectStructure();
 
   return {
@@ -746,6 +747,21 @@ export default function useProjectStructureActions() {
         payload: async () => {
           try {
             const response = _res(await removeUnit(data));
+            snackbar.showMessage({message: response.msg});
+            return Promise.resolve(response.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    addUnitLocation: data =>
+      dispatch({
+        type: types.ADD_UNIT_LOCATION,
+        payload: async () => {
+          try {
+            const response = _res(await addUnitLocation(data));
             snackbar.showMessage({message: response.msg});
             return Promise.resolve(response.data);
           } catch (error) {

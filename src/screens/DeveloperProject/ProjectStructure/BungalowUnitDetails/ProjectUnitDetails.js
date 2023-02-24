@@ -1,5 +1,5 @@
 import {StyleSheet, View} from 'react-native';
-import React, {useEffect} from 'react';
+import React from 'react';
 import {Divider, IconButton, Subheading, Title} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
@@ -9,40 +9,40 @@ const ROUTE = [
   {
     screenName: 'Unit Details',
     route: 'BungalowUnitDetails',
-    key: 'Unit Details',
+    key: 'UnitDetails',
   },
   {
     screenName: 'Location Info',
     route: 'BungalowLocationInfo',
-    key: 'Location Info',
+    key: 'LocationInfo',
   },
-  {screenName: 'Area Sheet', route: 'BungalowAreaSheet', key: 'Area Sheet'},
-  {
-    screenName: 'Infrastructure Info',
-    route: 'BungalowInfrastructureInfo',
-    key: 'Infrastructure Info',
-  },
-  {screenName: 'Details', route: 'BungalowUnitInformation', key: 'Details'},
-  {
-    screenName: 'Pricing',
-    route: 'BungalowUnitPricing',
-    key: 'Unit Pricing',
-  },
-  {
-    screenName: 'Owner Info',
-    route: 'BungalowUnitOwner',
-    key: 'Unit Owner Info',
-  },
-  {
-    screenName: 'Security/ Caretaker Info',
-    route: 'BungalowSecurityInfo',
-    key: 'Security/ Caretaker Info',
-  },
-  {
-    screenName: 'Files/ Attachments',
-    route: 'BungalowUnitFiles',
-    key: 'Files/ Attachments',
-  },
+  // {screenName: 'Area Sheet', route: 'BungalowAreaSheet', key: 'Area Sheet'},
+  // {
+  //   screenName: 'Infrastructure Info',
+  //   route: 'BungalowInfrastructureInfo',
+  //   key: 'Infrastructure Info',
+  // },
+  // {screenName: 'Details', route: 'BungalowUnitInformation', key: 'Details'},
+  // {
+  //   screenName: 'Pricing',
+  //   route: 'BungalowUnitPricing',
+  //   key: 'Unit Pricing',
+  // },
+  // {
+  //   screenName: 'Owner Info',
+  //   route: 'BungalowUnitOwner',
+  //   key: 'Unit Owner Info',
+  // },
+  // {
+  //   screenName: 'Security/ Caretaker Info',
+  //   route: 'BungalowSecurityInfo',
+  //   key: 'Security/ Caretaker Info',
+  // },
+  // {
+  //   screenName: 'Files/ Attachments',
+  //   route: 'BungalowUnitFiles',
+  //   key: 'Files/ Attachments',
+  // },
 ];
 
 const RenderRow = props => {

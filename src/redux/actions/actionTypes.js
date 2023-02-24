@@ -325,3 +325,4 @@ export const ADD_BUNGALOW = 'ADD_BUNGALOW';
 export const UPDATE_UNIT = 'UPDATE_UNIT';
 export const UPDATE_BUNGALOW = 'UPDATE_BUNGALOW';
 export const DELETE_UNIT = 'DELETE_UNIT';
+export const ADD_UNIT_LOCATION = 'ADD_UNIT_LOCATION';

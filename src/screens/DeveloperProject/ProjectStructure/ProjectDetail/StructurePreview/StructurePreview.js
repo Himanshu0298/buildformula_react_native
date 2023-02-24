@@ -14,6 +14,7 @@ function StructurePreview(props) {
   const loading = useSalesLoading();
 
   const {project_structure = {}} = selectedProject;
+
   const projectTypes =
     Object.keys(project_structure)?.map(v => Number(v)) || [];
 

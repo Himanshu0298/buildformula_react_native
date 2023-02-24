@@ -5,36 +5,38 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 
+import {useSelector} from 'react-redux';
+
 const ROUTE = [
   {screenName: 'Unit Details', route: 'UnitDetails', key: 'UnitDetails'},
   {screenName: 'Location Info', route: 'LocationInfo', key: 'LocationInfo'},
-  {screenName: 'Area Sheet', route: 'UnitAreaSheet', key: 'AreaSheet'},
-  {
-    screenName: 'Infrastructure Info',
-    route: 'InfrastructureInfo',
-    key: 'InfrastructureInfo',
-  },
-  {screenName: 'Details', route: 'UnitInformation', key: 'Details'},
-  {screenName: 'Pricing', route: 'UnitPricing', key: 'UnitPricing'},
-  {
-    screenName: 'Owner Information',
-    route: 'ProjectUnitOwner',
-    key: 'UnitOwnerInfo',
-  },
-  {
-    screenName: 'Security/ Caretaker Info',
-    route: 'UnitSecurityInfo',
-    key: 'Security/CaretakerInfo',
-  },
-  {
-    screenName: 'Files/ Attachments',
-    route: 'UnitFiles',
-    key: 'Files/Attachments',
-  },
+  // {screenName: 'Area Sheet', route: 'UnitAreaSheet', key: 'AreaSheet'},
+  // {
+  //   screenName: 'Infrastructure Info',
+  //   route: 'InfrastructureInfo',
+  //   key: 'InfrastructureInfo',
+  // },
+  // {screenName: 'Details', route: 'UnitInformation', key: 'Details'},
+  // {screenName: 'Pricing', route: 'UnitPricing', key: 'UnitPricing'},
+  // {
+  //   screenName: 'Owner Information',
+  //   route: 'ProjectUnitOwner',
+  //   key: 'UnitOwnerInfo',
+  // },
+  // {
+  //   screenName: 'Security/ Caretaker Info',
+  //   route: 'UnitSecurityInfo',
+  //   key: 'Security/CaretakerInfo',
+  // },
+  // {
+  //   screenName: 'Files/ Attachments',
+  //   route: 'UnitFiles',
+  //   key: 'Files/Attachments',
+  // },
 ];
 
 const RenderRow = props => {
-  const {navigation, screenName, route, unitId} = props;
+  const {navigation, screenName, route, unitId, selectedUnit} = props;
 
   return (
     <>
@@ -44,7 +46,7 @@ const RenderRow = props => {
           opacity={0.1}
           color="#4872f4"
           style={styles.navBTN}
-          onPress={() => navigation.navigate(route, {unitId})}>
+          onPress={() => navigation.navigate(route, {unitId, selectedUnit})}>
           <MaterialIcon name="edit" color="#4872f4" size={15} />
         </OpacityButton>
       </View>
@@ -56,6 +58,12 @@ const RenderRow = props => {
 const ProjectUnitDetails = props => {
   const {navigation, route} = props;
   const {unitId} = route?.params || {};
+
+  const {unitList = []} = useSelector(s => {
+    return s.projectStructure;
+  });
+
+  const selectedUnit = unitList?.find(i => i.id === unitId);
 
   return (
     <SafeAreaView style={styles.mainContainer}>
@@ -79,6 +87,7 @@ const ProjectUnitDetails = props => {
               screenName={item.screenName}
               route={item.route}
               unitId={unitId}
+              selectedUnit={selectedUnit}
             />
           );
         })}

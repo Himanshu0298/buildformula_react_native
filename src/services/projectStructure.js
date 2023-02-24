@@ -292,6 +292,13 @@ export default function useProjectStructure() {
         params,
       );
     },
+    addUnitLocation: data => {
+      return instance.post(
+        '/projectstructure/project/projectUnitLocationInfoAddUpdate',
+        data,
+        params,
+      );
+    },
 
     // Bungalow
     addBungalow: data => {
