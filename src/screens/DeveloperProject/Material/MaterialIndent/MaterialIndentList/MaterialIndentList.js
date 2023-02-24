@@ -38,7 +38,16 @@ const INDENT_TYPE = {
 const ListingCard = props => {
   const {item, navigation} = props;
 
-  const {id, created, email, type, first_name, last_name, status} = item;
+  const {
+    id,
+    created,
+    email,
+    type,
+    first_name,
+    last_name,
+    status,
+    contractor_name,
+  } = item;
 
   const {label, color} = INDENT_STATUS[status] || {};
 
@@ -66,6 +75,9 @@ const ListingCard = props => {
           </Subheading>
           <View style={styles.cardContent}>
             <Text style={styles.detail}>{email}</Text>
+          </View>
+          <View style={styles.cardContent}>
+            <Text>Vendor : {contractor_name}</Text>
           </View>
           <View style={styles.cardHeader}>
             <Caption>{date}</Caption>

@@ -198,15 +198,18 @@ const RequiredVendor = props => {
         <Caption>{contractor_email}</Caption>
       </View>
       {type === 'afm' ? (
-        <View style={styles.card}>
-          <Text> Required Date</Text>
-          <Caption>{requred_date} </Caption>
-        </View>
+        <>
+          <View style={styles.card}>
+            <Text> Required Date</Text>
+            <Caption>{requred_date} </Caption>
+          </View>
+          <View style={styles.card}>
+            <Text> Required For(Work)</Text>
+            <Caption>{requiredfor}</Caption>
+          </View>
+        </>
       ) : null}
-      <View style={styles.card}>
-        <Text> Required For(Work)</Text>
-        <Caption>{requiredfor}</Caption>
-      </View>
+
       <View style={styles.card}>
         <Text> Remark</Text>
         <Caption>{remark}</Caption>
@@ -216,16 +219,17 @@ const RequiredVendor = props => {
 };
 
 const MaterialCard = props => {
-  const {item, updateStatus, authorizedstatus, modulePermission, type} = props;
+  const {item, updateStatus, modulePermission, type} = props;
 
   const {
     materialcategrytitle,
     subcategorytitle,
-    damaged_qty,
     materialunitstitle,
     quantity,
     id,
     rm_status,
+    assigned_quantity,
+    damaged_qty,
   } = item;
 
   const {label, color} = STORE_KEEPER_DETAILS_STATUS[rm_status] || {};
@@ -240,18 +244,41 @@ const MaterialCard = props => {
         <Caption style={styles.lightData}>Sub Category:</Caption>
         <Text style={styles.title}>{subcategorytitle}</Text>
       </View>
-      <View style={styles.dataRow}>
-        <Caption style={styles.lightData}>Unit:</Caption>
-        <Text style={styles.title}>{materialunitstitle}</Text>
-      </View>
-      <View style={styles.dataRow}>
-        <Caption style={styles.lightData}>Request Qty:</Caption>
-        <Text style={styles.title}>{quantity}</Text>
-      </View>
-      <View style={styles.dataRow}>
-        <Caption style={styles.lightData}>Assigned Qty:</Caption>
-        <Text style={styles.title}>{damaged_qty}</Text>
-      </View>
+      {type === 'afm' ? (
+        <View style={styles.dataRow}>
+          <Caption style={styles.lightData}>Unit:</Caption>
+          <Text style={styles.title}>{materialunitstitle}</Text>
+        </View>
+      ) : null}
+
+      {type === 'afm' ? (
+        <View style={styles.dataRow}>
+          <Caption style={styles.lightData}>Request Qty:</Caption>
+          <Text style={styles.title}>{quantity}</Text>
+        </View>
+      ) : null}
+
+      {type === 'rm' ? (
+        <View style={styles.dataRow}>
+          <Caption style={styles.lightData}>Fine Qty:</Caption>
+          <Text style={styles.title}>{quantity}</Text>
+        </View>
+      ) : null}
+
+      {type === 'afm' ? (
+        <View style={styles.dataRow}>
+          <Caption style={styles.lightData}>Assigned Qty:</Caption>
+          <Text style={styles.title}>{assigned_quantity}</Text>
+        </View>
+      ) : null}
+
+      {type === 'rm' ? (
+        <View style={styles.dataRow}>
+          <Caption style={styles.lightData}>Damaged Qty:</Caption>
+          <Text style={styles.title}>{damaged_qty}</Text>
+        </View>
+      ) : null}
+
       {rm_status !== 'pending' ? (
         <View style={styles.dataRow}>
           <Caption style={styles.lightData}>Status:</Caption>

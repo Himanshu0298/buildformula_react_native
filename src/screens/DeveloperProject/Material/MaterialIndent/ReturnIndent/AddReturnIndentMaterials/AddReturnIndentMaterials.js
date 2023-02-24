@@ -137,7 +137,7 @@ function AddMaterialDialog(props) {
 }
 
 function CardListing(props) {
-  const {item, toggleEditDialog, handleDelete, index, edit} = props;
+  const {item, toggleEditDialog, handleDelete, index} = props;
 
   const {
     materialcategrytitle,
@@ -145,6 +145,7 @@ function CardListing(props) {
     subcategorytitle,
     quantity,
     damaged_qty,
+    id,
   } = item;
 
   const {materialCategories, materialSubCategories} = useSelector(
@@ -179,7 +180,7 @@ function CardListing(props) {
           <Text>{materialcategrytitle || categoryTitle}</Text>
         </View>
         <View style={styles.buttonContainer}>
-          {!edit ? (
+          {!id ? (
             <View style={styles.editButton}>
               <OpacityButton
                 color="#4872f4"
@@ -231,12 +232,6 @@ function AddReturnIndentMaterials(props) {
   const alert = useAlert();
   const snackbar = useSnackbar();
 
-  const getDetails = () =>
-    getIndentDetails({
-      project_id: selectedProject.id,
-      material_indent_id: detailId || id,
-    });
-
   const {
     getPRMaterialCategories,
     getIndentDetails,
@@ -269,6 +264,12 @@ function AddReturnIndentMaterials(props) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [materialsItems]);
+
+  const getDetails = () =>
+    getIndentDetails({
+      project_id: selectedProject.id,
+      material_indent_id: detailId || id,
+    });
 
   const initialValues = useMemo(() => {
     if (isNumber(selectedMaterialIndex)) {
@@ -331,12 +332,17 @@ function AddReturnIndentMaterials(props) {
       i => i.material_sub_category_id === values.material_sub_category_id,
     );
 
-    if (subCategoryMaterial) {
+    const subCategoriesMaterial = materialsItems?.find(
+      i => i.material_sub_category_id === values.material_sub_category_id,
+    );
+
+    if (subCategoryMaterial || subCategoriesMaterial) {
       snackbar.showMessage({
         message: 'This SubCategory already in use, please select another one',
         variant: 'warning',
       });
-    } else setMaterials(_materials);
+    }
+    setMaterials(_materials);
     toggleAddDialog();
   };
 

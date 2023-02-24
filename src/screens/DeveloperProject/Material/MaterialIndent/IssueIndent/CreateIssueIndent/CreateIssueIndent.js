@@ -122,6 +122,7 @@ const CreateIssueIndent = props => {
                   label="Required Date"
                   value={values.requred_date}
                   containerStyles={styles.input}
+                  disabled={!!edit}
                   onChange={value => {
                     setFieldValue(
                       'requred_date',
@@ -133,6 +134,7 @@ const CreateIssueIndent = props => {
                 <RenderSelect
                   name="wbs_works_id"
                   label="Required For"
+                  disabled={!!edit}
                   value={values.wbs_works_id}
                   options={workSubWorkOptions}
                   containerStyles={styles.inputStyles}

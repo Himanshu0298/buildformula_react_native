@@ -44,7 +44,9 @@ const RenderDatePicker = React.forwardRef((props, ref) => {
 
   return (
     <>
-      <TouchableOpacity disabled={disabled} onPress={togglePicker}>
+      <TouchableOpacity
+        disabled={disabled}
+        onPress={!disabled ? togglePicker : null}>
         <RenderInput
           ref={ref}
           pointerEvents="none"
@@ -60,7 +62,7 @@ const RenderDatePicker = React.forwardRef((props, ref) => {
                   ? 'calendar-blank'
                   : 'clock-time-three-outline' && 'calendar-clock-outline'
               }
-              onPress={togglePicker}
+              onPress={!disabled ? togglePicker : null}
             />
           }
         />
