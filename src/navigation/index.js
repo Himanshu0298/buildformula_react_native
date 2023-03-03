@@ -1017,7 +1017,7 @@ function NavContainer() {
           // Success code
           TouchID.authenticate('', authObject)
             .then(success => {
-              console.log('----->success ', success);
+              // console.log('----->success ', success);
             })
             .catch(async error => {
               await BackHandler.exitApp();
