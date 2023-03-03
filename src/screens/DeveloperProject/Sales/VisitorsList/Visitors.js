@@ -164,7 +164,7 @@ function Header(props) {
   return (
     <>
       <View style={styles.headerContainer}>
-        <Subheading style={{color: colors.primary}}>Visitor's list</Subheading>
+        <Subheading style={{color: colors.primary}}>Inquiry list</Subheading>
         <Menu
           visible={visible}
           onDismiss={toggleMenu}

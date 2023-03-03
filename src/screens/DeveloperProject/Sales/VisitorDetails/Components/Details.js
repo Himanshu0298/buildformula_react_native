@@ -102,7 +102,7 @@ function Details(props) {
         </View>
         <View style={styles.phoneContainer}>
           <View>
-            <Paragraph>Phone no.</Paragraph>
+            <Paragraph>Phone No</Paragraph>
             <TouchableOpacity
               disabled={!phone}
               onPress={() => openDialScreen(phoneNumber)}>
@@ -122,21 +122,30 @@ function Details(props) {
           ) : null}
         </View>
         <View style={styles.detailRow}>
+          <Paragraph>Phone No 2</Paragraph>
+          <Caption style={styles.value}>{occupation?.label}</Caption>
+        </View>
+        <View style={styles.detailRow}>
+          <Paragraph>Inquiry Date</Paragraph>
+          <Caption style={styles.value}>
+            {dayjs(created).format('DD MMM YYYY, h:m A')}
+          </Caption>
+        </View>
+        <View style={styles.detailRow}>
           <Paragraph>Occupation</Paragraph>
           <Caption style={styles.value}>{occupation?.label}</Caption>
         </View>
         <View style={styles.detailRow}>
-          <Paragraph>Date</Paragraph>
-          <Caption style={styles.value}>
-            {dayjs(created).format('DD MMM YYYY')}
-          </Caption>
+          <Paragraph>Current Locality</Paragraph>
+          <Caption style={styles.value}>{current_locality}</Caption>
         </View>
         <View style={styles.detailRow}>
-          <Paragraph>Inquiry for</Paragraph>
-          <Caption style={styles.value}>
-            {STRUCTURE_TYPE_LABELS[inquiry_for]}
-            {bhk ? ` - ${bhk} BHK` : null}
-          </Caption>
+          <Paragraph>Source type</Paragraph>
+          <Caption style={styles.value}>{source?.label || 'NA'}</Caption>
+        </View>
+        <View style={styles.detailRow}>
+          <Paragraph>Broker</Paragraph>
+          <Caption style={styles.value}>{broker_name || 'NA'}</Caption>
         </View>
         <View style={styles.detailRow}>
           <Paragraph>Budget Range</Paragraph>
@@ -145,22 +154,29 @@ function Details(props) {
             Rs. {budget_from} - Rs.{budget_to}
           </Caption>
         </View>
+        {/* <View style={styles.detailRow}>
+          <Paragraph>Date</Paragraph>
+          <Caption style={styles.value}>
+            {dayjs(created).format('DD MMM YYYY')}
+          </Caption>
+        </View> */}
         <View style={styles.detailRow}>
-          <Paragraph>Current Locality</Paragraph>
-          <Caption style={styles.value}>{current_locality}</Caption>
+          <Paragraph>Inquiry for</Paragraph>
+          <Caption style={styles.value}>
+            {STRUCTURE_TYPE_LABELS[inquiry_for]}
+            {bhk ? ` - ${bhk} BHK` : null}
+          </Caption>
         </View>
+
         <View style={styles.detailRow}>
-          <Paragraph>Interested In</Paragraph>
+          <Paragraph>Interested Property</Paragraph>
           <Caption style={styles.value}>{intrestedIn}</Caption>
         </View>
         <View style={styles.detailRow}>
           <Paragraph>Remark</Paragraph>
           <Caption style={styles.value}>{remarks}</Caption>
         </View>
-        <View style={styles.detailRow}>
-          <Paragraph>Source type</Paragraph>
-          <Caption style={styles.value}>{source?.label || 'NA'}</Caption>
-        </View>
+
         <View style={styles.detailRow}>
           <Paragraph>Priority</Paragraph>
           <Caption style={styles.value}>
@@ -171,10 +187,7 @@ function Details(props) {
             />
           </Caption>
         </View>
-        <View style={styles.detailRow}>
-          <Paragraph>Broker</Paragraph>
-          <Caption style={styles.value}>{broker_name || 'NA'}</Caption>
-        </View>
+
         <View style={styles.detailRow}>
           <Paragraph>Status</Paragraph>
           <Caption>

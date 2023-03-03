@@ -69,12 +69,12 @@ function FloorSelector(props) {
         </TouchableOpacity>
       </View>
 
-      {handleBhkChange ? (
+      {/* {handleBhkChange ? (
         <View>
           <Subheading style={styles.bhkHeading}>BHK indication</Subheading>
           <BhkList selectedBhk={selectedBhk} onPress={handleBhkChange} />
         </View>
-      ) : null}
+      ) : null} */}
 
       <View style={styles.editIconContainer}>
         <Subheading>Floors</Subheading>

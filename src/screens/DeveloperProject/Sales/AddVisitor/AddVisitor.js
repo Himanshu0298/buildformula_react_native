@@ -22,6 +22,7 @@ import _ from 'lodash';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import ActionButtons from 'components/Atoms/ActionButtons';
 import RenderSelectMultiple from 'components/Atoms/RenderSelectMultiple';
+import RenderDatePicker from 'components/Atoms/RenderDatePicker';
 
 const customParseFormat = require('dayjs/plugin/customParseFormat');
 
@@ -83,13 +84,17 @@ function PersonalTab(props) {
   const lastNameRef = React.useRef();
   const emailRef = React.useRef();
   const phoneRef = React.useRef();
+  const countryCodeRef = React.useRef();
+  const phone2Ref = React.useRef();
   const occupationRef = React.useRef();
+  const assignToRef = React.useRef();
   const occupationInputRef = React.useRef();
   const localityRef = React.useRef();
   const sourceTypeRef = React.useRef();
 
   return (
     <KeyboardAwareScrollView
+      showsVerticalScrollIndicator={false}
       contentContainerStyle={styles.scrollView}
       keyboardShouldPersistTaps="handled">
       <View style={styles.container}>
@@ -136,11 +141,40 @@ function PersonalTab(props) {
             containerStyles={styles.input}
             value={values.phone}
             onChangeText={handleChange('phone')}
-            onSubmitEditing={() => occupationRef?.current?.focus()}
+            onSubmitEditing={() => phone2Ref?.current?.focus()}
             onBlur={handleBlur('phone')}
             error={errors.phone}
             left={<TextInput.Affix text="+91" />}
           />
+
+          <View style={styles.radioContainer}>
+            <RenderSelect
+              name="country_code"
+              label={+91}
+              ref={countryCodeRef}
+              options={occupationOptions}
+              containerStyles={styles.input}
+              value={values.country_code}
+              placeholder={t('+91')}
+              error={errors.country_code}
+              onSelect={value => {
+                setFieldValue('country_code', value);
+              }}
+            />
+            <RenderInput
+              name="phone2"
+              ref={phone2Ref}
+              label="Phone No 2"
+              keyboardType="number-pad"
+              maxLength={10}
+              containerStyles={[styles.input, {width: '80%', marginLeft: 8}]}
+              value={values.phone2}
+              onChangeText={handleChange('phone2')}
+              onSubmitEditing={() => occupationRef?.current?.focus()}
+              onBlur={handleBlur('phone2')}
+              error={errors.phone2}
+            />
+          </View>
           <RenderSelect
             name="occupation"
             ref={occupationRef}
@@ -156,6 +190,24 @@ function PersonalTab(props) {
             error={errors.occupation}
             onSelect={value => {
               setFieldValue('occupation', value);
+              if (value === 0) {
+                occupationInputRef?.current?.focus();
+              } else {
+                localityRef?.current?.focus();
+              }
+            }}
+          />
+          <RenderSelect
+            name="assignTo"
+            ref={assignToRef}
+            label="Assign To"
+            options={occupationOptions}
+            containerStyles={styles.input}
+            value={values.occupation}
+            placeholder="Assign To"
+            error={errors.assignTo}
+            onSelect={value => {
+              setFieldValue('assignTo', value);
               if (value === 0) {
                 occupationInputRef?.current?.focus();
               } else {
@@ -225,6 +277,9 @@ function InquiryTab(props) {
 
   const budgetFromRef = React.useRef();
   const budgetToRef = React.useRef();
+  const followUpTitleRef = React.useRef();
+  const followUpDateRef = React.useRef();
+  const followUpTimeRef = React.useRef();
 
   useEffect(() => {
     setFieldValue(
@@ -237,7 +292,8 @@ function InquiryTab(props) {
   return (
     <KeyboardAwareScrollView
       contentContainerStyle={styles.scrollView}
-      keyboardShouldPersistTaps="handled">
+      keyboardShouldPersistTaps="handled"
+      showsVerticalScrollIndicator={false}>
       <View style={styles.container}>
         <View style={styles.inputsContainer}>
           <RenderInput
@@ -343,6 +399,53 @@ function InquiryTab(props) {
             returnKeyType="done"
             error={errors.remarks}
           />
+        </View>
+        <View style={styles.followupDetails}>
+          <Subheading>Followup Details</Subheading>
+          <View style={styles.inputsContainer}>
+            <RenderInput
+              name="title"
+              label="Task Title"
+              ref={followUpTitleRef}
+              keyboardType="number-pad"
+              containerStyles={styles.input}
+              value={values.budget_from}
+              onChangeText={handleChange('budget_from')}
+              onBlur={handleBlur('budget_from')}
+              onSubmitEditing={() => budgetToRef?.current.focus()}
+              error={errors.budget_from}
+            />
+          </View>
+        </View>
+        <View style={styles.row}>
+          <View style={styles.flex}>
+            <RenderDatePicker
+              name="followup_date"
+              label="Date"
+              ref={followUpDateRef}
+              containerStyles={styles.input}
+              value={values.followup_date}
+              error={errors.followup_date}
+              onChange={date => {
+                setFieldValue('followup_date', date);
+                followUpTimeRef?.current?.focus?.();
+              }}
+            />
+          </View>
+          <View style={styles.flex}>
+            <RenderDatePicker
+              mode="time"
+              label="Time"
+              ref={followUpTimeRef}
+              name="followup_time"
+              containerStyles={styles.input}
+              value={values.followup_time}
+              error={errors.followup_time}
+              onChange={date => {
+                setFieldValue('followup_time', date);
+              }}
+            />
+          </View>
         </View>
         <ActionButtons
           cancelLabel="Back"
@@ -592,5 +695,16 @@ const styles = StyleSheet.create({
   },
   radioContainer: {
     flexDirection: 'row',
+  },
+  followupDetails: {
+    marginVertical: 20,
+  },
+  row: {
+    flexDirection: 'row',
+    marginHorizontal: -10,
+  },
+  flex: {
+    flex: 1,
+    marginHorizontal: 10,
   },
 });
