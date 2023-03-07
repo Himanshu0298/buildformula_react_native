@@ -1,5 +1,5 @@
 import React, {useMemo} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, View, ScrollView} from 'react-native';
 import {withTheme, Subheading, TextInput} from 'react-native-paper';
 import useSalesActions from 'redux/actions/salesActions';
 import {useSelector} from 'react-redux';
@@ -30,7 +30,19 @@ const schema = Yup.object().shape({
 function AddBroker(props) {
   const {theme, navigation, route} = props;
   const {broker} = route?.params || {};
-  const {first_name, last_name, id, email, phone} = broker || {};
+  const {
+    first_name,
+    last_name,
+    id,
+    email,
+    phone,
+    company_name,
+    company_address,
+    pan,
+    gst,
+    rera_registration_no,
+    remarks,
+  } = broker || {};
 
   const edit = Boolean(broker?.id);
 
@@ -42,8 +54,30 @@ function AddBroker(props) {
   const {addBroker, getBrokersList, updateBroker} = useSalesActions();
 
   const initialValues = useMemo(() => {
-    return {first_name, last_name, email, phone};
-  }, [email, first_name, last_name, phone]);
+    return {
+      first_name,
+      last_name,
+      email,
+      phone,
+      company_name,
+      company_address,
+      pan,
+      gst,
+      rera_registration_no,
+      remarks,
+    };
+  }, [
+    email,
+    first_name,
+    last_name,
+    phone,
+    company_name,
+    company_address,
+    pan,
+    gst,
+    rera_registration_no,
+    remarks,
+  ]);
 
   const onSubmit = async values => {
     if (edit) {
@@ -54,6 +88,12 @@ function AddBroker(props) {
         last_name: values.last_name,
         email: values.email,
         phone: values.phone,
+        company_name: values.company_name,
+        company_address: values.company_address,
+        pan: values.pan,
+        gst: values.gst,
+        rera_registration_no: values.rera_registration_no,
+        remarks: values.remarks,
       });
     } else {
       await addBroker({
@@ -62,6 +102,12 @@ function AddBroker(props) {
         last_name: values.last_name,
         email: values.email,
         phone: values.phone,
+        company_name: values.company_name,
+        company_address: values.company_address,
+        pan: values.pan,
+        gst: values.gst,
+        rera_registration_no: values.rera_registration_no,
+        remarks: values.remarks,
       });
     }
 
@@ -81,65 +127,132 @@ function AddBroker(props) {
         onSubmit={onSubmit}>
         {({values, errors, handleChange, handleBlur, handleSubmit}) => {
           return (
-            <View style={styles.contentContainer}>
-              <View>
-                <RenderInput
-                  name="first_name"
-                  label="First Name"
-                  value={values.first_name}
-                  onChangeText={handleChange('first_name')}
-                  onBlur={handleBlur('first_name')}
-                  placeholder="First Name"
-                  autoCapitalize="none"
-                  returnKeyType="next"
-                  error={errors.first_name}
-                  style={styles.input}
-                />
-                <RenderInput
-                  name="last_name"
-                  label="Last Name"
-                  value={values.last_name}
-                  onChangeText={handleChange('last_name')}
-                  onBlur={handleBlur('last_name')}
-                  placeholder="Last Name"
-                  autoCapitalize="none"
-                  returnKeyType="next"
-                  error={errors.last_name}
-                  style={styles.input}
-                />
-                <RenderInput
-                  name="email"
-                  label="Email"
-                  value={values.email}
-                  onChangeText={handleChange('email')}
-                  onBlur={handleBlur('email')}
-                  placeholder="Email"
-                  autoCapitalize="none"
-                  returnKeyType="next"
-                  error={errors.email}
-                  style={styles.input}
-                />
-                <RenderInput
-                  name="phone"
-                  label="Phone"
-                  value={values.phone}
-                  onChangeText={handleChange('phone')}
-                  onBlur={handleBlur('phone')}
-                  placeholder="Phone"
-                  autoCapitalize="none"
-                  left={<TextInput.Affix text="+91" />}
-                  returnKeyType="next"
-                  maxLength={10}
-                  error={errors.phone}
-                  style={styles.input}
-                />
-              </View>
+            <ScrollView
+              contentContainerStyle={styles.contentContainer}
+              showsVerticalScrollIndicator={false}>
+              <RenderInput
+                name="first_name"
+                label="First Name"
+                value={values.first_name}
+                onChangeText={handleChange('first_name')}
+                onBlur={handleBlur('first_name')}
+                placeholder="First Name"
+                autoCapitalize="none"
+                returnKeyType="next"
+                error={errors.first_name}
+                style={styles.input}
+              />
+              <RenderInput
+                name="last_name"
+                label="Last Name"
+                value={values.last_name}
+                onChangeText={handleChange('last_name')}
+                onBlur={handleBlur('last_name')}
+                placeholder="Last Name"
+                autoCapitalize="none"
+                returnKeyType="next"
+                error={errors.last_name}
+                style={styles.input}
+              />
+              <RenderInput
+                name="email"
+                label="Email"
+                value={values.email}
+                onChangeText={handleChange('email')}
+                onBlur={handleBlur('email')}
+                placeholder="Email"
+                autoCapitalize="none"
+                returnKeyType="next"
+                error={errors.email}
+                style={styles.input}
+              />
+              <RenderInput
+                name="phone"
+                label="Phone"
+                value={values.phone}
+                onChangeText={handleChange('phone')}
+                onBlur={handleBlur('phone')}
+                placeholder="Phone"
+                autoCapitalize="none"
+                left={<TextInput.Affix text="+91" />}
+                returnKeyType="next"
+                maxLength={10}
+                error={errors.phone}
+                style={styles.input}
+              />
+              <RenderInput
+                name="company_name"
+                value={values.company_name}
+                onChangeText={handleChange('company_name')}
+                onBlur={handleBlur('company_name')}
+                placeholder="Company Name"
+                autoCapitalize="none"
+                returnKeyType="next"
+                error={errors.company_name}
+                style={styles.input}
+              />
+              <RenderInput
+                name="company_address"
+                value={values.company_address}
+                onChangeText={handleChange('company_address')}
+                onBlur={handleBlur('company_address')}
+                placeholder="Company Address"
+                autoCapitalize="none"
+                returnKeyType="next"
+                error={errors.company_address}
+                style={styles.input}
+              />
+              <RenderInput
+                name="pan"
+                value={values.pan}
+                onChangeText={handleChange('pan')}
+                onBlur={handleBlur('pan')}
+                placeholder="PAN"
+                autoCapitalize="none"
+                returnKeyType="next"
+                error={errors.pan}
+                style={styles.input}
+              />
+              <RenderInput
+                name="gst"
+                value={values.gst}
+                onChangeText={handleChange('gst')}
+                onBlur={handleBlur('gst')}
+                placeholder="GST"
+                autoCapitalize="none"
+                returnKeyType="next"
+                error={errors.gst}
+                style={styles.input}
+              />
+              <RenderInput
+                name="rera_registration_no"
+                value={values.rera_registration_no}
+                onChangeText={handleChange('rera_registration_no')}
+                onBlur={handleBlur('rera_registration_no')}
+                placeholder="Rera Registration No"
+                autoCapitalize="none"
+                returnKeyType="next"
+                error={errors.rera_registration_no}
+                style={styles.input}
+              />
+              <RenderInput
+                name="remarks"
+                value={values.remarks}
+                onChangeText={handleChange('remarks')}
+                onBlur={handleBlur('remarks')}
+                placeholder="Remarks"
+                autoCapitalize="none"
+                returnKeyType="next"
+                error={errors.remarks}
+                style={styles.input}
+                numberoflines={5}
+              />
 
               <ActionButtons
                 onCancel={navigation.goBack}
                 onSubmit={handleSubmit}
               />
-            </View>
+            </ScrollView>
           );
         }}
       </Formik>
@@ -152,13 +265,13 @@ export default withTheme(AddBroker);
 const styles = StyleSheet.create({
   container: {
     padding: 15,
-    flexGrow: 1,
+    flex: 1,
   },
   input: {
     marginVertical: 10,
   },
   contentContainer: {
-    flexGrow: 1,
+    // flex: 1,
     justifyContent: 'space-between',
   },
 });

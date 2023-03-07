@@ -27,11 +27,13 @@ function Details(props) {
     first_name,
     last_name,
     phone,
+    phone_2,
     budget_from,
     budget_to,
     created,
     priority,
     inquiry_for,
+    Inquiry_date,
     current_locality,
     bhk,
     email,
@@ -123,12 +125,12 @@ function Details(props) {
         </View>
         <View style={styles.detailRow}>
           <Paragraph>Phone No 2</Paragraph>
-          <Caption style={styles.value}>{occupation?.label}</Caption>
+          <Caption style={styles.value}>{phone_2}</Caption>
         </View>
         <View style={styles.detailRow}>
           <Paragraph>Inquiry Date</Paragraph>
           <Caption style={styles.value}>
-            {dayjs(created).format('DD MMM YYYY, h:m A')}
+            {dayjs(Inquiry_date).format('DD MMM YYYY, h:mm A')}
           </Caption>
         </View>
         <View style={styles.detailRow}>

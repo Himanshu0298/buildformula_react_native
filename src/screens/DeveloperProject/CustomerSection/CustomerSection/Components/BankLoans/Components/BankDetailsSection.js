@@ -24,6 +24,8 @@ function BankDetailsSection(props) {
     installment_amount,
     number_of_installment,
     bank_address,
+    agent_name,
+    agent_phone,
   } = bankDetails?.details || {};
 
   const detailsAvailable = Object.keys(bankDetails?.details || {}).length > 0;
@@ -51,6 +53,8 @@ function BankDetailsSection(props) {
             value={number_of_installment}
           />
           <RenderDetail label="Installment amount" value={installment_amount} />
+          <RenderDetail label="Agent Name" value={agent_name} />
+          <RenderDetail label="Agent Phone" value={agent_phone} />
         </>
       ) : (
         <View style={styles.emptyContainer}>

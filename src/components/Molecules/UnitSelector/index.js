@@ -69,12 +69,12 @@ function UnitSelector(props) {
 
   return (
     <View style={styles.container}>
-      {showBhkFilters ? (
+      {/* {showBhkFilters ? (
         <>
           <Subheading style={styles.bhkHeading}>BHK Indication</Subheading>
           <BhkList selectedBhk={selectedBhk} onPress={setSelectedBhk} />
         </>
-      ) : null}
+      ) : null} */}
       <FlatList
         data={filteredUnits}
         extraData={filteredUnits}

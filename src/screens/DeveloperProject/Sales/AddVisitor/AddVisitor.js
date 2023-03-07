@@ -76,6 +76,8 @@ function PersonalTab(props) {
     occupationOptions,
     sourceTypeOptions,
     setSelectedTab,
+    mobileCodes,
+    assigntoOptions,
   } = props;
   const {handleChange, setFieldValue, values, handleBlur, errors} = formikProps;
   const {t} = useTranslation();
@@ -146,35 +148,32 @@ function PersonalTab(props) {
             error={errors.phone}
             left={<TextInput.Affix text="+91" />}
           />
-
-          <View style={styles.radioContainer}>
-            <RenderSelect
-              name="country_code"
-              label={+91}
-              ref={countryCodeRef}
-              options={occupationOptions}
-              containerStyles={styles.input}
-              value={values.country_code}
-              placeholder={t('+91')}
-              error={errors.country_code}
-              onSelect={value => {
-                setFieldValue('country_code', value);
-              }}
-            />
-            <RenderInput
-              name="phone2"
-              ref={phone2Ref}
-              label="Phone No 2"
-              keyboardType="number-pad"
-              maxLength={10}
-              containerStyles={[styles.input, {width: '80%', marginLeft: 8}]}
-              value={values.phone2}
-              onChangeText={handleChange('phone2')}
-              onSubmitEditing={() => occupationRef?.current?.focus()}
-              onBlur={handleBlur('phone2')}
-              error={errors.phone2}
-            />
-          </View>
+          <RenderSelect
+            name="mobile_code"
+            label="Country Code for Phone No 2"
+            ref={countryCodeRef}
+            options={mobileCodes}
+            containerStyles={styles.input}
+            value={values.mobile_code}
+            placeholder="Country Code for Phone 2"
+            error={errors.mobile_code}
+            onSelect={value => {
+              setFieldValue('mobile_code', value);
+            }}
+          />
+          <RenderInput
+            name="phone2"
+            ref={phone2Ref}
+            label="Phone No 2"
+            keyboardType="number-pad"
+            maxLength={10}
+            containerStyles={styles.input}
+            value={values.phone2}
+            onChangeText={handleChange('phone2')}
+            onSubmitEditing={() => occupationRef?.current?.focus()}
+            onBlur={handleBlur('phone2')}
+            error={errors.phone2}
+          />
           <RenderSelect
             name="occupation"
             ref={occupationRef}
@@ -198,16 +197,16 @@ function PersonalTab(props) {
             }}
           />
           <RenderSelect
-            name="assignTo"
+            name="assign_to"
             ref={assignToRef}
             label="Assign To"
-            options={occupationOptions}
+            options={assigntoOptions}
             containerStyles={styles.input}
-            value={values.occupation}
+            value={values.assign_to}
             placeholder="Assign To"
-            error={errors.assignTo}
+            error={errors.assign_to}
             onSelect={value => {
-              setFieldValue('assignTo', value);
+              setFieldValue('assign_to', value);
               if (value === 0) {
                 occupationInputRef?.current?.focus();
               } else {
@@ -261,8 +260,14 @@ function PersonalTab(props) {
 }
 
 function InquiryTab(props) {
-  const {formikProps, setSelectedTab, inquiryOptions, interestedOptions, edit} =
-    props;
+  const {
+    formikProps,
+    setSelectedTab,
+    inquiryOptions,
+    interestedOptions,
+    edit,
+    brokerOptions,
+  } = props;
 
   const {
     handleChange,
@@ -359,6 +364,17 @@ function InquiryTab(props) {
               setFieldValue('inquiry_for', value);
             }}
           />
+          <RenderSelect
+            name="brokers_id"
+            label="Broker"
+            options={brokerOptions}
+            containerStyles={styles.input}
+            value={values.brokers_id}
+            error={errors.brokers_id}
+            onSelect={value => {
+              setFieldValue('brokers_id', value);
+            }}
+          />
           <RenderSelectMultiple
             name="interested_property"
             label="Interested Property"
@@ -386,6 +402,16 @@ function InquiryTab(props) {
               }}
             />
           ) : null}
+          <RenderDatePicker
+            name="Inquiry_date"
+            label="Inquiry Date"
+            containerStyles={styles.input}
+            value={values.Inquiry_date}
+            error={errors.Inquiry_date}
+            onChange={date => {
+              setFieldValue('Inquiry_date', date);
+            }}
+          />
           <RenderTextBox
             name="remarks"
             numberOfLines={5}
@@ -407,27 +433,25 @@ function InquiryTab(props) {
               name="title"
               label="Task Title"
               ref={followUpTitleRef}
-              keyboardType="number-pad"
               containerStyles={styles.input}
-              value={values.budget_from}
-              onChangeText={handleChange('budget_from')}
-              onBlur={handleBlur('budget_from')}
-              onSubmitEditing={() => budgetToRef?.current.focus()}
-              error={errors.budget_from}
+              value={values.title}
+              onChangeText={handleChange('title')}
+              onBlur={handleBlur('title')}
+              error={errors.title}
             />
           </View>
         </View>
         <View style={styles.row}>
           <View style={styles.flex}>
             <RenderDatePicker
-              name="followup_date"
+              name="date"
               label="Date"
               ref={followUpDateRef}
               containerStyles={styles.input}
-              value={values.followup_date}
-              error={errors.followup_date}
+              value={values.date}
+              error={errors.date}
               onChange={date => {
-                setFieldValue('followup_date', date);
+                setFieldValue('date', date);
                 followUpTimeRef?.current?.focus?.();
               }}
             />
@@ -437,12 +461,12 @@ function InquiryTab(props) {
               mode="time"
               label="Time"
               ref={followUpTimeRef}
-              name="followup_time"
+              name="time"
               containerStyles={styles.input}
-              value={values.followup_time}
-              error={errors.followup_time}
+              value={values.time}
+              error={errors.time}
               onChange={date => {
-                setFieldValue('followup_time', date);
+                setFieldValue('time', date);
               }}
             />
           </View>
@@ -459,7 +483,14 @@ function InquiryTab(props) {
 }
 
 function RenderForm(props) {
-  const {formikProps, user, ...restProps} = props;
+  const {
+    formikProps,
+    user,
+    mobileCodes,
+    assigntoOptions,
+    brokerOptions,
+    ...restProps
+  } = props;
   const {errors} = formikProps;
 
   const [selectedTab, setSelectedTab] = useState(0);
@@ -526,6 +557,8 @@ function RenderForm(props) {
             occupationOptions={occupationOptions}
             sourceTypeOptions={sourceTypeOptions}
             formikProps={formikProps}
+            mobileCodes={mobileCodes}
+            assigntoOptions={assigntoOptions}
           />
         );
       case 1:
@@ -537,6 +570,7 @@ function RenderForm(props) {
             interestedOptions={interestedOptions}
             assignOptions={updatedAssignOptions}
             formikProps={formikProps}
+            brokerOptions={brokerOptions}
           />
         );
       default:
@@ -570,7 +604,24 @@ function AddVisitor(props) {
 
   const {selectedProject} = useSelector(s => s.project);
   const {user} = useSelector(s => s.user);
-  const {loading} = useSelector(s => s.sales);
+  const {loading, countrycodes, assigntoData, brokersList} = useSelector(
+    s => s.sales,
+  );
+
+  const mobileCodes = countrycodes.map(i => ({
+    label: `+${i.phone_code}, ${i.country_name}`,
+    value: i.id,
+  }));
+
+  const assigntoOptions = assigntoData.map(i => ({
+    label: `${i.first_name} ${i.last_name} - ${i.email}`,
+    value: i.id,
+  }));
+
+  const brokerOptions = brokersList.map(i => ({
+    label: `${i.first_name} ${i.last_name}`,
+    value: i.id,
+  }));
 
   const {
     addVisitor,
@@ -655,7 +706,13 @@ function AddVisitor(props) {
           validationSchema={schema}
           onSubmit={onSubmit}>
           {formikProps => (
-            <RenderForm {...props} {...{formikProps, user, edit}} />
+            <RenderForm
+              {...props}
+              {...{formikProps, user, edit}}
+              mobileCodes={mobileCodes}
+              assigntoOptions={assigntoOptions}
+              brokerOptions={brokerOptions}
+            />
           )}
         </Formik>
       </View>

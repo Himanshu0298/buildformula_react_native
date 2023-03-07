@@ -50,7 +50,7 @@ function RenderForm({navigation, formikProps}) {
       <View style={styles.inputsContainer}>
         <RenderInput
           name="bank_name"
-          label={t('label_bank_name')}
+          label="Bank Name"
           ref={bankNameRef}
           containerStyles={styles.input}
           value={values.bank_name}
@@ -61,7 +61,7 @@ function RenderForm({navigation, formikProps}) {
         />
         <RenderInput
           name="bank_branch"
-          label={t('label_branch')}
+          label="Branch Name"
           ref={bankBranchRef}
           containerStyles={styles.input}
           value={values.bank_branch}
@@ -130,6 +130,28 @@ function RenderForm({navigation, formikProps}) {
           onSubmitEditing={handleSubmit}
           error={errors.installment_amount}
         />
+        <RenderInput
+          name="agent_name"
+          label="Agent Name"
+          containerStyles={styles.input}
+          value={values.agent_name}
+          onChangeText={handleChange('agent_name')}
+          onBlur={handleBlur('agent_name')}
+          onSubmitEditing={handleSubmit}
+          error={errors.agent_name}
+        />
+        <RenderInput
+          name="agent_phone"
+          label="Agent Phone"
+          keyboardType="decimal-pad"
+          left={<TextInput.Affix text="+91" />}
+          containerStyles={styles.input}
+          value={values.agent_phone}
+          onChangeText={handleChange('agent_phone')}
+          onBlur={handleBlur('agent_phone')}
+          onSubmitEditing={handleSubmit}
+          error={errors.agent_phone}
+        />
       </View>
       <ActionButtons
         cancelLabel="Cancel"
@@ -171,6 +193,8 @@ function AddBankDetails(props) {
     formData.append('loan_approval_letter', values.loan_approval_letter);
     formData.append('number_of_installment', values.number_of_installment);
     formData.append('installment_amount', values.installment_amount);
+    formData.append('agent_name', values.agent_name);
+    formData.append('agent_phone', values.agent_phone);
 
     updateBankDetails(formData).then(() => {
       getBankDetails({

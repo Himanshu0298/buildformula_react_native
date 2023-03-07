@@ -68,12 +68,12 @@ function RenderUnit(props) {
   const {unitLabel, unit_id, bhk} = unit;
   const unitBhk = BHK_OPTIONS.find(item => item.type === unit.bhk);
 
-  let statusStyle = BOOKING_STATUS_STYLES[unit?.status] || {};
-  const disabled = checkDisabled(isUnitDisabled, unit);
-
   if (unit.status === 2 && dayjs(unit.tmp_booking_time_end).isBefore(dayjs())) {
-    statusStyle = {};
+    unit.status = 1;
   }
+
+  const statusStyle = BOOKING_STATUS_STYLES[unit?.status] || {};
+  const disabled = checkDisabled(isUnitDisabled, unit);
 
   const bookingStyle = statusStyle?.color
     ? {borderColor: statusStyle?.color}
