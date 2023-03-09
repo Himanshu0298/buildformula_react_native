@@ -149,6 +149,7 @@ function RenderForm({navigation, formikProps}) {
           value={values.agent_phone}
           onChangeText={handleChange('agent_phone')}
           onBlur={handleBlur('agent_phone')}
+          maxLength={10}
           onSubmitEditing={handleSubmit}
           error={errors.agent_phone}
         />
@@ -181,6 +182,10 @@ function AddBankDetails(props) {
   }, [bankDetails.details]);
 
   const onSubmit = async values => {
+    console.log(
+      '🚀 ~ file: AddBankDetails.js:185 ~ onSubmit ~ values:',
+      values,
+    );
     const formData = new FormData();
 
     formData.append('project_id', selectedProject.id);

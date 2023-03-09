@@ -33,7 +33,7 @@ function BankDetailsSection(props) {
   const navToAddBankDetails = () =>
     navigation.navigate('AddBankDetails', {
       ...route?.params,
-      id: bankDetails.id,
+      id: bankDetails?.details?.id,
     });
 
   return (
