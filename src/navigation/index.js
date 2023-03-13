@@ -441,8 +441,11 @@ function AppStackNavigator() {
               <Stack.Screen name="CompleteTask" component={CompleteTask} />
             </Stack.Group>
             <Stack.Group screenOptions={{headerShown: false}}>
-              {/* <Stack.Screen name="BC_Step_One" component={BC_SelectProject} /> */}
-              <Stack.Screen name="BC_Step_One" component={BC_SelectStructure} />
+              <Stack.Screen name="BC_Step_One" component={BC_SelectProject} />
+              <Stack.Screen
+                name="BC_Step_dot_One"
+                component={BC_SelectStructure}
+              />
               <Stack.Screen name="BC_Step_Two" component={BC_SelectTower} />
               <Stack.Screen name="BC_Step_Three" component={BC_SelectFloor} />
               <Stack.Screen name="BC_Step_Four" component={BC_SelectUnit} />

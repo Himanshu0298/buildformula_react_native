@@ -18,15 +18,15 @@ const Header = () => {
   return (
     <View style={styles.headerWrapper}>
       <View>
-        <Title>Property Booking</Title>
-        <Caption>Select project for which you want to book property</Caption>
+        <Title>Customer Section</Title>
+        {/* <Caption>Select project for which you want to book property</Caption> */}
       </View>
     </View>
   );
 };
 
 const ProjectCard = props => {
-  const {item} = props;
+  const {item, navigation} = props;
 
   const {
     id,
@@ -40,7 +40,9 @@ const ProjectCard = props => {
   } = item;
 
   const loadProjectCategories = project_category => {
-    const next = 'BC_Step_OnedotOne';
+    const next = 'CS_Step_dot_One';
+
+    navigation.navigate(next);
   };
 
   return (
