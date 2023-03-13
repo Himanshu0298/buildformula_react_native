@@ -14,12 +14,14 @@ export const SelectUnit = props => {
   const {
     project_id,
     floorId,
+    floor_id,
     towerId,
     structureType,
     selectedStructure,
     towerType,
     displayHeader,
     showBhkFilters,
+    tower,
   } = props || {};
 
   const {getUnitsBookingStatus} = useSalesActions();
@@ -33,7 +35,7 @@ export const SelectUnit = props => {
     fetchUnitsBookingStatus();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [towerId, floorId]);
+  }, [towerId, floor_id]);
 
   const units = useMemo(() => {
     const structureData =
@@ -44,10 +46,10 @@ export const SelectUnit = props => {
     }
 
     const {floors = {}} =
-      structureData?.towers?.find(i => i.tower_id === towerId) || {};
+      structureData?.towers?.find(i => i.tower_id === tower) || {};
 
-    return floors?.[floorId]?.units || [];
-  }, [floorId, selectedProject, selectedStructure, towerId]);
+    return floors?.[Number(floor_id)]?.units || [];
+  }, [floor_id, selectedProject, selectedStructure, tower]);
 
   const processedUnits = useMemo(() => {
     const updatedUnits = units.map(unit => {
@@ -69,8 +71,8 @@ export const SelectUnit = props => {
     getUnitsBookingStatus({
       project_id,
       project_type: structureType || selectedStructure,
-      project_tower: towerId || 0,
-      project_floor: Number(floorId || 0),
+      project_tower: tower || 0,
+      project_floor: Number(floor_id || 0),
     });
   };
 
@@ -81,7 +83,7 @@ export const SelectUnit = props => {
   const handleSelectUnit = unit => {
     navigation.navigate('CS_Step_Five', {
       project_id,
-      floorId,
+      floor_id,
       towerId,
       structureType,
       selectedStructure,
@@ -90,8 +92,8 @@ export const SelectUnit = props => {
     });
   };
 
-  const floor = floorId
-    ? getFloorNumber(floorId)
+  const floor = floor_id
+    ? getFloorNumber(floor_id)
     : STRUCTURE_TYPE_LABELS?.[selectedStructure];
 
   return (
@@ -137,7 +139,7 @@ function SelectUnitContainer(props) {
 
   const {
     project_id,
-    floorId,
+    floor_id,
     towerId,
     structureType,
     selectedStructure,
@@ -149,7 +151,7 @@ function SelectUnitContainer(props) {
   return (
     <SelectUnit
       project_id={project_id}
-      floorId={floorId}
+      floor_id={floor_id}
       towerId={towerId}
       structureType={structureType}
       selectedStructure={selectedStructure}

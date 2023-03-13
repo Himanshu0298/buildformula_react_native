@@ -73,11 +73,11 @@ function FloorBar(props) {
               style={styles.structureInput}
               {...inputProps}
             />
-            <InputBox
+            {/* <InputBox
               style={styles.unitsInput}
               value={unitCount}
               {...inputProps}
-            />
+            /> */}
             <OpacityButton
               opacity={1}
               onPress={() => onSelectFloor(floorId)}

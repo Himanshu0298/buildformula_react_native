@@ -66,6 +66,7 @@ function checkDisabled(isUnitDisabled, unit) {
 function RenderUnit(props) {
   const {unit = {}, onSelectUnit, isUnitDisabled, floorType} = props;
   const {unitLabel, unit_id, bhk} = unit;
+
   const unitBhk = BHK_OPTIONS.find(item => item.type === unit.bhk);
 
   if (unit.status === 2 && dayjs(unit.tmp_booking_time_end).isBefore(dayjs())) {
@@ -98,14 +99,16 @@ function RenderUnit(props) {
           {backgroundColor: statusStyle?.background},
         ]}>
         <View style={styles.iconContainer}>
-          <UnitIcon
-            height={30}
-            width={30}
-            fill="#041D36"
-            fillSecondary="#4872F4"
-            // fill={addOpacity(unitBhk?.color, 1) || '#868686'}
-            // fillSecondary={addOpacity(unitBhk?.color, 1) || '#868686'}
-          />
+          {UnitIcon ? (
+            <UnitIcon
+              height={30}
+              width={30}
+              fill="#041D36"
+              fillSecondary="#4872F4"
+              // fill={addOpacity(unitBhk?.color, 1) || '#868686'}
+              // fillSecondary={addOpacity(unitBhk?.color, 1) || '#868686'}
+            />
+          ) : null}
         </View>
         <View style={styles.labelContainer}>
           <Text>{unit.unitLabel}</Text>
