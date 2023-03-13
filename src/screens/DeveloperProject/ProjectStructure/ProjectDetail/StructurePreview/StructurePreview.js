@@ -19,9 +19,15 @@ function StructurePreview(props) {
     Object.keys(project_structure)?.map(v => Number(v)) || [];
 
   const handlePress = (selectedStructure, towerType) => {
-    const params = {selectedStructure, id, towerType};
+    const project_id = selectedProject.id;
+    const params = {selectedStructure, id, towerType, project_id};
 
-    const nextStep = 'TowerPreview';
+    let nextStep = 'CS_Step_Four';
+
+    if (selectedStructure === 6) {
+      nextStep = 'TowerPreview';
+      params.towerType = towerType;
+    }
 
     navigation.navigate(nextStep, params);
   };

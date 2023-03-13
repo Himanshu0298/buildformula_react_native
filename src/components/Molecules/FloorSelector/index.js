@@ -99,8 +99,13 @@ function FloorSelector(props) {
         keyboardShouldPersistTaps="handled"
         keyExtractor={item => item.id}
         ListEmptyComponent={renderNoFloor}
-        renderItem={({item: floorData}) => {
-          const {structureType, id: floorId, unitCount} = floorData;
+        renderItem={({item: floorData, index}) => {
+          const {
+            structureType,
+            id: floorId,
+            unitCount,
+            floor: floor_id,
+          } = floorData;
 
           return (
             <>
@@ -117,9 +122,10 @@ function FloorSelector(props) {
                 buttonProps={{color: '#5B6F7C'}}
                 onSelectFloor={onSelectFloor}
                 selectedFloor={selectedFloor}
+                index={index}
               />
               {selectedFloor === floorId
-                ? renderUnits({structureType, floorId})
+                ? renderUnits({structureType, floorId, floor_id, index})
                 : null}
             </>
           );

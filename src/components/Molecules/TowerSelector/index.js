@@ -51,7 +51,7 @@ function TowerSelector(props) {
               {...props}
               key={index.toString()}
               label={item.label}
-              onPress={() => onSelectTower(item.id)}
+              onPress={() => onSelectTower(item.id, item.tower)}
             />
           );
         }}

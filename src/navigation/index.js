@@ -157,6 +157,7 @@ import DeveloperDashboard from '../screens/DeveloperProject/Dashboard';
 import ProjectNotification from 'screens/Notification/ProjectNotification';
 
 // * Developer : Sales Screens
+import BC_SelectProject from '../screens/DeveloperProject/Sales/BookingChart/SelectProject';
 import BC_SelectStructure from 'screens/DeveloperProject/Sales/BookingChart/SelectStructure';
 import BC_SelectFloor from 'screens/DeveloperProject/Sales/BookingChart/SelectFloor';
 import BC_SelectTower from 'screens/DeveloperProject/Sales/BookingChart/SelectTower';
@@ -192,6 +193,7 @@ import AddTask from 'screens/DeveloperProject/TodoTask/AddTask';
 import TaskDetails from 'screens/DeveloperProject/TodoTask/TaskDetails';
 
 // * Developer : Customer Section
+import CS_SelectProject from 'screens/DeveloperProject/CustomerSection/SelectProject';
 import CS_SelectStructure from 'screens/DeveloperProject/CustomerSection/SelectStructure';
 import CS_SelectTower from 'screens/DeveloperProject/CustomerSection/SelectTower';
 import CS_SelectFloor from 'screens/DeveloperProject/CustomerSection/SelectFloor';
@@ -439,6 +441,7 @@ function AppStackNavigator() {
               <Stack.Screen name="CompleteTask" component={CompleteTask} />
             </Stack.Group>
             <Stack.Group screenOptions={{headerShown: false}}>
+              {/* <Stack.Screen name="BC_Step_One" component={BC_SelectProject} /> */}
               <Stack.Screen name="BC_Step_One" component={BC_SelectStructure} />
               <Stack.Screen name="BC_Step_Two" component={BC_SelectTower} />
               <Stack.Screen name="BC_Step_Three" component={BC_SelectFloor} />
@@ -458,7 +461,11 @@ function AppStackNavigator() {
               />
             </Stack.Group>
             <Stack.Group>
-              <Stack.Screen name="CS_Step_One" component={CS_SelectStructure} />
+              <Stack.Screen name="CS_Step_One" component={CS_SelectProject} />
+              <Stack.Screen
+                name="CS_Step_dot_One"
+                component={CS_SelectStructure}
+              />
               <Stack.Screen name="CS_Step_Two" component={CS_SelectTower} />
               <Stack.Screen name="CS_Step_Three" component={CS_SelectFloor} />
               <Stack.Screen name="CS_Step_Four" component={CS_SelectUnit} />

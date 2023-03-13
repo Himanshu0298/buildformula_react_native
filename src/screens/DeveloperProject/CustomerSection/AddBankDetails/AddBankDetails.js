@@ -182,10 +182,6 @@ function AddBankDetails(props) {
   }, [bankDetails.details]);
 
   const onSubmit = async values => {
-    console.log(
-      '🚀 ~ file: AddBankDetails.js:185 ~ onSubmit ~ values:',
-      values,
-    );
     const formData = new FormData();
 
     formData.append('project_id', selectedProject.id);
