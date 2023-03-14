@@ -111,7 +111,7 @@ function RenderUnit(props) {
           ) : null}
         </View>
         <View style={styles.labelContainer}>
-          <Text>{unit.unitLabel}</Text>
+          <Text>{unit.project_unit}</Text>
           {bhk ? <Caption>{`${bhk} BHK`}</Caption> : undefined}
         </View>
         {unit?.status === 7 ? (

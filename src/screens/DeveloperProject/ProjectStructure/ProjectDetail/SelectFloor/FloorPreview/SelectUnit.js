@@ -11,7 +11,7 @@ import {useSalesLoading} from 'redux/selectors';
 import useProjectStructureActions from 'redux/actions/projectStructureActions';
 
 export const SelectUnit = props => {
-  const {navigation} = props;
+  const {navigation, route} = props;
   const {
     project_id,
     floorId,
@@ -23,68 +23,57 @@ export const SelectUnit = props => {
     displayHeader,
     showBhkFilters,
     tower,
-    projectId,
   } = props || {};
 
-  const {getUnitsBookingStatus} = useSalesActions();
-  const {getUnitList} = useProjectStructureActions();
+  const projectId = route.params.id || {};
 
-  const {selectedProject} = useSelector(s => s.project);
+  const {getUnitsBookingStatus} = useSalesActions();
   const {unitBookingStatus} = useSelector(s => s.sales);
   const {unitList} = useSelector(s => s.projectStructure);
 
   const loading = useSalesLoading();
+  console.log(
+    '🚀 ~ file: SelectUnit.js:32 ~ SelectUnit ~ unitBookingStatus:',
+    unitBookingStatus,
+  );
 
   useEffect(() => {
     fetchUnitsBookingStatus();
-    fetchUnitList();
+    // fetchUnitList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [towerId, floor_id]);
 
-  const fetchUnitList = async () => {
-    await getUnitList({
-      project_id: selectedProject.id,
-      floor_id,
-      id: projectId,
-    });
-  };
+  // const fetchUnitList = async () => {
+  //   await getUnitList({
+  //     project_id: selectedProject.id,
+  //     floor_id,
+  //     id: projectId,
+  //   });
+  // };
 
-  // const units = useMemo(() => {
-  //   const structureData =
-  //     selectedProject?.project_structure?.[selectedStructure] || {};
+  // const processedUnits = useMemo(() => {
+  //   const updatedUnits = unitList?.map(unit => {
+  //     const bookingData = unitBookingStatus.find(
+  //       i => Number(i.id) === Number(unit.unit_id),
+  //     );
 
-  //   if ([4, 5].includes(selectedStructure)) {
-  //     return structureData.units;
-  //   }
+  //     if (bookingData) {
+  //       unit = {...unit, ...bookingData};
+  //     }
 
-  //   const {floors = {}} =
-  //     structureData?.towers?.find(i => i.tower_id === tower) || {};
+  //     return unit;
+  //   });
 
-  //   return floors?.[Number(floor_id)]?.units || [];
-  // }, [floor_id, selectedProject, selectedStructure, tower]);
-
-  const processedUnits = useMemo(() => {
-    const updatedUnits = unitList?.map(unit => {
-      const bookingData = unitBookingStatus.find(
-        i => Number(i.id) === Number(unit.unit_id),
-      );
-
-      if (bookingData) {
-        unit = {...unit, ...bookingData};
-      }
-
-      return unit;
-    });
-
-    return updatedUnits;
-  }, [unitBookingStatus, unitList]);
+  //   return updatedUnits;
+  // }, [unitBookingStatus, unitList]);
 
   const fetchUnitsBookingStatus = () => {
     getUnitsBookingStatus({
       project_id,
       project_type: structureType || selectedStructure,
       project_tower: tower || 0,
-      project_floor: Number(floor_id || 0),
+      project_floor: floor_id || 0,
+      id: projectId,
     });
   };
 
@@ -134,7 +123,7 @@ export const SelectUnit = props => {
         {...props}
         refreshing={unitBookingStatus.length > 0 && loading}
         floorNumber={floor}
-        units={processedUnits}
+        units={unitBookingStatus}
         showBhkFilters={showBhkFilters}
         displayHeader={displayHeader}
         floorType={structureType || selectedStructure}
