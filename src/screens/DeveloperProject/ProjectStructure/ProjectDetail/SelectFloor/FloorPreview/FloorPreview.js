@@ -49,6 +49,7 @@ function FloorPreview(props) {
         towerType={towerType}
         showBhkFilters={false}
         displayHeader={false}
+        projectId={projectId}
       />
     );
   };

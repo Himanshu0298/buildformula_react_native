@@ -8,6 +8,7 @@ import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {IconButton, Subheading} from 'react-native-paper';
 import {STRUCTURE_TYPE_LABELS} from 'utils/constant';
 import {useSalesLoading} from 'redux/selectors';
+import useProjectStructureActions from 'redux/actions/projectStructureActions';
 
 export const SelectUnit = props => {
   const {navigation} = props;
@@ -22,37 +23,48 @@ export const SelectUnit = props => {
     displayHeader,
     showBhkFilters,
     tower,
+    projectId,
   } = props || {};
 
   const {getUnitsBookingStatus} = useSalesActions();
+  const {getUnitList} = useProjectStructureActions();
 
   const {selectedProject} = useSelector(s => s.project);
   const {unitBookingStatus} = useSelector(s => s.sales);
+  const {unitList} = useSelector(s => s.projectStructure);
 
   const loading = useSalesLoading();
 
   useEffect(() => {
     fetchUnitsBookingStatus();
-
+    fetchUnitList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [towerId, floor_id]);
 
-  const units = useMemo(() => {
-    const structureData =
-      selectedProject?.project_structure?.[selectedStructure] || {};
+  const fetchUnitList = async () => {
+    await getUnitList({
+      project_id: selectedProject.id,
+      floor_id,
+      id: projectId,
+    });
+  };
 
-    if ([4, 5].includes(selectedStructure)) {
-      return structureData.units;
-    }
+  // const units = useMemo(() => {
+  //   const structureData =
+  //     selectedProject?.project_structure?.[selectedStructure] || {};
 
-    const {floors = {}} =
-      structureData?.towers?.find(i => i.tower_id === tower) || {};
+  //   if ([4, 5].includes(selectedStructure)) {
+  //     return structureData.units;
+  //   }
 
-    return floors?.[Number(floor_id)]?.units || [];
-  }, [floor_id, selectedProject, selectedStructure, tower]);
+  //   const {floors = {}} =
+  //     structureData?.towers?.find(i => i.tower_id === tower) || {};
+
+  //   return floors?.[Number(floor_id)]?.units || [];
+  // }, [floor_id, selectedProject, selectedStructure, tower]);
 
   const processedUnits = useMemo(() => {
-    const updatedUnits = units.map(unit => {
+    const updatedUnits = unitList?.map(unit => {
       const bookingData = unitBookingStatus.find(
         i => Number(i.id) === Number(unit.unit_id),
       );
@@ -65,7 +77,7 @@ export const SelectUnit = props => {
     });
 
     return updatedUnits;
-  }, [unitBookingStatus, units]);
+  }, [unitBookingStatus, unitList]);
 
   const fetchUnitsBookingStatus = () => {
     getUnitsBookingStatus({

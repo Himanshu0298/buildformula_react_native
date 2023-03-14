@@ -54,7 +54,7 @@ function UnitSelector(props) {
 
   const [selectedBhk, setSelectedBhk] = React.useState();
 
-  const processedUnits = units.sort(
+  const processedUnits = units?.sort(
     (a, b) => getUnitNumber(a.unitLabel) - getUnitNumber(b.unitLabel),
   );
 
