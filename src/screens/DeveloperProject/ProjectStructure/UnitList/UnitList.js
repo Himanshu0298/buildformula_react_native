@@ -98,7 +98,7 @@ const UnitCard = ({item, navigation, handleDelete}) => {
               : `${project_name}`}
           </Caption>
         </View>
-        <View style={{marginVertical: 10}}>
+        <View style={styles.unitFor}>
           <Text>{unit_for}</Text>
         </View>
       </TouchableOpacity>
@@ -121,9 +121,17 @@ function UnitList(props) {
   const {unitList = [], loading} = useSelector(s => s.projectStructure);
   const {selectedProject} = useSelector(s => s.project);
 
+  useEffect(() => {
+    loadData();
+    getProjectList({project_id: selectedProject.id});
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const projectId = 0;
+
   const loadData = async () => {
-    await getUnitList({project_id: selectedProject.id});
-    await getProjectList({project_id: selectedProject.id});
+    await getUnitList({project_id: selectedProject.id, id: projectId});
     await getProjectMasterList({project_id: selectedProject.id});
   };
 
@@ -139,11 +147,6 @@ function UnitList(props) {
         i?.unit_for?.toLowerCase().includes(query),
     );
   }, [unitList, searchQuery]);
-
-  useEffect(() => {
-    loadData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const handleDelete = async unit_id => {
     alert.show({
@@ -173,18 +176,18 @@ function UnitList(props) {
       label: 'Add Bungalow',
       onPress: () => navigation.navigate('AddBungalowUnit'),
     },
-    {
-      icon: plot,
-      color: theme.colors.primary,
-      label: 'Add Plot',
-      onPress: () => navigation.navigate('AddPlotUnit'),
-    },
-    {
-      icon: industrial,
-      color: theme.colors.primary,
-      label: 'Add Industrial Unit',
-      onPress: () => navigation.navigate('AddIndustrialUnit'),
-    },
+    // {
+    //   icon: plot,
+    //   color: theme.colors.primary,
+    //   label: 'Add Plot',
+    //   onPress: () => navigation.navigate('AddPlotUnit'),
+    // },
+    // {
+    //   icon: industrial,
+    //   color: theme.colors.primary,
+    //   label: 'Add Industrial Unit',
+    //   onPress: () => navigation.navigate('AddIndustrialUnit'),
+    // },
   ];
 
   const onSearch = v => setSearchQuery(v);
@@ -192,7 +195,6 @@ function UnitList(props) {
   return (
     <View style={styles.mainContainer}>
       <Spinner visible={loading} textContent="" />
-
       <Subheading> Unit List</Subheading>
       <Searchbar
         style={styles.searchBar}
@@ -279,11 +281,8 @@ const styles = StyleSheet.create({
     color: '#4872f4',
   },
 
-  fab: {
-    position: 'absolute',
-    right: 5,
-    bottom: 15,
-    backgroundColor: '#4872f4',
+  unitFor: {
+    marginVertical: 10,
   },
 });
 export default UnitList;

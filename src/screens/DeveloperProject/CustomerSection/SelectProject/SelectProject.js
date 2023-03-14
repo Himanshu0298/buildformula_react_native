@@ -19,7 +19,7 @@ const Header = () => {
     <View style={styles.headerWrapper}>
       <View>
         <Title>Customer Section</Title>
-        {/* <Caption>Select project for which you want to book property</Caption> */}
+        <Caption>Select project for which you want to book property</Caption>
       </View>
     </View>
   );
@@ -40,7 +40,7 @@ const ProjectCard = props => {
   } = item;
 
   const loadProjectCategories = project_category => {
-    const next = 'CS_Step_dot_One';
+    const next = 'CS_Step_One';
 
     navigation.navigate(next);
   };

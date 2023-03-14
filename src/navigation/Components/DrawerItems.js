@@ -77,7 +77,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
       },
       {
         id: 3,
-        route: 'BC_Step_One',
+        route: 'BC_Step_dot_One',
         label: 'Booking Chart',
         icon: ({color, size}) => (
           <MaterialIcons name="library-books" {...{color, size}} />
@@ -123,7 +123,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
 
       {
         id: 17,
-        route: 'CS_Step_One',
+        route: 'CS_Step_dot_One',
         label: 'Customer Section',
         icon: ({color, size}) => (
           <MaterialCommunityIcons
