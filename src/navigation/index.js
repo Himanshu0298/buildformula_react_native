@@ -19,13 +19,6 @@ import SignUp from 'screens/Auth/SignUp';
 import Login from 'screens/Auth/Login';
 import LanguageSelect from 'screens/Auth/LanguageSelect';
 
-// * App : Project Creation Screens
-import PlanSelect from 'screens/CreateProject/PlanSelect';
-import PS_StepTwo from 'screens/CreateProject/ProjectStructure/StepTwo';
-import PS_StepOne from 'screens/CreateProject/ProjectStructure/StepOne';
-import PC_StepTwo from 'screens/CreateProject/ProjectCreation/StepTwo';
-import PC_StepOne from 'screens/CreateProject/ProjectCreation/StepOne';
-
 // * App : Home Screen
 import Home from 'screens/Home';
 import DrawerContent from './Components/DrawerContent';
@@ -975,12 +968,7 @@ function AppStackNavigator() {
           <Stack.Screen name="ResetPassword" component={ResetPassword} />
         </Stack.Group>
       )}
-      {/* Project Creation screens */}
-      <Stack.Screen name="ProjectCreationStepOne" component={PC_StepOne} />
-      <Stack.Screen name="ProjectCreationStepTwo" component={PC_StepTwo} />
-      <Stack.Screen name="ProjectStructureStepOne" component={PS_StepOne} />
-      <Stack.Screen name="ProjectStructureStepTwo" component={PS_StepTwo} />
-      <Stack.Screen name="PlanSelect" component={PlanSelect} />
+
       <Stack.Screen name="AdminCreation" component={SignUp} />
     </Stack.Navigator>
   );
