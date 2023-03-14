@@ -22,7 +22,7 @@ function SelectStructure(props) {
     const selectedStructure = value;
     const project_id = selectedProject.id;
 
-    const params = {selectedStructure, project_id};
+    const params = {selectedStructure, project_id, projectData};
 
     let nextStep = 'CS_Step_Four';
 

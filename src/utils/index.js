@@ -186,3 +186,15 @@ export function getCountryCode(numbers) {
 export function onlyInLeft(left = [], right = [], compare) {
   return left.filter(l => !right.some(r => compare(l, r)));
 }
+
+export const getProjectTypes = projectCategories => {
+  const types =
+    projectCategories
+      ?.replace('1', '6')
+      ?.replace('2', '6')
+      ?.replace('3', '6')
+      ?.split(',')
+      .map(i => Number(i)) || [];
+
+  return [...new Set(types)];
+};

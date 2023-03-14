@@ -10,17 +10,7 @@ import PropTypes from 'prop-types';
 import TowerIcon from 'assets/images/tower.svg';
 import BungalowIcon from 'assets/images/bungalow.svg';
 import PlotIcon from 'assets/images/plot.svg';
-
-const getProjectTypes = projectCategories => {
-  const types =
-    projectCategories
-      ?.replace('Apartment', 'Tower')
-      ?.replace('Shop', 'Tower')
-      ?.replace('Offices', 'Tower')
-      ?.split(',') || [];
-
-  return [...new Set(types)];
-};
+import {getProjectTypes} from 'utils';
 
 const getStructureItems = () => {
   return [
@@ -32,7 +22,7 @@ const getStructureItems = () => {
           fillSecondary={theme.colors.primary}
         />
       ),
-      value: 'Tower',
+      value: 6,
       imageStyle: styles.shop,
     },
     {
@@ -43,7 +33,7 @@ const getStructureItems = () => {
           fillSecondary={theme.colors.primary}
         />
       ),
-      value: 'Bunglows',
+      value: 4,
       imageStyle: styles.shop,
     },
     {
@@ -54,7 +44,7 @@ const getStructureItems = () => {
           fillSecondary={theme.colors.primary}
         />
       ),
-      value: 'Plots',
+      value: 5,
       imageStyle: styles.shop,
     },
   ];
@@ -86,6 +76,8 @@ function StructureSelector(props) {
   const projectTypes = getProjectTypes(projectCategories);
 
   const {t} = useTranslation();
+
+  console.log('===========>projectTypes ', projectTypes);
 
   return (
     <>

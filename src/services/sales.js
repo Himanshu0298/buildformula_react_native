@@ -59,7 +59,7 @@ export default function useSalesServices() {
     deletePipeline: data => {
       return instance.post('inquiry_status/remove', data, params);
     },
-    getUnitsBookingStatus: data => {
+    getUnitStatusListing: data => {
       return instance.post('/get_locked_units', data, params);
     },
     lockUnit: data => {

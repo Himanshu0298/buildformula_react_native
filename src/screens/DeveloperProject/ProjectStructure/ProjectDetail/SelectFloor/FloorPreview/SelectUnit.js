@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo} from 'react';
+import React, {useEffect} from 'react';
 import {useSelector} from 'react-redux';
 import useSalesActions from 'redux/actions/salesActions';
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -8,13 +8,11 @@ import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {IconButton, Subheading} from 'react-native-paper';
 import {STRUCTURE_TYPE_LABELS} from 'utils/constant';
 import {useSalesLoading} from 'redux/selectors';
-import useProjectStructureActions from 'redux/actions/projectStructureActions';
 
 export const SelectUnit = props => {
   const {navigation, route} = props;
   const {
     project_id,
-    floorId,
     floor_id,
     towerId,
     structureType,
@@ -27,44 +25,18 @@ export const SelectUnit = props => {
 
   const projectId = route.params.id || {};
 
-  const {getUnitsBookingStatus} = useSalesActions();
-  const {unitBookingStatus} = useSelector(s => s.sales);
-  const {unitList} = useSelector(s => s.projectStructure);
+  const {getUnitStatusListing} = useSalesActions();
+  const {unitStatusListing} = useSelector(s => s.sales);
 
   const loading = useSalesLoading();
 
   useEffect(() => {
     fetchUnitsBookingStatus();
-    // fetchUnitList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [towerId, floor_id]);
 
-  // const fetchUnitList = async () => {
-  //   await getUnitList({
-  //     project_id: selectedProject.id,
-  //     floor_id,
-  //     id: projectId,
-  //   });
-  // };
-
-  // const processedUnits = useMemo(() => {
-  //   const updatedUnits = unitList?.map(unit => {
-  //     const bookingData = unitBookingStatus.find(
-  //       i => Number(i.id) === Number(unit.unit_id),
-  //     );
-
-  //     if (bookingData) {
-  //       unit = {...unit, ...bookingData};
-  //     }
-
-  //     return unit;
-  //   });
-
-  //   return updatedUnits;
-  // }, [unitBookingStatus, unitList]);
-
   const fetchUnitsBookingStatus = () => {
-    getUnitsBookingStatus({
+    getUnitStatusListing({
       project_id,
       project_type: structureType || selectedStructure,
       project_tower: tower || 0,
@@ -117,9 +89,9 @@ export const SelectUnit = props => {
 
       <UnitSelector
         {...props}
-        refreshing={unitBookingStatus.length > 0 && loading}
+        refreshing={unitStatusListing.length > 0 && loading}
         floorNumber={floor}
-        units={unitBookingStatus}
+        units={unitStatusListing}
         showBhkFilters={showBhkFilters}
         displayHeader={displayHeader}
         floorType={structureType || selectedStructure}
@@ -142,8 +114,6 @@ function SelectUnitContainer(props) {
     selectedStructure,
     towerType,
   } = route?.params || {};
-
-  console.log('===========>route?.params ', route?.params);
 
   return (
     <SelectUnit

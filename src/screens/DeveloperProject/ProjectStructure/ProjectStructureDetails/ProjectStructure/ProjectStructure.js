@@ -41,7 +41,7 @@ function RenderForm(props) {
   const categoryOptions = useMemo(() => {
     return project_structure_project_category?.map(i => ({
       label: i?.title,
-      value: i?.title,
+      value: i?.id,
     }));
   }, [project_structure_project_category]);
 

@@ -23,7 +23,7 @@ export default function useSalesActions() {
     deleteBroker,
     updateBrokerRemark,
     moveVisitor,
-    getUnitsBookingStatus,
+    getUnitStatusListing,
     lockUnit,
     getHoldBookingDetails,
     unitHoldBooking,
@@ -397,12 +397,12 @@ export default function useSalesActions() {
         },
       }),
 
-    getUnitsBookingStatus: params =>
+    getUnitStatusListing: params =>
       dispatch({
         type: types.GET_BOOKINGS_STATUS,
         payload: async () => {
           try {
-            const response = _res(await getUnitsBookingStatus(params));
+            const response = _res(await getUnitStatusListing(params));
             const {data} = response;
 
             return Promise.resolve(data);

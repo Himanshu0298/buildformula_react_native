@@ -4,28 +4,38 @@ import TowerSelector from 'components/Molecules/TowerSelector';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {IconButton, Subheading} from 'react-native-paper';
 import {getTowerLabel} from 'utils';
+import useProjectStructureActions from 'redux/actions/projectStructureActions';
 
 function SelectTower(props) {
   const {navigation, route} = props;
-  const {selectedStructure, towerType} = route?.params || {};
+  const {towerType, projectData} = route?.params || {};
 
+  const id = projectData?.id;
+
+  const {getTowerList} = useProjectStructureActions();
+  const {towerList} = useSelector(s => s.projectStructure);
   const {selectedProject} = useSelector(s => s.project);
 
-  const structureData =
-    selectedProject.project_structure?.[selectedStructure] || {};
+  React.useEffect(() => {
+    getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  const {towerCount, towers} = structureData;
+  const getData = async () => {
+    await getTowerList({project_id: selectedProject.id, id});
+  };
 
   const parsedTowers = useMemo(() => {
-    return towers?.map((i, index) => ({
+    return towerList?.map((i, index) => ({
       id: i.tower_id,
       label: getTowerLabel(index + 1),
     }));
-  }, [towers]);
+  }, [towerList]);
 
-  const onSelectTower = towerId => {
+  const onSelectTower = (values, towerId) => {
     navigation.navigate('BC_Step_Three', {...route?.params, towerId});
   };
+
   return (
     <View style={styles.container}>
       <TouchableOpacity
@@ -37,7 +47,6 @@ function SelectTower(props) {
       <TowerSelector
         {...props}
         towers={parsedTowers}
-        towerCount={towerCount}
         towerType={towerType}
         onSelectTower={onSelectTower}
       />

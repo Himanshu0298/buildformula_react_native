@@ -85,7 +85,7 @@ const initialState = {
   visitorAnalytics: {},
   visitorSuggestions: [],
   pipelines: [],
-  unitBookingStatus: [],
+  unitStatusListing: [],
   bankList: [],
   visitor: {},
   visitorFollowUp: {},
@@ -420,7 +420,7 @@ const reducer = (state = initialState, action = {}) => {
       return {
         ...state,
         loadingUnitStatus: false,
-        unitBookingStatus: payload,
+        unitStatusListing: payload,
       };
     }
     case `${GET_BOOKINGS_STATUS}_REJECTED`:

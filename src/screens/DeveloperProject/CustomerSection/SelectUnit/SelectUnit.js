@@ -23,10 +23,10 @@ export const SelectUnit = props => {
     projectid,
   } = props || {};
 
-  const {getUnitsBookingStatus} = useSalesActions();
+  const {getUnitStatusListing} = useSalesActions();
 
   const {selectedProject} = useSelector(s => s.project);
-  const {unitBookingStatus} = useSelector(s => s.sales);
+  const {unitStatusListing} = useSelector(s => s.sales);
 
   const loading = useSalesLoading();
 
@@ -52,7 +52,7 @@ export const SelectUnit = props => {
 
   const processedUnits = useMemo(() => {
     const updatedUnits = units.map(unit => {
-      const bookingData = unitBookingStatus.find(
+      const bookingData = unitStatusListing.find(
         i => Number(i.id) === Number(unit.unit_id),
       );
 
@@ -64,10 +64,10 @@ export const SelectUnit = props => {
     });
 
     return updatedUnits;
-  }, [unitBookingStatus, units]);
+  }, [unitStatusListing, units]);
 
   const fetchUnitsBookingStatus = () => {
-    getUnitsBookingStatus({
+    getUnitStatusListing({
       project_id,
       project_type: structureType || selectedStructure,
       project_tower: towerId || 0,
@@ -120,7 +120,7 @@ export const SelectUnit = props => {
 
       <UnitSelector
         {...props}
-        refreshing={unitBookingStatus.length > 0 && loading}
+        refreshing={unitStatusListing.length > 0 && loading}
         floorNumber={floor}
         units={processedUnits}
         showBhkFilters={showBhkFilters}
