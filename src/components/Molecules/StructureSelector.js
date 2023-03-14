@@ -21,7 +21,29 @@ const getStructureItems = () => {
           fillSecondary={theme.colors.primary}
         />
       ),
-      value: 6,
+      value: 'Apartment',
+      imageStyle: styles.shop,
+    },
+    {
+      title: 'Towers',
+      src: (
+        <TowerIcon
+          fill={theme.colors.accent}
+          fillSecondary={theme.colors.primary}
+        />
+      ),
+      value: 'Offices',
+      imageStyle: styles.shop,
+    },
+    {
+      title: 'Towers',
+      src: (
+        <TowerIcon
+          fill={theme.colors.accent}
+          fillSecondary={theme.colors.primary}
+        />
+      ),
+      value: 'Shop',
       imageStyle: styles.shop,
     },
     {
@@ -32,7 +54,7 @@ const getStructureItems = () => {
           fillSecondary={theme.colors.primary}
         />
       ),
-      value: 4,
+      value: 'Bunglows',
       imageStyle: styles.shop,
     },
     {
@@ -43,7 +65,7 @@ const getStructureItems = () => {
           fillSecondary={theme.colors.primary}
         />
       ),
-      value: 5,
+      value: 'Plots',
       imageStyle: styles.shop,
     },
   ];
@@ -70,7 +92,12 @@ function StructureSelector(props) {
     onSelectStructure,
     projectTypes,
     activeTypes,
+    projectData,
   } = props;
+  console.log(
+    '🚀 ~ file: StructureSelector.js:75 ~ StructureSelector ~ projectData:',
+    projectData,
+  );
 
   const {t} = useTranslation();
 
@@ -82,7 +109,7 @@ function StructureSelector(props) {
 
       <View style={styles.container}>
         {getStructureItems()
-          .filter(structure => projectTypes.includes(structure.value))
+          .filter(structure => projectData?.includes(structure.value))
           .map(item => (
             <ImageRender
               key={item.value}

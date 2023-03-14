@@ -8,7 +8,7 @@ import StructureSelector from 'components/Molecules/StructureSelector';
 import {useSalesLoading} from 'redux/selectors';
 
 function SelectStructure(props) {
-  const {navigation} = props;
+  const {navigation, route} = props;
 
   const {selectedProject} = useSelector(s => s.project);
   const loading = useSalesLoading();
@@ -16,6 +16,12 @@ function SelectStructure(props) {
   const {project_structure = {}} = selectedProject;
   const projectTypes =
     Object.keys(project_structure)?.map(v => Number(v)) || [];
+
+  const {projectData} = route?.params || {};
+  console.log(
+    '🚀 ~ file: SelectStructure.js:21 ~ SelectStructure ~ projectData:',
+    projectData.id,
+  );
 
   const handlePress = (selectedStructure, towerType) => {
     const project_id = selectedProject.id;
@@ -41,6 +47,7 @@ function SelectStructure(props) {
       <StructureSelector
         onSelectStructure={handlePress}
         projectTypes={projectTypes}
+        projectData={projectData.project_category}
       />
     </>
   );

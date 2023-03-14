@@ -43,8 +43,8 @@ const ProjectCard = props => {
     country,
   } = item;
 
-  const loadProjectCategories = project_category => {
-    const next = 'BC_Step_OnedotOne';
+  const loadProjectCategories = () => {
+    navigation.navigate('BC_Step_dot_One', {projectData: item});
   };
 
   return (
