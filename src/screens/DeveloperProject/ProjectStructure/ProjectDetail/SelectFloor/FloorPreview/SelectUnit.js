@@ -32,10 +32,6 @@ export const SelectUnit = props => {
   const {unitList} = useSelector(s => s.projectStructure);
 
   const loading = useSalesLoading();
-  console.log(
-    '🚀 ~ file: SelectUnit.js:32 ~ SelectUnit ~ unitBookingStatus:',
-    unitBookingStatus,
-  );
 
   useEffect(() => {
     fetchUnitsBookingStatus();
