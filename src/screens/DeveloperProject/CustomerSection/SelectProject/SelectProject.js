@@ -39,10 +39,8 @@ const ProjectCard = props => {
     country,
   } = item;
 
-  const loadProjectCategories = project_category => {
-    const next = 'CS_Step_One';
-
-    navigation.navigate(next);
+  const loadProjectCategories = () => {
+    navigation.navigate('CS_Step_dot_One', {projectData: item});
   };
 
   return (

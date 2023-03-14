@@ -11,6 +11,17 @@ import TowerIcon from 'assets/images/tower.svg';
 import BungalowIcon from 'assets/images/bungalow.svg';
 import PlotIcon from 'assets/images/plot.svg';
 
+const getProjectTypes = projectCategories => {
+  const types =
+    projectCategories
+      ?.replace('Apartment', 'Tower')
+      ?.replace('Shop', 'Tower')
+      ?.replace('Offices', 'Tower')
+      ?.split(',') || [];
+
+  return [...new Set(types)];
+};
+
 const getStructureItems = () => {
   return [
     {
@@ -21,29 +32,7 @@ const getStructureItems = () => {
           fillSecondary={theme.colors.primary}
         />
       ),
-      value: 'Apartment',
-      imageStyle: styles.shop,
-    },
-    {
-      title: 'Towers',
-      src: (
-        <TowerIcon
-          fill={theme.colors.accent}
-          fillSecondary={theme.colors.primary}
-        />
-      ),
-      value: 'Offices',
-      imageStyle: styles.shop,
-    },
-    {
-      title: 'Towers',
-      src: (
-        <TowerIcon
-          fill={theme.colors.accent}
-          fillSecondary={theme.colors.primary}
-        />
-      ),
-      value: 'Shop',
+      value: 'Tower',
       imageStyle: styles.shop,
     },
     {
@@ -90,14 +79,11 @@ function StructureSelector(props) {
     subtitle,
     hideTitle,
     onSelectStructure,
-    projectTypes,
     activeTypes,
-    projectData,
+    projectCategories,
   } = props;
-  console.log(
-    '🚀 ~ file: StructureSelector.js:75 ~ StructureSelector ~ projectData:',
-    projectData,
-  );
+
+  const projectTypes = getProjectTypes(projectCategories);
 
   const {t} = useTranslation();
 
@@ -109,7 +95,7 @@ function StructureSelector(props) {
 
       <View style={styles.container}>
         {getStructureItems()
-          .filter(structure => projectData?.includes(structure.value))
+          .filter(structure => projectTypes?.includes(structure.value))
           .map(item => (
             <ImageRender
               key={item.value}

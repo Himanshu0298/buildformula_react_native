@@ -6,7 +6,11 @@ import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
 import StructureSelector from 'components/Molecules/StructureSelector';
 
-function SelectStructure({navigation}) {
+function SelectStructure(props) {
+  const {navigation, route} = props;
+
+  const {projectData} = route?.params || {};
+
   const {selectedProject} = useSelector(s => s.project);
   const {loading} = useSelector(s => s.customer);
 
@@ -42,6 +46,7 @@ function SelectStructure({navigation}) {
         subtitle="subtitle_customer_section"
         onSelectStructure={handlePress}
         projectTypes={projectTypes}
+        projectCategories={projectData.project_category}
       />
     </>
   );
