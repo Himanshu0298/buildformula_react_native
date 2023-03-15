@@ -129,9 +129,14 @@ function UnitList(props) {
   }, []);
 
   const projectId = 0;
+  const project_type = 6;
 
   const loadData = async () => {
-    await getUnitList({project_id: selectedProject.id, id: projectId});
+    await getUnitList({
+      project_id: selectedProject.id,
+      id: projectId,
+      project_type,
+    });
     await getProjectMasterList({project_id: selectedProject.id});
   };
 

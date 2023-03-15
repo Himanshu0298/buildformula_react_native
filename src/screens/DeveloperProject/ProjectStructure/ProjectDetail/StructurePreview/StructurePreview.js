@@ -24,7 +24,7 @@ function StructurePreview(props) {
 
     let nextStep = 'CS_Step_Four';
 
-    if (selectedStructure === 'Tower') {
+    if (selectedStructure === 6) {
       nextStep = 'TowerPreview';
       params.towerType = towerType;
     }
@@ -40,6 +40,7 @@ function StructurePreview(props) {
         onSelectStructure={handlePress}
         projectTypes={projectTypes}
         projectCategories={projectDetails.project_category}
+        navigation={navigation}
       />
     </View>
   );

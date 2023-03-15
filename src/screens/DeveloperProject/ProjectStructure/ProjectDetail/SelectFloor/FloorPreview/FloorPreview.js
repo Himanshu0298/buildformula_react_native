@@ -67,6 +67,7 @@ function FloorPreview(props) {
         selectedBhk={selectedBhk}
         renderUnits={renderUnits}
         handleBhkChange={setSelectedBhk}
+        edit
       />
     </View>
   );

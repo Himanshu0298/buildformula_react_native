@@ -40,14 +40,13 @@ function BhkList({onPress, selectedBhk}) {
 function FloorSelector(props) {
   const {
     navigation,
-    selectedBhk,
     floors,
     towerId,
     towerLabel,
     towerType,
-    handleBhkChange,
     projectId,
     renderUnits,
+    edit,
   } = props || {};
 
   const [selectedFloor, setSelectedFloor] = useState();
@@ -78,7 +77,7 @@ function FloorSelector(props) {
 
       <View style={styles.editIconContainer}>
         <Subheading>Floors</Subheading>
-        {projectId ? (
+        {edit ? (
           <OpacityButton
             opacity={0.1}
             color="#4872f4"

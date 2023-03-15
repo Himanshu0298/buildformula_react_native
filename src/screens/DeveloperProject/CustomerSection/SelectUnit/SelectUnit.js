@@ -5,7 +5,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import UnitSelector from 'components/Molecules/UnitSelector';
 import {getFloorNumber} from 'utils';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
-import {IconButton, Subheading} from 'react-native-paper';
+import {IconButton, Subheading, Text} from 'react-native-paper';
 import {STRUCTURE_TYPE_LABELS} from 'utils/constant';
 import {useSalesLoading} from 'redux/selectors';
 

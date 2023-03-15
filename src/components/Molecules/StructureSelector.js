@@ -71,18 +71,21 @@ function StructureSelector(props) {
     onSelectStructure,
     activeTypes,
     projectCategories,
+    navigation,
   } = props;
 
   const projectTypes = getProjectTypes(projectCategories);
 
   const {t} = useTranslation();
 
-  console.log('===========>projectTypes ', projectTypes);
-
   return (
     <>
       {!hideTitle ? (
-        <FormTitle title={t(title)} subTitle={t(subtitle)} />
+        <FormTitle
+          title={t(title)}
+          subTitle={t(subtitle)}
+          navigation={navigation}
+        />
       ) : null}
 
       <View style={styles.container}>

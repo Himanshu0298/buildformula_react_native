@@ -45,6 +45,7 @@ function SelectStructure(props) {
         onSelectStructure={handlePress}
         projectTypes={projectTypes}
         projectCategories={projectData.project_category}
+        navigation={navigation}
       />
     </>
   );

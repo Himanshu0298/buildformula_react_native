@@ -1,11 +1,11 @@
-import React from 'react';
 import ProjectLayout from 'components/Molecules/Layout/ProjectLayout';
-import SelectUnit from './SelectUnit';
+import React from 'react';
+import SelectUnitContainer from './SelectUnit';
 
 export default props => {
   return (
     <ProjectLayout {...props} header>
-      <SelectUnit {...props} />
+      <SelectUnitContainer {...props} />
     </ProjectLayout>
   );
 };

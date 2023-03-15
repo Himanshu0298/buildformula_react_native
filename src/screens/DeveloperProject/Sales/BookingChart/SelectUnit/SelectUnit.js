@@ -54,7 +54,7 @@ export const SelectUnit = props => {
       project_id,
       project_type: structureType || selectedStructure,
       project_tower: towerId || 0,
-      project_floor: Number(floorId || 0),
+      project_floor: floor_id || 0,
       id: projectId,
     });
   };
@@ -108,8 +108,6 @@ export const SelectUnit = props => {
   const floor = floor_id
     ? getFloorNumber(floor_id)
     : STRUCTURE_TYPE_LABELS?.[selectedStructure];
-
-  console.log('===========> floor', floor);
 
   return (
     <View style={styles.container}>
@@ -166,6 +164,8 @@ function SelectUnitContainer(props) {
     selectedStructure,
     towerType,
     projectData,
+    floor_id,
+    tower,
   } = route?.params || {};
 
   const projectId = projectData?.id;
@@ -175,6 +175,7 @@ function SelectUnitContainer(props) {
       project_id={project_id}
       floorId={floorId}
       towerId={towerId}
+      floor_id={floor_id}
       structureType={structureType}
       selectedStructure={selectedStructure}
       towerType={towerType}
@@ -183,6 +184,7 @@ function SelectUnitContainer(props) {
       displayHeader
       showBhkFilters={selectedStructure === 4}
       projectId={projectId}
+      tower={tower}
     />
   );
 }

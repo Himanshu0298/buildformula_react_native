@@ -1,23 +1,28 @@
 import React from 'react';
-import {View} from 'react-native';
-import PropTypes from 'prop-types';
-import {withTheme, Title, Caption} from 'react-native-paper';
+import {StyleSheet, View} from 'react-native';
+import {withTheme, Title, Caption, IconButton} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {secondaryTheme} from 'styles/theme';
 
-function FormTitle({title, renderTitle, subTitle, theme}) {
+function FormTitle({title, renderTitle, subTitle, navigation}) {
   return (
-    <View
-      style={{
-        backgroundColor: theme.colors.primary,
-        padding: 20,
-        wight: '100%',
-      }}>
+    <View style={styles.container}>
       <SafeAreaView edges={['top', 'left', 'right']}>
-        <Title theme={secondaryTheme}>
-          {title || (renderTitle && renderTitle())}
-        </Title>
-        <Caption theme={secondaryTheme}>{subTitle}</Caption>
+        <View style={styles.subContainer}>
+          <IconButton
+            icon="keyboard-backspace"
+            size={22}
+            color="#ffff"
+            style={styles.backIcon}
+            onPress={() => navigation.goBack()}
+          />
+          <Title theme={secondaryTheme}>
+            {title || (renderTitle && renderTitle())}
+          </Title>
+        </View>
+        <View style={styles.subTitleContainer}>
+          <Caption theme={secondaryTheme}>{subTitle}</Caption>
+        </View>
       </SafeAreaView>
     </View>
   );
@@ -29,10 +34,19 @@ FormTitle.defaultProps = {
   subTitle: 'subTitle',
 };
 
-// FormTitle.propTypes = {
-//   title: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]).isRequired,
-//   renderTitle: PropTypes.func,
-//   subTitle: PropTypes.string.isRequired,
-// };
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: '#4872F4',
+    wight: '100%',
+  },
+  subContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  subTitleContainer: {
+    marginLeft: 40,
+    paddingBottom: 20,
+  },
+});
 
 export default withTheme(FormTitle);
