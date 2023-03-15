@@ -20,7 +20,9 @@ export const SelectUnit = props => {
     towerType,
     displayHeader,
     showBhkFilters,
-    projectid,
+    projectData,
+    floor_id,
+    tower_id,
   } = props || {};
 
   const {getUnitStatusListing} = useSalesActions();
@@ -70,9 +72,9 @@ export const SelectUnit = props => {
     getUnitStatusListing({
       project_id,
       project_type: structureType || selectedStructure,
-      project_tower: towerId || 0,
-      project_floor: floorId || 0,
-      id: projectid,
+      project_tower: tower_id || 0,
+      project_floor: floor_id || 0,
+      id: projectData?.id,
     });
   };
 
@@ -122,7 +124,7 @@ export const SelectUnit = props => {
         {...props}
         refreshing={unitStatusListing.length > 0 && loading}
         floorNumber={floor}
-        units={processedUnits}
+        units={unitStatusListing}
         showBhkFilters={showBhkFilters}
         displayHeader={displayHeader}
         floorType={structureType || selectedStructure}
@@ -144,7 +146,7 @@ function SelectUnitContainer(props) {
     structureType,
     selectedStructure,
     towerType,
-    id,
+    projectData,
   } = route?.params || {};
 
   return (
@@ -152,13 +154,13 @@ function SelectUnitContainer(props) {
       project_id={project_id}
       floorId={floorId}
       towerId={towerId}
+      projectData={projectData}
       structureType={structureType}
       selectedStructure={selectedStructure}
       towerType={towerType}
       navigation={navigation}
       displayHeader
       showBhkFilters={selectedStructure === 4}
-      projectid={id}
     />
   );
 }

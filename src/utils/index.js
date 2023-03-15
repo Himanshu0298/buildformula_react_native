@@ -98,6 +98,9 @@ export function getTowerLabel(i) {
 }
 
 export function getFloorNumber(i) {
+  if (isNaN(i)) {
+    return `${i} Floor`;
+  }
   i = parseInt(i, 10);
   const j = i % 10;
   const k = i % 100;
@@ -115,7 +118,6 @@ export function getFloorNumber(i) {
   if (i === 0) {
     return 'Ground Floor';
   }
-
   return `${floor} Floor`;
 }
 

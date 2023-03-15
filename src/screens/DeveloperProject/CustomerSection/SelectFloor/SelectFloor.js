@@ -4,18 +4,28 @@ import {useSelector} from 'react-redux';
 import {isNumber} from 'lodash';
 import FloorSelector from 'components/Molecules/FloorSelector';
 import {getTowerLabel} from 'utils';
-import {SelectUnit} from 'screens/DeveloperProject/Sales/BookingChart/SelectUnit/SelectUnit';
+import {SelectUnit} from 'screens/DeveloperProject/CustomerSection/SelectUnit/SelectUnit';
 import useProjectStructureActions from 'redux/actions/projectStructureActions';
 
 function SelectFloor(props) {
   const {route} = props;
-  const {selectedStructure, towerType, towerId, project_id, projectId} =
-    route?.params || {};
+  const {
+    selectedStructure,
+    towerType,
+    towerId,
+    project_id,
+    projectId,
+    projectData,
+    tower_id,
+    tower_label,
+  } = route?.params || {};
 
   const {getFloorList} = useProjectStructureActions();
 
   const {selectedProject} = useSelector(s => s.project);
   const {floorList, loading} = useSelector(s => s.projectStructure);
+
+  const floor_id = floorList.find(i => i.id)?.floor;
 
   const [selectedBhk, setSelectedBhk] = React.useState();
 
@@ -69,6 +79,9 @@ function SelectFloor(props) {
         showBhkFilters={false}
         displayHeader={false}
         projectId={projectId}
+        floor_id={floor_id}
+        tower_id={tower_id}
+        projectData={projectData}
       />
     );
   };
@@ -79,7 +92,7 @@ function SelectFloor(props) {
       floors={floorList}
       towerId={towerId}
       towerType={towerType}
-      towerLabel={getTowerLabel(towerId)}
+      towerLabel={tower_label}
       selectedBhk={selectedBhk}
       renderUnits={renderUnits}
       handleBhkChange={setSelectedBhk}
