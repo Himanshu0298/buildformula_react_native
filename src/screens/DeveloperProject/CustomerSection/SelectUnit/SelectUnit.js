@@ -27,7 +27,6 @@ export const SelectUnit = props => {
 
   const {getUnitStatusListing} = useSalesActions();
 
-  const {selectedProject} = useSelector(s => s.project);
   const {unitStatusListing} = useSelector(s => s.sales);
 
   const loading = useSalesLoading();
@@ -37,36 +36,6 @@ export const SelectUnit = props => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [towerId, floorId]);
-
-  const units = useMemo(() => {
-    const structureData =
-      selectedProject?.project_structure?.[selectedStructure] || {};
-
-    if ([4, 5].includes(selectedStructure)) {
-      return structureData.units;
-    }
-
-    const {floors = {}} =
-      structureData?.towers?.find(i => i.tower_id === towerId) || {};
-
-    return floors?.[floorId]?.units || [];
-  }, [floorId, selectedProject, selectedStructure, towerId]);
-
-  const processedUnits = useMemo(() => {
-    const updatedUnits = units.map(unit => {
-      const bookingData = unitStatusListing.find(
-        i => Number(i.id) === Number(unit.unit_id),
-      );
-
-      if (bookingData) {
-        unit = {...unit, ...bookingData};
-      }
-
-      return unit;
-    });
-
-    return updatedUnits;
-  }, [unitStatusListing, units]);
 
   const fetchUnitsBookingStatus = () => {
     getUnitStatusListing({

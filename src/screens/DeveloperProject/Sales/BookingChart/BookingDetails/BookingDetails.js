@@ -356,8 +356,7 @@ function FormContent(props) {
 
 function BookingDetails(props) {
   const {navigation, route} = props;
-  const {project_id, withRate, unit_id, selectedStructure} =
-    route?.params || {};
+  const {project_id, withRate, id, selectedStructure} = route?.params || {};
 
   const {getBrokersList} = useSalesActions();
 
@@ -385,7 +384,7 @@ function BookingDetails(props) {
       ...data,
       project_id,
       withRate,
-      unit_id,
+      unit_id: id,
       project_main_types: selectedStructure,
     };
 

@@ -54,7 +54,7 @@ function CustomerSection(props) {
   const {route, navigation} = props;
   const {project_id, unitId, unit} = route?.params || {};
 
-  const id = unit?.unit_id;
+  const id = unit?.id;
 
   const insets = useSafeAreaInsets();
 

@@ -3,7 +3,7 @@ import {withTheme} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import FloorSelector from 'components/Molecules/FloorSelector';
 import useProjectStructureActions from 'redux/actions/projectStructureActions';
-import SelectUnit from 'screens/DeveloperProject/Sales/BookingChart/SelectUnit';
+import {SelectUnit} from 'screens/DeveloperProject/Sales/BookingChart/SelectUnit/SelectUnit';
 
 function SelectFloor(props) {
   const {route} = props;

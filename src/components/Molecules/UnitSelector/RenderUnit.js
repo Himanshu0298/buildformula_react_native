@@ -65,7 +65,7 @@ function checkDisabled(isUnitDisabled, unit) {
 
 function RenderUnit(props) {
   const {unit = {}, onSelectUnit, isUnitDisabled, floorType} = props;
-  const {unitLabel, unit_id, bhk} = unit;
+  const {unitLabel, bhk} = unit;
 
   const unitBhk = BHK_OPTIONS.find(item => item.type === unit.bhk);
 
@@ -87,7 +87,7 @@ function RenderUnit(props) {
       key={unitLabel}
       disabled={disabled}
       style={styles.container}
-      onPress={() => onSelectUnit({...unit, unit_id})}>
+      onPress={() => onSelectUnit(unit)}>
       <Text
         style={[styles.captionStyle, {color: `${bookingStyle.borderColor}`}]}>
         {statusStyle.title}

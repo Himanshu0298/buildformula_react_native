@@ -186,7 +186,7 @@ function AddBankDetails(props) {
 
     formData.append('project_id', selectedProject.id);
     formData.append('project_bankloan_id', id || 0);
-    formData.append('unit_id', unit.unit_id);
+    formData.append('unit_id', unit?.id);
     formData.append('bank_name', values.bank_name);
     formData.append('bank_branch', values.bank_branch);
     formData.append('bank_address', values.bank_address);
@@ -200,7 +200,7 @@ function AddBankDetails(props) {
     updateBankDetails(formData).then(() => {
       getBankDetails({
         project_id: selectedProject.id,
-        unit_id: unit.unit_id,
+        unit_id: unit?.id,
       });
       navigation.goBack();
     });

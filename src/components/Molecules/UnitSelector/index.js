@@ -41,11 +41,9 @@ function BhkList({onPress, selectedBhk}) {
 
 function UnitSelector(props) {
   const {
-    showBhkFilters,
     refreshing,
     onRefresh,
     units,
-    floorNumber,
     onSelectUnit,
     floorType,
     isUnitDisabled,
@@ -89,7 +87,7 @@ function UnitSelector(props) {
         }
         renderItem={({item: unit}) => (
           <RenderUnit
-            key={unit?.unit_id}
+            key={unit?.id}
             unit={unit}
             floorType={floorType}
             onSelectUnit={onSelectUnit}

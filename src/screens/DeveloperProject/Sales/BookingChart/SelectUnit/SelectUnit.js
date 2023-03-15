@@ -73,7 +73,7 @@ export const SelectUnit = props => {
 
   const handleBook = () => {
     if (modulePermission?.editor || modulePermission?.admin) {
-      lockUnit({unit_id: selectedUnit.unit_id, project_id: selectedProject.id});
+      lockUnit({unit_id: selectedUnit.id, project_id: selectedProject.id});
       toggleTimer({showTimer: true, startTime: new Date(), time: 1800});
       toggleDialog();
 

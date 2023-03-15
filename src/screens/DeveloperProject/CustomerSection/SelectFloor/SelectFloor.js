@@ -23,7 +23,7 @@ function SelectFloor(props) {
   const {getFloorList} = useProjectStructureActions();
 
   const {selectedProject} = useSelector(s => s.project);
-  const {floorList, loading} = useSelector(s => s.projectStructure);
+  const {floorList} = useSelector(s => s.projectStructure);
 
   const floor_id = floorList.find(i => i.id)?.floor;
 
@@ -41,31 +41,6 @@ function SelectFloor(props) {
       tower_id: towerId,
     });
   };
-
-  // const structureData =
-  //   selectedProject.project_structure?.[selectedStructure] || {};
-
-  // const {floors = {}} =
-  //   structureData?.towers?.find(i => i.tower_id === towerId) || {};
-
-  // const parsedFloors = useMemo(() => {
-  //   return Object.entries(floors).map(([key, value]) => ({id: key, ...value}));
-  // }, [floors]);
-
-  // const filteredFloors = useMemo(() => {
-  //   return parsedFloors.filter(floor => {
-  //     const units =
-  //       ([4, 5].includes(selectedStructure)
-  //         ? structureData.units
-  //         : floor.units) || [];
-
-  //     if (isNumber(selectedBhk) && floor.structureType === 1) {
-  //       return Boolean(units.filter(i => i.bhk === selectedBhk)?.length);
-  //     }
-
-  //     return true;
-  //   });
-  // }, [parsedFloors, selectedBhk, selectedStructure, structureData.units]);
 
   const renderUnits = params => {
     return (

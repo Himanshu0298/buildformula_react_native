@@ -45,6 +45,8 @@ function RenderForm(props) {
     }));
   }, [project_structure_project_category]);
 
+  console.log('===========>categoryOptions ', categoryOptions);
+
   // const apartment = values.project_category === 'Apartment';
 
   // const shop = values.project_category === 'Shop';
@@ -190,9 +192,9 @@ function ProjectStructure(props) {
   }, [projectDetails]);
 
   const onSubmit = values => {
-    const arrString = values?.bhk_configuration?.join('  ') || undefined;
+    const arrString = values?.bhk_configuration?.join('  ');
 
-    const arrCategory = values?.project_category?.join(',') || undefined;
+    const arrCategory = values?.project_category?.join(',');
 
     const data = {
       project_id: selectedProject.id,
