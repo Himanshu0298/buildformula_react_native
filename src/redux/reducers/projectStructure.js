@@ -53,6 +53,7 @@ import {
 
 const initialState = {
   loading: false,
+  unitLoading: false,
   refreshing: false,
   errorMessage: undefined,
   projectList: [],
@@ -105,13 +106,7 @@ const reducer = (state = initialState, action = {}) => {
         loading: false,
       };
     }
-    case `${GET_UNIT_LIST}_FULFILLED`: {
-      return {
-        ...state,
-        unitList: payload,
-        loading: false,
-      };
-    }
+
     case `${GET_MODULE_LIST}_FULFILLED`: {
       return {
         ...state,
@@ -162,6 +157,29 @@ const reducer = (state = initialState, action = {}) => {
       };
     }
 
+    case `${GET_UNIT_LIST}_FULFILLED`: {
+      return {
+        ...state,
+        unitList: payload,
+        unitLoading: false,
+      };
+    }
+
+    case `${GET_UNIT_LIST}_PENDING`: {
+      return {
+        ...state,
+        unitLoading: true,
+      };
+    }
+
+    case `${GET_UNIT_LIST}_REJECTED`: {
+      return {
+        ...state,
+        unitLoading: false,
+        errorMessage: payload,
+      };
+    }
+
     case `${GET_PROJECT_LIST}_PENDING`:
     case `${GET_PROJECT_CATEGORIES}_PENDING`:
     case `${DELETE_PROJECT}_PENDING`:
@@ -200,7 +218,6 @@ const reducer = (state = initialState, action = {}) => {
     case `${ADD_FLOOR}_PENDING`:
     case `${UPDATE_FLOOR}_PENDING`:
     case `${DELETE_FLOOR}_PENDING`:
-    case `${GET_UNIT_LIST}_PENDING`:
     case `${ADD_UNIT}_PENDING`:
     case `${ADD_BUNGALOW}_PENDING`:
     case `${ADD_UNIT_LOCATION}_PENDING`:
@@ -296,7 +313,6 @@ const reducer = (state = initialState, action = {}) => {
     case `${ADD_FLOOR}_REJECTED`:
     case `${UPDATE_FLOOR}_REJECTED`:
     case `${DELETE_FLOOR}_REJECTED`:
-    case `${GET_UNIT_LIST}_REJECTED`:
     case `${ADD_UNIT}_REJECTED`:
     case `${ADD_BUNGALOW}_REJECTED`:
     case `${ADD_UNIT_LOCATION}_REJECTED`:

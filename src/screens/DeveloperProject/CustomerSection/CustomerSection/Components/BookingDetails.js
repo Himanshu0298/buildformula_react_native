@@ -100,11 +100,8 @@ function CustomerCredLogin(props) {
       message: 'Are you sure you want to Cancel?',
       confirmText: 'Yes',
       onConfirm: () => {
-        cancelBooking({project_id: projectId, project_bookings_id: id}).then(
-          () => {
-            navigation.goBack();
-          },
-        );
+        cancelBooking({project_id: projectId, project_bookings_id: id});
+        navigation.goBack();
       },
     });
   };
@@ -150,21 +147,19 @@ function CustomerCredLogin(props) {
             <Text>Delete</Text>
           </OpacityButton>
         </View>
-        <View>
-          <OpacityButton
-            opacity={0.1}
-            onPress={() => handleCancel(id)}
+        <OpacityButton
+          opacity={0.1}
+          onPress={() => handleCancel(id)}
+          color={theme.colors.primary}
+          style={styles.editButton}>
+          <MaterialCommunityIcons
             color={theme.colors.primary}
-            style={styles.editButton}>
-            <MaterialCommunityIcons
-              color={theme.colors.primary}
-              name="tag"
-              size={10}
-              style={styles.iconStyle}
-            />
-            <Text>Cancel & Open for re-sale</Text>
-          </OpacityButton>
-        </View>
+            name="tag"
+            size={10}
+            style={styles.iconStyle}
+          />
+          <Text>Cancel & Open for re-sale</Text>
+        </OpacityButton>
       </View>
       <View style={styles.heading}>
         <Subheading style={{color: theme.colors.primary}}>
@@ -796,24 +791,16 @@ function TermsCondition({bookingDetails}) {
         Terms & Conditions
       </Subheading>
       <View style={styles.termsBody}>
-        <Text style={{color: '#000'}}>
-          {console.log(
-            '----->full_payment_remark ',
-            full_payment_remark,
-            custom_payment_remark,
-            installment_payment_remarks,
-          )}
-          <RenderHTML
-            style={{color: '#000'}}
-            source={{
-              html:
-                full_payment_remark ||
-                custom_payment_remark ||
-                installment_payment_remarks,
-            }}
-            contentWidth={Layout.window.width - 20}
-          />
-        </Text>
+        <RenderHTML
+          style={{color: '#000'}}
+          source={{
+            html:
+              full_payment_remark ||
+              custom_payment_remark ||
+              installment_payment_remarks,
+          }}
+          contentWidth={Layout.window.width - 20}
+        />
       </View>
     </View>
   );
@@ -969,7 +956,6 @@ const styles = StyleSheet.create({
   },
   termsBody: {
     paddingBottom: 10,
-    paddingHorizontal: 3,
   },
   installmentAmount: {
     alignItems: 'center',
@@ -978,7 +964,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   termsContainer: {
-    paddingHorizontal: 15,
+    padding: 10,
   },
   otpContainer: {
     flexDirection: 'row',

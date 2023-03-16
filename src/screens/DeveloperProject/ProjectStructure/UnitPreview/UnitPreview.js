@@ -1,3 +1,4 @@
+/* eslint-disable global-require */
 import React from 'react';
 import {
   Image,
@@ -38,7 +39,7 @@ import {
   FILES_DATA,
   OWNER_DATA,
   SECURITY_DATA,
-} from '../ProjectDetail/ProjectPreview/Data';
+} from 'screens/DeveloperProject/ProjectStructure/ProjectDetail/ProjectPreview/Data';
 
 const description =
   ' Lorem ipsum dolor sit amet consectetur. Tortor adipiscing leo sempermagna ipsum. Suspendisse odio adipiscing ultrices euismod. Eleifend ut';

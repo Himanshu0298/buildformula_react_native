@@ -131,7 +131,7 @@ const AddUnit = props => {
   const handleProjectSelection = async value => {
     formikProps.setFieldValue('projectName', value);
 
-    const option = projectList.find(i => {
+    const option = projectList?.find(i => {
       return i.id === value;
     });
 

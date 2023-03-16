@@ -20,8 +20,8 @@ import {getShadow} from 'utils';
 import {theme} from 'styles/theme';
 import useProjectStructureActions from 'redux/actions/projectStructureActions';
 import {useSelector} from 'react-redux';
-import Spinner from 'react-native-loading-spinner-overlay';
 import {useAlert} from 'components/Atoms/Alert';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const UnitCard = ({item, navigation, handleDelete}) => {
   const [visible, setVisible] = React.useState(false);
@@ -116,15 +116,20 @@ function UnitList(props) {
 
   const [searchQuery, setSearchQuery] = React.useState('');
 
-  const {getUnitList, removeUnit, getProjectList, getProjectMasterList} =
-    useProjectStructureActions();
-  const {unitList = [], loading} = useSelector(s => s.projectStructure);
+  const {getUnitList, removeUnit} = useProjectStructureActions();
+  const {
+    unitList = [],
+    unitLoading,
+    loading,
+  } = useSelector(s => s.projectStructure);
   const {selectedProject} = useSelector(s => s.project);
+
+  console.log('===========> unitLoading', unitLoading);
+
+  console.log('===========> loading', loading);
 
   useEffect(() => {
     loadData();
-    getProjectList({project_id: selectedProject.id});
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -135,12 +140,11 @@ function UnitList(props) {
       project_id: selectedProject.id,
       id: projectId,
     });
-    await getProjectMasterList({project_id: selectedProject.id});
   };
 
   const filteredUnit = useMemo(() => {
     const query = searchQuery.toLowerCase();
-    return unitList.filter(
+    return unitList?.filter(
       i =>
         i?.project_unit?.toLowerCase().includes(query) ||
         i?.project_name?.toLowerCase().includes(query) ||
@@ -197,7 +201,7 @@ function UnitList(props) {
 
   return (
     <View style={styles.mainContainer}>
-      <Spinner visible={loading} textContent="" />
+      <Spinner visible={unitLoading} textContent="" />
       <Subheading> Unit List</Subheading>
       <Searchbar
         style={styles.searchBar}

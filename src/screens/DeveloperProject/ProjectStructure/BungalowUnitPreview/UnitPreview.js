@@ -1,3 +1,4 @@
+/* eslint-disable global-require */
 import React from 'react';
 import {
   Image,
@@ -38,7 +39,7 @@ import {
   FILES_DATA,
   OWNER_DATA,
   SECURITY_DATA,
-} from '../ProjectDetail/ProjectPreview/Data';
+} from 'screens/DeveloperProject/ProjectStructure/ProjectDetail/ProjectPreview/Data';
 
 const data = [
   {

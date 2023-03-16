@@ -20,8 +20,15 @@ function StructurePreview(props) {
 
   const handlePress = (selectedStructure, towerType) => {
     const project_id = selectedProject.id;
-    const params = {selectedStructure, id, towerType, project_id};
 
+    const projectData = projectDetails;
+    const params = {
+      selectedStructure,
+      id,
+      towerType,
+      project_id,
+      projectData,
+    };
     let nextStep = 'CS_Step_Four';
 
     if (selectedStructure === 6) {

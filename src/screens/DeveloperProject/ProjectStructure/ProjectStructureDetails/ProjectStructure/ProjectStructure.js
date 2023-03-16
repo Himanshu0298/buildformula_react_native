@@ -45,13 +45,13 @@ function RenderForm(props) {
     }));
   }, [project_structure_project_category]);
 
-  console.log('===========>categoryOptions ', categoryOptions);
+  // const apartment = values.project_category === 1;
 
-  // const apartment = values.project_category === 'Apartment';
+  // const shop = values.project_category === 2;
 
-  // const shop = values.project_category === 'Shop';
+  // const offices = values.project_category === 4;
 
-  // const offices = values.project_category === 'Offices';
+  // const plots = values.project_category === 5;
 
   return (
     <View style={styles.formContainer}>
@@ -80,6 +80,7 @@ function RenderForm(props) {
           returnKeyType="next"
           error={errors.total_no_of_towers}
         />
+
         <RenderInput
           name="total_no_of_units"
           label="Total Number of Unit"
@@ -168,7 +169,7 @@ function ProjectStructure(props) {
 
   const initialValues = React.useMemo(() => {
     const {
-      project_category_title: project_category,
+      project_category,
       total_no_of_towers,
       total_no_of_units,
       total_no_of_bunglows,
@@ -194,12 +195,12 @@ function ProjectStructure(props) {
   const onSubmit = values => {
     const arrString = values?.bhk_configuration?.join('  ');
 
-    const arrCategory = values?.project_category?.join(',');
+    const arrCategory = values.project_category;
 
     const data = {
       project_id: selectedProject.id,
       id: projectId,
-      project_category: [arrCategory],
+      project_category: arrCategory,
       total_no_of_towers: values.total_no_of_towers,
       total_no_of_units: values.total_no_of_units,
       total_no_of_bunglows: values.total_no_of_bunglows,

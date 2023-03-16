@@ -42,9 +42,9 @@ const schema = Yup.object().shape({
     is: 'new',
     then: Yup.string('Invalid').email('Invalid').required('Required'),
   }),
-  customer_phone: Yup.number('Invalid').when('userType', {
+  customer_phone: Yup.number().when('userType', {
     is: 'new',
-    then: Yup.number('Invalid').required('Required'),
+    then: Yup.number().required('Required'),
   }),
   broker_id: Yup.string('Invalid').when('broker', {
     is: 'yes',
@@ -182,17 +182,19 @@ function FormContent(props) {
               <Text>Select user type</Text>
               <View style={styles.radioContainer}>
                 <Radio
-                  label="New user"
+                  label="New"
                   value="new"
                   checked={values.userType === 'new'}
                   onChange={value => setFieldValue('userType', value)}
                 />
-                <Radio
-                  label="Existing visitor"
-                  value="visitor"
-                  checked={values.userType === 'visitor'}
-                  onChange={value => setFieldValue('userType', value)}
-                />
+                <View style={{marginLeft: 60}}>
+                  <Radio
+                    label="Existing"
+                    value="visitor"
+                    checked={values.userType === 'visitor'}
+                    onChange={value => setFieldValue('userType', value)}
+                  />
+                </View>
               </View>
               {errors.selectedVisitor ? (
                 <RenderError error={errors.selectedVisitor} />
@@ -282,18 +284,20 @@ function FormContent(props) {
               <Text>Through broker?</Text>
               <View style={styles.radioContainer}>
                 <Radio
-                  label="Yes"
+                  label=" Yes"
                   value="yes"
                   checked={values.broker === 'yes'}
                   onChange={value => setFieldValue('broker', value)}
                 />
-                <Radio
-                  label="No"
-                  value="no"
-                  color={theme.colors.error}
-                  checked={values.broker === 'no'}
-                  onChange={value => setFieldValue('broker', value)}
-                />
+                <View style={{marginLeft: 60}}>
+                  <Radio
+                    label=" No"
+                    value="no"
+                    color={theme.colors.error}
+                    checked={values.broker === 'no'}
+                    onChange={value => setFieldValue('broker', value)}
+                  />
+                </View>
               </View>
             </View>
             {values.broker === 'yes' ? (
@@ -432,8 +436,8 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   radioContainer: {
-    justifyContent: 'space-between',
     flexDirection: 'row',
+    margin: 20,
   },
   visitorContainer: {
     marginTop: 10,
