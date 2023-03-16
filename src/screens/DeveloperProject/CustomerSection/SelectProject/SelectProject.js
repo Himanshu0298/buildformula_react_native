@@ -19,7 +19,6 @@ const Header = () => {
     <View style={styles.headerWrapper}>
       <View>
         <Title>Customer Section</Title>
-        <Caption>Select project for which you want to book property</Caption>
       </View>
     </View>
   );

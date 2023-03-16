@@ -16,15 +16,15 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import ScreenTitle from 'components/Atoms/ScreenTitle';
 import ActionButtons from 'components/Atoms/ActionButtons';
 
-const schema = Yup.object().shape({
-  bank_name: Yup.string().trim().required('Required'),
-  bank_branch: Yup.string().trim().required('Required'),
-  bank_address: Yup.string().trim().required('Required'),
-  loan_approval_letter: Yup.object().required('Required'),
-  loan_amount: Yup.string().required('Required'),
-  number_of_installment: Yup.string().required('Required'),
-  installment_amount: Yup.string().required('Required'),
-});
+// const schema = Yup.object().shape({
+//   bank_name: Yup.string().trim().required('Required'),
+//   bank_branch: Yup.string().trim().required('Required'),
+//   bank_address: Yup.string().trim().required('Required'),
+//   loan_approval_letter: Yup.object().required('Required'),
+//   loan_amount: Yup.string().required('Required'),
+//   number_of_installment: Yup.string().required('Required'),
+//   installment_amount: Yup.string().required('Required'),
+// });
 
 function RenderForm({navigation, formikProps}) {
   const {
@@ -218,7 +218,7 @@ function AddBankDetails(props) {
           validateOnChange={false}
           initialValues={initialValues}
           enableReinitialize
-          validationSchema={schema}
+          // validationSchema={schema}
           onSubmit={onSubmit}>
           {formikProps => <RenderForm formikProps={formikProps} {...props} />}
         </Formik>
