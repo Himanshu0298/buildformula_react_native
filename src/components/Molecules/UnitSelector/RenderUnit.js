@@ -65,7 +65,7 @@ function checkDisabled(isUnitDisabled, unit) {
 
 function RenderUnit(props) {
   const {unit = {}, onSelectUnit, isUnitDisabled, floorType} = props;
-  const {unitLabel, bhk} = unit;
+  const {unitLabel, project_bhk} = unit;
 
   const unitBhk = BHK_OPTIONS.find(item => item.type === unit.bhk);
 
@@ -112,7 +112,7 @@ function RenderUnit(props) {
         </View>
         <View style={styles.labelContainer}>
           <Text>{unit.project_unit}</Text>
-          {bhk ? <Caption>{`${bhk} BHK`}</Caption> : undefined}
+          {project_bhk ? <Caption>{`${project_bhk} BHK`}</Caption> : undefined}
         </View>
         {unit?.status === 7 ? (
           <View
