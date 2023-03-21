@@ -277,7 +277,7 @@ function Configuration(props) {
 function Details(props) {
   const {projectDetails} = props;
   const {
-    project_category_title,
+    project_category,
     total_no_of_units,
     total_no_of_towers,
     bhk_configuration,
@@ -290,7 +290,7 @@ function Details(props) {
       <View style={styles.detailContainer}>
         <View>
           <Caption>Project Category </Caption>
-          <Text style={styles.rawData}>{project_category_title}</Text>
+          <Text style={styles.rawData}>{project_category}</Text>
         </View>
         <View>
           <Caption>No of Towers Units</Caption>

@@ -41,7 +41,7 @@ function RenderForm(props) {
   const categoryOptions = useMemo(() => {
     return project_structure_project_category?.map(i => ({
       label: i?.title,
-      value: i?.title,
+      value: i?.id,
     }));
   }, [project_structure_project_category]);
 
@@ -192,12 +192,12 @@ function ProjectStructure(props) {
   const onSubmit = values => {
     const arrString = values?.bhk_configuration?.join('  ') || undefined;
 
-    const arrCategory = values?.project_category?.join(',') || undefined;
+    const arrCategory = values?.project_category;
 
     const data = {
       project_id: selectedProject.id,
       id: projectId,
-      project_category: [arrCategory],
+      project_category: arrCategory,
       total_no_of_towers: values.total_no_of_towers,
       total_no_of_units: values.total_no_of_units,
       total_no_of_bunglows: values.total_no_of_bunglows,
