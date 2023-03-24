@@ -10,6 +10,7 @@ import PropTypes from 'prop-types';
 import TowerIcon from 'assets/images/tower.svg';
 import BungalowIcon from 'assets/images/bungalow.svg';
 import PlotIcon from 'assets/images/plot.svg';
+import {getProjectTypes} from 'utils';
 
 const getStructureItems = () => {
   return [
@@ -68,21 +69,28 @@ function StructureSelector(props) {
     subtitle,
     hideTitle,
     onSelectStructure,
-    projectTypes,
     activeTypes,
+    projectCategories,
+    navigation,
   } = props;
+
+  const projectTypes = getProjectTypes(projectCategories);
 
   const {t} = useTranslation();
 
   return (
     <>
       {!hideTitle ? (
-        <FormTitle title={t(title)} subTitle={t(subtitle)} />
+        <FormTitle
+          title={t(title)}
+          subTitle={t(subtitle)}
+          navigation={navigation}
+        />
       ) : null}
 
       <View style={styles.container}>
         {getStructureItems()
-          .filter(structure => projectTypes.includes(structure.value))
+          .filter(structure => projectTypes?.includes(structure.value))
           .map(item => (
             <ImageRender
               key={item.value}

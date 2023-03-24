@@ -25,13 +25,14 @@ function TowerPreview(props) {
     await getTowerList({project_id: selectedProject.id, id});
   };
 
-  const onSelectTower = values => {
+  const onSelectTower = (values, tower) => {
     const towerLabel = towerList?.find(i => i.id === values);
     navigation.navigate('FloorPreview', {
       ...route?.params,
       towerId: values,
       label: towerLabel?.label,
       id,
+      tower,
     });
   };
 

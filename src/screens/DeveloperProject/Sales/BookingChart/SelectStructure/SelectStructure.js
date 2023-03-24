@@ -4,22 +4,25 @@ import {withTheme} from 'react-native-paper';
 import {theme} from 'styles/theme';
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
-import StructureSelector from 'components/Molecules/StructureSelector';
 import {useSalesLoading} from 'redux/selectors';
+import StructureSelector from 'components/Molecules/StructureSelector';
+import {getProjectTypes} from 'utils';
 
 function SelectStructure(props) {
-  const {navigation} = props;
+  const {navigation, route} = props;
 
   const {selectedProject} = useSelector(s => s.project);
   const loading = useSalesLoading();
 
-  const {project_structure = {}} = selectedProject;
-  const projectTypes =
-    Object.keys(project_structure)?.map(v => Number(v)) || [];
+  const {projectData} = route?.params || {};
+
+  const projectCategories = projectData.project_category;
+
+  const projectTypes = getProjectTypes(projectCategories);
 
   const handlePress = (selectedStructure, towerType) => {
     const project_id = selectedProject.id;
-    const params = {selectedStructure, project_id};
+    const params = {selectedStructure, project_id, projectData};
 
     let nextStep = 'BC_Step_Four';
 
@@ -41,6 +44,8 @@ function SelectStructure(props) {
       <StructureSelector
         onSelectStructure={handlePress}
         projectTypes={projectTypes}
+        projectCategories={projectData.project_category}
+        navigation={navigation}
       />
     </>
   );

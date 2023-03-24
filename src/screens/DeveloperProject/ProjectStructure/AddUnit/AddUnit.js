@@ -206,21 +206,23 @@ const AddUnit = props => {
   const loadTowers = async value => {
     formikProps.setFieldValue('projectCategory', value);
     return setTowerOptions(
-      towerList?.map(i => ({label: i.label, value: i.id})),
+      towerList?.map(i => ({label: i.label, value: i.tower})),
     );
   };
 
   const loadFloors = async value => {
     formikProps.setFieldValue('selectTower', value);
+    const tempTower = towerList?.find(i => i.tower === value);
+
     await getFloorList({
       project_id: selectedProject.id,
       id: towerId,
-      tower_id: value,
+      tower_id: tempTower.id,
     });
   };
 
   const floorOptions = useMemo(() => {
-    return floorList?.map(i => ({label: i.floor, value: i.id}));
+    return floorList?.map(i => ({label: i.floor, value: i.floor}));
   }, [floorList]);
 
   const onSubmit = async values => {
@@ -235,7 +237,9 @@ const AddUnit = props => {
       project_unit: unitNo,
     });
 
-    await getUnitList({project_id: selectedProject.id});
+    const projectId = 0;
+
+    await getUnitList({project_id: selectedProject.id, id: projectId});
 
     if (submitTypeRef.current === 'save') {
       navigation.goBack();

@@ -20,8 +20,8 @@ import {getShadow} from 'utils';
 import {theme} from 'styles/theme';
 import useProjectStructureActions from 'redux/actions/projectStructureActions';
 import {useSelector} from 'react-redux';
-import Spinner from 'react-native-loading-spinner-overlay';
 import {useAlert} from 'components/Atoms/Alert';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const UnitCard = ({item, navigation, handleDelete}) => {
   const [visible, setVisible] = React.useState(false);
@@ -75,7 +75,7 @@ const UnitCard = ({item, navigation, handleDelete}) => {
               </OpacityButton>
             }>
             <Menu.Item onPress={navToEdit} title="Edit" />
-            <Menu.Item onPress={deleteUnit} title="Delete" />
+            {/* <Menu.Item onPress={deleteUnit} title="Delete" /> */}
           </Menu>
         </View>
       </View>
@@ -98,7 +98,7 @@ const UnitCard = ({item, navigation, handleDelete}) => {
               : `${project_name}`}
           </Caption>
         </View>
-        <View style={{marginVertical: 10}}>
+        <View style={styles.unitFor}>
           <Text>{unit_for}</Text>
         </View>
       </TouchableOpacity>
@@ -116,20 +116,35 @@ function UnitList(props) {
 
   const [searchQuery, setSearchQuery] = React.useState('');
 
-  const {getUnitList, removeUnit, getProjectList, getProjectMasterList} =
-    useProjectStructureActions();
-  const {unitList = [], loading} = useSelector(s => s.projectStructure);
+  const {getUnitList, removeUnit} = useProjectStructureActions();
+  const {
+    unitList = [],
+    unitLoading,
+    loading,
+  } = useSelector(s => s.projectStructure);
   const {selectedProject} = useSelector(s => s.project);
 
+  console.log('===========> unitLoading', unitLoading);
+
+  console.log('===========> loading', loading);
+
+  useEffect(() => {
+    loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const projectId = 0;
+
   const loadData = async () => {
-    await getUnitList({project_id: selectedProject.id});
-    await getProjectList({project_id: selectedProject.id});
-    await getProjectMasterList({project_id: selectedProject.id});
+    await getUnitList({
+      project_id: selectedProject.id,
+      id: projectId,
+    });
   };
 
   const filteredUnit = useMemo(() => {
     const query = searchQuery.toLowerCase();
-    return unitList.filter(
+    return unitList?.filter(
       i =>
         i?.project_unit?.toLowerCase().includes(query) ||
         i?.project_name?.toLowerCase().includes(query) ||
@@ -139,11 +154,6 @@ function UnitList(props) {
         i?.unit_for?.toLowerCase().includes(query),
     );
   }, [unitList, searchQuery]);
-
-  useEffect(() => {
-    loadData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const handleDelete = async unit_id => {
     alert.show({
@@ -173,26 +183,25 @@ function UnitList(props) {
       label: 'Add Bungalow',
       onPress: () => navigation.navigate('AddBungalowUnit'),
     },
-    {
-      icon: plot,
-      color: theme.colors.primary,
-      label: 'Add Plot',
-      onPress: () => navigation.navigate('AddPlotUnit'),
-    },
-    {
-      icon: industrial,
-      color: theme.colors.primary,
-      label: 'Add Industrial Unit',
-      onPress: () => navigation.navigate('AddIndustrialUnit'),
-    },
+    // {
+    //   icon: plot,
+    //   color: theme.colors.primary,
+    //   label: 'Add Plot',
+    //   onPress: () => navigation.navigate('AddPlotUnit'),
+    // },
+    // {
+    //   icon: industrial,
+    //   color: theme.colors.primary,
+    //   label: 'Add Industrial Unit',
+    //   onPress: () => navigation.navigate('AddIndustrialUnit'),
+    // },
   ];
 
   const onSearch = v => setSearchQuery(v);
 
   return (
     <View style={styles.mainContainer}>
-      <Spinner visible={loading} textContent="" />
-
+      <Spinner visible={unitLoading} textContent="" />
       <Subheading> Unit List</Subheading>
       <Searchbar
         style={styles.searchBar}
@@ -279,11 +288,8 @@ const styles = StyleSheet.create({
     color: '#4872f4',
   },
 
-  fab: {
-    position: 'absolute',
-    right: 5,
-    bottom: 15,
-    backgroundColor: '#4872f4',
+  unitFor: {
+    marginVertical: 10,
   },
 });
 export default UnitList;

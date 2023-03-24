@@ -1,6 +1,8 @@
 import dayjs from 'dayjs';
 import _ from 'lodash';
 import {
+  GET_ASSIGNTO_DATA,
+  GET_COUNTRY_CODES,
   GET_VISITORS,
   GET_FOLLOWUP_LIST,
   GET_SALES_DATA,
@@ -69,6 +71,8 @@ const initialState = {
   loadingHoldBookingDetails: false,
   errorMessage: undefined,
   timerData: {showTimer: false},
+  countrycodes: [],
+  assigntoData: [],
   visitors: [],
   followups: [],
   followUpsData: {},
@@ -81,7 +85,7 @@ const initialState = {
   visitorAnalytics: {},
   visitorSuggestions: [],
   pipelines: [],
-  unitBookingStatus: [],
+  unitStatusListing: [],
   bankList: [],
   visitor: {},
   visitorFollowUp: {},
@@ -112,6 +116,35 @@ const reducer = (state = initialState, action = {}) => {
           showTimer: !state?.timerData?.showTimer,
           ...payload,
         },
+      };
+
+    case `${GET_COUNTRY_CODES}_FULFILLED`:
+      return {
+        ...state,
+        loading: false,
+        countrycodes: payload,
+      };
+
+    case `${GET_ASSIGNTO_DATA}_FULFILLED`:
+      return {
+        ...state,
+        loading: false,
+        assigntoData: payload,
+      };
+
+    case `${GET_COUNTRY_CODES}_PENDING`:
+    case `${GET_ASSIGNTO_DATA}_PENDING`:
+      return {
+        ...state,
+        loading: true,
+      };
+
+    case `${GET_COUNTRY_CODES}_REJECTED`:
+    case `${GET_ASSIGNTO_DATA}_REJECTED`:
+      return {
+        ...state,
+        loading: false,
+        errorMessage: payload,
       };
 
     case `${GET_PROJECT_COMMON_DATA}_PENDING`:
@@ -387,7 +420,7 @@ const reducer = (state = initialState, action = {}) => {
       return {
         ...state,
         loadingUnitStatus: false,
-        unitBookingStatus: payload,
+        unitStatusListing: payload,
       };
     }
     case `${GET_BOOKINGS_STATUS}_REJECTED`:

@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {useMemo, useState, useEffect} from 'react';
 import RenderInput from 'components/Atoms/RenderInput';
 import {Formik} from 'formik';
@@ -31,7 +32,7 @@ import {useSelector} from 'react-redux';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import {DOCUMENT_CHARGE_LIMIT} from 'utils/constant';
 import {theme} from 'styles/theme';
-import ActionButtons from '../../../../../components/Atoms/ActionButtons';
+import ActionButtons from 'components/Atoms/ActionButtons';
 
 const BASIC_TYPES = ['super_buildup', 'buildup', 'carpet'];
 const CONSTRUCTION_TYPES = ['construction_super_buildup', 'construction_build'];
@@ -67,11 +68,11 @@ const schema = Yup.object().shape({
 function RenderItems({row}) {
   return (
     <View>
-      {row.map(({label, labelStyle, value}, index) => {
+      {row.map(({label, labelStyle, value}) => {
         return (
-          <View key={index} style={styles.cell}>
+          <View key={label} style={styles.cell}>
             <Text style={labelStyle}>{label}:</Text>
-            <Caption style={{flexShrink: 1}}>{value}</Caption>
+            <Caption style={styles.renderItemsCaption}>{value}</Caption>
           </View>
         );
       })}
@@ -229,8 +230,8 @@ function RenderRates(props) {
             setFieldValue('carpet_unit', value);
           }}
         />
-        <View style={{marginTop: 20}}>
-          <Subheading style={{color: theme.colors.primary, fontWeight: '100'}}>
+        <View style={styles.bungalowContainer}>
+          <Subheading style={styles.bungalow}>
             {isBunglow ? 'Total Land Amount' : 'Total Basic Amount'}
           </Subheading>
           <View style={styles.landAmountSection}>
@@ -262,7 +263,7 @@ function RenderRates(props) {
 }
 
 function ConstructionRate(props) {
-  const {t, formikProps} = props;
+  const {formikProps} = props;
   const {values, setFieldValue} = formikProps;
 
   const syncAmounts = (amount, types) => {
@@ -285,9 +286,7 @@ function ConstructionRate(props) {
 
   return (
     <View>
-      <Subheading style={{color: theme.colors.primary, marginTop: 20}}>
-        Construction Rate
-      </Subheading>
+      <Subheading style={styles.otherCharges}>Construction Rate</Subheading>
       <View style={styles.ratesContainer}>
         <RatesColumn
           {...props}
@@ -309,7 +308,7 @@ function ConstructionRate(props) {
         />
       </View>
       <View style={styles.totalConstruction}>
-        <Subheading style={{color: theme.colors.primary, fontWeight: '100'}}>
+        <Subheading style={styles.bungalow}>
           Total Construction Amount
         </Subheading>
         <View style={styles.landAmountSection}>
@@ -435,18 +434,18 @@ function RenderCharges({formikProps, t}) {
           <Dialog.Content>
             <Subheading>Add a new Charge :</Subheading>
             <View style={styles.chargeInputContainer}>
-              <View style={{flex: 1, paddingHorizontal: 5}}>
+              <View style={styles.formContainer}>
                 <RenderInput
                   name="label"
                   label={t('label_charge')}
                   multiline
                   value={charge.label}
-                  contentContainerStyle={{flex: 1}}
+                  contentContainerStyle={styles.labelContainer}
                   onChangeText={value => setValue('label', value)}
                   error={chargeError.label}
                 />
               </View>
-              <View style={{flex: 1, paddingHorizontal: 5}}>
+              <View style={styles.formContainer}>
                 <RenderInput
                   name="amount"
                   label={t('label_amount')}
@@ -464,9 +463,7 @@ function RenderCharges({formikProps, t}) {
           </Dialog.Actions>
         </Dialog>
       </Portal>
-      <Subheading style={{color: theme.colors.primary, marginTop: 20}}>
-        Other Charges
-      </Subheading>
+      <Subheading style={styles.otherCharges}>Other Charges</Subheading>
       <RenderSelect
         name="other_charges"
         label="Select Other Charges"
@@ -476,7 +473,7 @@ function RenderCharges({formikProps, t}) {
       />
       {values.other_charges.map((item, i) => {
         return (
-          <View key={i} style={styles.chargesContainer}>
+          <View key={item} style={styles.chargesContainer}>
             <RenderInput
               label={item.label}
               editable={false}
@@ -487,7 +484,7 @@ function RenderCharges({formikProps, t}) {
             <OpacityButton
               color={theme.colors.red}
               opacity={0.1}
-              style={{marginLeft: 15, borderRadius: 20}}
+              style={styles.closeIcon}
               onPress={() => removeCharge(i)}>
               <MaterialIcons name="close" color={theme.colors.red} size={19} />
             </OpacityButton>
@@ -609,13 +606,13 @@ function FormContent(props) {
 
   return (
     <TouchableWithoutFeedback
-      style={{flexGrow: 1, margin: 10}}
+      style={styles.container}
       onPress={() => Keyboard.dismiss()}>
       <KeyboardAwareScrollView
         keyboardShouldPersistTaps="handled"
         extraScrollHeight={30}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{flexGrow: 1, margin: 10}}>
+        contentContainerStyle={styles.scrollView}>
         <View style={styles.container}>
           <Subheading style={{color: theme.colors.primary}}>
             2. Booking Rate
@@ -643,7 +640,7 @@ function FormContent(props) {
               <View style={styles.documentationInputContainer}>
                 <RenderInput
                   value={values.document_start}
-                  containerStyles={{width: '45%'}}
+                  containerStyles={styles.containerStyle}
                   keyboardType="number-pad"
                   placeholder="Start"
                   onChangeText={handleChange('document_start')}
@@ -652,7 +649,7 @@ function FormContent(props) {
                 <View style={styles.dot} />
                 <RenderInput
                   value={values.document_end}
-                  containerStyles={{width: '45%'}}
+                  containerStyles={styles.containerStyle}
                   keyboardType="number-pad"
                   placeholder="End"
                   onChangeText={handleChange('document_end')}
@@ -669,10 +666,7 @@ function FormContent(props) {
           </View>
 
           <View style={[styles.totalContainer, {marginTop: 20}]}>
-            <Subheading
-              style={{color: theme.colors.primary, fontWeight: '700'}}>
-              Final amount
-            </Subheading>
+            <Subheading style={styles.finalAmount}>Final amount</Subheading>
 
             <View style={styles.finalAmountBox}>
               <Text style={{marginBottom: 10}}>Booking Rate</Text>
@@ -739,9 +733,10 @@ function BookingRates(props) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    margin: 15,
+    flexGrow: 1,
+    margin: 10,
   },
+
   ratesContainer: {
     marginHorizontal: -5,
     flexDirection: 'row',
@@ -829,6 +824,44 @@ const styles = StyleSheet.create({
   divider: {
     height: 1,
     marginVertical: 7,
+  },
+  scrollView: {
+    flexGrow: 1,
+    margin: 10,
+    paddingBottom: 30,
+  },
+  containerStyle: {
+    width: '45%',
+  },
+
+  otherCharges: {
+    color: theme.colors.primary,
+    marginTop: 20,
+  },
+  bungalow: {
+    color: theme.colors.primary,
+    fontWeight: '100',
+  },
+  renderItemsCaption: {
+    flexShrink: 1,
+  },
+  bungalowContainer: {
+    marginTop: 20,
+  },
+  formContainer: {
+    flex: 1,
+    paddingHorizontal: 5,
+  },
+  labelContainer: {
+    flex: 1,
+  },
+  closeIcon: {
+    marginLeft: 15,
+    borderRadius: 20,
+  },
+  finalAmount: {
+    color: theme.colors.primary,
+    fontWeight: '700',
   },
 });
 

@@ -222,7 +222,7 @@ function AddCollection(props) {
 
     const data = {
       project_id,
-      unit_id: unit.unit_id,
+      unit_id: unit?.id,
       collectiontype: type,
       transaction_date: dayjs(date).format('DD-MM-YYYY'),
       ...restData,
@@ -234,7 +234,7 @@ function AddCollection(props) {
       await addCollection(data);
     }
 
-    getAccountDetails({project_id, unit_id: unit.unit_id});
+    getAccountDetails({project_id, unit_id: unit?.id});
     navigation.goBack();
   };
 

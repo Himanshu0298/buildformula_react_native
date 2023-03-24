@@ -108,7 +108,7 @@ const ProjectCard = props => {
               </OpacityButton>
             }>
             <Menu.Item onPress={navToEdit} title="Edit" />
-            <Menu.Item onPress={deleteProject} title="Delete" />
+            {/* <Menu.Item onPress={deleteProject} title="Delete" /> */}
           </Menu>
         </View>
       </View>

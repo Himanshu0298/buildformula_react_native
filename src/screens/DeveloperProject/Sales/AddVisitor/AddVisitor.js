@@ -22,6 +22,7 @@ import _ from 'lodash';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import ActionButtons from 'components/Atoms/ActionButtons';
 import RenderSelectMultiple from 'components/Atoms/RenderSelectMultiple';
+import RenderDatePicker from 'components/Atoms/RenderDatePicker';
 
 const customParseFormat = require('dayjs/plugin/customParseFormat');
 
@@ -75,6 +76,8 @@ function PersonalTab(props) {
     occupationOptions,
     sourceTypeOptions,
     setSelectedTab,
+    mobileCodes,
+    assigntoOptions,
   } = props;
   const {handleChange, setFieldValue, values, handleBlur, errors} = formikProps;
   const {t} = useTranslation();
@@ -83,13 +86,17 @@ function PersonalTab(props) {
   const lastNameRef = React.useRef();
   const emailRef = React.useRef();
   const phoneRef = React.useRef();
+  const countryCodeRef = React.useRef();
+  const phone2Ref = React.useRef();
   const occupationRef = React.useRef();
+  const assignToRef = React.useRef();
   const occupationInputRef = React.useRef();
   const localityRef = React.useRef();
   const sourceTypeRef = React.useRef();
 
   return (
     <KeyboardAwareScrollView
+      showsVerticalScrollIndicator={false}
       contentContainerStyle={styles.scrollView}
       keyboardShouldPersistTaps="handled">
       <View style={styles.container}>
@@ -136,10 +143,36 @@ function PersonalTab(props) {
             containerStyles={styles.input}
             value={values.phone}
             onChangeText={handleChange('phone')}
-            onSubmitEditing={() => occupationRef?.current?.focus()}
+            onSubmitEditing={() => phone2Ref?.current?.focus()}
             onBlur={handleBlur('phone')}
             error={errors.phone}
             left={<TextInput.Affix text="+91" />}
+          />
+          <RenderSelect
+            name="mobile_code"
+            label="Country Code for Phone No 2"
+            ref={countryCodeRef}
+            options={mobileCodes}
+            containerStyles={styles.input}
+            value={values.mobile_code}
+            placeholder="Country Code for Phone 2"
+            error={errors.mobile_code}
+            onSelect={value => {
+              setFieldValue('mobile_code', value);
+            }}
+          />
+          <RenderInput
+            name="phone2"
+            ref={phone2Ref}
+            label="Phone No 2"
+            keyboardType="number-pad"
+            maxLength={10}
+            containerStyles={styles.input}
+            value={values.phone2}
+            onChangeText={handleChange('phone2')}
+            onSubmitEditing={() => occupationRef?.current?.focus()}
+            onBlur={handleBlur('phone2')}
+            error={errors.phone2}
           />
           <RenderSelect
             name="occupation"
@@ -156,6 +189,24 @@ function PersonalTab(props) {
             error={errors.occupation}
             onSelect={value => {
               setFieldValue('occupation', value);
+              if (value === 0) {
+                occupationInputRef?.current?.focus();
+              } else {
+                localityRef?.current?.focus();
+              }
+            }}
+          />
+          <RenderSelect
+            name="assign_to"
+            ref={assignToRef}
+            label="Assign To"
+            options={assigntoOptions}
+            containerStyles={styles.input}
+            value={values.assign_to}
+            placeholder="Assign To"
+            error={errors.assign_to}
+            onSelect={value => {
+              setFieldValue('assign_to', value);
               if (value === 0) {
                 occupationInputRef?.current?.focus();
               } else {
@@ -209,8 +260,14 @@ function PersonalTab(props) {
 }
 
 function InquiryTab(props) {
-  const {formikProps, setSelectedTab, inquiryOptions, interestedOptions, edit} =
-    props;
+  const {
+    formikProps,
+    setSelectedTab,
+    inquiryOptions,
+    interestedOptions,
+    edit,
+    brokerOptions,
+  } = props;
 
   const {
     handleChange,
@@ -225,6 +282,9 @@ function InquiryTab(props) {
 
   const budgetFromRef = React.useRef();
   const budgetToRef = React.useRef();
+  const followUpTitleRef = React.useRef();
+  const followUpDateRef = React.useRef();
+  const followUpTimeRef = React.useRef();
 
   useEffect(() => {
     setFieldValue(
@@ -237,7 +297,8 @@ function InquiryTab(props) {
   return (
     <KeyboardAwareScrollView
       contentContainerStyle={styles.scrollView}
-      keyboardShouldPersistTaps="handled">
+      keyboardShouldPersistTaps="handled"
+      showsVerticalScrollIndicator={false}>
       <View style={styles.container}>
         <View style={styles.inputsContainer}>
           <RenderInput
@@ -303,6 +364,17 @@ function InquiryTab(props) {
               setFieldValue('inquiry_for', value);
             }}
           />
+          <RenderSelect
+            name="brokers_id"
+            label="Broker"
+            options={brokerOptions}
+            containerStyles={styles.input}
+            value={values.brokers_id}
+            error={errors.brokers_id}
+            onSelect={value => {
+              setFieldValue('brokers_id', value);
+            }}
+          />
           <RenderSelectMultiple
             name="interested_property"
             label="Interested Property"
@@ -330,6 +402,16 @@ function InquiryTab(props) {
               }}
             />
           ) : null}
+          <RenderDatePicker
+            name="Inquiry_date"
+            label="Inquiry Date"
+            containerStyles={styles.input}
+            value={values.Inquiry_date}
+            error={errors.Inquiry_date}
+            onChange={date => {
+              setFieldValue('Inquiry_date', date);
+            }}
+          />
           <RenderTextBox
             name="remarks"
             numberOfLines={5}
@@ -344,6 +426,51 @@ function InquiryTab(props) {
             error={errors.remarks}
           />
         </View>
+        <View style={styles.followupDetails}>
+          <Subheading>Followup Details</Subheading>
+          <View style={styles.inputsContainer}>
+            <RenderInput
+              name="title"
+              label="Task Title"
+              ref={followUpTitleRef}
+              containerStyles={styles.input}
+              value={values.title}
+              onChangeText={handleChange('title')}
+              onBlur={handleBlur('title')}
+              error={errors.title}
+            />
+          </View>
+        </View>
+        <View style={styles.row}>
+          <View style={styles.flex}>
+            <RenderDatePicker
+              name="date"
+              label="Date"
+              ref={followUpDateRef}
+              containerStyles={styles.input}
+              value={values.date}
+              error={errors.date}
+              onChange={date => {
+                setFieldValue('date', date);
+                followUpTimeRef?.current?.focus?.();
+              }}
+            />
+          </View>
+          <View style={styles.flex}>
+            <RenderDatePicker
+              mode="time"
+              label="Time"
+              ref={followUpTimeRef}
+              name="time"
+              containerStyles={styles.input}
+              value={values.time}
+              error={errors.time}
+              onChange={date => {
+                setFieldValue('time', date);
+              }}
+            />
+          </View>
+        </View>
         <ActionButtons
           cancelLabel="Back"
           submitLabel={edit ? 'Update' : 'Save'}
@@ -356,7 +483,14 @@ function InquiryTab(props) {
 }
 
 function RenderForm(props) {
-  const {formikProps, user, ...restProps} = props;
+  const {
+    formikProps,
+    user,
+    mobileCodes,
+    assigntoOptions,
+    brokerOptions,
+    ...restProps
+  } = props;
   const {errors} = formikProps;
 
   const [selectedTab, setSelectedTab] = useState(0);
@@ -423,6 +557,8 @@ function RenderForm(props) {
             occupationOptions={occupationOptions}
             sourceTypeOptions={sourceTypeOptions}
             formikProps={formikProps}
+            mobileCodes={mobileCodes}
+            assigntoOptions={assigntoOptions}
           />
         );
       case 1:
@@ -434,6 +570,7 @@ function RenderForm(props) {
             interestedOptions={interestedOptions}
             assignOptions={updatedAssignOptions}
             formikProps={formikProps}
+            brokerOptions={brokerOptions}
           />
         );
       default:
@@ -467,7 +604,24 @@ function AddVisitor(props) {
 
   const {selectedProject} = useSelector(s => s.project);
   const {user} = useSelector(s => s.user);
-  const {loading} = useSelector(s => s.sales);
+  const {loading, countrycodes, assigntoData, brokersList} = useSelector(
+    s => s.sales,
+  );
+
+  const mobileCodes = countrycodes.map(i => ({
+    label: `+${i.phone_code}, ${i.country_name}`,
+    value: i.id,
+  }));
+
+  const assigntoOptions = assigntoData.map(i => ({
+    label: `${i.first_name} ${i.last_name} - ${i.email}`,
+    value: i.id,
+  }));
+
+  const brokerOptions = brokersList.map(i => ({
+    label: `${i.first_name} ${i.last_name}`,
+    value: i.id,
+  }));
 
   const {
     addVisitor,
@@ -552,7 +706,13 @@ function AddVisitor(props) {
           validationSchema={schema}
           onSubmit={onSubmit}>
           {formikProps => (
-            <RenderForm {...props} {...{formikProps, user, edit}} />
+            <RenderForm
+              {...props}
+              {...{formikProps, user, edit}}
+              mobileCodes={mobileCodes}
+              assigntoOptions={assigntoOptions}
+              brokerOptions={brokerOptions}
+            />
           )}
         </Formik>
       </View>
@@ -592,5 +752,16 @@ const styles = StyleSheet.create({
   },
   radioContainer: {
     flexDirection: 'row',
+  },
+  followupDetails: {
+    marginVertical: 20,
+  },
+  row: {
+    flexDirection: 'row',
+    marginHorizontal: -10,
+  },
+  flex: {
+    flex: 1,
+    marginHorizontal: 10,
   },
 });

@@ -40,14 +40,13 @@ function BhkList({onPress, selectedBhk}) {
 function FloorSelector(props) {
   const {
     navigation,
-    selectedBhk,
     floors,
     towerId,
     towerLabel,
     towerType,
-    handleBhkChange,
     projectId,
     renderUnits,
+    edit,
   } = props || {};
 
   const [selectedFloor, setSelectedFloor] = useState();
@@ -69,16 +68,16 @@ function FloorSelector(props) {
         </TouchableOpacity>
       </View>
 
-      {handleBhkChange ? (
+      {/* {handleBhkChange ? (
         <View>
           <Subheading style={styles.bhkHeading}>BHK indication</Subheading>
           <BhkList selectedBhk={selectedBhk} onPress={handleBhkChange} />
         </View>
-      ) : null}
+      ) : null} */}
 
       <View style={styles.editIconContainer}>
         <Subheading>Floors</Subheading>
-        {projectId ? (
+        {edit ? (
           <OpacityButton
             opacity={0.1}
             color="#4872f4"
@@ -99,8 +98,13 @@ function FloorSelector(props) {
         keyboardShouldPersistTaps="handled"
         keyExtractor={item => item.id}
         ListEmptyComponent={renderNoFloor}
-        renderItem={({item: floorData}) => {
-          const {structureType, id: floorId, unitCount} = floorData;
+        renderItem={({item: floorData, index}) => {
+          const {
+            structureType,
+            id: floorId,
+            unitCount,
+            floor: floor_id,
+          } = floorData;
 
           return (
             <>
@@ -117,9 +121,10 @@ function FloorSelector(props) {
                 buttonProps={{color: '#5B6F7C'}}
                 onSelectFloor={onSelectFloor}
                 selectedFloor={selectedFloor}
+                index={index}
               />
               {selectedFloor === floorId
-                ? renderUnits({structureType, floorId})
+                ? renderUnits({structureType, floorId, floor_id, index})
                 : null}
             </>
           );

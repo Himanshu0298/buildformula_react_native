@@ -7,14 +7,14 @@ import {
   RefreshControl,
   FlatList,
 } from 'react-native';
-import {Divider, Subheading} from 'react-native-paper';
+import {Divider} from 'react-native-paper';
 import {BHK_OPTIONS} from 'utils/constant';
 import PropTypes from 'prop-types';
 import NoResult from 'components/Atoms/NoResult';
 import RenderUnit from './RenderUnit';
 
 const getUnitNumber = string => {
-  const split = string.split('-R');
+  const split = string?.split('-R');
   return Number(`${split[0]}.${split[1] || 0}`);
 };
 
@@ -41,11 +41,9 @@ function BhkList({onPress, selectedBhk}) {
 
 function UnitSelector(props) {
   const {
-    showBhkFilters,
     refreshing,
     onRefresh,
     units,
-    floorNumber,
     onSelectUnit,
     floorType,
     isUnitDisabled,
@@ -54,8 +52,8 @@ function UnitSelector(props) {
 
   const [selectedBhk, setSelectedBhk] = React.useState();
 
-  const processedUnits = units.sort(
-    (a, b) => getUnitNumber(a.unitLabel) - getUnitNumber(b.unitLabel),
+  const processedUnits = units?.sort(
+    (a, b) => getUnitNumber(a.project_unit) - getUnitNumber(b.project_unit),
   );
 
   const filteredUnits = useMemo(() => {
@@ -65,16 +63,16 @@ function UnitSelector(props) {
     return processedUnits;
   }, [selectedBhk, processedUnits]);
 
-  const renderNoUnits = () => <NoResult title="No Units available" />;
+  const renderNoUnits = () => <NoResult title="No Data available" />;
 
   return (
     <View style={styles.container}>
-      {showBhkFilters ? (
+      {/* {showBhkFilters ? (
         <>
           <Subheading style={styles.bhkHeading}>BHK Indication</Subheading>
           <BhkList selectedBhk={selectedBhk} onPress={setSelectedBhk} />
         </>
-      ) : null}
+      ) : null} */}
       <FlatList
         data={filteredUnits}
         extraData={filteredUnits}
@@ -89,7 +87,7 @@ function UnitSelector(props) {
         }
         renderItem={({item: unit}) => (
           <RenderUnit
-            key={unit?.unit_id}
+            key={unit?.id}
             unit={unit}
             floorType={floorType}
             onSelectUnit={onSelectUnit}

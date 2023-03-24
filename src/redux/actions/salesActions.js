@@ -9,6 +9,8 @@ export default function useSalesActions() {
   const snackbar = useSnackbar();
   const {_err, _res} = useResProcessor();
   const {
+    getAssignToData,
+    getCountryCodes,
     getVisitorsList,
     getSalesData,
     addVisitor,
@@ -21,7 +23,7 @@ export default function useSalesActions() {
     deleteBroker,
     updateBrokerRemark,
     moveVisitor,
-    getUnitsBookingStatus,
+    getUnitStatusListing,
     lockUnit,
     getHoldBookingDetails,
     unitHoldBooking,
@@ -69,6 +71,40 @@ export default function useSalesActions() {
       dispatch({
         type: types.SET_UPDATED_PIPELINE_DATA,
         payload: data,
+      }),
+
+    getCountryCodes: params =>
+      dispatch({
+        type: types.GET_COUNTRY_CODES,
+        payload: async () => {
+          try {
+            const response = _res(await getCountryCodes(params));
+            const {data} = response;
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    getAssignToData: params =>
+      dispatch({
+        type: types.GET_ASSIGNTO_DATA,
+        payload: async () => {
+          try {
+            const response = _res(await getAssignToData(params));
+            const {data} = response;
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
       }),
 
     getSalesData: params =>
@@ -361,12 +397,12 @@ export default function useSalesActions() {
         },
       }),
 
-    getUnitsBookingStatus: params =>
+    getUnitStatusListing: params =>
       dispatch({
         type: types.GET_BOOKINGS_STATUS,
         payload: async () => {
           try {
-            const response = _res(await getUnitsBookingStatus(params));
+            const response = _res(await getUnitStatusListing(params));
             const {data} = response;
 
             return Promise.resolve(data);
@@ -579,7 +615,7 @@ export default function useSalesActions() {
           try {
             const response = _res(await addBroker(formData));
             const {data} = response;
-
+            snackbar.showMessage({message: 'Broker Added'});
             return Promise.resolve(data.data);
           } catch (error) {
             const message = _err(error);

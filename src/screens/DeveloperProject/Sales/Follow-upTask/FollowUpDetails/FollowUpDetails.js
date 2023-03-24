@@ -52,6 +52,7 @@ const TaskList = props => {
         <MaterialIcons name="phone" size={24} color="grey" />
         <Caption style={styles.captionText}>+91 {item.phone}</Caption>
       </View>
+
       <Divider style={styles.divider} />
 
       <View style={styles.remarkContainer}>
@@ -68,10 +69,19 @@ const TaskList = props => {
         )}
       </View>
       <Divider style={styles.divider} />
+      {item?.completed_datetime ? (
+        <>
+          <View style={styles.remarkContainer}>
+            <Text style={styles.remarkText}>Completed Date & Time</Text>
+            <Caption>{item.completed_datetime}</Caption>
+          </View>
+          <Divider style={styles.divider} />
+        </>
+      ) : undefined}
       {item.completed_remarks ? (
         <>
           <View style={styles.remarkContainer}>
-            <Text style={styles.remarkText}>Complete Remark</Text>
+            <Text style={styles.remarkText}>Completed Remark</Text>
             {!source ? (
               <Caption>{source}</Caption>
             ) : (

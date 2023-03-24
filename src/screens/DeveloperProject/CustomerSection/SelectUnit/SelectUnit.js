@@ -5,7 +5,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import UnitSelector from 'components/Molecules/UnitSelector';
 import {getFloorNumber} from 'utils';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
-import {IconButton, Subheading} from 'react-native-paper';
+import {IconButton, Subheading, Text} from 'react-native-paper';
 import {STRUCTURE_TYPE_LABELS} from 'utils/constant';
 import {useSalesLoading} from 'redux/selectors';
 
@@ -20,12 +20,14 @@ export const SelectUnit = props => {
     towerType,
     displayHeader,
     showBhkFilters,
+    projectData,
+    floor_id,
+    tower_id,
   } = props || {};
 
-  const {getUnitsBookingStatus} = useSalesActions();
+  const {getUnitStatusListing} = useSalesActions();
 
-  const {selectedProject} = useSelector(s => s.project);
-  const {unitBookingStatus} = useSelector(s => s.sales);
+  const {unitStatusListing} = useSelector(s => s.sales);
 
   const loading = useSalesLoading();
 
@@ -35,42 +37,13 @@ export const SelectUnit = props => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [towerId, floorId]);
 
-  const units = useMemo(() => {
-    const structureData =
-      selectedProject?.project_structure?.[selectedStructure] || {};
-
-    if ([4, 5].includes(selectedStructure)) {
-      return structureData.units;
-    }
-
-    const {floors = {}} =
-      structureData?.towers?.find(i => i.tower_id === towerId) || {};
-
-    return floors?.[floorId]?.units || [];
-  }, [floorId, selectedProject, selectedStructure, towerId]);
-
-  const processedUnits = useMemo(() => {
-    const updatedUnits = units.map(unit => {
-      const bookingData = unitBookingStatus.find(
-        i => Number(i.id) === Number(unit.unit_id),
-      );
-
-      if (bookingData) {
-        unit = {...unit, ...bookingData};
-      }
-
-      return unit;
-    });
-
-    return updatedUnits;
-  }, [unitBookingStatus, units]);
-
   const fetchUnitsBookingStatus = () => {
-    getUnitsBookingStatus({
+    getUnitStatusListing({
       project_id,
       project_type: structureType || selectedStructure,
-      project_tower: towerId || 0,
-      project_floor: Number(floorId || 0),
+      project_tower: tower_id || 0,
+      project_floor: floor_id || 0,
+      id: projectData?.id,
     });
   };
 
@@ -118,9 +91,9 @@ export const SelectUnit = props => {
 
       <UnitSelector
         {...props}
-        refreshing={unitBookingStatus.length > 0 && loading}
+        refreshing={unitStatusListing.length > 0 && loading}
         floorNumber={floor}
-        units={processedUnits}
+        units={unitStatusListing}
         showBhkFilters={showBhkFilters}
         displayHeader={displayHeader}
         floorType={structureType || selectedStructure}
@@ -142,6 +115,7 @@ function SelectUnitContainer(props) {
     structureType,
     selectedStructure,
     towerType,
+    projectData,
   } = route?.params || {};
 
   return (
@@ -149,6 +123,7 @@ function SelectUnitContainer(props) {
       project_id={project_id}
       floorId={floorId}
       towerId={towerId}
+      projectData={projectData}
       structureType={structureType}
       selectedStructure={selectedStructure}
       towerType={towerType}

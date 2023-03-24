@@ -5,7 +5,7 @@ import {withTheme, Divider} from 'react-native-paper';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import useCustomerActions from 'redux/actions/customerActions';
 import ScreenTitle from 'components/Atoms/ScreenTitle';
-import DetailsHeader from '../CustomerSection/Components/DetailsHeader';
+import DetailsHeader from 'screens/DeveloperProject/CustomerSection/CustomerSection/Components/DetailsHeader';
 import {CustomerSection, EngineerSection, ManagerSection} from './Components';
 
 function AddModifyRequest(props) {
@@ -29,7 +29,7 @@ function AddModifyRequest(props) {
     formData.append('description', description);
     formData.append('files', files);
     formData.append('project_id', project_id);
-    formData.append('unit_id', unit.unit_id);
+    formData.append('unit_id', unit?.id);
 
     addModifyRequest(formData).then(() => handleRefresh());
   };

@@ -164,7 +164,7 @@ function Header(props) {
   return (
     <>
       <View style={styles.headerContainer}>
-        <Subheading style={{color: colors.primary}}>Visitor's list</Subheading>
+        <Subheading style={{color: colors.primary}}>Inquiry list</Subheading>
         <Menu
           visible={visible}
           onDismiss={toggleMenu}
@@ -217,7 +217,13 @@ function Visitors(props) {
 
   const modulePermission = getPermissions('Visitors');
 
-  const {getVisitors, getSalesData} = useSalesActions();
+  const {
+    getVisitors,
+    getSalesData,
+    getCountryCodes,
+    getAssignToData,
+    getBrokersList,
+  } = useSalesActions();
   const [filter, setFilter] = React.useState('name');
   const [searchQuery, setSearchQuery] = React.useState('');
 
@@ -241,6 +247,9 @@ function Visitors(props) {
   const loadData = () => {
     getVisitors({project_id: projectId, filter_mode: filter});
     getSalesData({project_id: projectId});
+    getCountryCodes({project_id: projectId});
+    getAssignToData({project_id: projectId});
+    getBrokersList({project_id: projectId});
   };
 
   const onRefresh = () => loadData();

@@ -130,7 +130,7 @@ export function RenderInstallments(props) {
             Installment Amount
           </Caption>
         </View>
-        {installments.map((installment, index) => {
+        {installments?.map((installment, index) => {
           return (
             <View key={index?.toString()} style={styles.installmentRow}>
               <Subheading>{index + 1}</Subheading>
@@ -772,11 +772,7 @@ function RenderPaymentForm(props) {
             opacity={1}
             style={styles.conditionsButton}
             onPress={toggleConditionsDialog}>
-            <MaterialCommunityIcons
-              name="pencil"
-              color={theme.colors.white}
-              size={16}
-            />
+            <MaterialCommunityIcons name="pencil" color="#ffff" size={16} />
           </OpacityButton>
         </View>
       ) : null}
@@ -863,18 +859,20 @@ function FormContent(props) {
             <Text>Do you wish to take a loan?</Text>
             <View style={styles.radioContainer}>
               <Radio
-                label="Yes"
+                label=" Yes"
                 value="yes"
                 checked={values.is_loan === 'yes'}
                 onChange={value => setFieldValue('is_loan', value)}
               />
-              <Radio
-                label="No"
-                value="no"
-                color={theme.colors.error}
-                checked={values.is_loan === 'no'}
-                onChange={value => setFieldValue('is_loan', value)}
-              />
+              <View style={{marginLeft: 50}}>
+                <Radio
+                  label=" No"
+                  value="no"
+                  color={theme.colors.error}
+                  checked={values.is_loan === 'no'}
+                  onChange={value => setFieldValue('is_loan', value)}
+                />
+              </View>
             </View>
           </View>
           {withRate === false ? (
@@ -882,18 +880,20 @@ function FormContent(props) {
               <Text>Payment Method?</Text>
               <View style={styles.radioContainer}>
                 <Radio
-                  label="Yes"
+                  label=" Yes"
                   value="yes"
                   checked={Boolean(values.payment_type)}
                   onChange={() => setFieldValue('payment_type', 1)}
                 />
-                <Radio
-                  label="No"
-                  value="no"
-                  color={theme.colors.error}
-                  checked={!values.payment_type}
-                  onChange={() => setFieldValue('payment_type', 0)}
-                />
+                <View style={{marginLeft: 50}}>
+                  <Radio
+                    label=" No"
+                    value="no"
+                    color={theme.colors.error}
+                    checked={!values.payment_type}
+                    onChange={() => setFieldValue('payment_type', 0)}
+                  />
+                </View>
               </View>
             </View>
           ) : null}
@@ -954,28 +954,25 @@ function FormContent(props) {
           </>
         </View>
 
-        <View style={styles.buttonContainer}>
-          <View style={styles.checkBox}>
-            <CustomCheckbox
-              label="Save with OTP"
-              checked={values.booking_confirm_via_otp === 'yes'}
-              onChange={() => {
-                setFieldValue(
-                  'booking_confirm_via_otp',
-                  values.booking_confirm_via_otp === 'yes' ? 'no' : 'yes',
-                );
-              }}
-            />
-          </View>
-
-          <ActionButtons
-            cancelLabel="Back"
-            submitLabel="Save"
-            onCancel={handleCancel}
-            onSubmit={handleSubmit}
-            style={styles.actionButtons}
+        <View style={styles.checkBox}>
+          <CustomCheckbox
+            label="Save with OTP"
+            checked={values.booking_confirm_via_otp === 'yes'}
+            onChange={() => {
+              setFieldValue(
+                'booking_confirm_via_otp',
+                values.booking_confirm_via_otp === 'yes' ? 'no' : 'yes',
+              );
+            }}
           />
         </View>
+        <ActionButtons
+          cancelLabel="Back"
+          submitLabel="Save"
+          onCancel={handleCancel}
+          onSubmit={handleSubmit}
+          style={styles.actionButtons}
+        />
       </KeyboardAwareScrollView>
     </TouchableWithoutFeedback>
   );
@@ -1192,7 +1189,7 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
     margin: 10,
-    paddingBottom: 10,
+    paddingBottom: 20,
   },
   contentContainer: {
     flexGrow: 1,
@@ -1211,6 +1208,7 @@ const styles = StyleSheet.create({
   },
   radioContainer: {
     flexDirection: 'row',
+    margin: 10,
   },
   docChargesSection: {
     marginBottom: 10,
@@ -1300,6 +1298,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 10,
     right: 10,
+    borderRadius: 20,
   },
   textEditor: {
     flexGrow: 1,
@@ -1326,15 +1325,16 @@ const styles = StyleSheet.create({
     marginTop: 5,
     marginBottom: 10,
   },
-  buttonContainer: {
-    marginTop: 25,
-  },
+
   checkBox: {
     flexDirection: 'row',
     alignItems: 'center',
     marginLeft: 10,
+    marginVertical: 40,
   },
-  actionButtons: {marginTop: 5},
+  actionButtons: {
+    marginTop: 5,
+  },
 });
 
 export default withTheme(BookingPayments);

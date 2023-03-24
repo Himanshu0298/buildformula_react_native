@@ -6,7 +6,7 @@ import {useSelector} from 'react-redux';
 import {useSalesLoading} from 'redux/selectors';
 
 function StructurePreview(props) {
-  const {navigation, route} = props;
+  const {navigation, route, projectDetails} = props;
 
   const {id} = route?.params || {};
 
@@ -19,9 +19,22 @@ function StructurePreview(props) {
     Object.keys(project_structure)?.map(v => Number(v)) || [];
 
   const handlePress = (selectedStructure, towerType) => {
-    const params = {selectedStructure, id, towerType};
+    const project_id = selectedProject.id;
 
-    const nextStep = 'TowerPreview';
+    const projectData = projectDetails;
+    const params = {
+      selectedStructure,
+      id,
+      towerType,
+      project_id,
+      projectData,
+    };
+    let nextStep = 'CS_Step_Four';
+
+    if (selectedStructure === 6) {
+      nextStep = 'TowerPreview';
+      params.towerType = towerType;
+    }
 
     navigation.navigate(nextStep, params);
   };
@@ -33,6 +46,8 @@ function StructurePreview(props) {
         hideTitle
         onSelectStructure={handlePress}
         projectTypes={projectTypes}
+        projectCategories={projectDetails.project_category}
+        navigation={navigation}
       />
     </View>
   );

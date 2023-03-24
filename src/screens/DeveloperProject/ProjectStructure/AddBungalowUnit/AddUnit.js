@@ -131,7 +131,7 @@ const AddUnit = props => {
   const handleProjectSelection = async value => {
     formikProps.setFieldValue('projectName', value);
 
-    const option = projectList.find(i => {
+    const option = projectList?.find(i => {
       return i.id === value;
     });
 
@@ -156,7 +156,9 @@ const AddUnit = props => {
       project_unit: unitNo,
     });
 
-    await getUnitList({project_id: selectedProject.id});
+    const projectId = 0;
+
+    await getUnitList({project_id: selectedProject.id, id: projectId});
 
     if (submitTypeRef.current === 'save') {
       navigation.goBack();

@@ -109,9 +109,11 @@ function BookingFormOnHold(props) {
     selectedStructure,
     towerId,
     floorId,
-    unit_id,
+    id,
     unitLabel,
   } = route?.params || {};
+
+  const unit_id = id;
 
   const {bookingHoldDetails} = useSelector(s => s.sales);
   const loading = useSalesLoading();

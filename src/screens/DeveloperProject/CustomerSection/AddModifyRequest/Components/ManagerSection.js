@@ -37,7 +37,8 @@ function ManagerSection(props) {
         validateOnChange={false}
         initialValues={{accepted: false}}
         validationSchema={schema}
-        onSubmit={async values => {}}>
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        onSubmit={console.log('===========> ')}>
         {({
           values,
           errors,

@@ -26,6 +26,12 @@ export default function useSalesServices() {
     getVisitorInterestedProperty: data => {
       return instance.post('/visitors/getInterestedProperty', data, params);
     },
+    getCountryCodes: data => {
+      return instance.post('/countries/code', data, params);
+    },
+    getAssignToData: data => {
+      return instance.post('/project/user/list', data, params);
+    },
     addVisitorComment: data => {
       return instance.post('/visitors/addcomment', data, params);
     },
@@ -53,7 +59,7 @@ export default function useSalesServices() {
     deletePipeline: data => {
       return instance.post('inquiry_status/remove', data, params);
     },
-    getUnitsBookingStatus: data => {
+    getUnitStatusListing: data => {
       return instance.post('/get_locked_units', data, params);
     },
     lockUnit: data => {

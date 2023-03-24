@@ -14,26 +14,19 @@ import RNBootSplash from 'react-native-bootsplash';
 import ForgotPassword from 'screens/Auth/ForgotPassword';
 import ForgotPasswordOtp from 'screens/Auth/ForgotPasswordOtp';
 import ResetPassword from 'screens/Auth/ResetPassword';
-import OtpScreen from '../screens/Auth/OtpScreen';
-import SignUp from '../screens/Auth/SignUp';
-import Login from '../screens/Auth/Login';
-import LanguageSelect from '../screens/Auth/LanguageSelect';
-
-// * App : Project Creation Screens
-import PlanSelect from '../screens/CreateProject/PlanSelect';
-import PS_StepTwo from '../screens/CreateProject/ProjectStructure/StepTwo';
-import PS_StepOne from '../screens/CreateProject/ProjectStructure/StepOne';
-import PC_StepTwo from '../screens/CreateProject/ProjectCreation/StepTwo';
-import PC_StepOne from '../screens/CreateProject/ProjectCreation/StepOne';
+import OtpScreen from 'screens/Auth/OtpScreen';
+import SignUp from 'screens/Auth/SignUp';
+import Login from 'screens/Auth/Login';
+import LanguageSelect from 'screens/Auth/LanguageSelect';
 
 // * App : Home Screen
-import Home from '../screens/Home';
+import Home from 'screens/Home';
 import DrawerContent from './Components/DrawerContent';
 
 // * App : User Purchased Project Screens
-import UpdateBillingInfo from '../screens/PurchaseDetails/UpdateBillingInfo/index';
-import ProjectDetails from '../screens/PurchaseDetails/ProjectDetails';
-import PurchasedProjects from '../screens/PurchaseDetails/PurchasedProjects';
+import UpdateBillingInfo from 'screens/PurchaseDetails/UpdateBillingInfo/index';
+import ProjectDetails from 'screens/PurchaseDetails/ProjectDetails';
+import PurchasedProjects from 'screens/PurchaseDetails/PurchasedProjects';
 
 // * App : Notification Screen
 import GlobalNotification from 'screens/Notification/GlobalNotification';
@@ -48,7 +41,7 @@ import StepTwo from 'screens/UserAccount/ChangePassword/StepTwo';
 import StepThree from 'screens/UserAccount/ChangePassword/StepThree';
 
 // * App : Search Screen
-import SearchScreen from '../screens/Search';
+import SearchScreen from 'screens/Search';
 
 /** *********** Customer Project Sub Screens    ************ */
 import CustomerHome from 'screens/CustomerProject/Ownership';
@@ -151,12 +144,13 @@ import IndustrialUnitPreview from 'screens/DeveloperProject/ProjectStructure/Ind
 
 // Project : Sales Screens
 // * Developer : Dashboard
-import DeveloperDashboard from '../screens/DeveloperProject/Dashboard';
+import DeveloperDashboard from 'screens/DeveloperProject/Dashboard';
 
 // * Developer : Notification
 import ProjectNotification from 'screens/Notification/ProjectNotification';
 
 // * Developer : Sales Screens
+import BC_SelectProject from 'screens/DeveloperProject/Sales/BookingChart/SelectProject';
 import BC_SelectStructure from 'screens/DeveloperProject/Sales/BookingChart/SelectStructure';
 import BC_SelectFloor from 'screens/DeveloperProject/Sales/BookingChart/SelectFloor';
 import BC_SelectTower from 'screens/DeveloperProject/Sales/BookingChart/SelectTower';
@@ -168,13 +162,13 @@ import HoldBookingHistory from 'screens/DeveloperProject/Sales/BookingChart/Hold
 import BookingRates from 'screens/DeveloperProject/Sales/BookingChart/BookingRates';
 import BookingPayment from 'screens/DeveloperProject/Sales/BookingChart/BookingPayment';
 import BrokerList from 'screens/DeveloperProject/Sales/BrokerList';
-import AddDetails from '../screens/DeveloperProject/Sales/AddDetails/index';
-import AddFollowUp from '../screens/DeveloperProject/Sales/AddDetails/Components/AddFollowUp';
-import AddVisitor from '../screens/DeveloperProject/Sales/AddVisitor';
-import Payment from '../screens/DeveloperProject/Sales/Payment';
-import SalesPipeline from '../screens/DeveloperProject/Sales/SalesPipeline';
-import VisitorDetails from '../screens/DeveloperProject/Sales/VisitorDetails';
-import Visitors from '../screens/DeveloperProject/Sales/VisitorsList';
+import AddDetails from 'screens/DeveloperProject/Sales/AddDetails/index';
+import AddFollowUp from 'screens/DeveloperProject/Sales/AddDetails/Components/AddFollowUp';
+import AddVisitor from 'screens/DeveloperProject/Sales/AddVisitor';
+import Payment from 'screens/DeveloperProject/Sales/Payment';
+import SalesPipeline from 'screens/DeveloperProject/Sales/SalesPipeline';
+import VisitorDetails from 'screens/DeveloperProject/Sales/VisitorDetails';
+import Visitors from 'screens/DeveloperProject/Sales/VisitorsList';
 // import AddBrokerPaymentDetails from 'screens/DeveloperProject/Sales/BrokerDetails/Components/AddBrokerPaymentDetails';
 import AddBrokerPaymentDetails from 'screens/DeveloperProject/Sales/BrokerDetails/Components/AddBrokerPaymentDetails';
 import Approval from 'screens/DeveloperProject/Sales/Approval';
@@ -192,6 +186,7 @@ import AddTask from 'screens/DeveloperProject/TodoTask/AddTask';
 import TaskDetails from 'screens/DeveloperProject/TodoTask/TaskDetails';
 
 // * Developer : Customer Section
+import CS_SelectProject from 'screens/DeveloperProject/CustomerSection/SelectProject';
 import CS_SelectStructure from 'screens/DeveloperProject/CustomerSection/SelectStructure';
 import CS_SelectTower from 'screens/DeveloperProject/CustomerSection/SelectTower';
 import CS_SelectFloor from 'screens/DeveloperProject/CustomerSection/SelectFloor';
@@ -236,8 +231,8 @@ import WorkDetails from 'screens/DeveloperProject/ProjectManagement/WBS/WorkDeta
 import ProgressRecords from 'screens/DeveloperProject/ProjectManagement/WBS/ProgressRecords';
 import Worklist from 'screens/DeveloperProject/ProjectManagement/WBS/Worklist';
 import SubWorkCategory from 'screens/DeveloperProject/ProjectManagement/SubWorkCategory';
-import ProjectSchedule from '../screens/DeveloperProject/ProjectManagement/ProjectSchedule';
-import ProcessChart from '../screens/DeveloperProject/ProjectManagement/ProcessChart/ProcessChart';
+import ProjectSchedule from 'screens/DeveloperProject/ProjectManagement/ProjectSchedule';
+import ProcessChart from 'screens/DeveloperProject/ProjectManagement/ProcessChart/ProcessChart';
 
 // * Developer : Material management screens
 // MaterialPR
@@ -247,18 +242,18 @@ import PRPreview from 'screens/DeveloperProject/Material/MaterialPR/PRPreview';
 import AddMaterialList from 'screens/DeveloperProject/Material/MaterialPR/AddMaterialList';
 
 // MaterialGRN
-import Estimation from '../screens/DeveloperProject/MaterialManagement/Estimation';
-import RequestForPrice from '../screens/DeveloperProject/MaterialManagement/RequestForPrice';
-import PurchaseOrders from '../screens/DeveloperProject/MaterialManagement/PurchaseOrders';
-import OrderDetail from '../screens/DeveloperProject/Material/OrderDetail';
-import MaterialList from '../screens/DeveloperProject/Material/MaterialList';
+import Estimation from 'screens/DeveloperProject/MaterialManagement/Estimation';
+import RequestForPrice from 'screens/DeveloperProject/MaterialManagement/RequestForPrice';
+import PurchaseOrders from 'screens/DeveloperProject/MaterialManagement/PurchaseOrders';
+import OrderDetail from 'screens/DeveloperProject/Material/OrderDetail';
+import MaterialList from 'screens/DeveloperProject/Material/MaterialList';
 import DeliveryDetails from 'screens/DeveloperProject/Material/DeliveryDetails/Components/DeliveryDetails';
 import AddChallan from 'screens/DeveloperProject/Material/DeliveryDetails/AddChallan';
 import SelectMaterials from 'screens/DeveloperProject/Material/DeliveryDetails/SelectMaterial';
 import AddMaterialInfo from 'screens/DeveloperProject/Material/DeliveryDetails/AddMaterialChallan';
 import AddVehicleInfo from 'screens/DeveloperProject/Material/DeliveryDetails/AddVehicleChallan';
 import MaterialGRNListing from 'screens/DeveloperProject/Material/MaterialGRN/MaterialGRNListing';
-import MaterialGRN from '../screens/DeveloperProject/Material/MaterialGRN/FromPoGRNList';
+import MaterialGRN from 'screens/DeveloperProject/Material/MaterialGRN/FromPoGRNList';
 import DirectGRNPreview from 'screens/DeveloperProject/Material/MaterialGRN/DirectGRNPreview';
 import AddDirectGRN from 'screens/DeveloperProject/Material/MaterialGRN/Components/AddDirectGRN';
 import DirectGRNChallanMaterial from 'screens/DeveloperProject/Material/MaterialGRN/Components/DirectGRNChallanMaterial';
@@ -297,7 +292,7 @@ import MaterialPreview from 'screens/DeveloperProject/Material/MaterialInventory
 import SubListPreview from 'screens/DeveloperProject/Material/MaterialInventory/SubListPreview';
 
 // * Developer : Files screens
-import Files from '../screens/DeveloperProject/Files';
+import Files from 'screens/DeveloperProject/Files';
 
 // * Developer : Role screens
 
@@ -439,7 +434,11 @@ function AppStackNavigator() {
               <Stack.Screen name="CompleteTask" component={CompleteTask} />
             </Stack.Group>
             <Stack.Group screenOptions={{headerShown: false}}>
-              <Stack.Screen name="BC_Step_One" component={BC_SelectStructure} />
+              <Stack.Screen name="BC_Step_One" component={BC_SelectProject} />
+              <Stack.Screen
+                name="BC_Step_dot_One"
+                component={BC_SelectStructure}
+              />
               <Stack.Screen name="BC_Step_Two" component={BC_SelectTower} />
               <Stack.Screen name="BC_Step_Three" component={BC_SelectFloor} />
               <Stack.Screen name="BC_Step_Four" component={BC_SelectUnit} />
@@ -458,7 +457,11 @@ function AppStackNavigator() {
               />
             </Stack.Group>
             <Stack.Group>
-              <Stack.Screen name="CS_Step_One" component={CS_SelectStructure} />
+              <Stack.Screen name="CS_Step_One" component={CS_SelectProject} />
+              <Stack.Screen
+                name="CS_Step_dot_One"
+                component={CS_SelectStructure}
+              />
               <Stack.Screen name="CS_Step_Two" component={CS_SelectTower} />
               <Stack.Screen name="CS_Step_Three" component={CS_SelectFloor} />
               <Stack.Screen name="CS_Step_Four" component={CS_SelectUnit} />
@@ -965,12 +968,7 @@ function AppStackNavigator() {
           <Stack.Screen name="ResetPassword" component={ResetPassword} />
         </Stack.Group>
       )}
-      {/* Project Creation screens */}
-      <Stack.Screen name="ProjectCreationStepOne" component={PC_StepOne} />
-      <Stack.Screen name="ProjectCreationStepTwo" component={PC_StepTwo} />
-      <Stack.Screen name="ProjectStructureStepOne" component={PS_StepOne} />
-      <Stack.Screen name="ProjectStructureStepTwo" component={PS_StepTwo} />
-      <Stack.Screen name="PlanSelect" component={PlanSelect} />
+
       <Stack.Screen name="AdminCreation" component={SignUp} />
     </Stack.Navigator>
   );
@@ -1017,7 +1015,7 @@ function NavContainer() {
           // Success code
           TouchID.authenticate('', authObject)
             .then(success => {
-              console.log('----->success ', success);
+              // console.log('----->success ', success);
             })
             .catch(async error => {
               await BackHandler.exitApp();

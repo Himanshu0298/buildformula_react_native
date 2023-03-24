@@ -106,7 +106,7 @@ function VisitorDetails(props) {
                     color={colors.primary}
                   />
                   <Subheading style={{color: colors.primary}}>
-                    Visitors Details
+                    Inquiry Details
                   </Subheading>
                 </TouchableOpacity>
                 <MaterialTabBar {...tabBarProps} />

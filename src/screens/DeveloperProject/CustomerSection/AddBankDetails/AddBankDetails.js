@@ -16,15 +16,15 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import ScreenTitle from 'components/Atoms/ScreenTitle';
 import ActionButtons from 'components/Atoms/ActionButtons';
 
-const schema = Yup.object().shape({
-  bank_name: Yup.string().trim().required('Required'),
-  bank_branch: Yup.string().trim().required('Required'),
-  bank_address: Yup.string().trim().required('Required'),
-  loan_approval_letter: Yup.object().required('Required'),
-  loan_amount: Yup.string().required('Required'),
-  number_of_installment: Yup.string().required('Required'),
-  installment_amount: Yup.string().required('Required'),
-});
+// const schema = Yup.object().shape({
+//   bank_name: Yup.string().trim().required('Required'),
+//   bank_branch: Yup.string().trim().required('Required'),
+//   bank_address: Yup.string().trim().required('Required'),
+//   loan_approval_letter: Yup.object().required('Required'),
+//   loan_amount: Yup.string().required('Required'),
+//   number_of_installment: Yup.string().required('Required'),
+//   installment_amount: Yup.string().required('Required'),
+// });
 
 function RenderForm({navigation, formikProps}) {
   const {
@@ -50,7 +50,7 @@ function RenderForm({navigation, formikProps}) {
       <View style={styles.inputsContainer}>
         <RenderInput
           name="bank_name"
-          label={t('label_bank_name')}
+          label="Bank Name"
           ref={bankNameRef}
           containerStyles={styles.input}
           value={values.bank_name}
@@ -61,7 +61,7 @@ function RenderForm({navigation, formikProps}) {
         />
         <RenderInput
           name="bank_branch"
-          label={t('label_branch')}
+          label="Branch Name"
           ref={bankBranchRef}
           containerStyles={styles.input}
           value={values.bank_branch}
@@ -130,6 +130,29 @@ function RenderForm({navigation, formikProps}) {
           onSubmitEditing={handleSubmit}
           error={errors.installment_amount}
         />
+        <RenderInput
+          name="agent_name"
+          label="Agent Name"
+          containerStyles={styles.input}
+          value={values.agent_name}
+          onChangeText={handleChange('agent_name')}
+          onBlur={handleBlur('agent_name')}
+          onSubmitEditing={handleSubmit}
+          error={errors.agent_name}
+        />
+        <RenderInput
+          name="agent_phone"
+          label="Agent Phone"
+          keyboardType="decimal-pad"
+          left={<TextInput.Affix text="+91" />}
+          containerStyles={styles.input}
+          value={values.agent_phone}
+          onChangeText={handleChange('agent_phone')}
+          onBlur={handleBlur('agent_phone')}
+          maxLength={10}
+          onSubmitEditing={handleSubmit}
+          error={errors.agent_phone}
+        />
       </View>
       <ActionButtons
         cancelLabel="Cancel"
@@ -163,7 +186,7 @@ function AddBankDetails(props) {
 
     formData.append('project_id', selectedProject.id);
     formData.append('project_bankloan_id', id || 0);
-    formData.append('unit_id', unit.unit_id);
+    formData.append('unit_id', unit?.id);
     formData.append('bank_name', values.bank_name);
     formData.append('bank_branch', values.bank_branch);
     formData.append('bank_address', values.bank_address);
@@ -171,11 +194,13 @@ function AddBankDetails(props) {
     formData.append('loan_approval_letter', values.loan_approval_letter);
     formData.append('number_of_installment', values.number_of_installment);
     formData.append('installment_amount', values.installment_amount);
+    formData.append('agent_name', values.agent_name);
+    formData.append('agent_phone', values.agent_phone);
 
     updateBankDetails(formData).then(() => {
       getBankDetails({
         project_id: selectedProject.id,
-        unit_id: unit.unit_id,
+        unit_id: unit?.id,
       });
       navigation.goBack();
     });
@@ -193,7 +218,7 @@ function AddBankDetails(props) {
           validateOnChange={false}
           initialValues={initialValues}
           enableReinitialize
-          validationSchema={schema}
+          // validationSchema={schema}
           onSubmit={onSubmit}>
           {formikProps => <RenderForm formikProps={formikProps} {...props} />}
         </Formik>

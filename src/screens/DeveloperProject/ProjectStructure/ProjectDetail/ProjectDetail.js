@@ -57,7 +57,7 @@ function ProjectDetail(props) {
       case 'first':
         return <ProjectPreview {...props} />;
       case 'second':
-        return <StructurePreview {...props} />;
+        return <StructurePreview {...props} projectDetails={projectDetails} />;
 
       default:
         return null;

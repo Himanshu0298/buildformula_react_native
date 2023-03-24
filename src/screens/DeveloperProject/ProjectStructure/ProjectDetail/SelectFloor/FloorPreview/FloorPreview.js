@@ -14,6 +14,7 @@ function FloorPreview(props) {
     towerId,
     id: projectId,
     label,
+    tower,
   } = route?.params || {};
 
   const {getFloorList} = useProjectStructureActions();
@@ -43,10 +44,12 @@ function FloorPreview(props) {
         {...params}
         project_id={selectedProject.id}
         towerId={towerId}
+        tower={tower}
         selectedStructure={selectedStructure}
         towerType={towerType}
         showBhkFilters={false}
         displayHeader={false}
+        projectId={projectId}
       />
     );
   };
@@ -64,6 +67,7 @@ function FloorPreview(props) {
         selectedBhk={selectedBhk}
         renderUnits={renderUnits}
         handleBhkChange={setSelectedBhk}
+        edit
       />
     </View>
   );
