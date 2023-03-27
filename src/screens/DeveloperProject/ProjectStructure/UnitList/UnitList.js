@@ -75,7 +75,7 @@ const UnitCard = ({item, navigation, handleDelete}) => {
               </OpacityButton>
             }>
             <Menu.Item onPress={navToEdit} title="Edit" />
-            {/* <Menu.Item onPress={deleteUnit} title="Delete" /> */}
+            <Menu.Item onPress={deleteUnit} title="Delete" />
           </Menu>
         </View>
       </View>

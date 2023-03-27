@@ -100,13 +100,13 @@ function ListData(props) {
       <View style={styles.listSubContainer}>
         <Caption>{item?.floor}</Caption>
       </View>
-      {/* <OpacityButton
+      <OpacityButton
         color="#FF5D5D"
         opacity={0.18}
         onPress={() => handleDelete(item.id)}
         style={styles.deleteIcon}>
         <MaterialIcons name="delete" color="#FF5D5D" size={13} />
-      </OpacityButton> */}
+      </OpacityButton>
     </View>
   );
 }
