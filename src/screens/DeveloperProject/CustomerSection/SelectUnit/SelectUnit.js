@@ -23,6 +23,7 @@ export const SelectUnit = props => {
     projectData,
     floor_id,
     tower_id,
+    tower_label,
   } = props || {};
 
   const {getUnitStatusListing} = useSalesActions();
@@ -60,6 +61,9 @@ export const SelectUnit = props => {
       selectedStructure,
       towerType,
       unit,
+      tower_label,
+      tower_id,
+      floor_id,
     });
   };
 
