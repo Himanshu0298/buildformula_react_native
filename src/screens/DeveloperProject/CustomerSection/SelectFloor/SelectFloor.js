@@ -25,8 +25,6 @@ function SelectFloor(props) {
   const {selectedProject} = useSelector(s => s.project);
   const {floorList} = useSelector(s => s.projectStructure);
 
-  const floor_id = floorList.find(i => i.id)?.floor;
-
   const [selectedBhk, setSelectedBhk] = React.useState();
 
   React.useEffect(() => {
@@ -54,7 +52,6 @@ function SelectFloor(props) {
         showBhkFilters={false}
         displayHeader={false}
         projectId={projectId}
-        floor_id={floor_id}
         tower_id={tower_id}
         projectData={projectData}
       />

@@ -116,6 +116,7 @@ function SelectUnitContainer(props) {
     selectedStructure,
     towerType,
     projectData,
+    floor_id,
   } = route?.params || {};
 
   return (
@@ -123,6 +124,7 @@ function SelectUnitContainer(props) {
       project_id={project_id}
       floorId={floorId}
       towerId={towerId}
+      floor_id={floor_id}
       projectData={projectData}
       structureType={structureType}
       selectedStructure={selectedStructure}
