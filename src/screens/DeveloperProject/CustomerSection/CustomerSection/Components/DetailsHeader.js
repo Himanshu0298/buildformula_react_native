@@ -14,10 +14,17 @@ function renderDetailText(label, value) {
 }
 
 function DetailsHeader(props) {
-  const {towerId, floorId, structureType, selectedStructure, unitId, unit} =
-    props;
+  const {
+    structureType,
+    selectedStructure,
+    unitId,
+    unit,
+    tower_label,
+    floor_id,
+    tower_id,
+  } = props;
 
-  const id = unit?.unit_id;
+  const id = unit?.id;
 
   return (
     <View style={styles.detailContainer}>
@@ -26,10 +33,12 @@ function DetailsHeader(props) {
           'Project type',
           STRUCTURE_TYPE_LABELS[structureType || selectedStructure],
         )}
-        {renderDetailText('Floor', getFloorNumber(floorId))}
+        {renderDetailText('Floor', getFloorNumber(floor_id))}
       </View>
       <View style={styles.detailSubContainer}>
-        {renderDetailText('Tower', getTowerLabel(towerId))}
+        {/* {renderDetailText('Tower', tower_label)} */}
+        {renderDetailText('Tower', tower_label || getTowerLabel(tower_id))}
+
         {renderDetailText('Unit number', unitId || id)}
       </View>
     </View>

@@ -57,6 +57,7 @@ function SelectFloor(props) {
         floor_id={floor_id}
         tower_id={tower_id}
         projectData={projectData}
+        tower_label={tower_label}
       />
     );
   };

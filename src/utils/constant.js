@@ -1,8 +1,8 @@
 import {Platform} from 'react-native';
 import {theme} from 'styles/theme';
 
-// export const SITE_URL = 'http://104.198.176.6';
-export const SITE_URL = 'https://portal.buildformula.com';
+export const SITE_URL = 'http://104.198.176.6';
+// export const SITE_URL = 'https://portal.buildformula.com';
 export const BASE_API_URL = `${SITE_URL}/api/`;
 
 export const PHONE_REGEX =

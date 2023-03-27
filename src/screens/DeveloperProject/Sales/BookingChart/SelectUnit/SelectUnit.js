@@ -62,7 +62,7 @@ export const SelectUnit = props => {
   const checkUnitDisability = unit => {
     const {status, booked_unit_user_id, tmp_booking_time_end} = unit;
     let disabled =
-      [3, 4].includes(status) ||
+      [3, 4, 7].includes(status) ||
       (status === 2 && booked_unit_user_id && booked_unit_user_id !== user.id);
 
     if (status === 2 && dayjs(tmp_booking_time_end).isBefore(dayjs())) {
