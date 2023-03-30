@@ -209,13 +209,13 @@ function PaymentCollections(props) {
               style={[styles.amount, {color: theme.colors.documentation}]}>
               ₹ {amountCollected || 0}
             </Caption>
-            <OpacityButton
+            {/* <OpacityButton
               opacity={0.1}
               color={theme.colors.primary}
               style={styles.printAll}
               onPress={navToPrintAll}>
               <Ionicons name="print" size={22} color={theme.colors.primary} />
-            </OpacityButton>
+            </OpacityButton> */}
           </View>
 
           {charges?.map((charge, i) => (
