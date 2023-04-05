@@ -290,7 +290,7 @@ function Account(props) {
               <React.Fragment key={index.toString()}>
                 <TouchableOpacity
                   style={styles.cardItem}
-                  onPress={() => navToDetails(item.key)}>
+                  onPress={() => navToDetails(item.key, {project_id, unit})}>
                   <View style={styles.arrowButton}>
                     <View style={styles.badgeButton}>
                       <Text style={{color: item.color}}>{item.label}</Text>

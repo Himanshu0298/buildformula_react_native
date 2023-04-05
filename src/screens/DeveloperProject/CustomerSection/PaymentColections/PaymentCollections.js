@@ -1,6 +1,20 @@
 import * as React from 'react';
-import {ScrollView, StyleSheet, View} from 'react-native';
-import {Caption, Text, withTheme} from 'react-native-paper';
+import {
+  ScrollView,
+  StyleSheet,
+  View, // eslint-disable-next-line react-native/split-platform-components
+  PermissionsAndroid,
+  Platform,
+} from 'react-native';
+import {
+  Caption,
+  Divider,
+  Headline,
+  Subheading,
+  Switch,
+  Text,
+  withTheme,
+} from 'react-native-paper';
 import dayjs from 'dayjs';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
@@ -11,12 +25,16 @@ import useCustomerActions from 'redux/actions/customerActions';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {useSelector} from 'react-redux';
 import {theme} from 'styles/theme';
-import {useSnackbar} from 'components/Atoms/Snackbar';
 import {downloadPdf} from 'utils/download';
 import FileViewer from 'react-native-file-viewer';
-import {BASE_API_URL} from 'utils/constant';
 import {useDownload} from 'components/Atoms/Download';
 import ScreenTitle from 'components/Atoms/ScreenTitle';
+import ReactNativeBlobUtil from 'react-native-blob-util';
+import {BASE_API_URL} from 'utils/constant';
+import {config} from 'services/init';
+import {useSnackbar} from 'components/Atoms/Snackbar';
+import Modal from 'react-native-modal';
+import ActionButtons from 'components/Atoms/ActionButtons';
 
 const TITLE = {
   document: 'Documentation charges',
@@ -134,13 +152,19 @@ const RenderCharge = React.memo(props => {
 
 function PaymentCollections(props) {
   const {navigation, route} = props;
-  const {type} = route?.params || {};
+  const {type, project_id, unit} = route?.params || {};
+  const unitid = unit?.id;
 
   const alert = useAlert();
   const {deleteCollection, getAccountDetails} = useCustomerActions();
 
   const {loading, accountDetails} = useSelector(s => s.customer);
   const {paymentCollection = {}} = accountDetails;
+
+  const [Visible, setVisible] = React.useState(false);
+  const [docCharges, setDocCharges] = React.useState(false);
+  const [finalAmount, setFinalAmount] = React.useState(false);
+  const [validationMsg, setValidationMsg] = React.useState();
 
   const charges = React.useMemo(() => {
     const {documentcharges, propertyfinalamount, gst} = paymentCollection;
@@ -167,10 +191,6 @@ function PaymentCollections(props) {
   const navToAddCollection = () =>
     navigation.navigate('AddCollection', {...route.params});
 
-  const navToPrintAll = () => {
-    console.log('-------->');
-  };
-
   const handleDelete = ({project_id, id, unit_id}) => {
     alert.show({
       title: 'Confirm',
@@ -183,10 +203,154 @@ function PaymentCollections(props) {
     });
   };
 
+  const snackbar = useSnackbar();
+
+  const downloadPermissions = async () => {
+    if (Platform.OS === 'ios') {
+      actualDownload();
+    } else if (Platform.OS === 'android') {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          actualDownload();
+        } else {
+          snackbar.showMessage({
+            message: 'You need to give storage permission to download the file',
+            variant: 'error',
+          });
+        }
+      } catch (err) {
+        console.warn(err);
+      }
+    } else {
+      snackbar.showMessage({
+        message: 'File is already downloaded.',
+        variant: 'warning',
+      });
+    }
+  };
+  const actualDownload = async () => {
+    const {dirs} = ReactNativeBlobUtil.fs;
+    const data = {
+      project_id,
+      unitid,
+      print_document_charge: (await docCharges)
+        ? JSON.stringify(docCharges)
+        : '',
+      print_property_final: (await finalAmount)
+        ? JSON.stringify(finalAmount)
+        : '',
+    };
+
+    const dirToSave =
+      Platform.OS === 'ios' ? dirs.DocumentDir : dirs.DownloadDir;
+    const configfb = {
+      useDownloadManager: true,
+      notification: true,
+      mediaScannable: true,
+      title: `CS_Account-${unit?.project_tower}-${unit?.project_floor}-${unit?.project_unit}`,
+      path: `${dirToSave}/CS_Account-${unit?.project_tower}-${unit?.project_floor}-${unit?.project_unit}.pdf`,
+    };
+    const configOptions = Platform.select({
+      ios: {
+        title: configfb.title,
+        path: configfb.path,
+        appendExt: 'pdf',
+      },
+      android: configfb,
+    });
+
+    ReactNativeBlobUtil.config(configOptions)
+      .fetch(
+        'POST',
+        `${BASE_API_URL}customers/print/account`,
+        config({multipart: false}).headers,
+        JSON.stringify(data),
+      )
+      .then(res => {
+        if (Platform.OS === 'ios') {
+          ReactNativeBlobUtil.ios.previewDocument(configfb.path);
+        }
+        if (Platform.OS === 'android') {
+          snackbar.showMessage({message: 'File downloaded'});
+        }
+      })
+      .catch(e => {
+        console.log('The file saved to ERROR', e.message);
+      });
+  };
+
+  const onToggleDocCharges = () => {
+    setDocCharges(!docCharges);
+    setValidationMsg('');
+  };
+  const onToggleFinalAmount = () => {
+    setFinalAmount(!finalAmount);
+    setValidationMsg('');
+  };
+
+  const handleDownload = async () => {
+    if (docCharges || finalAmount) {
+      await downloadPermissions();
+      setVisible(false);
+    } else {
+      setValidationMsg('Please select atleast one option to proceed');
+    }
+  };
+
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{flexGrow: 1}}>
+      <Modal isVisible={Visible}>
+        <View style={styles.printModal}>
+          <View style={{alignItems: 'flex-end'}}>
+            <OpacityButton
+              opacity={0.1}
+              color={theme.colors.red}
+              style={styles.deleteButton}
+              onPress={() => setVisible(!Visible)}>
+              <MaterialIcon name="cancel" color={theme.colors.red} size={18} />
+            </OpacityButton>
+          </View>
+          <View style={{alignItems: 'center'}}>
+            <Subheading>Select Print Option</Subheading>
+          </View>
+          <Divider />
+          <Text style={styles.printError}>{validationMsg}</Text>
+          <View style={styles.extraDetailsRow}>
+            <Subheading>Documentation charges</Subheading>
+            <View style={styles.extraDetailsSwitchWrap}>
+              <Switch
+                value={Boolean(docCharges)}
+                onValueChange={onToggleDocCharges}
+                color="#07CA03"
+              />
+              {docCharges ? <Text style={styles.switchtxt}>Yes</Text> : null}
+            </View>
+          </View>
+          <View style={styles.extraDetailsRow}>
+            <Subheading>Final Amount</Subheading>
+            <View style={styles.extraDetailsSwitchWrap}>
+              <Switch
+                value={Boolean(finalAmount)}
+                onValueChange={onToggleFinalAmount}
+                color="#07CA03"
+              />
+              {finalAmount ? <Text style={styles.switchtxt}>Yes</Text> : null}
+            </View>
+          </View>
+          <Divider />
+          <ActionButtons
+            cancelLabel="Cancel"
+            submitLabel="Print"
+            onCancel={() => setVisible(false)}
+            onSubmit={() => handleDownload()}
+          />
+        </View>
+      </Modal>
       <Spinner visible={loading} textContent="" />
       <View style={styles.container}>
         <View style={styles.actionButton}>
@@ -209,13 +373,13 @@ function PaymentCollections(props) {
               style={[styles.amount, {color: theme.colors.documentation}]}>
               ₹ {amountCollected || 0}
             </Caption>
-            {/* <OpacityButton
+            <OpacityButton
               opacity={0.1}
               color={theme.colors.primary}
               style={styles.printAll}
-              onPress={navToPrintAll}>
+              onPress={() => setVisible(!Visible)}>
               <Ionicons name="print" size={22} color={theme.colors.primary} />
-            </OpacityButton> */}
+            </OpacityButton>
           </View>
 
           {charges?.map((charge, i) => (
@@ -294,6 +458,36 @@ const styles = StyleSheet.create({
   amount: {
     alignSelf: 'center',
     paddingEnd: 150,
+  },
+  printModal: {
+    backgroundColor: '#fff',
+    paddingBottom: 25,
+    paddingTop: 7,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+  },
+  switchtxt: {
+    color: '#07CA03',
+    marginLeft: 10,
+    width: 60,
+  },
+  extraDetailsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginVertical: 10,
+    alignItems: 'center',
+  },
+  extraDetailsSwitchWrap: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: 100,
+    marginVertical: 5,
+  },
+  printError: {
+    color: theme.colors.error,
+    marginTop: 10,
+    marginBottom: 5,
+    textAlign: 'center',
   },
 });
 
