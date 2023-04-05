@@ -24,6 +24,8 @@ import {useAlert} from 'components/Atoms/Alert';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
+import ImageView from 'react-native-image-viewing';
+import {isNumber} from 'lodash';
 
 const INDENT_STATUS = {
   pending: {label: 'Pending', color: 'rgba(72, 114, 244, 1)'},
@@ -124,26 +126,42 @@ const MaterialCard = props => {
 
 const MaterialAttachments = props => {
   const {returnAttachments} = props;
+  const [imageIndex, setImageIndex] = React.useState(false);
+
+  const returnImages = React.useMemo(() => {
+    return returnAttachments?.map(i => ({uri: i.file_url}));
+  }, [returnAttachments]);
+
   return (
     <View>
+      <ImageView
+        images={returnImages}
+        imageIndex={imageIndex}
+        visible={isNumber(imageIndex)}
+        onRequestClose={() => setImageIndex(false)}
+      />
       <View style={styles.attachmentContainer}>
         <View style={styles.renderFileContainer}>
           <Text style={styles.attachmentFileHeader}>Material Images</Text>
         </View>
-        {returnAttachments?.map(attachment => {
+        {returnAttachments?.map((attachment, index) => {
           return (
-            <View key={attachment.file_name}>
-              <View style={styles.sectionContainer}>
-                <Image source={FileIcon} style={styles.fileIcon} />
-                <View>
-                  <Text
-                    style={(styles.verticalFlex, styles.text)}
-                    numberOfLines={1}>
-                    {attachment.file_name}
-                  </Text>
+            <TouchableOpacity
+              style={styles.imageIconContainer}
+              onPress={() => setImageIndex(index)}>
+              <View key={attachment.file_name}>
+                <View style={styles.sectionContainer}>
+                  <Image source={FileIcon} style={styles.fileIcon} />
+                  <View>
+                    <Text
+                      style={(styles.verticalFlex, styles.text)}
+                      numberOfLines={1}>
+                      {attachment.file_name}
+                    </Text>
+                  </View>
                 </View>
               </View>
-            </View>
+            </TouchableOpacity>
           );
         })}
       </View>
@@ -166,7 +184,7 @@ function ReturnIndentPreview(props) {
 
   const details = indentDetails?.material_indent;
 
-  const returnAttachments = indentDetails.return_indent_files || [];
+  const returnAttachments = indentDetails?.return_indent_files ?? [];
 
   const materialData = indentDetails?.material_indent_details;
 
@@ -449,5 +467,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  imageIcon: {
+    height: 50,
+    width: 50,
+  },
+  imageIconContainer: {
+    marginTop: 10,
   },
 });
