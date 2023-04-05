@@ -14,7 +14,8 @@
     "dev-release": "cd android && fastlane distribute",
     "podinstall:windows:linux": "echo god",
     "postinstall": "patch-package &&  npx jetify ; npm run podinstall;",
-    "postuninstall": "patch-package && npx jetify ; npm run podinstall;"
+    "postuninstall": "patch-package && npx jetify ; npm run podinstall;",
+    "pre-commit": "lint-staged"
   },
   "dependencies": {
     "@expo/react-native-action-sheet": "^3.13.0",

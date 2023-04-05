@@ -191,6 +191,7 @@ function PaymentCollections(props) {
   const navToAddCollection = () =>
     navigation.navigate('AddCollection', {...route.params});
 
+  // eslint-disable-next-line @typescript-eslint/no-shadow
   const handleDelete = ({project_id, id, unit_id}) => {
     alert.show({
       title: 'Confirm',
@@ -306,7 +307,13 @@ function PaymentCollections(props) {
       contentContainerStyle={{flexGrow: 1}}>
       <Modal isVisible={Visible}>
         <View style={styles.printModal}>
-          <View style={{alignItems: 'flex-end'}}>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              margin: 10,
+            }}>
+            <Subheading>Select Print Option</Subheading>
             <OpacityButton
               opacity={0.1}
               color={theme.colors.red}
@@ -315,32 +322,23 @@ function PaymentCollections(props) {
               <MaterialIcon name="cancel" color={theme.colors.red} size={18} />
             </OpacityButton>
           </View>
-          <View style={{alignItems: 'center'}}>
-            <Subheading>Select Print Option</Subheading>
-          </View>
           <Divider />
           <Text style={styles.printError}>{validationMsg}</Text>
           <View style={styles.extraDetailsRow}>
             <Subheading>Documentation charges</Subheading>
-            <View style={styles.extraDetailsSwitchWrap}>
-              <Switch
-                value={Boolean(docCharges)}
-                onValueChange={onToggleDocCharges}
-                color="#07CA03"
-              />
-              {docCharges ? <Text style={styles.switchtxt}>Yes</Text> : null}
-            </View>
+            <Switch
+              value={Boolean(docCharges)}
+              onValueChange={onToggleDocCharges}
+              color="#07CA03"
+            />
           </View>
           <View style={styles.extraDetailsRow}>
             <Subheading>Final Amount</Subheading>
-            <View style={styles.extraDetailsSwitchWrap}>
-              <Switch
-                value={Boolean(finalAmount)}
-                onValueChange={onToggleFinalAmount}
-                color="#07CA03"
-              />
-              {finalAmount ? <Text style={styles.switchtxt}>Yes</Text> : null}
-            </View>
+            <Switch
+              value={Boolean(finalAmount)}
+              onValueChange={onToggleFinalAmount}
+              color="#07CA03"
+            />
           </View>
           <Divider />
           <ActionButtons
@@ -466,22 +464,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 5,
   },
-  switchtxt: {
-    color: '#07CA03',
-    marginLeft: 10,
-    width: 60,
-  },
   extraDetailsRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginVertical: 10,
     alignItems: 'center',
-  },
-  extraDetailsSwitchWrap: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: 100,
-    marginVertical: 5,
+    paddingHorizontal: 10,
   },
   printError: {
     color: theme.colors.error,
