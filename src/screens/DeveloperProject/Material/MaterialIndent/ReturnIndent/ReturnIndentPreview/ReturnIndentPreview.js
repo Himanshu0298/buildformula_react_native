@@ -184,7 +184,7 @@ function ReturnIndentPreview(props) {
 
   const details = indentDetails?.material_indent;
 
-  const returnAttachments = indentDetails?.return_indent_files ?? [];
+  const returnAttachments = indentDetails?.return_indent_files || [];
 
   const materialData = indentDetails?.material_indent_details;
 
