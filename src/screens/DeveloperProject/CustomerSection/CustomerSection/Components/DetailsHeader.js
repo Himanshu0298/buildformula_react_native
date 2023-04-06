@@ -24,7 +24,7 @@ function DetailsHeader(props) {
     tower_id,
   } = props;
 
-  const id = unit?.id;
+  const {id, project_unit} = unit || {};
 
   return (
     <View style={styles.detailContainer}>
@@ -39,7 +39,7 @@ function DetailsHeader(props) {
         {/* {renderDetailText('Tower', tower_label)} */}
         {renderDetailText('Tower', tower_label || getTowerLabel(tower_id))}
 
-        {renderDetailText('Unit number', unitId || id)}
+        {renderDetailText('Unit number', project_unit)}
       </View>
     </View>
   );

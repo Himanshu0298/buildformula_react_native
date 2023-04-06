@@ -123,7 +123,7 @@ function ApprovalListing(props) {
             color="black"
           />
         </OpacityButton>
-        <Subheading style={styles.subheading}>Approval listing</Subheading>
+        <Subheading style={styles.subheading}>Approval Details</Subheading>
       </View>
       <ListingDescription
         {...route.params}
