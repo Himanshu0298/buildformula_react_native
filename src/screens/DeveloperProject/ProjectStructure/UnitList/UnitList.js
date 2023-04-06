@@ -44,15 +44,22 @@ const UnitCard = ({item, navigation, handleDelete}) => {
         : project_type === 4
         ? 'BungalowDetails'
         : 'PlotDetails',
-      {unitId: id},
+      {unitId: id, item},
     );
     toggleMenu();
   };
-
   const deleteUnit = () => {
     handleDelete(id);
     toggleMenu();
   };
+  const navToNext = () =>
+    project_type === 1 || project_type === 2 || project_type === 3
+      ? navigation.navigate('UnitPreview', {unitData: item})
+      : project_type === 4
+      ? navigation.navigate('BungalowUnitPreview', {unitData: item})
+      : project_type === 5
+      ? navigation.navigate('PlotUnitPreview')
+      : navigation.navigate('IndustrialUnitPreview');
 
   return (
     <View style={styles.projectCardWrapper}>
@@ -80,16 +87,7 @@ const UnitCard = ({item, navigation, handleDelete}) => {
         </View>
       </View>
       <Divider />
-      <TouchableOpacity
-        onPress={() =>
-          project_type === 1 || project_type === 2 || project_type === 3
-            ? navigation.navigate('UnitPreview', {unitData: item})
-            : project_type === 4
-            ? navigation.navigate('BungalowUnitPreview', {unitData: item})
-            : project_type === 5
-            ? navigation.navigate('PlotUnitPreview')
-            : navigation.navigate('IndustrialUnitPreview')
-        }>
+      <TouchableOpacity onPress={navToNext}>
         <View style={styles.bodyWrapper}>
           <Text>{`${unit_category} - ${project_unit}`}</Text>
           <Caption>
@@ -123,10 +121,6 @@ function UnitList(props) {
     loading,
   } = useSelector(s => s.projectStructure);
   const {selectedProject} = useSelector(s => s.project);
-
-  console.log('===========> unitLoading', unitLoading);
-
-  console.log('===========> loading', loading);
 
   useEffect(() => {
     loadData();

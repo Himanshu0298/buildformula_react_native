@@ -90,7 +90,7 @@ function RenderContent(props) {
             right={
               <TextInput.Icon
                 theme={secondaryTheme}
-                name={showPassword ? 'eye-off' : 'eye'}
+                name={!showPassword ? 'eye-off' : 'eye'}
                 onPress={() => setShowPassword(show => !show)}
               />
             }

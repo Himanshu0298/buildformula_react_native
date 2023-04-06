@@ -45,7 +45,7 @@ function RenderForm(props) {
     }));
   }, [project_structure_project_category]);
 
-  // const apartment = values.project_category === 1;
+  // const {apartment} = values.project_category;
 
   // const shop = values.project_category === 2;
 
@@ -177,30 +177,27 @@ function ProjectStructure(props) {
       bhk_configuration,
     } = projectDetails || {};
 
-    const category =
-      typeof project_category === 'number'
-        ? [project_category]
-        : project_category;
+    // const category =
+    //   typeof project_category === 'number'
+    //     ? [project_category]
+    //     : project_category;
 
     return {
       total_no_of_towers,
       total_no_of_units,
       total_no_of_bunglows,
       total_no_of_plots,
-      project_category: category,
+      project_category,
       bhk_configuration: bhk_configuration.split('  '),
     };
   }, [projectDetails]);
 
   const onSubmit = values => {
     const arrString = values?.bhk_configuration?.join('  ');
-
-    const arrCategory = values.project_category;
-
     const data = {
       project_id: selectedProject.id,
       id: projectId,
-      project_category: arrCategory,
+      project_category: values.project_category,
       total_no_of_towers: values.total_no_of_towers,
       total_no_of_units: values.total_no_of_units,
       total_no_of_bunglows: values.total_no_of_bunglows,

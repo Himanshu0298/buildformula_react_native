@@ -1,5 +1,5 @@
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
-import React, {useMemo} from 'react';
+import React, {useMemo, useEffect} from 'react';
 import {IconButton, Subheading, Switch} from 'react-native-paper';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
@@ -256,24 +256,27 @@ const RenderForm = props => {
 const UnitDetails = props => {
   const {navigation, route} = props;
 
-  const {unitId} = route.params || {};
+  const {unitId, selectedUnit} = route?.params || {};
 
-  const {updateUnit, getUnitList} = useProjectStructureActions();
+  const {updateUnit, getUnitList, getProjectList} =
+    useProjectStructureActions();
 
-  const {
-    unitList = [],
-    projectList = [],
-    masterList = [],
-  } = useSelector(s => {
+  const {projectList = [], masterList = []} = useSelector(s => {
     return s.projectStructure;
   });
+
+  useEffect(() => {
+    getProjectList({project_id: selectedProject.id});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const {selectedProject} = useSelector(s => s.project);
 
-  const selectedUnit = unitList?.find(i => i.id === unitId);
+  const projectId = 0;
 
-  const selected_project = projectList?.find(
-    i => i.project_id === selectedUnit.project_id,
-  );
+  // const selectedUnit = unitList?.find(i => i.id === unitId);
+
+  const selected_project =
+    projectList?.find(i => i.project_id === selectedUnit.project_id) || {};
 
   const onSubmit = async values => {
     const {
@@ -288,7 +291,7 @@ const UnitDetails = props => {
     } = values;
 
     await updateUnit({
-      id: selectedUnit.project_list_id,
+      id: selectedUnit.id,
       project_id: selectedUnit.project_id,
       project_unit: unitNo,
       project_tower: selectedUnit.project_tower,
@@ -303,7 +306,7 @@ const UnitDetails = props => {
       unit_id: unitId,
     });
 
-    await getUnitList({project_id: selectedProject.id});
+    await getUnitList({project_id: selectedProject.id, id: projectId});
 
     await navigation.navigate('UnitList');
   };
@@ -338,6 +341,26 @@ const UnitDetails = props => {
       ?.map(i => ({label: i.title, value: i.id}));
   }, [masterList]);
 
+  const initialValues = {
+    projectName: selected_project?.project_name,
+    projectCategory: selectedUnit.unit_category,
+    selectTower: selectedUnit.tower_name,
+    selectFloor: selectedUnit.project_floor,
+    unitNo: selectedUnit.project_unit,
+    address: selected_project?.area,
+    city: selected_project?.city,
+    state: selected_project?.state,
+    country: selected_project?.country,
+    pincode: selected_project?.pincode,
+    premium_location: selectedUnit.premium_location || 0,
+    share_with_broker: selectedUnit.share_with_broker || 0,
+    status: selectedUnit.status,
+    noOfBhk: selectedUnit.no_of_bhk,
+    specificType: selectedUnit.specific_type,
+    unitType: selectedUnit.unit_type_id,
+    unitFor: selectedUnit.unit_for,
+  };
+
   return (
     <View style={styles.mainContainer}>
       <View style={styles.headerWrapper}>
@@ -355,25 +378,7 @@ const UnitDetails = props => {
           enableReinitialize
           validateOnBlur={false}
           validateOnChange={false}
-          initialValues={{
-            projectName: selectedUnit.project_name,
-            projectCategory: selectedUnit.unit_category,
-            selectTower: selectedUnit.tower_name,
-            selectFloor: selectedUnit.floor_name,
-            unitNo: selectedUnit.project_unit,
-            address: selected_project.area,
-            city: selected_project.city,
-            state: selected_project.state,
-            country: selected_project.country,
-            pincode: selected_project.pincode,
-            premium_location: selectedUnit.premium_location || 0,
-            share_with_broker: selectedUnit.share_with_broker || 0,
-            status: selectedUnit.status,
-            noOfBhk: selectedUnit.no_of_bhk,
-            specificType: selectedUnit.specific_type,
-            unitType: selectedUnit.unit_type_id,
-            unitFor: selectedUnit.unit_for,
-          }}
+          initialValues={initialValues}
           validationSchema={schema}
           onSubmit={onSubmit}>
           {formikProps => (

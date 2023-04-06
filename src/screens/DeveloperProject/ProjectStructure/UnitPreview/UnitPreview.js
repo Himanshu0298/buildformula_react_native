@@ -338,9 +338,13 @@ function Details() {
 }
 
 function UnitDetails(props) {
-  const {premium_location, selected_project, project_name} = props;
+  const {premium_location, selected_project, project_name, unitData} = props;
 
-  const {area, city, state, country, pincode} = selected_project;
+  console.log('===========> unitData', unitData);
+
+  console.log('===========> selected_project', selected_project);
+
+  const {area, city, state, country, pincode} = selected_project || {};
 
   return (
     <View style={{padding: 10, paddingTop: 0}}>
@@ -371,6 +375,7 @@ function UnitPreview(props) {
   const {navigation, route} = props;
 
   const {unitData} = route.params;
+  console.log('===========> route.params', route.params);
   const {
     id,
     no_of_bhk_name,
@@ -386,7 +391,8 @@ function UnitPreview(props) {
     return s.projectStructure;
   });
 
-  const selected_project = projectList?.find(i => i.project_id === project_id);
+  const selected_project =
+    projectList?.find(i => i.project_id === project_id) || {};
 
   return (
     <View>
