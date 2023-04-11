@@ -10,6 +10,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 
 import useProjectStructureActions from 'redux/actions/projectStructureActions';
 import {useSelector} from 'react-redux';
+import {debounce} from 'lodash';
 
 const schema = Yup.object().shape({
   projectName: Yup.string()
@@ -216,8 +217,8 @@ const AddUnit = props => {
         <ActionButtons
           cancelLabel="Add Details"
           submitLabel="Save"
-          onCancel={() => onSave('details')}
-          onSubmit={() => onSave('save')}
+          onCancel={debounce(() => onSave('details', 200))}
+          onSubmit={debounce(() => onSave('save'), 200)}
         />
       </View>
     </View>

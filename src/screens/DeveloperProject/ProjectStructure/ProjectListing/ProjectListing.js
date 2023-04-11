@@ -35,7 +35,7 @@ const Header = props => {
   const {navToFilter, filterCount} = props;
   return (
     <View style={styles.headerWrapper}>
-      <Title>Project {filterCount}</Title>
+      <Title>Project Listing</Title>
       <View style={styles.editIconContainer}>
         {filterCount ? (
           <Badge style={styles.filterCount}>{filterCount}</Badge>
@@ -141,8 +141,6 @@ const ProjectCard = props => {
 
 function ProjectListing(props) {
   const {navigation, route} = props;
-
-  const {filterData} = route?.params || {};
 
   const alert = useAlert();
 
