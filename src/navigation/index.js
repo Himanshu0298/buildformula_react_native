@@ -88,6 +88,7 @@ import SearchPickUpList from 'screens/DeveloperProject/ProjectStructure/PickUp/S
 
 // Tower Unit
 import UnitList from 'screens/DeveloperProject/ProjectStructure/UnitList/Index';
+import UnitFilter from 'screens/DeveloperProject/ProjectStructure/UnitList/UnitFilter';
 import AddUnit from 'screens/DeveloperProject/ProjectStructure/AddUnit';
 import UnitDetails from 'screens/DeveloperProject/ProjectStructure/ProjectUnitDetails/UnitDetails';
 import ProjectUnitDetails from 'screens/DeveloperProject/ProjectStructure/ProjectUnitDetails/ProjectUnitDetails';
@@ -765,6 +766,7 @@ function AppStackNavigator() {
               component={ProjectStructure}
             />
             <Stack.Screen name="UnitList" component={UnitList} />
+            <Stack.Screen name="UnitFilter" component={UnitFilter} />
             <Stack.Screen name="AddUnit" component={AddUnit} />
             <Stack.Screen
               name="ProjectUnitDetails"

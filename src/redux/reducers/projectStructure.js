@@ -1,4 +1,5 @@
 import {
+  UPDATE_FILTER_COUNT,
   ADD_AREA,
   ADD_FLOOR,
   ADD_PICK_UP,
@@ -68,11 +69,21 @@ const initialState = {
   masterList: [],
   areaList: [],
   floorList: [],
+  filterCount: 0,
+  isFiltered: false,
+  filteredProjects: [],
 };
 
 const reducer = (state = initialState, action = {}) => {
   const {type, payload} = action;
   switch (type) {
+    case `${UPDATE_FILTER_COUNT}`:
+      console.log('Reducer', payload);
+      return {
+        ...initialState,
+        filterCount: payload,
+      };
+
     case `${GET_SELECTED_PROJECT}_PENDING`:
       return {
         ...initialState,

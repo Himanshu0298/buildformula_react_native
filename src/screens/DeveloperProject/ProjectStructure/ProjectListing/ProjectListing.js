@@ -14,6 +14,7 @@ import {
   Searchbar,
   Text,
   Title,
+  Badge,
 } from 'react-native-paper';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -30,11 +31,15 @@ const PROJECT_STATUS = {
   1: {label: 'Active', color: '#07CA03'},
 };
 
-const Header = ({navToFilter}) => {
+const Header = props => {
+  const {navToFilter, filterCount} = props;
   return (
     <View style={styles.headerWrapper}>
-      <Title>Project Listing</Title>
+      <Title>Project {filterCount}</Title>
       <View style={styles.editIconContainer}>
+        {filterCount ? (
+          <Badge style={styles.filterCount}>{filterCount}</Badge>
+        ) : undefined}
         <OpacityButton
           color="#4872f4"
           opacity={0.18}
@@ -135,14 +140,20 @@ const ProjectCard = props => {
 };
 
 function ProjectListing(props) {
-  const {navigation} = props;
+  const {navigation, route} = props;
+
+  const {filterData} = route?.params || {};
 
   const alert = useAlert();
 
   const {getProjectList, deleteProject} = useProjectStructureActions();
   const [searchQuery, setSearchQuery] = React.useState('');
 
-  const {projectList = [], loading} = useSelector(s => s.projectStructure);
+  const {
+    projectList = [],
+    filterCount,
+    loading,
+  } = useSelector(s => s.projectStructure);
   const {selectedProject} = useSelector(s => s.project);
 
   React.useEffect(() => {
@@ -191,7 +202,7 @@ function ProjectListing(props) {
     <View style={styles.mainContainer}>
       <Spinner visible={loading} textContent="" />
 
-      <Header navToFilter={navToFilter} />
+      <Header navToFilter={navToFilter} filterCount={filterCount} />
       <Searchbar
         style={styles.searchBar}
         value={searchQuery}
@@ -308,5 +319,10 @@ const styles = StyleSheet.create({
   },
   developer: {
     textTransform: 'capitalize',
+  },
+  filterCount: {
+    position: 'absolute',
+    top: -13,
+    right: 15,
   },
 });
