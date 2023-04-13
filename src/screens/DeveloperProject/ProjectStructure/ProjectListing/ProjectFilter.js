@@ -1,38 +1,15 @@
 import {ScrollView, StyleSheet, View} from 'react-native';
-import React, {useEffect, useMemo, useState} from 'react';
-import {Caption, Divider, IconButton, Text, Title} from 'react-native-paper';
+import React, {useEffect, useMemo} from 'react';
+import {Divider, IconButton, Text, Title} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {useFormik, Formik} from 'formik';
+import {useFormik} from 'formik';
 import ActionButtons from 'components/Atoms/ActionButtons';
 import RenderSelect from 'components/Atoms/RenderSelect';
-import RenderInput from 'components/Atoms/RenderInput';
 import dayjs from 'dayjs';
-import RangeSlider from '@ptomasroos/react-native-multi-slider';
+import RangeSlider from 'components/Atoms/RangeSlider';
 
 import useProjectStructureActions from 'redux/actions/projectStructureActions';
 import {useSelector} from 'react-redux';
-
-const initialValues = {
-  projectName: '',
-  developerName: '',
-  area: '',
-  status: '',
-  premium: '',
-  possession: '',
-  rera: '',
-  projectType: '',
-  restrictedUser: '',
-  projectStatus: '',
-  projectQuality: '',
-  bhk: '',
-  category: '',
-  tower: '',
-  unit: '',
-  bungalow: '',
-  plot: '',
-  owner: '',
-  security: '',
-};
 
 const RenderForm = props => {
   const {
@@ -68,36 +45,26 @@ const RenderForm = props => {
     handleSubmit,
   } = formikProps;
 
-  // Tower
-  const [towerMinVal, setTowerMinVal] = React.useState(0);
-  const [towerMaxVal, setTowerMaxVal] = React.useState(1);
-  const handleTowerRangeChange = towerVal => {
-    setTowerMinVal(towerVal[0]);
-    setTowerMaxVal(towerVal[1]);
-  };
-
-  // Unit
-  const [unitMinVal, setUnitMinVal] = React.useState(0);
-  const [unitMaxVal, setUnitMaxVal] = React.useState(1);
-  const handleUnitRangeChange = unitVal => {
-    setUnitMinVal(unitVal[0]);
-    setUnitMaxVal(unitVal[1]);
-  };
-
-  // Bungalow
-  const [bungalowMinVal, setBungalowMinVal] = React.useState(0);
-  const [bungalowMaxVal, setBungalowMaxVal] = React.useState(1);
-  const handleBungalowRangeChange = bungalowVal => {
-    setBungalowMinVal(bungalowVal[0]);
-    setBungalowMaxVal(bungalowVal[1]);
-  };
-
-  // Plot
-  const [plotMinVal, setPlotMinVal] = React.useState(0);
-  const [plotMaxVal, setPlotMaxVal] = React.useState(1);
-  const handlePlotRangeChange = plotVal => {
-    setPlotMinVal(plotVal[0]);
-    setPlotMaxVal(plotVal[1]);
+  const clearForm = () => {
+    formikProps.setFieldValue('projectNames', '');
+    formikProps.setFieldValue('developerNames', '');
+    formikProps.setFieldValue('area', '');
+    formikProps.setFieldValue('status', '');
+    formikProps.setFieldValue('premium', '');
+    formikProps.setFieldValue('possession', '');
+    formikProps.setFieldValue('rera', '');
+    formikProps.setFieldValue('projectType', '');
+    formikProps.setFieldValue('restrictedUser', '');
+    formikProps.setFieldValue('projectStatus', '');
+    formikProps.setFieldValue('projectQuality', '');
+    formikProps.setFieldValue('bhk', '');
+    formikProps.setFieldValue('category', '');
+    formikProps.setFieldValue('towers', '');
+    formikProps.setFieldValue('units', '');
+    formikProps.setFieldValue('bungalows', '');
+    formikProps.setFieldValue('plots', '');
+    formikProps.setFieldValue('owners', '');
+    formikProps.setFieldValue('security', '');
   };
 
   return (
@@ -105,26 +72,26 @@ const RenderForm = props => {
       <ScrollView style={styles.formContainer}>
         <RenderSelect
           multiselect
-          name="projectName"
+          name="projectNames"
           label="Project Name"
-          value={values.projectName}
+          value={values.projectNames}
           options={projectOptions}
           containerStyles={styles.inputStyles}
-          onBlur={handleBlur('projectName')}
+          onBlur={handleBlur('projectNames')}
           onSelect={value => {
-            setFieldValue('projectName', value);
+            setFieldValue('projectNames', value);
           }}
         />
         <RenderSelect
           multiselect
-          name="developerName"
+          name="developerNames"
           label="Developer Name"
-          value={values.developerName}
+          value={values.developerNames}
           options={developerOptions}
           containerStyles={styles.inputStyles}
-          onBlur={handleBlur('developerName')}
+          onBlur={handleBlur('developerNames')}
           onSelect={value => {
-            setFieldValue('developerName', value);
+            setFieldValue('developerNames', value);
           }}
         />
         <RenderSelect
@@ -198,6 +165,7 @@ const RenderForm = props => {
           }}
         />
         <RenderSelect
+          multiselect
           name="restrictedUser"
           label="Restricted User"
           value={values.restrictedUser}
@@ -258,114 +226,59 @@ const RenderForm = props => {
         />
 
         <View style={styles.rangeContainer}>
-          <Text>Select no towers</Text>
+          <Text>Select no of towers</Text>
           <RangeSlider
-            values={[towerMinVal, towerMaxVal]}
-            sliderLength={330}
-            onValuesChange={handleTowerRangeChange}
             min={towerData?.towerMin}
             max={towerData?.towerMax}
-            step={1}
-            allowOverlap={false}
-            snapped
-            minMarkerOverlapDistance={30}
-            trackStyle={styles.rangeTrack}
-            selectedStyle={styles.rangeSelected}
-            touchDimensions={{
-              height: 40,
-              width: 40,
-              borderRadius: 20,
-              slipDisplacement: 40,
-            }}
+            rangeData={values?.towers}
+            handleChange={v => setFieldValue('towers', v)}
           />
-          <Caption>{`No of towers between ${towerMinVal} - ${towerMaxVal}`}</Caption>
           <Divider style={{marginVertical: 10}} />
         </View>
 
         <View style={styles.rangeContainer}>
-          <Text>Select no units</Text>
+          <Text>Select no of units</Text>
           <RangeSlider
-            values={[unitMinVal, unitMaxVal]}
-            sliderLength={330}
-            onValuesChange={handleUnitRangeChange}
             min={unitData?.unitMin}
             max={unitData?.unitMax}
-            step={1}
-            allowOverlap={false}
-            snapped
-            minMarkerOverlapDistance={30}
-            trackStyle={styles.rangeTrack}
-            selectedStyle={styles.rangeSelected}
-            touchDimensions={{
-              height: 40,
-              width: 40,
-              borderRadius: 20,
-              slipDisplacement: 40,
-            }}
+            rangeData={values?.units}
+            handleChange={v => setFieldValue('units', v)}
           />
-          <Caption>{`No of unit between ${unitMinVal} - ${unitMaxVal}`}</Caption>
           <Divider style={{marginVertical: 10}} />
         </View>
 
         <View style={styles.rangeContainer}>
-          <Text>Select no bungalow</Text>
+          <Text>Select no of bungalows</Text>
           <RangeSlider
-            values={[bungalowMinVal, bungalowMaxVal]}
-            sliderLength={330}
-            onValuesChange={handleBungalowRangeChange}
             min={bungalowData?.bungalowMin}
             max={bungalowData?.bungalowMax}
-            step={1}
-            allowOverlap={false}
-            snapped
-            minMarkerOverlapDistance={30}
-            trackStyle={styles.rangeTrack}
-            selectedStyle={styles.rangeSelected}
-            touchDimensions={{
-              height: 40,
-              width: 40,
-              borderRadius: 20,
-              slipDisplacement: 40,
-            }}
+            rangeData={values?.bungalows}
+            handleChange={v => setFieldValue('bungalows', v)}
           />
-          <Caption>{`No of bungalow between ${bungalowMinVal} - ${bungalowMaxVal}`}</Caption>
           <Divider style={{marginVertical: 10}} />
         </View>
 
         <View style={styles.rangeContainer}>
-          <Text>Select no plot</Text>
+          <Text>Select no of plots</Text>
           <RangeSlider
-            values={[plotMinVal, plotMaxVal]}
-            sliderLength={330}
-            onValuesChange={handlePlotRangeChange}
             min={plotData?.plotMin}
             max={plotData?.plotMax}
-            step={1}
-            allowOverlap={false}
-            snapped
-            minMarkerOverlapDistance={30}
-            trackStyle={styles.rangeTrack}
-            selectedStyle={styles.rangeSelected}
-            touchDimensions={{
-              height: 40,
-              width: 40,
-              borderRadius: 20,
-              slipDisplacement: 40,
-            }}
+            rangeData={values?.plots}
+            handleChange={v => setFieldValue('plots', v)}
           />
-          <Caption>{`No of plot between ${plotMinVal} - ${plotMaxVal}`}</Caption>
+          <Divider style={{marginVertical: 10}} />
         </View>
 
         <RenderSelect
           multiselect
-          name="owner"
-          label="Project Owner"
-          value={values.owner}
+          name="owners"
+          label="Project Owners"
+          value={values.owners}
           options={ownerData}
           containerStyles={styles.inputStyles}
-          onBlur={handleBlur('owner')}
+          onBlur={handleBlur('owners')}
           onSelect={value => {
-            setFieldValue('owner', value);
+            setFieldValue('owners', value);
           }}
         />
 
@@ -384,9 +297,9 @@ const RenderForm = props => {
       </ScrollView>
 
       <ActionButtons
-        cancelLabel="Cancel"
+        cancelLabel="Clear"
         submitLabel="Apply"
-        onCancel={navigation.goBack}
+        onCancel={() => clearForm()}
         onSubmit={handleSubmit}
       />
     </View>
@@ -396,11 +309,59 @@ const RenderForm = props => {
 const ProjectFilter = props => {
   const {navigation} = props;
 
-  const {getProjectMasterList, updateFilterCount} =
+  const {getProjectMasterList, updateProjectFilters} =
     useProjectStructureActions();
 
   const {selectedProject} = useSelector(s => s.project);
-  const {projectList = [], masterList} = useSelector(s => s.projectStructure);
+  const {
+    projectList = [],
+    masterList,
+    projectFilters,
+  } = useSelector(s => s.projectStructure);
+
+  const {
+    projectNames,
+    developerNames,
+    area,
+    status,
+    premium,
+    possession,
+    rera,
+    projectType,
+    restrictedUser,
+    projectStatus,
+    projectQuality,
+    bhk,
+    category,
+    towers,
+    units,
+    bungalows,
+    plots,
+    owners,
+    security,
+  } = projectFilters;
+
+  const initialValues = {
+    projectNames: projectNames || '',
+    developerNames: developerNames || '',
+    area: area || '',
+    status: status || '',
+    premium: premium || '',
+    possession: possession || '',
+    rera: rera || '',
+    projectType: projectType || '',
+    restrictedUser: restrictedUser || '',
+    projectStatus: projectStatus || '',
+    projectQuality: projectQuality || '',
+    bhk: bhk || '',
+    category: category || '',
+    towers: towers || '',
+    units: units || '',
+    bungalows: bungalows || '',
+    plots: plots || '',
+    owners: owners || '',
+    security: security || '',
+  };
 
   const {master_bhks, project_structure_project_category} = masterList || [];
 
@@ -414,9 +375,7 @@ const ProjectFilter = props => {
   }, []);
 
   const projectOptions = useMemo(() => {
-    return projectList
-      ?.filter(i => i.status === 1)
-      ?.map(i => ({label: i.project_name, value: i.id}));
+    return projectList?.filter(i => i.status === 1)?.map(i => i.project_name);
   }, [projectList]);
 
   const developerOptions = useMemo(() => {
@@ -456,23 +415,36 @@ const ProjectFilter = props => {
   }, [projectList]);
 
   const restrictedUserOptions = useMemo(() => {
-    const restrictedData = projectList?.map(i => i.restricted_user);
-    return [...new Set(restrictedData?.filter(i => i !== ''))];
+    return projectList
+      ?.map(i => ({
+        label: i.restricted_user_label,
+        value: i.restricted_user,
+      }))
+      ?.filter(i => i.value > 0);
   }, [projectList]);
 
   const projectTypeOptions = useMemo(() => {
-    const typeData = projectList?.map(i => i.project_type);
-    return [...new Set(typeData?.filter(i => i !== ''))];
+    return projectList
+      ?.map(i => ({
+        label: i.project_type_label,
+        value: i.project_type,
+      }))
+      ?.filter(i => i.value > 0);
   }, [projectList]);
 
   const projectStatusOptions = useMemo(() => {
-    const statusData = projectList?.map(i => i.project_status);
-    return [...new Set(statusData?.filter(i => i !== ''))];
+    return projectList
+      ?.map(i => ({label: i.project_status_label, value: i.project_status}))
+      ?.filter(i => i.value > 0);
   }, [projectList]);
 
   const projectQualityOptions = useMemo(() => {
-    const qualityData = projectList?.map(i => i.project_quality);
-    return [...new Set(qualityData?.filter(i => i !== ''))];
+    return projectList
+      ?.map(i => ({
+        label: i.project_quality_label,
+        value: i.project_quality,
+      }))
+      ?.filter(i => i.value > 0);
   }, [projectList]);
 
   const bhkOptions = useMemo(() => {
@@ -553,20 +525,15 @@ const ProjectFilter = props => {
   }, [projectList]);
 
   const onSubmit = async values => {
-    console.log('🚀 ~ file: ProjectFilter.js:556 ~ onSubmit ~ values:', values);
-    const filterValues = Object.values(values);
-    const filterCount = filterValues?.filter(i => i !== '')?.length;
-
-    updateFilterCount(filterCount);
-
-    //  navigation.goBack();
+    await updateProjectFilters(values);
+    navigation.goBack();
   };
 
   const formikProps = useFormik({
     enableReinitialize: true,
     validateOnBlur: false,
     validateOnChange: false,
-    initialValues: {initialValues},
+    initialValues,
     onSubmit,
   });
 
@@ -633,12 +600,5 @@ const styles = StyleSheet.create({
   rangeContainer: {
     marginTop: 10,
     paddingHorizontal: 15,
-  },
-  rangeTrack: {
-    height: 5,
-    backgroundColor: '#d6dcf4',
-  },
-  rangeSelected: {
-    backgroundColor: '#4872f4',
   },
 });

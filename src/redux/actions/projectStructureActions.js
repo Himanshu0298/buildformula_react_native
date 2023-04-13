@@ -65,10 +65,10 @@ export default function useProjectStructureActions() {
     setSelectedUnit: unit =>
       dispatch({type: types.SET_SELECTED_UNIT, payload: unit}),
 
-    updateFilterCount: count => {
+    updateProjectFilters: data => {
       dispatch({
-        type: types.UPDATE_FILTER_COUNT,
-        payload: count,
+        type: types.ADD_PROJECT_FILTERS,
+        payload: data,
       });
     },
 
