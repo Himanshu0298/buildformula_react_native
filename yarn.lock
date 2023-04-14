@@ -11093,6 +11093,11 @@
   "resolved" "https://registry.npmjs.org/rn-host-detect/-/rn-host-detect-1.2.0.tgz"
   "version" "1.2.0"
 
+"rn-range-slider@^2.2.2":
+  "integrity" "sha512-34qdWz0oPEa6Wa9+B0+IihxolfydGPfzKvIyjieCyz4+YzVuSizalwpwRufxAnojfFPxqX1Kt/CTBckt8K7eEQ=="
+  "resolved" "https://registry.npmjs.org/rn-range-slider/-/rn-range-slider-2.2.2.tgz"
+  "version" "2.2.2"
+
 "rsvp@^4.8.4":
   "integrity" "sha512-nfMOlASu9OnRJo1mbEk2cz0D56a1MBNrJ7orjRZQG10XDyuvwksKbuXNp6qa+kbn839HwjwhBzhFmdsaEAfauA=="
   "resolved" "https://registry.npmjs.org/rsvp/-/rsvp-4.8.5.tgz"

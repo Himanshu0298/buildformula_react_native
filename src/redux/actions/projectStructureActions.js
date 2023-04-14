@@ -65,6 +65,13 @@ export default function useProjectStructureActions() {
     setSelectedUnit: unit =>
       dispatch({type: types.SET_SELECTED_UNIT, payload: unit}),
 
+    updateProjectFilters: data => {
+      dispatch({
+        type: types.ADD_PROJECT_FILTERS,
+        payload: data,
+      });
+    },
+
     getProjectList: data =>
       dispatch({
         type: types.GET_PROJECT_LIST,

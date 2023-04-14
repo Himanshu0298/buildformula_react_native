@@ -14,6 +14,7 @@ import {
   Searchbar,
   Text,
   Title,
+  Badge,
 } from 'react-native-paper';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -30,11 +31,16 @@ const PROJECT_STATUS = {
   1: {label: 'Active', color: '#07CA03'},
 };
 
-const Header = ({navToFilter}) => {
+const Header = props => {
+  const {navToFilter, filterCount} = props;
+
   return (
     <View style={styles.headerWrapper}>
       <Title>Project Listing</Title>
-      <View style={styles.editIconContainer}>
+      <View>
+        {filterCount ? (
+          <Badge style={styles.filterCount}>{filterCount}</Badge>
+        ) : undefined}
         <OpacityButton
           color="#4872f4"
           opacity={0.18}
@@ -135,14 +141,19 @@ const ProjectCard = props => {
 };
 
 function ProjectListing(props) {
-  const {navigation} = props;
+  const {navigation, route} = props;
 
   const alert = useAlert();
 
   const {getProjectList, deleteProject} = useProjectStructureActions();
   const [searchQuery, setSearchQuery] = React.useState('');
 
-  const {projectList = [], loading} = useSelector(s => s.projectStructure);
+  const {
+    projectList = [],
+    loading,
+    projectFilters,
+  } = useSelector(s => s.projectStructure);
+
   const {selectedProject} = useSelector(s => s.project);
 
   React.useEffect(() => {
@@ -153,9 +164,85 @@ function ProjectListing(props) {
   const getList = async () => {
     await getProjectList({project_id: selectedProject.id});
   };
+
+  // for filters
+  const filterCount = useMemo(() => {
+    const tempCount = Object.values(projectFilters);
+    return tempCount?.filter(i => i !== '').length;
+  }, [projectFilters]);
+
+  const checkRange = (value, key = {}) => {
+    const {low = 0, high = 0} = key;
+    let isRangeValid = false;
+
+    if (value > 0) {
+      if (value >= low && value <= high) {
+        isRangeValid = true;
+        return isRangeValid;
+      }
+    }
+    return isRangeValid;
+  };
+
+  const filteredProjectData = useMemo(() => {
+    if (filterCount > 0) {
+      const {
+        projectNames,
+        developerNames,
+        area,
+        status,
+        premium,
+        possession,
+        rera,
+        projectType,
+        restrictedUser,
+        projectStatus,
+        projectQuality,
+        bhk,
+        category,
+        towers,
+        units,
+        bungalows,
+        plots,
+        owners,
+        security,
+      } = projectFilters;
+
+      return projectList.filter(i => {
+        const validations = [
+          projectNames?.includes(i?.project_name),
+          developerNames?.includes(i?.developer_name),
+          area?.includes(i?.area),
+          status === i?.status,
+          premium === i?.premium_project,
+          Object.values(possession)?.includes(i?.possesion_year),
+          Object.values(rera)?.includes(i?.rera_no),
+          projectType?.includes(i?.project_type),
+          restrictedUser?.includes(i?.restricted_user),
+          projectStatus?.includes(i?.project_status),
+          projectQuality?.includes(i?.project_quality),
+          i?.bhk_configuration
+            ?.split(',')
+            ?.some(value => Object.values(bhk)?.includes(value?.toUpperCase())),
+          i?.project_category
+            .split(',')
+            ?.some(cat => category?.includes(Number(cat))),
+          i?.owner_info?.some(e => owners?.includes(e.id)),
+          i?.security_info?.some(e => security?.includes(e.id)),
+          checkRange(i?.total_no_of_towers, towers),
+          checkRange(i?.total_no_of_units, units),
+          checkRange(i?.total_no_of_bunglows, bungalows),
+          checkRange(i?.total_no_of_plots, plots),
+        ];
+        return validations.find(valid => valid);
+      });
+    }
+    return projectList;
+  }, [filterCount, projectFilters, projectList]);
+
   const filteredProject = useMemo(() => {
     const query = searchQuery.toLowerCase();
-    return projectList.filter(
+    return filteredProjectData.filter(
       i =>
         i?.project_name?.toLowerCase().includes(query) ||
         i?.developer_name?.toLowerCase().includes(query) ||
@@ -164,7 +251,7 @@ function ProjectListing(props) {
         i?.country?.toLowerCase().includes(query) ||
         i?.area?.toLowerCase().includes(query),
     );
-  }, [projectList, searchQuery]);
+  }, [filteredProjectData, searchQuery]);
 
   const onSearch = v => setSearchQuery(v);
 
@@ -191,13 +278,14 @@ function ProjectListing(props) {
     <View style={styles.mainContainer}>
       <Spinner visible={loading} textContent="" />
 
-      <Header navToFilter={navToFilter} />
+      <Header navToFilter={navToFilter} filterCount={filterCount} />
       <Searchbar
         style={styles.searchBar}
         value={searchQuery}
         placeholder="Search Project"
         onChangeText={onSearch}
       />
+
       <View style={styles.bodyWrapper}>
         <FlatList
           data={filteredProject}
@@ -308,5 +396,10 @@ const styles = StyleSheet.create({
   },
   developer: {
     textTransform: 'capitalize',
+  },
+  filterCount: {
+    position: 'absolute',
+    top: -13,
+    right: 15,
   },
 });

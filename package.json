@@ -114,6 +114,7 @@
     "redux-persist-transform-encrypt": "^3.0.1",
     "redux-promise-middleware": "^6.1.2",
     "redux-thunk": "^2.4.1",
+    "rn-range-slider": "^2.2.2",
     "v8-compile-cache": "^2.3.0",
     "yup": "^0.32.11"
   },

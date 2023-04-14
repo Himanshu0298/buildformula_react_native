@@ -432,9 +432,9 @@ function AddReturnIndentMaterials(props) {
       </View>
 
       <ActionButtons
-        cancelLabel="Previous"
+        cancelLabel="Cancel"
         submitLabel="Next"
-        onCancel={navigation.goBack}
+        onCancel={() => navigation.navigate('MaterialIndent')}
         onSubmit={handleSave}
       />
     </View>

@@ -127,7 +127,11 @@ const RenderSelect = React.forwardRef((props, ref) => {
           multiline
           keyboardShouldPersistTaps="always"
           {...rest}
-          value={displayValue}
+          value={
+            multiselect && displayValue?.length > 0
+              ? `Selected ${displayValue.length} values`
+              : displayValue
+          }
           right={
             <TextInput.Icon
               disabled={disabled}

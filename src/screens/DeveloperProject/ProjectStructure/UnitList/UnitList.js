@@ -15,6 +15,7 @@ import {
   Searchbar,
   Subheading,
   Text,
+  Title,
 } from 'react-native-paper';
 import {getShadow} from 'utils';
 import {theme} from 'styles/theme';
@@ -104,6 +105,23 @@ const UnitCard = ({item, navigation, handleDelete}) => {
   );
 };
 
+const Header = ({navToFilter}) => {
+  return (
+    <View style={styles.headerWrapper}>
+      <Title>Unit Listing</Title>
+      {/* <View style={styles.editIconContainer}>
+        <OpacityButton
+          color="#4872f4"
+          opacity={0.18}
+          style={styles.editIcon}
+          onPress={() => navToFilter()}>
+          <MaterialIcon name="filter-variant" color="#4872f4" size={16} />
+        </OpacityButton>
+      </View> */}
+    </View>
+  );
+};
+
 function UnitList(props) {
   const {navigation} = props;
   const alert = useAlert();
@@ -164,6 +182,10 @@ function UnitList(props) {
     });
   };
 
+  const navToFilter = () => {
+    navigation.navigate('UnitFilter');
+  };
+
   const FAB_ACTIONS = [
     {
       icon: towerunit,
@@ -196,7 +218,7 @@ function UnitList(props) {
   return (
     <View style={styles.mainContainer}>
       <Spinner visible={unitLoading} textContent="" />
-      <Subheading> Unit List</Subheading>
+      <Header navToFilter={navToFilter} />
       <Searchbar
         style={styles.searchBar}
         value={searchQuery}
