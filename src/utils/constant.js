@@ -110,3 +110,26 @@ export function getFileName(string) {
 
   return string;
 }
+
+
+export const DEFAULT_PROJECT_FILTERS:{
+  projectNames: '',
+  developerNames: '',
+  area: '',
+  status: '',
+  premium: '',
+  possession: '',
+  rera: '',
+  projectType: '',
+  restrictedUser: '',
+  projectStatus: '',
+  projectQuality: '',
+  bhk: '',
+  category: '',
+  towers: '',
+  units: '',
+  bungalows: '',
+  plots: '',
+  owners: '',
+  security: '',
+}

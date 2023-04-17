@@ -10,16 +10,18 @@ import RangeSlider from 'components/Atoms/RangeSlider';
 
 import useProjectStructureActions from 'redux/actions/projectStructureActions';
 import {useSelector} from 'react-redux';
+import {DEFAULT_PROJECT_FILTERS} from 'utils/constant';
+
+const STATUS_OPTIONS = ['Active', 'Inactive'];
+
+const PREMIUM_PROJECT_OPTIONS = ['Yes', 'No'];
 
 const RenderForm = props => {
   const {
-    navigation,
     formikProps,
     projectOptions,
     developerOptions,
     areaOptions,
-    statusOptions,
-    premiumProjectOptions,
     possessionYearOptions,
     reraOptions,
     restrictedUserOptions,
@@ -37,14 +39,7 @@ const RenderForm = props => {
     clearForm,
   } = props;
 
-  const {
-    values,
-    errors,
-    handleChange,
-    handleBlur,
-    setFieldValue,
-    handleSubmit,
-  } = formikProps;
+  const {values, handleBlur, setFieldValue, handleSubmit} = formikProps;
 
   return (
     <View style={styles.formContainer}>
@@ -89,7 +84,7 @@ const RenderForm = props => {
           name="status"
           label="Status"
           value={values.status}
-          options={statusOptions}
+          options={STATUS_OPTIONS}
           containerStyles={styles.inputStyles}
           onBlur={handleBlur('status')}
           onSelect={value => {
@@ -100,7 +95,7 @@ const RenderForm = props => {
           name="premium"
           label="Premium"
           value={values.premium}
-          options={premiumProjectOptions}
+          options={PREMIUM_PROJECT_OPTIONS}
           containerStyles={styles.inputStyles}
           onBlur={handleBlur('premium')}
           onSelect={value => {
@@ -298,72 +293,6 @@ const ProjectFilter = props => {
     projectFilters,
   } = useSelector(s => s.projectStructure);
 
-  const {
-    projectNames,
-    developerNames,
-    area,
-    status,
-    premium,
-    possession,
-    rera,
-    projectType,
-    restrictedUser,
-    projectStatus,
-    projectQuality,
-    bhk,
-    category,
-    towers,
-    units,
-    bungalows,
-    plots,
-    owners,
-    security,
-  } = projectFilters;
-
-  const initialValues = {
-    projectNames: projectNames || '',
-    developerNames: developerNames || '',
-    area: area || '',
-    status: status || '',
-    premium: premium || '',
-    possession: possession || '',
-    rera: rera || '',
-    projectType: projectType || '',
-    restrictedUser: restrictedUser || '',
-    projectStatus: projectStatus || '',
-    projectQuality: projectQuality || '',
-    bhk: bhk || '',
-    category: category || '',
-    towers: towers || '',
-    units: units || '',
-    bungalows: bungalows || '',
-    plots: plots || '',
-    owners: owners || '',
-    security: security || '',
-  };
-
-  const defaultValues = {
-    projectNames: '',
-    developerNames: '',
-    area: '',
-    status: '',
-    premium: '',
-    possession: '',
-    rera: '',
-    projectType: '',
-    restrictedUser: '',
-    projectStatus: '',
-    projectQuality: '',
-    bhk: '',
-    category: '',
-    towers: '',
-    units: '',
-    bungalows: '',
-    plots: '',
-    owners: '',
-    security: '',
-  };
-
   const {master_bhks, project_structure_project_category} = masterList || [];
 
   const getMasters = async () => {
@@ -375,25 +304,10 @@ const ProjectFilter = props => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const getCount = count => {
-    let max = count[0];
-    let min = count[0];
-    // eslint-disable-next-line no-plusplus
-    for (let i = 0; i < count?.length; i++) {
-      if (count[i] > max) {
-        max = count[i];
-      }
-      if (count[i] < min) {
-        min = count[i];
-      }
-    }
-
-    if (count?.length < 0) {
-      max = undefined;
-      min = undefined;
-    }
-    return {max, min};
-  };
+  const getCount = count => ({
+    min: 0,
+    max: count?.length ? Math.max(count) : 100,
+  });
 
   const getUnique = options => {
     const uniqueData = options?.filter((obj, index) => {
@@ -424,16 +338,11 @@ const ProjectFilter = props => {
     return [...new Set(areaData)];
   }, [projectList]);
 
-  const statusOptions = ['Active', 'Inactive'];
-
-  const premiumProjectOptions = ['Yes', 'No'];
-
   const possessionYearOptions = useMemo(() => {
     const possessionData = projectList
       ?.map(i => i.possesion_year)
       ?.filter(i => i !== '');
-    const tempPossessionData = [...new Set(possessionData)];
-    return tempPossessionData.map(i => ({
+    return [...new Set(possessionData)].map(i => ({
       label: dayjs(i).get('year'),
       value: i,
     }));
@@ -535,8 +444,8 @@ const ProjectFilter = props => {
     return [
       ...new Set(
         projectList
+          ?.filter(i => i?.owner_info?.length)
           ?.map(i => i.owner_info?.map(e => e.name))
-          ?.filter(i => i.length > 0)
           ?.flat(2),
       ),
     ];
@@ -546,8 +455,8 @@ const ProjectFilter = props => {
     return [
       ...new Set(
         projectList
+          ?.filter(i => i?.security_info?.length)
           ?.map(i => i.security_info?.map(e => e.contact_person_name))
-          ?.filter(i => i.length > 0)
           ?.flat(2),
       ),
     ];
@@ -559,7 +468,7 @@ const ProjectFilter = props => {
   };
 
   const clearForm = () => {
-    updateProjectFilters(defaultValues);
+    updateProjectFilters(DEFAULT_PROJECT_FILTERS);
     navigation.goBack();
   };
 
@@ -567,7 +476,7 @@ const ProjectFilter = props => {
     enableReinitialize: true,
     validateOnBlur: false,
     validateOnChange: false,
-    initialValues,
+    initialValues: projectFilters,
     onSubmit,
   });
 
@@ -579,7 +488,7 @@ const ProjectFilter = props => {
           size={18}
           color="#4872f4"
           style={styles.backIcon}
-          onPress={() => navigation.goBack()}
+          onPress={navigation.goBack}
         />
         <Title>Project Filters</Title>
       </View>
@@ -589,8 +498,6 @@ const ProjectFilter = props => {
         projectOptions={projectOptions}
         developerOptions={developerOptions}
         areaOptions={areaOptions}
-        statusOptions={statusOptions}
-        premiumProjectOptions={premiumProjectOptions}
         possessionYearOptions={possessionYearOptions}
         reraOptions={reraOptions}
         restrictedUserOptions={restrictedUserOptions}
