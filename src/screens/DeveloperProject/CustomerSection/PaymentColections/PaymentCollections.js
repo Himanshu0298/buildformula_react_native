@@ -35,6 +35,7 @@ import {config} from 'services/init';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import Modal from 'react-native-modal';
 import ActionButtons from 'components/Atoms/ActionButtons';
+import Share from 'react-native-share';
 
 const TITLE = {
   document: 'Documentation charges',
@@ -234,6 +235,7 @@ function PaymentCollections(props) {
   };
   const actualDownload = async () => {
     const {dirs} = ReactNativeBlobUtil.fs;
+    console.log(dirs.DocumentDir);
     const data = {
       project_id,
       unitid,
@@ -275,7 +277,7 @@ function PaymentCollections(props) {
           ReactNativeBlobUtil.ios.previewDocument(configfb.path);
         }
         if (Platform.OS === 'android') {
-          snackbar.showMessage({message: 'File downloaded'});
+          ReactNativeBlobUtil.android.actionViewIntent(configfb.path);
         }
       })
       .catch(e => {

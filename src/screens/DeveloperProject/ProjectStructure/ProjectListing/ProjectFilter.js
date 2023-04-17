@@ -32,8 +32,9 @@ const RenderForm = props => {
     unitData,
     bungalowData,
     plotData,
-    ownerData,
+    ownerOptions,
     securityData,
+    clearForm,
   } = props;
 
   const {
@@ -44,28 +45,6 @@ const RenderForm = props => {
     setFieldValue,
     handleSubmit,
   } = formikProps;
-
-  const clearForm = () => {
-    formikProps.setFieldValue('projectNames', '');
-    formikProps.setFieldValue('developerNames', '');
-    formikProps.setFieldValue('area', '');
-    formikProps.setFieldValue('status', '');
-    formikProps.setFieldValue('premium', '');
-    formikProps.setFieldValue('possession', '');
-    formikProps.setFieldValue('rera', '');
-    formikProps.setFieldValue('projectType', '');
-    formikProps.setFieldValue('restrictedUser', '');
-    formikProps.setFieldValue('projectStatus', '');
-    formikProps.setFieldValue('projectQuality', '');
-    formikProps.setFieldValue('bhk', '');
-    formikProps.setFieldValue('category', '');
-    formikProps.setFieldValue('towers', '');
-    formikProps.setFieldValue('units', '');
-    formikProps.setFieldValue('bungalows', '');
-    formikProps.setFieldValue('plots', '');
-    formikProps.setFieldValue('owners', '');
-    formikProps.setFieldValue('security', '');
-  };
 
   return (
     <View style={styles.formContainer}>
@@ -228,8 +207,8 @@ const RenderForm = props => {
         <View style={styles.rangeContainer}>
           <Text>Select no of towers</Text>
           <RangeSlider
-            min={towerData?.towerMin}
-            max={towerData?.towerMax}
+            min={towerData?.min}
+            max={towerData?.max}
             rangeData={values?.towers}
             handleChange={v => setFieldValue('towers', v)}
           />
@@ -239,8 +218,8 @@ const RenderForm = props => {
         <View style={styles.rangeContainer}>
           <Text>Select no of units</Text>
           <RangeSlider
-            min={unitData?.unitMin}
-            max={unitData?.unitMax}
+            min={unitData?.min}
+            max={unitData?.max}
             rangeData={values?.units}
             handleChange={v => setFieldValue('units', v)}
           />
@@ -250,7 +229,7 @@ const RenderForm = props => {
         <View style={styles.rangeContainer}>
           <Text>Select no of bungalows</Text>
           <RangeSlider
-            min={bungalowData?.bungalowMin}
+            min={bungalowData?.min}
             max={bungalowData?.bungalowMax}
             rangeData={values?.bungalows}
             handleChange={v => setFieldValue('bungalows', v)}
@@ -261,8 +240,8 @@ const RenderForm = props => {
         <View style={styles.rangeContainer}>
           <Text>Select no of plots</Text>
           <RangeSlider
-            min={plotData?.plotMin}
-            max={plotData?.plotMax}
+            min={plotData?.min}
+            max={plotData?.max}
             rangeData={values?.plots}
             handleChange={v => setFieldValue('plots', v)}
           />
@@ -274,7 +253,7 @@ const RenderForm = props => {
           name="owners"
           label="Project Owners"
           value={values.owners}
-          options={ownerData}
+          options={ownerOptions}
           containerStyles={styles.inputStyles}
           onBlur={handleBlur('owners')}
           onSelect={value => {
@@ -297,7 +276,7 @@ const RenderForm = props => {
       </ScrollView>
 
       <ActionButtons
-        cancelLabel="Clear"
+        cancelLabel="Clear All"
         submitLabel="Apply"
         onCancel={() => clearForm()}
         onSubmit={handleSubmit}
@@ -363,6 +342,28 @@ const ProjectFilter = props => {
     security: security || '',
   };
 
+  const defaultValues = {
+    projectNames: '',
+    developerNames: '',
+    area: '',
+    status: '',
+    premium: '',
+    possession: '',
+    rera: '',
+    projectType: '',
+    restrictedUser: '',
+    projectStatus: '',
+    projectQuality: '',
+    bhk: '',
+    category: '',
+    towers: '',
+    units: '',
+    bungalows: '',
+    plots: '',
+    owners: '',
+    security: '',
+  };
+
   const {master_bhks, project_structure_project_category} = masterList || [];
 
   const getMasters = async () => {
@@ -374,8 +375,43 @@ const ProjectFilter = props => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const getCount = count => {
+    let max = count[0];
+    let min = count[0];
+    // eslint-disable-next-line no-plusplus
+    for (let i = 0; i < count?.length; i++) {
+      if (count[i] > max) {
+        max = count[i];
+      }
+      if (count[i] < min) {
+        min = count[i];
+      }
+    }
+
+    if (count?.length < 0) {
+      max = undefined;
+      min = undefined;
+    }
+    return {max, min};
+  };
+
+  const getUnique = options => {
+    const uniqueData = options?.filter((obj, index) => {
+      return (
+        index ===
+        options?.findIndex(o => obj.label === o.label || obj.value === o.value)
+      );
+    });
+
+    return uniqueData;
+  };
+
   const projectOptions = useMemo(() => {
-    return projectList?.filter(i => i.status === 1)?.map(i => i.project_name);
+    const projectData = projectList
+      ?.filter(i => i.status === 1)
+      ?.map(i => i.project_name);
+
+    return [...new Set(projectData)];
   }, [projectList]);
 
   const developerOptions = useMemo(() => {
@@ -388,15 +424,9 @@ const ProjectFilter = props => {
     return [...new Set(areaData)];
   }, [projectList]);
 
-  const statusOptions = [
-    {label: 'Active', value: 1},
-    {label: 'Inactive', value: 0},
-  ];
+  const statusOptions = ['Active', 'Inactive'];
 
-  const premiumProjectOptions = [
-    {label: 'Yes', value: 1},
-    {label: 'No', value: 0},
-  ];
+  const premiumProjectOptions = ['Yes', 'No'];
 
   const possessionYearOptions = useMemo(() => {
     const possessionData = projectList
@@ -415,36 +445,44 @@ const ProjectFilter = props => {
   }, [projectList]);
 
   const restrictedUserOptions = useMemo(() => {
-    return projectList
-      ?.map(i => ({
-        label: i.restricted_user_label,
-        value: i.restricted_user,
-      }))
-      ?.filter(i => i.value > 0);
+    return getUnique(
+      projectList
+        ?.map(i => ({
+          label: i.restricted_user_label,
+          value: i.restricted_user,
+        }))
+        ?.filter(i => i.value > 0),
+    );
   }, [projectList]);
 
   const projectTypeOptions = useMemo(() => {
-    return projectList
-      ?.map(i => ({
-        label: i.project_type_label,
-        value: i.project_type,
-      }))
-      ?.filter(i => i.value > 0);
+    return getUnique(
+      projectList
+        ?.map(i => ({
+          label: i.project_type_label,
+          value: i.project_type,
+        }))
+        ?.filter(i => i.value > 0),
+    );
   }, [projectList]);
 
   const projectStatusOptions = useMemo(() => {
-    return projectList
-      ?.map(i => ({label: i.project_status_label, value: i.project_status}))
-      ?.filter(i => i.value > 0);
+    return getUnique(
+      projectList
+        ?.map(i => ({label: i.project_status_label, value: i.project_status}))
+        ?.filter(i => i.value > 0),
+    );
   }, [projectList]);
 
   const projectQualityOptions = useMemo(() => {
-    return projectList
-      ?.map(i => ({
-        label: i.project_quality_label,
-        value: i.project_quality,
-      }))
-      ?.filter(i => i.value > 0);
+    return getUnique(
+      projectList
+        ?.map(i => ({
+          label: i.project_quality_label,
+          value: i.project_quality,
+        }))
+        ?.filter(i => i.value > 0),
+    );
   }, [projectList]);
 
   const bhkOptions = useMemo(() => {
@@ -466,10 +504,7 @@ const ProjectFilter = props => {
       ?.map(i => parseInt(i.total_no_of_towers, 10))
       .filter(i => !isNaN(i));
 
-    const towerMin = Math.min(...towerCount);
-    const towerMax = Math.max(...towerCount);
-
-    return {towerMin, towerMax};
+    return getCount(towerCount);
   }, [projectList]);
 
   const unitData = useMemo(() => {
@@ -477,55 +512,54 @@ const ProjectFilter = props => {
       ?.map(i => parseInt(i.total_no_of_units, 10))
       .filter(i => !isNaN(i));
 
-    const unitMin = Math.min(...unitCount);
-    const unitMax = Math.max(...unitCount);
-
-    return {unitMin, unitMax};
+    return getCount(unitCount);
   }, [projectList]);
 
   const bungalowData = useMemo(() => {
     const bungalowCount = projectList
       ?.map(i => parseInt(i.total_no_of_bunglows, 10))
-      .filter(i => !isNaN(i));
+      ?.filter(i => !isNaN(i));
 
-    const bungalowMin = Math.min(...bungalowCount);
-    const bungalowMax = Math.max(...bungalowCount);
-
-    return {bungalowMin, bungalowMax};
+    return getCount(bungalowCount);
   }, [projectList]);
 
   const plotData = useMemo(() => {
     const plotCount = projectList
       ?.map(i => parseInt(i.total_no_of_plots, 10))
-      .filter(i => !isNaN(i));
+      ?.filter(i => !isNaN(i));
 
-    const plotMin = Math.min(...plotCount);
-    const plotMax = Math.max(...plotCount);
-
-    return {plotMin, plotMax};
+    return getCount(plotCount);
   }, [projectList]);
 
-  const ownerData = useMemo(() => {
-    return projectList
-      ?.map(i => i.owner_info?.map(e => ({label: e.name, value: e.id})))
-      ?.filter(i => i.length > 0)
-      ?.flat(2);
+  const ownerOptions = useMemo(() => {
+    return [
+      ...new Set(
+        projectList
+          ?.map(i => i.owner_info?.map(e => e.name))
+          ?.filter(i => i.length > 0)
+          ?.flat(2),
+      ),
+    ];
   }, [projectList]);
 
   const securityData = useMemo(() => {
-    return projectList
-      ?.map(i =>
-        i.security_info?.map(e => ({
-          label: e.contact_person_name,
-          value: e.id,
-        })),
-      )
-      ?.filter(i => i.length > 0)
-      ?.flat(2);
+    return [
+      ...new Set(
+        projectList
+          ?.map(i => i.security_info?.map(e => e.contact_person_name))
+          ?.filter(i => i.length > 0)
+          ?.flat(2),
+      ),
+    ];
   }, [projectList]);
 
   const onSubmit = async values => {
     await updateProjectFilters(values);
+    navigation.goBack();
+  };
+
+  const clearForm = () => {
+    updateProjectFilters(defaultValues);
     navigation.goBack();
   };
 
@@ -569,8 +603,9 @@ const ProjectFilter = props => {
         unitData={unitData}
         bungalowData={bungalowData}
         plotData={plotData}
-        ownerData={ownerData}
+        ownerOptions={ownerOptions}
         securityData={securityData}
+        clearForm={clearForm}
       />
     </SafeAreaView>
   );

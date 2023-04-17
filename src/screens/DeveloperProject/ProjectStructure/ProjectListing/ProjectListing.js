@@ -213,8 +213,8 @@ function ProjectListing(props) {
           projectNames?.includes(i?.project_name),
           developerNames?.includes(i?.developer_name),
           area?.includes(i?.area),
-          status === i?.status,
-          premium === i?.premium_project,
+          (status === 'Active' ? 1 : 0) === i?.status,
+          (premium === 'Yes' ? 1 : 0) === i?.premium_project,
           Object.values(possession)?.includes(i?.possesion_year),
           Object.values(rera)?.includes(i?.rera_no),
           projectType?.includes(i?.project_type),
@@ -227,8 +227,8 @@ function ProjectListing(props) {
           i?.project_category
             .split(',')
             ?.some(cat => category?.includes(Number(cat))),
-          i?.owner_info?.some(e => owners?.includes(e.id)),
-          i?.security_info?.some(e => security?.includes(e.id)),
+          i?.owner_info?.some(e => owners?.includes(e.name)),
+          i?.security_info?.some(e => security?.includes(e.name)),
           checkRange(i?.total_no_of_towers, towers),
           checkRange(i?.total_no_of_units, units),
           checkRange(i?.total_no_of_bunglows, bungalows),

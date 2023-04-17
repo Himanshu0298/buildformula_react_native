@@ -80,7 +80,7 @@ const RenderSelect = React.forwardRef((props, ref) => {
     // if (multiselect) {
     //   return value?.length ? `${value.length - 1} selected` : '';
     // }
-    const index = options.findIndex(option => option.value === value);
+    const index = options.findIndex(option => option?.value === value);
     if (index > -1) {
       return options[index].label;
     }

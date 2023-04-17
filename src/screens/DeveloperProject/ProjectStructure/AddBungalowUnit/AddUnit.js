@@ -217,8 +217,8 @@ const AddUnit = props => {
         <ActionButtons
           cancelLabel="Add Details"
           submitLabel="Save"
-          onCancel={debounce(() => onSave('details', 200))}
-          onSubmit={debounce(() => onSave('save'), 200)}
+          onCancel={debounce(() => onSave('details', 500))}
+          onSubmit={debounce(() => onSave('save'), 500)}
         />
       </View>
     </View>
