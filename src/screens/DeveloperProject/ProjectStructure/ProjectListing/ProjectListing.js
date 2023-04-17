@@ -15,6 +15,7 @@ import {
   Text,
   Title,
   Badge,
+  useTheme,
 } from 'react-native-paper';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -31,7 +32,7 @@ const PROJECT_STATUS = {
   1: {label: 'Active', color: '#07CA03'},
 };
 
-const Header = props => {
+function Header(props) {
   const {navToFilter, filterCount} = props;
 
   return (
@@ -51,7 +52,7 @@ const Header = props => {
       </View>
     </View>
   );
-};
+}
 
 const ProjectCard = props => {
   const {item, navigation, handleDelete} = props;
@@ -141,11 +142,13 @@ const ProjectCard = props => {
 };
 
 function ProjectListing(props) {
-  const {navigation, route} = props;
+  const {navigation} = props;
 
   const alert = useAlert();
+  const {colors} = useTheme();
 
   const {getProjectList, deleteProject} = useProjectStructureActions();
+
   const [searchQuery, setSearchQuery] = React.useState('');
 
   const {
@@ -153,7 +156,6 @@ function ProjectListing(props) {
     loading,
     projectFilters,
   } = useSelector(s => s.projectStructure);
-
   const {selectedProject} = useSelector(s => s.project);
 
   React.useEffect(() => {
@@ -162,30 +164,21 @@ function ProjectListing(props) {
   }, []);
 
   const getList = async () => {
-    await getProjectList({project_id: selectedProject.id});
+    return getProjectList({project_id: selectedProject.id});
   };
 
   // for filters
   const filterCount = useMemo(() => {
-    const tempCount = Object.values(projectFilters);
-    return tempCount?.filter(i => i !== '').length;
+    return Object.values(projectFilters)?.filter(i => i !== '').length;
   }, [projectFilters]);
 
-  const checkRange = (value, key = {}) => {
-    const {low = 0, high = 0} = key;
-    let isRangeValid = false;
-
-    if (value > 0) {
-      if (value >= low && value <= high) {
-        isRangeValid = true;
-        return isRangeValid;
-      }
-    }
-    return isRangeValid;
+  const checkRange = (value = 0, key) => {
+    const {low = 0, high = 0} = key || {};
+    return value >= low && value <= high;
   };
 
   const filteredProjectData = useMemo(() => {
-    if (filterCount > 0) {
+    if (filterCount) {
       const {
         projectNames,
         developerNames,
@@ -260,19 +253,16 @@ function ProjectListing(props) {
       title: 'Confirm',
       message: 'Are you sure you want to delete?',
       confirmText: 'Delete',
-      onConfirm: () => {
-        deleteProject({
-          project_id: selectedProject.id,
-          id: projectId,
-        });
+      onConfirm: async () => {
+        await deleteProject({project_id: selectedProject.id, id: projectId});
         getList();
       },
     });
   };
 
-  const navToFilter = () => {
-    navigation.navigate('ProjectFilter');
-  };
+  const navToFilter = () => navigation.navigate('ProjectFilter');
+
+  const handleAddNav = () => navigation.navigate('AddProject');
 
   return (
     <View style={styles.mainContainer}>
@@ -294,22 +284,15 @@ function ProjectListing(props) {
           refreshControl={
             <RefreshControl refreshing={false} onRefresh={getList} />
           }
-          renderItem={({item}) => {
-            return (
-              <ProjectCard
-                item={item}
-                navigation={navigation}
-                handleDelete={handleDelete}
-              />
-            );
-          }}
+          renderItem={({item}) => (
+            <ProjectCard
+              item={item}
+              navigation={navigation}
+              handleDelete={handleDelete}
+            />
+          )}
         />
-        <FAB
-          style={styles.fab}
-          large
-          icon="plus"
-          onPress={() => navigation.navigate('AddProject')}
-        />
+        <FAB style={styles.fab} large icon="plus" onPress={handleAddNav} />
       </View>
     </View>
   );
