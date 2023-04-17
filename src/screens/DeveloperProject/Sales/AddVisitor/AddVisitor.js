@@ -51,22 +51,19 @@ const schema = Yup.object().shape({
   }),
   current_locality: Yup.string('Invalid'),
 
-  bhk: Yup.string('Invalid').when('bhk_required', {
-    is: true,
-    then: Yup.string('Invalid').required('Required'),
-  }),
-  assign_to: Yup.string('Invalid'),
+  // bhk: Yup.string('Invalid').when('bhk_required', {
+  //   is: true,
+  //   then: Yup.string('Invalid').required('Required'),
+  // }),
+  assign_to: Yup.string('Invalid').required('Required'),
   inquiry_for: Yup.string('Invalid').required('Required'),
-  remarks: Yup.string('Invalid').required('Required'),
-  budget_from: Yup.number('Invalid').required('Required'),
-  budget_to: Yup.number('Invalid').when('budget_from', (budgetFrom, Schema) => {
-    return budgetFrom
-      ? Schema.min(
-          Number(budgetFrom),
-          'Budget To is less then Budget From',
-        ).required('Budget To is less then Budget From')
-      : Schema;
-  }),
+  remarks: Yup.string('Invalid'),
+  budget_from: Yup.number('Invalid'),
+  // budget_to: Yup.number('Invalid').when('budget_from', (budgetFrom, Schema) => {
+  //   return budgetFrom
+  //     ? Schema.min(Number(budgetFrom), 'Budget To is less then Budget From')
+  //     : Schema;
+  // }),
 });
 
 function PersonalTab(props) {
@@ -84,12 +81,12 @@ function PersonalTab(props) {
 
   const firstNameRef = React.useRef();
   const lastNameRef = React.useRef();
+  const assignRef = React.useRef();
   const emailRef = React.useRef();
   const phoneRef = React.useRef();
   const countryCodeRef = React.useRef();
   const phone2Ref = React.useRef();
   const occupationRef = React.useRef();
-  const assignToRef = React.useRef();
   const occupationInputRef = React.useRef();
   const localityRef = React.useRef();
   const sourceTypeRef = React.useRef();
@@ -198,13 +195,14 @@ function PersonalTab(props) {
           />
           <RenderSelect
             name="assign_to"
-            ref={assignToRef}
+            ref={assignRef}
             label="Assign To"
             options={assigntoOptions}
             containerStyles={styles.input}
             value={values.assign_to}
             placeholder="Assign To"
             error={errors.assign_to}
+            onSubmitEditing={() => assignRef?.current?.focus()}
             onSelect={value => {
               setFieldValue('assign_to', value);
               if (value === 0) {

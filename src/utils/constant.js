@@ -111,8 +111,7 @@ export function getFileName(string) {
   return string;
 }
 
-
-export const DEFAULT_PROJECT_FILTERS:{
+export const DEFAULT_PROJECT_FILTERS = {
   projectNames: '',
   developerNames: '',
   area: '',
@@ -132,4 +131,4 @@ export const DEFAULT_PROJECT_FILTERS:{
   plots: '',
   owners: '',
   security: '',
-}
+};

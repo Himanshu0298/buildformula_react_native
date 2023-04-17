@@ -41,6 +41,13 @@ const RenderForm = props => {
 
   const {values, handleBlur, setFieldValue, handleSubmit} = formikProps;
 
+  const handleChange = (key, value) => {
+    setFieldValue(
+      key,
+      Array.isArray(value) && value?.length ? value : undefined,
+    );
+  };
+
   return (
     <View style={styles.formContainer}>
       <ScrollView style={styles.formContainer}>
@@ -53,7 +60,7 @@ const RenderForm = props => {
           containerStyles={styles.inputStyles}
           onBlur={handleBlur('projectNames')}
           onSelect={value => {
-            setFieldValue('projectNames', value);
+            handleChange('projectNames', value);
           }}
         />
         <RenderSelect
@@ -65,7 +72,7 @@ const RenderForm = props => {
           containerStyles={styles.inputStyles}
           onBlur={handleBlur('developerNames')}
           onSelect={value => {
-            setFieldValue('developerNames', value);
+            handleChange('developerNames', value);
           }}
         />
         <RenderSelect
@@ -77,7 +84,7 @@ const RenderForm = props => {
           containerStyles={styles.inputStyles}
           onBlur={handleBlur('area')}
           onSelect={value => {
-            setFieldValue('area', value);
+            handleChange('area', value);
           }}
         />
         <RenderSelect
@@ -111,7 +118,7 @@ const RenderForm = props => {
           containerStyles={styles.inputStyles}
           onBlur={handleBlur('possession')}
           onSelect={value => {
-            setFieldValue('possession', value);
+            handleChange('possession', value);
           }}
         />
         <RenderSelect
@@ -123,7 +130,7 @@ const RenderForm = props => {
           containerStyles={styles.inputStyles}
           onBlur={handleBlur('rera')}
           onSelect={value => {
-            setFieldValue('rera', value);
+            handleChange('rera', value);
           }}
         />
         <RenderSelect
@@ -135,7 +142,7 @@ const RenderForm = props => {
           containerStyles={styles.inputStyles}
           onBlur={handleBlur('projectType')}
           onSelect={value => {
-            setFieldValue('projectType', value);
+            handleChange('projectType', value);
           }}
         />
         <RenderSelect
@@ -147,7 +154,7 @@ const RenderForm = props => {
           containerStyles={styles.inputStyles}
           onBlur={handleBlur('restrictedUser')}
           onSelect={value => {
-            setFieldValue('restrictedUser', value);
+            handleChange('restrictedUser', value);
           }}
         />
         <RenderSelect
@@ -159,7 +166,7 @@ const RenderForm = props => {
           containerStyles={styles.inputStyles}
           onBlur={handleBlur('projectStatus')}
           onSelect={value => {
-            setFieldValue('projectStatus', value);
+            handleChange('projectStatus', value);
           }}
         />
         <RenderSelect
@@ -171,7 +178,7 @@ const RenderForm = props => {
           containerStyles={styles.inputStyles}
           onBlur={handleBlur('projectQuality')}
           onSelect={value => {
-            setFieldValue('projectQuality', value);
+            handleChange('projectQuality', value);
           }}
         />
         <RenderSelect
@@ -183,7 +190,7 @@ const RenderForm = props => {
           containerStyles={styles.inputStyles}
           onBlur={handleBlur('bhk')}
           onSelect={value => {
-            setFieldValue('bhk', value);
+            handleChange('bhk', value);
           }}
         />
         <RenderSelect
@@ -195,7 +202,7 @@ const RenderForm = props => {
           containerStyles={styles.inputStyles}
           onBlur={handleBlur('category')}
           onSelect={value => {
-            setFieldValue('category', value);
+            handleChange('category', value);
           }}
         />
 
@@ -252,7 +259,7 @@ const RenderForm = props => {
           containerStyles={styles.inputStyles}
           onBlur={handleBlur('owners')}
           onSelect={value => {
-            setFieldValue('owners', value);
+            handleChange('owners', value);
           }}
         />
 
@@ -265,7 +272,7 @@ const RenderForm = props => {
           containerStyles={styles.inputStyles}
           onBlur={handleBlur('security')}
           onSelect={value => {
-            setFieldValue('security', value);
+            handleChange('security', value);
           }}
         />
       </ScrollView>
@@ -306,7 +313,7 @@ const ProjectFilter = props => {
 
   const getCount = count => ({
     min: 0,
-    max: count?.length ? Math.max(count) : 100,
+    max: count?.length ? Math.max(...count) : 100,
   });
 
   const getUnique = options => {
