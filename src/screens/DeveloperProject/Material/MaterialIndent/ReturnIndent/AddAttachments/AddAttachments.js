@@ -119,7 +119,7 @@ function AttachmentsForm(props) {
       <ActionButtons
         onSubmit={() => handleSubmit(values)}
         submitLabel="Next"
-        onCancel={() => navigation.goBack()}
+        onCancel={() => navigation.navigate('MaterialIndent')}
       />
     </View>
   );

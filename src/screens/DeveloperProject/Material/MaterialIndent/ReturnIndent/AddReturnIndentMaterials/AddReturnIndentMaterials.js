@@ -328,7 +328,7 @@ function AddReturnIndentMaterials(props) {
     } else {
       _materials.push(values);
     }
-    const subCategoryMaterial = materials.find(
+    const subCategoryMaterial = materials?.find(
       i => i.material_sub_category_id === values.material_sub_category_id,
     );
 
