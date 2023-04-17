@@ -51,6 +51,7 @@ import {
   UPDATE_UNIT,
   UPDATE_BUNGALOW,
 } from 'redux/actions/actionTypes';
+import {DEFAULT_PROJECT_FILTERS} from 'utils/constant';
 
 const initialState = {
   loading: false,
@@ -69,7 +70,7 @@ const initialState = {
   masterList: [],
   areaList: [],
   floorList: [],
-  projectFilters: [],
+  projectFilters: DEFAULT_PROJECT_FILTERS,
 };
 
 const reducer = (state = initialState, action = {}) => {

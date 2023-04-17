@@ -40,8 +40,10 @@ function Details(props) {
     remarks,
     inquiry_status_id,
     intrestedIn,
-    broker_name,
+    mobile_code_data,
+    brokers_data,
   } = visitor;
+  console.log('🚀 ~ file: Details.js:45 ~ Details ~ visitor:', visitor);
 
   const snackbar = useSnackbar();
 
@@ -125,7 +127,10 @@ function Details(props) {
         </View>
         <View style={styles.detailRow}>
           <Paragraph>Phone No 2</Paragraph>
-          <Caption style={styles.value}>{phone_2}</Caption>
+          <Caption
+            style={
+              styles.value
+            }>{`${mobile_code_data?.phone_code} - ${phone_2}`}</Caption>
         </View>
         <View style={styles.detailRow}>
           <Paragraph>Inquiry Date</Paragraph>
@@ -147,7 +152,9 @@ function Details(props) {
         </View>
         <View style={styles.detailRow}>
           <Paragraph>Broker</Paragraph>
-          <Caption style={styles.value}>{broker_name || 'NA'}</Caption>
+          <Caption style={styles.value}>
+            {`${brokers_data?.first_name} ${brokers_data?.last_name}` || 'NA'}
+          </Caption>
         </View>
         <View style={styles.detailRow}>
           <Paragraph>Budget Range</Paragraph>

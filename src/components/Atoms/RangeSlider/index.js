@@ -8,7 +8,7 @@ import Rail from './Rail';
 import RailSelected from './RailSelected';
 import Thumb from './Thumb';
 
-const RangeSlider = ({min, max, handleChange, rangeData}) => {
+const RangeSlider = ({min = 0, max = 100, handleChange, rangeData}) => {
   const renderThumb = useCallback(() => <Thumb />, []);
   const renderRail = useCallback(() => <Rail />, []);
   const renderRailSelected = useCallback(() => <RailSelected />, []);
@@ -16,6 +16,7 @@ const RangeSlider = ({min, max, handleChange, rangeData}) => {
   const renderNotch = useCallback(() => <Notch />, []);
 
   const handleValueChange = useCallback((newLow, newHigh) => {
+    console.log(rangeData, newLow !== min, newHigh !== max);
     if (rangeData || newLow !== min || newHigh !== max) {
       const values = {
         low: newLow,
@@ -66,8 +67,8 @@ const RangeSlider = ({min, max, handleChange, rangeData}) => {
         // style={styles.slider}
         min={min}
         max={max}
-        low={rangeData?.low}
-        high={rangeData?.high}
+        low={rangeData?.low || min}
+        high={rangeData?.high || max}
         step={1}
         floatingLabel
         renderThumb={renderThumb}

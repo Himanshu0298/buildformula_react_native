@@ -10,16 +10,18 @@ import RangeSlider from 'components/Atoms/RangeSlider';
 
 import useProjectStructureActions from 'redux/actions/projectStructureActions';
 import {useSelector} from 'react-redux';
+import {DEFAULT_PROJECT_FILTERS} from 'utils/constant';
+
+const STATUS_OPTIONS = ['Active', 'Inactive'];
+
+const PREMIUM_PROJECT_OPTIONS = ['Yes', 'No'];
 
 const RenderForm = props => {
   const {
-    navigation,
     formikProps,
     projectOptions,
     developerOptions,
     areaOptions,
-    statusOptions,
-    premiumProjectOptions,
     possessionYearOptions,
     reraOptions,
     restrictedUserOptions,
@@ -32,39 +34,18 @@ const RenderForm = props => {
     unitData,
     bungalowData,
     plotData,
-    ownerData,
+    ownerOptions,
     securityData,
+    clearForm,
   } = props;
 
-  const {
-    values,
-    errors,
-    handleChange,
-    handleBlur,
-    setFieldValue,
-    handleSubmit,
-  } = formikProps;
+  const {values, handleBlur, setFieldValue, handleSubmit} = formikProps;
 
-  const clearForm = () => {
-    formikProps.setFieldValue('projectNames', '');
-    formikProps.setFieldValue('developerNames', '');
-    formikProps.setFieldValue('area', '');
-    formikProps.setFieldValue('status', '');
-    formikProps.setFieldValue('premium', '');
-    formikProps.setFieldValue('possession', '');
-    formikProps.setFieldValue('rera', '');
-    formikProps.setFieldValue('projectType', '');
-    formikProps.setFieldValue('restrictedUser', '');
-    formikProps.setFieldValue('projectStatus', '');
-    formikProps.setFieldValue('projectQuality', '');
-    formikProps.setFieldValue('bhk', '');
-    formikProps.setFieldValue('category', '');
-    formikProps.setFieldValue('towers', '');
-    formikProps.setFieldValue('units', '');
-    formikProps.setFieldValue('bungalows', '');
-    formikProps.setFieldValue('plots', '');
-    formikProps.setFieldValue('owners', '');
-    formikProps.setFieldValue('security', '');
+  const handleChange = (key, value) => {
+    setFieldValue(
+      key,
+      Array.isArray(value) && value?.length ? value : undefined,
+    );
   };
 
   return (
@@ -79,7 +60,7 @@ const RenderForm = props => {
           containerStyles={styles.inputStyles}
           onBlur={handleBlur('projectNames')}
           onSelect={value => {
-            setFieldValue('projectNames', value);
+            handleChange('projectNames', value);
           }}
         />
         <RenderSelect
@@ -91,7 +72,7 @@ const RenderForm = props => {
           containerStyles={styles.inputStyles}
           onBlur={handleBlur('developerNames')}
           onSelect={value => {
-            setFieldValue('developerNames', value);
+            handleChange('developerNames', value);
           }}
         />
         <RenderSelect
@@ -103,14 +84,14 @@ const RenderForm = props => {
           containerStyles={styles.inputStyles}
           onBlur={handleBlur('area')}
           onSelect={value => {
-            setFieldValue('area', value);
+            handleChange('area', value);
           }}
         />
         <RenderSelect
           name="status"
           label="Status"
           value={values.status}
-          options={statusOptions}
+          options={STATUS_OPTIONS}
           containerStyles={styles.inputStyles}
           onBlur={handleBlur('status')}
           onSelect={value => {
@@ -121,7 +102,7 @@ const RenderForm = props => {
           name="premium"
           label="Premium"
           value={values.premium}
-          options={premiumProjectOptions}
+          options={PREMIUM_PROJECT_OPTIONS}
           containerStyles={styles.inputStyles}
           onBlur={handleBlur('premium')}
           onSelect={value => {
@@ -137,7 +118,7 @@ const RenderForm = props => {
           containerStyles={styles.inputStyles}
           onBlur={handleBlur('possession')}
           onSelect={value => {
-            setFieldValue('possession', value);
+            handleChange('possession', value);
           }}
         />
         <RenderSelect
@@ -149,7 +130,7 @@ const RenderForm = props => {
           containerStyles={styles.inputStyles}
           onBlur={handleBlur('rera')}
           onSelect={value => {
-            setFieldValue('rera', value);
+            handleChange('rera', value);
           }}
         />
         <RenderSelect
@@ -161,7 +142,7 @@ const RenderForm = props => {
           containerStyles={styles.inputStyles}
           onBlur={handleBlur('projectType')}
           onSelect={value => {
-            setFieldValue('projectType', value);
+            handleChange('projectType', value);
           }}
         />
         <RenderSelect
@@ -173,7 +154,7 @@ const RenderForm = props => {
           containerStyles={styles.inputStyles}
           onBlur={handleBlur('restrictedUser')}
           onSelect={value => {
-            setFieldValue('restrictedUser', value);
+            handleChange('restrictedUser', value);
           }}
         />
         <RenderSelect
@@ -185,7 +166,7 @@ const RenderForm = props => {
           containerStyles={styles.inputStyles}
           onBlur={handleBlur('projectStatus')}
           onSelect={value => {
-            setFieldValue('projectStatus', value);
+            handleChange('projectStatus', value);
           }}
         />
         <RenderSelect
@@ -197,7 +178,7 @@ const RenderForm = props => {
           containerStyles={styles.inputStyles}
           onBlur={handleBlur('projectQuality')}
           onSelect={value => {
-            setFieldValue('projectQuality', value);
+            handleChange('projectQuality', value);
           }}
         />
         <RenderSelect
@@ -209,7 +190,7 @@ const RenderForm = props => {
           containerStyles={styles.inputStyles}
           onBlur={handleBlur('bhk')}
           onSelect={value => {
-            setFieldValue('bhk', value);
+            handleChange('bhk', value);
           }}
         />
         <RenderSelect
@@ -221,15 +202,15 @@ const RenderForm = props => {
           containerStyles={styles.inputStyles}
           onBlur={handleBlur('category')}
           onSelect={value => {
-            setFieldValue('category', value);
+            handleChange('category', value);
           }}
         />
 
         <View style={styles.rangeContainer}>
           <Text>Select no of towers</Text>
           <RangeSlider
-            min={towerData?.towerMin}
-            max={towerData?.towerMax}
+            min={towerData?.min}
+            max={towerData?.max}
             rangeData={values?.towers}
             handleChange={v => setFieldValue('towers', v)}
           />
@@ -239,8 +220,8 @@ const RenderForm = props => {
         <View style={styles.rangeContainer}>
           <Text>Select no of units</Text>
           <RangeSlider
-            min={unitData?.unitMin}
-            max={unitData?.unitMax}
+            min={unitData?.min}
+            max={unitData?.max}
             rangeData={values?.units}
             handleChange={v => setFieldValue('units', v)}
           />
@@ -250,7 +231,7 @@ const RenderForm = props => {
         <View style={styles.rangeContainer}>
           <Text>Select no of bungalows</Text>
           <RangeSlider
-            min={bungalowData?.bungalowMin}
+            min={bungalowData?.min}
             max={bungalowData?.bungalowMax}
             rangeData={values?.bungalows}
             handleChange={v => setFieldValue('bungalows', v)}
@@ -261,8 +242,8 @@ const RenderForm = props => {
         <View style={styles.rangeContainer}>
           <Text>Select no of plots</Text>
           <RangeSlider
-            min={plotData?.plotMin}
-            max={plotData?.plotMax}
+            min={plotData?.min}
+            max={plotData?.max}
             rangeData={values?.plots}
             handleChange={v => setFieldValue('plots', v)}
           />
@@ -274,11 +255,11 @@ const RenderForm = props => {
           name="owners"
           label="Project Owners"
           value={values.owners}
-          options={ownerData}
+          options={ownerOptions}
           containerStyles={styles.inputStyles}
           onBlur={handleBlur('owners')}
           onSelect={value => {
-            setFieldValue('owners', value);
+            handleChange('owners', value);
           }}
         />
 
@@ -291,13 +272,13 @@ const RenderForm = props => {
           containerStyles={styles.inputStyles}
           onBlur={handleBlur('security')}
           onSelect={value => {
-            setFieldValue('security', value);
+            handleChange('security', value);
           }}
         />
       </ScrollView>
 
       <ActionButtons
-        cancelLabel="Clear"
+        cancelLabel="Clear All"
         submitLabel="Apply"
         onCancel={() => clearForm()}
         onSubmit={handleSubmit}
@@ -319,50 +300,6 @@ const ProjectFilter = props => {
     projectFilters,
   } = useSelector(s => s.projectStructure);
 
-  const {
-    projectNames,
-    developerNames,
-    area,
-    status,
-    premium,
-    possession,
-    rera,
-    projectType,
-    restrictedUser,
-    projectStatus,
-    projectQuality,
-    bhk,
-    category,
-    towers,
-    units,
-    bungalows,
-    plots,
-    owners,
-    security,
-  } = projectFilters;
-
-  const initialValues = {
-    projectNames: projectNames || '',
-    developerNames: developerNames || '',
-    area: area || '',
-    status: status || '',
-    premium: premium || '',
-    possession: possession || '',
-    rera: rera || '',
-    projectType: projectType || '',
-    restrictedUser: restrictedUser || '',
-    projectStatus: projectStatus || '',
-    projectQuality: projectQuality || '',
-    bhk: bhk || '',
-    category: category || '',
-    towers: towers || '',
-    units: units || '',
-    bungalows: bungalows || '',
-    plots: plots || '',
-    owners: owners || '',
-    security: security || '',
-  };
-
   const {master_bhks, project_structure_project_category} = masterList || [];
 
   const getMasters = async () => {
@@ -374,8 +311,28 @@ const ProjectFilter = props => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const getCount = count => ({
+    min: 0,
+    max: count?.length ? Math.max(...count) : 100,
+  });
+
+  const getUnique = options => {
+    const uniqueData = options?.filter((obj, index) => {
+      return (
+        index ===
+        options?.findIndex(o => obj.label === o.label || obj.value === o.value)
+      );
+    });
+
+    return uniqueData;
+  };
+
   const projectOptions = useMemo(() => {
-    return projectList?.filter(i => i.status === 1)?.map(i => i.project_name);
+    const projectData = projectList
+      ?.filter(i => i.status === 1)
+      ?.map(i => i.project_name);
+
+    return [...new Set(projectData)];
   }, [projectList]);
 
   const developerOptions = useMemo(() => {
@@ -388,22 +345,11 @@ const ProjectFilter = props => {
     return [...new Set(areaData)];
   }, [projectList]);
 
-  const statusOptions = [
-    {label: 'Active', value: 1},
-    {label: 'Inactive', value: 0},
-  ];
-
-  const premiumProjectOptions = [
-    {label: 'Yes', value: 1},
-    {label: 'No', value: 0},
-  ];
-
   const possessionYearOptions = useMemo(() => {
     const possessionData = projectList
       ?.map(i => i.possesion_year)
       ?.filter(i => i !== '');
-    const tempPossessionData = [...new Set(possessionData)];
-    return tempPossessionData.map(i => ({
+    return [...new Set(possessionData)].map(i => ({
       label: dayjs(i).get('year'),
       value: i,
     }));
@@ -415,36 +361,44 @@ const ProjectFilter = props => {
   }, [projectList]);
 
   const restrictedUserOptions = useMemo(() => {
-    return projectList
-      ?.map(i => ({
-        label: i.restricted_user_label,
-        value: i.restricted_user,
-      }))
-      ?.filter(i => i.value > 0);
+    return getUnique(
+      projectList
+        ?.map(i => ({
+          label: i.restricted_user_label,
+          value: i.restricted_user,
+        }))
+        ?.filter(i => i.value > 0),
+    );
   }, [projectList]);
 
   const projectTypeOptions = useMemo(() => {
-    return projectList
-      ?.map(i => ({
-        label: i.project_type_label,
-        value: i.project_type,
-      }))
-      ?.filter(i => i.value > 0);
+    return getUnique(
+      projectList
+        ?.map(i => ({
+          label: i.project_type_label,
+          value: i.project_type,
+        }))
+        ?.filter(i => i.value > 0),
+    );
   }, [projectList]);
 
   const projectStatusOptions = useMemo(() => {
-    return projectList
-      ?.map(i => ({label: i.project_status_label, value: i.project_status}))
-      ?.filter(i => i.value > 0);
+    return getUnique(
+      projectList
+        ?.map(i => ({label: i.project_status_label, value: i.project_status}))
+        ?.filter(i => i.value > 0),
+    );
   }, [projectList]);
 
   const projectQualityOptions = useMemo(() => {
-    return projectList
-      ?.map(i => ({
-        label: i.project_quality_label,
-        value: i.project_quality,
-      }))
-      ?.filter(i => i.value > 0);
+    return getUnique(
+      projectList
+        ?.map(i => ({
+          label: i.project_quality_label,
+          value: i.project_quality,
+        }))
+        ?.filter(i => i.value > 0),
+    );
   }, [projectList]);
 
   const bhkOptions = useMemo(() => {
@@ -466,10 +420,7 @@ const ProjectFilter = props => {
       ?.map(i => parseInt(i.total_no_of_towers, 10))
       .filter(i => !isNaN(i));
 
-    const towerMin = Math.min(...towerCount);
-    const towerMax = Math.max(...towerCount);
-
-    return {towerMin, towerMax};
+    return getCount(towerCount);
   }, [projectList]);
 
   const unitData = useMemo(() => {
@@ -477,51 +428,45 @@ const ProjectFilter = props => {
       ?.map(i => parseInt(i.total_no_of_units, 10))
       .filter(i => !isNaN(i));
 
-    const unitMin = Math.min(...unitCount);
-    const unitMax = Math.max(...unitCount);
-
-    return {unitMin, unitMax};
+    return getCount(unitCount);
   }, [projectList]);
 
   const bungalowData = useMemo(() => {
     const bungalowCount = projectList
       ?.map(i => parseInt(i.total_no_of_bunglows, 10))
-      .filter(i => !isNaN(i));
+      ?.filter(i => !isNaN(i));
 
-    const bungalowMin = Math.min(...bungalowCount);
-    const bungalowMax = Math.max(...bungalowCount);
-
-    return {bungalowMin, bungalowMax};
+    return getCount(bungalowCount);
   }, [projectList]);
 
   const plotData = useMemo(() => {
     const plotCount = projectList
       ?.map(i => parseInt(i.total_no_of_plots, 10))
-      .filter(i => !isNaN(i));
+      ?.filter(i => !isNaN(i));
 
-    const plotMin = Math.min(...plotCount);
-    const plotMax = Math.max(...plotCount);
-
-    return {plotMin, plotMax};
+    return getCount(plotCount);
   }, [projectList]);
 
-  const ownerData = useMemo(() => {
-    return projectList
-      ?.map(i => i.owner_info?.map(e => ({label: e.name, value: e.id})))
-      ?.filter(i => i.length > 0)
-      ?.flat(2);
+  const ownerOptions = useMemo(() => {
+    return [
+      ...new Set(
+        projectList
+          ?.filter(i => i?.owner_info?.length)
+          ?.map(i => i.owner_info?.map(e => e.name))
+          ?.flat(2),
+      ),
+    ];
   }, [projectList]);
 
   const securityData = useMemo(() => {
-    return projectList
-      ?.map(i =>
-        i.security_info?.map(e => ({
-          label: e.contact_person_name,
-          value: e.id,
-        })),
-      )
-      ?.filter(i => i.length > 0)
-      ?.flat(2);
+    return [
+      ...new Set(
+        projectList
+          ?.filter(i => i?.security_info?.length)
+          ?.map(i => i.security_info?.map(e => e.contact_person_name))
+          ?.flat(2),
+      ),
+    ];
   }, [projectList]);
 
   const onSubmit = async values => {
@@ -529,11 +474,16 @@ const ProjectFilter = props => {
     navigation.goBack();
   };
 
+  const clearForm = () => {
+    updateProjectFilters(DEFAULT_PROJECT_FILTERS);
+    navigation.goBack();
+  };
+
   const formikProps = useFormik({
     enableReinitialize: true,
     validateOnBlur: false,
     validateOnChange: false,
-    initialValues,
+    initialValues: projectFilters,
     onSubmit,
   });
 
@@ -545,7 +495,7 @@ const ProjectFilter = props => {
           size={18}
           color="#4872f4"
           style={styles.backIcon}
-          onPress={() => navigation.goBack()}
+          onPress={navigation.goBack}
         />
         <Title>Project Filters</Title>
       </View>
@@ -555,8 +505,6 @@ const ProjectFilter = props => {
         projectOptions={projectOptions}
         developerOptions={developerOptions}
         areaOptions={areaOptions}
-        statusOptions={statusOptions}
-        premiumProjectOptions={premiumProjectOptions}
         possessionYearOptions={possessionYearOptions}
         reraOptions={reraOptions}
         restrictedUserOptions={restrictedUserOptions}
@@ -569,8 +517,9 @@ const ProjectFilter = props => {
         unitData={unitData}
         bungalowData={bungalowData}
         plotData={plotData}
-        ownerData={ownerData}
+        ownerOptions={ownerOptions}
         securityData={securityData}
+        clearForm={clearForm}
       />
     </SafeAreaView>
   );
