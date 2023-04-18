@@ -84,6 +84,7 @@ function PersonalTab(props) {
     setSelectedTab,
     mobileCodes,
     assigntoOptions,
+    edit,
   } = props;
   const {handleChange, setFieldValue, values, handleBlur, errors} = formikProps;
   const {t} = useTranslation();
@@ -160,7 +161,7 @@ function PersonalTab(props) {
             ref={countryCodeRef}
             options={mobileCodes}
             containerStyles={styles.input}
-            value={values?.mobile_code_data?.id}
+            value={edit ? values.mobile_code_data?.id : values.mobile_code}
             placeholder="Country Code for Phone 2"
             error={errors.mobile_code}
             onSelect={value => {
@@ -168,17 +169,17 @@ function PersonalTab(props) {
             }}
           />
           <RenderInput
-            name="phone2"
+            name="phone_2"
             ref={phone2Ref}
             label="Phone No 2"
             keyboardType="number-pad"
             maxLength={10}
             containerStyles={styles.input}
             value={values.phone_2}
-            onChangeText={handleChange('phone2')}
+            onChangeText={handleChange('phone_2')}
             onSubmitEditing={() => occupationRef?.current?.focus()}
-            onBlur={handleBlur('phone2')}
-            error={errors.phone2}
+            onBlur={handleBlur('phone_2')}
+            error={errors.phone_2}
           />
           <RenderSelect
             name="occupation"
