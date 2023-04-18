@@ -242,7 +242,7 @@ function PersonalTab(props) {
             value={values.current_locality}
             onChangeText={handleChange('current_locality')}
             onBlur={handleBlur('current_locality')}
-            error={errors.email}
+            error={errors.current_locality}
           />
           <RenderSelect
             name="source_type"
