@@ -173,7 +173,8 @@ function Details(props) {
           <Paragraph>Inquiry for</Paragraph>
           <Caption style={styles.value}>
             {STRUCTURE_TYPE_LABELS[inquiry_for]}
-            {bhk && STRUCTURE_TYPE_LABELS[inquiry_for] === 'Apartments'
+            {(bhk && STRUCTURE_TYPE_LABELS[inquiry_for] === 'Apartments') ||
+            STRUCTURE_TYPE_LABELS[inquiry_for] === 'Bungalows'
               ? ` - ${bhk} BHK`
               : null}
           </Caption>
