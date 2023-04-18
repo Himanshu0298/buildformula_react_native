@@ -57,7 +57,7 @@ const schema = Yup.object().shape({
   // }),
   assign_to: Yup.string('Invalid').required('Required'),
   inquiry_for: Yup.string('Invalid').required('Required'),
-  remarks: Yup.string('Invalid'),
+  // remarks: Yup.string('Invalid'),
   budget_from: Yup.number('Invalid'),
   // budget_to: Yup.number('Invalid').when('budget_from', (budgetFrom, Schema) => {
   //   return budgetFrom
@@ -66,11 +66,11 @@ const schema = Yup.object().shape({
   // }),
   title: Yup.string('Invalid'),
   date: Yup.string('Invalid').when('title', {
-    is: title => title.length > 0,
+    is: value => !!value,
     then: Yup.string().required('Date is required'),
   }),
   time: Yup.string('Invalid').when('title', {
-    is: title => title.length > 0,
+    is: value => !!value,
     then: Yup.string().required('Time is required'),
   }),
 });
@@ -160,7 +160,7 @@ function PersonalTab(props) {
             ref={countryCodeRef}
             options={mobileCodes}
             containerStyles={styles.input}
-            value={values.mobile_code_data.id}
+            value={values?.mobile_code_data?.id}
             placeholder="Country Code for Phone 2"
             error={errors.mobile_code}
             onSelect={value => {
@@ -208,7 +208,7 @@ function PersonalTab(props) {
             label="Assign To"
             options={assigntoOptions}
             containerStyles={styles.input}
-            value={values.assign_to_data.id}
+            value={values?.assign_to_data?.id}
             placeholder="Assign To"
             error={errors.assign_to}
             onSubmitEditing={() => assignRef?.current?.focus()}
@@ -433,51 +433,55 @@ function InquiryTab(props) {
             error={errors.remarks}
           />
         </View>
-        <View style={styles.followupDetails}>
-          <Subheading>Followup Details</Subheading>
-          <View style={styles.inputsContainer}>
-            <RenderInput
-              name="title"
-              label="Task Title"
-              ref={followUpTitleRef}
-              containerStyles={styles.input}
-              value={values.title}
-              onChangeText={handleChange('title')}
-              onBlur={handleBlur('title')}
-              error={errors.title}
-            />
-          </View>
-        </View>
-        <View style={styles.row}>
-          <View style={styles.flex}>
-            <RenderDatePicker
-              name="date"
-              label="Date"
-              ref={followUpDateRef}
-              containerStyles={styles.input}
-              value={values.date}
-              error={errors.date}
-              onChange={date => {
-                setFieldValue('date', date);
-                followUpTimeRef?.current?.focus?.();
-              }}
-            />
-          </View>
-          <View style={styles.flex}>
-            <RenderDatePicker
-              mode="time"
-              label="Time"
-              ref={followUpTimeRef}
-              name="time"
-              containerStyles={styles.input}
-              value={values.time}
-              error={errors.time}
-              onChange={date => {
-                setFieldValue('time', date);
-              }}
-            />
-          </View>
-        </View>
+        {!edit ? (
+          <>
+            <View style={styles.followupDetails}>
+              <Subheading>Followup Details</Subheading>
+              <View style={styles.inputsContainer}>
+                <RenderInput
+                  name="title"
+                  label="Task Title"
+                  ref={followUpTitleRef}
+                  containerStyles={styles.input}
+                  value={values.title}
+                  onChangeText={handleChange('title')}
+                  onBlur={handleBlur('title')}
+                  error={errors.title}
+                />
+              </View>
+            </View>
+            <View style={styles.row}>
+              <View style={styles.flex}>
+                <RenderDatePicker
+                  name="date"
+                  label="Date"
+                  ref={followUpDateRef}
+                  containerStyles={styles.input}
+                  value={values.date}
+                  error={errors.date}
+                  onChange={date => {
+                    setFieldValue('date', date);
+                    followUpTimeRef?.current?.focus?.();
+                  }}
+                />
+              </View>
+              <View style={styles.flex}>
+                <RenderDatePicker
+                  mode="time"
+                  label="Time"
+                  ref={followUpTimeRef}
+                  name="time"
+                  containerStyles={styles.input}
+                  value={values.time}
+                  error={errors.time}
+                  onChange={date => {
+                    setFieldValue('time', date);
+                  }}
+                />
+              </View>
+            </View>
+          </>
+        ) : null}
         <ActionButtons
           cancelLabel="Back"
           submitLabel={edit ? 'Update' : 'Save'}
@@ -653,7 +657,6 @@ function AddVisitor(props) {
         follow_up_time: dayjs(visitorData.follow_up_time, 'HH:mm:ss').toDate(),
         bhk: visitorData.bhk,
         remarks: visitorData.remarks,
-        phone_code: 33,
         interested_for: [],
       };
     }
