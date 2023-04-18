@@ -43,7 +43,6 @@ function Details(props) {
     mobile_code_data,
     brokers_data,
   } = visitor;
-  console.log('🚀 ~ file: Details.js:45 ~ Details ~ visitor:', visitor);
 
   const snackbar = useSnackbar();
 
@@ -102,7 +101,7 @@ function Details(props) {
 
         <View style={styles.detailRow}>
           <Paragraph>Email</Paragraph>
-          <Caption style={styles.value}>{email}</Caption>
+          <Caption style={styles.value}>{email || 'NA'}</Caption>
         </View>
         <View style={styles.phoneContainer}>
           <View>
@@ -127,10 +126,11 @@ function Details(props) {
         </View>
         <View style={styles.detailRow}>
           <Paragraph>Phone No 2</Paragraph>
-          <Caption
-            style={
-              styles.value
-            }>{`${mobile_code_data?.phone_code} - ${phone_2}`}</Caption>
+          <Caption style={styles.value}>
+            {mobile_code_data
+              ? `${mobile_code_data?.phone_code} - ${phone_2}`
+              : 'NA'}
+          </Caption>
         </View>
         <View style={styles.detailRow}>
           <Paragraph>Inquiry Date</Paragraph>
@@ -144,7 +144,7 @@ function Details(props) {
         </View>
         <View style={styles.detailRow}>
           <Paragraph>Current Locality</Paragraph>
-          <Caption style={styles.value}>{current_locality}</Caption>
+          <Caption style={styles.value}>{current_locality || 'NA'}</Caption>
         </View>
         <View style={styles.detailRow}>
           <Paragraph>Source type</Paragraph>
@@ -183,7 +183,7 @@ function Details(props) {
         </View>
         <View style={styles.detailRow}>
           <Paragraph>Remark</Paragraph>
-          <Caption style={styles.value}>{remarks}</Caption>
+          <Caption style={styles.value}>{remarks || 'NA'}</Caption>
         </View>
 
         <View style={styles.detailRow}>

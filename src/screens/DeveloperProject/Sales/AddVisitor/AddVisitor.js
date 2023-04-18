@@ -64,6 +64,15 @@ const schema = Yup.object().shape({
   //     ? Schema.min(Number(budgetFrom), 'Budget To is less then Budget From')
   //     : Schema;
   // }),
+  title: Yup.string('Invalid'),
+  date: Yup.string('Invalid').when('title', {
+    is: title => title.length > 0,
+    then: Yup.string().required('Date is required'),
+  }),
+  time: Yup.string('Invalid').when('title', {
+    is: title => title.length > 0,
+    then: Yup.string().required('Time is required'),
+  }),
 });
 
 function PersonalTab(props) {
@@ -151,7 +160,7 @@ function PersonalTab(props) {
             ref={countryCodeRef}
             options={mobileCodes}
             containerStyles={styles.input}
-            value={values.mobile_code}
+            value={values.mobile_code_data.id}
             placeholder="Country Code for Phone 2"
             error={errors.mobile_code}
             onSelect={value => {
@@ -165,7 +174,7 @@ function PersonalTab(props) {
             keyboardType="number-pad"
             maxLength={10}
             containerStyles={styles.input}
-            value={values.phone2}
+            value={values.phone_2}
             onChangeText={handleChange('phone2')}
             onSubmitEditing={() => occupationRef?.current?.focus()}
             onBlur={handleBlur('phone2')}
@@ -199,7 +208,7 @@ function PersonalTab(props) {
             label="Assign To"
             options={assigntoOptions}
             containerStyles={styles.input}
-            value={values.assign_to}
+            value={values.assign_to_data.id}
             placeholder="Assign To"
             error={errors.assign_to}
             onSubmitEditing={() => assignRef?.current?.focus()}
@@ -644,6 +653,7 @@ function AddVisitor(props) {
         follow_up_time: dayjs(visitorData.follow_up_time, 'HH:mm:ss').toDate(),
         bhk: visitorData.bhk,
         remarks: visitorData.remarks,
+        phone_code: 33,
         interested_for: [],
       };
     }

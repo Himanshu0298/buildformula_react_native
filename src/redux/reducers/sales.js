@@ -245,8 +245,7 @@ const reducer = (state = initialState, action = {}) => {
         ...state,
         loadingVisitors: false,
         visitors: filteredVisitors.sort(
-          (a, b) =>
-            dayjs(b.follow_up_date).unix() - dayjs(a.follow_up_date).unix(),
+          (a, b) => dayjs(b.created).unix() - dayjs(a.created).unix(),
         ),
       };
     }
