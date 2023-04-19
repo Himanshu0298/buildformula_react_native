@@ -132,3 +132,14 @@ export const DEFAULT_PROJECT_FILTERS = {
   owners: '',
   security: '',
 };
+
+export function getUniqueOptions(options) {
+  const uniqueData = options?.filter((obj, index) => {
+    return (
+      index ===
+      options?.findIndex(o => obj.label === o.label || obj.value === o.value)
+    );
+  });
+
+  return uniqueData;
+}
