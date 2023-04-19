@@ -84,7 +84,6 @@ function PersonalTab(props) {
     setSelectedTab,
     mobileCodes,
     assigntoOptions,
-    edit,
   } = props;
   const {handleChange, setFieldValue, values, handleBlur, errors} = formikProps;
   const {t} = useTranslation();
@@ -150,7 +149,7 @@ function PersonalTab(props) {
             containerStyles={styles.input}
             value={values.phone}
             onChangeText={handleChange('phone')}
-            onSubmitEditing={() => phone2Ref?.current?.focus()}
+            onSubmitEditing={() => countryCodeRef?.current?.focus()}
             onBlur={handleBlur('phone')}
             error={errors.phone}
             left={<TextInput.Affix text="+91" />}
@@ -161,7 +160,7 @@ function PersonalTab(props) {
             ref={countryCodeRef}
             options={mobileCodes}
             containerStyles={styles.input}
-            value={edit ? values.mobile_code_data?.id : values.mobile_code}
+            value={values.mobile_code}
             placeholder="Country Code for Phone 2"
             error={errors.mobile_code}
             onSelect={value => {
@@ -169,17 +168,17 @@ function PersonalTab(props) {
             }}
           />
           <RenderInput
-            name="phone_2"
+            name="phone2"
             ref={phone2Ref}
             label="Phone No 2"
             keyboardType="number-pad"
             maxLength={10}
             containerStyles={styles.input}
-            value={values.phone_2}
-            onChangeText={handleChange('phone_2')}
+            value={values.phone2}
+            onChangeText={handleChange('phone2')}
             onSubmitEditing={() => occupationRef?.current?.focus()}
-            onBlur={handleBlur('phone_2')}
-            error={errors.phone_2}
+            onBlur={handleBlur('phone2')}
+            error={errors.phone2}
           />
           <RenderSelect
             name="occupation"
@@ -209,7 +208,7 @@ function PersonalTab(props) {
             label="Assign To"
             options={assigntoOptions}
             containerStyles={styles.input}
-            value={values?.assign_to_data?.id}
+            value={values.assign_to}
             placeholder="Assign To"
             error={errors.assign_to}
             onSubmitEditing={() => assignRef?.current?.focus()}
@@ -383,7 +382,8 @@ function InquiryTab(props) {
               setFieldValue('brokers_id', value);
             }}
           />
-          <RenderSelectMultiple
+          <RenderSelect
+            multiselect
             name="interested_property"
             label="Interested Property"
             options={interestedOptions}
@@ -620,17 +620,17 @@ function AddVisitor(props) {
     s => s.sales,
   );
 
-  const mobileCodes = countrycodes.map(i => ({
+  const mobileCodes = countrycodes?.map(i => ({
     label: `+${i.phone_code}, ${i.country_name}`,
     value: i.id,
   }));
 
-  const assigntoOptions = assigntoData.map(i => ({
+  const assigntoOptions = assigntoData?.map(i => ({
     label: `${i.first_name} ${i.last_name} - ${i.email}`,
     value: i.id,
   }));
 
-  const brokerOptions = brokersList.map(i => ({
+  const brokerOptions = brokersList?.map(i => ({
     label: `${i.first_name} ${i.last_name}`,
     value: i.id,
   }));
@@ -658,7 +658,10 @@ function AddVisitor(props) {
         follow_up_time: dayjs(visitorData.follow_up_time, 'HH:mm:ss').toDate(),
         bhk: visitorData.bhk,
         remarks: visitorData.remarks,
-        interested_for: [],
+        interested_property: visitorData.intrestedIn,
+        mobile_code: visitorData?.mobile_code_data?.id,
+        phone2: visitorData?.phone_2,
+        assign_to: visitorData?.assign_to_data?.id,
       };
     }
     return {priority: 'none'};

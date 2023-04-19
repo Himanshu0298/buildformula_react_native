@@ -127,9 +127,7 @@ function Details(props) {
         <View style={styles.detailRow}>
           <Paragraph>Phone No 2</Paragraph>
           <Caption style={styles.value}>
-            {mobile_code_data
-              ? `${mobile_code_data?.phone_code} - ${phone_2}`
-              : 'NA'}
+            {phone_2 ? `${mobile_code_data?.phone_code} - ${phone_2}` : 'NA'}
           </Caption>
         </View>
         <View style={styles.detailRow}>
@@ -153,7 +151,9 @@ function Details(props) {
         <View style={styles.detailRow}>
           <Paragraph>Broker</Paragraph>
           <Caption style={styles.value}>
-            {`${brokers_data?.first_name} ${brokers_data?.last_name}` || 'NA'}
+            {brokers_data
+              ? `${brokers_data?.first_name} ${brokers_data?.last_name}`
+              : 'NA'}
           </Caption>
         </View>
         <View style={styles.detailRow}>
@@ -182,7 +182,7 @@ function Details(props) {
 
         <View style={styles.detailRow}>
           <Paragraph>Interested Property</Paragraph>
-          <Caption style={styles.value}>{intrestedIn}</Caption>
+          <Caption style={styles.value}>{intrestedIn?.join(',')}</Caption>
         </View>
         <View style={styles.detailRow}>
           <Paragraph>Remark</Paragraph>
