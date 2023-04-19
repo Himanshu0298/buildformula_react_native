@@ -10,7 +10,7 @@ import RangeSlider from 'components/Atoms/RangeSlider';
 
 import useProjectStructureActions from 'redux/actions/projectStructureActions';
 import {useSelector} from 'react-redux';
-import {DEFAULT_PROJECT_FILTERS} from 'utils/constant';
+import {DEFAULT_PROJECT_FILTERS, getUniqueOptions} from 'utils/constant';
 
 const STATUS_OPTIONS = ['Active', 'Inactive'];
 
@@ -316,17 +316,6 @@ const ProjectFilter = props => {
     max: count?.length ? Math.max(...count) : 100,
   });
 
-  const getUnique = options => {
-    const uniqueData = options?.filter((obj, index) => {
-      return (
-        index ===
-        options?.findIndex(o => obj.label === o.label || obj.value === o.value)
-      );
-    });
-
-    return uniqueData;
-  };
-
   const projectOptions = useMemo(() => {
     const projectData = projectList
       ?.filter(i => i.status === 1)
@@ -361,7 +350,7 @@ const ProjectFilter = props => {
   }, [projectList]);
 
   const restrictedUserOptions = useMemo(() => {
-    return getUnique(
+    return getUniqueOptions(
       projectList
         ?.map(i => ({
           label: i.restricted_user_label,
@@ -372,7 +361,7 @@ const ProjectFilter = props => {
   }, [projectList]);
 
   const projectTypeOptions = useMemo(() => {
-    return getUnique(
+    return getUniqueOptions(
       projectList
         ?.map(i => ({
           label: i.project_type_label,
@@ -383,7 +372,7 @@ const ProjectFilter = props => {
   }, [projectList]);
 
   const projectStatusOptions = useMemo(() => {
-    return getUnique(
+    return getUniqueOptions(
       projectList
         ?.map(i => ({label: i.project_status_label, value: i.project_status}))
         ?.filter(i => i.value > 0),
@@ -391,7 +380,7 @@ const ProjectFilter = props => {
   }, [projectList]);
 
   const projectQualityOptions = useMemo(() => {
-    return getUnique(
+    return getUniqueOptions(
       projectList
         ?.map(i => ({
           label: i.project_quality_label,

@@ -10,7 +10,12 @@ import * as Yup from 'yup';
 import RenderInput, {RenderError} from 'components/Atoms/RenderInput';
 import {useTranslation} from 'react-i18next';
 import RenderSelect from 'components/Atoms/RenderSelect';
-import {BHK_OPTIONS, PHONE_REGEX, PRIORITY_COLORS} from 'utils/constant';
+import {
+  BHK_OPTIONS,
+  PHONE_REGEX,
+  PRIORITY_COLORS,
+  getUniqueOptions,
+} from 'utils/constant';
 import Radio from 'components/Atoms/Radio';
 import useSalesActions from 'redux/actions/salesActions';
 import dayjs from 'dayjs';
@@ -625,15 +630,23 @@ function AddVisitor(props) {
     value: i.id,
   }));
 
-  const assigntoOptions = assigntoData?.map(i => ({
-    label: `${i.first_name} ${i.last_name} - ${i.email}`,
-    value: i.id,
-  }));
+  const assigntoOptions = useMemo(() => {
+    return getUniqueOptions(
+      assigntoData?.map(i => ({
+        label: `${i.first_name} ${i.last_name} - ${i.email}`,
+        value: i.id,
+      })),
+    );
+  }, [assigntoData]);
 
-  const brokerOptions = brokersList?.map(i => ({
-    label: `${i.first_name} ${i.last_name}`,
-    value: i.id,
-  }));
+  const brokerOptions = useMemo(() => {
+    return getUniqueOptions(
+      brokersList?.map(i => ({
+        label: `${i.first_name} ${i.last_name}`,
+        value: i.id,
+      })),
+    );
+  }, [brokersList]);
 
   const {
     addVisitor,
