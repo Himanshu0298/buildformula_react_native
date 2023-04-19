@@ -133,7 +133,7 @@ function Details(props) {
         <View style={styles.detailRow}>
           <Paragraph>Inquiry Date</Paragraph>
           <Caption style={styles.value}>
-            {dayjs(Inquiry_date).format('DD MMM YYYY, h:mm A')}
+            {dayjs(Inquiry_date).format('DD MMM YYYY')}
           </Caption>
         </View>
         <View style={styles.detailRow}>
