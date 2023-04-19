@@ -16,8 +16,7 @@ const RangeSlider = ({min = 0, max = 100, handleChange, rangeData}) => {
   const renderNotch = useCallback(() => <Notch />, []);
 
   const handleValueChange = useCallback((newLow, newHigh) => {
-    // if (rangeData || newLow !== min || newHigh !== max) {
-    if (newLow > min) {
+    if (rangeData || newLow !== min || newHigh !== max) {
       const values = {
         low: newLow,
         high: newHigh,
