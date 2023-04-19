@@ -64,11 +64,11 @@ const schema = Yup.object().shape({
   inquiry_for: Yup.string('Invalid').required('Required'),
   // remarks: Yup.string('Invalid'),
   budget_from: Yup.number('Invalid'),
-  // budget_to: Yup.number('Invalid').when('budget_from', (budgetFrom, Schema) => {
-  //   return budgetFrom
-  //     ? Schema.min(Number(budgetFrom), 'Budget To is less then Budget From')
-  //     : Schema;
-  // }),
+  budget_to: Yup.number('Invalid').when('budget_from', (budgetFrom, Schema) => {
+    return budgetFrom
+      ? Schema.min(Number(budgetFrom), 'Budget To is less then Budget From')
+      : Schema;
+  }),
   title: Yup.string('Invalid'),
   date: Yup.string('Invalid').when('title', {
     is: value => !!value,
