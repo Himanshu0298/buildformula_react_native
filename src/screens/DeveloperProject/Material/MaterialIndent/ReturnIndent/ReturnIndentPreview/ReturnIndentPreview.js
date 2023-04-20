@@ -38,9 +38,9 @@ const ListingCard = props => {
 
   const {id, status, email, first_name, last_name, created} = details || {};
 
-  const {label, color} = INDENT_STATUS[status] || {};
-
   const date = moment(created).format('llll');
+
+  const {label, color} = INDENT_STATUS[status] || {};
 
   return (
     <TouchableOpacity>
@@ -51,20 +51,21 @@ const ListingCard = props => {
         </View>
         <Divider />
         <View style={styles.cardDetails}>
-          <View style={styles.dataRow}>
+          <View style={styles.newDataRow}>
             <Subheading>Create by:</Subheading>
-            <Subheading>
-              {first_name}
-              {last_name}
-            </Subheading>
+            <View style={{marginLeft: 25}}>
+              <Text>
+                {first_name}
+                {last_name}
+              </Text>
+              <Caption>({email})</Caption>
+            </View>
           </View>
-          <View style={styles.cardContent}>
-            <Caption>{email}</Caption>
-          </View>
-          <View style={styles.createdOn}>
-            <Text> Created on:</Text>
-
-            <Text>{date}</Text>
+          <View style={styles.newDataRow}>
+            <Subheading>Created on:</Subheading>
+            <View style={{marginLeft: 15, marginTop: 5}}>
+              <Text>{date}</Text>
+            </View>
           </View>
         </View>
       </View>
@@ -80,14 +81,14 @@ const RequiredVendor = props => {
   return (
     <View style={styles.vendorContainer}>
       <View>
-        <Subheading> Required For Vendor</Subheading>
+        <Subheading>Required For Vendor</Subheading>
       </View>
       <View style={styles.vendorSubContainer}>
         <Text>{contractor_name}</Text>
         <Caption>{contractor_email}</Caption>
       </View>
       <View style={styles.card}>
-        <Text> Remark</Text>
+        <Text>Remark</Text>
         <Caption>{remark}</Caption>
       </View>
     </View>
@@ -474,5 +475,9 @@ const styles = StyleSheet.create({
   },
   imageIconContainer: {
     marginTop: 10,
+  },
+  newDataRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
   },
 });

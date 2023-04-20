@@ -24,7 +24,7 @@ import {Formik} from 'formik';
 import RenderInput from 'components/Atoms/RenderInput';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import ActionButtons from 'components/Atoms/ActionButtons';
-import {isNumber, pick} from 'lodash';
+import {isArray, isNumber, pick} from 'lodash';
 import Spinner from 'react-native-loading-spinner-overlay';
 
 const INDENT_STATUS = {
@@ -98,20 +98,21 @@ const ListingCard = props => {
         </View>
         <Divider />
         <View style={styles.cardDetails}>
-          <View style={styles.dataRow}>
+          <View style={styles.newDataRow}>
             <Subheading>Create by:</Subheading>
-            <Subheading>
-              {first_name}
-              {last_name}
-            </Subheading>
+            <View style={{marginLeft: 25}}>
+              <Text>
+                {first_name}
+                {last_name}
+              </Text>
+              <Caption>({email})</Caption>
+            </View>
           </View>
-          <View style={styles.cardContent}>
-            <Caption>{email}</Caption>
-          </View>
-          <View style={styles.createdOn}>
-            <Text> Created on:</Text>
-
-            <Text> {date} </Text>
+          <View style={styles.newDataRow}>
+            <Subheading>Created on:</Subheading>
+            <View style={{marginLeft: 15, marginTop: 5}}>
+              <Text>{date}</Text>
+            </View>
           </View>
         </View>
       </View>
@@ -134,24 +135,18 @@ const RequiredVendor = props => {
 
   return (
     <View style={styles.vendorContainer}>
-      <View>
-        <Subheading> Required For Vendor</Subheading>
-      </View>
       <View style={styles.vendorSubContainer}>
-        <Text>{contractor_name}</Text>
+        <Caption>Required For Vendor</Caption>
+        <Subheading>{contractor_name}</Subheading>
         <Caption>{contractor_email}</Caption>
       </View>
       <View style={styles.card}>
-        <Text> Required Date</Text>
-        <Caption>{date}</Caption>
+        <Caption> Required Date</Caption>
+        <Text>{date}</Text>
       </View>
       <View style={styles.card}>
-        <Text> Required For(Work)</Text>
-        <Caption>{wbs_work_path}</Caption>
-      </View>
-      <View style={styles.card}>
-        <Text> Remark</Text>
-        <Caption>{remark}</Caption>
+        <Caption>Remark</Caption>
+        <Text>{remark}</Text>
       </View>
     </View>
   );
@@ -230,6 +225,82 @@ function AssignMaterialCard(props) {
   );
 }
 
+const IssueMaterialCard = props => {
+  const {item} = props;
+
+  const {
+    materialcategrytitle,
+    subcategorytitle,
+    materialunitstitle,
+    quantity,
+    assigned_quantity,
+    requiredfor,
+  } = item;
+
+  return (
+    <View style={styles.cardContainer}>
+      <View style={styles.dataRow}>
+        <Caption style={styles.lightData}>Category:</Caption>
+        <Text style={styles.title}>{materialcategrytitle}</Text>
+      </View>
+      <View style={styles.dataRow}>
+        <Caption style={styles.lightData}>Sub Category:</Caption>
+        <Text style={styles.title}>{subcategorytitle}</Text>
+      </View>
+      <View style={styles.dataRow}>
+        <Caption style={styles.lightData}>Unit:</Caption>
+        <Text style={styles.title}>{materialunitstitle}</Text>
+      </View>
+
+      <View style={styles.dataRow}>
+        <Caption style={styles.lightData}>Ask Qty:</Caption>
+        <Text style={styles.title}>{quantity}</Text>
+      </View>
+      <View style={styles.dataRow}>
+        <Caption style={styles.lightData}>Assigned Qty:</Caption>
+        <Text style={styles.title}>{assigned_quantity}</Text>
+      </View>
+    </View>
+  );
+};
+const RMCCard = props => {
+  const {item} = props;
+
+  const {
+    materialcategrytitle,
+    subcategorytitle,
+    quantity,
+    assigned_quantity,
+    materialunitstitle,
+  } = item;
+
+  return (
+    <View style={styles.cardContainer}>
+      <View style={styles.dataRow}>
+        <Caption style={styles.lightData}>Category:</Caption>
+        <Text style={styles.title}>{materialcategrytitle}</Text>
+      </View>
+      <View style={styles.dataRow}>
+        <Caption style={styles.lightData}>Sub Category:</Caption>
+        <Text style={styles.title}>{subcategorytitle}</Text>
+      </View>
+      <View style={styles.dataRow}>
+        <Caption style={styles.lightData}>Unit:</Caption>
+        <Text style={styles.title}>{materialunitstitle}</Text>
+      </View>
+      <View style={styles.dataRow}>
+        <Caption style={styles.lightData}>Ask Qty:</Caption>
+        <Text style={styles.title}>{quantity}</Text>
+      </View>
+
+      <View style={styles.dataRow}>
+        <Caption style={styles.lightData}>Assigned Qty:</Caption>
+        <Text style={styles.title}>{assigned_quantity}</Text>
+      </View>
+    </View>
+  );
+};
+
 function IssueIndentPreview(props) {
   const {navigation, route} = props;
   const {id} = route?.params || {};
@@ -250,6 +321,7 @@ function IssueIndentPreview(props) {
   const details = indentDetails?.material_indent;
   const {status, verification_code} = details || {};
   const materialData = indentDetails?.material_indent_details;
+  const {rmc_list, issue_list} = indentDetails || [];
 
   const [selectedItemIndex, setSelectedItemIndex] = React.useState();
   const [showDetail, setShowDetail] = React.useState();
@@ -417,26 +489,102 @@ function IssueIndentPreview(props) {
           contentContainerStyle={styles.scrollView}>
           <ListingCard details={details} />
           <RequiredVendor details={details} />
-          {materialData?.length ? (
+          {issue_list ? (
             <>
               <View style={styles.textContainer}>
                 <Subheading style={styles.textSubContainer}>
-                  Material Request
+                  Issue Material Request
                 </Subheading>
               </View>
 
-              {materials?.map((item, index) => {
-                return (
-                  <AssignMaterialCard
-                    item={item}
-                    index={index}
-                    toggleDialog={toggleDialog}
-                    showDetail={showDetail}
-                    showEdit={isPending}
-                    isApproved={isApproved}
-                  />
-                );
-              })}
+              <View style={styles.materialCardContainer}>
+                {Object.entries(issue_list)?.map(item => {
+                  return item
+                    ?.filter(workId => isArray(workId))
+                    ?.map(issue_request => {
+                      const headerInfo = issue_request?.find(e => e);
+                      return (
+                        <View style={styles.cardContainer}>
+                          {item.find(e => e !== issue_request.wbs_works_id) ? (
+                            <>
+                              <View style={styles.cardHeader}>
+                                <Text variant="labelSmall">
+                                  {headerInfo?.requiredfor}
+                                </Text>
+                              </View>
+
+                              <Divider />
+                            </>
+                          ) : null}
+                          {issue_request?.map(single_request => {
+                            return (
+                              <IssueMaterialCard
+                                item={single_request}
+                                navigation={navigation}
+                                updateStatus={updateStatus}
+                              />
+                            );
+                          })}
+                        </View>
+                      );
+                    });
+                })}
+              </View>
+              <Divider />
+            </>
+          ) : null}
+          {rmc_list ? (
+            <>
+              <View style={styles.textContainer}>
+                <Subheading style={styles.textSubContainer}>
+                  RMC Request
+                </Subheading>
+              </View>
+
+              <View style={styles.materialCardContainer}>
+                {Object.entries(rmc_list)?.map(item => {
+                  return item
+                    ?.filter(workId => isArray(workId))
+                    ?.map(rmc_request => {
+                      const headerInfo = rmc_request?.find(e => e);
+
+                      const {requiredfor, grade, rmc_qty} = headerInfo;
+                      return (
+                        <View style={styles.cardContainer}>
+                          {item.find(e => e !== rmc_request.wbs_works_id) ? (
+                            <>
+                              <View style={styles.cardHeader}>
+                                <Text variant="labelSmall">{requiredfor}</Text>
+                              </View>
+
+                              <Divider />
+                              <View style={styles.newDataRow}>
+                                <View style={styles.rmcDetail}>
+                                  <Caption>Grade: </Caption>
+                                  <Text>{grade}</Text>
+                                </View>
+                                <View style={styles.rmcDetail}>
+                                  <Caption>Qty: </Caption>
+                                  <Text>{rmc_qty}</Text>
+                                </View>
+                              </View>
+                              <Divider style={styles.rmcHeader} />
+                            </>
+                          ) : null}
+                          {rmc_request?.map(single_request => {
+                            return (
+                              <RMCCard
+                                item={single_request}
+                                navigation={navigation}
+                                updateStatus={updateStatus}
+                              />
+                            );
+                          })}
+                        </View>
+                      );
+                    });
+                })}
+              </View>
             </>
           ) : null}
         </ScrollView>
@@ -490,11 +638,6 @@ const styles = StyleSheet.create({
   textSubContainer: {
     color: 'rgba(72, 114, 244, 1)',
   },
-  cardContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingLeft: 50,
-  },
   cardContainer: {
     padding: 10,
     marginBottom: 10,
@@ -520,11 +663,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  createdOn: {
-    padding: 10,
-    paddingHorizontal: 0,
+  newDataRow: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
   },
 
   ID: {
@@ -603,5 +744,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  rmcHeader: {
+    marginVertical: 10,
   },
 });

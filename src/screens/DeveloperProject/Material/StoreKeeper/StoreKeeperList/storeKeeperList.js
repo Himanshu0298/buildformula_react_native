@@ -47,14 +47,14 @@ const ListingCard = props => {
           </View>
           <View>
             <View style={styles.subContainer}>
-              <Text> Type</Text>
+              <Text>Type</Text>
             </View>
 
             <Text>{title}</Text>
           </View>
           <View>
             <View style={styles.subContainer}>
-              <Text> Status</Text>
+              <Text>Status</Text>
             </View>
 
             <Text
@@ -67,7 +67,7 @@ const ListingCard = props => {
         </View>
         <Divider />
         <View style={styles.cardDetails}>
-          <Text> Create Details:</Text>
+          <Text>Create Details:</Text>
           <Subheading>
             {first_name}-{last_name}
           </Subheading>
@@ -97,7 +97,7 @@ const AuthorizedDetails = props => {
   return (
     <View>
       <View style={styles.authorizedDetails}>
-        <Text> Authorized Details:</Text>
+        <Text>Authorized Details:</Text>
       </View>
       <Subheading>
         {authorizedby_fname} {authorizedby_lname}
