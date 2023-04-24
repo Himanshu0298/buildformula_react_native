@@ -53,6 +53,7 @@ export default function useMaterialManagementActions() {
     getMaterialIndentCategoryList,
     deleteIndentItem,
     getCommonMaterial,
+    getRMCList,
   } = useMaterialManagement();
 
   return {
@@ -573,6 +574,20 @@ export default function useMaterialManagementActions() {
         payload: async () => {
           try {
             const response = _res(await getMaterialIndentList(data));
+            return Promise.resolve(response.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    getRMCList: data =>
+      dispatch({
+        type: types.GET_RMC_LIST,
+        payload: async () => {
+          try {
+            const response = _res(await getRMCList(data));
             return Promise.resolve(response.data);
           } catch (error) {
             const message = _err(error);

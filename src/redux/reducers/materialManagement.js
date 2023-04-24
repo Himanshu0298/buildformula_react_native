@@ -46,6 +46,7 @@ import {
   GET_COMMON_MATERIAL,
   ADD_RETURN_ATTACHMENT,
   ADD_MATERIAL_RETURN_REQUEST,
+  GET_RMC_LIST,
 } from '../actions/actionTypes';
 
 const initialState = {
@@ -76,6 +77,7 @@ const initialState = {
   indentDetails: {},
   categoryList: [],
   commonList: [],
+  rmcList: [],
 };
 
 const reducer = (state = initialState, action = {}) => {
@@ -118,6 +120,12 @@ const reducer = (state = initialState, action = {}) => {
         ...state,
         loading: false,
         workOptions: payload,
+      };
+    case `${GET_RMC_LIST}_FULFILLED`:
+      return {
+        ...state,
+        loading: false,
+        rmcList: payload,
       };
 
     case `${GET_MATERIAL_LIST}_FULFILLED`: {
@@ -290,6 +298,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${ADD_SUPPLIER}_PENDING`:
     case `${DELETE_INDENT_ITEM}_PENDING`:
     case `${ADD_MATERIAL_RETURN_REQUEST}_PENDING`:
+    case `${GET_RMC_LIST}_PENDING`:
     case `${GET_SUPPLIERS_LIST}_PENDING`: {
       return {
         ...state,
@@ -376,6 +385,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${ADD_RETURN_ATTACHMENT}_REJECTED`:
     case `${DELETE_INDENT_ITEM}_REJECTED`:
     case `${ADD_MATERIAL_RETURN_REQUEST}_REJECTED`:
+    case `${GET_RMC_LIST}_REJECTED`:
     case `${UPDATE_STORE_KEEPER_STATUS}_REJECTED`: {
       return {
         ...state,

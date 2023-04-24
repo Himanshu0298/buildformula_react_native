@@ -272,6 +272,7 @@ import CreatePIMaterial from 'screens/DeveloperProject/Material/MaterialPI/Mater
 
 // MaterialIndent
 import MaterialIndentListing from 'screens/DeveloperProject/Material/MaterialIndent/MaterialIndentList';
+import CreateWork from 'screens/DeveloperProject/Material/MaterialIndent/IssueIndent/CreateWork';
 import CreateIssueIndent from 'screens/DeveloperProject/Material/MaterialIndent/IssueIndent/CreateIssueIndent';
 import CreateReturnIndent from 'screens/DeveloperProject/Material/MaterialIndent/ReturnIndent/CreateReturnIndent';
 import IssueIndentPreview from 'screens/DeveloperProject/Material/MaterialIndent/IssueIndent/IssueIndentPreview';
@@ -551,6 +552,7 @@ function AppStackNavigator() {
                 name="CreateReturnIndent"
                 component={CreateReturnIndent}
               />
+              <Stack.Screen name="CreateWork" component={CreateWork} />
               <Stack.Screen name="AddPIMaterial" component={CreatePIMaterial} />
               <Stack.Screen
                 name="AddIssueIndentMaterials"

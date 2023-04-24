@@ -11,10 +11,10 @@ import dayjs from 'dayjs';
 import Header from 'screens/DeveloperProject/Material/CommonComponents/Header';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 
-const schema = Yup.object().shape({
-  vendor_id: Yup.string().label('vendor_id').required('Vendor is Required'),
-  requred_date: Yup.string().label('requred_date').required('Date is Required'),
-});
+// const schema = Yup.object().shape({
+//   vendor_id: Yup.string().label('vendor_id').required('Vendor is Required'),
+//   requred_date: Yup.string().label('requred_date').required('Date is Required'),
+// });
 
 const CreateIssueIndent = props => {
   const {navigation, route} = props;
@@ -49,10 +49,6 @@ const CreateIssueIndent = props => {
     }));
   }, [vendorOptions]);
 
-  const workSubWorkOptions = useMemo(() => {
-    return workOptions?.map(i => ({label: `{${i.title}}`, value: i.id}));
-  }, [workOptions]);
-
   const initialValues = React.useMemo(() => {
     if (edit) {
       const {vendor_id, requred_date, wbs_works_id, remark} = details;
@@ -75,12 +71,16 @@ const CreateIssueIndent = props => {
     };
 
     const {value} = await addIssueRequest(data);
-    navigation.navigate('AddIssueIndentMaterials', {
+    navigation.navigate('CreateWork', {
       edit,
       id: value.indent_id,
       wbs_id: values.wbs_works_id,
     });
   };
+
+  // const onSubmit = () => {
+  //   navigation.navigate('CreateWork');
+  // };
 
   return (
     <View style={styles.container}>
@@ -92,7 +92,7 @@ const CreateIssueIndent = props => {
         validateOnBlur={false}
         validateOnChange={false}
         initialValues={initialValues}
-        validationSchema={schema}
+        // validationSchema={schema}
         onSubmit={onSubmit}>
         {({
           values,
@@ -131,18 +131,7 @@ const CreateIssueIndent = props => {
                   }}
                   error={errors.requred_date}
                 />
-                <RenderSelect
-                  name="wbs_works_id"
-                  label="Required For"
-                  disabled={!!edit}
-                  value={values.wbs_works_id}
-                  options={workSubWorkOptions}
-                  containerStyles={styles.inputStyles}
-                  onBlur={handleBlur('wbs_works_id')}
-                  onSelect={value => {
-                    setFieldValue('wbs_works_id', value);
-                  }}
-                />
+
                 <RenderTextBox
                   name="remark"
                   blurOnSubmit={false}

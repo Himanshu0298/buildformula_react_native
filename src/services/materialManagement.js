@@ -140,6 +140,9 @@ export default function useMaterialManagement() {
     getIndentDetails: data => {
       return instance.post('/material/issuereuestdetails', data, params);
     },
+    getRMCList: data => {
+      return instance.post('/indent/rmclist', data, params);
+    },
     getMaterialIssueIndentList: data => {
       return instance.post('/material/issuereuest', data, params);
     },
