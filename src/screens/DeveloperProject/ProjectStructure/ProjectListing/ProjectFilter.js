@@ -12,9 +12,15 @@ import useProjectStructureActions from 'redux/actions/projectStructureActions';
 import {useSelector} from 'react-redux';
 import {DEFAULT_PROJECT_FILTERS, getUniqueOptions} from 'utils/constant';
 
-const STATUS_OPTIONS = ['Active', 'Inactive'];
+const STATUS_OPTIONS = [
+  {label: 'Active', value: 1},
+  {label: 'Inactive', value: 0},
+];
 
-const PREMIUM_PROJECT_OPTIONS = ['Yes', 'No'];
+const PREMIUM_PROJECT_OPTIONS = [
+  {label: 'Yes', value: 1},
+  {label: 'No', value: 0},
+];
 
 const RenderForm = props => {
   const {

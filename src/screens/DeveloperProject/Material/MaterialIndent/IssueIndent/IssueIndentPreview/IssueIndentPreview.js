@@ -489,7 +489,7 @@ function IssueIndentPreview(props) {
           contentContainerStyle={styles.scrollView}>
           <ListingCard details={details} />
           <RequiredVendor details={details} />
-          {issue_list ? (
+          {issue_list?.length ? (
             <>
               <View style={styles.textContainer}>
                 <Subheading style={styles.textSubContainer}>
