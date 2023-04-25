@@ -69,8 +69,6 @@ function RenderProject({project, handleOnPress, tab}) {
   );
 }
 
-const EXPIRED = true;
-
 const getData = (data = []) =>
   Array.isArray(data) ? data : Object.values(data);
 
