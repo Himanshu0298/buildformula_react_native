@@ -52,6 +52,7 @@ export default function useMaterialManagementActions() {
     updateIssueQuantity,
     getMaterialIndentCategoryList,
     deleteIndentItem,
+    deleteIndentRequest,
     getCommonMaterial,
     getRMCList,
     updateIssueStatus,
@@ -648,6 +649,21 @@ export default function useMaterialManagementActions() {
         payload: async () => {
           try {
             const res = _res(await deleteIndentItem(data));
+            snackbar.showMessage({message: res.msg});
+            return Promise.resolve(res.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    deleteIndentRequest: data =>
+      dispatch({
+        type: types.DELETE_INDENT_REQUEST,
+        payload: async () => {
+          try {
+            const res = _res(await deleteIndentRequest(data));
             snackbar.showMessage({message: res.msg});
             return Promise.resolve(res.data);
           } catch (error) {

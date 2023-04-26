@@ -185,6 +185,9 @@ export default function useMaterialManagement() {
     deleteIndentItem: data => {
       return instance.post('/indent/materialdeleteitem', data, params);
     },
+    deleteIndentRequest: data => {
+      return instance.post('/material/workwise_issue_delete', data, params);
+    },
     // Material StoreKeeper
 
     getStoreKeeperList: data => {
