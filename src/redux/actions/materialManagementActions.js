@@ -54,6 +54,8 @@ export default function useMaterialManagementActions() {
     deleteIndentItem,
     getCommonMaterial,
     getRMCList,
+    updateIssueStatus,
+    createWorkIssue,
   } = useMaterialManagement();
 
   return {
@@ -737,6 +739,34 @@ export default function useMaterialManagementActions() {
         payload: async () => {
           try {
             const response = _res(await updateIssueQuantity(formData));
+            return Promise.resolve(response.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    updateIssueStatus: formData =>
+      dispatch({
+        type: types.UPDATE_ISSUE_ASSIGN_QUANTITY,
+        payload: async () => {
+          try {
+            const response = _res(await updateIssueStatus(formData));
+            return Promise.resolve(response.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    createWorkIssue: formData =>
+      dispatch({
+        type: types.CREATE_WORK_ISSUE,
+        payload: async () => {
+          try {
+            const response = _res(await createWorkIssue(formData));
             return Promise.resolve(response.data);
           } catch (error) {
             const message = _err(error);

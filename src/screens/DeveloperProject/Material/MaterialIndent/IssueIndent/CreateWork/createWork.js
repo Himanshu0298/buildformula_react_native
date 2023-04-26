@@ -1,8 +1,7 @@
 import ActionButtons from 'components/Atoms/ActionButtons';
 import RenderSelect from 'components/Atoms/RenderSelect';
-import {Formik, useFormik} from 'formik';
+import {useFormik} from 'formik';
 import React, {useEffect, useMemo} from 'react';
-import * as Yup from 'yup';
 
 import {
   Modal,
@@ -28,21 +27,13 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import RenderInput from 'components/Atoms/RenderInput';
 import {getUniqueOptions} from 'utils/constant';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
-import {cloneDeep, isArray, isEqual, isNumber} from 'lodash';
+import {cloneDeep, isEqual, isNumber, round} from 'lodash';
 import {getShadow, onlyInLeft} from 'utils';
 import {useSnackbar} from 'components/Atoms/Snackbar';
+import {useAlert} from 'components/Atoms/Alert';
 
 function AddMaterialDialog(props) {
-  const {
-    handleClose,
-    edit,
-    categoryList,
-    wbs_id,
-    selectedMaterialIndex,
-    materials,
-    materialsItems,
-    setMaterials,
-  } = props;
+  const {handleClose, edit, categoryList, wbs_id, handleSave} = props;
 
   const {materialCategories, materialSubCategories} = useSelector(
     s => s.materialManagement,
@@ -50,39 +41,6 @@ function AddMaterialDialog(props) {
 
   const {commonData} = useSelector(s => s.project);
   const {units} = commonData;
-  const snackbar = useSnackbar();
-
-  const handleSaveMaterial = async values => {
-    const _materials = [...materials];
-
-    if (!values.material_units_id) {
-      snackbar.showMessage({
-        message: 'This SubCategory have no unit , please select another one',
-        variant: 'warning',
-      });
-    } else if (!isNaN(selectedMaterialIndex)) {
-      _materials[selectedMaterialIndex] = values;
-    } else {
-      _materials.push(values);
-    }
-    const subCategoryMaterial = materials?.find(
-      i => i.material_sub_category_id === values.material_sub_category_id,
-    );
-
-    const subCategoriesMaterial = materialsItems?.find(
-      i => i.material_sub_category_id === values.material_sub_category_id,
-    );
-
-    if (subCategoryMaterial || subCategoriesMaterial) {
-      snackbar.showMessage({
-        message: 'This SubCategory already in use, please select another one',
-        variant: 'warning',
-      });
-    }
-
-    setMaterials(_materials);
-    handleClose();
-  };
 
   const {
     values,
@@ -96,11 +54,11 @@ function AddMaterialDialog(props) {
     validateOnBlur: false,
     validateOnChange: false,
     initialValues: {},
-    onSubmit: handleSaveMaterial,
+    onSubmit: handleSave,
   });
 
   const categoryOptions = useMemo(() => {
-    const categories = [...new Set(categoryList.map(i => i.category_id))];
+    const categories = [...new Set(categoryList?.map(i => i.category_id))];
 
     if (wbs_id) {
       return materialCategories
@@ -294,108 +252,145 @@ function IssueCardListing(props) {
 }
 
 const RMCCard = props => {
-  const {item} = props;
+  const {item, materialSubCategories, materialCategories} = props;
 
-  const {
-    materialcategrytitle,
-    subcategorytitle,
-    quantity,
-    assigned_quantity,
-    materialunitstitle,
-  } = item;
+  const {material_category_id, material_sub_category_id, material_units_id} =
+    item;
+
+  const {commonData} = useSelector(s => s.project);
+  const {units} = commonData;
+
+  const categoryTitle = React.useMemo(() => {
+    return (
+      materialCategories?.find(i => i.id === item?.material_category_id)
+        ?.title || 'NA'
+    );
+  }, [item?.material_category_id, materialCategories]);
+
+  const subCategoryTitle = React.useMemo(() => {
+    return (
+      materialSubCategories?.find(i => i.id === item?.material_sub_category_id)
+        ?.title || 'NA'
+    );
+  }, [item?.material_sub_category_id, materialSubCategories]);
+
+  const unitTitle = React.useMemo(() => {
+    return units?.find(i => i.id === item?.material_units_id)?.title || 'NA';
+  }, [item?.material_units_id, units]);
 
   return (
-    <View style={styles.cardContainer}>
+    <View>
       <View style={styles.dataRow}>
         <Caption style={styles.lightData}>Category:</Caption>
-        <Text style={styles.title}>{materialcategrytitle}</Text>
+        <Text style={styles.title}>
+          {categoryTitle || material_category_id}
+        </Text>
       </View>
       <View style={styles.dataRow}>
         <Caption style={styles.lightData}>Sub Category:</Caption>
-        <Text style={styles.title}>{subcategorytitle}</Text>
+        <Text style={styles.title}>
+          {subCategoryTitle || material_sub_category_id}
+        </Text>
       </View>
       <View style={styles.dataRow}>
         <Caption style={styles.lightData}>Unit:</Caption>
-        <Text style={styles.title}>{materialunitstitle}</Text>
-      </View>
-      <View style={styles.dataRow}>
-        <Caption style={styles.lightData}>Ask Qty:</Caption>
-        <Text style={styles.title}>{quantity}</Text>
-      </View>
-
-      <View style={styles.dataRow}>
-        <Caption style={styles.lightData}>Assigned Qty:</Caption>
-        <Text style={styles.title}>{assigned_quantity}</Text>
+        <Text style={styles.title}>{unitTitle || material_units_id}</Text>
       </View>
     </View>
   );
 };
 
 function RMCCardListing(props) {
-  const {rmcItems, navigation, updateStatus} = props;
-  console.log('===========> rmc_list', rmcItems);
+  const {
+    id,
+    item,
+    index,
+    rmcIssueData,
+    navigation,
+    materialCategories,
+    materialSubCategories,
+    editRmcDialog,
+  } = props;
+
+  const {requiredfor, grade, rmc_qty, select_grade, quantity} = item;
   return (
     <View style={styles.materialCardContainer}>
-      {rmcItems?.map(item => {
-        return item
-          ?.filter(workId => isArray(workId))
-          ?.map(rmc_request => {
-            const headerInfo = rmc_request?.find(e => e);
+      <View style={styles.cardContainer}>
+        <>
+          <View>
+            <View style={styles.buttonRmcContainer}>
+              {!id ? (
+                <View style={styles.editButton}>
+                  <OpacityButton
+                    color="#4872f4"
+                    opacity={0.18}
+                    style={styles.OpacityButton}
+                    onPress={() => editRmcDialog(index, item)}>
+                    <MaterialIcons name="edit" color="#4872f4" size={13} />
+                  </OpacityButton>
+                </View>
+              ) : null}
 
-            const {requiredfor, grade, rmc_qty} = headerInfo;
-            return (
-              <View style={styles.cardContainer}>
-                {item.find(e => e !== rmc_request.wbs_works_id) ? (
-                  <>
-                    <View style={styles.cardHeader}>
-                      <Text variant="labelSmall">{requiredfor}</Text>
-                    </View>
+              {/* <View>
+                <OpacityButton
+                  color="#FF5D5D"
+                  opacity={0.18}
+                  onPress={() => handleRMCDelete(index, item.id)}
+                  style={styles.OpacityButton}>
+                  <MaterialIcons name="delete" color="#FF5D5D" size={13} />
+                </OpacityButton>
+              </View> */}
+            </View>
+            <View style={styles.cardHeader}>
+              <Text variant="labelSmall">{requiredfor}</Text>
+            </View>
+          </View>
+          <Divider />
+          <View style={styles.newDataRow}>
+            <View style={styles.rmcDetail}>
+              <Caption>Grade: </Caption>
+              <Text>{grade || select_grade}</Text>
+            </View>
+            <View style={styles.rmcDetail}>
+              <Caption>Qty: </Caption>
+              <Text style={styles.title}>{rmc_qty || quantity}</Text>
+            </View>
+          </View>
+          <Divider style={styles.rmcHeader} />
+        </>
 
-                    <Divider />
-                    <View style={styles.newDataRow}>
-                      <View style={styles.rmcDetail}>
-                        <Caption>Grade: </Caption>
-                        <Text>{grade}</Text>
-                      </View>
-                      <View style={styles.rmcDetail}>
-                        <Caption>Qty: </Caption>
-                        <Text>{rmc_qty}</Text>
-                      </View>
-                    </View>
-                    <Divider style={styles.rmcHeader} />
-                  </>
-                ) : null}
-                {rmc_request?.map(single_request => {
-                  return (
-                    <RMCCard
-                      item={single_request}
-                      navigation={navigation}
-                      updateStatus={updateStatus}
-                    />
-                  );
-                })}
-              </View>
-            );
-          });
-      })}
+        <RMCCard
+          item={item}
+          navigation={navigation}
+          rmcIssueData={rmcIssueData}
+          materialCategories={materialCategories}
+          materialSubCategories={materialSubCategories}
+        />
+      </View>
     </View>
   );
 }
 
 function AddRMCDialog(props) {
-  const {handleClose, visible, rmcList, edit} = props;
+  const {handleClose, visible, rmcList, edit, handleSave} = props;
 
   const rmcOptions = useMemo(() => {
     return getUniqueOptions(
       rmcList?.rmc_material?.map(i => ({
         label: i.grade,
-        value: i.id,
+        value: i.grade,
       })),
     );
   }, [rmcList]);
 
   const onSubmit = values => {
-    console.log('===========>values ', values);
+    handleSave(values);
+    handleClose();
+  };
+
+  const initialValues = {
+    select_grade: '',
+    quantity: '',
   };
 
   const {
@@ -409,7 +404,7 @@ function AddRMCDialog(props) {
     enableReinitialize: true,
     validateOnBlur: false,
     validateOnChange: false,
-    initialValues: {},
+    initialValues,
     onSubmit,
   });
 
@@ -463,10 +458,107 @@ function AddRMCDialog(props) {
   );
 }
 
+function MultiRender(props) {
+  const {
+    wbs,
+    issueMaterials,
+    edit,
+    rmcMaterials,
+    rmcIssueData,
+    materialCategories,
+    materialSubCategories,
+    toggleAddRMCDialog,
+    toggleAddIssueDialog,
+    editDialog,
+    handleDelete,
+    editRmcDialog,
+    handleRMCDelete,
+  } = props;
+
+  return (
+    <View style={styles.wbsDataContainer}>
+      <View style={styles.cardSubContainer}>
+        <View style={styles.wbsIdContainer}>
+          <Text style={styles.wbs}>{wbs.title} </Text>
+        </View>
+        <View style={styles.subContainer}>
+          <TouchableOpacity
+            style={styles.buttonContainer}
+            activeOpacity={0.5}
+            onPress={() => toggleAddIssueDialog(wbs.id)}>
+            <Text style={styles.textColor}>Issue Material</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            activeOpacity={0.5}
+            style={styles.buttonContainer}
+            onPress={() => toggleAddRMCDialog(wbs.id)}>
+            <Text style={styles.textColor}>Issue RMC</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.cardSubContainer}>
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <View style={styles.titleContainer}>
+              <Text style={styles.title}>Issue Material</Text>
+            </View>
+            {issueMaterials?.length ? (
+              issueMaterials?.map((item, index) => {
+                return (
+                  <IssueCardListing
+                    key={item?.id?.toString()}
+                    item={item}
+                    index={index}
+                    toggleEditDialog={editDialog}
+                    handleDelete={handleDelete}
+                    edit={edit}
+                  />
+                );
+              })
+            ) : (
+              <View style={styles.noResultContainer}>
+                <Text>No Materials Added</Text>
+              </View>
+            )}
+          </ScrollView>
+        </View>
+
+        <View style={styles.cardSubContainer}>
+          <View style={styles.titleContainer}>
+            <Text style={styles.title}> RMC Issue Request</Text>
+          </View>
+
+          {rmcMaterials?.length ? (
+            rmcMaterials?.map((item, index) => {
+              return (
+                <RMCCardListing
+                  item={item}
+                  index={index}
+                  rmcIssueData={rmcIssueData}
+                  materialCategories={materialCategories}
+                  materialSubCategories={materialSubCategories}
+                  editRmcDialog={editRmcDialog}
+                  handleRMCDelete={handleRMCDelete}
+                />
+              );
+            })
+          ) : (
+            <View style={styles.noResultContainer}>
+              <Text>No Materials Added</Text>
+            </View>
+          )}
+        </View>
+      </View>
+    </View>
+  );
+}
+
 function CreateWork(props) {
   const {navigation, edit, route} = props;
 
   const {id} = route?.params || {};
+
+  const alert = useAlert();
+  const snackbar = useSnackbar();
 
   const {
     getWorkSubWorkList,
@@ -474,29 +566,40 @@ function CreateWork(props) {
     getPRMaterialCategories,
     deleteIndentItem,
     getIndentDetails,
-    addMaterialIssueRequest,
+    createWorkIssue,
   } = useMaterialManagementActions();
+
   const {
     workOptions,
     rmcList,
     categoryList,
     indentDetails,
+    materialCategories,
     materialSubCategories,
   } = useSelector(s => s.materialManagement);
+
   const {selectedProject} = useSelector(s => s.project);
   const projectId = selectedProject.id;
 
+  const {remark, requred_date, vendor_id} = indentDetails.material_indent || {};
+
   const materialsItems = indentDetails?.issue_list;
-  const rmcItems = indentDetails.rmc_list;
+
+  const rmcItems = indentDetails?.rmc_list || [];
+
+  const rmcIssueData = Object.entries(rmcItems)[0];
 
   const [addRmcDialog, setRmcDialog] = React.useState(false);
   const [addDialog, setAddDialog] = React.useState(false);
   const [selectedMaterialIndex, setSelectedMaterialIndex] = React.useState();
+  const [selectedIssueIndex, setSelectedIssueIndex] = React.useState();
+  const [selectedWBSId, setSelectedWBSId] = React.useState();
+  const [wbsIds, setWbsIds] = React.useState();
   const [materials, setMaterials] = React.useState(
     cloneDeep(materialsItems) || [],
   );
   const [rmcMaterials, setRmcMaterials] = React.useState(
-    cloneDeep(rmcItems) || [],
+    cloneDeep(rmcIssueData) || [],
   );
 
   React.useEffect(() => {
@@ -516,11 +619,11 @@ function CreateWork(props) {
   }, [materialsItems]);
 
   useEffect(() => {
-    if (!isEqual(rmcItems, rmcMaterials)) {
-      setRmcMaterials(rmcItems);
+    if (!isEqual(rmcIssueData, rmcMaterials)) {
+      setRmcMaterials(rmcIssueData);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rmcItems]);
+  }, [rmcIssueData]);
 
   const getDetails = async () => {
     await getIndentDetails({
@@ -530,73 +633,99 @@ function CreateWork(props) {
   };
 
   const workSubWorkOptions = useMemo(() => {
-    return workOptions?.map(i => ({label: `{${i.title}}`, value: i.id}));
+    return workOptions?.map(i => ({label: i.title, value: i.id}));
   }, [workOptions]);
 
-  const initialValues = useMemo(() => {
-    if (isNumber(selectedMaterialIndex)) {
-      const {
-        material_category_id,
-        material_sub_category_id,
-        material_units_id,
-        quantity,
-      } = materials[selectedMaterialIndex];
-
-      const selectedSubCategory = materialSubCategories?.find(
-        i => i.id === material_sub_category_id,
-      );
-
-      return {
-        material_category_id,
-        material_sub_category_id,
-        material_units_id: material_units_id || selectedSubCategory?.unit_id,
-        quantity,
-      };
-    }
-    return {};
-  }, [materialSubCategories, materials, selectedMaterialIndex]);
-
   const handleSave = async () => {
-    const updatedMaterials = onlyInLeft(
-      materials,
-      materialsItems,
-      (l, r) =>
-        l.material_indent_id === r.material_indent_id &&
-        l.material_category_id === r.material_category_id &&
-        l.material_sub_category_id === r.material_sub_category_id &&
-        l.material_units_id === r.material_units_id &&
-        l.quantity === r.quantity,
-    );
+    const issuework = {};
+    const rmc_work = {};
+    wbsIds?.map(wbsId => {
+      issuework[wbsId] = materials.filter(item => {
+        if (item.requiredfor === wbsId) {
+          const {
+            material_category_id,
+            material_sub_category_id,
+            material_units_id,
+            quantity,
+          } = item;
+          return {
+            material_category_id,
+            material_sub_category_id,
+            material_units_id,
+            quantity,
+          };
+        }
+        return false;
+      });
 
-    updatedMaterials?.map(async ele => {
-      const restData = {
-        project_id: projectId,
-        material_indent_id: id,
-        material_category_id: ele?.material_category_id,
-        material_sub_category_id: ele?.material_sub_category_id,
-        material_units_id: ele?.material_units_id,
-        quantity: ele?.quantity,
-      };
-      await addMaterialIssueRequest(restData);
+      rmc_work[wbsId] = rmcMaterials?.filter(item => {
+        if (item.wbs_works_id === wbsId) {
+          const {
+            material_category_id,
+            material_sub_category_id,
+            material_units_id,
+            quantity,
+            indent_rmc_id,
+            // rmc_qty: coefficient_qty,
+          } = item;
+          return {
+            material_category_id,
+            material_sub_category_id,
+            material_units_id,
+            quantity,
+            indent_rmc_id,
+            // coefficient_qty,
+          };
+        }
+        return false;
+      });
+
+      return true;
     });
+
+    const restData = {
+      project_id: projectId,
+      material_indent_id: id,
+      issuework: [issuework],
+      rmc_work: [rmc_work],
+      remark,
+      requred_date,
+      vendor_id,
+    };
+
+    await createWorkIssue(restData);
 
     getDetails();
     navigation.navigate('MaterialIndent');
     navigation.navigate('IssueIndentPreview', {id});
   };
 
-  const toggleAddRMcDialog = () => setRmcDialog(v => !v);
+  const toggleAddRMCDialog = wbsWorkId => {
+    setRmcDialog(v => {
+      if (v) setSelectedIssueIndex();
 
-  const toggleAddDialog = () => {
+      setSelectedWBSId(wbsWorkId);
+      return !v;
+    });
+  };
+
+  const toggleAddIssueDialog = wbsWorkId => {
     setAddDialog(v => {
       if (v) setSelectedMaterialIndex();
+
+      setSelectedWBSId(wbsWorkId);
       return !v;
     });
   };
 
   const editDialog = index => {
     setSelectedMaterialIndex(index);
-    toggleAddDialog();
+    toggleAddIssueDialog();
+  };
+
+  const editRmcDialog = index => {
+    setSelectedIssueIndex(index);
+    toggleAddRMCDialog();
   };
 
   const handleDelete = (index, itemId) => {
@@ -619,109 +748,168 @@ function CreateWork(props) {
       },
     });
   };
+
+  const handleRMCDelete = (index, itemId) => {
+    alert.show({
+      title: 'Confirm',
+      message: 'Are you sure you want to delete?',
+      confirmText: 'Delete',
+      onConfirm: () => {
+        const _materials = [...rmcMaterials];
+        _materials?.splice(index, 1);
+        setRmcMaterials(_materials);
+      },
+    });
+  };
+
+  const handelSetRmc = values => {
+    const {select_grade, quantity} = values;
+
+    const data = rmcList?.rmc_material
+      ?.filter(i => i.grade === select_grade)
+      .map(item => {
+        const {
+          material_category_id,
+          material_sub_category_id,
+          material_units_id,
+          coefficient_qty: rmc_qty,
+          grade,
+          rmc_id: indent_rmc_id,
+        } = item;
+
+        return {
+          wbs_works_id: selectedWBSId,
+          material_category_id,
+          material_sub_category_id,
+          material_units_id,
+          quantity: round(quantity * rmc_qty, 2),
+          grade,
+          indent_rmc_id,
+          rmc_qty,
+        };
+      });
+
+    setRmcMaterials(data);
+  };
+
+  const handleSaveIssueMaterial = values => {
+    if (!values.material_units_id) {
+      snackbar.showMessage({
+        message: 'This SubCategory have no unit , please select another one',
+        variant: 'warning',
+      });
+      return;
+    }
+
+    const subCategoryMaterial = materials?.find(
+      i => i.material_sub_category_id === values.material_sub_category_id,
+    );
+
+    const subCategoriesMaterial = materialsItems?.find(
+      i => i.material_sub_category_id === values.material_sub_category_id,
+    );
+
+    if (subCategoryMaterial || subCategoriesMaterial) {
+      snackbar.showMessage({
+        message: 'This SubCategory already in use, please select another one',
+        variant: 'warning',
+      });
+
+      return;
+    }
+
+    const _materials = [...materials];
+
+    const data = {...values, requiredfor: selectedWBSId};
+
+    if (!isNaN(selectedMaterialIndex)) {
+      _materials[selectedMaterialIndex] = data;
+    } else {
+      _materials.push(data);
+    }
+
+    setMaterials(_materials);
+    toggleAddIssueDialog();
+  };
+
   return (
-    <View style={styles.container}>
-      <Formik
-        enableReinitialize
-        validateOnBlur={false}
-        validateOnChange={false}
-        initialValues={initialValues}
-        onSubmit={handleSave}>
-        {formikProps => {
-          const {values, handleBlur, setFieldValue} = formikProps;
+    <>
+      {addRmcDialog ? (
+        <AddRMCDialog
+          handleClose={toggleAddRMCDialog}
+          visible={addRmcDialog}
+          rmcList={rmcList}
+          addRmcDialog={addRmcDialog}
+          selectedIssueIndex={selectedIssueIndex}
+          rmcIssueData={rmcIssueData}
+          handleSave={handelSetRmc}
+        />
+      ) : null}
+      {addDialog ? (
+        <AddMaterialDialog
+          visible={addDialog}
+          handleClose={toggleAddIssueDialog}
+          edit={edit}
+          categoryList={categoryList}
+          handleSave={handleSaveIssueMaterial}
+        />
+      ) : null}
+      <ScrollView>
+        <View style={styles.container}>
+          <View style={styles.formContainer}>
+            <ScrollView>
+              <View style={styles.formContainer}>
+                <RenderSelect
+                  multiselect
+                  name="wbs_works_id"
+                  label="Required For"
+                  value={wbsIds}
+                  options={workSubWorkOptions}
+                  containerStyles={styles.inputStyles}
+                  onSelect={setWbsIds}
+                />
 
-          return (
-            <View style={styles.formContainer}>
-              <ScrollView>
-                <View style={styles.formContainer}>
-                  <RenderSelect
-                    multiselect
-                    name="wbs_works_id"
-                    label="Required For"
-                    value={values.wbs_works_id}
-                    options={workSubWorkOptions}
-                    containerStyles={styles.inputStyles}
-                    onBlur={handleBlur('wbs_works_id')}
-                    onSelect={value => {
-                      setFieldValue('wbs_works_id', value);
-                    }}
-                  />
-                  {values.wbs_works_id ? (
-                    <View style={styles.subContainer}>
-                      <TouchableOpacity
-                        style={styles.buttonContainer}
-                        activeOpacity={0.5}
-                        onPress={toggleAddDialog}>
-                        <Text style={styles.textColor}>Issue Material</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        activeOpacity={0.5}
-                        style={styles.buttonContainer}
-                        onPress={toggleAddRMcDialog}>
-                        <Text style={styles.textColor}>Issue RMC</Text>
-                      </TouchableOpacity>
-                    </View>
-                  ) : null}
-                  {materials?.length ? (
-                    <View style={styles.cardSubContainer}>
-                      <ScrollView showsVerticalScrollIndicator={false}>
-                        <View style={styles.titleContainer}>
-                          <Text style={styles.title}>Issue Material</Text>
-                        </View>
-                        {materials?.map((item, index) => {
-                          return (
-                            <IssueCardListing
-                              key={item?.id?.toString()}
-                              item={item}
-                              index={index}
-                              toggleEditDialog={editDialog}
-                              handleDelete={handleDelete}
-                              edit={edit}
-                            />
-                          );
-                        })}
-                      </ScrollView>
-                    </View>
-                  ) : null}
+                {wbsIds?.map(wbsId => {
+                  const wbs = workOptions.find(i => i.id === wbsId);
 
-                  <View style={styles.cardSubContainer}>
-                    <View style={styles.titleContainer}>
-                      <Text style={styles.title}> RMC Issue Request</Text>
-                    </View>
-                    <RMCCardListing rmcItems={rmcItems} />
-                  </View>
+                  const filteredIssueMaterials = materials.filter(
+                    i => i.requiredfor === wbsId,
+                  );
+                  const filteredRMCMaterials = rmcMaterials?.filter(
+                    i => i.wbs_works_id === wbsId,
+                  );
 
-                  <AddRMCDialog
-                    handleClose={toggleAddRMcDialog}
-                    visible={addRmcDialog}
-                    rmcList={rmcList}
-                    formikProps={formikProps}
-                    addRmcDialog={addRmcDialog}
-                  />
-                  <AddMaterialDialog
-                    visible={addDialog}
-                    handleClose={toggleAddDialog}
-                    formikProps={formikProps}
-                    edit={edit}
-                    categoryList={categoryList}
-                    setMaterials={setMaterials}
-                    materials={materials}
-                    selectedMaterialIndex={selectedMaterialIndex}
-                    materialsItems={materialsItems}
-                  />
-                </View>
-              </ScrollView>
-              <ActionButtons
-                cancelLabel="Cancel"
-                submitLabel="Next"
-                onCancel={navigation.goBack}
-                onSubmit={handleSave}
-              />
-            </View>
-          );
-        }}
-      </Formik>
-    </View>
+                  return (
+                    <MultiRender
+                      wbs={wbs}
+                      edit={edit}
+                      workOptions={workOptions}
+                      issueMaterials={filteredIssueMaterials}
+                      rmcMaterials={filteredRMCMaterials}
+                      rmcIssueData={rmcIssueData}
+                      materialCategories={materialCategories}
+                      materialSubCategories={materialSubCategories}
+                      handleDelete={handleDelete}
+                      handleRMCDelete={handleRMCDelete}
+                      editDialog={editDialog}
+                      editRmcDialog={editRmcDialog}
+                      toggleAddRMCDialog={toggleAddRMCDialog}
+                      toggleAddIssueDialog={toggleAddIssueDialog}
+                    />
+                  );
+                })}
+              </View>
+            </ScrollView>
+            <ActionButtons
+              cancelLabel="Cancel"
+              submitLabel="Next"
+              onCancel={navigation.goBack}
+              onSubmit={handleSave}
+            />
+          </View>
+        </View>
+      </ScrollView>
+    </>
   );
 }
 
@@ -755,7 +943,11 @@ const styles = StyleSheet.create({
   textColor: {
     color: '#EDF1FD',
   },
-
+  wbsDataContainer: {
+    marginBottom: 20,
+    marginTop: 10,
+    flexGrow: 1,
+  },
   dataRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -797,6 +989,32 @@ const styles = StyleSheet.create({
   },
   title: {
     color: '#4872f4',
+  },
+  newDataRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  noResultContainer: {
+    alignItems: 'center',
+    paddingVertical: 10,
+  },
+
+  buttonRmcContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-end',
+  },
+
+  wbsIdContainer: {
+    marginVertical: 10,
+    borderWidth: 1,
+    borderColor: theme.colors.primary,
+    borderRadius: 10,
+    textAlign: 'center',
+    alignItems: 'center',
+  },
+  wbs: {
+    padding: 2,
   },
 });
 

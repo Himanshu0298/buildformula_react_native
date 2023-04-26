@@ -78,8 +78,8 @@ const CreateIssueIndent = props => {
     });
   };
 
-  // const onSubmit = () => {
-  //   navigation.navigate('CreateWork');
+  // const onSubmit = values => {
+  //   navigation.navigate('CreateWork', {values});
   // };
 
   return (

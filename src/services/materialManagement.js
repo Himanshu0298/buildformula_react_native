@@ -143,6 +143,10 @@ export default function useMaterialManagement() {
     getRMCList: data => {
       return instance.post('/indent/rmclist', data, params);
     },
+
+    createWorkIssue: data => {
+      return instance.post('/material/add_rmc_issuereuest', data, params);
+    },
     getMaterialIssueIndentList: data => {
       return instance.post('/material/issuereuest', data, params);
     },
@@ -154,6 +158,13 @@ export default function useMaterialManagement() {
     },
     updateIssueQuantity: data => {
       return instance.post('/material/issueassignqtyupdate', data, params);
+    },
+    updateIssueStatus: data => {
+      return instance.post(
+        '/material/workwiseissueassignqtyupdate',
+        data,
+        params,
+      );
     },
     addReturnIndentMaterials: data => {
       return instance.post('/material/returnaddedit', data, params);

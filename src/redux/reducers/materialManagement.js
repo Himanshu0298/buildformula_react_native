@@ -47,6 +47,8 @@ import {
   ADD_RETURN_ATTACHMENT,
   ADD_MATERIAL_RETURN_REQUEST,
   GET_RMC_LIST,
+  UPDATE_ISSUE_STATUS,
+  CREATE_WORK_ISSUE,
 } from '../actions/actionTypes';
 
 const initialState = {
@@ -299,6 +301,8 @@ const reducer = (state = initialState, action = {}) => {
     case `${DELETE_INDENT_ITEM}_PENDING`:
     case `${ADD_MATERIAL_RETURN_REQUEST}_PENDING`:
     case `${GET_RMC_LIST}_PENDING`:
+    case `${UPDATE_ISSUE_STATUS}_PENDING`:
+    case `${CREATE_WORK_ISSUE}_PENDING`:
     case `${GET_SUPPLIERS_LIST}_PENDING`: {
       return {
         ...state,
@@ -333,6 +337,8 @@ const reducer = (state = initialState, action = {}) => {
     case `${ADD_RETURN_ATTACHMENT}_FULFILLED`:
     case `${DELETE_INDENT_ITEM}_FULFILLED`:
     case `${ADD_MATERIAL_RETURN_REQUEST}_FULFILLED`:
+    case `${UPDATE_ISSUE_STATUS}_FULFILLED`:
+    case `${CREATE_WORK_ISSUE}_FULFILLED`:
     case `${UPDATE_STORE_KEEPER_STATUS}_FULFILLED`: {
       return {
         ...state,
@@ -386,6 +392,8 @@ const reducer = (state = initialState, action = {}) => {
     case `${DELETE_INDENT_ITEM}_REJECTED`:
     case `${ADD_MATERIAL_RETURN_REQUEST}_REJECTED`:
     case `${GET_RMC_LIST}_REJECTED`:
+    case `${UPDATE_ISSUE_STATUS}_REJECTED`:
+    case `${CREATE_WORK_ISSUE}_REJECTED`:
     case `${UPDATE_STORE_KEEPER_STATUS}_REJECTED`: {
       return {
         ...state,
