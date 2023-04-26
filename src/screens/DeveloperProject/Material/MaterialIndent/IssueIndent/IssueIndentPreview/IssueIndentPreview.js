@@ -344,25 +344,25 @@ function IssueIndentPreview(props) {
   const {selectedProject} = useSelector(s => s.project);
   const {indentDetails, loading} = useSelector(s => s.materialManagement);
 
-  const details = indentDetails?.material_indent;
+  const {
+    material_indent: details,
+    rmc_list: rmcData,
+    issue_list: materialData,
+  } = indentDetails || [];
   const {status, verification_code} = details || {};
-  const materialData = indentDetails?.issue_list;
-
-  const issueData = Object.values(materialData)[0];
-
-  const rmcData = indentDetails.rmc_list;
-
-  const rmcIssueData = Object.values(rmcData)[0] || [];
-  const {rmc_list, issue_list} = indentDetails || [];
 
   const [selectedItemIndex, setSelectedItemIndex] = React.useState();
   const [showDetail, setShowDetail] = React.useState();
-  const [materials, setMaterials] = React.useState(issueData);
-  const [rmc, setRmc] = React.useState(rmcIssueData);
+  const [materials, setMaterials] = React.useState([]);
+  const [rmc, setRmc] = React.useState([]);
 
   useEffect(() => {
-    if (materialData?.length) setMaterials(Object.values(materialData)[0]);
+    if (materialData) setMaterials(Object.values(materialData)[0]);
   }, [materialData]);
+
+  useEffect(() => {
+    if (rmcData) setRmc(Object.values(rmcData)[0]);
+  }, [rmcData]);
 
   useEffect(() => {
     getData();
@@ -544,7 +544,7 @@ function IssueIndentPreview(props) {
           contentContainerStyle={styles.scrollView}>
           <ListingCard details={details} />
           <RequiredVendor details={details} />
-          {issue_list?.length ? (
+          {materialData ? (
             <>
               <View style={styles.textContainer}>
                 <Subheading style={styles.textSubContainer}>
@@ -553,7 +553,7 @@ function IssueIndentPreview(props) {
               </View>
 
               <View style={styles.materialCardContainer}>
-                {Object.entries(issue_list)?.map(item => {
+                {Object.entries(materialData)?.map(item => {
                   return item
                     ?.filter(workId => isArray(workId))
                     ?.map(issue_request => {
@@ -610,7 +610,7 @@ function IssueIndentPreview(props) {
               <Divider />
             </>
           ) : null}
-          {rmc_list ? (
+          {rmcData ? (
             <>
               <View style={styles.textContainer}>
                 <Subheading style={styles.textSubContainer}>
@@ -619,7 +619,7 @@ function IssueIndentPreview(props) {
               </View>
 
               <View style={styles.materialCardContainer}>
-                {Object.entries(rmc_list)?.map(item => {
+                {Object.entries(rmcData)?.map(item => {
                   return item
                     ?.filter(workId => isArray(workId))
                     ?.map(rmc_request => {

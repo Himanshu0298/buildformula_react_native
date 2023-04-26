@@ -28,12 +28,19 @@ import RenderInput from 'components/Atoms/RenderInput';
 import {getUniqueOptions} from 'utils/constant';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import {cloneDeep, isEqual, isNumber, round} from 'lodash';
-import {getShadow, onlyInLeft} from 'utils';
+import {getShadow} from 'utils';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import {useAlert} from 'components/Atoms/Alert';
 
 function AddMaterialDialog(props) {
-  const {handleClose, edit, categoryList, wbs_id, handleSave} = props;
+  const {
+    handleClose,
+    edit,
+    categoryList,
+    wbs_id,
+    handleSave,
+    issueInitialValues,
+  } = props;
 
   const {materialCategories, materialSubCategories} = useSelector(
     s => s.materialManagement,
@@ -53,7 +60,7 @@ function AddMaterialDialog(props) {
     enableReinitialize: true,
     validateOnBlur: false,
     validateOnChange: false,
-    initialValues: {},
+    initialValues: issueInitialValues,
     onSubmit: handleSave,
   });
 
@@ -832,6 +839,29 @@ function CreateWork(props) {
     toggleAddIssueDialog();
   };
 
+  const issueInitialValues = useMemo(() => {
+    if (isNumber(selectedMaterialIndex)) {
+      const {
+        material_category_id,
+        material_sub_category_id,
+        material_units_id,
+        quantity,
+      } = materials[selectedMaterialIndex];
+
+      const selectedSubCategory = materialSubCategories?.find(
+        i => i.id === material_sub_category_id,
+      );
+
+      return {
+        material_category_id,
+        material_sub_category_id,
+        material_units_id: material_units_id || selectedSubCategory?.unit_id,
+        quantity,
+      };
+    }
+    return {};
+  }, [materialSubCategories, materials, selectedMaterialIndex]);
+
   return (
     <>
       {addRmcDialog ? (
@@ -852,6 +882,7 @@ function CreateWork(props) {
           edit={edit}
           categoryList={categoryList}
           handleSave={handleSaveIssueMaterial}
+          issueInitialValues={issueInitialValues}
         />
       ) : null}
       <ScrollView>
