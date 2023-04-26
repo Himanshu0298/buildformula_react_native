@@ -159,6 +159,7 @@ function AssignMaterialCard(props) {
     estimated_quantity,
     remaining,
     assigned_quantity,
+    rm_status,
   } = item;
 
   return (
@@ -183,7 +184,6 @@ function AssignMaterialCard(props) {
       </View>
 
       {isApproved || showDetail ? (
-        // rm_status ? (
         <>
           <View style={styles.dataRow}>
             <Caption style={styles.lightData}>Estimated Qty:</Caption>
@@ -202,27 +202,27 @@ function AssignMaterialCard(props) {
             <Caption style={styles.lightData}>Assign Quantity:</Caption>
             <Text>{assigned_quantity}</Text>
             {showEdit ? (
-              <OpacityButton
-                color={theme.colors.primary}
-                opacity={0.18}
-                style={styles.paymentSubContainer}
-                onPress={() => toggleDialog(index)}>
-                <MaterialIcons
-                  name="edit"
+              rm_status === 'pending' ? (
+                <OpacityButton
                   color={theme.colors.primary}
-                  size={10}
-                />
-              </OpacityButton>
+                  opacity={0.18}
+                  style={styles.paymentSubContainer}
+                  onPress={() => toggleDialog(index)}>
+                  <MaterialIcons
+                    name="edit"
+                    color={theme.colors.primary}
+                    size={10}
+                  />
+                </OpacityButton>
+              ) : null
             ) : null}
           </View>
         </>
-      ) : // ) : null
-      null}
+      ) : null}
     </View>
   );
 }
 
-// const IssueMaterialCard = props => {
 //   const {item} = props;
 
 //   const {
@@ -405,7 +405,20 @@ function IssueIndentPreview(props) {
     navigation.navigate('CreateIssueIndent', {id: indentId, indentDetails});
   };
 
-  const handleSaveMaterialQuantity = value => {
+  const handleSaveMaterialQuantity = (value, approveStatus) => {
+    if (approveStatus === 'approved') {
+      if (quantity) {
+        snackbar.showMessage({
+          message: 'please add assigned quantity',
+          variant: 'warning',
+        });
+        toggleDialog();
+        return;
+      }
+    }
+
+    const quantity = materials.find(i => i.assigned_quantity === null);
+
     const _materials = [...materials];
     if (value > _materials[selectedItemIndex]?.available_quantity) {
       snackbar.showMessage({
@@ -588,7 +601,7 @@ function IssueIndentPreview(props) {
                               />
                             );
                           })}
-                          {rm_status !== 'approved' ? (
+                          {rm_status === 'pending' ? (
                             showDetail ? (
                               <ActionButtons
                                 cancelLabel="Reject"
@@ -666,14 +679,14 @@ function IssueIndentPreview(props) {
                               <RMCCard
                                 item={single_request}
                                 navigation={navigation}
-                                // updateStatus={updateStatus}
                                 isApproved={isApproved}
                                 showDetail={showDetail}
                                 isPending={isPending}
                               />
                             );
                           })}
-                          {rm_status !== 'approved' ? (
+
+                          {rm_status === 'pending' ? (
                             showDetail ? (
                               <ActionButtons
                                 cancelLabel="Reject"

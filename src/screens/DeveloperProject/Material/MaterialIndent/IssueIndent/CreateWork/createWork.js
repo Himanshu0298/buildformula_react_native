@@ -312,14 +312,13 @@ function RMCCardListing(props) {
     id,
     item,
     index,
-    rmcIssueData,
     navigation,
     materialCategories,
     materialSubCategories,
     editRmcDialog,
   } = props;
 
-  const {requiredfor, grade, rmc_qty, select_grade, quantity} = item;
+  const {grade, rmc_qty, select_grade, quantity} = item;
   return (
     <View style={styles.materialCardContainer}>
       <View style={styles.cardContainer}>
@@ -348,9 +347,6 @@ function RMCCardListing(props) {
                 </OpacityButton>
               </View> */}
             </View>
-            <View style={styles.cardHeader}>
-              <Text variant="labelSmall">{requiredfor}</Text>
-            </View>
           </View>
           <Divider />
           <View style={styles.newDataRow}>
@@ -369,7 +365,6 @@ function RMCCardListing(props) {
         <RMCCard
           item={item}
           navigation={navigation}
-          rmcIssueData={rmcIssueData}
           materialCategories={materialCategories}
           materialSubCategories={materialSubCategories}
         />
@@ -471,7 +466,6 @@ function MultiRender(props) {
     issueMaterials,
     edit,
     rmcMaterials,
-    rmcIssueData,
     materialCategories,
     materialSubCategories,
     toggleAddRMCDialog,
@@ -482,11 +476,13 @@ function MultiRender(props) {
     handleRMCDelete,
   } = props;
 
+  console.log('===========> rmcMaterials', rmcMaterials);
+
   return (
     <View style={styles.wbsDataContainer}>
       <View style={styles.cardSubContainer}>
         <View style={styles.wbsIdContainer}>
-          <Text style={styles.wbs}>{wbs.title} </Text>
+          <Text style={styles.wbs}>{wbs?.title} </Text>
         </View>
         <View style={styles.subContainer}>
           <TouchableOpacity
@@ -540,7 +536,6 @@ function MultiRender(props) {
                 <RMCCardListing
                   item={item}
                   index={index}
-                  rmcIssueData={rmcIssueData}
                   materialCategories={materialCategories}
                   materialSubCategories={materialSubCategories}
                   editRmcDialog={editRmcDialog}
@@ -576,6 +571,9 @@ function CreateWork(props) {
     createWorkIssue,
   } = useMaterialManagementActions();
 
+  const {selectedProject} = useSelector(s => s.project);
+  const projectId = selectedProject.id;
+
   const {
     workOptions,
     rmcList,
@@ -585,29 +583,17 @@ function CreateWork(props) {
     materialSubCategories,
   } = useSelector(s => s.materialManagement);
 
-  const {selectedProject} = useSelector(s => s.project);
-  const projectId = selectedProject.id;
-
-  const {remark, requred_date, vendor_id} = indentDetails.material_indent || {};
-
-  const materialsItems = indentDetails?.issue_list;
-
-  const rmcItems = indentDetails?.rmc_list || [];
-
-  const rmcIssueData = Object.entries(rmcItems)[0];
+  const {material_indent, issue_list: materialsItems} = indentDetails;
+  const {remark, requred_date, vendor_id} = material_indent || {};
 
   const [addRmcDialog, setRmcDialog] = React.useState(false);
   const [addDialog, setAddDialog] = React.useState(false);
   const [selectedMaterialIndex, setSelectedMaterialIndex] = React.useState();
   const [selectedIssueIndex, setSelectedIssueIndex] = React.useState();
   const [selectedWBSId, setSelectedWBSId] = React.useState();
-  const [wbsIds, setWbsIds] = React.useState();
-  const [materials, setMaterials] = React.useState(
-    cloneDeep(materialsItems) || [],
-  );
-  const [rmcMaterials, setRmcMaterials] = React.useState(
-    cloneDeep(rmcIssueData) || [],
-  );
+  const [wbsIds, setWbsIds] = React.useState([]);
+  const [materials, setMaterials] = React.useState(indentDetails.issue_list);
+  const [rmcMaterials, setRmcMaterials] = React.useState([]);
 
   React.useEffect(() => {
     getWorkSubWorkList({project_id: projectId});
@@ -619,18 +605,12 @@ function CreateWork(props) {
   }, []);
 
   useEffect(() => {
-    if (!isEqual(materialsItems, materials)) {
-      setMaterials(materialsItems);
+    if (indentDetails) {
+      setWbsIds(Object.keys(indentDetails.issue_list));
+      setMaterials(Object.values(indentDetails.issue_list).flat());
+      setRmcMaterials(Object.values(indentDetails.rmc_list).flat());
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [materialsItems]);
-
-  useEffect(() => {
-    if (!isEqual(rmcIssueData, rmcMaterials)) {
-      setRmcMaterials(rmcIssueData);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rmcIssueData]);
+  }, [indentDetails]);
 
   const getDetails = async () => {
     await getIndentDetails({
@@ -648,7 +628,7 @@ function CreateWork(props) {
     const rmc_work = {};
     wbsIds?.map(wbsId => {
       issuework[wbsId] = materials.filter(item => {
-        if (item.requiredfor === wbsId) {
+        if (item.wbs_works_id === wbsId) {
           const {
             material_category_id,
             material_sub_category_id,
@@ -772,6 +752,11 @@ function CreateWork(props) {
   const handelSetRmc = values => {
     const {select_grade, quantity} = values;
 
+    const filtered =
+      rmcMaterials?.filter(
+        i => i.grade !== select_grade || i.wbs_works_id !== selectedWBSId,
+      ) || [];
+
     const data = rmcList?.rmc_material
       ?.filter(i => i.grade === select_grade)
       .map(item => {
@@ -796,7 +781,7 @@ function CreateWork(props) {
         };
       });
 
-    setRmcMaterials(data);
+    setRmcMaterials([...filtered, ...data]);
   };
 
   const handleSaveIssueMaterial = values => {
@@ -827,7 +812,7 @@ function CreateWork(props) {
 
     const _materials = [...materials];
 
-    const data = {...values, requiredfor: selectedWBSId};
+    const data = {...values, wbs_works_id: selectedWBSId};
 
     if (!isNaN(selectedMaterialIndex)) {
       _materials[selectedMaterialIndex] = data;
@@ -862,6 +847,13 @@ function CreateWork(props) {
     return {};
   }, [materialSubCategories, materials, selectedMaterialIndex]);
 
+  const rmcInitialValues = useMemo(() => {
+    const {select_grade: grade} = rmcMaterials;
+    return {
+      grade,
+    };
+  }, [rmcMaterials]);
+
   return (
     <>
       {addRmcDialog ? (
@@ -871,7 +863,6 @@ function CreateWork(props) {
           rmcList={rmcList}
           addRmcDialog={addRmcDialog}
           selectedIssueIndex={selectedIssueIndex}
-          rmcIssueData={rmcIssueData}
           handleSave={handelSetRmc}
         />
       ) : null}
@@ -901,13 +892,13 @@ function CreateWork(props) {
                 />
 
                 {wbsIds?.map(wbsId => {
-                  const wbs = workOptions.find(i => i.id === wbsId);
+                  const wbs = workOptions?.find(i => i.id);
 
                   const filteredIssueMaterials = materials.filter(
-                    i => i.requiredfor === wbsId,
+                    i => i.wbs_works_id,
                   );
                   const filteredRMCMaterials = rmcMaterials?.filter(
-                    i => i.wbs_works_id === wbsId,
+                    i => i.wbs_works_id,
                   );
 
                   return (
@@ -917,7 +908,6 @@ function CreateWork(props) {
                       workOptions={workOptions}
                       issueMaterials={filteredIssueMaterials}
                       rmcMaterials={filteredRMCMaterials}
-                      rmcIssueData={rmcIssueData}
                       materialCategories={materialCategories}
                       materialSubCategories={materialSubCategories}
                       handleDelete={handleDelete}
