@@ -27,10 +27,16 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import RenderInput from 'components/Atoms/RenderInput';
 import {getUniqueOptions} from 'utils/constant';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
-import {cloneDeep, isEqual, isNumber, round} from 'lodash';
+import {isNumber, round} from 'lodash';
 import {getShadow} from 'utils';
+import * as Yup from 'yup';
+
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import {useAlert} from 'components/Atoms/Alert';
+
+const schema = Yup.object().shape({
+  quantity: Yup.number().label('quantity').required('required'),
+});
 
 function AddMaterialDialog(props) {
   const {
@@ -405,6 +411,7 @@ function AddRMCDialog(props) {
   } = useFormik({
     enableReinitialize: true,
     validateOnBlur: false,
+    validationSchema: schema,
     validateOnChange: false,
     initialValues,
     onSubmit,
@@ -476,13 +483,11 @@ function MultiRender(props) {
     handleRMCDelete,
   } = props;
 
-  console.log('===========> rmcMaterials', rmcMaterials);
-
   return (
     <View style={styles.wbsDataContainer}>
       <View style={styles.cardSubContainer}>
         <View style={styles.wbsIdContainer}>
-          <Text style={styles.wbs}>{wbs?.title} </Text>
+          <Text style={styles.wbs}>{wbs.title} </Text>
         </View>
         <View style={styles.subContainer}>
           <TouchableOpacity
@@ -555,9 +560,9 @@ function MultiRender(props) {
 }
 
 function CreateWork(props) {
-  const {navigation, edit, route} = props;
+  const {navigation, route} = props;
 
-  const {id} = route?.params || {};
+  const {id, edit} = route?.params || {};
 
   const alert = useAlert();
   const snackbar = useSnackbar();
@@ -606,7 +611,7 @@ function CreateWork(props) {
 
   useEffect(() => {
     if (indentDetails) {
-      setWbsIds(Object.keys(indentDetails.issue_list));
+      setWbsIds(Object.keys(indentDetails.issue_list).flat());
       setMaterials(Object.values(indentDetails.issue_list).flat());
       setRmcMaterials(Object.values(indentDetails.rmc_list).flat());
     }
@@ -783,6 +788,7 @@ function CreateWork(props) {
 
     setRmcMaterials([...filtered, ...data]);
   };
+  console.log('===========>wbsIds ', wbsIds);
 
   const handleSaveIssueMaterial = values => {
     if (!values.material_units_id) {
@@ -793,22 +799,22 @@ function CreateWork(props) {
       return;
     }
 
-    const subCategoryMaterial = materials?.find(
-      i => i.material_sub_category_id === values.material_sub_category_id,
-    );
+    // const subCategoryMaterial = materials?.find(
+    //   i => i.material_sub_category_id === values.material_sub_category_id,
+    // );
 
-    const subCategoriesMaterial = materialsItems?.find(
-      i => i.material_sub_category_id === values.material_sub_category_id,
-    );
+    // const subCategoriesMaterial = materialsItems?.find(
+    //   i => i.material_sub_category_id === values.material_sub_category_id,
+    // );
 
-    if (subCategoryMaterial || subCategoriesMaterial) {
-      snackbar.showMessage({
-        message: 'This SubCategory already in use, please select another one',
-        variant: 'warning',
-      });
+    // if (subCategoryMaterial || subCategoriesMaterial) {
+    //   snackbar.showMessage({
+    //     message: 'This SubCategory already in use, please select another one',
+    //     variant: 'warning',
+    //   });
 
-      return;
-    }
+    //   return;
+    // }
 
     const _materials = [...materials];
 
@@ -892,13 +898,15 @@ function CreateWork(props) {
                 />
 
                 {wbsIds?.map(wbsId => {
-                  const wbs = workOptions?.find(i => i.id);
+                  const wbs = workOptions?.find(
+                    i => Number(i.id) === Number(wbsId),
+                  );
 
                   const filteredIssueMaterials = materials.filter(
-                    i => i.wbs_works_id,
+                    i => Number(i.wbs_works_id) === Number(wbsId),
                   );
                   const filteredRMCMaterials = rmcMaterials?.filter(
-                    i => i.wbs_works_id,
+                    i => Number(i.wbs_works_id) === Number(wbsId),
                   );
 
                   return (
@@ -921,6 +929,7 @@ function CreateWork(props) {
                 })}
               </View>
             </ScrollView>
+
             <ActionButtons
               cancelLabel="Cancel"
               submitLabel="Next"
@@ -933,7 +942,6 @@ function CreateWork(props) {
     </>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     margin: 10,

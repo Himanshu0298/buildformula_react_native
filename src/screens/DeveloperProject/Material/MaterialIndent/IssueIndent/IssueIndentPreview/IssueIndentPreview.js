@@ -91,7 +91,7 @@ const ListingCard = props => {
 
   return (
     <TouchableOpacity>
-      <View style={styles.cardContainer}>
+      <View style={styles.mainCardContainer}>
         <View style={styles.cardHeader}>
           <Text style={styles.ID}>{id}</Text>
           <Caption style={{color}}>{label}</Caption>
@@ -223,44 +223,6 @@ function AssignMaterialCard(props) {
   );
 }
 
-//   const {item} = props;
-
-//   const {
-//     materialcategrytitle,
-//     subcategorytitle,
-//     materialunitstitle,
-//     quantity,
-//     assigned_quantity,
-//     requiredfor,
-//   } = item;
-
-//   return (
-//     <View style={styles.cardContainer}>
-//       <View style={styles.dataRow}>
-//         <Caption style={styles.lightData}>Category:</Caption>
-//         <Text style={styles.title}>{materialcategrytitle}</Text>
-//       </View>
-//       <View style={styles.dataRow}>
-//         <Caption style={styles.lightData}>Sub Category:</Caption>
-//         <Text style={styles.title}>{subcategorytitle}</Text>
-//       </View>
-//       <View style={styles.dataRow}>
-//         <Caption style={styles.lightData}>Unit:</Caption>
-//         <Text style={styles.title}>{materialunitstitle}</Text>
-//       </View>
-
-//       <View style={styles.dataRow}>
-//         <Caption style={styles.lightData}>Ask Qty:</Caption>
-//         <Text style={styles.title}>{quantity}</Text>
-//       </View>
-//       <View style={styles.dataRow}>
-//         <Caption style={styles.lightData}>Assigned Qty:</Caption>
-//         <Text style={styles.title}>{assigned_quantity}</Text>
-//       </View>
-//     </View>
-//   );
-// };
-
 const RMCCard = props => {
   const {item, isApproved, showDetail} = props;
 
@@ -350,6 +312,10 @@ function IssueIndentPreview(props) {
     issue_list: materialData,
   } = indentDetails || [];
   const {status, verification_code} = details || {};
+
+  console.log('===========> rmcData', rmcData);
+
+  console.log('===========>materialData ', materialData);
 
   const [selectedItemIndex, setSelectedItemIndex] = React.useState();
   const [showDetail, setShowDetail] = React.useState();
@@ -583,8 +549,10 @@ function IssueIndentPreview(props) {
                                 <Text> Status:</Text>
                                 <Caption style={{color}}>{label}</Caption>
                               </View>
-                              <View style={{marginVertical: 5}}>
-                                <Text>{headerInfo.requiredfor} </Text>
+                              <View style={styles.wbsIdContainer}>
+                                <Text style={styles.idContainer}>
+                                  {headerInfo.requiredfor}{' '}
+                                </Text>
                               </View>
                             </>
                           ) : null}
@@ -649,15 +617,17 @@ function IssueIndentPreview(props) {
                         type,
                       } = headerInfo;
                       return (
-                        <View style={styles.cardContainer}>
+                        <View style={styles.mainCardContainer}>
                           {item.find(e => e !== rmc_request.wbs_works_id) ? (
                             <>
                               <View style={styles.cardHeader}>
                                 <Text> Status:</Text>
                                 <Caption style={{color}}>{label}</Caption>
                               </View>
-                              <View style={styles.cardHeader}>
-                                <Text variant="labelSmall">{requiredfor}</Text>
+                              <View style={styles.wbsIdContainer}>
+                                <Text style={styles.idContainer}>
+                                  {requiredfor}
+                                </Text>
                               </View>
 
                               <Divider />
@@ -761,7 +731,16 @@ const styles = StyleSheet.create({
   cardContainer: {
     padding: 10,
     marginBottom: 10,
-    backgroundColor: '#fff',
+    backgroundColor: '#f5f5f5f5',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    ...getShadow(2),
+  },
+
+  mainCardContainer: {
+    padding: 10,
+    marginBottom: 10,
+    backgroundColor: '#ffff',
     borderRadius: 5,
     paddingHorizontal: 10,
     ...getShadow(2),
@@ -865,5 +844,17 @@ const styles = StyleSheet.create({
   },
   rmcHeader: {
     marginVertical: 10,
+  },
+
+  wbsIdContainer: {
+    marginVertical: 5,
+    borderWidth: 1,
+    borderColor: theme.colors.primary,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  idContainer: {
+    padding: 5,
   },
 });
