@@ -331,7 +331,7 @@ function RMCCardListing(props) {
         <>
           <View>
             <View style={styles.buttonRmcContainer}>
-              {!id ? (
+              {id ? (
                 <View style={styles.editButton}>
                   <OpacityButton
                     color="#4872f4"
@@ -342,16 +342,6 @@ function RMCCardListing(props) {
                   </OpacityButton>
                 </View>
               ) : null}
-
-              {/* <View>
-                <OpacityButton
-                  color="#FF5D5D"
-                  opacity={0.18}
-                  onPress={() => handleRMCDelete(index, item.id)}
-                  style={styles.OpacityButton}>
-                  <MaterialIcons name="delete" color="#FF5D5D" size={13} />
-                </OpacityButton>
-              </View> */}
             </View>
           </View>
           <Divider />
@@ -481,7 +471,11 @@ function MultiRender(props) {
     handleDelete,
     editRmcDialog,
     handleRMCDelete,
+    handleIndentRequestDelete,
   } = props;
+
+  const rmc_delete_data = rmcMaterials?.find(e => e) || {};
+  const issue_delete_data = issueMaterials?.find(e => e) || {};
 
   return (
     <View style={styles.wbsDataContainer}>
@@ -506,8 +500,19 @@ function MultiRender(props) {
 
         <View style={styles.cardSubContainer}>
           <ScrollView showsVerticalScrollIndicator={false}>
-            <View style={styles.titleContainer}>
+            <View style={styles.listHeader}>
               <Text style={styles.title}>Issue Material</Text>
+              {edit && issueMaterials?.length ? (
+                <View>
+                  <OpacityButton
+                    color="#FF5D5D"
+                    opacity={0.18}
+                    onPress={() => handleIndentRequestDelete(issue_delete_data)}
+                    style={[styles.OpacityButton, {width: 32, height: 32}]}>
+                    <MaterialIcons name="delete" color="#FF5D5D" size={13} />
+                  </OpacityButton>
+                </View>
+              ) : null}
             </View>
             {issueMaterials?.length ? (
               issueMaterials?.map((item, index) => {
@@ -531,8 +536,19 @@ function MultiRender(props) {
         </View>
 
         <View style={styles.cardSubContainer}>
-          <View style={styles.titleContainer}>
+          <View style={styles.listHeader}>
             <Text style={styles.title}> RMC Issue Request</Text>
+            {edit && rmcMaterials?.length ? (
+              <View>
+                <OpacityButton
+                  color="#FF5D5D"
+                  opacity={0.18}
+                  onPress={() => handleIndentRequestDelete(rmc_delete_data)}
+                  style={[styles.OpacityButton, {width: 32, height: 32}]}>
+                  <MaterialIcons name="delete" color="#FF5D5D" size={13} />
+                </OpacityButton>
+              </View>
+            ) : null}
           </View>
 
           {rmcMaterials?.length ? (
@@ -572,6 +588,7 @@ function CreateWork(props) {
     getRMCList,
     getPRMaterialCategories,
     deleteIndentItem,
+    deleteIndentRequest,
     getIndentDetails,
     createWorkIssue,
   } = useMaterialManagementActions();
@@ -674,7 +691,6 @@ function CreateWork(props) {
 
       return true;
     });
-
     const restData = {
       project_id: projectId,
       material_indent_id: id,
@@ -690,6 +706,23 @@ function CreateWork(props) {
     getDetails();
     navigation.navigate('MaterialIndent');
     navigation.navigate('IssueIndentPreview', {id});
+  };
+
+  const handleIndentRequestDelete = async delete_data => {
+    const {type, wbs_works_id} = delete_data;
+    alert.show({
+      title: 'Confirm',
+      message: 'Are you sure you want to delete?',
+      confirmText: 'Delete',
+      onConfirm: () => {
+        deleteIndentRequest({
+          project_id: projectId,
+          material_indent_id: id,
+          wbs_works_id,
+          type,
+        });
+      },
+    });
   };
 
   const toggleAddRMCDialog = wbsWorkId => {
@@ -920,6 +953,7 @@ function CreateWork(props) {
                       materialSubCategories={materialSubCategories}
                       handleDelete={handleDelete}
                       handleRMCDelete={handleRMCDelete}
+                      handleIndentRequestDelete={handleIndentRequestDelete}
                       editDialog={editDialog}
                       editRmcDialog={editRmcDialog}
                       toggleAddRMCDialog={toggleAddRMCDialog}
@@ -1011,6 +1045,7 @@ const styles = StyleSheet.create({
   OpacityButton: {
     borderRadius: 20,
     marginLeft: 10,
+    marginVertical: 5,
   },
 
   titleContainer: {
@@ -1044,6 +1079,11 @@ const styles = StyleSheet.create({
   },
   wbs: {
     padding: 2,
+  },
+  listHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
 });
 

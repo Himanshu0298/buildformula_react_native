@@ -313,9 +313,9 @@ function IssueIndentPreview(props) {
   } = indentDetails || [];
   const {status, verification_code} = details || {};
 
-  console.log('===========> rmcData', rmcData);
+  // console.log('===========> rmcData', rmcData);
 
-  console.log('===========>materialData ', materialData);
+  // console.log('===========>materialData ', materialData);
 
   const [selectedItemIndex, setSelectedItemIndex] = React.useState();
   const [showDetail, setShowDetail] = React.useState();
