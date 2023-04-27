@@ -19,10 +19,12 @@ import Layout from 'utils/Layout';
 import {useAlert} from 'components/Atoms/Alert';
 import LottieView from 'lottie-react-native';
 import waiting from 'assets/animation/waiting.json';
+import subscription from 'assets/animation/project_subscription.json';
 import useAddProjectActions from 'redux/actions/addProjectActions';
 import ProjectHeader from 'components/Molecules/Layout/ProjectHeader';
 import useNotificationActions from 'redux/actions/notificationActions';
 import useAppActions from 'redux/actions/appActions';
+import dayjs from 'dayjs';
 import useProjectActions from '../../redux/actions/projectActions';
 
 const IMAGES = {
@@ -111,6 +113,10 @@ function Home(props) {
     return {tabs: _tabs, projectsData: data};
   }, [projects]);
 
+  const checkProjectExpiry = expiry_date => {
+    return dayjs().isAfter(dayjs(expiry_date));
+  };
+
   const handleOnPress = project => {
     // if (project.is_completed === 'N' && project.project_structure === 'N') {
     //   setProjectData(project);
@@ -122,10 +128,30 @@ function Home(props) {
     //   navigation.navigate('PlanSelect');
     //   return;
     // }
+
     if (project.project_approved === 'Y') {
       if (tabs[selectedTab] === 'Developer') {
-        setDrawerType('developer');
-        navigation.navigate('DeveloperHome', {project});
+        if (checkProjectExpiry(project.expired_date)) {
+          alert.show({
+            dismissable: false,
+            title: false,
+            showCancelButton: false,
+            content: (
+              <View style={styles.alertContainer}>
+                <View style={styles.splashImage}>
+                  <LottieView source={subscription} autoPlay loop />
+                </View>
+                <Subheading style={styles.subtitleText}>
+                  Your project {project?.project_name} subscription is expired,
+                  Kindly renew it.
+                </Subheading>
+              </View>
+            ),
+          });
+        } else {
+          setDrawerType('developer');
+          navigation.navigate('DeveloperHome', {project});
+        }
       } else if (tabs[selectedTab] === 'Customer') {
         setDrawerType('customer');
         navigation.navigate('Ownership', {project});
@@ -290,6 +316,7 @@ const styles = StyleSheet.create({
     width: 300,
   },
   subtitleText: {
+    marginTop: 20,
     textAlign: 'center',
     color: 'rgba(4, 29, 54, 0.5)',
   },

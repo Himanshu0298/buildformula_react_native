@@ -48,7 +48,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
       {
         id: 1,
         route: 'VisitorsHome',
-        label: 'Visitors',
+        label: 'Inquiry',
         icon: 'badge-account-horizontal-outline',
       },
       {
