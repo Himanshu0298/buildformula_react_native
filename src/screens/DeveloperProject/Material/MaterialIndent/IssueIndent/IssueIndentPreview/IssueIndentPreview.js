@@ -100,7 +100,7 @@ const ListingCard = props => {
         <View style={styles.cardDetails}>
           <View style={styles.newDataRow}>
             <Subheading>Create by:</Subheading>
-            <View style={{marginLeft: 25}}>
+            <View style={styles.createdBy}>
               <Text>
                 {first_name}
                 {last_name}
@@ -110,7 +110,7 @@ const ListingCard = props => {
           </View>
           <View style={styles.newDataRow}>
             <Subheading>Created on:</Subheading>
-            <View style={{marginLeft: 15, marginTop: 5}}>
+            <View style={styles.date}>
               <Text>{date}</Text>
             </View>
           </View>
@@ -313,14 +313,16 @@ function IssueIndentPreview(props) {
   } = indentDetails || [];
   const {status, verification_code} = details || {};
 
-  // console.log('===========> rmcData', rmcData);
-
-  // console.log('===========>materialData ', materialData);
-
   const [selectedItemIndex, setSelectedItemIndex] = React.useState();
   const [showDetail, setShowDetail] = React.useState();
   const [materials, setMaterials] = React.useState([]);
   const [rmc, setRmc] = React.useState([]);
+
+  const detailsIssueStatus = Object.values(materialData)[0]?.find(
+    i => i.id,
+  ).rm_status;
+
+  const detailsRmcStatus = Object.values(rmcData)[0]?.find(i => i.id).rm_status;
 
   useEffect(() => {
     if (materialData) setMaterials(Object.values(materialData)[0]);
@@ -401,17 +403,17 @@ function IssueIndentPreview(props) {
   };
 
   const UpdateDetailsStatus = async approveStatus => {
-    const quantity = materials.find(i => i.assigned_quantity === null);
-    if (approveStatus === 'approved') {
-      if (quantity) {
-        snackbar.showMessage({
-          message: 'please add assigned quantity',
-          variant: 'warning',
-        });
-        toggleDialog();
-        return;
-      }
-    }
+    // const quantity = materials.find(i => i.assigned_quantity === null);
+    // if (approveStatus === 'approved') {
+    //   if (quantity) {
+    //     snackbar.showMessage({
+    //       message: 'please add assigned quantity',
+    //       variant: 'warning',
+    //     });
+    //     toggleDialog();
+    //     return;
+    //   }
+    // }
 
     const data = {
       project_id: selectedProject.id,
@@ -492,7 +494,10 @@ function IssueIndentPreview(props) {
             </View>
           ) : null}
 
-          {isPending && !showDetail ? (
+          {isPending &&
+          !showDetail &&
+          detailsRmcStatus === 'pending' &&
+          detailsIssueStatus === 'pending' ? (
             <View style={styles.statusContainer}>
               <OpacityButton
                 color={theme.colors.primary}
@@ -537,6 +542,7 @@ function IssueIndentPreview(props) {
                     ?.filter(workId => isArray(workId))
                     ?.map(issue_request => {
                       const headerInfo = issue_request?.find(e => e);
+
                       const {rm_status, wbs_works_id, type} = headerInfo;
                       const {label, color} =
                         INDENT_STATUS[headerInfo?.rm_status] || {};
@@ -569,6 +575,7 @@ function IssueIndentPreview(props) {
                               />
                             );
                           })}
+
                           {rm_status === 'pending' ? (
                             showDetail ? (
                               <ActionButtons
@@ -616,6 +623,7 @@ function IssueIndentPreview(props) {
                         wbs_works_id,
                         type,
                       } = headerInfo;
+
                       return (
                         <View style={styles.mainCardContainer}>
                           {item.find(e => e !== rmc_request.wbs_works_id) ? (
@@ -655,18 +663,23 @@ function IssueIndentPreview(props) {
                               />
                             );
                           })}
-
                           {rm_status === 'pending' ? (
                             showDetail ? (
                               <ActionButtons
                                 cancelLabel="Reject"
                                 submitLabel=" Approve"
-                                onCancel={() =>
-                                  updateStatus('rejected', {wbs_works_id, type})
-                                }
-                                onSubmit={() =>
-                                  updateStatus('approved', {wbs_works_id, type})
-                                }
+                                onCancel={() => {
+                                  updateStatus('rejected', {
+                                    wbs_works_id,
+                                    type,
+                                  });
+                                }}
+                                onSubmit={() => {
+                                  updateStatus('approved', {
+                                    wbs_works_id,
+                                    type,
+                                  });
+                                }}
                               />
                             ) : null
                           ) : null}
@@ -856,5 +869,12 @@ const styles = StyleSheet.create({
   },
   idContainer: {
     padding: 5,
+  },
+  createdBy: {
+    marginLeft: 25,
+  },
+  date: {
+    marginLeft: 15,
+    marginTop: 5,
   },
 });
