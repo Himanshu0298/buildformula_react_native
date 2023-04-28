@@ -11,10 +11,10 @@ import dayjs from 'dayjs';
 import Header from 'screens/DeveloperProject/Material/CommonComponents/Header';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 
-// const schema = Yup.object().shape({
-//   vendor_id: Yup.string().label('vendor_id').required('Vendor is Required'),
-//   requred_date: Yup.string().label('requred_date').required('Date is Required'),
-// });
+const schema = Yup.object().shape({
+  vendor_id: Yup.string().label('vendor_id').required('Vendor is Required'),
+  requred_date: Yup.string().label('requred_date').required('Date is Required'),
+});
 
 const CreateIssueIndent = props => {
   const {navigation, route} = props;
@@ -78,10 +78,6 @@ const CreateIssueIndent = props => {
     });
   };
 
-  // const onSubmit = values => {
-  //   navigation.navigate('CreateWork', {values});
-  // };
-
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
@@ -92,7 +88,7 @@ const CreateIssueIndent = props => {
         validateOnBlur={false}
         validateOnChange={false}
         initialValues={initialValues}
-        // validationSchema={schema}
+        validationSchema={schema}
         onSubmit={onSubmit}>
         {({
           values,
