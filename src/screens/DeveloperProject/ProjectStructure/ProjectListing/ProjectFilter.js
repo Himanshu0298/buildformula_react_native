@@ -238,7 +238,7 @@ const RenderForm = props => {
           <Text>Select no of bungalows</Text>
           <RangeSlider
             min={bungalowData?.min}
-            max={bungalowData?.bungalowMax}
+            max={bungalowData?.max}
             rangeData={values?.bungalows}
             handleChange={v => setFieldValue('bungalows', v)}
           />

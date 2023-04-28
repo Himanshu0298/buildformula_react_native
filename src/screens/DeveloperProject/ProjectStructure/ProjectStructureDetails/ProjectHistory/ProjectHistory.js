@@ -142,10 +142,13 @@ const ProjectHistory = props => {
 
   const {projectId: id} = route?.params || {};
 
-  const {getProjectMasterList, updateProjectHistory} =
-    useProjectStructureActions();
+  const {
+    getProjectMasterList,
+    updateProjectHistory,
+    getProjectList,
+    getProjectDetails,
+  } = useProjectStructureActions();
 
-  const {getProjectDetails} = useProjectStructureActions();
   const {projectDetails, loading} = useSelector(s => s.projectStructure);
 
   React.useEffect(() => {
@@ -161,6 +164,10 @@ const ProjectHistory = props => {
   const {masterList} = useSelector(s => s.projectStructure);
 
   const getData = () => getProjectMasterList({project_id: selectedProject.id});
+
+  const getList = async () => {
+    await getProjectList({project_id: selectedProject.id});
+  };
 
   const initialValues = React.useMemo(() => {
     const {
@@ -194,6 +201,7 @@ const ProjectHistory = props => {
     };
     updateProjectHistory(data);
     getDetails();
+    getList();
     navigation.goBack();
   };
 

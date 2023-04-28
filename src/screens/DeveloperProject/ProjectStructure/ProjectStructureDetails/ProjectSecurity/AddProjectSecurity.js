@@ -80,8 +80,12 @@ function AddProjectSecurity(props) {
 
   const id = securityId;
 
-  const {getProjectDetails, addProjectSecurity, updateProjectSecurity} =
-    useProjectStructureActions();
+  const {
+    getProjectDetails,
+    addProjectSecurity,
+    updateProjectSecurity,
+    getProjectList,
+  } = useProjectStructureActions();
 
   const {selectedProject, loading} = useSelector(s => s.project);
 
@@ -104,6 +108,10 @@ function AddProjectSecurity(props) {
     await getProjectDetails({project_id: selectedProject.id, id: projectId});
   };
 
+  const getList = async () => {
+    await getProjectList({project_id: selectedProject.id});
+  };
+
   const onSubmit = async values => {
     const data = {
       project_id: selectedProject.id,
@@ -124,6 +132,7 @@ function AddProjectSecurity(props) {
       await addProjectSecurity(data);
     }
     getData();
+    getList();
     navigation.goBack();
   };
   return (

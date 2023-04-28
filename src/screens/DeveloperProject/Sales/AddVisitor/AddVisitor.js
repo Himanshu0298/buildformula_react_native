@@ -422,7 +422,7 @@ function InquiryTab(props) {
             value={values.Inquiry_date}
             error={errors.Inquiry_date}
             onChange={date => {
-              setFieldValue('Inquiry_date', date);
+              setFieldValue('Inquiry_date', dayjs(date).format('YYYY-MM-DD'));
             }}
           />
           <RenderTextBox
