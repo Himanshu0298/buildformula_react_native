@@ -63,8 +63,12 @@ function ProjectBrief(props) {
 
   const {projectId: id} = route?.params || {};
 
-  const {updateProjectBrief, getProjectMasterList, getProjectDetails} =
-    useProjectStructureActions();
+  const {
+    updateProjectBrief,
+    getProjectMasterList,
+    getProjectDetails,
+    getProjectList,
+  } = useProjectStructureActions();
 
   const {selectedProject} = useSelector(s => s.project);
   const {projectDetails, masterList} = useSelector(s => s.projectStructure);
@@ -77,12 +81,17 @@ function ProjectBrief(props) {
   const getData = async () => {
     await getProjectDetails({project_id: selectedProject.id, id});
   };
+
+  const getList = async () => {
+    await getProjectList({project_id: selectedProject.id});
+  };
+
   const initialValues = React.useMemo(() => {
     const {description, configurtion} = projectDetails;
 
     return {
       description,
-      configurtion: configurtion.split('  '),
+      configurtion: configurtion ? configurtion.split('  ') : null,
     };
   }, [projectDetails]);
 
@@ -97,6 +106,7 @@ function ProjectBrief(props) {
     };
     updateProjectBrief(data);
     getData();
+    getList();
 
     navigation.goBack();
   };

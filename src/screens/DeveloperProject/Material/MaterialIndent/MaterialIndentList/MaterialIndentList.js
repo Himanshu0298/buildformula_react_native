@@ -74,14 +74,14 @@ const ListingCard = props => {
             {first_name}-{last_name}
           </Subheading>
           <View style={styles.cardContent}>
-            <Text style={styles.detail}>{email}</Text>
+            <Text>{email}</Text>
           </View>
           <View style={styles.cardContent}>
             <Text>Vendor : {contractor_name}</Text>
           </View>
           <View style={styles.cardHeader}>
             <Caption>{date}</Caption>
-            <Text> {title}</Text>
+            <Text>{title}</Text>
           </View>
         </View>
       </View>
@@ -218,8 +218,5 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     fontSize: 10,
     color: 'rgba(72, 114, 244, 1)',
-  },
-  detail: {
-    marginLeft: 7,
   },
 });

@@ -29,6 +29,7 @@ import FileViewer from 'react-native-file-viewer';
 
 import {useDownload} from 'components/Atoms/Download';
 import {getDownloadUrl, getFileName} from 'utils/download';
+import {isArray} from 'lodash';
 import ApproveButtons from '../components/ApprovalButtons';
 
 const STORE_KEEPER_STATUS = {
@@ -133,8 +134,8 @@ const IssuedCard = props => {
         <Text style={styles.title}> {`${first_name} ${last_name}`}</Text>
       </View>
       <View style={styles.title}>
-        <Subheading> Remark</Subheading>
-        <Caption> {storekeeper_remark}</Caption>
+        <Subheading>Remark</Subheading>
+        <Caption>{storekeeper_remark}</Caption>
       </View>
       <RenderAttachments storeKeeperDetails={storeKeeperDetails} />
     </View>
@@ -162,19 +163,21 @@ const ListingCard = props => {
         </View>
         <Divider />
         <View style={styles.cardDetails}>
-          <View style={styles.dataRow}>
+          <View style={styles.newDataRow}>
             <Subheading>Create by:</Subheading>
-            <Text style={styles.title}>
-              {first_name}
-              {last_name}
-            </Text>
+            <View style={{marginLeft: 25}}>
+              <Text>
+                {first_name}
+                {last_name}
+              </Text>
+              <Caption>({email})</Caption>
+            </View>
           </View>
-          <View style={styles.cardContent}>
-            <Caption>{email}</Caption>
-          </View>
-          <View style={styles.createdOn}>
-            <Subheading> Created on:</Subheading>
-            <Text>{dayjs(created).format('  MMM D, YYYY ,hh:mm A')}</Text>
+          <View style={styles.newDataRow}>
+            <Subheading>Created on:</Subheading>
+            <View style={{marginLeft: 6, marginTop: 5}}>
+              <Text>{dayjs(created).format('  MMM D, YYYY ,hh:mm A')}</Text>
+            </View>
           </View>
         </View>
       </View>
@@ -188,37 +191,116 @@ const RequiredVendor = props => {
   const {contractor_name, contractor_email, remark, requred_date, requiredfor} =
     storeKeeperDetails?.indent_details?.material_indent || {};
 
+  // <View style={styles.card}>
+  //   <Text>Required For(Work)</Text>
+  //   <Caption>{requiredfor}</Caption>
+  // </View>;
+
   return (
     <View style={styles.vendorContainer}>
-      <View>
-        <Subheading> Required For Vendor</Subheading>
-      </View>
       <View style={styles.vendorSubContainer}>
-        <Text> {contractor_name}</Text>
+        <Caption>Required For Vendor</Caption>
+        <Subheading>{contractor_name}</Subheading>
         <Caption>{contractor_email}</Caption>
       </View>
       {type === 'afm' ? (
-        <>
-          <View style={styles.card}>
-            <Text> Required Date</Text>
-            <Caption>{requred_date} </Caption>
-          </View>
-          <View style={styles.card}>
-            <Text> Required For(Work)</Text>
-            <Caption>{requiredfor}</Caption>
-          </View>
-        </>
+        <View style={styles.card}>
+          <Caption>Required Date</Caption>
+          <Text>{requred_date} </Text>
+        </View>
       ) : null}
 
       <View style={styles.card}>
-        <Text> Remark</Text>
-        <Caption>{remark}</Caption>
+        <Caption>Remark</Caption>
+        <Text>{remark}</Text>
       </View>
     </View>
   );
 };
 
 const MaterialCard = props => {
+  const {item, updateStatus, modulePermission, type} = props;
+
+  const {
+    materialcategrytitle,
+    subcategorytitle,
+    materialunitstitle,
+    quantity,
+    id,
+    rm_status,
+    assigned_quantity,
+    damaged_qty,
+  } = item;
+
+  const {label, color} = STORE_KEEPER_DETAILS_STATUS[rm_status] || {};
+
+  return (
+    <View style={styles.cardContainer}>
+      <View style={styles.dataRow}>
+        <Caption style={styles.lightData}>Category:</Caption>
+        <Text style={styles.title}>{materialcategrytitle}</Text>
+      </View>
+      <View style={styles.dataRow}>
+        <Caption style={styles.lightData}>Sub Category:</Caption>
+        <Text style={styles.title}>{subcategorytitle}</Text>
+      </View>
+      {type === 'afm' ? (
+        <View style={styles.dataRow}>
+          <Caption style={styles.lightData}>Unit:</Caption>
+          <Text style={styles.title}>{materialunitstitle}</Text>
+        </View>
+      ) : null}
+
+      {type === 'afm' ? (
+        <View style={styles.dataRow}>
+          <Caption style={styles.lightData}>Request Qty:</Caption>
+          <Text style={styles.title}>{quantity}</Text>
+        </View>
+      ) : null}
+
+      {type === 'rm' ? (
+        <View style={styles.dataRow}>
+          <Caption style={styles.lightData}>Fine Qty:</Caption>
+          <Text style={styles.title}>{quantity}</Text>
+        </View>
+      ) : null}
+
+      {type === 'afm' ? (
+        <View style={styles.dataRow}>
+          <Caption style={styles.lightData}>Assigned Qty:</Caption>
+          <Text style={styles.title}>{assigned_quantity}</Text>
+        </View>
+      ) : null}
+
+      {type === 'rm' ? (
+        <View style={styles.dataRow}>
+          <Caption style={styles.lightData}>Damaged Qty:</Caption>
+          <Text style={styles.title}>{damaged_qty}</Text>
+        </View>
+      ) : null}
+
+      {rm_status !== 'pending' ? (
+        <View style={styles.dataRow}>
+          <Caption style={styles.lightData}>Status:</Caption>
+          <Text style={[styles.title, {color}]}>{label}</Text>
+        </View>
+      ) : null}
+      {/* {modulePermission?.editor || modulePermission?.admin ? ( */}
+      {rm_status === 'pending' ? (
+        type === 'rm' ? (
+          <ApproveButtons
+            rejectLabel="Reject"
+            approvedLabel="Approved"
+            onReject={() => updateStatus('rejected', id)}
+            onApprove={() => updateStatus('approved', id)}
+          />
+        ) : null
+      ) : null}
+      {/* ) : null} */}
+    </View>
+  );
+};
+const IssueMaterialCard = props => {
   const {item, updateStatus, modulePermission, type} = props;
 
   const {
@@ -300,6 +382,44 @@ const MaterialCard = props => {
     </View>
   );
 };
+const RMCCard = props => {
+  const {item, updateStatus} = props;
+
+  const {
+    materialcategrytitle,
+    subcategorytitle,
+    materialunitstitle,
+    quantity,
+    assigned_quantity,
+  } = item;
+
+  return (
+    <View style={styles.cardContainer}>
+      <View style={styles.dataRow}>
+        <Caption style={styles.lightData}>Category:</Caption>
+        <Text style={styles.title}>{materialcategrytitle}</Text>
+      </View>
+      <View style={styles.dataRow}>
+        <Caption style={styles.lightData}>Sub Category:</Caption>
+        <Text style={styles.title}>{subcategorytitle}</Text>
+      </View>
+      <View style={styles.dataRow}>
+        <Caption style={styles.lightData}>Unit:</Caption>
+        <Text style={styles.title}>{materialunitstitle}</Text>
+      </View>
+
+      <View style={styles.dataRow}>
+        <Caption style={styles.lightData}>Request Qty:</Caption>
+        <Text style={styles.title}>{quantity}</Text>
+      </View>
+
+      <View style={styles.dataRow}>
+        <Caption style={styles.lightData}>Assigned Qty:</Caption>
+        <Text style={styles.title}>{assigned_quantity}</Text>
+      </View>
+    </View>
+  );
+};
 
 function StoreKeeperPreview(props) {
   const {navigation, route} = props;
@@ -314,7 +434,8 @@ function StoreKeeperPreview(props) {
   const modulePermission = getPermissions('StoreKeeper List');
 
   const projectId = selectedProject.id;
-  const {material_indent_details} = storeKeeperDetails?.indent_details || [];
+  const {material_indent_details, rmc_list, issue_list} =
+    storeKeeperDetails?.indent_details || [];
 
   const {authorizedstatus} =
     storeKeeperDetails?.indent_details?.material_indent || {};
@@ -391,31 +512,144 @@ function StoreKeeperPreview(props) {
         ) : null}
         <ListingCard storeKeeperDetails={storeKeeperDetails} />
         <RequiredVendor storeKeeperDetails={storeKeeperDetails} type={type} />
-        {material_indent_details?.length ? (
+
+        {type === 'rm' ? (
+          material_indent_details?.length ? (
+            <>
+              <View style={styles.textContainer}>
+                <Subheading style={styles.textSubContainer}>
+                  Material Request
+                </Subheading>
+              </View>
+
+              <View style={styles.materialCardContainer}>
+                {material_indent_details?.map(item => {
+                  return (
+                    <MaterialCard
+                      item={item}
+                      navigation={navigation}
+                      updateStatus={updateStatus}
+                      authorizedstatus={authorizedstatus}
+                      modulePermission={modulePermission}
+                      type={type}
+                    />
+                  );
+                })}
+              </View>
+            </>
+          ) : null
+        ) : null}
+
+        {issue_list ? (
           <>
             <View style={styles.textContainer}>
               <Subheading style={styles.textSubContainer}>
-                Material Request
+                Issue Material Request
               </Subheading>
             </View>
 
             <View style={styles.materialCardContainer}>
-              {material_indent_details?.map(item => {
-                return (
-                  <MaterialCard
-                    item={item}
-                    navigation={navigation}
-                    updateStatus={updateStatus}
-                    authorizedstatus={authorizedstatus}
-                    modulePermission={modulePermission}
-                    type={type}
-                  />
-                );
+              {Object.entries(issue_list)?.map(item => {
+                return item
+                  ?.filter(id => isArray(id))
+                  ?.map(issue_request => {
+                    const headerInfo = issue_request?.find(e => e);
+                    return (
+                      <View style={styles.cardContainer}>
+                        {item.find(e => e !== issue_request.wbs_works_id) ? (
+                          <>
+                            <View style={styles.cardHeader}>
+                              <Text variant="labelSmall">
+                                {headerInfo?.requiredfor}
+                              </Text>
+                            </View>
+
+                            <Divider />
+                          </>
+                        ) : null}
+                        {issue_request?.map(single_request => {
+                          return (
+                            <IssueMaterialCard
+                              item={single_request}
+                              navigation={navigation}
+                              updateStatus={updateStatus}
+                              authorizedstatus={authorizedstatus}
+                              modulePermission={modulePermission}
+                              type={type}
+                            />
+                          );
+                        })}
+                      </View>
+                    );
+                  });
+              })}
+            </View>
+            <Divider />
+          </>
+        ) : null}
+        {rmc_list ? (
+          <>
+            <View style={styles.textContainer}>
+              <Subheading style={styles.textSubContainer}>
+                RMC Request
+              </Subheading>
+            </View>
+
+            <View style={styles.materialCardContainer}>
+              {Object.entries(rmc_list)?.map(item => {
+                return item
+                  ?.filter(id => {
+                    return isArray(id);
+                  })
+                  ?.map(rmc_request => {
+                    const headerInfo = rmc_request?.find(e => e);
+
+                    const {requiredfor, grade, rmc_qty} = headerInfo;
+
+                    return (
+                      <View style={styles.cardContainer}>
+                        {item.find(e => e !== rmc_request.wbs_works_id) ? (
+                          <>
+                            <View style={styles.cardHeader}>
+                              <Text variant="labelSmall">{requiredfor}</Text>
+                            </View>
+
+                            <Divider />
+                            <View style={styles.newDataRow}>
+                              <View style={styles.rmcDetail}>
+                                <Caption>Grade: </Caption>
+                                <Text>{grade}</Text>
+                              </View>
+                              <View style={styles.rmcDetail}>
+                                <Caption>Qty: </Caption>
+                                <Text>{rmc_qty}</Text>
+                              </View>
+                            </View>
+                            <Divider style={styles.rmcHeader} />
+                          </>
+                        ) : null}
+                        {rmc_request?.map(single_request => {
+                          return (
+                            <>
+                              <RMCCard
+                                item={single_request}
+                                navigation={navigation}
+                                updateStatus={updateStatus}
+                                authorizedstatus={authorizedstatus}
+                                modulePermission={modulePermission}
+                                type={type}
+                              />
+                              <Divider />
+                            </>
+                          );
+                        })}
+                      </View>
+                    );
+                  });
               })}
             </View>
           </>
         ) : null}
-
         {attachments?.length ? (
           label === 'Issued' ? null : (
             <>
@@ -479,11 +713,6 @@ const styles = StyleSheet.create({
   textSubContainer: {
     color: 'rgba(72, 114, 244, 1)',
   },
-  cardContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingLeft: 50,
-  },
   cardContainer: {
     padding: 15,
     marginBottom: 20,
@@ -492,24 +721,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     ...getShadow(2),
   },
-
   cardDetails: {
     padding: 5,
   },
   cardHeader: {
-    padding: 10,
-    paddingHorizontal: 0,
+    paddingBottom: 10,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  createdOn: {
-    padding: 10,
-    paddingHorizontal: 0,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-
   ID: {
     backgroundColor: '#E5EAFA',
     padding: 7,
@@ -517,7 +737,6 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: 'rgba(72, 114, 244, 1)',
   },
-
   subContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -526,6 +745,16 @@ const styles = StyleSheet.create({
   dataRow: {
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  rmcDetail: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: 20,
+    paddingVertical: 5,
+  },
+  newDataRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
   },
   backButton: {
     backgroundColor: 'rgba(72, 114, 244, 0.1)',
@@ -608,5 +837,8 @@ const styles = StyleSheet.create({
   },
   storeIcon: {
     marginRight: 10,
+  },
+  rmcHeader: {
+    marginVertical: 10,
   },
 });

@@ -112,6 +112,7 @@ function AddProjectOwner(props) {
     addProjectOwner,
     getProjectMasterList,
     updateProjectOwner,
+    getProjectList,
   } = useProjectStructureActions();
   const {masterList} = useSelector(s => s.projectStructure);
 
@@ -127,6 +128,10 @@ function AddProjectOwner(props) {
 
   const getData = async () => {
     await getProjectDetails({project_id: selectedProject.id, id: projectId});
+  };
+
+  const getList = async () => {
+    await getProjectList({project_id: selectedProject.id});
   };
 
   const contactTypeOptions = useMemo(() => {
@@ -163,6 +168,7 @@ function AddProjectOwner(props) {
       await addProjectOwner(data);
     }
     getData();
+    getList();
     navigation.goBack();
   };
 

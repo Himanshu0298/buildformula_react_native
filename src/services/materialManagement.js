@@ -140,6 +140,13 @@ export default function useMaterialManagement() {
     getIndentDetails: data => {
       return instance.post('/material/issuereuestdetails', data, params);
     },
+    getRMCList: data => {
+      return instance.post('/indent/rmclist', data, params);
+    },
+
+    createWorkIssue: data => {
+      return instance.post('/material/add_rmc_issuereuest', data, params);
+    },
     getMaterialIssueIndentList: data => {
       return instance.post('/material/issuereuest', data, params);
     },
@@ -151,6 +158,13 @@ export default function useMaterialManagement() {
     },
     updateIssueQuantity: data => {
       return instance.post('/material/issueassignqtyupdate', data, params);
+    },
+    updateIssueStatus: data => {
+      return instance.post(
+        '/material/workwiseissueassignqtyupdate',
+        data,
+        params,
+      );
     },
     addReturnIndentMaterials: data => {
       return instance.post('/material/returnaddedit', data, params);
@@ -170,6 +184,9 @@ export default function useMaterialManagement() {
     },
     deleteIndentItem: data => {
       return instance.post('/indent/materialdeleteitem', data, params);
+    },
+    deleteIndentRequest: data => {
+      return instance.post('/material/workwise_issue_delete', data, params);
     },
     // Material StoreKeeper
 

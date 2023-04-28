@@ -147,8 +147,12 @@ function ProjectStructure(props) {
 
   const {projectId} = route?.params || {};
 
-  const {updateProjectStructure, getProjectMasterList, getProjectDetails} =
-    useProjectStructureActions();
+  const {
+    updateProjectStructure,
+    getProjectMasterList,
+    getProjectDetails,
+    getProjectList,
+  } = useProjectStructureActions();
 
   const {selectedProject} = useSelector(s => s.project);
   const {masterList, projectDetails, loading} = useSelector(
@@ -162,6 +166,10 @@ function ProjectStructure(props) {
   }, []);
 
   const getData = () => getProjectMasterList({project_id: selectedProject.id});
+
+  const getList = async () => {
+    await getProjectList({project_id: selectedProject.id});
+  };
 
   const getDetails = async () => {
     await getProjectDetails({project_id: selectedProject.id, id: projectId});
@@ -188,12 +196,14 @@ function ProjectStructure(props) {
       total_no_of_bunglows,
       total_no_of_plots,
       project_category,
-      bhk_configuration: bhk_configuration.split('  '),
+      bhk_configuration: bhk_configuration
+        ? bhk_configuration.split(',')
+        : null,
     };
   }, [projectDetails]);
 
   const onSubmit = values => {
-    const arrString = values?.bhk_configuration?.join('  ');
+    const arrString = values?.bhk_configuration?.join(',');
     const data = {
       project_id: selectedProject.id,
       id: projectId,
@@ -206,6 +216,7 @@ function ProjectStructure(props) {
     };
     updateProjectStructure(data);
     getDetails();
+    getList();
     navigation.goBack();
   };
 

@@ -19,7 +19,7 @@ function VisitorDetails(props) {
   const {colors} = theme;
 
   const [activityFilter, setActivityFilter] = useState('all');
-  const modulePermission = getPermissions('Visitors');
+  const modulePermission = getPermissions('Inquiry');
 
   const {getVisitor, getPipelineData, getVisitorActivities} = useSalesActions();
 

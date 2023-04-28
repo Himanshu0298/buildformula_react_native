@@ -24,7 +24,7 @@ import {Formik} from 'formik';
 import RenderInput from 'components/Atoms/RenderInput';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import ActionButtons from 'components/Atoms/ActionButtons';
-import {isNumber, pick} from 'lodash';
+import {isArray, isNumber} from 'lodash';
 import Spinner from 'react-native-loading-spinner-overlay';
 
 const INDENT_STATUS = {
@@ -91,27 +91,28 @@ const ListingCard = props => {
 
   return (
     <TouchableOpacity>
-      <View style={styles.cardContainer}>
+      <View style={styles.mainCardContainer}>
         <View style={styles.cardHeader}>
           <Text style={styles.ID}>{id}</Text>
           <Caption style={{color}}>{label}</Caption>
         </View>
         <Divider />
         <View style={styles.cardDetails}>
-          <View style={styles.dataRow}>
+          <View style={styles.newDataRow}>
             <Subheading>Create by:</Subheading>
-            <Subheading>
-              {first_name}
-              {last_name}
-            </Subheading>
+            <View style={styles.createdBy}>
+              <Text>
+                {first_name}
+                {last_name}
+              </Text>
+              <Caption>({email})</Caption>
+            </View>
           </View>
-          <View style={styles.cardContent}>
-            <Caption>{email}</Caption>
-          </View>
-          <View style={styles.createdOn}>
-            <Text> Created on:</Text>
-
-            <Text> {date} </Text>
+          <View style={styles.newDataRow}>
+            <Subheading>Created on:</Subheading>
+            <View style={styles.date}>
+              <Text>{date}</Text>
+            </View>
           </View>
         </View>
       </View>
@@ -122,36 +123,25 @@ const ListingCard = props => {
 const RequiredVendor = props => {
   const {details} = props;
 
-  const {
-    contractor_name,
-    contractor_email,
-    requred_date,
-    remark,
-    wbs_work_path,
-  } = details || {};
+  const {contractor_name, contractor_email, requred_date, remark} =
+    details || {};
 
   const date = moment(requred_date).format('D-MMM-YYYY, LT');
 
   return (
     <View style={styles.vendorContainer}>
-      <View>
-        <Subheading> Required For Vendor</Subheading>
-      </View>
       <View style={styles.vendorSubContainer}>
-        <Text>{contractor_name}</Text>
+        <Caption>Required For Vendor</Caption>
+        <Subheading>{contractor_name}</Subheading>
         <Caption>{contractor_email}</Caption>
       </View>
       <View style={styles.card}>
-        <Text> Required Date</Text>
-        <Caption>{date}</Caption>
+        <Caption> Required Date</Caption>
+        <Text>{date}</Text>
       </View>
       <View style={styles.card}>
-        <Text> Required For(Work)</Text>
-        <Caption>{wbs_work_path}</Caption>
-      </View>
-      <View style={styles.card}>
-        <Text> Remark</Text>
-        <Caption>{remark}</Caption>
+        <Caption>Remark</Caption>
+        <Text>{remark}</Text>
       </View>
     </View>
   );
@@ -169,6 +159,7 @@ function AssignMaterialCard(props) {
     estimated_quantity,
     remaining,
     assigned_quantity,
+    rm_status,
   } = item;
 
   return (
@@ -211,17 +202,19 @@ function AssignMaterialCard(props) {
             <Caption style={styles.lightData}>Assign Quantity:</Caption>
             <Text>{assigned_quantity}</Text>
             {showEdit ? (
-              <OpacityButton
-                color={theme.colors.primary}
-                opacity={0.18}
-                style={styles.paymentSubContainer}
-                onPress={() => toggleDialog(index)}>
-                <MaterialIcons
-                  name="edit"
+              rm_status === 'pending' ? (
+                <OpacityButton
                   color={theme.colors.primary}
-                  size={10}
-                />
-              </OpacityButton>
+                  opacity={0.18}
+                  style={styles.paymentSubContainer}
+                  onPress={() => toggleDialog(index)}>
+                  <MaterialIcons
+                    name="edit"
+                    color={theme.colors.primary}
+                    size={10}
+                  />
+                </OpacityButton>
+              ) : null
             ) : null}
           </View>
         </>
@@ -230,9 +223,74 @@ function AssignMaterialCard(props) {
   );
 }
 
+const RMCCard = props => {
+  const {item, isApproved, showDetail} = props;
+
+  const {
+    materialcategrytitle,
+    subcategorytitle,
+    quantity,
+    materialunitstitle,
+    available_quantity,
+    remaining,
+    estimated_quantity,
+  } = item;
+
+  return (
+    <View style={styles.cardContainer}>
+      <View style={styles.dataRow}>
+        <Caption style={styles.lightData}>Category:</Caption>
+        <Text style={styles.title}>{materialcategrytitle}</Text>
+      </View>
+      <View style={styles.dataRow}>
+        <Caption style={styles.lightData}>Sub Category:</Caption>
+        <Text style={styles.title}>{subcategorytitle}</Text>
+      </View>
+      <View style={styles.dataRow}>
+        <Caption style={styles.lightData}>Unit:</Caption>
+        <Text style={styles.title}>{materialunitstitle}</Text>
+      </View>
+      <View style={styles.dataRow}>
+        <Caption style={styles.lightData}>Ask Qty:</Caption>
+        <Text style={styles.title}>{quantity}</Text>
+      </View>
+      {isApproved || showDetail ? (
+        <>
+          <View style={styles.dataRow}>
+            <Caption style={styles.lightData}>Estimated Qty:</Caption>
+            <Text style={styles.title}>{estimated_quantity}</Text>
+          </View>
+          <View style={styles.dataRow}>
+            <Caption style={styles.lightData}>Remaining Qty:</Caption>
+            <Text style={styles.title}>{remaining}</Text>
+          </View>
+          <View style={styles.dataRow}>
+            <Caption style={styles.lightData}>Available Qty:</Caption>
+            <Text style={styles.title}>{available_quantity}</Text>
+          </View>
+        </>
+      ) : null}
+      <View style={styles.dataRow}>
+        <Caption style={styles.lightData}>Assigned Qty:</Caption>
+        {isApproved || showDetail ? (
+          available_quantity > quantity ? (
+            <MaterialIcons
+              name="check"
+              color={theme.colors.success}
+              size={18}
+            />
+          ) : (
+            <MaterialIcons name="close" color={theme.colors.error} size={18} />
+          )
+        ) : null}
+      </View>
+    </View>
+  );
+};
+
 function IssueIndentPreview(props) {
   const {navigation, route} = props;
-  const {id} = route?.params || {};
+  const {id: indentId} = route?.params || {};
 
   const alert = useAlert();
   const snackbar = useSnackbar();
@@ -242,22 +300,41 @@ function IssueIndentPreview(props) {
     deleteIssue,
     getMaterialIndentList,
     updateIssueQuantity,
+    updateIssueStatus,
   } = useMaterialManagementActions();
 
   const {selectedProject} = useSelector(s => s.project);
   const {indentDetails, loading} = useSelector(s => s.materialManagement);
 
-  const details = indentDetails?.material_indent;
+  const {
+    material_indent: details,
+    rmc_list: rmcData,
+    issue_list: materialData,
+  } = indentDetails || [];
   const {status, verification_code} = details || {};
-  const materialData = indentDetails?.material_indent_details;
 
   const [selectedItemIndex, setSelectedItemIndex] = React.useState();
   const [showDetail, setShowDetail] = React.useState();
-  const [materials, setMaterials] = React.useState(materialData);
+  const [materials, setMaterials] = React.useState([]);
+  const [rmc, setRmc] = React.useState([]);
+
+  const detailsIssueStatus = materialData
+    ? Object.values(materialData)[0]?.find(i => i.id).rm_status
+    : [];
+  console.log('===========> detailsIssueStatus', detailsIssueStatus);
+  const detailsRmcStatus = rmcData
+    ? Object.values(rmcData)[0]?.find(i => i.id).rm_status
+    : [];
+
+  console.log('===========> detailsRmcStatus', detailsRmcStatus);
 
   useEffect(() => {
-    if (materialData?.length) setMaterials(materialData);
+    if (materialData) setMaterials(Object.values(materialData)[0]);
   }, [materialData]);
+
+  useEffect(() => {
+    if (rmcData) setRmc(Object.values(rmcData)[0]);
+  }, [rmcData]);
 
   useEffect(() => {
     getData();
@@ -271,7 +348,7 @@ function IssueIndentPreview(props) {
   const getData = async () => {
     await getIndentDetails({
       project_id: selectedProject.id,
-      material_indent_id: id,
+      material_indent_id: indentId,
     });
   };
 
@@ -287,7 +364,7 @@ function IssueIndentPreview(props) {
       confirmText: 'Delete',
       onConfirm: () => {
         deleteIssue({
-          material_indent_id: id,
+          material_indent_id: indentId,
           project_id: selectedProject.id,
         });
         getList();
@@ -297,12 +374,24 @@ function IssueIndentPreview(props) {
   };
 
   const navToCreate = () => {
-    navigation.navigate('CreateIssueIndent', {id, indentDetails});
+    navigation.navigate('CreateIssueIndent', {id: indentId, indentDetails});
   };
 
-  const handleSaveMaterialQuantity = value => {
-    const _materials = [...materials];
+  const handleSaveMaterialQuantity = (value, approveStatus) => {
+    if (approveStatus === 'approved') {
+      if (quantity) {
+        snackbar.showMessage({
+          message: 'please add assigned quantity',
+          variant: 'warning',
+        });
+        toggleDialog();
+        return;
+      }
+    }
 
+    const quantity = materials.find(i => i.assigned_quantity === null);
+
+    const _materials = [...materials];
     if (value > _materials[selectedItemIndex]?.available_quantity) {
       snackbar.showMessage({
         message: 'Assign Quantity can not be more then Available Quantity',
@@ -317,31 +406,54 @@ function IssueIndentPreview(props) {
     toggleDialog();
   };
 
-  const updateStatus = async approveStatus => {
-    const quantityData = materials.map(item => {
-      const keys = ['material_indent_id', 'assigned_quantity'];
-      return {...pick(item, keys), material_indent_details_id: item.id};
+  const UpdateDetailsStatus = async approveStatus => {
+    // const quantity = materials.find(i => i.assigned_quantity === null);
+    // if (approveStatus === 'approved') {
+    //   if (quantity) {
+    //     snackbar.showMessage({
+    //       message: 'please add assigned quantity',
+    //       variant: 'warning',
+    //     });
+    //     toggleDialog();
+    //     return;
+    //   }
+    // }
+
+    const data = {
+      project_id: selectedProject.id,
+      material_indent_id: indentId,
+      type: approveStatus,
+    };
+    await updateIssueQuantity(data);
+    getData();
+  };
+
+  const updateStatus = async (approvedStatus, data) => {
+    const {wbs_works_id, type} = data;
+
+    const issueQuantityData = materials.map(item => {
+      const {id, assigned_quantity} = item;
+      return {assigned_quantity, material_indent_details_id: id};
     });
-    const quantity = materials.find(i => i.assigned_quantity === null);
-    if (approveStatus === 'approved') {
-      if (quantity) {
-        snackbar.showMessage({
-          message: 'please add assigned quantity',
-          variant: 'warning',
-        });
-        toggleDialog();
-        return;
-      }
-    }
+
+    const rmcQuantityData = rmc?.map(item => {
+      const {id, assigned_quantity} = item;
+      return {assigned_quantity, material_indent_details_id: id};
+    });
+
+    const assigned_quantity =
+      type === 'rmc' ? rmcQuantityData : issueQuantityData;
 
     const restData = {
       project_id: selectedProject.id,
-      material_indent_id: id,
-      type: approveStatus,
-      assigned_quantity: JSON.stringify(quantityData),
+      material_indent_id: indentId,
+      approvaltype: approvedStatus,
+      wbsworkid: wbs_works_id,
+      indenttype: type,
+      assigned_quantity: JSON.stringify(assigned_quantity),
     };
 
-    await updateIssueQuantity(restData);
+    await updateIssueStatus(restData);
     getData();
   };
 
@@ -386,7 +498,8 @@ function IssueIndentPreview(props) {
             </View>
           ) : null}
 
-          {isPending && !showDetail ? (
+          {(isPending && !showDetail && detailsRmcStatus === 'pending') ||
+          detailsIssueStatus === 'pending' ? (
             <View style={styles.statusContainer}>
               <OpacityButton
                 color={theme.colors.primary}
@@ -417,26 +530,166 @@ function IssueIndentPreview(props) {
           contentContainerStyle={styles.scrollView}>
           <ListingCard details={details} />
           <RequiredVendor details={details} />
-          {materialData?.length ? (
+          {materialData ? (
             <>
               <View style={styles.textContainer}>
                 <Subheading style={styles.textSubContainer}>
-                  Material Request
+                  Issue Material Request
                 </Subheading>
               </View>
 
-              {materials?.map((item, index) => {
-                return (
-                  <AssignMaterialCard
-                    item={item}
-                    index={index}
-                    toggleDialog={toggleDialog}
-                    showDetail={showDetail}
-                    showEdit={isPending}
-                    isApproved={isApproved}
-                  />
-                );
-              })}
+              <View style={styles.materialCardContainer}>
+                {Object.entries(materialData)?.map(item => {
+                  return item
+                    ?.filter(workId => isArray(workId))
+                    ?.map(issue_request => {
+                      const headerInfo = issue_request?.find(e => e);
+
+                      const {rm_status, wbs_works_id, type} = headerInfo;
+                      const {label, color} =
+                        INDENT_STATUS[headerInfo?.rm_status] || {};
+
+                      return (
+                        <View style={styles.cardContainer}>
+                          {item.find(e => e !== headerInfo.requiredfor) ? (
+                            <>
+                              <View style={styles.cardHeader}>
+                                <Text> Status:</Text>
+                                <Caption style={{color}}>{label}</Caption>
+                              </View>
+                              <View style={styles.wbsIdContainer}>
+                                <Text style={styles.idContainer}>
+                                  {headerInfo.requiredfor}{' '}
+                                </Text>
+                              </View>
+                            </>
+                          ) : null}
+                          {issue_request?.map((single_request, index) => {
+                            return (
+                              <AssignMaterialCard
+                                key={single_request.id}
+                                item={single_request}
+                                index={index}
+                                toggleDialog={toggleDialog}
+                                showDetail={showDetail}
+                                showEdit={isPending}
+                                isApproved={isApproved}
+                              />
+                            );
+                          })}
+
+                          {rm_status === 'pending' ? (
+                            showDetail ? (
+                              <ActionButtons
+                                cancelLabel="Reject"
+                                submitLabel=" Approve"
+                                onCancel={() =>
+                                  updateStatus('rejected', {wbs_works_id, type})
+                                }
+                                onSubmit={() =>
+                                  updateStatus('approved', {wbs_works_id, type})
+                                }
+                              />
+                            ) : null
+                          ) : null}
+                        </View>
+                      );
+                    });
+                })}
+              </View>
+              <Divider />
+            </>
+          ) : null}
+          {rmcData ? (
+            <>
+              <View style={styles.textContainer}>
+                <Subheading style={styles.textSubContainer}>
+                  RMC Request
+                </Subheading>
+              </View>
+
+              <View style={styles.materialCardContainer}>
+                {Object.entries(rmcData)?.map(item => {
+                  return item
+                    ?.filter(workId => isArray(workId))
+                    ?.map(rmc_request => {
+                      const headerInfo = rmc_request?.find(e => e);
+                      const {label, color} =
+                        INDENT_STATUS[headerInfo?.rm_status] || {};
+
+                      const {
+                        requiredfor,
+                        grade,
+                        rmc_qty,
+                        rm_status,
+                        wbs_works_id,
+                        type,
+                      } = headerInfo;
+
+                      return (
+                        <View style={styles.mainCardContainer}>
+                          {item.find(e => e !== rmc_request.wbs_works_id) ? (
+                            <>
+                              <View style={styles.cardHeader}>
+                                <Text> Status:</Text>
+                                <Caption style={{color}}>{label}</Caption>
+                              </View>
+                              <View style={styles.wbsIdContainer}>
+                                <Text style={styles.idContainer}>
+                                  {requiredfor}
+                                </Text>
+                              </View>
+
+                              <Divider />
+                              <View style={styles.newDataRow}>
+                                <View style={styles.rmcDetail}>
+                                  <Caption>Grade: </Caption>
+                                  <Text>{grade}</Text>
+                                </View>
+                                <View style={styles.rmcDetail}>
+                                  <Caption>Qty: </Caption>
+                                  <Text>{rmc_qty}</Text>
+                                </View>
+                              </View>
+                              <Divider style={styles.rmcHeader} />
+                            </>
+                          ) : null}
+                          {rmc_request?.map(single_request => {
+                            return (
+                              <RMCCard
+                                item={single_request}
+                                navigation={navigation}
+                                isApproved={isApproved}
+                                showDetail={showDetail}
+                                isPending={isPending}
+                              />
+                            );
+                          })}
+                          {rm_status === 'pending' ? (
+                            showDetail ? (
+                              <ActionButtons
+                                cancelLabel="Reject"
+                                submitLabel=" Approve"
+                                onCancel={() => {
+                                  updateStatus('rejected', {
+                                    wbs_works_id,
+                                    type,
+                                  });
+                                }}
+                                onSubmit={() => {
+                                  updateStatus('approved', {
+                                    wbs_works_id,
+                                    type,
+                                  });
+                                }}
+                              />
+                            ) : null
+                          ) : null}
+                        </View>
+                      );
+                    });
+                })}
+              </View>
             </>
           ) : null}
         </ScrollView>
@@ -451,8 +704,8 @@ function IssueIndentPreview(props) {
             cancelLabel="Reject"
             submitLabel=" Approve"
             // submitDisabled={disableApprove}
-            onCancel={() => updateStatus('rejected')}
-            onSubmit={() => updateStatus('approved')}
+            onCancel={() => UpdateDetailsStatus('rejected')}
+            onSubmit={() => UpdateDetailsStatus('approved')}
           />
         ) : null}
       </View>
@@ -490,15 +743,19 @@ const styles = StyleSheet.create({
   textSubContainer: {
     color: 'rgba(72, 114, 244, 1)',
   },
-  cardContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingLeft: 50,
-  },
   cardContainer: {
     padding: 10,
     marginBottom: 10,
-    backgroundColor: '#fff',
+    backgroundColor: '#f5f5f5f5',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    ...getShadow(2),
+  },
+
+  mainCardContainer: {
+    padding: 10,
+    marginBottom: 10,
+    backgroundColor: '#ffff',
     borderRadius: 5,
     paddingHorizontal: 10,
     ...getShadow(2),
@@ -520,11 +777,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  createdOn: {
-    padding: 10,
-    paddingHorizontal: 0,
+  newDataRow: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
   },
 
   ID: {
@@ -596,12 +851,32 @@ const styles = StyleSheet.create({
   scrollView: {
     paddingBottom: 50,
   },
-  deleteIcon: {
-    borderRadius: 20,
-  },
+
   cardHeaderStyle: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  rmcHeader: {
+    marginVertical: 10,
+  },
+
+  wbsIdContainer: {
+    marginVertical: 5,
+    borderWidth: 1,
+    borderColor: theme.colors.primary,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  idContainer: {
+    padding: 5,
+  },
+  createdBy: {
+    marginLeft: 25,
+  },
+  date: {
+    marginLeft: 15,
+    marginTop: 5,
   },
 });

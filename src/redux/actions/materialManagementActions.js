@@ -52,7 +52,11 @@ export default function useMaterialManagementActions() {
     updateIssueQuantity,
     getMaterialIndentCategoryList,
     deleteIndentItem,
+    deleteIndentRequest,
     getCommonMaterial,
+    getRMCList,
+    updateIssueStatus,
+    createWorkIssue,
   } = useMaterialManagement();
 
   return {
@@ -581,6 +585,20 @@ export default function useMaterialManagementActions() {
           }
         },
       }),
+    getRMCList: data =>
+      dispatch({
+        type: types.GET_RMC_LIST,
+        payload: async () => {
+          try {
+            const response = _res(await getRMCList(data));
+            return Promise.resolve(response.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
     getIndentDetails: data =>
       dispatch({
         type: types.GET_MATERIAL_INDENT_DETAILS,
@@ -631,6 +649,21 @@ export default function useMaterialManagementActions() {
         payload: async () => {
           try {
             const res = _res(await deleteIndentItem(data));
+            snackbar.showMessage({message: res.msg});
+            return Promise.resolve(res.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    deleteIndentRequest: data =>
+      dispatch({
+        type: types.DELETE_INDENT_REQUEST,
+        payload: async () => {
+          try {
+            const res = _res(await deleteIndentRequest(data));
             snackbar.showMessage({message: res.msg});
             return Promise.resolve(res.data);
           } catch (error) {
@@ -722,6 +755,34 @@ export default function useMaterialManagementActions() {
         payload: async () => {
           try {
             const response = _res(await updateIssueQuantity(formData));
+            return Promise.resolve(response.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    updateIssueStatus: formData =>
+      dispatch({
+        type: types.UPDATE_ISSUE_ASSIGN_QUANTITY,
+        payload: async () => {
+          try {
+            const response = _res(await updateIssueStatus(formData));
+            return Promise.resolve(response.data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    createWorkIssue: formData =>
+      dispatch({
+        type: types.CREATE_WORK_ISSUE,
+        payload: async () => {
+          try {
+            const response = _res(await createWorkIssue(formData));
             return Promise.resolve(response.data);
           } catch (error) {
             const message = _err(error);

@@ -15,7 +15,6 @@ import {
   Text,
   Title,
   Badge,
-  useTheme,
 } from 'react-native-paper';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -26,6 +25,8 @@ import useProjectStructureActions from 'redux/actions/projectStructureActions';
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {useAlert} from 'components/Atoms/Alert';
+import {inRange} from 'lodash';
+import NoResult from 'components/Atoms/NoResult';
 
 const PROJECT_STATUS = {
   0: {label: 'Inactive', color: '#FF5E5E'},
@@ -145,7 +146,6 @@ function ProjectListing(props) {
   const {navigation} = props;
 
   const alert = useAlert();
-  const {colors} = useTheme();
 
   const {getProjectList, deleteProject} = useProjectStructureActions();
 
@@ -172,9 +172,13 @@ function ProjectListing(props) {
     return Object.values(projectFilters)?.filter(i => i !== '').length;
   }, [projectFilters]);
 
-  const checkRange = (value = 0, key) => {
-    const {low = 0, high = 0} = key || {};
-    return value >= low && value <= high;
+  const checkRange = (value, key) => {
+    const {low = 0, high = 0} = key;
+    return inRange(value, low, high);
+  };
+
+  const exist = v => {
+    return v !== undefined && v !== null && v !== '';
   };
 
   const filteredProjectData = useMemo(() => {
@@ -203,31 +207,65 @@ function ProjectListing(props) {
 
       return projectList.filter(i => {
         const validations = [
-          projectNames?.includes(i?.project_name),
-          developerNames?.includes(i?.developer_name),
-          area?.includes(i?.area),
-          (status === 'Active' ? 1 : 0) === i?.status,
-          (premium === 'Yes' ? 1 : 0) === i?.premium_project,
-          Object.values(possession)?.includes(i?.possesion_year),
-          Object.values(rera)?.includes(i?.rera_no),
-          projectType?.includes(i?.project_type),
-          restrictedUser?.includes(i?.restricted_user),
-          projectStatus?.includes(i?.project_status),
-          projectQuality?.includes(i?.project_quality),
-          i?.bhk_configuration
-            ?.split(',')
-            ?.some(value => Object.values(bhk)?.includes(value?.toUpperCase())),
-          i?.project_category
-            .split(',')
-            ?.some(cat => category?.includes(Number(cat))),
-          i?.owner_info?.some(e => owners?.includes(e.name)),
-          i?.security_info?.some(e => security?.includes(e.name)),
-          checkRange(i?.total_no_of_towers, towers),
-          checkRange(i?.total_no_of_units, units),
-          checkRange(i?.total_no_of_bunglows, bungalows),
-          checkRange(i?.total_no_of_plots, plots),
+          exist(projectNames)
+            ? projectNames?.includes(i?.project_name)
+            : undefined,
+          exist(developerNames)
+            ? developerNames?.includes(i?.developer_name)
+            : undefined,
+          exist(area) ? area?.includes(i?.area) : undefined,
+          exist(status) ? status === i?.status : undefined,
+          exist(premium) ? premium === i?.premium_project : undefined,
+          exist(possession)
+            ? Object.values(possession)?.includes(i?.possesion_year)
+            : undefined,
+          exist(rera) ? Object.values(rera)?.includes(i?.rera_no) : undefined,
+          exist(projectType)
+            ? projectType?.includes(i?.project_type)
+            : undefined,
+          exist(restrictedUser)
+            ? restrictedUser?.includes(i?.restricted_user)
+            : undefined,
+          exist(projectStatus)
+            ? projectStatus?.includes(i?.project_status)
+            : undefined,
+          exist(projectQuality)
+            ? projectQuality?.includes(i?.project_quality)
+            : undefined,
+          exist(bhk)
+            ? i?.bhk_configuration
+                ?.split(',')
+                ?.some(value =>
+                  Object.values(bhk)?.includes(value?.toUpperCase()),
+                )
+            : undefined,
+          exist(category)
+            ? i?.project_category
+                .split(',')
+                ?.some(cat => category?.includes(Number(cat)))
+            : undefined,
+          exist(owners)
+            ? i?.owner_info?.some(e => owners?.includes(e.name))
+            : undefined,
+          exist(security)
+            ? i?.security_info?.some(e =>
+                security?.includes(e.contact_person_name),
+              )
+            : undefined,
+          exist(towers) ? checkRange(i?.total_no_of_towers, towers) : undefined,
+          exist(units) ? checkRange(i?.total_no_of_units, units) : undefined,
+          exist(bungalows)
+            ? checkRange(i?.total_no_of_bunglows, bungalows)
+            : undefined,
+          exist(plots) ? checkRange(i?.total_no_of_plots, plots) : undefined,
         ];
-        return validations.find(valid => valid);
+        console.log(
+          '🚀 ~ file: ProjectListing.js:262 ~ filteredProjectData ~ validations:',
+          i.id,
+          validations,
+        );
+        // console.log('==========>', i?.bhk_configuration.split(','));
+        return validations.filter(v => v === false).length === 0;
       });
     }
     return projectList;
@@ -267,7 +305,6 @@ function ProjectListing(props) {
   return (
     <View style={styles.mainContainer}>
       <Spinner visible={loading} textContent="" />
-
       <Header navToFilter={navToFilter} filterCount={filterCount} />
       <Searchbar
         style={styles.searchBar}
@@ -291,6 +328,7 @@ function ProjectListing(props) {
               handleDelete={handleDelete}
             />
           )}
+          ListEmptyComponent={<NoResult />}
         />
         <FAB style={styles.fab} large icon="plus" onPress={handleAddNav} />
       </View>

@@ -42,10 +42,14 @@ import {
   UPDATE_ISSUE_ASSIGN_QUANTITY,
   GET_MATERIAL_CATEGORY_LIST,
   DELETE_INDENT_ITEM,
+  DELETE_INDENT_REQUEST,
   DELETE_ISSUE,
   GET_COMMON_MATERIAL,
   ADD_RETURN_ATTACHMENT,
   ADD_MATERIAL_RETURN_REQUEST,
+  GET_RMC_LIST,
+  UPDATE_ISSUE_STATUS,
+  CREATE_WORK_ISSUE,
 } from '../actions/actionTypes';
 
 const initialState = {
@@ -76,6 +80,7 @@ const initialState = {
   indentDetails: {},
   categoryList: [],
   commonList: [],
+  rmcList: [],
 };
 
 const reducer = (state = initialState, action = {}) => {
@@ -118,6 +123,12 @@ const reducer = (state = initialState, action = {}) => {
         ...state,
         loading: false,
         workOptions: payload,
+      };
+    case `${GET_RMC_LIST}_FULFILLED`:
+      return {
+        ...state,
+        loading: false,
+        rmcList: payload,
       };
 
     case `${GET_MATERIAL_LIST}_FULFILLED`: {
@@ -289,7 +300,11 @@ const reducer = (state = initialState, action = {}) => {
     case `${GET_VENDOR_OR_CONTRACTORS_DETAILS}_PENDING`:
     case `${ADD_SUPPLIER}_PENDING`:
     case `${DELETE_INDENT_ITEM}_PENDING`:
+    case `${DELETE_INDENT_REQUEST}_PENDING`:
     case `${ADD_MATERIAL_RETURN_REQUEST}_PENDING`:
+    case `${GET_RMC_LIST}_PENDING`:
+    case `${UPDATE_ISSUE_STATUS}_PENDING`:
+    case `${CREATE_WORK_ISSUE}_PENDING`:
     case `${GET_SUPPLIERS_LIST}_PENDING`: {
       return {
         ...state,
@@ -323,7 +338,10 @@ const reducer = (state = initialState, action = {}) => {
     case `${CREATE_STOREKEEPER_ORDER}_FULFILLED`:
     case `${ADD_RETURN_ATTACHMENT}_FULFILLED`:
     case `${DELETE_INDENT_ITEM}_FULFILLED`:
+    case `${DELETE_INDENT_REQUEST}_FULFILLED`:
     case `${ADD_MATERIAL_RETURN_REQUEST}_FULFILLED`:
+    case `${UPDATE_ISSUE_STATUS}_FULFILLED`:
+    case `${CREATE_WORK_ISSUE}_FULFILLED`:
     case `${UPDATE_STORE_KEEPER_STATUS}_FULFILLED`: {
       return {
         ...state,
@@ -375,7 +393,11 @@ const reducer = (state = initialState, action = {}) => {
     case `${CREATE_STOREKEEPER_ORDER}_REJECTED`:
     case `${ADD_RETURN_ATTACHMENT}_REJECTED`:
     case `${DELETE_INDENT_ITEM}_REJECTED`:
+    case `${DELETE_INDENT_REQUEST}_REJECTED`:
     case `${ADD_MATERIAL_RETURN_REQUEST}_REJECTED`:
+    case `${GET_RMC_LIST}_REJECTED`:
+    case `${UPDATE_ISSUE_STATUS}_REJECTED`:
+    case `${CREATE_WORK_ISSUE}_REJECTED`:
     case `${UPDATE_STORE_KEEPER_STATUS}_REJECTED`: {
       return {
         ...state,

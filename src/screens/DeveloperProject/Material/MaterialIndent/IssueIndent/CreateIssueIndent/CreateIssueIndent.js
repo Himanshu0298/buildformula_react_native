@@ -49,10 +49,6 @@ const CreateIssueIndent = props => {
     }));
   }, [vendorOptions]);
 
-  const workSubWorkOptions = useMemo(() => {
-    return workOptions?.map(i => ({label: `{${i.title}}`, value: i.id}));
-  }, [workOptions]);
-
   const initialValues = React.useMemo(() => {
     if (edit) {
       const {vendor_id, requred_date, wbs_works_id, remark} = details;
@@ -75,7 +71,7 @@ const CreateIssueIndent = props => {
     };
 
     const {value} = await addIssueRequest(data);
-    navigation.navigate('AddIssueIndentMaterials', {
+    navigation.navigate('CreateWork', {
       edit,
       id: value.indent_id,
       wbs_id: values.wbs_works_id,
@@ -131,18 +127,7 @@ const CreateIssueIndent = props => {
                   }}
                   error={errors.requred_date}
                 />
-                <RenderSelect
-                  name="wbs_works_id"
-                  label="Required For"
-                  disabled={!!edit}
-                  value={values.wbs_works_id}
-                  options={workSubWorkOptions}
-                  containerStyles={styles.inputStyles}
-                  onBlur={handleBlur('wbs_works_id')}
-                  onSelect={value => {
-                    setFieldValue('wbs_works_id', value);
-                  }}
-                />
+
                 <RenderTextBox
                   name="remark"
                   blurOnSubmit={false}

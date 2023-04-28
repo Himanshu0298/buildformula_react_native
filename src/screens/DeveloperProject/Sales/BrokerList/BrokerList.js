@@ -110,7 +110,7 @@ function BrokerList(props) {
   const loading = useSalesLoading();
 
   // TODO: setup permissions
-  const modulePermission = getPermissions('Visitors');
+  const modulePermission = getPermissions('Inquiry');
 
   const {getBrokersList} = useSalesActions();
   const [filter, setFilter] = React.useState('name');

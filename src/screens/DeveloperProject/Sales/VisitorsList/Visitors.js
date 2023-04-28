@@ -215,7 +215,7 @@ function Visitors(props) {
 
   const loading = useSalesLoading();
 
-  const modulePermission = getPermissions('Visitors');
+  const modulePermission = getPermissions('Inquiry');
 
   const {
     getVisitors,
