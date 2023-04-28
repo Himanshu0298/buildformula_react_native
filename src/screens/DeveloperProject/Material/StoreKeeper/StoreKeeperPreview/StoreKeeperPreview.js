@@ -285,18 +285,18 @@ const MaterialCard = props => {
           <Text style={[styles.title, {color}]}>{label}</Text>
         </View>
       ) : null}
-      {modulePermission?.editor || modulePermission?.admin ? (
-        rm_status === 'pending' ? (
-          type === 'rm' ? (
-            <ApproveButtons
-              rejectLabel="Reject"
-              approvedLabel="Approved"
-              onReject={() => updateStatus('rejected', id)}
-              onApprove={() => updateStatus('approved', id)}
-            />
-          ) : null
+      {/* {modulePermission?.editor || modulePermission?.admin ? ( */}
+      {rm_status === 'pending' ? (
+        type === 'rm' ? (
+          <ApproveButtons
+            rejectLabel="Reject"
+            approvedLabel="Approved"
+            onReject={() => updateStatus('rejected', id)}
+            onApprove={() => updateStatus('approved', id)}
+          />
         ) : null
       ) : null}
+      {/* ) : null} */}
     </View>
   );
 };
@@ -383,7 +383,7 @@ const IssueMaterialCard = props => {
   );
 };
 const RMCCard = props => {
-  const {item} = props;
+  const {item, updateStatus} = props;
 
   const {
     materialcategrytitle,
