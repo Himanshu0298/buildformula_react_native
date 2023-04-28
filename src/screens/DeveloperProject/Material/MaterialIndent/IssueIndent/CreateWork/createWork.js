@@ -626,11 +626,31 @@ function CreateWork(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // useEffect(() => {
+  //   if (indentDetails) {
+  //     setWbsIds(Object.keys(indentDetails.issue_list) || []);
+  //     setMaterials(Object.values(indentDetails.issue_list).flat() || []);
+  //     setRmcMaterials(Object.values(indentDetails.rmc_list).flat() || []);
+  //   }
+  // }, [indentDetails]);
+
   useEffect(() => {
-    if (indentDetails) {
-      setWbsIds(Object.keys(indentDetails.issue_list) || []);
-      setMaterials(Object.values(indentDetails.issue_list).flat() || []);
-      setRmcMaterials(Object.values(indentDetails.rmc_list).flat() || []);
+    if (
+      typeof indentDetails !== 'undefined' &&
+      indentDetails &&
+      indentDetails.issue_list &&
+      indentDetails.rmc_list
+    ) {
+      const issueListKeys = Object.keys(indentDetails.issue_list);
+      const rmcListValues = Object.values(indentDetails.rmc_list).flat();
+      const issueListValues = issueListKeys.reduce((acc, key) => {
+        return acc.concat(indentDetails.issue_list[key]);
+      }, []);
+      setWbsIds(issueListKeys);
+      setMaterials(issueListValues);
+      setRmcMaterials(rmcListValues);
+    } else {
+      // Handle the case when indentDetails is undefined or does not have the expected properties
     }
   }, [indentDetails]);
 
@@ -821,7 +841,6 @@ function CreateWork(props) {
 
     setRmcMaterials([...filtered, ...data]);
   };
-  console.log('===========>wbsIds ', wbsIds);
 
   const handleSaveIssueMaterial = values => {
     if (!values.material_units_id) {
