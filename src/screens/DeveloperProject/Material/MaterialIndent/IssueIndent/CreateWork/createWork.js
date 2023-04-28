@@ -628,9 +628,9 @@ function CreateWork(props) {
 
   useEffect(() => {
     if (indentDetails) {
-      setWbsIds(Object.keys(indentDetails.issue_list).flat());
-      setMaterials(Object.values(indentDetails.issue_list).flat());
-      setRmcMaterials(Object.values(indentDetails.rmc_list).flat());
+      setWbsIds(Object.keys(indentDetails.issue_list) || []);
+      setMaterials(Object.values(indentDetails.issue_list).flat() || []);
+      setRmcMaterials(Object.values(indentDetails.rmc_list).flat() || []);
     }
   }, [indentDetails]);
 

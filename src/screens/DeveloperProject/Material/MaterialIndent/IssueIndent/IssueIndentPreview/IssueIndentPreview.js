@@ -318,11 +318,13 @@ function IssueIndentPreview(props) {
   const [materials, setMaterials] = React.useState([]);
   const [rmc, setRmc] = React.useState([]);
 
-  const detailsIssueStatus = Object.values(materialData)[0]?.find(
-    i => i.id,
-  ).rm_status;
+  const detailsIssueStatus = materialData
+    ? Object.values(materialData)[0]?.find(i => i.id).rm_status
+    : [];
 
-  const detailsRmcStatus = Object.values(rmcData)[0]?.find(i => i.id).rm_status;
+  const detailsRmcStatus = rmcData
+    ? Object.values(rmcData)[0]?.find(i => i.id).rm_status
+    : [];
 
   useEffect(() => {
     if (materialData) setMaterials(Object.values(materialData)[0]);
