@@ -66,8 +66,7 @@ const DeliverDetails = props => {
   const {route} = props;
   const {item, orderNumber} = route?.params || {};
 
-  const {material_purchase_request_version_id, challan_number: challanNumber} =
-    item;
+  const {challan_number: challanNumber, id: deliveryChallanId} = item;
 
   const {getMaterialChallanDetails} = useMaterialManagementActions();
 
@@ -82,7 +81,7 @@ const DeliverDetails = props => {
     getMaterialChallanDetails({
       project_id: selectedProject.id,
       material_order_no: orderNumber,
-      material_delivery_challan_id: material_purchase_request_version_id,
+      material_delivery_challan_id: deliveryChallanId,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
