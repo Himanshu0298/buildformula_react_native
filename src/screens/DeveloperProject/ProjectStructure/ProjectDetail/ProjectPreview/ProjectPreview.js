@@ -50,7 +50,6 @@ function Files(props) {
   const [visible, setVisible] = React.useState(false);
 
   const onPressFile = async file => {
-    console.log('===========> file', file);
     const fileUrl = getDownloadUrl(file);
     const name = getFileName(file);
 

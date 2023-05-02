@@ -36,7 +36,7 @@ function AddFollowUp(props) {
     await addVisitorFollowUp({
       ...values,
       followup_date: dayjs(values.followup_date).format('DD-MM-YYYY'),
-      followup_time: dayjs(values.followup_time).format('hh:mm:ss'),
+      followup_time: dayjs(values.followup_time).format('hh:mm:ss a'),
       visitor_id: visitorId || customerId,
       project_id: selectedProject.id,
     });

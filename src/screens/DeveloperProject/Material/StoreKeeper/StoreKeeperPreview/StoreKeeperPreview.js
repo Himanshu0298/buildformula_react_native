@@ -55,7 +55,7 @@ const RenderAttachments = props => {
   const download = useDownload();
 
   const onPressFile = async file => {
-    const fileUrl = getDownloadUrl(file);
+    const fileUrl = getDownloadUrl(file.file_url);
     const name = getFileName(file);
 
     download.link({
@@ -68,8 +68,6 @@ const RenderAttachments = props => {
     });
   };
 
-  // TODO download file remaining
-
   return (
     <View>
       <View style={styles.cardContainer1}>
@@ -79,7 +77,7 @@ const RenderAttachments = props => {
 
         {attachments?.map(attachment => {
           return (
-            <TouchableOpacity onPress={onPressFile}>
+            <TouchableOpacity onPress={() => onPressFile(attachment)}>
               <View key={attachment.file_name}>
                 <View style={styles.sectionContainer}>
                   <Image source={FileIcon} style={styles.fileIcon} />
@@ -99,7 +97,7 @@ const RenderAttachments = props => {
                   <OpacityButton
                     opacity={0.0}
                     style={styles.closeButton}
-                    onPress={() => onPressFile(attachment.file_name)}>
+                    onPress={() => onPressFile(attachment)}>
                     <MaterialCommunityIcons
                       name="download"
                       color={theme.colors.primary}
@@ -512,7 +510,6 @@ function StoreKeeperPreview(props) {
         ) : null}
         <ListingCard storeKeeperDetails={storeKeeperDetails} />
         <RequiredVendor storeKeeperDetails={storeKeeperDetails} type={type} />
-
         {type === 'rm' ? (
           material_indent_details?.length ? (
             <>
@@ -539,7 +536,6 @@ function StoreKeeperPreview(props) {
             </>
           ) : null
         ) : null}
-
         {issue_list ? (
           <>
             <View style={styles.textContainer}>
@@ -588,67 +584,69 @@ function StoreKeeperPreview(props) {
           </>
         ) : null}
         {rmc_list ? (
-          <>
-            <View style={styles.textContainer}>
-              <Subheading style={styles.textSubContainer}>
-                RMC Request
-              </Subheading>
-            </View>
+          rmc_list.length ? (
+            <>
+              <View style={styles.textContainer}>
+                <Subheading style={styles.textSubContainer}>
+                  RMC Request
+                </Subheading>
+              </View>
 
-            <View style={styles.materialCardContainer}>
-              {Object.entries(rmc_list)?.map(item => {
-                return item
-                  ?.filter(id => {
-                    return isArray(id);
-                  })
-                  ?.map(rmc_request => {
-                    const headerInfo = rmc_request?.find(e => e);
+              <View style={styles.materialCardContainer}>
+                {Object.entries(rmc_list)?.map(item => {
+                  return item
+                    ?.filter(id => {
+                      return isArray(id);
+                    })
+                    ?.map(rmc_request => {
+                      const headerInfo = rmc_request?.find(e => e);
 
-                    const {requiredfor, grade, rmc_qty} = headerInfo;
+                      const {requiredfor, grade, rmc_qty} = headerInfo;
 
-                    return (
-                      <View style={styles.cardContainer}>
-                        {item.find(e => e !== rmc_request.wbs_works_id) ? (
-                          <>
-                            <View style={styles.cardHeader}>
-                              <Text variant="labelSmall">{requiredfor}</Text>
-                            </View>
-
-                            <Divider />
-                            <View style={styles.newDataRow}>
-                              <View style={styles.rmcDetail}>
-                                <Caption>Grade: </Caption>
-                                <Text>{grade}</Text>
-                              </View>
-                              <View style={styles.rmcDetail}>
-                                <Caption>Qty: </Caption>
-                                <Text>{rmc_qty}</Text>
-                              </View>
-                            </View>
-                            <Divider style={styles.rmcHeader} />
-                          </>
-                        ) : null}
-                        {rmc_request?.map(single_request => {
-                          return (
+                      return (
+                        <View style={styles.cardContainer}>
+                          {item.find(e => e !== rmc_request.wbs_works_id) ? (
                             <>
-                              <RMCCard
-                                item={single_request}
-                                navigation={navigation}
-                                updateStatus={updateStatus}
-                                authorizedstatus={authorizedstatus}
-                                modulePermission={modulePermission}
-                                type={type}
-                              />
+                              <View style={styles.cardHeader}>
+                                <Text variant="labelSmall">{requiredfor}</Text>
+                              </View>
+
                               <Divider />
+                              <View style={styles.newDataRow}>
+                                <View style={styles.rmcDetail}>
+                                  <Caption>Grade: </Caption>
+                                  <Text>{grade}</Text>
+                                </View>
+                                <View style={styles.rmcDetail}>
+                                  <Caption>Qty: </Caption>
+                                  <Text>{rmc_qty}</Text>
+                                </View>
+                              </View>
+                              <Divider style={styles.rmcHeader} />
                             </>
-                          );
-                        })}
-                      </View>
-                    );
-                  });
-              })}
-            </View>
-          </>
+                          ) : null}
+                          {rmc_request?.map(single_request => {
+                            return (
+                              <>
+                                <RMCCard
+                                  item={single_request}
+                                  navigation={navigation}
+                                  updateStatus={updateStatus}
+                                  authorizedstatus={authorizedstatus}
+                                  modulePermission={modulePermission}
+                                  type={type}
+                                />
+                                <Divider />
+                              </>
+                            );
+                          })}
+                        </View>
+                      );
+                    });
+                })}
+              </View>
+            </>
+          ) : null
         ) : null}
         {attachments?.length ? (
           label === 'Issued' ? null : (

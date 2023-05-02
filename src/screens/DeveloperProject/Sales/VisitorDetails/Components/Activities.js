@@ -77,7 +77,7 @@ function DetailCard(props) {
       ) : null}
       {type === 'visitor_followup' ? (
         <Text style={styles.valueContainer}>
-          Due at {dayjs(followup).format('hh:mm a')} on
+          Due at {dayjs(followup).format('HH:MM')} on{'  '}
           {dayjs(followup).format('DD-MM-YYYY')}
         </Text>
       ) : null}

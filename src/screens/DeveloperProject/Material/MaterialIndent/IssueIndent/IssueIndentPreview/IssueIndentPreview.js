@@ -321,12 +321,9 @@ function IssueIndentPreview(props) {
   const detailsIssueStatus = materialData
     ? Object.values(materialData)[0]?.find(i => i.id).rm_status
     : [];
-  console.log('===========> detailsIssueStatus', detailsIssueStatus);
   const detailsRmcStatus = rmcData
     ? Object.values(rmcData)[0]?.find(i => i.id).rm_status
     : [];
-
-  console.log('===========> detailsRmcStatus', detailsRmcStatus);
 
   useEffect(() => {
     if (materialData) setMaterials(Object.values(materialData)[0]);
@@ -431,7 +428,7 @@ function IssueIndentPreview(props) {
   const updateStatus = async (approvedStatus, data) => {
     const {wbs_works_id, type} = data;
 
-    const issueQuantityData = materials.map(item => {
+    const issueQuantityData = materials?.map(item => {
       const {id, assigned_quantity} = item;
       return {assigned_quantity, material_indent_details_id: id};
     });
@@ -498,8 +495,7 @@ function IssueIndentPreview(props) {
             </View>
           ) : null}
 
-          {(isPending && !showDetail && detailsRmcStatus === 'pending') ||
-          detailsIssueStatus === 'pending' ? (
+          {isPending && !showDetail ? (
             <View style={styles.statusContainer}>
               <OpacityButton
                 color={theme.colors.primary}

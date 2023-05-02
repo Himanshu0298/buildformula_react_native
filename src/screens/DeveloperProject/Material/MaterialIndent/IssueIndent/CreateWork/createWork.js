@@ -605,7 +605,11 @@ function CreateWork(props) {
     materialSubCategories,
   } = useSelector(s => s.materialManagement);
 
-  const {material_indent, issue_list: materialsItems} = indentDetails;
+  const {
+    material_indent,
+    issue_list: materialsItems,
+    rmc_list: rmcItems,
+  } = indentDetails;
   const {remark, requred_date, vendor_id} = material_indent || {};
 
   const [addRmcDialog, setRmcDialog] = React.useState(false);
@@ -614,8 +618,12 @@ function CreateWork(props) {
   const [selectedIssueIndex, setSelectedIssueIndex] = React.useState();
   const [selectedWBSId, setSelectedWBSId] = React.useState();
   const [wbsIds, setWbsIds] = React.useState([]);
-  const [materials, setMaterials] = React.useState(indentDetails.issue_list);
-  const [rmcMaterials, setRmcMaterials] = React.useState([]);
+  const [materials, setMaterials] = React.useState(materialsItems);
+  const [rmcMaterials, setRmcMaterials] = React.useState(rmcItems);
+
+  console.log('===========> materials', materials);
+
+  console.log('===========> rmcMaterials', rmcMaterials);
 
   React.useEffect(() => {
     getWorkSubWorkList({project_id: projectId});
@@ -625,14 +633,6 @@ function CreateWork(props) {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  // useEffect(() => {
-  //   if (indentDetails) {
-  //     setWbsIds(Object.keys(indentDetails.issue_list) || []);
-  //     setMaterials(Object.values(indentDetails.issue_list).flat() || []);
-  //     setRmcMaterials(Object.values(indentDetails.rmc_list).flat() || []);
-  //   }
-  // }, [indentDetails]);
 
   useEffect(() => {
     if (
@@ -669,8 +669,8 @@ function CreateWork(props) {
     const issuework = {};
     const rmc_work = {};
     wbsIds?.map(wbsId => {
-      issuework[wbsId] = materials.filter(item => {
-        if (item.wbs_works_id === wbsId) {
+      issuework[wbsId] = materials?.filter(item => {
+        if (Number(item.wbs_works_id) === Number(wbsId)) {
           const {
             material_category_id,
             material_sub_category_id,
@@ -688,14 +688,14 @@ function CreateWork(props) {
       });
 
       rmc_work[wbsId] = rmcMaterials?.filter(item => {
-        if (item.wbs_works_id === wbsId) {
+        if (Number(item.wbs_works_id) === Number(wbsId)) {
           const {
             material_category_id,
             material_sub_category_id,
             material_units_id,
             quantity,
             indent_rmc_id,
-            // rmc_qty: coefficient_qty,
+            rmc_qty: coefficient_qty,
           } = item;
           return {
             material_category_id,
@@ -703,7 +703,7 @@ function CreateWork(props) {
             material_units_id,
             quantity,
             indent_rmc_id,
-            // coefficient_qty,
+            coefficient_qty,
           };
         }
         return false;
@@ -720,6 +720,10 @@ function CreateWork(props) {
       requred_date,
       vendor_id,
     };
+
+    console.log('===========>issuework ', issuework);
+
+    console.log('===========>rmc_work ', rmc_work);
 
     await createWorkIssue(restData);
 
