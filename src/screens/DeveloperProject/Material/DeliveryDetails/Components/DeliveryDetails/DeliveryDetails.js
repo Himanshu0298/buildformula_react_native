@@ -14,6 +14,8 @@ import NoResult from 'components/Atoms/NoResult';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {useDownload} from 'components/Atoms/Download';
 import FileViewer from 'react-native-file-viewer';
+import {getFileName} from 'utils/constant';
+import {getDownloadUrl} from 'utils/download';
 import MaterialInfo from '../MaterialInfo';
 import VehicleInfo from '../VehicleInfo';
 import Header from '../../../CommonComponents/Header';
@@ -23,9 +25,9 @@ const Attachments = props => {
 
   const download = useDownload();
 
-  const onPressFile = async fileUrl => {
-    const name = fileUrl.split('/').pop();
-
+  const onPressFile = async file => {
+    const fileUrl = getDownloadUrl(file.challan_image);
+    const name = getFileName(file.challan_image);
     download.link({
       name,
       link: fileUrl,
@@ -43,7 +45,7 @@ const Attachments = props => {
           return (
             <TouchableOpacity
               style={styles.sectionContainer}
-              onPress={() => onPressFile(file.challan_image)}>
+              onPress={() => onPressFile(file)}>
               <Image source={FileIcon} style={styles.fileIcon} />
               <View>
                 <Text
