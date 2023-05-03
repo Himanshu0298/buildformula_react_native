@@ -6,7 +6,13 @@ import {
   Text,
   withTheme,
 } from 'react-native-paper';
-import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {
+  Image,
+  Platform,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {theme} from 'styles/theme';
 import {getShadow} from 'utils';
@@ -17,6 +23,7 @@ import NoResult from 'components/Atoms/NoResult';
 import {useDownload} from 'components/Atoms/Download';
 import FileViewer from 'react-native-file-viewer';
 import {getDownloadUrl} from 'utils/download';
+import ReactNativeBlobUtil from 'react-native-blob-util';
 
 const RenderImage = ({item, index, type}) => {
   const label =
@@ -24,32 +31,64 @@ const RenderImage = ({item, index, type}) => {
       ? `Material image ${index + 1}`
       : `Damaged image ${index + 1}`;
 
-  const download = useDownload();
+  // const download = useDownload();
 
-  const getFileName = url => {
-    const lastSlashIndex = url.lastIndexOf('/');
-    return url.substring(lastSlashIndex + 1);
-  };
+  // const getFileName = url => {
+  //   const lastSlashIndex = url.lastIndexOf('/');
+  //   return url.substring(lastSlashIndex + 1);
+  // };
 
-  const onPressFile = async fileUrl => {
-    const url = getDownloadUrl(fileUrl.image_url);
+  // const onPressFile = async fileUrl => {
+  //   const url = getDownloadUrl(fileUrl.image_url);
 
-    const name = getFileName(fileUrl.image_url);
+  //   const name = getFileName(fileUrl.image_url);
 
-    download.link({
-      name,
-      link: url,
-      showAction: false,
-      onFinish: ({dir}) => {
-        FileViewer.open(`file://${dir}`);
+  //   download.link({
+  //     name,
+  //     link: url,
+  //     showAction: false,
+  //     onFinish: ({dir}) => {
+  //       FileViewer.open(`file://${dir}`);
+  //     },
+  //   });
+  // };
+
+  const downloadFile = image => {
+    const imgUrl = image.image_url;
+    const newImgUri = imgUrl.lastIndexOf('/');
+    const imageName = imgUrl.substring(newImgUri);
+    const {dirs} = ReactNativeBlobUtil.fs;
+    const path =
+      Platform.OS === 'ios'
+        ? dirs.DocumentDir + imageName
+        : dirs.DownloadDir + imageName;
+    ReactNativeBlobUtil.config({
+      fileCache: true,
+      appendExt: 'jpeg',
+      indicator: true,
+      IOSBackgroundTask: true,
+      path,
+      addAndroidDownloads: {
+        useDownloadManager: true,
+        notification: true,
+        path,
+        description: 'Image',
       },
-    });
+    })
+      .fetch('GET', imgUrl)
+      .then(res => {
+        if (Platform.OS === 'ios') {
+          ReactNativeBlobUtil.ios.previewDocument(path);
+          // eslint-disable-next-line no-console
+          console.log(res, 'end downloaded');
+        }
+      });
   };
 
   return (
     <TouchableOpacity
       style={styles.sectionContainer}
-      onPress={() => onPressFile(item)}
+      onPress={() => downloadFile(item)}
       key={item.id}>
       <Image source={FileIcon} style={styles.fileIcon} />
       <View>
