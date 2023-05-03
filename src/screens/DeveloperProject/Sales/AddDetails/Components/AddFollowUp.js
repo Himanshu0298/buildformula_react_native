@@ -11,6 +11,7 @@ import dayjs from 'dayjs';
 import RichTextEditor from 'components/Atoms/RichTextEditor';
 import ActionButtons from 'components/Atoms/ActionButtons';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import RenderSelect from 'components/Atoms/RenderSelect';
 
 const schema = Yup.object().shape({
   followup_date: Yup.date('Invalid').required('Required'),
@@ -26,7 +27,7 @@ function AddFollowUp(props) {
 
   const {route, navigation} = props;
 
-  const {visitorId, customerId} = route.params || {};
+  const {visitorId, customerId, salesPipelineOptions} = route.params || {};
 
   const {selectedProject} = useSelector(s => s.project);
 
@@ -114,6 +115,19 @@ function AddFollowUp(props) {
                   />
                 </View>
               </View>
+
+              <RenderSelect
+                name="sales_pipeline"
+                label="Sales Pipeline"
+                options={salesPipelineOptions}
+                containerStyles={styles.input}
+                value={values.inquiry_status_id}
+                placeholder="Select Sales pipeline"
+                onSelect={value => {
+                  setFieldValue('inquiry_status_id', value);
+                }}
+              />
+
               <RichTextEditor
                 style={styles.input}
                 name="remarks"

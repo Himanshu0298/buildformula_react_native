@@ -20,21 +20,25 @@ export const DEVELOPER_DRAWER_ITEMS = [
     id: 11,
     routes: [
       {
+        id: 79,
         route: 'ProjectListing',
         label: 'Project List',
         icon: 'office-building',
       },
       {
+        id: 80,
         route: 'SearchPickUpList',
         label: 'Pickup List',
         icon: 'menu-open',
       },
       {
+        id: 81,
         route: 'AreaList',
         label: 'Area List',
         icon: 'map-marker',
       },
       {
+        id: 82,
         route: 'UnitList',
         label: 'Unit List',
         icon: 'home-city-outline',

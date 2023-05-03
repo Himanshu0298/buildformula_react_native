@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useMemo} from 'react';
 import {StyleSheet, View, ScrollView} from 'react-native';
 import {withTheme, Text, Button} from 'react-native-paper';
 import useSalesActions from 'redux/actions/salesActions';
@@ -8,6 +8,7 @@ import RichTextEditor from 'components/Atoms/RichTextEditor';
 import * as Yup from 'yup';
 import {Formik} from 'formik';
 import {RenderError} from 'components/Atoms/RenderInput';
+import RenderSelect from 'components/Atoms/RenderSelect';
 
 const schema = Yup.object().shape({
   remark: Yup.string('Invalid').required('Required'),
@@ -18,9 +19,12 @@ function CompleteTask(props) {
   const {date, time, visitorID} = route?.params || {};
 
   const {selectedProject} = useSelector(s => s.project);
+  const {pipelines = []} = useSelector(s => s.sales);
+
   const project_id = selectedProject.id;
 
-  const {updateCompleteTask, getFollowUpDetailsList} = useSalesActions();
+  const {updateCompleteTask, getFollowUpDetailsList, getPipelineData} =
+    useSalesActions();
 
   const loadData = () => {
     getFollowUpDetailsList({
@@ -30,11 +34,17 @@ function CompleteTask(props) {
     });
   };
 
+  useEffect(() => {
+    getPipelineData({project_id: selectedProject.id});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const onSubmit = async values => {
     await updateCompleteTask({
       project_id,
       visitor_followup_id: visitorID,
       followuptask_remark: values.remark.toString(),
+      inquiry_status_id: values.inquiry_status_id,
       next_followup_save: 'no',
       followup_date: date,
       followup_time: time,
@@ -42,6 +52,15 @@ function CompleteTask(props) {
     loadData();
     navigation.goBack();
   };
+
+  const salesPipelineOptions = useMemo(() => {
+    const options = pipelines
+      ?.map(e => {
+        return {label: e?.title, value: e?.id};
+      })
+      ?.filter(e => e.label !== 'Book(won)');
+    return options;
+  }, [pipelines]);
 
   return (
     <ScrollView style={styles.container}>
@@ -65,7 +84,20 @@ function CompleteTask(props) {
                   setFieldValue('remark', value);
                 }}
               />
+
               <RenderError error={errors.remark} style={styles.renderError} />
+
+              <RenderSelect
+                name="sales_pipeline"
+                label="Sales Pipeline"
+                options={salesPipelineOptions}
+                containerStyles={styles.input}
+                value={values.inquiry_status_id}
+                placeholder="Select Sales pipeline"
+                onSelect={value => {
+                  setFieldValue('inquiry_status_id', value);
+                }}
+              />
 
               <View style={styles.actionContainer}>
                 <Button

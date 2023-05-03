@@ -60,8 +60,8 @@ const schema = Yup.object().shape({
   //   is: true,
   //   then: Yup.string('Invalid').required('Required'),
   // }),
-  assign_to: Yup.string('Invalid').required('Required'),
-  inquiry_for: Yup.string('Invalid').required('Required'),
+  // assign_to: Yup.string('Invalid').required('Required'),
+  // inquiry_for: Yup.string('Invalid').required('Required'),
   // remarks: Yup.string('Invalid'),
   budget_from: Yup.number('Invalid'),
   budget_to: Yup.number('Invalid').when('budget_from', (budgetFrom, Schema) => {
@@ -86,9 +86,11 @@ function PersonalTab(props) {
     formikProps,
     occupationOptions,
     sourceTypeOptions,
+    budgetRangeOptions,
     setSelectedTab,
     mobileCodes,
     assigntoOptions,
+    formFieldsData,
   } = props;
   const {handleChange, setFieldValue, values, handleBlur, errors} = formikProps;
   const {t} = useTranslation();
@@ -104,6 +106,7 @@ function PersonalTab(props) {
   const occupationInputRef = React.useRef();
   const localityRef = React.useRef();
   const sourceTypeRef = React.useRef();
+  const budgetRangeRef = React.useRef();
 
   return (
     <KeyboardAwareScrollView
@@ -159,32 +162,37 @@ function PersonalTab(props) {
             error={errors.phone}
             left={<TextInput.Affix text="+91" />}
           />
-          <RenderSelect
-            name="mobile_code"
-            label="Country Code for Phone No 2"
-            ref={countryCodeRef}
-            options={mobileCodes}
-            containerStyles={styles.input}
-            value={values.mobile_code}
-            placeholder="Country Code for Phone 2"
-            error={errors.mobile_code}
-            onSelect={value => {
-              setFieldValue('mobile_code', value);
-            }}
-          />
-          <RenderInput
-            name="phone2"
-            ref={phone2Ref}
-            label="Phone No 2"
-            keyboardType="number-pad"
-            maxLength={10}
-            containerStyles={styles.input}
-            value={values.phone2}
-            onChangeText={handleChange('phone2')}
-            onSubmitEditing={() => occupationRef?.current?.focus()}
-            onBlur={handleBlur('phone2')}
-            error={errors.phone2}
-          />
+          {formFieldsData?.phone_2 ? (
+            <>
+              <RenderSelect
+                name="mobile_code"
+                label="Country Code for Phone No 2"
+                ref={countryCodeRef}
+                options={mobileCodes}
+                containerStyles={styles.input}
+                value={values.mobile_code}
+                placeholder="Country Code for Phone 2"
+                onSubmitEditing={() => phone2Ref?.current?.focus()}
+                error={errors.mobile_code}
+                onSelect={value => {
+                  setFieldValue('mobile_code', value);
+                }}
+              />
+              <RenderInput
+                name="phone2"
+                ref={phone2Ref}
+                label="Phone No 2"
+                keyboardType="number-pad"
+                maxLength={10}
+                containerStyles={styles.input}
+                value={values.phone2}
+                onChangeText={handleChange('phone2')}
+                onSubmitEditing={() => occupationRef?.current?.focus()}
+                onBlur={handleBlur('phone2')}
+                error={errors.phone2}
+              />
+            </>
+          ) : null}
           <RenderSelect
             name="occupation"
             ref={occupationRef}
@@ -198,6 +206,7 @@ function PersonalTab(props) {
             value={values.occupation}
             placeholder={t('placeholder_occupation')}
             error={errors.occupation}
+            onSubmitEditing={() => assignRef?.current?.focus()}
             onSelect={value => {
               setFieldValue('occupation', value);
               if (value === 0) {
@@ -207,58 +216,78 @@ function PersonalTab(props) {
               }
             }}
           />
-          <RenderSelect
-            name="assign_to"
-            ref={assignRef}
-            label="Assign To"
-            options={assigntoOptions}
-            containerStyles={styles.input}
-            value={values.assign_to}
-            placeholder="Assign To"
-            error={errors.assign_to}
-            onSubmitEditing={() => assignRef?.current?.focus()}
-            onSelect={value => {
-              setFieldValue('assign_to', value);
-              if (value === 0) {
-                occupationInputRef?.current?.focus();
-              } else {
-                localityRef?.current?.focus();
-              }
-            }}
-          />
-          {values.occupation === 0 ? (
-            <RenderInput
-              ref={occupationInputRef}
-              name="other_occupation"
-              label={t('label_other_occupation')}
+          {formFieldsData?.assign_to ? (
+            <RenderSelect
+              name="assign_to"
+              ref={assignRef}
+              label="Assign To"
+              options={assigntoOptions}
               containerStyles={styles.input}
-              value={values.other_occupation}
-              onChangeText={handleChange('other_occupation')}
-              onBlur={handleBlur('other_occupation')}
-              error={errors.other_occupation}
+              value={values.assign_to}
+              placeholder="Assign To"
+              error={errors.assign_to}
+              onSubmitEditing={() => localityRef?.current?.focus()}
+              onSelect={value => {
+                setFieldValue('assign_to', value);
+                if (value === 0) {
+                  occupationInputRef?.current?.focus();
+                } else {
+                  localityRef?.current?.focus();
+                }
+              }}
             />
           ) : null}
-          <RenderInput
-            ref={localityRef}
-            returnKeyType="done"
-            name="current_locality"
-            label={t('label_current_locality')}
-            containerStyles={styles.input}
-            value={values.current_locality}
-            onChangeText={handleChange('current_locality')}
-            onBlur={handleBlur('current_locality')}
-            error={errors.current_locality}
-          />
-          <RenderSelect
-            name="source_type"
-            ref={sourceTypeRef}
-            label={t('label_source')}
-            options={sourceTypeOptions}
-            containerStyles={styles.input}
-            value={values.source_type}
-            error={errors.source_type}
-            onSelect={value => setFieldValue('source_type', value)}
-          />
+          {formFieldsData?.occupation ? (
+            values.occupation === 0 ? (
+              <RenderInput
+                ref={occupationInputRef}
+                name="other_occupation"
+                label={t('label_other_occupation')}
+                containerStyles={styles.input}
+                value={values.other_occupation}
+                onChangeText={handleChange('other_occupation')}
+                onBlur={handleBlur('other_occupation')}
+                error={errors.other_occupation}
+              />
+            ) : null
+          ) : null}
+          {formFieldsData?.current_locality ? (
+            <RenderInput
+              ref={localityRef}
+              returnKeyType="done"
+              name="current_locality"
+              label={t('label_current_locality')}
+              containerStyles={styles.input}
+              value={values.current_locality}
+              onChangeText={handleChange('current_locality')}
+              onBlur={handleBlur('current_locality')}
+              error={errors.current_locality}
+            />
+          ) : null}
+          {formFieldsData?.source_type ? (
+            <RenderSelect
+              name="source_type"
+              ref={sourceTypeRef}
+              label={t('label_source')}
+              options={sourceTypeOptions}
+              containerStyles={styles.input}
+              value={values.source_type}
+              error={errors.source_type}
+              onSelect={value => setFieldValue('source_type', value)}
+            />
+          ) : null}
+          {formFieldsData?.budgetrange ? (
+            <RenderSelect
+              name="budgetrange_id"
+              ref={budgetRangeRef}
+              label="Budget Range"
+              options={budgetRangeOptions}
+              containerStyles={styles.input}
+              value={values.budgetrange_id}
+              error={errors.budgetrange_id}
+              onSelect={value => setFieldValue('budgetrange_id', value)}
+            />
+          ) : null}
         </View>
         <ActionButtons
           cancelLabel="Cancel"
@@ -279,6 +308,7 @@ function InquiryTab(props) {
     interestedOptions,
     edit,
     brokerOptions,
+    formFieldsData,
   } = props;
 
   const {
@@ -313,30 +343,33 @@ function InquiryTab(props) {
       showsVerticalScrollIndicator={false}>
       <View style={styles.container}>
         <View style={styles.inputsContainer}>
-          <RenderInput
-            name="budget_from"
-            label={t('label_budget_from')}
-            ref={budgetFromRef}
-            keyboardType="number-pad"
-            containerStyles={styles.input}
-            value={values.budget_from}
-            onChangeText={handleChange('budget_from')}
-            onBlur={handleBlur('budget_from')}
-            onSubmitEditing={() => budgetToRef?.current.focus()}
-            error={errors.budget_from}
-          />
-          <RenderInput
-            name="budget_to"
-            label={t('label_budget_to')}
-            keyboardType="number-pad"
-            ref={budgetToRef}
-            containerStyles={styles.input}
-            value={values.budget_to}
-            onChangeText={handleChange('budget_to')}
-            onBlur={handleBlur('budget_to')}
-            error={errors.budget_to}
-          />
-
+          {formFieldsData?.budget_from ? (
+            <RenderInput
+              name="budget_from"
+              label={t('label_budget_from')}
+              ref={budgetFromRef}
+              keyboardType="number-pad"
+              containerStyles={styles.input}
+              value={values.budget_from}
+              onChangeText={handleChange('budget_from')}
+              onBlur={handleBlur('budget_from')}
+              onSubmitEditing={() => budgetToRef?.current.focus()}
+              error={errors.budget_from}
+            />
+          ) : null}
+          {formFieldsData?.budget_to ? (
+            <RenderInput
+              name="budget_to"
+              label={t('label_budget_to')}
+              keyboardType="number-pad"
+              ref={budgetToRef}
+              containerStyles={styles.input}
+              value={values.budget_to}
+              onChangeText={handleChange('budget_to')}
+              onBlur={handleBlur('budget_to')}
+              error={errors.budget_to}
+            />
+          ) : null}
           <View style={styles.priorityContainer}>
             <Subheading>Lead Priority</Subheading>
             <View style={styles.radioContainer}>
@@ -376,68 +409,78 @@ function InquiryTab(props) {
               setFieldValue('inquiry_for', value);
             }}
           />
-          <RenderSelect
-            name="brokers_id"
-            label="Broker"
-            options={brokerOptions}
-            containerStyles={styles.input}
-            value={values.brokers_id}
-            error={errors.brokers_id}
-            onSelect={value => {
-              setFieldValue('brokers_id', value);
-            }}
-          />
-          <RenderSelect
-            multiselect
-            name="interested_property"
-            label="Interested Property"
-            options={interestedOptions}
-            value={values.interested_property}
-            containerStyles={styles.input}
-            error={errors.interested_property}
-            onSelect={v => {
-              setFieldValue('interested_property', v);
-            }}
-          />
-          {values.bhk_required ? (
+          {formFieldsData?.brokers ? (
             <RenderSelect
-              name="bhk"
-              label={t('label_for_bhk')}
-              options={BHK_OPTIONS.map(({type}) => ({
-                label: type.toString(),
-                value: type.toString(),
-              }))}
+              name="brokers_id"
+              label="Broker"
+              options={brokerOptions}
               containerStyles={styles.input}
-              value={values.bhk}
-              error={errors.bhk}
+              value={values.brokers_id}
+              error={errors.brokers_id}
               onSelect={value => {
-                setFieldValue('bhk', value);
+                setFieldValue('brokers_id', value);
               }}
             />
           ) : null}
-          <RenderDatePicker
-            name="Inquiry_date"
-            label="Inquiry Date"
-            containerStyles={styles.input}
-            value={values.Inquiry_date}
-            error={errors.Inquiry_date}
-            onChange={date => {
-              setFieldValue('Inquiry_date', dayjs(date).format('YYYY-MM-DD'));
-            }}
-          />
-          <RenderTextBox
-            name="remarks"
-            numberOfLines={5}
-            minHeight={120}
-            label={t('label_remark')}
-            containerStyles={styles.input}
-            value={values.remarks}
-            onChangeText={handleChange('remarks')}
-            onBlur={handleBlur('remarks')}
-            onSubmitEditing={handleSubmit}
-            returnKeyType="done"
-            error={errors.remarks}
-          />
+          {formFieldsData?.interested_property ? (
+            <RenderSelect
+              multiselect
+              name="interested_property"
+              label="Interested Property"
+              options={interestedOptions}
+              value={values.interested_property}
+              containerStyles={styles.input}
+              error={errors.interested_property}
+              onSelect={v => {
+                setFieldValue('interested_property', v);
+              }}
+            />
+          ) : null}
+          {formFieldsData?.for_bhk ? (
+            values.bhk_required ? (
+              <RenderSelect
+                name="bhk"
+                label={t('label_for_bhk')}
+                options={BHK_OPTIONS.map(({type}) => ({
+                  label: type.toString(),
+                  value: type.toString(),
+                }))}
+                containerStyles={styles.input}
+                value={values.bhk}
+                error={errors.bhk}
+                onSelect={value => {
+                  setFieldValue('bhk', value);
+                }}
+              />
+            ) : null
+          ) : null}
+          {formFieldsData?.Inquiry_date ? (
+            <RenderDatePicker
+              name="Inquiry_date"
+              label="Inquiry Date"
+              containerStyles={styles.input}
+              value={values.Inquiry_date}
+              error={errors.Inquiry_date}
+              onChange={date => {
+                setFieldValue('Inquiry_date', dayjs(date).format('YYYY-MM-DD'));
+              }}
+            />
+          ) : null}
+          {formFieldsData?.remarks ? (
+            <RenderTextBox
+              name="remarks"
+              numberOfLines={5}
+              minHeight={120}
+              label={t('label_remark')}
+              containerStyles={styles.input}
+              value={values.remarks}
+              onChangeText={handleChange('remarks')}
+              onBlur={handleBlur('remarks')}
+              onSubmitEditing={handleSubmit}
+              returnKeyType="done"
+              error={errors.remarks}
+            />
+          ) : null}
         </View>
         {!edit ? (
           <>
@@ -522,10 +565,23 @@ function RenderForm(props) {
     interestedOptions,
     assignOptions,
     sourceTypeOptions,
+    budgetRangeOptions,
+    formFields = [],
   } = useSelector(s => s.sales);
+
   const {selectedProject} = useSelector(s => s.project);
 
-  const {getVisitorInterestedProperty} = useSalesActions();
+  const {
+    getVisitorInterestedProperty,
+    getPipelineData,
+    get_inquiry_form_fields,
+  } = useSalesActions();
+
+  const loadPipelines = async () => {
+    await getPipelineData({project_id: selectedProject.id});
+  };
+
+  const formFieldsData = formFields?.find(e => e);
 
   const updatedAssignOptions = useMemo(() => {
     const data = [...assignOptions];
@@ -561,6 +617,11 @@ function RenderForm(props) {
     getVisitorInterestedProperty({
       project_id: selectedProject.id,
     });
+    get_inquiry_form_fields({
+      project_id: selectedProject.id,
+    });
+
+    loadPipelines();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -573,9 +634,11 @@ function RenderForm(props) {
             setSelectedTab={setSelectedTab}
             occupationOptions={occupationOptions}
             sourceTypeOptions={sourceTypeOptions}
+            budgetRangeOptions={budgetRangeOptions}
             formikProps={formikProps}
             mobileCodes={mobileCodes}
             assigntoOptions={assigntoOptions}
+            formFieldsData={formFieldsData}
           />
         );
       case 1:
@@ -588,6 +651,7 @@ function RenderForm(props) {
             assignOptions={updatedAssignOptions}
             formikProps={formikProps}
             brokerOptions={brokerOptions}
+            formFieldsData={formFieldsData}
           />
         );
       default:

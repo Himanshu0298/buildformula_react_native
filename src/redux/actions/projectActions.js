@@ -18,6 +18,7 @@ export default function useProjectActions() {
     getPurchasedProjects,
     getPurchaseProjectDetails,
     updateBilling,
+    getProjectModules,
   } = useProject();
 
   return {
@@ -35,6 +36,21 @@ export default function useProjectActions() {
             const project = {...project_data, project_structure};
 
             return Promise.resolve(project);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    getProjectModules: projectId =>
+      dispatch({
+        type: types.GET_PROJECT_MODULES,
+        payload: async () => {
+          try {
+            const response = _res(await getProjectModules(projectId));
+
+            return Promise.resolve(response.data);
           } catch (error) {
             const message = _err(error);
             snackbar.showMessage({message, variant: 'error'});
