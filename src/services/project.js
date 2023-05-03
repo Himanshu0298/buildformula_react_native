@@ -25,6 +25,13 @@ export default function useProject() {
         config({multipart: false}),
       );
     },
+    getProjectModules: data => {
+      return instance.post(
+        '/project_type_modules',
+        data,
+        config({multipart: false}),
+      );
+    },
     getDashboardData: data => {
       return instance.post(
         '/dashboard/charts',

@@ -4,6 +4,9 @@ export default function useSalesServices() {
   const params = config({multipart: false});
 
   return {
+    get_inquiry_form_fields: data => {
+      return instance.post('/visitors/visitor_form_setting_list', data, params);
+    },
     getVisitorsList: data => {
       return instance.post('/visitors/get_lists', data, params);
     },

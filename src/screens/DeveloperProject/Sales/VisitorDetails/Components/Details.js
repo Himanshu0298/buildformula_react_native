@@ -13,6 +13,7 @@ import {PRIORITY_COLORS, STRUCTURE_TYPE_LABELS} from 'utils/constant';
 import CustomBadge from 'components/Atoms/CustomBadge';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import {getCountryCode} from 'utils';
+import {useSelector} from 'react-redux';
 
 function Details(props) {
   const {
@@ -42,7 +43,14 @@ function Details(props) {
     intrestedIn,
     mobile_code_data,
     brokers_data,
+    budgetrange_id,
   } = visitor;
+
+  const {budgetRangeOptions} = useSelector(s => s.sales);
+
+  const budgetRangeValue = budgetRangeOptions?.filter(
+    e => e.value === budgetrange_id,
+  );
 
   const snackbar = useSnackbar();
 
@@ -160,7 +168,11 @@ function Details(props) {
           <Paragraph>Budget Range</Paragraph>
           <Caption style={styles.value}>
             {/* TODO: Add amount formatting */}
-            Rs. {budget_from} - Rs.{budget_to}
+            {/* Rs. {budget_from} - Rs.{budget_to}
+             */}
+            {budgetRangeValue[0]?.label ||
+              `Rs. ${budget_from} - Rs.${budget_to}` ||
+              'NA'}
           </Caption>
         </View>
         {/* <View style={styles.detailRow}>

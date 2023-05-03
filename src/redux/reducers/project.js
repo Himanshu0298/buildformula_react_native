@@ -9,6 +9,7 @@ import {
   GET_PURCHASE_PROJECT_DETAILS,
   GET_SELECTED_PROJECT,
   SET_SELECTED_UNIT,
+  GET_PROJECT_MODULES,
 } from '../actions/actionTypes';
 
 const persistConfig = {
@@ -37,6 +38,7 @@ const initialState = {
   purchasedProjects: [],
   purchaseProjectDetails: [],
   selectedUnit: undefined,
+  availableModules: [],
 };
 
 const reducer = (state = initialState, action = {}) => {
@@ -48,11 +50,13 @@ const reducer = (state = initialState, action = {}) => {
         selectedUnit: payload,
       };
 
-    case `${GET_SELECTED_PROJECT}_PENDING`:
+    case `${GET_PROJECT_MODULES}_PENDING`:
+    case `${GET_SELECTED_PROJECT}_PENDING`: {
       return {
         ...state,
         loadingProject: true,
       };
+    }
     case `${GET_SELECTED_PROJECT}_FULFILLED`: {
       return {
         ...state,
@@ -60,12 +64,21 @@ const reducer = (state = initialState, action = {}) => {
         loadingProject: false,
       };
     }
-    case `${GET_SELECTED_PROJECT}_REJECTED`:
+    case `${GET_PROJECT_MODULES}_FULFILLED`: {
+      return {
+        ...state,
+        availableModules: payload,
+        loadingProject: false,
+      };
+    }
+    case `${GET_PROJECT_MODULES}_REJECTED`:
+    case `${GET_SELECTED_PROJECT}_REJECTED`: {
       return {
         ...state,
         loadingProject: false,
         errorMessage: payload,
       };
+    }
 
     case `${GET_PROJECTS}_PENDING`:
       return {

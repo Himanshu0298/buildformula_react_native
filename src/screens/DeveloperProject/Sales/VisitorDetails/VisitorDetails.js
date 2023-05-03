@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {withTheme, FAB, IconButton, Subheading} from 'react-native-paper';
 import {getPermissions, getShadow} from 'utils';
@@ -30,8 +30,12 @@ function VisitorDetails(props) {
   ]);
 
   const {selectedProject} = useSelector(s => s.project);
-  const {visitor, pipelines, occupationOptions, sourceTypeOptions} =
-    useSelector(s => s.sales);
+  const {
+    visitor,
+    pipelines = [],
+    occupationOptions,
+    sourceTypeOptions,
+  } = useSelector(s => s.sales);
 
   const loading = useSalesLoading();
 
@@ -40,6 +44,15 @@ function VisitorDetails(props) {
     getPipelineData({project_id: selectedProject.id});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedProject.id, visitorId]);
+
+  const salesPipelineOptions = useMemo(() => {
+    const options = pipelines
+      ?.map(e => {
+        return {label: e?.title, value: e?.id};
+      })
+      ?.filter(e => e.label !== 'Book(won)');
+    return options;
+  }, [pipelines]);
 
   useEffect(() => {
     getVisitorActivities({
@@ -133,6 +146,7 @@ function VisitorDetails(props) {
                   navigation.navigate('AddDetails', {
                     type: 'Comment',
                     visitorId,
+                    salesPipelineOptions,
                   }),
               },
               {
@@ -142,6 +156,7 @@ function VisitorDetails(props) {
                   navigation.navigate('AddDetails', {
                     type: 'Call Log',
                     visitorId,
+                    salesPipelineOptions,
                   }),
               },
               {
@@ -151,6 +166,7 @@ function VisitorDetails(props) {
                   navigation.navigate('AddDetails', {
                     type: 'Follow-up',
                     visitorId,
+                    salesPipelineOptions,
                   }),
               },
               {

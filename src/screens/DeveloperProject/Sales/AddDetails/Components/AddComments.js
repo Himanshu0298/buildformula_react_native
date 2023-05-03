@@ -8,6 +8,7 @@ import {useSelector} from 'react-redux';
 import CustomCheckbox from 'components/Atoms/CustomCheckbox';
 import RichTextEditor from 'components/Atoms/RichTextEditor';
 import ActionButtons from 'components/Atoms/ActionButtons';
+import RenderSelect from 'components/Atoms/RenderSelect';
 
 const schema = Yup.object().shape({
   remarks: Yup.string().required('Please enter a comment'),
@@ -15,7 +16,7 @@ const schema = Yup.object().shape({
 
 function AddComments(props) {
   const {navigation, route} = props;
-  const {visitorId, customerId} = route.params || {};
+  const {visitorId, customerId, salesPipelineOptions} = route.params || {};
 
   const {addVisitorComment, getVisitorActivities} = useSalesActions();
 
@@ -42,7 +43,7 @@ function AddComments(props) {
       initialValues={{is_important: false}}
       validationSchema={schema}
       onSubmit={onSubmit}>
-      {({setFieldValue, values, handleSubmit}) => (
+      {({setFieldValue, values, handleSubmit, errors}) => (
         <View style={styles.container}>
           <View style={styles.contentContainer}>
             <View style={styles.headingContainer}>
@@ -57,11 +58,24 @@ function AddComments(props) {
               }
             />
 
+            <RenderSelect
+              name="sales_pipeline"
+              label="Sales Pipeline"
+              options={salesPipelineOptions}
+              containerStyles={styles.input}
+              value={values.inquiry_status_id}
+              placeholder="Select Sales pipeline"
+              onSelect={value => {
+                setFieldValue('inquiry_status_id', value);
+              }}
+            />
+
             <RichTextEditor
               name="remarks"
               placeholder="Response"
               value={values.remarks}
               height={200}
+              error={errors.remarks}
               onChangeText={value => setFieldValue('remarks', value)}
             />
           </View>
@@ -89,6 +103,9 @@ const styles = StyleSheet.create({
   headingContainer: {
     marginLeft: 10,
     marginTop: 20,
+  },
+  input: {
+    marginVertical: 7,
   },
 });
 

@@ -47,6 +47,9 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     padding: 10,
   },
+  input: {
+    marginTop: -20,
+  },
 });
 
 export default AddDetails;

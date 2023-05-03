@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import _ from 'lodash';
 import {
+  GET_INQUIRY_FORM_FIELDS,
   GET_ASSIGNTO_DATA,
   GET_COUNTRY_CODES,
   GET_VISITORS,
@@ -79,6 +80,7 @@ const initialState = {
   bhkOptions: {},
   occupationOptions: [],
   sourceTypeOptions: [],
+  budgetRangeOptions: [],
   inquiryOptions: [],
   interestedOptions: [],
   assignOptions: [],
@@ -99,6 +101,7 @@ const initialState = {
   approvalsDetails: {},
   approvalDetailsList: [],
   brokageDealDetails: {},
+  formFields: [],
 };
 
 const reducer = (state = initialState, action = {}) => {
@@ -125,6 +128,13 @@ const reducer = (state = initialState, action = {}) => {
         countrycodes: payload,
       };
 
+    case `${GET_INQUIRY_FORM_FIELDS}_FULFILLED`:
+      return {
+        ...state,
+        loading: false,
+        formFields: payload,
+      };
+
     case `${GET_ASSIGNTO_DATA}_FULFILLED`:
       return {
         ...state,
@@ -134,6 +144,7 @@ const reducer = (state = initialState, action = {}) => {
 
     case `${GET_COUNTRY_CODES}_PENDING`:
     case `${GET_ASSIGNTO_DATA}_PENDING`:
+    case `${GET_INQUIRY_FORM_FIELDS}_PENDING`:
       return {
         ...state,
         loading: true,
@@ -141,6 +152,7 @@ const reducer = (state = initialState, action = {}) => {
 
     case `${GET_COUNTRY_CODES}_REJECTED`:
     case `${GET_ASSIGNTO_DATA}_REJECTED`:
+    case `${GET_INQUIRY_FORM_FIELDS}_REJECTED`:
       return {
         ...state,
         loading: false,
@@ -156,10 +168,14 @@ const reducer = (state = initialState, action = {}) => {
       const sourceTypeOptions = payload.source_types
         .filter(i => i.status)
         .map(i => ({label: i.source_title, value: i.id}));
+      const budgetRangeOptions = payload.budgetrange
+        .filter(i => i.status)
+        .map(i => ({label: i.budgetrange, value: i.id}));
       return {
         ...state,
         loadingCommonData: false,
         sourceTypeOptions,
+        budgetRangeOptions,
       };
     }
     case `${GET_PROJECT_COMMON_DATA}_REJECTED`:

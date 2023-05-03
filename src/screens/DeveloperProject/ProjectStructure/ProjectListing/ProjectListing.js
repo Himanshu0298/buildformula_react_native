@@ -259,11 +259,6 @@ function ProjectListing(props) {
             : undefined,
           exist(plots) ? checkRange(i?.total_no_of_plots, plots) : undefined,
         ];
-        console.log(
-          '🚀 ~ file: ProjectListing.js:262 ~ filteredProjectData ~ validations:',
-          i.id,
-          validations,
-        );
         // console.log('==========>', i?.bhk_configuration.split(','));
         return validations.filter(v => v === false).length === 0;
       });

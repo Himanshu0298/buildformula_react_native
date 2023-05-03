@@ -22,6 +22,7 @@ export default function DeveloperDashboard(props) {
     getProjectCommonData,
     getDashboardData,
     getProjectPermissions,
+    getProjectModules,
   } = useProjectActions();
   const {getProjectNotifications} = useNotificationActions();
   const {getSalesData} = useSalesActions();
@@ -43,6 +44,7 @@ export default function DeveloperDashboard(props) {
     if (project?.id) {
       getDashboardData(project.id);
       getProjectPermissions(project.id);
+      getProjectModules({project_id: project.id});
       getProjectData(project.id);
       getProjectCommonData(project.id);
       getProjectNotifications({project_id: project.id});

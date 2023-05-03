@@ -9,6 +9,7 @@ export default function useSalesActions() {
   const snackbar = useSnackbar();
   const {_err, _res} = useResProcessor();
   const {
+    get_inquiry_form_fields,
     getAssignToData,
     getCountryCodes,
     getVisitorsList,
@@ -65,6 +66,23 @@ export default function useSalesActions() {
       dispatch({
         type: types.SET_TIMER,
         payload: data,
+      }),
+
+    get_inquiry_form_fields: params =>
+      dispatch({
+        type: types.GET_INQUIRY_FORM_FIELDS,
+        payload: async () => {
+          try {
+            const response = _res(await get_inquiry_form_fields(params));
+            const {data} = response;
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
       }),
 
     setUpdatedPipelineOrderList: data =>

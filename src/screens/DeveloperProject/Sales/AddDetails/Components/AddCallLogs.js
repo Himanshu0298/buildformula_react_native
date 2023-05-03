@@ -21,7 +21,7 @@ const schema = Yup.object().shape({
 
 function AddCallLogs(props) {
   const {route, navigation} = props;
-  const {visitorId, customerId} = route.params || {};
+  const {visitorId, customerId, salesPipelineOptions} = route.params || {};
 
   const followUpDateRef = React.useRef();
   const followUpTimeRef = React.useRef();
@@ -115,6 +115,17 @@ function AddCallLogs(props) {
                   error={errors.call_outcome}
                   onSelect={value => {
                     setFieldValue('call_outcome', value);
+                  }}
+                />
+                <RenderSelect
+                  name="sales_pipeline"
+                  label="Sales Pipeline"
+                  options={salesPipelineOptions}
+                  containerStyles={styles.input}
+                  value={values.inquiry_status_id}
+                  placeholder="Select Sales pipeline"
+                  onSelect={value => {
+                    setFieldValue('inquiry_status_id', value);
                   }}
                 />
                 <RichTextEditor
