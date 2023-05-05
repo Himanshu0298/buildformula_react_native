@@ -41,6 +41,7 @@ class Registry {
     return colItem;
   };
 
+  // eslint-disable-next-line class-methods-use-this
   existingItemAttributes = (existingItems, itemId) => {
     const item = existingItems[itemId];
 
@@ -48,7 +49,7 @@ class Registry {
   };
 
   buildItemsMap = (columnId, rows, existingItems) => {
-    const items = range(rows.length).map(index => {
+    const items = range(rows?.length).map(index => {
       const row = rows[index];
       const {id} = row;
       const existingItemAttributes =

@@ -290,7 +290,7 @@ const RenderBoard = React.memo(props => {
     const data = pipelines.map((pipeline, i) => ({
       id: i + 1,
       name: pipeline.title,
-      rows: pipeline.get_visitors,
+      rows: pipeline?.get_visitors,
       pipeline,
     }));
 

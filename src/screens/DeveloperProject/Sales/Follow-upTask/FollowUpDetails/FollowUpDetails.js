@@ -135,13 +135,17 @@ function FollowUpDetails(props) {
 
   const {approvalDetailsList, loading} = useSelector(s => s.sales);
 
-  const {getFollowUpDetailsList} = useSalesActions();
+  const {getFollowUpDetailsList, getFollowUpList} = useSalesActions();
 
   useEffect(() => {
     getFollowUpDetailsList({
       project_id,
       visitor_followup_id: visitorId,
       followup_date: date,
+    });
+    getFollowUpList({
+      project_id,
+      given_date: date,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

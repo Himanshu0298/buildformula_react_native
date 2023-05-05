@@ -27,7 +27,8 @@ function AddFollowUp(props) {
 
   const {route, navigation} = props;
 
-  const {visitorId, customerId, salesPipelineOptions} = route.params || {};
+  const {visitorId, customerId, salesPipelineOptions, visitorsOptions} =
+    route.params || {};
 
   const {selectedProject} = useSelector(s => s.project);
 
@@ -38,11 +39,11 @@ function AddFollowUp(props) {
       ...values,
       followup_date: dayjs(values.followup_date).format('DD-MM-YYYY'),
       followup_time: dayjs(values.followup_time).format('hh:mm:ss a'),
-      visitor_id: visitorId || customerId,
+      visitor_id: visitorId || customerId || values.visitor_id,
       project_id: selectedProject.id,
     });
     getVisitorActivities({
-      visitor_id: visitorId || customerId,
+      visitor_id: visitorId || customerId || values.visitor_id,
       project_id: selectedProject.id,
     });
     navigation.goBack();
@@ -71,6 +72,19 @@ function AddFollowUp(props) {
             contentContainerStyle={styles.scrollView}
             keyboardShouldPersistTaps="handled">
             <View style={styles.contentContainer}>
+              {visitorsOptions ? (
+                <RenderSelect
+                  name="visitor_id"
+                  label="Visitor"
+                  options={visitorsOptions}
+                  containerStyles={styles.input}
+                  value={values.visitor_id}
+                  placeholder="Select Visitor"
+                  onSelect={value => {
+                    setFieldValue('visitor_id', value);
+                  }}
+                />
+              ) : null}
               <RenderInput
                 name="task_title"
                 numberOfLines={8}
@@ -83,7 +97,6 @@ function AddFollowUp(props) {
                 returnKeyType="done"
                 error={errors.task_title}
               />
-
               <View style={styles.row}>
                 <View style={styles.flex}>
                   <RenderDatePicker
@@ -115,7 +128,6 @@ function AddFollowUp(props) {
                   />
                 </View>
               </View>
-
               <RenderSelect
                 name="sales_pipeline"
                 label="Sales Pipeline"
@@ -127,7 +139,6 @@ function AddFollowUp(props) {
                   setFieldValue('inquiry_status_id', value);
                 }}
               />
-
               <RichTextEditor
                 style={styles.input}
                 name="remarks"
