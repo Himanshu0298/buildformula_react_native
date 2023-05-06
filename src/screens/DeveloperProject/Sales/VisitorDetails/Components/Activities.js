@@ -44,12 +44,21 @@ function Heading(props) {
 
 function DetailCard(props) {
   const {theme, name, comment, activity, type} = props;
-  const {created, followup_date, followup_time} = activity;
+  const {
+    created,
+    followup_date,
+    followup_time,
+    completed_remarks,
+    completed_datetime,
+    completed,
+  } = activity;
 
   const followup = dayjs(`${followup_date} ${followup_time}`).format(
     'YYYY-MM-DD hh:mm:ss',
   );
-
+  const completeDateAndTime = dayjs(`${completed_datetime}`).format(
+    'YYYY-MM-DD hh:mm:ss',
+  );
   const isHtml = comment?.includes('<') && comment?.includes('>');
 
   return (
@@ -89,6 +98,24 @@ function DetailCard(props) {
           contentWidth={Layout.window.width}
         />
       )}
+      {completed === 'yes' ? (
+        <>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Caption> Completed Remarks: </Caption>
+            <RenderHtml
+              source={{html: completed_remarks}}
+              contentWidth={Layout.window.width}
+            />
+          </View>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Caption> Completed Date & Time: </Caption>
+            <RenderHtml
+              source={{html: completeDateAndTime}}
+              contentWidth={Layout.window.width}
+            />
+          </View>
+        </>
+      ) : null}
     </View>
   );
 }
@@ -124,7 +151,7 @@ function FilterPanel(props) {
         horizontal
         style={styles.container}
         showsHorizontalScrollIndicator={false}>
-        {FILTERS.map(i => {
+        {FILTERS?.map(i => {
           const active = filter === i.value;
           return (
             <Button

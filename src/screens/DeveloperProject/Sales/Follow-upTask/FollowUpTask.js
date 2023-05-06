@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {SafeAreaView, StyleSheet, TouchableOpacity, View} from 'react-native';
-import {Text, withTheme, Subheading, Caption} from 'react-native-paper';
+import {Text, withTheme, Subheading, Caption, FAB} from 'react-native-paper';
 import {theme} from 'styles/theme';
 import {useEffect} from 'react';
 import {Agenda} from 'react-native-calendars';
@@ -9,6 +9,7 @@ import useSalesActions from 'redux/actions/salesActions';
 import NoResult from 'components/Atoms/NoResult';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import dayjs from 'dayjs';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const Calendar = props => {
   const {navigation, followUpsData, loadMonthData} = props;
@@ -79,15 +80,42 @@ const Calendar = props => {
 };
 
 function FollowUpTask(props) {
+  const {navigation} = props;
   const {selectedProject} = useSelector(s => s.project);
   const project_id = selectedProject.id;
 
-  const {followUpsData} = useSelector(s => s.sales);
+  const {
+    followUpsData,
+    loading,
+    pipelines = [],
+    visitors = [],
+  } = useSelector(s => s.sales);
 
-  const {getFollowUpList} = useSalesActions();
+  const {getFollowUpList, getPipelineData, getVisitors} = useSalesActions();
+
+  const [filter, setFilter] = React.useState('name');
+
+  const salesPipelineOptions = React.useMemo(() => {
+    const options = pipelines
+      ?.map(e => {
+        return {label: e?.title, value: e?.id};
+      })
+      ?.filter(e => e.label !== 'Book(won)');
+    return options;
+  }, [pipelines]);
+
+  const visitorsOptions = React.useMemo(() => {
+    const options = visitors?.map(e => {
+      return {label: `${e.first_name} ${e.last_name}`, value: e?.id};
+    });
+    return options;
+  }, [visitors]);
 
   useEffect(() => {
     loadMonthData({dateString: dayjs().format('YYYY-MM-DD')});
+    getPipelineData({project_id: selectedProject.id});
+    getVisitors({project_id: selectedProject.id, filter_mode: filter});
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -97,6 +125,8 @@ function FollowUpTask(props) {
 
   return (
     <View style={styles.container}>
+      <Spinner visible={loading} textContent="" />
+
       <View style={styles.scrollView}>
         <View style={styles.headingContainer}>
           <Subheading style={styles.Subheading}>Follow-up Task</Subheading>
@@ -107,6 +137,18 @@ function FollowUpTask(props) {
           loadMonthData={loadMonthData}
         />
       </View>
+      <FAB
+        style={[styles.fab, {backgroundColor: theme.colors.primary}]}
+        large
+        icon="plus"
+        onPress={() =>
+          navigation.navigate('AddDetails', {
+            type: 'Follow-up',
+            salesPipelineOptions,
+            visitorsOptions,
+          })
+        }
+      />
     </View>
   );
 }
@@ -174,6 +216,11 @@ const styles = StyleSheet.create({
   noResult: {
     flex: 1,
     alignItems: 'center',
+  },
+  fab: {
+    position: 'absolute',
+    right: 20,
+    bottom: 20,
   },
 });
 

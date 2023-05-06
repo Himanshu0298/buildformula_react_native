@@ -46,6 +46,7 @@ class BoardRepository {
     column.setContentHeight(contentHeight);
   };
 
+  // eslint-disable-next-line class-methods-use-this
   setItemRef = (columnId, item, ref) => {
     item.setRef(ref);
   };
@@ -56,6 +57,7 @@ class BoardRepository {
     return column && column.setListView(listView);
   };
 
+  // eslint-disable-next-line class-methods-use-this
   updateItemWithLayout = (columnId, item, previousItem) => {
     item.measureAndSaveLayout(previousItem);
   };
@@ -106,10 +108,12 @@ class BoardRepository {
     });
   };
 
+  // eslint-disable-next-line class-methods-use-this
   hide = (columnId, item) => {
     item.setHidden(true);
   };
 
+  // eslint-disable-next-line class-methods-use-this
   show = (columnId, item) => {
     item.setHidden(false);
   };

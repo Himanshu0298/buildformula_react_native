@@ -348,7 +348,7 @@ function RMCCardListing(props) {
           <View style={styles.newDataRow}>
             <View style={styles.rmcDetail}>
               <Caption>Grade: </Caption>
-              <Text>{grade || select_grade}</Text>
+              <Text>{grade || select_grade || ''}</Text>
             </View>
             <View style={styles.rmcDetail}>
               <Caption>Qty: </Caption>
@@ -621,10 +621,6 @@ function CreateWork(props) {
   const [materials, setMaterials] = React.useState(materialsItems);
   const [rmcMaterials, setRmcMaterials] = React.useState(rmcItems);
 
-  console.log('===========> materials', materials);
-
-  console.log('===========> rmcMaterials', rmcMaterials);
-
   React.useEffect(() => {
     getWorkSubWorkList({project_id: projectId});
     getRMCList({project_id: projectId});
@@ -720,10 +716,6 @@ function CreateWork(props) {
       requred_date,
       vendor_id,
     };
-
-    console.log('===========>issuework ', issuework);
-
-    console.log('===========>rmc_work ', rmc_work);
 
     await createWorkIssue(restData);
 
@@ -909,12 +901,12 @@ function CreateWork(props) {
     return {};
   }, [materialSubCategories, materials, selectedMaterialIndex]);
 
-  const rmcInitialValues = useMemo(() => {
-    const {select_grade: grade} = rmcMaterials;
-    return {
-      grade,
-    };
-  }, [rmcMaterials]);
+  // const rmcInitialValues = useMemo(() => {
+  //   const {select_grade: grade} = rmcMaterials;
+  //   return {
+  //     grade,
+  //   };
+  // }, [rmcMaterials]);
 
   return (
     <>
