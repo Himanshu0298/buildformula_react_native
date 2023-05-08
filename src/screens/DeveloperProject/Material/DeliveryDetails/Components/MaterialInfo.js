@@ -16,6 +16,7 @@ import FileIcon from 'assets/images/file_icon.png';
 import NoResult from 'components/Atoms/NoResult';
 import {useDownload} from 'components/Atoms/Download';
 import FileViewer from 'react-native-file-viewer';
+import {getDownloadUrl} from 'utils/download';
 
 const RenderImage = ({item, index, type}) => {
   const label =
@@ -25,12 +26,19 @@ const RenderImage = ({item, index, type}) => {
 
   const download = useDownload();
 
+  const getFileName = url => {
+    const lastSlashIndex = url.lastIndexOf('/');
+    return url.substring(lastSlashIndex + 1);
+  };
+
   const onPressFile = async fileUrl => {
-    const name = fileUrl.split('/').pop();
+    const url = getDownloadUrl(fileUrl.image_url);
+
+    const name = getFileName(fileUrl.image_url);
 
     download.link({
       name,
-      link: fileUrl,
+      link: url,
       showAction: false,
       onFinish: ({dir}) => {
         FileViewer.open(`file://${dir}`);
@@ -41,7 +49,7 @@ const RenderImage = ({item, index, type}) => {
   return (
     <TouchableOpacity
       style={styles.sectionContainer}
-      onPress={() => onPressFile(item?.image_url)}
+      onPress={() => onPressFile(item)}
       key={item.id}>
       <Image source={FileIcon} style={styles.fileIcon} />
       <View>

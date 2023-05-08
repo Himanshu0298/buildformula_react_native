@@ -103,11 +103,13 @@ const VehicleInfo = props => {
   const download = useDownload();
 
   const onPressFile = async fileUrl => {
-    const name = fileUrl.split('/').pop();
+    const url = getDownloadUrl(fileUrl.image_url);
+
+    const name = getFileName(fileUrl.image_url);
 
     download.link({
       name,
-      link: fileUrl,
+      link: url,
       showAction: false,
       onFinish: ({dir}) => {
         FileViewer.open(`file://${dir}`);
@@ -145,7 +147,7 @@ const VehicleInfo = props => {
           return (
             <TouchableOpacity
               style={styles.sectionContainer}
-              onPress={() => onPressFile(item?.image_url)}>
+              onPress={() => onPressFile(item)}>
               <Image source={FileIcon} style={styles.fileIcon} />
 
               <View key={item.id}>
