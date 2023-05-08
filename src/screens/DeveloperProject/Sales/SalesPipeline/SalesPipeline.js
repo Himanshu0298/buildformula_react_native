@@ -267,10 +267,6 @@ const RenderBoard = React.memo(props => {
     handleAddNew,
     moveContact,
   } = props;
-  console.log(
-    '🚀 ~ file: SalesPipeline.js:270 ~ RenderBoard ~ pipelines:',
-    pipelines,
-  );
 
   const alert = useAlert();
 
