@@ -290,7 +290,7 @@ const RenderBoard = React.memo(props => {
     const data = pipelines.map((pipeline, i) => ({
       id: i + 1,
       name: pipeline.title,
-      rows: pipeline?.get_visitors,
+      rows: pipeline.get_visitors || [],
       pipeline,
     }));
 
@@ -397,7 +397,7 @@ export default function SalesPipeline(props) {
   return (
     <View style={styles.container}>
       <Spinner visible={loading} textContent="" />
-      {sortedPipelines.length === 0 ? (
+      {sortedPipelines?.length === 0 ? (
         <View style={styles.noResultContainer}>
           <Subheading>No Data Found</Subheading>
         </View>
@@ -478,9 +478,7 @@ const styles = StyleSheet.create({
   visitorContainer: {
     marginLeft: 5,
   },
-  rightContainer: {
-    alignItems: 'center',
-  },
+
   addNewContainer: {
     padding: 20,
     backgroundColor: '#fff',

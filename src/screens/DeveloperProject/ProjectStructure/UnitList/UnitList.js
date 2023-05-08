@@ -17,14 +17,14 @@ import {
   Text,
   Title,
 } from 'react-native-paper';
-import {getShadow} from 'utils';
+import {getPermissions, getShadow} from 'utils';
 import {theme} from 'styles/theme';
 import useProjectStructureActions from 'redux/actions/projectStructureActions';
 import {useSelector} from 'react-redux';
 import {useAlert} from 'components/Atoms/Alert';
 import Spinner from 'react-native-loading-spinner-overlay';
 
-const UnitCard = ({item, navigation, handleDelete}) => {
+const UnitCard = ({item, navigation, handleDelete, modulePermission}) => {
   const [visible, setVisible] = React.useState(false);
   const toggleMenu = () => setVisible(v => !v);
   const {
@@ -70,21 +70,29 @@ const UnitCard = ({item, navigation, handleDelete}) => {
         </View>
 
         <View style={styles.headerWrapper}>
-          <Menu
-            visible={visible}
-            onDismiss={() => toggleMenu()}
-            anchor={
-              <OpacityButton
-                opacity={0.1}
-                color="#4872f4"
-                style={styles.editIcon}
-                onPress={toggleMenu}>
-                <MaterialIcon name="dots-vertical" color="#4872f4" size={15} />
-              </OpacityButton>
-            }>
-            <Menu.Item onPress={navToEdit} title="Edit" />
-            <Menu.Item onPress={deleteUnit} title="Delete" />
-          </Menu>
+          {modulePermission?.editor || modulePermission?.admin ? (
+            <Menu
+              visible={visible}
+              onDismiss={() => toggleMenu()}
+              anchor={
+                <OpacityButton
+                  opacity={0.1}
+                  color="#4872f4"
+                  style={styles.editIcon}
+                  onPress={toggleMenu}>
+                  <MaterialIcon
+                    name="dots-vertical"
+                    color="#4872f4"
+                    size={15}
+                  />
+                </OpacityButton>
+              }>
+              <Menu.Item onPress={navToEdit} title="Edit" />
+              {modulePermission?.admin ? (
+                <Menu.Item onPress={deleteUnit} title="Delete" />
+              ) : null}
+            </Menu>
+          ) : null}
         </View>
       </View>
       <Divider />
@@ -215,6 +223,8 @@ function UnitList(props) {
 
   const onSearch = v => setSearchQuery(v);
 
+  const modulePermission = getPermissions('Unit List');
+
   return (
     <View style={styles.mainContainer}>
       <Spinner visible={unitLoading} textContent="" />
@@ -240,25 +250,27 @@ function UnitList(props) {
                 item={item}
                 navigation={navigation}
                 handleDelete={handleDelete}
+                modulePermission={modulePermission}
               />
             );
           }}
         />
       </View>
-
-      <FAB.Group
-        open={selectDialog}
-        fabStyle={{
-          backgroundColor: colors.primary,
-        }}
-        icon={selectDialog ? 'window-close' : 'plus'}
-        small
-        onPress={toggleSelectDialog}
-        actions={FAB_ACTIONS}
-        onStateChange={() => {
-          console.log('-----> onStateChange');
-        }}
-      />
+      {modulePermission?.editor || modulePermission?.admin ? (
+        <FAB.Group
+          open={selectDialog}
+          fabStyle={{
+            backgroundColor: colors.primary,
+          }}
+          icon={selectDialog ? 'window-close' : 'plus'}
+          small
+          onPress={toggleSelectDialog}
+          actions={FAB_ACTIONS}
+          onStateChange={() => {
+            console.log('-----> onStateChange');
+          }}
+        />
+      ) : null}
     </View>
   );
 }

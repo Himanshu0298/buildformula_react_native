@@ -82,6 +82,7 @@ const initialState = {
   sourceTypeOptions: [],
   budgetRangeOptions: [],
   inquiryOptions: [],
+  project_types: [],
   interestedOptions: [],
   assignOptions: [],
   visitorAnalytics: {},
@@ -201,6 +202,7 @@ const reducer = (state = initialState, action = {}) => {
         yearly_visitor,
         month_visitor,
         weekly_visitor,
+        project_types,
       } = payload;
 
       return {
@@ -211,6 +213,7 @@ const reducer = (state = initialState, action = {}) => {
           return {value: Number(value), label: inquiry_for[value]};
         }),
         bhkOptions: project_bhk,
+        project_types,
         visitorSuggestions: visitors_autosuggestions,
         assignOptions: assign_to,
         visitorAnalytics: {

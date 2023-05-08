@@ -17,7 +17,7 @@ import {
 } from 'react-native-paper';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {getShadow} from 'utils';
+import {getPermissions, getShadow} from 'utils';
 import {useSelector} from 'react-redux';
 import useProjectStructureActions from 'redux/actions/projectStructureActions';
 import {useAlert} from 'components/Atoms/Alert';
@@ -32,7 +32,7 @@ const PROJECT_STATUS = {
 };
 
 const AreaCard = props => {
-  const {item, handleDelete, navigation} = props;
+  const {item, handleDelete, navigation, modulePermission} = props;
 
   const [visible, setVisible] = React.useState(false);
 
@@ -56,21 +56,29 @@ const AreaCard = props => {
           <Text style={styles.idText}>{id}</Text>
         </View>
         <View style={styles.headerWrapper}>
-          <Menu
-            visible={visible}
-            onDismiss={() => toggleMenu()}
-            anchor={
-              <OpacityButton
-                opacity={0.1}
-                color="#4872f4"
-                style={styles.editIcon}
-                onPress={toggleMenu}>
-                <MaterialIcon name="dots-vertical" color="#4872f4" size={15} />
-              </OpacityButton>
-            }>
-            <Menu.Item onPress={onEdit} title="Edit" />
-            <Menu.Item onPress={onDelete} title="Delete" />
-          </Menu>
+          {modulePermission?.editor || modulePermission?.admin ? (
+            <Menu
+              visible={visible}
+              onDismiss={() => toggleMenu()}
+              anchor={
+                <OpacityButton
+                  opacity={0.1}
+                  color="#4872f4"
+                  style={styles.editIcon}
+                  onPress={toggleMenu}>
+                  <MaterialIcon
+                    name="dots-vertical"
+                    color="#4872f4"
+                    size={15}
+                  />
+                </OpacityButton>
+              }>
+              <Menu.Item onPress={onEdit} title="Edit" />
+              {modulePermission?.admin ? (
+                <Menu.Item onPress={onDelete} title="Delete" />
+              ) : null}
+            </Menu>
+          ) : null}
         </View>
       </View>
       <Divider />
@@ -110,6 +118,8 @@ function AreaList(props) {
     getList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const modulePermission = getPermissions('Area List');
 
   const getList = () => getAreaList({project_id: selectedProject.id});
 
@@ -167,16 +177,19 @@ function AreaList(props) {
                 item={item}
                 handleDelete={handleDelete}
                 navigation={navigation}
+                modulePermission={modulePermission}
               />
             );
           }}
         />
-        <FAB
-          style={styles.fab}
-          large
-          icon="plus"
-          onPress={() => navigation.navigate('AddArea')}
-        />
+        {modulePermission?.editor || modulePermission?.admin ? (
+          <FAB
+            style={styles.fab}
+            large
+            icon="plus"
+            onPress={() => navigation.navigate('AddArea')}
+          />
+        ) : null}
       </View>
     </View>
   );

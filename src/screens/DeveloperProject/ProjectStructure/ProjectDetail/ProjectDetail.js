@@ -2,7 +2,7 @@ import {StyleSheet, View} from 'react-native';
 import React, {useState} from 'react';
 import {IconButton, Subheading} from 'react-native-paper';
 import {TabView} from 'react-native-tab-view';
-import {getShadow} from 'utils';
+import {getPermissions, getShadow} from 'utils';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useSelector} from 'react-redux';
@@ -64,6 +64,8 @@ function ProjectDetail(props) {
     }
   };
 
+  const modulePermission = getPermissions('Project List');
+
   const onMakeDuplicate = async () => {
     const data = {
       project_id: selectedProject.id,
@@ -102,22 +104,24 @@ function ProjectDetail(props) {
           />
           <Subheading style={styles.header}>Project Details</Subheading>
         </View>
-        <View style={styles.editIconContainer}>
-          <OpacityButton
-            color="#4872f4"
-            opacity={0.18}
-            style={styles.editIcon}
-            onPress={navToEdit}>
-            <MaterialIcons name="edit" color="#4872f4" size={13} />
-          </OpacityButton>
-          <OpacityButton
-            color="#4872f4"
-            opacity={0.18}
-            style={styles.editIcon}
-            onPress={onMakeDuplicate}>
-            <MaterialIcons name="content-copy" color="#4872f4" size={13} />
-          </OpacityButton>
-        </View>
+        {modulePermission?.editor || modulePermission?.admin ? (
+          <View style={styles.editIconContainer}>
+            <OpacityButton
+              color="#4872f4"
+              opacity={0.18}
+              style={styles.editIcon}
+              onPress={navToEdit}>
+              <MaterialIcons name="edit" color="#4872f4" size={13} />
+            </OpacityButton>
+            <OpacityButton
+              color="#4872f4"
+              opacity={0.18}
+              style={styles.editIcon}
+              onPress={onMakeDuplicate}>
+              <MaterialIcons name="content-copy" color="#4872f4" size={13} />
+            </OpacityButton>
+          </View>
+        ) : null}
       </View>
       <View style={styles.mainContainer}>
         <TabView

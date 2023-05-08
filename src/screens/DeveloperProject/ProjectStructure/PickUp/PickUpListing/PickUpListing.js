@@ -15,7 +15,7 @@ import {
 } from 'react-native-paper';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {theme} from 'styles/theme';
-import {getShadow} from 'utils';
+import {getPermissions, getShadow} from 'utils';
 import useProjectStructureActions from 'redux/actions/projectStructureActions';
 import {useSelector} from 'react-redux';
 import {useAlert} from 'components/Atoms/Alert';
@@ -36,7 +36,7 @@ const schema = Yup.object().shape({
 });
 
 function PickUpList(props) {
-  const {item, index, handleDelete, editDialog, hide} = props;
+  const {item, index, handleDelete, editDialog, hide, modulePermission} = props;
 
   const {title, bhk_title, id} = item;
 
@@ -52,35 +52,38 @@ function PickUpList(props) {
           />
           <Subheading> {title || bhk_title} </Subheading>
         </View>
-        {!hide && (
-          <View style={styles.headerSubContainer}>
-            <View style={styles.editIconContainer}>
-              <OpacityButton
-                color={theme.colors.primary}
-                opacity={0.18}
-                style={styles.editIcon}
-                onPress={() => editDialog(index, item)}>
-                <MaterialIcons
-                  name="edit"
-                  color={theme.colors.primary}
-                  size={13}
-                />
-              </OpacityButton>
-            </View>
-
-            <OpacityButton
-              color={theme.colors.error}
-              opacity={0.18}
-              onPress={() => handleDelete(id)}
-              style={styles.deleteIcon}>
-              <MaterialIcons
-                name="delete"
-                color={theme.colors.error}
-                size={13}
-              />
-            </OpacityButton>
-          </View>
-        )}
+        {modulePermission?.editor || modulePermission?.admin
+          ? !hide && (
+              <View style={styles.headerSubContainer}>
+                <View style={styles.editIconContainer}>
+                  <OpacityButton
+                    color={theme.colors.primary}
+                    opacity={0.18}
+                    style={styles.editIcon}
+                    onPress={() => editDialog(index, item)}>
+                    <MaterialIcons
+                      name="edit"
+                      color={theme.colors.primary}
+                      size={13}
+                    />
+                  </OpacityButton>
+                </View>
+                {modulePermission?.admin ? (
+                  <OpacityButton
+                    color={theme.colors.error}
+                    opacity={0.18}
+                    onPress={() => handleDelete(id)}
+                    style={styles.deleteIcon}>
+                    <MaterialIcons
+                      name="delete"
+                      color={theme.colors.error}
+                      size={13}
+                    />
+                  </OpacityButton>
+                ) : null}
+              </View>
+            )
+          : null}
       </View>
     </KeyboardAwareScrollView>
   );
@@ -180,6 +183,8 @@ function PickUpListing(props) {
     );
   }, [fieldLabel]);
 
+  const modulePermission = getPermissions('Pickup List');
+
   const getList = () => {
     getPickUpList({project_id: selectedProject.id, field_id});
   };
@@ -274,6 +279,7 @@ function PickUpListing(props) {
                   editDialog={editDialog}
                   handleDelete={handleDelete}
                   hide={check}
+                  modulePermission={modulePermission}
                 />
               )}
               onDataChange={handleDragEnd}
@@ -281,10 +287,11 @@ function PickUpListing(props) {
           ) : (
             <NoResult />
           )}
-
-          {!check && (
-            <FAB style={styles.fab} icon="plus" onPress={toggleAddDialog} />
-          )}
+          {modulePermission?.editor || modulePermission?.admin
+            ? !check && (
+                <FAB style={styles.fab} icon="plus" onPress={toggleAddDialog} />
+              )
+            : null}
         </View>
 
         {dialog ? (
@@ -294,6 +301,7 @@ function PickUpListing(props) {
             pickUp={pickUpList?.[selectedIndex]}
             onClose={toggleAddDialog}
             onSubmit={onSubmit}
+            modulePermission={modulePermission}
           />
         ) : null}
       </>

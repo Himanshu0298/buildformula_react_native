@@ -138,14 +138,20 @@ function RenderGeneralDrawerItems(props) {
 function RenderDeveloperDrawerItems(props) {
   const {theme} = props;
 
-  const {permissions, isProjectAdmin} = useSelector(s => s.project);
+  const {permissions, isProjectAdmin, availableModules} = useSelector(
+    s => s.project,
+  );
+
+  const projectRoutes = useMemo(() => {
+    return DEVELOPER_DRAWER_ITEMS?.filter(e => availableModules.includes(e.id));
+  }, [availableModules]);
 
   const routes = useMemo(() => {
     if (isProjectAdmin) {
-      return DEVELOPER_DRAWER_ITEMS;
+      return projectRoutes;
     }
-    return filterSidebar(DEVELOPER_DRAWER_ITEMS, permissions);
-  }, [isProjectAdmin, permissions]);
+    return filterSidebar(projectRoutes, permissions);
+  }, [isProjectAdmin, permissions, projectRoutes]);
 
   return routes.map(section => {
     if (section.title) {
