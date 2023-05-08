@@ -328,20 +328,20 @@ function AddReturnIndentMaterials(props) {
     } else {
       _materials.push(values);
     }
-    const subCategoryMaterial = materials?.find(
-      i => i.material_sub_category_id === values.material_sub_category_id,
-    );
+    // const subCategoryMaterial = materials?.find(
+    //   i => i.material_sub_category_id === values.material_sub_category_id,
+    // );
 
-    const subCategoriesMaterial = materialsItems?.find(
-      i => i.material_sub_category_id === values.material_sub_category_id,
-    );
+    // const subCategoriesMaterial = materialsItems?.find(
+    //   i => i.material_sub_category_id === values.material_sub_category_id,
+    // );
 
-    if (subCategoryMaterial || subCategoriesMaterial) {
-      snackbar.showMessage({
-        message: 'This SubCategory already in use, please select another one',
-        variant: 'warning',
-      });
-    }
+    // if (subCategoryMaterial === subCategoriesMaterial) {
+    //   snackbar.showMessage({
+    //     message: 'This SubCategory already in use, please select another one',
+    //     variant: 'warning',
+    //   });
+    // }
     setMaterials(_materials);
     toggleAddDialog();
   };

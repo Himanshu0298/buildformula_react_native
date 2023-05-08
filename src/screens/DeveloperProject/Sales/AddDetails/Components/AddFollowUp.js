@@ -1,5 +1,5 @@
 import RenderInput from 'components/Atoms/RenderInput';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {withTheme, Subheading} from 'react-native-paper';
 import {Formik} from 'formik';
@@ -32,7 +32,18 @@ function AddFollowUp(props) {
 
   const {selectedProject} = useSelector(s => s.project);
 
-  const {addVisitorFollowUp, getVisitorActivities} = useSalesActions();
+  const {addVisitorFollowUp, getVisitorActivities, getFollowUpList} =
+    useSalesActions();
+
+  useEffect(() => {
+    loadMonthData({dateString: dayjs().format('YYYY-MM-DD')});
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const loadMonthData = ({dateString}) => {
+    getFollowUpList({project_id: selectedProject.id, given_date: dateString});
+  };
 
   const onSubmit = async values => {
     await addVisitorFollowUp({
@@ -46,6 +57,8 @@ function AddFollowUp(props) {
       visitor_id: visitorId || customerId || values.visitor_id,
       project_id: selectedProject.id,
     });
+    // loadMonthData();
+
     navigation.goBack();
   };
 
@@ -128,17 +141,20 @@ function AddFollowUp(props) {
                   />
                 </View>
               </View>
-              <RenderSelect
-                name="sales_pipeline"
-                label="Sales Pipeline"
-                options={salesPipelineOptions}
-                containerStyles={styles.input}
-                value={values.inquiry_status_id}
-                placeholder="Select Sales pipeline"
-                onSelect={value => {
-                  setFieldValue('inquiry_status_id', value);
-                }}
-              />
+              {!visitorsOptions ? (
+                <RenderSelect
+                  name="sales_pipeline"
+                  label="Sales Pipeline"
+                  options={salesPipelineOptions}
+                  containerStyles={styles.input}
+                  value={values.inquiry_status_id}
+                  placeholder="Select Sales pipeline"
+                  onSelect={value => {
+                    setFieldValue('inquiry_status_id', value);
+                  }}
+                />
+              ) : null}
+
               <RichTextEditor
                 style={styles.input}
                 name="remarks"
