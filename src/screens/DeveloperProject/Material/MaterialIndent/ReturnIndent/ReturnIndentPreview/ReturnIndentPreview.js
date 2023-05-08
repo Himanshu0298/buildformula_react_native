@@ -4,6 +4,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Image,
+  Platform,
 } from 'react-native';
 
 import React, {useEffect} from 'react';
@@ -26,6 +27,11 @@ import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
 import ImageView from 'react-native-image-viewing';
 import {isNumber} from 'lodash';
+import ReactNativeBlobUtil from 'react-native-blob-util';
+import {getDownloadUrl} from 'utils/download';
+import {getFileName} from 'utils/constant';
+import {useDownload} from 'components/Atoms/Download';
+import FileViewer from 'react-native-file-viewer';
 
 const INDENT_STATUS = {
   pending: {label: 'Pending', color: 'rgba(72, 114, 244, 1)'},
@@ -133,23 +139,69 @@ const MaterialAttachments = props => {
     return returnAttachments?.map(i => ({uri: i.file_url}));
   }, [returnAttachments]);
 
+  // const downloadFile = attachment => {
+  //   const imgUrl = attachment.file_url;
+  //   const newImgUri = imgUrl.lastIndexOf('/');
+  //   const imageName = imgUrl.substring(newImgUri);
+  //   const {dirs} = ReactNativeBlobUtil.fs;
+  //   const path =
+  //     Platform.OS === 'ios'
+  //       ? dirs.DocumentDir + imageName
+  //       : dirs.DownloadDir + imageName;
+  //   ReactNativeBlobUtil.config({
+  //     fileCache: true,
+  //     appendExt: 'jpg',
+  //     indicator: true,
+  //     IOSBackgroundTask: true,
+  //     path,
+  //     addAndroidDownloads: {
+  //       useDownloadManager: true,
+  //       notification: true,
+  //       path,
+  //       description: 'Image',
+  //     },
+  //   })
+  //     .fetch('GET', imgUrl)
+  //     .then(res => {
+  //       if (Platform.OS === 'ios') {
+  //         ReactNativeBlobUtil.ios.previewDocument(path);
+  //         // eslint-disable-next-line no-console
+  //         console.log(res, 'end downloaded');
+  //       }
+  //     });
+  // };
+  const download = useDownload();
+
+  const onPressFile = async file => {
+    const fileUrl = getDownloadUrl(file.file_url);
+    const name = getFileName(file.file_url);
+
+    download.link({
+      name,
+      link: fileUrl,
+      showAction: false,
+      onFinish: ({dir}) => {
+        FileViewer.open(`file://${dir}`);
+      },
+    });
+  };
+
   return (
     <View>
       <ImageView
         images={returnImages}
         imageIndex={imageIndex}
         visible={isNumber(imageIndex)}
-        onRequestClose={() => setImageIndex(false)}
       />
       <View style={styles.attachmentContainer}>
         <View style={styles.renderFileContainer}>
           <Text style={styles.attachmentFileHeader}>Material Images</Text>
         </View>
-        {returnAttachments?.map((attachment, index) => {
+        {returnAttachments?.map(attachment => {
           return (
             <TouchableOpacity
               style={styles.imageIconContainer}
-              onPress={() => setImageIndex(index)}>
+              onPress={() => onPressFile(attachment)}>
               <View key={attachment.file_name}>
                 <View style={styles.sectionContainer}>
                   <Image source={FileIcon} style={styles.fileIcon} />
@@ -353,11 +405,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginRight: 10,
   },
-  cardContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingLeft: 50,
-  },
+
   cardContainer: {
     padding: 10,
     marginBottom: 10,
@@ -417,12 +465,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  createdOn: {
-    padding: 10,
-    paddingHorizontal: 0,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
 
   ID: {
     backgroundColor: '#E5EAFA',
@@ -461,18 +503,13 @@ const styles = StyleSheet.create({
     maxWidth: 170,
     flex: 1,
   },
-  deleteIcon: {
-    borderRadius: 20,
-  },
+
   cardHeaderStyle: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  imageIcon: {
-    height: 50,
-    width: 50,
-  },
+
   imageIconContainer: {
     marginTop: 10,
   },

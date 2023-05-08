@@ -84,25 +84,11 @@ function FollowUpTask(props) {
   const {selectedProject} = useSelector(s => s.project);
   const project_id = selectedProject.id;
 
-  const {
-    followUpsData,
-    loading,
-    pipelines = [],
-    visitors = [],
-  } = useSelector(s => s.sales);
+  const {followUpsData, loading, visitors = []} = useSelector(s => s.sales);
 
-  const {getFollowUpList, getPipelineData, getVisitors} = useSalesActions();
+  const {getFollowUpList, getVisitors} = useSalesActions();
 
   const [filter, setFilter] = React.useState('name');
-
-  const salesPipelineOptions = React.useMemo(() => {
-    const options = pipelines
-      ?.map(e => {
-        return {label: e?.title, value: e?.id};
-      })
-      ?.filter(e => e.label !== 'Book(won)');
-    return options;
-  }, [pipelines]);
 
   const visitorsOptions = React.useMemo(() => {
     const options = visitors?.map(e => {
@@ -113,7 +99,6 @@ function FollowUpTask(props) {
 
   useEffect(() => {
     loadMonthData({dateString: dayjs().format('YYYY-MM-DD')});
-    getPipelineData({project_id: selectedProject.id});
     getVisitors({project_id: selectedProject.id, filter_mode: filter});
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -144,7 +129,6 @@ function FollowUpTask(props) {
         onPress={() =>
           navigation.navigate('AddDetails', {
             type: 'Follow-up',
-            salesPipelineOptions,
             visitorsOptions,
           })
         }

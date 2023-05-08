@@ -404,18 +404,6 @@ function IssueIndentPreview(props) {
   };
 
   const UpdateDetailsStatus = async approveStatus => {
-    // const quantity = materials.find(i => i.assigned_quantity === null);
-    // if (approveStatus === 'approved') {
-    //   if (quantity) {
-    //     snackbar.showMessage({
-    //       message: 'please add assigned quantity',
-    //       variant: 'warning',
-    //     });
-    //     toggleDialog();
-    //     return;
-    //   }
-    // }
-
     const data = {
       project_id: selectedProject.id,
       material_indent_id: indentId,
