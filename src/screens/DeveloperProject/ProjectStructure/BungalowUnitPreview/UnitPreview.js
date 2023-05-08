@@ -29,7 +29,7 @@ import PdfIcon from 'assets/images/pdf_icon.png';
 import {useDownload} from 'components/Atoms/Download';
 import {getFileName} from 'utils/constant';
 import {getDownloadUrl} from 'utils/download';
-import {getShadow} from 'utils';
+import {getPermissions, getShadow} from 'utils';
 import PostContent from 'components/Atoms/RenderSeeMore';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import CustomCarousel from 'components/Atoms/CustomCarousel';
@@ -355,6 +355,8 @@ function UnitPreview(props) {
 
   const selected_project = projectList?.find(i => i.project_id === project_id);
 
+  const modulePermission = getPermissions('Unit List');
+
   return (
     <View>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -377,15 +379,17 @@ function UnitPreview(props) {
               onPress={() => navigation.navigate('')}>
               <MaterialIcons name="content-copy" color="#4872f4" size={15} />
             </OpacityButton> */}
-            <OpacityButton
-              opacity={0.1}
-              color="#4872f4"
-              style={styles.navBTN}
-              onPress={() =>
-                navigation.navigate('BungalowDetails', {unitId: id})
-              }>
-              <MaterialIcons name="edit" color="#4872f4" size={15} />
-            </OpacityButton>
+            {modulePermission?.editor || modulePermission?.admin ? (
+              <OpacityButton
+                opacity={0.1}
+                color="#4872f4"
+                style={styles.navBTN}
+                onPress={() =>
+                  navigation.navigate('BungalowDetails', {unitId: id})
+                }>
+                <MaterialIcons name="edit" color="#4872f4" size={15} />
+              </OpacityButton>
+            ) : null}
           </View>
         </View>
         <View>

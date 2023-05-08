@@ -18,7 +18,7 @@ import {
 } from 'react-native-paper';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {getShadow} from 'utils';
+import {getPermissions, getShadow} from 'utils';
 import BuilderIcon from 'assets/images/projectHouseOwner.svg';
 import PrimeIcon from 'assets/images/primeBuilding.svg';
 import useProjectStructureActions from 'redux/actions/projectStructureActions';
@@ -56,7 +56,7 @@ function Header(props) {
 }
 
 const ProjectCard = props => {
-  const {item, navigation, handleDelete} = props;
+  const {item, navigation, handleDelete, modulePermission} = props;
   const [visible, setVisible] = React.useState(false);
   const toggleMenu = () => setVisible(v => !v);
 
@@ -103,21 +103,29 @@ const ProjectCard = props => {
             />
             <Caption>{PROJECT_STATUS[status]?.label}</Caption>
           </View>
-          <Menu
-            visible={visible}
-            onDismiss={() => toggleMenu()}
-            anchor={
-              <OpacityButton
-                opacity={0.1}
-                color="#4872f4"
-                style={styles.editIcon}
-                onPress={toggleMenu}>
-                <MaterialIcon name="dots-vertical" color="#4872f4" size={15} />
-              </OpacityButton>
-            }>
-            <Menu.Item onPress={navToEdit} title="Edit" />
-            <Menu.Item onPress={deleteProject} title="Delete" />
-          </Menu>
+          {modulePermission?.editor || modulePermission?.admin ? (
+            <Menu
+              visible={visible}
+              onDismiss={() => toggleMenu()}
+              anchor={
+                <OpacityButton
+                  opacity={0.1}
+                  color="#4872f4"
+                  style={styles.editIcon}
+                  onPress={toggleMenu}>
+                  <MaterialIcon
+                    name="dots-vertical"
+                    color="#4872f4"
+                    size={15}
+                  />
+                </OpacityButton>
+              }>
+              <Menu.Item onPress={navToEdit} title="Edit" />
+              {modulePermission?.admin ? (
+                <Menu.Item onPress={deleteProject} title="Delete" />
+              ) : null}
+            </Menu>
+          ) : null}
         </View>
       </View>
       <Divider />
@@ -180,6 +188,8 @@ function ProjectListing(props) {
   const exist = v => {
     return v !== undefined && v !== null && v !== '';
   };
+
+  const modulePermission = getPermissions('Project List');
 
   const filteredProjectData = useMemo(() => {
     if (filterCount) {
@@ -321,11 +331,14 @@ function ProjectListing(props) {
               item={item}
               navigation={navigation}
               handleDelete={handleDelete}
+              modulePermission={modulePermission}
             />
           )}
           ListEmptyComponent={<NoResult />}
         />
-        <FAB style={styles.fab} large icon="plus" onPress={handleAddNav} />
+        {modulePermission?.editor || modulePermission?.admin ? (
+          <FAB style={styles.fab} large icon="plus" onPress={handleAddNav} />
+        ) : null}
       </View>
     </View>
   );

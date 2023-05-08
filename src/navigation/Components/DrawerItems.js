@@ -5,6 +5,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 export const DEVELOPER_DRAWER_ITEMS = [
   {
+    id: 0,
     route: 'DeveloperHome',
     label: 'Dashboard',
     icon: ({color, size}) => (
@@ -423,6 +424,7 @@ export const DEVELOPER_DRAWER_ITEMS = [
     ],
   },
   {
+    id: 10,
     title: 'ROLES & SETTINGS',
     routes: [
       {
