@@ -4,7 +4,7 @@ import {withTheme, Subheading, TextInput} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
 import ProjectHeader from 'components/Molecules/Layout/ProjectHeader';
-import {getShadow} from 'utils';
+import {getPermissions, getShadow} from 'utils';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import RenderInput, {RenderError} from 'components/Atoms/RenderInput';
@@ -23,6 +23,7 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import ActionButtons from 'components/Atoms/ActionButtons';
 import RenderSelectMultiple from 'components/Atoms/RenderSelectMultiple';
 import RenderDatePicker from 'components/Atoms/RenderDatePicker';
+import {store} from 'redux/store';
 
 const customParseFormat = require('dayjs/plugin/customParseFormat');
 
@@ -412,7 +413,7 @@ function InquiryTab(props) {
               <RenderSelect
                 name="bhk"
                 label={t('label_for_bhk')}
-                options={bhkOptions.map(e => e.bhk_title)}
+                options={bhkOptions?.map(e => e.bhk_title)}
                 containerStyles={styles.input}
                 value={values.bhk}
                 error={errors.bhk}
@@ -684,6 +685,9 @@ function AddVisitor(props) {
 
   const edit = Boolean(visitor?.id);
 
+  const modulePermission = getPermissions('Sales Pipeline');
+  const {isProjectAdmin} = store.getState().project;
+
   const {selectedProject} = useSelector(s => s.project);
   const {user} = useSelector(s => s.user);
   const {loading, countrycodes, assigntoData, brokersList} = useSelector(
@@ -783,7 +787,10 @@ function AddVisitor(props) {
 
     await getVisitors({project_id: selectedProject.id, filter_mode: 'all'});
 
-    await getSalesData({project_id: selectedProject.id});
+    await getSalesData({
+      project_id: selectedProject.id,
+      role: modulePermission?.admin || isProjectAdmin ? 'admin' : 'none',
+    });
     navigation.goBack();
   };
 

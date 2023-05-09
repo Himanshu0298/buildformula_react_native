@@ -10,12 +10,17 @@ import {Subheading} from 'react-native-paper';
 import useNotificationActions from 'redux/actions/notificationActions';
 import {useProjectLoading} from 'redux/selectors';
 import useSalesActions from 'redux/actions/salesActions';
+import {getPermissions} from 'utils';
+import {store} from 'redux/store';
 import Statistics from './Components/Statistics';
 import Activity from './Components/Activity';
 
 export default function DeveloperDashboard(props) {
   const {route} = props;
   const {project} = route?.params || {};
+
+  const modulePermission = getPermissions('Sales Pipeline');
+  const {isProjectAdmin} = store.getState().project;
 
   const {
     getProjectData,
@@ -48,7 +53,10 @@ export default function DeveloperDashboard(props) {
       getProjectData(project.id);
       getProjectCommonData(project.id);
       getProjectNotifications({project_id: project.id});
-      getSalesData({project_id: project.id});
+      getSalesData({
+        project_id: project.id,
+        role: modulePermission?.admin || isProjectAdmin ? 'admin' : 'none',
+      });
     }
   };
 

@@ -30,6 +30,7 @@ import {useTranslation} from 'react-i18next';
 import {useSalesLoading} from 'redux/selectors';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import _ from 'lodash';
+import {store} from 'redux/store';
 
 function RenderContacts({item}) {
   const {get_user = {}, get_role = {}} = item?.get_role_user || {};
@@ -266,11 +267,10 @@ const RenderBoard = React.memo(props => {
     toggleModal,
     handleAddNew,
     moveContact,
+    modulePermission,
   } = props;
 
   const alert = useAlert();
-
-  const modulePermission = getPermissions('Sales Pipeline');
 
   const onDeletePipeline = (id, visitorCount) => {
     if (visitorCount > 0) {
@@ -357,12 +357,19 @@ export default function SalesPipeline(props) {
 
   const sortedPipelines = pipelines.sort((a, b) => a.order_by - b.order_by);
 
+  const modulePermission = getPermissions('Sales Pipeline');
+  const {isProjectAdmin} = store.getState().project;
+
   React.useEffect(() => {
     loadPipelines();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const loadPipelines = () => getPipelineData({project_id: selectedProject.id});
+  const loadPipelines = () =>
+    getPipelineData({
+      project_id: selectedProject.id,
+      role: modulePermission?.admin || isProjectAdmin ? 'admin' : 'none',
+    });
 
   const handleAddNew = async title => {
     await addPipeline({
@@ -411,6 +418,7 @@ export default function SalesPipeline(props) {
             handleAddNew={handleAddNew}
             toggleModal={toggleModal}
             moveContact={moveContact}
+            modulePermission={modulePermission}
           />
           <DotIndicator count={sortedPipelines.length} selected={selectedTab} />
         </>
