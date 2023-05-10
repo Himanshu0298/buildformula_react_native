@@ -74,7 +74,7 @@ function RenderVisitorItem(props) {
     last_name,
     phone,
     priority = 'low',
-    inquiry_for,
+    inquiry_for_title,
     created,
     title,
   } = data;
@@ -100,7 +100,7 @@ function RenderVisitorItem(props) {
         </View>
         <View style={styles.rowItemContainer}>
           <Subheading style={styles.visitorTitle}>
-            {STRUCTURE_TYPE_LABELS[inquiry_for]}
+            {inquiry_for_title}
           </Subheading>
           <CustomBadge
             color="rgba(72,114,244,0.15)"
