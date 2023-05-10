@@ -10,8 +10,8 @@ import {Subheading} from 'react-native-paper';
 import useNotificationActions from 'redux/actions/notificationActions';
 import {useProjectLoading} from 'redux/selectors';
 import useSalesActions from 'redux/actions/salesActions';
-import Statistics from './Components/Statistics';
 import Activity from './Components/Activity';
+import Dashboard from './Components/Dashboard';
 
 export default function DeveloperDashboard(props) {
   const {route} = props;
@@ -31,7 +31,7 @@ export default function DeveloperDashboard(props) {
 
   const [selectedTab, setSelectedTab] = useState(0);
   const [routes] = React.useState([
-    {key: 0, title: 'Statistics'},
+    {key: 0, title: 'Dashboard'},
     {key: 1, title: 'Activity'},
   ]);
 
@@ -55,7 +55,7 @@ export default function DeveloperDashboard(props) {
   const renderScene = ({route: {key}}) => {
     switch (key) {
       case 0:
-        return <Statistics onRefresh={loadData} />;
+        return <Dashboard onRefresh={loadData} />;
       case 1:
         return <Activity onRefresh={loadData} />;
       default:

@@ -189,7 +189,7 @@ function Statistics(props) {
 const styles = StyleSheet.create({
   staticsContainer: {
     backgroundColor: '#eaeff1',
-    flexGrow: 1,
+    flex: 1,
   },
   sectionContainer: {
     backgroundColor: '#fff',
