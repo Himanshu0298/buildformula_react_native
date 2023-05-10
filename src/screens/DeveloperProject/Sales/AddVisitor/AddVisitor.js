@@ -4,18 +4,13 @@ import {withTheme, Subheading, TextInput} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
 import ProjectHeader from 'components/Molecules/Layout/ProjectHeader';
-import {getShadow} from 'utils';
+import {getPermissions, getShadow} from 'utils';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import RenderInput, {RenderError} from 'components/Atoms/RenderInput';
 import {useTranslation} from 'react-i18next';
 import RenderSelect from 'components/Atoms/RenderSelect';
-import {
-  BHK_OPTIONS,
-  PHONE_REGEX,
-  PRIORITY_COLORS,
-  getUniqueOptions,
-} from 'utils/constant';
+import {PHONE_REGEX, PRIORITY_COLORS, getUniqueOptions} from 'utils/constant';
 import Radio from 'components/Atoms/Radio';
 import useSalesActions from 'redux/actions/salesActions';
 import dayjs from 'dayjs';
@@ -28,6 +23,7 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import ActionButtons from 'components/Atoms/ActionButtons';
 import RenderSelectMultiple from 'components/Atoms/RenderSelectMultiple';
 import RenderDatePicker from 'components/Atoms/RenderDatePicker';
+import {store} from 'redux/store';
 
 const customParseFormat = require('dayjs/plugin/customParseFormat');
 
@@ -193,29 +189,31 @@ function PersonalTab(props) {
               />
             </>
           ) : null}
-          <RenderSelect
-            name="occupation"
-            ref={occupationRef}
-            label={
-              values.occupation
-                ? t('label_occupation')
-                : t('placeholder_occupation')
-            }
-            options={occupationOptions}
-            containerStyles={styles.input}
-            value={values.occupation}
-            placeholder={t('placeholder_occupation')}
-            error={errors.occupation}
-            onSubmitEditing={() => assignRef?.current?.focus()}
-            onSelect={value => {
-              setFieldValue('occupation', value);
-              if (value === 0) {
-                occupationInputRef?.current?.focus();
-              } else {
-                localityRef?.current?.focus();
+          {formFieldsData?.occupation ? (
+            <RenderSelect
+              name="occupation"
+              ref={occupationRef}
+              label={
+                values.occupation
+                  ? t('label_occupation')
+                  : t('placeholder_occupation')
               }
-            }}
-          />
+              options={occupationOptions}
+              containerStyles={styles.input}
+              value={values.occupation}
+              placeholder={t('placeholder_occupation')}
+              error={errors.occupation}
+              onSubmitEditing={() => assignRef?.current?.focus()}
+              onSelect={value => {
+                setFieldValue('occupation', value);
+                if (value === 0) {
+                  occupationInputRef?.current?.focus();
+                } else {
+                  localityRef?.current?.focus();
+                }
+              }}
+            />
+          ) : null}
           {formFieldsData?.assign_to ? (
             <RenderSelect
               name="assign_to"
@@ -309,6 +307,7 @@ function InquiryTab(props) {
     edit,
     brokerOptions,
     formFieldsData,
+    bhkOptions,
   } = props;
 
   const {
@@ -409,6 +408,21 @@ function InquiryTab(props) {
               setFieldValue('inquiry_for', value);
             }}
           />
+          {formFieldsData?.for_bhk ? (
+            values.bhk_required ? (
+              <RenderSelect
+                name="bhk"
+                label={t('label_for_bhk')}
+                options={bhkOptions?.map(e => e.bhk_title)}
+                containerStyles={styles.input}
+                value={values.bhk}
+                error={errors.bhk}
+                onSelect={value => {
+                  setFieldValue('bhk', value);
+                }}
+              />
+            ) : null
+          ) : null}
           {formFieldsData?.brokers ? (
             <RenderSelect
               name="brokers_id"
@@ -435,24 +449,6 @@ function InquiryTab(props) {
                 setFieldValue('interested_property', v);
               }}
             />
-          ) : null}
-          {formFieldsData?.for_bhk ? (
-            values.bhk_required ? (
-              <RenderSelect
-                name="bhk"
-                label={t('label_for_bhk')}
-                options={BHK_OPTIONS.map(({type}) => ({
-                  label: type.toString(),
-                  value: type.toString(),
-                }))}
-                containerStyles={styles.input}
-                value={values.bhk}
-                error={errors.bhk}
-                onSelect={value => {
-                  setFieldValue('bhk', value);
-                }}
-              />
-            ) : null
           ) : null}
           {formFieldsData?.Inquiry_date ? (
             <RenderDatePicker
@@ -561,13 +557,18 @@ function RenderForm(props) {
 
   const {
     occupationOptions,
-    inquiryOptions,
     interestedOptions,
     assignOptions,
     sourceTypeOptions,
     budgetRangeOptions,
     formFields = [],
+    bhkOptions,
+    project_types,
   } = useSelector(s => s.sales);
+
+  const inquiryOptions = useMemo(() => {
+    return project_types?.map(e => ({label: e.title, value: e.id}));
+  }, [project_types]);
 
   const {selectedProject} = useSelector(s => s.project);
 
@@ -652,6 +653,7 @@ function RenderForm(props) {
             formikProps={formikProps}
             brokerOptions={brokerOptions}
             formFieldsData={formFieldsData}
+            bhkOptions={bhkOptions}
           />
         );
       default:
@@ -682,6 +684,9 @@ function AddVisitor(props) {
   const {visitor} = route?.params || {};
 
   const edit = Boolean(visitor?.id);
+
+  const modulePermission = getPermissions('Sales Pipeline');
+  const {isProjectAdmin} = store.getState().project;
 
   const {selectedProject} = useSelector(s => s.project);
   const {user} = useSelector(s => s.user);
@@ -782,7 +787,10 @@ function AddVisitor(props) {
 
     await getVisitors({project_id: selectedProject.id, filter_mode: 'all'});
 
-    await getSalesData({project_id: selectedProject.id});
+    await getSalesData({
+      project_id: selectedProject.id,
+      role: modulePermission?.admin || isProjectAdmin ? 'admin' : 'none',
+    });
     navigation.goBack();
   };
 

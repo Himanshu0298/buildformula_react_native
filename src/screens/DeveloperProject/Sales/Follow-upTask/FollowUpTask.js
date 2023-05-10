@@ -26,7 +26,7 @@ const Calendar = props => {
       <View style={styles.renderContainer}>
         <TouchableOpacity onPress={() => navToDetails(item)}>
           <View style={styles.followupTime}>
-            <Text>{`${item.followup_time}`}</Text>
+            <Text>{item?.followup_time}</Text>
             {item.completed === 'yes' ? (
               <MaterialCommunityIcons
                 name="check-circle-outline"

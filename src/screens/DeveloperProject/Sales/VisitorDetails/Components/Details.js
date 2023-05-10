@@ -165,14 +165,21 @@ function Details(props) {
           </Caption>
         </View>
         <View style={styles.detailRow}>
+          <Paragraph>Budget</Paragraph>
+          <Caption style={styles.value}>
+            {/* TODO: Add amount formatting */}
+            {/* Rs. {budget_from} - Rs.{budget_to}
+             */}
+            {`Rs. ${budget_from} - Rs.${budget_to}` || 'NA'}
+          </Caption>
+        </View>
+        <View style={styles.detailRow}>
           <Paragraph>Budget Range</Paragraph>
           <Caption style={styles.value}>
             {/* TODO: Add amount formatting */}
             {/* Rs. {budget_from} - Rs.{budget_to}
              */}
-            {budgetRangeValue[0]?.label ||
-              `Rs. ${budget_from} - Rs.${budget_to}` ||
-              'NA'}
+            {budgetRangeValue[0]?.label || 'NA'}
           </Caption>
         </View>
         {/* <View style={styles.detailRow}>

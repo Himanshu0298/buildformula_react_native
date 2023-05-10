@@ -39,14 +39,8 @@ const schema = Yup.object().shape({
 });
 
 function AddMaterialDialog(props) {
-  const {
-    handleClose,
-    edit,
-    categoryList,
-    wbs_id,
-    handleSave,
-    issueInitialValues,
-  } = props;
+  const {handleClose, edit, categoryList, handleSave, issueInitialValues} =
+    props;
 
   const {materialCategories, materialSubCategories} = useSelector(
     s => s.materialManagement,
@@ -73,39 +67,24 @@ function AddMaterialDialog(props) {
   const categoryOptions = useMemo(() => {
     const categories = [...new Set(categoryList?.map(i => i.category_id))];
 
-    if (wbs_id) {
-      return materialCategories
-        ?.filter(i => categories.includes(i.id))
-        ?.map(i => ({
-          label: `${i.title}`,
-          value: i.id,
-        }));
-    }
-    return materialCategories?.map(i => ({
-      label: `${i.title}`,
-      value: i.id,
-    }));
-  }, [categoryList, materialCategories, wbs_id]);
+    return materialCategories
+      ?.filter(i => categories.includes(i.id))
+      ?.map(i => ({
+        label: `${i.title}`,
+        value: i.id,
+      }));
+  }, [categoryList, materialCategories]);
 
   const subCategoryOptions = useMemo(() => {
     const subCategories = [
       ...new Set(categoryList.map(i => i.master_material_subcategory_id)),
     ];
-    if (wbs_id) {
-      return materialSubCategories
-        ?.filter(i => subCategories.includes(i.id))
-        ?.filter(i => i.category_id === values.material_category_id)
-        ?.map(i => ({label: `${i.title}`, value: i.id}));
-    }
+
     return materialSubCategories
+      ?.filter(i => subCategories.includes(i.id))
       ?.filter(i => i.category_id === values.material_category_id)
       ?.map(i => ({label: `${i.title}`, value: i.id}));
-  }, [
-    categoryList,
-    materialSubCategories,
-    values.material_category_id,
-    wbs_id,
-  ]);
+  }, [categoryList, materialSubCategories, values.material_category_id]);
 
   const unitOptions = useMemo(() => {
     return units?.map(i => ({label: `${i.title}`, value: i.id}));
@@ -591,6 +570,7 @@ function CreateWork(props) {
     deleteIndentRequest,
     getIndentDetails,
     createWorkIssue,
+    getMaterialIndentCategoryList,
   } = useMaterialManagementActions();
 
   const {selectedProject} = useSelector(s => s.project);
@@ -599,10 +579,10 @@ function CreateWork(props) {
   const {
     workOptions,
     rmcList,
-    categoryList,
     indentDetails,
     materialCategories,
     materialSubCategories,
+    categoryList,
   } = useSelector(s => s.materialManagement);
 
   const {
@@ -629,6 +609,24 @@ function CreateWork(props) {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // const wbs_id = wbsIds.find(i => i);
+
+  const categoriesList = () => {
+    wbsIds.forEach(function (wbs_id, index) {
+      if (wbs_id) {
+        getMaterialIndentCategoryList({
+          project_id: projectId,
+          wbs_works_id: [wbs_id],
+        });
+      }
+    });
+  };
+
+  React.useEffect(() => {
+    categoriesList();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [wbsIds]);
 
   useEffect(() => {
     if (
@@ -717,7 +715,9 @@ function CreateWork(props) {
       vendor_id,
     };
 
-    await createWorkIssue(restData);
+    if (wbsIds) {
+      await createWorkIssue(restData);
+    }
 
     getDetails();
     navigation.navigate('MaterialIndent');
