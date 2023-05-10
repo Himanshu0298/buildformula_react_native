@@ -23,7 +23,6 @@ import {MONTHS} from 'utils/constant';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {isArray} from 'lodash';
 import {PieChart} from 'react-native-svg-charts';
-import {Circle, G, Line} from 'react-native-svg';
 
 const StatsCard = props => {
   const {data, title} = props;
@@ -53,9 +52,7 @@ const StatsCard = props => {
 };
 
 function SalesDashboard() {
-  const [label, setLabel] = useState('');
   const [currentPie, setCurrentPie] = useState('');
-  const [selectedSlice, setSelectedSlice] = useState('');
   const [arc, setArc] = useState(0);
 
   const {get_sales_dashboard_data} = useSalesActions();
@@ -66,20 +63,6 @@ function SalesDashboard() {
   const loadData = async () => {
     get_sales_dashboard_data({project_id: selectedProject.id});
   };
-
-  const data1 = [50, 10, 40, 95, 14, 24, 85, 91, 35, 53];
-  const labels = [
-    'One',
-    'Two',
-    'Three',
-    'Four',
-    'Five',
-    'Six',
-    'Seven',
-    'Eight',
-    'Nine',
-    'Ten',
-  ];
 
   const Colors = [
     '#FF731D',
@@ -121,7 +104,6 @@ function SalesDashboard() {
       key: index,
       arc: index === currentPie ? {outerRadius: arc, cornerRadius: 10} : 0,
       onPress: () => {
-        setLabel(index);
         setCurrentPie(index);
         setArc('110%');
       },

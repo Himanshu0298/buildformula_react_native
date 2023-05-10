@@ -37,7 +37,6 @@ export default function DeveloperDashboard(props) {
 
   useEffect(() => {
     loadData();
-    return true;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project?.id]);
 
