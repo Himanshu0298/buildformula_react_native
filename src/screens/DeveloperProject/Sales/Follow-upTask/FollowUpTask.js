@@ -10,6 +10,8 @@ import NoResult from 'components/Atoms/NoResult';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import dayjs from 'dayjs';
 import Spinner from 'react-native-loading-spinner-overlay';
+import {getPermissions} from 'utils';
+import {store} from 'redux/store';
 
 const Calendar = props => {
   const {navigation, followUpsData, loadMonthData} = props;
@@ -90,6 +92,10 @@ function FollowUpTask(props) {
 
   const [filter, setFilter] = React.useState('name');
 
+  const modulePermission = getPermissions('Inquiry');
+
+  const {isProjectAdmin} = store.getState().project;
+
   const visitorsOptions = React.useMemo(() => {
     const options = visitors?.map(e => {
       return {label: `${e.first_name} ${e.last_name}`, value: e?.id};
@@ -105,7 +111,11 @@ function FollowUpTask(props) {
   }, []);
 
   const loadMonthData = ({dateString}) => {
-    getFollowUpList({project_id, given_date: dateString});
+    getFollowUpList({
+      project_id,
+      given_date: dateString,
+      role: modulePermission?.admin || isProjectAdmin ? 'admin' : 'none',
+    });
   };
 
   return (
