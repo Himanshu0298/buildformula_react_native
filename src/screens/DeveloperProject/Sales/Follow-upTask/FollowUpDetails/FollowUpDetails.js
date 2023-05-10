@@ -150,6 +150,11 @@ function FollowUpDetails(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const onBackPress = () => {
+    getFollowUpList({project_id, given_date: date});
+    navigation.goBack();
+  };
+
   return (
     <View style={styles.container}>
       <Spinner visible={loading} textContent="" />
@@ -161,7 +166,7 @@ function FollowUpDetails(props) {
             opacity={0.1}
             color={theme.colors.primary}
             style={styles.backButton}
-            onPress={navigation.goBack}>
+            onPress={onBackPress}>
             <MaterialCommunityIcons
               name="keyboard-backspace"
               size={18}

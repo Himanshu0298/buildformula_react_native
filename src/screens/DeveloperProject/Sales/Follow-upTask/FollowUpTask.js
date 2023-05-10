@@ -26,7 +26,7 @@ const Calendar = props => {
       <View style={styles.renderContainer}>
         <TouchableOpacity onPress={() => navToDetails(item)}>
           <View style={styles.followupTime}>
-            <Text>{item?.followup_time}</Text>
+            <Text>{`${item?.followup_time}`}</Text>
             {item.completed === 'yes' ? (
               <MaterialCommunityIcons
                 name="check-circle-outline"
@@ -74,6 +74,7 @@ const Calendar = props => {
         }}
         items={followUpsData}
         renderItem={renderItem}
+        extraData={followUpsData}
       />
     </SafeAreaView>
   );
@@ -97,6 +98,11 @@ function FollowUpTask(props) {
     return options;
   }, [visitors]);
 
+  const loadMonthData = ({dateString}) => {
+    console.log('===========> dateString', dateString);
+    getFollowUpList({project_id, given_date: dateString});
+  };
+
   useEffect(() => {
     loadMonthData({dateString: dayjs().format('YYYY-MM-DD')});
     getVisitors({project_id: selectedProject.id, filter_mode: filter});
@@ -104,18 +110,14 @@ function FollowUpTask(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const loadMonthData = ({dateString}) => {
-    getFollowUpList({project_id, given_date: dateString});
-  };
-
   return (
     <View style={styles.container}>
-      <Spinner visible={loading} textContent="" />
-
       <View style={styles.scrollView}>
         <View style={styles.headingContainer}>
           <Subheading style={styles.Subheading}>Follow-up Task</Subheading>
         </View>
+        <Spinner visible={loading} textContent="" />
+
         <Calendar
           {...props}
           followUpsData={followUpsData}
