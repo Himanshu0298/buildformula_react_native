@@ -610,7 +610,7 @@ function CreateWork(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // const wbs_id = wbsIds.find(i => i);
+  const wbsIdCheck = selectedProject.afm_wbs_id;
 
   const categoriesList = () => {
     wbsIds.forEach(function (wbs_id, index) {
@@ -714,11 +714,17 @@ function CreateWork(props) {
       requred_date,
       vendor_id,
     };
-
-    if (wbsIds) {
-      await createWorkIssue(restData);
+    if (!!wbsIdCheck === true) {
+      if (wbsIds.length) {
+        await createWorkIssue(restData);
+      } else {
+        snackbar.showMessage({
+          message: 'Please add Required for',
+          variant: 'error',
+        });
+        return;
+      }
     }
-
     getDetails();
     navigation.navigate('MaterialIndent');
     navigation.navigate('IssueIndentPreview', {id});

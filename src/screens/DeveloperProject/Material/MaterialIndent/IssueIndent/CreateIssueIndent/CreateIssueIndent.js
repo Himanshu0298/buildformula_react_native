@@ -30,9 +30,10 @@ const CreateIssueIndent = props => {
   const {getVendorList, getWorkSubWorkList, addIssueRequest} =
     useMaterialManagementActions();
 
-  const {vendorOptions, workOptions} = useSelector(s => s.materialManagement);
+  const {vendorOptions} = useSelector(s => s.materialManagement);
 
   const {selectedProject} = useSelector(s => s.project);
+
   const projectId = selectedProject.id;
 
   React.useEffect(() => {
