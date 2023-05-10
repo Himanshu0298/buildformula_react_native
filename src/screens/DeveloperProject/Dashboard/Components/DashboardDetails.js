@@ -9,7 +9,7 @@ const DASHBOARD_OPTIONS = [
   {label: 'Sales Dashboard', value: '1'},
 ];
 
-const Dashboard = () => {
+const DashboardDetails = () => {
   const [dashboard, setDashboard] = useState('0');
   return (
     <View style={styles.mainContainer}>
@@ -24,8 +24,8 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default DashboardDetails;
 
 const styles = StyleSheet.create({
-  mainContainer: {padding: 5, flex: 1},
+  mainContainer: {padding: 5, flex: 1, backgroundColor: '#eaeff1'},
 });

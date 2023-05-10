@@ -11,7 +11,7 @@ import useNotificationActions from 'redux/actions/notificationActions';
 import {useProjectLoading} from 'redux/selectors';
 import useSalesActions from 'redux/actions/salesActions';
 import Activity from './Components/Activity';
-import Dashboard from './Components/Dashboard';
+import DashboardDetails from './Components/DashboardDetails';
 
 export default function DeveloperDashboard(props) {
   const {route} = props;
@@ -55,7 +55,7 @@ export default function DeveloperDashboard(props) {
   const renderScene = ({route: {key}}) => {
     switch (key) {
       case 0:
-        return <Dashboard onRefresh={loadData} />;
+        return <DashboardDetails onRefresh={loadData} />;
       case 1:
         return <Activity onRefresh={loadData} />;
       default:
