@@ -1,17 +1,19 @@
 import ProjectHeader from 'components/Molecules/Layout/ProjectHeader';
-import MaterialTabBar from 'components/Atoms/MaterialTabBar';
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
-import {TabView} from 'react-native-tab-view';
 import useProjectActions from 'redux/actions/projectActions';
-import Layout from 'utils/Layout';
-import {Subheading} from 'react-native-paper';
+import {Subheading, Menu, IconButton, Divider} from 'react-native-paper';
 import useNotificationActions from 'redux/actions/notificationActions';
 import {useProjectLoading} from 'redux/selectors';
 import useSalesActions from 'redux/actions/salesActions';
-import Activity from './Components/Activity';
-import DashboardDetails from './Components/DashboardDetails';
+import GeneralDashboard from './Components/GeneralDashboard';
+import SalesDashboard from '../Sales/SalesDashboard/SalesDashboard';
+
+const DASHBOARD_OPTIONS = [
+  {label: 'General Dashboard', value: '0'},
+  {label: 'Sales Dashboard', value: '1'},
+];
 
 export default function DeveloperDashboard(props) {
   const {route} = props;
@@ -29,14 +31,13 @@ export default function DeveloperDashboard(props) {
 
   const loading = useProjectLoading();
 
-  const [selectedTab, setSelectedTab] = useState(0);
-  const [routes] = React.useState([
-    {key: 0, title: 'Dashboard'},
-    {key: 1, title: 'Activity'},
-  ]);
+  const [visible, setVisible] = React.useState(false);
+  const toggleMenu = () => setVisible(v => !v);
+  const [dashboard, setDashboard] = useState('0');
 
   useEffect(() => {
     loadData();
+    return true;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project?.id]);
 
@@ -52,37 +53,48 @@ export default function DeveloperDashboard(props) {
     }
   };
 
-  const renderScene = ({route: {key}}) => {
-    switch (key) {
-      case 0:
-        return <DashboardDetails />;
-      case 1:
-        return <Activity onRefresh={loadData} />;
-      default:
-        return <View />;
-    }
-  };
-
   return (
     <View style={styles.container}>
       <Spinner visible={loading} textContent="" />
-      <TabView
-        navigationState={{index: selectedTab, routes}}
-        renderScene={renderScene}
-        onIndexChange={setSelectedTab}
-        initialLayout={{width: Layout.window.width}}
-        renderTabBar={tabBarProps => {
-          return (
-            <View style={styles.headerContainer}>
-              <ProjectHeader {...props} />
-              <View style={styles.titleContainer}>
-                <Subheading>Project Dashboard</Subheading>
-              </View>
-              <MaterialTabBar {...tabBarProps} />
-            </View>
-          );
-        }}
-      />
+      <View style={styles.headerContainer}>
+        <ProjectHeader {...props} />
+        <View style={styles.titleContainer}>
+          <Subheading style={{fontWeight: '500'}}>
+            {DASHBOARD_OPTIONS[dashboard]?.label}
+          </Subheading>
+          <Menu
+            style={styles.filterMenu}
+            visible={visible}
+            onDismiss={toggleMenu}
+            anchor={
+              <IconButton
+                icon="menu"
+                size={23}
+                onPress={toggleMenu}
+                color="#4872f4"
+                style={styles.iconButton}
+              />
+            }>
+            {DASHBOARD_OPTIONS.map((i, index) => {
+              const active = i.value === dashboard;
+              return (
+                <Menu.Item
+                  index={index?.toString()}
+                  title={i.label}
+                  style={active ? styles.menuItem : {}}
+                  titleStyle={active ? styles.menuItem : {}}
+                  onPress={() => {
+                    setDashboard(i.value);
+                    toggleMenu();
+                  }}
+                />
+              );
+            })}
+          </Menu>
+        </View>
+        <Divider />
+        {dashboard === '0' ? <GeneralDashboard /> : <SalesDashboard />}
+      </View>
     </View>
   );
 }
@@ -93,5 +105,23 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     paddingLeft: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  headerContainer: {
+    flex: 1,
+    backgroundColor: '#eaeff1',
+  },
+  filterMenu: {
+    borderRadius: 10,
+    paddingVertical: 0,
+  },
+  menuItem: {
+    backgroundColor: '#4872f4',
+    color: '#fff',
+  },
+  iconButton: {
+    backgroundColor: 'rgba(72, 114, 244, 0.1)',
   },
 });
