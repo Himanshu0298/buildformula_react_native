@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {Image, StyleSheet, View} from 'react-native';
 import {Subheading, Text, withTheme} from 'react-native-paper';
 import {getShadow} from 'utils';
@@ -13,16 +13,21 @@ function GeneralDashboard() {
   const {selectedProject} = useSelector(s => s.project);
   const {user} = useSelector(s => s.user);
 
-  const {first_name, last_name, profile_url} = user || {};
+  const {first_name, last_name} = user || {};
 
   const company_logo = `${SITE_URL}/logo_images/${selectedProject.company_logo_url}`;
+  const [time, setTime] = useState(dayjs().format('DD-MM-YYYY , hh:mm A'));
+
+  useEffect(() => {
+    setInterval(() => setTime(dayjs().format('DD-MM-YYYY , hh:mm A')), 5900);
+  }, []);
 
   return (
     <View style={styles.staticsContainer}>
       <View
         showsVerticalScrollIndicator={false}
         style={styles.detailsContainer}>
-        {profile_url ? (
+        {selectedProject.company_logo_url ? (
           <ImageProgress
             source={{uri: company_logo}}
             indicator={Progress.Pie}
@@ -40,9 +45,7 @@ function GeneralDashboard() {
         <Text style={styles.subheading}>
           {first_name} {last_name}
         </Text>
-        <Subheading style={styles.timeContainer}>
-          {dayjs().format('hh:mm:ss A')}
-        </Subheading>
+        <Subheading style={styles.timeContainer}>{time}</Subheading>
       </View>
     </View>
   );
@@ -54,11 +57,14 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   profileIMG: {
+    borderWidth: 0.1,
+    borderColor: '#8d8d8d',
     width: 210,
     height: 210,
-    borderRadius: 100,
+    borderRadius: 150,
     overflow: 'hidden',
     ...getShadow(5),
+    resizeMode: 'contain',
   },
   subheading: {
     marginTop: 30,
@@ -76,4 +82,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default withTheme(GeneralDashboard);
+export default GeneralDashboard;

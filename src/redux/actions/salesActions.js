@@ -9,6 +9,7 @@ export default function useSalesActions() {
   const snackbar = useSnackbar();
   const {_err, _res} = useResProcessor();
   const {
+    get_sales_dashboard_data,
     get_inquiry_form_fields,
     getAssignToData,
     getCountryCodes,
@@ -74,6 +75,23 @@ export default function useSalesActions() {
         payload: async () => {
           try {
             const response = _res(await get_inquiry_form_fields(params));
+            const {data} = response;
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    get_sales_dashboard_data: params =>
+      dispatch({
+        type: types.GET_SALES_DASHBOARD_DATA,
+        payload: async () => {
+          try {
+            const response = _res(await get_sales_dashboard_data(params));
             const {data} = response;
 
             return Promise.resolve(data);

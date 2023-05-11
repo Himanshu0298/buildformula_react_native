@@ -1,173 +1,136 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {RefreshControl, ScrollView, StyleSheet, View} from 'react-native';
 import Layout from 'utils/Layout';
-import {Subheading, Text, withTheme} from 'react-native-paper';
+import {
+  Caption,
+  DataTable,
+  Subheading,
+  Text,
+  withTheme,
+} from 'react-native-paper';
 import {getShadow} from 'utils';
-import {BarChart, LineChart, ProgressChart} from 'react-native-chart-kit';
+import {
+  BarChart,
+  LineChart,
+  PieChart,
+  ProgressChart,
+} from 'react-native-chart-kit';
 import {useSelector} from 'react-redux';
+import useSalesActions from 'redux/actions/salesActions';
+import {theme} from 'styles/theme';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-function RenderProgressChart(props) {
-  const {params, color, width} = props;
-  const {labels, data = {}} = params;
-  const {totalBookedCount, totalCount} = data;
-
-  // const bookingPercentage =
-  //   totalCount && totalBookedCount
-  //     ? ((totalBookedCount / totalCount) * 100).toFixed(0)
-  //     : 0.0;
-  const bookingPercentage =
-    totalCount && totalBookedCount ? totalBookedCount / totalCount : 0.0;
-  const progressData = {labels, data: [bookingPercentage]};
-
+const StatsCard = props => {
+  const {data, title} = props;
   return (
-    <View style={styles.progressBarContainer}>
-      <ProgressChart
-        data={progressData}
-        width={width}
-        height={120}
-        strokeWidth={14}
-        radius={40}
-        hideLegend
-        chartConfig={{
-          backgroundGradientFrom: '#fff',
-          backgroundGradientTo: '#fff',
-          color: (opacity = 1) => `rgba(${color}, ${opacity})`,
-        }}
-      />
-      <Text>{labels[0]}</Text>
-      <View style={styles.progressLegend}>
-        <Text
-          style={{
-            fontWeight: 'bold',
-            fontSize: 18,
-            color: `rgba(${color}, 1)`,
-          }}>
-          {totalCount ? totalBookedCount : 'NA'}
-        </Text>
-        {totalCount ? (
-          <Text style={{color: `rgba(${color}, 1)`}}>/{totalCount}</Text>
-        ) : null}
+    <View style={styles.detailContainer}>
+      <Caption>{title}</Caption>
+      <View style={styles.statsCardContainer}>
+        <Subheading>{data}</Subheading>
+        {title === 'INQUIRY' || title === 'CUSTOMERS' ? (
+          <MaterialIcon
+            name={title === 'INQUIRY' ? 'image-search' : 'group'}
+            color={theme.colors.primary}
+            size={25}
+          />
+        ) : (
+          <MaterialCommunityIcons
+            name={
+              title === 'PROJECT' ? 'cube-unfolded' : 'office-building-outline'
+            }
+            size={25}
+            color={theme.colors.primary}
+          />
+        )}
       </View>
     </View>
   );
-}
+};
 
-function Statistics(props) {
-  const {onRefresh} = props;
+const data = [
+  {
+    title: 'Seoul',
+    count: 21500000,
+    color: 'rgba(131, 167, 234, 1)',
+    legendFontColor: '#7F7F7F',
+  },
+  {
+    title: 'Toronto',
+    count: 2800000,
+    color: '#F00',
+    legendFontColor: '#7F7F7F',
+  },
+  {
+    title: 'Beijing',
+    count: 527612,
+    color: 'red',
+    legendFontColor: '#7F7F7F',
+  },
+  {
+    title: 'New York',
+    count: 8538000,
+    color: '#ffffff',
+    legendFontColor: '#7F7F7F',
+  },
+  {
+    title: 'Moscow',
+    count: 11920000,
+    color: 'rgb(0, 0, 255)',
+    legendFontColor: '#7F7F7F',
+  },
+];
 
-  const {dashboardData = {}} = useSelector(s => s.project);
-  const {
-    salesData,
-    bookingProjectTypeWiseCount: bookingData,
-    projectPhases,
-  } = dashboardData;
-  const {data_with_date: weeklySalesData} = salesData?.weekly || {};
+function SalesDashboard() {
+  const [sourceTypeData, setSourceTypeData] = useState();
+
+  const {get_sales_dashboard_data} = useSalesActions();
+
+  const {selectedProject} = useSelector(s => s.project);
+  const {salesDashboardData} = useSelector(s => s.sales);
+
+  const loadData = () => {
+    get_sales_dashboard_data({project_id: selectedProject.id});
+  };
+
+  useEffect(() => {
+    loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
-    <View style={styles.staticsContainer}>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        refreshControl={
-          <RefreshControl refreshing={false} onRefresh={onRefresh} />
-        }>
-        {weeklySalesData ? (
-          <View style={styles.sectionContainer}>
-            <Subheading>Sales</Subheading>
-            <LineChart
-              fromZero
-              data={{
-                labels: Object.keys(weeklySalesData),
-                datasets: [{data: Object.values(weeklySalesData)}],
-              }}
-              width={Layout.window.width - 30} // from react-native
-              height={200}
-              withDots={false}
-              withHorizontalLines={false}
-              yAxisInterval={1} // optional, defaults to 1
-              chartConfig={{
-                backgroundColor: 'transparent',
-                backgroundGradientFrom: '#fff',
-                backgroundGradientTo: '#fff',
-                decimalPlaces: 0, // optional, defaults to 2dp
-                color: (opacity = 1) => `rgba(72,114,244, ${opacity})`,
-                labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-              }}
-              bezier
-              style={{marginTop: 8, marginLeft: -10}}
-            />
-          </View>
-        ) : null}
-        {bookingData ? (
-          <View style={styles.sectionContainer}>
-            <Subheading>Booking</Subheading>
-            <View style={styles.row}>
-              <RenderProgressChart
-                params={{labels: ['Apartment'], data: bookingData.apartment}}
-                color="72, 161, 244"
-                width={(Layout.window.width - 40) / 3}
-              />
-              <RenderProgressChart
-                params={{labels: ['Shop'], data: bookingData.shop}}
-                color="244, 175, 72"
-                width={(Layout.window.width - 40) / 3}
-              />
-              <RenderProgressChart
-                color="0, 205, 205"
-                params={{labels: ['Office'], data: bookingData.office}}
-                width={(Layout.window.width - 40) / 3}
-              />
-            </View>
-            <View style={styles.row}>
-              <RenderProgressChart
-                params={{labels: ['Bungalow'], data: bookingData.bunglow}}
-                color="7, 202, 3"
-                width={(Layout.window.width - 40) / 3}
-              />
-              <RenderProgressChart
-                params={{labels: ['Plot'], data: bookingData.plot}}
-                color="168, 72, 244"
-                width={(Layout.window.width - 40) / 3}
-              />
-            </View>
-          </View>
-        ) : null}
-        {projectPhases ? (
-          <View style={[styles.sectionContainer, {flex: 1}]}>
-            <Subheading>Project phases</Subheading>
-            <BarChart
-              withInnerLines={false}
-              fromZero
-              verticalLabelRotation="25"
-              data={{
-                labels: projectPhases.labels || [],
-                datasets: [{data: projectPhases.data || []}],
-              }}
-              width={Layout.window.width - 40} // from react-native
-              height={450}
-              chartConfig={{
-                backgroundColor: 'transparent',
-                backgroundGradientFrom: '#fff',
-                backgroundGradientTo: '#fff',
-                decimalPlaces: 0, // optional, defaults to 2dp
-                color: (opacity = 1) => `rgba(72,114,244, ${opacity})`,
-                labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                propsForHorizontalLabels: {paddingBottom: 100},
-              }}
-              style={{marginTop: 8, marginLeft: -50}}
-            />
-          </View>
-        ) : null}
-        {/* <View style={styles.sectionContainer}>
-          <Subheading>Project Sub-phases</Subheading>
+    <ScrollView
+      style={styles.salesContainer}
+      showsVerticalScrollIndicator={false}>
+      {/* stats card */}
+      <View style={styles.row}>
+        <StatsCard data={salesDashboardData.total_visitors} title="INQUIRY" />
+        <StatsCard data={salesDashboardData.total_customer} title="CUSTOMERS" />
+      </View>
+      <View style={styles.row}>
+        <StatsCard data={salesDashboardData.total_property} title="PROPERTY" />
+        <StatsCard data={salesDashboardData.total_project} title="PROJECT" />
+      </View>
+
+      {/* sales pipeline */}
+      <View style={[styles.sectionContainer, {flex: 1}]}>
+        <Caption>Sales Pipeline</Caption>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           <BarChart
             withInnerLines={false}
             fromZero
+            verticalLabelRotation="25"
             data={{
-              labels: ['Phase 1', 'Phase 2', 'Phase 3', 'Phase 4'],
-              datasets: [{data: [20, 45, 28, 80]}],
+              labels: salesDashboardData.sales_pipeline_project_type || [],
+              datasets: [
+                {
+                  data:
+                    salesDashboardData.sales_pipeline_project_type_count || [],
+                },
+              ],
             }}
-            width={Layout.window.width - 40} // from react-native
-            height={200}
+            width={Layout.window.width + 300} // from react-native
+            height={450}
             chartConfig={{
               backgroundColor: 'transparent',
               backgroundGradientFrom: '#fff',
@@ -175,26 +138,85 @@ function Statistics(props) {
               decimalPlaces: 0, // optional, defaults to 2dp
               color: (opacity = 1) => `rgba(72,114,244, ${opacity})`,
               labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+              propsForHorizontalLabels: {paddingBottom: 100},
             }}
-            style={{
-              marginTop: 8,
-            }}
+            style={{marginTop: 8, marginLeft: -39}}
           />
-        </View> */}
-      </ScrollView>
-    </View>
+        </ScrollView>
+      </View>
+
+      {/* source-type */}
+      <PieChart
+        data={data}
+        width={Layout.window.width}
+        height={220}
+        chartConfig={{
+          backgroundColor: 'transparent',
+          backgroundGradientFrom: '#fff',
+          backgroundGradientTo: '#fff',
+          decimalPlaces: 0, // optional, defaults to 2dp
+          color: (opacity = 1) => `rgba(72,114,244, ${opacity})`,
+          labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+          propsForHorizontalLabels: {paddingBottom: 100},
+        }}
+        accessor="count"
+        paddingLeft="15"
+        center={[5, 10]}
+        absolute
+        style={{marginTop: 8, marginLeft: -25}}
+      />
+
+      {/* property sold by category */}
+      <DataTable>
+        <DataTable.Header>
+          <DataTable.Title>Category</DataTable.Title>
+          <DataTable.Title numeric>Total</DataTable.Title>
+          <DataTable.Title numeric>Booked </DataTable.Title>
+          <DataTable.Title numeric>Reserved </DataTable.Title>
+          <DataTable.Title numeric>Hold </DataTable.Title>
+          <DataTable.Title numeric>Available </DataTable.Title>
+        </DataTable.Header>
+
+        <DataTable.Row>
+          <DataTable.Cell>Apartment</DataTable.Cell>
+          <DataTable.Cell numeric>285</DataTable.Cell>
+          <DataTable.Cell numeric>4</DataTable.Cell>
+          <DataTable.Cell numeric>25</DataTable.Cell>
+          <DataTable.Cell numeric>5</DataTable.Cell>
+          <DataTable.Cell numeric>251</DataTable.Cell>
+        </DataTable.Row>
+      </DataTable>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  staticsContainer: {
+  salesContainer: {
     backgroundColor: '#eaeff1',
     flex: 1,
+  },
+  detailContainer: {
+    backgroundColor: '#e7eafb',
+    padding: 10,
+    marginHorizontal: 5,
+    marginVertical: 10,
+    borderRadius: 5,
+    ...getShadow(2),
+    width: 180,
+    height: 75,
+    borderBottomWidth: 5,
+    borderColor: theme.colors.primary,
+  },
+  statsCardContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   sectionContainer: {
     backgroundColor: '#fff',
     padding: 10,
-    margin: 12,
+    marginVertical: 12,
+    marginHorizontal: 5,
     borderRadius: 5,
     ...getShadow(2),
   },
@@ -219,4 +241,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default withTheme(Statistics);
+export default withTheme(SalesDashboard);

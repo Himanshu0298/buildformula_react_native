@@ -55,7 +55,7 @@ export default function DeveloperDashboard(props) {
   const renderScene = ({route: {key}}) => {
     switch (key) {
       case 0:
-        return <DashboardDetails onRefresh={loadData} />;
+        return <DashboardDetails />;
       case 1:
         return <Activity onRefresh={loadData} />;
       default:

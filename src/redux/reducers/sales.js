@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import _ from 'lodash';
 import {
+  GET_SALES_DASHBOARD_DATA,
   GET_INQUIRY_FORM_FIELDS,
   GET_ASSIGNTO_DATA,
   GET_COUNTRY_CODES,
@@ -103,6 +104,7 @@ const initialState = {
   approvalDetailsList: [],
   brokageDealDetails: {},
   formFields: [],
+  salesDashboardData: [],
 };
 
 const reducer = (state = initialState, action = {}) => {
@@ -136,6 +138,13 @@ const reducer = (state = initialState, action = {}) => {
         formFields: payload,
       };
 
+    case `${GET_SALES_DASHBOARD_DATA}_FULFILLED`:
+      return {
+        ...state,
+        loading: false,
+        salesDashboardData: payload,
+      };
+
     case `${GET_ASSIGNTO_DATA}_FULFILLED`:
       return {
         ...state,
@@ -146,6 +155,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${GET_COUNTRY_CODES}_PENDING`:
     case `${GET_ASSIGNTO_DATA}_PENDING`:
     case `${GET_INQUIRY_FORM_FIELDS}_PENDING`:
+    case `${GET_SALES_DASHBOARD_DATA}_PENDING`:
       return {
         ...state,
         loading: true,
@@ -154,6 +164,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${GET_COUNTRY_CODES}_REJECTED`:
     case `${GET_ASSIGNTO_DATA}_REJECTED`:
     case `${GET_INQUIRY_FORM_FIELDS}_REJECTED`:
+    case `${GET_SALES_DASHBOARD_DATA}_REJECTED`:
       return {
         ...state,
         loading: false,
