@@ -110,7 +110,11 @@ function FollowUpTask(props) {
 
   useEffect(() => {
     loadMonthData({dateString: dayjs().format('YYYY-MM-DD')});
-    getVisitors({project_id: selectedProject.id, filter_mode: filter});
+    getVisitors({
+      project_id: selectedProject.id,
+      filter_mode: filter,
+      role: modulePermission?.admin || isProjectAdmin ? 'admin' : 'none',
+    });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
