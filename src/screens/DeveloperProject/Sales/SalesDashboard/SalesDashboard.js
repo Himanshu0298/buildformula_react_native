@@ -72,7 +72,7 @@ function SalesDashboard() {
       refreshControl={
         <RefreshControl refreshing={false} onRefresh={loadData} />
       }>
-      <Spinner visible={loading} textContent="" />
+      <Spinner visible={loading} />
       {/* stats card */}
       <View style={styles.row}>
         <StatsCard data={salesDashboardData?.total_visitors} title="INQUIRY" />
