@@ -188,7 +188,7 @@ function SalesDashboard() {
         </ScrollView>
       </View>
 
-      {/* Inquiry by priority */}
+      {/* Inquiry by priority  */}
       <View style={styles.sectionContainer}>
         <Caption>Inquiry by Priority</Caption>
         <View style={styles.row}>
