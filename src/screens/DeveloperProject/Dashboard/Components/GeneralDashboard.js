@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import {Image, StyleSheet, View} from 'react-native';
-import {Subheading, Text, withTheme} from 'react-native-paper';
+import {Image, ImageBackground, StyleSheet, View} from 'react-native';
+import {Subheading, Text} from 'react-native-paper';
 import {getShadow} from 'utils';
 import {useSelector} from 'react-redux';
 import {SITE_URL} from 'utils/constant';
@@ -8,6 +8,7 @@ import dayjs from 'dayjs';
 import * as Progress from 'react-native-progress';
 import ImageProgress from 'react-native-image-progress';
 import developer_building from 'assets/images/developer_building.png';
+import DashboardBG from 'assets/images/DashboardBG.png';
 
 function GeneralDashboard() {
   const {selectedProject} = useSelector(s => s.project);
@@ -23,7 +24,7 @@ function GeneralDashboard() {
   }, []);
 
   return (
-    <View style={styles.staticsContainer}>
+    <ImageBackground source={DashboardBG} style={styles.staticsContainer}>
       <View
         showsVerticalScrollIndicator={false}
         style={styles.detailsContainer}>
@@ -47,7 +48,7 @@ function GeneralDashboard() {
         </Text>
         <Subheading style={styles.timeContainer}>{time}</Subheading>
       </View>
-    </View>
+    </ImageBackground>
   );
 }
 
@@ -68,17 +69,17 @@ const styles = StyleSheet.create({
   },
   subheading: {
     marginTop: 30,
-    fontWeight: '600',
-    fontSize: 30,
+    fontWeight: '700',
+    fontSize: 32,
   },
   detailsContainer: {
     alignItems: 'center',
     flex: 1,
-    marginTop: 60,
+    marginTop: 20,
   },
   timeContainer: {
     marginTop: 15,
-    color: '#8e8e8e',
+    fontWeight: '600',
   },
 });
 

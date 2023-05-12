@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import React, {useState} from 'react';
 import RenderSelect from 'components/Atoms/RenderSelect';
 import SalesDashboard from 'screens/DeveloperProject/Sales/SalesDashboard/SalesDashboard';

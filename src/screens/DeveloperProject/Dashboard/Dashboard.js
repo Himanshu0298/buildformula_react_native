@@ -25,7 +25,7 @@ export default function DeveloperDashboard(props) {
     getProjectModules,
   } = useProjectActions();
   const {getProjectNotifications} = useNotificationActions();
-  const {getSalesData} = useSalesActions();
+  const {get_sales_dashboard_data} = useSalesActions();
 
   const loading = useProjectLoading();
 
@@ -48,7 +48,7 @@ export default function DeveloperDashboard(props) {
       getProjectData(project.id);
       getProjectCommonData(project.id);
       getProjectNotifications({project_id: project.id});
-      getSalesData({project_id: project.id});
+      get_sales_dashboard_data({project_id: project.id});
     }
   };
 
