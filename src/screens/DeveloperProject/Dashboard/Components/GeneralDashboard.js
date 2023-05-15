@@ -1,0 +1,86 @@
+import React, {useEffect, useState} from 'react';
+import {Image, ImageBackground, StyleSheet, View} from 'react-native';
+import {Subheading, Text} from 'react-native-paper';
+import {getShadow} from 'utils';
+import {useSelector} from 'react-redux';
+import {SITE_URL} from 'utils/constant';
+import dayjs from 'dayjs';
+import * as Progress from 'react-native-progress';
+import ImageProgress from 'react-native-image-progress';
+import developer_building from 'assets/images/developer_building.png';
+import DashboardBG from 'assets/images/DashboardBG.png';
+
+function GeneralDashboard() {
+  const {selectedProject} = useSelector(s => s.project);
+  const {user} = useSelector(s => s.user);
+
+  const {first_name, last_name} = user || {};
+
+  const company_logo = `${SITE_URL}/logo_images/${selectedProject.company_logo_url}`;
+  const [time, setTime] = useState(dayjs().format('DD-MM-YYYY , hh:mm A'));
+
+  useEffect(() => {
+    setInterval(() => setTime(dayjs().format('DD-MM-YYYY , hh:mm A')), 5900);
+  }, []);
+
+  return (
+    <ImageBackground source={DashboardBG} style={styles.staticsContainer}>
+      <View
+        showsVerticalScrollIndicator={false}
+        style={styles.detailsContainer}>
+        {selectedProject.company_logo_url ? (
+          <ImageProgress
+            source={{uri: company_logo}}
+            indicator={Progress.Pie}
+            indicatorProps={{
+              size: 80,
+              borderWidth: 0,
+              color: 'rgba(234,236,241,1)',
+              unfilledColor: 'rgba(211,218,239,1)',
+            }}
+            style={styles.profileIMG}
+          />
+        ) : (
+          <Image source={developer_building} style={styles.profileIMG} />
+        )}
+        <Text style={styles.subheading}>
+          {first_name} {last_name}
+        </Text>
+        <Subheading style={styles.timeContainer}>{time}</Subheading>
+      </View>
+    </ImageBackground>
+  );
+}
+
+const styles = StyleSheet.create({
+  staticsContainer: {
+    backgroundColor: '#eaeff1',
+    flexGrow: 1,
+  },
+  profileIMG: {
+    borderWidth: 0.1,
+    borderColor: '#8d8d8d',
+    width: 210,
+    height: 210,
+    borderRadius: 150,
+    overflow: 'hidden',
+    ...getShadow(5),
+    resizeMode: 'contain',
+  },
+  subheading: {
+    marginTop: 30,
+    fontWeight: '700',
+    fontSize: 32,
+  },
+  detailsContainer: {
+    alignItems: 'center',
+    flex: 1,
+    marginTop: 20,
+  },
+  timeContainer: {
+    marginTop: 15,
+    fontWeight: '600',
+  },
+});
+
+export default GeneralDashboard;

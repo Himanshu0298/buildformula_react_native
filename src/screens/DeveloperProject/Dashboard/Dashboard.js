@@ -12,8 +12,8 @@ import {useProjectLoading} from 'redux/selectors';
 import useSalesActions from 'redux/actions/salesActions';
 import {getPermissions} from 'utils';
 import {store} from 'redux/store';
-import Statistics from './Components/Statistics';
 import Activity from './Components/Activity';
+import DashboardDetails from './Components/DashboardDetails';
 
 export default function DeveloperDashboard(props) {
   const {route} = props;
@@ -30,13 +30,13 @@ export default function DeveloperDashboard(props) {
     getProjectModules,
   } = useProjectActions();
   const {getProjectNotifications} = useNotificationActions();
-  const {getSalesData} = useSalesActions();
+  const {get_sales_dashboard_data} = useSalesActions();
 
   const loading = useProjectLoading();
 
   const [selectedTab, setSelectedTab] = useState(0);
   const [routes] = React.useState([
-    {key: 0, title: 'Statistics'},
+    {key: 0, title: 'Dashboard'},
     {key: 1, title: 'Activity'},
   ]);
 
@@ -53,17 +53,14 @@ export default function DeveloperDashboard(props) {
       getProjectData(project.id);
       getProjectCommonData(project.id);
       getProjectNotifications({project_id: project.id});
-      getSalesData({
-        project_id: project.id,
-        role: modulePermission?.admin || isProjectAdmin ? 'admin' : 'none',
-      });
+      get_sales_dashboard_data({project_id: project.id});
     }
   };
 
   const renderScene = ({route: {key}}) => {
     switch (key) {
       case 0:
-        return <Statistics onRefresh={loadData} />;
+        return <DashboardDetails />;
       case 1:
         return <Activity onRefresh={loadData} />;
       default:
