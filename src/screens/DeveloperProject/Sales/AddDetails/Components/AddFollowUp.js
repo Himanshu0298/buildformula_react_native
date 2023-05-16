@@ -35,15 +35,12 @@ function AddFollowUp(props) {
   const {addVisitorFollowUp, getVisitorActivities, getFollowUpList} =
     useSalesActions();
 
-  useEffect(() => {
-    loadMonthData({dateString: dayjs().format('YYYY-MM-DD')});
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const loadMonthData = ({dateString}) => {
-    getFollowUpList({project_id: selectedProject.id, given_date: dateString});
-  };
+  // const getList = values => {
+  //   getFollowUpList({
+  //     project_id: selectedProject.id,
+  //     given_date: values.followup_date,
+  //   });
+  // };
 
   const onSubmit = async values => {
     await addVisitorFollowUp({
@@ -57,8 +54,10 @@ function AddFollowUp(props) {
       visitor_id: visitorId || customerId || values.visitor_id,
       project_id: selectedProject.id,
     });
-    // loadMonthData();
-
+    getFollowUpList({
+      project_id: selectedProject.id,
+      given_date: values.followup_date,
+    });
     navigation.goBack();
   };
 

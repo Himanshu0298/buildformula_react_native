@@ -33,7 +33,7 @@ function Details(props) {
     budget_to,
     created,
     priority,
-    inquiry_for,
+    inquiry_for_title,
     Inquiry_date,
     current_locality,
     bhk,
@@ -191,9 +191,9 @@ function Details(props) {
         <View style={styles.detailRow}>
           <Paragraph>Inquiry for</Paragraph>
           <Caption style={styles.value}>
-            {STRUCTURE_TYPE_LABELS[inquiry_for]}
-            {(bhk && STRUCTURE_TYPE_LABELS[inquiry_for] === 'Apartments') ||
-            STRUCTURE_TYPE_LABELS[inquiry_for] === 'Bungalows'
+            {inquiry_for_title}
+            {(bhk && inquiry_for_title === 'Apartments') ||
+            inquiry_for_title === 'Bunglows'
               ? ` - ${bhk} BHK`
               : null}
           </Caption>

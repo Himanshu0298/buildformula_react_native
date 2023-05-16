@@ -28,6 +28,7 @@ import {getShadow, getPermissions} from 'utils';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSalesLoading} from 'redux/selectors';
+import {store} from 'redux/store';
 
 const FILTERS = [
   {value: 'name', label: 'Name'},
@@ -73,7 +74,7 @@ function RenderVisitorItem(props) {
     last_name,
     phone,
     priority = 'low',
-    inquiry_for,
+    inquiry_for_title,
     created,
     title,
   } = data;
@@ -99,7 +100,7 @@ function RenderVisitorItem(props) {
         </View>
         <View style={styles.rowItemContainer}>
           <Subheading style={styles.visitorTitle}>
-            {STRUCTURE_TYPE_LABELS[inquiry_for]}
+            {inquiry_for_title}
           </Subheading>
           <CustomBadge
             color="rgba(72,114,244,0.15)"
@@ -217,6 +218,8 @@ function Visitors(props) {
 
   const modulePermission = getPermissions('Inquiry');
 
+  const {isProjectAdmin} = store.getState().project;
+
   const {
     getVisitors,
     getSalesData,
@@ -245,8 +248,15 @@ function Visitors(props) {
   }, [projectId, filter]);
 
   const loadData = () => {
-    getVisitors({project_id: projectId, filter_mode: filter});
-    getSalesData({project_id: projectId});
+    getVisitors({
+      project_id: projectId,
+      filter_mode: filter,
+      role: modulePermission?.admin || isProjectAdmin ? 'admin' : 'none',
+    });
+    getSalesData({
+      project_id: projectId,
+      role: modulePermission?.admin || isProjectAdmin ? 'admin' : 'none',
+    });
     getCountryCodes({project_id: projectId});
     getAssignToData({project_id: projectId});
     getBrokersList({project_id: projectId});

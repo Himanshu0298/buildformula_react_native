@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import _ from 'lodash';
+import _, {cloneDeep} from 'lodash';
 import {
   GET_SALES_DASHBOARD_DATA,
   GET_INQUIRY_FORM_FIELDS,
@@ -323,13 +323,14 @@ const reducer = (state = initialState, action = {}) => {
       return {
         ...state,
         loadingFollowups: true,
+        followUpsData: {},
       };
     case `${GET_FOLLOWUP_LIST}_FULFILLED`: {
       return {
         ...state,
         loadingFollowups: false,
         // followups: sortedFollowups,
-        followUpsData: {...state.followUpsData, ...payload},
+        followUpsData: cloneDeep({...state.followUpsData, ...payload}),
       };
     }
 

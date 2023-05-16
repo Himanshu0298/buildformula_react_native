@@ -12,6 +12,7 @@ import RenderSelect from 'components/Atoms/RenderSelect';
 import RenderDatePicker from 'components/Atoms/RenderDatePicker';
 import CustomCheckbox from 'components/Atoms/CustomCheckbox';
 import ActionButtons from 'components/Atoms/ActionButtons';
+import dayjs from 'dayjs';
 
 const schema = Yup.object().shape({
   remark: Yup.string('Invalid').required('Required'),
@@ -50,10 +51,6 @@ function CompleteTask(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const getList = () => {
-    getFollowUpList({project_id, given_date: date});
-  };
-
   const onSubmit = async values => {
     await updateCompleteTask({
       project_id,
@@ -62,10 +59,10 @@ function CompleteTask(props) {
       inquiry_status_id: values.inquiry_status_id,
       next_followup_save: values.next_followup_save,
       followup_date: values.followup_date,
-      followup_time: values.followup_time,
+      followup_time: dayjs(values.followup_time).format('hh:mm:ss a'),
     });
+    getFollowUpList({project_id, given_date: date});
     loadData();
-    getList();
     navigation.goBack();
   };
 
