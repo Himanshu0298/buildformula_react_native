@@ -26,7 +26,7 @@ function GeneralDashboard() {
       setTime(dayjs().format('hh:mm A'));
       setDate(dayjs().format('DD-MM-YYYY'));
     }, 5900);
-  }, []);
+  }, [selectedProject]);
 
   return (
     <ImageBackground source={DashboardBG} style={styles.staticsContainer}>
@@ -80,7 +80,6 @@ const styles = StyleSheet.create({
     ...getShadow(5),
   },
   profileIMG2: {
-    borderWidth: 0.1,
     borderColor: '#8d8d8d',
     width: '49%',
     height: '30%',

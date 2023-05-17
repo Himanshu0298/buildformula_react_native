@@ -105,6 +105,7 @@ const initialState = {
   brokageDealDetails: {},
   formFields: [],
   salesDashboardData: [],
+  salesDashboardPermission: {},
 };
 
 const reducer = (state = initialState, action = {}) => {
@@ -188,6 +189,7 @@ const reducer = (state = initialState, action = {}) => {
         loadingCommonData: false,
         sourceTypeOptions,
         budgetRangeOptions,
+        salesDashboardPermission: payload.dashboard_assignee,
       };
     }
     case `${GET_PROJECT_COMMON_DATA}_REJECTED`:

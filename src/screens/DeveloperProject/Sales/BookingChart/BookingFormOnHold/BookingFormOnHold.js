@@ -20,6 +20,7 @@ import useSalesActions from 'redux/actions/salesActions';
 import {useSalesLoading} from 'redux/selectors';
 import {getFloorNumber, getTowerLabel} from 'utils';
 import {STRUCTURE_TYPE_LABELS} from 'utils/constant';
+import {useAlert} from 'components/Atoms/Alert';
 import BookingHoldForm from './Components/BookingHoldForm';
 
 function RenderRow(props) {
@@ -103,6 +104,7 @@ function PropertyHoldUserDetails(props) {
 
 function BookingFormOnHold(props) {
   const {navigation, route, theme} = props;
+  const alert = useAlert();
   const {
     project_id,
     structureType,
@@ -111,6 +113,8 @@ function BookingFormOnHold(props) {
     floorId,
     id,
     unitLabel,
+    projectId,
+    floor_id,
   } = route?.params || {};
 
   const unit_id = id;
@@ -123,8 +127,12 @@ function BookingFormOnHold(props) {
     unitDetails,
   } = bookingHoldDetails || {};
 
-  const {getHoldBookingDetails, unitHoldBooking, unitUnHoldBooking} =
-    useSalesActions();
+  const {
+    getHoldBookingDetails,
+    unitHoldBooking,
+    unitUnHoldBooking,
+    getUnitStatusListing,
+  } = useSalesActions();
 
   const [visible, setVisible] = useState(false);
 
@@ -157,6 +165,16 @@ function BookingFormOnHold(props) {
     return false;
   }, [holdHistoryList, unitDetails?.status]);
 
+  const fetchUnitsBookingStatus = () => {
+    getUnitStatusListing({
+      project_id,
+      project_type: structureType || selectedStructure,
+      project_tower: towerId || 0,
+      project_floor: floor_id || 0,
+      id: projectId,
+    });
+  };
+
   const handleHold = async values => {
     const {date, time, remark} = values;
     toggleHoldForm();
@@ -168,16 +186,34 @@ function BookingFormOnHold(props) {
       remark,
     });
     loadHoldDetails();
+    await fetchUnitsBookingStatus();
   };
 
+  // const handleUnHold = async () => {
+  //   // toggleHoldForm();
+  //   await unitUnHoldBooking({
+  //     project_id,
+  //     unit_id,
+  //     units_on_hold_id: propertyBooked.id,
+  //   });
+  //   loadHoldDetails();
+  // };
+
   const handleUnHold = async () => {
-    toggleHoldForm();
-    await unitUnHoldBooking({
-      project_id,
-      unit_id,
-      units_on_hold_id: propertyBooked.id,
+    alert.show({
+      title: 'Confirm',
+      message: 'Are you sure you want to un-hold property?',
+      confirmText: 'Yes',
+      onConfirm: async () => {
+        await unitUnHoldBooking({
+          project_id,
+          unit_id,
+          units_on_hold_id: propertyBooked.id,
+        });
+        await loadHoldDetails();
+        await fetchUnitsBookingStatus();
+      },
     });
-    loadHoldDetails();
   };
 
   return (

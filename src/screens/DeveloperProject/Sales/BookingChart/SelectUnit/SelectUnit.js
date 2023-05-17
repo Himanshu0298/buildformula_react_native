@@ -94,6 +94,8 @@ export const SelectUnit = props => {
       ...route?.params,
       ...selectedUnit,
       ...holdUnit,
+      projectId,
+      floor_id,
     });
   };
 
