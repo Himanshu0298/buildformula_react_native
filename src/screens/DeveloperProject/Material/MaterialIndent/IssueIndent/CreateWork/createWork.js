@@ -161,7 +161,7 @@ function AddMaterialDialog(props) {
 }
 
 function IssueCardListing(props) {
-  const {item, toggleEditDialog, handleDelete, index} = props;
+  const {item, toggleEditDialog, handleDelete, index, wbs} = props;
 
   const {
     subcategorytitle,
@@ -209,7 +209,7 @@ function IssueCardListing(props) {
                 color="#4872f4"
                 opacity={0.18}
                 style={styles.OpacityButton}
-                onPress={() => toggleEditDialog(index, item)}>
+                onPress={() => toggleEditDialog(index, wbs)}>
                 <MaterialIcons name="edit" color="#4872f4" size={13} />
               </OpacityButton>
             </View>
@@ -301,6 +301,7 @@ function RMCCardListing(props) {
     materialCategories,
     materialSubCategories,
     editRmcDialog,
+    wbs,
   } = props;
 
   const {grade, rmc_qty, select_grade, quantity} = item;
@@ -316,7 +317,7 @@ function RMCCardListing(props) {
                     color="#4872f4"
                     opacity={0.18}
                     style={styles.OpacityButton}
-                    onPress={() => editRmcDialog(index, item)}>
+                    onPress={() => editRmcDialog(index, wbs)}>
                     <MaterialIcons name="edit" color="#4872f4" size={13} />
                   </OpacityButton>
                 </View>
@@ -502,6 +503,7 @@ function MultiRender(props) {
                     index={index}
                     toggleEditDialog={editDialog}
                     handleDelete={handleDelete}
+                    wbs={wbs.id}
                     edit={edit}
                   />
                 );
@@ -539,6 +541,7 @@ function MultiRender(props) {
                   materialCategories={materialCategories}
                   materialSubCategories={materialSubCategories}
                   editRmcDialog={editRmcDialog}
+                  wbs={wbs.id}
                   handleRMCDelete={handleRMCDelete}
                 />
               );
@@ -613,7 +616,7 @@ function CreateWork(props) {
   const wbsIdCheck = selectedProject.afm_wbs_id;
 
   const categoriesList = () => {
-    wbsIds.forEach(function (wbs_id, index) {
+    wbsIds.forEach(function (wbs_id) {
       if (wbs_id) {
         getMaterialIndentCategoryList({
           project_id: projectId,
@@ -765,14 +768,15 @@ function CreateWork(props) {
     });
   };
 
-  const editDialog = index => {
+  const editDialog = (index, wbs) => {
     setSelectedMaterialIndex(index);
-    toggleAddIssueDialog();
+
+    toggleAddIssueDialog(wbs);
   };
 
-  const editRmcDialog = index => {
+  const editRmcDialog = (index, wbsId) => {
     setSelectedIssueIndex(index);
-    toggleAddRMCDialog();
+    toggleAddRMCDialog(wbsId);
   };
 
   const handleDelete = (index, itemId) => {
@@ -796,7 +800,7 @@ function CreateWork(props) {
     });
   };
 
-  const handleRMCDelete = (index, itemId) => {
+  const handleRMCDelete = index => {
     alert.show({
       title: 'Confirm',
       message: 'Are you sure you want to delete?',
@@ -853,23 +857,6 @@ function CreateWork(props) {
       return;
     }
 
-    // const subCategoryMaterial = materials?.find(
-    //   i => i.material_sub_category_id === values.material_sub_category_id,
-    // );
-
-    // const subCategoriesMaterial = materialsItems?.find(
-    //   i => i.material_sub_category_id === values.material_sub_category_id,
-    // );
-
-    // if (subCategoryMaterial || subCategoriesMaterial) {
-    //   snackbar.showMessage({
-    //     message: 'This SubCategory already in use, please select another one',
-    //     variant: 'warning',
-    //   });
-
-    //   return;
-    // }
-
     const _materials = [...materials];
 
     const data = {...values, wbs_works_id: selectedWBSId};
@@ -891,6 +878,7 @@ function CreateWork(props) {
         material_sub_category_id,
         material_units_id,
         quantity,
+        wbs_works_id,
       } = materials[selectedMaterialIndex];
 
       const selectedSubCategory = materialSubCategories?.find(
@@ -902,17 +890,11 @@ function CreateWork(props) {
         material_sub_category_id,
         material_units_id: material_units_id || selectedSubCategory?.unit_id,
         quantity,
+        wbs_works_id,
       };
     }
     return {};
   }, [materialSubCategories, materials, selectedMaterialIndex]);
-
-  // const rmcInitialValues = useMemo(() => {
-  //   const {select_grade: grade} = rmcMaterials;
-  //   return {
-  //     grade,
-  //   };
-  // }, [rmcMaterials]);
 
   return (
     <>
