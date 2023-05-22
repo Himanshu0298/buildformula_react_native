@@ -331,13 +331,6 @@ function IssueIndentPreview(props) {
   const [materials, setMaterials] = React.useState([]);
   const [rmc, setRmc] = React.useState([]);
 
-  const detailsIssueStatus = materialData
-    ? Object.values(materialData)[0]?.find(i => i.id).rm_status
-    : [];
-  const detailsRmcStatus = rmcData
-    ? Object.values(rmcData)[0]?.find(i => i.id).rm_status
-    : [];
-
   useEffect(() => {
     if (materialData) setMaterials(Object.values(materialData)[0]);
   }, [materialData]);
@@ -388,6 +381,8 @@ function IssueIndentPreview(props) {
   };
 
   const handleSaveMaterialQuantity = (value, approveStatus) => {
+    const quantity = materials.find(i => i.assigned_quantity === null);
+
     if (approveStatus === 'approved') {
       if (quantity) {
         snackbar.showMessage({
@@ -398,8 +393,6 @@ function IssueIndentPreview(props) {
         return;
       }
     }
-
-    const quantity = materials.find(i => i.assigned_quantity === null);
 
     const _materials = [...materials];
     if (value > _materials[selectedItemIndex]?.available_quantity) {
@@ -412,6 +405,7 @@ function IssueIndentPreview(props) {
     }
 
     _materials[selectedItemIndex].assigned_quantity = value;
+
     setMaterials(_materials);
     toggleDialog();
   };
@@ -461,6 +455,7 @@ function IssueIndentPreview(props) {
   return (
     <>
       <Spinner visible={loading || details} textContent="" />
+
       <AssignQtyDialog
         {...props}
         visible={isNumber(selectedItemIndex)}
