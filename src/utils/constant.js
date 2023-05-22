@@ -1,7 +1,7 @@
 import {Platform} from 'react-native';
 import {theme} from 'styles/theme';
 
-export const SITE_URL = 'http://34.136.52.10/';
+export const SITE_URL = 'http://34.136.52.10';
 // export const SITE_URL = 'https://portal.buildformula.com';
 export const BASE_API_URL = `${SITE_URL}/api/`;
 
@@ -131,6 +131,13 @@ export const DEFAULT_PROJECT_FILTERS = {
   plots: '',
   owners: '',
   security: '',
+};
+
+export const DEFAULT_VISITORS_FILTERS = {
+  sortby: '',
+  priority: '',
+  status: '',
+  sourceType: '',
 };
 
 export function getUniqueOptions(options) {

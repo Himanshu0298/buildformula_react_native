@@ -7,8 +7,6 @@ import {Subheading, Menu, IconButton, Divider} from 'react-native-paper';
 import useNotificationActions from 'redux/actions/notificationActions';
 import {useProjectLoading} from 'redux/selectors';
 import useSalesActions from 'redux/actions/salesActions';
-import {getPermissions} from 'utils';
-import {store} from 'redux/store';
 import GeneralDashboard from './Components/GeneralDashboard';
 import SalesDashboard from '../Sales/SalesDashboard/SalesDashboard';
 
@@ -20,9 +18,6 @@ const DASHBOARD_OPTIONS = [
 export default function DeveloperDashboard(props) {
   const {route} = props;
   const {project} = route?.params || {};
-
-  const modulePermission = getPermissions('Sales Pipeline');
-  const {isProjectAdmin} = store.getState().project;
 
   const {
     getProjectData,

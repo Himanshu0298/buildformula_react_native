@@ -58,7 +58,11 @@ function SalesDashboard() {
   const {get_sales_dashboard_data} = useSalesActions();
 
   const {selectedProject} = useSelector(s => s.project);
-  const {salesDashboardData = [], loading} = useSelector(s => s.sales);
+  const {
+    salesDashboardData = [],
+    loading,
+    salesDashboardPermission,
+  } = useSelector(s => s.sales);
 
   const loadData = async () => {
     get_sales_dashboard_data({project_id: selectedProject.id});
@@ -93,35 +97,37 @@ function SalesDashboard() {
     '#C0A080',
   ];
 
-  const pieData = salesDashboardData?.source_type_count
-    // .filter(value => value > 0)
-    .map((value, index) => ({
-      value,
-      svg: {
-        fill: Colors[index],
-      },
-      label: salesDashboardData?.source_type_type[index],
-      key: index,
-      arc: index === currentPie ? {outerRadius: arc, cornerRadius: 10} : 0,
-      onPress: () => {
-        setCurrentPie(index);
-        setArc('110%');
-      },
-    }));
+  const pieData = salesDashboardData
+    ? salesDashboardData?.source_type_count?.map((value, index) => ({
+        value,
+        svg: {
+          fill: Colors[index],
+        },
+        label: salesDashboardData?.source_type_type[index],
+        key: index,
+        arc: index === currentPie ? {outerRadius: arc, cornerRadius: 10} : 0,
+        onPress: () => {
+          setCurrentPie(index);
+          setArc('110%');
+        },
+      }))
+    : [];
 
-  const pieChartLegend = pieData.map(e => ({
-    key: e.key,
-    label: e.label,
-    color: e.svg.fill,
-    value: e.value,
-  }));
+  const pieChartLegend = pieData
+    ? pieData?.map(e => ({
+        key: e.key,
+        label: e.label,
+        color: e.svg.fill,
+        value: e.value,
+      }))
+    : [];
 
   useEffect(() => {
     loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return (
+  return salesDashboardPermission ? (
     <ScrollView
       style={styles.salesContainer}
       showsVerticalScrollIndicator={false}
@@ -130,20 +136,33 @@ function SalesDashboard() {
       }>
       <Spinner visible={loading} />
       {/* stats card */}
-      <View style={styles.row}>
-        <StatsCard data={salesDashboardData?.total_visitors} title="INQUIRY" />
-        <StatsCard
-          data={salesDashboardData?.total_customer}
-          title="CUSTOMERS"
-        />
-      </View>
-      <View style={styles.row}>
-        <StatsCard data={salesDashboardData?.total_property} title="PROPERTY" />
-        <StatsCard data={salesDashboardData?.total_project} title="PROJECT" />
-      </View>
+      {salesDashboardData ? (
+        <>
+          <View style={styles.row}>
+            <StatsCard
+              data={salesDashboardData?.total_visitors}
+              title="INQUIRY"
+            />
+            <StatsCard
+              data={salesDashboardData?.total_customer}
+              title="CUSTOMERS"
+            />
+          </View>
+          <View style={styles.row}>
+            <StatsCard
+              data={salesDashboardData?.total_property}
+              title="PROPERTY"
+            />
+            <StatsCard
+              data={salesDashboardData?.total_project}
+              title="PROJECT"
+            />
+          </View>
+        </>
+      ) : null}
 
       {/* sales pipeline */}
-      {salesDashboardData.sales_pipeline_project_type ? (
+      {salesDashboardData?.sales_pipeline_project_type ? (
         <View style={styles.sectionContainer}>
           <Caption>Sales Pipeline</Caption>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -179,7 +198,7 @@ function SalesDashboard() {
       ) : null}
 
       {/* source-type */}
-      {salesDashboardData.source_type_pie_chart?.length ? (
+      {salesDashboardData?.source_type_pie_chart?.length ? (
         <View style={styles.sectionContainer}>
           <Caption>Source Type</Caption>
           <PieChart
@@ -212,7 +231,7 @@ function SalesDashboard() {
       ) : null}
 
       {/* property sold by category */}
-      {salesDashboardData.property_sold_by_category?.length ? (
+      {salesDashboardData?.property_sold_by_category?.length ? (
         <View style={styles.sectionContainer}>
           <Caption>Property sold by category</Caption>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -304,7 +323,7 @@ function SalesDashboard() {
       </View>
 
       {/* today's followup */}
-      {salesDashboardData.todays_followup_data.follow_up_data?.length ? (
+      {salesDashboardData ? (
         <View style={styles.sectionContainer}>
           <Caption>Today's Follow-up</Caption>
           <Divider />
@@ -441,7 +460,7 @@ function SalesDashboard() {
       </View>
 
       {/* Receipt Listing */}
-      {salesDashboardData.receipt_listing?.length ? (
+      {salesDashboardData?.receipt_listing?.length ? (
         <View style={styles.sectionContainer}>
           <Caption>
             Receipt Listing{' '}
@@ -474,7 +493,7 @@ function SalesDashboard() {
       ) : null}
 
       {/* Payment schedule */}
-      {salesDashboardData.payment_schedule?.length ? (
+      {salesDashboardData?.payment_schedule?.length ? (
         <View style={styles.sectionContainer}>
           <Caption>Payment Schedule</Caption>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -536,68 +555,72 @@ function SalesDashboard() {
           </View>
           <Divider />
           <View style={styles.birthdayWrapper}>
-            {salesDashboardData
-              ? Object.entries(
-                  salesDashboardData?.bday_anniversary?.datas,
-                )?.map(item => {
-                  return (
-                    <View
-                      style={[
-                        styles.row,
-                        {marginVertical: 10, alignItems: 'flex-start'},
-                      ]}>
-                      {item?.map(date => {
-                        return !isArray(date) ? (
-                          <View style={styles.birthdayDateWrap}>
-                            <Badge style={styles.birthdayDate} size={23}>
-                              {date}
-                            </Badge>
-                          </View>
-                        ) : null;
-                      })}
+            {salesDashboardData?.bday_anniversary
+              ? Object.entries(salesDashboardData?.bday_anniversary?.datas)
+                  ?.sort()
+                  ?.map(item => {
+                    return (
                       <View
-                        style={{
-                          flexDirection: 'column',
-                          paddingLeft: 13,
-                        }}>
-                        {item
-                          ?.filter(birthData => isArray(birthData))
-                          ?.map(data => {
-                            return data.map(val => {
-                              return (
-                                <View style={styles.birthdayCard}>
-                                  <Text>
-                                    {val.bithName}
-                                    <Caption>{` (${val.type})`}</Caption>
-                                  </Text>
-                                  <View style={styles.row}>
-                                    <Caption>
-                                      {`${val.relation} of `}
-                                      <Caption
-                                        style={{
-                                          color: theme.colors.primary,
-                                        }}>
-                                        {`${val.visitor_name || 'N.A'} | ${
-                                          val.property || 'N.A'
-                                        } | ${val.visitor_phone || 'N.A'} | ${
-                                          val.visitor_email || 'N.A'
-                                        } `}
+                        style={[
+                          styles.row,
+                          {marginVertical: 10, alignItems: 'flex-start'},
+                        ]}>
+                        {item?.map(date => {
+                          return !isArray(date) ? (
+                            <View style={styles.birthdayDateWrap}>
+                              <Badge style={styles.birthdayDate} size={23}>
+                                {date}
+                              </Badge>
+                            </View>
+                          ) : null;
+                        })}
+                        <View
+                          style={{
+                            flexDirection: 'column',
+                            paddingLeft: 13,
+                          }}>
+                          {item
+                            ?.filter(birthData => isArray(birthData))
+                            ?.map(data => {
+                              return data.map(val => {
+                                return (
+                                  <View style={styles.birthdayCard}>
+                                    <Text>
+                                      {val.bithName}
+                                      <Caption>{` (${val.type})`}</Caption>
+                                    </Text>
+                                    <View style={styles.row}>
+                                      <Caption>
+                                        {`${val.relation} of `}
+                                        <Caption
+                                          style={{
+                                            color: theme.colors.primary,
+                                          }}>
+                                          {`${val.visitor_name || 'N.A'} | ${
+                                            val.property || 'N.A'
+                                          } | ${val.visitor_phone || 'N.A'} | ${
+                                            val.visitor_email || 'N.A'
+                                          } `}
+                                        </Caption>
                                       </Caption>
-                                    </Caption>
+                                    </View>
                                   </View>
-                                </View>
-                              );
-                            });
-                          })}
+                                );
+                              });
+                            })}
+                        </View>
                       </View>
-                    </View>
-                  );
-                })
+                    );
+                  })
               : null}
           </View>
         </View>
       ) : null}
     </ScrollView>
+  ) : (
+    <View style={styles.noPermission}>
+      <Caption>Sorry you don't have rights to access this screen!</Caption>
+    </View>
   );
 }
 
@@ -702,6 +725,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginTop: 4,
     width: '50%',
+  },
+  noPermission: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 1,
   },
 });
 
