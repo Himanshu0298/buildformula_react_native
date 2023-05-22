@@ -1,4 +1,4 @@
-import {StyleSheet, View} from 'react-native';
+import {ScrollView, StyleSheet, View} from 'react-native';
 import React, {useMemo} from 'react';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
@@ -10,6 +10,7 @@ import {useSelector} from 'react-redux';
 import dayjs from 'dayjs';
 import Header from 'screens/DeveloperProject/Material/CommonComponents/Header';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
+import {debounce} from 'lodash';
 
 const schema = Yup.object().shape({
   vendor_id: Yup.string().label('vendor_id').required('Vendor is Required'),
@@ -80,7 +81,9 @@ const CreateIssueIndent = props => {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView
+      keyboardShouldPersistTaps="handled"
+      contentContainerStyle={styles.container}>
       <View style={styles.headerContainer}>
         <Header title="Issue Request" {...props} />
       </View>
@@ -138,20 +141,19 @@ const CreateIssueIndent = props => {
                   value={values.remark}
                   onChangeText={handleChange('remark')}
                   onBlur={handleBlur('remark')}
-                  onSubmitEditing={handleSubmit}
                 />
               </View>
               <ActionButtons
                 cancelLabel="Cancel"
                 submitLabel="Next"
                 onCancel={navigation.goBack}
-                onSubmit={handleSubmit}
+                onSubmit={debounce(handleSubmit, 200)}
               />
             </View>
           );
         }}
       </Formik>
-    </View>
+    </ScrollView>
   );
 };
 

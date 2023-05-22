@@ -234,10 +234,23 @@ const RMCCard = props => {
     available_quantity,
     remaining,
     estimated_quantity,
+    grade,
+    rmc_qty,
   } = item;
 
   return (
     <View style={styles.cardContainer}>
+      <View style={styles.newDataRow}>
+        <View style={styles.rmcDetail}>
+          <Caption>Grade: </Caption>
+          <Text>{grade}</Text>
+        </View>
+        <View style={styles.rmcDetail}>
+          <Caption>Qty: </Caption>
+          <Text>{rmc_qty}</Text>
+        </View>
+      </View>
+      <Divider style={styles.rmcHeader} />
       <View style={styles.dataRow}>
         <Caption style={styles.lightData}>Category:</Caption>
         <Text style={styles.title}>{materialcategrytitle}</Text>
@@ -601,14 +614,8 @@ function IssueIndentPreview(props) {
                       const {label, color} =
                         INDENT_STATUS[headerInfo?.rm_status] || {};
 
-                      const {
-                        requiredfor,
-                        grade,
-                        rmc_qty,
-                        rm_status,
-                        wbs_works_id,
-                        type,
-                      } = headerInfo;
+                      const {requiredfor, rm_status, wbs_works_id, type} =
+                        headerInfo;
 
                       return (
                         <View style={styles.mainCardContainer}>
@@ -625,17 +632,6 @@ function IssueIndentPreview(props) {
                               </View>
 
                               <Divider />
-                              <View style={styles.newDataRow}>
-                                <View style={styles.rmcDetail}>
-                                  <Caption>Grade: </Caption>
-                                  <Text>{grade}</Text>
-                                </View>
-                                <View style={styles.rmcDetail}>
-                                  <Caption>Qty: </Caption>
-                                  <Text>{rmc_qty}</Text>
-                                </View>
-                              </View>
-                              <Divider style={styles.rmcHeader} />
                             </>
                           ) : null}
                           {rmc_request?.map(single_request => {
@@ -764,6 +760,7 @@ const styles = StyleSheet.create({
   newDataRow: {
     flexDirection: 'row',
     alignItems: 'flex-start',
+    justifyContent: 'space-between',
   },
 
   ID: {

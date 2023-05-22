@@ -593,6 +593,7 @@ function CreateWork(props) {
     issue_list: materialsItems,
     rmc_list: rmcItems,
   } = indentDetails;
+
   const {remark, requred_date, vendor_id} = material_indent || {};
 
   const [addRmcDialog, setRmcDialog] = React.useState(false);
@@ -633,17 +634,24 @@ function CreateWork(props) {
 
   useEffect(() => {
     if (
-      typeof indentDetails !== 'undefined' &&
-      indentDetails &&
-      indentDetails.issue_list &&
+      (typeof indentDetails !== 'undefined' &&
+        indentDetails &&
+        indentDetails.issue_list) ||
       indentDetails.rmc_list
     ) {
       const issueListKeys = Object.keys(indentDetails.issue_list);
-      const rmcListValues = Object.values(indentDetails.rmc_list).flat();
+      const rmcListKeys = Object.keys(indentDetails.rmc_list);
+
       const issueListValues = issueListKeys.reduce((acc, key) => {
         return acc.concat(indentDetails.issue_list[key]);
       }, []);
-      setWbsIds(issueListKeys);
+
+      const rmcListValues = rmcListKeys.reduce((acc, key) => {
+        return acc.concat(indentDetails.rmc_list[key]);
+      }, []);
+
+      setWbsIds(indentDetails.issue_list.length ? issueListKeys : rmcListKeys);
+
       setMaterials(issueListValues);
       setRmcMaterials(rmcListValues);
     } else {
@@ -746,6 +754,7 @@ function CreateWork(props) {
           wbs_works_id,
           type,
         });
+        getDetails();
       },
     });
   };
