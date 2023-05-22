@@ -477,56 +477,56 @@ function InquiryTab(props) {
               error={errors.remarks}
             />
           ) : null}
+          {!edit ? (
+            <>
+              <View style={styles.followupDetails}>
+                <Subheading>Followup Details</Subheading>
+                <View style={styles.inputsContainer}>
+                  <RenderInput
+                    name="title"
+                    label="Task Title"
+                    ref={followUpTitleRef}
+                    containerStyles={styles.input}
+                    value={values.title}
+                    onChangeText={handleChange('title')}
+                    onBlur={handleBlur('title')}
+                    error={errors.title}
+                  />
+                </View>
+              </View>
+              <View style={styles.row}>
+                <View style={styles.flex}>
+                  <RenderDatePicker
+                    name="date"
+                    label="Date"
+                    ref={followUpDateRef}
+                    containerStyles={styles.input}
+                    value={values.date}
+                    error={errors.date}
+                    onChange={date => {
+                      setFieldValue('date', date);
+                      followUpTimeRef?.current?.focus?.();
+                    }}
+                  />
+                </View>
+                <View style={styles.flex}>
+                  <RenderDatePicker
+                    mode="time"
+                    label="Time"
+                    ref={followUpTimeRef}
+                    name="time"
+                    containerStyles={styles.input}
+                    value={values.time}
+                    error={errors.time}
+                    onChange={date => {
+                      setFieldValue('time', date);
+                    }}
+                  />
+                </View>
+              </View>
+            </>
+          ) : null}
         </View>
-        {!edit ? (
-          <>
-            <View style={styles.followupDetails}>
-              <Subheading>Followup Details</Subheading>
-              <View style={styles.inputsContainer}>
-                <RenderInput
-                  name="title"
-                  label="Task Title"
-                  ref={followUpTitleRef}
-                  containerStyles={styles.input}
-                  value={values.title}
-                  onChangeText={handleChange('title')}
-                  onBlur={handleBlur('title')}
-                  error={errors.title}
-                />
-              </View>
-            </View>
-            <View style={styles.row}>
-              <View style={styles.flex}>
-                <RenderDatePicker
-                  name="date"
-                  label="Date"
-                  ref={followUpDateRef}
-                  containerStyles={styles.input}
-                  value={values.date}
-                  error={errors.date}
-                  onChange={date => {
-                    setFieldValue('date', date);
-                    followUpTimeRef?.current?.focus?.();
-                  }}
-                />
-              </View>
-              <View style={styles.flex}>
-                <RenderDatePicker
-                  mode="time"
-                  label="Time"
-                  ref={followUpTimeRef}
-                  name="time"
-                  containerStyles={styles.input}
-                  value={values.time}
-                  error={errors.time}
-                  onChange={date => {
-                    setFieldValue('time', date);
-                  }}
-                />
-              </View>
-            </View>
-          </>
-        ) : null}
         <ActionButtons
           cancelLabel="Back"
           submitLabel={edit ? 'Update' : 'Save'}

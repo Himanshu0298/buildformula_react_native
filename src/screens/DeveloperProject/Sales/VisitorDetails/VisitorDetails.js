@@ -21,7 +21,7 @@ function VisitorDetails(props) {
   const [activityFilter, setActivityFilter] = useState('all');
   const modulePermission = getPermissions('Inquiry');
 
-  const {getVisitor, getPipelineData, getVisitorActivities} = useSalesActions();
+  const {getVisitor, getVisitorActivities} = useSalesActions();
 
   const [selectedTab, setSelectedTab] = useState(0);
   const [routes] = React.useState([
@@ -41,7 +41,6 @@ function VisitorDetails(props) {
 
   useEffect(() => {
     getVisitor({project_id: selectedProject.id, visitor_id: visitorId});
-    getPipelineData({project_id: selectedProject.id});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedProject.id, visitorId]);
 

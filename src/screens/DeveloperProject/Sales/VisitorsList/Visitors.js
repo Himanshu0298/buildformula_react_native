@@ -16,6 +16,8 @@ import {
   Divider,
   Menu,
   Searchbar,
+  Text,
+  Badge,
 } from 'react-native-paper';
 import useSalesActions from 'redux/actions/salesActions';
 import {useSelector} from 'react-redux';
@@ -66,7 +68,7 @@ function StatsRow({visitorAnalytics}) {
 }
 
 function RenderVisitorItem(props) {
-  const {theme, data, navToDetails} = props;
+  const {theme, data, navToDetails, sourceTypeOptions} = props;
 
   const {
     id,
@@ -79,6 +81,10 @@ function RenderVisitorItem(props) {
     title,
   } = data;
 
+  const source = useMemo(() => {
+    return sourceTypeOptions.find(v => v.value === data.source_type);
+  }, [data.source_type, sourceTypeOptions]);
+
   return (
     <TouchableOpacity onPress={() => navToDetails(id)}>
       <View style={styles.rowMainContainer}>
@@ -87,6 +93,14 @@ function RenderVisitorItem(props) {
             {first_name} {last_name}
           </Subheading>
           <Caption style={styles.rowLabel}>+91 {phone}</Caption>
+          <Caption
+            style={{
+              color: theme.colors.primary,
+              fontWeight: '700',
+              marginTop: -2,
+            }}>
+            {source?.label || '-'}
+          </Caption>
         </View>
         <View style={styles.rowItemContainer}>
           <Subheading style={styles.visitorTitle}>
@@ -115,7 +129,8 @@ function RenderVisitorItem(props) {
 }
 
 function RenderVisitors(props) {
-  const {theme, visitors, onRefresh, navToDetails} = props;
+  const {theme, visitors, onRefresh, navToDetails, loadMore, totalPage, page} =
+    props;
 
   const renderDivider = () => <Divider style={styles.divider} />;
 
@@ -136,6 +151,13 @@ function RenderVisitors(props) {
             navToDetails={navToDetails}
           />
         )}
+        // ListFooterComponent={
+        //   page >= totalPage ? (
+        //     <Caption style={styles.noMoreData}>No More Data Display!</Caption>
+        //   ) : (
+        //     ''
+        //   )
+        // }
         refreshControl={
           <RefreshControl refreshing={false} onRefresh={onRefresh} />
         }
@@ -147,18 +169,18 @@ function RenderVisitors(props) {
             </Title>
           </View>
         }
+        // onEndReached={() => {
+        //   loadMore();
+        // }}
+        // onEndReachedThreshold={0.5}
       />
     </View>
   );
 }
 
 function Header(props) {
-  const {theme, filter, searchQuery, setFilter, setSearchQuery} = props;
+  const {theme, searchQuery, setSearchQuery, filterCount, navToFilter} = props;
   const {colors} = theme;
-
-  const [visible, setVisible] = React.useState(false);
-
-  const toggleMenu = () => setVisible(v => !v);
 
   const onSearch = v => setSearchQuery(v);
 
@@ -166,38 +188,18 @@ function Header(props) {
     <>
       <View style={styles.headerContainer}>
         <Subheading style={{color: colors.primary}}>Inquiry list</Subheading>
-        <Menu
-          visible={visible}
-          onDismiss={toggleMenu}
-          anchor={
-            <OpacityButton
-              opacity={0.1}
-              color={colors.primary}
-              style={styles.filterButton}
-              onPress={toggleMenu}>
-              <MaterialIcon
-                name="filter-variant"
-                color={colors.primary}
-                size={22}
-              />
-            </OpacityButton>
-          }>
-          {FILTERS.map((i, index) => {
-            const active = i.value === filter;
-            return (
-              <Menu.Item
-                key={index?.toString()}
-                title={i.label}
-                style={active ? {backgroundColor: colors.primary} : {}}
-                titleStyle={active ? {color: colors.white} : {}}
-                onPress={() => {
-                  setFilter(i.value);
-                  toggleMenu();
-                }}
-              />
-            );
-          })}
-        </Menu>
+        <View>
+          {filterCount ? (
+            <Badge style={styles.filterCount}>{filterCount}</Badge>
+          ) : undefined}
+          <OpacityButton
+            color="#4872f4"
+            opacity={0.18}
+            style={styles.editIcon}
+            onPress={() => navToFilter()}>
+            <MaterialIcon name="filter-variant" color="#4872f4" size={16} />
+          </OpacityButton>
+        </View>
       </View>
       <Searchbar
         style={styles.searchBar}
@@ -211,10 +213,17 @@ function Header(props) {
 function Visitors(props) {
   const {theme, navigation} = props;
 
-  const {selectedProject} = useSelector(s => s.project);
-  const {visitors, visitorAnalytics} = useSelector(s => s.sales);
+  const [page, setPage] = React.useState(1);
 
-  const loading = useSalesLoading();
+  const {selectedProject} = useSelector(s => s.project);
+  const {
+    visitors,
+    visitorAnalytics,
+    totalPage,
+    sourceTypeOptions,
+    visitorsFilters,
+    loading,
+  } = useSelector(s => s.sales);
 
   const modulePermission = getPermissions('Inquiry');
 
@@ -226,11 +235,23 @@ function Visitors(props) {
     getCountryCodes,
     getAssignToData,
     getBrokersList,
+    getPipelineData,
   } = useSalesActions();
-  const [filter, setFilter] = React.useState('name');
+  const [filter, setFilter] = React.useState('recent');
   const [searchQuery, setSearchQuery] = React.useState('');
 
   const projectId = selectedProject.id;
+
+  const loadMoreData = async () => {
+    await setPage(page + 1);
+    if (page <= totalPage) {
+      await loadVisitorData(page);
+    }
+  };
+
+  const filterCount = useMemo(() => {
+    return Object.values(visitorsFilters)?.filter(i => i !== '').length;
+  }, [visitorsFilters]);
 
   const filteredVisitors = useMemo(() => {
     return visitors.filter(
@@ -240,19 +261,29 @@ function Visitors(props) {
     );
   }, [visitors, searchQuery]);
 
+  const navToFilter = () => navigation.navigate('VisitorFilter');
+
   useEffect(() => {
     if (projectId) {
       loadData();
+      loadVisitorData();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [projectId, filter]);
+  }, [projectId, filter, visitorsFilters]);
+
+  const loadVisitorData = async pageno => {
+    await getVisitors({
+      project_id: projectId,
+      sort_mode: visitorsFilters?.sortby,
+      priority_mode: visitorsFilters?.priority,
+      lead_status: visitorsFilters?.status,
+      source_type: visitorsFilters?.sourceType,
+      role: modulePermission?.admin || isProjectAdmin ? 'admin' : 'none',
+      // page: pageno || page,
+    });
+  };
 
   const loadData = () => {
-    getVisitors({
-      project_id: projectId,
-      filter_mode: filter,
-      role: modulePermission?.admin || isProjectAdmin ? 'admin' : 'none',
-    });
     getSalesData({
       project_id: projectId,
       role: modulePermission?.admin || isProjectAdmin ? 'admin' : 'none',
@@ -260,9 +291,13 @@ function Visitors(props) {
     getCountryCodes({project_id: projectId});
     getAssignToData({project_id: projectId});
     getBrokersList({project_id: projectId});
+    getPipelineData({project_id: selectedProject.id});
   };
 
-  const onRefresh = () => loadData();
+  const onRefresh = async () => {
+    loadData();
+    loadVisitorData(page);
+  };
 
   const navToDetails = id => {
     navigation.navigate('VisitorDetails', {visitorId: id});
@@ -279,6 +314,8 @@ function Visitors(props) {
         searchQuery={searchQuery}
         setFilter={setFilter}
         setSearchQuery={setSearchQuery}
+        navToFilter={navToFilter}
+        filterCount={filterCount}
       />
 
       <StatsRow visitorAnalytics={visitorAnalytics} />
@@ -286,9 +323,13 @@ function Visitors(props) {
       <View style={{flexGrow: 1}}>
         <RenderVisitors
           {...props}
+          page={page}
+          totalPage={totalPage}
           visitors={filteredVisitors}
           onRefresh={onRefresh}
+          loadMore={loadMoreData}
           navToDetails={navToDetails}
+          sourceTypeOptions={sourceTypeOptions}
         />
       </View>
       {modulePermission?.editor || modulePermission?.admin ? (
@@ -353,6 +394,7 @@ const styles = StyleSheet.create({
   },
   name: {
     textTransform: 'capitalize',
+    fontWeight: '500',
   },
   statusLabel: {
     textTransform: 'uppercase',
@@ -396,5 +438,18 @@ const styles = StyleSheet.create({
   },
   filterButton: {
     borderRadius: 50,
+  },
+  noMoreData: {
+    textAlign: 'center',
+    backgroundColor: '#8e8e8e',
+    color: '#fff',
+  },
+  editIcon: {
+    borderRadius: 20,
+  },
+  filterCount: {
+    position: 'absolute',
+    top: -9,
+    right: 15,
   },
 });

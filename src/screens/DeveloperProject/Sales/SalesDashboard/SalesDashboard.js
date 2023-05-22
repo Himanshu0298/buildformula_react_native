@@ -619,7 +619,7 @@ function SalesDashboard() {
     </ScrollView>
   ) : (
     <View style={styles.noPermission}>
-      <Caption>Sorry you don't rights to access this screen!</Caption>
+      <Caption>Sorry you don't have rights to access this screen!</Caption>
     </View>
   );
 }

@@ -170,6 +170,7 @@ import Payment from 'screens/DeveloperProject/Sales/Payment';
 import SalesPipeline from 'screens/DeveloperProject/Sales/SalesPipeline';
 import VisitorDetails from 'screens/DeveloperProject/Sales/VisitorDetails';
 import Visitors from 'screens/DeveloperProject/Sales/VisitorsList';
+import VisitorFilter from 'screens/DeveloperProject/Sales/VisitorsList/VisitorFilter';
 // import AddBrokerPaymentDetails from 'screens/DeveloperProject/Sales/BrokerDetails/Components/AddBrokerPaymentDetails';
 import AddBrokerPaymentDetails from 'screens/DeveloperProject/Sales/BrokerDetails/Components/AddBrokerPaymentDetails';
 import Approval from 'screens/DeveloperProject/Sales/Approval';
@@ -399,6 +400,7 @@ function AppStackNavigator() {
 
             <Stack.Group>
               <Stack.Screen name="VisitorsHome" component={Visitors} />
+              <Stack.Screen name="VisitorFilter" component={VisitorFilter} />
               <Stack.Screen name="VisitorDetails" component={VisitorDetails} />
               <Stack.Screen name="AddVisitor" component={AddVisitor} />
               <Stack.Screen name="AddFollowUp" component={AddFollowUp} />

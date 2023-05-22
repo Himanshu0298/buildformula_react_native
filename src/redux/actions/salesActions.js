@@ -166,9 +166,9 @@ export default function useSalesActions() {
         payload: async () => {
           try {
             const response = _res(await getVisitorsList(params));
-            const {data} = response;
+            const {data, page} = response;
 
-            return Promise.resolve(data);
+            return Promise.resolve({data, page});
           } catch (error) {
             const message = _err(error);
             snackbar.showMessage({message, variant: 'error'});
@@ -193,6 +193,13 @@ export default function useSalesActions() {
           }
         },
       }),
+
+    updateVisitorsFilters: data => {
+      dispatch({
+        type: types.FILTER_VISITORS,
+        payload: data,
+      });
+    },
 
     getPipelineData: params =>
       dispatch({

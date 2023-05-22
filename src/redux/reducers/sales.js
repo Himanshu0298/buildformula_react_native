@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import _, {cloneDeep} from 'lodash';
+import {DEFAULT_VISITORS_FILTERS} from 'utils/constant';
 import {
   GET_SALES_DASHBOARD_DATA,
   GET_INQUIRY_FORM_FIELDS,
@@ -53,6 +54,7 @@ import {
   EDIT_BROKERAGE,
   DELETE_BROKERAGE_PAYMENT,
   EDIT_REMARK,
+  FILTER_VISITORS,
 } from '../actions/actionTypes';
 
 const initialState = {
@@ -76,6 +78,8 @@ const initialState = {
   countrycodes: [],
   assigntoData: [],
   visitors: [],
+  visitorsFilters: DEFAULT_VISITORS_FILTERS,
+  totalPage: [],
   followups: [],
   followUpsData: {},
   bhkOptions: {},
@@ -272,13 +276,14 @@ const reducer = (state = initialState, action = {}) => {
       };
     case `${GET_VISITORS}_FULFILLED`: {
       // If visitor status is Book(won), he/she will be considered as a customer. And should not be displayed in visitor list.
-      const filteredVisitors = payload.filter(v => v.title !== 'Book(won)');
+      const filteredVisitors = payload.data?.filter(
+        v => v.title !== 'Book(won)',
+      );
       return {
         ...state,
         loadingVisitors: false,
-        visitors: filteredVisitors.sort(
-          (a, b) => dayjs(b.created).unix() - dayjs(a.created).unix(),
-        ),
+        totalPage: payload?.page,
+        visitors: filteredVisitors,
       };
     }
     case `${GET_VISITORS}_REJECTED`:
@@ -286,6 +291,12 @@ const reducer = (state = initialState, action = {}) => {
         ...state,
         loadingVisitors: false,
         errorMessage: payload,
+      };
+
+    case `${FILTER_VISITORS}`:
+      return {
+        ...state,
+        visitorsFilters: payload,
       };
 
     case `${GET_VISITOR}_PENDING`:

@@ -7,7 +7,6 @@ import {Subheading, Menu, IconButton, Divider} from 'react-native-paper';
 import useNotificationActions from 'redux/actions/notificationActions';
 import {useProjectLoading} from 'redux/selectors';
 import useSalesActions from 'redux/actions/salesActions';
-import {useSelector} from 'react-redux';
 import GeneralDashboard from './Components/GeneralDashboard';
 import SalesDashboard from '../Sales/SalesDashboard/SalesDashboard';
 
