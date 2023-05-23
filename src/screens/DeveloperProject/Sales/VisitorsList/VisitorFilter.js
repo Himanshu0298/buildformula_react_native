@@ -9,6 +9,7 @@ import {useSelector} from 'react-redux';
 import useSalesActions from 'redux/actions/salesActions';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {DEFAULT_VISITORS_FILTERS} from 'utils/constant';
+import {debounce} from 'lodash';
 
 const RenderForm = props => {
   const {formikProps, clearForm, sourceTypeOptions, salesPipelineOptions} =
@@ -33,6 +34,10 @@ const RenderForm = props => {
     {label: 'Medium', value: 'medium'},
     {label: 'High', value: 'high'},
   ];
+
+  const handleCancel = debounce(() => {
+    clearForm();
+  }, 500);
 
   return (
     <View style={styles.formContainer}>
@@ -87,8 +92,8 @@ const RenderForm = props => {
       <ActionButtons
         cancelLabel="Clear All"
         submitLabel="Apply"
-        onCancel={() => clearForm()}
-        onSubmit={handleSubmit}
+        onCancel={handleCancel}
+        onSubmit={debounce(handleSubmit, 500)}
       />
     </View>
   );
@@ -174,5 +179,6 @@ const styles = StyleSheet.create({
   },
   formContainer: {
     flex: 1,
+    marginVertical: 10,
   },
 });
