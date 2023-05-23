@@ -10,6 +10,8 @@ import NoResult from 'components/Atoms/NoResult';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import dayjs from 'dayjs';
 import Spinner from 'react-native-loading-spinner-overlay';
+import {getPermissions} from 'utils';
+import {store} from 'redux/store';
 
 const Calendar = props => {
   const {navigation, followUpsData, loadMonthData} = props;
@@ -91,6 +93,10 @@ function FollowUpTask(props) {
 
   const [filter, setFilter] = React.useState('name');
 
+  const modulePermission = getPermissions('Inquiry');
+
+  const {isProjectAdmin} = store.getState().project;
+
   const visitorsOptions = React.useMemo(() => {
     const options = visitors?.map(e => {
       return {label: `${e.first_name} ${e.last_name}`, value: e?.id};
@@ -98,17 +104,28 @@ function FollowUpTask(props) {
     return options;
   }, [visitors]);
 
-  const loadMonthData = ({dateString}) => {
-    console.log('===========> dateString', dateString);
-    getFollowUpList({project_id, given_date: dateString});
-  };
+  // const loadMonthData = ({dateString}) => {
+  //   getFollowUpList({project_id, given_date: dateString});
+  // };
 
   useEffect(() => {
     loadMonthData({dateString: dayjs().format('YYYY-MM-DD')});
-    getVisitors({project_id: selectedProject.id, filter_mode: filter});
+    getVisitors({
+      project_id: selectedProject.id,
+      filter_mode: filter,
+      role: modulePermission?.admin || isProjectAdmin ? 'admin' : 'none',
+    });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const loadMonthData = ({dateString}) => {
+    getFollowUpList({
+      project_id,
+      given_date: dateString,
+      role: modulePermission?.admin || isProjectAdmin ? 'admin' : 'none',
+    });
+  };
 
   return (
     <View style={styles.container}>

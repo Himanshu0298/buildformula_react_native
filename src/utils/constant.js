@@ -1,7 +1,7 @@
 import {Platform} from 'react-native';
 import {theme} from 'styles/theme';
 
-export const SITE_URL = 'http://104.198.176.6';
+export const SITE_URL = 'http://34.136.52.10';
 // export const SITE_URL = 'https://portal.buildformula.com';
 export const BASE_API_URL = `${SITE_URL}/api/`;
 
@@ -133,6 +133,13 @@ export const DEFAULT_PROJECT_FILTERS = {
   security: '',
 };
 
+export const DEFAULT_VISITORS_FILTERS = {
+  sortby: '',
+  priority: '',
+  status: '',
+  sourceType: '',
+};
+
 export function getUniqueOptions(options) {
   const uniqueData = options?.filter((obj, index) => {
     return (
@@ -143,3 +150,18 @@ export function getUniqueOptions(options) {
 
   return uniqueData;
 }
+
+export const MONTHS = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'June',
+  'July',
+  'Aug',
+  'Sept',
+  'Oct',
+  'Nov',
+  'Dec',
+];

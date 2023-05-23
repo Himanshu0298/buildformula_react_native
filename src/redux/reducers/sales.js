@@ -1,6 +1,8 @@
 import dayjs from 'dayjs';
 import _, {cloneDeep} from 'lodash';
+import {DEFAULT_VISITORS_FILTERS} from 'utils/constant';
 import {
+  GET_SALES_DASHBOARD_DATA,
   GET_INQUIRY_FORM_FIELDS,
   GET_ASSIGNTO_DATA,
   GET_COUNTRY_CODES,
@@ -52,6 +54,7 @@ import {
   EDIT_BROKERAGE,
   DELETE_BROKERAGE_PAYMENT,
   EDIT_REMARK,
+  FILTER_VISITORS,
 } from '../actions/actionTypes';
 
 const initialState = {
@@ -75,6 +78,8 @@ const initialState = {
   countrycodes: [],
   assigntoData: [],
   visitors: [],
+  visitorsFilters: DEFAULT_VISITORS_FILTERS,
+  totalPage: [],
   followups: [],
   followUpsData: {},
   bhkOptions: {},
@@ -103,6 +108,8 @@ const initialState = {
   approvalDetailsList: [],
   brokageDealDetails: {},
   formFields: [],
+  salesDashboardData: [],
+  salesDashboardPermission: {},
 };
 
 const reducer = (state = initialState, action = {}) => {
@@ -136,6 +143,13 @@ const reducer = (state = initialState, action = {}) => {
         formFields: payload,
       };
 
+    case `${GET_SALES_DASHBOARD_DATA}_FULFILLED`:
+      return {
+        ...state,
+        loading: false,
+        salesDashboardData: payload,
+      };
+
     case `${GET_ASSIGNTO_DATA}_FULFILLED`:
       return {
         ...state,
@@ -146,6 +160,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${GET_COUNTRY_CODES}_PENDING`:
     case `${GET_ASSIGNTO_DATA}_PENDING`:
     case `${GET_INQUIRY_FORM_FIELDS}_PENDING`:
+    case `${GET_SALES_DASHBOARD_DATA}_PENDING`:
       return {
         ...state,
         loading: true,
@@ -154,6 +169,7 @@ const reducer = (state = initialState, action = {}) => {
     case `${GET_COUNTRY_CODES}_REJECTED`:
     case `${GET_ASSIGNTO_DATA}_REJECTED`:
     case `${GET_INQUIRY_FORM_FIELDS}_REJECTED`:
+    case `${GET_SALES_DASHBOARD_DATA}_REJECTED`:
       return {
         ...state,
         loading: false,
@@ -177,6 +193,7 @@ const reducer = (state = initialState, action = {}) => {
         loadingCommonData: false,
         sourceTypeOptions,
         budgetRangeOptions,
+        salesDashboardPermission: payload.dashboard_assignee,
       };
     }
     case `${GET_PROJECT_COMMON_DATA}_REJECTED`:
@@ -259,13 +276,14 @@ const reducer = (state = initialState, action = {}) => {
       };
     case `${GET_VISITORS}_FULFILLED`: {
       // If visitor status is Book(won), he/she will be considered as a customer. And should not be displayed in visitor list.
-      const filteredVisitors = payload.filter(v => v.title !== 'Book(won)');
+      const filteredVisitors = payload.data?.filter(
+        v => v.title !== 'Book(won)',
+      );
       return {
         ...state,
         loadingVisitors: false,
-        visitors: filteredVisitors.sort(
-          (a, b) => dayjs(b.created).unix() - dayjs(a.created).unix(),
-        ),
+        totalPage: payload?.page,
+        visitors: filteredVisitors,
       };
     }
     case `${GET_VISITORS}_REJECTED`:
@@ -273,6 +291,12 @@ const reducer = (state = initialState, action = {}) => {
         ...state,
         loadingVisitors: false,
         errorMessage: payload,
+      };
+
+    case `${FILTER_VISITORS}`:
+      return {
+        ...state,
+        visitorsFilters: payload,
       };
 
     case `${GET_VISITOR}_PENDING`:

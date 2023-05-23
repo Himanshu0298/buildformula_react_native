@@ -234,10 +234,23 @@ const RMCCard = props => {
     available_quantity,
     remaining,
     estimated_quantity,
+    grade,
+    rmc_qty,
   } = item;
 
   return (
     <View style={styles.cardContainer}>
+      <View style={styles.newDataRow}>
+        <View style={styles.rmcDetail}>
+          <Caption>Grade: </Caption>
+          <Text>{grade}</Text>
+        </View>
+        <View style={styles.rmcDetail}>
+          <Caption>Qty: </Caption>
+          <Text>{rmc_qty}</Text>
+        </View>
+      </View>
+      <Divider style={styles.rmcHeader} />
       <View style={styles.dataRow}>
         <Caption style={styles.lightData}>Category:</Caption>
         <Text style={styles.title}>{materialcategrytitle}</Text>
@@ -318,13 +331,6 @@ function IssueIndentPreview(props) {
   const [materials, setMaterials] = React.useState([]);
   const [rmc, setRmc] = React.useState([]);
 
-  const detailsIssueStatus = materialData
-    ? Object.values(materialData)[0]?.find(i => i.id).rm_status
-    : [];
-  const detailsRmcStatus = rmcData
-    ? Object.values(rmcData)[0]?.find(i => i.id).rm_status
-    : [];
-
   useEffect(() => {
     if (materialData) setMaterials(Object.values(materialData)[0]);
   }, [materialData]);
@@ -375,6 +381,8 @@ function IssueIndentPreview(props) {
   };
 
   const handleSaveMaterialQuantity = (value, approveStatus) => {
+    const quantity = materials.find(i => i.assigned_quantity === null);
+
     if (approveStatus === 'approved') {
       if (quantity) {
         snackbar.showMessage({
@@ -385,8 +393,6 @@ function IssueIndentPreview(props) {
         return;
       }
     }
-
-    const quantity = materials.find(i => i.assigned_quantity === null);
 
     const _materials = [...materials];
     if (value > _materials[selectedItemIndex]?.available_quantity) {
@@ -399,6 +405,7 @@ function IssueIndentPreview(props) {
     }
 
     _materials[selectedItemIndex].assigned_quantity = value;
+
     setMaterials(_materials);
     toggleDialog();
   };
@@ -448,6 +455,7 @@ function IssueIndentPreview(props) {
   return (
     <>
       <Spinner visible={loading || details} textContent="" />
+
       <AssignQtyDialog
         {...props}
         visible={isNumber(selectedItemIndex)}
@@ -601,14 +609,8 @@ function IssueIndentPreview(props) {
                       const {label, color} =
                         INDENT_STATUS[headerInfo?.rm_status] || {};
 
-                      const {
-                        requiredfor,
-                        grade,
-                        rmc_qty,
-                        rm_status,
-                        wbs_works_id,
-                        type,
-                      } = headerInfo;
+                      const {requiredfor, rm_status, wbs_works_id, type} =
+                        headerInfo;
 
                       return (
                         <View style={styles.mainCardContainer}>
@@ -625,17 +627,6 @@ function IssueIndentPreview(props) {
                               </View>
 
                               <Divider />
-                              <View style={styles.newDataRow}>
-                                <View style={styles.rmcDetail}>
-                                  <Caption>Grade: </Caption>
-                                  <Text>{grade}</Text>
-                                </View>
-                                <View style={styles.rmcDetail}>
-                                  <Caption>Qty: </Caption>
-                                  <Text>{rmc_qty}</Text>
-                                </View>
-                              </View>
-                              <Divider style={styles.rmcHeader} />
                             </>
                           ) : null}
                           {rmc_request?.map(single_request => {
@@ -764,6 +755,7 @@ const styles = StyleSheet.create({
   newDataRow: {
     flexDirection: 'row',
     alignItems: 'flex-start',
+    justifyContent: 'space-between',
   },
 
   ID: {
