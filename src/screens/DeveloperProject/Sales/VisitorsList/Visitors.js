@@ -14,31 +14,22 @@ import {
   Title,
   Subheading,
   Divider,
-  Menu,
   Searchbar,
-  Text,
   Badge,
+  DataTable,
 } from 'react-native-paper';
 import useSalesActions from 'redux/actions/salesActions';
 import {useSelector} from 'react-redux';
 import dayjs from 'dayjs';
 import Spinner from 'react-native-loading-spinner-overlay';
-import {PRIORITY_COLORS, STRUCTURE_TYPE_LABELS} from 'utils/constant';
+import {PRIORITY_COLORS} from 'utils/constant';
 import CustomBadge from 'components/Atoms/CustomBadge';
 import NoDataFound from 'assets/images/NoDataFound.png';
 import {getShadow, getPermissions} from 'utils';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {useSalesLoading} from 'redux/selectors';
 import {store} from 'redux/store';
-
-const FILTERS = [
-  {value: 'name', label: 'Name'},
-  {value: 'recent', label: 'Recent'},
-  {value: 'low', label: 'Low Priority'},
-  {value: 'medium', label: 'Medium Priority'},
-  {value: 'high', label: 'High Priority'},
-];
+import {theme} from 'styles/theme';
 
 function StatsRow({visitorAnalytics}) {
   const {
@@ -68,7 +59,7 @@ function StatsRow({visitorAnalytics}) {
 }
 
 function RenderVisitorItem(props) {
-  const {theme, data, navToDetails, sourceTypeOptions} = props;
+  const {data, navToDetails, sourceTypeOptions} = props;
 
   const {
     id,
@@ -93,14 +84,7 @@ function RenderVisitorItem(props) {
             {first_name} {last_name}
           </Subheading>
           <Caption style={styles.rowLabel}>+91 {phone}</Caption>
-          <Caption
-            style={{
-              color: theme.colors.primary,
-              fontWeight: '700',
-              marginTop: -2,
-            }}>
-            {source?.label || '-'}
-          </Caption>
+          <Caption style={styles.source}>{source?.label || '-'}</Caption>
         </View>
         <View style={styles.rowItemContainer}>
           <Subheading style={styles.visitorTitle}>
@@ -129,8 +113,7 @@ function RenderVisitorItem(props) {
 }
 
 function RenderVisitors(props) {
-  const {theme, visitors, onRefresh, navToDetails, loadMore, totalPage, page} =
-    props;
+  const {visitors, onRefresh, navToDetails, totalPage, page} = props;
 
   const renderDivider = () => <Divider style={styles.divider} />;
 
@@ -151,13 +134,13 @@ function RenderVisitors(props) {
             navToDetails={navToDetails}
           />
         )}
-        // ListFooterComponent={
-        //   page >= totalPage ? (
-        //     <Caption style={styles.noMoreData}>No More Data Display!</Caption>
-        //   ) : (
-        //     ''
-        //   )
-        // }
+        ListFooterComponent={
+          page === totalPage ? (
+            <Caption style={styles.noMoreData}>No More Data Display!</Caption>
+          ) : (
+            ''
+          )
+        }
         refreshControl={
           <RefreshControl refreshing={false} onRefresh={onRefresh} />
         }
@@ -169,17 +152,13 @@ function RenderVisitors(props) {
             </Title>
           </View>
         }
-        // onEndReached={() => {
-        //   loadMore();
-        // }}
-        // onEndReachedThreshold={0.5}
       />
     </View>
   );
 }
 
 function Header(props) {
-  const {theme, searchQuery, setSearchQuery, filterCount, navToFilter} = props;
+  const {searchQuery, setSearchQuery, filterCount, navToFilter} = props;
   const {colors} = theme;
 
   const onSearch = v => setSearchQuery(v);
@@ -211,7 +190,7 @@ function Header(props) {
 }
 
 function Visitors(props) {
-  const {theme, navigation} = props;
+  const {navigation} = props;
 
   const [page, setPage] = React.useState(1);
 
@@ -242,13 +221,6 @@ function Visitors(props) {
 
   const projectId = selectedProject.id;
 
-  const loadMoreData = async () => {
-    await setPage(page + 1);
-    if (page <= totalPage) {
-      await loadVisitorData(page);
-    }
-  };
-
   const filterCount = useMemo(() => {
     return Object.values(visitorsFilters)?.filter(i => i !== '').length;
   }, [visitorsFilters]);
@@ -269,9 +241,9 @@ function Visitors(props) {
       loadVisitorData();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [projectId, filter, visitorsFilters]);
+  }, [projectId, filter, visitorsFilters, page]);
 
-  const loadVisitorData = async pageno => {
+  const loadVisitorData = async () => {
     await getVisitors({
       project_id: projectId,
       sort_mode: visitorsFilters?.sortby,
@@ -279,7 +251,7 @@ function Visitors(props) {
       lead_status: visitorsFilters?.status,
       source_type: visitorsFilters?.sourceType,
       role: modulePermission?.admin || isProjectAdmin ? 'admin' : 'none',
-      // page: pageno || page,
+      page,
     });
   };
 
@@ -320,6 +292,23 @@ function Visitors(props) {
 
       <StatsRow visitorAnalytics={visitorAnalytics} />
 
+      <Divider />
+
+      <DataTable style={{backgroundColor: '#fff'}}>
+        <DataTable.Pagination
+          page={page}
+          numberOfPages={Math.ceil(page / totalPage)}
+          onPageChange={val =>
+            setPage(
+              val === totalPage || (val <= totalPage && val !== 0) ? val : page,
+            )
+          }
+          label={`Page ${page} of ${totalPage}`}
+          style={{justifyContent: 'space-between'}}
+          showFastPaginationControls={false}
+        />
+      </DataTable>
+
       <View style={{flexGrow: 1}}>
         <RenderVisitors
           {...props}
@@ -327,7 +316,6 @@ function Visitors(props) {
           totalPage={totalPage}
           visitors={filteredVisitors}
           onRefresh={onRefresh}
-          loadMore={loadMoreData}
           navToDetails={navToDetails}
           sourceTypeOptions={sourceTypeOptions}
         />
@@ -361,6 +349,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#fff',
+    marginTop: 5,
   },
   rowMainContainer: {
     paddingVertical: 5,
@@ -451,5 +440,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: -9,
     right: 15,
+  },
+  source: {
+    color: theme.colors.primary,
+    fontWeight: '700',
+    marginTop: -2,
   },
 });
