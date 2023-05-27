@@ -147,7 +147,7 @@ const CreateIssueIndent = props => {
                 cancelLabel="Cancel"
                 submitLabel="Next"
                 onCancel={navigation.goBack}
-                onSubmit={debounce(handleSubmit, 200)}
+                onSubmit={debounce(handleSubmit, 500)}
               />
             </View>
           );
