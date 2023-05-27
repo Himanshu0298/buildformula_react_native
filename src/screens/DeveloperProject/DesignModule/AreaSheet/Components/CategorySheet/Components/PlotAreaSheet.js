@@ -47,8 +47,8 @@ function PlotAreaSheet(props) {
 
   React.useEffect(() => {
     if (Platform.OS === 'android') {
-      AndroidKeyboardAdjust?.adjustResize();
-      return () => AndroidKeyboardAdjust.adjustPan();
+      AndroidKeyboardAdjust?.setAdjustResize();
+      return () => AndroidKeyboardAdjust.setAdjustResize();
     }
     return null;
   }, []);
@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   scrollContent: {
-    paddingBottom: 50,
+    paddingBottom: '50%',
     flexGrow: 1,
   },
   tableContainer: {

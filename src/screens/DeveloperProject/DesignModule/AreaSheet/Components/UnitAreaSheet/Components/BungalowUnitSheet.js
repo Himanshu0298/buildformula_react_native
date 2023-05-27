@@ -59,8 +59,8 @@ function BungalowUnitSheet(props) {
 
   React.useEffect(() => {
     if (Platform.OS === 'android') {
-      AndroidKeyboardAdjust?.adjustResize();
-      return () => AndroidKeyboardAdjust.adjustPan();
+      AndroidKeyboardAdjust?.setAdjustResize();
+      return () => AndroidKeyboardAdjust.setAdjustResize();
     }
     return null;
   }, []);

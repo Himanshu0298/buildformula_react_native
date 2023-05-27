@@ -56,7 +56,7 @@ function TowerUnitSheet(props) {
   const {towers} = structureData?.['6'] || {};
 
   const towerOptions = React.useMemo(() => {
-    return towers.map((item, index) => ({
+    return towers?.map((item, index) => ({
       label: getTowerLabel(index + 1),
       value: item.tower_id,
     }));
@@ -80,8 +80,8 @@ function TowerUnitSheet(props) {
 
   React.useEffect(() => {
     if (Platform.OS === 'android') {
-      AndroidKeyboardAdjust?.adjustResize();
-      return () => AndroidKeyboardAdjust.adjustPan();
+      AndroidKeyboardAdjust?.setAdjustResize();
+      return () => AndroidKeyboardAdjust.setAdjustResize();
     }
     return null;
   }, []);

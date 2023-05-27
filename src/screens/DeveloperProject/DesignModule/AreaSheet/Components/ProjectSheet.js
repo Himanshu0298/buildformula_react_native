@@ -62,10 +62,10 @@ function ProjectSheet() {
 
   useEffect(() => {
     if (Platform.OS === 'android') {
-      AndroidKeyboardAdjust?.adjustResize();
-      return () => AndroidKeyboardAdjust.adjustPan();
+      AndroidKeyboardAdjust?.setAdjustResize();
+      return AndroidKeyboardAdjust?.setAdjustResize();
     }
-    return () => null;
+    return null;
   }, []);
 
   useEffect(() => {
@@ -146,8 +146,7 @@ function ProjectSheet() {
         refreshControl={
           <RefreshControl refreshing={false} onRefresh={loadInitialData} />
         }
-        contentContainerStyle={styles.scrollContent}
-        keyboardShouldPersistTaps="handled">
+        contentContainerStyle={styles.scrollContent}>
         <View style={styles.tableContainer}>
           {Object.keys(sheetData)?.map(key => (
             <RenderRow
@@ -179,7 +178,8 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   scrollContent: {
-    paddingBottom: 50,
+    paddingBottom: '50%',
+    flexGrow: 1,
   },
   tableContainer: {
     borderWidth: 1,
