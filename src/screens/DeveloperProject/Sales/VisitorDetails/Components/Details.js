@@ -44,6 +44,11 @@ function Details(props) {
     mobile_code_data,
     brokers_data,
     budgetrange_id,
+    source_type_sub_category_title,
+    master_cast_type_title,
+    master_project_status_title,
+    anniversary_date,
+    dob,
   } = visitor;
 
   const {budgetRangeOptions} = useSelector(s => s.sales);
@@ -157,6 +162,12 @@ function Details(props) {
           <Caption style={styles.value}>{source?.label || 'NA'}</Caption>
         </View>
         <View style={styles.detailRow}>
+          <Paragraph>Source Type Sub Category</Paragraph>
+          <Caption style={styles.value}>
+            {source_type_sub_category_title || 'NA'}
+          </Caption>
+        </View>
+        <View style={styles.detailRow}>
           <Paragraph>Broker</Paragraph>
           <Caption style={styles.value}>
             {brokers_data
@@ -182,6 +193,24 @@ function Details(props) {
             {budgetRangeValue[0]?.label || 'NA'}
           </Caption>
         </View>
+        <View style={styles.detailRow}>
+          <Paragraph>Anniversary Date</Paragraph>
+          <Caption style={styles.value}>
+            {dayjs(anniversary_date).format('DD MMM YYYY')}
+          </Caption>
+        </View>
+        <View style={styles.detailRow}>
+          <Paragraph>Birthday Date</Paragraph>
+          <Caption style={styles.value}>
+            {dayjs(dob).format('DD MMM YYYY')}
+          </Caption>
+        </View>
+        <View style={styles.detailRow}>
+          <Paragraph>Cast</Paragraph>
+          <Caption style={styles.value}>
+            {master_cast_type_title || 'NA'}
+          </Caption>
+        </View>
         {/* <View style={styles.detailRow}>
           <Paragraph>Date</Paragraph>
           <Caption style={styles.value}>
@@ -203,6 +232,14 @@ function Details(props) {
           <Paragraph>Interested Property</Paragraph>
           <Caption style={styles.value}>{intrestedIn?.join(',')}</Caption>
         </View>
+
+        <View style={styles.detailRow}>
+          <Paragraph>Project Status</Paragraph>
+          <Caption style={styles.value}>
+            {master_project_status_title || 'NA'}
+          </Caption>
+        </View>
+
         <View style={styles.detailRow}>
           <Paragraph>Remark</Paragraph>
           <Caption style={styles.value}>{remarks || 'NA'}</Caption>
