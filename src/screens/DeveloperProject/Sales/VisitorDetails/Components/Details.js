@@ -146,7 +146,7 @@ function Details(props) {
         <View style={styles.detailRow}>
           <Paragraph>Inquiry Date</Paragraph>
           <Caption style={styles.value}>
-            {dayjs(Inquiry_date).format('DD MMM YYYY')}
+            {Inquiry_date ? dayjs(Inquiry_date).format('DD MMM YYYY') : 'NA'}
           </Caption>
         </View>
         <View style={styles.detailRow}>
@@ -196,13 +196,15 @@ function Details(props) {
         <View style={styles.detailRow}>
           <Paragraph>Anniversary Date</Paragraph>
           <Caption style={styles.value}>
-            {dayjs(anniversary_date).format('DD MMM YYYY')}
+            {anniversary_date
+              ? dayjs(anniversary_date).format('DD MMM YYYY')
+              : 'NA'}
           </Caption>
         </View>
         <View style={styles.detailRow}>
           <Paragraph>Birthday Date</Paragraph>
           <Caption style={styles.value}>
-            {dayjs(dob).format('DD MMM YYYY')}
+            {dob ? dayjs(dob).format('DD MMM YYYY') : 'NA'}
           </Caption>
         </View>
         <View style={styles.detailRow}>
