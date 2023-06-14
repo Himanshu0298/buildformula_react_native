@@ -83,6 +83,8 @@ function PersonalTab(props) {
     occupationOptions,
     sourceTypeOptions,
     budgetRangeOptions,
+    castTypeOptions,
+    sourceTypeSubCatOptions,
     setSelectedTab,
     mobileCodes,
     assigntoOptions,
@@ -102,7 +104,11 @@ function PersonalTab(props) {
   const occupationInputRef = React.useRef();
   const localityRef = React.useRef();
   const sourceTypeRef = React.useRef();
+  const sourceTypeSubCatRef = React.useRef();
   const budgetRangeRef = React.useRef();
+  const anniversaryRef = React.useRef();
+  const dobRef = React.useRef();
+  const castRef = React.useRef();
 
   return (
     <KeyboardAwareScrollView
@@ -272,6 +278,26 @@ function PersonalTab(props) {
               value={values.source_type}
               error={errors.source_type}
               onSelect={value => setFieldValue('source_type', value)}
+              onSubmitEditing={() => sourceTypeSubCatRef?.current?.focus()}
+            />
+          ) : null}
+          {formFieldsData?.source_type_sub_category ? (
+            <RenderSelect
+              name="source_type_sub_category"
+              ref={sourceTypeSubCatRef}
+              label="Source Type Sub Category"
+              options={sourceTypeSubCatOptions}
+              containerStyles={styles.input}
+              value={
+                sourceTypeSubCatOptions.find(
+                  e => e.value === values.source_type_sub_category,
+                ) && values.source_type_sub_category
+              }
+              error={errors.source_type_sub_category}
+              onSelect={value =>
+                setFieldValue('source_type_sub_category', value)
+              }
+              onSubmitEditing={() => budgetRangeRef?.current?.focus()}
             />
           ) : null}
           {formFieldsData?.budgetrange ? (
@@ -284,6 +310,51 @@ function PersonalTab(props) {
               value={values.budgetrange_id}
               error={errors.budgetrange_id}
               onSelect={value => setFieldValue('budgetrange_id', value)}
+              onSubmitEditing={() => anniversaryRef?.current?.focus()}
+            />
+          ) : null}
+          {formFieldsData?.anniversary_date ? (
+            <RenderDatePicker
+              name="anniversary_date"
+              ref={anniversaryRef}
+              label="Anniversary Date"
+              containerStyles={styles.input}
+              value={values.anniversary_date}
+              error={errors.anniversary_date}
+              onChange={date => {
+                setFieldValue(
+                  'anniversary_date',
+                  dayjs(date).format('YYYY-MM-DD'),
+                );
+              }}
+            />
+          ) : null}
+          {formFieldsData?.dob ? (
+            <RenderDatePicker
+              name="dob"
+              ref={dobRef}
+              label="Birthday Date"
+              containerStyles={styles.input}
+              value={values.dob}
+              error={errors.dob}
+              onChange={date => {
+                setFieldValue('dob', dayjs(date).format('YYYY-MM-DD'));
+              }}
+            />
+          ) : null}
+          {formFieldsData?.cast_type ? (
+            <RenderSelect
+              name="cast_type"
+              ref={castRef}
+              label="Cast"
+              options={castTypeOptions}
+              containerStyles={styles.input}
+              value={
+                castTypeOptions.find(e => e.value === values.cast_type) &&
+                values.cast_type
+              }
+              error={errors.cast_type}
+              onSelect={value => setFieldValue('cast_type', value)}
             />
           ) : null}
         </View>
@@ -308,6 +379,7 @@ function InquiryTab(props) {
     brokerOptions,
     formFieldsData,
     bhkOptions,
+    projectStatusTypeOptions,
   } = props;
 
   const {
@@ -326,6 +398,7 @@ function InquiryTab(props) {
   const followUpTitleRef = React.useRef();
   const followUpDateRef = React.useRef();
   const followUpTimeRef = React.useRef();
+  const projectStatusRef = React.useRef();
 
   useEffect(() => {
     setFieldValue(
@@ -450,6 +523,24 @@ function InquiryTab(props) {
               }}
             />
           ) : null}
+          {formFieldsData?.project_status_type ? (
+            <RenderSelect
+              name="project_status_type"
+              label="Project Status"
+              ref={projectStatusRef}
+              options={projectStatusTypeOptions}
+              value={
+                projectStatusTypeOptions.find(
+                  e => e.value === values.project_status_type,
+                ) && values.project_status_type
+              }
+              containerStyles={styles.input}
+              error={errors.project_status_type}
+              onSelect={v => {
+                setFieldValue('project_status_type', v);
+              }}
+            />
+          ) : null}
           {formFieldsData?.Inquiry_date ? (
             <RenderDatePicker
               name="Inquiry_date"
@@ -561,6 +652,9 @@ function RenderForm(props) {
     assignOptions,
     sourceTypeOptions,
     budgetRangeOptions,
+    castTypeOptions,
+    projectStatusTypeOptions,
+    sourceTypeSubCatOptions,
     formFields = [],
     bhkOptions,
     project_types,
@@ -640,6 +734,8 @@ function RenderForm(props) {
             mobileCodes={mobileCodes}
             assigntoOptions={assigntoOptions}
             formFieldsData={formFieldsData}
+            castTypeOptions={castTypeOptions}
+            sourceTypeSubCatOptions={sourceTypeSubCatOptions}
           />
         );
       case 1:
@@ -654,6 +750,7 @@ function RenderForm(props) {
             brokerOptions={brokerOptions}
             formFieldsData={formFieldsData}
             bhkOptions={bhkOptions}
+            projectStatusTypeOptions={projectStatusTypeOptions}
           />
         );
       default:

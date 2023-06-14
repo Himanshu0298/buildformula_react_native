@@ -86,6 +86,9 @@ const initialState = {
   occupationOptions: [],
   sourceTypeOptions: [],
   budgetRangeOptions: [],
+  castTypeOptions: [],
+  projectStatusTypeOptions: [],
+  sourceTypeSubCatOptions: [],
   inquiryOptions: [],
   project_types: [],
   interestedOptions: [],
@@ -185,14 +188,31 @@ const reducer = (state = initialState, action = {}) => {
       const sourceTypeOptions = payload.source_types
         .filter(i => i.status)
         .map(i => ({label: i.source_title, value: i.id}));
+
       const budgetRangeOptions = payload.budgetrange
         .filter(i => i.status)
         .map(i => ({label: i.budgetrange, value: i.id}));
+
+      const castTypeOptions = payload.master_cast_type
+        .filter(i => i.status)
+        .map(i => ({label: i.cast_title, value: i.id}));
+
+      const projectStatusTypeOptions = payload.master_projectstatus_type
+        .filter(i => i.status)
+        .map(i => ({label: i.projectstatus_title, value: i.id}));
+
+      const sourceTypeSubCatOptions = payload.master_sourcetypesubcategory_type
+        .filter(i => i.status)
+        .map(i => ({label: i.sourcetypesubcategory_title, value: i.id}));
+
       return {
         ...state,
         loadingCommonData: false,
         sourceTypeOptions,
         budgetRangeOptions,
+        castTypeOptions,
+        projectStatusTypeOptions,
+        sourceTypeSubCatOptions,
         salesDashboardPermission: payload.dashboard_assignee,
       };
     }
