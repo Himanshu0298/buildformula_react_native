@@ -288,7 +288,11 @@ function PersonalTab(props) {
               label="Source Type Sub Category"
               options={sourceTypeSubCatOptions}
               containerStyles={styles.input}
-              value={values.source_type_sub_category}
+              value={
+                sourceTypeSubCatOptions.find(
+                  e => e.value === values.source_type_sub_category,
+                ) && values.source_type_sub_category
+              }
               error={errors.source_type_sub_category}
               onSelect={value =>
                 setFieldValue('source_type_sub_category', value)
@@ -345,7 +349,10 @@ function PersonalTab(props) {
               label="Cast"
               options={castTypeOptions}
               containerStyles={styles.input}
-              value={values.cast_type}
+              value={
+                castTypeOptions.find(e => e.value === values.cast_type) &&
+                values.cast_type
+              }
               error={errors.cast_type}
               onSelect={value => setFieldValue('cast_type', value)}
             />
@@ -522,7 +529,11 @@ function InquiryTab(props) {
               label="Project Status"
               ref={projectStatusRef}
               options={projectStatusTypeOptions}
-              value={values.project_status_type}
+              value={
+                projectStatusTypeOptions.find(
+                  e => e.value === values.project_status_type,
+                ) && values.project_status_type
+              }
               containerStyles={styles.input}
               error={errors.project_status_type}
               onSelect={v => {
