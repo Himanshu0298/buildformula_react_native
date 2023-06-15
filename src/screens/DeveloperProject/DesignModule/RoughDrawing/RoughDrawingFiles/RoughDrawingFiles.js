@@ -20,7 +20,7 @@ import FileIcon from 'assets/images/file_icon.png';
 import dayjs from 'dayjs';
 import {useSelector} from 'react-redux';
 import NoResult from 'components/Atoms/NoResult';
-import {getFileExtension} from 'utils/download';
+import {getDownloadUrl, getFileExtension} from 'utils/download';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import FileViewer from 'react-native-file-viewer';
 import useDesignModuleActions from 'redux/actions/designModuleActions';
@@ -45,23 +45,29 @@ import RenameDialogue from '../Components/RenameDialog';
 const SNAP_POINTS = [0, '70%'];
 
 function RenderFile(props) {
-  const {
-    index,
-    item,
-    toggleMenu,
-    setModalContentType,
-    setModalContent,
-    onPressFile,
-  } = props;
+  const {index, item, toggleMenu, setModalContentType, setModalContent} = props;
 
   const {title, created} = item;
-  // TO DO Flies Download
 
+  const download = useDownload();
+
+  const onPressFile = async file => {
+    const fileUrl = getDownloadUrl(file.file_url);
+    const name = getFileName(file.title);
+    download.link({
+      name,
+      link: fileUrl,
+      showAction: false,
+      onFinish: ({dir}) => {
+        FileViewer.open(`file://${dir}`);
+      },
+    });
+  };
   return (
     <View style={styles.recentFiles}>
       <TouchableOpacity
         style={styles.sectionContainer}
-        onPress={() => onPressFile(console.log('-------->pressed'))}>
+        onPress={() => onPressFile(item)}>
         <Image source={FileIcon} style={styles.fileIcon} />
         <View>
           <Text style={(styles.verticalFlex, styles.text)} numberOfLines={2}>

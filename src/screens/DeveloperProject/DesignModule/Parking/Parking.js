@@ -21,12 +21,15 @@ import useDesignModuleActions from 'redux/actions/designModuleActions';
 import {useSelector} from 'react-redux';
 import {theme} from 'styles/theme';
 import FileIcon from 'assets/images/file_icon.png';
-import {getFileExtension} from 'utils/download';
+import {getDownloadUrl, getFileExtension} from 'utils/download';
 import {useImagePicker} from 'hooks';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {useAlert} from 'components/Atoms/Alert';
 import {cloneDeep, debounce} from 'lodash';
+import {getFileName} from 'utils/constant';
+import {useDownload} from 'components/Atoms/Download';
+import FileViewer from 'react-native-file-viewer';
 
 const Parking_DETAILS = [
   {label: 'Parking', key: 'parking', value: ''},
@@ -35,13 +38,28 @@ const Parking_DETAILS = [
 const TABLE_WIDTH = [Layout.window.width * 0.25, Layout.window.width * 0.65];
 
 function RenderFile(props) {
-  const {item, onPressFile, handleDelete} = props;
+  const {item, handleDelete} = props;
 
   const [visible, setVisible] = React.useState(false);
 
   const openMenu = () => setVisible(true);
 
   const closeMenu = () => setVisible(false);
+
+  const download = useDownload();
+
+  const onPressFile = async file => {
+    const fileUrl = getDownloadUrl(file.file_url);
+    const name = getFileName(file.title);
+    download.link({
+      name,
+      link: fileUrl,
+      showAction: false,
+      onFinish: ({dir}) => {
+        FileViewer.open(`file://${dir}`);
+      },
+    });
+  };
 
   return (
     <View style={styles.renderContainer}>

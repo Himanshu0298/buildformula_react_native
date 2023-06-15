@@ -35,6 +35,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import {getPermissions, getShadow} from 'utils';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import Spinner from 'react-native-loading-spinner-overlay';
+import {useDownload} from 'components/Atoms/Download';
 import MenuDialog from '../Components/MenuDialog';
 import DeleteDialog from '../Components/DeleteDialog';
 import RenameDialogue from '../Components/RenameDialog';
@@ -43,22 +44,30 @@ import VersionDialog from '../../RoughDrawing/Components/VersionDialog';
 const SNAP_POINTS = [0, '70%'];
 
 function RenderFile(props) {
-  const {
-    index,
-    item,
-    toggleMenu,
-    setModalContentType,
-    setModalContent,
-    onPressFile,
-  } = props;
+  const {index, item, toggleMenu, setModalContentType, setModalContent} = props;
 
   const {title, created} = item;
+
+  const download = useDownload();
+
+  const onPressFile = async file => {
+    const fileUrl = getDownloadUrl(file.file_url);
+    const name = getFileName(file.title);
+    download.link({
+      name,
+      link: fileUrl,
+      showAction: false,
+      onFinish: ({dir}) => {
+        FileViewer.open(`file://${dir}`);
+      },
+    });
+  };
 
   return (
     <View style={styles.recentFiles}>
       <TouchableOpacity
         style={styles.sectionContainer}
-        onPress={() => onPressFile(console.log('-------->TO do'))}>
+        onPress={() => onPressFile(item)}>
         <Image source={FileIcon} style={styles.fileIcon} />
         <View>
           <Text style={(styles.verticalFlex, styles.text)} numberOfLines={2}>
