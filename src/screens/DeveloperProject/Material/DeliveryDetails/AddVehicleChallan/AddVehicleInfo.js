@@ -180,7 +180,7 @@ const AddVehicleInfo = props => {
     materialAttachments,
     challan,
     materials,
-    material_order_no,
+    orderNumber,
     item: vehicleInfo,
   } = route?.params || {};
 
@@ -199,7 +199,7 @@ const AddVehicleInfo = props => {
   const loadData = () => {
     return getMaterialChallanList({
       project_id: selectedProject.id,
-      material_order_no,
+      material_order_no: orderNumber,
     });
   };
 
@@ -233,21 +233,21 @@ const AddVehicleInfo = props => {
       formData.append('challan_images[]', item);
       return item;
     });
-    damageAttachments.map(item => {
+    damageAttachments?.map(item => {
       formData.append('damageMaterial_images[]', item);
       return item;
     });
-    materialAttachments.map(item => {
+    materialAttachments?.map(item => {
       formData.append('material_images[]', item);
       return item;
     });
-    values.vehicleAttachments.map(item => {
+    values?.vehicleAttachments?.map(item => {
       formData.append('vehicle_images[]', item);
       return item;
     });
 
     formData.append('project_id', selectedProject.id);
-    formData.append('material_order_no', material_order_no);
+    formData.append('material_order_no', orderNumber);
     formData.append('challan_no', challan);
     formData.append('driver_name', values.driverName);
     formData.append('materials', JSON.stringify(materialData));
