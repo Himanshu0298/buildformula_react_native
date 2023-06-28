@@ -96,7 +96,7 @@ const initialState = {
   visitorAnalytics: {},
   visitorSuggestions: [],
   pipelines: [],
-  unitStatusListing: [],
+  unitStatusListing: {},
   bankList: [],
   visitor: {},
   visitorFollowUp: {},
@@ -480,10 +480,14 @@ const reducer = (state = initialState, action = {}) => {
         loadingUnitStatus: true,
       };
     case `${GET_BOOKINGS_STATUS}_FULFILLED`: {
+      const listing = {...state.unitStatusListing};
+      if (payload.length > 0) {
+        listing[payload[0].project_floor] = payload;
+      }
       return {
         ...state,
         loadingUnitStatus: false,
-        unitStatusListing: payload,
+        unitStatusListing: listing,
       };
     }
     case `${GET_BOOKINGS_STATUS}_REJECTED`:
