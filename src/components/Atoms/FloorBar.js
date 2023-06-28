@@ -47,7 +47,7 @@ function FloorBar(props) {
 
   const LabelContainer = onPressLabel ? TouchableOpacity : View;
 
-  const isSelectedFloor = selectedFloor === floorId;
+  const isSelectedFloor = selectedFloor?.includes(floorId);
 
   const floorNumber = getFloorNumber(floor || floorId);
 
@@ -111,13 +111,6 @@ FloorBar.defaultProps = {
 };
 
 const styles = StyleSheet.create({
-  unitsInput: {
-    marginHorizontal: 10,
-    fontSize: 16,
-    justifyContent: 'center',
-    backgroundColor: '#fff',
-    ...getShadow(3),
-  },
   structureInput: {
     marginHorizontal: 5,
     fontSize: 14,

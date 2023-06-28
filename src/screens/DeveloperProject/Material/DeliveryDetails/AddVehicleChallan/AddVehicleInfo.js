@@ -23,7 +23,7 @@ import Pagination from '../../CommonComponents/Pagination';
 const schema = Yup.object().shape({
   driverName: Yup.string('Required').required('Required'),
   vehicleNo: Yup.string('Required').required('Required'),
-  vehicleAttachments: Yup.mixed().required('File is required'),
+  // vehicleAttachments: Yup.mixed().required('File is required'),
 });
 
 const RenderAttachments = props => {
@@ -141,7 +141,9 @@ function ChallanForm(props) {
             />
 
             <View>
-              <Text style={{color: theme.colors.primary}}>Attachment</Text>
+              <Text style={{color: theme.colors.primary}}>
+                Upload Vehicle Image
+              </Text>
               <OpacityButton
                 onPress={handleUpload}
                 opacity={0.1}

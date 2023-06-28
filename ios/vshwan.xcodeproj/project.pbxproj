@@ -426,7 +426,7 @@
 				DEVELOPMENT_TEAM = K589DAC6S3;
 				INFOPLIST_FILE = vshwan/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 2.1.0;
+				MARKETING_VERSION = 2.1.4;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -455,7 +455,7 @@
 				DEVELOPMENT_TEAM = K589DAC6S3;
 				INFOPLIST_FILE = vshwan/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 2.1.0;
+				MARKETING_VERSION = 2.1.4;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
