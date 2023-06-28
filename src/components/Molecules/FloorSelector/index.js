@@ -1,10 +1,11 @@
-import React, {useState} from 'react';
+import React, {useMemo, useState} from 'react';
 import {
   FlatList,
   View,
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  Text,
 } from 'react-native';
 import FloorBar from 'components/Atoms/FloorBar';
 import {IconButton, Subheading, withTheme} from 'react-native-paper';
@@ -15,6 +16,7 @@ import NoResult from 'components/Atoms/NoResult';
 import {BHK_OPTIONS} from 'utils/constant';
 import BhkButton from 'components/Atoms/Buttons/BhkButton';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 function BhkList({onPress, selectedBhk}) {
   return (
@@ -47,17 +49,34 @@ function FloorSelector(props) {
     projectId,
     renderUnits,
     edit,
+    loadingUnitStatus,
   } = props || {};
 
-  const [selectedFloor, setSelectedFloor] = useState();
+  // const floorIdList = useMemo(() => {
+  //   return floors?.map(e => e.id);
+  // }, [floors]);
+
+  const [selectedFloor, setSelectedFloor] = useState([]);
+
+  // const [openAll, setOpenAll] = useState(false);
+
+  // const toggleFloors = async () => {
+  //   setOpenAll(!openAll);
+  //   // eslint-disable-next-line no-unused-expressions
+  //   !openAll ? setSelectedFloor(floorIdList) : setSelectedFloor([]);
+  // };
 
   const onSelectFloor = floorId => {
-    setSelectedFloor(v => (v === floorId ? undefined : floorId));
+    // eslint-disable-next-line no-unused-expressions
+    !selectedFloor.includes(floorId)
+      ? setSelectedFloor(v => [...v, floorId])
+      : setSelectedFloor(selectedFloor.filter(e => e !== floorId));
   };
   const renderNoFloor = () => <NoResult title="No Floors available" />;
 
   return (
     <View style={styles.container}>
+      <Spinner visible={loadingUnitStatus} textContent="" />
       <Subheading>{towerType}</Subheading>
       <View style={styles.headerContainer}>
         <TouchableOpacity
@@ -66,6 +85,14 @@ function FloorSelector(props) {
           <IconButton icon="keyboard-backspace" />
           <RenderTowerBox towerId={towerId} label={towerLabel} active />
         </TouchableOpacity>
+        {/* <OpacityButton
+          opacity={0.1}
+          color="#4872f4"
+          onPress={() => toggleFloors()}>
+          <Text style={{color: '#4872f4'}}>
+            {openAll ? 'Close Floors' : 'Open Floors'}
+          </Text>
+        </OpacityButton> */}
       </View>
 
       {/* {handleBhkChange ? (
@@ -123,8 +150,13 @@ function FloorSelector(props) {
                 selectedFloor={selectedFloor}
                 index={index}
               />
-              {selectedFloor === floorId
-                ? renderUnits({structureType, floorId, floor_id, index})
+              {selectedFloor?.includes(floorId)
+                ? renderUnits({
+                    structureType,
+                    floorId,
+                    floor_id,
+                    index,
+                  })
                 : null}
             </>
           );

@@ -22,6 +22,7 @@ function SelectFloor(props) {
 
   const {selectedProject} = useSelector(s => s.project);
   const {floorList} = useSelector(s => s.projectStructure);
+  const {loading} = useSelector(s => s.sales);
 
   const [selectedBhk, setSelectedBhk] = React.useState();
 
@@ -66,6 +67,7 @@ function SelectFloor(props) {
       selectedBhk={selectedBhk}
       renderUnits={renderUnits}
       handleBhkChange={setSelectedBhk}
+      loadingUnitStatus={loading}
     />
   );
 }

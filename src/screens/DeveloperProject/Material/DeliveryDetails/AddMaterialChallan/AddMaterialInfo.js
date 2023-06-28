@@ -227,7 +227,7 @@ function MaterialForm(props) {
 
         <View style={styles.attachmentContainer}>
           <View>
-            <Text style={styles.attachmentHeading}>Attachment </Text>
+            <Text style={styles.attachmentHeading}>Upload material image</Text>
             <OpacityButton
               onPress={handleUpload}
               opacity={0.1}
@@ -242,7 +242,9 @@ function MaterialForm(props) {
                 handleDelete={i => handleDelete(i)}
               />
             ) : null}
-            <Text style={styles.damageAttachment}>Attachment</Text>
+            <Text style={styles.damageAttachment}>
+              Upload damage material image
+            </Text>
             <OpacityButton
               onPress={handleUploadDamage}
               opacity={0.1}

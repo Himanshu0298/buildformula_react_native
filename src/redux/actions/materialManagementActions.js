@@ -40,6 +40,7 @@ export default function useMaterialManagementActions() {
     getIndentDetails,
     AddPR,
     addDirectGRNVehicleInfo,
+    addDirectGRNFirst,
     deleteChallan,
     deleteIssue,
     addIssueRequest,
@@ -459,7 +460,7 @@ export default function useMaterialManagementActions() {
         type: types.UPDATE_STORE_KEEPER_STATUS,
         payload: async () => {
           try {
-            const response = _res(await updateStoreKeeperStatus(formData));
+            const response = _res(await addDirectGRNFirst(formData));
             const {data} = response;
 
             return Promise.resolve(data);
