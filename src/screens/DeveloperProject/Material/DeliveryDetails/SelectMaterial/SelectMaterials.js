@@ -100,7 +100,6 @@ function SelectMaterials(props) {
       </Subheading>
       <HeaderTitle />
       <Spinner visible={loading} textContent="" />
-      <Text>122</Text>
       <FlatList
         data={selectedMaterialChallan}
         extraData={selectedMaterialChallan}

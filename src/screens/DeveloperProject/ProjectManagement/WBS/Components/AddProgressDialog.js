@@ -15,11 +15,12 @@ import {useImagePicker} from 'hooks';
 
 const schema = Yup.object().shape({
   percentage: Yup.number('Required').required('Required'),
-  quantity: Yup.number('Required').required('Required'),
+  // .moreThan(Yup.ref('percentage')),
+  // quantity: Yup.number('Required').required('Required'),
 });
 
 const RenderAttachments = props => {
-  const {attachments, handleDelete} = props;
+  const {attachments, handleDelete, progressReport} = props;
 
   return (
     <View>
@@ -97,7 +98,7 @@ function ModalContent(props) {
             error={errors.percentage}
             keyboardType="numeric"
           />
-          <RenderInput
+          {/* <RenderInput
             name="quantity"
             label="Quantity Completed"
             numberOfLines={3}
@@ -107,7 +108,7 @@ function ModalContent(props) {
             onBlur={handleBlur('quantity')}
             error={errors.quantity}
             keyboardType="numeric"
-          />
+          /> */}
           <RenderTextBox
             name="remark"
             label="Remark"
@@ -144,13 +145,19 @@ function ModalContent(props) {
 }
 
 const AddProgressModal = props => {
-  const {handleSubmit, path} = props;
+  const {handleSubmit, path, progressReport} = props;
+
+  const {percentage_completed, remarks} = progressReport || {};
 
   return (
     <Formik
       validateOnBlur={false}
       validateOnChange={false}
-      initialValues={{}}
+      enableReinitialize
+      initialValues={{
+        percentage: percentage_completed,
+        remark: remarks,
+      }}
       validationSchema={schema}
       onSubmit={handleSubmit}>
       {formikProps => (
