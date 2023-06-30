@@ -98,10 +98,31 @@ function ChallanForm(props) {
     setFieldValue('vehicleAttachments', values.vehicleAttachments);
   };
 
+  const handleUploadDamage = () => {
+    openImagePicker({
+      type: 'file',
+      onChoose: file => {
+        if (file.uri) {
+          const attachments = values.vehicleInvoiceAttachments || [];
+          attachments.push(file);
+          setFieldValue('vehicleInvoiceAttachments', attachments);
+        }
+      },
+    });
+  };
+
+  const handleDeleteDamage = i => {
+    values.vehicleInvoiceAttachments.splice(i, 1);
+    setFieldValue(
+      'vehicleInvoiceAttachments',
+      values.vehicleInvoiceAttachments,
+    );
+  };
+
   return (
     <>
       <View style={styles.headerContainer}>
-        <Header title="Vehicle Info" {...props} />
+        <Header title="Vehicle Info " {...props} />
         <Pagination title="Page 3 of 3" />
       </View>
       <KeyboardAwareScrollView
@@ -159,6 +180,26 @@ function ChallanForm(props) {
                 handleDelete={i => handleDelete(i)}
               />
             ) : null}
+
+            <View>
+              <Text style={{color: theme.colors.red}}>
+                Upload Invoice Vehicle Image
+              </Text>
+              <OpacityButton
+                onPress={handleUploadDamage}
+                opacity={0.1}
+                style={styles.uploadInvoiceButton}
+                color="#fff">
+                <Text style={{color: theme.colors.red}}>Upload File</Text>
+              </OpacityButton>
+              <RenderError error={errors.vehicleInvoiceAttachments} />
+            </View>
+            {values.vehicleInvoiceAttachments?.length ? (
+              <RenderAttachments
+                attachments={values.vehicleInvoiceAttachments}
+                handleDelete={i => handleDeleteDamage(i)}
+              />
+            ) : null}
           </View>
           <ActionButtons
             onSubmit={handleSubmit}
@@ -180,9 +221,12 @@ const AddVehicleInfo = props => {
     materialAttachments,
     challan,
     materials,
-    orderNumber,
+    material_order_no: orderNumber,
     item: vehicleInfo,
+    delivery_date,
   } = route?.params || {};
+
+  console.log('===========>route?.params ', route?.params);
 
   const edit = Boolean(vehicleInfo);
 
@@ -245,10 +289,15 @@ const AddVehicleInfo = props => {
       formData.append('vehicle_images[]', item);
       return item;
     });
+    values?.vehicleInvoiceAttachments?.map(item => {
+      formData.append('upload_vehicle_invoice_images[]', item);
+      return item;
+    });
 
     formData.append('project_id', selectedProject.id);
     formData.append('material_order_no', orderNumber);
     formData.append('challan_no', challan);
+    formData.append('delivery_date', delivery_date);
     formData.append('driver_name', values.driverName);
     formData.append('materials', JSON.stringify(materialData));
     formData.append('vehicle_number', values.vehicleNo);
@@ -295,6 +344,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 5,
     borderColor: theme.colors.primary,
+    padding: 10,
+    marginVertical: 10,
+  },
+  uploadInvoiceButton: {
+    borderWidth: 1,
+    borderRadius: 5,
+    borderColor: theme.colors.red,
     padding: 10,
     marginVertical: 10,
   },
@@ -350,6 +406,11 @@ const styles = StyleSheet.create({
   },
   contentContainerStyle: {
     flexGrow: 1,
+  },
+
+  damageAttachment: {
+    color: theme.colors.red,
+    marginTop: 10,
   },
 });
 

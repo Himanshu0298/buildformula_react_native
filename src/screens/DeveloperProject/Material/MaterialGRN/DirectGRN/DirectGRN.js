@@ -13,13 +13,23 @@ import NoResult from 'components/Atoms/NoResult';
 import {Caption, Searchbar, FAB} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
+import {MODIFY_REQUEST_STATUS} from 'utils/constant';
 
 const renderEmpty = () => <NoResult />;
 
 const OrderCard = props => {
   const {navigation, item} = props;
 
-  const {id, delivery_date, created, first_name, last_name} = item;
+  const {
+    id,
+    delivery_date,
+    created,
+    first_name,
+    last_name,
+    company_name,
+    supplier_name,
+    challan_status,
+  } = item;
 
   const handleNav = () => {
     navigation.navigate('DirectGRNPreview', {id});
@@ -30,6 +40,15 @@ const OrderCard = props => {
       <View style={styles.bodyContent}>
         <View style={styles.idBox}>
           <Text style={{color: theme.colors.primary}}>{id}</Text>
+        </View>
+        <View style={styles.row}>
+          <Caption>Status: </Caption>
+          <Text
+            style={{
+              color: MODIFY_REQUEST_STATUS[item.challan_status]?.color,
+            }}>
+            {challan_status}
+          </Text>
         </View>
         <View style={styles.row}>
           <Caption>GRN Date: </Caption>
@@ -44,6 +63,14 @@ const OrderCard = props => {
         <View style={styles.row}>
           <Caption>Created Date: </Caption>
           <Text>{created}</Text>
+        </View>
+        <View style={styles.row}>
+          <Caption>Company Name: </Caption>
+          <Text>{company_name}</Text>
+        </View>
+        <View style={styles.row}>
+          <Caption>Supplier Name: </Caption>
+          <Text>{supplier_name}</Text>
         </View>
       </View>
     </TouchableOpacity>

@@ -4,7 +4,7 @@ import {StyleSheet} from 'react-native';
 import {Divider, IconButton, Menu} from 'react-native-paper';
 
 function MenuDialog(props) {
-  const {onDelete, onUpdate} = props;
+  const {onDelete, onUpdate, onUpdateStatus} = props;
 
   const [versionMenu, setVersionMenu] = React.useState(false);
 
@@ -21,7 +21,7 @@ function MenuDialog(props) {
           toggleVersionMenu();
           onUpdate();
         }}
-        title="Edit"
+        title="Edit "
       />
       <Divider />
       <Menu.Item
@@ -31,6 +31,14 @@ function MenuDialog(props) {
         }}
         title="Delete"
       />
+      {/* <Divider />
+      <Menu.Item
+        onPress={() => {
+          toggleVersionMenu();
+          onUpdateStatus();
+        }}
+        title="update Status"
+      /> */}
       <Divider />
     </Menu>
   );

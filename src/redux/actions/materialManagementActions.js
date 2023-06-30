@@ -457,10 +457,43 @@ export default function useMaterialManagementActions() {
 
     addDirectGRN: formData =>
       dispatch({
-        type: types.UPDATE_STORE_KEEPER_STATUS,
+        type: types.ADD_DIRECT_GRN,
         payload: async () => {
           try {
             const response = _res(await addDirectGRNFirst(formData));
+
+            return Promise.resolve(response);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    addDirectGRNMaterialInfo: formData =>
+      dispatch({
+        type: types.ADD_DIRECT_GRN_MATERIAL_INFO,
+        payload: async () => {
+          try {
+            const response = _res(await addDirectGRNMaterialInfo(formData));
+
+            const {data} = response;
+
+            return Promise.resolve(data);
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    addDirectGRNVehicleInfo: formData =>
+      dispatch({
+        type: types.ADD_DIRECT_GRN_VEHICLE_INFO,
+        payload: async () => {
+          try {
+            const response = _res(await addDirectGRNVehicleInfo(formData));
+
             const {data} = response;
 
             return Promise.resolve(data);

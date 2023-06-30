@@ -108,7 +108,7 @@ const MaterialDetailsForm = props => {
 
   const errors = allErrors?.materials?.[index] || {};
 
-  const {id, quantity, damaged} = item;
+  const {id, quantity, damaged, missing_qty} = item;
 
   const materialData = useMemo(() => {
     return selectedMaterialChallan?.find(i => i.id === id);
@@ -154,6 +154,17 @@ const MaterialDetailsForm = props => {
             value={damaged}
             onChangeText={v => updateMaterialItem('damaged', v)}
             error={errors.damaged}
+            keyboardType="numeric"
+          />
+        </View>
+        <View style={styles.renderInputContainer}>
+          <RenderInput
+            name="missing_qty"
+            label="Missing Q."
+            containerStyles={styles.input}
+            value={missing_qty}
+            onChangeText={v => updateMaterialItem('missing_qty', v)}
+            error={errors.missing_qty}
             keyboardType="numeric"
           />
         </View>
@@ -275,6 +286,7 @@ function MaterialForm(props) {
 const AddMaterialInfo = props => {
   const {navigation, route} = props;
   const {selectedMaterial} = route?.params || {};
+
   const {selectedMaterialChallan} = useSelector(s => s.materialManagement);
 
   const navToStepFour = values => {

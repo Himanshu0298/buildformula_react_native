@@ -26,7 +26,7 @@ const RenderRow = props => {
 };
 
 function ChallanSection(props) {
-  const {item, onDelete, navigation, orderNumber} = props;
+  const {item, onDelete, navigation, orderNumber, updateStatus} = props;
 
   const {created} = item;
 
@@ -48,7 +48,11 @@ function ChallanSection(props) {
             value: dayjs(created).format('DD MMM YYYY'),
           }}
         />
-        <MenuDialog onUpdate={onUpdate} onDelete={() => onDelete(materialId)} />
+        <MenuDialog
+          onUpdate={onUpdate}
+          onDelete={() => onDelete(materialId)}
+          onUpdateStatus={updateStatus}
+        />
       </View>
     </View>
   );
@@ -87,9 +91,18 @@ const Updated = props => {
 };
 
 const Details = props => {
-  const {navigation, materialOrderNo, materialChallanList} = props;
+  const {
+    navigation,
+    materialOrderNo,
+    materialChallanList,
+    finalized_amount,
+    materialId,
+  } = props;
   const {damaged_quentity, delivered_quentity, total_quentity, remaining} =
-    materialChallanList.infoData;
+    materialChallanList?.infoData || {};
+
+  const {company_name, supplier_name, crated} =
+    materialChallanList.workorder || {};
 
   return (
     <View style={styles.orderedContainer}>
@@ -110,12 +123,13 @@ const Details = props => {
           item={{label: 'Remaining', value: remaining}}
           containerStyle={styles.orderedListValue}
         />
+
         <OpacityButton
           opacity={0.1}
           color={theme.colors.primary}
           style={styles.button}
           onPress={() =>
-            navigation.navigate('MaterialList', {materialOrderNo})
+            navigation.navigate('MaterialList', {materialOrderNo, materialId})
           }>
           <MaterialCommunityIcons
             name="chevron-right"
@@ -124,12 +138,34 @@ const Details = props => {
           />
         </OpacityButton>
       </View>
+      <View style={styles.orderedList}>
+        <Caption> Company Name: </Caption>
+        <Text>{company_name} </Text>
+      </View>
+      <View style={styles.orderedList}>
+        <Caption> Supplier Name: </Caption>
+        <Text>{supplier_name} </Text>
+      </View>
+      <View style={styles.orderedList}>
+        <Caption> Finalize Amount: </Caption>
+        <Text>{finalized_amount} </Text>
+      </View>
+      <View style={styles.orderedList}>
+        <Caption> PO Date: </Caption>
+        <Text>{crated} </Text>
+      </View>
     </View>
   );
 };
 
 function CommonCard(props) {
-  const {navigation, materialOrderNo: orderNumber, item, onDelete} = props;
+  const {
+    navigation,
+    materialOrderNo: orderNumber,
+    item,
+    onDelete,
+    updateStatus,
+  } = props;
 
   return (
     <View style={styles.commonCard}>
@@ -138,6 +174,7 @@ function CommonCard(props) {
         onDelete={onDelete}
         navigation={navigation}
         orderNumber={orderNumber}
+        updateStatus={updateStatus}
       />
       <Created item={item} />
       <Divider style={styles.divider} />
@@ -169,16 +206,17 @@ function CommonCard(props) {
 function OrderDetail(props) {
   const {navigation, route} = props;
 
-  const {material_order_no, materialId} = route?.params || {};
+  const {material_order_no, materialId, finalized_amount} = route?.params || {};
 
-  const {getMaterialChallanList, deleteChallan} =
+  const {getMaterialChallanList, deleteChallan, updateDirectGRNStatus} =
     useMaterialManagementActions();
   const {materialChallanList, materialOrderList, loading} = useSelector(
     s => s.materialManagement,
   );
 
   const materialDeliveryChallan =
-    materialChallanList.infoData?.material_delivery_challan;
+    materialChallanList?.infoData?.material_delivery_challan || [];
+
   const {selectedProject} = useSelector(s => s.project);
 
   const project_id = selectedProject?.id;
@@ -213,6 +251,16 @@ function OrderDetail(props) {
       },
     });
   };
+
+  const updateStatus = async status => {
+    const restData = {
+      project_id: selectedProject.id,
+      challan_id: materialId,
+      status,
+    };
+    await updateDirectGRNStatus(restData);
+    getList();
+  };
   return (
     <View style={styles.headerContainer}>
       <Header title={`PO ID : ${material_order_no}`} {...props} />
@@ -220,6 +268,8 @@ function OrderDetail(props) {
         {...props}
         materialOrderNo={material_order_no}
         materialChallanList={materialChallanList}
+        finalized_amount={finalized_amount}
+        materialId={materialId}
         summaryData={selectedMaterial?.summary || []}
       />
       <Spinner visible={loading} textContent="" />
@@ -249,6 +299,7 @@ function OrderDetail(props) {
               challanList={materialOrderList}
               materialOrderNo={material_order_no}
               onDelete={onDelete}
+              updateStatus={updateStatus}
             />
           );
         })}
@@ -278,7 +329,6 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   orderedContainer: {
-    flexDirection: 'row',
     paddingHorizontal: 10,
     marginTop: 10,
     backgroundColor: '#fff',
@@ -334,5 +384,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingTop: 15,
     flex: 1,
+  },
+
+  orderedList: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 });

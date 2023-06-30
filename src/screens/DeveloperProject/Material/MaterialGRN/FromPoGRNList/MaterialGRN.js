@@ -24,6 +24,7 @@ function OrderCard(props) {
     supplier_name,
     percentage,
     finalized_amount,
+    grnids,
   } = item;
 
   const progressBar = Math.round(percentage) / 100;
@@ -31,7 +32,11 @@ function OrderCard(props) {
   const materialId = Number(material_request_id || materialrequestid);
 
   const handleNav = () => {
-    navigation.navigate('OrderDetail', {material_order_no, materialId});
+    navigation.navigate('OrderDetail', {
+      material_order_no,
+      materialId,
+      finalized_amount,
+    });
   };
 
   return (
@@ -44,10 +49,14 @@ function OrderCard(props) {
           <Text>{`₹ ${finalized_amount || 0}`}</Text>
         </View>
       </View>
+      <View style={{flexDirection: 'row'}}>
+        <Text>GRN Id: </Text>
+        <Text>{grnids}</Text>
+      </View>
       <View style={styles.bodyContent}>
         <View style={styles.detailsBox}>
           <Text style={styles.companyName}>{company_name}</Text>
-          <View />
+
           <View style={styles.cardHeader}>
             <Text style={styles.supplierName}>{supplier_name}</Text>
             <Text>{`${percentage} %`}</Text>

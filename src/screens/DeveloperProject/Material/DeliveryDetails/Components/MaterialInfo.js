@@ -155,7 +155,7 @@ const MaterialInfo = props => {
   const {loading} = useSelector(s => s.materialManagement);
   return (
     <View style={styles.container}>
-      <Subheading>Material Info</Subheading>
+      <Subheading>Material Info </Subheading>
       <Spinner visible={loading} textContent="" />
 
       {materials?.map(item => {
@@ -174,9 +174,8 @@ const MaterialInfo = props => {
                 style={{
                   color: theme.colors.primary,
                 }}>
-                {/* {item.sub_category_title && item.work_units_title */}
                 {item.sub_category_title
-                  ? ` ${item.sub_category_title} ${item.work_units_title}`
+                  ? ` ${item.sub_category_title}  ${item.work_units_title}`
                   : ' NA'}
               </Text>
             </View>
