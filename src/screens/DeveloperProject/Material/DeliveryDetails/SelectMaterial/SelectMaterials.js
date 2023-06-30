@@ -39,7 +39,7 @@ const MaterialData = props => {
 
 function SelectMaterials(props) {
   const {navigation, route} = props;
-  const {orderNumber} = route?.params || {};
+  const {material_order_no: orderNumber} = route?.params || {};
 
   const snackbar = useSnackbar();
   const {getSelectMaterialChallan} = useMaterialManagementActions();

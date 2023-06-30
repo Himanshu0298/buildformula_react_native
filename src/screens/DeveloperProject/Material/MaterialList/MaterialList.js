@@ -5,7 +5,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import {Text, Divider, Caption} from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector} from 'react-redux';
-import useMaterialManagement from 'services/materialManagement';
+import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 import {theme} from 'styles/theme';
 import {getShadow} from 'utils';
 import Header from '../CommonComponents/Header';
@@ -25,7 +25,8 @@ const RenderRow = props => {
 const Quantity = props => {
   const {materialChallanList} = props;
   const {damaged_quentity, delivered_quentity, total_quentity, remaining} =
-    materialChallanList;
+    materialChallanList.infoData;
+
   return (
     <View style={styles.quantityContainer}>
       <Text>Quantity</Text>
@@ -80,12 +81,19 @@ const DetailsCard = props => {
 };
 
 const MaterialList = props => {
-  const {getSelectMaterialChallan} = useMaterialManagement();
+  const {route} = props;
+  const {materialId, materialOrderNo} = route?.params || {};
 
-  const {materialChallanList} = useSelector(s => s.materialManagement);
+  const {getSelectMaterialChallan} = useMaterialManagementActions();
+
+  const {materialChallanList, selectedMaterialChallan} = useSelector(
+    s => s.materialManagement,
+  );
   const {selectedProject} = useSelector(s => s.project);
 
-  const [materialList, setMaterialList] = useState([]);
+  const [materialList, setMaterialList] = useState(
+    selectedMaterialChallan || [],
+  );
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -93,28 +101,34 @@ const MaterialList = props => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [materialChallanList]);
 
-  const loadData = async () => {
-    setLoading(true);
-    const resList = await Promise.all(
-      materialChallanList?.material_delivery_challan?.map(async i => {
-        const {data} = await getSelectMaterialChallan({
-          project_id: selectedProject.id,
-          material_request_id: i.id,
-        });
+  // const loadData = async () => {
+  //   const resList = await Promise.all(
+  //     materialChallanList?.workData.material_delivery_challan?.map(async i => {
+  //       const {data} = await getSelectMaterialChallan({
+  //         project_id: selectedProject.id,
+  //         material_request_id: materialId,
+  //         material_order_no: materialOrderNo,
+  //       });
 
-        return data?.data || [];
-      }),
-    );
+  //       return data?.data || [];
+  //     }),
+  //   );
 
-    setMaterialList(resList.flat());
-    setLoading(false);
-  };
+  //   setMaterialList(resList.flat());
+  //   setLoading(false);
+  // };
 
+  const loadData = () =>
+    getSelectMaterialChallan({
+      project_id: selectedProject.id,
+      material_request_id: materialId,
+      material_order_no: materialOrderNo,
+    });
   const renderEmpty = () => <NoResult />;
 
   return (
     <View style={styles.materialContainer}>
-      <Header title="List" {...props} />
+      <Header title="List " {...props} />
       <Spinner visible={loading} textContent="" />
       <FlatList
         data={materialList}

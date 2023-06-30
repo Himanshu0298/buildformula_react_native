@@ -283,9 +283,12 @@ const AddDirectGRN = props => {
     formData.append('supplier', values.supplier);
     formData.append('file_upload', values.attachments);
 
-    const {value} = await addDirectGRN(formData);
+    const res = await addDirectGRN(formData);
+
+    const data = res.action.payload;
+
     navigation.navigate('DirectGRNChallanMaterial', {
-      challan_id: challan_id || value?.challan_id,
+      challan_id: challan_id || data?.challan_id,
       edit,
       challan_number: values.challan,
     });

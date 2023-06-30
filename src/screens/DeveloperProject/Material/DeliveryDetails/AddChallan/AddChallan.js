@@ -11,6 +11,8 @@ import FileIcon from 'assets/images/file_icon.png';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useImagePicker} from 'hooks';
 import ActionButtons from 'components/Atoms/ActionButtons';
+import RenderDatePicker from 'components/Atoms/RenderDatePicker';
+import dayjs from 'dayjs';
 import Header from '../../CommonComponents/Header';
 import Pagination from '../../CommonComponents/Pagination';
 
@@ -95,7 +97,7 @@ function ChallanForm(props) {
     <>
       <View style={styles.headerContainer}>
         <Header title="Challan Info" {...props} />
-        <Pagination title="Page 1 of 3" />
+        <Pagination title="Page 1 of 3 " />
       </View>
       <KeyboardAwareScrollView
         contentContainerStyle={styles.contentContainerStyle}>
@@ -110,6 +112,20 @@ function ChallanForm(props) {
               onChangeText={handleChange('challan')}
               onBlur={handleBlur('challan')}
               error={errors.challan}
+            />
+
+            <RenderDatePicker
+              name="delivery_date"
+              label="Delivery Date"
+              value={values.delivery_date}
+              containerStyles={styles.input}
+              onChange={value => {
+                setFieldValue(
+                  'delivery_date',
+                  dayjs(value).format('YYYY-MM-DD'),
+                );
+              }}
+              error={errors.delivery_date}
             />
             <View>
               <Text style={{color: theme.colors.primary}}>Attachment</Text>
