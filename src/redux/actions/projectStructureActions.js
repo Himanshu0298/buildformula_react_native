@@ -378,6 +378,7 @@ export default function useProjectStructureActions() {
         payload: async () => {
           try {
             const response = _res(await updateTower(params));
+            snackbar.showMessage({message: response.msg});
             return Promise.resolve(response.data);
           } catch (error) {
             const message = _err(error);

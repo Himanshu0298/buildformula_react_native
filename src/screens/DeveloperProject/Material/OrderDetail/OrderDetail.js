@@ -69,6 +69,7 @@ const Created = props => {
     </View>
   );
 };
+
 const Updated = props => {
   const {item} = props;
 
@@ -88,7 +89,7 @@ const Updated = props => {
 const Details = props => {
   const {navigation, materialOrderNo, materialChallanList} = props;
   const {damaged_quentity, delivered_quentity, total_quentity, remaining} =
-    materialChallanList;
+    materialChallanList.infoData;
 
   return (
     <View style={styles.orderedContainer}>
@@ -177,7 +178,7 @@ function OrderDetail(props) {
   );
 
   const materialDeliveryChallan =
-    materialChallanList?.material_delivery_challan;
+    materialChallanList.infoData?.material_delivery_challan;
   const {selectedProject} = useSelector(s => s.project);
 
   const project_id = selectedProject?.id;

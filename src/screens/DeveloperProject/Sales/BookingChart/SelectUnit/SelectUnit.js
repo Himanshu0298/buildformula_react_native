@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {useSelector} from 'react-redux';
 import useSalesActions from 'redux/actions/salesActions';
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -40,6 +40,10 @@ export const SelectUnit = props => {
   const loading = useSalesLoading();
 
   const [selectedUnit, setSelectedUnit] = useState();
+
+  const unitListing = useMemo(() => {
+    return unitStatusListing[floor_id] || [];
+  }, [floor_id, unitStatusListing]);
 
   useEffect(() => {
     fetchUnitsBookingStatus();
@@ -142,9 +146,9 @@ export const SelectUnit = props => {
 
       <UnitSelector
         {...props}
-        refreshing={unitStatusListing.length > 0 && loading}
+        refreshing={unitListing.length > 0 && loading}
         floorNumber={floor}
-        units={unitStatusListing}
+        units={unitListing}
         showBhkFilters={showBhkFilters}
         displayHeader={displayHeader}
         floorType={structureType || selectedStructure}

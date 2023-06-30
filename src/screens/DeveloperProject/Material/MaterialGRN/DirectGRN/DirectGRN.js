@@ -73,7 +73,7 @@ const DirectGRN = props => {
 
   const filteredUsers = useMemo(() => {
     const query = searchQuery.toLowerCase();
-    return directGRNList.filter(
+    return directGRNList?.infoData?.filter(
       i =>
         i?.first_name?.toLowerCase().includes(query) ||
         i?.last_name?.toLowerCase().includes(query),

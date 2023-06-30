@@ -22,8 +22,8 @@ const schema = Yup.object().shape({
       damaged: Yup.number('Required').required('Required'),
     }),
   ),
-  materialAttachments: Yup.mixed().required('File is required'),
-  damageAttachments: Yup.mixed().required('File is required'),
+  // materialAttachments: Yup.mixed().required('File is required'),
+  // damageAttachments: Yup.mixed().required('File is required'),
 });
 
 const RenderDamageAttachments = props => {

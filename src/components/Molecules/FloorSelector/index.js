@@ -52,19 +52,19 @@ function FloorSelector(props) {
     loadingUnitStatus,
   } = props || {};
 
-  // const floorIdList = useMemo(() => {
-  //   return floors?.map(e => e.id);
-  // }, [floors]);
+  const floorIdList = useMemo(() => {
+    return floors?.map(e => e.id);
+  }, [floors]);
 
   const [selectedFloor, setSelectedFloor] = useState([]);
 
-  // const [openAll, setOpenAll] = useState(false);
+  const [openAll, setOpenAll] = useState(false);
 
-  // const toggleFloors = async () => {
-  //   setOpenAll(!openAll);
-  //   // eslint-disable-next-line no-unused-expressions
-  //   !openAll ? setSelectedFloor(floorIdList) : setSelectedFloor([]);
-  // };
+  const toggleFloors = async () => {
+    setOpenAll(!openAll);
+    // eslint-disable-next-line no-unused-expressions
+    !openAll ? setSelectedFloor(floorIdList) : setSelectedFloor([]);
+  };
 
   const onSelectFloor = floorId => {
     // eslint-disable-next-line no-unused-expressions
@@ -85,14 +85,14 @@ function FloorSelector(props) {
           <IconButton icon="keyboard-backspace" />
           <RenderTowerBox towerId={towerId} label={towerLabel} active />
         </TouchableOpacity>
-        {/* <OpacityButton
+        <OpacityButton
           opacity={0.1}
           color="#4872f4"
           onPress={() => toggleFloors()}>
           <Text style={{color: '#4872f4'}}>
             {openAll ? 'Close Floors' : 'Open Floors'}
           </Text>
-        </OpacityButton> */}
+        </OpacityButton>
       </View>
 
       {/* {handleBhkChange ? (
