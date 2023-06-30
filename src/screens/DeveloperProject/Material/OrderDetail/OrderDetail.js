@@ -69,6 +69,7 @@ const Created = props => {
     </View>
   );
 };
+
 const Updated = props => {
   const {item} = props;
 
