@@ -190,7 +190,11 @@ function Login(props) {
       <Formik
         validateOnBlur={false}
         validateOnChange={false}
-        initialValues={{}}
+        initialValues={
+          __DEV__
+            ? {email: 'himanhunanikwal@gmail.com', password: 'Officer@123'}
+            : {}
+        }
         validationSchema={schema}
         onSubmit={onSubmit}>
         {({handleChange, values, handleSubmit, handleBlur, errors}) => (

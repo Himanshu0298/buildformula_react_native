@@ -281,7 +281,10 @@ const AddDirectGRN = props => {
     formData.append('delivery_date', values.delivery_date);
     formData.append('company', values.company);
     formData.append('supplier', values.supplier);
-    formData.append('file_upload', values.attachments);
+
+    if (values.attachments) {
+      formData.append('file_upload', values.attachments);
+    }
 
     const res = await addDirectGRN(formData);
 

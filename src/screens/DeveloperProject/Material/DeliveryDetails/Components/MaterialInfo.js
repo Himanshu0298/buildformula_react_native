@@ -20,9 +20,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import {useSelector} from 'react-redux';
 import FileIcon from 'assets/images/file_icon.png';
 import NoResult from 'components/Atoms/NoResult';
-import {useDownload} from 'components/Atoms/Download';
-import FileViewer from 'react-native-file-viewer';
-import {getDownloadUrl} from 'utils/download';
+
 import ReactNativeBlobUtil from 'react-native-blob-util';
 
 const RenderImage = ({item, index, type}) => {
@@ -30,28 +28,6 @@ const RenderImage = ({item, index, type}) => {
     type === 'normal'
       ? `Material image ${index + 1}`
       : `Damaged image ${index + 1}`;
-
-  // const download = useDownload();
-
-  // const getFileName = url => {
-  //   const lastSlashIndex = url.lastIndexOf('/');
-  //   return url.substring(lastSlashIndex + 1);
-  // };
-
-  // const onPressFile = async fileUrl => {
-  //   const url = getDownloadUrl(fileUrl.image_url);
-
-  //   const name = getFileName(fileUrl.image_url);
-
-  //   download.link({
-  //     name,
-  //     link: url,
-  //     showAction: false,
-  //     onFinish: ({dir}) => {
-  //       FileViewer.open(`file://${dir}`);
-  //     },
-  //   });
-  // };
 
   const downloadFile = image => {
     const imgUrl = image.image_url;
@@ -139,11 +115,9 @@ const MaterialData = props => {
     <View style={styles.quantityContainer}>
       <View style={styles.itemContainer}>
         <RenderRow item={{label: 'LOM: ', value: item.lomtitle}} />
-        <RenderRow
-          item={{label: 'Delivered Qantity: ', value: item.quantity}}
-        />
-        <RenderRow item={{label: 'Damage Qantity: ', value: item.damage}} />
-        <RenderRow item={{label: 'Missing Qantity: ', value: item.missing}} />
+        <RenderRow item={{label: 'Received Qty: ', value: item.quantity}} />
+        <RenderRow item={{label: 'Damage Qty: ', value: item.damage}} />
+        <RenderRow item={{label: 'Missing Qty: ', value: item.missing}} />
       </View>
     </View>
   );

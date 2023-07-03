@@ -120,13 +120,25 @@ export default function useMaterialManagement() {
     },
 
     addDirectGRNFirst: data => {
-      return instance.post('/material/directgrnadd_first', data, params);
+      return instance.post(
+        '/material/directgrnadd_first',
+        data,
+        config({multipart: true}),
+      );
     },
     addDirectGRNMaterialInfo: data => {
-      return instance.post('/material/directgrnadd_second', data, params);
+      return instance.post(
+        '/material/directgrnadd_second',
+        data,
+        config({multipart: true}),
+      );
     },
     addDirectGRNVehicleInfo: data => {
-      return instance.post('/material/directgrnaddedit_third', data, params);
+      return instance.post(
+        '/material/directgrnaddedit_third',
+        data,
+        config({multipart: true}),
+      );
     },
 
     // Material Indent
