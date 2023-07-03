@@ -19,7 +19,7 @@
   "dependencies": {
     "@expo/react-native-action-sheet": "^3.13.0",
     "@react-native-async-storage/async-storage": "^1.15.15",
-    "@react-native-community/datetimepicker": "^6.1.3",
+    "@react-native-community/datetimepicker": "^7.3.0",
     "@react-native-community/hooks": "^2.8.1",
     "@react-native-community/masked-view": "^0.1.11",
     "@react-native-community/netinfo": "^9.3.0",
@@ -46,7 +46,7 @@
     "prop-types": "^15.8.1",
     "react": "17.0.2",
     "react-i18next": "^11.15.3",
-    "react-native": "0.66.4",
+    "react-native": "^0.66.5",
     "react-native-android-keyboard-adjust": "github:saahiil-pny/react-native-android-keyboard-adjust#feat/typescript-and-autolinking-support",
     "react-native-autogrow-textinput": "^5.4.0",
     "react-native-blob-util": "^0.16.2",
