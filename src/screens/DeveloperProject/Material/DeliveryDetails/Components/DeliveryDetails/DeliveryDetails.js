@@ -11,12 +11,8 @@ import {
 import FileIcon from 'assets/images/file_icon.png';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 import {useSelector} from 'react-redux';
-import NoResult from 'components/Atoms/NoResult';
 import Spinner from 'react-native-loading-spinner-overlay';
-import {useDownload} from 'components/Atoms/Download';
-import FileViewer from 'react-native-file-viewer';
-import {getFileName} from 'utils/constant';
-import {getDownloadUrl} from 'utils/download';
+
 import ReactNativeBlobUtil from 'react-native-blob-util';
 import MaterialInfo from '../MaterialInfo';
 import VehicleInfo from '../VehicleInfo';
@@ -24,22 +20,6 @@ import Header from '../../../CommonComponents/Header';
 
 const Attachments = props => {
   const {challanImages = []} = props;
-
-  const download = useDownload();
-
-  // const onPressFile = async file => {
-  //   const fileUrl = getDownloadUrl(file.challan_image);
-  //   const name = getFileName(file.challan_image);
-  //   download.link({
-  //     name,
-  //     link: fileUrl,
-  //     showAction: false,
-
-  //     onFinish: ({dir}) => {
-  //       FileViewer.open(`file://${dir}`);
-  //     },
-  //   });
-  // };
 
   const downloadFile = image => {
     const imgUrl = image.challan_image;
@@ -76,26 +56,24 @@ const Attachments = props => {
   return (
     <View style={styles.container}>
       <Text style={styles.attachmentsText}>Attachments</Text>
-      {challanImages?.length ? (
-        challanImages?.map((file, index) => {
-          return (
-            <TouchableOpacity
-              style={styles.sectionContainer}
-              onPress={() => downloadFile(file)}>
-              <Image source={FileIcon} style={styles.fileIcon} />
-              <View>
-                <Text
-                  style={[styles.verticalFlex, styles.text]}
-                  numberOfLines={2}>
-                  Challan Image {index + 1}
-                </Text>
-              </View>
-            </TouchableOpacity>
-          );
-        })
-      ) : (
-        <NoResult />
-      )}
+      {challanImages?.length
+        ? challanImages?.map((file, index) => {
+            return (
+              <TouchableOpacity
+                style={styles.sectionContainer}
+                onPress={() => downloadFile(file)}>
+                <Image source={FileIcon} style={styles.fileIcon} />
+                <View>
+                  <Text
+                    style={[styles.verticalFlex, styles.text]}
+                    numberOfLines={2}>
+                    Challan Image {index + 1}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            );
+          })
+        : null}
     </View>
   );
 };
@@ -138,12 +116,16 @@ const DeliverDetails = props => {
           </View>
         ) : null}
         <View>
-          <View style={styles.headerWrap}>
-            <Subheading style={styles.challanHeading}>
-              Challan Images
-            </Subheading>
-          </View>
-          <Attachments challanImages={challan_images} />
+          {challan_images.length ? (
+            <>
+              <View style={styles.headerWrap}>
+                <Subheading style={styles.challanHeading}>
+                  Challan Images
+                </Subheading>
+              </View>
+              <Attachments challanImages={challan_images} />
+            </>
+          ) : null}
         </View>
         <MaterialInfo materialInfo={materila_info} />
         <VehicleInfo

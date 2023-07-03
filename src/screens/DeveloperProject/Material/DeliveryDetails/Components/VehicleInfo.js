@@ -19,22 +19,6 @@ import ReactNativeBlobUtil from 'react-native-blob-util';
 const InvoiceAttachments = props => {
   const {invoiceImages = []} = props;
 
-  const download = useDownload();
-
-  // const onPressFile = async file => {
-  //   const fileUrl = getDownloadUrl(file);
-  //   const name = getFileName(file);
-
-  //   download.link({
-  //     name,
-  //     link: fileUrl,
-  //     showAction: false,
-  //     onFinish: ({dir}) => {
-  //       FileViewer.open(`file://${dir}`);
-  //     },
-  //   });
-  // };
-
   const downloadFile = image => {
     const imgUrl = image.challan_image;
     const newImgUri = imgUrl.lastIndexOf('/');
@@ -95,22 +79,6 @@ const InvoiceAttachments = props => {
 const VehicleImages = props => {
   const {vehicleAttachments = []} = props;
 
-  const download = useDownload();
-
-  // const onPressFile = async file => {
-  //   const fileUrl = getDownloadUrl(file);
-  //   const name = getFileName(file);
-
-  //   download.link({
-  //     name,
-  //     link: fileUrl,
-  //     showAction: false,
-  //     onFinish: ({dir}) => {
-  //       FileViewer.open(`file://${dir}`);
-  //     },
-  //   });
-  // };
-
   const downloadFile = image => {
     const imgUrl = image.image_url;
     const newImgUri = imgUrl.lastIndexOf('/');
@@ -156,8 +124,7 @@ const VehicleImages = props => {
               <Text
                 style={[styles.verticalFlex, styles.text]}
                 numberOfLines={2}>
-                {file?.image_url}
-                {index + 1}
+                Vehicle File {index + 1}
               </Text>
             </View>
           </TouchableOpacity>
@@ -214,7 +181,7 @@ const VehicleInfo = props => {
         {invoiceImages?.length ? (
           <InvoiceAttachments invoiceImages={invoiceImages} />
         ) : null}
-        {vehicleAttachments?.map(item => {
+        {vehicleAttachments?.map((item, index) => {
           return (
             <TouchableOpacity
               style={styles.sectionContainer}
@@ -225,8 +192,7 @@ const VehicleInfo = props => {
                 <Text
                   style={(styles.verticalFlex, styles.text)}
                   numberOfLines={2}>
-                  {/* Vehicle File {index + 1} */}
-                  {item.image_url}
+                  Vehicle File {index + 1}
                 </Text>
               </View>
             </TouchableOpacity>

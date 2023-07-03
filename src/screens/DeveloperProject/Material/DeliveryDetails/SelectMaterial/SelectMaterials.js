@@ -14,8 +14,10 @@ const HeaderTitle = () => {
   return (
     <View style={styles.titleContainer}>
       <Text style={styles.titles}>Catergory</Text>
-      <Text style={styles.titles}>Sub Category</Text>
-      <Text style={styles.titles}>{'    '}Unit</Text>
+      <Text style={styles.titles}>SubCategory</Text>
+      <Text style={styles.titles}>Unit</Text>
+      <Text style={styles.titles}>LOM</Text>
+      <Text style={styles.titles}>Qty</Text>
     </View>
   );
 };
@@ -33,13 +35,15 @@ const MaterialData = props => {
       <Text style={styles.values}>{item.category_title}</Text>
       <Text style={styles.values}>{item.subcategory_title}</Text>
       <Text style={styles.values}>{item.unit_title}</Text>
+      <Text style={styles.values}>{item.lomtitle}</Text>
+      <Text style={styles.values}>{item.material_quantity}</Text>
     </View>
   );
 };
 
 function SelectMaterials(props) {
   const {navigation, route} = props;
-  const {material_order_no: orderNumber} = route?.params || {};
+  const {material_order_no: order_number, orderNumber} = route?.params || {};
 
   const snackbar = useSnackbar();
   const {getSelectMaterialChallan} = useMaterialManagementActions();
@@ -87,7 +91,7 @@ function SelectMaterials(props) {
   const loadOrders = () => {
     getSelectMaterialChallan({
       project_id: selectedProject.id,
-      material_order_no: orderNumber,
+      material_order_no: order_number || orderNumber,
     });
   };
 

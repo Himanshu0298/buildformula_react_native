@@ -171,7 +171,10 @@ function AddChallan(props) {
   }, [item]);
 
   const navToStepTwo = values => {
-    navigation.navigate('SelectMaterials', {...values, ...route.params});
+    navigation.navigate('SelectMaterials', {
+      ...values,
+      ...route.params,
+    });
   };
 
   return (
