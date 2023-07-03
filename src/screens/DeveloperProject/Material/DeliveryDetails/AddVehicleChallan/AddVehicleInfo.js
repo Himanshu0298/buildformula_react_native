@@ -183,7 +183,7 @@ function ChallanForm(props) {
 
             <View>
               <Text style={{color: theme.colors.red}}>
-                Upload Invoice Vehicle Image
+                Upload Invoice Image
               </Text>
               <OpacityButton
                 onPress={handleUploadDamage}

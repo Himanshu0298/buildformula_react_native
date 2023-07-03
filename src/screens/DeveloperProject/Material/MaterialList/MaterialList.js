@@ -11,39 +11,57 @@ import {getShadow} from 'utils';
 import Header from '../CommonComponents/Header';
 
 const RenderRow = props => {
-  const {item} = props;
+  const {item, damage} = props;
   return (
     <View style={styles.renderContainer}>
       <Caption numberOfLines={1} style={styles.label}>
         {item.label}
       </Caption>
-      <Text>{item.value}</Text>
+      <Text style={{color: damage && theme.colors.red}}>{item.value}</Text>
     </View>
   );
 };
 
 const Quantity = props => {
-  const {materialChallanList} = props;
-  const {damaged_quentity, delivered_quentity, total_quentity, remaining} =
-    materialChallanList.infoData;
+  const {materialChallanList, item} = props;
+  const {
+    damaged_quentity,
+    delivered_quentity,
+    total_quentity,
+    remaining,
+    missing_quentity,
+  } = materialChallanList.infoData;
 
   return (
     <View style={styles.quantityContainer}>
       <Text>Quantity</Text>
 
       <View style={styles.itemContainer}>
+        <RenderRow item={{label: 'LOM: ', value: item?.lomtitle}} />
         <RenderRow
-          item={{label: 'Ordered: ', value: total_quentity?.material_quantity}}
+          item={{
+            label: 'Qty Ordered: ',
+            value: total_quentity?.material_quantity,
+          }}
         />
-        <RenderRow item={{label: 'Remaining: ', value: remaining}} />
       </View>
       <View style={styles.itemContainer}>
         <RenderRow
-          item={{label: 'Delivered: ', value: delivered_quentity?.quantity}}
+          item={{label: 'Qty Delivered: ', value: delivered_quentity?.quantity}}
         />
         <RenderRow
-          item={{label: 'Damage: ', value: damaged_quentity?.damage}}
+          item={{label: 'Qty Damage: ', value: damaged_quentity?.damage}}
+          damage
         />
+      </View>
+      <View style={styles.itemContainer}>
+        <RenderRow
+          item={{
+            label: 'Qty Missing: ',
+            value: missing_quentity?.missing,
+          }}
+        />
+        <RenderRow item={{label: 'Qty Remaining: ', value: remaining}} />
       </View>
     </View>
   );

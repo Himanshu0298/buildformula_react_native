@@ -3,16 +3,36 @@ import {Caption, Text, withTheme} from 'react-native-paper';
 import {StyleSheet, View, TouchableOpacity, Image} from 'react-native';
 import FileIcon from 'assets/images/file_icon.png';
 import dayjs from 'dayjs';
+import {getDownloadUrl} from 'utils/download';
+import {getFileName} from 'utils/constant';
+import {useDownload} from 'components/Atoms/Download';
+import FileViewer from 'react-native-file-viewer';
 
 const ProgressCard = props => {
   const {details} = props;
+  const download = useDownload();
   const {
     remarks,
     created,
     file_name,
     percentage_completed,
     quantity_completed,
+    file_url,
   } = details || {};
+
+  const onPressFile = async file => {
+    const fileUrl = getDownloadUrl(file.file_url);
+    const name = getFileName(file.title);
+    download.link({
+      name,
+      link: fileUrl,
+      showAction: false,
+      onFinish: ({dir}) => {
+        FileViewer.open(`file://${dir}`);
+      },
+    });
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.recordContainer}>
@@ -39,12 +59,11 @@ const ProgressCard = props => {
         </View>
         <TouchableOpacity
           style={styles.sectionContainer}
-          // onPress={() => onPressFile(file)}
-        >
+          onPress={() => onPressFile(file_url)}>
           <Image source={FileIcon} style={styles.fileIcon} />
           <View>
             <Text style={(styles.verticalFlex, styles.text)} numberOfLines={2}>
-              {file_name}
+              {file_name || 'Image'}
             </Text>
           </View>
         </TouchableOpacity>
