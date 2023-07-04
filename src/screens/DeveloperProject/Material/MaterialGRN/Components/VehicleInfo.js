@@ -272,6 +272,21 @@ const VehicleInfo = props => {
   const handleSubmit = async values => {
     const formData = new FormData();
 
+    const {attachments, invoiceAttachments} = values;
+
+    if (attachments) {
+      attachments.map(item => {
+        formData.append('upload_vehicle_image', item);
+        return item;
+      });
+    }
+    if (invoiceAttachments) {
+      invoiceAttachments.map(item => {
+        formData.append('upload_invoice_file', item);
+        return item;
+      });
+    }
+
     formData.append('project_id', selectedProject.id);
     formData.append('challan_id', challan_id);
     formData.append('challan_no', challan_number);
@@ -279,8 +294,6 @@ const VehicleInfo = props => {
     formData.append('vehicle_number', values.vehicleNo);
     formData.append('challan_remark', values.remark);
     formData.append('edit_challan_id', challan_id);
-    formData.append('upload_vehicle_image', values.attachments);
-    formData.append('upload_invoice_file', values.invoiceAttachments);
 
     await addDirectGRNVehicleInfo(formData);
     navigation.navigate('DirectGRNPreview', {id: challan_id});

@@ -1,5 +1,5 @@
 import {ScrollView, StyleSheet, View} from 'react-native';
-import React, {useMemo, useState} from 'react';
+import React, {useEffect, useMemo} from 'react';
 import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 import * as Yup from 'yup';
 import {Formik} from 'formik';
@@ -8,7 +8,7 @@ import RenderInput from 'components/Atoms/RenderInput';
 import RenderSelect from 'components/Atoms/RenderSelect';
 import {useSelector} from 'react-redux';
 import Modal from 'react-native-modal';
-import InputSearchDropdown from 'components/Atoms/InputSearchDropdown';
+import {round} from 'lodash';
 import Header from '../../CommonComponents/Header';
 
 const schema = Yup.object().shape({
@@ -25,10 +25,6 @@ function MaterialForm(props) {
     handleChange,
     handleSubmit,
   } = formikProps;
-
-  const [lomSearchText, setLomSearchText] = useState('');
-
-  const setSelectedLom = v => setFieldValue('master_list_of_makes_id', v);
 
   const {materialCategories, materialSubCategories, makeOfLists} = useSelector(
     s => s.materialManagement,
@@ -54,6 +50,14 @@ function MaterialForm(props) {
   const listOfMakesOptions = useMemo(() => {
     return makeOfLists?.map(i => ({label: `${i.title}`, value: i.id}));
   }, [makeOfLists]);
+
+  useEffect(() => {
+    const totalAmount = round(
+      Number(values.material_quantity) * Number(values.rate),
+    );
+    if (!isNaN(totalAmount)) setFieldValue('total_amount', totalAmount);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [values.material_quantity, values.rate]);
 
   const handleSubMaterialChange = value => {
     setFieldValue('material_sub_category_id', value);
@@ -94,25 +98,17 @@ function MaterialForm(props) {
         value={values.material_units_id}
       />
 
-      <InputSearchDropdown
-        placeholder="List of Makes"
+      <RenderSelect
+        name="lom"
+        label="List of Makes"
+        creatable
+        value={values.lom}
         options={listOfMakesOptions}
-        icon={<View />}
-        searchQuery={lomSearchText}
-        selected={values.master_list_of_makes_id}
-        style={styles.search}
-        onSelect={setSelectedLom}
-        onChangeText={setLomSearchText}
-      />
-
-      <RenderInput
-        name="damage_qty"
-        label="Damage Qty"
-        containerStyles={styles.input}
-        value={values.damage_qty}
-        onChangeText={handleChange('damage_qty')}
-        onBlur={handleBlur('damage_qty')}
-        error={errors.damage_qty}
+        containerStyles={styles.inputStyles}
+        onBlur={handleBlur('lom')}
+        onSelect={value => {
+          setFieldValue('lom', value);
+        }}
       />
 
       <RenderInput
@@ -125,6 +121,15 @@ function MaterialForm(props) {
         autoCapitalize="none"
         returnKeyType="next"
         error={errors.material_quantity}
+      />
+      <RenderInput
+        name="damage_qty"
+        label="Damage Qty"
+        containerStyles={styles.input}
+        value={values.damage_qty}
+        onChangeText={handleChange('damage_qty')}
+        onBlur={handleBlur('damage_qty')}
+        error={errors.damage_qty}
       />
 
       <RenderInput
@@ -148,11 +153,9 @@ function MaterialForm(props) {
       <RenderInput
         name="total_amount"
         label="Total Amount"
+        disabled
         containerStyles={styles.input}
         value={values.total_amount}
-        onChangeText={handleChange('total_amount')}
-        onBlur={handleBlur('total_amount')}
-        error={errors.total_amount}
       />
 
       <ActionButtons
@@ -216,7 +219,10 @@ function AddMaterialDialog(props) {
               enableReinitialize
               onSubmit={handleSave}>
               {formikProps => (
-                <MaterialForm {...{formikProps}} handleClose={handleClose} />
+                <MaterialForm
+                  formikProps={formikProps}
+                  handleClose={handleClose}
+                />
               )}
             </Formik>
           </ScrollView>
@@ -241,9 +247,7 @@ const styles = StyleSheet.create({
   input: {
     paddingVertical: 7,
   },
-  search: {
-    marginVertical: 20,
-  },
+
   modal: {
     margin: 0,
     justifyContent: 'flex-start',

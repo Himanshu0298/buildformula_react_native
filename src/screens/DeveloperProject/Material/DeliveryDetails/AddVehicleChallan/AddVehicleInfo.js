@@ -226,8 +226,6 @@ const AddVehicleInfo = props => {
     delivery_date,
   } = route?.params || {};
 
-  console.log('===========>route?.params ', route?.params);
-
   const edit = Boolean(vehicleInfo);
 
   const {loading} = useSelector(s => s.materialManagement);
