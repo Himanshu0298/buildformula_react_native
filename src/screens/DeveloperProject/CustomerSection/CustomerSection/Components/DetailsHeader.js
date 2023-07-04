@@ -22,22 +22,23 @@ function DetailsHeader(props) {
     tower_label,
     floor_id,
     tower_id,
+    bookingDetails,
   } = props;
 
-  const {id, project_unit} = unit || {};
+  const {project_type_label, project_floor, towerLabel, project_unit} =
+    bookingDetails.bookedUnit || {};
+
+  const {id} = unit || {};
 
   return (
     <View style={styles.detailContainer}>
       <View style={styles.detailSubContainer}>
-        {renderDetailText(
-          'Project type',
-          STRUCTURE_TYPE_LABELS[structureType || selectedStructure],
-        )}
-        {renderDetailText('Floor', getFloorNumber(floor_id))}
+        {renderDetailText('Project type', project_type_label)}
+        {renderDetailText('Floor', getFloorNumber(project_floor))}
       </View>
       <View style={styles.detailSubContainer}>
         {/* {renderDetailText('Tower', tower_label)} */}
-        {renderDetailText('Tower', tower_label || getTowerLabel(tower_id))}
+        {renderDetailText('Tower', towerLabel || getTowerLabel(tower_id))}
 
         {renderDetailText('Unit number', project_unit)}
       </View>

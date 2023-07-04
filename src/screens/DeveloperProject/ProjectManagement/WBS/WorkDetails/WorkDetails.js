@@ -174,6 +174,7 @@ function Execution(props) {
         handleClose={toggleAddDialog}
         handleSubmit={handleAddProgress}
         path={pathList}
+        progressReport={latestProgressReport}
       />
       <ScrollView>
         <Header {...props} data={pathList} />

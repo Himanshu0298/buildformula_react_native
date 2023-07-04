@@ -136,6 +136,24 @@ function MaterialForm(props) {
         onBlur={handleBlur('missing')}
         error={errors.missing}
       />
+      <RenderInput
+        name="rate"
+        label="Rate"
+        containerStyles={styles.input}
+        value={values.rate}
+        onChangeText={handleChange('rate')}
+        onBlur={handleBlur('rate')}
+        error={errors.rate}
+      />
+      <RenderInput
+        name="total_amount"
+        label="Total Amount"
+        containerStyles={styles.input}
+        value={values.total_amount}
+        onChangeText={handleChange('total_amount')}
+        onBlur={handleBlur('total_amount')}
+        error={errors.total_amount}
+      />
 
       <ActionButtons
         cancelLabel="Cancel"

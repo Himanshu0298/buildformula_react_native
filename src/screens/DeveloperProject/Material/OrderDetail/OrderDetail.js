@@ -2,7 +2,15 @@ import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import React, {useMemo} from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
-import {Subheading, Text, Divider, Caption, Button} from 'react-native-paper';
+import {
+  Subheading,
+  Text,
+  Divider,
+  Caption,
+  Button,
+  Dialog,
+  Portal,
+} from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector} from 'react-redux';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
@@ -25,16 +33,43 @@ const RenderRow = props => {
   );
 };
 
+const OnStatusUpdate = props => {
+  const {visible, updateStatus, toggleAddDialog} = props;
+
+  return (
+    <Portal>
+      <Dialog visible={visible} onDismiss={toggleAddDialog}>
+        <View style={styles.buttonRow}>
+          <Button
+            compact
+            mode="outlined"
+            color="green"
+            onPress={() => updateStatus('approved')}>
+            Approved
+          </Button>
+          <Button
+            mode="outlined"
+            color="red"
+            compact
+            onPress={() => updateStatus('rejected')}>
+            Rejected
+          </Button>
+          <Button
+            color="orange"
+            mode="outlined"
+            compact
+            onPress={() => updateStatus('pending')}>
+            Pending
+          </Button>
+        </View>
+      </Dialog>
+    </Portal>
+  );
+};
+
 function ChallanSection(props) {
-  const {item, onDelete, navigation, orderNumber, updateStatus} = props;
-
-  const {created} = item;
-
-  const materialId = item.id;
-
-  const onUpdate = () => {
-    navigation.navigate('AddChallan', {materialId, item, orderNumber});
-  };
+  const {item, onDelete, onUpdate, onUpdateStatus} = props;
+  const {created, id: materialId, challan_status: status} = item;
 
   return (
     <View style={styles.challanContainer}>
@@ -51,7 +86,8 @@ function ChallanSection(props) {
         <MenuDialog
           onUpdate={onUpdate}
           onDelete={() => onDelete(materialId)}
-          onUpdateStatus={updateStatus}
+          status={status}
+          onUpdateStatus={onUpdateStatus}
         />
       </View>
     </View>
@@ -73,6 +109,7 @@ const Created = props => {
     </View>
   );
 };
+
 const Updated = props => {
   const {item} = props;
 
@@ -137,21 +174,23 @@ const Details = props => {
           />
         </OpacityButton>
       </View>
-      <View style={styles.orderedList}>
-        <Caption> Company Name: </Caption>
-        <Text>{company_name} </Text>
-      </View>
-      <View style={styles.orderedList}>
-        <Caption> Supplier Name: </Caption>
-        <Text>{supplier_name} </Text>
-      </View>
-      <View style={styles.orderedList}>
-        <Caption> Finalize Amount: </Caption>
-        <Text>{finalized_amount} </Text>
-      </View>
-      <View style={styles.orderedList}>
-        <Caption> PO Date: </Caption>
-        <Text>{crated} </Text>
+      <View style={{marginBottom: 10}}>
+        <View style={styles.orderedList}>
+          <Caption> Company Name: </Caption>
+          <Text>{company_name} </Text>
+        </View>
+        <View style={styles.orderedList}>
+          <Caption> Supplier Name: </Caption>
+          <Text>{supplier_name} </Text>
+        </View>
+        <View style={styles.orderedList}>
+          <Caption> Finalize Amount: </Caption>
+          <Text>{finalized_amount} </Text>
+        </View>
+        <View style={styles.orderedList}>
+          <Caption> PO Date: </Caption>
+          <Text>{crated} </Text>
+        </View>
       </View>
     </View>
   );
@@ -163,17 +202,20 @@ function CommonCard(props) {
     materialOrderNo: orderNumber,
     item,
     onDelete,
-    updateStatus,
+    onUpdateStatus,
   } = props;
+
+  const onUpdate = () => {
+    navigation.navigate('AddChallan', {materialId: item.id, item, orderNumber});
+  };
 
   return (
     <View style={styles.commonCard}>
       <ChallanSection
         item={item}
         onDelete={onDelete}
-        navigation={navigation}
-        orderNumber={orderNumber}
-        updateStatus={updateStatus}
+        onUpdate={onUpdate}
+        onUpdateStatus={onUpdateStatus}
       />
       <Created item={item} />
       <Divider style={styles.divider} />
@@ -204,8 +246,9 @@ function CommonCard(props) {
 
 function OrderDetail(props) {
   const {navigation, route} = props;
-
   const {material_order_no, materialId, finalized_amount} = route?.params || {};
+
+  const alert = useAlert();
 
   const {getMaterialChallanList, deleteChallan, updateDirectGRNStatus} =
     useMaterialManagementActions();
@@ -213,14 +256,16 @@ function OrderDetail(props) {
     s => s.materialManagement,
   );
 
-  const materialDeliveryChallan =
-    materialChallanList?.infoData?.material_delivery_challan || [];
-
   const {selectedProject} = useSelector(s => s.project);
 
-  const project_id = selectedProject?.id;
+  const [addDialog, setAddDialog] = React.useState(false);
+  const [selectedMaterialId, setSelectedMaterialId] = React.useState();
 
-  const alert = useAlert();
+  const toggleAddDialog = () => setAddDialog(v => !v);
+
+  const materialDeliveryChallan =
+    materialChallanList?.infoData?.material_delivery_challan || [];
+  const project_id = selectedProject?.id;
 
   React.useEffect(() => {
     getList(); // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -251,17 +296,38 @@ function OrderDetail(props) {
     });
   };
 
-  const updateStatus = async status => {
+  const onUpdateStatus = id => {
+    setSelectedMaterialId(id);
+    toggleAddDialog();
+  };
+
+  const handleUpdateStatus = status => {
+    toggleAddDialog();
+
     const restData = {
       project_id: selectedProject.id,
-      challan_id: materialId,
+      challan_id: selectedMaterialId,
       status,
     };
-    await updateDirectGRNStatus(restData);
-    getList();
+
+    alert.show({
+      title: 'Confirm',
+      message: `Are you sure you want to change the status to ${status}?`,
+      confirmText: 'Yes',
+      onConfirm: async () => {
+        await updateDirectGRNStatus(restData);
+        getList();
+      },
+    });
   };
+
   return (
     <View style={styles.headerContainer}>
+      <OnStatusUpdate
+        toggleAddDialog={toggleAddDialog}
+        visible={addDialog}
+        updateStatus={handleUpdateStatus}
+      />
       <Header title={`PO ID : ${material_order_no}`} {...props} />
       <Details
         {...props}
@@ -298,7 +364,8 @@ function OrderDetail(props) {
               challanList={materialOrderList}
               materialOrderNo={material_order_no}
               onDelete={onDelete}
-              updateStatus={updateStatus}
+              onUpdateStatus={() => onUpdateStatus(item.id)}
+              toggleAddDialog={toggleAddDialog}
             />
           );
         })}
@@ -384,9 +451,14 @@ const styles = StyleSheet.create({
     paddingTop: 15,
     flex: 1,
   },
-
   orderedList: {
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  buttonRow: {
+    padding: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
   },
 });

@@ -6,19 +6,19 @@ import {Divider, IconButton, Menu} from 'react-native-paper';
 function MenuDialog(props) {
   const {onDelete, onUpdate, onUpdateStatus} = props;
 
-  const [versionMenu, setVersionMenu] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
 
-  const toggleVersionMenu = () => setVersionMenu(v => !v);
+  const toggleMenu = () => setOpen(v => !v);
 
   return (
     <Menu
-      visible={versionMenu}
+      visible={open}
       contentStyle={styles.toggleDotIcon}
-      onDismiss={toggleVersionMenu}
-      anchor={<IconButton icon="dots-vertical" onPress={toggleVersionMenu} />}>
+      onDismiss={toggleMenu}
+      anchor={<IconButton icon="dots-vertical" onPress={toggleMenu} />}>
       <Menu.Item
         onPress={() => {
-          toggleVersionMenu();
+          toggleMenu();
           onUpdate();
         }}
         title="Edit "
@@ -26,20 +26,19 @@ function MenuDialog(props) {
       <Divider />
       <Menu.Item
         onPress={() => {
-          toggleVersionMenu();
+          toggleMenu();
           onDelete();
         }}
         title="Delete"
       />
-      {/* <Divider />
+      <Divider />
       <Menu.Item
         onPress={() => {
-          toggleVersionMenu();
+          toggleMenu();
           onUpdateStatus();
         }}
-        title="update Status"
-      /> */}
-      <Divider />
+        title="Update Status"
+      />
     </Menu>
   );
 }

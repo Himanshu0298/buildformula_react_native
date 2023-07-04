@@ -73,6 +73,7 @@ function CustomerSection(props) {
 
   const loading = useCustomerLoading();
   const {permissions, isProjectAdmin} = useSelector(s => s.project);
+  const {bookingDetails} = useSelector(s => s.customer);
 
   const routes = React.useMemo(() => {
     if (isProjectAdmin) {
@@ -108,7 +109,7 @@ function CustomerSection(props) {
           <Title>{t('title_customer_section')}</Title>
         </View>
         <View style={styles.container}>
-          <DetailsHeader {...route?.params} />
+          <DetailsHeader {...route?.params} bookingDetails={bookingDetails} />
           <Divider style={styles.divider} />
         </View>
       </>

@@ -19,7 +19,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import * as Yup from 'yup';
 import {Formik} from 'formik';
 import {useSelector} from 'react-redux';
-import {isEqual} from 'lodash';
+import {isEqual, round} from 'lodash';
 import {useAlert} from 'components/Atoms/Alert';
 import useMaterialManagement from 'services/materialManagement';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
@@ -216,7 +216,8 @@ function UploadForm(props) {
 const RenderCard = props => {
   const {item, editDialog, index, handleDelete} = props;
 
-  const {damage, missing, material_quantity} = item || {};
+  const {damage, missing, material_quantity, rate, challan_total_amount} =
+    item || {};
 
   const {materialCategories, materialSubCategories, makeOfLists} = useSelector(
     s => s.materialManagement,
@@ -274,7 +275,6 @@ const RenderCard = props => {
           </OpacityButton>
         </View>
       </View>
-
       <View style={styles.row}>
         <Caption>Sub Category: </Caption>
         <Text>{subCategoryTitle}</Text>
@@ -297,6 +297,14 @@ const RenderCard = props => {
       <View style={styles.row}>
         <Caption>Missing Qty: </Caption>
         <Text>{missing}</Text>
+      </View>
+      <View style={styles.row}>
+        <Caption>Rate: </Caption>
+        <Text>{rate}</Text>
+      </View>
+      <View style={styles.row}>
+        <Caption>Total Rate: </Caption>
+        <Text>{challan_total_amount}</Text>
       </View>
     </View>
   );
@@ -365,6 +373,8 @@ const DirectGRNChallanMaterial = props => {
       lom: item.master_list_of_makes_id,
       missing: item.missing,
       quantity: item.material_quantity,
+      delivery_challan_rate: item.rate,
+      challan_total_amount: item.challan_total_amount,
     }));
 
     formData.append('project_id', selectedProject.id);
@@ -399,6 +409,11 @@ const DirectGRNChallanMaterial = props => {
 
   const handleSaveMaterial = values => {
     const _materials = [...materials];
+
+    values.challan_total_amount = round(
+      Number(values.material_quantity) * Number(values.rate),
+    );
+
     if (!isNaN(selectedMaterialIndex)) {
       _materials[selectedMaterialIndex] = values;
     } else {
@@ -412,6 +427,8 @@ const DirectGRNChallanMaterial = props => {
     setSelectedMaterialIndex(index);
     toggleAddDialog();
   };
+
+  console.log('===========>materials ', materials);
 
   return (
     <>

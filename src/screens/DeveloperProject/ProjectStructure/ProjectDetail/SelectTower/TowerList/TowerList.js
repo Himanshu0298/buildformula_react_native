@@ -1,6 +1,6 @@
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import React, {useState} from 'react';
-import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, TouchableOpacity, View, Text} from 'react-native';
 import {
   Button,
   Caption,
@@ -9,8 +9,9 @@ import {
   IconButton,
   Portal,
   Subheading,
+  Menu,
 } from 'react-native-paper';
-
+import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import RenderInput from 'components/Atoms/RenderInput';
 import {Formik} from 'formik';
@@ -23,6 +24,7 @@ import NoResult from 'components/Atoms/NoResult';
 import Layout from 'utils/Layout';
 import {AutoDragSortableView} from 'react-native-drag-sort';
 import {debounce} from 'lodash';
+import {secondaryTheme} from 'styles/theme';
 
 const ROW_HEIGHT = 50;
 
@@ -83,7 +85,10 @@ function AddTowerModel(props) {
 }
 
 function ListData(props) {
-  const {item, handleDelete} = props;
+  const {item, handleDelete, handleEdit} = props;
+
+  const [visible, setVisible] = React.useState(false);
+  const toggleMenu = () => setVisible(v => !v);
 
   return (
     <View style={styles.listMainContainer}>
@@ -97,14 +102,101 @@ function ListData(props) {
       <View style={styles.listSubContainer}>
         <Caption>{item?.label}</Caption>
       </View>
-      <OpacityButton
+      <Menu
+        visible={visible}
+        onDismiss={() => toggleMenu()}
+        anchor={
+          <OpacityButton
+            opacity={0.1}
+            color="#4872f4"
+            style={styles.deleteIcon}
+            onPress={toggleMenu}>
+            <MaterialIcon name="dots-vertical" color="#4872f4" size={15} />
+          </OpacityButton>
+        }>
+        <Menu.Item
+          onPress={() => {
+            handleEdit(item?.id);
+            toggleMenu();
+          }}
+          title="Edit"
+        />
+        {/* {modulePermission?.admin ? ( */}
+        <Menu.Item
+          onPress={() => {
+            handleDelete(item?.id);
+            toggleMenu();
+          }}
+          title="Delete"
+        />
+        {/* ) : null} */}
+      </Menu>
+      {/* <OpacityButton
         color="#FF5D5D"
         opacity={0.18}
         onPress={() => handleDelete(item?.id)}
         style={styles.deleteIcon}>
         <MaterialIcons name="delete" color="#FF5D5D" size={13} />
-      </OpacityButton>
+      </OpacityButton> */}
     </View>
+  );
+}
+
+function EditTowerModal(props) {
+  const {visible, toggleEditModal, onEdit, selectedTower} = props;
+
+  return (
+    <Portal>
+      <Dialog visible={visible} onDismiss={toggleEditModal} style={{top: -100}}>
+        <View style={styles.dialogTitleContainer}>
+          <Text style={{color: '#000'}}>Rename Tower</Text>
+        </View>
+        <Formik
+          validateOnBlur={false}
+          validateOnChange={false}
+          initialValues={{
+            towerName: selectedTower[0]?.label || '',
+            tower_id: selectedTower[0]?.id,
+          }}
+          onSubmit={onEdit}>
+          {({values, errors, handleChange, handleBlur, handleSubmit}) => {
+            return (
+              <View style={styles.dialogContentContainer}>
+                <RenderInput
+                  name="towerName"
+                  label="Tower name"
+                  containerStyles={styles.input}
+                  value={values.towerName}
+                  onChangeText={handleChange('towerName')}
+                  onBlur={handleBlur('towerName')}
+                  onSubmitEditing={handleSubmit}
+                  error={errors.towerName}
+                />
+
+                <View style={styles.dialogActionContainer}>
+                  <Button
+                    style={{width: '40%', marginHorizontal: 5}}
+                    contentStyle={{padding: 2}}
+                    theme={{roundness: 15}}
+                    mode="contained"
+                    onPress={toggleEditModal}>
+                    <Text theme={secondaryTheme}>cancel</Text>
+                  </Button>
+                  <Button
+                    style={{width: '40%', marginHorizontal: 5}}
+                    mode="contained"
+                    contentStyle={{padding: 1}}
+                    theme={{roundness: 15}}
+                    onPress={handleSubmit}>
+                    <Text theme={secondaryTheme}>save</Text>
+                  </Button>
+                </View>
+              </View>
+            );
+          }}
+        </Formik>
+      </Dialog>
+    </Portal>
   );
 }
 
@@ -116,7 +208,10 @@ function TowerList(props) {
 
   const [dialog, setDialog] = useState();
 
-  const {getTowerList, addTower, deleteTower, updateTowerOrder} =
+  const [selectedTower, setSelectedTower] = useState([]);
+  const [isEdit, setIsEdit] = useState(false);
+
+  const {getTowerList, addTower, deleteTower, updateTowerOrder, updateTower} =
     useProjectStructureActions();
   const {selectedProject} = useSelector(s => s.project);
   const {towerList, loading} = useSelector(s => s.projectStructure);
@@ -131,6 +226,7 @@ function TowerList(props) {
   };
 
   const toggleAddDialog = () => setDialog(v => !v);
+  const toggleEditModal = () => setIsEdit(v => !v);
 
   const onSubmit = async values => {
     const data = {
@@ -161,6 +257,24 @@ function TowerList(props) {
     });
   };
 
+  const handleEdit = async tower_id => {
+    setIsEdit(true);
+    await setSelectedTower(towerList?.filter(t => t.id === tower_id));
+  };
+
+  const onEdit = async values => {
+    const data = {
+      project_id: selectedProject.id,
+      id,
+      name: values.towerName,
+      tower_id: values.tower_id,
+    };
+
+    updateTower(data);
+    toggleEditModal();
+    getData();
+  };
+
   const handleDragEnd = async data => {
     const sortedList = {};
 
@@ -184,8 +298,18 @@ function TowerList(props) {
           visible={dialog}
           onClose={toggleAddDialog}
           onSubmit={onSubmit}
+          isEdit={isEdit}
+          onEdit={onEdit}
+          selectedTower={selectedTower}
         />
       ) : null}
+
+      <EditTowerModal
+        visible={isEdit}
+        toggleEditModal={toggleEditModal}
+        onEdit={onEdit}
+        selectedTower={selectedTower}
+      />
 
       <View style={styles.container}>
         <Spinner visible={loading} textContent="" />
@@ -210,7 +334,11 @@ function TowerList(props) {
             childrenHeight={ROW_HEIGHT}
             keyExtractor={(_, i) => i.toString()}
             renderItem={item => (
-              <ListData item={item} handleDelete={handleDelete} />
+              <ListData
+                item={item}
+                handleDelete={handleDelete}
+                handleEdit={handleEdit}
+              />
             )}
             onDataChange={handleDragEnd}
           />
@@ -294,6 +422,22 @@ const styles = StyleSheet.create({
   closeContainer: {
     alignItems: 'flex-end',
   },
+  dialogTitleContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 10,
+  },
+  dialogContentContainer: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+  },
+  dialogActionContainer: {
+    marginTop: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  input: {marginVertical: 5},
 });
 
 export default TowerList;

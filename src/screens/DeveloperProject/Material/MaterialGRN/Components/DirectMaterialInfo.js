@@ -151,9 +151,18 @@ const MaterialData = props => {
   return (
     <View style={styles.quantityContainer}>
       <View style={styles.itemContainer}>
-        <RenderRow item={{label: 'Fine Quantity: ', value: item.quantity}} />
-        <RenderRow item={{label: 'Damage Quantity: ', value: item.damage}} />
-        <RenderRow item={{label: 'Missing Quantity: ', value: item.missing}} />
+        <RenderRow item={{label: 'Received Qty: ', value: item.quantity}} />
+        <RenderRow item={{label: 'Damage Qty: ', value: item.damage}} />
+        <RenderRow item={{label: 'Missing Qty: ', value: item.missing}} />
+        <RenderRow
+          item={{label: 'List of Makes: ', value: item.master_list_of_makes_id}}
+        />
+        <RenderRow
+          item={{label: 'Rate: ', value: item.delivery_challan_rate}}
+        />
+        <RenderRow
+          item={{label: 'Total: ', value: item.challan_total_amount}}
+        />
       </View>
     </View>
   );
@@ -240,7 +249,6 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: '#F2F4F5',
     borderRadius: 5,
-    // margin: 10,
   },
   attachmentsText: {
     fontSize: 15,
