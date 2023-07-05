@@ -276,13 +276,13 @@ const VehicleInfo = props => {
 
     if (attachments) {
       attachments.map(item => {
-        formData.append('upload_vehicle_image', item);
+        formData.append('upload_vehicle_image[]', item);
         return item;
       });
     }
     if (invoiceAttachments) {
       invoiceAttachments.map(item => {
-        formData.append('upload_invoice_file', item);
+        formData.append('upload_invoice_file[]', item);
         return item;
       });
     }

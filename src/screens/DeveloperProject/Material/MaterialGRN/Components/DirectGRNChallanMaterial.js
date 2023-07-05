@@ -389,13 +389,13 @@ const DirectGRNChallanMaterial = props => {
 
     if (challanImages) {
       challanImages.map(item => {
-        formData.append('upload_challan_image', item);
+        formData.append('upload_challan_image[]', item);
         return item;
       });
     }
     if (challan_material_damage_image) {
       challan_material_damage_image.map(item => {
-        formData.append('upload_damage_challan_image', item);
+        formData.append('upload_damage_challan_image[]', item);
         return item;
       });
     }

@@ -221,12 +221,14 @@ const AddVehicleInfo = props => {
     materialAttachments,
     challan,
     materials,
-    material_order_no: orderNumber,
+    orderNumber,
+    material_order_no,
     item: vehicleInfo,
     delivery_date,
+    materialId,
   } = route?.params || {};
 
-  const edit = Boolean(vehicleInfo);
+  const edit = Boolean(materialId);
 
   const {loading} = useSelector(s => s.materialManagement);
   const {selectedProject} = useSelector(s => s.project);
@@ -241,7 +243,7 @@ const AddVehicleInfo = props => {
   const loadData = () => {
     return getMaterialChallanList({
       project_id: selectedProject.id,
-      material_order_no: orderNumber,
+      material_order_no: orderNumber || material_order_no,
     });
   };
 
@@ -293,14 +295,14 @@ const AddVehicleInfo = props => {
     });
 
     formData.append('project_id', selectedProject.id);
-    formData.append('material_order_no', orderNumber);
+    formData.append('material_order_no', orderNumber || material_order_no);
     formData.append('challan_no', challan);
     formData.append('delivery_date', delivery_date);
     formData.append('driver_name', values.driverName);
     formData.append('materials', JSON.stringify(materialData));
     formData.append('vehicle_number', values.vehicleNo);
     formData.append('challan_remark', values.remark);
-    formData.append('edit_challan_id', 0);
+    formData.append('edit_challan_id', edit ? materialId : 0);
     await addMaterialChallan(formData);
     loadData();
     navigation.dispatch(StackActions.pop(4));

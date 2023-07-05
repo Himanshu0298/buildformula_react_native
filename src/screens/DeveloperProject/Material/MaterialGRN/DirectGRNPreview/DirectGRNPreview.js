@@ -130,7 +130,10 @@ const DirectGRNPreview = props => {
 
   const {challanInfo} = directGRNDetails;
 
-  const vehicleImage = directGRNDetails?.challan_material_damage_image;
+  // first
+  const challanImages = directGRNDetails?.material_delivery_challan_images;
+  // third
+  const vehicleImage = directGRNDetails?.challan_material_vehicle_image;
   const invoiceImages = directGRNDetails?.challan_material_invoice_image;
 
   useEffect(() => {
@@ -233,8 +236,8 @@ const DirectGRNPreview = props => {
         </View>
         <View style={styles.detailContainer}>
           <HeaderDetails challanInfo={challanInfo} />
-          {vehicleImage?.length ? (
-            <Attachments damageImage={vehicleImage} />
+          {challanImages?.length ? (
+            <Attachments damageImage={challanImages} />
           ) : null}
         </View>
         {materialItem?.length ? (

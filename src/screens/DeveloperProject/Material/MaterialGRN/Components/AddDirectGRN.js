@@ -276,7 +276,7 @@ const AddDirectGRN = props => {
 
     if (attachments) {
       attachments.map(item => {
-        formData.append('challan_images[]', item);
+        formData.append('file_upload[]', item);
         return item;
       });
     }

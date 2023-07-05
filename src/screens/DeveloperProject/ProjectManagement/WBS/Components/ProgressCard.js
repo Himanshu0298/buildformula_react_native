@@ -57,16 +57,20 @@ const ProgressCard = props => {
             <Text style={styles.remarkText}>{remarks}</Text>
           </View>
         </View>
-        <TouchableOpacity
-          style={styles.sectionContainer}
-          onPress={() => onPressFile(file_url)}>
-          <Image source={FileIcon} style={styles.fileIcon} />
-          <View>
-            <Text style={(styles.verticalFlex, styles.text)} numberOfLines={2}>
-              {file_name || 'Image'}
-            </Text>
-          </View>
-        </TouchableOpacity>
+        {file_url ? (
+          <TouchableOpacity
+            style={styles.sectionContainer}
+            onPress={() => onPressFile(file_url)}>
+            <Image source={FileIcon} style={styles.fileIcon} />
+            <View>
+              <Text
+                style={(styles.verticalFlex, styles.text)}
+                numberOfLines={2}>
+                {file_name}
+              </Text>
+            </View>
+          </TouchableOpacity>
+        ) : null}
       </View>
     </View>
   );
