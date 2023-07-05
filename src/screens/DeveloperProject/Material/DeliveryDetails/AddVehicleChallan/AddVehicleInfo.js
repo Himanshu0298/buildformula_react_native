@@ -290,7 +290,7 @@ const AddVehicleInfo = props => {
       return item;
     });
     values?.vehicleInvoiceAttachments?.map(item => {
-      formData.append('upload_vehicle_invoice_images[]', item);
+      formData.append('upload_invoice_file[]', item);
       return item;
     });
 
