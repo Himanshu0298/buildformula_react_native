@@ -90,8 +90,12 @@ const DeliverDetails = props => {
   const {materialChallanDetails, loading} = useSelector(
     s => s.materialManagement,
   );
-  const {challan_images, challan_info, materila_info, vehicle_images} =
-    materialChallanDetails || {};
+  const {
+    challan_images = [],
+    challan_info,
+    materila_info,
+    vehicle_images,
+  } = materialChallanDetails || {};
 
   React.useEffect(() => {
     getMaterialChallanDetails({
@@ -116,7 +120,7 @@ const DeliverDetails = props => {
           </View>
         ) : null}
         <View>
-          {challan_images.length ? (
+          {challan_images?.length ? (
             <>
               <View style={styles.headerWrap}>
                 <Subheading style={styles.challanHeading}>

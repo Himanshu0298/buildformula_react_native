@@ -360,10 +360,20 @@ const DirectGRNChallanMaterial = props => {
     setDirectGrnDetails(res.data);
   };
 
-  const toggleAddDialog = () => setAddDialog(v => !v);
+  const toggleAddDialog = () => {
+    setAddDialog(v => {
+      if (v) setSelectedMaterialIndex();
+      return !v;
+    });
+  };
 
   const onSubmit = async values => {
     const formData = new FormData();
+
+    const {
+      challan_material_image: challanImages,
+      challan_material_damage_image,
+    } = values;
 
     const materialData = materials.map(item => ({
       material_category_id: item.material_category_id,
@@ -373,18 +383,25 @@ const DirectGRNChallanMaterial = props => {
       lom: item.master_list_of_makes_id,
       missing: item.missing,
       quantity: item.material_quantity,
-      delivery_challan_rate: item.rate,
-      challan_total_amount: item.challan_total_amount,
+      rate: item.rate,
+      total_amount: item.challan_total_amount,
     }));
 
+    if (challanImages) {
+      challanImages.map(item => {
+        formData.append('upload_challan_image', item);
+        return item;
+      });
+    }
+    if (challan_material_damage_image) {
+      challan_material_damage_image.map(item => {
+        formData.append('upload_damage_challan_image', item);
+        return item;
+      });
+    }
     formData.append('project_id', selectedProject.id);
     formData.append('challan_id', challan_id);
     formData.append('data', JSON.stringify(materialData));
-    formData.append('upload_challan_image', values.challan_material_image);
-    formData.append(
-      'upload_damage_challan_image',
-      values.challan_material_damage_image,
-    );
 
     await addDirectGRNMaterialInfo(formData);
     navigation.navigate('VehicleInfo', {
@@ -427,8 +444,6 @@ const DirectGRNChallanMaterial = props => {
     setSelectedMaterialIndex(index);
     toggleAddDialog();
   };
-
-  console.log('===========>materials ', materials);
 
   return (
     <>
@@ -573,7 +588,9 @@ const styles = StyleSheet.create({
   companyName: {
     backgroundColor: theme.colors.primary,
     color: '#fff',
-    padding: 2,
+    padding: 5,
+    fontSize: 10,
+    borderRadius: 30,
   },
   damage: {
     color: theme.colors.red,

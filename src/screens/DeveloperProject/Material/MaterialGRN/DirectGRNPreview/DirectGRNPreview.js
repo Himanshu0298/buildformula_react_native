@@ -43,7 +43,7 @@ const HeaderDetails = props => {
         <View>
           <Caption>Delivery Date</Caption>
 
-          <Text>{dayjs(delivery_date).format('MMM D, YYYY , hh:mm a')}</Text>
+          <Text>{dayjs(delivery_date).format('MMM D, YYYY')}</Text>
         </View>
       </View>
       <View style={styles.row}>
