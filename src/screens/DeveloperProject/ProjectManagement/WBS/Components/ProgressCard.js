@@ -32,10 +32,10 @@ const ProgressCard = props => {
     const path =
       Platform.OS === 'ios'
         ? `${dirs.DocumentDir}Progress Image`
-        : `${dirs.DownloadDir}Progress Image`;
+        : `${dirs.DownloadDir}Progress Image.jpg`;
     ReactNativeBlobUtil.config({
       fileCache: true,
-      appendExt: 'jpeg',
+      appendExt: 'jpg',
       indicator: true,
       IOSBackgroundTask: true,
       path,

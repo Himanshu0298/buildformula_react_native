@@ -159,16 +159,8 @@ function Execution(props) {
     formData.append('wbs_works_id', parent_id);
     formData.append('quantity_completed', Number(values.quantity));
     formData.append('percentage_completed', Number(values.percentage));
-    formData.append('remarks', values.remark);
+    formData.append('remarks', values.remark || '');
     formData.append('file', values.attachments);
-    if (values.percentage < latestProgressReport.percentage_completed) {
-      snackbar.showMessage({
-        message:
-          'You do not have permissions to perform this action. Contact project Admin for support',
-        variant: 'warning',
-      });
-      return;
-    }
     await addProgressRecord(formData);
     loadData();
     navigation.goBack();

@@ -12,13 +12,6 @@ import {theme} from 'styles/theme';
 import FileIcon from 'assets/images/file_icon.png';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useImagePicker} from 'hooks';
-import {useEffect} from 'react';
-
-const schema = Yup.object().shape({
-  percentage: Yup.number('Required').required('Required').max(100),
-  // .moreThan(Yup.ref('percentage') > 100),
-  // quantity: Yup.number('Required').required('Required'),
-});
 
 const RenderAttachments = props => {
   const {attachments, handleDelete, progressReport} = props;
@@ -57,7 +50,15 @@ const RenderAttachments = props => {
 
 function ModalContent(props) {
   const {formikProps, pathData} = props;
-  const {values, errors, handleChange, handleBlur, setFieldValue} = formikProps;
+  const {
+    values,
+    errors,
+    handleChange,
+    handleBlur,
+    setFieldValue,
+    setErrors,
+    initialValues,
+  } = formikProps;
 
   const {openCamera} = useImagePicker();
 
@@ -69,7 +70,6 @@ function ModalContent(props) {
       },
     });
   };
-
   const handleDelete = () => {
     console.log('-------->inside delete');
     setFieldValue('attachments', undefined);
@@ -149,6 +149,15 @@ const AddProgressModal = props => {
   const {handleSubmit, path, progressReport} = props;
 
   const {percentage_completed, remarks} = progressReport || {};
+
+  const schema = Yup.object().shape({
+    percentage: Yup.number('Required')
+      .required('Required')
+      .min(percentage_completed || 0)
+      .max(100),
+    // .moreThan(Yup.ref('percentage') > 100),
+    // quantity: Yup.number('Required').required('Required'),
+  });
 
   return (
     <Formik
