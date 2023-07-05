@@ -216,8 +216,14 @@ function UploadForm(props) {
 const RenderCard = props => {
   const {item, editDialog, index, handleDelete} = props;
 
-  const {damage, missing, material_quantity, rate, challan_total_amount} =
-    item || {};
+  const {
+    damage_qty,
+    missing,
+    material_quantity,
+    rate,
+    challan_total_amount,
+    lom,
+  } = item || {};
 
   const {materialCategories, materialSubCategories, makeOfLists} = useSelector(
     s => s.materialManagement,
@@ -245,11 +251,8 @@ const RenderCard = props => {
   }, [item?.material_units_id, units]);
 
   const makeOfListTitle = React.useMemo(() => {
-    return (
-      makeOfLists?.find(i => i.id === item?.master_list_of_makes_id)?.title ||
-      'NA'
-    );
-  }, [item?.master_list_of_makes_id, makeOfLists]);
+    return makeOfLists?.find(i => i.id === item?.lom)?.title || 'NA';
+  }, [item?.lom, makeOfLists]);
 
   return (
     <View style={styles.materialContainer}>
@@ -285,14 +288,14 @@ const RenderCard = props => {
       </View>
       <View style={styles.row}>
         <Caption>List of Makes: </Caption>
-        <Text style={styles.companyName}>{makeOfListTitle}</Text>
+        <Text style={styles.companyName}>{lom || makeOfListTitle}</Text>
       </View>
       <View style={styles.row}>
         <Caption>Fine Qty: </Caption>
         <Text>{material_quantity}</Text>
       </View>
       <View style={styles.row}>
-        <Text style={styles.damage}>Damage Qty :{damage} </Text>
+        <Text style={styles.damage}>Damage Qty :{damage_qty} </Text>
       </View>
       <View style={styles.row}>
         <Caption>Missing Qty: </Caption>
@@ -520,7 +523,6 @@ const styles = StyleSheet.create({
   bodyContainer: {
     padding: 10,
     flex: 1,
-    marginBottom: 40,
   },
   headerContainer: {
     marginTop: 10,
@@ -590,7 +592,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     padding: 5,
     fontSize: 10,
-    borderRadius: 30,
+    borderRadius: 10,
   },
   damage: {
     color: theme.colors.red,

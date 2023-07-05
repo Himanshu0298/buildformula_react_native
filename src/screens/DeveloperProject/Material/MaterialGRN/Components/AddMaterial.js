@@ -177,26 +177,32 @@ function AddMaterialDialog(props) {
     if (material) {
       const {
         material_category_id,
-        material_sub_category_id: sub_material_id,
-        material_units_id: material_unit_id,
-        damage: damage_qty,
-        missing_qty,
+        material_sub_category_id,
+        material_units_id,
+        lom,
+        material_quantity,
+        damage_qty,
+        missing,
         fineQty,
-        master_list_of_makes_id,
+        rate,
+        total_amount,
       } = material;
 
       const selectedSubCategory = materialSubCategories.find(
-        i => i.id === sub_material_id,
+        i => i.id === material_sub_category_id,
       );
 
       return {
         material_category_id,
-        sub_material_id,
-        material_units_id: material_unit_id || selectedSubCategory?.unit_id,
+        material_sub_category_id,
+        material_units_id: material_units_id || selectedSubCategory?.unit_id,
+        lom,
+        material_quantity,
         damage_qty,
-        missing_qty,
+        missing,
         fineQty,
-        master_list_of_makes_id,
+        rate,
+        total_amount,
       };
     }
     return {};
