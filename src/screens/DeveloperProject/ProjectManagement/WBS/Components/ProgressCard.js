@@ -17,15 +17,8 @@ import ReactNativeBlobUtil from 'react-native-blob-util';
 
 const ProgressCard = props => {
   const {details} = props;
-  const download = useDownload();
-  const {
-    remarks,
-    created,
-    file_name,
-    percentage_completed,
-    quantity_completed,
-    file_url,
-  } = details || {};
+  const {remarks, created, file_name, percentage_completed, file_url} =
+    details || {};
 
   const downloadFile = image => {
     const {dirs} = ReactNativeBlobUtil.fs;
