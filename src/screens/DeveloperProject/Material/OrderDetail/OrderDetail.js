@@ -518,4 +518,10 @@ const styles = StyleSheet.create({
   iconButton: {
     backgroundColor: 'rgba(72, 114, 244, 0.1)',
   },
+  menuItem: {
+    backgroundColor: '#4872f4',
+  },
+  titleStyle: {
+    color: '#fff',
+  },
 });

@@ -82,7 +82,11 @@ const DeliverDetails = props => {
   const {route} = props;
   const {item, orderNumber} = route?.params || {};
 
-  const {challan_number: challanNumber, id: deliveryChallanId} = item;
+  const {
+    challan_number: challanNumber,
+    id: deliveryChallanId,
+    delivery_date,
+  } = item;
 
   const {getMaterialChallanDetails} = useMaterialManagementActions();
 
@@ -108,7 +112,9 @@ const DeliverDetails = props => {
   return (
     <View style={styles.mainContainer}>
       <Header title={`Challan No. : ${challanNumber}`} {...props} />
-
+      <Subheading style={{marginVertical: 5, marginLeft: 10}}>
+        Delivery Date: {delivery_date}
+      </Subheading>
       <Spinner visible={loading} textContent="" />
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* {challan_images?.length ? (

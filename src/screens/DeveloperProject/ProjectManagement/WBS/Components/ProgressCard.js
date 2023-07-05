@@ -1,12 +1,19 @@
 import * as React from 'react';
 import {Caption, Text, withTheme} from 'react-native-paper';
-import {StyleSheet, View, TouchableOpacity, Image} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  Image,
+  Platform,
+} from 'react-native';
 import FileIcon from 'assets/images/file_icon.png';
 import dayjs from 'dayjs';
 import {getDownloadUrl} from 'utils/download';
 import {getFileName} from 'utils/constant';
 import {useDownload} from 'components/Atoms/Download';
 import FileViewer from 'react-native-file-viewer';
+import ReactNativeBlobUtil from 'react-native-blob-util';
 
 const ProgressCard = props => {
   const {details} = props;
@@ -20,17 +27,33 @@ const ProgressCard = props => {
     file_url,
   } = details || {};
 
-  const onPressFile = async file => {
-    const fileUrl = getDownloadUrl(file.file_url);
-    const name = getFileName(file.title);
-    download.link({
-      name,
-      link: fileUrl,
-      showAction: false,
-      onFinish: ({dir}) => {
-        FileViewer.open(`file://${dir}`);
+  const downloadFile = image => {
+    const {dirs} = ReactNativeBlobUtil.fs;
+    const path =
+      Platform.OS === 'ios'
+        ? `${dirs.DocumentDir}Progress Image`
+        : `${dirs.DownloadDir}Progress Image`;
+    ReactNativeBlobUtil.config({
+      fileCache: true,
+      appendExt: 'jpeg',
+      indicator: true,
+      IOSBackgroundTask: true,
+      path,
+      addAndroidDownloads: {
+        useDownloadManager: true,
+        notification: true,
+        path,
+        description: 'Image',
       },
-    });
+    })
+      .fetch('GET', image)
+      .then(res => {
+        if (Platform.OS === 'ios') {
+          ReactNativeBlobUtil.ios.previewDocument(path);
+          // eslint-disable-next-line no-console
+          console.log(res, 'end downloaded');
+        }
+      });
   };
 
   return (
@@ -44,12 +67,12 @@ const ProgressCard = props => {
               <Text style={styles.text}>{percentage_completed}</Text>
             </View>
           </View>
-          <View style={styles.cardDetailsContainer}>
+          {/* <View style={styles.cardDetailsContainer}>
             <Caption>Quantity:</Caption>
             <View>
               <Text style={styles.text}>{quantity_completed}</Text>
             </View>
-          </View>
+          </View> */}
         </View>
         <View style={styles.remarkContainer}>
           <Caption>Remark:</Caption>
@@ -60,7 +83,7 @@ const ProgressCard = props => {
         {file_url ? (
           <TouchableOpacity
             style={styles.sectionContainer}
-            onPress={() => onPressFile(file_url)}>
+            onPress={() => downloadFile(file_url)}>
             <Image source={FileIcon} style={styles.fileIcon} />
             <View>
               <Text

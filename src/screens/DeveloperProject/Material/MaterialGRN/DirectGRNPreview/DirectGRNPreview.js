@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
+  Platform,
 } from 'react-native';
 import React, {useEffect} from 'react';
 import {Caption, Subheading} from 'react-native-paper';
@@ -22,6 +23,7 @@ import {theme} from 'styles/theme';
 import dayjs from 'dayjs';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 import {getDownloadUrl} from 'utils/download';
+import ReactNativeBlobUtil from 'react-native-blob-util';
 import Header from '../../CommonComponents/Header';
 
 import VehicleInfo from '../../DeliveryDetails/Components/VehicleInfo';
@@ -63,20 +65,36 @@ const HeaderDetails = props => {
 const Attachments = props => {
   const {damageImage = []} = props;
 
-  const download = useDownload();
-
-  const onPressFile = async file => {
-    const fileUrl = getDownloadUrl(file);
-    const name = getFileName(file);
-
-    download.link({
-      name,
-      link: fileUrl,
-      showAction: false,
-      onFinish: ({dir}) => {
-        FileViewer.open(`file://${dir}`);
+  const downloadFile = image => {
+    const imgUrl = image.challan_image;
+    const newImgUri = imgUrl.lastIndexOf('/');
+    const imageName = imgUrl.substring(newImgUri);
+    const {dirs} = ReactNativeBlobUtil.fs;
+    const path =
+      Platform.OS === 'ios'
+        ? dirs.DocumentDir + imageName
+        : dirs.DownloadDir + imageName;
+    ReactNativeBlobUtil.config({
+      fileCache: true,
+      appendExt: 'jpeg',
+      indicator: true,
+      IOSBackgroundTask: true,
+      path,
+      addAndroidDownloads: {
+        useDownloadManager: true,
+        notification: true,
+        path,
+        description: 'Image',
       },
-    });
+    })
+      .fetch('GET', imgUrl)
+      .then(res => {
+        if (Platform.OS === 'ios') {
+          ReactNativeBlobUtil.ios.previewDocument(path);
+          // eslint-disable-next-line no-console
+          console.log(res, 'end downloaded');
+        }
+      });
   };
   return (
     <>
@@ -88,7 +106,7 @@ const Attachments = props => {
           return (
             <TouchableOpacity
               style={styles.sectionContainer}
-              onPress={() => onPressFile(file.image_type)}>
+              onPress={() => downloadFile(file)}>
               <Image source={FileIcon} style={styles.fileIcon} />
               <View>
                 <Text

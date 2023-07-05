@@ -12,10 +12,11 @@ import {theme} from 'styles/theme';
 import FileIcon from 'assets/images/file_icon.png';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useImagePicker} from 'hooks';
+import {useEffect} from 'react';
 
 const schema = Yup.object().shape({
-  percentage: Yup.number('Required').required('Required'),
-  // .moreThan(Yup.ref('percentage')),
+  percentage: Yup.number('Required').required('Required').max(100),
+  // .moreThan(Yup.ref('percentage') > 100),
   // quantity: Yup.number('Required').required('Required'),
 });
 

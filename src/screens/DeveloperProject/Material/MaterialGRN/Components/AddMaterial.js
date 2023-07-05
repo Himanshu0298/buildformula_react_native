@@ -54,6 +54,7 @@ function MaterialForm(props) {
   useEffect(() => {
     const totalAmount = round(
       Number(values.material_quantity) * Number(values.rate),
+      2,
     );
     if (!isNaN(totalAmount)) setFieldValue('total_amount', totalAmount);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -121,6 +122,7 @@ function MaterialForm(props) {
         autoCapitalize="none"
         returnKeyType="next"
         error={errors.material_quantity}
+        keyboardType="phone-pad"
       />
       <RenderInput
         name="damage_qty"
@@ -130,6 +132,7 @@ function MaterialForm(props) {
         onChangeText={handleChange('damage_qty')}
         onBlur={handleBlur('damage_qty')}
         error={errors.damage_qty}
+        keyboardType="phone-pad"
       />
 
       <RenderInput
@@ -140,6 +143,7 @@ function MaterialForm(props) {
         onChangeText={handleChange('missing')}
         onBlur={handleBlur('missing')}
         error={errors.missing}
+        keyboardType="phone-pad"
       />
       <RenderInput
         name="rate"
@@ -149,6 +153,7 @@ function MaterialForm(props) {
         onChangeText={handleChange('rate')}
         onBlur={handleBlur('rate')}
         error={errors.rate}
+        keyboardType="phone-pad"
       />
       <RenderInput
         name="total_amount"

@@ -161,9 +161,9 @@ function VehicleForm(props) {
         onBlur={handleBlur('vehicleNo')}
         onChangeText={handleChange('vehicleNo')}
         error={errors.vehicleNo}
-        render={inputProps => (
-          <TextInputMask {...inputProps} mask="[AA]-[00]-[AA]-[0000]" />
-        )}
+        // render={inputProps => (
+        //   <TextInputMask {...inputProps} mask="[AA]-[00]-[AA]-[0000]" />
+        // )}
       />
       <RenderTextBox
         name="remark"

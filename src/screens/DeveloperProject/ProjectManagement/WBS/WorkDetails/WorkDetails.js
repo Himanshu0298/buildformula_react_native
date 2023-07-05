@@ -8,6 +8,7 @@ import useProjectManagementActions from 'redux/actions/projectManagementActions'
 import {useSelector} from 'react-redux';
 import dayjs from 'dayjs';
 import NoResult from 'components/Atoms/NoResult';
+import {useSnackbar} from 'components/Atoms/Snackbar';
 import ProgressCard from '../Components/ProgressCard';
 import AddProgressDialog from '../Components/AddProgressDialog';
 import WorkPath from '../Components/WorkPath';
@@ -122,6 +123,7 @@ const AddButton = props => {
 };
 
 function Execution(props) {
+  const snackbar = useSnackbar();
   const {route, navigation} = props;
   const {parent_id, pathList} = route?.params || {};
 
@@ -159,10 +161,16 @@ function Execution(props) {
     formData.append('percentage_completed', Number(values.percentage));
     formData.append('remarks', values.remark);
     formData.append('file', values.attachments);
-
+    if (values.percentage < latestProgressReport.percentage_completed) {
+      snackbar.showMessage({
+        message:
+          'You do not have permissions to perform this action. Contact project Admin for support',
+        variant: 'warning',
+      });
+      return;
+    }
     await addProgressRecord(formData);
     loadData();
-
     navigation.goBack();
   };
 
