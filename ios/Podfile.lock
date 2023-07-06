@@ -318,7 +318,7 @@ PODS:
     - ReactCommon/turbomodule/core
   - react-native-signature-capture (0.4.12):
     - React
-  - react-native-text-input-mask (3.2.0):
+  - react-native-text-input-mask (3.1.4):
     - InputMask (~> 6.1.0)
     - React-Core
     - React-RCTText
@@ -727,8 +727,8 @@ SPEC CHECKSUMS:
   lottie-ios: 69495122151a378fdc7d1bb4c5930347e37baf1f
   lottie-react-native: b702fab740cdb952a8e2354713d3beda63ff97b0
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
-  Permission-MediaLibrary: e454dd984c74359dab1650e8fcf510df3abc26b3
-  Permission-PhotoLibrary: 7a6bdb29bc8d470648f9ced30540fa91a58041c3
+  Permission-MediaLibrary: a994236bae41b3597a376ff08298fb1c6d84729b
+  Permission-PhotoLibrary: 5b34ca67279f7201ae109cef36f9806a6596002d
   PromisesObjC: 09985d6d70fbe7878040aa746d78236e6946d2ef
   RCT-Folly: a21c126816d8025b547704b777a2ba552f3d9fa9
   RCTRequired: 405e24508a0feed1771d48caebb85c581db53122
@@ -752,7 +752,7 @@ SPEC CHECKSUMS:
   react-native-pager-view: da490aa1f902c9a5aeecf0909cc975ad0e92e53e
   react-native-safe-area-context: 99b24a0c5acd0d5dcac2b1a7f18c49ea317be99a
   react-native-signature-capture: 416a3947684e049a5b012cdd6496f878dc797f16
-  react-native-text-input-mask: a273f7823ac4cb7189ea96873fd7b4a48b8aaaaa
+  react-native-text-input-mask: 36a546b378fadd2efe1b7484a859d34bc2c80395
   react-native-webview: 994b9f8fbb504d6314dc40d83f94f27c6831b3bf
   React-perflogger: 169fb34f60c5fd793b370002ee9c916eba9bc4ae
   React-RCTActionSheet: 2355539e02ad5cd4b1328682ab046487e1e1e920
