@@ -7,7 +7,13 @@ import {
   Text,
   withTheme,
 } from 'react-native-paper';
-import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  Platform,
+} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {theme} from 'styles/theme';
 import {getShadow} from 'utils';
@@ -16,8 +22,7 @@ import {useSelector} from 'react-redux';
 import FileIcon from 'assets/images/file_icon.png';
 import NoResult from 'components/Atoms/NoResult';
 import FileViewer from 'react-native-file-viewer';
-
-import {useDownload} from 'components/Atoms/Download';
+import ReactNativeBlobUtil from 'react-native-blob-util';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 
 const MaterialInfoHeader = props => {
@@ -84,24 +89,41 @@ const renderImage = (item, index, type) => {
       ? `Material image ${index + 1}`
       : `Damaged image ${index + 1}`;
 
-  const download = useDownload();
-
-  const onPressFile = async fileUrl => {
-    const name = fileUrl.split('/').pop();
-
-    download.link({
-      name,
-      link: fileUrl,
-      showAction: false,
-      onFinish: ({dir}) => {
-        FileViewer.open(`file://${dir}`);
+  const downloadFile = image => {
+    const imgUrl = image.image_url;
+    const newImgUri = imgUrl.lastIndexOf('/');
+    const imageName = imgUrl.substring(newImgUri);
+    const {dirs} = ReactNativeBlobUtil.fs;
+    const path =
+      Platform.OS === 'ios'
+        ? dirs.DocumentDir + imageName
+        : dirs.DownloadDir + imageName;
+    ReactNativeBlobUtil.config({
+      fileCache: true,
+      appendExt: 'jpeg',
+      indicator: true,
+      IOSBackgroundTask: true,
+      path,
+      addAndroidDownloads: {
+        useDownloadManager: true,
+        notification: true,
+        path,
+        description: 'Image',
       },
-    });
+    })
+      .fetch('GET', imgUrl)
+      .then(res => {
+        if (Platform.OS === 'ios') {
+          ReactNativeBlobUtil.ios.previewDocument(path);
+          // eslint-disable-next-line no-console
+          console.log(res, 'end downloaded');
+        }
+      });
   };
   return (
     <TouchableOpacity
       style={styles.sectionContainer}
-      onPress={() => onPressFile(item?.image_url)}
+      onPress={() => downloadFile(item)}
       key={item?.id}>
       <Image source={FileIcon} style={styles.fileIcon} />
       <View>
@@ -112,14 +134,16 @@ const renderImage = (item, index, type) => {
 };
 
 const RenderMaterialAttachments = props => {
-  const {materialImages} = props;
+  const {materialImages, damage} = props;
 
   const normalImages = materialImages?.filter(i => i.image_type === 'normal');
   const damagedImages = materialImages?.filter(i => i.image_type === 'damage');
 
   return (
     <View style={styles.imageContainer}>
-      <Text style={styles.attachmentsText}>Material Images</Text>
+      <Text style={styles.attachmentsText}>
+        {damage ? 'Damage' : 'Material'} Images
+      </Text>
       {materialImages?.length ? (
         <>
           {normalImages?.map((item, index) =>
@@ -170,8 +194,11 @@ const MaterialData = props => {
 
 const DirectMaterialInfo = props => {
   const {materialInfo = {}} = props;
-  const {material_request_items = [], challan_material_image = []} =
-    materialInfo;
+  const {
+    material_request_items = [],
+    challan_material_image = [],
+    challan_material_damage_image = [],
+  } = materialInfo;
 
   const {getPRMaterialCategories} = useMaterialManagementActions();
 
@@ -203,6 +230,12 @@ const DirectMaterialInfo = props => {
       })}
       {challan_material_image?.length ? (
         <RenderMaterialAttachments materialImages={challan_material_image} />
+      ) : null}
+      {challan_material_damage_image?.length ? (
+        <RenderMaterialAttachments
+          materialImages={challan_material_damage_image}
+          damage
+        />
       ) : null}
     </View>
   );

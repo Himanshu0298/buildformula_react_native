@@ -8,6 +8,7 @@ import useProjectManagementActions from 'redux/actions/projectManagementActions'
 import {useSelector} from 'react-redux';
 import dayjs from 'dayjs';
 import NoResult from 'components/Atoms/NoResult';
+import {useSnackbar} from 'components/Atoms/Snackbar';
 import ProgressCard from '../Components/ProgressCard';
 import AddProgressDialog from '../Components/AddProgressDialog';
 import WorkPath from '../Components/WorkPath';
@@ -122,6 +123,7 @@ const AddButton = props => {
 };
 
 function Execution(props) {
+  const snackbar = useSnackbar();
   const {route, navigation} = props;
   const {parent_id, pathList} = route?.params || {};
 
@@ -157,12 +159,10 @@ function Execution(props) {
     formData.append('wbs_works_id', parent_id);
     formData.append('quantity_completed', Number(values.quantity));
     formData.append('percentage_completed', Number(values.percentage));
-    formData.append('remarks', values.remark);
+    formData.append('remarks', values.remark || '');
     formData.append('file', values.attachments);
-
     await addProgressRecord(formData);
     loadData();
-
     navigation.goBack();
   };
 

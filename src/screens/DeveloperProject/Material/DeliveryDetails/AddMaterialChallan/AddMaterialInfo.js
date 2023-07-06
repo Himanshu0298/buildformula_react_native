@@ -138,7 +138,7 @@ const MaterialDetailsForm = props => {
         <View style={styles.renderInputContainer}>
           <RenderInput
             name="quantity"
-            label="Quantity"
+            label="Received Q."
             containerStyles={styles.input}
             value={quantity}
             onChangeText={v => updateMaterialItem('quantity', v)}

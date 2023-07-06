@@ -82,7 +82,11 @@ const DeliverDetails = props => {
   const {route} = props;
   const {item, orderNumber} = route?.params || {};
 
-  const {challan_number: challanNumber, id: deliveryChallanId} = item;
+  const {
+    challan_number: challanNumber,
+    id: deliveryChallanId,
+    delivery_date,
+  } = item;
 
   const {getMaterialChallanDetails} = useMaterialManagementActions();
 
@@ -90,8 +94,12 @@ const DeliverDetails = props => {
   const {materialChallanDetails, loading} = useSelector(
     s => s.materialManagement,
   );
-  const {challan_images, challan_info, materila_info, vehicle_images} =
-    materialChallanDetails || {};
+  const {
+    challan_images = [],
+    challan_info,
+    materila_info,
+    vehicle_images,
+  } = materialChallanDetails || {};
 
   React.useEffect(() => {
     getMaterialChallanDetails({
@@ -104,19 +112,21 @@ const DeliverDetails = props => {
   return (
     <View style={styles.mainContainer}>
       <Header title={`Challan No. : ${challanNumber}`} {...props} />
-
+      <Subheading style={{marginVertical: 5, marginLeft: 10}}>
+        Delivery Date: {delivery_date}
+      </Subheading>
       <Spinner visible={loading} textContent="" />
       <ScrollView showsVerticalScrollIndicator={false}>
-        {challan_images?.length ? (
+        {/* {challan_images?.length ? (
           <View>
             <Subheading style={styles.challanHeading}>
               Challan Images
             </Subheading>
             <Attachments challanImages={challan_images} />
           </View>
-        ) : null}
+        ) : null} */}
         <View>
-          {challan_images.length ? (
+          {challan_images?.length ? (
             <>
               <View style={styles.headerWrap}>
                 <Subheading style={styles.challanHeading}>

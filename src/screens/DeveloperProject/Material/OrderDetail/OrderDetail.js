@@ -10,6 +10,8 @@ import {
   Button,
   Dialog,
   Portal,
+  Menu,
+  IconButton,
 } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector} from 'react-redux';
@@ -21,6 +23,13 @@ import {useAlert} from 'components/Atoms/Alert';
 import {theme} from '../../../../styles/theme';
 import Header from '../CommonComponents/Header';
 import MenuDialog from '../MaterialGRN/Components/MenuDialog';
+
+const FILTER = [
+  {value: 'all', label: 'All'},
+  {value: 'pending', label: 'Pending'},
+  {value: 'rejected', label: 'Rejected'},
+  {value: 'approved', label: 'Approved'},
+];
 
 const RenderRow = props => {
   const {item, containerStyle} = props;
@@ -260,11 +269,17 @@ function OrderDetail(props) {
 
   const [addDialog, setAddDialog] = React.useState(false);
   const [selectedMaterialId, setSelectedMaterialId] = React.useState();
+  const [sort, setSort] = React.useState('all');
+  const [visible, setVisible] = React.useState(false);
+
+  const toggleMenu = () => setVisible(v => !v);
 
   const toggleAddDialog = () => setAddDialog(v => !v);
 
-  const materialDeliveryChallan =
-    materialChallanList?.infoData?.material_delivery_challan || [];
+  const materialDeliveryChallan = useMemo(() => {
+    return materialChallanList?.infoData?.material_delivery_challan || [];
+  }, [materialChallanList]);
+
   const project_id = selectedProject?.id;
 
   React.useEffect(() => {
@@ -276,6 +291,11 @@ function OrderDetail(props) {
       i => i.material_order_no === material_order_no,
     );
   }, [materialOrderList, material_order_no]);
+
+  const filteredChallan = useMemo(() => {
+    if (sort === 'all') return materialDeliveryChallan;
+    return materialDeliveryChallan.filter(i => i.challan_status === sort);
+  }, [materialDeliveryChallan, sort]);
 
   const getList = () => getMaterialChallanList({project_id, material_order_no});
 
@@ -341,21 +361,55 @@ function OrderDetail(props) {
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.subheadingContainer}>
           <Subheading>Challans</Subheading>
-          <OpacityButton
-            opacity={0.1}
-            color={theme.colors.primary}
-            onPress={() =>
-              navigation.navigate('AddChallan', {material_order_no, materialId})
-            }>
-            <MaterialCommunityIcons
-              name="plus"
+          <View style={{flexDirection: 'row'}}>
+            <OpacityButton
+              opacity={0.1}
               color={theme.colors.primary}
-              size={18}
-            />
-            <Text style={{color: theme.colors.primary}}>Add Challan</Text>
-          </OpacityButton>
+              onPress={() =>
+                navigation.navigate('AddChallan', {
+                  material_order_no,
+                  materialId,
+                })
+              }>
+              <MaterialCommunityIcons
+                name="plus"
+                color={theme.colors.primary}
+                size={18}
+              />
+              <Text style={{color: theme.colors.primary}}>Add Challan</Text>
+            </OpacityButton>
+            <Menu
+              style={styles.filterMenu}
+              visible={visible}
+              onDismiss={toggleMenu}
+              anchor={
+                <IconButton
+                  icon="filter-variant"
+                  size={23}
+                  onPress={toggleMenu}
+                  color="#4872f4"
+                  style={styles.iconButton}
+                />
+              }>
+              {FILTER.map((i, index) => {
+                const active = i.value === sort;
+                return (
+                  <Menu.Item
+                    index={index?.toString()}
+                    title={i.label}
+                    style={active ? styles.menuItem : {}}
+                    titleStyle={active ? styles.titleStyle : {}}
+                    onPress={() => {
+                      setSort(i.value);
+                      toggleMenu();
+                    }}
+                  />
+                );
+              })}
+            </Menu>
+          </View>
         </View>
-        {materialDeliveryChallan?.map(item => {
+        {filteredChallan?.map(item => {
           return (
             <CommonCard
               {...props}
@@ -460,5 +514,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
+  },
+  iconButton: {
+    backgroundColor: 'rgba(72, 114, 244, 0.1)',
+  },
+  menuItem: {
+    backgroundColor: '#4872f4',
+  },
+  titleStyle: {
+    color: '#fff',
   },
 });

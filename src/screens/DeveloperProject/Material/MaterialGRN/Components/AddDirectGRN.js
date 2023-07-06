@@ -159,16 +159,6 @@ function ChallanForm(props) {
             error={errors.company}
             onSelect={handleSubMaterialChange}
           />
-          {/* <TouchableOpacity
-            style={{
-              backgroundColor: 'blue',
-              padding: 10,
-              borderRadius: 10,
-              width: '35%',
-            }}
-            opacity={0.2}>
-            <Text style={{color: 'white'}}> Add Supplier</Text>
-          </TouchableOpacity> */}
           <RenderSelect
             name="supplier"
             disabled
@@ -275,6 +265,8 @@ const AddDirectGRN = props => {
   const onSubmit = async values => {
     const formData = new FormData();
 
+    const {attachments} = values;
+
     formData.append('project_id', selectedProject.id);
     formData.append('challan_id', challan_id);
     formData.append('challan_number', values.challan);
@@ -282,8 +274,11 @@ const AddDirectGRN = props => {
     formData.append('company', values.company);
     formData.append('supplier', values.supplier);
 
-    if (values.attachments) {
-      formData.append('file_upload', values.attachments);
+    if (attachments) {
+      attachments.map(item => {
+        formData.append('file_upload[]', item);
+        return item;
+      });
     }
 
     const res = await addDirectGRN(formData);

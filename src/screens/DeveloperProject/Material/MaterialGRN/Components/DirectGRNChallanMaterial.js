@@ -23,6 +23,7 @@ import {isEqual, round} from 'lodash';
 import {useAlert} from 'components/Atoms/Alert';
 import useMaterialManagement from 'services/materialManagement';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
+import {useSnackbar} from 'components/Atoms/Snackbar';
 import Header from '../../CommonComponents/Header';
 import Pagination from '../../CommonComponents/Pagination';
 import AddMaterialModal from './AddMaterial';
@@ -216,8 +217,14 @@ function UploadForm(props) {
 const RenderCard = props => {
   const {item, editDialog, index, handleDelete} = props;
 
-  const {damage, missing, material_quantity, rate, challan_total_amount} =
-    item || {};
+  const {
+    damage_qty,
+    missing,
+    material_quantity,
+    rate,
+    challan_total_amount,
+    lom,
+  } = item || {};
 
   const {materialCategories, materialSubCategories, makeOfLists} = useSelector(
     s => s.materialManagement,
@@ -245,11 +252,8 @@ const RenderCard = props => {
   }, [item?.material_units_id, units]);
 
   const makeOfListTitle = React.useMemo(() => {
-    return (
-      makeOfLists?.find(i => i.id === item?.master_list_of_makes_id)?.title ||
-      'NA'
-    );
-  }, [item?.master_list_of_makes_id, makeOfLists]);
+    return makeOfLists?.find(i => i.id === item?.lom)?.title || 'NA';
+  }, [item?.lom, makeOfLists]);
 
   return (
     <View style={styles.materialContainer}>
@@ -285,14 +289,14 @@ const RenderCard = props => {
       </View>
       <View style={styles.row}>
         <Caption>List of Makes: </Caption>
-        <Text style={styles.companyName}>{makeOfListTitle}</Text>
+        <Text style={styles.companyName}>{lom || makeOfListTitle}</Text>
       </View>
       <View style={styles.row}>
         <Caption>Fine Qty: </Caption>
         <Text>{material_quantity}</Text>
       </View>
       <View style={styles.row}>
-        <Text style={styles.damage}>Damage Qty :{damage} </Text>
+        <Text style={styles.damage}>Damage Qty :{damage_qty} </Text>
       </View>
       <View style={styles.row}>
         <Caption>Missing Qty: </Caption>
@@ -311,6 +315,8 @@ const RenderCard = props => {
 };
 
 const DirectGRNChallanMaterial = props => {
+  const snackbar = useSnackbar();
+
   const {navigation, route} = props;
   const {challan_id, edit, challan_number} = route?.params || {};
 
@@ -360,10 +366,20 @@ const DirectGRNChallanMaterial = props => {
     setDirectGrnDetails(res.data);
   };
 
-  const toggleAddDialog = () => setAddDialog(v => !v);
+  const toggleAddDialog = () => {
+    setAddDialog(v => {
+      if (v) setSelectedMaterialIndex();
+      return !v;
+    });
+  };
 
   const onSubmit = async values => {
     const formData = new FormData();
+
+    const {
+      challan_material_image: challanImages,
+      challan_material_damage_image,
+    } = values;
 
     const materialData = materials.map(item => ({
       material_category_id: item.material_category_id,
@@ -373,18 +389,25 @@ const DirectGRNChallanMaterial = props => {
       lom: item.master_list_of_makes_id,
       missing: item.missing,
       quantity: item.material_quantity,
-      delivery_challan_rate: item.rate,
-      challan_total_amount: item.challan_total_amount,
+      rate: item.rate,
+      total_amount: item.challan_total_amount,
     }));
 
+    if (challanImages) {
+      challanImages.map(item => {
+        formData.append('upload_challan_image[]', item);
+        return item;
+      });
+    }
+    if (challan_material_damage_image) {
+      challan_material_damage_image.map(item => {
+        formData.append('upload_damage_challan_image[]', item);
+        return item;
+      });
+    }
     formData.append('project_id', selectedProject.id);
     formData.append('challan_id', challan_id);
     formData.append('data', JSON.stringify(materialData));
-    formData.append('upload_challan_image', values.challan_material_image);
-    formData.append(
-      'upload_damage_challan_image',
-      values.challan_material_damage_image,
-    );
 
     await addDirectGRNMaterialInfo(formData);
     navigation.navigate('VehicleInfo', {
@@ -410,16 +433,27 @@ const DirectGRNChallanMaterial = props => {
   const handleSaveMaterial = values => {
     const _materials = [...materials];
 
+    const filteredMaterial = _materials.filter(e =>
+      e.material_sub_category_id === values.material_sub_category_id
+        ? (snackbar.showMessage({
+            message: 'Cannot add same subcategory again',
+            variant: 'error',
+          }),
+          e.material_sub_category_id !== values.material_sub_category_id)
+        : _materials,
+    );
+
     values.challan_total_amount = round(
       Number(values.material_quantity) * Number(values.rate),
+      2,
     );
 
     if (!isNaN(selectedMaterialIndex)) {
-      _materials[selectedMaterialIndex] = values;
+      filteredMaterial[selectedMaterialIndex] = values;
     } else {
-      _materials.push(values);
+      filteredMaterial.push(values);
     }
-    setMaterials(_materials);
+    setMaterials(filteredMaterial);
     toggleAddDialog();
   };
 
@@ -427,8 +461,6 @@ const DirectGRNChallanMaterial = props => {
     setSelectedMaterialIndex(index);
     toggleAddDialog();
   };
-
-  console.log('===========>materials ', materials);
 
   return (
     <>
@@ -505,7 +537,6 @@ const styles = StyleSheet.create({
   bodyContainer: {
     padding: 10,
     flex: 1,
-    marginBottom: 40,
   },
   headerContainer: {
     marginTop: 10,
@@ -573,7 +604,9 @@ const styles = StyleSheet.create({
   companyName: {
     backgroundColor: theme.colors.primary,
     color: '#fff',
-    padding: 2,
+    padding: 5,
+    fontSize: 10,
+    borderRadius: 10,
   },
   damage: {
     color: theme.colors.red,

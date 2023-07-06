@@ -34,8 +34,6 @@ function SelectTower(props) {
   const onSelectTower = (towerId, values) => {
     const tower = towerList?.find(i => i.tower === values)?.label;
 
-    console.log('===========> towerLabel', tower);
-
     navigation.navigate('CS_Step_Three', {
       ...route?.params,
       towerId,

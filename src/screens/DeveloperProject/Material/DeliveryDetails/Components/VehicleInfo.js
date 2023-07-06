@@ -20,7 +20,7 @@ const InvoiceAttachments = props => {
   const {invoiceImages = []} = props;
 
   const downloadFile = image => {
-    const imgUrl = image.challan_image;
+    const imgUrl = image.image_url;
     const newImgUri = imgUrl.lastIndexOf('/');
     const imageName = imgUrl.substring(newImgUri);
     const {dirs} = ReactNativeBlobUtil.fs;
@@ -59,7 +59,7 @@ const InvoiceAttachments = props => {
         return (
           <TouchableOpacity
             style={styles.sectionContainer}
-            onPress={() => downloadFile(file.image_url)}>
+            onPress={() => downloadFile(file)}>
             <Image source={FileIcon} style={styles.fileIcon} />
             <View>
               <Text
@@ -181,7 +181,7 @@ const VehicleInfo = props => {
         {invoiceImages?.length ? (
           <InvoiceAttachments invoiceImages={invoiceImages} />
         ) : null}
-        {vehicleAttachments?.map((item, index) => {
+        {/* {vehicleAttachments?.map((item, index) => {
           return (
             <TouchableOpacity
               style={styles.sectionContainer}
@@ -197,7 +197,7 @@ const VehicleInfo = props => {
               </View>
             </TouchableOpacity>
           );
-        })}
+        })} */}
       </View>
     </View>
   );
