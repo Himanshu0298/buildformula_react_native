@@ -28,37 +28,34 @@ const Quantity = props => {
     damaged_quentity,
     delivered_quentity,
     total_quentity,
-    remaining,
     missing_quentity,
   } = materialChallanList.infoData;
+
+  const {material_quantity, quantity_list, damage_list, missing, remaining} =
+    item || {};
 
   return (
     <View style={styles.quantityContainer}>
       <Text>Quantity</Text>
 
       <View style={styles.itemContainer}>
-        <RenderRow item={{label: 'LOM: ', value: item?.lomtitle}} />
+        <RenderRow item={{label: 'LOM: ', value: item?.lomtitle || '-'}} />
         <RenderRow
           item={{
             label: 'Qty Ordered: ',
-            value: total_quentity?.material_quantity,
+            value: material_quantity,
           }}
         />
       </View>
       <View style={styles.itemContainer}>
-        <RenderRow
-          item={{label: 'Qty Delivered: ', value: delivered_quentity?.quantity}}
-        />
-        <RenderRow
-          item={{label: 'Qty Damage: ', value: damaged_quentity?.damage}}
-          damage
-        />
+        <RenderRow item={{label: 'Qty Delivered: ', value: quantity_list}} />
+        <RenderRow item={{label: 'Qty Damage: ', value: damage_list}} damage />
       </View>
       <View style={styles.itemContainer}>
         <RenderRow
           item={{
             label: 'Qty Missing: ',
-            value: missing_quentity?.missing,
+            value: missing,
           }}
         />
         <RenderRow item={{label: 'Qty Remaining: ', value: remaining}} />
