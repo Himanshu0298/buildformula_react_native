@@ -209,6 +209,7 @@ const styles = StyleSheet.create({
   },
   customerDetails: {
     marginLeft: 10,
+    width: '50%',
   },
   customerBookings: {
     width: 170,

@@ -39,7 +39,7 @@ function MaterialForm(props) {
 
   const subCategoryOptions = useMemo(() => {
     return materialSubCategories
-      .filter(i => i.category_id === values.material_category_id)
+      ?.filter(i => i.category_id === values.material_category_id)
       ?.map(i => ({label: `${i.title}`, value: i.id}));
   }, [materialSubCategories, values.material_category_id]);
 

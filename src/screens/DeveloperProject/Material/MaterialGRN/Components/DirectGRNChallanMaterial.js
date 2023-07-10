@@ -24,6 +24,7 @@ import {useAlert} from 'components/Atoms/Alert';
 import useMaterialManagement from 'services/materialManagement';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 import {useSnackbar} from 'components/Atoms/Snackbar';
+import {getUniqueOptions} from 'utils/constant';
 import Header from '../../CommonComponents/Header';
 import Pagination from '../../CommonComponents/Pagination';
 import AddMaterialModal from './AddMaterial';
@@ -433,15 +434,15 @@ const DirectGRNChallanMaterial = props => {
   const handleSaveMaterial = values => {
     const _materials = [...materials];
 
-    const filteredMaterial = _materials.filter(e =>
-      e.material_sub_category_id === values.material_sub_category_id
-        ? (snackbar.showMessage({
-            message: 'Cannot add same subcategory again',
-            variant: 'error',
-          }),
-          e.material_sub_category_id !== values.material_sub_category_id)
-        : _materials,
-    );
+    // const filteredMaterial = _materials.filter(e =>
+    //   e.material_sub_category_id === values.material_sub_category_id
+    //     ? (snackbar.showMessage({
+    //         message: 'Cannot add same subcategory again',
+    //         variant: 'error',
+    //       }),
+    //       e.material_sub_category_id !== values.material_sub_category_id)
+    //     : _materials,
+    // );
 
     values.challan_total_amount = round(
       Number(values.material_quantity) * Number(values.rate),
@@ -449,11 +450,11 @@ const DirectGRNChallanMaterial = props => {
     );
 
     if (!isNaN(selectedMaterialIndex)) {
-      filteredMaterial[selectedMaterialIndex] = values;
+      _materials[selectedMaterialIndex] = values;
     } else {
-      filteredMaterial.push(values);
+      _materials.push(values);
     }
-    setMaterials(filteredMaterial);
+    setMaterials(_materials);
     toggleAddDialog();
   };
 
