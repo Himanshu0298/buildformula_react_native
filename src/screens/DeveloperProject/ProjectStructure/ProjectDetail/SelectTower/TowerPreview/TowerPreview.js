@@ -15,6 +15,7 @@ function TowerPreview(props) {
 
   const {getTowerList} = useProjectStructureActions();
   const {towerList, loading} = useSelector(s => s.projectStructure);
+
   const {selectedProject} = useSelector(s => s.project);
   React.useEffect(() => {
     getData();

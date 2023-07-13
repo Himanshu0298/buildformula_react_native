@@ -2,7 +2,7 @@ import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import RenderInput from 'components/Atoms/RenderInput';
 import {Formik} from 'formik';
 import React, {useMemo, useState} from 'react';
-import {ScrollView, StyleSheet, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 
 import {
   Button,

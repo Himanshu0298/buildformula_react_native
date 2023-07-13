@@ -40,6 +40,7 @@ import MenuDialog from '../Components/MenuDialog';
 import DeleteDialog from '../Components/DeleteDialog';
 import RenameDialogue from '../Components/RenameDialog';
 import VersionDialog from '../../RoughDrawing/Components/VersionDialog';
+import SelectTower from '../Components/SelectTower';
 
 const SNAP_POINTS = [0, '70%'];
 
@@ -263,6 +264,8 @@ function FinalDrawingFiles(props) {
   const {route, navigation} = props;
   const {folderId} = route?.params || {};
 
+  const structureLabel = 'tower';
+
   const {
     getFDFiles,
     uploadFDFile,
@@ -290,10 +293,10 @@ function FinalDrawingFiles(props) {
   const project_id = selectedProject.id;
   const {data} = files;
 
-  React.useEffect(() => {
-    loadFiles();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // React.useEffect(() => {
+  //   loadFiles();
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
   const loadFiles = () => {
     getFDFiles({project_id, folder_id: folderId});
@@ -403,6 +406,10 @@ function FinalDrawingFiles(props) {
     });
   };
 
+  const onSelectStructure = () => {
+    navigation.navigate('FDTowerPreview');
+  };
+
   return (
     <View style={styles.container}>
       <Spinner visible={loading} textContent="" />
@@ -414,8 +421,14 @@ function FinalDrawingFiles(props) {
           onPress={() => navigation.goBack()}>
           <MaterialCommunityIcons name="arrow-left" size={18} />
         </OpacityButton>
-        <Subheading style={styles.Subheading}>Files</Subheading>
+        <Subheading style={styles.Subheading}>Tower</Subheading>
       </View>
+
+      <SelectTower
+        navigation={navigation}
+        structureLabel={structureLabel}
+        onSelectStructure={onSelectStructure}
+      />
 
       <FlatList
         refreshControl={

@@ -302,6 +302,13 @@ import Files from 'screens/DeveloperProject/Files';
 // * Document Generator
 import DocumentGenerater from 'screens/DeveloperProject/DocumentGenerater';
 import DocumentDownload from 'screens/DeveloperProject/DocumentGenerater/Documents/DocumentDownload';
+import AddRows from 'screens/DeveloperProject/DesignModule/FinalDrawing/AddRows';
+import FDTowerPreview from 'screens/DeveloperProject/DesignModule/FinalDrawing/FDTowerPreview';
+import SelectStructure from 'screens/DeveloperProject/DesignModule/FinalDrawing/SelectStructure';
+import BungalowsList from 'screens/DeveloperProject/DesignModule/FinalDrawing/BungalowsList';
+import BungalowsFileDetails from 'screens/DeveloperProject/DesignModule/FinalDrawing/BungalowsFileDetails';
+import PlotsList from 'screens/DeveloperProject/DesignModule/FinalDrawing/PlotsList';
+// import SelectTower from 'screens/DeveloperProject/DesignModule/FinalDrawing/SelectTower/SelectTower';
 
 /** *********** Developer Project Sub Screens End   ************ */
 
@@ -683,6 +690,18 @@ function AppStackNavigator() {
               <Stack.Screen
                 name="FinalDrawingFiles"
                 component={FinalDrawingFiles}
+              />
+              <Stack.Screen
+                name="SelectStructure"
+                component={SelectStructure}
+              />
+              <Stack.Screen name="FDTowerPreview" component={FDTowerPreview} />
+              <Stack.Screen name="AddRows" component={AddRows} />
+              <Stack.Screen name="BungalowsList" component={BungalowsList} />
+              <Stack.Screen name="PlotsList" component={PlotsList} />
+              <Stack.Screen
+                name="BungalowsFileDetails"
+                component={BungalowsFileDetails}
               />
             </Stack.Group>
 
