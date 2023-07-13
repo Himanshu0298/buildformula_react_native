@@ -4,7 +4,7 @@ import {View, StyleSheet} from 'react-native';
 import {Divider, IconButton, Menu} from 'react-native-paper';
 
 function MenuDialog(props) {
-  const {onDelete, onUpdate, onShare} = props;
+  const {handleDelete, onUpdate, onShare, item} = props;
 
   const [versionMenu, setVersionMenu] = React.useState();
 
@@ -35,7 +35,7 @@ function MenuDialog(props) {
       <Menu.Item
         onPress={() => {
           toggleVersionMenu();
-          onDelete();
+          handleDelete(item?.id);
         }}
         title="Delete"
       />

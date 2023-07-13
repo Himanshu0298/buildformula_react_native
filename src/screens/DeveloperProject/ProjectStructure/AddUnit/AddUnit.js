@@ -237,6 +237,7 @@ const AddUnit = props => {
       project_floor: selectFloor,
       project_unit: unitNo,
     });
+    console.log('🚀 ~ file: AddUnit.js:240 ~ onSubmit ~ res:', res);
 
     const projectId = 0;
 

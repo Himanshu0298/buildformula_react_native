@@ -1,69 +1,88 @@
 import * as React from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, Image} from 'react-native';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import FileIcon from 'assets/images/file_icon.png';
 import Feather from 'react-native-vector-icons/Feather';
-
-import {Caption, Paragraph, Text, withTheme} from 'react-native-paper';
+import {Caption, Text, withTheme} from 'react-native-paper';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import {theme} from 'styles/theme';
-import {useState} from 'react';
 import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
-
-const arr = [
-  {title: 'Pay Bill', icon: 'checkbox-marked-circle', completed: false},
-  {
-    title: 'Check Bank Statement',
-    icon: 'checkbox-marked-circle',
-    completed: false,
-  },
-  {
-    title: 'Print bill payed Receipt',
-    icon: 'checkbox-blank-circle-outline',
-    completed: false,
-  },
-  {
-    title: 'Attach in file',
-    icon: 'checkbox-blank-circle-outline',
-    completed: false,
-  },
-];
-
-const Attachment = [
-  {
-    title: 'broser.pdf',
-    icon: 'file-pdf-box',
-    storage: '1.5mb',
-    name: 'download',
-  },
-  {
-    title: 'broser.pdf',
-    icon: 'file-pdf-box',
-    storage: '1.5mb',
-    name: 'download',
-  },
-];
-
-const Array = [
-  {title: 'Reminder', caption: '15 March 2022,1:00 PM'},
-  {title: 'Due Date', caption: '20 March, 2022'},
-];
+import {useSelector} from 'react-redux';
+import Spinner from 'react-native-loading-spinner-overlay';
+import useTodoActions from 'redux/actions/todoActions';
+import Layout from 'utils/Layout';
+import {useAlert} from 'components/Atoms/Alert';
 
 function TaskDetails(props) {
-  const {navigation} = props;
+  const alert = useAlert();
+  const {navigation, route} = props;
+
+  const {taskID, loadLists, loadTasks} = route.params;
+
+  const {TODO_COMPLETED_TASKS, TODO_TASKS, loading} = useSelector(s => s.todo);
+  const {selectedProject} = useSelector(s => s.project);
+
+  const {delete_task, mark_task_complete, mark_task_important} =
+    useTodoActions();
+
+  const projectId = selectedProject.id;
+
+  const taskDetails =
+    TODO_COMPLETED_TASKS?.find(e => e.id === taskID) ||
+    TODO_TASKS?.find(e => e.id === taskID);
+
+  const {
+    task_title,
+    description,
+    sub_task,
+    reminder_date,
+    due_date,
+    assign_to,
+    attachments,
+    completed,
+    important,
+  } = taskDetails || {};
 
   const navToEdit = () => {
     navigation.navigate('AddTask', {type: 'edit'});
   };
 
-  const handleDelete = () => {
-    console.log('----->');
+  const toggleComplete = async (id, complete) => {
+    await mark_task_complete({
+      project_id: projectId,
+      task_id: id,
+      task_completed: complete ? String(0) : String(1),
+    });
+    await loadTasks();
   };
 
-  const toggleComplete = () => {
-    console.log('----->');
+  const handleDelete = async () => {
+    alert.show({
+      title: 'Confirm',
+      message: 'Are you sure you want to delete?',
+      confirmText: 'Delete',
+      onConfirm: async () => {
+        await delete_task({
+          project_id: projectId,
+          task_id: taskID,
+        });
+        await loadLists();
+        await loadTasks();
+        await navigation.goBack();
+      },
+    });
+  };
+
+  const toggleFavorite = async () => {
+    await mark_task_important({
+      project_id: projectId,
+      task_id: taskID,
+      task_important: important ? String(0) : String(1),
+    });
+    await loadTasks();
   };
 
   const AddToFavorite = i => {
@@ -71,6 +90,7 @@ function TaskDetails(props) {
   };
   return (
     <ScrollView>
+      <Spinner visible={loading} textContent="" />
       <View style={styles.container}>
         <View style={styles.subContainer1}>
           <OpacityButton
@@ -80,7 +100,7 @@ function TaskDetails(props) {
             <MaterialIcon name="keyboard-backspace" color="#000" size={20} />
           </OpacityButton>
 
-          <Text style={styles.text}> Task</Text>
+          <Text style={styles.text}>Task Details</Text>
           <View style={styles.subContainer}>
             <OpacityButton
               opacity={0.1}
@@ -103,7 +123,7 @@ function TaskDetails(props) {
             <OpacityButton
               opacity={0.2}
               style={styles.icons}
-              onPress={AddToFavorite}>
+              onPress={() => toggleFavorite()}>
               <MaterialCommunityIcons
                 name="star-outline"
                 size={18}
@@ -113,89 +133,105 @@ function TaskDetails(props) {
           </View>
         </View>
         <View style={styles.tasks}>
-          <TouchableOpacity opacity={0} onPress={toggleComplete}>
-            <Feather name="circle" size={22} color="#4872F4" />
+          <TouchableOpacity
+            opacity={0}
+            onPress={() => toggleComplete(taskID, completed)}>
+            <MaterialCommunityIcons
+              name={
+                completed
+                  ? 'checkbox-marked-circle'
+                  : 'checkbox-blank-circle-outline'
+              }
+              size={20}
+              color="#005BE4"
+              style={styles.circle}
+            />
           </TouchableOpacity>
-          <Text style={styles.header}>2nd round with dev</Text>
+          <Text style={styles.header}>{task_title}</Text>
         </View>
         <View style={styles.description}>
-          <Text style={styles.textContainer}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Gravida
-            duis consectetur adipiscing eu egestas sed id euismod erat. Turpis
-            morbi tellus eu leo. Donec vestibulum aliquet facilisi tristique. In
-            neque dictum quis turpis. Nisl, faucibus fermentum mauris dolor in
-            vitae magna sit. Donec libero sed risus fringilla ultrices imperdiet
-            fringilla eu odio.
-          </Text>
+          <Text style={styles.textContainer}>{description}</Text>
         </View>
         <View>
-          {arr.map((element, index) => {
+          {sub_task?.map((element, index) => {
             return (
               <View style={styles.detailContainer}>
-                <OpacityButton opacity={0} onPress={toggleComplete}>
-                  <MaterialCommunityIcons
-                    name={element.icon}
-                    size={20}
-                    color="#005BE4"
-                    style={styles.circle}
-                  />
-                </OpacityButton>
-                <Paragraph style={styles.successParagraph}>
+                <MaterialCommunityIcons
+                  name={
+                    element?.complete
+                      ? 'checkbox-marked-circle'
+                      : 'checkbox-blank-circle-outline'
+                  }
+                  size={20}
+                  color="#005BE4"
+                  style={styles.circle}
+                />
+                <Text
+                  style={
+                    element?.complete
+                      ? {textDecorationLine: 'line-through'}
+                      : {}
+                  }>
                   {element.title}
-                </Paragraph>
+                </Text>
               </View>
             );
           })}
         </View>
-
-        {Array.map((i, index) => {
-          return (
-            <View style={styles.captionContainer}>
-              <Caption style={styles.caption}>{i.title} :</Caption>
-              <Text style={styles.value}>{i.caption}</Text>
-            </View>
-          );
-        })}
         <View style={styles.captionContainer}>
-          <Caption style={styles.caption}>Assignee:</Caption>
+          <Caption style={styles.caption}>Reminder :</Caption>
+          <Text style={styles.value}>{reminder_date}</Text>
         </View>
-        <View style={styles.headingContainer}>
-          <View style={{padding: 5}}>
-            <Text style={styles.textContainer}> Pratik Ghandhi</Text>
-
-            <Caption style={styles.input}>pratikghandhi0001@gmail.com</Caption>
-          </View>
+        <View style={styles.captionContainer}>
+          <Caption style={styles.caption}>Due Date :</Caption>
+          <Text style={styles.value}>{due_date}</Text>
         </View>
+        {assign_to ? (
+          <>
+            <View style={styles.captionContainer}>
+              <Caption style={styles.caption}>Assignee:</Caption>
+            </View>
+            <View style={styles.headingContainer}>
+              <View style={{padding: 5}}>
+                <Text style={styles.textContainer}> {assign_to || ''}</Text>
+                {/* 
+                <Caption style={styles.input}>
+                  pratikghandhi0001@gmail.com
+                </Caption> */}
+              </View>
+            </View>
+          </>
+        ) : undefined}
 
         <View style={styles.captionContainer}>
           <Caption style={styles.caption}>Attachments</Caption>
         </View>
 
-        {Attachment.map((ele, index) => {
+        {attachments?.map((ele, index) => {
           return (
             <View style={styles.card}>
               <View style={styles.cardContainer}>
                 <View style={styles.subCardContainer}>
                   <View style={{flexDirection: 'row'}}>
                     <View style={styles.pdfIcon}>
-                      <MaterialCommunityIcons
-                        name={ele.icon}
-                        size={25}
-                        color="#4872F4"
-                      />
+                      <Image source={FileIcon} style={styles.fileIcon} />
                     </View>
                     <View>
                       <View style={styles.InputContainer}>
-                        <Text>{ele.title}</Text>
+                        <Text
+                          numberOfLines={1}
+                          style={{width: Layout.window.width - 150}}>
+                          {ele.file_name}
+                        </Text>
                         <View>
-                          <Caption> {ele.storage}</Caption>
+                          <Caption> {ele.file_size}</Caption>
                         </View>
                       </View>
                     </View>
                   </View>
                 </View>
                 <View style={styles.download}>
-                  <AntDesign name={ele.name} size={24} color="#4872F4" />
+                  <AntDesign name="download" size={18} color="#4872F4" />
                 </View>
               </View>
             </View>
@@ -229,7 +265,7 @@ const styles = StyleSheet.create({
 
   pdfIcon: {
     margin: 10,
-    backgroundColor: 'rgba(72, 114, 244, 0.2)',
+    // backgroundColor: 'rgba(72, 114, 244, 0.2)',
   },
 
   tasks: {
@@ -243,8 +279,10 @@ const styles = StyleSheet.create({
   },
 
   download: {
-    alignSelf: 'flex-end',
-    paddingBottom: 10,
+    // alignSelf: 'flex-end',
+    backgroundColor: 'rgba(72, 114, 244, 0.2)',
+    padding: 8,
+    borderRadius: 50,
     marginRight: 15,
   },
 
@@ -258,6 +296,8 @@ const styles = StyleSheet.create({
   detailContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginVertical: 8,
+    marginHorizontal: 6,
   },
 
   description: {
@@ -326,5 +366,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderColor: 'rgba(4, 29, 54, 0.1)',
     borderRadius: 5,
+  },
+  fileIcon: {
+    width: 32,
+    height: 38,
+    paddingLeft: 10,
+    marginLeft: 10,
   },
 });

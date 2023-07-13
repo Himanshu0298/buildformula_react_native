@@ -3,35 +3,52 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import {View, StyleSheet, FlatList, ScrollView} from 'react-native';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import {
+  Button,
   Caption,
+  Dialog,
   FAB,
   Paragraph,
+  Portal,
   Subheading,
   Text,
   withTheme,
 } from 'react-native-paper';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import {RefreshControl, TouchableOpacity} from 'react-native-gesture-handler';
+import useTodoActions from 'redux/actions/todoActions';
+import {useSelector} from 'react-redux';
+import useSalesActions from 'redux/actions/salesActions';
+import RenderInput from 'components/Atoms/RenderInput';
+import {theme} from 'styles/theme';
+import {Formik} from 'formik';
+import {useAlert} from 'components/Atoms/Alert';
+import Layout from 'utils/Layout';
+import NoResult from 'components/Atoms/NoResult';
+import Spinner from 'react-native-loading-spinner-overlay';
 import MenuDialog from '../Components/MenuDialog';
-
-const arr = [
-  {id: 1, title: 'Pay Bill For Gas Cylinder', favorite: true, completed: false},
-  {id: 2, title: 'Need more candidates', favorite: false, completed: false},
-  {id: 3, title: 'interview with startup', favorite: false, completed: false},
-  {id: 4, title: '2nd round with dev', favorite: false, completed: false},
-  {id: 5, title: 'talk to harry', favorite: false, completed: false},
-];
+import ShareTask from '../TaskList/ShareTask';
 
 function RenderTodoCard(props) {
   const {item, toggleComplete, toggleFavorite, navToDetails} = props;
-  const {id, title, favorite, completed} = item;
+  const {
+    id,
+    task_title,
+    due_date,
+    reminder_date,
+    important,
+    completed,
+    sub_task_count,
+    user,
+  } = item || {};
 
   return (
-    <ScrollView>
+    <View>
       <View style={styles.cardContainer}>
         <View style={styles.headingContainer}>
           <View style={styles.subCardContainer}>
-            <OpacityButton opacity={0} onPress={() => toggleComplete(id)}>
+            <OpacityButton
+              opacity={0}
+              onPress={() => toggleComplete(id, completed)}>
               <MaterialCommunityIcons
                 name={
                   completed
@@ -44,86 +61,255 @@ function RenderTodoCard(props) {
               />
             </OpacityButton>
 
-            <TouchableOpacity onPress={() => navToDetails()}>
+            <TouchableOpacity onPress={() => navToDetails(id)}>
               <Paragraph
+                numberOfLines={1}
                 style={[
                   styles.successParagraph,
                   completed ? {textDecorationLine: 'line-through'} : {},
+                  {width: Layout.window.width - 135},
                 ]}>
-                {title}
+                {task_title}
               </Paragraph>
-              <Caption>2 of 5. 15 March,2022. Jayesh Ghandhi</Caption>
+              <Caption>
+                {`${sub_task_count || ''} • ${due_date} • ${reminder_date}`}
+              </Caption>
+              <Caption style={{color: '#000'}}>{user}</Caption>
             </TouchableOpacity>
           </View>
           <View style={styles.icons}>
-            <OpacityButton opacity={0} onPress={() => toggleFavorite(id)}>
+            <OpacityButton
+              opacity={0}
+              onPress={() => toggleFavorite(id, important)}>
               <MaterialCommunityIcons
-                name={favorite ? 'star' : 'star-outline'}
+                name={important ? 'star' : 'star-outline'}
                 size={23}
-                color={favorite ? '#FFC700' : undefined}
+                color={important ? '#FFC700' : undefined}
               />
             </OpacityButton>
           </View>
         </View>
       </View>
-    </ScrollView>
+    </View>
+  );
+}
+
+function AddTaskCategory(props) {
+  const {visible, selectedList, toggleDialog, onSubmit} = props;
+
+  return (
+    <Portal>
+      <Dialog
+        visible={visible}
+        onDismiss={toggleDialog}
+        style={styles.toggleDialog}>
+        <View style={styles.dialogContainer}>
+          <View style={styles.dialogTitleContainer}>
+            <OpacityButton
+              opacity={0.1}
+              color={theme.colors.error}
+              style={styles.closeButton}
+              onPress={toggleDialog}>
+              <MaterialCommunityIcons
+                name="close"
+                size={15}
+                color={theme.colors.error}
+              />
+            </OpacityButton>
+            <Text style={styles.dialogHeader}>
+              {selectedList ? 'Update' : 'Add'} List
+            </Text>
+          </View>
+          <View style={styles.taskInputDialog}>
+            <Formik
+              validateOnBlur={false}
+              validateOnChange={false}
+              initialValues={{
+                todo_id: selectedList?.action || undefined,
+                listName: selectedList?.title || '',
+              }}
+              // validationSchema={schema}
+              onSubmit={async values => onSubmit(values)}>
+              {({values, errors, handleChange, handleBlur, handleSubmit}) => {
+                return (
+                  <View style={styles.dialogContentContainer}>
+                    <RenderInput
+                      name="listName"
+                      label="Enter List Title"
+                      containerStyles={styles.input}
+                      value={values.listName}
+                      onChangeText={handleChange('listName')}
+                      onBlur={handleBlur('listName')}
+                      onSubmitEditing={handleSubmit}
+                      error={errors.listName}
+                    />
+                    <View style={styles.dialogActionContainer}>
+                      <Button
+                        style={styles.addWorkActionButton}
+                        mode="contained"
+                        contentStyle={styles.contentStyle}
+                        theme={{roundness: 15}}
+                        onPress={handleSubmit}>
+                        {selectedList ? 'Update' : 'Save'}
+                      </Button>
+                    </View>
+                  </View>
+                );
+              }}
+            </Formik>
+          </View>
+        </View>
+      </Dialog>
+    </Portal>
   );
 }
 
 function SubTaskList(props) {
-  const {navigation, theme} = props;
+  const {navigation, route} = props;
+  const alert = useAlert();
 
-  const [list, setList] = React.useState(arr);
+  const {action, title} = route.params || '';
 
-  const [completedList, incompleteList] = React.useMemo(() => {
-    return [list.filter(i => i.completed), list.filter(i => !i.completed)];
-  }, [list]);
+  const [listTitle, setListTitle] = React.useState(title);
 
-  const navToAdd = () => navigation.navigate('AddTask');
+  const [dialog, setDialog] = React.useState(false);
+  const toggleModal = () => setDialog(v => !v);
 
-  const navToShare = () => navigation.navigate('ShareTask');
-  const navToDetails = () => navigation.navigate('TaskDetails');
+  const [addActivityDialog, setAddActivityDialog] = React.useState(false);
+  const toggleDialog = () => setAddActivityDialog(v => !v);
 
-  const toggleComplete = id => {
-    const updatedList = [...list];
-    const index = updatedList.findIndex(i => i.id === id);
-    updatedList[index].completed = !updatedList[index].completed;
+  const {selectedProject} = useSelector(s => s.project);
+  const {TODO_COMPLETED_TASKS, TODO_TASKS, loading} = useSelector(s => s.todo);
 
-    setList(updatedList);
+  const {
+    get_todo_list_tasks,
+    share_task,
+    add_todo_list,
+    delete_todo_list,
+    get_todo_list,
+    mark_task_important,
+    mark_task_complete,
+  } = useTodoActions();
+  const {getAssignToData} = useSalesActions();
+
+  const projectId = selectedProject.id;
+
+  const loadLists = () => {
+    get_todo_list({
+      project_id: projectId,
+    });
   };
 
-  const toggleFavorite = id => {
-    const updatedList = [...list];
-    const index = updatedList.findIndex(i => i.id === id);
-    updatedList[index].favorite = !updatedList[index].favorite;
-
-    setList(updatedList);
+  const loadTasks = () => {
+    get_todo_list_tasks({
+      project_id: projectId,
+      action_type: action,
+    });
   };
 
-  const onDelete = () => {
-    console.log('----->');
+  React.useEffect(() => {
+    loadTasks();
+    getAssignToData({project_id: projectId});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const navToAdd = () => navigation.navigate('AddTask', {action});
+
+  const navToDetails = taskID =>
+    navigation.navigate('TaskDetails', {taskID, loadTasks, loadLists});
+
+  const toggleComplete = async (id, complete) => {
+    await mark_task_complete({
+      project_id: projectId,
+      task_id: id,
+      task_completed: complete ? String(0) : String(1),
+    });
+    await loadTasks();
   };
-  const onUpdate = () => {
-    console.log('----->');
+
+  const toggleFavorite = async (id, important) => {
+    await mark_task_important({
+      project_id: projectId,
+      task_id: id,
+      task_important: important ? String(0) : String(1),
+    });
+    await loadTasks();
   };
+
+  const handleShare = async (share_list_id, userList) => {
+    await share_task({
+      project_id: projectId,
+      share_list_id,
+      share_id: userList,
+    });
+  };
+
+  const OnSubmit = async values => {
+    const res = await add_todo_list({
+      project_id: projectId,
+      title: values?.listName,
+      todo_id: values?.todo_id || 0,
+    });
+    await setListTitle(res?.value?.list_name);
+    await loadLists({
+      project_id: projectId,
+    });
+    await toggleDialog();
+    // setSelectedList(undefined);
+  };
+
+  const handleDelete = async () => {
+    alert.show({
+      title: 'Confirm',
+      message: 'Are you sure you want to delete?',
+      confirmText: 'Delete',
+      onConfirm: async () => {
+        await delete_todo_list({
+          project_id: projectId,
+          list_id: action,
+        });
+        await loadLists();
+        await navigation.goBack();
+      },
+    });
+  };
+
   return (
     <View style={styles.container}>
+      <Spinner visible={loading} textContent="" />
+      <AddTaskCategory
+        visible={addActivityDialog}
+        selectedList={route.params}
+        toggleDialog={toggleDialog}
+        onSubmit={OnSubmit}
+      />
+      <ShareTask
+        open={dialog}
+        handleClose={toggleModal}
+        handleSubmit={handleShare}
+        selectedList={action}
+      />
       <View style={styles.headingContainer2}>
         <View style={styles.subContainer}>
           <OpacityButton
             opacity={0.2}
-            // color={theme.colors.primary}
             style={styles.backButton}
             onPress={navigation.goBack}>
-            <MaterialIcon name="keyboard-backspace" color="#000" size={20} />
+            <MaterialIcon name="keyboard-backspace" color="#4872f4" size={20} />
           </OpacityButton>
-          <Subheading>Sales Team</Subheading>
+          <Subheading>{listTitle}</Subheading>
         </View>
-        <MenuDialog
-          onUpdate={onUpdate}
-          onDelete={onDelete}
-          onShare={navToShare}
-        />
+        {Number(action) ? (
+          <MenuDialog
+            onUpdate={() => {
+              toggleDialog();
+            }}
+            handleDelete={handleDelete}
+            onShare={() => {
+              toggleModal();
+            }}
+          />
+        ) : undefined}
       </View>
       {/* <AutoDragSortableView
         dataSource={milestones}
@@ -134,11 +320,14 @@ function SubTaskList(props) {
         keyExtractor={(_, i) => i.toString()}
         renderItem={() => <RenderTaskList />}
       /> */}
-      <View style={styles.contentContainer}>
+      <View style={{flex: TODO_COMPLETED_TASKS?.length ? 0.5 : 1}}>
         <FlatList
-          data={incompleteList}
-          extraData={incompleteList}
+          data={TODO_TASKS}
+          extraData={TODO_TASKS}
           keyExtractor={(_, index) => String(index)}
+          refreshControl={
+            <RefreshControl refreshing={false} onRefresh={loadTasks} />
+          }
           renderItem={({item}) => (
             <RenderTodoCard
               item={item}
@@ -147,34 +336,34 @@ function SubTaskList(props) {
               navToDetails={navToDetails}
             />
           )}
+          ListEmptyComponent={<NoResult />}
         />
-
-        {completedList.length ? (
-          <>
-            <View style={styles.completeHeadingContainer}>
-              <Text style={styles.completedHeading}>Completed</Text>
-              <MaterialCommunityIcons
-                name="chevron-right"
-                size={24}
-                color="black"
-              />
-            </View>
-            <FlatList
-              data={completedList}
-              extraData={completedList}
-              keyExtractor={(_, index) => String(index)}
-              renderItem={({item}) => (
-                <RenderTodoCard
-                  item={item}
-                  toggleComplete={toggleComplete}
-                  toggleFavorite={toggleFavorite}
-                  navToDetails={navToDetails}
-                />
-              )}
-            />
-          </>
-        ) : null}
       </View>
+      {TODO_COMPLETED_TASKS?.length ? (
+        <View style={styles.content}>
+          <View style={styles.completeHeadingContainer}>
+            <Text style={styles.completedHeading}>Completed</Text>
+            <MaterialCommunityIcons
+              name="chevron-right"
+              size={24}
+              color="black"
+            />
+          </View>
+          <FlatList
+            data={TODO_COMPLETED_TASKS}
+            extraData={TODO_COMPLETED_TASKS}
+            keyExtractor={(_, index) => String(index)}
+            renderItem={({item}) => (
+              <RenderTodoCard
+                item={item}
+                toggleComplete={toggleComplete}
+                toggleFavorite={toggleFavorite}
+                navToDetails={navToDetails}
+              />
+            )}
+          />
+        </View>
+      ) : null}
       <FAB
         style={[styles.fab, {backgroundColor: theme.colors.primary}]}
         icon="plus"
@@ -187,6 +376,9 @@ function SubTaskList(props) {
 export default withTheme(SubTaskList);
 
 const styles = StyleSheet.create({
+  content: {
+    flex: 0.5,
+  },
   container: {
     flexGrow: 1,
     padding: 10,
@@ -209,13 +401,19 @@ const styles = StyleSheet.create({
   subCardContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    paddingLeft: 4,
+    paddingRight: 0,
+    paddingVertical: 12,
   },
   icons: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginRight: 12,
   },
   circle: {
-    margin: 15,
+    margin: 12,
+    marginRight: 10,
+    marginLeft: 0,
   },
   completedHeading: {
     fontSize: 17,
@@ -250,5 +448,52 @@ const styles = StyleSheet.create({
     right: 20,
     bottom: 20,
     color: 'red',
+  },
+  dialogContainer: {
+    margin: 10,
+  },
+  taskInputDialog: {
+    marginTop: 25,
+  },
+
+  input: {
+    marginVertical: 5,
+  },
+
+  closeButton: {
+    borderRadius: 50,
+    alignSelf: 'flex-end',
+    position: 'absolute',
+  },
+
+  toggleDialog: {
+    top: -100,
+  },
+  dialogTitleContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    // padding: 10,
+  },
+
+  dialogHeader: {
+    color: '#000',
+    margin: 5,
+    fontSize: 20,
+  },
+  dialogContentContainer: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+  },
+  dialogActionContainer: {
+    marginTop: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  addWorkActionButton: {
+    width: '40%',
+  },
+  contentStyle: {
+    padding: 1,
+    flex: 1,
   },
 });
