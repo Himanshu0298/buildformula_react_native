@@ -57,7 +57,7 @@ export async function downloadFile(params) {
 
   const {token} = store.getState().user;
 
-  const Authorization = `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8xMDQuMTk4LjE3Ni42XC9hcGlcL2xvZ2luIiwiaWF0IjoxNjU5MTY3MTkyLCJleHAiOjE2NTkzMzk5OTIsIm5iZiI6MTY1OTE2NzE5MiwianRpIjoid2NDSWFOUDNyN0x5ZGhZNCIsInN1YiI6MTg4LCJwcnYiOiI4N2UwYWYxZWY5ZmQxNTgxMmZkZWM5NzE1M2ExNGUwYjA0NzU0NmFhIn0.Dk35WWY02kiRbg8HLDOcig94Di7M5_5fZ8dxCbEXeVU`;
+  const Authorization = `Bearer ${token}`;
 
   const downloaded = await checkDownloaded(name);
 
