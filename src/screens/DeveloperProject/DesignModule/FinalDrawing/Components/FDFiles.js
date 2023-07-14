@@ -20,10 +20,7 @@ import FileIcon from 'assets/images/file_icon.png';
 import dayjs from 'dayjs';
 import {useSelector} from 'react-redux';
 import NoResult from 'components/Atoms/NoResult';
-import {downloadFile, getDownloadUrl, getFileExtension} from 'utils/download';
-import {useSnackbar} from 'components/Atoms/Snackbar';
-import FileViewer from 'react-native-file-viewer';
-import useDesignModuleActions from 'redux/actions/designModuleActions';
+import {getDownloadUrl} from 'utils/download';
 import {theme} from 'styles/theme';
 import {useImagePicker} from 'hooks';
 import Animated from 'react-native-reanimated';
@@ -32,15 +29,17 @@ import BottomSheet from 'reanimated-bottom-sheet';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Feather from 'react-native-vector-icons/Feather';
-import {getPermissions, getShadow} from 'utils';
+import {getShadow} from 'utils';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {useDownload} from 'components/Atoms/Download';
-import MenuDialog from '../Components/MenuDialog';
-import DeleteDialog from '../Components/DeleteDialog';
-import RenameDialogue from '../Components/RenameDialog';
-import VersionDialog from '../../RoughDrawing/Components/VersionDialog';
-import SelectTower from '../Components/SelectTower';
+import FileViewer from 'react-native-file-viewer';
+import MenuDialog from './MenuDialog';
+
+import VersionDialog from './VersionDialog';
+import SelectTower from './SelectTower';
+import RenameDialogue from './RenameDialog';
+import DeleteDialog from './DeleteDialog';
 
 const SNAP_POINTS = [0, '70%'];
 
@@ -260,157 +259,38 @@ function RenderMenuModal(props) {
   );
 }
 
-function FinalDrawingFiles(props) {
-  const {route, navigation} = props;
-  const {folderId, title} = route?.params || {};
-
-  const {
-    getFDFiles,
-    uploadFDFile,
-    renameFDFile,
-    deleteFDFile,
-    getFDActivities,
-    addFDVersion,
-    getFDVersion,
-    deleteFDVersion,
-  } = useDesignModuleActions();
+function FDFiles(props) {
+  const {navigation} = props;
   const {openImagePicker} = useImagePicker();
 
-  const modulePermissions = getPermissions('Files');
+  const {
+    data,
+    onSelectStructure,
+    menuId,
+    toggleMenu,
+    setModalContentType,
+    setModalContent,
+    onPressFile,
+    modelContentType,
+    modalContent,
+    toggleDialog,
+    versionDataHandler,
+    activityDataHandler,
+    toggleShareDialog,
+    handleNewVersionUpload,
+    handleDeleteVersion,
+    DialogType,
+    renameFileHandler,
+    deleteFileHandler,
+    versionData,
+    onChoose,
+  } = props;
 
-  const [menuId, setMenuId] = React.useState();
-  const [modelContentType, setModalContentType] = React.useState('menu');
-  const [modalContent, setModalContent] = React.useState({});
-  const [shareDialog, setShareDialog] = React.useState(false);
-  const [DialogType, setDialogType] = React.useState();
-
-  const snackbar = useSnackbar();
-  const {selectedProject} = useSelector(s => s.project);
-  const {files, versionData, loading} = useSelector(s => s.designModule);
-
-  const project_id = selectedProject.id;
-  const {data} = files;
-
-  // React.useEffect(() => {
-  //   loadFiles();
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
-
-  const loadFiles = () => {
-    getFDFiles({project_id, folder_id: folderId});
-  };
-
-  const toggleMenu = folderIndex => setMenuId(folderIndex);
-  const toggleDialog = v => setDialogType(v);
-  const toggleShareDialog = () => setShareDialog(v => !v);
-
-  const renameFileHandler = async (name, id, type) => {
-    await renameFDFile({
-      file_name: name,
-      final_drawing_files_id: id,
-      project_id,
-    });
-    loadFiles();
-    toggleDialog();
-  };
-
-  const deleteFileHandler = async (id, type) => {
-    await deleteFDFile({final_drawing_files_id: id, project_id});
-    loadFiles();
-    toggleDialog();
-    snackbar.showMessage({
-      message: 'File Deleted!',
-      variant: 'success',
-    });
-  };
-
-  const versionDataHandler = async (id, type) => {
-    setModalContentType('version');
-    getFDVersion({project_id, final_drawing_files_id: id});
-  };
-
-  const activityDataHandler = (action_type, id) => {
-    setModalContentType('activity');
-    getFDActivities({project_id, record_id: id, mode: 'file'});
-  };
-
-  const onPressFile = async file => {
-    snackbar.showMessage({
-      message: 'Preparing your download...',
-      variant: 'warning',
-      autoHideDuration: 10000,
-    });
-    const fileUrl = getDownloadUrl(file);
-    const {dir} = await downloadFile(file, fileUrl);
-
-    snackbar.showMessage({
-      message: 'File Downloaded!',
-      variant: 'success',
-      action: {label: 'Open', onPress: () => FileViewer.open(`file://${dir}`)},
-    });
-  };
-
-  const onChoose = v => {
-    handleFileUpload(v);
-  };
-
-  const handleFileUpload = async file => {
-    const {name} = file;
-    const extension = getFileExtension(file.name);
-    file.name = `${name}.${extension}`;
-
-    const formData = new FormData();
-
-    formData.append('folder_id', folderId);
-    formData.append('myfile[]', file);
-    formData.append('project_id', project_id);
-
-    await uploadFDFile(formData);
-    toggleDialog();
-    snackbar.showMessage({
-      message: 'File Uploaded Sucessfully!',
-      variant: 'success',
-    });
-    loadFiles();
-  };
-
-  const handleNewVersionUpload = file_id => {
-    openImagePicker({
-      type: 'file',
-      onChoose: async v => {
-        const formData = new FormData();
-
-        formData.append('finaldrawing_file_id', file_id);
-        formData.append('myfile', v);
-        formData.append('folder_id', folderId);
-        formData.append('project_id', project_id);
-
-        await addFDVersion(formData);
-        getFDVersion({project_id, final_drawing_files_id: file_id});
-      },
-    });
-  };
-
-  const handleDeleteVersion = async (version, type) => {
-    setModalContentType('version');
-    await deleteFDVersion({
-      project_id,
-      record_id: version.id,
-      record_type: type,
-    });
-    getFDVersion({
-      project_id,
-      final_drawing_files_id: version.final_drawing_files_id,
-    });
-  };
-
-  const onSelectStructure = () => {
-    navigation.navigate('FDTowerPreview');
-  };
+  const structureLabel = 'tower';
 
   return (
     <View style={styles.container}>
-      <Spinner visible={loading} textContent="" />
+      <Spinner textContent="" />
 
       <View style={styles.header}>
         <OpacityButton
@@ -419,12 +299,21 @@ function FinalDrawingFiles(props) {
           onPress={() => navigation.goBack()}>
           <MaterialCommunityIcons name="arrow-left" size={18} />
         </OpacityButton>
-        <Subheading style={styles.Subheading}>{title}</Subheading>
+        <Subheading style={styles.Subheading}>Tower</Subheading>
       </View>
+
+      <SelectTower
+        navigation={navigation}
+        structureLabel={structureLabel}
+        onSelectStructure={onSelectStructure}
+      />
 
       <FlatList
         refreshControl={
-          <RefreshControl refreshing={false} onRefresh={loadFiles} />
+          <RefreshControl
+            refreshing={false}
+            onRefresh={console.log('===========> ')}
+          />
         }
         data={data}
         extraData={data}
@@ -457,7 +346,6 @@ function FinalDrawingFiles(props) {
       <RenderMenuModal
         {...props}
         {...{
-          modulePermissions,
           menuId,
           modelContentType,
           modalContent,
@@ -604,4 +492,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FinalDrawingFiles;
+export default FDFiles;

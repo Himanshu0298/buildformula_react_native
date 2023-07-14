@@ -36,7 +36,7 @@ function getFilePath(name) {
 export async function checkDownloaded(name) {
   const path = getFilePath(name);
   const result = await RNFS.exists(path);
-  return result ? path : result;
+  return result ? path : `result`;
 }
 
 export function getDownloadUrl(file, version) {
@@ -110,6 +110,75 @@ export async function downloadFile(params) {
       throw error;
     });
 }
+
+// const downloadFile = async () => {
+//   if (Platform.OS === 'ios') {
+//     const downloadDest = `${RNFS.DocumentDirectoryPath}/${docName}.${docExtinction}`;
+//     setLoading(true);
+//     const downloadOptions = {
+//       fromUrl: docUrl,
+//       toFile: downloadDest,
+//     };
+//     await RNFS.downloadFile(downloadOptions)
+//       .promise.then(() => {
+//         FileViewer.open(downloadDest, {showOpenWithDialog: true});
+//       })
+//       .catch(error => {
+//         console.log('error ===========>', error);
+//       });
+//     setLoading(false);
+//     Share.share({
+//       title: docName,
+//       url: downloadDest,
+//     });
+//   } else {
+//     check(PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE).then(res => {
+//       if (
+//         res === RESULTS.UNAVAILABLE ||
+//         RESULTS.DENIED ||
+//         RESULTS.LIMITED ||
+//         RESULTS.BLOCKED
+//       ) {
+//         request(PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE).then(
+//           async result => {
+//             if (result === 'granted') {
+//               try {
+//                 setLoading(true);
+//                 const downloadDest = `${RNFS.DownloadDirectoryPath}/${docName}.${docExtinction}`;
+//                 const options = {
+//                   fromUrl: docUrl,
+//                   toFile: downloadDest,
+//                 };
+//                 await RNFS.downloadFile(options)
+//                   .promise.then(() => {
+//                     FileViewer.open(downloadDest, {showOpenWithDialog: true});
+//                   })
+//                   .catch(error => {
+//                     console.log(' ===========>', error);
+//                     // error
+//                   });
+//                 setLoading(false);
+//                 showSnackbar({
+//                   message: 'Document Downloaded Successfully',
+//                   type: 'success',
+//                 });
+//               } catch (error) {
+//                 showSnackbar({
+//                   message: 'Something went Wrong',
+//                   type: 'error',
+//                 });
+//               }
+//             } else if (result === 'denied') {
+//               showSnackbar({message: 'Permission Denied', type: 'error'});
+//             }
+//           },
+//         );
+//       } else {
+//         showSnackbar({message: 'Could not Download Document'});
+//       }
+//     });
+//   }
+// };
 
 export async function downloadPdf(data, fileUrl, getBase64) {
   const path = `${DIR}/vshwan_document_${new Date().getTime()}.pdf`;

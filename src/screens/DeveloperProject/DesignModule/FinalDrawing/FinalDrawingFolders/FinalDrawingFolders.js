@@ -58,17 +58,27 @@ function RenderFolder(props) {
   } = props;
   const {title} = item;
 
+  console.log('===========> item', item);
+
+  const navToNext = () => {
+    if (title === 'Structure') {
+      navigation.navigate('SelectStructure', {
+        ...props,
+        title,
+        folderId: item.id,
+      });
+    } else {
+      navigation.navigate('FinalDrawingFiles', {
+        ...props,
+        title,
+        folderId: item.id,
+      });
+    }
+  };
+
   return (
     <View style={styles.sectionContainer}>
-      <TouchableOpacity
-        style={{flexGrow: 1}}
-        onPress={() => {
-          navigation.navigate('SelectStructure', {
-            ...props,
-            title,
-            folderId: item.id,
-          });
-        }}>
+      <TouchableOpacity style={{flexGrow: 1}} onPress={navToNext}>
         <View style={styles.sectionContainer}>
           <Image source={FolderIcon} style={styles.PdfIcon} />
           <View>

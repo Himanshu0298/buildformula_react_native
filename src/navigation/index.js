@@ -308,6 +308,7 @@ import SelectStructure from 'screens/DeveloperProject/DesignModule/FinalDrawing/
 import BungalowsList from 'screens/DeveloperProject/DesignModule/FinalDrawing/BungalowsList';
 import BungalowsFileDetails from 'screens/DeveloperProject/DesignModule/FinalDrawing/BungalowsFileDetails';
 import PlotsList from 'screens/DeveloperProject/DesignModule/FinalDrawing/PlotsList';
+import FDTowerList from 'screens/DeveloperProject/DesignModule/FinalDrawing/FDTowerList';
 // import SelectTower from 'screens/DeveloperProject/DesignModule/FinalDrawing/SelectTower/SelectTower';
 
 /** *********** Developer Project Sub Screens End   ************ */
@@ -696,6 +697,7 @@ function AppStackNavigator() {
                 component={SelectStructure}
               />
               <Stack.Screen name="FDTowerPreview" component={FDTowerPreview} />
+              <Stack.Screen name="FDTowerList" component={FDTowerList} />
               <Stack.Screen name="AddRows" component={AddRows} />
               <Stack.Screen name="BungalowsList" component={BungalowsList} />
               <Stack.Screen name="PlotsList" component={PlotsList} />

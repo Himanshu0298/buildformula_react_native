@@ -43,7 +43,7 @@ function FloorBar(props) {
     selectedFloor,
   } = props;
 
-  const {structureType, unitCount, floor} = floorData || {};
+  const {structureType, floor} = floorData || {};
 
   const LabelContainer = onPressLabel ? TouchableOpacity : View;
 

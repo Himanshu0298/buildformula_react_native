@@ -20,7 +20,7 @@ function SelectStructure(props) {
     let nextStep = 'PlotsList';
 
     if (selectedStructure === 6) {
-      nextStep = 'FinalDrawingFiles';
+      nextStep = 'FDTowerList';
     }
     if (selectedStructure === 4) {
       nextStep = 'BungalowsList';
