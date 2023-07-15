@@ -55,10 +55,9 @@ const MaterialInfoHeader = props => {
 
   const makeOfListTitle = React.useMemo(() => {
     return (
-      makeOfLists?.find(i => i.id === item?.master_list_of_makes_id)?.status ||
-      'NA'
+      makeOfLists?.find(i => String(i.id) === item.lomtitle)?.title || 'NA'
     );
-  }, [item?.master_list_of_makes_id, makeOfLists]);
+  }, [item, makeOfLists]);
 
   return (
     <>
