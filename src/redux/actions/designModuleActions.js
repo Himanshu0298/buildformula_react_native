@@ -530,10 +530,124 @@ export default function useDesignModuleActions() {
       }),
     addFDTowerFloorsRows: params =>
       dispatch({
-        type: types.GET_FD_TOWER_FLOORS,
+        type: types.ADD_FD_TOWER_ROWS,
         payload: async () => {
           try {
             const {data, msg} = _res(await getFDTowerFloors(params));
+            snackbar.showMessage({message: msg});
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    updateFDTowerFloorsRows: params =>
+      dispatch({
+        type: types.UPDATE_FD_TOWER_ROWS,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await updateFDTowerFloorsRows(params));
+            snackbar.showMessage({message: msg});
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    deleteFDTowerFloorsRows: params =>
+      dispatch({
+        type: types.DELETE_FD_TOWER_ROWS,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await deleteFDTowerFloorsRows(params));
+            snackbar.showMessage({message: msg});
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    renameFDTowerFile: params =>
+      dispatch({
+        type: types.RENAME_FD_TOWER_FILE,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await renameFDTowerFile(params));
+            snackbar.showMessage({message: msg});
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    deleteFDTowerFile: params =>
+      dispatch({
+        type: types.DELETE_FD_TOWER_FILE,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await deleteFDTowerFile(params));
+            snackbar.showMessage({message: msg});
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    FDTowerFileActivityLogs: params =>
+      dispatch({
+        type: types.FD_TOWER_ACTIVITY_LOG,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await FDTowerFileActivityLogs(params));
+            snackbar.showMessage({message: msg});
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    uploadTowerFileVersion: params =>
+      dispatch({
+        type: types.UPDATE_TOWER_FILE_VERSION,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await uploadTowerFileVersion(params));
+            snackbar.showMessage({message: msg});
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    getFDBungalows: params =>
+      dispatch({
+        type: types.GET_FD_BUNGALOWS,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await getFDBungalows(params));
             snackbar.showMessage({message: msg});
 
             return Promise.resolve({data});

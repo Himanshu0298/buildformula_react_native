@@ -3,14 +3,18 @@ import {
   ADD_FD_TOWER_ROWS,
   ADD_RD_VERSION,
   CREATE_RD_FOLDER,
+  DELETE_FD_TOWER_FILE,
+  DELETE_FD_TOWER_ROWS,
   DELETE_PARKING_FILE,
   DELETE_RD_FILES,
   DELETE_RD_FOLDER,
   DELETE_RD_VERSION,
+  FD_TOWER_ACTIVITY_LOG,
   GET_BUNGALOW_UNIT_SHEET,
   GET_CATEGORY_BUNGALOW_SHEET,
   GET_CATEGORY_PLOT_SHEET,
   GET_CATEGORY_TOWER_SHEET,
+  GET_FD_BUNGALOWS,
   GET_FD_TOWERS,
   GET_FD_TOWER_FLOORS,
   GET_PARKING_LIST,
@@ -22,6 +26,7 @@ import {
   GET_RD_VERSION,
   GET_SELECTED_PROJECT,
   GET_UNIT_TOWER_SHEET,
+  RENAME_FD_TOWER_FILE,
   RENAME_RD_FILES,
   RENAME_RD_FOLDER,
   UPDATE_AREA_SHEET,
@@ -29,8 +34,10 @@ import {
   UPDATE_CATEGORY_BUNGALOW_SHEET,
   UPDATE_CATEGORY_PLOT_SHEET,
   UPDATE_CATEGORY_TOWER_SHEET,
+  UPDATE_FD_TOWER_ROWS,
   UPDATE_PARKING_LIST,
   UPDATE_PLOT_UNIT_SHEET,
+  UPDATE_TOWER_FILE_VERSION,
   UPDATE_UNIT_TOWER_SHEET,
   UPLOAD_PARKING_FILE,
   UPLOAD_RD_FILES,
@@ -53,6 +60,7 @@ const initialState = {
   versionData: [],
   fdTowers: [],
   fdTowerFloorsList: [],
+  fdBungalowsList: [],
 };
 
 export default (state = initialState, action = {}) => {
@@ -145,6 +153,13 @@ export default (state = initialState, action = {}) => {
         ...state,
         loading: false,
         fdTowerFloorsList: payload,
+      };
+    }
+    case `${GET_FD_BUNGALOWS}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+        fdBungalowsList: payload,
       };
     }
     case `${GET_RD_FOLDER_ACTIVITIES}_REJECTED`:
@@ -477,6 +492,13 @@ export default (state = initialState, action = {}) => {
     case `${ADD_FD_TOWER_FILES}_PENDING`:
     case `${GET_FD_TOWER_FLOORS}_PENDING`:
     case `${ADD_FD_TOWER_ROWS}_PENDING`:
+    case `${UPDATE_FD_TOWER_ROWS}_PENDING`:
+    case `${DELETE_FD_TOWER_ROWS}_PENDING`:
+    case `${RENAME_FD_TOWER_FILE}_PENDING`:
+    case `${DELETE_FD_TOWER_FILE}_PENDING`:
+    case `${FD_TOWER_ACTIVITY_LOG}_PENDING`:
+    case `${UPDATE_TOWER_FILE_VERSION}_PENDING`:
+    case `${GET_FD_BUNGALOWS}_PENDING`:
       return {
         ...state,
         loading: true,
@@ -495,6 +517,12 @@ export default (state = initialState, action = {}) => {
     case `${DELETE_RD_VERSION}_FULFILLED`:
     case `${ADD_FD_TOWER_FILES}_FULFILLED`:
     case `${ADD_FD_TOWER_ROWS}_FULFILLED`:
+    case `${UPDATE_FD_TOWER_ROWS}_FULFILLED`:
+    case `${DELETE_FD_TOWER_ROWS}_FULFILLED`:
+    case `${RENAME_FD_TOWER_FILE}_FULFILLED`:
+    case `${DELETE_FD_TOWER_FILE}_FULFILLED`:
+    case `${FD_TOWER_ACTIVITY_LOG}_FULFILLED`:
+    case `${UPDATE_TOWER_FILE_VERSION}_FULFILLED`:
       return {
         ...state,
         loading: false,
@@ -516,6 +544,13 @@ export default (state = initialState, action = {}) => {
     case `${ADD_FD_TOWER_FILES}_REJECTED`:
     case `${GET_FD_TOWER_FLOORS}_REJECTED`:
     case `${ADD_FD_TOWER_ROWS}_REJECTED`:
+    case `${UPDATE_FD_TOWER_ROWS}_REJECTED`:
+    case `${DELETE_FD_TOWER_ROWS}_REJECTED`:
+    case `${RENAME_FD_TOWER_FILE}_REJECTED`:
+    case `${DELETE_FD_TOWER_FILE}_REJECTED`:
+    case `${FD_TOWER_ACTIVITY_LOG}_REJECTED`:
+    case `${UPDATE_TOWER_FILE_VERSION}_REJECTED`:
+    case `${GET_FD_BUNGALOWS}_REJECTED`:
       return {
         ...state,
         loading: false,
