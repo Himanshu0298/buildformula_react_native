@@ -176,6 +176,151 @@ export default function useDesignModule() {
       );
     },
 
+    getFDTowers: data => {
+      return instance.post(
+        '/finaldrawing/getalltowers',
+        data,
+        config({multipart: false}),
+      );
+    },
+
+    addFDTowerFiles: data => {
+      return instance.post(
+        '/finaldrawing/towersFilesupload',
+        data,
+        config({multipart: false}),
+      );
+    },
+
+    getFDTowerFloors: data => {
+      return instance.post(
+        '/finaldrawing/gettower',
+        data,
+        config({multipart: false}),
+      );
+    },
+    addFDTowerFloorsRows: data => {
+      return instance.post(
+        '/finaldrawing/addfloorrows',
+        data,
+        config({multipart: false}),
+      );
+    },
+    updateFDTowerFloorsRows: data => {
+      return instance.post(
+        '/finaldrawing/updatefloorrows',
+        data,
+        config({multipart: false}),
+      );
+    },
+    deleteFDTowerFloorsRows: data => {
+      return instance.post(
+        '/finaldrawing/deletefloorrows',
+        data,
+        config({multipart: false}),
+      );
+    },
+    renameFDTowerFile: data => {
+      return instance.post(
+        '/finaldrawing/renametowerfile',
+        data,
+        config({multipart: false}),
+      );
+    },
+    deleteFDTowerFile: data => {
+      return instance.post(
+        '/finaldrawing/deletetowerfile',
+        data,
+        config({multipart: false}),
+      );
+    },
+    FDTowerFileActivityLogs: data => {
+      return instance.post(
+        '/finaldrawing/towerfilesactivitylogs',
+        data,
+        config({multipart: false}),
+      );
+    },
+    uploadTowerFileVersion: data => {
+      return instance.post(
+        '/finaldrawing/uploadtowerfileversion',
+        data,
+        config({multipart: true}),
+      );
+    },
+    getFDBungalows: data => {
+      return instance.post(
+        '/finaldrawing/getallbungalows',
+        data,
+        config({multipart: false}),
+      );
+    },
+    uploadFDBungalowsFile: data => {
+      return instance.post(
+        '/finaldrawing/uploadbungalowsfiles',
+        data,
+        config({multipart: true}),
+      );
+    },
+    renameFDBungalowsFile: data => {
+      return instance.post(
+        '/finaldrawing/renamebungalowsfile',
+        data,
+        config({multipart: false}),
+      );
+    },
+
+    deleteFDBungalowsFile: data => {
+      return instance.post(
+        '/finaldrawing/deletebungalowsfile',
+        data,
+        config({multipart: false}),
+      );
+    },
+    FDBungalowsFileActivityLog: data => {
+      return instance.post(
+        '/finaldrawing/bungalowsactivitylogs',
+        data,
+        config({multipart: false}),
+      );
+    },
+    getFDPlots: data => {
+      return instance.post(
+        '/inaldrawing/getallplot',
+        data,
+        config({multipart: false}),
+      );
+    },
+    uploadFDPlotFiles: data => {
+      return instance.post(
+        '/finaldrawing/uploadplotfiles',
+        data,
+        config({multipart: true}),
+      );
+    },
+    uploadFDPlotBungalowFileVersion: data => {
+      return instance.post(
+        '/finaldrawing/uploadbunglowpoltfileversion',
+        data,
+        config({multipart: true}),
+      );
+    },
+
+    addFloorFolder: data => {
+      return instance.post(
+        '/finaldrawing/addfloorfolder',
+        data,
+        config({multipart: true}),
+      );
+    },
+    addFloorFolderFile: data => {
+      return instance.post(
+        '/finaldrawing/uploadfloorfolderfile',
+        data,
+        config({multipart: true}),
+      );
+    },
+
     // Working Drawing
 
     getWDFolders: data => {

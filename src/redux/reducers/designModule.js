@@ -1,4 +1,6 @@
 import {
+  ADD_FD_TOWER_FILES,
+  ADD_FD_TOWER_ROWS,
   ADD_RD_VERSION,
   CREATE_RD_FOLDER,
   DELETE_PARKING_FILE,
@@ -9,6 +11,8 @@ import {
   GET_CATEGORY_BUNGALOW_SHEET,
   GET_CATEGORY_PLOT_SHEET,
   GET_CATEGORY_TOWER_SHEET,
+  GET_FD_TOWERS,
+  GET_FD_TOWER_FLOORS,
   GET_PARKING_LIST,
   GET_PLOT_UNIT_SHEET,
   GET_PROJECT_AREA_SHEET,
@@ -47,6 +51,8 @@ const initialState = {
   unitBungalowList: [],
   unitPlotList: [],
   versionData: [],
+  fdTowers: [],
+  fdTowerFloorsList: [],
 };
 
 export default (state = initialState, action = {}) => {
@@ -124,6 +130,21 @@ export default (state = initialState, action = {}) => {
         ...state,
         loading: false,
         activities: Object.values(payload).flat(),
+      };
+    }
+
+    case `${GET_FD_TOWERS}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+        fdTowers: payload,
+      };
+    }
+    case `${GET_FD_TOWER_FLOORS}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+        fdTowerFloorsList: payload,
       };
     }
     case `${GET_RD_FOLDER_ACTIVITIES}_REJECTED`:
@@ -451,7 +472,11 @@ export default (state = initialState, action = {}) => {
     case `${DELETE_PARKING_FILE}_PENDING`:
     case `${UPDATE_PARKING_LIST}_PENDING`:
     case `${ADD_RD_VERSION}_PENDING`:
+    case `${GET_FD_TOWERS}_PENDING`:
     case `${DELETE_RD_VERSION}_PENDING`:
+    case `${ADD_FD_TOWER_FILES}_PENDING`:
+    case `${GET_FD_TOWER_FLOORS}_PENDING`:
+    case `${ADD_FD_TOWER_ROWS}_PENDING`:
       return {
         ...state,
         loading: true,
@@ -468,6 +493,8 @@ export default (state = initialState, action = {}) => {
     case `${UPDATE_PARKING_LIST}_FULFILLED`:
     case `${ADD_RD_VERSION}_FULFILLED`:
     case `${DELETE_RD_VERSION}_FULFILLED`:
+    case `${ADD_FD_TOWER_FILES}_FULFILLED`:
+    case `${ADD_FD_TOWER_ROWS}_FULFILLED`:
       return {
         ...state,
         loading: false,
@@ -484,7 +511,11 @@ export default (state = initialState, action = {}) => {
     case `${DELETE_PARKING_FILE}_REJECTED`:
     case `${UPDATE_PARKING_LIST}_REJECTED`:
     case `${ADD_RD_VERSION}_REJECTED`:
+    case `${GET_FD_TOWERS}_REJECTED`:
     case `${DELETE_RD_VERSION}_REJECTED`:
+    case `${ADD_FD_TOWER_FILES}_REJECTED`:
+    case `${GET_FD_TOWER_FLOORS}_REJECTED`:
+    case `${ADD_FD_TOWER_ROWS}_REJECTED`:
       return {
         ...state,
         loading: false,

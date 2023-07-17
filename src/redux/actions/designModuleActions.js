@@ -26,6 +26,26 @@ export default function useDesignModuleActions() {
     uploadFDFile,
     renameFDFile,
     deleteFDFile,
+    getFDTowers,
+    addFDTowerFiles,
+    getFDTowerFloors,
+    addFDTowerFloorsRows,
+    updateFDTowerFloorsRows,
+    deleteFDTowerFloorsRows,
+    renameFDTowerFile,
+    deleteFDTowerFile,
+    FDTowerFileActivityLogs,
+    uploadTowerFileVersion,
+    getFDBungalows,
+    uploadFDBungalowsFile,
+    renameFDBungalowsFile,
+    deleteFDBungalowsFile,
+    FDBungalowsFileActivityLog,
+    getFDPlots,
+    uploadFDPlotFiles,
+    uploadFDPlotBungalowFileVersion,
+    addFloorFolder,
+    addFloorFolderFile,
     getWDFiles,
     getWDFolders,
     createWDFolder,
@@ -450,6 +470,70 @@ export default function useDesignModuleActions() {
         payload: async () => {
           try {
             const {data, msg} = _res(await deleteFDVersion(params));
+            snackbar.showMessage({message: msg});
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    getFDTowers: params =>
+      dispatch({
+        type: types.GET_FD_TOWERS,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await getFDTowers(params));
+            snackbar.showMessage({message: msg});
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    addFDTowerFiles: params =>
+      dispatch({
+        type: types.ADD_FD_TOWER_FILES,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await addFDTowerFiles(params));
+            snackbar.showMessage({message: msg});
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    getFDTowerFloors: params =>
+      dispatch({
+        type: types.GET_FD_TOWER_FLOORS,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await getFDTowerFloors(params));
+            snackbar.showMessage({message: msg});
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    addFDTowerFloorsRows: params =>
+      dispatch({
+        type: types.GET_FD_TOWER_FLOORS,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await getFDTowerFloors(params));
             snackbar.showMessage({message: msg});
 
             return Promise.resolve({data});
