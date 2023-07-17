@@ -20,10 +20,7 @@ import FileIcon from 'assets/images/file_icon.png';
 import dayjs from 'dayjs';
 import {useSelector} from 'react-redux';
 import NoResult from 'components/Atoms/NoResult';
-import {downloadFile, getDownloadUrl, getFileExtension} from 'utils/download';
-import {useSnackbar} from 'components/Atoms/Snackbar';
-import FileViewer from 'react-native-file-viewer';
-import useDesignModuleActions from 'redux/actions/designModuleActions';
+import {getDownloadUrl} from 'utils/download';
 import {theme} from 'styles/theme';
 import {useImagePicker} from 'hooks';
 import Animated from 'react-native-reanimated';
@@ -32,14 +29,16 @@ import BottomSheet from 'reanimated-bottom-sheet';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Feather from 'react-native-vector-icons/Feather';
-import {getPermissions, getShadow} from 'utils';
+import {getShadow} from 'utils';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {useDownload} from 'components/Atoms/Download';
-import MenuDialog from '../Components/MenuDialog';
-import DeleteDialog from '../Components/DeleteDialog';
-import RenameDialogue from '../Components/RenameDialog';
-import VersionDialog from '../../RoughDrawing/Components/VersionDialog';
+import FileViewer from 'react-native-file-viewer';
+import MenuDialog from './MenuDialog';
+
+import VersionDialog from './VersionDialog';
+import RenameDialogue from './RenameDialog';
+import DeleteDialog from './DeleteDialog';
 
 const SNAP_POINTS = [0, '70%'];
 
@@ -47,6 +46,7 @@ function RenderFile(props) {
   const {index, item, toggleMenu, setModalContentType, setModalContent} = props;
 
   const {title, created} = item;
+
   const download = useDownload();
 
   const onPressFile = async file => {
@@ -61,6 +61,7 @@ function RenderFile(props) {
       },
     });
   };
+
   return (
     <View style={styles.recentFiles}>
       <TouchableOpacity
@@ -257,154 +258,38 @@ function RenderMenuModal(props) {
   );
 }
 
-function WorkingDrawingFiles(props) {
-  const {route, navigation} = props;
-  const {folderId} = route?.params || {};
-
-  const {
-    getWDFiles,
-    uploadWDFile,
-    renameWDFile,
-    deleteWDFile,
-    getWDActivities,
-    getWDVersion,
-    addWDVersion,
-    deleteWDVersion,
-  } = useDesignModuleActions();
+function FDFiles(props) {
+  const {navigation} = props;
   const {openImagePicker} = useImagePicker();
 
-  const modulePermissions = getPermissions('Files');
+  const {
+    data,
+    onSelectStructure,
+    menuId,
+    toggleMenu,
+    setModalContentType,
+    setModalContent,
+    onPressFile,
+    modelContentType,
+    modalContent,
+    toggleDialog,
+    versionDataHandler,
+    activityDataHandler,
+    toggleShareDialog,
+    handleNewVersionUpload,
+    handleDeleteVersion,
+    DialogType,
+    renameFileHandler,
+    deleteFileHandler,
+    versionData,
+    onChoose,
+  } = props;
 
-  const [menuId, setMenuId] = React.useState();
-  const [modelContentType, setModalContentType] = React.useState('menu');
-  const [modalContent, setModalContent] = React.useState({});
-  const [shareDialog, setShareDialog] = React.useState(false);
-  const [DialogType, setDialogType] = React.useState();
-
-  const snackbar = useSnackbar();
-  const {selectedProject} = useSelector(s => s.project);
-  const {files, versionData, loading} = useSelector(s => s.designModule);
-  console.log('-------->versionData123', versionData);
-
-  const project_id = selectedProject.id;
-  const {data} = files;
-
-  React.useEffect(() => {
-    loadFiles();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const loadFiles = () => {
-    getWDFiles({project_id, folder_id: folderId});
-  };
-
-  const toggleMenu = folderIndex => setMenuId(folderIndex);
-  const toggleDialog = v => setDialogType(v);
-  const toggleShareDialog = () => setShareDialog(v => !v);
-
-  const renameFileHandler = async (name, id, type) => {
-    await renameWDFile({
-      file_name: name,
-      working_drawing_files_id: id,
-      project_id,
-    });
-    loadFiles();
-    toggleDialog();
-  };
-
-  const deleteFileHandler = async (id, type) => {
-    await deleteWDFile({working_drawing_files_id: id, project_id});
-    loadFiles();
-    toggleDialog();
-    snackbar.showMessage({
-      message: 'File Deleted!',
-      variant: 'success',
-    });
-  };
-
-  const versionDataHandler = async (id, type) => {
-    setModalContentType('version');
-    getWDVersion({project_id, working_drawing_files_id: id});
-  };
-
-  const activityDataHandler = (action_type, id) => {
-    setModalContentType('activity');
-    getWDActivities({project_id, record_id: id, mode: 'file'});
-  };
-
-  const onPressFile = async file => {
-    snackbar.showMessage({
-      message: 'Preparing your download...',
-      variant: 'warning',
-      autoHideDuration: 10000,
-    });
-    const fileUrl = getDownloadUrl({file, common: true});
-    const {dir} = await downloadFile(file, fileUrl);
-
-    snackbar.showMessage({
-      message: 'File Uploaded successfully!',
-      variant: 'success',
-      action: {label: 'Open', onPress: () => FileViewer.open(`file://${dir}`)},
-    });
-  };
-
-  const onChoose = v => {
-    handleFileUpload(v);
-  };
-
-  const handleFileUpload = async file => {
-    const {name} = file;
-    const extension = getFileExtension(file.name);
-    file.name = `${name}.${extension}`;
-
-    const formData = new FormData();
-
-    formData.append('folder_id', folderId);
-    formData.append('myfile[]', file);
-    formData.append('project_id', project_id);
-
-    await uploadWDFile(formData);
-
-    toggleDialog();
-    snackbar.showMessage({
-      message: 'File Downloaded!',
-      variant: 'success',
-    });
-    loadFiles();
-  };
-
-  const handleNewVersionUpload = async file_id => {
-    openImagePicker({
-      type: 'file',
-      onChoose: async v => {
-        const formData = new FormData();
-
-        formData.append('workingdrawing_file_id', file_id);
-        formData.append('myfile', v);
-        formData.append('folder_id', folderId);
-        formData.append('project_id', project_id);
-
-        await addWDVersion(formData);
-        getWDVersion({project_id, working_drawing_files_id: file_id});
-      },
-    });
-  };
-  const handleDeleteVersion = async (version, versionType) => {
-    setModalContentType('version');
-    await deleteWDVersion({
-      project_id,
-      record_id: version.id,
-      record_type: versionType,
-    });
-    getWDVersion({
-      project_id,
-      working_drawing_files_id: version.working_drawing_files_id,
-    });
-  };
+  const structureLabel = 'tower';
 
   return (
     <View style={styles.container}>
-      <Spinner visible={loading} textContent="" />
+      <Spinner textContent="" />
 
       <View style={styles.header}>
         <OpacityButton
@@ -413,12 +298,21 @@ function WorkingDrawingFiles(props) {
           onPress={() => navigation.goBack()}>
           <MaterialCommunityIcons name="arrow-left" size={18} />
         </OpacityButton>
-        <Subheading style={styles.Subheading}>Files</Subheading>
+        <Subheading style={styles.Subheading}>Tower</Subheading>
       </View>
+
+      {/* <SelectTower
+        navigation={navigation}
+        structureLabel={structureLabel}
+        onSelectStructure={onSelectStructure}
+      /> */}
 
       <FlatList
         refreshControl={
-          <RefreshControl refreshing={false} onRefresh={loadFiles} />
+          <RefreshControl
+            refreshing={false}
+            onRefresh={console.log('===========> ')}
+          />
         }
         data={data}
         extraData={data}
@@ -451,7 +345,6 @@ function WorkingDrawingFiles(props) {
       <RenderMenuModal
         {...props}
         {...{
-          modulePermissions,
           menuId,
           modelContentType,
           modalContent,
@@ -487,7 +380,6 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     backgroundColor: '#ffffff',
-    paddingHorizontal: 10,
   },
   Subheading: {
     fontSize: 20,
@@ -599,4 +491,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default WorkingDrawingFiles;
+export default FDFiles;

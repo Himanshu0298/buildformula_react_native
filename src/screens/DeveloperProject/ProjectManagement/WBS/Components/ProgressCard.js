@@ -9,10 +9,6 @@ import {
 } from 'react-native';
 import FileIcon from 'assets/images/file_icon.png';
 import dayjs from 'dayjs';
-import {getDownloadUrl} from 'utils/download';
-import {getFileName} from 'utils/constant';
-import {useDownload} from 'components/Atoms/Download';
-import FileViewer from 'react-native-file-viewer';
 import ReactNativeBlobUtil from 'react-native-blob-util';
 
 const ProgressCard = props => {

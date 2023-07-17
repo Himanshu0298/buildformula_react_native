@@ -39,7 +39,8 @@ export async function checkDownloaded(name) {
   return result ? path : result;
 }
 
-export function getDownloadUrl(file, version) {
+export function getDownloadUrl(params) {
+  const {file, version, common} = params;
   const {id, project_id} = file;
   let url = `files/downloadversoin/${project_id}/current/${id}`;
 

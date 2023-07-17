@@ -117,7 +117,8 @@ function Files() {
   const download = useDownload();
 
   const onPressFile = async file => {
-    const fileUrl = getDownloadUrl(file);
+    const fileUrl = getDownloadUrl({file, common: true});
+
     const name = getFileName(file);
 
     download.link({

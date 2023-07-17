@@ -1,3 +1,4 @@
+/* eslint-disable global-require */
 import React from 'react';
 import {
   Image,
@@ -6,18 +7,15 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import industrialPreview from 'assets/images/industrialUnit.png';
 import {
   Caption,
   Divider,
-  Headline,
   IconButton,
   Subheading,
   Text,
   Title,
 } from 'react-native-paper';
 import {theme} from 'styles/theme';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import FileViewer from 'react-native-file-viewer';
@@ -42,6 +40,7 @@ const data = [
     image: require('assets/images/bungalow_img.png'),
   },
   {
+    // eslint-disable-next-line global-require
     image: require('assets/images/bungalow_img.png'),
   },
   {
@@ -114,7 +113,7 @@ function Files() {
   const download = useDownload();
 
   const onPressFile = async file => {
-    const fileUrl = getDownloadUrl(file);
+    const fileUrl = getDownloadUrl({file, common: true});
     const name = getFileName(file);
 
     download.link({

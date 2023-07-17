@@ -50,7 +50,7 @@ function Files(props) {
   const [visible, setVisible] = React.useState(false);
 
   const onPressFile = async file => {
-    const fileUrl = getDownloadUrl(file);
+    const fileUrl = getDownloadUrl({file, common: true});
     const name = getFileName(file);
 
     download.link({
@@ -397,7 +397,7 @@ function ProjectPreview(props) {
   const handleShare = async file => {
     try {
       toggleSharing();
-      const fileUrl = getDownloadUrl(file);
+      const fileUrl = getDownloadUrl({file, common: true});
       const name = getFileName(file);
 
       return download.link({

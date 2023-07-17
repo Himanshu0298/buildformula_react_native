@@ -141,7 +141,7 @@ const VehicleInfo = props => {
   const download = useDownload();
 
   const onPressFile = async fileUrl => {
-    const url = getDownloadUrl(fileUrl.image_url);
+    const url = getDownloadUrl({file: fileUrl.image_url, common: true});
 
     const name = getFileName(fileUrl.image_url);
 

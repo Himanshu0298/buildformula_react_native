@@ -173,7 +173,7 @@ const MaterialAttachments = props => {
   const download = useDownload();
 
   const onPressFile = async file => {
-    const fileUrl = getDownloadUrl(file.file_url);
+    const fileUrl = getDownloadUrl({file: file.file_url, common: true});
     const name = getFileName(file.file_url);
 
     download.link({

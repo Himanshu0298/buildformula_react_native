@@ -51,7 +51,7 @@ function RenderFile(props) {
   const download = useDownload();
 
   const onPressFile = async file => {
-    const fileUrl = getDownloadUrl(file.file_url);
+    const fileUrl = getDownloadUrl({file: file.file_url, common: true});
     const name = getFileName(file.title);
     download.link({
       name,
@@ -339,7 +339,7 @@ function FinalDrawingFiles(props) {
       variant: 'warning',
       autoHideDuration: 10000,
     });
-    const fileUrl = getDownloadUrl(file);
+    const fileUrl = getDownloadUrl({file, common: true});
     const {dir} = await downloadFile(file, fileUrl);
 
     snackbar.showMessage({

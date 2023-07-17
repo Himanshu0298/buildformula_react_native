@@ -65,7 +65,7 @@ function FileSection(props) {
   const filteredFiles = files?.[folderDepth] || [];
 
   const onPressFile = async file => {
-    const fileUrl = getDownloadUrl(file);
+    const fileUrl = getDownloadUrl({file});
     const name = getFileName(file);
 
     download.link({

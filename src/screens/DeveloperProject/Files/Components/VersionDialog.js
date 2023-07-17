@@ -40,7 +40,7 @@ function VersionFile(props) {
     toggleVersionMenu();
     toggleDownloading();
 
-    const fileUrl = getDownloadUrl(version, true);
+    const fileUrl = getDownloadUrl({version});
     const name = getFileName(version);
 
     download.link({
