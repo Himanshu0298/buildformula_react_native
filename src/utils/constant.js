@@ -1,9 +1,9 @@
 import {Platform} from 'react-native';
 import {theme} from 'styles/theme';
 
-export const SITE_URL = 'http://192.168.20.131/';
+// export const SITE_URL = 'http://192.168.20.131/';
 // export const SITE_URL = 'http://110.227.208.185/';
-// export const SITE_URL = 'https://portal.buildformula.com';
+export const SITE_URL = 'https://portal.buildformula.com';
 export const BASE_API_URL = `${SITE_URL}/api/`;
 
 export const COMMON_DOWNLOAD_LINK = `${BASE_API_URL}files/download`;

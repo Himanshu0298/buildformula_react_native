@@ -1,54 +1,28 @@
 import * as React from 'react';
 import {Caption, Subheading, Text, withTheme} from 'react-native-paper';
-import {
-  StyleSheet,
-  View,
-  TouchableOpacity,
-  Image,
-  Platform,
-} from 'react-native';
+import {StyleSheet, View, TouchableOpacity, Image} from 'react-native';
 import FileIcon from 'assets/images/file_icon.png';
 import {getShadow} from 'utils';
 import FileViewer from 'react-native-file-viewer';
 
 import {getFileName} from 'utils/constant';
 import {useDownload} from 'components/Atoms/Download';
-import {getDownloadUrl} from 'utils/download';
-import ReactNativeBlobUtil from 'react-native-blob-util';
 
 const InvoiceAttachments = props => {
-  const {invoiceImages = []} = props;
+  const {invoiceImages = [], projectId} = props;
 
-  const downloadFile = image => {
-    const imgUrl = image.image_url;
-    const newImgUri = imgUrl.lastIndexOf('/');
-    const imageName = imgUrl.substring(newImgUri);
-    const {dirs} = ReactNativeBlobUtil.fs;
-    const path =
-      Platform.OS === 'ios'
-        ? dirs.DocumentDir + imageName
-        : dirs.DownloadDir + imageName;
-    ReactNativeBlobUtil.config({
-      fileCache: true,
-      appendExt: 'jpeg',
-      indicator: true,
-      IOSBackgroundTask: true,
-      path,
-      addAndroidDownloads: {
-        useDownloadManager: true,
-        notification: true,
-        path,
-        description: 'Image',
+  const download = useDownload();
+
+  const onPressFile = async fileUrl => {
+    download.link({
+      name: getFileName(fileUrl.image_url),
+
+      data: {project_id: projectId, file_url: fileUrl.image_url},
+      showAction: false,
+      onFinish: ({dir}) => {
+        FileViewer.open(`file://${dir}`);
       },
-    })
-      .fetch('GET', imgUrl)
-      .then(res => {
-        if (Platform.OS === 'ios') {
-          ReactNativeBlobUtil.ios.previewDocument(path);
-          // eslint-disable-next-line no-console
-          console.log(res, 'end downloaded');
-        }
-      });
+    });
   };
 
   return (
@@ -59,14 +33,13 @@ const InvoiceAttachments = props => {
         return (
           <TouchableOpacity
             style={styles.sectionContainer}
-            onPress={() => downloadFile(file)}>
+            onPress={() => onPressFile(file)}>
             <Image source={FileIcon} style={styles.fileIcon} />
             <View>
               <Text
                 style={[styles.verticalFlex, styles.text]}
                 numberOfLines={2}>
-                {getFileName(file?.image_url)}
-                {index + 1}
+                Vehicle Invoice File {index + 1}
               </Text>
             </View>
           </TouchableOpacity>
@@ -77,39 +50,22 @@ const InvoiceAttachments = props => {
 };
 
 const VehicleImages = props => {
-  const {vehicleAttachments = []} = props;
+  const {vehicleAttachments = [], projectId} = props;
 
-  const downloadFile = image => {
-    const imgUrl = image.image_url;
-    const newImgUri = imgUrl.lastIndexOf('/');
-    const imageName = imgUrl.substring(newImgUri);
-    const {dirs} = ReactNativeBlobUtil.fs;
-    const path =
-      Platform.OS === 'ios'
-        ? dirs.DocumentDir + imageName
-        : dirs.DownloadDir + imageName;
-    ReactNativeBlobUtil.config({
-      fileCache: true,
-      appendExt: 'jpeg',
-      indicator: true,
-      IOSBackgroundTask: true,
-      path,
-      addAndroidDownloads: {
-        useDownloadManager: true,
-        notification: true,
-        path,
-        description: 'Image',
+  const download = useDownload();
+
+  const onPressFile = async fileUrl => {
+    download.link({
+      name: getFileName(fileUrl.image_url),
+
+      data: {project_id: projectId, file_url: fileUrl.image_url},
+      showAction: false,
+      onFinish: ({dir}) => {
+        FileViewer.open(`file://${dir}`);
       },
-    })
-      .fetch('GET', imgUrl)
-      .then(res => {
-        if (Platform.OS === 'ios') {
-          ReactNativeBlobUtil.ios.previewDocument(path);
-          // eslint-disable-next-line no-console
-          console.log(res, 'end downloaded');
-        }
-      });
+    });
   };
+
   return (
     <>
       <Subheading style={styles.challanHeading}> Vehicle Images</Subheading>
@@ -118,7 +74,7 @@ const VehicleImages = props => {
         return (
           <TouchableOpacity
             style={styles.sectionContainer}
-            onPress={() => downloadFile(file)}>
+            onPress={() => onPressFile(file)}>
             <Image source={FileIcon} style={styles.fileIcon} />
             <View>
               <Text
@@ -135,24 +91,8 @@ const VehicleImages = props => {
 };
 
 const VehicleInfo = props => {
-  const {vehicleInfo, vehicleAttachments, invoiceImages} = props;
+  const {vehicleInfo, vehicleAttachments, invoiceImages, projectId} = props;
   const {driver_name, vehicle_number, challan_remark} = vehicleInfo || {};
-
-  const download = useDownload();
-
-  const onPressFile = async fileUrl => {
-    const url = getDownloadUrl({file: fileUrl.image_url, common: true});
-
-    download.link({
-      name: getFileName(fileUrl.image_url),
-
-      data: {project_id: fileUrl.project_id, file_url: fileUrl.image_url},
-      showAction: false,
-      onFinish: ({dir}) => {
-        FileViewer.open(`file://${dir}`);
-      },
-    });
-  };
 
   return (
     <View style={styles.infoContainer}>
@@ -174,11 +114,17 @@ const VehicleInfo = props => {
           <Text>{challan_remark || ''}</Text>
         </View>
         {vehicleAttachments?.length ? (
-          <VehicleImages vehicleAttachments={vehicleAttachments} />
+          <VehicleImages
+            vehicleAttachments={vehicleAttachments}
+            projectId={projectId}
+          />
         ) : null}
 
         {invoiceImages?.length ? (
-          <InvoiceAttachments invoiceImages={invoiceImages} />
+          <InvoiceAttachments
+            invoiceImages={invoiceImages}
+            projectId={projectId}
+          />
         ) : null}
         {/* {vehicleAttachments?.map((item, index) => {
           return (

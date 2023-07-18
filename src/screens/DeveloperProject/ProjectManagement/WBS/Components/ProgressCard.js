@@ -1,48 +1,36 @@
 import * as React from 'react';
 import {Caption, Text, withTheme} from 'react-native-paper';
-import {
-  StyleSheet,
-  View,
-  TouchableOpacity,
-  Image,
-  Platform,
-} from 'react-native';
+import {StyleSheet, View, TouchableOpacity, Image} from 'react-native';
+import FileViewer from 'react-native-file-viewer';
+
 import FileIcon from 'assets/images/file_icon.png';
 import dayjs from 'dayjs';
-import ReactNativeBlobUtil from 'react-native-blob-util';
+import {getFileName} from 'utils/constant';
+import {useDownload} from 'components/Atoms/Download';
 
 const ProgressCard = props => {
   const {details} = props;
-  const {remarks, created, file_name, percentage_completed, file_url} =
-    details || {};
+  const {
+    remarks,
+    created,
+    file_name,
+    percentage_completed,
+    file_url,
+    project_id,
+  } = details || {};
 
-  const downloadFile = image => {
-    const {dirs} = ReactNativeBlobUtil.fs;
-    const path =
-      Platform.OS === 'ios'
-        ? `${dirs.DocumentDir}Progress Image`
-        : `${dirs.DownloadDir}Progress Image.jpg`;
-    ReactNativeBlobUtil.config({
-      fileCache: true,
-      appendExt: 'jpg',
-      indicator: true,
-      IOSBackgroundTask: true,
-      path,
-      addAndroidDownloads: {
-        useDownloadManager: true,
-        notification: true,
-        path,
-        description: 'Image',
+  const download = useDownload();
+
+  const onPressFile = async fileUrl => {
+    download.link({
+      name: getFileName(file_url),
+
+      data: {project_id, file_url},
+      showAction: false,
+      onFinish: ({dir}) => {
+        FileViewer.open(`file://${dir}`);
       },
-    })
-      .fetch('GET', image)
-      .then(res => {
-        if (Platform.OS === 'ios') {
-          ReactNativeBlobUtil.ios.previewDocument(path);
-          // eslint-disable-next-line no-console
-          console.log(res, 'end downloaded');
-        }
-      });
+    });
   };
 
   return (
@@ -72,15 +60,11 @@ const ProgressCard = props => {
         {file_url ? (
           <TouchableOpacity
             style={styles.sectionContainer}
-            onPress={() => downloadFile(file_url)}>
+            onPress={() => onPressFile(file_url)}>
             <Image source={FileIcon} style={styles.fileIcon} />
-            <View>
-              <Text
-                style={(styles.verticalFlex, styles.text)}
-                numberOfLines={2}>
-                {file_name}
-              </Text>
-            </View>
+            <Text style={(styles.verticalFlex, styles.text)} numberOfLines={1}>
+              {file_name}
+            </Text>
           </TouchableOpacity>
         ) : null}
       </View>
@@ -101,6 +85,7 @@ const styles = StyleSheet.create({
   },
   text: {
     marginLeft: 5,
+    overflow: 'hidden',
   },
   container: {
     padding: 10,

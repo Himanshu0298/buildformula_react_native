@@ -60,14 +60,16 @@ const HeaderDetails = props => {
 };
 
 const Attachments = props => {
-  const {damageImage = []} = props;
+  const {damageImage = [], projectId} = props;
 
   const download = useDownload();
 
   const onPressFile = async file => {
+    console.log('file direct grn===========> ', file);
+
     download.link({
       name: getFileName(file.challan_image),
-      data: {project_id: file.project_id, file_url: file.challan_image},
+      data: {project_id: projectId, file_url: file.challan_image},
       showAction: false,
       onFinish: ({dir}) => {
         FileViewer.open(`file://${dir}`);
@@ -119,6 +121,8 @@ const DirectGRNPreview = props => {
   const {selectedProject} = useSelector(s => s.project);
   const {directGRNDetails} = useSelector(s => s.materialManagement);
   const modulePermission = getPermissions('DirectGRNPreview');
+
+  const projectId = selectedProject.id;
 
   const {challan_status} = directGRNDetails?.challanInfo || {};
 
@@ -233,16 +237,20 @@ const DirectGRNPreview = props => {
         <View style={styles.detailContainer}>
           <HeaderDetails challanInfo={challanInfo} />
           {challanImages?.length ? (
-            <Attachments damageImage={challanImages} />
+            <Attachments damageImage={challanImages} projectId={projectId} />
           ) : null}
         </View>
         {materialItem?.length ? (
-          <DirectMaterialInfo materialInfo={directGRNDetails} />
+          <DirectMaterialInfo
+            materialInfo={directGRNDetails}
+            projectId={projectId}
+          />
         ) : null}
         <VehicleInfo
           vehicleInfo={challanInfo}
           vehicleAttachments={vehicleImage}
           invoiceImages={invoiceImages}
+          projectId={projectId}
         />
       </ScrollView>
       {modulePermission?.editor || modulePermission?.admin ? (
