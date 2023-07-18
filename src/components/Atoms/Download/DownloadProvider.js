@@ -1,5 +1,6 @@
 import React, {useCallback, useMemo, useState} from 'react';
 import {downloadFile} from 'utils/download';
+import {COMMON_DOWNLOAD_LINK} from 'utils/constant';
 import DownloadContext from './DownloadContext';
 import DownloadPrompt from './Download';
 
@@ -21,7 +22,7 @@ function DownloadProvider({children}) {
         base64,
         data,
         showAction,
-        link: downloadLink,
+        link: downloadLink = COMMON_DOWNLOAD_LINK,
         onFinish,
         onAction,
       } = params;
@@ -30,7 +31,12 @@ function DownloadProvider({children}) {
       try {
         setState(() => ({...DEFAULT_STATE, ...params, open: true}));
 
-        const result = await downloadFile({name, downloadLink, base64, data});
+        const result = await downloadFile({
+          name,
+          link: downloadLink,
+          base64,
+          data,
+        });
         console.log('-------->result', result);
 
         onFinish?.(result);

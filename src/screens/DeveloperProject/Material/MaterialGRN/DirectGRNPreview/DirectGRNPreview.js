@@ -5,7 +5,6 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
-  Platform,
 } from 'react-native';
 import React, {useEffect} from 'react';
 import {Caption, Subheading} from 'react-native-paper';
@@ -19,8 +18,9 @@ import {getPermissions, getShadow} from 'utils';
 import {getFileName} from 'utils/constant';
 import {theme} from 'styles/theme';
 import dayjs from 'dayjs';
+import FileViewer from 'react-native-file-viewer';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
-import ReactNativeBlobUtil from 'react-native-blob-util';
+import {useDownload} from 'components/Atoms/Download';
 import Header from '../../CommonComponents/Header';
 
 import VehicleInfo from '../../DeliveryDetails/Components/VehicleInfo';
@@ -62,37 +62,19 @@ const HeaderDetails = props => {
 const Attachments = props => {
   const {damageImage = []} = props;
 
-  const downloadFile = image => {
-    const imgUrl = image.challan_image;
-    const newImgUri = imgUrl.lastIndexOf('/');
-    const imageName = imgUrl.substring(newImgUri);
-    const {dirs} = ReactNativeBlobUtil.fs;
-    const path =
-      Platform.OS === 'ios'
-        ? dirs.DocumentDir + imageName
-        : dirs.DownloadDir + imageName;
-    ReactNativeBlobUtil.config({
-      fileCache: true,
-      appendExt: 'jpeg',
-      indicator: true,
-      IOSBackgroundTask: true,
-      path,
-      addAndroidDownloads: {
-        useDownloadManager: true,
-        notification: true,
-        path,
-        description: 'Image',
+  const download = useDownload();
+
+  const onPressFile = async file => {
+    download.link({
+      name: getFileName(file.challan_image),
+      data: {project_id: file.project_id, file_url: file.challan_image},
+      showAction: false,
+      onFinish: ({dir}) => {
+        FileViewer.open(`file://${dir}`);
       },
-    })
-      .fetch('GET', imgUrl)
-      .then(res => {
-        if (Platform.OS === 'ios') {
-          ReactNativeBlobUtil.ios.previewDocument(path);
-          // eslint-disable-next-line no-console
-          console.log(res, 'end downloaded');
-        }
-      });
+    });
   };
+
   return (
     <>
       <Caption style={styles.challanHeading}>Challan Images</Caption>
@@ -103,14 +85,13 @@ const Attachments = props => {
           return (
             <TouchableOpacity
               style={styles.sectionContainer}
-              onPress={() => downloadFile(file)}>
+              onPress={() => onPressFile(file)}>
               <Image source={FileIcon} style={styles.fileIcon} />
               <View>
                 <Text
                   style={[styles.verticalFlex, styles.text]}
                   numberOfLines={2}>
-                  {getFileName(file?.image_type)}
-                  {index + 1}
+                  {index + 1} Challan Image
                 </Text>
               </View>
             </TouchableOpacity>

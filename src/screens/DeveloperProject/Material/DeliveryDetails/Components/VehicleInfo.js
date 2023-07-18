@@ -143,11 +143,10 @@ const VehicleInfo = props => {
   const onPressFile = async fileUrl => {
     const url = getDownloadUrl({file: fileUrl.image_url, common: true});
 
-    const name = getFileName(fileUrl.image_url);
-
     download.link({
-      name,
-      link: url,
+      name: getFileName(fileUrl.image_url),
+
+      data: {project_id: fileUrl.project_id, file_url: fileUrl.image_url},
       showAction: false,
       onFinish: ({dir}) => {
         FileViewer.open(`file://${dir}`);

@@ -50,15 +50,13 @@ function Files(props) {
   const [visible, setVisible] = React.useState(false);
 
   const onPressFile = async file => {
-    const fileUrl = getDownloadUrl({file, common: true});
-    const name = getFileName(file);
-
     download.link({
-      name,
-      link: fileUrl,
+      name: getFileName(file.file_url),
+      data: {project_id: file.project_id, file_url: file.file_url},
       showAction: false,
       onFinish: ({dir}) => {
-        FileViewer.open(`file://${dir}`);
+        console.log('===========>dir ', dir);
+        FileViewer.open(dir);
       },
     });
   };
@@ -80,7 +78,7 @@ function Files(props) {
       <View style={styles.recentFiles}>
         <TouchableOpacity
           style={styles.sectionContainer}
-          onPress={() => onPressFile(item.file_url)}>
+          onPress={() => onPressFile(item)}>
           <Image source={PdfIcon} style={styles.fileIcon} />
           <View style={{width: '80%'}}>
             <Text
@@ -397,12 +395,9 @@ function ProjectPreview(props) {
   const handleShare = async file => {
     try {
       toggleSharing();
-      const fileUrl = getDownloadUrl({file, common: true});
-      const name = getFileName(file);
-
       return download.link({
-        name,
-        link: fileUrl,
+        name: getFileName(file),
+        data: {project_id: file.project_id, file_url: file.file_url},
         showAction: false,
         base64: true,
         onFinish: ({base64}) => {

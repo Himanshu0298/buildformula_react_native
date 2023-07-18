@@ -410,6 +410,7 @@ const DirectGRNChallanMaterial = props => {
     formData.append('data', JSON.stringify(materialData));
 
     await addDirectGRNMaterialInfo(formData);
+    navigation.navigate('MaterialGRNListing');
     navigation.navigate('VehicleInfo', {
       challan_id,
       edit,
@@ -516,7 +517,7 @@ const DirectGRNChallanMaterial = props => {
                   onSubmit={formikProps.handleSubmit}
                   submitLabel="Next"
                   cancelLabel="Previous"
-                  onCancel={() => navigation.goBack()}
+                  onCancel={() => navigation.navigate('MaterialGRNListing')}
                 />
               </>
             )}

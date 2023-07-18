@@ -40,10 +40,10 @@ export async function checkDownloaded(name) {
 }
 
 export function getDownloadUrl(params) {
-  const {file, version, common} = params;
+  const {file, version} = params;
   const {id, project_id} = file;
-  let url = `files/downloadversoin/${project_id}/current/${id}`;
 
+  let url = `files/downloadversoin/${project_id}/current/${id}`;
   if (version) {
     url = `files/downloadversoin/${project_id}/version/${id}`;
   }
@@ -52,7 +52,9 @@ export function getDownloadUrl(params) {
 }
 
 export async function downloadFile(params) {
-  const {name, downloadLink: fileUrl, base64: getBase64, data} = params;
+  const {name, link: fileUrl, base64: getBase64, data} = params;
+
+  const mimeType = mime.lookup(name);
 
   const path = getFilePath(name);
 
@@ -66,87 +68,44 @@ export async function downloadFile(params) {
     await RNFS.unlink(path);
   }
 
+  const REQUEST_TYPE = data ? 'POST' : 'GET';
+
   const options = {
     fileCache: true,
     path,
     addAndroidDownloads: {
       path,
+      title: name,
       description: 'downloading file...',
-      notification: true,
-      // useDownloadManager works with Android only
-      useDownloadManager: true,
+      notification: false,
+      // useDownloadManager works with Android only and only with GET request
+      useDownloadManager: false,
     },
   };
 
-  const REQUEST_TYPE = data ? 'POST' : 'GET';
-
-  console.log('-------->REQUEST_TYPE', REQUEST_TYPE);
-  console.log('-------->fileUrl', fileUrl);
-  console.log('-------->data', data);
-  console.log('-------->Authorization', Authorization);
+  // useDownloadManager works only with GET request
+  if (REQUEST_TYPE === 'GET') {
+    options.addAndroidDownloads.useDownloadManager = true;
+    options.addAndroidDownloads.notification = true;
+  }
 
   return RNFetchBlob.config(options)
     .fetch(
       REQUEST_TYPE,
       fileUrl,
-      {Authorization, Accept: '*/*'},
+      {Authorization, Accept: '*/*', 'Content-Type': 'application/json'},
       JSON.stringify(data),
     )
     .then(async res => {
-      console.log('-------->res', res);
       // Alert after successful downloading
-
       const downloadDir = normalizeFilePath(res.data);
       let base64;
       if (getBase64) {
         const base64Data = await RNFS.readFile(downloadDir, 'base64');
-        const mimeType = mime.lookup(name);
         base64 = `data:${mimeType};base64,${base64Data}`;
       }
 
       return {base64, dir: downloadDir};
-    })
-    .catch(async error => {
-      console.log('-----> error', error);
-      throw error;
-    });
-}
-
-export async function downloadPdf(data, fileUrl, getBase64) {
-  const path = `${DIR}/vshwan_document_${new Date().getTime()}.pdf`;
-
-  const {token} = store.getState().user;
-
-  const Authorization = `Bearer ${token}`;
-
-  const options = {
-    fileCache: true,
-    path,
-    addAndroidDownloads: {
-      path,
-      description: 'downloading file...',
-      notification: true,
-      // useDownloadManager works with Android only
-      useDownloadManager: true,
-    },
-  };
-
-  return RNFetchBlob.config(options)
-    .fetch('POST', fileUrl, {Authorization}, data)
-    .then(async res => {
-      // Alert after successful downloading
-
-      console.log('-------->res', res);
-
-      // const downloadDir = normalizeFilePath(res.data);
-      // let base64;
-      // if (getBase64) {
-      //   const base64Data = await RNFS.readFile(downloadDir, 'base64');
-      //   const mimeType = mime.lookup(file.file_name);
-      //   base64 = `data:${mimeType};base64,${base64Data}`;
-      // }
-
-      // return {base64, dir: downloadDir};
     })
     .catch(async error => {
       console.log('-----> error', error);

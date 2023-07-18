@@ -110,12 +110,9 @@ function ProjectFiles(props) {
   };
 
   const onPressFile = async file => {
-    const fileUrl = getDownloadUrl({file, common: true});
-    const name = getFileName(file);
-
     download.link({
-      name,
-      link: fileUrl,
+      name: getFileName(file),
+      data: {project_id: file.project_id, file_url: file.file_url},
       showAction: false,
       onFinish: ({dir}) => {
         FileViewer.open(`file://${dir}`);

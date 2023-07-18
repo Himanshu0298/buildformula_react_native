@@ -25,8 +25,6 @@ import useCustomerActions from 'redux/actions/customerActions';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {useSelector} from 'react-redux';
 import {theme} from 'styles/theme';
-import {downloadPdf} from 'utils/download';
-import FileViewer from 'react-native-file-viewer';
 import {useDownload} from 'components/Atoms/Download';
 import ScreenTitle from 'components/Atoms/ScreenTitle';
 import ReactNativeBlobUtil from 'react-native-blob-util';
@@ -35,7 +33,6 @@ import {config} from 'services/init';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import Modal from 'react-native-modal';
 import ActionButtons from 'components/Atoms/ActionButtons';
-import Share from 'react-native-share';
 
 const TITLE = {
   document: 'Documentation charges',
