@@ -4,14 +4,24 @@ import {View} from 'react-native';
 import {downloadFile, getDownloadUrl, getFileExtension} from 'utils/download';
 import FileViewer from 'react-native-file-viewer';
 import {useImagePicker} from 'hooks';
+import useDesignModuleActions from 'redux/actions/designModuleActions';
+import {useSelector} from 'react-redux';
 import FDFiles from '../Components/FDFiles';
 
 function FDTowerList(props) {
-  const {navigation} = props;
+  const {navigation, route} = props;
+
+  const {folder_id} = route?.params || {};
   const snackbar = useSnackbar();
   const {openImagePicker} = useImagePicker();
 
-  const data = [];
+  const {getFDTowers} = useDesignModuleActions();
+
+  const {plotList} = useSelector(s => s.designModule);
+  const {selectedProject} = useSelector(s => s.project);
+  const project_id = selectedProject.id;
+
+  console.log('===========> plotList', plotList);
 
   const [menuId, setMenuId] = React.useState();
   const [modelContentType, setModalContentType] = React.useState('menu');
@@ -22,6 +32,11 @@ function FDTowerList(props) {
   const toggleMenu = folderIndex => setMenuId(folderIndex);
   const toggleDialog = v => setDialogType(v);
   const toggleShareDialog = () => setShareDialog(v => !v);
+
+  React.useEffect(() => {
+    getFDTowers({project_id, folder_id});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const renameFileHandler = async (name, id, type) => {
     await console.log('===========> ', renameFileHandler);
@@ -96,7 +111,7 @@ function FDTowerList(props) {
   return (
     <View>
       <FDFiles
-        data={data}
+        data={plotList}
         menuId={menuId}
         modelContentType={modelContentType}
         modalContent={modalContent}

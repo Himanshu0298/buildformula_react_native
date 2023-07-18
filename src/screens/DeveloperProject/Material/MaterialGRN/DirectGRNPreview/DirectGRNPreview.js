@@ -17,12 +17,10 @@ import ActionButtons from 'components/Atoms/ActionButtons';
 import {useSelector} from 'react-redux';
 import {getPermissions, getShadow} from 'utils';
 import {getFileName} from 'utils/constant';
-import FileViewer from 'react-native-file-viewer';
-import {useDownload} from 'components/Atoms/Download';
+
 import {theme} from 'styles/theme';
 import dayjs from 'dayjs';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
-import {getDownloadUrl} from 'utils/download';
 import ReactNativeBlobUtil from 'react-native-blob-util';
 import Header from '../../CommonComponents/Header';
 

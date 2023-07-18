@@ -658,6 +658,153 @@ export default function useDesignModuleActions() {
           }
         },
       }),
+    uploadFDBungalowsFile: params =>
+      dispatch({
+        type: types.GET_FD_BUNGALOWS_FILES,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await uploadFDBungalowsFile(params));
+            snackbar.showMessage({message: msg});
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    renameFDBungalowsFile: params =>
+      dispatch({
+        type: types.RENAME_FD_BUNGALOWS_FILES,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await renameFDBungalowsFile(params));
+            snackbar.showMessage({message: msg});
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    deleteFDBungalowsFile: params =>
+      dispatch({
+        type: types.RENAME_FD_BUNGALOWS_FILES,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await deleteFDBungalowsFile(params));
+            snackbar.showMessage({message: msg});
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    FDBungalowsFileActivityLog: params =>
+      dispatch({
+        type: types.FD_TOWER_ACTIVITY_LOG,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await FDBungalowsFileActivityLog(params));
+            snackbar.showMessage({message: msg});
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    getFDPlots: params =>
+      dispatch({
+        type: types.GET_FD_PLOTS,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await getFDPlots(params));
+            snackbar.showMessage({message: msg});
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    uploadFDPlotFiles: params =>
+      dispatch({
+        type: types.ADD_FD_PLOT_FILES,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await uploadFDPlotFiles(params));
+            snackbar.showMessage({message: msg});
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    uploadFDPlotBungalowFileVersion: params =>
+      dispatch({
+        type: types.UPLOAD_FD_BUNGALOW_TOWER_FILE_VERSION,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(
+              await uploadFDPlotBungalowFileVersion(params),
+            );
+            snackbar.showMessage({message: msg});
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    addFloorFolder: params =>
+      dispatch({
+        type: types.ADD_FD_FLOOR_FOLDER,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await addFloorFolder(params));
+            snackbar.showMessage({message: msg});
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    addFloorFolderFile: params =>
+      dispatch({
+        type: types.UPLOAD_FD_BUNGALOW_TOWER_FILE_VERSION,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await addFloorFolderFile(params));
+            snackbar.showMessage({message: msg});
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
 
     // Working Drawing
 
