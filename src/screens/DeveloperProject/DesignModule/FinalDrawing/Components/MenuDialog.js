@@ -46,7 +46,7 @@ function MenuDialog(props) {
   const handleDownload = async () => {
     try {
       toggleDownloading();
-      const fileUrl = getDownloadUrl(modalContent);
+      const fileUrl = getDownloadUrl({modalContent, common: true});
       const {dir} = await downloadFile(modalContent, fileUrl);
       snackbar.showMessage({
         message: 'File Downloaded Successfully!',

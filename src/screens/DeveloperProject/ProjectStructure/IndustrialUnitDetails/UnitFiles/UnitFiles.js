@@ -11,10 +11,9 @@ import {Button, FAB, IconButton, Text, Title} from 'react-native-paper';
 import {theme} from 'styles/theme';
 import BottomSheet from 'reanimated-bottom-sheet';
 import Animated from 'react-native-reanimated';
-import _ from 'lodash';
 
 import PdfIcon from 'assets/images/pdf_icon.png';
-import {getDownloadUrl, getFileName} from 'utils/download';
+import {getFileName} from 'utils/download';
 import FileViewer from 'react-native-file-viewer';
 
 import {useDownload} from 'components/Atoms/Download';
@@ -209,12 +208,9 @@ function UnitFiles(props) {
   const [dialog, setDialog] = useState();
 
   const onPressFile = async file => {
-    const fileUrl = getDownloadUrl(file);
-    const name = getFileName(file);
-
     download.link({
-      name,
-      link: fileUrl,
+      name: getFileName(file),
+      data: {project_id: file.project_id, file_url: file.file_url},
       showAction: false,
       onFinish: ({dir}) => {
         FileViewer.open(`file://${dir}`);

@@ -100,7 +100,7 @@ const DirectGRN = props => {
 
   const filteredUsers = useMemo(() => {
     const query = searchQuery.toLowerCase();
-    return directGRNList?.infoData?.filter(
+    return directGRNList?.filter(
       i =>
         i?.first_name?.toLowerCase().includes(query) ||
         i?.last_name?.toLowerCase().includes(query),
@@ -137,8 +137,6 @@ const DirectGRN = props => {
     </View>
   );
 };
-
-export default DirectGRN;
 
 const styles = StyleSheet.create({
   mainContainer: {
@@ -182,3 +180,5 @@ const styles = StyleSheet.create({
     bottom: 20,
   },
 });
+
+export default DirectGRN;

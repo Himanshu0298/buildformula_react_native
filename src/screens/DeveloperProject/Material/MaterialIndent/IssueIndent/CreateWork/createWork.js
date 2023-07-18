@@ -725,7 +725,8 @@ function CreateWork(props) {
       requred_date,
       vendor_id,
     };
-    if (!!wbsIdCheck === true) {
+
+    if (wbsIdCheck === 'yes') {
       if (wbsIds.length) {
         await createWorkIssue(restData);
       } else {

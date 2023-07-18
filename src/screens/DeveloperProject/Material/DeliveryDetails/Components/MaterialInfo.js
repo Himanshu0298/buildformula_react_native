@@ -6,65 +6,43 @@ import {
   Text,
   withTheme,
 } from 'react-native-paper';
-import {
-  Image,
-  Platform,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {theme} from 'styles/theme';
 import {getShadow} from 'utils';
+import FileViewer from 'react-native-file-viewer';
+
 import Spinner from 'react-native-loading-spinner-overlay';
 import {useSelector} from 'react-redux';
 import FileIcon from 'assets/images/file_icon.png';
 import NoResult from 'components/Atoms/NoResult';
 
-import ReactNativeBlobUtil from 'react-native-blob-util';
+import {useDownload} from 'components/Atoms/Download';
+import {getFileName} from 'utils/constant';
 
-const RenderImage = ({item, index, type}) => {
+const RenderImage = ({item, index, type, projectId}) => {
   const label =
     type === 'normal'
       ? `Material image ${index + 1}`
       : `Damaged image ${index + 1}`;
 
-  const downloadFile = image => {
-    const imgUrl = image.image_url;
-    const newImgUri = imgUrl.lastIndexOf('/');
-    const imageName = imgUrl.substring(newImgUri);
-    const {dirs} = ReactNativeBlobUtil.fs;
-    const path =
-      Platform.OS === 'ios'
-        ? dirs.DocumentDir + imageName
-        : dirs.DownloadDir + imageName;
-    ReactNativeBlobUtil.config({
-      fileCache: true,
-      appendExt: 'jpeg',
-      indicator: true,
-      IOSBackgroundTask: true,
-      path,
-      addAndroidDownloads: {
-        useDownloadManager: true,
-        notification: true,
-        path,
-        description: 'Image',
+  const download = useDownload();
+
+  const onPressFile = async fileUrl => {
+    download.link({
+      name: getFileName(fileUrl.image_url),
+      data: {project_id: projectId, file_url: fileUrl.image_url},
+      showAction: false,
+      onFinish: ({dir}) => {
+        FileViewer.open(`file://${dir}`);
       },
-    })
-      .fetch('GET', imgUrl)
-      .then(res => {
-        if (Platform.OS === 'ios') {
-          ReactNativeBlobUtil.ios.previewDocument(path);
-          // eslint-disable-next-line no-console
-          console.log(res, 'end downloaded');
-        }
-      });
+    });
   };
 
   return (
     <TouchableOpacity
       style={styles.sectionContainer}
-      onPress={() => downloadFile(item)}
+      onPress={() => onPressFile(item)}
       key={item.id}>
       <Image source={FileIcon} style={styles.fileIcon} />
       <View>
@@ -75,7 +53,7 @@ const RenderImage = ({item, index, type}) => {
 };
 
 const RenderMaterialAttachments = props => {
-  const {materialImages} = props;
+  const {materialImages, projectId} = props;
 
   const normalImages = materialImages?.filter(i => i.image_type === 'normal');
   const damagedImages = materialImages?.filter(i => i.image_type === 'damage');
@@ -86,10 +64,20 @@ const RenderMaterialAttachments = props => {
       {materialImages?.length ? (
         <>
           {normalImages?.map((item, index) => (
-            <RenderImage item={item} index={index} type="normal" />
+            <RenderImage
+              item={item}
+              index={index}
+              type="normal"
+              projectId={projectId}
+            />
           ))}
           {damagedImages?.map((item, index) => (
-            <RenderImage item={item} index={index} type="damage" />
+            <RenderImage
+              item={item}
+              index={index}
+              type="damage"
+              projectId={projectId}
+            />
           ))}
         </>
       ) : (
@@ -124,7 +112,7 @@ const MaterialData = props => {
 };
 
 const MaterialInfo = props => {
-  const {materialInfo = {}} = props;
+  const {materialInfo = {}, projectId} = props;
   const {materials = [], material_images} = materialInfo;
   const {loading} = useSelector(s => s.materialManagement);
   return (
@@ -159,7 +147,10 @@ const MaterialInfo = props => {
         );
       })}
       {material_images?.length ? (
-        <RenderMaterialAttachments materialImages={material_images} />
+        <RenderMaterialAttachments
+          materialImages={material_images}
+          projectId={projectId}
+        />
       ) : null}
     </View>
   );

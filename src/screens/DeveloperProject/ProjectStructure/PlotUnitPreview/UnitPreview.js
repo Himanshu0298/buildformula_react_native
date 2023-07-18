@@ -1,3 +1,4 @@
+/* eslint-disable global-require */
 import React from 'react';
 import {
   Image,
@@ -9,7 +10,6 @@ import {
 import {
   Caption,
   Divider,
-  Headline,
   IconButton,
   Subheading,
   Text,
@@ -112,12 +112,9 @@ function Files() {
   const download = useDownload();
 
   const onPressFile = async file => {
-    const fileUrl = getDownloadUrl(file);
-    const name = getFileName(file);
-
     download.link({
-      name,
-      link: fileUrl,
+      name: getFileName(file),
+      data: {project_id: file.project_id, file_url: file.file_url},
       showAction: false,
       onFinish: ({dir}) => {
         FileViewer.open(`file://${dir}`);

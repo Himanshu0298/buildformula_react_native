@@ -4,7 +4,6 @@ import {
   TouchableOpacity,
   ScrollView,
   Image,
-  Platform,
 } from 'react-native';
 
 import React, {useEffect} from 'react';
@@ -27,8 +26,7 @@ import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
 import ImageView from 'react-native-image-viewing';
 import {isNumber} from 'lodash';
-import ReactNativeBlobUtil from 'react-native-blob-util';
-import {getDownloadUrl} from 'utils/download';
+
 import {getFileName} from 'utils/constant';
 import {useDownload} from 'components/Atoms/Download';
 import FileViewer from 'react-native-file-viewer';
@@ -139,46 +137,12 @@ const MaterialAttachments = props => {
     return returnAttachments?.map(i => ({uri: i.file_url}));
   }, [returnAttachments]);
 
-  // const downloadFile = attachment => {
-  //   const imgUrl = attachment.file_url;
-  //   const newImgUri = imgUrl.lastIndexOf('/');
-  //   const imageName = imgUrl.substring(newImgUri);
-  //   const {dirs} = ReactNativeBlobUtil.fs;
-  //   const path =
-  //     Platform.OS === 'ios'
-  //       ? dirs.DocumentDir + imageName
-  //       : dirs.DownloadDir + imageName;
-  //   ReactNativeBlobUtil.config({
-  //     fileCache: true,
-  //     appendExt: 'jpg',
-  //     indicator: true,
-  //     IOSBackgroundTask: true,
-  //     path,
-  //     addAndroidDownloads: {
-  //       useDownloadManager: true,
-  //       notification: true,
-  //       path,
-  //       description: 'Image',
-  //     },
-  //   })
-  //     .fetch('GET', imgUrl)
-  //     .then(res => {
-  //       if (Platform.OS === 'ios') {
-  //         ReactNativeBlobUtil.ios.previewDocument(path);
-  //         // eslint-disable-next-line no-console
-  //         console.log(res, 'end downloaded');
-  //       }
-  //     });
-  // };
   const download = useDownload();
 
   const onPressFile = async file => {
-    const fileUrl = getDownloadUrl(file.file_url);
-    const name = getFileName(file.file_url);
-
     download.link({
-      name,
-      link: fileUrl,
+      name: getFileName(file.file_url),
+      data: {project_id: file.project_id, file_url: file.file_url},
       showAction: false,
       onFinish: ({dir}) => {
         FileViewer.open(`file://${dir}`);

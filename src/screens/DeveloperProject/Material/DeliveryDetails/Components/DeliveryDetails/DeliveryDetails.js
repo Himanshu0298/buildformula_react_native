@@ -6,51 +6,34 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
-  Platform,
 } from 'react-native';
 import FileIcon from 'assets/images/file_icon.png';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
 
-import ReactNativeBlobUtil from 'react-native-blob-util';
+import {useDownload} from 'components/Atoms/Download';
+import {getFileName} from 'utils/constant';
+import FileViewer from 'react-native-file-viewer';
 import MaterialInfo from '../MaterialInfo';
 import VehicleInfo from '../VehicleInfo';
 import Header from '../../../CommonComponents/Header';
 
 const Attachments = props => {
-  const {challanImages = []} = props;
+  const {challanImages = [], projectId} = props;
 
-  const downloadFile = image => {
-    const imgUrl = image.challan_image;
-    const newImgUri = imgUrl.lastIndexOf('/');
-    const imageName = imgUrl.substring(newImgUri);
-    const {dirs} = ReactNativeBlobUtil.fs;
-    const path =
-      Platform.OS === 'ios'
-        ? dirs.DocumentDir + imageName
-        : dirs.DownloadDir + imageName;
-    ReactNativeBlobUtil.config({
-      fileCache: true,
-      appendExt: 'jpeg',
-      indicator: true,
-      IOSBackgroundTask: true,
-      path,
-      addAndroidDownloads: {
-        useDownloadManager: true,
-        notification: true,
-        path,
-        description: 'Image',
+  const download = useDownload();
+
+  const onPressFile = async fileUrl => {
+    download.link({
+      name: getFileName(fileUrl.challan_image),
+
+      data: {project_id: projectId, file_url: fileUrl.challan_image},
+      showAction: false,
+      onFinish: ({dir}) => {
+        FileViewer.open(`file://${dir}`);
       },
-    })
-      .fetch('GET', imgUrl)
-      .then(res => {
-        if (Platform.OS === 'ios') {
-          ReactNativeBlobUtil.ios.previewDocument(path);
-          // eslint-disable-next-line no-console
-          console.log(res, 'end downloaded');
-        }
-      });
+    });
   };
 
   return (
@@ -61,7 +44,7 @@ const Attachments = props => {
             return (
               <TouchableOpacity
                 style={styles.sectionContainer}
-                onPress={() => downloadFile(file)}>
+                onPress={() => onPressFile(file)}>
                 <Image source={FileIcon} style={styles.fileIcon} />
                 <View>
                   <Text
@@ -94,6 +77,8 @@ const DeliverDetails = props => {
   const {materialChallanDetails, loading} = useSelector(
     s => s.materialManagement,
   );
+
+  const projectId = selectedProject.id;
   const {
     challan_images = [],
     challan_info,
@@ -133,14 +118,18 @@ const DeliverDetails = props => {
                   Challan Images
                 </Subheading>
               </View>
-              <Attachments challanImages={challan_images} />
+              <Attachments
+                challanImages={challan_images}
+                projectId={projectId}
+              />
             </>
           ) : null}
         </View>
-        <MaterialInfo materialInfo={materila_info} />
+        <MaterialInfo materialInfo={materila_info} projectId={projectId} />
         <VehicleInfo
           vehicleInfo={challan_info}
           vehicleAttachments={vehicle_images}
+          projectId={projectId}
         />
       </ScrollView>
     </View>

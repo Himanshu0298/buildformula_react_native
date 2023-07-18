@@ -5,7 +5,6 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
-  Platform,
 } from 'react-native';
 import React, {useEffect} from 'react';
 import {Caption, Subheading} from 'react-native-paper';
@@ -17,13 +16,11 @@ import ActionButtons from 'components/Atoms/ActionButtons';
 import {useSelector} from 'react-redux';
 import {getPermissions, getShadow} from 'utils';
 import {getFileName} from 'utils/constant';
-import FileViewer from 'react-native-file-viewer';
-import {useDownload} from 'components/Atoms/Download';
 import {theme} from 'styles/theme';
 import dayjs from 'dayjs';
+import FileViewer from 'react-native-file-viewer';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
-import {getDownloadUrl} from 'utils/download';
-import ReactNativeBlobUtil from 'react-native-blob-util';
+import {useDownload} from 'components/Atoms/Download';
 import Header from '../../CommonComponents/Header';
 
 import VehicleInfo from '../../DeliveryDetails/Components/VehicleInfo';
@@ -63,39 +60,23 @@ const HeaderDetails = props => {
 };
 
 const Attachments = props => {
-  const {damageImage = []} = props;
+  const {damageImage = [], projectId} = props;
 
-  const downloadFile = image => {
-    const imgUrl = image.challan_image;
-    const newImgUri = imgUrl.lastIndexOf('/');
-    const imageName = imgUrl.substring(newImgUri);
-    const {dirs} = ReactNativeBlobUtil.fs;
-    const path =
-      Platform.OS === 'ios'
-        ? dirs.DocumentDir + imageName
-        : dirs.DownloadDir + imageName;
-    ReactNativeBlobUtil.config({
-      fileCache: true,
-      appendExt: 'jpeg',
-      indicator: true,
-      IOSBackgroundTask: true,
-      path,
-      addAndroidDownloads: {
-        useDownloadManager: true,
-        notification: true,
-        path,
-        description: 'Image',
+  const download = useDownload();
+
+  const onPressFile = async file => {
+    console.log('file direct grn===========> ', file);
+
+    download.link({
+      name: getFileName(file.challan_image),
+      data: {project_id: projectId, file_url: file.challan_image},
+      showAction: false,
+      onFinish: ({dir}) => {
+        FileViewer.open(`file://${dir}`);
       },
-    })
-      .fetch('GET', imgUrl)
-      .then(res => {
-        if (Platform.OS === 'ios') {
-          ReactNativeBlobUtil.ios.previewDocument(path);
-          // eslint-disable-next-line no-console
-          console.log(res, 'end downloaded');
-        }
-      });
+    });
   };
+
   return (
     <>
       <Caption style={styles.challanHeading}>Challan Images</Caption>
@@ -106,14 +87,13 @@ const Attachments = props => {
           return (
             <TouchableOpacity
               style={styles.sectionContainer}
-              onPress={() => downloadFile(file)}>
+              onPress={() => onPressFile(file)}>
               <Image source={FileIcon} style={styles.fileIcon} />
               <View>
                 <Text
                   style={[styles.verticalFlex, styles.text]}
                   numberOfLines={2}>
-                  {getFileName(file?.image_type)}
-                  {index + 1}
+                  {index + 1} Challan Image
                 </Text>
               </View>
             </TouchableOpacity>
@@ -141,6 +121,8 @@ const DirectGRNPreview = props => {
   const {selectedProject} = useSelector(s => s.project);
   const {directGRNDetails} = useSelector(s => s.materialManagement);
   const modulePermission = getPermissions('DirectGRNPreview');
+
+  const projectId = selectedProject.id;
 
   const {challan_status} = directGRNDetails?.challanInfo || {};
 
@@ -255,16 +237,20 @@ const DirectGRNPreview = props => {
         <View style={styles.detailContainer}>
           <HeaderDetails challanInfo={challanInfo} />
           {challanImages?.length ? (
-            <Attachments damageImage={challanImages} />
+            <Attachments damageImage={challanImages} projectId={projectId} />
           ) : null}
         </View>
         {materialItem?.length ? (
-          <DirectMaterialInfo materialInfo={directGRNDetails} />
+          <DirectMaterialInfo
+            materialInfo={directGRNDetails}
+            projectId={projectId}
+          />
         ) : null}
         <VehicleInfo
           vehicleInfo={challanInfo}
           vehicleAttachments={vehicleImage}
           invoiceImages={invoiceImages}
+          projectId={projectId}
         />
       </ScrollView>
       {modulePermission?.editor || modulePermission?.admin ? (

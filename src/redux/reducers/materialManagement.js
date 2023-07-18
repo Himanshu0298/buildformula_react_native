@@ -198,7 +198,7 @@ const reducer = (state = initialState, action = {}) => {
       return {
         ...state,
         loading: false,
-        directGRNList: payload,
+        directGRNList: payload.infoData.sort((a, b) => b.id - a.id),
       };
     case `${GET_MATERIAL_GRN_DETAILS}_FULFILLED`:
       return {
