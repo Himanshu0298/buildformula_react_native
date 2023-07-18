@@ -1,26 +1,31 @@
 import * as React from 'react';
 import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-
 import {Button, Dialog, Divider, Portal, Text} from 'react-native-paper';
 import {Formik} from 'formik';
 import RenderInput from 'components/Atoms/RenderInput';
-
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import {theme} from 'styles/theme';
+import useTodoActions from 'redux/actions/todoActions';
+import {useSelector} from 'react-redux';
+import {useAlert} from 'components/Atoms/Alert';
+import useSalesActions from 'redux/actions/salesActions';
+import Spinner from 'react-native-loading-spinner-overlay';
 import MenuDialog from '../Components/MenuDialog';
 import ShareTask from './ShareTask';
 
-const arr = [
-  {title: "Today's Task", name: 'calendar'},
-  {title: 'Important Task', name: 'star-circle-outline'},
-  {title: 'My Task', name: 'note-outline'},
-  {title: 'Sales Task', name: 'chevron-right'},
-  {title: 'Dev Task', name: 'chevron-right'},
+const DEFAULT_LIST = [
+  {title: "Today's Task", name: 'calendar', action: 'todayTask'},
+  {
+    title: 'Important Task',
+    name: 'star-circle-outline',
+    action: 'importantTask',
+  },
+  {title: 'My Task', name: 'note-outline', action: 'myTask'},
 ];
 
 function AddTaskCategory(props) {
-  const {visible, selectedCategory, toggleDialog, onSubmit} = props;
+  const {visible, selectedList, toggleDialog, onSubmit} = props;
 
   return (
     <Portal>
@@ -41,27 +46,32 @@ function AddTaskCategory(props) {
                 color={theme.colors.error}
               />
             </OpacityButton>
-            <Text style={styles.dialogHeader}>Add List</Text>
+            <Text style={styles.dialogHeader}>
+              {selectedList ? 'Update' : 'Add'} List
+            </Text>
           </View>
           <View style={styles.taskInputDialog}>
             <Formik
               validateOnBlur={false}
               validateOnChange={false}
-              initialValues={{work: selectedCategory?.title}}
+              initialValues={{
+                todo_id: selectedList?.id || undefined,
+                listName: selectedList?.list_name || '',
+              }}
               // validationSchema={schema}
               onSubmit={async values => onSubmit(values)}>
               {({values, errors, handleChange, handleBlur, handleSubmit}) => {
                 return (
                   <View style={styles.dialogContentContainer}>
                     <RenderInput
-                      name="Enter list title"
+                      name="listName"
                       label="Enter List Title"
                       containerStyles={styles.input}
-                      value={values.work}
-                      onChangeText={handleChange('task')}
-                      onBlur={handleBlur('task')}
+                      value={values.listName}
+                      onChangeText={handleChange('listName')}
+                      onBlur={handleBlur('listName')}
                       onSubmitEditing={handleSubmit}
-                      error={errors.work}
+                      error={errors.listName}
                     />
                     <View style={styles.dialogActionContainer}>
                       <Button
@@ -70,7 +80,7 @@ function AddTaskCategory(props) {
                         contentStyle={styles.contentStyle}
                         theme={{roundness: 15}}
                         onPress={handleSubmit}>
-                        {selectedCategory ? 'Update' : 'Save'}
+                        {selectedList ? 'Update' : 'Save'}
                       </Button>
                     </View>
                   </View>
@@ -84,11 +94,32 @@ function AddTaskCategory(props) {
   );
 }
 
-function TaskList(props) {
-  const {navigation, onUpdate, onDelete} = props;
+function TaskList({navigation}) {
+  const alert = useAlert();
 
   const [addActivityDialog, setAddActivityDialog] = React.useState(false);
-  const [selectedCategory, setSelectedCategory] = React.useState();
+  const [selectedList, setSelectedList] = React.useState();
+
+  const {selectedProject} = useSelector(s => s.project);
+  const {loading, TODO_LIST} = useSelector(s => s.todo);
+
+  const {get_todo_list, add_todo_list, delete_todo_list, share_task} =
+    useTodoActions();
+  const {getAssignToData} = useSalesActions();
+
+  const projectId = selectedProject.id;
+
+  const loadLists = () => {
+    get_todo_list({
+      project_id: projectId,
+    });
+  };
+
+  React.useEffect(() => {
+    loadLists();
+    getAssignToData({project_id: projectId});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const toggleDialog = () => setAddActivityDialog(v => !v);
 
@@ -96,24 +127,59 @@ function TaskList(props) {
 
   const toggleModal = () => setDialog(v => !v);
 
-  const OnSubmit = () => {
-    toggleDialog();
+  const OnSubmit = async values => {
+    add_todo_list({
+      project_id: projectId,
+      title: values?.listName,
+      todo_id: values?.todo_id || 0,
+    });
+    await loadLists({
+      project_id: projectId,
+    });
+    await toggleDialog();
+    setSelectedList(undefined);
   };
 
-  const navToSubtask = () => navigation.navigate('SubTaskList');
+  const handleDelete = async list_id => {
+    alert.show({
+      title: 'Confirm',
+      message: 'Are you sure you want to delete?',
+      confirmText: 'Delete',
+      onConfirm: async () => {
+        await delete_todo_list({
+          project_id: projectId,
+          list_id,
+        });
+        loadLists();
+      },
+    });
+  };
+
+  const handleShare = async (share_list_id, userList) => {
+    await share_task({
+      project_id: projectId,
+      share_list_id,
+      share_id: userList,
+    });
+  };
+
+  const navToSubtask = (action, title) =>
+    navigation.navigate('SubTaskList', {action, title});
 
   return (
     <>
+      <Spinner visible={loading} textContent="" />
       <AddTaskCategory
         visible={addActivityDialog}
-        selectedCategory={selectedCategory}
+        selectedList={selectedList}
         toggleDialog={toggleDialog}
         onSubmit={OnSubmit}
       />
       <ShareTask
         open={dialog}
         handleClose={toggleModal}
-        submitForm={console.log('----->')}
+        handleSubmit={handleShare}
+        selectedList={selectedList}
       />
 
       <View style={styles.container}>
@@ -126,15 +192,16 @@ function TaskList(props) {
               opacity={0.2}
               onPress={toggleDialog}>
               <MaterialCommunityIcons name="plus" size={16} color="#005BE4" />
-              <Text style={styles.add}>Add</Text>
+              <Text style={styles.add}>Add List</Text>
             </OpacityButton>
           </View>
         </View>
         <Divider />
-        {arr.map((ele, index) => {
+        {DEFAULT_LIST.map((ele, index) => {
           return (
-            <View>
-              <TouchableOpacity onPress={navToSubtask}>
+            <View key={index}>
+              <TouchableOpacity
+                onPress={() => navToSubtask(ele.action, ele.title)}>
                 <View style={styles.sectionContainer}>
                   <View style={styles.taskContainer}>
                     <View style={styles.calenderIcon}>
@@ -146,10 +213,39 @@ function TaskList(props) {
                     </View>
                     <Text style={styles.subHeading}>{ele.title}</Text>
                   </View>
+                </View>
+              </TouchableOpacity>
+              <Divider />
+            </View>
+          );
+        })}
+        {TODO_LIST?.map((ele, index) => {
+          return (
+            <View key={ele.id}>
+              <TouchableOpacity
+                onPress={() => navToSubtask(ele.id, ele.list_name)}>
+                <View style={styles.sectionContainer}>
+                  <View style={styles.taskContainer}>
+                    <View style={styles.calenderIcon}>
+                      <MaterialCommunityIcons
+                        name="chevron-right"
+                        size={23}
+                        color="black"
+                      />
+                    </View>
+                    <Text style={styles.subHeading}>{ele?.list_name}</Text>
+                  </View>
                   <MenuDialog
-                    onUpdate={onUpdate}
-                    onDelete={onDelete}
-                    onShare={toggleModal}
+                    onUpdate={() => {
+                      toggleDialog();
+                      setSelectedList(ele);
+                    }}
+                    handleDelete={handleDelete}
+                    item={ele}
+                    onShare={() => {
+                      toggleModal();
+                      setSelectedList(ele);
+                    }}
                   />
                 </View>
               </TouchableOpacity>
@@ -191,6 +287,7 @@ const styles = StyleSheet.create({
   taskContainer: {
     alignItems: 'center',
     flexDirection: 'row',
+    padding: 2,
   },
   headerContainer: {
     flexDirection: 'row',
