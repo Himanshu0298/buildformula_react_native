@@ -216,7 +216,7 @@ function SubTaskList(props) {
   const navToAdd = () => navigation.navigate('AddTask', {action});
 
   const navToDetails = taskID =>
-    navigation.navigate('TaskDetails', {taskID, loadTasks, loadLists});
+    navigation.navigate('TaskDetails', {taskID, loadTasks, loadLists, action});
 
   const toggleComplete = async (id, complete) => {
     await mark_task_complete({

@@ -1,11 +1,9 @@
 import * as React from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-
 import {View, StyleSheet, Image} from 'react-native';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FileIcon from 'assets/images/file_icon.png';
-import Feather from 'react-native-vector-icons/Feather';
 import {Caption, Text, withTheme} from 'react-native-paper';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import {theme} from 'styles/theme';
@@ -20,7 +18,7 @@ function TaskDetails(props) {
   const alert = useAlert();
   const {navigation, route} = props;
 
-  const {taskID, loadLists, loadTasks} = route.params;
+  const {taskID, loadLists, loadTasks, action} = route.params;
 
   const {TODO_COMPLETED_TASKS, TODO_TASKS, loading} = useSelector(s => s.todo);
   const {selectedProject} = useSelector(s => s.project);
@@ -47,7 +45,7 @@ function TaskDetails(props) {
   } = taskDetails || {};
 
   const navToEdit = () => {
-    navigation.navigate('AddTask', {type: 'edit'});
+    navigation.navigate('AddTask', {type: 'edit', taskID, action, taskDetails});
   };
 
   const toggleComplete = async (id, complete) => {
@@ -85,9 +83,6 @@ function TaskDetails(props) {
     await loadTasks();
   };
 
-  const AddToFavorite = i => {
-    console.log('----->i', i);
-  };
   return (
     <ScrollView>
       <Spinner visible={loading} textContent="" />
@@ -125,7 +120,7 @@ function TaskDetails(props) {
               style={styles.icons}
               onPress={() => toggleFavorite()}>
               <MaterialCommunityIcons
-                name="star-outline"
+                name={important ? 'star' : 'star-outline'}
                 size={18}
                 color={theme.colors.primary}
               />
@@ -180,11 +175,11 @@ function TaskDetails(props) {
         </View>
         <View style={styles.captionContainer}>
           <Caption style={styles.caption}>Reminder :</Caption>
-          <Text style={styles.value}>{reminder_date}</Text>
+          <Text style={styles.value}>{reminder_date || ''}</Text>
         </View>
         <View style={styles.captionContainer}>
           <Caption style={styles.caption}>Due Date :</Caption>
-          <Text style={styles.value}>{due_date}</Text>
+          <Text style={styles.value}>{due_date || ''}</Text>
         </View>
         {assign_to ? (
           <>
@@ -194,49 +189,48 @@ function TaskDetails(props) {
             <View style={styles.headingContainer}>
               <View style={{padding: 5}}>
                 <Text style={styles.textContainer}> {assign_to || ''}</Text>
-                {/* 
-                <Caption style={styles.input}>
-                  pratikghandhi0001@gmail.com
-                </Caption> */}
               </View>
             </View>
           </>
         ) : undefined}
+        {attachments?.length ? (
+          <>
+            <View style={styles.captionContainer}>
+              <Caption style={styles.caption}>Attachments</Caption>
+            </View>
 
-        <View style={styles.captionContainer}>
-          <Caption style={styles.caption}>Attachments</Caption>
-        </View>
-
-        {attachments?.map((ele, index) => {
-          return (
-            <View style={styles.card}>
-              <View style={styles.cardContainer}>
-                <View style={styles.subCardContainer}>
-                  <View style={{flexDirection: 'row'}}>
-                    <View style={styles.pdfIcon}>
-                      <Image source={FileIcon} style={styles.fileIcon} />
-                    </View>
-                    <View>
-                      <View style={styles.InputContainer}>
-                        <Text
-                          numberOfLines={1}
-                          style={{width: Layout.window.width - 150}}>
-                          {ele.file_name}
-                        </Text>
+            {attachments?.map((ele, index) => {
+              return (
+                <View style={styles.card}>
+                  <View style={styles.cardContainer}>
+                    <View style={styles.subCardContainer}>
+                      <View style={{flexDirection: 'row'}}>
+                        <View style={styles.pdfIcon}>
+                          <Image source={FileIcon} style={styles.fileIcon} />
+                        </View>
                         <View>
-                          <Caption> {ele.file_size}</Caption>
+                          <View style={styles.InputContainer}>
+                            <Text
+                              numberOfLines={1}
+                              style={{width: Layout.window.width - 150}}>
+                              {ele.file_name}
+                            </Text>
+                            <View>
+                              <Caption> {ele.file_size}</Caption>
+                            </View>
+                          </View>
                         </View>
                       </View>
                     </View>
+                    <View style={styles.download}>
+                      <AntDesign name="download" size={18} color="#4872F4" />
+                    </View>
                   </View>
                 </View>
-                <View style={styles.download}>
-                  <AntDesign name="download" size={18} color="#4872F4" />
-                </View>
-              </View>
-            </View>
-          );
-        })}
+              );
+            })}
+          </>
+        ) : null}
       </View>
     </ScrollView>
   );

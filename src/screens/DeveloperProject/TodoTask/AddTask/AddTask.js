@@ -32,8 +32,7 @@ const schema = Yup.object().shape({
 });
 
 const RenderAttachments = props => {
-  const {attachments, handleDelete} = props;
-
+  const {attachments, handleDelete, type} = props;
   return (
     <View>
       <View style={styles.cardContainer}>
@@ -57,7 +56,7 @@ const RenderAttachments = props => {
                 opacity={0.1}
                 color={theme.colors.error}
                 style={styles.closeButton}
-                onPress={() => handleDelete(index)}>
+                onPress={() => handleDelete(index, type && attachment.id)}>
                 <MaterialIcon
                   name="close"
                   color={theme.colors.error}
@@ -146,7 +145,8 @@ function RenderSubTask(props) {
 }
 
 function CreateTask(props) {
-  const {formikProps, navigation} = props;
+  const {delete_task_file} = useTodoActions();
+  const {formikProps, navigation, type, projectId, taskID} = props;
   const {assigntoData} = useSelector(s => s.sales);
   const {
     values,
@@ -179,8 +179,13 @@ function CreateTask(props) {
     });
   };
 
-  const handleDelete = i => {
+  const handleDelete = (i, id) => {
     values.attachments.splice(i, 1);
+    delete_task_file({
+      project_id: projectId,
+      todo_task_id: type ? taskID : 0,
+      file_id: id,
+    });
     setFieldValue('attachments', values.attachments);
   };
 
@@ -290,7 +295,6 @@ function CreateTask(props) {
             onBlur={handleBlur('description')}
             error={errors.description}
           />
-
           <View>
             <Text style={[{color: theme.colors.primary}, styles.attachmentBox]}>
               Attachment
@@ -315,6 +319,7 @@ function CreateTask(props) {
             <RenderAttachments
               attachments={values.attachments}
               handleDelete={i => handleDelete(i)}
+              type={type}
             />
           ) : null}
         </View>
@@ -330,6 +335,18 @@ function CreateTask(props) {
 
 function AddTask(props) {
   const {navigation, route} = props;
+
+  const {action, taskID, type, taskDetails} = route.params || {};
+
+  const _subTasks = taskDetails?.sub_task?.map(e => ({
+    [e?.title]: e?.complete,
+  }));
+
+  const _attachments = taskDetails?.attachments?.map(e => ({
+    id: e.id,
+    uri: e.file_url,
+    name: e.file_name,
+  }));
 
   const {selectedProject} = useSelector(s => s.project);
   const projectId = selectedProject.id;
@@ -349,13 +366,17 @@ function AddTask(props) {
 
     const formData = new FormData();
     formData.append('project_id', projectId);
-    formData.append('action_type', route.params.action || '');
+    formData.append('task_id', type ? taskID : 0);
+    formData.append('action_type', action || '');
     formData.append('task_title', taskName);
     formData.append('description', description);
-    formData.append('due_date', dayjs(dueDate).format('YYYY-MM-DD'));
+    formData.append(
+      'due_date',
+      dueDate ? dayjs(dueDate).format('YYYY-MM-DD') : '',
+    );
     formData.append(
       'reminder_date',
-      dayjs(reminderDate).format('YYYY-MM-DD hh:mm:ss'),
+      reminderDate ? dayjs(reminderDate).format('YYYY-MM-DD hh:mm:ss') : '',
     );
     formData.append('assign_to', assignee);
     formData.append('subtask', JSON.stringify(subTaskList));
@@ -380,16 +401,32 @@ function AddTask(props) {
               <MaterialIcon name="keyboard-backspace" color="#000" size={18} />
             </OpacityButton>
 
-            <Subheading>Create Task</Subheading>
+            <Subheading>{type ? 'Edit' : 'Create'} Task</Subheading>
           </View>
         </View>
         <Formik
           validateOnBlur={false}
           validateOnChange={false}
-          initialValues={{subTaskList: [], attachments: []}}
+          initialValues={{
+            taskName: type ? taskDetails?.task_title : '',
+            description: type ? taskDetails?.description : '',
+            reminderDate: type ? taskDetails?.reminder_date : '',
+            dueDate: type ? taskDetails?.due_date : '',
+            assignee: type ? taskDetails?.assign_to_id : '',
+            subTaskList: type ? _subTasks : [],
+            attachments: type ? _attachments : [],
+          }}
           validationSchema={schema}
           onSubmit={onSubmit}>
-          {formikProps => <CreateTask {...props} formikProps={formikProps} />}
+          {formikProps => (
+            <CreateTask
+              {...props}
+              formikProps={formikProps}
+              type={type}
+              projectId={projectId}
+              taskID={taskID}
+            />
+          )}
         </Formik>
       </View>
     </ScrollView>
