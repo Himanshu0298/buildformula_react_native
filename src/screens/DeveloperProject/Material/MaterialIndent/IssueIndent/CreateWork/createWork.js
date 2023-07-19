@@ -25,22 +25,30 @@ import {theme} from 'styles/theme';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import RenderInput from 'components/Atoms/RenderInput';
-import {getUniqueOptions} from 'utils/constant';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
-import {isNumber, round} from 'lodash';
+import {cloneDeep, isNumber, round} from 'lodash';
 import {getShadow} from 'utils';
 import * as Yup from 'yup';
 
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import {useAlert} from 'components/Atoms/Alert';
+import {getUniqueOptions} from 'utils/constant';
+
+const NO_WBS_ID = 0;
 
 const schema = Yup.object().shape({
   quantity: Yup.number().label('quantity').required('required'),
 });
 
 function AddMaterialDialog(props) {
-  const {handleClose, edit, categoryList, handleSave, issueInitialValues} =
-    props;
+  const {
+    handleClose,
+    edit,
+    categoryList,
+    handleSave,
+    issueInitialValues,
+    wbsIds,
+  } = props;
 
   const {materialCategories, materialSubCategories} = useSelector(
     s => s.materialManagement,
@@ -64,7 +72,7 @@ function AddMaterialDialog(props) {
     onSubmit: handleSave,
   });
 
-  const categoryOptions = useMemo(() => {
+  const categoryWorkOptions = useMemo(() => {
     const categories = [...new Set(categoryList?.map(i => i.category_id))];
 
     return materialCategories
@@ -75,7 +83,14 @@ function AddMaterialDialog(props) {
       }));
   }, [categoryList, materialCategories]);
 
-  const subCategoryOptions = useMemo(() => {
+  const categoryOptions = useMemo(() => {
+    return materialCategories?.map(i => ({
+      label: `${i.title}`,
+      value: i.id,
+    }));
+  }, [materialCategories]);
+
+  const subCategoryWorkOptions = useMemo(() => {
     const subCategories = [
       ...new Set(categoryList.map(i => i.master_material_subcategory_id)),
     ];
@@ -85,6 +100,12 @@ function AddMaterialDialog(props) {
       ?.filter(i => i.category_id === values.material_category_id)
       ?.map(i => ({label: `${i.title}`, value: i.id}));
   }, [categoryList, materialSubCategories, values.material_category_id]);
+
+  const subCategoryOptions = useMemo(() => {
+    return materialSubCategories
+      ?.filter(i => i.category_id === values.material_category_id)
+      ?.map(i => ({label: `${i.title}`, value: i.id}));
+  }, [materialSubCategories, values.material_category_id]);
 
   const unitOptions = useMemo(() => {
     return units?.map(i => ({label: `${i.title}`, value: i.id}));
@@ -108,7 +129,7 @@ function AddMaterialDialog(props) {
               <RenderSelect
                 name="material_category_id"
                 label="Category"
-                options={categoryOptions}
+                options={wbsIds?.length ? categoryWorkOptions : categoryOptions}
                 value={values.material_category_id}
                 containerStyles={styles.inputStyles}
                 onBlur={handleBlur('material_category_id')}
@@ -119,7 +140,9 @@ function AddMaterialDialog(props) {
               <RenderSelect
                 name="material_sub_category_id"
                 label="Sub Category"
-                options={subCategoryOptions}
+                options={
+                  wbsIds?.length ? subCategoryWorkOptions : subCategoryOptions
+                }
                 value={values.material_sub_category_id}
                 containerStyles={styles.inputStyles}
                 onBlur={handleBlur('material_sub_category_id')}
@@ -219,7 +242,7 @@ function IssueCardListing(props) {
             <OpacityButton
               color="#FF5D5D"
               opacity={0.18}
-              onPress={() => handleDelete(index, item.id)}
+              onPress={() => handleDelete(wbs, index, item.id)}
               style={styles.OpacityButton}>
               <MaterialIcons name="delete" color="#FF5D5D" size={13} />
             </OpacityButton>
@@ -450,7 +473,6 @@ function MultiRender(props) {
     editDialog,
     handleDelete,
     editRmcDialog,
-    handleRMCDelete,
     handleIndentRequestDelete,
   } = props;
 
@@ -460,20 +482,22 @@ function MultiRender(props) {
   return (
     <View style={styles.wbsDataContainer}>
       <View style={styles.cardSubContainer}>
-        <View style={styles.wbsIdContainer}>
-          <Text style={styles.wbs}>{wbs.title} </Text>
-        </View>
+        {wbs?.title ? (
+          <View style={styles.wbsIdContainer}>
+            <Text style={styles.wbs}>{wbs?.title} </Text>
+          </View>
+        ) : null}
         <View style={styles.subContainer}>
           <TouchableOpacity
             style={styles.buttonContainer}
             activeOpacity={0.5}
-            onPress={() => toggleAddIssueDialog(wbs.id)}>
+            onPress={() => toggleAddIssueDialog(wbs?.id)}>
             <Text style={styles.textColor}>Issue Material</Text>
           </TouchableOpacity>
           <TouchableOpacity
             activeOpacity={0.5}
             style={styles.buttonContainer}
-            onPress={() => toggleAddRMCDialog(wbs.id)}>
+            onPress={() => toggleAddRMCDialog(wbs?.id)}>
             <Text style={styles.textColor}>Issue RMC</Text>
           </TouchableOpacity>
         </View>
@@ -503,7 +527,7 @@ function MultiRender(props) {
                     index={index}
                     toggleEditDialog={editDialog}
                     handleDelete={handleDelete}
-                    wbs={wbs.id}
+                    wbs={wbs?.id}
                     edit={edit}
                   />
                 );
@@ -541,8 +565,7 @@ function MultiRender(props) {
                   materialCategories={materialCategories}
                   materialSubCategories={materialSubCategories}
                   editRmcDialog={editRmcDialog}
-                  wbs={wbs.id}
-                  handleRMCDelete={handleRMCDelete}
+                  wbs={wbs?.id}
                 />
               );
             })
@@ -578,6 +601,7 @@ function CreateWork(props) {
 
   const {selectedProject} = useSelector(s => s.project);
   const projectId = selectedProject.id;
+  const wbsIdCheck = selectedProject.afm_wbs_id;
 
   const {
     workOptions,
@@ -588,79 +612,69 @@ function CreateWork(props) {
     categoryList,
   } = useSelector(s => s.materialManagement);
 
-  const {
-    material_indent,
-    issue_list: materialsItems,
-    rmc_list: rmcItems,
-  } = indentDetails;
-
-  const {remark, requred_date, vendor_id} = material_indent || {};
+  const {remark, requred_date, vendor_id} =
+    indentDetails?.material_indent || {};
 
   const [addRmcDialog, setRmcDialog] = React.useState(false);
   const [addDialog, setAddDialog] = React.useState(false);
   const [selectedMaterialIndex, setSelectedMaterialIndex] = React.useState();
   const [selectedIssueIndex, setSelectedIssueIndex] = React.useState();
   const [selectedWBSId, setSelectedWBSId] = React.useState();
-  const [wbsIds, setWbsIds] = React.useState([]);
-  const [materials, setMaterials] = React.useState(materialsItems);
-  const [rmcMaterials, setRmcMaterials] = React.useState(rmcItems);
+  const [wbsIds, setWbsIds] = React.useState([NO_WBS_ID]);
+  const [materials, setMaterials] = React.useState([]);
+  const [rmcMaterials, setRmcMaterials] = React.useState([]);
 
   React.useEffect(() => {
     getWorkSubWorkList({project_id: projectId});
     getRMCList({project_id: projectId});
-    getPRMaterialCategories({project_id: projectId});
     getDetails();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const wbsIdCheck = selectedProject.afm_wbs_id;
-
-  const categoriesList = () => {
-    wbsIds.forEach(function (wbs_id) {
-      if (wbs_id) {
-        getMaterialIndentCategoryList({
-          project_id: projectId,
-          wbs_works_id: [wbs_id],
-        });
+  React.useEffect(() => {
+    if (wbsIds.length) {
+      if (materials[NO_WBS_ID]) {
+        const _materials = {...materials};
+        delete _materials[NO_WBS_ID];
+        setMaterials(_materials);
       }
-    });
-  };
+      if (rmcMaterials[NO_WBS_ID]) {
+        const _rmcMaterials = {...rmcMaterials};
+        delete rmcMaterials[NO_WBS_ID];
+        setRmcMaterials(_rmcMaterials);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [wbsIds.length]);
 
   React.useEffect(() => {
-    categoriesList();
+    if (selectedWBSId) {
+      getMaterialIndentCategoryList({
+        project_id: projectId,
+        wbs_works_id: [selectedWBSId],
+      });
+    } else if (selectedWBSId === NO_WBS_ID) {
+      getPRMaterialCategories({project_id: projectId});
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wbsIds]);
+  }, [selectedWBSId]);
 
   useEffect(() => {
-    if (
-      (typeof indentDetails !== 'undefined' &&
-        indentDetails &&
-        indentDetails.issue_list) ||
-      indentDetails.rmc_list
-    ) {
-      const issueListKeys = Object.keys(indentDetails.issue_list);
-      const rmcListKeys = Object.keys(indentDetails.rmc_list);
+    if (indentDetails) {
+      const {issue_list = {}, rmc_list = {}} = indentDetails;
+      const computedWbsIds = [
+        ...new Set([...Object.keys(issue_list), ...Object.keys(rmc_list)]),
+      ];
 
-      const issueListValues = issueListKeys.reduce((acc, key) => {
-        return acc.concat(indentDetails.issue_list[key]);
-      }, []);
-
-      const rmcListValues = rmcListKeys.reduce((acc, key) => {
-        return acc.concat(indentDetails.rmc_list[key]);
-      }, []);
-
-      setWbsIds(indentDetails.issue_list.length ? issueListKeys : rmcListKeys);
-
-      setMaterials(issueListValues);
-      setRmcMaterials(rmcListValues);
-    } else {
-      // Handle the case when indentDetails is undefined or does not have the expected properties
+      setMaterials(cloneDeep(issue_list || {}));
+      setRmcMaterials(cloneDeep(rmc_list || {}));
+      setWbsIds(computedWbsIds);
     }
   }, [indentDetails]);
 
   const getDetails = async () => {
-    await getIndentDetails({
+    return getIndentDetails({
       project_id: selectedProject.id,
       material_indent_id: id,
     });
@@ -671,72 +685,38 @@ function CreateWork(props) {
   }, [workOptions]);
 
   const handleSave = async () => {
-    const issuework = {};
-    const rmc_work = {};
-    wbsIds?.map(wbsId => {
-      issuework[wbsId] = materials?.filter(item => {
-        if (Number(item.wbs_works_id) === Number(wbsId)) {
-          const {
-            material_category_id,
-            material_sub_category_id,
-            material_units_id,
-            quantity,
-          } = item;
-          return {
-            material_category_id,
-            material_sub_category_id,
-            material_units_id,
-            quantity,
-          };
-        }
-        return false;
-      });
-
-      rmc_work[wbsId] = rmcMaterials?.filter(item => {
-        if (Number(item.wbs_works_id) === Number(wbsId)) {
-          const {
-            material_category_id,
-            material_sub_category_id,
-            material_units_id,
-            quantity,
-            indent_rmc_id,
-            rmc_qty: coefficient_qty,
-          } = item;
-          return {
-            material_category_id,
-            material_sub_category_id,
-            material_units_id,
-            quantity,
-            indent_rmc_id,
-            coefficient_qty,
-          };
-        }
-        return false;
-      });
-
-      return true;
+    const parsedRmcMaterials = rmcMaterials.map(item => {
+      const {rmc_qty: coefficient_qty, ...rest} = item;
+      return {
+        ...rest,
+        coefficient_qty,
+      };
     });
+
     const restData = {
       project_id: projectId,
       material_indent_id: id,
-      issuework: [issuework],
-      rmc_work: [rmc_work],
+      issuework: [materials],
+      rmc_work: [parsedRmcMaterials],
       remark,
       requred_date,
       vendor_id,
     };
 
     if (wbsIdCheck === 'yes') {
-      if (wbsIds.length) {
+      if (wbsIds?.length) {
         await createWorkIssue(restData);
       } else {
         snackbar.showMessage({
-          message: 'Please add Required for',
+          message: 'Please add item in Required for dropdown',
           variant: 'error',
         });
         return;
       }
     }
+
+    await createWorkIssue(restData);
+
     getDetails();
     navigation.navigate('MaterialIndent');
     navigation.navigate('IssueIndentPreview', {id});
@@ -748,8 +728,8 @@ function CreateWork(props) {
       title: 'Confirm',
       message: 'Are you sure you want to delete?',
       confirmText: 'Delete',
-      onConfirm: () => {
-        deleteIndentRequest({
+      onConfirm: async () => {
+        await deleteIndentRequest({
           project_id: projectId,
           material_indent_id: id,
           wbs_works_id,
@@ -789,36 +769,23 @@ function CreateWork(props) {
     toggleAddRMCDialog(wbsId);
   };
 
-  const handleDelete = (index, itemId) => {
+  const handleDelete = (wbsId, index, itemId) => {
     alert.show({
       title: 'Confirm',
       message: 'Are you sure you want to delete?',
       confirmText: 'Delete',
-      onConfirm: () => {
+      onConfirm: async () => {
         if (itemId) {
-          deleteIndentItem({
+          await deleteIndentItem({
             project_id: selectedProject.id,
             material_indent_details_id: itemId,
           });
           getDetails();
         } else {
           const _materials = [...materials];
-          _materials?.splice(index, 1);
+          _materials[wbsId]?.splice(index, 1);
           setMaterials(_materials);
         }
-      },
-    });
-  };
-
-  const handleRMCDelete = index => {
-    alert.show({
-      title: 'Confirm',
-      message: 'Are you sure you want to delete?',
-      confirmText: 'Delete',
-      onConfirm: () => {
-        const _materials = [...rmcMaterials];
-        _materials?.splice(index, 1);
-        setRmcMaterials(_materials);
       },
     });
   };
@@ -826,36 +793,30 @@ function CreateWork(props) {
   const handelSetRmc = values => {
     const {select_grade, quantity} = values;
 
+    const wbsRmcMaterials = rmcMaterials[selectedWBSId] || [];
+
     const filtered =
-      rmcMaterials?.filter(
+      wbsRmcMaterials?.filter(
         i => i.grade !== select_grade || i.wbs_works_id !== selectedWBSId,
       ) || [];
 
     const data = rmcList?.rmc_material
       ?.filter(i => i.grade === select_grade)
       .map(item => {
-        const {
-          material_category_id,
-          material_sub_category_id,
-          material_units_id,
-          coefficient_qty: rmc_qty,
-          grade,
-          rmc_id: indent_rmc_id,
-        } = item;
+        const {coefficient_qty: rmc_qty, rmc_id: indent_rmc_id, ...rest} = item;
 
         return {
+          ...rest,
           wbs_works_id: selectedWBSId,
-          material_category_id,
-          material_sub_category_id,
-          material_units_id,
           quantity: round(quantity * rmc_qty, 2),
-          grade,
           indent_rmc_id,
           rmc_qty,
         };
       });
 
-    setRmcMaterials([...filtered, ...data]);
+    rmcMaterials[selectedWBSId] = [...filtered, ...data];
+
+    setRmcMaterials(rmcMaterials);
   };
 
   const handleSaveIssueMaterial = values => {
@@ -867,18 +828,25 @@ function CreateWork(props) {
       return;
     }
 
-    const _materials = [...materials];
+    const wbsMaterials = materials[selectedWBSId] || [];
 
     const data = {...values, wbs_works_id: selectedWBSId};
 
     if (!isNaN(selectedMaterialIndex)) {
-      _materials[selectedMaterialIndex] = data;
+      wbsMaterials[selectedMaterialIndex] = data;
     } else {
-      _materials.push(data);
+      wbsMaterials.push(data);
     }
 
-    setMaterials(_materials);
+    materials[selectedWBSId] = wbsMaterials;
+
+    setMaterials(materials);
     toggleAddIssueDialog();
+  };
+
+  const getWbsOption = wbsId => {
+    if (wbsId === NO_WBS_ID) return {id: 0};
+    return workOptions?.find(i => Number(i.id) === Number(wbsId));
   };
 
   const issueInitialValues = useMemo(() => {
@@ -889,7 +857,7 @@ function CreateWork(props) {
         material_units_id,
         quantity,
         wbs_works_id,
-      } = materials[selectedMaterialIndex];
+      } = materials[selectedWBSId][selectedMaterialIndex];
 
       const selectedSubCategory = materialSubCategories?.find(
         i => i.id === material_sub_category_id,
@@ -903,31 +871,39 @@ function CreateWork(props) {
         wbs_works_id,
       };
     }
+
     return {};
-  }, [materialSubCategories, materials, selectedMaterialIndex]);
+  }, [materialSubCategories, materials, selectedMaterialIndex, selectedWBSId]);
+
+  const parsedWbsIds = useMemo(() => {
+    return wbsIds?.length ? wbsIds : [NO_WBS_ID];
+  }, [wbsIds]);
 
   return (
     <>
       {addRmcDialog ? (
         <AddRMCDialog
-          handleClose={toggleAddRMCDialog}
           visible={addRmcDialog}
           rmcList={rmcList}
           addRmcDialog={addRmcDialog}
           selectedIssueIndex={selectedIssueIndex}
           handleSave={handelSetRmc}
+          handleClose={toggleAddRMCDialog}
         />
       ) : null}
+
       {addDialog ? (
         <AddMaterialDialog
           visible={addDialog}
-          handleClose={toggleAddIssueDialog}
           edit={edit}
+          wbsIds={wbsIds}
           categoryList={categoryList}
-          handleSave={handleSaveIssueMaterial}
           issueInitialValues={issueInitialValues}
+          handleSave={handleSaveIssueMaterial}
+          handleClose={toggleAddIssueDialog}
         />
       ) : null}
+
       <ScrollView>
         <View style={styles.container}>
           <View style={styles.formContainer}>
@@ -943,29 +919,36 @@ function CreateWork(props) {
                   onSelect={setWbsIds}
                 />
 
-                {wbsIds?.map(wbsId => {
-                  const wbs = workOptions?.find(
-                    i => Number(i.id) === Number(wbsId),
-                  );
+                {!parsedWbsIds.length ? (
+                  <View>
+                    <View style={styles.subContainer}>
+                      <TouchableOpacity
+                        style={styles.buttonContainer}
+                        activeOpacity={0.5}
+                        onPress={() => toggleAddIssueDialog(NO_WBS_ID)}>
+                        <Text style={styles.textColor}>Issue Material</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        activeOpacity={0.5}
+                        style={styles.buttonContainer}
+                        onPress={() => toggleAddRMCDialog(NO_WBS_ID)}>
+                        <Text style={styles.textColor}>Issue RMC</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                ) : null}
 
-                  const filteredIssueMaterials = materials.filter(
-                    i => Number(i.wbs_works_id) === Number(wbsId),
-                  );
-                  const filteredRMCMaterials = rmcMaterials?.filter(
-                    i => Number(i.wbs_works_id) === Number(wbsId),
-                  );
-
+                {parsedWbsIds?.map(wbsId => {
                   return (
                     <MultiRender
-                      wbs={wbs}
+                      wbs={getWbsOption(wbsId)}
                       edit={edit}
                       workOptions={workOptions}
-                      issueMaterials={filteredIssueMaterials}
-                      rmcMaterials={filteredRMCMaterials}
+                      issueMaterials={materials[wbsId]}
+                      rmcMaterials={rmcMaterials[wbsId]}
                       materialCategories={materialCategories}
                       materialSubCategories={materialSubCategories}
                       handleDelete={handleDelete}
-                      handleRMCDelete={handleRMCDelete}
                       handleIndentRequestDelete={handleIndentRequestDelete}
                       editDialog={editDialog}
                       editRmcDialog={editRmcDialog}
@@ -1061,9 +1044,6 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
 
-  titleContainer: {
-    marginVertical: 5,
-  },
   title: {
     color: '#4872f4',
   },
