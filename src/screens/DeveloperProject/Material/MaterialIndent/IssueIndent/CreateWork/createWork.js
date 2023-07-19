@@ -474,6 +474,7 @@ function MultiRender(props) {
     handleDelete,
     editRmcDialog,
     handleIndentRequestDelete,
+    wbsIdCheck,
   } = props;
 
   const rmc_delete_data = rmcMaterials?.find(e => e) || {};
@@ -601,7 +602,7 @@ function CreateWork(props) {
 
   const {selectedProject} = useSelector(s => s.project);
   const projectId = selectedProject.id;
-  const wbsIdCheck = selectedProject.afm_wbs_id;
+  const wbsIdCheck = selectedProject.afm_wbs_id === 'yes';
 
   const {
     workOptions,
@@ -703,7 +704,7 @@ function CreateWork(props) {
       vendor_id,
     };
 
-    if (wbsIdCheck === 'yes') {
+    if (wbsIdCheck) {
       if (wbsIds?.length) {
         await createWorkIssue(restData);
       } else {
@@ -846,8 +847,11 @@ function CreateWork(props) {
 
   const getWbsOption = wbsId => {
     if (wbsId === NO_WBS_ID) return {id: 0};
+
     return workOptions?.find(i => Number(i.id) === Number(wbsId));
   };
+
+  console.log('===========> getWbsOption', getWbsOption);
 
   const issueInitialValues = useMemo(() => {
     if (isNumber(selectedMaterialIndex)) {
@@ -876,8 +880,8 @@ function CreateWork(props) {
   }, [materialSubCategories, materials, selectedMaterialIndex, selectedWBSId]);
 
   const parsedWbsIds = useMemo(() => {
-    return wbsIds?.length ? wbsIds : [NO_WBS_ID];
-  }, [wbsIds]);
+    return wbsIds?.length ? wbsIds : !wbsIdCheck ? [NO_WBS_ID] : [];
+  }, [wbsIdCheck, wbsIds]);
 
   return (
     <>
@@ -918,25 +922,6 @@ function CreateWork(props) {
                   containerStyles={styles.inputStyles}
                   onSelect={setWbsIds}
                 />
-
-                {!parsedWbsIds.length ? (
-                  <View>
-                    <View style={styles.subContainer}>
-                      <TouchableOpacity
-                        style={styles.buttonContainer}
-                        activeOpacity={0.5}
-                        onPress={() => toggleAddIssueDialog(NO_WBS_ID)}>
-                        <Text style={styles.textColor}>Issue Material</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        activeOpacity={0.5}
-                        style={styles.buttonContainer}
-                        onPress={() => toggleAddRMCDialog(NO_WBS_ID)}>
-                        <Text style={styles.textColor}>Issue RMC</Text>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                ) : null}
 
                 {parsedWbsIds?.map(wbsId => {
                   return (
