@@ -148,7 +148,7 @@ const AddAttachments = props => {
   };
 
   const onSubmit = async values => {
-    const {attachments} = values;
+    const {attachments = []} = values;
 
     const formData = new FormData();
 

@@ -48,6 +48,7 @@ function AddMaterialDialog(props) {
     handleSave,
     issueInitialValues,
     wbsIds,
+    wbsIdCheck,
   } = props;
 
   const {materialCategories, materialSubCategories} = useSelector(
@@ -95,6 +96,8 @@ function AddMaterialDialog(props) {
       ...new Set(categoryList.map(i => i.master_material_subcategory_id)),
     ];
 
+    console.log('===========> subCategoryWorkOptions', subCategoryWorkOptions);
+
     return materialSubCategories
       ?.filter(i => subCategories.includes(i.id))
       ?.filter(i => i.category_id === values.material_category_id)
@@ -141,7 +144,7 @@ function AddMaterialDialog(props) {
                 name="material_sub_category_id"
                 label="Sub Category"
                 options={
-                  wbsIds?.length ? subCategoryWorkOptions : subCategoryOptions
+                  wbsIdCheck ? subCategoryWorkOptions : subCategoryOptions
                 }
                 value={values.material_sub_category_id}
                 containerStyles={styles.inputStyles}
@@ -653,7 +656,7 @@ function CreateWork(props) {
     if (selectedWBSId) {
       getMaterialIndentCategoryList({
         project_id: projectId,
-        wbs_works_id: [selectedWBSId],
+        wbs_works_id: selectedWBSId,
       });
     } else if (selectedWBSId === NO_WBS_ID) {
       getPRMaterialCategories({project_id: projectId});
@@ -851,8 +854,6 @@ function CreateWork(props) {
     return workOptions?.find(i => Number(i.id) === Number(wbsId));
   };
 
-  console.log('===========> getWbsOption', getWbsOption);
-
   const issueInitialValues = useMemo(() => {
     if (isNumber(selectedMaterialIndex)) {
       const {
@@ -905,6 +906,7 @@ function CreateWork(props) {
           issueInitialValues={issueInitialValues}
           handleSave={handleSaveIssueMaterial}
           handleClose={toggleAddIssueDialog}
+          wbsIdCheck={wbsIdCheck}
         />
       ) : null}
 
@@ -939,6 +941,7 @@ function CreateWork(props) {
                       editRmcDialog={editRmcDialog}
                       toggleAddRMCDialog={toggleAddRMCDialog}
                       toggleAddIssueDialog={toggleAddIssueDialog}
+                      wbsIdCheck={wbsIdCheck}
                     />
                   );
                 })}
