@@ -7,13 +7,7 @@ import {
   Text,
   withTheme,
 } from 'react-native-paper';
-import {
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-  Platform,
-} from 'react-native';
+import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {theme} from 'styles/theme';
 import {getShadow} from 'utils';
@@ -22,8 +16,9 @@ import {useSelector} from 'react-redux';
 import FileIcon from 'assets/images/file_icon.png';
 import NoResult from 'components/Atoms/NoResult';
 import FileViewer from 'react-native-file-viewer';
-import ReactNativeBlobUtil from 'react-native-blob-util';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
+import {useDownload} from 'components/Atoms/Download';
+import {getFileName} from 'utils/constant';
 
 const MaterialInfoHeader = props => {
   const {item} = props;
@@ -55,10 +50,9 @@ const MaterialInfoHeader = props => {
 
   const makeOfListTitle = React.useMemo(() => {
     return (
-      makeOfLists?.find(i => i.id === item?.master_list_of_makes_id)?.status ||
-      'NA'
+      makeOfLists?.find(i => String(i.id) === item.lomtitle)?.title || 'NA'
     );
-  }, [item?.master_list_of_makes_id, makeOfLists]);
+  }, [item, makeOfLists]);
 
   return (
     <>
@@ -83,47 +77,30 @@ const MaterialInfoHeader = props => {
   );
 };
 
-const renderImage = (item, index, type) => {
+const renderImage = (item, index, type, projectId) => {
   const label =
     type === 'normal'
       ? `Material image ${index + 1}`
       : `Damaged image ${index + 1}`;
 
-  const downloadFile = image => {
-    const imgUrl = image.image_url;
-    const newImgUri = imgUrl.lastIndexOf('/');
-    const imageName = imgUrl.substring(newImgUri);
-    const {dirs} = ReactNativeBlobUtil.fs;
-    const path =
-      Platform.OS === 'ios'
-        ? dirs.DocumentDir + imageName
-        : dirs.DownloadDir + imageName;
-    ReactNativeBlobUtil.config({
-      fileCache: true,
-      appendExt: 'jpeg',
-      indicator: true,
-      IOSBackgroundTask: true,
-      path,
-      addAndroidDownloads: {
-        useDownloadManager: true,
-        notification: true,
-        path,
-        description: 'Image',
+  const download = useDownload();
+
+  const onPressFile = async fileUrl => {
+    console.log('material image direct grn===========> ', fileUrl);
+    download.link({
+      name: getFileName(fileUrl.image_url),
+
+      data: {project_id: projectId, file_url: fileUrl.image_url},
+      showAction: false,
+      onFinish: ({dir}) => {
+        FileViewer.open(`file://${dir}`);
       },
-    })
-      .fetch('GET', imgUrl)
-      .then(res => {
-        if (Platform.OS === 'ios') {
-          ReactNativeBlobUtil.ios.previewDocument(path);
-          // eslint-disable-next-line no-console
-          console.log(res, 'end downloaded');
-        }
-      });
+    });
   };
   return (
     <TouchableOpacity
       style={styles.sectionContainer}
-      onPress={() => downloadFile(item)}
+      onPress={() => onPressFile(item)}
       key={item?.id}>
       <Image source={FileIcon} style={styles.fileIcon} />
       <View>
@@ -134,7 +111,7 @@ const renderImage = (item, index, type) => {
 };
 
 const RenderMaterialAttachments = props => {
-  const {materialImages, damage} = props;
+  const {materialImages, damage, projectId} = props;
 
   const normalImages = materialImages?.filter(i => i.image_type === 'normal');
   const damagedImages = materialImages?.filter(i => i.image_type === 'damage');
@@ -147,10 +124,10 @@ const RenderMaterialAttachments = props => {
       {materialImages?.length ? (
         <>
           {normalImages?.map((item, index) =>
-            renderImage(item, index, 'normal'),
+            renderImage(item, index, 'normal', projectId),
           )}
           {damagedImages?.map((item, index) =>
-            renderImage(item, index, 'damage'),
+            renderImage(item, index, 'damage', projectId),
           )}
         </>
       ) : (
@@ -229,12 +206,16 @@ const DirectMaterialInfo = props => {
         );
       })}
       {challan_material_image?.length ? (
-        <RenderMaterialAttachments materialImages={challan_material_image} />
+        <RenderMaterialAttachments
+          materialImages={challan_material_image}
+          projectId={projectId}
+        />
       ) : null}
       {challan_material_damage_image?.length ? (
         <RenderMaterialAttachments
           materialImages={challan_material_damage_image}
           damage
+          projectId={projectId}
         />
       ) : null}
     </View>

@@ -41,7 +41,7 @@ function VersionFile(props) {
   const handleDownload = async () => {
     toggleVersionMenu();
     toggleDownloading();
-    const fileUrl = getDownloadUrl(version, true);
+    const fileUrl = getDownloadUrl({version});
     const {dir} = await downloadFile(version, fileUrl);
     snackbar.showMessage({message: 'File Downloaded Successfully!'});
     setDownloaded(dir);

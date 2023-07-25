@@ -11,6 +11,7 @@ import notification from './notification';
 import materialManagement from './materialManagement';
 import projectStructure from './projectStructure';
 import designModule from './designModule';
+import todo from './todo';
 
 const reducers = {
   app,
@@ -26,6 +27,7 @@ const reducers = {
   materialManagement,
   designModule,
   projectStructure,
+  todo,
 };
 
 export default reducers;

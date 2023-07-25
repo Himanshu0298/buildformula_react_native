@@ -293,6 +293,7 @@ const UnitDetails = props => {
     await updateUnit({
       id: selectedUnit.id,
       project_id: selectedUnit.project_id,
+      project_list_id: selectedUnit.project_list_id,
       project_unit: unitNo,
       project_tower: selectedUnit.project_tower,
       project_floor: selectedUnit.project_floor,

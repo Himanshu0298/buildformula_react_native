@@ -292,7 +292,7 @@ PODS:
   - React-jsinspector (0.66.5)
   - React-logger (0.66.5):
     - glog
-  - react-native-blob-util (0.16.4):
+  - react-native-blob-util (0.18.3):
     - React-Core
   - react-native-config (1.4.11):
     - react-native-config/App (= 1.4.11)
@@ -732,7 +732,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 50a73168582868421112609d2fb155e607e34ec8
   React-jsinspector: 953260b8580780a6e81f2a6d319a8d42fd5028d8
   React-logger: fa4ff1e9c7e115648f7c5dafb7c20822ab4f7a7e
-  react-native-blob-util: 60453b777610c87a22b3524032c0214e8db555db
+  react-native-blob-util: 2d36383bb52c15c5451be81cb7ddf22bc34a12a6
   react-native-config: bcafda5b4c51491ee1b0e1d0c4e3905bc7b56c1b
   react-native-date-picker: 04e866ba4e7857f83abd504ad42e787f0f02ae00
   react-native-document-picker: ec07866a30707f23660c0f3ae591d669d3e89096

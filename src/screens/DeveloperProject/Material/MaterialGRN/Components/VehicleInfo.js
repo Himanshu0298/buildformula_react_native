@@ -296,6 +296,7 @@ const VehicleInfo = props => {
     formData.append('edit_challan_id', challan_id);
 
     await addDirectGRNVehicleInfo(formData);
+    navigation.navigate('MaterialGRNListing');
     navigation.navigate('DirectGRNPreview', {id: challan_id});
   };
 

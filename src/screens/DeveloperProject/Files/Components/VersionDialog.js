@@ -40,12 +40,11 @@ function VersionFile(props) {
     toggleVersionMenu();
     toggleDownloading();
 
-    const fileUrl = getDownloadUrl(version, true);
-    const name = getFileName(version);
+    const fileUrl = getDownloadUrl({version});
 
     download.link({
-      name,
-      link: fileUrl,
+      name: getFileName(version),
+      data: {version},
       onFinish: ({dir}) => {
         setDownloaded(dir);
         toggleDownloading();

@@ -50,12 +50,11 @@ function MenuDialog(props) {
   const handleDownload = async () => {
     try {
       toggleDownloading();
-      const fileUrl = getDownloadUrl(modalContent);
-      const name = getFileName(modalContent);
+      const fileUrl = getDownloadUrl({modalContent});
 
       download.link({
-        name,
-        link: fileUrl,
+        name: getFileName(modalContent),
+        data: {file_url: modalContent, project_id: modalContent.project_id},
         onFinish: ({dir}) => {
           setDownloaded(dir);
           toggleDownloading();

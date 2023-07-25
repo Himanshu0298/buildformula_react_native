@@ -125,14 +125,13 @@ function MaterialForm(props) {
         keyboardType="phone-pad"
       />
       <RenderInput
-        name="damage_qty"
+        name="damage"
         label="Damage Qty"
         containerStyles={styles.input}
-        value={values.damage_qty}
-        onChangeText={handleChange('damage_qty')}
-        onBlur={handleBlur('damage_qty')}
-        error={errors.damage_qty}
-        keyboardType="phone-pad"
+        value={values.damage}
+        onChangeText={handleChange('damage')}
+        onBlur={handleBlur('damage')}
+        error={errors.damage}
       />
 
       <RenderInput
@@ -186,10 +185,10 @@ function AddMaterialDialog(props) {
         material_units_id,
         lom,
         material_quantity,
-        damage_qty,
+        damage: damage_qty,
         missing,
         fineQty,
-        rate,
+        delivery_challan_rate: rate,
         total_amount,
       } = material;
 

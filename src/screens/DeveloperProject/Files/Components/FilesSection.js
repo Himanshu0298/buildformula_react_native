@@ -5,7 +5,7 @@ import FileIcon from 'assets/images/file_icon.png';
 import dayjs from 'dayjs';
 import {useSelector} from 'react-redux';
 import NoResult from 'components/Atoms/NoResult';
-import {getDownloadUrl, getFileName} from 'utils/download';
+import {getFileName} from 'utils/download';
 import FileViewer from 'react-native-file-viewer';
 import {useDownload} from 'components/Atoms/Download';
 
@@ -65,12 +65,9 @@ function FileSection(props) {
   const filteredFiles = files?.[folderDepth] || [];
 
   const onPressFile = async file => {
-    const fileUrl = getDownloadUrl(file);
-    const name = getFileName(file);
-
     download.link({
-      name,
-      link: fileUrl,
+      name: getFileName(file),
+      data: {file_url: file.file_url, project_id: file.project_id},
       showAction: false,
       onFinish: ({dir}) => {
         FileViewer.open(`file://${dir}`);

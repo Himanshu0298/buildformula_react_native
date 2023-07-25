@@ -88,7 +88,7 @@ const CustomerList = ({navigation}) => {
   const navToDetails = item => {
     navigation.navigate('CustomerInnerDetails', {
       id: `${item.visitor_id}`,
-      linkedProperty: `${item.linked_property}`,
+      linkedProperty: `${item.linked_property_with_tower_name}`,
       customerId: item.id,
       unitId: item?.unitid,
     });
@@ -163,7 +163,9 @@ const CustomerList = ({navigation}) => {
                   </View>
                 </View>
                 <View style={styles.customerBookings}>
-                  <Text style={styles.text}>{item.linked_property}</Text>
+                  <Text style={styles.text}>
+                    {item.linked_property_with_tower_name}
+                  </Text>
                 </View>
               </View>
             </TouchableOpacity>

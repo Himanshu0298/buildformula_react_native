@@ -569,11 +569,14 @@ function IssueIndentPreview(props) {
                             <Text> Status:</Text>
                             <Caption style={{color}}>{label}</Caption>
                           </View>
-                          <View style={styles.wbsIdContainer}>
-                            <Text style={styles.idContainer}>
-                              {requiredfor}
-                            </Text>
-                          </View>
+
+                          {requiredfor ? (
+                            <View style={styles.wbsIdContainer}>
+                              <Text style={styles.idContainer}>
+                                {requiredfor}
+                              </Text>
+                            </View>
+                          ) : null}
                         </>
                         {requests?.map((single_request, index) => {
                           return (
@@ -645,11 +648,13 @@ function IssueIndentPreview(props) {
                             <Text> Status:</Text>
                             <Caption style={{color}}>{label}</Caption>
                           </View>
-                          <View style={styles.wbsIdContainer}>
-                            <Text style={styles.idContainer}>
-                              {requiredfor}
-                            </Text>
-                          </View>
+                          {requiredfor ? (
+                            <View style={styles.wbsIdContainer}>
+                              <Text style={styles.idContainer}>
+                                {requiredfor}
+                              </Text>
+                            </View>
+                          ) : null}
 
                           <Divider />
                         </>

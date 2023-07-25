@@ -2,6 +2,7 @@ import React from 'react';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 export const DEVELOPER_DRAWER_ITEMS = [
   {
@@ -100,20 +101,6 @@ export const DEVELOPER_DRAWER_ITEMS = [
   },
 
   {
-    title: 'TODO LIST',
-    id: 15,
-    routes: [
-      {
-        id: 67,
-        route: 'TaskList',
-        label: 'Task List',
-        icon: ({color, size}) => (
-          <MaterialCommunityIcons name="account-group" {...{color, size}} />
-        ),
-      },
-    ],
-  },
-  {
     title: 'CUSTOMER SECTION',
     id: 7,
     routes: [
@@ -160,6 +147,21 @@ export const DEVELOPER_DRAWER_ITEMS = [
       //     />
       //   ),
       // },
+    ],
+  },
+
+  {
+    title: 'TODO LIST',
+    id: 15,
+    routes: [
+      {
+        id: 67,
+        route: 'TaskList',
+        label: 'Todo List',
+        icon: ({color, size}) => (
+          <Ionicons name="md-checkmark-done-circle-sharp" {...{color, size}} />
+        ),
+      },
     ],
   },
 

@@ -51,11 +51,9 @@ function RenderFile(props) {
   const download = useDownload();
 
   const onPressFile = async file => {
-    const fileUrl = getDownloadUrl(file.file_url);
-    const name = getFileName(file.title);
     download.link({
-      name,
-      link: fileUrl,
+      name: getFileName(file.title),
+      data: {project_id: file.project_id, file_url: file.url},
       showAction: false,
       onFinish: ({dir}) => {
         FileViewer.open(`file://${dir}`);

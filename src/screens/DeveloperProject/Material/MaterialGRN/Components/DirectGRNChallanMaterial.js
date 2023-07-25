@@ -225,6 +225,8 @@ const RenderCard = props => {
     rate,
     challan_total_amount,
     lom,
+    delivery_challan_rate,
+    damage,
   } = item || {};
 
   const {materialCategories, materialSubCategories, makeOfLists} = useSelector(
@@ -290,14 +292,14 @@ const RenderCard = props => {
       </View>
       <View style={styles.row}>
         <Caption>List of Makes: </Caption>
-        <Text style={styles.companyName}>{lom || makeOfListTitle}</Text>
+        <Text style={styles.companyName}>{makeOfListTitle || lom}</Text>
       </View>
       <View style={styles.row}>
         <Caption>Fine Qty: </Caption>
         <Text>{material_quantity}</Text>
       </View>
       <View style={styles.row}>
-        <Text style={styles.damage}>Damage Qty :{damage_qty} </Text>
+        <Text style={styles.damage}>Damage Qty :{damage || damage_qty} </Text>
       </View>
       <View style={styles.row}>
         <Caption>Missing Qty: </Caption>
@@ -305,7 +307,7 @@ const RenderCard = props => {
       </View>
       <View style={styles.row}>
         <Caption>Rate: </Caption>
-        <Text>{rate}</Text>
+        <Text>{rate || delivery_challan_rate}</Text>
       </View>
       <View style={styles.row}>
         <Caption>Total Rate: </Caption>
@@ -316,8 +318,6 @@ const RenderCard = props => {
 };
 
 const DirectGRNChallanMaterial = props => {
-  const snackbar = useSnackbar();
-
   const {navigation, route} = props;
   const {challan_id, edit, challan_number} = route?.params || {};
 
@@ -386,8 +386,8 @@ const DirectGRNChallanMaterial = props => {
       material_category_id: item.material_category_id,
       sub_material_id: item.material_sub_category_id,
       material_unit_id: item.material_units_id,
-      damage: item.damage_qty,
-      lom: item.master_list_of_makes_id,
+      damage: item.damage,
+      lom: item.lom,
       missing: item.missing,
       quantity: item.material_quantity,
       rate: item.rate,
@@ -411,6 +411,7 @@ const DirectGRNChallanMaterial = props => {
     formData.append('data', JSON.stringify(materialData));
 
     await addDirectGRNMaterialInfo(formData);
+    navigation.navigate('MaterialGRNListing');
     navigation.navigate('VehicleInfo', {
       challan_id,
       edit,
@@ -517,7 +518,7 @@ const DirectGRNChallanMaterial = props => {
                   onSubmit={formikProps.handleSubmit}
                   submitLabel="Next"
                   cancelLabel="Previous"
-                  onCancel={() => navigation.goBack()}
+                  onCancel={() => navigation.navigate('MaterialGRNListing')}
                 />
               </>
             )}
