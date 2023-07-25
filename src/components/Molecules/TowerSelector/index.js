@@ -2,26 +2,66 @@ import React from 'react';
 import {StyleSheet, View, TouchableOpacity, FlatList} from 'react-native';
 import {withTheme, Text, useTheme} from 'react-native-paper';
 import PropTypes from 'prop-types';
+import BungalowIcon from 'assets/images/bungalow.svg';
+import PlatIcon from 'assets/images/plot.svg';
 import TowerIcon from 'assets/images/tower.svg';
 import {secondaryTheme} from 'styles/theme';
+import {getTowerLabel} from 'utils';
 
 export function RenderTowerBox(props) {
-  const {label, onPress, active} = props;
+  const {label, onPress, active, towerType} = props;
 
   const Container = onPress ? TouchableOpacity : View;
 
   const {colors} = useTheme();
 
+  const renderIcon = () => {
+    switch (towerType) {
+      case 'Towers':
+        return (
+          <TowerIcon
+            height={20}
+            width={20}
+            fill={colors.accent}
+            fillSecondary={colors.primary}
+          />
+        );
+
+      case 'Plots':
+        return (
+          <PlatIcon
+            height={20}
+            width={20}
+            fill={colors.accent}
+            fillSecondary={colors.primary}
+          />
+        );
+
+      case 'Bungalows':
+        return (
+          <BungalowIcon
+            height={20}
+            width={20}
+            fill={colors.accent}
+            fillSecondary={colors.primary}
+          />
+        );
+
+      default:
+        return (
+          <TowerIcon
+            height={20}
+            width={20}
+            fill={colors.accent}
+            fillSecondary={colors.primary}
+          />
+        );
+    }
+  };
+
   return (
     <Container style={styles.towerContainer} onPress={onPress}>
-      <View style={styles.iconContainer}>
-        <TowerIcon
-          height={20}
-          width={20}
-          fill={colors.accent}
-          fillSecondary={colors.primary}
-        />
-      </View>
+      <View style={styles.iconContainer}>{renderIcon()}</View>
       <View
         style={[
           styles.labelContainer,
@@ -36,7 +76,7 @@ export function RenderTowerBox(props) {
 }
 
 function TowerSelector(props) {
-  const {towerCount, onSelectTower, towers} = props;
+  const {towerCount, onSelectTower, towers, towerType} = props;
 
   return (
     <View style={styles.towerList}>
@@ -46,12 +86,23 @@ function TowerSelector(props) {
         extraData={new Array(towerCount).fill(0)}
         contentContainerStyle={styles.scrollContainer}
         renderItem={({item, index}) => {
+          let label = item.label || getTowerLabel(index + 1);
+
+          if (towerType === 'Bungalows') {
+            label = item.label || index + 1;
+          }
+
+          if (towerType === 'Plots') {
+            label = item.label || index + 1;
+          }
+
           return (
             <RenderTowerBox
               {...props}
               key={index.toString()}
-              label={item.label}
-              onPress={() => onSelectTower(item.id, item.tower)}
+              label={label}
+              onPress={() => onSelectTower(item.id, item.tower, index)}
+              towerType={towerType}
             />
           );
         }}

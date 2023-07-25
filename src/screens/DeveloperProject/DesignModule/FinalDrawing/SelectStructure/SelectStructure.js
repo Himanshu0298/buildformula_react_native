@@ -5,7 +5,9 @@ import {IconButton, Text, Title} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 
 function SelectStructure(props) {
-  const {navigation} = props;
+  const {navigation, route} = props;
+
+  const {folderId, designModuleTitle} = route?.params || {};
 
   const {selectedProject} = useSelector(s => s.project);
 
@@ -26,7 +28,7 @@ function SelectStructure(props) {
       nextStep = 'BungalowsList';
     }
 
-    navigation.navigate(nextStep);
+    navigation.navigate(nextStep, {folderId});
   };
   return (
     <View>
@@ -38,7 +40,7 @@ function SelectStructure(props) {
           style={styles.backIcon}
           onPress={() => navigation.goBack()}
         />
-        <Title> Final Drawing</Title>
+        <Title>{designModuleTitle}</Title>
       </View>
       <StructureSelector
         hideTitle

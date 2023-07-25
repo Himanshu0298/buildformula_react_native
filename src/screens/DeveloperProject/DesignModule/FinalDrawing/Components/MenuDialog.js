@@ -104,42 +104,39 @@ function MenuDialog(props) {
                 </View>
               </TouchableOpacity>
             ) : null}
-            {/* {modulePermissions?.editor || modulePermissions?.admin ? ( */}
-            <TouchableOpacity
-              onPress={() => {
-                toggleDialog('renameFile');
-                toggleMenu();
-              }}>
-              <View style={styles.viewDirection}>
-                <IconButton icon="pencil" />
-                <Text style={styles.ModalText}>Rename</Text>
-              </View>
-            </TouchableOpacity>
-            {/* ) : null} */}
+            {modulePermissions?.editor || modulePermissions?.admin ? (
+              <TouchableOpacity
+                onPress={() => {
+                  toggleDialog('renameFile');
+                  toggleMenu();
+                }}>
+                <View style={styles.viewDirection}>
+                  <IconButton icon="pencil" />
+                  <Text style={styles.ModalText}>Rename</Text>
+                </View>
+              </TouchableOpacity>
+            ) : null}
 
-            <TouchableOpacity onPress={() => activityDataHandler(fileType, id)}>
+            <TouchableOpacity onPress={() => activityDataHandler(id)}>
               <View style={styles.viewDirection}>
                 <IconButton icon="information" />
                 <Text style={styles.ModalText}>Activity</Text>
               </View>
             </TouchableOpacity>
 
-            {modulePermissions?.editor || modulePermissions?.admin ? (
-              <TouchableOpacity
-                onPress={() => {
-                  toggleDialog('deleteFileFolder');
-                  toggleMenu();
-                }}>
-                <View style={styles.viewDirection}>
-                  <IconButton icon="delete" />
-                  <Text style={styles.ModalText}>Delete</Text>
-                </View>
-              </TouchableOpacity>
-            ) : null}
+            <TouchableOpacity
+              onPress={() => {
+                toggleDialog('deleteFileFolder');
+                toggleMenu();
+              }}>
+              <View style={styles.viewDirection}>
+                <IconButton icon="delete" />
+                <Text style={styles.ModalText}>Delete</Text>
+              </View>
+            </TouchableOpacity>
           </>
         ) : null}
       </View>
-      {/* ) : null} */}
     </View>
   );
 }

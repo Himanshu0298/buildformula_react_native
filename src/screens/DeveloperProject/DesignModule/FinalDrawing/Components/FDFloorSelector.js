@@ -7,28 +7,44 @@ import NoResult from 'components/Atoms/NoResult';
 
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import Spinner from 'react-native-loading-spinner-overlay';
+import useDesignModuleActions from 'redux/actions/designModuleActions';
+import {useSelector} from 'react-redux';
+import FDFloorBar from './FDFloorbar';
 
 function FDFloorSelector(props) {
-  const {
-    navigation,
-    floors,
-    towerId,
+  const {navigation, loadingUnitStatus, route} = props || {};
 
-    loadingUnitStatus,
-  } = props || {};
+  const {folderId, tower_id} = route?.params || {};
 
   const [selectedFloor, setSelectedFloor] = useState([]);
 
-  const onSelectFloor = floorId => {
-    // eslint-disable-next-line no-unused-expressions
-    !selectedFloor.includes(floorId)
-      ? setSelectedFloor(v => [...v, floorId])
-      : setSelectedFloor(selectedFloor.filter(e => e !== floorId));
+  const {getFDTowerFloors} = useDesignModuleActions();
+
+  const {fdTowerFloorsList} = useSelector(s => s.designModule);
+  const {selectedProject} = useSelector(s => s.project);
+  const project_id = selectedProject.id;
+
+  const floors = fdTowerFloorsList?.data?.floors || [];
+
+  React.useEffect(() => {
+    loadFloors();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const loadFloors = () => {
+    getFDTowerFloors({
+      project_id,
+      folder_id: folderId,
+      tower_id,
+    });
   };
-  const renderNoFloor = () => <NoResult title="No Floors available" />;
+
+  const navToFloorFolder = floorId => {
+    navigation.navigate('FDFloorFolder', {folderId, tower_id, floorId});
+  };
 
   const navToAddRow = () => {
-    navigation.navigate('AddRows');
+    navigation.navigate('AddRows', {folderId, tower_id});
   };
 
   return (
@@ -48,15 +64,15 @@ function FDFloorSelector(props) {
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
         keyExtractor={item => item.id}
-        ListEmptyComponent={renderNoFloor}
+        ListEmptyComponent={<NoResult />}
         renderItem={({item: floorData, index}) => {
           const {structureType, id: floorId, unitCount} = floorData;
 
           return (
             <>
-              <FloorBar
+              <FDFloorBar
                 floorId={floorId}
-                towerId={towerId}
+                towerId={tower_id}
                 floorData={floorData}
                 toggle
                 structureType={structureType}
@@ -65,7 +81,7 @@ function FDFloorSelector(props) {
                   disabled: true,
                 }}
                 buttonProps={{color: '#5B6F7C'}}
-                onSelectFloor={onSelectFloor}
+                onSelectFloor={() => navToFloorFolder(floorId)}
                 selectedFloor={selectedFloor}
                 index={index}
               />

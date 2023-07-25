@@ -234,6 +234,14 @@ export default function useDesignModule() {
         config({multipart: false}),
       );
     },
+    getFDTowerFloorFolder: data => {
+      return instance.post(
+        '/finaldrawing/getfloorrowsfolder',
+        data,
+        config({multipart: false}),
+      );
+    },
+
     FDTowerFileActivityLogs: data => {
       return instance.post(
         '/finaldrawing/towerfilesactivitylogs',
@@ -286,7 +294,7 @@ export default function useDesignModule() {
     },
     getFDPlots: data => {
       return instance.post(
-        '/inaldrawing/getallplot',
+        '/finaldrawing/getallplot',
         data,
         config({multipart: false}),
       );
@@ -318,6 +326,27 @@ export default function useDesignModule() {
         '/finaldrawing/uploadfloorfolderfile',
         data,
         config({multipart: true}),
+      );
+    },
+    getFloorFolderFile: data => {
+      return instance.post(
+        '/finaldrawing/getlistfloorfolderfile',
+        data,
+        config({multipart: false}),
+      );
+    },
+    getTowerFolderFileVersion: data => {
+      return instance.post(
+        '/finaldrawing/gettowerversionfileslist',
+        data,
+        config({multipart: false}),
+      );
+    },
+    rearrangeFloorRows: data => {
+      return instance.post(
+        '/finaldrawing/updateRearrangefloorrows',
+        data,
+        config({multipart: false}),
       );
     },
 

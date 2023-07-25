@@ -10,10 +10,11 @@ import FinalDrawingTowerFiles from '../Components/TowerFiles';
 import FDFloorSelector from '../Components/FDFloorSelector';
 
 function FDTowerPreview(props) {
-  const {navigation} = props;
+  const {navigation, route} = props;
+
+  const {towerLabel} = route?.params || {};
 
   const towerId = 1;
-  const towerLabel = 'A';
 
   const [selectedTab, setSelectedTab] = useState(0);
 
@@ -27,6 +28,7 @@ function FDTowerPreview(props) {
       <FDTabBar {...prop} />
     </View>
   );
+  // eslint-disable-next-line @typescript-eslint/no-shadow
   const renderScene = ({route}) => {
     switch (route.key) {
       case 'first':

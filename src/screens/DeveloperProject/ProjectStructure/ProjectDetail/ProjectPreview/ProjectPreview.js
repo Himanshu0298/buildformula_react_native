@@ -55,7 +55,6 @@ function Files(props) {
       data: {project_id: file.project_id, file_url: file.file_url},
       showAction: false,
       onFinish: ({dir}) => {
-        console.log('===========>dir ', dir);
         FileViewer.open(dir);
       },
     });

@@ -13,7 +13,6 @@ import {
   Subheading,
   Text,
   FAB,
-  withTheme,
   Divider,
   Caption,
 } from 'react-native-paper';
@@ -34,6 +33,7 @@ import useDesignModuleActions from 'redux/actions/designModuleActions';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import NoResult from 'components/Atoms/NoResult';
 import {theme} from 'styles/theme';
+import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import DeleteDialog from '../Components/DeleteDialog';
 import RenameDialogue from '../Components/RenameDialog';
 import CreateFolderDialogue from '../Components/CreateFolderDialog';
@@ -56,23 +56,14 @@ function RenderFolder(props) {
     navigation,
     setModalContent,
   } = props;
-  const {title} = item;
+  const {folder_title} = item;
 
   const navToNext = () => {
-    // eslint-disable-next-line no-constant-condition
-    if (title === 'Structure' || 'Architech' || 'MEP') {
-      navigation.navigate('SelectStructure', {
-        ...props,
-        title,
-        folderId: item.id,
-      });
-    } else {
-      navigation.navigate('FinalDrawingFiles', {
-        ...props,
-        title,
-        folderId: item.id,
-      });
-    }
+    navigation.navigate('FDFloorFolderFile', {
+      ...props,
+      folder_title,
+      id: item.id,
+    });
   };
 
   return (
@@ -82,7 +73,7 @@ function RenderFolder(props) {
           <Image source={FolderIcon} style={styles.PdfIcon} />
           <View>
             <Text numberOfLines={2} style={styles.text}>
-              {title}
+              {folder_title}
             </Text>
           </View>
         </View>
@@ -108,7 +99,6 @@ function FolderSection(props) {
     loadData,
     setModalContent,
   } = props;
-  const {data} = folders || {};
 
   return (
     <View style={styles.container}>
@@ -116,8 +106,8 @@ function FolderSection(props) {
         refreshControl={
           <RefreshControl refreshing={false} onRefresh={loadData} />
         }
-        data={data}
-        extraData={data}
+        data={folders}
+        extraData={folders}
         keyExtractor={i => i.id}
         contentContainerStyle={styles.contentContainerStyle}
         ListEmptyComponent={<NoResult title="No Data found!" />}
@@ -322,25 +312,22 @@ const ListViewControl = props => {
   );
 };
 
-function FinalDrawingFolders(props) {
+function FDFloorFolder(props) {
+  const {navigation, route} = props;
+  const {tower_id, folderId, floorId} = route?.params || {};
+
   const modulePermissions = getPermissions('Files');
   const snackbar = useSnackbar();
 
-  const designModuleTitle = 'Final Drawing';
-
   const {versionData} = useSelector(s => s.files);
   const {selectedProject} = useSelector(s => s.project);
-  const {folders, loading} = useSelector(s => s.designModule);
+  const {loading, towerFolderList} = useSelector(s => s.designModule);
+
+  const folders = towerFolderList?.data?.final_drawing_floor_rows_folder || [];
 
   const project_id = selectedProject.id;
 
-  const {
-    getFDFolders,
-    createFDFolder,
-    renameFDFolder,
-    deleteFDFolder,
-    getFDActivities,
-  } = useDesignModuleActions();
+  const {addFloorFolder, getFDTowerFloorFolder} = useDesignModuleActions();
 
   const [menuId, setMenuId] = React.useState();
   const [modelContentType, setModalContentType] = React.useState('menu');
@@ -355,7 +342,10 @@ function FinalDrawingFolders(props) {
   }, []);
 
   const loadData = () => {
-    getFDFolders({project_id, default_folders: 'no'});
+    getFDTowerFloorFolder({
+      project_id,
+      final_drawing_floor_rows_id: floorId,
+    });
   };
 
   const toggleMenu = folderIndex => setMenuId(folderIndex);
@@ -363,27 +353,21 @@ function FinalDrawingFolders(props) {
   const toggleShareDialog = () => setShareDialog(v => !v);
 
   const createFolderHandler = async folder_name => {
-    await createFDFolder({
+    await addFloorFolder({
       project_id,
       folder_name,
+      tower_id,
+      folder_id: folderId,
+      final_drawing_floor_rows_id: floorId,
     });
     toggleDialog();
-    getFDFolders({project_id, default_folders: 'no'});
+    loadData();
   };
-
   const renameFolderHandler = async (name, id, type) => {
-    await renameFDFolder({
-      folder_name: name,
-      final_drawing_id: id,
-      project_id,
-    });
-    getFDFolders({project_id, default_folders: 'no'});
     toggleDialog();
   };
 
   const deleteFolderHandler = async (id, type) => {
-    await deleteFDFolder({final_drawing_id: id, project_id});
-    getFDFolders({project_id, default_folders: 'no'});
     toggleDialog();
     snackbar.showMessage({
       message: 'Folder Deleted!',
@@ -393,27 +377,38 @@ function FinalDrawingFolders(props) {
 
   const activityDataHandler = (action_type, id) => {
     setModalContentType('activity');
-    getFDActivities({project_id, record_id: id, mode: 'folder'});
   };
 
   return (
     <View style={styles.container}>
       <Spinner visible={loading} textContent="" />
       <View style={styles.headerContainer}>
-        <Subheading>{designModuleTitle}</Subheading>
+        <View style={{flexDirection: 'row'}}>
+          <OpacityButton
+            opacity={0.18}
+            style={styles.button}
+            onPress={() => navigation.goBack()}>
+            <MaterialCommunityIcons name="arrow-left" size={18} />
+          </OpacityButton>
+          <Subheading style={styles.Subheading}> Floor Folders</Subheading>
+        </View>
+
         <ListViewControl {...props} {...{listMode, setListMode}} />
       </View>
+
       {listMode === 'list' ? (
         <FolderSection
           {...props}
           folders={folders}
+          tower_id={tower_id}
+          folderId={folderId}
+          floorId={floorId}
           {...{
             menuId,
             toggleMenu,
             setModalContent,
             setModalContentType,
             loadData,
-            designModuleTitle,
           }}
         />
       ) : null}
@@ -427,7 +422,6 @@ function FinalDrawingFolders(props) {
             setModalContent,
             setModalContentType,
             loadData,
-            designModuleTitle,
           }}
         />
       ) : null}
@@ -481,6 +475,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#ffffff',
+    padding: 10,
   },
   fab: {
     position: 'absolute',
@@ -582,6 +577,12 @@ const styles = StyleSheet.create({
   contentContainerStyle: {
     flexGrow: 1,
   },
+  header: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 10,
+  },
 });
 
-export default withTheme(FinalDrawingFolders);
+export default FDFloorFolder;

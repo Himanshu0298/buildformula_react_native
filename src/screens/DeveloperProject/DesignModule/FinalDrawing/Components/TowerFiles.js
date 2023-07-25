@@ -33,16 +33,14 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Feather from 'react-native-vector-icons/Feather';
 import {getPermissions, getShadow} from 'utils';
-import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {useDownload} from 'components/Atoms/Download';
 import MenuDialog from './MenuDialog';
 import VersionDialog from './VersionDialog';
-import SelectTower from './SelectTower';
 import RenameDialogue from './RenameDialog';
 import DeleteDialog from './DeleteDialog';
 
-const SNAP_POINTS = [0, '70%'];
+const SNAP_POINTS = [0, '50%'];
 
 function RenderFile(props) {
   const {index, item, toggleMenu, setModalContentType, setModalContent} = props;
@@ -261,18 +259,18 @@ function RenderMenuModal(props) {
 }
 
 function FinalDrawingTowerFiles(props) {
-  const {route, navigation} = props;
-  const {folderId} = route?.params || {};
+  const {route} = props;
+  const {folderId, tower_id} = route?.params || {};
 
   const {
-    getFDFiles,
-    uploadFDFile,
-    renameFDFile,
-    deleteFDFile,
-    getFDActivities,
-    addFDVersion,
+    getFDTowerFloors,
+    renameFDTowerFile,
     getFDVersion,
     deleteFDVersion,
+    addFDTowerFiles,
+    deleteFDTowerFile,
+    FDTowerFileActivityLogs,
+    uploadTowerFileVersion,
   } = useDesignModuleActions();
   const {openImagePicker} = useImagePicker();
 
@@ -286,37 +284,44 @@ function FinalDrawingTowerFiles(props) {
 
   const snackbar = useSnackbar();
   const {selectedProject} = useSelector(s => s.project);
-  const {files, versionData, loading} = useSelector(s => s.designModule);
+  const {versionData, loading, fdTowerFloorsList} = useSelector(
+    s => s.designModule,
+  );
+
+  const towerFiles = fdTowerFloorsList?.data?.final_drawing_tower_files || [];
 
   const project_id = selectedProject.id;
-  const {data} = files;
 
-  // React.useEffect(() => {
-  //   loadFiles();
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
+  React.useEffect(() => {
+    loadFloors();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  const loadFiles = () => {
-    getFDFiles({project_id, folder_id: folderId});
+  const loadFloors = () => {
+    getFDTowerFloors({
+      project_id,
+      folder_id: folderId,
+      tower_id,
+    });
   };
 
   const toggleMenu = folderIndex => setMenuId(folderIndex);
   const toggleDialog = v => setDialogType(v);
   const toggleShareDialog = () => setShareDialog(v => !v);
 
-  const renameFileHandler = async (name, id, type) => {
-    await renameFDFile({
+  const renameFileHandler = async (name, id) => {
+    await renameFDTowerFile({
       file_name: name,
-      final_drawing_files_id: id,
+      final_drawing_tower_files_id: id,
       project_id,
     });
-    loadFiles();
+    loadFloors();
     toggleDialog();
   };
 
-  const deleteFileHandler = async (id, type) => {
-    await deleteFDFile({final_drawing_files_id: id, project_id});
-    loadFiles();
+  const deleteFileHandler = async id => {
+    await deleteFDTowerFile({final_drawing_tower_files_id: id, project_id});
+    loadFloors();
     toggleDialog();
     snackbar.showMessage({
       message: 'File Deleted!',
@@ -324,14 +329,14 @@ function FinalDrawingTowerFiles(props) {
     });
   };
 
-  const versionDataHandler = async (id, type) => {
+  const versionDataHandler = async id => {
     setModalContentType('version');
     getFDVersion({project_id, final_drawing_files_id: id});
   };
 
-  const activityDataHandler = (action_type, id) => {
+  const activityDataHandler = id => {
     setModalContentType('activity');
-    getFDActivities({project_id, record_id: id, mode: 'file'});
+    FDTowerFileActivityLogs({project_id, record_id: id});
   };
 
   const onPressFile = async file => {
@@ -364,14 +369,15 @@ function FinalDrawingTowerFiles(props) {
     formData.append('folder_id', folderId);
     formData.append('myfile[]', file);
     formData.append('project_id', project_id);
+    formData.append('tower_id', tower_id);
 
-    await uploadFDFile(formData);
+    await addFDTowerFiles(formData);
     toggleDialog();
     snackbar.showMessage({
       message: 'File Uploaded Sucessfully!',
       variant: 'success',
     });
-    loadFiles();
+    loadFloors();
   };
 
   const handleNewVersionUpload = file_id => {
@@ -380,12 +386,12 @@ function FinalDrawingTowerFiles(props) {
       onChoose: async v => {
         const formData = new FormData();
 
-        formData.append('finaldrawing_file_id', file_id);
+        formData.append('final_drawing_tower_files_id', file_id);
         formData.append('myfile', v);
         formData.append('folder_id', folderId);
         formData.append('project_id', project_id);
 
-        await addFDVersion(formData);
+        await uploadTowerFileVersion(formData);
         getFDVersion({project_id, final_drawing_files_id: file_id});
       },
     });
@@ -410,10 +416,10 @@ function FinalDrawingTowerFiles(props) {
 
       <FlatList
         refreshControl={
-          <RefreshControl refreshing={false} onRefresh={loadFiles} />
+          <RefreshControl refreshing={false} onRefresh={loadFloors} />
         }
-        data={data}
-        extraData={data}
+        data={towerFiles}
+        extraData={towerFiles}
         keyExtractor={i => i.id}
         contentContainerStyle={styles.contentContainerStyle}
         ListEmptyComponent={<NoResult title="No Data found!" />}
@@ -480,7 +486,9 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     backgroundColor: '#ffffff',
   },
-
+  contentContainerStyle: {
+    padding: 10,
+  },
   fileIcon: {
     width: 32,
     height: 38,

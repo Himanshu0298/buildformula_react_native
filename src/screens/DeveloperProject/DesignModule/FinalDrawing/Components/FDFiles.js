@@ -241,7 +241,7 @@ function RenderMenuModal(props) {
               />
             </View>
             {modelContentType === 'menu' ? <MenuDialog {...props} /> : null}
-            {modelContentType === 'parentActivity' ? (
+            {/* {modelContentType === 'parentActivity' ? (
               <ActivityModal {...props} />
             ) : null}
             {modelContentType === 'activity' ? (
@@ -249,7 +249,7 @@ function RenderMenuModal(props) {
             ) : null}
             {modelContentType === 'version' ? (
               <VersionDialog {...props} />
-            ) : null}
+            ) : null} */}
           </View>
         )}
       />
@@ -263,6 +263,7 @@ function FDFiles(props) {
 
   const {
     data,
+    towerList,
     onSelectStructure,
     menuId,
     toggleMenu,
@@ -281,7 +282,6 @@ function FDFiles(props) {
     renameFileHandler,
     deleteFileHandler,
     versionData,
-    onChoose,
   } = props;
 
   const structureLabel = 'tower';
@@ -299,47 +299,6 @@ function FDFiles(props) {
         </OpacityButton>
         <Subheading style={styles.Subheading}>Tower</Subheading>
       </View>
-
-      <SelectTower
-        navigation={navigation}
-        structureLabel={structureLabel}
-        onSelectStructure={onSelectStructure}
-      />
-
-      <FlatList
-        refreshControl={
-          <RefreshControl
-            refreshing={false}
-            onRefresh={console.log('===========> ')}
-          />
-        }
-        data={data}
-        extraData={data}
-        keyExtractor={i => i.id}
-        contentContainerStyle={styles.contentContainerStyle}
-        ListEmptyComponent={<NoResult title="No Data found!" />}
-        renderItem={({item, index}) => (
-          <RenderFile
-            {...props}
-            {...{
-              item,
-              index,
-              menuId,
-              toggleMenu,
-              setModalContentType,
-              setModalContent,
-              onPressFile,
-            }}
-          />
-        )}
-      />
-
-      <FAB
-        style={styles.fab}
-        icon="plus"
-        onPress={() => openImagePicker({type: 'file', onChoose})}
-        medium
-      />
 
       <RenderMenuModal
         {...props}
@@ -370,6 +329,41 @@ function FDFiles(props) {
         toggleDialogue={toggleDialog}
         dialogueContent={modalContent}
         deleteFileHandler={deleteFileHandler}
+      />
+
+      <SelectTower
+        navigation={navigation}
+        structureLabel={structureLabel}
+        onSelectStructure={onSelectStructure}
+        towerList={towerList}
+      />
+
+      <FlatList
+        refreshControl={
+          <RefreshControl
+            refreshing={false}
+            onRefresh={console.log('===========> ')}
+          />
+        }
+        data={data}
+        extraData={data}
+        keyExtractor={i => i.id}
+        contentContainerStyle={styles.contentContainerStyle}
+        ListEmptyComponent={<NoResult title="No Data found!" />}
+        renderItem={({item, index}) => (
+          <RenderFile
+            {...props}
+            {...{
+              item,
+              index,
+              menuId,
+              toggleMenu,
+              setModalContentType,
+              setModalContent,
+              onPressFile,
+            }}
+          />
+        )}
       />
     </View>
   );

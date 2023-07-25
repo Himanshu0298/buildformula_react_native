@@ -14,6 +14,8 @@ import {
   DELETE_RD_FOLDER,
   DELETE_RD_VERSION,
   FD_TOWER_ACTIVITY_LOG,
+  FD_TOWER_FLOOR_FILE,
+  FD_TOWER_FLOOR_FOLDER,
   GET_BUNGALOW_UNIT_SHEET,
   GET_CATEGORY_BUNGALOW_SHEET,
   GET_CATEGORY_PLOT_SHEET,
@@ -32,6 +34,7 @@ import {
   GET_RD_VERSION,
   GET_SELECTED_PROJECT,
   GET_UNIT_TOWER_SHEET,
+  REARRANGE_FD_FLOOR_ROWS,
   RENAME_FD_BUNGALOWS_FILES,
   RENAME_FD_TOWER_FILE,
   RENAME_RD_FILES,
@@ -66,11 +69,13 @@ const initialState = {
   unitBungalowList: [],
   unitPlotList: [],
   versionData: [],
-  fdTowers: [],
+  fdTowers: {},
   fdTowerFloorsList: [],
   fdBungalowsList: [],
   fdBungalowsFilesList: [],
-  fdPlots: [],
+  fdPlots: {},
+  towerFolderList: [],
+  towerFileList: [],
 };
 
 export default (state = initialState, action = {}) => {
@@ -163,6 +168,21 @@ export default (state = initialState, action = {}) => {
         ...state,
         loading: false,
         fdTowerFloorsList: payload,
+      };
+    }
+    case `${FD_TOWER_FLOOR_FOLDER}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+        towerFolderList: payload,
+      };
+    }
+
+    case `${FD_TOWER_FLOOR_FILE}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+        towerFileList: payload,
       };
     }
     case `${GET_FD_BUNGALOWS}_FULFILLED`: {
@@ -531,6 +551,9 @@ export default (state = initialState, action = {}) => {
     case `${UPLOAD_FD_BUNGALOW_TOWER_FILE_VERSION}_PENDING`:
     case `${ADD_FD_FLOOR_FOLDER}_PENDING`:
     case `${ADD_FD_FLOOR_FOLDER_FILE}_PENDING`:
+    case `${FD_TOWER_FLOOR_FOLDER}_PENDING`:
+    case `${FD_TOWER_FLOOR_FILE}_PENDING`:
+    case `${REARRANGE_FD_FLOOR_ROWS}_PENDING`:
       return {
         ...state,
         loading: true,
@@ -561,6 +584,7 @@ export default (state = initialState, action = {}) => {
     case `${UPLOAD_FD_BUNGALOW_TOWER_FILE_VERSION}_FULFILLED`:
     case `${ADD_FD_FLOOR_FOLDER}_FULFILLED`:
     case `${ADD_FD_FLOOR_FOLDER_FILE}_FULFILLED`:
+    case `${REARRANGE_FD_FLOOR_ROWS}_FULFILLED`:
       return {
         ...state,
         loading: false,
@@ -597,6 +621,9 @@ export default (state = initialState, action = {}) => {
     case `${UPLOAD_FD_BUNGALOW_TOWER_FILE_VERSION}_REJECTED`:
     case `${ADD_FD_FLOOR_FOLDER}_REJECTED`:
     case `${ADD_FD_FLOOR_FOLDER_FILE}_REJECTED`:
+    case `${FD_TOWER_FLOOR_FOLDER}_REJECTED`:
+    case `${FD_TOWER_FLOOR_FILE}_REJECTED`:
+    case `${REARRANGE_FD_FLOOR_ROWS}_REJECTED`:
       return {
         ...state,
         loading: false,

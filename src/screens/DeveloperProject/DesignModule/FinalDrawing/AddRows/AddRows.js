@@ -23,42 +23,17 @@ import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import {theme} from 'styles/theme';
 import {Formik} from 'formik';
 import RenderInput from 'components/Atoms/RenderInput';
-import {debounce} from 'lodash';
+import {debounce, isNumber} from 'lodash';
 import {getShadow} from 'utils';
+import {useSelector} from 'react-redux';
+import useDesignModuleActions from 'redux/actions/designModuleActions';
 
 const ROW_HEIGHT = 50;
-
-const arrowList = [
-  {
-    label: 'Ground Floor',
-    id: 1,
-  },
-  {
-    label: 'First Floor',
-    id: 2,
-  },
-  {
-    label: 'Second Floor',
-    id: 3,
-  },
-  {
-    label: 'Third Floor',
-    id: 4,
-  },
-  {
-    label: 'Fourth Floor',
-    id: 5,
-  },
-  {
-    label: 'Fifth Floor',
-    id: 6,
-  },
-];
 
 function ArrowList(props) {
   const {item, index, handleDelete, editDialog} = props;
 
-  const {label, id} = item;
+  const {floor_text, id} = item;
 
   return (
     <KeyboardAwareScrollView>
@@ -71,7 +46,7 @@ function ArrowList(props) {
             size={24}
             color="rgba(4, 29, 54, 0.15)"
           />
-          <Subheading> {label} </Subheading>
+          <Subheading> {floor_text} </Subheading>
         </View>
         <View style={styles.headerSubContainer}>
           <View style={styles.editIconContainer}>
@@ -104,7 +79,7 @@ function AddRowModal(props) {
   const {visible, arrow, onClose, onSubmit} = props;
 
   const initialValues = useMemo(() => {
-    return {title: arrow?.label || ''};
+    return {row_name: arrow?.floor_text || ''};
   }, [arrow]);
 
   const edit = Boolean(arrow);
@@ -135,15 +110,15 @@ function AddRowModal(props) {
                   </View>
                   <Subheading> Add Row</Subheading>
                   <RenderInput
-                    name="title"
-                    label="Field Name"
+                    name="row_name"
+                    label="Row Name"
                     containerStyles={styles.inputStyles}
-                    value={values.title}
-                    onChangeText={handleChange('title')}
-                    onBlur={handleBlur('title')}
+                    value={values.row_name}
+                    onChangeText={handleChange('row_name')}
+                    onBlur={handleBlur('row_name')}
                     autoCapitalize="none"
                     returnKeyType="next"
-                    error={errors.title}
+                    error={errors.row_name}
                   />
                   <Button
                     style={styles.button}
@@ -163,26 +138,78 @@ function AddRowModal(props) {
 }
 
 function AddRows(props) {
-  const {navigation} = props;
+  const {navigation, route} = props;
+  const {folderId, tower_id} = route?.params || {};
 
   const alert = useAlert();
 
   const [dialog, setDialog] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState();
 
-  const onSubmit = async () => {
-    console.log('===========> ');
+  const {
+    getFDTowerFloors,
+    addFDTowerFloorsRows,
+    updateFDTowerFloorsRows,
+    deleteFDTowerFloorsRows,
+    rearrangeFloorRows,
+  } = useDesignModuleActions();
+
+  const {fdTowerFloorsList, loading} = useSelector(s => s.designModule);
+  const {selectedProject} = useSelector(s => s.project);
+  const project_id = selectedProject.id;
+
+  const floors = fdTowerFloorsList?.data?.floors || [];
+
+  React.useEffect(() => {
+    loadFloors();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const loadFloors = () => {
+    getFDTowerFloors({
+      project_id,
+      folder_id: folderId,
+      tower_id,
+    });
   };
 
-  const handleDelete = () => {
+  const onSubmit = async values => {
+    const {row_name} = values;
+
+    const restData = {
+      project_id,
+      folder_id: folderId,
+      tower_id,
+      row_name,
+    };
+
+    if (isNumber(selectedIndex)) {
+      await updateFDTowerFloorsRows({
+        row_id: floors?.[selectedIndex].id,
+        ...restData,
+      });
+    } else {
+      await addFDTowerFloorsRows(restData);
+    }
+
+    toggleAddDialog();
+
+    loadFloors();
+  };
+
+  const handleDelete = async rowId => {
     alert.show({
       title: 'Confirm',
       message: 'Are you sure you want to delete?',
       confirmText: 'Delete',
       onConfirm: async () => {
-        console.log('===========> ');
+        deleteFDTowerFloorsRows({
+          project_id,
+          row_id: rowId,
+        });
       },
     });
+    await loadFloors();
   };
 
   const editDialog = index => {
@@ -197,15 +224,22 @@ function AddRows(props) {
     });
   };
 
-  const handleDragEnd = () => {
-    console.log('===========> ');
+  const onDragEnd = async (fromIndex, toIndex) => {
+    const record = floors[fromIndex];
+
+    await rearrangeFloorRows({
+      project_id: selectedProject.id,
+      record_id: record.id,
+      order_by_value: toIndex,
+    });
+    loadFloors();
   };
 
   return (
     <ActionSheetProvider>
       <>
         <View style={styles.mainContainer}>
-          <Spinner textContent="" />
+          <Spinner textContent="" visible={loading} />
 
           <View style={styles.headerWrapper}>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -227,9 +261,9 @@ function AddRows(props) {
             </OpacityButton>
           </View>
 
-          {arrowList?.length ? (
+          {floors?.length ? (
             <AutoDragSortableView
-              dataSource={arrowList}
+              dataSource={floors}
               maxScale={1.03}
               childrenWidth={Layout.window.width}
               childrenHeight={ROW_HEIGHT}
@@ -242,7 +276,7 @@ function AddRows(props) {
                   handleDelete={handleDelete}
                 />
               )}
-              onDataChange={handleDragEnd}
+              onDragEnd={onDragEnd}
             />
           ) : (
             <NoResult />
@@ -253,7 +287,7 @@ function AddRows(props) {
           <AddRowModal
             {...props}
             visible={dialog}
-            arrow={arrowList?.[selectedIndex]}
+            arrow={floors?.[selectedIndex]}
             onClose={toggleAddDialog}
             onSubmit={onSubmit}
           />

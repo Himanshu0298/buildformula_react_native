@@ -1,6 +1,13 @@
 import {useImagePicker} from 'hooks';
 import React, {useEffect, useMemo, useRef} from 'react';
-import {SectionList, StyleSheet, View} from 'react-native';
+import {
+  FlatList,
+  RefreshControl,
+  SectionList,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import BottomSheet from 'reanimated-bottom-sheet';
 
 import {
@@ -21,6 +28,16 @@ import Feather from 'react-native-vector-icons/Feather';
 
 import dayjs from 'dayjs';
 import {useSnackbar} from 'components/Atoms/Snackbar';
+import useDesignModuleActions from 'redux/actions/designModuleActions';
+import {useSelector} from 'react-redux';
+import {getFileExtension} from 'utils/download';
+import Spinner from 'react-native-loading-spinner-overlay';
+import NoResult from 'components/Atoms/NoResult';
+import {useDownload} from 'components/Atoms/Download';
+import FileViewer from 'react-native-file-viewer';
+import {Image} from 'react-native-svg';
+import FileIcon from 'assets/images/file_icon.png';
+import {getShadow} from 'utils';
 import SelectTower from '../Components/SelectTower';
 import MenuDialog from '../Components/MenuDialog';
 import VersionDialog from '../Components/VersionDialog';
@@ -100,6 +117,58 @@ function ActivityModal(props) {
           <Caption>{dayjs(title).format('DD MMM')}</Caption>
         )}
       />
+    </View>
+  );
+}
+
+function RenderFile(props) {
+  const {index, item, toggleMenu, setModalContentType, setModalContent} = props;
+
+  const {title, created} = item;
+
+  const download = useDownload();
+
+  const onPressFile = async file => {
+    download.link({
+      name: getFileName(file.file_url),
+      data: {project_id: file.project_id, file_url: file.file_url},
+      showAction: false,
+      onFinish: ({dir}) => {
+        FileViewer.open(`file://${dir}`);
+      },
+    });
+  };
+
+  return (
+    <View style={styles.recentFiles}>
+      <TouchableOpacity
+        style={styles.sectionContainer}
+        onPress={() => onPressFile(item)}>
+        <Image source={FileIcon} style={styles.fileIcon} />
+        <View>
+          <Text style={(styles.verticalFlex, styles.text)} numberOfLines={2}>
+            {title}
+          </Text>
+        </View>
+      </TouchableOpacity>
+
+      <View style={styles.sectionContainer}>
+        <View>
+          <Text style={styles.date}>
+            {dayjs(created).format('DD MMM YYYY')}
+          </Text>
+        </View>
+        <View>
+          <IconButton
+            icon="dots-vertical"
+            onPress={() => {
+              toggleMenu(index);
+              setModalContentType('menu');
+              setModalContent(item);
+            }}
+          />
+        </View>
+      </View>
     </View>
   );
 }
@@ -192,9 +261,11 @@ function RenderMenuModal(props) {
 }
 
 function PlotsList(props) {
-  const {navigation} = props;
+  const {navigation, route} = props;
 
-  const structureLabel = 'Bungalows';
+  const {folderId} = route?.params || {};
+
+  const structureLabel = 'Plots';
   const snackbar = useSnackbar();
 
   const {openImagePicker} = useImagePicker();
@@ -205,16 +276,50 @@ function PlotsList(props) {
   const [shareDialog, setShareDialog] = React.useState(false);
   const [DialogType, setDialogType] = React.useState();
 
+  const {
+    getFDPlots,
+    uploadFDPlotFiles,
+    uploadFDPlotBungalowFileVersion,
+    renameFDBungalowsFile,
+    deleteFDBungalowsFile,
+  } = useDesignModuleActions();
+
+  const {fdPlots, loading, versionData} = useSelector(s => s.designModule);
+  const {selectedProject} = useSelector(s => s.project);
+  const project_id = selectedProject.id;
+
+  const plotsList = fdPlots?.data?.plots || [];
+
+  const plotFiles = fdPlots?.data?.final_drawing_bunglow_files;
+
+  React.useEffect(() => {
+    loadFiles();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const loadFiles = () => {
+    getFDPlots({project_id, folder_id: folderId, bunglow_plot_id: 0});
+  };
+
   const toggleMenu = folderIndex => setMenuId(folderIndex);
   const toggleDialog = v => setDialogType(v);
   const toggleShareDialog = () => setShareDialog(v => !v);
 
-  const renameFileHandler = async () => {
-    console.log('===========> ');
+  const renameFileHandler = async (name, id) => {
+    await renameFDBungalowsFile({
+      file_name: name,
+      final_drawing_bunglow_plot_files_id: id,
+      project_id,
+    });
+    loadFiles();
     toggleDialog();
   };
-
-  const deleteFileHandler = async () => {
+  const deleteFileHandler = async id => {
+    await deleteFDBungalowsFile({
+      final_drawing_bunglow_plot_files_id: id,
+      project_id,
+    });
+    loadFiles();
     toggleDialog();
     snackbar.showMessage({
       message: 'File Deleted!',
@@ -234,17 +339,42 @@ function PlotsList(props) {
     handleFileUpload(v);
   };
 
-  const handleFileUpload = () => {
-    console.log('===========> ');
+  const handleFileUpload = async file => {
+    const {name} = file;
+    const extension = getFileExtension(file.name);
+    file.name = `${name}.${extension}`;
+
+    const formData = new FormData();
+
+    formData.append('folder_id', folderId);
+    formData.append('attachmentFile', file);
+    formData.append('project_id', project_id);
+    formData.append('bunglow_plot_id', 0);
+
+    await uploadFDPlotFiles(formData);
+    toggleDialog();
+    snackbar.showMessage({
+      message: 'File Uploaded Successfully!',
+      variant: 'success',
+    });
+    loadFiles();
   };
 
-  const handleNewVersionUpload = () => {
+  const handleNewVersionUpload = file_id => {
     openImagePicker({
       type: 'file',
       onChoose: async v => {
-        console.log('===========> ');
+        const formData = new FormData();
+
+        formData.append('final_drawing_bunglow_plot_files_id', file_id);
+        formData.append('myfile', v);
+        formData.append('folder_id', folderId);
+        formData.append('project_id', project_id);
+
+        await uploadFDPlotBungalowFileVersion(formData);
       },
     });
+    loadFiles();
   };
 
   const handleDeleteVersion = async () => {
@@ -252,30 +382,81 @@ function PlotsList(props) {
     console.log('===========> ');
   };
 
-  const onSelectStructure = () => {
-    navigation.navigate('BungalowsFileDetails');
+  const onSelectStructure = values => {
+    const tower_id = plotsList?.find(i => i.id === values)?.id;
+    const towerLabel = plotsList?.find(i => i.id === values)?.project_unit;
+    navigation.navigate('PlotFileDetails', {
+      tower_id,
+      folderId,
+      towerLabel,
+      structureLabel,
+    });
   };
 
   return (
     <>
-      {menuId ? (
-        <RenderMenuModal
-          {...props}
-          {...{
-            menuId,
-            modelContentType,
-            modalContent,
-            toggleMenu,
-            setModalContentType,
-            toggleDialog,
-            versionDataHandler,
-            activityDataHandler,
-            toggleShareDialog,
-            handleNewVersionUpload,
-            handleDeleteVersion,
-          }}
+      <RenderMenuModal
+        {...props}
+        {...{
+          menuId,
+          modelContentType,
+          modalContent,
+          versionData,
+          toggleMenu,
+          setModalContentType,
+          toggleDialog,
+          versionDataHandler,
+          activityDataHandler,
+          toggleShareDialog,
+          handleNewVersionUpload,
+          handleDeleteVersion,
+        }}
+      />
+
+      <View styles={styles.container}>
+        <Spinner visible={loading} textContent="" />
+
+        <View style={styles.header}>
+          <IconButton
+            icon="keyboard-backspace"
+            size={20}
+            color="#4872f4"
+            style={styles.backIcon}
+            onPress={() => navigation.goBack()}
+          />
+          <Title>Plots</Title>
+        </View>
+        <SelectTower
+          structureLabel={structureLabel}
+          navigation={navigation}
+          onSelectStructure={onSelectStructure}
+          data={plotsList}
         />
-      ) : null}
+
+        <FlatList
+          refreshControl={
+            <RefreshControl refreshing={false} onRefresh={loadFiles} />
+          }
+          data={plotFiles}
+          extraData={plotFiles}
+          keyExtractor={i => i.id}
+          contentContainerStyle={styles.contentContainerStyle}
+          ListEmptyComponent={<NoResult title="No Data found!" />}
+          renderItem={({item, index}) => (
+            <RenderFile
+              {...props}
+              {...{
+                item,
+                index,
+                menuId,
+                toggleMenu,
+                setModalContentType,
+                setModalContent,
+              }}
+            />
+          )}
+        />
+      </View>
       <RenameDialogue
         visible={DialogType === 'renameFile'}
         toggleDialogue={toggleDialog}
@@ -288,23 +469,6 @@ function PlotsList(props) {
         dialogueContent={modalContent}
         deleteFileHandler={deleteFileHandler}
       />
-      <View styles={styles.container}>
-        <View style={styles.headerWrapper}>
-          <IconButton
-            icon="keyboard-backspace"
-            size={20}
-            color="#4872f4"
-            style={styles.backIcon}
-            onPress={() => navigation.goBack()}
-          />
-          <Title> Plots</Title>
-        </View>
-        <SelectTower
-          structureLabel={structureLabel}
-          navigation={navigation}
-          onSelectStructure={onSelectStructure}
-        />
-      </View>
       <FAB
         style={styles.fab}
         icon="plus"
@@ -319,18 +483,106 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     backgroundColor: '#ffffff',
-  },
-  headerWrapper: {
     flexDirection: 'row',
-    alignItems: 'center',
   },
 
+  header: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 10,
+  },
+
+  fileIcon: {
+    width: 32,
+    height: 38,
+    paddingLeft: 10,
+    marginLeft: 10,
+    marginBottom: 10,
+  },
+  text: {
+    color: '#080707',
+    paddingHorizontal: 10,
+    fontSize: 14,
+    alignItems: 'center',
+    maxWidth: 170,
+  },
+  date: {
+    color: '#080707',
+  },
+  sectionContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  recentFiles: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  verticalFlex: {
+    flexDirection: 'column',
+  },
   fab: {
     position: 'absolute',
     right: 25,
     bottom: 30,
     zIndex: 2,
     backgroundColor: theme.colors.primary,
+  },
+
+  backdrop: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.3)',
+  },
+  sheetContentContainer: {
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    paddingHorizontal: 15,
+    paddingBottom: 20,
+    flexGrow: 1,
+    height: '100%',
+    ...getShadow(2),
+  },
+  closeContainer: {
+    alignItems: 'flex-end',
+  },
+
+  activityContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    marginVertical: 5,
+  },
+  activityBody: {
+    flexGrow: 1,
+    flex: 1,
+  },
+  activitiesContainer: {
+    flexGrow: 1,
+  },
+  iconContainer: {
+    paddingHorizontal: 10,
+  },
+  activityScrollContainer: {
+    paddingBottom: 80,
+    marginTop: 10,
+    flexGrow: 1,
+  },
+  fileName: {
+    lineHeight: 12,
+    marginRight: 20,
+  },
+  activityUser: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  emptyContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 export default PlotsList;

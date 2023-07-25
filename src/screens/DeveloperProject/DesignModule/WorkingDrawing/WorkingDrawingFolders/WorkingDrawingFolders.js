@@ -55,20 +55,31 @@ function RenderFolder(props) {
     toggleMenu,
     navigation,
     setModalContent,
+    designModuleTitle,
   } = props;
   const {title} = item;
 
+  const navToNext = () => {
+    // eslint-disable-next-line no-constant-condition
+    if (title === 'Structure' || 'Architech' || 'MEP') {
+      navigation.navigate('SelectStructure', {
+        ...props,
+        title,
+        folderId: item.id,
+        designModuleTitle,
+      });
+    } else {
+      navigation.navigate('WorkingDrawingFiles', {
+        ...props,
+        title,
+        folderId: item.id,
+      });
+    }
+  };
+
   return (
     <View style={styles.sectionContainer}>
-      <TouchableOpacity
-        style={styles.renderFolder}
-        onPress={() => {
-          navigation.navigate('WorkingDrawingFiles', {
-            ...props,
-            title,
-            folderId: item.id,
-          });
-        }}>
+      <TouchableOpacity style={styles.renderFolder} onPress={navToNext}>
         <View style={styles.sectionContainer}>
           <Image source={FolderIcon} style={styles.PdfIcon} />
           <View>
@@ -317,6 +328,7 @@ function WorkingDrawingFolders(props) {
   const modulePermissions = getPermissions('Files');
   const snackbar = useSnackbar();
 
+  const designModuleTitle = 'Working Drawing';
   const {versionData} = useSelector(s => s.files);
   const {selectedProject} = useSelector(s => s.project);
   const {folders, loading} = useSelector(s => s.designModule);
@@ -389,7 +401,7 @@ function WorkingDrawingFolders(props) {
     <View style={styles.container}>
       <Spinner visible={loading} textContent="" />
       <View style={styles.headerContainer}>
-        <Subheading>Working Drawing</Subheading>
+        <Subheading>{designModuleTitle}</Subheading>
         <ListViewControl {...props} {...{listMode, setListMode}} />
       </View>
       {listMode === 'list' ? (
@@ -402,6 +414,7 @@ function WorkingDrawingFolders(props) {
             setModalContent,
             setModalContentType,
             loadData,
+            designModuleTitle,
           }}
         />
       ) : null}
@@ -415,6 +428,7 @@ function WorkingDrawingFolders(props) {
             setModalContent,
             setModalContentType,
             loadData,
+            designModuleTitle,
           }}
         />
       ) : null}

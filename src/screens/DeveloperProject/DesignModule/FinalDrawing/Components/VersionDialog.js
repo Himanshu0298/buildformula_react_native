@@ -65,7 +65,7 @@ function VersionFile(props) {
               {!countVersion ? 'Current Version' : `Version ${countVersion}`}
             </Text>
             <Text numberOfLines={1} style={styles.text}>
-              By {version?.first_name} {version?.last_name}
+              By {version?.user_id}
             </Text>
           </View>
         </View>
@@ -114,9 +114,8 @@ function VersionFile(props) {
 function VersionDialog(props) {
   const {modulePermissions, modalContent, versionData, handleNewVersionUpload} =
     props;
-
   const filteredVersion = useMemo(() => {
-    return [versionData?.current, ...(versionData?.lists || [])];
+    return [versionData?.current, ...(versionData || [])];
   }, [versionData]);
 
   return (

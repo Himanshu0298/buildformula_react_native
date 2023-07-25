@@ -73,7 +73,6 @@ export default function useDesignModuleActions() {
     uploadParkingFile,
     deleteParkingFile,
     updateParkingList,
-    downloadRDFile,
     getWDVersion,
     addRDVersion,
     addFDVersion,
@@ -82,6 +81,10 @@ export default function useDesignModuleActions() {
     getFDVersion,
     deleteFDVersion,
     deleteWDVersion,
+    getFDTowerFloorFolder,
+    getFloorFolderFile,
+    rearrangeFloorRows,
+    getTowerFolderFileVersion,
   } = useDesignModule();
   const {_err, _res} = useResProcessor();
   const snackbar = useSnackbar();
@@ -485,8 +488,7 @@ export default function useDesignModuleActions() {
         type: types.GET_FD_TOWERS,
         payload: async () => {
           try {
-            const {data, msg} = _res(await getFDTowers(params));
-            snackbar.showMessage({message: msg});
+            const {data} = _res(await getFDTowers(params));
 
             return Promise.resolve({data});
           } catch (error) {
@@ -502,7 +504,6 @@ export default function useDesignModuleActions() {
         payload: async () => {
           try {
             const {data, msg} = _res(await addFDTowerFiles(params));
-            snackbar.showMessage({message: msg});
 
             return Promise.resolve({data});
           } catch (error) {
@@ -517,8 +518,7 @@ export default function useDesignModuleActions() {
         type: types.GET_FD_TOWER_FLOORS,
         payload: async () => {
           try {
-            const {data, msg} = _res(await getFDTowerFloors(params));
-            snackbar.showMessage({message: msg});
+            const {data} = _res(await getFDTowerFloors(params));
 
             return Promise.resolve({data});
           } catch (error) {
@@ -533,8 +533,7 @@ export default function useDesignModuleActions() {
         type: types.ADD_FD_TOWER_ROWS,
         payload: async () => {
           try {
-            const {data, msg} = _res(await getFDTowerFloors(params));
-            snackbar.showMessage({message: msg});
+            const {data} = _res(await addFDTowerFloorsRows(params));
 
             return Promise.resolve({data});
           } catch (error) {
@@ -550,7 +549,6 @@ export default function useDesignModuleActions() {
         payload: async () => {
           try {
             const {data, msg} = _res(await updateFDTowerFloorsRows(params));
-            snackbar.showMessage({message: msg});
 
             return Promise.resolve({data});
           } catch (error) {
@@ -615,7 +613,53 @@ export default function useDesignModuleActions() {
         type: types.FD_TOWER_ACTIVITY_LOG,
         payload: async () => {
           try {
-            const {data, msg} = _res(await FDTowerFileActivityLogs(params));
+            const {data} = _res(await FDTowerFileActivityLogs(params));
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    getFDTowerFloorFolder: params =>
+      dispatch({
+        type: types.FD_TOWER_FLOOR_FOLDER,
+        payload: async () => {
+          try {
+            const {data} = _res(await getFDTowerFloorFolder(params));
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    getFloorFolderFile: params =>
+      dispatch({
+        type: types.FD_TOWER_FLOOR_FILE,
+        payload: async () => {
+          try {
+            const {data} = _res(await getFloorFolderFile(params));
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    rearrangeFloorRows: params =>
+      dispatch({
+        type: types.FD_TOWER_FLOOR_FILE,
+        payload: async () => {
+          try {
+            const {data, msg} = _res(await rearrangeFloorRows(params));
             snackbar.showMessage({message: msg});
 
             return Promise.resolve({data});
@@ -626,6 +670,7 @@ export default function useDesignModuleActions() {
           }
         },
       }),
+
     uploadTowerFileVersion: params =>
       dispatch({
         type: types.UPDATE_TOWER_FILE_VERSION,
@@ -647,8 +692,7 @@ export default function useDesignModuleActions() {
         type: types.GET_FD_BUNGALOWS,
         payload: async () => {
           try {
-            const {data, msg} = _res(await getFDBungalows(params));
-            snackbar.showMessage({message: msg});
+            const {data} = _res(await getFDBungalows(params));
 
             return Promise.resolve({data});
           } catch (error) {
@@ -679,8 +723,7 @@ export default function useDesignModuleActions() {
         type: types.RENAME_FD_BUNGALOWS_FILES,
         payload: async () => {
           try {
-            const {data, msg} = _res(await renameFDBungalowsFile(params));
-            snackbar.showMessage({message: msg});
+            const {data} = _res(await renameFDBungalowsFile(params));
 
             return Promise.resolve({data});
           } catch (error) {
@@ -695,8 +738,7 @@ export default function useDesignModuleActions() {
         type: types.RENAME_FD_BUNGALOWS_FILES,
         payload: async () => {
           try {
-            const {data, msg} = _res(await deleteFDBungalowsFile(params));
-            snackbar.showMessage({message: msg});
+            const {data} = _res(await deleteFDBungalowsFile(params));
 
             return Promise.resolve({data});
           } catch (error) {
@@ -711,8 +753,7 @@ export default function useDesignModuleActions() {
         type: types.FD_TOWER_ACTIVITY_LOG,
         payload: async () => {
           try {
-            const {data, msg} = _res(await FDBungalowsFileActivityLog(params));
-            snackbar.showMessage({message: msg});
+            const {data} = _res(await FDBungalowsFileActivityLog(params));
 
             return Promise.resolve({data});
           } catch (error) {
@@ -727,8 +768,7 @@ export default function useDesignModuleActions() {
         type: types.GET_FD_PLOTS,
         payload: async () => {
           try {
-            const {data, msg} = _res(await getFDPlots(params));
-            snackbar.showMessage({message: msg});
+            const {data} = _res(await getFDPlots(params));
 
             return Promise.resolve({data});
           } catch (error) {
@@ -743,8 +783,7 @@ export default function useDesignModuleActions() {
         type: types.ADD_FD_PLOT_FILES,
         payload: async () => {
           try {
-            const {data, msg} = _res(await uploadFDPlotFiles(params));
-            snackbar.showMessage({message: msg});
+            const {data} = _res(await uploadFDPlotFiles(params));
 
             return Promise.resolve({data});
           } catch (error) {
@@ -759,10 +798,7 @@ export default function useDesignModuleActions() {
         type: types.UPLOAD_FD_BUNGALOW_TOWER_FILE_VERSION,
         payload: async () => {
           try {
-            const {data, msg} = _res(
-              await uploadFDPlotBungalowFileVersion(params),
-            );
-            snackbar.showMessage({message: msg});
+            const {data} = _res(await uploadFDPlotBungalowFileVersion(params));
 
             return Promise.resolve({data});
           } catch (error) {
@@ -778,8 +814,22 @@ export default function useDesignModuleActions() {
         type: types.ADD_FD_FLOOR_FOLDER,
         payload: async () => {
           try {
-            const {data, msg} = _res(await addFloorFolder(params));
-            snackbar.showMessage({message: msg});
+            const {data} = _res(await addFloorFolder(params));
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    getTowerFolderFileVersion: params =>
+      dispatch({
+        type: types.GET_RD_VERSION,
+        payload: async () => {
+          try {
+            const {data} = _res(await getTowerFolderFileVersion(params));
 
             return Promise.resolve({data});
           } catch (error) {
@@ -794,8 +844,7 @@ export default function useDesignModuleActions() {
         type: types.UPLOAD_FD_BUNGALOW_TOWER_FILE_VERSION,
         payload: async () => {
           try {
-            const {data, msg} = _res(await addFloorFolderFile(params));
-            snackbar.showMessage({message: msg});
+            const {data} = _res(await addFloorFolderFile(params));
 
             return Promise.resolve({data});
           } catch (error) {
