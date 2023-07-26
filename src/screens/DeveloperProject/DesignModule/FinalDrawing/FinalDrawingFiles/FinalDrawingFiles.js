@@ -40,7 +40,6 @@ import MenuDialog from '../Components/MenuDialog';
 import DeleteDialog from '../Components/DeleteDialog';
 import RenameDialogue from '../Components/RenameDialog';
 import VersionDialog from '../../RoughDrawing/Components/VersionDialog';
-import SelectTower from '../Components/SelectTower';
 
 const SNAP_POINTS = [0, '70%'];
 
@@ -287,12 +286,12 @@ function FinalDrawingFiles(props) {
   const {files, versionData, loading} = useSelector(s => s.designModule);
 
   const project_id = selectedProject.id;
-  const {data} = files;
+  const data = files?.data?.list || [];
 
-  // React.useEffect(() => {
-  //   loadFiles();
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
+  React.useEffect(() => {
+    loadFiles();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const loadFiles = () => {
     getFDFiles({project_id, folder_id: folderId});

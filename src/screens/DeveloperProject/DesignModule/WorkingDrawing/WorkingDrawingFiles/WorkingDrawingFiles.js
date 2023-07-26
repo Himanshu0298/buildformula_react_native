@@ -282,10 +282,9 @@ function WorkingDrawingFiles(props) {
   const snackbar = useSnackbar();
   const {selectedProject} = useSelector(s => s.project);
   const {files, versionData, loading} = useSelector(s => s.designModule);
-  console.log('-------->versionData123', versionData);
 
   const project_id = selectedProject.id;
-  const {data} = files;
+  const data = files?.data?.list || [];
 
   React.useEffect(() => {
     loadFiles();

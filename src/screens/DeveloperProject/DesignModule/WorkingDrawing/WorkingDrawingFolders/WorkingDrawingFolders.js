@@ -59,9 +59,12 @@ function RenderFolder(props) {
   } = props;
   const {title} = item;
 
+  const next =
+    title === 'Structure' || title === 'MEP' || title === 'Architech';
+
   const navToNext = () => {
     // eslint-disable-next-line no-constant-condition
-    if (title === 'Structure' || 'Architech' || 'MEP') {
+    if (next) {
       navigation.navigate('SelectStructure', {
         ...props,
         title,
