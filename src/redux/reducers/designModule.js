@@ -26,6 +26,8 @@ import {
   GET_FD_TOWERS,
   GET_FD_TOWER_FLOORS,
   GET_PARKING_LIST,
+  GET_PLOT,
+  GET_PLOT_FILE,
   GET_PLOT_UNIT_SHEET,
   GET_PROJECT_AREA_SHEET,
   GET_RD_FILES,
@@ -34,6 +36,15 @@ import {
   GET_RD_VERSION,
   GET_SELECTED_PROJECT,
   GET_UNIT_TOWER_SHEET,
+  GET_WD_BUNGALOWS_LIST,
+  GET_WD_FLOOR_FILE_VERSION,
+  GET_WD_FLOOR_FOLDER,
+  GET_WD_FLOOR_FOLDER_FILE,
+  GET_WD_FLOOR_FOLDER_FILE_VERSION,
+  GET_WD_PLOT,
+  GET_WD_PLOTS,
+  GET_WD_TOWER,
+  GET_WD_TOWER_VERSION,
   REARRANGE_FD_FLOOR_ROWS,
   RENAME_FD_BUNGALOWS_FILES,
   RENAME_FD_TOWER_FILE,
@@ -49,9 +60,11 @@ import {
   UPDATE_PLOT_UNIT_SHEET,
   UPDATE_TOWER_FILE_VERSION,
   UPDATE_UNIT_TOWER_SHEET,
+  UPLOAD_BUNGALOWS_FILES,
   UPLOAD_FD_BUNGALOW_TOWER_FILE_VERSION,
   UPLOAD_PARKING_FILE,
   UPLOAD_RD_FILES,
+  WD_FILE_ACTIVITY_LOG,
 } from '../actions/actionTypes';
 
 const initialState = {
@@ -74,8 +87,21 @@ const initialState = {
   fdBungalowsList: [],
   fdBungalowsFilesList: [],
   fdPlots: {},
+  wdPlotList: {},
+  wdTower: {},
   towerFolderList: [],
   towerFileList: [],
+  towerFileActivities: {},
+  wdFileActivities: {},
+  plots: {},
+  wdBungalows: {},
+  plotFiles: {},
+  wdTowerFile: {},
+  wdFolderList: [],
+  wdFolderFilesList: [],
+  wdFolderFileVersion: [],
+  version: [],
+  wdTowerVersion: [],
 };
 
 export default (state = initialState, action = {}) => {
@@ -204,6 +230,98 @@ export default (state = initialState, action = {}) => {
         ...state,
         loading: false,
         fdPlots: payload,
+      };
+    }
+    case `${GET_WD_PLOTS}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+        wdPlotList: payload.data,
+      };
+    }
+    case `${GET_WD_FLOOR_FOLDER_FILE_VERSION}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+        wdFolderFileVersion: payload.data,
+      };
+    }
+    case `${GET_WD_FLOOR_FILE_VERSION}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+        version: payload.data,
+      };
+    }
+    case `${GET_WD_FLOOR_FOLDER}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+        wdFolderList: payload.data,
+      };
+    }
+    case `${GET_WD_TOWER_VERSION}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+        wdTowerVersion: payload.data,
+      };
+    }
+    case `${GET_WD_TOWER}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+        wdTowerFile: payload.data,
+      };
+    }
+    case `${GET_WD_PLOT}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+        wdTower: payload.data,
+      };
+    }
+    case `${GET_PLOT_FILE}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+        plotFiles: payload.data,
+      };
+    }
+    case `${GET_PLOT}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+        plots: payload.data,
+      };
+    }
+    case `${GET_WD_BUNGALOWS_LIST}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+        wdBungalows: payload.data,
+      };
+    }
+
+    case `${FD_TOWER_ACTIVITY_LOG}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+        towerFileActivities: payload.data,
+      };
+    }
+    case `${WD_FILE_ACTIVITY_LOG}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+        wdFileActivities: payload.data,
+      };
+    }
+    case `${GET_WD_FLOOR_FOLDER_FILE}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+        wdFolderFilesList: payload.data,
       };
     }
     case `${GET_RD_FOLDER_ACTIVITIES}_REJECTED`:
@@ -554,6 +672,19 @@ export default (state = initialState, action = {}) => {
     case `${FD_TOWER_FLOOR_FOLDER}_PENDING`:
     case `${FD_TOWER_FLOOR_FILE}_PENDING`:
     case `${REARRANGE_FD_FLOOR_ROWS}_PENDING`:
+    case `${GET_WD_PLOTS}_PENDING`:
+    case `${GET_PLOT}_PENDING`:
+    case `${GET_WD_PLOT}_PENDING`:
+    case `${UPLOAD_BUNGALOWS_FILES}_PENDING`:
+    case `${GET_WD_BUNGALOWS_LIST}_PENDING`:
+    case `${WD_FILE_ACTIVITY_LOG}_PENDING`:
+    case `${GET_WD_TOWER}_PENDING`:
+    case `${GET_PLOT_FILE}_PENDING`:
+    case `${GET_WD_FLOOR_FOLDER}_PENDING`:
+    case `${GET_WD_FLOOR_FOLDER_FILE}_PENDING`:
+    case `${GET_WD_FLOOR_FOLDER_FILE_VERSION}_PENDING`:
+    case `${GET_WD_FLOOR_FILE_VERSION}_PENDING`:
+    case `${GET_WD_TOWER_VERSION}_PENDING`:
       return {
         ...state,
         loading: true,
@@ -576,7 +707,6 @@ export default (state = initialState, action = {}) => {
     case `${DELETE_FD_TOWER_ROWS}_FULFILLED`:
     case `${RENAME_FD_TOWER_FILE}_FULFILLED`:
     case `${DELETE_FD_TOWER_FILE}_FULFILLED`:
-    case `${FD_TOWER_ACTIVITY_LOG}_FULFILLED`:
     case `${UPDATE_TOWER_FILE_VERSION}_FULFILLED`:
     case `${RENAME_FD_BUNGALOWS_FILES}_FULFILLED`:
     case `${DELETE_FD_BUNGALOWS_FILES}_FULFILLED`:
@@ -585,6 +715,7 @@ export default (state = initialState, action = {}) => {
     case `${ADD_FD_FLOOR_FOLDER}_FULFILLED`:
     case `${ADD_FD_FLOOR_FOLDER_FILE}_FULFILLED`:
     case `${REARRANGE_FD_FLOOR_ROWS}_FULFILLED`:
+    case `${UPLOAD_BUNGALOWS_FILES}_FULFILLED`:
       return {
         ...state,
         loading: false,
@@ -624,6 +755,19 @@ export default (state = initialState, action = {}) => {
     case `${FD_TOWER_FLOOR_FOLDER}_REJECTED`:
     case `${FD_TOWER_FLOOR_FILE}_REJECTED`:
     case `${REARRANGE_FD_FLOOR_ROWS}_REJECTED`:
+    case `${GET_WD_PLOTS}_REJECTED`:
+    case `${GET_WD_PLOT}_REJECTED`:
+    case `${GET_PLOT}_REJECTED`:
+    case `${UPLOAD_BUNGALOWS_FILES}_REJECTED`:
+    case `${GET_WD_BUNGALOWS_LIST}_REJECTED`:
+    case `${WD_FILE_ACTIVITY_LOG}_REJECTED`:
+    case `${GET_WD_TOWER}_REJECTED`:
+    case `${GET_PLOT_FILE}_REJECTED`:
+    case `${GET_WD_FLOOR_FOLDER}_REJECTED`:
+    case `${GET_WD_FLOOR_FOLDER_FILE}_REJECTED`:
+    case `${GET_WD_FLOOR_FOLDER_FILE_VERSION}_REJECTED`:
+    case `${GET_WD_FLOOR_FILE_VERSION}_REJECTED`:
+    case `${GET_WD_TOWER_VERSION}_REJECTED`:
       return {
         ...state,
         loading: false,

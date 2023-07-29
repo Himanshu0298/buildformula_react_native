@@ -96,8 +96,6 @@ function AddMaterialDialog(props) {
       ...new Set(categoryList.map(i => i.master_material_subcategory_id)),
     ];
 
-    console.log('===========> subCategoryWorkOptions', subCategoryWorkOptions);
-
     return materialSubCategories
       ?.filter(i => subCategories.includes(i.id))
       ?.filter(i => i.category_id === values.material_category_id)

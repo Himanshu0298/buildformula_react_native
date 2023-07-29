@@ -15,6 +15,7 @@ import {
   FAB,
   Divider,
   Caption,
+  useTheme,
 } from 'react-native-paper';
 import FolderIcon from 'assets/images/folder_icon.png';
 import {useSelector} from 'react-redux';
@@ -85,45 +86,6 @@ function RenderFolder(props) {
           setModalContentType('menu');
           setModalContent(item);
         }}
-      />
-    </View>
-  );
-}
-
-function FolderSection(props) {
-  const {
-    folders,
-    menuId,
-    toggleMenu,
-    setModalContentType,
-    loadData,
-    setModalContent,
-  } = props;
-
-  return (
-    <View style={styles.container}>
-      <FlatList
-        refreshControl={
-          <RefreshControl refreshing={false} onRefresh={loadData} />
-        }
-        data={folders}
-        extraData={folders}
-        keyExtractor={i => i.id}
-        contentContainerStyle={styles.contentContainerStyle}
-        ListEmptyComponent={<NoResult title="No Data found!" />}
-        renderItem={({item, index}) => (
-          <RenderFolder
-            {...props}
-            {...{
-              item,
-              index,
-              menuId,
-              toggleMenu,
-              setModalContentType,
-              setModalContent,
-            }}
-          />
-        )}
       />
     </View>
   );
@@ -312,14 +274,33 @@ const ListViewControl = props => {
   );
 };
 
+function RenderRow(props) {
+  const {item, onPress} = props;
+  const {folder_title} = item;
+
+  const {colors} = useTheme();
+
+  return (
+    <View>
+      <TouchableOpacity style={styles.optionContainer} onPress={onPress}>
+        <Text>{folder_title} </Text>
+        <OpacityButton
+          opacity={0.1}
+          style={styles.rightArrow}
+          color={colors.primary}>
+          <MaterialCommunityIcons name="arrow-right" size={15} color="black" />
+        </OpacityButton>
+      </TouchableOpacity>
+    </View>
+  );
+}
+
 function FDFloorFolder(props) {
   const {navigation, route} = props;
   const {tower_id, folderId, floorId} = route?.params || {};
 
-  const modulePermissions = getPermissions('Files');
   const snackbar = useSnackbar();
 
-  const {versionData} = useSelector(s => s.files);
   const {selectedProject} = useSelector(s => s.project);
   const {loading, towerFolderList} = useSelector(s => s.designModule);
 
@@ -327,7 +308,12 @@ function FDFloorFolder(props) {
 
   const project_id = selectedProject.id;
 
-  const {addFloorFolder, getFDTowerFloorFolder} = useDesignModuleActions();
+  const {
+    addFloorFolder,
+    getFDTowerFloorFolder,
+    deleteFDFloorFolderFileVersion,
+    renameWDFloorFolder,
+  } = useDesignModuleActions();
 
   const [menuId, setMenuId] = React.useState();
   const [modelContentType, setModalContentType] = React.useState('menu');
@@ -363,225 +349,156 @@ function FDFloorFolder(props) {
     toggleDialog();
     loadData();
   };
-  const renameFolderHandler = async (name, id, type) => {
-    toggleDialog();
-  };
-
-  const deleteFolderHandler = async (id, type) => {
-    toggleDialog();
-    snackbar.showMessage({
-      message: 'Folder Deleted!',
-      variant: 'success',
+  const renameFolderHandler = async (name, id) => {
+    await renameWDFloorFolder({
+      folder_title: name,
+      working_drawing_floor_rows_folder_id: id,
+      project_id,
     });
+    loadData();
+    toggleDialog();
   };
 
-  const activityDataHandler = (action_type, id) => {
-    setModalContentType('activity');
+  // const deleteFolderHandler = async id => {
+  //   await deleteWDFloorFolder({folder_id: id, project_id});
+  //   loadData();
+  //   toggleDialog();
+  //   snackbar.showMessage({
+  //     message: 'Folder Deleted!',
+  //     variant: 'success',
+  //   });
+  // };
+
+  const renderEmpty = () => <NoResult />;
+
+  const navToNext = item => {
+    const {folder_title, id} = item;
+
+    navigation.navigate('FDFloorFolderFile', {folder_title, item, folderId});
   };
 
   return (
-    <View style={styles.container}>
-      <Spinner visible={loading} textContent="" />
-      <View style={styles.headerContainer}>
-        <View style={{flexDirection: 'row'}}>
-          <OpacityButton
-            opacity={0.18}
-            style={styles.button}
-            onPress={() => navigation.goBack()}>
-            <MaterialCommunityIcons name="arrow-left" size={18} />
-          </OpacityButton>
-          <Subheading style={styles.Subheading}> Floor Folders</Subheading>
-        </View>
-
-        <ListViewControl {...props} {...{listMode, setListMode}} />
-      </View>
-
-      {listMode === 'list' ? (
-        <FolderSection
-          {...props}
-          folders={folders}
-          tower_id={tower_id}
-          folderId={folderId}
-          floorId={floorId}
-          {...{
-            menuId,
-            toggleMenu,
-            setModalContent,
-            setModalContentType,
-            loadData,
-          }}
-        />
-      ) : null}
-      {listMode === 'grid' ? (
-        <FolderSectionGridView
-          {...props}
-          folders={folders}
-          {...{
-            menuId,
-            toggleMenu,
-            setModalContent,
-            setModalContentType,
-            loadData,
-          }}
-        />
-      ) : null}
-      {modulePermissions?.editor || modulePermissions?.admin ? (
-        <FAB
-          style={styles.fab}
-          icon="plus"
-          onPress={() => toggleDialog('createFolder')}
-          medium
-        />
-      ) : null}
-      <RenderMenuModal
-        {...props}
-        {...{
-          modulePermissions,
-          menuId,
-          modelContentType,
-          modalContent,
-          versionData,
-          toggleMenu,
-          setModalContentType,
-          toggleDialog,
-          activityDataHandler,
-          toggleShareDialog,
-          is_preset: 'no',
-        }}
-      />
-
+    <>
       <CreateFolderDialogue
         visible={DialogType === 'createFolder'}
         toggleDialogue={toggleDialog}
         createFolderHandler={createFolderHandler}
+        placeholder="Destination Name"
+        title="Create new destination"
       />
+
       <RenameDialogue
         visible={DialogType === 'renameFile'}
         toggleDialogue={toggleDialog}
         dialogueContent={modalContent}
         renameFolderHandler={renameFolderHandler}
       />
-      <DeleteDialog
+      {/* <DeleteDialog
         visible={DialogType === 'deleteFileFolder'}
         toggleDialogue={toggleDialog}
         dialogueContent={modalContent}
         deleteFileHandler={deleteFolderHandler}
-      />
-    </View>
+      /> */}
+      <View style={styles.container}>
+        <Spinner visible={loading} textContent="" />
+        <View style={styles.headerContainer}>
+          <View style={styles.button}>
+            <OpacityButton
+              opacity={0.1}
+              color={theme.colors.primary}
+              style={styles.backButton}
+              onPress={navigation.goBack}>
+              <MaterialCommunityIcons
+                name="keyboard-backspace"
+                size={18}
+                color="black"
+              />
+            </OpacityButton>
+          </View>
+          <View style={styles.headerSubContainer}>
+            <View>
+              <Text numberOfLines={2} style={styles.headerTitle}>
+                List
+              </Text>
+            </View>
+            <View>
+              <OpacityButton
+                opacity={0.6}
+                color={theme.colors.primary}
+                style={styles.addButton}
+                onPress={() => toggleDialog('createFolder')}>
+                <Text> Add File Destination</Text>
+              </OpacityButton>
+            </View>
+          </View>
+        </View>
+        <View style={styles.flatListContainer}>
+          <FlatList
+            data={folders}
+            refreshControl={
+              <RefreshControl refreshing={false} onRefresh={() => loadData()} />
+            }
+            contentContainerStyle={styles.flatList}
+            keyExtractor={item => item.id}
+            ListEmptyComponent={renderEmpty}
+            renderItem={({item}) => {
+              return <RenderRow item={item} onPress={() => navToNext(item)} />;
+            }}
+          />
+        </View>
+      </View>
+    </>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#ffffff',
-    padding: 10,
-  },
-  fab: {
-    position: 'absolute',
-    right: 25,
-    bottom: 30,
-    zIndex: 2,
-    backgroundColor: theme.colors.primary,
-  },
-
-  backdrop: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.3)',
-  },
-  sheetContentContainer: {
-    backgroundColor: '#fff',
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-    paddingHorizontal: 15,
-    paddingBottom: 20,
-    flexGrow: 1,
-    height: '100%',
-    ...getShadow(2),
-  },
-  closeContainer: {
-    alignItems: 'flex-end',
-  },
-
-  activityContainer: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    marginVertical: 5,
-  },
-  activityBody: {
     flexGrow: 1,
   },
-  activitiesContainer: {
-    flexGrow: 1,
-  },
-  iconContainer: {
-    paddingHorizontal: 10,
-  },
-  activityScrollContainer: {
-    paddingBottom: 80,
-    marginTop: 10,
-    flexGrow: 1,
-  },
-  fileName: {
-    lineHeight: 12,
-    flex: 1,
-    flexShrink: 1,
-  },
-  activityUser: {
+  optionContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    backgroundColor: '#fff',
+    ...getShadow(1),
+    margin: 1,
   },
-  emptyContainer: {
-    justifyContent: 'center',
+
+  headerSubContainer: {
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '85%',
   },
+
   headerContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20,
-    paddingLeft: 10,
-    paddingRight: 30,
   },
-  headerActionContainer: {
-    alignItems: 'center',
-    flexDirection: 'row',
+  button: {
+    padding: 10,
   },
-  headerIcon: {
-    marginHorizontal: 10,
+  backButton: {
+    borderRadius: 50,
+    marginRight: 7,
   },
-  PdfIcon: {
-    width: 38,
-    height: 38,
-    paddingLeft: 10,
-    marginLeft: 10,
-    marginBottom: 10,
+  addButton: {
+    marginRight: 7,
   },
-  text: {
-    color: '#080707',
-    paddingHorizontal: 10,
-    fontSize: 14,
-    alignItems: 'center',
-    maxWidth: 170,
+  headerTitle: {
+    fontSize: 18,
+    color: 'black',
   },
-  sectionContainer: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    paddingBottom: 5,
+
+  rightArrow: {
+    borderRadius: 25,
   },
-  contentContainerStyle: {
+  flatList: {
     flexGrow: 1,
   },
-  header: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 10,
+  flatListContainer: {
+    flex: 1,
   },
 });
 

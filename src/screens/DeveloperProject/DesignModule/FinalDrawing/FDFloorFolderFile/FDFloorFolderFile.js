@@ -83,6 +83,17 @@ function RenderFile(props) {
             {dayjs(created).format('DD MMM YYYY')}
           </Text>
         </View>
+
+        <View>
+          <IconButton
+            icon="dots-vertical"
+            onPress={() => {
+              toggleMenu(index);
+              setModalContentType('menu');
+              setModalContent(item);
+            }}
+          />
+        </View>
       </View>
     </View>
   );
@@ -424,30 +435,15 @@ function FDFloorFolderFile(props) {
         </OpacityButton>
         <Subheading style={styles.Subheading}>{folder_title}</Subheading>
       </View>
-
-      <FlatList
-        refreshControl={
-          <RefreshControl refreshing={false} onRefresh={loadFiles} />
-        }
-        data={data}
-        extraData={data}
-        keyExtractor={i => i.id}
-        contentContainerStyle={styles.contentContainerStyle}
-        ListEmptyComponent={<NoResult title="No Data found!" />}
-        renderItem={({item, index}) => (
-          <RenderFile
-            {...props}
-            {...{
-              item,
-              index,
-              menuId,
-              toggleMenu,
-              setModalContentType,
-              setModalContent,
-              onPressFile,
-            }}
-          />
-        )}
+      <RenderFile
+        {...props}
+        {...{
+          menuId,
+          toggleMenu,
+          setModalContentType,
+          setModalContent,
+          onPressFile,
+        }}
       />
 
       <FAB

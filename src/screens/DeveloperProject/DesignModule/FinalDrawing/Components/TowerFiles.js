@@ -50,11 +50,9 @@ function RenderFile(props) {
   const download = useDownload();
 
   const onPressFile = async file => {
-    const fileUrl = getDownloadUrl(file.file_url);
-    const name = getFileName(file.title);
     download.link({
-      name,
-      link: fileUrl,
+      name: getFileName(file.title),
+      data: {project_id: file.project_id, file_url: file.file_url},
       showAction: false,
       onFinish: ({dir}) => {
         FileViewer.open(`file://${dir}`);
@@ -283,6 +281,7 @@ function FinalDrawingTowerFiles(props) {
   const [DialogType, setDialogType] = React.useState();
 
   const snackbar = useSnackbar();
+  const download = useDownload();
   const {selectedProject} = useSelector(s => s.project);
   const {versionData, loading, fdTowerFloorsList} = useSelector(
     s => s.designModule,
@@ -340,18 +339,13 @@ function FinalDrawingTowerFiles(props) {
   };
 
   const onPressFile = async file => {
-    snackbar.showMessage({
-      message: 'Preparing your download...',
-      variant: 'warning',
-      autoHideDuration: 10000,
-    });
-    const fileUrl = getDownloadUrl(file);
-    const {dir} = await downloadFile(file, fileUrl);
-
-    snackbar.showMessage({
-      message: 'File Downloaded!',
-      variant: 'success',
-      action: {label: 'Open', onPress: () => FileViewer.open(`file://${dir}`)},
+    download.link({
+      name: getFileName(file.title),
+      data: {project_id: file.project_id, file_url: file.file_url},
+      showAction: false,
+      onFinish: ({dir}) => {
+        FileViewer.open(`file://${dir}`);
+      },
     });
   };
 

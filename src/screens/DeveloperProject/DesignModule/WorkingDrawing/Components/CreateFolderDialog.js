@@ -1,24 +1,37 @@
 import React from 'react';
 import RenderInput from 'components/Atoms/RenderInput';
 import {Formik} from 'formik';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Text, Dialog, Button, Portal} from 'react-native-paper';
-import {secondaryTheme} from 'styles/theme';
+import {secondaryTheme, theme} from 'styles/theme';
 import * as Yup from 'yup';
+import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const schema = Yup.object().shape({
   folder_name: Yup.string().trim().required('Required'),
 });
 
 function CreateFolderDialogue(props) {
-  const {visible, toggleDialogue, createFolderHandler} = props;
+  const {
+    visible,
+    toggleDialogue,
+    createFolderHandler,
+    title,
+    handleFileUpload,
+    addFile,
+  } = props;
   const folderNameRef = React.useRef();
 
   return (
     <Portal>
       <Dialog visible={visible} onDismiss={toggleDialogue} style={{top: -100}}>
         <View style={styles.dialogTitleContainer}>
-          <Text style={{color: '#000'}}>Create New Folder</Text>
+          {title ? (
+            <Text style={{color: '#000'}}>{title}</Text>
+          ) : (
+            <Text style={{color: '#000'}}>Create New Folder</Text>
+          )}
         </View>
         <Formik
           validateOnBlur={false}
@@ -33,7 +46,7 @@ function CreateFolderDialogue(props) {
               <View style={styles.dialogContentContainer}>
                 <RenderInput
                   name="folder_name"
-                  label="Folder name"
+                  label={title || 'Folder Name'}
                   containerStyles={styles.input}
                   value={values.folder_name}
                   onChangeText={handleChange('folder_name')}
@@ -43,6 +56,17 @@ function CreateFolderDialogue(props) {
                   error={errors.folder_name}
                 />
 
+                {addFile ? (
+                  <View style={{marginTop: 10}}>
+                    <OpacityButton
+                      opacity={0.18}
+                      style={styles.button}
+                      onPress={handleFileUpload}>
+                      <MaterialCommunityIcons name="plus" size={18} />
+                      <Text> Add File</Text>
+                    </OpacityButton>
+                  </View>
+                ) : null}
                 <View style={styles.dialogActionContainer}>
                   <Button
                     style={{width: '40%', marginHorizontal: 5}}

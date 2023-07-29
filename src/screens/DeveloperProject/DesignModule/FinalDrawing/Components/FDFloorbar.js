@@ -19,11 +19,11 @@ function FDFloorBar(props) {
     onSelectFloor,
   } = props;
 
-  const {floor} = floorData || {};
+  const {floor_text} = floorData || {};
 
   const LabelContainer = onPressLabel ? TouchableOpacity : View;
 
-  const floorNumber = getFloorNumber(floor || floorId);
+  const floorNumber = getFloorNumber(floorId);
 
   return (
     <View style={styles.floorContainer}>
@@ -39,14 +39,14 @@ function FDFloorBar(props) {
           <LabelContainer
             style={styles.floorLabelContainer}
             onPress={() => onPressLabel?.(floorId)}>
-            <Caption>{floorNumber}</Caption>
+            <Caption>{floor_text || floorNumber}</Caption>
           </LabelContainer>
           <View style={styles.rightSection}>
             <TouchableOpacity
               style={{flexDirection: 'row'}}
               onPress={onSelectFloor}>
               <OpacityButton opacity={1} style={styles.button}>
-                <MaterialCommunityIcons name="upload" size={18} color="#fff" />
+                <MaterialCommunityIcons name="upload" size={15} color="#fff" />
               </OpacityButton>
               <Caption style={styles.uploadButton}>Upload</Caption>
             </TouchableOpacity>
@@ -114,8 +114,8 @@ const styles = StyleSheet.create({
   button: {
     borderRadius: 50,
     padding: 0,
-    height: 30,
-    width: 30,
+    height: 20,
+    width: 20,
   },
   uploadButton: {
     marginLeft: 5,

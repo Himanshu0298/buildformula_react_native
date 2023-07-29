@@ -83,6 +83,8 @@ function TowerSelector(props) {
       <FlatList
         data={towers}
         numColumns={3}
+        // style={{marginBottom: 70}}
+        showsVerticalScrollIndicator={false}
         extraData={new Array(towerCount).fill(0)}
         contentContainerStyle={styles.scrollContainer}
         renderItem={({item, index}) => {
@@ -101,7 +103,7 @@ function TowerSelector(props) {
               {...props}
               key={index.toString()}
               label={label}
-              onPress={() => onSelectTower(item.id, item.tower, index)}
+              onPress={() => onSelectTower(item.id, index)}
               towerType={towerType}
             />
           );

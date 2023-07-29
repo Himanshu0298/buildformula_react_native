@@ -313,6 +313,16 @@ import SelectTower from 'screens/DeveloperProject/DesignModule/FinalDrawing/Comp
 import PlotFileDetails from 'screens/DeveloperProject/DesignModule/FinalDrawing/PlotFileDetails';
 import FDFloorFolder from 'screens/DeveloperProject/DesignModule/FinalDrawing/FDFloorFolder';
 import FDFloorFolderFile from 'screens/DeveloperProject/DesignModule/FinalDrawing/FDFloorFolderFile';
+import WDSelectStructure from 'screens/DeveloperProject/DesignModule/WorkingDrawing/WD Select Structure ';
+import WDTowerList from 'screens/DeveloperProject/DesignModule/WorkingDrawing/WDTowerList';
+import WDTowerPreview from 'screens/DeveloperProject/DesignModule/WorkingDrawing/WDTowerPreview';
+import AddWDRows from 'screens/DeveloperProject/DesignModule/WorkingDrawing/AddWDRows';
+import WDFloorFolder from 'screens/DeveloperProject/DesignModule/WorkingDrawing/WDFloorFolder';
+import FloorDestinationFiles from 'screens/DeveloperProject/DesignModule/WorkingDrawing/FloorDestinationFiles';
+import WDPlotList from 'screens/DeveloperProject/DesignModule/WorkingDrawing/WDPlotList';
+import WDPlotFileList from 'screens/DeveloperProject/DesignModule/WorkingDrawing/WDPlotFileList';
+import WDBungalowList from 'screens/DeveloperProject/DesignModule/WorkingDrawing/WDBungalowList';
+import WDBungalowFileList from 'screens/DeveloperProject/DesignModule/WorkingDrawing/WDBungalowFileList';
 
 /** *********** Developer Project Sub Screens End   ************ */
 
@@ -728,6 +738,25 @@ function AppStackNavigator() {
               <Stack.Screen
                 name="WorkingDrawingFiles"
                 component={WorkingDrawingFiles}
+              />
+              <Stack.Screen
+                name="WDSelectStructure"
+                component={WDSelectStructure}
+              />
+              <Stack.Screen name="WDTowerList" component={WDTowerList} />
+              <Stack.Screen name="WDTowerPreview" component={WDTowerPreview} />
+              <Stack.Screen name="AddWDRows" component={AddWDRows} />
+              <Stack.Screen name="WDFloorFolder" component={WDFloorFolder} />
+              <Stack.Screen name="WDPlotList" component={WDPlotList} />
+              <Stack.Screen name="WDPlotFileList" component={WDPlotFileList} />
+              <Stack.Screen name="WDBungalowList" component={WDBungalowList} />
+              <Stack.Screen
+                name="WDBungalowFileList"
+                component={WDBungalowFileList}
+              />
+              <Stack.Screen
+                name="FloorDestinationFiles"
+                component={FloorDestinationFiles}
               />
               <Stack.Screen name="Parking" component={Parking} />
             </Stack.Group>

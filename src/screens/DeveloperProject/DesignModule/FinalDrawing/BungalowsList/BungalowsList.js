@@ -3,6 +3,7 @@ import React, {useEffect, useMemo, useRef} from 'react';
 import {
   FlatList,
   RefreshControl,
+  ScrollView,
   SectionList,
   StyleSheet,
   TouchableOpacity,
@@ -383,13 +384,10 @@ function BungalowsList(props) {
 
   const handleDeleteVersion = async () => {
     setModalContentType('version');
-    console.log('===========> ');
   };
   const onSelectStructure = values => {
-    console.log('values ===========> ', values);
     const tower_id = bungalowsList?.find(i => i.id === values)?.id;
     const towerLabel = bungalowsList?.find(i => i.id === values)?.project_unit;
-    console.log('===========> towerLabel', towerLabel);
     navigation.navigate('BungalowsFileDetails', {
       tower_id,
       folderId,
@@ -417,51 +415,6 @@ function BungalowsList(props) {
           handleDeleteVersion,
         }}
       />
-
-      <View styles={styles.container}>
-        <Spinner visible={loading} textContent="" />
-        <View style={styles.header}>
-          <IconButton
-            icon="keyboard-backspace"
-            size={20}
-            color="#4872f4"
-            style={styles.backIcon}
-            onPress={() => navigation.goBack()}
-          />
-          <Title> Bungalows</Title>
-        </View>
-      </View>
-      <SelectTower
-        structureLabel={structureLabel}
-        navigation={navigation}
-        onSelectStructure={onSelectStructure}
-        data={bungalowsList}
-      />
-
-      <FlatList
-        refreshControl={
-          <RefreshControl refreshing={false} onRefresh={loadFiles} />
-        }
-        data={bungalowFiles}
-        extraData={bungalowFiles}
-        keyExtractor={i => i.id}
-        contentContainerStyle={styles.contentContainerStyle}
-        ListEmptyComponent={<NoResult title="No Data found!" />}
-        renderItem={({item, index}) => (
-          <RenderFile
-            {...props}
-            {...{
-              item,
-              index,
-              menuId,
-              toggleMenu,
-              setModalContentType,
-              setModalContent,
-            }}
-          />
-        )}
-      />
-
       <RenameDialogue
         visible={DialogType === 'renameFile'}
         toggleDialogue={toggleDialog}
@@ -474,6 +427,52 @@ function BungalowsList(props) {
         dialogueContent={modalContent}
         deleteFileHandler={deleteFileHandler}
       />
+
+      <View styles={styles.container}>
+        <Spinner visible={loading} textContent="" />
+        <ScrollView contentContainerStyle={styles.contentContainerStyle}>
+          <View style={styles.header}>
+            <IconButton
+              icon="keyboard-backspace"
+              size={20}
+              color="#4872f4"
+              style={styles.backIcon}
+              onPress={() => navigation.goBack()}
+            />
+            <Title> Bungalows</Title>
+          </View>
+          <SelectTower
+            structureLabel={structureLabel}
+            navigation={navigation}
+            onSelectStructure={onSelectStructure}
+            data={bungalowsList}
+          />
+
+          <FlatList
+            refreshControl={
+              <RefreshControl refreshing={false} onRefresh={loadFiles} />
+            }
+            data={bungalowFiles}
+            extraData={bungalowFiles}
+            keyExtractor={i => i.id}
+            contentContainerStyle={styles.contentContainerStyle}
+            ListEmptyComponent={<NoResult title="No Data found!" />}
+            renderItem={({item, index}) => (
+              <RenderFile
+                {...props}
+                {...{
+                  item,
+                  index,
+                  menuId,
+                  toggleMenu,
+                  setModalContentType,
+                  setModalContent,
+                }}
+              />
+            )}
+          />
+        </ScrollView>
+      </View>
 
       <FAB
         style={styles.fab}
@@ -589,6 +588,9 @@ const styles = StyleSheet.create({
   emptyContainer: {
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  contentContainerStyle: {
+    marginBottom: 40,
   },
 });
 export default BungalowsList;

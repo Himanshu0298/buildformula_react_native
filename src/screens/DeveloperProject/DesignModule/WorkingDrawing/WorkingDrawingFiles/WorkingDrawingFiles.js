@@ -43,6 +43,33 @@ import VersionDialog from '../../RoughDrawing/Components/VersionDialog';
 
 const SNAP_POINTS = [0, '70%'];
 
+const ACTIVITY_LABEL = {
+  new_version: 'Uploaded new version',
+  add: 'File Added',
+  downloaded: 'Downloaded file',
+  rename: 'Renamed File',
+  delete: 'Deleted File',
+};
+const ACTIVITY_ICONS = {
+  new_version: <MaterialIcons name="file-copy" size={20} />,
+  rename: <MaterialCommunityIcons name="pencil" size={20} />,
+  share: <MaterialIcons name="share" size={20} />,
+  delete: <MaterialIcons name="delete" size={20} />,
+  add: <Feather name="upload" size={20} />,
+  downloaded: (
+    <MaterialCommunityIcons name="cloud-download-outline" size={20} />
+  ),
+};
+
+function getFileName(string) {
+  if (string.includes('/')) {
+    const splits = string.split('/');
+    return splits[splits.length - 1];
+  }
+
+  return string;
+}
+
 function RenderFile(props) {
   const {index, item, toggleMenu, setModalContentType, setModalContent} = props;
 
@@ -93,33 +120,6 @@ function RenderFile(props) {
   );
 }
 
-const ACTIVITY_LABEL = {
-  new_version: 'Uploaded new version',
-  add: 'File Added',
-  downloaded: 'Downloaded file',
-  rename: 'Renamed File',
-  delete: 'Deleted File',
-};
-const ACTIVITY_ICONS = {
-  new_version: <MaterialIcons name="file-copy" size={20} />,
-  rename: <MaterialCommunityIcons name="pencil" size={20} />,
-  share: <MaterialIcons name="share" size={20} />,
-  delete: <MaterialIcons name="delete" size={20} />,
-  add: <Feather name="upload" size={20} />,
-  downloaded: (
-    <MaterialCommunityIcons name="cloud-download-outline" size={20} />
-  ),
-};
-
-function getFileName(string) {
-  if (string.includes('/')) {
-    const splits = string.split('/');
-    return splits[splits.length - 1];
-  }
-
-  return string;
-}
-
 function RenderActivity({item}) {
   const {user_full_name, log_type, created, log_text} = item;
 
@@ -131,7 +131,6 @@ function RenderActivity({item}) {
           <Text>{user_full_name}</Text>
           <Caption>{dayjs(created).fromNow()}</Caption>
         </View>
-
         <Caption>{ACTIVITY_LABEL?.[log_type] || log_type}</Caption>
         <Caption style={styles.fileName}>{getFileName(log_text)}</Caption>
       </View>
@@ -364,7 +363,7 @@ function WorkingDrawingFiles(props) {
 
     toggleDialog();
     snackbar.showMessage({
-      message: 'File Downloaded!',
+      message: 'File uploaded successfully!',
       variant: 'success',
     });
     loadFiles();
@@ -484,7 +483,6 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     backgroundColor: '#ffffff',
-    paddingHorizontal: 10,
   },
   Subheading: {
     fontSize: 20,

@@ -335,11 +335,7 @@ function Details() {
 }
 
 function UnitDetails(props) {
-  const {premium_location, selected_project, project_name, unitData} = props;
-
-  console.log('===========> unitData', unitData);
-
-  console.log('===========> selected_project', selected_project);
+  const {premium_location, selected_project, project_name} = props;
 
   const {area, city, state, country, pincode} = selected_project || {};
 
@@ -372,7 +368,6 @@ function UnitPreview(props) {
   const {navigation, route} = props;
 
   const {unitData} = route.params;
-  console.log('===========> route.params', route.params);
   const {
     id,
     no_of_bhk_name,

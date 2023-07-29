@@ -63,9 +63,8 @@ function RenderFolder(props) {
     title === 'Structure' || title === 'MEP' || title === 'Architech';
 
   const navToNext = () => {
-    // eslint-disable-next-line no-constant-condition
     if (next) {
-      navigation.navigate('SelectStructure', {
+      navigation.navigate('WDSelectStructure', {
         ...props,
         title,
         folderId: item.id,

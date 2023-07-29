@@ -116,7 +116,6 @@ function MenuDialog(props) {
                 </View>
               </TouchableOpacity>
             ) : null}
-
             <TouchableOpacity onPress={() => activityDataHandler(id)}>
               <View style={styles.viewDirection}>
                 <IconButton icon="information" />
@@ -144,6 +143,7 @@ function MenuDialog(props) {
 const styles = StyleSheet.create({
   viewDirection: {
     flexDirection: 'row',
+    marginRight: 50,
   },
   ModalText: {
     alignItems: 'center',
@@ -152,6 +152,7 @@ const styles = StyleSheet.create({
   title: {
     marginHorizontal: 10,
     marginVertical: 5,
+    overflow: 'hidden',
   },
   PdfIcon: {
     width: 32,

@@ -86,7 +86,6 @@ const renderImage = (item, index, type, projectId) => {
   const download = useDownload();
 
   const onPressFile = async fileUrl => {
-    console.log('material image direct grn===========> ', fileUrl);
     download.link({
       name: getFileName(fileUrl.image_url),
 

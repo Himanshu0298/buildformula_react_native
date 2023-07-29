@@ -66,8 +66,6 @@ const Attachments = props => {
   const download = useDownload();
 
   const onPressFile = async file => {
-    console.log('file direct grn===========> ', file);
-
     download.link({
       name: getFileName(file.challan_image),
       data: {project_id: projectId, file_url: file.challan_image},

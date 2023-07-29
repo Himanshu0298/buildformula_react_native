@@ -16,11 +16,15 @@ import {useSnackbar} from 'components/Atoms/Snackbar';
 import FileViewer from 'react-native-file-viewer';
 import {theme} from 'styles/theme';
 import NoResult from 'components/Atoms/NoResult';
+import {getFileName} from 'utils/constant';
+import {useDownload} from 'components/Atoms/Download';
 
 function VersionFile(props) {
   const {modulePermissions, version, countVersion, handleDeleteVersion} = props;
 
   const snackbar = useSnackbar();
+
+  const download = useDownload();
 
   const [versionMenu, setVersionMenu] = React.useState(false);
   const [downloading, setDownloading] = React.useState(false);
@@ -35,17 +39,18 @@ function VersionFile(props) {
     }
   }, [version]);
 
-  const toggleDownloading = () => setDownloading(v => !v);
   const toggleVersionMenu = () => setVersionMenu(v => !v);
 
-  const handleDownload = async () => {
+  const onPressFile = async file => {
+    download.link({
+      name: getFileName(file.file_url),
+      data: {project_id: file.project_id, file_url: file.file_url},
+      showAction: false,
+      onFinish: ({dir}) => {
+        FileViewer.open(`file://${dir}`);
+      },
+    });
     toggleVersionMenu();
-    toggleDownloading();
-    const fileUrl = getDownloadUrl({version});
-    const {dir} = await downloadFile(version, fileUrl);
-    snackbar.showMessage({message: 'File Downloaded Successfully!'});
-    setDownloaded(dir);
-    toggleDownloading();
   };
 
   const openFile = filePath => {
@@ -92,11 +97,11 @@ function VersionFile(props) {
             anchor={
               <IconButton icon="dots-vertical" onPress={toggleVersionMenu} />
             }>
-            {/* <Menu.Item
+            <Menu.Item
               icon="download"
-              onPress={() => handleDownload()}
+              onPress={() => onPressFile(version)}
               title="Download"
-            /> */}
+            />
             {modulePermissions?.editor || modulePermissions?.admin ? (
               <>
                 <Divider />

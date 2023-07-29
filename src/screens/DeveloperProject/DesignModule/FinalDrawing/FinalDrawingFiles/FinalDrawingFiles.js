@@ -321,12 +321,12 @@ function FinalDrawingFiles(props) {
     });
   };
 
-  const versionDataHandler = async (id, type) => {
+  const versionDataHandler = async id => {
     setModalContentType('version');
     getFDVersion({project_id, final_drawing_files_id: id});
   };
 
-  const activityDataHandler = (action_type, id) => {
+  const activityDataHandler = id => {
     setModalContentType('activity');
     getFDActivities({project_id, record_id: id, mode: 'file'});
   };
@@ -399,10 +399,6 @@ function FinalDrawingFiles(props) {
       project_id,
       final_drawing_files_id: version.final_drawing_files_id,
     });
-  };
-
-  const onSelectStructure = () => {
-    navigation.navigate('FDTowerPreview');
   };
 
   return (

@@ -24,7 +24,7 @@ import {
 import {theme} from 'styles/theme';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {getShadow} from 'utils';
+import {getShadow, getTowerLabel} from 'utils';
 import FileIcon from 'assets/images/file_icon.png';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Feather from 'react-native-vector-icons/Feather';
@@ -76,34 +76,30 @@ function RenderActivity({item}) {
           <Text>{user_full_name}</Text>
           <Caption>{dayjs(created).fromNow()}</Caption>
         </View>
-
         <Caption>{ACTIVITY_LABEL?.[log_type] || log_type}</Caption>
-        <Caption style={styles.fileName}>{getFileName(log_text)}</Caption>
+        <Caption style={styles.fileName}>{getFileName([log_text])}</Caption>
       </View>
     </View>
   );
 }
 
 function ActivityModal(props) {
-  const {activities = []} = useSelector(s => s.designModule);
-
-  console.log('===========> activities', activities);
+  const {towerFileActivities = {}} = useSelector(s => s.designModule);
 
   const processedActivities = useMemo(() => {
-    const sectionedData = [];
-    activities?.map(i => {
-      const key = dayjs(i.created).format('YYYY-MM-DD');
+    const data = [];
 
-      sectionedData[key] = sectionedData[key] || {};
-      sectionedData[key].title = key;
-      sectionedData[key].data = sectionedData[key].data || [];
-      sectionedData[key].data.push(i);
+    Object.entries(towerFileActivities)?.map(([key, values]) => {
+      data[key] = data[key] || {};
+      data[key].title = key;
 
-      return i;
+      data[key].data = [data[key].data || [], ...values];
+
+      return key;
     });
 
-    return Object.values(sectionedData);
-  }, [activities]);
+    return Object.values(data);
+  }, [towerFileActivities]);
 
   const renderSeparator = () => <Divider />;
   const renderEmpty = () => (
@@ -115,7 +111,6 @@ function ActivityModal(props) {
   return (
     <View style={styles.activitiesContainer}>
       <Subheading style={{color: theme.colors.primary}}>Activity</Subheading>
-
       <SectionList
         sections={processedActivities}
         extraData={processedActivities}
@@ -126,9 +121,9 @@ function ActivityModal(props) {
         stickySectionHeadersEnabled={false}
         ListEmptyComponent={renderEmpty}
         renderItem={params => <RenderActivity {...params} />}
-        renderSectionHeader={({section: {title}}) => (
-          <Caption>{dayjs(title).format('DD MMM')}</Caption>
-        )}
+        // renderSectionHeader={({section: {title}}) => (
+        //   // <Caption>{dayjs(title).format('DD MMM')}</Caption>
+        // )}
       />
     </View>
   );
@@ -370,10 +365,6 @@ function FDTowerList(props) {
   };
 
   const handleFileUpload = async file => {
-    const {name} = file;
-    const extension = getFileExtension(file.name);
-    file.name = `${name}.${extension}`;
-
     const formData = new FormData();
 
     formData.append('folder_id', folderId);
@@ -403,11 +394,17 @@ function FDTowerList(props) {
     });
   };
 
-  const onSelectStructure = values => {
-    const tower_id = towerList?.find(i => i.id === values)?.id;
-    const towerLabel = towerList?.find(i => i.id === values)?.label;
+  const onSelectStructure = (itemId, index) => {
+    const label = getTowerLabel(index + 1);
 
-    navigation.navigate('FDTowerPreview', {tower_id, folderId, towerLabel});
+    const tower_id = towerList?.find(i => i.id === itemId)?.id;
+    const towerLabel = towerList?.find(i => i.id === itemId)?.label;
+
+    navigation.navigate('FDTowerPreview', {
+      tower_id,
+      folderId,
+      towerLabel: towerLabel || label,
+    });
   };
 
   return (

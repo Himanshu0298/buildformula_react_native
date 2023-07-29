@@ -203,13 +203,13 @@ function AddRows(props) {
       message: 'Are you sure you want to delete?',
       confirmText: 'Delete',
       onConfirm: async () => {
-        deleteFDTowerFloorsRows({
+        await deleteFDTowerFloorsRows({
           project_id,
           row_id: rowId,
         });
+        await loadFloors();
       },
     });
-    await loadFloors();
   };
 
   const editDialog = index => {

@@ -3,6 +3,7 @@ import React, {useEffect, useMemo, useRef} from 'react';
 import {
   FlatList,
   RefreshControl,
+  ScrollView,
   SectionList,
   StyleSheet,
   TouchableOpacity,
@@ -379,7 +380,6 @@ function PlotsList(props) {
 
   const handleDeleteVersion = async () => {
     setModalContentType('version');
-    console.log('===========> ');
   };
 
   const onSelectStructure = values => {
@@ -413,50 +413,6 @@ function PlotsList(props) {
         }}
       />
 
-      <View styles={styles.container}>
-        <Spinner visible={loading} textContent="" />
-
-        <View style={styles.header}>
-          <IconButton
-            icon="keyboard-backspace"
-            size={20}
-            color="#4872f4"
-            style={styles.backIcon}
-            onPress={() => navigation.goBack()}
-          />
-          <Title>Plots</Title>
-        </View>
-        <SelectTower
-          structureLabel={structureLabel}
-          navigation={navigation}
-          onSelectStructure={onSelectStructure}
-          data={plotsList}
-        />
-
-        <FlatList
-          refreshControl={
-            <RefreshControl refreshing={false} onRefresh={loadFiles} />
-          }
-          data={plotFiles}
-          extraData={plotFiles}
-          keyExtractor={i => i.id}
-          contentContainerStyle={styles.contentContainerStyle}
-          ListEmptyComponent={<NoResult title="No Data found!" />}
-          renderItem={({item, index}) => (
-            <RenderFile
-              {...props}
-              {...{
-                item,
-                index,
-                menuId,
-                toggleMenu,
-                setModalContentType,
-                setModalContent,
-              }}
-            />
-          )}
-        />
-      </View>
       <RenameDialogue
         visible={DialogType === 'renameFile'}
         toggleDialogue={toggleDialog}
@@ -469,6 +425,52 @@ function PlotsList(props) {
         dialogueContent={modalContent}
         deleteFileHandler={deleteFileHandler}
       />
+
+      <View styles={styles.container}>
+        <Spinner visible={loading} textContent="" />
+        <ScrollView contentContainerStyle={styles.contentContainerStyle}>
+          <View style={styles.header}>
+            <IconButton
+              icon="keyboard-backspace"
+              size={20}
+              color="#4872f4"
+              style={styles.backIcon}
+              onPress={() => navigation.goBack()}
+            />
+            <Title>Plots</Title>
+          </View>
+          <SelectTower
+            structureLabel={structureLabel}
+            navigation={navigation}
+            onSelectStructure={onSelectStructure}
+            data={plotsList}
+          />
+
+          <FlatList
+            refreshControl={
+              <RefreshControl refreshing={false} onRefresh={loadFiles} />
+            }
+            data={plotFiles}
+            extraData={plotFiles}
+            keyExtractor={i => i.id}
+            contentContainerStyle={styles.contentContainerStyle}
+            ListEmptyComponent={<NoResult title="No Data found!" />}
+            renderItem={({item, index}) => (
+              <RenderFile
+                {...props}
+                {...{
+                  item,
+                  index,
+                  menuId,
+                  toggleMenu,
+                  setModalContentType,
+                  setModalContent,
+                }}
+              />
+            )}
+          />
+        </ScrollView>
+      </View>
       <FAB
         style={styles.fab}
         icon="plus"
@@ -483,7 +485,6 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     backgroundColor: '#ffffff',
-    flexDirection: 'row',
   },
 
   header: {
@@ -584,5 +585,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  contentContainerStyle: {marginBottom: 40},
 });
 export default PlotsList;

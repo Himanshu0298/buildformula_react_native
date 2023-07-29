@@ -64,9 +64,9 @@ export async function downloadFile(params) {
 
   const downloaded = await checkDownloaded(name);
 
-  if (downloaded) {
-    await RNFS.unlink(path);
-  }
+  // if (downloaded) {
+  //   await RNFS.unlink(path);
+  // }
 
   const REQUEST_TYPE = data ? 'POST' : 'GET';
 

@@ -269,7 +269,6 @@ function ProjectListing(props) {
             : undefined,
           exist(plots) ? checkRange(i?.total_no_of_plots, plots) : undefined,
         ];
-        // console.log('==========>', i?.bhk_configuration.split(','));
         return validations.filter(v => v === false).length === 0;
       });
     }

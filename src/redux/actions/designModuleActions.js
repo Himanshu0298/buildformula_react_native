@@ -48,9 +48,12 @@ export default function useDesignModuleActions() {
     addFloorFolderFile,
     getWDFiles,
     getWDFolders,
+    getWDTowers,
+    getWDTower,
     createWDFolder,
     renameWDFolder,
     deleteWDFolder,
+    renameWDFloorFolder,
     getWDActivities,
     uploadWDFile,
     renameWDFile,
@@ -85,6 +88,37 @@ export default function useDesignModuleActions() {
     getFloorFolderFile,
     rearrangeFloorRows,
     getTowerFolderFileVersion,
+    deleteWDFloorFolder,
+    uploadWDTowersFile,
+    AddWDRow,
+    updateWDRow,
+    deleteWDRow,
+    getWDplots,
+    uploadWDPlotsFile,
+    uploadFDPlotBungalowFile,
+    getWDBungalowList,
+    uploadWDBungalowsFile,
+    renameWDCommonFile,
+    deleteWDTowerFile,
+    getWDCommonFileActivity,
+    getWDPlot,
+    deleteWDPlotBungalowFile,
+    renameWDTowerFile,
+    uploadWDTowerFileVersion,
+    createWDFloorFolder,
+    getWDFloorFolder,
+    getWDFloorFolderFile,
+    uploadWDFloorFolderFile,
+    uploadWDFloorFolderFileVersion,
+    deleteFloorFolderFileVersion,
+    getFloorFolderFileVersion,
+    getBungalowPlotFileVersion,
+    uploadWDBungalowPlotFileVersion,
+    getTowerFileVersion,
+    uploadFDFloorFolderFileVersion,
+    getFDFloorFolderFileVersion,
+    deleteFDFloorFolderFileVersion,
+    renameFDFloorFolder,
   } = useDesignModule();
   const {_err, _res} = useResProcessor();
   const snackbar = useSnackbar();
@@ -503,7 +537,7 @@ export default function useDesignModuleActions() {
         type: types.ADD_FD_TOWER_FILES,
         payload: async () => {
           try {
-            const {data, msg} = _res(await addFDTowerFiles(params));
+            const {data} = _res(await addFDTowerFiles(params));
 
             return Promise.resolve({data});
           } catch (error) {
@@ -548,7 +582,7 @@ export default function useDesignModuleActions() {
         type: types.UPDATE_FD_TOWER_ROWS,
         payload: async () => {
           try {
-            const {data, msg} = _res(await updateFDTowerFloorsRows(params));
+            const {data} = _res(await updateFDTowerFloorsRows(params));
 
             return Promise.resolve({data});
           } catch (error) {
@@ -563,8 +597,7 @@ export default function useDesignModuleActions() {
         type: types.DELETE_FD_TOWER_ROWS,
         payload: async () => {
           try {
-            const {data, msg} = _res(await deleteFDTowerFloorsRows(params));
-            snackbar.showMessage({message: msg});
+            const {data} = _res(await deleteFDTowerFloorsRows(params));
 
             return Promise.resolve({data});
           } catch (error) {
@@ -659,8 +692,7 @@ export default function useDesignModuleActions() {
         type: types.FD_TOWER_FLOOR_FILE,
         payload: async () => {
           try {
-            const {data, msg} = _res(await rearrangeFloorRows(params));
-            snackbar.showMessage({message: msg});
+            const {data} = _res(await rearrangeFloorRows(params));
 
             return Promise.resolve({data});
           } catch (error) {
@@ -704,7 +736,7 @@ export default function useDesignModuleActions() {
       }),
     uploadFDBungalowsFile: params =>
       dispatch({
-        type: types.GET_FD_BUNGALOWS_FILES,
+        type: types.UPLOAD_BUNGALOWS_FILES,
         payload: async () => {
           try {
             const {data, msg} = _res(await uploadFDBungalowsFile(params));
@@ -763,12 +795,42 @@ export default function useDesignModuleActions() {
           }
         },
       }),
+    getWDCommonFileActivity: params =>
+      dispatch({
+        type: types.WD_FILE_ACTIVITY_LOG,
+        payload: async () => {
+          try {
+            const {data} = _res(await getWDCommonFileActivity(params));
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
     getFDPlots: params =>
       dispatch({
         type: types.GET_FD_PLOTS,
         payload: async () => {
           try {
             const {data} = _res(await getFDPlots(params));
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    getWDPlot: params =>
+      dispatch({
+        type: types.GET_PLOT_FILE,
+        payload: async () => {
+          try {
+            const {data} = _res(await getWDPlot(params));
 
             return Promise.resolve({data});
           } catch (error) {
@@ -855,6 +917,38 @@ export default function useDesignModuleActions() {
         },
       }),
 
+    deleteWDFloorFolder: params =>
+      dispatch({
+        type: types.DELETE_RD_FOLDER,
+        payload: async () => {
+          try {
+            const {data} = _res(await deleteWDFloorFolder(params));
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    renameWDFloorFolder: params =>
+      dispatch({
+        type: types.RENAME_RD_FOLDER,
+        payload: async () => {
+          try {
+            const {data} = _res(await renameWDFloorFolder(params));
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
     // Working Drawing
 
     getWDFolders: params =>
@@ -863,6 +957,141 @@ export default function useDesignModuleActions() {
         payload: async () => {
           try {
             const res = _res(await getWDFolders(params));
+
+            return Promise.resolve({data: res.data, index_of: params.index_of});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    getWDTowers: params =>
+      dispatch({
+        type: types.GET_WD_PLOTS,
+        payload: async () => {
+          try {
+            const res = _res(await getWDTowers(params));
+
+            return Promise.resolve({data: res.data, index_of: params.index_of});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    getWDTower: params =>
+      dispatch({
+        type: types.GET_WD_TOWER,
+        payload: async () => {
+          try {
+            const res = _res(await getWDTower(params));
+
+            return Promise.resolve({data: res.data, index_of: params.index_of});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    uploadWDTowersFile: params =>
+      dispatch({
+        type: types.ADD_FD_TOWER_FILES,
+        payload: async () => {
+          try {
+            const res = _res(await uploadWDTowersFile(params));
+
+            return Promise.resolve({data: res.data, index_of: params.index_of});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    AddWDRow: params =>
+      dispatch({
+        type: types.ADD_FD_TOWER_ROWS,
+        payload: async () => {
+          try {
+            const res = _res(await AddWDRow(params));
+
+            return Promise.resolve({data: res.data, index_of: params.index_of});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    updateWDRow: params =>
+      dispatch({
+        type: types.UPDATE_FD_TOWER_ROWS,
+        payload: async () => {
+          try {
+            const res = _res(await updateWDRow(params));
+
+            return Promise.resolve({data: res.data, index_of: params.index_of});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    deleteWDRow: params =>
+      dispatch({
+        type: types.DELETE_FD_TOWER_ROWS,
+        payload: async () => {
+          try {
+            const res = _res(await deleteWDRow(params));
+
+            return Promise.resolve({data: res.data, index_of: params.index_of});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    getWDplots: params =>
+      dispatch({
+        type: types.GET_PLOT,
+        payload: async () => {
+          try {
+            const res = _res(await getWDplots(params));
+
+            return Promise.resolve({data: res.data, index_of: params.index_of});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    uploadWDPlotsFile: params =>
+      dispatch({
+        type: types.UPLOAD_BUNGALOWS_FILES,
+        payload: async () => {
+          try {
+            const res = _res(await uploadWDPlotsFile(params));
+
+            return Promise.resolve({data: res.data, index_of: params.index_of});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    uploadFDPlotBungalowFile: params =>
+      dispatch({
+        type: types.UPLOAD_BUNGALOWS_FILES,
+        payload: async () => {
+          try {
+            const res = _res(await uploadFDPlotBungalowFile(params));
 
             return Promise.resolve({data: res.data, index_of: params.index_of});
           } catch (error) {
@@ -971,10 +1200,348 @@ export default function useDesignModuleActions() {
           }
         },
       }),
+    getWDBungalowList: params =>
+      dispatch({
+        type: types.GET_WD_BUNGALOWS_LIST,
+        payload: async () => {
+          try {
+            const res = _res(await getWDBungalowList(params));
+            return Promise.resolve({
+              data: res.data,
+            });
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    uploadWDBungalowsFile: params =>
+      dispatch({
+        type: types.UPLOAD_BUNGALOWS_FILES,
+        payload: async () => {
+          try {
+            const res = _res(await uploadWDBungalowsFile(params));
+            return Promise.resolve({
+              data: res.data,
+            });
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    uploadWDTowerFileVersion: params =>
+      dispatch({
+        type: types.UPLOAD_BUNGALOWS_FILES,
+        payload: async () => {
+          try {
+            const res = _res(await uploadWDTowerFileVersion(params));
+            return Promise.resolve({
+              data: res.data,
+            });
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    createWDFloorFolder: params =>
+      dispatch({
+        type: types.UPLOAD_BUNGALOWS_FILES,
+        payload: async () => {
+          try {
+            const res = _res(await createWDFloorFolder(params));
+            return Promise.resolve({
+              data: res.data,
+            });
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    getWDFloorFolder: params =>
+      dispatch({
+        type: types.GET_WD_FLOOR_FOLDER,
+        payload: async () => {
+          try {
+            const res = _res(await getWDFloorFolder(params));
+            return Promise.resolve({
+              data: res.data,
+            });
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    getWDFloorFolderFile: params =>
+      dispatch({
+        type: types.GET_WD_FLOOR_FOLDER_FILE,
+        payload: async () => {
+          try {
+            const res = _res(await getWDFloorFolderFile(params));
+            return Promise.resolve({
+              data: res.data,
+            });
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    uploadWDFloorFolderFile: params =>
+      dispatch({
+        type: types.UPLOAD_BUNGALOWS_FILES,
+        payload: async () => {
+          try {
+            const res = _res(await uploadWDFloorFolderFile(params));
+            return Promise.resolve({
+              data: res.data,
+            });
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    uploadWDFloorFolderFileVersion: params =>
+      dispatch({
+        type: types.UPLOAD_BUNGALOWS_FILES,
+        payload: async () => {
+          try {
+            const res = _res(await uploadWDFloorFolderFileVersion(params));
+            return Promise.resolve({
+              data: res.data,
+            });
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    uploadWDBungalowPlotFileVersion: params =>
+      dispatch({
+        type: types.UPLOAD_BUNGALOWS_FILES,
+        payload: async () => {
+          try {
+            const res = _res(await uploadWDBungalowPlotFileVersion(params));
+            return Promise.resolve({
+              data: res.data,
+            });
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    uploadFDFloorFolderFileVersion: params =>
+      dispatch({
+        type: types.UPLOAD_BUNGALOWS_FILES,
+        payload: async () => {
+          try {
+            const res = _res(await uploadFDFloorFolderFileVersion(params));
+            return Promise.resolve({
+              data: res.data,
+            });
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    deleteFloorFolderFileVersion: params =>
+      dispatch({
+        type: types.DELETE_RD_FOLDER,
+        payload: async () => {
+          try {
+            const res = _res(await deleteFloorFolderFileVersion(params));
+            return Promise.resolve({
+              data: res.data,
+            });
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    deleteFDFloorFolderFileVersion: params =>
+      dispatch({
+        type: types.DELETE_RD_FOLDER,
+        payload: async () => {
+          try {
+            const res = _res(await deleteFDFloorFolderFileVersion(params));
+            return Promise.resolve({
+              data: res.data,
+            });
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    getFloorFolderFileVersion: params =>
+      dispatch({
+        type: types.GET_WD_FLOOR_FOLDER_FILE_VERSION,
+        payload: async () => {
+          try {
+            const res = _res(await getFloorFolderFileVersion(params));
+            return Promise.resolve({
+              data: res.data,
+            });
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
+    getBungalowPlotFileVersion: params =>
+      dispatch({
+        type: types.GET_WD_FLOOR_FILE_VERSION,
+        payload: async () => {
+          try {
+            const res = _res(await getBungalowPlotFileVersion(params));
+            return Promise.resolve({
+              data: res.data,
+            });
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    getTowerFileVersion: params =>
+      dispatch({
+        type: types.GET_WD_TOWER_VERSION,
+        payload: async () => {
+          try {
+            const res = _res(await getTowerFileVersion(params));
+            return Promise.resolve({
+              data: res.data,
+            });
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    getFDFloorFolderFileVersion: params =>
+      dispatch({
+        type: types.GET_WD_FLOOR_FOLDER_FILE_VERSION,
+        payload: async () => {
+          try {
+            const res = _res(await getFDFloorFolderFileVersion(params));
+            return Promise.resolve({
+              data: res.data,
+            });
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    renameWDCommonFile: params =>
+      dispatch({
+        type: types.RENAME_RD_FILES,
+        payload: async () => {
+          try {
+            const res = _res(await renameWDCommonFile(params));
+            return Promise.resolve({
+              data: res.data,
+            });
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    renameWDTowerFile: params =>
+      dispatch({
+        type: types.RENAME_RD_FILES,
+        payload: async () => {
+          try {
+            const res = _res(await renameWDTowerFile(params));
+            return Promise.resolve({
+              data: res.data,
+            });
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    renameFDFloorFolder: params =>
+      dispatch({
+        type: types.RENAME_RD_FILES,
+        payload: async () => {
+          try {
+            const res = _res(await renameFDFloorFolder(params));
+            return Promise.resolve({
+              data: res.data,
+            });
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    deleteWDTowerFile: params =>
+      dispatch({
+        type: types.RENAME_RD_FILES,
+        payload: async () => {
+          try {
+            const res = _res(await deleteWDTowerFile(params));
+            return Promise.resolve({
+              data: res.data,
+            });
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    deleteWDPlotBungalowFile: params =>
+      dispatch({
+        type: types.RENAME_RD_FILES,
+        payload: async () => {
+          try {
+            const res = _res(await deleteWDPlotBungalowFile(params));
+            return Promise.resolve({
+              data: res.data,
+            });
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
 
     renameWDFile: params =>
       dispatch({
-        type: types.RENAME_RD_FILES,
+        type: types.DELETE_RD_FILES,
         payload: async () => {
           try {
             const res = _res(await renameWDFile(params));
@@ -1043,8 +1610,7 @@ export default function useDesignModuleActions() {
         type: types.DELETE_RD_VERSION,
         payload: async () => {
           try {
-            const {data, msg} = _res(await deleteWDVersion(params));
-            snackbar.showMessage({message: msg});
+            const {data} = _res(await deleteWDVersion(params));
 
             return Promise.resolve({data});
           } catch (error) {

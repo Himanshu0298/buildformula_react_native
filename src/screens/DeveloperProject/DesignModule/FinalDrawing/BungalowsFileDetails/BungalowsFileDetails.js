@@ -15,6 +15,7 @@ import {
   Divider,
   FAB,
   IconButton,
+  Menu,
   Subheading,
   Text,
   Title,
@@ -77,9 +78,11 @@ function RenderFile(props) {
   const {title, created} = item;
 
   const download = useDownload();
+  const [versionMenu, setVersionMenu] = React.useState(false);
+
+  const toggleVersionMenu = () => setVersionMenu(v => !v);
 
   const onPressFile = async file => {
-    console.log('===========> file', file);
     download.link({
       name: getFileName(file.file_url),
       data: {project_id: file.project_id, file_url: file.file_url},
@@ -88,6 +91,7 @@ function RenderFile(props) {
         FileViewer.open(`file://${dir}`);
       },
     });
+    toggleVersionMenu();
   };
 
   return (
@@ -108,6 +112,20 @@ function RenderFile(props) {
           <Text style={styles.date}>
             {dayjs(created).format('DD MMM YYYY')}
           </Text>
+        </View>
+        <View>
+          <Menu
+            visible={versionMenu}
+            onDismiss={toggleVersionMenu}
+            anchor={
+              <IconButton icon="dots-vertical" onPress={toggleVersionMenu} />
+            }>
+            <Menu.Item
+              icon="download"
+              onPress={() => onPressFile(item)}
+              title="Download"
+            />
+          </Menu>
         </View>
       </View>
     </View>
@@ -462,7 +480,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   activityScrollContainer: {
-    paddingBottom: 80,
+    paddingBottom: 100,
     marginTop: 10,
     flexGrow: 1,
   },
