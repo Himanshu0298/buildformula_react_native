@@ -336,10 +336,6 @@ const UnitDetails = props => {
       ?.filter(i => i.status === 1)
       ?.map(i => ({label: i.bhk_title, value: i.id}));
   }, [masterList]);
-  console.log(
-    '🚀 ~ file: UnitDetails.js:338 ~ unitBHKOptions ~ unitBHKOptions:',
-    masterList,
-  );
 
   const unitStatusOptions = useMemo(() => {
     return masterList.project_structure_project_status
