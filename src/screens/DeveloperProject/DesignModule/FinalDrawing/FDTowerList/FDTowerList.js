@@ -1,4 +1,3 @@
-import {useSnackbar} from 'components/Atoms/Snackbar';
 import React, {useEffect, useMemo, useRef} from 'react';
 import {
   FlatList,
@@ -8,10 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {getFileExtension} from 'utils/download';
 import FileViewer from 'react-native-file-viewer';
-import {useImagePicker} from 'hooks';
-import useDesignModuleActions from 'redux/actions/designModuleActions';
 import {useSelector} from 'react-redux';
 import {
   Caption,
@@ -21,24 +17,28 @@ import {
   Subheading,
   Text,
 } from 'react-native-paper';
-import {theme} from 'styles/theme';
-import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {getShadow, getTowerLabel} from 'utils';
-import FileIcon from 'assets/images/file_icon.png';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Feather from 'react-native-vector-icons/Feather';
 import Animated from 'react-native-reanimated';
 import BottomSheet from 'reanimated-bottom-sheet';
 
-import NoResult from 'components/Atoms/NoResult';
-import {useDownload} from 'components/Atoms/Download';
-import {getFileName} from 'utils/constant';
 import {Image} from 'react-native-svg';
 import dayjs from 'dayjs';
 import _ from 'lodash';
-import TowerSelector from 'components/Molecules/TowerSelector';
 import Spinner from 'react-native-loading-spinner-overlay';
+import NoResult from 'components/Atoms/NoResult';
+import {useDownload} from 'components/Atoms/Download';
+import {getFileName} from 'utils/constant';
+import TowerSelector from 'components/Molecules/TowerSelector';
+import FileIcon from 'assets/images/file_icon.png';
+import {getShadow, getTowerLabel} from 'utils';
+import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
+import {theme} from 'styles/theme';
+import useDesignModuleActions from 'redux/actions/designModuleActions';
+import {useImagePicker} from 'hooks';
+import {getFileExtension} from 'utils/download';
+import {useSnackbar} from 'components/Atoms/Snackbar';
 import SelectTower from '../Components/SelectTower';
 import MenuDialog from '../Components/MenuDialog';
 import RenameDialogue from '../Components/RenameDialog';
@@ -267,14 +267,15 @@ function FDTowerList(props) {
     FDTowerFileActivityLogs,
     deleteFDVersion,
     renameFDTowerFile,
-    getTowerFolderFileVersion,
-
+    getFDFloorFolderFileVersion,
     deleteFDTowerFile,
   } = useDesignModuleActions();
 
-  const {fdTowers, versionData, loading} = useSelector(s => s.designModule);
+  const {fdTowers, loading, fdVersionData} = useSelector(s => s.designModule);
   const {selectedProject} = useSelector(s => s.project);
   const project_id = selectedProject.id;
+
+  const versionData = fdVersionData?.data || [];
 
   const towerList = fdTowers?.data?.towers_lists || [];
 
@@ -320,7 +321,7 @@ function FDTowerList(props) {
 
   const versionDataHandler = async id => {
     setModalContentType('version');
-    getTowerFolderFileVersion({project_id, final_drawing_tower_files_id: id});
+    getFDFloorFolderFileVersion({project_id, final_drawing_tower_files_id: id});
   };
 
   const activityDataHandler = id => {
@@ -352,7 +353,7 @@ function FDTowerList(props) {
         formData.append('project_id', project_id);
 
         await uploadTowerFileVersion(formData);
-        getTowerFolderFileVersion({
+        getFDFloorFolderFileVersion({
           project_id,
           final_drawing_tower_files_id: file_id,
         });
@@ -388,7 +389,7 @@ function FDTowerList(props) {
       record_id: version.id,
       record_type: type,
     });
-    getTowerFolderFileVersion({
+    getFDFloorFolderFileVersion({
       project_id,
       final_drawing_tower_files_id: version.final_drawing_files_id,
     });

@@ -1,4 +1,3 @@
-import {useImagePicker} from 'hooks';
 import React, {useEffect, useMemo, useRef} from 'react';
 import {
   FlatList,
@@ -21,22 +20,23 @@ import {
   Title,
 } from 'react-native-paper';
 import Animated from 'react-native-reanimated';
-import {theme} from 'styles/theme';
 import _ from 'lodash';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Feather from 'react-native-vector-icons/Feather';
 
 import dayjs from 'dayjs';
-import {useSnackbar} from 'components/Atoms/Snackbar';
-import useDesignModuleActions from 'redux/actions/designModuleActions';
 import {useSelector} from 'react-redux';
-import {getFileExtension} from 'utils/download';
 import Spinner from 'react-native-loading-spinner-overlay';
-import NoResult from 'components/Atoms/NoResult';
-import {useDownload} from 'components/Atoms/Download';
 import FileViewer from 'react-native-file-viewer';
 import {Image} from 'react-native-svg';
+import {useSnackbar} from 'components/Atoms/Snackbar';
+import useDesignModuleActions from 'redux/actions/designModuleActions';
+import {getFileExtension} from 'utils/download';
+import NoResult from 'components/Atoms/NoResult';
+import {useDownload} from 'components/Atoms/Download';
+import {theme} from 'styles/theme';
+import {useImagePicker} from 'hooks';
 import FileIcon from 'assets/images/file_icon.png';
 import {getShadow} from 'utils';
 import SelectTower from '../Components/SelectTower';
@@ -281,6 +281,7 @@ function PlotsList(props) {
     getFDPlots,
     uploadFDPlotFiles,
     uploadFDPlotBungalowFileVersion,
+    getFDPlotFileVersion,
     renameFDBungalowsFile,
     deleteFDBungalowsFile,
   } = useDesignModuleActions();
@@ -328,8 +329,12 @@ function PlotsList(props) {
     });
   };
 
-  const versionDataHandler = async () => {
+  const versionDataHandler = async id => {
     setModalContentType('version');
+    getFDPlotFileVersion({
+      final_drawing_bunglow_plot_files_id: id,
+      project_id,
+    });
   };
 
   const activityDataHandler = () => {
@@ -373,9 +378,12 @@ function PlotsList(props) {
         formData.append('project_id', project_id);
 
         await uploadFDPlotBungalowFileVersion(formData);
+        getFDPlotFileVersion({
+          final_drawing_bunglow_plot_files_id: file_id,
+          project_id,
+        });
       },
     });
-    loadFiles();
   };
 
   const handleDeleteVersion = async () => {

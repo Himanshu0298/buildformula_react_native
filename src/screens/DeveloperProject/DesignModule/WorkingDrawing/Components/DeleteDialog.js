@@ -28,7 +28,7 @@ function DeleteDialog(props) {
           <Button
             style={styles.button}
             onPress={() => {
-              deleteFileHandler(dialogueContent.id);
+              deleteFileHandler(dialogueContent.id, dialogueContent);
             }}>
             Delete
           </Button>

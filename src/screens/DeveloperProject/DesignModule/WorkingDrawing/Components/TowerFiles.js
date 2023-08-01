@@ -16,24 +16,23 @@ import {
   Subheading,
   Text,
 } from 'react-native-paper';
-import FileIcon from 'assets/images/file_icon.png';
 import dayjs from 'dayjs';
 import {useSelector} from 'react-redux';
-import NoResult from 'components/Atoms/NoResult';
-import {downloadFile, getDownloadUrl, getFileExtension} from 'utils/download';
-import {useSnackbar} from 'components/Atoms/Snackbar';
 import FileViewer from 'react-native-file-viewer';
-import useDesignModuleActions from 'redux/actions/designModuleActions';
-import {theme} from 'styles/theme';
-import {useImagePicker} from 'hooks';
 import Animated from 'react-native-reanimated';
 import _ from 'lodash';
 import BottomSheet from 'reanimated-bottom-sheet';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Feather from 'react-native-vector-icons/Feather';
-import {getPermissions, getShadow} from 'utils';
 import Spinner from 'react-native-loading-spinner-overlay';
+import {getPermissions, getShadow} from 'utils';
+import {useImagePicker} from 'hooks';
+import {theme} from 'styles/theme';
+import useDesignModuleActions from 'redux/actions/designModuleActions';
+import {useSnackbar} from 'components/Atoms/Snackbar';
+import NoResult from 'components/Atoms/NoResult';
+import FileIcon from 'assets/images/file_icon.png';
 import {useDownload} from 'components/Atoms/Download';
 import MenuDialog from './MenuDialog';
 import RenameDialogue from './RenameDialog';
@@ -262,12 +261,12 @@ function WDTowerFiles(props) {
 
   const {
     renameFDTowerFile,
-    getFDVersion,
+    getTowerFolderFileVersion,
     deleteFDVersion,
     uploadWDTowersFile,
     deleteFDTowerFile,
-    FDTowerFileActivityLogs,
-    uploadTowerFileVersion,
+    WDTowerFileActivityLogs,
+    uploadWDFloorFolderFileVersion,
     getWDTower,
   } = useDesignModuleActions();
   const {openImagePicker} = useImagePicker();
@@ -328,12 +327,12 @@ function WDTowerFiles(props) {
 
   const versionDataHandler = async id => {
     setModalContentType('version');
-    getFDVersion({project_id, final_drawing_files_id: id});
+    getTowerFolderFileVersion({project_id, working_drawing_tower_files_id: id});
   };
 
   const activityDataHandler = id => {
     setModalContentType('activity');
-    FDTowerFileActivityLogs({project_id, record_id: id});
+    WDTowerFileActivityLogs({project_id, record_id: id});
   };
 
   const onPressFile = async file => {
@@ -368,19 +367,22 @@ function WDTowerFiles(props) {
     loadFloors();
   };
 
-  const handleNewVersionUpload = file_id => {
+  const handleNewVersionUpload = (file_id, id) => {
     openImagePicker({
       type: 'file',
       onChoose: async v => {
         const formData = new FormData();
 
-        formData.append('final_drawing_tower_files_id', file_id);
+        formData.append('working_drawing_tower_files_id', id);
         formData.append('myfile', v);
         formData.append('folder_id', folderId);
         formData.append('project_id', project_id);
 
-        await uploadTowerFileVersion(formData);
-        getFDVersion({project_id, final_drawing_files_id: file_id});
+        await uploadWDFloorFolderFileVersion(formData);
+        getTowerFolderFileVersion({
+          project_id,
+          working_drawing_tower_files_id: id,
+        });
       },
     });
   };
@@ -392,9 +394,9 @@ function WDTowerFiles(props) {
       record_id: version.id,
       record_type: type,
     });
-    getFDVersion({
+    getTowerFolderFileVersion({
       project_id,
-      final_drawing_files_id: version.final_drawing_files_id,
+      working_drawing_tower_files_id: version.final_drawing_files_id,
     });
   };
 

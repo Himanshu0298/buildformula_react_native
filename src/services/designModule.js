@@ -249,6 +249,13 @@ export default function useDesignModule() {
         config({multipart: false}),
       );
     },
+    WDTowerFileActivityLogs: data => {
+      return instance.post(
+        '/workingdrawing/toweractivitylogs',
+        data,
+        config({multipart: false}),
+      );
+    },
     uploadTowerFileVersion: data => {
       return instance.post(
         '/finaldrawing/uploadtowerfileversion',
@@ -328,13 +335,7 @@ export default function useDesignModule() {
         config({multipart: true}),
       );
     },
-    // getFloorFolderFile: data => {
-    //   return instance.post(
-    //     '/finaldrawing/getlistfloorfolderfile',
-    //     data,
-    //     config({multipart: false}),
-    //   );
-    // },
+
     getTowerFolderFileVersion: data => {
       return instance.post(
         '/workingdrawing/listtowerfileversion',
@@ -354,14 +355,29 @@ export default function useDesignModule() {
       return instance.post('', data, config({multipart: false}));
     },
     uploadFDFloorFolderFileVersion: data => {
-      return instance.post('', data, config({multipart: true}));
+      return instance.post(
+        '/finaldrawing/uploadfloorfolderfile',
+        data,
+        config({multipart: true}),
+      );
     },
     getFDFloorFolderFileVersion: data => {
-      return instance.post('', data, config({multipart: false}));
+      return instance.post(
+        '/finaldrawing/gettowerversionfileslist',
+        data,
+        config({multipart: false}),
+      );
+    },
+    getFDPlotFileVersion: data => {
+      return instance.post(
+        '/finaldrawing/getbunglowplotversionfileslist',
+        data,
+        config({multipart: false}),
+      );
     },
     deleteFDFloorFolderFileVersion: data => {
       return instance.post(
-        'finaldrawing/deleteFloorFolderFileVersion',
+        '/finaldrawing/deleteFloorFolderFileVersion',
         data,
         config({multipart: false}),
       );
@@ -421,6 +437,13 @@ export default function useDesignModule() {
         config({multipart: false}),
       );
     },
+    deleteWDFloorFolderFile: data => {
+      return instance.post(
+        '/workingdrawing/deletefloorfolderfiles',
+        data,
+        config({multipart: false}),
+      );
+    },
     getWDVersion: data => {
       return instance.post(
         '/workingdrawing/files_version',
@@ -462,6 +485,14 @@ export default function useDesignModule() {
         '/workingdrawing/renameFile',
         data,
         config({multipart: false}),
+      );
+    },
+
+    uploadWDTFileVersion: data => {
+      return instance.post(
+        '/workingdrawing/uploadsepratetowerfileversion',
+        data,
+        config({multipart: true}),
       );
     },
     deleteWDFile: data => {
@@ -523,7 +554,11 @@ export default function useDesignModule() {
       );
     },
     deleteFloorFolderFileVersion: data => {
-      return instance.post('', data, config({multipart: false}));
+      return instance.post(
+        'workingdrawing/deleteFloorFolderFileVersion',
+        data,
+        config({multipart: false}),
+      );
     },
     getFloorFolderFileVersion: data => {
       return instance.post(
@@ -548,6 +583,13 @@ export default function useDesignModule() {
     },
     getTowerFileVersion: data => {
       return instance.post('', data, config({multipart: true}));
+    },
+    uploadFloorFileVersion: data => {
+      return instance.post(
+        'finaldrawing/uploadtowerfloorsfileversion',
+        data,
+        config({multipart: true}),
+      );
     },
 
     // CATEGORY SHEET

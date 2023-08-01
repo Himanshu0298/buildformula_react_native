@@ -8,10 +8,10 @@ import {
   Button,
   Subheading,
 } from 'react-native-paper';
-import PdfIcon from 'assets/images/pdf_icon.png';
 import dayjs from 'dayjs';
-import {getDownloadUrl, checkDownloaded, getFileName} from 'utils/download';
 import FileViewer from 'react-native-file-viewer';
+import PdfIcon from 'assets/images/pdf_icon.png';
+import {getDownloadUrl, checkDownloaded, getFileName} from 'utils/download';
 import {useDownload} from 'components/Atoms/Download';
 
 function VersionFile(props) {
@@ -36,18 +36,13 @@ function VersionFile(props) {
   const toggleDownloading = () => setDownloading(v => !v);
   const toggleVersionMenu = () => setVersionMenu(v => !v);
 
-  const handleDownload = async () => {
+  const handleDownload = async file => {
     toggleVersionMenu();
-    toggleDownloading();
-
-    const fileUrl = getDownloadUrl({version});
-
     download.link({
-      name: getFileName(version),
-      data: {version},
+      name: getFileName(file.file_url),
+      data: {file_url: file.file_url, project_id: file.project_id},
       onFinish: ({dir}) => {
-        setDownloaded(dir);
-        toggleDownloading();
+        FileViewer.open(`file://${dir}`);
       },
     });
   };
@@ -98,7 +93,7 @@ function VersionFile(props) {
             }>
             <Menu.Item
               icon="download"
-              onPress={() => handleDownload()}
+              onPress={() => handleDownload(version)}
               title="Download"
             />
             {modulePermissions?.editor || modulePermissions?.admin ? (

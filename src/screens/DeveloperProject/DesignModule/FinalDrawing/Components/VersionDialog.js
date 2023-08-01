@@ -8,18 +8,23 @@ import {
   Button,
   Subheading,
 } from 'react-native-paper';
-import PdfIcon from 'assets/images/pdf_icon.png';
 import dayjs from 'dayjs';
-import {getDownloadUrl, downloadFile, checkDownloaded} from 'utils/download';
-import {useSnackbar} from 'components/Atoms/Snackbar';
 import FileViewer from 'react-native-file-viewer';
+import PdfIcon from 'assets/images/pdf_icon.png';
+import {checkDownloaded} from 'utils/download';
+
+import {useSnackbar} from 'components/Atoms/Snackbar';
 import {theme} from 'styles/theme';
+import {useDownload} from 'components/Atoms/Download';
+import {getFileName} from 'utils/constant';
 
 function VersionFile(props) {
-  const {modulePermissions, version, countVersion} = props;
+  const {modulePermissions, version, countVersion, handleDeleteVersion} = props;
   console.log('-------->propsVersile', props);
 
   const snackbar = useSnackbar();
+
+  const download = useDownload();
 
   const [versionMenu, setVersionMenu] = React.useState(false);
   const [downloading, setDownloading] = React.useState(false);
@@ -37,16 +42,16 @@ function VersionFile(props) {
   const toggleDownloading = () => setDownloading(v => !v);
   const toggleVersionMenu = () => setVersionMenu(v => !v);
 
-  const handleDownload = async () => {
+  const handleDownload = async file => {
     toggleVersionMenu();
-    toggleDownloading();
-    const fileUrl = getDownloadUrl({version});
-    const {dir} = await downloadFile(version, fileUrl);
-    snackbar.showMessage({message: 'File Downloaded Successfully!'});
-    setDownloaded(dir);
-    toggleDownloading();
+    download.link({
+      name: getFileName(file.file_url),
+      data: {file_url: file.file_url, project_id: file.project_id},
+      onFinish: ({dir}) => {
+        FileViewer.open(`file://${dir}`);
+      },
+    });
   };
-
   const openFile = filePath => {
     filePath = filePath || downloaded;
     console.log('-----> open path', filePath);
@@ -93,14 +98,17 @@ function VersionFile(props) {
             }>
             <Menu.Item
               icon="download"
-              onPress={() => handleDownload()}
+              onPress={() => handleDownload(version)}
               title="Download"
             />
             {modulePermissions?.editor || modulePermissions?.admin ? (
               <>
                 <Divider />
-                {/* TODO: update handle delete */}
-                <Menu.Item icon="delete" onPress={() => null} title="Delete" />
+                <Menu.Item
+                  icon="delete"
+                  onPress={() => handleDeleteVersion(version, version.files_id)}
+                  title="Delete"
+                />
               </>
             ) : null}
           </Menu>
@@ -128,7 +136,9 @@ function VersionDialog(props) {
             mode="contained"
             compact
             labelStyle={styles.labelStyle}
-            onPress={() => handleNewVersionUpload(modalContent.id)}>
+            onPress={() =>
+              handleNewVersionUpload(modalContent.id, modalContent.files_id)
+            }>
             Add New Version
           </Button>
         ) : null}
@@ -139,7 +149,7 @@ function VersionDialog(props) {
           <VersionFile
             {...props}
             version={version}
-            key={index}
+            key={version}
             countVersion={index}
           />
         ))}

@@ -7,10 +7,10 @@ import {
   Image,
 } from 'react-native';
 import {Button, IconButton, Subheading, Text} from 'react-native-paper';
+import FileViewer from 'react-native-file-viewer';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import {checkDownloaded, downloadFile, getDownloadUrl} from 'utils/download';
 import {theme} from 'styles/theme';
-import FileViewer from 'react-native-file-viewer';
 import FolderIcon from 'assets/images/folder_icon.png';
 import FileIcon from 'assets/images/file_icon.png';
 
@@ -22,8 +22,9 @@ function MenuDialog(props) {
     toggleMenu,
     versionDataHandler,
     activityDataHandler,
+    showActivity = true,
   } = props;
-  const {id, row_type, file_type, is_preset, title} = modalContent;
+  const {id, row_type, file_type, is_preset, title, files_id} = modalContent;
 
   const snackbar = useSnackbar();
 
@@ -97,7 +98,8 @@ function MenuDialog(props) {
         {!fixedFolder ? (
           <>
             {file_type === 'image/jpeg' ? (
-              <TouchableOpacity onPress={() => versionDataHandler(id)}>
+              <TouchableOpacity
+                onPress={() => versionDataHandler(id, files_id)}>
                 <View style={styles.viewDirection}>
                   <IconButton icon="file-multiple" />
                   <Text style={styles.ModalText}>Manage version</Text>
@@ -116,12 +118,14 @@ function MenuDialog(props) {
                 </View>
               </TouchableOpacity>
             ) : null}
-            <TouchableOpacity onPress={() => activityDataHandler(id)}>
-              <View style={styles.viewDirection}>
-                <IconButton icon="information" />
-                <Text style={styles.ModalText}>Activity</Text>
-              </View>
-            </TouchableOpacity>
+            {showActivity ? (
+              <TouchableOpacity onPress={() => activityDataHandler(id)}>
+                <View style={styles.viewDirection}>
+                  <IconButton icon="information" />
+                  <Text style={styles.ModalText}>Activity</Text>
+                </View>
+              </TouchableOpacity>
+            ) : null}
 
             <TouchableOpacity
               onPress={() => {

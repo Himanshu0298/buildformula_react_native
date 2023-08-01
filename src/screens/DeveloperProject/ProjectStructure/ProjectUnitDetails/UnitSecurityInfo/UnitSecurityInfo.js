@@ -1,14 +1,14 @@
-import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import React, {useState} from 'react';
 import {StyleSheet, View, ScrollView, SafeAreaView, Modal} from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import {FAB, IconButton, Text, Title} from 'react-native-paper';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {Formik} from 'formik';
 import {theme} from 'styles/theme';
 import ActionButtons from 'components/Atoms/ActionButtons';
 import RenderInput from 'components/Atoms/RenderInput';
-import {SafeAreaProvider} from 'react-native-safe-area-context';
-import {Formik} from 'formik';
+import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 
 const DATA = [
   {

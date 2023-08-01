@@ -1,4 +1,3 @@
-import {useSnackbar} from 'components/Atoms/Snackbar';
 import React, {useEffect, useMemo, useRef} from 'react';
 import {
   FlatList,
@@ -9,8 +8,6 @@ import {
   View,
 } from 'react-native';
 import FileViewer from 'react-native-file-viewer';
-import {useImagePicker} from 'hooks';
-import useDesignModuleActions from 'redux/actions/designModuleActions';
 import {useSelector} from 'react-redux';
 import {
   Caption,
@@ -20,24 +17,27 @@ import {
   Subheading,
   Text,
 } from 'react-native-paper';
-import {theme} from 'styles/theme';
-import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {getShadow, getTowerLabel} from 'utils';
-import FileIcon from 'assets/images/file_icon.png';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Feather from 'react-native-vector-icons/Feather';
 import Animated from 'react-native-reanimated';
 import BottomSheet from 'reanimated-bottom-sheet';
 
-import NoResult from 'components/Atoms/NoResult';
-import {useDownload} from 'components/Atoms/Download';
-import {getFileName} from 'utils/constant';
 import {Image} from 'react-native-svg';
 import dayjs from 'dayjs';
 import _ from 'lodash';
-import TowerSelector from 'components/Molecules/TowerSelector';
 import Spinner from 'react-native-loading-spinner-overlay';
+import NoResult from 'components/Atoms/NoResult';
+import {useDownload} from 'components/Atoms/Download';
+import {getFileName} from 'utils/constant';
+import TowerSelector from 'components/Molecules/TowerSelector';
+import FileIcon from 'assets/images/file_icon.png';
+import {getShadow, getTowerLabel} from 'utils';
+import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
+import {theme} from 'styles/theme';
+import useDesignModuleActions from 'redux/actions/designModuleActions';
+import {useImagePicker} from 'hooks';
+import {useSnackbar} from 'components/Atoms/Snackbar';
 import MenuDialog from '../Components/MenuDialog';
 import RenameDialogue from '../Components/RenameDialog';
 import DeleteDialog from '../Components/DeleteDialog';
@@ -261,20 +261,22 @@ function WDTowerList(props) {
 
   const {
     getWDTowers,
-    uploadWDTowerFileVersion,
+    uploadWDTFileVersion,
     uploadWDTowersFile,
-    FDTowerFileActivityLogs,
+    WDTowerFileActivityLogs,
     deleteFDVersion,
     renameWDTowerFile,
     getTowerFolderFileVersion,
     deleteWDTowerFile,
   } = useDesignModuleActions();
 
-  const {wdPlotList, versionData, loading} = useSelector(s => s.designModule);
+  const {wdPlotList, wdVersion, loading} = useSelector(s => s.designModule);
   const {selectedProject} = useSelector(s => s.project);
   const project_id = selectedProject.id;
 
   const towerList = wdPlotList?.towers_lists || [];
+
+  const versionData = wdVersion?.list || [];
 
   const towerCommonFiles = wdPlotList?.final_drawing_tower_files;
   const [menuId, setMenuId] = React.useState();
@@ -317,12 +319,12 @@ function WDTowerList(props) {
 
   const versionDataHandler = async id => {
     setModalContentType('version');
-    getTowerFolderFileVersion({project_id, final_drawing_tower_files_id: id});
+    getTowerFolderFileVersion({project_id, working_drawing_tower_files_id: id});
   };
 
   const activityDataHandler = id => {
     setModalContentType('activity');
-    FDTowerFileActivityLogs({project_id, record_id: id});
+    WDTowerFileActivityLogs({project_id, record_id: id});
   };
 
   const onPressFile = async file => {
@@ -343,15 +345,15 @@ function WDTowerList(props) {
       onChoose: async v => {
         const formData = new FormData();
 
-        formData.append('final_drawing_tower_files_id', file_id);
+        formData.append('working_drawing_tower_files_id', file_id);
         formData.append('myfile', v);
         formData.append('folder_id', folderId);
         formData.append('project_id', project_id);
 
-        await uploadWDTowerFileVersion(formData);
+        await uploadWDTFileVersion(formData);
         getTowerFolderFileVersion({
           project_id,
-          final_drawing_tower_files_id: file_id,
+          working_drawing_tower_files_id: file_id,
         });
       },
     });
@@ -387,7 +389,7 @@ function WDTowerList(props) {
     });
     getTowerFolderFileVersion({
       project_id,
-      final_drawing_tower_files_id: version.final_drawing_files_id,
+      working_drawing_tower_files_id: version.final_drawing_files_id,
     });
   };
 

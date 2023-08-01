@@ -1,5 +1,11 @@
 import React, {useMemo} from 'react';
-import {StyleSheet, View, Image, ActivityIndicator} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Image,
+  ActivityIndicator,
+  ScrollView,
+} from 'react-native';
 import {
   IconButton,
   Text,
@@ -8,18 +14,18 @@ import {
   Button,
   Subheading,
 } from 'react-native-paper';
-import PdfIcon from 'assets/images/pdf_icon.png';
 import dayjs from 'dayjs';
-import {getDownloadUrl, downloadFile, checkDownloaded} from 'utils/download';
-import {useSnackbar} from 'components/Atoms/Snackbar';
 import FileViewer from 'react-native-file-viewer';
+import PdfIcon from 'assets/images/pdf_icon.png';
+import {checkDownloaded} from 'utils/download';
 import {theme} from 'styles/theme';
+import {getFileName} from 'utils/constant';
+import {useDownload} from 'components/Atoms/Download';
 
 function VersionFile(props) {
-  const {modulePermissions, version, countVersion} = props;
-  console.log('-------->propsVersile', props);
+  const {modulePermissions, version, countVersion, handleDeleteVersion} = props;
 
-  const snackbar = useSnackbar();
+  const download = useDownload();
 
   const [versionMenu, setVersionMenu] = React.useState(false);
   const [downloading, setDownloading] = React.useState(false);
@@ -34,17 +40,19 @@ function VersionFile(props) {
     }
   }, [version]);
 
-  const toggleDownloading = () => setDownloading(v => !v);
   const toggleVersionMenu = () => setVersionMenu(v => !v);
 
-  const handleDownload = async () => {
+  const handleDownload = async file => {
     toggleVersionMenu();
-    toggleDownloading();
-    const fileUrl = getDownloadUrl({version});
-    const {dir} = await downloadFile(version, fileUrl);
-    snackbar.showMessage({message: 'File Downloaded Successfully!'});
-    setDownloaded(dir);
-    toggleDownloading();
+    const name = getFileName(file.title);
+    download.link({
+      name,
+      data: {file_url: file.url, project_id: file.project_id},
+      showAction: false,
+      onFinish: ({dir}) => {
+        FileViewer.open(`file://${dir}`);
+      },
+    });
   };
 
   const openFile = filePath => {
@@ -65,7 +73,7 @@ function VersionFile(props) {
               {!countVersion ? 'Current Version' : `Version ${countVersion}`}
             </Text>
             <Text numberOfLines={1} style={styles.text}>
-              By {version?.user_id}
+              By {version?.first_name} {version?.last_name}
             </Text>
           </View>
         </View>
@@ -93,14 +101,22 @@ function VersionFile(props) {
             }>
             <Menu.Item
               icon="download"
-              onPress={() => handleDownload()}
+              onPress={() => handleDownload(version)}
               title="Download"
             />
             {modulePermissions?.editor || modulePermissions?.admin ? (
               <>
                 <Divider />
-                {/* TODO: update handle delete */}
-                <Menu.Item icon="delete" onPress={() => null} title="Delete" />
+                <Menu.Item
+                  icon="delete"
+                  onPress={() =>
+                    handleDeleteVersion(
+                      version?.id,
+                      version?.working_drawing_tower_floors_files_id,
+                    )
+                  }
+                  title="Delete"
+                />
               </>
             ) : null}
           </Menu>
@@ -112,8 +128,14 @@ function VersionFile(props) {
 }
 
 function VersionDialog(props) {
-  const {modulePermissions, modalContent, versionData, handleNewVersionUpload} =
-    props;
+  const {
+    modulePermissions,
+    modalContent,
+    versionData,
+    handleNewVersionUpload,
+    handleDeleteVersion,
+  } = props;
+
   const filteredVersion = useMemo(() => {
     return [versionData?.current, ...(versionData || [])];
   }, [versionData]);
@@ -128,22 +150,25 @@ function VersionDialog(props) {
             mode="contained"
             compact
             labelStyle={styles.labelStyle}
-            onPress={() => handleNewVersionUpload(modalContent.id)}>
+            onPress={() =>
+              handleNewVersionUpload(modalContent.files_id, modalContent.id)
+            }>
             Add New Version
           </Button>
         ) : null}
       </View>
 
-      <View>
+      <ScrollView contentContainerStyle={{marginBottom: 20}}>
         {filteredVersion?.map((version, index) => (
           <VersionFile
             {...props}
             version={version}
             key={index}
             countVersion={index}
+            handleDeleteVersion={handleDeleteVersion}
           />
         ))}
-      </View>
+      </ScrollView>
     </View>
   );
 }

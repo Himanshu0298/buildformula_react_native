@@ -16,24 +16,24 @@ import {
   Subheading,
   Text,
 } from 'react-native-paper';
-import FileIcon from 'assets/images/file_icon.png';
 import dayjs from 'dayjs';
 import {useSelector} from 'react-redux';
-import {downloadFile, getDownloadUrl, getFileExtension} from 'utils/download';
-import {useSnackbar} from 'components/Atoms/Snackbar';
 import FileViewer from 'react-native-file-viewer';
-import useDesignModuleActions from 'redux/actions/designModuleActions';
-import {theme} from 'styles/theme';
-import {useImagePicker} from 'hooks';
 import Animated from 'react-native-reanimated';
 import _ from 'lodash';
 import BottomSheet from 'reanimated-bottom-sheet';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Feather from 'react-native-vector-icons/Feather';
+import Spinner from 'react-native-loading-spinner-overlay';
 import {getShadow} from 'utils';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
-import Spinner from 'react-native-loading-spinner-overlay';
+import {useImagePicker} from 'hooks';
+import {theme} from 'styles/theme';
+import useDesignModuleActions from 'redux/actions/designModuleActions';
+import {useSnackbar} from 'components/Atoms/Snackbar';
+import {downloadFile, getDownloadUrl, getFileExtension} from 'utils/download';
+import FileIcon from 'assets/images/file_icon.png';
 import {useDownload} from 'components/Atoms/Download';
 import NoResult from 'components/Atoms/NoResult';
 import MenuDialog from '../Components/MenuDialog';
@@ -321,16 +321,6 @@ function FloorDestinationFiles(props) {
     });
     loadFiles();
     toggleDialog();
-  };
-
-  const deleteFileHandler = async (id, type) => {
-    await deleteFDFile({final_drawing_files_id: id, project_id});
-    loadFiles();
-    toggleDialog();
-    snackbar.showMessage({
-      message: 'File Deleted!',
-      variant: 'success',
-    });
   };
 
   const versionDataHandler = async (id, type) => {

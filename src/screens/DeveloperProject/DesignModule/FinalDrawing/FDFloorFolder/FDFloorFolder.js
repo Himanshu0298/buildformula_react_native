@@ -17,11 +17,11 @@ import {
   Caption,
   useTheme,
 } from 'react-native-paper';
-import FolderIcon from 'assets/images/folder_icon.png';
 import {useSelector} from 'react-redux';
+import FileViewer from 'react-native-file-viewer';
+
 import Spinner from 'react-native-loading-spinner-overlay';
 import BottomSheet from 'reanimated-bottom-sheet';
-import {getPermissions, getShadow} from 'utils';
 import Animated from 'react-native-reanimated';
 import _ from 'lodash';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -30,16 +30,21 @@ import Feather from 'react-native-vector-icons/Feather';
 import dayjs from 'dayjs';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import Foundation from 'react-native-vector-icons/Foundation';
+import {getShadow} from 'utils';
+import FolderIcon from 'assets/images/folder_icon.png';
 import useDesignModuleActions from 'redux/actions/designModuleActions';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import NoResult from 'components/Atoms/NoResult';
 import {theme} from 'styles/theme';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
-import DeleteDialog from '../Components/DeleteDialog';
+import {useImagePicker} from 'hooks';
+import {useDownload} from 'components/Atoms/Download';
+import {getDownloadUrl} from 'utils/download';
+import FileIcon from 'assets/images/file_icon.png';
 import RenameDialogue from '../Components/RenameDialog';
 import CreateFolderDialogue from '../Components/CreateFolderDialog';
 import MenuDialog from '../Components/MenuDialog';
-import FolderSectionGridView from '../Components/FolderSectionGridView';
+import VersionDialog from '../Components/VersionDialog';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const relativeTime = require('dayjs/plugin/relativeTime');
@@ -237,12 +242,17 @@ function RenderMenuModal(props) {
                 color="grey"
               />
             </View>
-            {modelContentType === 'menu' ? <MenuDialog {...props} /> : null}
-            {modelContentType === 'parentActivity' ? (
-              <ActivityModal {...props} />
+            {modelContentType === 'menu' ? (
+              <MenuDialog {...props} showActivity={false} />
             ) : null}
-            {modelContentType === 'activity' ? (
+            {/* {modelContentType === 'parentActivity' ? (
               <ActivityModal {...props} />
+            ) : null} */}
+            {/* {modelContentType === 'activity' ? (
+              <ActivityModal {...props}  />
+            ) : null} */}
+            {modelContentType === 'version' ? (
+              <VersionDialog {...props} />
             ) : null}
           </View>
         )}
@@ -251,45 +261,99 @@ function RenderMenuModal(props) {
   );
 }
 
-const ListViewControl = props => {
-  const {listMode, setListMode} = props;
+function RenderFile(props) {
+  const {index, item, toggleMenu, setModalContentType, setModalContent} = props;
+
+  const {title, created} = item || {};
+
+  const download = useDownload();
+
+  const onPressFile = async file => {
+    const fileUrl = getDownloadUrl(file.file_url);
+    const name = getFileName(file.title);
+    download.link({
+      name,
+      link: fileUrl,
+      showAction: false,
+      onFinish: ({dir}) => {
+        FileViewer.open(`file://${dir}`);
+      },
+    });
+  };
+
   return (
-    <View style={styles.headerActionContainer}>
-      <TouchableOpacity onPress={() => setListMode('list')}>
-        <Foundation
-          name="list-bullet"
-          size={20}
-          color={listMode === 'list' ? theme.colors.primary : undefined}
-          style={styles.headerIcon}
-        />
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => setListMode('grid')}>
-        <Fontisto
-          name="nav-icon-grid"
-          size={17}
-          color={listMode === 'grid' ? theme.colors.primary : undefined}
-        />
-      </TouchableOpacity>
+    <View style={styles.recentFiles}>
+      {title ? (
+        <View style={styles.sectionContainer} onPress={() => onPressFile(item)}>
+          <Image source={FileIcon} style={styles.fileIcon} />
+          <View>
+            <Text style={(styles.verticalFlex, styles.text)} numberOfLines={2}>
+              {title}
+            </Text>
+          </View>
+        </View>
+      ) : null}
+
+      <View style={styles.sectionContainer}>
+        <View>
+          <Text style={styles.date}>
+            {dayjs(created).format('DD MMM YYYY')}
+          </Text>
+        </View>
+
+        <View>
+          <IconButton
+            icon="dots-vertical"
+            onPress={() => {
+              toggleMenu(index);
+              setModalContentType('menu');
+              setModalContent(item);
+            }}
+          />
+        </View>
+      </View>
     </View>
   );
-};
+}
 
 function RenderRow(props) {
-  const {item, onPress} = props;
-  const {folder_title} = item;
-
-  const {colors} = useTheme();
+  const {
+    item,
+    index,
+    onPress,
+    handleFileUpload,
+    toggleMenu,
+    setModalContent,
+    setModalContentType,
+  } = props;
+  const {folder_title, title, id} = item;
 
   return (
     <View>
       <TouchableOpacity style={styles.optionContainer} onPress={onPress}>
-        <Text>{folder_title} </Text>
-        <OpacityButton
-          opacity={0.1}
-          style={styles.rightArrow}
-          color={colors.primary}>
-          <MaterialCommunityIcons name="arrow-right" size={15} color="black" />
-        </OpacityButton>
+        <Text style={{fontSize: 18, margin: 10}}>{folder_title} </Text>
+        <Divider />
+
+        {title ? (
+          <RenderFile
+            toggleMenu={toggleMenu}
+            item={item}
+            setModalContentType={setModalContentType}
+            setModalContent={setModalContent}
+            index={index}
+          />
+        ) : null}
+        <View style={{marginTop: 10, justifyContent: 'center'}}>
+          {!title ? (
+            <OpacityButton
+              opacity={0.18}
+              style={styles.button}
+              onPress={() => handleFileUpload(id)}>
+              <MaterialCommunityIcons name="plus" size={18} />
+              <Text> Add File</Text>
+            </OpacityButton>
+          ) : null}
+        </View>
       </TouchableOpacity>
     </View>
   );
@@ -300,16 +364,23 @@ function FDFloorFolder(props) {
   const {tower_id, folderId, floorId} = route?.params || {};
 
   const snackbar = useSnackbar();
+  const {openImagePicker} = useImagePicker();
 
   const {selectedProject} = useSelector(s => s.project);
-  const {loading, towerFolderList} = useSelector(s => s.designModule);
+  const {loading, towerFolderList, fdVersionData} = useSelector(
+    s => s.designModule,
+  );
+  const folders = towerFolderList?.data?.list || [];
 
-  const folders = towerFolderList?.data?.final_drawing_floor_rows_folder || [];
+  const versionData = fdVersionData?.data || [];
 
   const project_id = selectedProject.id;
 
   const {
     addFloorFolder,
+    addFloorFolderFile,
+    uploadFloorFileVersion,
+    getFDFloorFolderFileVersion,
     getFDTowerFloorFolder,
     deleteFDFloorFolderFileVersion,
     renameWDFloorFolder,
@@ -338,14 +409,23 @@ function FDFloorFolder(props) {
   const toggleDialog = v => setDialogType(v);
   const toggleShareDialog = () => setShareDialog(v => !v);
 
-  const createFolderHandler = async folder_name => {
-    await addFloorFolder({
+  const createFolderHandler = async (foldername, file) => {
+    const data = {
       project_id,
-      folder_name,
+      folder_name: foldername,
       tower_id,
       folder_id: folderId,
       final_drawing_floor_rows_id: floorId,
-    });
+    };
+
+    const {value} = await addFloorFolder(data);
+    const response = value.data.list;
+
+    const id = response.find(i => i.id)?.id;
+
+    if (file) {
+      uploadFile(id, file);
+    }
     toggleDialog();
     loadData();
   };
@@ -357,6 +437,78 @@ function FDFloorFolder(props) {
     });
     loadData();
     toggleDialog();
+  };
+
+  const versionDataHandler = async (id, files_id) => {
+    setModalContentType('version');
+    getFDFloorFolderFileVersion({
+      project_id,
+      final_drawing_tower_files_id: files_id,
+    });
+  };
+
+  const onChooseFile = async (v, fileId) => {
+    const formData = new FormData();
+
+    formData.append('project_id', project_id);
+    formData.append('folder_id', folderId);
+    formData.append('tower_id', tower_id);
+    formData.append('final_drawing_tower_files_id', fileId);
+    formData.append('myfile', v);
+
+    await uploadFloorFileVersion(formData);
+    await getFDFloorFolderFileVersion({
+      project_id,
+      final_drawing_tower_files_id: fileId,
+    });
+  };
+
+  const handleNewVersionUpload = async (_id, file_id) => {
+    openImagePicker({
+      type: 'file',
+      onChoose: v => onChooseFile(v, file_id),
+    });
+  };
+
+  const handleDeleteVersion = async (version, fileId) => {
+    setModalContentType('version');
+    deleteFDFloorFolderFileVersion({
+      project_id,
+      final_drawing_tower_floors_files_id: version.id,
+    });
+    getFDFloorFolderFileVersion({
+      project_id,
+      final_drawing_tower_files_id: fileId,
+    });
+  };
+
+  const uploadFile = async (id, v) => {
+    const formData = new FormData();
+    formData.append('folder_id', folderId);
+    formData.append('myfile', v);
+    formData.append('project_id', project_id);
+    formData.append('tower_id', tower_id);
+    formData.append('final_drawing_floor_rows_id', floorId);
+    formData.append('final_drawing_floor_rows_folder_id', id);
+
+    await addFloorFolderFile(formData);
+    toggleDialog();
+    snackbar.showMessage({
+      message: 'File Uploaded Sucessfully!',
+      variant: 'success',
+    });
+    loadData();
+  };
+
+  const handleFileUpload = async file => {
+    openImagePicker({
+      type: 'file',
+      onChoose: v => {
+        uploadFile(file, v);
+      },
+    });
+
+    loadData();
   };
 
   // const deleteFolderHandler = async id => {
@@ -371,20 +523,32 @@ function FDFloorFolder(props) {
 
   const renderEmpty = () => <NoResult />;
 
-  const navToNext = item => {
-    const {folder_title, id} = item;
-
-    navigation.navigate('FDFloorFolderFile', {folder_title, item, folderId});
-  };
-
   return (
     <>
+      <RenderMenuModal
+        {...props}
+        {...{
+          menuId,
+          modelContentType,
+          modalContent,
+          versionData,
+          toggleMenu,
+          setModalContentType,
+          toggleDialog,
+          versionDataHandler,
+          toggleShareDialog,
+          handleNewVersionUpload,
+          handleDeleteVersion,
+        }}
+      />
       <CreateFolderDialogue
+        addFile
         visible={DialogType === 'createFolder'}
         toggleDialogue={toggleDialog}
         createFolderHandler={createFolderHandler}
         placeholder="Destination Name"
         title="Create new destination"
+        handleFileUpload={handleFileUpload}
       />
 
       <RenameDialogue
@@ -441,8 +605,17 @@ function FDFloorFolder(props) {
             contentContainerStyle={styles.flatList}
             keyExtractor={item => item.id}
             ListEmptyComponent={renderEmpty}
-            renderItem={({item}) => {
-              return <RenderRow item={item} onPress={() => navToNext(item)} />;
+            renderItem={({item, index}) => {
+              return (
+                <RenderRow
+                  item={item}
+                  index={index}
+                  toggleMenu={toggleMenu}
+                  setModalContentType={setModalContentType}
+                  setModalContent={setModalContent}
+                  handleFileUpload={handleFileUpload}
+                />
+              );
             }}
           />
         </View>
@@ -455,16 +628,17 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   optionContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
     paddingHorizontal: 10,
     paddingVertical: 4,
     backgroundColor: '#fff',
     ...getShadow(1),
     margin: 1,
   },
-
+  recentFiles: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 10,
+  },
   headerSubContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -485,20 +659,98 @@ const styles = StyleSheet.create({
   },
   addButton: {
     marginRight: 7,
+    padding: 9,
   },
   headerTitle: {
     fontSize: 18,
     color: 'black',
   },
 
-  rightArrow: {
-    borderRadius: 25,
+  fileIcon: {
+    width: 25,
+    height: 25,
+    paddingLeft: 10,
+    marginLeft: 10,
+    marginBottom: 10,
   },
   flatList: {
     flexGrow: 1,
   },
   flatListContainer: {
     flex: 1,
+  },
+  sectionContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  text: {
+    color: '#080707',
+    paddingHorizontal: 10,
+    fontSize: 14,
+    alignItems: 'center',
+    maxWidth: 170,
+  },
+  date: {
+    color: '#080707',
+  },
+  verticalFlex: {
+    flexDirection: 'column',
+  },
+
+  backdrop: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.3)',
+  },
+  sheetContentContainer: {
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    paddingHorizontal: 15,
+    paddingBottom: 20,
+    flexGrow: 1,
+    height: '100%',
+    ...getShadow(2),
+  },
+  closeContainer: {
+    alignItems: 'flex-end',
+  },
+
+  activityContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    marginVertical: 5,
+  },
+  activityBody: {
+    flexGrow: 1,
+    flex: 1,
+  },
+  activitiesContainer: {
+    flexGrow: 1,
+  },
+  iconContainer: {
+    paddingHorizontal: 10,
+  },
+  activityScrollContainer: {
+    paddingBottom: 80,
+    marginTop: 10,
+    flexGrow: 1,
+  },
+  fileName: {
+    lineHeight: 12,
+    marginRight: 20,
+  },
+  activityUser: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  emptyContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

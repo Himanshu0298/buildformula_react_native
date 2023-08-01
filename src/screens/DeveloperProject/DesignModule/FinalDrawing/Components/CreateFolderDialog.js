@@ -1,18 +1,47 @@
 import React from 'react';
-import RenderInput from 'components/Atoms/RenderInput';
-import {Formik} from 'formik';
-import {StyleSheet, View} from 'react-native';
+import {Formik, useFormik} from 'formik';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Text, Dialog, Button, Portal} from 'react-native-paper';
-import {secondaryTheme} from 'styles/theme';
 import * as Yup from 'yup';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {secondaryTheme, theme} from 'styles/theme';
+import RenderInput from 'components/Atoms/RenderInput';
+
+import {useImagePicker} from 'hooks';
 
 const schema = Yup.object().shape({
   folder_name: Yup.string().trim().required('Required'),
 });
 
 function CreateFolderDialogue(props) {
-  const {visible, toggleDialogue, createFolderHandler} = props;
+  const {visible, toggleDialogue, createFolderHandler, addFile} = props;
   const folderNameRef = React.useRef();
+  const {openImagePicker} = useImagePicker();
+
+  const {
+    values,
+    errors,
+    handleChange,
+    setFieldValue,
+    handleSubmit,
+    handleBlur,
+  } = useFormik({
+    initialValues: {folder_name: ''},
+    enableReinitialize: true,
+    validateOnBlur: false,
+    validationSchema: schema,
+    validateOnChange: false,
+    onSubmit: v => createFolderHandler(values.folder_name, v.file),
+  });
+
+  const handleFileUpload = () => {
+    openImagePicker({
+      type: 'file',
+      onChoose: v => {
+        setFieldValue('file', v);
+      },
+    });
+  };
 
   return (
     <Portal>
@@ -20,51 +49,65 @@ function CreateFolderDialogue(props) {
         <View style={styles.dialogTitleContainer}>
           <Text style={{color: '#000'}}>Create New Folder</Text>
         </View>
-        <Formik
-          validateOnBlur={false}
-          validateOnChange={false}
-          initialValues={{folderName: ''}}
-          validationSchema={schema}
-          onSubmit={async values => {
-            createFolderHandler(values.folder_name);
-          }}>
-          {({values, errors, handleChange, handleBlur, handleSubmit}) => {
-            return (
-              <View style={styles.dialogContentContainer}>
-                <RenderInput
-                  name="folder_name"
-                  label="Folder name"
-                  containerStyles={styles.input}
-                  value={values.folder_name}
-                  onChangeText={handleChange('folder_name')}
-                  onBlur={handleBlur('folder_name')}
-                  ref={folderNameRef}
-                  onSubmitEditing={handleSubmit}
-                  error={errors.folder_name}
-                />
 
-                <View style={styles.dialogActionContainer}>
-                  <Button
-                    style={{width: '40%', marginHorizontal: 5}}
-                    contentStyle={{padding: 2}}
-                    theme={{roundness: 15}}
-                    mode="contained"
-                    onPress={toggleDialogue}>
-                    <Text theme={secondaryTheme}>cancel</Text>
-                  </Button>
-                  <Button
-                    style={{width: '40%', marginHorizontal: 5}}
-                    mode="contained"
-                    contentStyle={{padding: 1}}
-                    theme={{roundness: 15}}
-                    onPress={handleSubmit}>
-                    <Text theme={secondaryTheme}>save</Text>
-                  </Button>
-                </View>
-              </View>
-            );
-          }}
-        </Formik>
+        <View style={styles.dialogContentContainer}>
+          <RenderInput
+            name="folder_name"
+            label="Folder name"
+            containerStyles={styles.input}
+            value={values.folder_name}
+            onChangeText={handleChange('folder_name')}
+            onBlur={handleBlur('folder_name')}
+            ref={folderNameRef}
+            onSubmitEditing={handleSubmit}
+            error={errors.folder_name}
+          />
+
+          {addFile ? (
+            <View style={{marginTop: 10}}>
+              <TouchableOpacity
+                onPress={handleFileUpload}
+                // eslint-disable-next-line react-native/no-inline-styles
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: values.file
+                    ? theme.colors.success
+                    : theme.colors.primary,
+                  padding: 10,
+                }}>
+                <MaterialCommunityIcons
+                  name="plus"
+                  size={18}
+                  style={{color: '#ffff'}}
+                />
+                <Text style={{color: '#ffff'}}>
+                  {values.file ? 'File Selected' : 'Add File'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          ) : null}
+
+          <View style={styles.dialogActionContainer}>
+            <Button
+              style={{width: '40%', marginHorizontal: 5}}
+              contentStyle={{padding: 2}}
+              theme={{roundness: 15}}
+              mode="contained"
+              onPress={toggleDialogue}>
+              <Text theme={secondaryTheme}>cancel</Text>
+            </Button>
+            <Button
+              style={{width: '40%', marginHorizontal: 5}}
+              mode="contained"
+              contentStyle={{padding: 1}}
+              theme={{roundness: 15}}
+              onPress={handleSubmit}>
+              <Text theme={secondaryTheme}>save</Text>
+            </Button>
+          </View>
+        </View>
       </Dialog>
     </Portal>
   );

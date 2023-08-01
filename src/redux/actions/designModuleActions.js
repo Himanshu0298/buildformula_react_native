@@ -89,6 +89,8 @@ export default function useDesignModuleActions() {
     rearrangeFloorRows,
     getTowerFolderFileVersion,
     deleteWDFloorFolder,
+    deleteWDFloorFolderFile,
+    uploadWDTFileVersion,
     uploadWDTowersFile,
     AddWDRow,
     updateWDRow,
@@ -119,6 +121,9 @@ export default function useDesignModuleActions() {
     getFDFloorFolderFileVersion,
     deleteFDFloorFolderFileVersion,
     renameFDFloorFolder,
+    WDTowerFileActivityLogs,
+    uploadFloorFileVersion,
+    getFDPlotFileVersion,
   } = useDesignModule();
   const {_err, _res} = useResProcessor();
   const snackbar = useSnackbar();
@@ -484,6 +489,21 @@ export default function useDesignModuleActions() {
           }
         },
       }),
+    getFDPlotFileVersion: params =>
+      dispatch({
+        type: types.GET_RD_VERSION,
+        payload: async () => {
+          try {
+            const {data} = _res(await getFDPlotFileVersion(params));
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
 
     addFDVersion: params =>
       dispatch({
@@ -656,6 +676,22 @@ export default function useDesignModuleActions() {
           }
         },
       }),
+    WDTowerFileActivityLogs: params =>
+      dispatch({
+        type: types.FD_TOWER_ACTIVITY_LOG,
+        payload: async () => {
+          try {
+            const {data} = _res(await WDTowerFileActivityLogs(params));
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+
     getFDTowerFloorFolder: params =>
       dispatch({
         type: types.FD_TOWER_FLOOR_FOLDER,
@@ -888,7 +924,7 @@ export default function useDesignModuleActions() {
       }),
     getTowerFolderFileVersion: params =>
       dispatch({
-        type: types.GET_RD_VERSION,
+        type: types.GET_WD_VERSION,
         payload: async () => {
           try {
             const {data} = _res(await getTowerFolderFileVersion(params));
@@ -923,6 +959,21 @@ export default function useDesignModuleActions() {
         payload: async () => {
           try {
             const {data} = _res(await deleteWDFloorFolder(params));
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    deleteWDFloorFolderFile: params =>
+      dispatch({
+        type: types.DELETE_RD_FOLDER,
+        payload: async () => {
+          try {
+            const {data} = _res(await deleteWDFloorFolderFile(params));
 
             return Promise.resolve({data});
           } catch (error) {
@@ -1002,6 +1053,36 @@ export default function useDesignModuleActions() {
         payload: async () => {
           try {
             const res = _res(await uploadWDTowersFile(params));
+
+            return Promise.resolve({data: res.data, index_of: params.index_of});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    uploadWDTFileVersion: params =>
+      dispatch({
+        type: types.ADD_FD_TOWER_FILES,
+        payload: async () => {
+          try {
+            const res = _res(await uploadWDTFileVersion(params));
+
+            return Promise.resolve({data: res.data, index_of: params.index_of});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    uploadFloorFileVersion: params =>
+      dispatch({
+        type: types.ADD_FD_TOWER_FILES,
+        payload: async () => {
+          try {
+            const res = _res(await uploadFloorFileVersion(params));
 
             return Promise.resolve({data: res.data, index_of: params.index_of});
           } catch (error) {
@@ -1254,9 +1335,7 @@ export default function useDesignModuleActions() {
         payload: async () => {
           try {
             const res = _res(await createWDFloorFolder(params));
-            return Promise.resolve({
-              data: res.data,
-            });
+            return Promise.resolve({data: res.data});
           } catch (error) {
             const message = _err(error);
             snackbar.showMessage({message, variant: 'error'});
@@ -1444,7 +1523,7 @@ export default function useDesignModuleActions() {
       }),
     getFDFloorFolderFileVersion: params =>
       dispatch({
-        type: types.GET_WD_FLOOR_FOLDER_FILE_VERSION,
+        type: types.GET_FD_FLOOR_FILE_VERSION,
         payload: async () => {
           try {
             const res = _res(await getFDFloorFolderFileVersion(params));

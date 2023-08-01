@@ -2,8 +2,8 @@ import {StyleSheet, View} from 'react-native';
 import React, {useState} from 'react';
 import {IconButton, Title} from 'react-native-paper';
 import {TouchableOpacity} from 'react-native-gesture-handler';
-import {RenderTowerBox} from 'components/Molecules/TowerSelector';
 import {TabView} from 'react-native-tab-view';
+import {RenderTowerBox} from 'components/Molecules/TowerSelector';
 
 import WDTabBar from '../Components/WDTabBar';
 import WDFloorSelector from '../Components/WDFloorSelector';

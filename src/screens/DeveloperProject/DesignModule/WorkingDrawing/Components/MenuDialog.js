@@ -1,16 +1,9 @@
 import React, {useState, useEffect} from 'react';
-import {
-  StyleSheet,
-  View,
-  TouchableOpacity,
-  ActivityIndicator,
-  Image,
-} from 'react-native';
-import {Button, IconButton, Subheading, Text} from 'react-native-paper';
+import {StyleSheet, View, TouchableOpacity, Image} from 'react-native';
+import {IconButton, Subheading, Text} from 'react-native-paper';
+import FileViewer from 'react-native-file-viewer';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import {checkDownloaded, downloadFile, getDownloadUrl} from 'utils/download';
-import {theme} from 'styles/theme';
-import FileViewer from 'react-native-file-viewer';
 import FolderIcon from 'assets/images/folder_icon.png';
 import FileIcon from 'assets/images/file_icon.png';
 
@@ -22,8 +15,9 @@ function MenuDialog(props) {
     toggleMenu,
     versionDataHandler,
     activityDataHandler,
+    showActivity,
   } = props;
-  const {id, is_preset, file_type, title} = modalContent;
+  const {id, is_preset, file_type, title, files_id} = modalContent;
 
   const snackbar = useSnackbar();
 
@@ -82,7 +76,8 @@ function MenuDialog(props) {
         {!fixedFolder ? (
           <>
             {file_type === 'image/jpeg' ? (
-              <TouchableOpacity onPress={() => versionDataHandler(id)}>
+              <TouchableOpacity
+                onPress={() => versionDataHandler(id, files_id)}>
                 <View style={styles.viewDirection}>
                   <IconButton icon="file-multiple" />
                   <Text style={styles.ModalText}>Manage version</Text>
@@ -101,26 +96,26 @@ function MenuDialog(props) {
                 </View>
               </TouchableOpacity>
             ) : null}
-
-            <TouchableOpacity onPress={() => activityDataHandler(id)}>
-              <View style={styles.viewDirection}>
-                <IconButton icon="information" />
-                <Text style={styles.ModalText}>Activity</Text>
-              </View>
-            </TouchableOpacity>
-
-            {/* {modulePermissions?.editor || modulePermissions?.admin ? ( */}
-            <TouchableOpacity
-              onPress={() => {
-                toggleDialog('deleteFileFolder');
-                toggleMenu();
-              }}>
-              <View style={styles.viewDirection}>
-                <IconButton icon="delete" />
-                <Text style={styles.ModalText}>Delete</Text>
-              </View>
-            </TouchableOpacity>
-            {/* ) : null} */}
+            {showActivity ? (
+              <TouchableOpacity onPress={() => activityDataHandler(id)}>
+                <View style={styles.viewDirection}>
+                  <IconButton icon="information" />
+                  <Text style={styles.ModalText}>Activity</Text>
+                </View>
+              </TouchableOpacity>
+            ) : null}
+            {modulePermissions?.editor || modulePermissions?.admin ? (
+              <TouchableOpacity
+                onPress={() => {
+                  toggleDialog('deleteFileFolder');
+                  toggleMenu();
+                }}>
+                <View style={styles.viewDirection}>
+                  <IconButton icon="delete" />
+                  <Text style={styles.ModalText}>Delete</Text>
+                </View>
+              </TouchableOpacity>
+            ) : null}
           </>
         ) : null}
       </View>

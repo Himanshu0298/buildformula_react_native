@@ -22,6 +22,7 @@ import {
   GET_CATEGORY_TOWER_SHEET,
   GET_FD_BUNGALOWS,
   GET_FD_BUNGALOWS_FILES,
+  GET_FD_FLOOR_FILE_VERSION,
   GET_FD_PLOTS,
   GET_FD_TOWERS,
   GET_FD_TOWER_FLOORS,
@@ -45,6 +46,7 @@ import {
   GET_WD_PLOTS,
   GET_WD_TOWER,
   GET_WD_TOWER_VERSION,
+  GET_WD_VERSION,
   REARRANGE_FD_FLOOR_ROWS,
   RENAME_FD_BUNGALOWS_FILES,
   RENAME_FD_TOWER_FILE,
@@ -102,6 +104,8 @@ const initialState = {
   wdFolderFileVersion: [],
   version: [],
   wdTowerVersion: [],
+  fdVersionData: [],
+  wdVersion: [],
 };
 
 export default (state = initialState, action = {}) => {
@@ -194,6 +198,13 @@ export default (state = initialState, action = {}) => {
         ...state,
         loading: false,
         fdTowerFloorsList: payload,
+      };
+    }
+    case `${GET_FD_FLOOR_FILE_VERSION}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+        fdVersionData: payload,
       };
     }
     case `${FD_TOWER_FLOOR_FOLDER}_FULFILLED`: {
@@ -300,6 +311,13 @@ export default (state = initialState, action = {}) => {
         ...state,
         loading: false,
         wdBungalows: payload.data,
+      };
+    }
+    case `${GET_WD_VERSION}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+        wdVersion: payload.data,
       };
     }
 
@@ -685,6 +703,8 @@ export default (state = initialState, action = {}) => {
     case `${GET_WD_FLOOR_FOLDER_FILE_VERSION}_PENDING`:
     case `${GET_WD_FLOOR_FILE_VERSION}_PENDING`:
     case `${GET_WD_TOWER_VERSION}_PENDING`:
+    case `${GET_FD_FLOOR_FILE_VERSION}_PENDING`:
+    case `${GET_WD_VERSION}_PENDING`:
       return {
         ...state,
         loading: true,
@@ -768,6 +788,8 @@ export default (state = initialState, action = {}) => {
     case `${GET_WD_FLOOR_FOLDER_FILE_VERSION}_REJECTED`:
     case `${GET_WD_FLOOR_FILE_VERSION}_REJECTED`:
     case `${GET_WD_TOWER_VERSION}_REJECTED`:
+    case `${GET_FD_FLOOR_FILE_VERSION}_REJECTED`:
+    case `${GET_WD_VERSION}_REJECTED`:
       return {
         ...state,
         loading: false,
