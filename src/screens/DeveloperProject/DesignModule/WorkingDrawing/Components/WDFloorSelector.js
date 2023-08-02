@@ -1,14 +1,13 @@
 import React, {useState} from 'react';
 import {FlatList, View, StyleSheet, Text} from 'react-native';
-import FloorBar from 'components/Atoms/FloorBar';
 import {Subheading, withTheme} from 'react-native-paper';
 
+import Spinner from 'react-native-loading-spinner-overlay';
+import {useSelector} from 'react-redux';
 import NoResult from 'components/Atoms/NoResult';
 
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
-import Spinner from 'react-native-loading-spinner-overlay';
 import useDesignModuleActions from 'redux/actions/designModuleActions';
-import {useSelector} from 'react-redux';
 import WDFloorBar from './WDFloorBar';
 
 function FDFloorSelector(props) {

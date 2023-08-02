@@ -1,8 +1,8 @@
-import StructureSelector from 'components/Molecules/StructureSelector';
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
-import {IconButton, Text, Title} from 'react-native-paper';
+import {IconButton, Title} from 'react-native-paper';
 import {useSelector} from 'react-redux';
+import StructureSelector from 'components/Molecules/StructureSelector';
 
 function SelectStructure(props) {
   const {navigation, route} = props;

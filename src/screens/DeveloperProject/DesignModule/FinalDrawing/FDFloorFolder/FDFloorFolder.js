@@ -364,7 +364,7 @@ function FDFloorFolder(props) {
   const {tower_id, folderId, floorId} = route?.params || {};
 
   const snackbar = useSnackbar();
-  const {openImagePicker} = useImagePicker();
+  const {openFilePicker} = useImagePicker();
 
   const {selectedProject} = useSelector(s => s.project);
   const {loading, towerFolderList, fdVersionData} = useSelector(
@@ -464,7 +464,7 @@ function FDFloorFolder(props) {
   };
 
   const handleNewVersionUpload = async (_id, file_id) => {
-    openImagePicker({
+    openFilePicker({
       type: 'file',
       onChoose: v => onChooseFile(v, file_id),
     });
@@ -478,7 +478,7 @@ function FDFloorFolder(props) {
     });
     getFDFloorFolderFileVersion({
       project_id,
-      final_drawing_tower_files_id: fileId,
+      final_drawing_tower_files_id: version.final_drawing_tower_files_id,
     });
   };
 
@@ -501,7 +501,7 @@ function FDFloorFolder(props) {
   };
 
   const handleFileUpload = async file => {
-    openImagePicker({
+    openFilePicker({
       type: 'file',
       onChoose: v => {
         uploadFile(file, v);

@@ -1,10 +1,10 @@
 import React from 'react';
-import RenderInput from 'components/Atoms/RenderInput';
 import {Formik} from 'formik';
 import {StyleSheet, View} from 'react-native';
 import {Text, Dialog, Button, Portal} from 'react-native-paper';
-import {secondaryTheme} from 'styles/theme';
 import * as Yup from 'yup';
+import {secondaryTheme} from 'styles/theme';
+import RenderInput from 'components/Atoms/RenderInput';
 
 const schema = Yup.object().shape({
   name: Yup.string().trim().required('Required'),

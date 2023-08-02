@@ -4,8 +4,6 @@ import {
   View,
   Image,
   TouchableOpacity,
-  FlatList,
-  RefreshControl,
   SectionList,
 } from 'react-native';
 import {
@@ -26,7 +24,6 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Feather from 'react-native-vector-icons/Feather';
 import Spinner from 'react-native-loading-spinner-overlay';
-import NoResult from 'components/Atoms/NoResult';
 import {downloadFile, getDownloadUrl, getFileExtension} from 'utils/download';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import useDesignModuleActions from 'redux/actions/designModuleActions';
@@ -37,10 +34,8 @@ import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import FileIcon from 'assets/images/file_icon.png';
 import {useDownload} from 'components/Atoms/Download';
 import MenuDialog from '../Components/MenuDialog';
-import DeleteDialog from '../Components/DeleteDialog';
-import RenameDialogue from '../Components/RenameDialog';
+
 import VersionDialog from '../../RoughDrawing/Components/VersionDialog';
-import SelectTower from '../Components/SelectTower';
 
 const SNAP_POINTS = [0, '70%'];
 
@@ -281,7 +276,7 @@ function FDFloorFolderFile(props) {
     getFDVersion,
     deleteFDVersion,
   } = useDesignModuleActions();
-  const {openImagePicker} = useImagePicker();
+  const {openFilePicker} = useImagePicker();
 
   const modulePermissions = getPermissions('Files');
 
@@ -393,7 +388,7 @@ function FDFloorFolderFile(props) {
   };
 
   const handleNewVersionUpload = file_id => {
-    openImagePicker({
+    openFilePicker({
       type: 'file',
       onChoose: async v => {
         const formData = new FormData();
@@ -449,7 +444,7 @@ function FDFloorFolderFile(props) {
       <FAB
         style={styles.fab}
         icon="plus"
-        onPress={() => openImagePicker({type: 'file', onChoose})}
+        onPress={() => openFilePicker({type: 'file', onChoose})}
         medium
       />
     </View>

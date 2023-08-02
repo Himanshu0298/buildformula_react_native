@@ -1,11 +1,11 @@
 import React from 'react';
 import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
 import PropTypes from 'prop-types';
-import Layout from 'utils/Layout';
 import {Badge, Caption} from 'react-native-paper';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Layout from 'utils/Layout';
 import {getFloorNumber} from 'utils';
 import floorSlab from 'assets/images/slab.png';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {theme} from 'styles/theme';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 

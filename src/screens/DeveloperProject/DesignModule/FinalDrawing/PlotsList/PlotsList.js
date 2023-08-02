@@ -269,7 +269,7 @@ function PlotsList(props) {
   const structureLabel = 'Plots';
   const snackbar = useSnackbar();
 
-  const {openImagePicker} = useImagePicker();
+  const {openFilePicker} = useImagePicker();
 
   const [menuId, setMenuId] = React.useState();
   const [modelContentType, setModalContentType] = React.useState('menu');
@@ -367,7 +367,7 @@ function PlotsList(props) {
   };
 
   const handleNewVersionUpload = file_id => {
-    openImagePicker({
+    openFilePicker({
       type: 'file',
       onChoose: async v => {
         const formData = new FormData();
@@ -482,7 +482,7 @@ function PlotsList(props) {
       <FAB
         style={styles.fab}
         icon="plus"
-        onPress={() => openImagePicker({type: 'file', onChoose})}
+        onPress={() => openFilePicker({type: 'file', onChoose})}
         medium
       />
     </>

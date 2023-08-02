@@ -258,7 +258,7 @@ function FDTowerList(props) {
 
   const snackbar = useSnackbar();
   const download = useDownload();
-  const {openImagePicker} = useImagePicker();
+  const {openFilePicker} = useImagePicker();
 
   const {
     getFDTowers,
@@ -342,7 +342,7 @@ function FDTowerList(props) {
   };
 
   const handleNewVersionUpload = file_id => {
-    openImagePicker({
+    openFilePicker({
       type: 'file',
       onChoose: async v => {
         const formData = new FormData();
@@ -487,7 +487,7 @@ function FDTowerList(props) {
       <FAB
         style={styles.fab}
         icon="plus"
-        onPress={() => openImagePicker({type: 'file', onChoose})}
+        onPress={() => openFilePicker({type: 'file', onChoose})}
         medium
       />
     </View>

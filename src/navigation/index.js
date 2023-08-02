@@ -318,7 +318,6 @@ import WDTowerList from 'screens/DeveloperProject/DesignModule/WorkingDrawing/WD
 import WDTowerPreview from 'screens/DeveloperProject/DesignModule/WorkingDrawing/WDTowerPreview';
 import AddWDRows from 'screens/DeveloperProject/DesignModule/WorkingDrawing/AddWDRows';
 import WDFloorFolder from 'screens/DeveloperProject/DesignModule/WorkingDrawing/WDFloorFolder';
-import FloorDestinationFiles from 'screens/DeveloperProject/DesignModule/WorkingDrawing/FloorDestinationFiles';
 import WDPlotList from 'screens/DeveloperProject/DesignModule/WorkingDrawing/WDPlotList';
 import WDPlotFileList from 'screens/DeveloperProject/DesignModule/WorkingDrawing/WDPlotFileList';
 import WDBungalowList from 'screens/DeveloperProject/DesignModule/WorkingDrawing/WDBungalowList';
@@ -754,10 +753,7 @@ function AppStackNavigator() {
                 name="WDBungalowFileList"
                 component={WDBungalowFileList}
               />
-              <Stack.Screen
-                name="FloorDestinationFiles"
-                component={FloorDestinationFiles}
-              />
+
               <Stack.Screen name="Parking" component={Parking} />
             </Stack.Group>
 

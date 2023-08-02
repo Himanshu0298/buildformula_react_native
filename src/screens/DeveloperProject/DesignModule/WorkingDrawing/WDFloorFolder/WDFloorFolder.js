@@ -261,7 +261,6 @@ function RenderRow(props) {
   const {
     item,
     index,
-    onPress,
     handleFileUpload,
     fileData,
     toggleMenu,
@@ -305,10 +304,10 @@ function RenderRow(props) {
 function WDFloorFolder(props) {
   const {navigation, route} = props;
 
-  const {folderId, tower_id, floorId, folder_id} = route?.params || {};
+  const {folderId, tower_id, floorId} = route?.params || {};
 
   const {colors} = useTheme();
-  const {openImagePicker} = useImagePicker();
+  const {openFilePicker} = useImagePicker();
 
   const snackbar = useSnackbar();
 
@@ -366,7 +365,7 @@ function WDFloorFolder(props) {
   };
 
   const handleNewVersionUpload = (file_id, id) => {
-    openImagePicker({
+    openFilePicker({
       type: 'file',
       onChoose: async v => {
         const formData = new FormData();
@@ -437,7 +436,7 @@ function WDFloorFolder(props) {
   };
 
   const handleFileUpload = async file => {
-    openImagePicker({
+    openFilePicker({
       type: 'file',
       onChoose: v => {
         uploadFile(file, v);
@@ -480,16 +479,17 @@ function WDFloorFolder(props) {
           handleDeleteVersion,
         }}
       />
-      <CreateFolderDialogue
-        visible={DialogType === 'createFolder'}
-        toggleDialogue={toggleDialog}
-        createFolderHandler={createFolderHandler}
-        placeholder="Destination Name"
-        title="Create new destination"
-        addFile
-        handleFileUpload={handleFileUpload}
-      />
-
+      {DialogType ? (
+        <CreateFolderDialogue
+          visible={DialogType === 'createFolder'}
+          toggleDialogue={toggleDialog}
+          createFolderHandler={createFolderHandler}
+          placeholder="Destination Name"
+          title="Create new destination"
+          addFile
+          handleFileUpload={handleFileUpload}
+        />
+      ) : null}
       <DeleteDialog
         visible={DialogType === 'deleteFileFolder'}
         toggleDialogue={toggleDialog}

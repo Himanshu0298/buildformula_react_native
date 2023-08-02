@@ -270,7 +270,7 @@ function FinalDrawingTowerFiles(props) {
     FDTowerFileActivityLogs,
     uploadTowerFileVersion,
   } = useDesignModuleActions();
-  const {openImagePicker} = useImagePicker();
+  const {openFilePicker} = useImagePicker();
 
   const modulePermissions = getPermissions('Files');
 
@@ -375,7 +375,7 @@ function FinalDrawingTowerFiles(props) {
   };
 
   const handleNewVersionUpload = file_id => {
-    openImagePicker({
+    openFilePicker({
       type: 'file',
       onChoose: async v => {
         const formData = new FormData();
@@ -436,7 +436,7 @@ function FinalDrawingTowerFiles(props) {
       <FAB
         style={styles.fab}
         icon="plus"
-        onPress={() => openImagePicker({type: 'file', onChoose})}
+        onPress={() => openFilePicker({type: 'file', onChoose})}
         medium
       />
 

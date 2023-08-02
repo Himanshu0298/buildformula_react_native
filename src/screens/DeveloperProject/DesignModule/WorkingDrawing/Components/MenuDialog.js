@@ -35,30 +35,6 @@ function MenuDialog(props) {
     }
   }, [modalContent]);
 
-  const toggleDownloading = () => setDownloading(v => !v);
-
-  const handleDownload = async () => {
-    try {
-      toggleDownloading();
-      const fileUrl = getDownloadUrl({modalContent, common: true});
-      const {dir} = await downloadFile(modalContent, fileUrl);
-      snackbar.showMessage({
-        message: 'File Downloaded Successfully!',
-        variant: 'success',
-      });
-      setDownloaded(dir);
-      toggleDownloading();
-    } catch (error) {
-      toggleDownloading();
-      console.log('----->erorr', error);
-    }
-  };
-  const openFile = filePath => {
-    filePath = filePath || downloaded;
-    console.log('-----> open path', filePath);
-    FileViewer.open(filePath);
-  };
-
   const fixedFolder =
     fileType === 'folder' || ['Architech', 'Structure', 'MEP'].includes(title);
 

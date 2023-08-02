@@ -269,7 +269,7 @@ function WDTowerFiles(props) {
     uploadWDFloorFolderFileVersion,
     getWDTower,
   } = useDesignModuleActions();
-  const {openImagePicker} = useImagePicker();
+  const {openFilePicker} = useImagePicker();
 
   const modulePermissions = getPermissions('Files');
 
@@ -368,7 +368,7 @@ function WDTowerFiles(props) {
   };
 
   const handleNewVersionUpload = (file_id, id) => {
-    openImagePicker({
+    openFilePicker({
       type: 'file',
       onChoose: async v => {
         const formData = new FormData();
@@ -432,7 +432,7 @@ function WDTowerFiles(props) {
       <FAB
         style={styles.fab}
         icon="plus"
-        onPress={() => openImagePicker({type: 'file', onChoose})}
+        onPress={() => openFilePicker({type: 'file', onChoose})}
         medium
       />
 

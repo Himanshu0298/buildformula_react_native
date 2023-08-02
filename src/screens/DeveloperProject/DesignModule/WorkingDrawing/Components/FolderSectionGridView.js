@@ -1,10 +1,10 @@
 import React from 'react';
 import {StyleSheet, View, Image, TouchableOpacity} from 'react-native';
 import {Text} from 'react-native-paper';
-import FolderIcon from 'assets/images/folder_icon.png';
 import {FlatList} from 'react-native-gesture-handler';
-import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import FolderIcon from 'assets/images/folder_icon.png';
+import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 
 function RenderFolder(props) {
   const {

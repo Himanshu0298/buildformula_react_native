@@ -16,7 +16,7 @@ const schema = Yup.object().shape({
 function CreateFolderDialogue(props) {
   const {visible, toggleDialogue, createFolderHandler, addFile} = props;
   const folderNameRef = React.useRef();
-  const {openImagePicker} = useImagePicker();
+  const {openFilePicker} = useImagePicker();
 
   const {
     values,
@@ -35,7 +35,7 @@ function CreateFolderDialogue(props) {
   });
 
   const handleFileUpload = () => {
-    openImagePicker({
+    openFilePicker({
       type: 'file',
       onChoose: v => {
         setFieldValue('file', v);

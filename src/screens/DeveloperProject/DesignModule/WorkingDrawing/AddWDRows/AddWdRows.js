@@ -1,6 +1,5 @@
 import {StyleSheet, View} from 'react-native';
 import React, {useMemo, useState} from 'react';
-import {useAlert} from 'components/Atoms/Alert';
 import {ActionSheetProvider} from '@expo/react-native-action-sheet';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {
@@ -13,18 +12,19 @@ import {
   Text,
 } from 'react-native-paper';
 import {AutoDragSortableView} from 'react-native-drag-sort';
-import Layout from 'utils/Layout';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {Formik} from 'formik';
+import {debounce, isNumber} from 'lodash';
+import {useSelector} from 'react-redux';
+import Layout from 'utils/Layout';
 
 import NoResult from 'components/Atoms/NoResult';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import {theme} from 'styles/theme';
-import {Formik} from 'formik';
 import RenderInput from 'components/Atoms/RenderInput';
-import {debounce, isNumber} from 'lodash';
 import {getShadow} from 'utils';
-import {useSelector} from 'react-redux';
+import {useAlert} from 'components/Atoms/Alert';
 import useDesignModuleActions from 'redux/actions/designModuleActions';
 
 const ROW_HEIGHT = 50;

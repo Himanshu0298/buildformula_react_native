@@ -1,10 +1,10 @@
-import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
-import TowerSelector from 'components/Molecules/TowerSelector';
 import React, {useMemo, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {Text} from 'react-native-paper';
+import TowerSelector from 'components/Molecules/TowerSelector';
+import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import {theme} from 'styles/theme';
 
 function Towers(props) {

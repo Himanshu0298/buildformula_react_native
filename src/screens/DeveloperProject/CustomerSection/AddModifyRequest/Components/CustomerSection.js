@@ -9,15 +9,15 @@ import {
   Subheading,
   Divider,
 } from 'react-native-paper';
-import RenderInput from 'components/Atoms/RenderInput';
 import {Formik} from 'formik';
-import useImagePicker from 'hooks/useImagePicker';
 import dayjs from 'dayjs';
-import RenderTextBox from 'components/Atoms/RenderTextbox';
 import {cloneDeep, uniqBy} from 'lodash';
+import * as Yup from 'yup';
+import RenderInput from 'components/Atoms/RenderInput';
+import useImagePicker from 'hooks/useImagePicker';
+import RenderTextBox from 'components/Atoms/RenderTextbox';
 import fileIcon from 'assets/images/file_icon.png';
 import {theme} from 'styles/theme';
-import * as Yup from 'yup';
 
 const schema = Yup.object().shape({
   title: Yup.string().required('Required'),

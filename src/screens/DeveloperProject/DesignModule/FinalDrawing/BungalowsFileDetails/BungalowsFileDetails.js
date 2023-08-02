@@ -1,4 +1,3 @@
-import {useImagePicker} from 'hooks';
 import React, {useEffect, useMemo, useRef} from 'react';
 import {
   FlatList,
@@ -21,25 +20,26 @@ import {
   Title,
 } from 'react-native-paper';
 import Animated from 'react-native-reanimated';
-import {theme} from 'styles/theme';
 import _ from 'lodash';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Feather from 'react-native-vector-icons/Feather';
-
 import dayjs from 'dayjs';
-import {useSnackbar} from 'components/Atoms/Snackbar';
 import {useSelector} from 'react-redux';
+import {Image} from 'react-native-svg';
+import FileViewer from 'react-native-file-viewer';
+import Spinner from 'react-native-loading-spinner-overlay';
+import {theme} from 'styles/theme';
+
+import {useSnackbar} from 'components/Atoms/Snackbar';
 import useDesignModuleActions from 'redux/actions/designModuleActions';
 import NoResult from 'components/Atoms/NoResult';
 import {useDownload} from 'components/Atoms/Download';
-import {Image} from 'react-native-svg';
 import FileIcon from 'assets/images/file_icon.png';
-import FileViewer from 'react-native-file-viewer';
 import {getFileExtension} from 'utils/download';
 import {getShadow} from 'utils';
 import {RenderTowerBox} from 'components/Molecules/TowerSelector';
-import Spinner from 'react-native-loading-spinner-overlay';
+import {useImagePicker} from 'hooks';
 import MenuDialog from '../Components/MenuDialog';
 import VersionDialog from '../Components/VersionDialog';
 
@@ -278,7 +278,7 @@ function BungalowsFileDetails(props) {
 
   const towerId = 1;
   const snackbar = useSnackbar();
-  const {openImagePicker} = useImagePicker();
+  const {openFilePicker} = useImagePicker();
 
   const {uploadFDBungalowsFile, getFDBungalows} = useDesignModuleActions();
 
@@ -386,7 +386,7 @@ function BungalowsFileDetails(props) {
       <FAB
         style={styles.fab}
         icon="plus"
-        onPress={() => openImagePicker({type: 'file', onChoose})}
+        onPress={() => openFilePicker({type: 'file', onChoose})}
         medium
       />
     </View>

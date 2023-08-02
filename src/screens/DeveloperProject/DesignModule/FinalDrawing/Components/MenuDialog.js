@@ -1,16 +1,8 @@
 import React, {useState, useEffect} from 'react';
-import {
-  StyleSheet,
-  View,
-  TouchableOpacity,
-  ActivityIndicator,
-  Image,
-} from 'react-native';
-import {Button, IconButton, Subheading, Text} from 'react-native-paper';
-import FileViewer from 'react-native-file-viewer';
-import {useSnackbar} from 'components/Atoms/Snackbar';
-import {checkDownloaded, downloadFile, getDownloadUrl} from 'utils/download';
-import {theme} from 'styles/theme';
+import {StyleSheet, View, TouchableOpacity, Image} from 'react-native';
+import {IconButton, Subheading, Text} from 'react-native-paper';
+
+import {checkDownloaded} from 'utils/download';
 import FolderIcon from 'assets/images/folder_icon.png';
 import FileIcon from 'assets/images/file_icon.png';
 
@@ -26,8 +18,6 @@ function MenuDialog(props) {
   } = props;
   const {id, row_type, file_type, is_preset, title, files_id} = modalContent;
 
-  const snackbar = useSnackbar();
-
   const fileType = row_type ? 'folder' : 'file';
 
   const [downloading, setDownloading] = useState(false);
@@ -41,30 +31,6 @@ function MenuDialog(props) {
       });
     }
   }, [modalContent]);
-
-  const toggleDownloading = () => setDownloading(v => !v);
-
-  const handleDownload = async () => {
-    try {
-      toggleDownloading();
-      const fileUrl = getDownloadUrl({modalContent, common: true});
-      const {dir} = await downloadFile(modalContent, fileUrl);
-      snackbar.showMessage({
-        message: 'File Downloaded Successfully!',
-        variant: 'success',
-      });
-      setDownloaded(dir);
-      toggleDownloading();
-    } catch (error) {
-      toggleDownloading();
-      console.log('----->erorr', error);
-    }
-  };
-  const openFile = filePath => {
-    filePath = filePath || downloaded;
-    console.log('-----> open path', filePath);
-    FileViewer.open(filePath);
-  };
 
   const fixedFolder =
     fileType === 'folder' || ['Architech', 'Structure', 'MEP'].includes(title);

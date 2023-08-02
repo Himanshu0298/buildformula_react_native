@@ -13,16 +13,12 @@ import FileViewer from 'react-native-file-viewer';
 import PdfIcon from 'assets/images/pdf_icon.png';
 import {checkDownloaded} from 'utils/download';
 
-import {useSnackbar} from 'components/Atoms/Snackbar';
 import {theme} from 'styles/theme';
 import {useDownload} from 'components/Atoms/Download';
 import {getFileName} from 'utils/constant';
 
 function VersionFile(props) {
   const {modulePermissions, version, countVersion, handleDeleteVersion} = props;
-  console.log('-------->propsVersile', props);
-
-  const snackbar = useSnackbar();
 
   const download = useDownload();
 
@@ -39,7 +35,6 @@ function VersionFile(props) {
     }
   }, [version]);
 
-  const toggleDownloading = () => setDownloading(v => !v);
   const toggleVersionMenu = () => setVersionMenu(v => !v);
 
   const handleDownload = async file => {
@@ -101,16 +96,16 @@ function VersionFile(props) {
               onPress={() => handleDownload(version)}
               title="Download"
             />
-            {modulePermissions?.editor || modulePermissions?.admin ? (
-              <>
-                <Divider />
-                <Menu.Item
-                  icon="delete"
-                  onPress={() => handleDeleteVersion(version, version.files_id)}
-                  title="Delete"
-                />
-              </>
-            ) : null}
+            {/* {modulePermissions?.editor || modulePermissions?.admin ? ( */}
+            <>
+              <Divider />
+              <Menu.Item
+                icon="delete"
+                onPress={() => handleDeleteVersion(version, version.files_id)}
+                title="Delete"
+              />
+            </>
+            {/* ) : null} */}
           </Menu>
         </View>
       </View>
@@ -130,18 +125,18 @@ function VersionDialog(props) {
     <View style={styles.container}>
       <View style={styles.versionHeading}>
         <Subheading style={{color: theme.colors.primary}}>Versions</Subheading>
-        {modulePermissions?.editor || modulePermissions?.admin ? (
-          <Button
-            uppercase={false}
-            mode="contained"
-            compact
-            labelStyle={styles.labelStyle}
-            onPress={() =>
-              handleNewVersionUpload(modalContent.id, modalContent.files_id)
-            }>
-            Add New Version
-          </Button>
-        ) : null}
+        {/* {modulePermissions?.editor || modulePermissions?.admin ? ( */}
+        <Button
+          uppercase={false}
+          mode="contained"
+          compact
+          labelStyle={styles.labelStyle}
+          onPress={() =>
+            handleNewVersionUpload(modalContent.id, modalContent.files_id)
+          }>
+          Add New Version
+        </Button>
+        {/* ) : null} */}
       </View>
 
       <View>

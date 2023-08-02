@@ -276,7 +276,7 @@ function WDPlotFileList(props) {
   } = route?.params || {};
 
   const snackbar = useSnackbar();
-  const {openImagePicker} = useImagePicker();
+  const {openFilePicker} = useImagePicker();
 
   const {uploadFDPlotBungalowFile, getWDPlot} = useDesignModuleActions();
 
@@ -390,7 +390,7 @@ function WDPlotFileList(props) {
         <FAB
           style={styles.fab}
           icon="plus"
-          onPress={() => openImagePicker({type: 'file', onChoose})}
+          onPress={() => openFilePicker({type: 'file', onChoose})}
           medium
         />
       </View>

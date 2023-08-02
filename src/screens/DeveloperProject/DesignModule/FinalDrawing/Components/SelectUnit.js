@@ -1,13 +1,13 @@
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useState} from 'react';
+import {useSelector} from 'react-redux';
+import dayjs from 'dayjs';
+import {IconButton, Subheading} from 'react-native-paper';
 import {getFloorNumber, getPermissions} from 'utils';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import useSalesActions from 'redux/actions/salesActions';
-import {useSelector} from 'react-redux';
 import {useSalesLoading} from 'redux/selectors';
-import dayjs from 'dayjs';
-import {IconButton, Subheading} from 'react-native-paper';
 import {STRUCTURE_TYPE_LABELS} from 'utils/constant';
 import UnitSelector from 'components/Molecules/UnitSelector';
 

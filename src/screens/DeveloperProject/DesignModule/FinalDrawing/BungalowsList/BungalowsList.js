@@ -268,7 +268,7 @@ function BungalowsList(props) {
   const structureLabel = 'Bungalows';
   const snackbar = useSnackbar();
 
-  const {openImagePicker} = useImagePicker();
+  const {openFilePicker} = useImagePicker();
 
   const {
     getFDBungalows,
@@ -371,7 +371,7 @@ function BungalowsList(props) {
   };
 
   const handleNewVersionUpload = file_id => {
-    openImagePicker({
+    openFilePicker({
       type: 'file',
       onChoose: async v => {
         const formData = new FormData();
@@ -485,7 +485,7 @@ function BungalowsList(props) {
       <FAB
         style={styles.fab}
         icon="plus"
-        onPress={() => openImagePicker({type: 'file', onChoose})}
+        onPress={() => openFilePicker({type: 'file', onChoose})}
         medium
       />
     </>

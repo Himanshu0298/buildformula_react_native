@@ -17,11 +17,9 @@ import {
   Divider,
   Caption,
 } from 'react-native-paper';
-import FolderIcon from 'assets/images/folder_icon.png';
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
 import BottomSheet from 'reanimated-bottom-sheet';
-import {getPermissions, getShadow} from 'utils';
 import Animated from 'react-native-reanimated';
 import _ from 'lodash';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -30,6 +28,8 @@ import Feather from 'react-native-vector-icons/Feather';
 import dayjs from 'dayjs';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import Foundation from 'react-native-vector-icons/Foundation';
+import {getPermissions, getShadow} from 'utils';
+import FolderIcon from 'assets/images/folder_icon.png';
 import useDesignModuleActions from 'redux/actions/designModuleActions';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import NoResult from 'components/Atoms/NoResult';

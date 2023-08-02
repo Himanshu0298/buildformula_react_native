@@ -1,6 +1,3 @@
-import CustomCheckbox from 'components/Atoms/CustomCheckbox';
-import CustomDialog from 'components/Atoms/CustomDialog';
-import {RenderError} from 'components/Atoms/RenderInput';
 import React, {Fragment, useMemo, useState} from 'react';
 import {StyleSheet, TouchableOpacity, View, FlatList} from 'react-native';
 import {
@@ -14,6 +11,9 @@ import {
   IconButton,
 } from 'react-native-paper';
 import {useSelector} from 'react-redux';
+import {RenderError} from 'components/Atoms/RenderInput';
+import CustomDialog from 'components/Atoms/CustomDialog';
+import CustomCheckbox from 'components/Atoms/CustomCheckbox';
 import {getShadow} from 'utils';
 
 const USER_ROLES = [

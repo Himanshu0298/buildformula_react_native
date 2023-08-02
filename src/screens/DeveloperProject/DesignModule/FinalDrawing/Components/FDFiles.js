@@ -16,24 +16,24 @@ import {
   Subheading,
   Text,
 } from 'react-native-paper';
-import FileIcon from 'assets/images/file_icon.png';
 import dayjs from 'dayjs';
 import {useSelector} from 'react-redux';
-import NoResult from 'components/Atoms/NoResult';
-import {getDownloadUrl} from 'utils/download';
-import {theme} from 'styles/theme';
-import {useImagePicker} from 'hooks';
 import Animated from 'react-native-reanimated';
 import _ from 'lodash';
 import BottomSheet from 'reanimated-bottom-sheet';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Feather from 'react-native-vector-icons/Feather';
+import Spinner from 'react-native-loading-spinner-overlay';
+import FileViewer from 'react-native-file-viewer';
 import {getShadow} from 'utils';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
-import Spinner from 'react-native-loading-spinner-overlay';
 import {useDownload} from 'components/Atoms/Download';
-import FileViewer from 'react-native-file-viewer';
+import {useImagePicker} from 'hooks';
+import {theme} from 'styles/theme';
+import {getDownloadUrl} from 'utils/download';
+import NoResult from 'components/Atoms/NoResult';
+import FileIcon from 'assets/images/file_icon.png';
 import MenuDialog from './MenuDialog';
 
 import VersionDialog from './VersionDialog';
@@ -259,7 +259,6 @@ function RenderMenuModal(props) {
 
 function FDFiles(props) {
   const {navigation} = props;
-  const {openImagePicker} = useImagePicker();
 
   const {
     data,
@@ -408,13 +407,6 @@ const styles = StyleSheet.create({
   },
   verticalFlex: {
     flexDirection: 'column',
-  },
-  fab: {
-    position: 'absolute',
-    right: 25,
-    bottom: 30,
-    zIndex: 2,
-    backgroundColor: theme.colors.primary,
   },
 
   backdrop: {
