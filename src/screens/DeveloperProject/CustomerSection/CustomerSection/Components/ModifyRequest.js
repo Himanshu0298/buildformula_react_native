@@ -1,16 +1,9 @@
-import ScreenTitle from 'components/Atoms/ScreenTitle';
 import * as React from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
 import {Tabs} from 'react-native-collapsible-tab-view';
-import {
-  Caption,
-  Text,
-  withTheme,
-  Subheading,
-  FAB,
-  Button,
-} from 'react-native-paper';
+import {Caption, Text, withTheme, FAB, Button} from 'react-native-paper';
 import {useSelector} from 'react-redux';
+import ScreenTitle from 'components/Atoms/ScreenTitle';
 import {getPermissions} from 'utils';
 import {MODIFY_REQUEST_STATUS} from 'utils/constant';
 

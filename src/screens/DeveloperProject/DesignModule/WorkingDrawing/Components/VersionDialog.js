@@ -21,6 +21,7 @@ import {checkDownloaded} from 'utils/download';
 import {theme} from 'styles/theme';
 import {getFileName} from 'utils/constant';
 import {useDownload} from 'components/Atoms/Download';
+import {getPermissions} from 'utils';
 
 function VersionFile(props) {
   const {modulePermissions, version, countVersion, handleDeleteVersion} = props;
@@ -59,6 +60,14 @@ function VersionFile(props) {
     filePath = filePath || downloaded;
     console.log('-----> open path', filePath);
     FileViewer.open(filePath);
+  };
+
+  const onDelete = () => {
+    handleDeleteVersion(
+      version?.id,
+      version?.working_drawing_tower_floors_files_id,
+    );
+    toggleVersionMenu();
   };
 
   return (
@@ -107,16 +116,7 @@ function VersionFile(props) {
             {modulePermissions?.editor || modulePermissions?.admin ? (
               <>
                 <Divider />
-                <Menu.Item
-                  icon="delete"
-                  onPress={() =>
-                    handleDeleteVersion(
-                      version?.id,
-                      version?.working_drawing_tower_floors_files_id,
-                    )
-                  }
-                  title="Delete"
-                />
+                <Menu.Item icon="delete" onPress={onDelete} title="Delete" />
               </>
             ) : null}
           </Menu>
@@ -129,12 +129,13 @@ function VersionFile(props) {
 
 function VersionDialog(props) {
   const {
-    modulePermissions,
     modalContent,
     versionData,
     handleNewVersionUpload,
     handleDeleteVersion,
   } = props;
+
+  const modulePermissions = getPermissions('Files');
 
   const filteredVersion = useMemo(() => {
     return [versionData?.current, ...(versionData || [])];
@@ -151,7 +152,11 @@ function VersionDialog(props) {
             compact
             labelStyle={styles.labelStyle}
             onPress={() =>
-              handleNewVersionUpload(modalContent.files_id, modalContent.id)
+              handleNewVersionUpload(
+                modalContent.files_id,
+                modalContent.id,
+                modalContent,
+              )
             }>
             Add New Version
           </Button>
@@ -166,6 +171,7 @@ function VersionDialog(props) {
             key={index}
             countVersion={index}
             handleDeleteVersion={handleDeleteVersion}
+            modulePermissions={modulePermissions}
           />
         ))}
       </ScrollView>

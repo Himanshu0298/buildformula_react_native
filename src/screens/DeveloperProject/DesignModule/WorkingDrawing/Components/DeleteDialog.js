@@ -7,6 +7,9 @@ import {theme} from 'styles/theme';
 function DeleteDialog(props) {
   const {visible, toggleDialogue, dialogueContent, deleteFileHandler} = props;
 
+  const {title, folder_title} = dialogueContent;
+  console.log('===========>dialogueContent ', dialogueContent);
+
   return (
     <Portal>
       <Dialog
@@ -18,7 +21,7 @@ function DeleteDialog(props) {
             <Text style={styles.alertText}>
               Are you sure you want to delete
             </Text>
-            <Text>{dialogueContent.title}</Text>
+            <Text>{folder_title || title}</Text>
           </View>
         </Dialog.Content>
         <Dialog.Actions>

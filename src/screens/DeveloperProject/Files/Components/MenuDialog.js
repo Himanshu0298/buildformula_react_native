@@ -7,10 +7,10 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import {Button, IconButton, Subheading, Text} from 'react-native-paper';
-import FolderIcon from 'assets/images/folder_icon.png';
-import FileIcon from 'assets/images/file_icon.png';
 import FileViewer from 'react-native-file-viewer';
 import Share from 'react-native-share';
+import FolderIcon from 'assets/images/folder_icon.png';
+import FileIcon from 'assets/images/file_icon.png';
 import {checkDownloaded, getDownloadUrl, getFileName} from 'utils/download';
 import {useDownload} from 'components/Atoms/Download';
 

@@ -12,7 +12,7 @@ const schema = Yup.object().shape({
 
 function RenameDialogue(props) {
   const {visible, toggleDialogue, dialogueContent, renameFolderHandler} = props;
-  const {file_name, folder_name, title} = dialogueContent || {};
+  const {file_name, folder_name, title, folder_title} = dialogueContent || {};
 
   const renaNameRef = React.useRef();
 
@@ -20,12 +20,16 @@ function RenameDialogue(props) {
     <Portal>
       <Dialog visible={visible} onDismiss={toggleDialogue} style={{top: -100}}>
         <View style={styles.dialogTitleContainer}>
-          <Text style={{color: '#000'}}>{file_name || folder_name}</Text>
+          <Text style={{color: '#000'}}>
+            {folder_title || file_name || folder_name}
+          </Text>
         </View>
         <Formik
           validateOnBlur={false}
           validateOnChange={false}
-          initialValues={{name: file_name || folder_name || title}}
+          initialValues={{
+            name: folder_title || file_name || folder_name || title,
+          }}
           validationSchema={schema}
           onSubmit={async values => {
             renameFolderHandler(values.name, dialogueContent?.id);

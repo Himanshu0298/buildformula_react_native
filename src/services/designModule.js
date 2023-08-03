@@ -382,8 +382,19 @@ export default function useDesignModule() {
         config({multipart: false}),
       );
     },
+    deleteFDFloorFolder: data => {
+      return instance.post(
+        'finaldrawing/deletefloorfolder',
+        data,
+        config({multipart: false}),
+      );
+    },
     renameFDFloorFolder: data => {
-      return instance.post('', data, config({multipart: false}));
+      return instance.post(
+        'finaldrawing/rename_floor_folder',
+        data,
+        config({multipart: false}),
+      );
     },
 
     // Working Drawing

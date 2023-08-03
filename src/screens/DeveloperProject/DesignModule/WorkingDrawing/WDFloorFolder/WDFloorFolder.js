@@ -44,6 +44,7 @@ import CreateFolderDialogue from '../Components/CreateFolderDialog';
 import MenuDialog from '../Components/MenuDialog';
 import VersionDialog from '../Components/VersionDialog';
 import DeleteDialog from '../Components/DeleteDialog';
+import RenameDialogue from '../Components/RenameDialog';
 
 const SNAP_POINTS = [0, '70%'];
 
@@ -183,9 +184,7 @@ function RenderMenuModal(props) {
                 color="grey"
               />
             </View>
-            {modelContentType === 'menu' ? (
-              <MenuDialog {...props} showActivity={false} />
-            ) : null}
+            {modelContentType === 'menu' ? <MenuDialog {...props} /> : null}
             {modelContentType === 'parentActivity' ? (
               <ActivityModal {...props} />
             ) : null}
@@ -259,44 +258,36 @@ function RenderFile(props) {
 
 function RenderRow(props) {
   const {
-    item,
     index,
-    handleFileUpload,
-    fileData,
+    item,
     toggleMenu,
-    setModalContent,
     setModalContentType,
+    setModalContent,
+    handleNewVersionUpload,
   } = props;
-  const {folder_title, title, id} = item;
+  const {folder_title} = item;
 
   return (
-    <View>
-      <TouchableOpacity style={styles.optionContainer}>
-        <Text style={{fontSize: 18, margin: 10}}>{folder_title} </Text>
-        <Divider />
-
-        {title ? (
-          <RenderFile
-            fileData={fileData}
-            toggleMenu={toggleMenu}
-            item={item}
-            setModalContentType={setModalContentType}
-            setModalContent={setModalContent}
-            index={index}
-          />
-        ) : null}
-        <View style={{marginTop: 10, justifyContent: 'center'}}>
-          {!title ? (
-            <OpacityButton
-              opacity={0.18}
-              style={styles.button}
-              onPress={() => handleFileUpload(id)}>
-              <MaterialCommunityIcons name="plus" size={18} />
-              <Text> Add File</Text>
-            </OpacityButton>
-          ) : null}
-        </View>
+    <View style={styles.optionContainer}>
+      <Text style={{fontSize: 18, margin: 10}}>{folder_title} </Text>
+      <TouchableOpacity
+        style={styles.rightSection}
+        onPress={() => handleNewVersionUpload(item)}>
+        <OpacityButton opacity={1} style={styles.button}>
+          <MaterialCommunityIcons name="upload" size={10} color="#fff" />
+        </OpacityButton>
+        <Caption style={styles.uploadButton}>Upload</Caption>
       </TouchableOpacity>
+      {/* <View>
+        <IconButton
+          icon="dots-vertical"
+          onPress={() => {
+            toggleMenu(index);
+            setModalContentType('menu');
+            setModalContent(item);
+          }}
+        />
+      </View> */}
     </View>
   );
 }
@@ -315,10 +306,11 @@ function WDFloorFolder(props) {
     createWDFloorFolder,
     getWDFloorFolder,
     uploadWDFloorFolderFile,
-    deleteWDFloorFolderFile,
     getFloorFolderFileVersion,
     uploadWDFloorFolderFileVersion,
     deleteFloorFolderFileVersion,
+    deleteWDFloorFolder,
+    renameWDFloorFolder,
   } = useDesignModuleActions();
 
   const [menuId, setMenuId] = React.useState();
@@ -370,17 +362,19 @@ function WDFloorFolder(props) {
       onChoose: async v => {
         const formData = new FormData();
 
+        console.log('===========> v', v);
+
         formData.append('working_drawing_tower_files_id', file_id);
         formData.append('myfile', v);
         formData.append('folder_id', id);
         formData.append('project_id', project_id);
 
         await uploadWDFloorFolderFileVersion(formData);
+        getFloorFolderFileVersion({
+          project_id,
+          working_drawing_tower_floors_files_id: file_id,
+        });
       },
-    });
-    getFloorFolderFileVersion({
-      project_id,
-      working_drawing_tower_floors_files_id: file_id,
     });
   };
 
@@ -429,10 +423,9 @@ function WDFloorFolder(props) {
     await uploadWDFloorFolderFile(formData);
     toggleDialog();
     snackbar.showMessage({
-      message: 'File Uploaded Sucessfully!',
+      message: 'File Uploaded Successfully!',
       variant: 'success',
     });
-    loadData();
   };
 
   const handleFileUpload = async file => {
@@ -442,13 +435,12 @@ function WDFloorFolder(props) {
         uploadFile(file, v);
       },
     });
-
     loadData();
   };
 
-  const deleteFileHandler = async (id, data) => {
-    await deleteWDFloorFolderFile({
-      working_drawing_tower_floors_files_id: data.files_id,
+  const deleteFolderHandler = async id => {
+    await deleteWDFloorFolder({
+      folder_id: id,
       project_id,
     });
     loadData();
@@ -459,6 +451,15 @@ function WDFloorFolder(props) {
     });
   };
 
+  const renameFileHandler = async (name, id, type) => {
+    await renameWDFloorFolder({
+      folder_title: name,
+      working_drawing_floor_rows_folder_id: id,
+      project_id,
+    });
+    loadData();
+    toggleDialog();
+  };
   const renderEmpty = () => <NoResult />;
 
   return (
@@ -490,11 +491,18 @@ function WDFloorFolder(props) {
           handleFileUpload={handleFileUpload}
         />
       ) : null}
+
+      <RenameDialogue
+        visible={DialogType === 'renameFile'}
+        toggleDialogue={toggleDialog}
+        dialogueContent={modalContent}
+        renameFolderHandler={renameFileHandler}
+      />
       <DeleteDialog
         visible={DialogType === 'deleteFileFolder'}
         toggleDialogue={toggleDialog}
         dialogueContent={modalContent}
-        deleteFileHandler={deleteFileHandler}
+        deleteFileHandler={deleteFolderHandler}
       />
       <View style={styles.container}>
         <Spinner visible={loading} textContent="" />
@@ -547,7 +555,7 @@ function WDFloorFolder(props) {
                   toggleMenu={toggleMenu}
                   setModalContentType={setModalContentType}
                   setModalContent={setModalContent}
-                  handleFileUpload={handleFileUpload}
+                  handleNewVersionUpload={handleNewVersionUpload}
                 />
               );
             }}
@@ -563,11 +571,13 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   optionContainer: {
-    paddingHorizontal: 10,
     paddingVertical: 4,
     backgroundColor: '#fff',
     ...getShadow(1),
     margin: 1,
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    paddingHorizontal: 12,
   },
   recentFiles: {
     flexDirection: 'row',
@@ -586,7 +596,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   button: {
-    padding: 10,
+    padding: 5,
   },
   backButton: {
     borderRadius: 50,
@@ -685,6 +695,20 @@ const styles = StyleSheet.create({
   },
   emptyContainer: {
     justifyContent: 'center',
+    alignItems: 'center',
+  },
+  rightSection: {
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  uploadButton: {
+    marginLeft: 5,
+    color: theme.colors.primary,
+    fontSize: 16,
+  },
+  uploadContainer: {
+    justifyContent: 'space-between',
+    flexDirection: 'row',
     alignItems: 'center',
   },
 });

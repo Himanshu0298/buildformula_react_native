@@ -45,6 +45,7 @@ import RenameDialogue from '../Components/RenameDialog';
 import CreateFolderDialogue from '../Components/CreateFolderDialog';
 import MenuDialog from '../Components/MenuDialog';
 import VersionDialog from '../Components/VersionDialog';
+import DeleteDialog from '../Components/DeleteDialog';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const relativeTime = require('dayjs/plugin/relativeTime');
@@ -242,15 +243,13 @@ function RenderMenuModal(props) {
                 color="grey"
               />
             </View>
-            {modelContentType === 'menu' ? (
-              <MenuDialog {...props} showActivity={false} />
-            ) : null}
-            {/* {modelContentType === 'parentActivity' ? (
+            {modelContentType === 'menu' ? <MenuDialog {...props} /> : null}
+            {modelContentType === 'parentActivity' ? (
               <ActivityModal {...props} />
-            ) : null} */}
-            {/* {modelContentType === 'activity' ? (
-              <ActivityModal {...props}  />
-            ) : null} */}
+            ) : null}
+            {modelContentType === 'activity' ? (
+              <ActivityModal {...props} />
+            ) : null}
             {modelContentType === 'version' ? (
               <VersionDialog {...props} />
             ) : null}
@@ -317,44 +316,30 @@ function RenderFile(props) {
 }
 
 function RenderRow(props) {
-  const {
-    item,
-    index,
-    onPress,
-    handleFileUpload,
-    toggleMenu,
-    setModalContent,
-    setModalContentType,
-  } = props;
-  const {folder_title, title, id} = item;
+  const {item, index, toggleMenu, setModalContent, setModalContentType} = props;
+  const {folder_title} = item;
 
   return (
-    <View>
-      <TouchableOpacity style={styles.optionContainer} onPress={onPress}>
+    <View style={styles.optionContainer}>
+      <View>
         <Text style={{fontSize: 18, margin: 10}}>{folder_title} </Text>
-        <Divider />
-
-        {title ? (
-          <RenderFile
-            toggleMenu={toggleMenu}
-            item={item}
-            setModalContentType={setModalContentType}
-            setModalContent={setModalContent}
-            index={index}
-          />
-        ) : null}
-        <View style={{marginTop: 10, justifyContent: 'center'}}>
-          {!title ? (
-            <OpacityButton
-              opacity={0.18}
-              style={styles.button}
-              onPress={() => handleFileUpload(id)}>
-              <MaterialCommunityIcons name="plus" size={18} />
-              <Text> Add File</Text>
-            </OpacityButton>
-          ) : null}
-        </View>
-      </TouchableOpacity>
+      </View>
+      <View style={styles.rightSection}>
+        <OpacityButton opacity={1} style={styles.button}>
+          <MaterialCommunityIcons name="upload" size={10} color="#fff" />
+        </OpacityButton>
+        <Caption style={styles.uploadButton}>Upload</Caption>
+      </View>
+      <View>
+        <IconButton
+          icon="dots-vertical"
+          onPress={() => {
+            toggleMenu(index);
+            setModalContentType('menu');
+            setModalContent(item);
+          }}
+        />
+      </View>
     </View>
   );
 }
@@ -383,7 +368,8 @@ function FDFloorFolder(props) {
     getFDFloorFolderFileVersion,
     getFDTowerFloorFolder,
     deleteFDFloorFolderFileVersion,
-    renameWDFloorFolder,
+    renameFDFloorFolder,
+    deleteFDFloorFolder,
   } = useDesignModuleActions();
 
   const [menuId, setMenuId] = React.useState();
@@ -430,9 +416,9 @@ function FDFloorFolder(props) {
     loadData();
   };
   const renameFolderHandler = async (name, id) => {
-    await renameWDFloorFolder({
+    await renameFDFloorFolder({
       folder_title: name,
-      working_drawing_floor_rows_folder_id: id,
+      final_drawing_floor_rows_folder_id: id,
       project_id,
     });
     loadData();
@@ -511,15 +497,15 @@ function FDFloorFolder(props) {
     loadData();
   };
 
-  // const deleteFolderHandler = async id => {
-  //   await deleteWDFloorFolder({folder_id: id, project_id});
-  //   loadData();
-  //   toggleDialog();
-  //   snackbar.showMessage({
-  //     message: 'Folder Deleted!',
-  //     variant: 'success',
-  //   });
-  // };
+  const deleteFolderHandler = async id => {
+    await deleteFDFloorFolder({folder_id: id, project_id});
+    loadData();
+    toggleDialog();
+    snackbar.showMessage({
+      message: 'Folder Deleted!',
+      variant: 'success',
+    });
+  };
 
   const renderEmpty = () => <NoResult />;
 
@@ -541,28 +527,28 @@ function FDFloorFolder(props) {
           handleDeleteVersion,
         }}
       />
-      <CreateFolderDialogue
-        addFile
-        visible={DialogType === 'createFolder'}
-        toggleDialogue={toggleDialog}
-        createFolderHandler={createFolderHandler}
-        placeholder="Destination Name"
-        title="Create new destination"
-        handleFileUpload={handleFileUpload}
-      />
-
+      {DialogType ? (
+        <CreateFolderDialogue
+          visible={DialogType === 'createFolder'}
+          toggleDialogue={toggleDialog}
+          createFolderHandler={createFolderHandler}
+          placeholder="Destination Name"
+          title="Create new destination"
+          handleFileUpload={handleFileUpload}
+        />
+      ) : null}
       <RenameDialogue
         visible={DialogType === 'renameFile'}
         toggleDialogue={toggleDialog}
         dialogueContent={modalContent}
         renameFolderHandler={renameFolderHandler}
       />
-      {/* <DeleteDialog
+      <DeleteDialog
         visible={DialogType === 'deleteFileFolder'}
         toggleDialogue={toggleDialog}
         dialogueContent={modalContent}
         deleteFileHandler={deleteFolderHandler}
-      /> */}
+      />
       <View style={styles.container}>
         <Spinner visible={loading} textContent="" />
         <View style={styles.headerContainer}>
@@ -628,11 +614,12 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   optionContainer: {
-    paddingHorizontal: 10,
     paddingVertical: 4,
     backgroundColor: '#fff',
     ...getShadow(1),
     margin: 1,
+    justifyContent: 'space-between',
+    flexDirection: 'row',
   },
   recentFiles: {
     flexDirection: 'row',
@@ -651,7 +638,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   button: {
-    padding: 10,
+    padding: 5,
   },
   backButton: {
     borderRadius: 50,
@@ -751,6 +738,16 @@ const styles = StyleSheet.create({
   emptyContainer: {
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  rightSection: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    flexGrow: 1,
+  },
+  uploadButton: {
+    marginLeft: 5,
+    color: theme.colors.primary,
+    fontSize: 16,
   },
 });
 

@@ -42,11 +42,15 @@ function WDFloorBar(props) {
               onPress={() => onPressLabel?.(floorId)}>
               <Caption>{floor_text || floorNumber}</Caption>
             </LabelContainer>
-            <View style={styles.rightSection}>
+
+            <View>
               <OpacityButton opacity={1} style={styles.button}>
-                <MaterialCommunityIcons name="upload" size={15} color="#fff" />
+                <MaterialCommunityIcons
+                  name="arrow-right"
+                  size={15}
+                  color="#fff"
+                />
               </OpacityButton>
-              <Caption style={styles.uploadButton}>Upload</Caption>
             </View>
           </View>
           <Image source={floorSlab} style={styles.slabImage} />
@@ -99,12 +103,7 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
   },
-  rightSection: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    flexGrow: 1,
-    marginLeft: 70,
-  },
+
   slabImage: {
     height: Layout.window.width * 0.7 * (20 / 320),
     width: '100%',
@@ -114,11 +113,6 @@ const styles = StyleSheet.create({
     padding: 0,
     height: 20,
     width: 20,
-  },
-  uploadButton: {
-    marginLeft: 5,
-    color: theme.colors.primary,
-    fontSize: 16,
   },
 });
 

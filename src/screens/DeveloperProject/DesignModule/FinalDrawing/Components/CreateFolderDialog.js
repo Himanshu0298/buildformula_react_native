@@ -1,31 +1,20 @@
 import React from 'react';
-import {Formik, useFormik} from 'formik';
-import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {useFormik} from 'formik';
+import {StyleSheet, View} from 'react-native';
 import {Text, Dialog, Button, Portal} from 'react-native-paper';
 import * as Yup from 'yup';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {secondaryTheme, theme} from 'styles/theme';
+import {secondaryTheme} from 'styles/theme';
 import RenderInput from 'components/Atoms/RenderInput';
-
-import {useImagePicker} from 'hooks';
 
 const schema = Yup.object().shape({
   folder_name: Yup.string().trim().required('Required'),
 });
 
 function CreateFolderDialogue(props) {
-  const {visible, toggleDialogue, createFolderHandler, addFile} = props;
+  const {visible, toggleDialogue, createFolderHandler} = props;
   const folderNameRef = React.useRef();
-  const {openFilePicker} = useImagePicker();
 
-  const {
-    values,
-    errors,
-    handleChange,
-    setFieldValue,
-    handleSubmit,
-    handleBlur,
-  } = useFormik({
+  const {values, errors, handleChange, handleSubmit, handleBlur} = useFormik({
     initialValues: {folder_name: ''},
     enableReinitialize: true,
     validateOnBlur: false,
@@ -33,15 +22,6 @@ function CreateFolderDialogue(props) {
     validateOnChange: false,
     onSubmit: v => createFolderHandler(values.folder_name, v.file),
   });
-
-  const handleFileUpload = () => {
-    openFilePicker({
-      type: 'file',
-      onChoose: v => {
-        setFieldValue('file', v);
-      },
-    });
-  };
 
   return (
     <Portal>
@@ -62,32 +42,6 @@ function CreateFolderDialogue(props) {
             onSubmitEditing={handleSubmit}
             error={errors.folder_name}
           />
-
-          {addFile ? (
-            <View style={{marginTop: 10}}>
-              <TouchableOpacity
-                onPress={handleFileUpload}
-                // eslint-disable-next-line react-native/no-inline-styles
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  backgroundColor: values.file
-                    ? theme.colors.success
-                    : theme.colors.primary,
-                  padding: 10,
-                }}>
-                <MaterialCommunityIcons
-                  name="plus"
-                  size={18}
-                  style={{color: '#ffff'}}
-                />
-                <Text style={{color: '#ffff'}}>
-                  {values.file ? 'File Selected' : 'Add File'}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          ) : null}
 
           <View style={styles.dialogActionContainer}>
             <Button

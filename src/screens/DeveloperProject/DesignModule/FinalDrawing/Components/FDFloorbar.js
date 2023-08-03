@@ -35,23 +35,22 @@ function FDFloorBar(props) {
         </View>
       ) : null}
       <View style={styles.floorContent}>
-        <View style={styles.rowContainer}>
+        <TouchableOpacity style={styles.rowContainer} onPress={onSelectFloor}>
           <LabelContainer
             style={styles.floorLabelContainer}
             onPress={() => onPressLabel?.(floorId)}>
             <Caption>{floor_text || floorNumber}</Caption>
           </LabelContainer>
-          <View style={styles.rightSection}>
-            <TouchableOpacity
-              style={{flexDirection: 'row'}}
-              onPress={onSelectFloor}>
-              <OpacityButton opacity={1} style={styles.button}>
-                <MaterialCommunityIcons name="upload" size={15} color="#fff" />
-              </OpacityButton>
-              <Caption style={styles.uploadButton}>Upload</Caption>
-            </TouchableOpacity>
+          <View>
+            <OpacityButton opacity={1} style={styles.button}>
+              <MaterialCommunityIcons
+                name="arrow-right"
+                size={15}
+                color="#fff"
+              />
+            </OpacityButton>
           </View>
-        </View>
+        </TouchableOpacity>
         <Image source={floorSlab} style={styles.slabImage} />
       </View>
     </View>
@@ -101,12 +100,7 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
   },
-  rightSection: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    flexGrow: 1,
-    marginLeft: 70,
-  },
+
   slabImage: {
     height: Layout.window.width * 0.7 * (20 / 320),
     width: '100%',
@@ -116,11 +110,6 @@ const styles = StyleSheet.create({
     padding: 0,
     height: 20,
     width: 20,
-  },
-  uploadButton: {
-    marginLeft: 5,
-    color: theme.colors.primary,
-    fontSize: 16,
   },
 });
 

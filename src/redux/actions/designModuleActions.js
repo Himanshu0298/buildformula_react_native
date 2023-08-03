@@ -124,6 +124,7 @@ export default function useDesignModuleActions() {
     WDTowerFileActivityLogs,
     uploadFloorFileVersion,
     getFDPlotFileVersion,
+    deleteFDFloorFolder,
   } = useDesignModule();
   const {_err, _res} = useResProcessor();
   const snackbar = useSnackbar();
@@ -1397,9 +1398,7 @@ export default function useDesignModuleActions() {
         payload: async () => {
           try {
             const res = _res(await uploadWDFloorFolderFileVersion(params));
-            return Promise.resolve({
-              data: res.data,
-            });
+            return Promise.resolve({data: res.data});
           } catch (error) {
             const message = _err(error);
             snackbar.showMessage({message, variant: 'error'});
@@ -1587,10 +1586,26 @@ export default function useDesignModuleActions() {
       }),
     deleteWDTowerFile: params =>
       dispatch({
-        type: types.RENAME_RD_FILES,
+        type: types.DELETE_RD_FOLDER,
         payload: async () => {
           try {
             const res = _res(await deleteWDTowerFile(params));
+            return Promise.resolve({
+              data: res.data,
+            });
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    deleteFDFloorFolder: params =>
+      dispatch({
+        type: types.DELETE_RD_FOLDER,
+        payload: async () => {
+          try {
+            const res = _res(await deleteFDFloorFolder(params));
             return Promise.resolve({
               data: res.data,
             });
