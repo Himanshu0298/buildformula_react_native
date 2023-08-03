@@ -20,8 +20,8 @@ import Header from '../../CommonComponents/Header';
 import Pagination from '../../CommonComponents/Pagination';
 
 const schema = Yup.object().shape({
-  driver_name: Yup.string('Required').required('Required'),
-  vehicleNo: Yup.string('Required').required('Required'),
+  // driver_name: Yup.string('Required').required('Required'),
+  // vehicleNo: Yup.string('Required').required('Required'),
 });
 
 const RenderDamageAttachments = props => {
@@ -290,9 +290,9 @@ const VehicleInfo = props => {
     formData.append('project_id', selectedProject.id);
     formData.append('challan_id', challan_id);
     formData.append('challan_no', challan_number);
-    formData.append('driver_name', values.driver_name);
-    formData.append('vehicle_number', values.vehicleNo);
-    formData.append('challan_remark', values.remark);
+    formData.append('driver_name', values.driver_name || '');
+    formData.append('vehicle_number', values.vehicleNo || '');
+    formData.append('challan_remark', values.remark || '');
     formData.append('edit_challan_id', challan_id);
 
     await addDirectGRNVehicleInfo(formData);

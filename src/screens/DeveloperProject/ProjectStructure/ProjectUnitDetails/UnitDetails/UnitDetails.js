@@ -258,7 +258,7 @@ const UnitDetails = props => {
 
   const {unitId, selectedUnit} = route?.params || {};
 
-  const {updateUnit, getUnitList, getProjectList} =
+  const {updateUnit, getUnitList, getProjectList, getProjectMasterList} =
     useProjectStructureActions();
 
   const {projectList = [], masterList = []} = useSelector(s => {
@@ -267,6 +267,7 @@ const UnitDetails = props => {
 
   useEffect(() => {
     getProjectList({project_id: selectedProject.id});
+    getProjectMasterList({project_id: selectedProject.id});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const {selectedProject} = useSelector(s => s.project);
