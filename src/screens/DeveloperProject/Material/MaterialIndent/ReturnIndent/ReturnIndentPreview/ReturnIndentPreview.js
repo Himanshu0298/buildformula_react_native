@@ -14,22 +14,22 @@ import {
   Subheading,
   Text,
 } from 'react-native-paper';
-import {theme} from 'styles/theme';
-import {getShadow} from 'utils';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import FileIcon from 'assets/images/file_icon.png';
-import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import moment from 'moment';
-import {useAlert} from 'components/Atoms/Alert';
-import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
 import ImageView from 'react-native-image-viewing';
 import {isNumber} from 'lodash';
+import FileViewer from 'react-native-file-viewer';
+import {theme} from 'styles/theme';
+import {getShadow} from 'utils';
+import FileIcon from 'assets/images/file_icon.png';
+import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
+import {useAlert} from 'components/Atoms/Alert';
+import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 
 import {getFileName} from 'utils/constant';
 import {useDownload} from 'components/Atoms/Download';
-import FileViewer from 'react-native-file-viewer';
 
 const INDENT_STATUS = {
   pending: {label: 'Pending', color: 'rgba(72, 114, 244, 1)'},

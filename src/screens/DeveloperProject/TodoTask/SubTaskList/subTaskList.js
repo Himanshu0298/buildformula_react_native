@@ -13,18 +13,18 @@ import {
   Text,
   withTheme,
 } from 'react-native-paper';
-import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import {RefreshControl, TouchableOpacity} from 'react-native-gesture-handler';
-import useTodoActions from 'redux/actions/todoActions';
 import {useSelector} from 'react-redux';
+import {Formik} from 'formik';
+import Spinner from 'react-native-loading-spinner-overlay';
+import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
+import useTodoActions from 'redux/actions/todoActions';
 import useSalesActions from 'redux/actions/salesActions';
 import RenderInput from 'components/Atoms/RenderInput';
 import {theme} from 'styles/theme';
-import {Formik} from 'formik';
 import {useAlert} from 'components/Atoms/Alert';
 import Layout from 'utils/Layout';
 import NoResult from 'components/Atoms/NoResult';
-import Spinner from 'react-native-loading-spinner-overlay';
 import MenuDialog from '../Components/MenuDialog';
 import ShareTask from '../TaskList/ShareTask';
 
@@ -71,9 +71,19 @@ function RenderTodoCard(props) {
                 ]}>
                 {task_title}
               </Paragraph>
-              <Caption>
-                {`${sub_task_count || ''} • ${due_date} • ${reminder_date}`}
-              </Caption>
+
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <Caption>{`${sub_task_count || ''} `}</Caption>
+                {due_date !== null ? (
+                  <Caption style={{color: theme.colors.error}}>{` • ${
+                    due_date || ''
+                  } `}</Caption>
+                ) : null}
+                {reminder_date !== null ? (
+                  <Caption>{` • ${reminder_date || ''}`}</Caption>
+                ) : null}
+              </View>
+
               <Caption style={{color: '#000'}}>{user}</Caption>
             </TouchableOpacity>
           </View>

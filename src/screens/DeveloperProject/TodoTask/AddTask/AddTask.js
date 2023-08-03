@@ -1,4 +1,3 @@
-import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import * as React from 'react';
 import {
   StyleSheet,
@@ -7,13 +6,17 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-import FileIcon from 'assets/images/file_icon.png';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Subheading, Text, withTheme} from 'react-native-paper';
-import Feather from 'react-native-vector-icons/Feather';
-import RenderInput, {RenderError} from 'components/Atoms/RenderInput';
 import {Formik} from 'formik';
+import {useSelector} from 'react-redux';
+import dayjs from 'dayjs';
+import * as Yup from 'yup';
+import {debounce} from 'lodash';
+import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
+import FileIcon from 'assets/images/file_icon.png';
+import RenderInput, {RenderError} from 'components/Atoms/RenderInput';
 import RenderSelect from 'components/Atoms/RenderSelect';
 import RenderTextBox from 'components/Atoms/RenderTextbox';
 import RenderDatePicker from 'components/Atoms/RenderDatePicker';
@@ -21,10 +24,7 @@ import {theme} from 'styles/theme';
 import {useImagePicker} from 'hooks';
 import ActionButtons from 'components/Atoms/ActionButtons';
 import useTodoActions from 'redux/actions/todoActions';
-import {useSelector} from 'react-redux';
 import Layout from 'utils/Layout';
-import dayjs from 'dayjs';
-import * as Yup from 'yup';
 import {getUniqueOptions} from 'utils/constant';
 
 const schema = Yup.object().shape({
@@ -76,11 +76,7 @@ function RenderSubTaskItem(props) {
 
   return (
     <View style={styles.subTaskContainer}>
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-        }}>
+      <View style={styles.subTaskSubContainer}>
         <TouchableOpacity onPress={() => handleComplete(index)}>
           <MaterialCommunityIcons
             name={
@@ -172,9 +168,11 @@ function CreateTask(props) {
     openImagePicker({
       type: 'file',
       onChoose: file => {
-        const attachments = values.attachments || [];
-        attachments.push(file);
-        setFieldValue('attachments', attachments);
+        if (file.uri) {
+          const attachments = values.attachments || [];
+          attachments.push(file);
+          setFieldValue('attachments', attachments);
+        }
       },
     });
   };
@@ -326,7 +324,7 @@ function CreateTask(props) {
         <ActionButtons
           submitLabel="Save"
           onCancel={navigation.goBack}
-          onSubmit={handleSubmit}
+          onSubmit={debounce(handleSubmit, 500)}
         />
       </View>
     </ScrollView>
@@ -389,6 +387,16 @@ function AddTask(props) {
     });
     await navigation.goBack();
   };
+
+  const initialValues = {
+    taskName: type ? taskDetails?.task_title : '',
+    description: type ? taskDetails?.description : '',
+    reminderDate: type ? taskDetails?.reminder_date : '',
+    dueDate: type ? taskDetails?.due_date : '',
+    assignee: type ? taskDetails?.assign_to_id : '',
+    subTaskList: type ? _subTasks : [],
+    // attachments: type ? _attachments : [],
+  };
   return (
     <ScrollView style={styles.container}>
       <View style={styles.container}>
@@ -407,15 +415,7 @@ function AddTask(props) {
         <Formik
           validateOnBlur={false}
           validateOnChange={false}
-          initialValues={{
-            taskName: type ? taskDetails?.task_title : '',
-            description: type ? taskDetails?.description : '',
-            reminderDate: type ? taskDetails?.reminder_date : '',
-            dueDate: type ? taskDetails?.due_date : '',
-            assignee: type ? taskDetails?.assign_to_id : '',
-            subTaskList: type ? _subTasks : [],
-            attachments: type ? _attachments : [],
-          }}
+          initialValues={initialValues}
           validationSchema={schema}
           onSubmit={onSubmit}>
           {formikProps => (
@@ -524,5 +524,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginVertical: 8,
+  },
+  subTaskSubContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 });

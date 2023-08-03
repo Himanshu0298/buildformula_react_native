@@ -3,16 +3,19 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import {View, StyleSheet, Image} from 'react-native';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import FileIcon from 'assets/images/file_icon.png';
 import {Caption, Text, withTheme} from 'react-native-paper';
-import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
-import {theme} from 'styles/theme';
 import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
+import FileViewer from 'react-native-file-viewer';
+import {theme} from 'styles/theme';
+import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
+import FileIcon from 'assets/images/file_icon.png';
 import useTodoActions from 'redux/actions/todoActions';
 import Layout from 'utils/Layout';
 import {useAlert} from 'components/Atoms/Alert';
+import {useDownload} from 'components/Atoms/Download';
+import {getFileName} from 'utils/constant';
 
 function TaskDetails(props) {
   const alert = useAlert();
@@ -20,11 +23,12 @@ function TaskDetails(props) {
 
   const {taskID, loadLists, loadTasks, action} = route.params;
 
+  const download = useDownload();
+
   const {TODO_COMPLETED_TASKS, TODO_TASKS, loading} = useSelector(s => s.todo);
   const {selectedProject} = useSelector(s => s.project);
 
-  const {delete_task, mark_task_complete, mark_task_important} =
-    useTodoActions();
+  const {delete_task} = useTodoActions();
 
   const projectId = selectedProject.id;
 
@@ -48,15 +52,6 @@ function TaskDetails(props) {
     navigation.navigate('AddTask', {type: 'edit', taskID, action, taskDetails});
   };
 
-  const toggleComplete = async (id, complete) => {
-    await mark_task_complete({
-      project_id: projectId,
-      task_id: id,
-      task_completed: complete ? String(0) : String(1),
-    });
-    await loadTasks();
-  };
-
   const handleDelete = async () => {
     alert.show({
       title: 'Confirm',
@@ -74,13 +69,15 @@ function TaskDetails(props) {
     });
   };
 
-  const toggleFavorite = async () => {
-    await mark_task_important({
-      project_id: projectId,
-      task_id: taskID,
-      task_important: important ? String(0) : String(1),
+  const onPressFile = async file => {
+    download.link({
+      name: getFileName(file.file_url),
+      data: {project_id: projectId, file_url: file.file_url},
+      showAction: false,
+      onFinish: ({dir}) => {
+        FileViewer.open(`file://${dir}`);
+      },
     });
-    await loadTasks();
   };
 
   return (
@@ -115,25 +112,20 @@ function TaskDetails(props) {
                 color={theme.colors.primary}
               />
             </OpacityButton>
-            <OpacityButton
-              opacity={0.2}
-              style={styles.icons}
-              onPress={() => toggleFavorite()}>
+            <OpacityButton opacity={0.2} style={styles.icons}>
               <MaterialCommunityIcons
                 name={important ? 'star' : 'star-outline'}
                 size={18}
-                color={theme.colors.primary}
+                color={important ? '#FFC700' : undefined}
               />
             </OpacityButton>
           </View>
         </View>
         <View style={styles.tasks}>
-          <TouchableOpacity
-            opacity={0}
-            onPress={() => toggleComplete(taskID, completed)}>
+          <TouchableOpacity opacity={0}>
             <MaterialCommunityIcons
               name={
-                completed
+                completed === 1
                   ? 'checkbox-marked-circle'
                   : 'checkbox-blank-circle-outline'
               }
@@ -199,7 +191,7 @@ function TaskDetails(props) {
               <Caption style={styles.caption}>Attachments</Caption>
             </View>
 
-            {attachments?.map((ele, index) => {
+            {attachments?.map(ele => {
               return (
                 <View style={styles.card}>
                   <View style={styles.cardContainer}>
@@ -222,9 +214,11 @@ function TaskDetails(props) {
                         </View>
                       </View>
                     </View>
-                    <View style={styles.download}>
+                    <TouchableOpacity
+                      style={styles.download}
+                      onPress={() => onPressFile(ele)}>
                       <AntDesign name="download" size={18} color="#4872F4" />
-                    </View>
+                    </TouchableOpacity>
                   </View>
                 </View>
               );
@@ -298,10 +292,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 15,
   },
 
-  input: {
-    fontStyle: 'italic',
-  },
-
   text: {
     paddingTop: 5,
     fontSize: 15,
@@ -334,10 +324,6 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     marginRight: 10,
     width: 30,
-  },
-  successParagraph: {
-    textDecorationLine: 'line-through',
-    fontSize: 12,
   },
 
   subCardContainer: {

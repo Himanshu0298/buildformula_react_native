@@ -2,19 +2,19 @@ import {Image, StyleSheet, View} from 'react-native';
 import React, {useEffect} from 'react';
 import * as Yup from 'yup';
 
-import {RenderError} from 'components/Atoms/RenderInput';
-
 import {Text} from 'react-native-paper';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {Formik} from 'formik';
+import {useSelector} from 'react-redux';
+import {RenderError} from 'components/Atoms/RenderInput';
+
 import FileIcon from 'assets/images/file_icon.png';
 
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import {theme} from 'styles/theme';
 import {useImagePicker} from 'hooks';
 import ActionButtons from 'components/Atoms/ActionButtons';
-import {Formik} from 'formik';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
-import {useSelector} from 'react-redux';
 
 const schema = Yup.object().shape({
   attachments: Yup.array()

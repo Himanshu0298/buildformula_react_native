@@ -3,13 +3,13 @@ import React, {useMemo} from 'react';
 import {IconButton, Title} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useFormik} from 'formik';
+import {useSelector} from 'react-redux';
+import Spinner from 'react-native-loading-spinner-overlay';
+import {debounce} from 'lodash';
 import ActionButtons from 'components/Atoms/ActionButtons';
 import RenderSelect from 'components/Atoms/RenderSelect';
-import {useSelector} from 'react-redux';
 import useSalesActions from 'redux/actions/salesActions';
-import Spinner from 'react-native-loading-spinner-overlay';
 import {DEFAULT_VISITORS_FILTERS} from 'utils/constant';
-import {debounce} from 'lodash';
 
 const RenderForm = props => {
   const {formikProps, clearForm, sourceTypeOptions, salesPipelineOptions} =

@@ -49,8 +49,7 @@ export default function useTodoActions() {
         payload: async () => {
           try {
             const response = _res(await add_todo_list(params));
-            const {data, msg} = response;
-            snackbar.showMessage({message: msg});
+            const {data} = response;
             return Promise.resolve(data);
           } catch (error) {
             const message = _err(error);
