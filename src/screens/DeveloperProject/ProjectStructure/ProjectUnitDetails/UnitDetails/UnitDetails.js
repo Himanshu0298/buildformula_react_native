@@ -3,12 +3,12 @@ import React, {useMemo, useEffect} from 'react';
 import {IconButton, Subheading, Switch} from 'react-native-paper';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
+import {useSelector} from 'react-redux';
 import RenderInput from 'components/Atoms/RenderInput';
 import RenderSelect from 'components/Atoms/RenderSelect';
 import ActionButtons from 'components/Atoms/ActionButtons';
 
 import useProjectStructureActions from 'redux/actions/projectStructureActions';
-import {useSelector} from 'react-redux';
 
 const schema = Yup.object().shape({
   projectName: Yup.string()
@@ -258,7 +258,7 @@ const UnitDetails = props => {
 
   const {unitId, selectedUnit} = route?.params || {};
 
-  const {updateUnit, getUnitList, getProjectList} =
+  const {updateUnit, getUnitList, getProjectList, getProjectMasterList} =
     useProjectStructureActions();
 
   const {projectList = [], masterList = []} = useSelector(s => {
@@ -267,6 +267,7 @@ const UnitDetails = props => {
 
   useEffect(() => {
     getProjectList({project_id: selectedProject.id});
+    getProjectMasterList({project_id: selectedProject.id});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const {selectedProject} = useSelector(s => s.project);

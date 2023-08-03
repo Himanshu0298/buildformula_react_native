@@ -3,25 +3,25 @@ import React, {useEffect} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import * as Yup from 'yup';
 import {Formik} from 'formik';
+import TextInputMask from 'react-native-text-input-mask';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import {ScrollView} from 'react-native-gesture-handler';
+import {useSelector} from 'react-redux';
+import Spinner from 'react-native-loading-spinner-overlay';
 import {theme} from 'styles/theme';
 import ActionButtons from 'components/Atoms/ActionButtons';
-import TextInputMask from 'react-native-text-input-mask';
 import FileIcon from 'assets/images/file_icon.png';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import RenderInput, {RenderError} from 'components/Atoms/RenderInput';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import RenderTextBox from 'components/Atoms/RenderTextbox';
 import {useImagePicker} from 'hooks';
-import {ScrollView} from 'react-native-gesture-handler';
-import {useSelector} from 'react-redux';
-import Spinner from 'react-native-loading-spinner-overlay';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 import Header from '../../CommonComponents/Header';
 import Pagination from '../../CommonComponents/Pagination';
 
 const schema = Yup.object().shape({
-  driver_name: Yup.string('Required').required('Required'),
-  vehicleNo: Yup.string('Required').required('Required'),
+  // driver_name: Yup.string('Required').required('Required'),
+  // vehicleNo: Yup.string('Required').required('Required'),
 });
 
 const RenderDamageAttachments = props => {
@@ -290,9 +290,9 @@ const VehicleInfo = props => {
     formData.append('project_id', selectedProject.id);
     formData.append('challan_id', challan_id);
     formData.append('challan_no', challan_number);
-    formData.append('driver_name', values.driver_name);
-    formData.append('vehicle_number', values.vehicleNo);
-    formData.append('challan_remark', values.remark);
+    formData.append('driver_name', values.driver_name || '');
+    formData.append('vehicle_number', values.vehicleNo || '');
+    formData.append('challan_remark', values.remark || '');
     formData.append('edit_challan_id', challan_id);
 
     await addDirectGRNVehicleInfo(formData);

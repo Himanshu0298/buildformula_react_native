@@ -20,8 +20,8 @@ import Header from '../../CommonComponents/Header';
 import Pagination from '../../CommonComponents/Pagination';
 
 const schema = Yup.object().shape({
-  driverName: Yup.string('Required').required('Required'),
-  vehicleNo: Yup.string('Required').required('Required'),
+  // driverName: Yup.string('Required').required('Required'),
+  // vehicleNo: Yup.string('Required').required('Required'),
   // vehicleAttachments: Yup.mixed().required('File is required'),
 });
 
@@ -297,10 +297,10 @@ const AddVehicleInfo = props => {
     formData.append('material_order_no', orderNumber || material_order_no);
     formData.append('challan_no', challan);
     formData.append('delivery_date', delivery_date);
-    formData.append('driver_name', values.driverName);
+    formData.append('driver_name', values.driverName || '');
     formData.append('materials', JSON.stringify(materialData));
-    formData.append('vehicle_number', values.vehicleNo);
-    formData.append('challan_remark', values.remark);
+    formData.append('vehicle_number', values.vehicleNo || '');
+    formData.append('challan_remark', values.remark || '');
     formData.append('edit_challan_id', edit ? materialId : 0);
     await addMaterialChallan(formData);
     loadData();
@@ -405,11 +405,6 @@ const styles = StyleSheet.create({
   },
   contentContainerStyle: {
     flexGrow: 1,
-  },
-
-  damageAttachment: {
-    color: theme.colors.red,
-    marginTop: 10,
   },
 });
 
