@@ -270,6 +270,7 @@ const AddVehicleInfo = props => {
       material_requests_items_id: i.id,
       approved_quantity: i.quantity,
       damaged_quantity: i.damaged,
+      missing_quantity: i.missing_qty,
     }));
 
     attachments.map(item => {

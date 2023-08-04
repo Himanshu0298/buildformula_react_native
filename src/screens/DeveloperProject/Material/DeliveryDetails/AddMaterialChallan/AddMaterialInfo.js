@@ -3,14 +3,14 @@ import {Formik} from 'formik';
 import {Divider, Subheading, withTheme} from 'react-native-paper';
 import {Image, StyleSheet, Text, View} from 'react-native';
 import * as Yup from 'yup';
-import RenderInput, {RenderError} from 'components/Atoms/RenderInput';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useSelector} from 'react-redux';
+import RenderInput, {RenderError} from 'components/Atoms/RenderInput';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import {theme} from 'styles/theme';
 import FileIcon from 'assets/images/file_icon.png';
-import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useImagePicker} from 'hooks';
-import {useSelector} from 'react-redux';
 import ActionButtons from 'components/Atoms/ActionButtons';
 import Header from '../../CommonComponents/Header';
 import Pagination from '../../CommonComponents/Pagination';
@@ -290,6 +290,8 @@ const AddMaterialInfo = props => {
   const {selectedMaterialChallan} = useSelector(s => s.materialManagement);
 
   const navToStepFour = values => {
+    console.log('===========> values', values);
+
     navigation.navigate('AddVehicleInfo', {
       ...values,
       ...route?.params,
@@ -302,6 +304,7 @@ const AddMaterialInfo = props => {
         id: i,
         quantity: '',
         damaged: '',
+        missing_qty: '',
       })),
     };
   }, [selectedMaterial]);

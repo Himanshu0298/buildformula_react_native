@@ -3,7 +3,6 @@ import React, {useEffect} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import * as Yup from 'yup';
 import {Formik} from 'formik';
-import TextInputMask from 'react-native-text-input-mask';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {ScrollView} from 'react-native-gesture-handler';
 import {useSelector} from 'react-redux';

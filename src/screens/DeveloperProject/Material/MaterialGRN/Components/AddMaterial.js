@@ -3,12 +3,12 @@ import React, {useEffect, useMemo} from 'react';
 import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 import * as Yup from 'yup';
 import {Formik} from 'formik';
-import ActionButtons from 'components/Atoms/ActionButtons';
-import RenderInput from 'components/Atoms/RenderInput';
-import RenderSelect from 'components/Atoms/RenderSelect';
 import {useSelector} from 'react-redux';
 import Modal from 'react-native-modal';
 import {round} from 'lodash';
+import ActionButtons from 'components/Atoms/ActionButtons';
+import RenderInput from 'components/Atoms/RenderInput';
+import RenderSelect from 'components/Atoms/RenderSelect';
 import Header from '../../CommonComponents/Header';
 
 const schema = Yup.object().shape({
@@ -188,7 +188,7 @@ function AddMaterialDialog(props) {
         damage: damage_qty,
         missing,
         fineQty,
-        delivery_challan_rate: rate,
+        rate,
         total_amount,
       } = material;
 

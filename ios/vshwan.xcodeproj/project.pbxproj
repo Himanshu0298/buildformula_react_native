@@ -421,12 +421,12 @@
 				CODE_SIGN_ENTITLEMENTS = vshwan/vshwan.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 6;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = K589DAC6S3;
 				INFOPLIST_FILE = vshwan/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 2.1.8;
+				MARKETING_VERSION = 2.1.12;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -451,11 +451,11 @@
 				CODE_SIGN_ENTITLEMENTS = vshwan/vshwan.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = K589DAC6S3;
 				INFOPLIST_FILE = vshwan/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 2.1.8;
+				MARKETING_VERSION = 2.1.12;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",

@@ -8,12 +8,12 @@ import {
 } from 'react-native-paper';
 import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {theme} from 'styles/theme';
-import {getShadow} from 'utils';
 import FileViewer from 'react-native-file-viewer';
 
 import Spinner from 'react-native-loading-spinner-overlay';
 import {useSelector} from 'react-redux';
+import {getShadow} from 'utils';
+import {theme} from 'styles/theme';
 import FileIcon from 'assets/images/file_icon.png';
 import NoResult from 'components/Atoms/NoResult';
 
@@ -89,6 +89,7 @@ const RenderMaterialAttachments = props => {
 
 const RenderRow = props => {
   const {item} = props;
+
   return (
     <View style={styles.renderContainer}>
       <Caption style={styles.label}>{item.label}</Caption>
@@ -99,6 +100,7 @@ const RenderRow = props => {
 
 const MaterialData = props => {
   const {item} = props;
+
   return (
     <View style={styles.quantityContainer}>
       <View style={styles.itemContainer}>
