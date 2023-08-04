@@ -39,6 +39,7 @@ import {theme} from 'styles/theme';
 import {useImagePicker} from 'hooks';
 import FileIcon from 'assets/images/file_icon.png';
 import {getShadow} from 'utils';
+import {getFileName} from 'utils/constant';
 import MenuDialog from '../Components/MenuDialog';
 import VersionDialog from '../Components/VersionDialog';
 import RenameDialogue from '../Components/RenameDialog';
@@ -65,33 +66,23 @@ const ACTIVITY_ICONS = {
   ),
 };
 
-function getFileName(string) {
-  if (string.includes('/')) {
-    const splits = string.split('/');
-    return splits[splits.length - 1];
-  }
-
-  return string;
-}
-
 function ActivityModal(props) {
-  const activities = useMemo(() => [], []);
+  const {wdFileActivities = []} = useSelector(s => s.designModule);
 
   const processedActivities = useMemo(() => {
-    const sectionedData = [];
-    activities?.map(i => {
-      const key = dayjs(i.created).format('YYYY-MM-DD');
+    const data = [];
 
-      sectionedData[key] = sectionedData[key] || {};
-      sectionedData[key].title = key;
-      sectionedData[key].data = sectionedData[key].data || [];
-      sectionedData[key].data.push(i);
+    Object.entries(wdFileActivities)?.map(([key, values]) => {
+      data[key] = data[key] || {};
+      data[key].title = key;
 
-      return i;
+      data[key].data = [data[key].data || [], ...values];
+
+      return key;
     });
 
-    return Object.values(sectionedData);
-  }, [activities]);
+    return Object.values(data);
+  }, [wdFileActivities]);
 
   const renderSeparator = () => <Divider />;
   const renderEmpty = () => (
@@ -178,18 +169,20 @@ function RenderActivity({item}) {
   const {user_full_name, log_type, created, log_text} = item;
 
   return (
-    <View style={styles.activityContainer}>
-      <View style={styles.iconContainer}>{ACTIVITY_ICONS?.[log_type]}</View>
-      <View style={styles.activityBody}>
-        <View style={styles.activityUser}>
-          <Text>{user_full_name}</Text>
-          <Caption>{dayjs(created).fromNow()}</Caption>
-        </View>
+    <ScrollView contentContainerStyle={{paddingBottom: 100}}>
+      <View style={styles.activityContainer}>
+        <View style={styles.iconContainer}>{ACTIVITY_ICONS?.[log_type]}</View>
+        <View style={styles.activityBody}>
+          <View style={styles.activityUser}>
+            <Text>{user_full_name}</Text>
+            <Caption>{dayjs(created).fromNow()}</Caption>
+          </View>
 
-        <Caption>{ACTIVITY_LABEL?.[log_type] || log_type}</Caption>
-        <Caption style={styles.fileName}>{getFileName(log_text)}</Caption>
+          <Caption>{ACTIVITY_LABEL?.[log_type] || log_type}</Caption>
+          <Caption style={styles.fileName}>{getFileName(log_text)}</Caption>
+        </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
@@ -244,7 +237,9 @@ function RenderMenuModal(props) {
                 color="grey"
               />
             </View>
-            {modelContentType === 'menu' ? <MenuDialog {...props} /> : null}
+            {modelContentType === 'menu' ? (
+              <MenuDialog {...props} showShare={false} />
+            ) : null}
             {modelContentType === 'parentActivity' ? (
               <ActivityModal {...props} />
             ) : null}
@@ -284,6 +279,7 @@ function WDPlotList(props) {
     uploadWDBungalowPlotFileVersion,
     renameFDBungalowsFile,
     deleteWDPlotBungalowFile,
+    getWDCommonFileActivity,
   } = useDesignModuleActions();
 
   const {plots, loading, version} = useSelector(s => s.designModule);
@@ -340,8 +336,12 @@ function WDPlotList(props) {
     });
   };
 
-  const activityDataHandler = () => {
+  const activityDataHandler = (id, type) => {
     setModalContentType('activity');
+    getWDCommonFileActivity({
+      project_id,
+      working_drawing_bunglow_plot_files_id: id,
+    });
   };
 
   const onChoose = v => {
@@ -369,7 +369,7 @@ function WDPlotList(props) {
     loadFiles();
   };
 
-  const handleNewVersionUpload = file_id => {
+  const handleNewVersionUpload = (id, file_id) => {
     openFilePicker({
       type: 'file',
       onChoose: async v => {
@@ -381,11 +381,11 @@ function WDPlotList(props) {
         formData.append('project_id', project_id);
 
         await uploadWDBungalowPlotFileVersion(formData);
+        getBungalowPlotFileVersion({
+          project_id,
+          working_drawing_bunglow_plot_files: file_id,
+        });
       },
-    });
-    getBungalowPlotFileVersion({
-      project_id,
-      working_drawing_bunglow_plot_files: file_id,
     });
   };
 
@@ -481,13 +481,14 @@ function WDPlotList(props) {
           />
         </ScrollView>
       </View>
-
-      <FAB
-        style={styles.fab}
-        icon="plus"
-        onPress={() => openFilePicker({type: 'file', onChoose})}
-        medium
-      />
+      {menuId === undefined ? (
+        <FAB
+          style={styles.fab}
+          icon="plus"
+          onPress={() => openFilePicker({type: 'file', onChoose})}
+          medium
+        />
+      ) : null}
     </>
   );
 }

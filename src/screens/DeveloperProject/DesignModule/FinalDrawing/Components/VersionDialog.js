@@ -10,12 +10,14 @@ import {
 } from 'react-native-paper';
 import dayjs from 'dayjs';
 import FileViewer from 'react-native-file-viewer';
+import {ScrollView} from 'react-native-gesture-handler';
 import PdfIcon from 'assets/images/pdf_icon.png';
 import {checkDownloaded} from 'utils/download';
 
 import {theme} from 'styles/theme';
 import {useDownload} from 'components/Atoms/Download';
 import {getFileName} from 'utils/constant';
+import {getPermissions} from 'utils';
 
 function VersionFile(props) {
   const {modulePermissions, version, countVersion, handleDeleteVersion} = props;
@@ -96,16 +98,16 @@ function VersionFile(props) {
               onPress={() => handleDownload(version)}
               title="Download"
             />
-            {/* {modulePermissions?.editor || modulePermissions?.admin ? ( */}
-            <>
-              <Divider />
-              <Menu.Item
-                icon="delete"
-                onPress={() => handleDeleteVersion(version, version.files_id)}
-                title="Delete"
-              />
-            </>
-            {/* ) : null} */}
+            {modulePermissions?.editor || modulePermissions?.admin ? (
+              <>
+                <Divider />
+                <Menu.Item
+                  icon="delete"
+                  onPress={() => handleDeleteVersion(version, version.files_id)}
+                  title="Delete"
+                />
+              </>
+            ) : null}
           </Menu>
         </View>
       </View>
@@ -115,8 +117,10 @@ function VersionFile(props) {
 }
 
 function VersionDialog(props) {
-  const {modulePermissions, modalContent, versionData, handleNewVersionUpload} =
-    props;
+  const {modalContent, versionData, handleNewVersionUpload} = props;
+
+  const modulePermissions = getPermissions('Files');
+
   const filteredVersion = useMemo(() => {
     return [versionData?.current, ...(versionData || [])];
   }, [versionData]);
@@ -125,30 +129,32 @@ function VersionDialog(props) {
     <View style={styles.container}>
       <View style={styles.versionHeading}>
         <Subheading style={{color: theme.colors.primary}}>Versions</Subheading>
-        {/* {modulePermissions?.editor || modulePermissions?.admin ? ( */}
-        <Button
-          uppercase={false}
-          mode="contained"
-          compact
-          labelStyle={styles.labelStyle}
-          onPress={() =>
-            handleNewVersionUpload(modalContent.id, modalContent.files_id)
-          }>
-          Add New Version
-        </Button>
-        {/* ) : null} */}
+        {modulePermissions?.editor || modulePermissions?.admin ? (
+          <Button
+            uppercase={false}
+            mode="contained"
+            compact
+            labelStyle={styles.labelStyle}
+            onPress={() =>
+              handleNewVersionUpload(modalContent.id, modalContent.files_id)
+            }>
+            Add New Version
+          </Button>
+        ) : null}
       </View>
-
-      <View>
-        {filteredVersion?.map((version, index) => (
-          <VersionFile
-            {...props}
-            version={version}
-            key={version}
-            countVersion={index}
-          />
-        ))}
-      </View>
+      <ScrollView contentContainerStyle={{paddingBottom: 100, flexGrow: 1}}>
+        <View>
+          {filteredVersion?.map((version, index) => (
+            <VersionFile
+              {...props}
+              version={version}
+              key={version}
+              countVersion={index}
+              modulePermissions={modulePermissions}
+            />
+          ))}
+        </View>
+      </ScrollView>
     </View>
   );
 }

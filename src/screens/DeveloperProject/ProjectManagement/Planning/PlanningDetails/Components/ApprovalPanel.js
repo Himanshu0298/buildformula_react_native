@@ -1,6 +1,3 @@
-import CustomCheckbox from 'components/Atoms/CustomCheckbox';
-import CustomDialog from 'components/Atoms/CustomDialog';
-import {RenderError} from 'components/Atoms/RenderInput';
 import React, {useMemo, useState} from 'react';
 import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {
@@ -12,6 +9,9 @@ import {
   Text,
   withTheme,
 } from 'react-native-paper';
+import CustomCheckbox from 'components/Atoms/CustomCheckbox';
+import CustomDialog from 'components/Atoms/CustomDialog';
+import {RenderError} from 'components/Atoms/RenderInput';
 import {getShadow} from 'utils';
 
 const USERS = [

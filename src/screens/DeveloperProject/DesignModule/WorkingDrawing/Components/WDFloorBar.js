@@ -39,7 +39,7 @@ function WDFloorBar(props) {
           <View style={styles.rowContainer}>
             <LabelContainer
               style={styles.floorLabelContainer}
-              onPress={() => onPressLabel?.(floorId)}>
+              onPress={onSelectFloor}>
               <Caption>{floor_text || floorNumber}</Caption>
             </LabelContainer>
 

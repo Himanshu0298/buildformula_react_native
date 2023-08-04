@@ -25,8 +25,10 @@ function MenuDialog(props) {
     toggleMenu,
     versionDataHandler,
     activityDataHandler,
-    showActivity,
+    showActivity = true,
     showRename = true,
+    showShare = true,
+    showVersion = true,
   } = props;
   const {id, is_preset, file_type, title, files_id, folder_title} =
     modalContent;
@@ -61,7 +63,7 @@ function MenuDialog(props) {
           project_id: modalContent.project_id,
         },
         onFinish: ({dir}) => {
-          setDownloaded(dir);
+          FileViewer.open(`file://${dir}`);
         },
       });
     } catch (error) {
@@ -126,17 +128,19 @@ function MenuDialog(props) {
       <View>
         {!fixedFolder ? (
           <>
-            <TouchableOpacity onPress={handleShare}>
-              <View style={styles.viewDirection}>
-                <IconButton icon="share-variant" />
-                <View style={styles.rowBetween}>
-                  <Text style={styles.ModalText}>Share Copy</Text>
-                  {sharing ? (
-                    <ActivityIndicator color={theme.colors.primary} />
-                  ) : null}
+            {showShare ? (
+              <TouchableOpacity onPress={handleShare}>
+                <View style={styles.viewDirection}>
+                  <IconButton icon="share-variant" />
+                  <View style={styles.rowBetween}>
+                    <Text style={styles.ModalText}>Share Copy</Text>
+                    {sharing ? (
+                      <ActivityIndicator color={theme.colors.primary} />
+                    ) : null}
+                  </View>
                 </View>
-              </View>
-            </TouchableOpacity>
+              </TouchableOpacity>
+            ) : null}
 
             <TouchableOpacity onPress={handleDownload}>
               <View style={styles.viewDirection}>
@@ -154,13 +158,15 @@ function MenuDialog(props) {
               </View>
             </TouchableOpacity>
             {file_type === 'image/jpeg' ? (
-              <TouchableOpacity
-                onPress={() => versionDataHandler(id, files_id)}>
-                <View style={styles.viewDirection}>
-                  <IconButton icon="file-multiple" />
-                  <Text style={styles.ModalText}>Manage version</Text>
-                </View>
-              </TouchableOpacity>
+              showVersion ? (
+                <TouchableOpacity
+                  onPress={() => versionDataHandler(id, files_id)}>
+                  <View style={styles.viewDirection}>
+                    <IconButton icon="file-multiple" />
+                    <Text style={styles.ModalText}>Manage version</Text>
+                  </View>
+                </TouchableOpacity>
+              ) : null
             ) : null}
             {showRename ? (
               modulePermissions?.editor || modulePermissions?.admin ? (
@@ -176,12 +182,15 @@ function MenuDialog(props) {
                 </TouchableOpacity>
               ) : null
             ) : null}
-            <TouchableOpacity onPress={() => activityDataHandler(id)}>
-              <View style={styles.viewDirection}>
-                <IconButton icon="information" />
-                <Text style={styles.ModalText}>Activity</Text>
-              </View>
-            </TouchableOpacity>
+
+            {showActivity ? (
+              <TouchableOpacity onPress={() => activityDataHandler(id)}>
+                <View style={styles.viewDirection}>
+                  <IconButton icon="information" />
+                  <Text style={styles.ModalText}>Activity</Text>
+                </View>
+              </TouchableOpacity>
+            ) : null}
             {modulePermissions?.editor || modulePermissions?.admin ? (
               <TouchableOpacity
                 onPress={() => {

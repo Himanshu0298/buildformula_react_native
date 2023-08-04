@@ -1,4 +1,3 @@
-import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import dayjs from 'dayjs';
 import React, {useMemo} from 'react';
 import {
@@ -19,6 +18,7 @@ import {
   withTheme,
 } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import ApprovalPanel from './Components/ApprovalPanel';
 import AssignPersonPanel from './Components/AssignPersonPanel';
 import AttachmentsPanel from './Components/AttachmentsPanel';

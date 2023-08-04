@@ -16,22 +16,22 @@ import {
   Divider,
   Caption,
 } from 'react-native-paper';
-import useFileActions from 'redux/actions/fileActions';
-import FolderIcon from 'assets/images/folder_icon.png';
-import UploadFileIcon from 'assets/images/file_icon.png';
 import {useSelector} from 'react-redux';
-import useImagePicker from 'hooks/useImagePicker';
 import Spinner from 'react-native-loading-spinner-overlay';
 import BottomSheet from 'reanimated-bottom-sheet';
-import {getPermissions, getShadow} from 'utils';
 import Animated from 'react-native-reanimated';
 import _ from 'lodash';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Feather from 'react-native-vector-icons/Feather';
 import dayjs from 'dayjs';
-import {getFileExtension} from 'utils/download';
 import {Tabs} from 'react-native-collapsible-tab-view';
+import {getFileExtension} from 'utils/download';
+import {getPermissions, getShadow} from 'utils';
+import useImagePicker from 'hooks/useImagePicker';
+import UploadFileIcon from 'assets/images/file_icon.png';
+import FolderIcon from 'assets/images/folder_icon.png';
+import useFileActions from 'redux/actions/fileActions';
 import DeleteDialog from './Components/DeleteDialog';
 import RenameDialogue from './Components/RenameDialog';
 import CreateFolderDialogue from './Components/CreateFolderDialog';

@@ -180,7 +180,9 @@ function RenderMenuModal(props) {
                 color="grey"
               />
             </View>
-            {modelContentType === 'menu' ? <MenuDialog {...props} /> : null}
+            {modelContentType === 'menu' ? (
+              <MenuDialog {...props} showShare={false} />
+            ) : null}
             {modelContentType === 'parentActivity' ? (
               <ActivityModal {...props} />
             ) : null}
@@ -483,13 +485,14 @@ function FDTowerList(props) {
         dialogueContent={modalContent}
         deleteFileHandler={deleteFileHandler}
       />
-
-      <FAB
-        style={styles.fab}
-        icon="plus"
-        onPress={() => openFilePicker({type: 'file', onChoose})}
-        medium
-      />
+      {menuId === undefined ? (
+        <FAB
+          style={styles.fab}
+          icon="plus"
+          onPress={() => openFilePicker({type: 'file', onChoose})}
+          medium
+        />
+      ) : null}
     </View>
   );
 }

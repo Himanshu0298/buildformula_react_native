@@ -39,6 +39,7 @@ import {getFileExtension} from 'utils/download';
 import {getShadow} from 'utils';
 import {theme} from 'styles/theme';
 import {useImagePicker} from 'hooks';
+import {getFileName} from 'utils/constant';
 import MenuDialog from '../Components/MenuDialog';
 import VersionDialog from '../Components/VersionDialog';
 import RenameDialogue from '../Components/RenameDialog';
@@ -65,33 +66,23 @@ const ACTIVITY_ICONS = {
   ),
 };
 
-function getFileName(string) {
-  if (string.includes('/')) {
-    const splits = string.split('/');
-    return splits[splits.length - 1];
-  }
-
-  return string;
-}
-
 function ActivityModal(props) {
-  const activities = useMemo(() => [], []);
+  const {wdFileActivities = []} = useSelector(s => s.designModule);
 
   const processedActivities = useMemo(() => {
-    const sectionedData = [];
-    activities?.map(i => {
-      const key = dayjs(i.created).format('YYYY-MM-DD');
+    const data = [];
 
-      sectionedData[key] = sectionedData[key] || {};
-      sectionedData[key].title = key;
-      sectionedData[key].data = sectionedData[key].data || [];
-      sectionedData[key].data.push(i);
+    Object.entries(wdFileActivities)?.map(([key, values]) => {
+      data[key] = data[key] || {};
+      data[key].title = key;
 
-      return i;
+      data[key].data = [data[key].data || [], ...values];
+
+      return key;
     });
 
-    return Object.values(sectionedData);
-  }, [activities]);
+    return Object.values(data);
+  }, [wdFileActivities]);
 
   const renderSeparator = () => <Divider />;
   const renderEmpty = () => (
@@ -101,24 +92,26 @@ function ActivityModal(props) {
   );
 
   return (
-    <View style={styles.activitiesContainer}>
-      <Subheading style={{color: theme.colors.primary}}>Activity</Subheading>
+    <ScrollView>
+      <View style={styles.activitiesContainer}>
+        <Subheading style={{color: theme.colors.primary}}>Activity</Subheading>
 
-      <SectionList
-        sections={processedActivities}
-        extraData={processedActivities}
-        showsVerticalScrollIndicator={false}
-        keyExtractor={i => i.id}
-        ItemSeparatorComponent={renderSeparator}
-        contentContainerStyle={styles.activityScrollContainer}
-        stickySectionHeadersEnabled={false}
-        ListEmptyComponent={renderEmpty}
-        renderItem={params => <RenderActivity {...params} />}
-        renderSectionHeader={({section: {title}}) => (
-          <Caption>{dayjs(title).format('DD MMM')}</Caption>
-        )}
-      />
-    </View>
+        <SectionList
+          sections={processedActivities}
+          extraData={processedActivities}
+          showsVerticalScrollIndicator={false}
+          keyExtractor={i => i.id}
+          ItemSeparatorComponent={renderSeparator}
+          contentContainerStyle={styles.activityScrollContainer}
+          stickySectionHeadersEnabled={false}
+          ListEmptyComponent={renderEmpty}
+          renderItem={params => <RenderActivity {...params} />}
+          renderSectionHeader={({section: {title}}) => (
+            <Caption>{dayjs(title).format('DD MMM')}</Caption>
+          )}
+        />
+      </View>
+    </ScrollView>
   );
 }
 
@@ -244,7 +237,9 @@ function RenderMenuModal(props) {
                 color="grey"
               />
             </View>
-            {modelContentType === 'menu' ? <MenuDialog {...props} /> : null}
+            {modelContentType === 'menu' ? (
+              <MenuDialog {...props} showShare={false} />
+            ) : null}
             {modelContentType === 'parentActivity' ? (
               <ActivityModal {...props} />
             ) : null}
@@ -281,6 +276,8 @@ function WDBungalowList(props) {
   } = useDesignModuleActions();
 
   const [menuId, setMenuId] = React.useState();
+  const [fab, setFab] = React.useState(false);
+
   const [modelContentType, setModalContentType] = React.useState('menu');
   const [modalContent, setModalContent] = React.useState({});
   const [shareDialog, setShareDialog] = React.useState(false);
@@ -290,11 +287,12 @@ function WDBungalowList(props) {
   const toggleDialog = v => setDialogType(v);
   const toggleShareDialog = () => setShareDialog(v => !v);
 
-  const {wdBungalows, versionData, loading} = useSelector(s => s.designModule);
+  const {wdBungalows, version, loading} = useSelector(s => s.designModule);
   const {selectedProject} = useSelector(s => s.project);
   const project_id = selectedProject.id;
 
   const bungalowsList = wdBungalows?.bungalows;
+  const versionData = version?.list || [];
 
   const bungalowFiles = wdBungalows?.working_drawing_bunglow_files;
 
@@ -343,6 +341,7 @@ function WDBungalowList(props) {
       working_drawing_bunglow_plot_files_id: id,
     });
   };
+
   const onChoose = v => {
     handleFileUpload(v);
   };
@@ -368,7 +367,7 @@ function WDBungalowList(props) {
     loadFiles();
   };
 
-  const handleNewVersionUpload = file_id => {
+  const handleNewVersionUpload = (id, file_id) => {
     openFilePicker({
       type: 'file',
       onChoose: async v => {
@@ -380,11 +379,11 @@ function WDBungalowList(props) {
         formData.append('project_id', project_id);
 
         await uploadWDBungalowPlotFileVersion(formData);
+        getBungalowPlotFileVersion({
+          project_id,
+          working_drawing_bunglow_plot_files: file_id,
+        });
       },
-    });
-    getBungalowPlotFileVersion({
-      project_id,
-      working_drawing_bunglow_plot_files: file_id,
     });
   };
 
@@ -401,6 +400,8 @@ function WDBungalowList(props) {
       structureLabel,
     });
   };
+
+  console.log('menuId ===========> ', menuId);
 
   return (
     <>
@@ -481,12 +482,17 @@ function WDBungalowList(props) {
           />
         </ScrollView>
       </View>
-      <FAB
-        style={styles.fab}
-        icon="plus"
-        onPress={() => openFilePicker({type: 'file', onChoose})}
-        medium
-      />
+      {menuId === undefined ? (
+        <FAB
+          style={[
+            styles.fab,
+            {backgroundColor: fab ? theme.colors.white : theme.colors.primary},
+          ]}
+          icon="plus"
+          onPress={() => openFilePicker({type: 'file', onChoose})}
+          medium
+        />
+      ) : null}
     </>
   );
 }
@@ -536,8 +542,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 25,
     bottom: 30,
-    zIndex: 2,
-    backgroundColor: theme.colors.primary,
+    zIndex: 1,
   },
 
   backdrop: {
@@ -555,6 +560,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingBottom: 20,
     flexGrow: 1,
+    zIndex: 1,
+
     height: '100%',
     ...getShadow(2),
   },

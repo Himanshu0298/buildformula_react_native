@@ -239,7 +239,15 @@ function RenderMenuModal(props) {
                 color="grey"
               />
             </View>
-            {modelContentType === 'menu' ? <MenuDialog {...props} /> : null}
+            {modelContentType === 'menu' ? (
+              <MenuDialog
+                {...props}
+                showActivity={false}
+                showShare={false}
+                showRename={false}
+                showVersion={false}
+              />
+            ) : null}
             {modelContentType === 'parentActivity' ? (
               <ActivityModal {...props} />
             ) : null}
@@ -432,14 +440,14 @@ function FinalDrawingTowerFiles(props) {
           />
         )}
       />
-
-      <FAB
-        style={styles.fab}
-        icon="plus"
-        onPress={() => openFilePicker({type: 'file', onChoose})}
-        medium
-      />
-
+      {menuId === undefined ? (
+        <FAB
+          style={styles.fab}
+          icon="plus"
+          onPress={() => openFilePicker({type: 'file', onChoose})}
+          medium
+        />
+      ) : null}
       <RenderMenuModal
         {...props}
         {...{

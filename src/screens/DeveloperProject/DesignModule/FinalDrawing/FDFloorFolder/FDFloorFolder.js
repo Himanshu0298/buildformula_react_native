@@ -316,29 +316,44 @@ function RenderFile(props) {
 }
 
 function RenderRow(props) {
-  const {item, index, toggleMenu, setModalContent, setModalContentType} = props;
-  const {folder_title} = item;
+  const {
+    item,
+    index,
+    toggleMenu,
+    setModalContent,
+    setModalContentType,
+    handleFileUpload,
+  } = props;
+  const {folder_title, title, id} = item;
 
   return (
     <View style={styles.optionContainer}>
       <View>
         <Text style={{fontSize: 18, margin: 10}}>{folder_title} </Text>
       </View>
-      <View style={styles.rightSection}>
-        <OpacityButton opacity={1} style={styles.button}>
-          <MaterialCommunityIcons name="upload" size={10} color="#fff" />
-        </OpacityButton>
-        <Caption style={styles.uploadButton}>Upload</Caption>
-      </View>
-      <View>
-        <IconButton
-          icon="dots-vertical"
-          onPress={() => {
-            toggleMenu(index);
-            setModalContentType('menu');
-            setModalContent(item);
-          }}
+
+      <Divider />
+
+      {title ? (
+        <RenderFile
+          toggleMenu={toggleMenu}
+          item={item}
+          setModalContentType={setModalContentType}
+          setModalContent={setModalContent}
+          index={index}
         />
+      ) : null}
+      <View style={styles.rightSection}>
+        {!title ? (
+          <TouchableOpacity
+            style={styles.rightSection}
+            onPress={() => handleFileUpload(id)}>
+            <OpacityButton opacity={1} style={styles.button}>
+              <MaterialCommunityIcons name="upload" size={10} color="#fff" />
+            </OpacityButton>
+            <Caption style={styles.uploadButton}>Upload</Caption>
+          </TouchableOpacity>
+        ) : null}
       </View>
     </View>
   );
@@ -618,8 +633,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     ...getShadow(1),
     margin: 1,
-    justifyContent: 'space-between',
-    flexDirection: 'row',
   },
   recentFiles: {
     flexDirection: 'row',

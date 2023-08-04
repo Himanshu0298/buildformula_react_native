@@ -2,7 +2,6 @@ import React, {useEffect, useMemo, useRef} from 'react';
 import {
   FlatList,
   RefreshControl,
-  ScrollView,
   SectionList,
   StyleSheet,
   TouchableOpacity,
@@ -30,6 +29,7 @@ import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
 import FileViewer from 'react-native-file-viewer';
 import {Image} from 'react-native-svg';
+import {ScrollView} from 'react-native-gesture-handler';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 import useDesignModuleActions from 'redux/actions/designModuleActions';
 import {getFileExtension} from 'utils/download';
@@ -178,18 +178,20 @@ function RenderActivity({item}) {
   const {user_full_name, log_type, created, log_text} = item;
 
   return (
-    <View style={styles.activityContainer}>
-      <View style={styles.iconContainer}>{ACTIVITY_ICONS?.[log_type]}</View>
-      <View style={styles.activityBody}>
-        <View style={styles.activityUser}>
-          <Text>{user_full_name}</Text>
-          <Caption>{dayjs(created).fromNow()}</Caption>
-        </View>
+    <ScrollView style={{paddingBottom: 100}}>
+      <View style={styles.activityContainer}>
+        <View style={styles.iconContainer}>{ACTIVITY_ICONS?.[log_type]}</View>
+        <View style={styles.activityBody}>
+          <View style={styles.activityUser}>
+            <Text>{user_full_name}</Text>
+            <Caption>{dayjs(created).fromNow()}</Caption>
+          </View>
 
-        <Caption>{ACTIVITY_LABEL?.[log_type] || log_type}</Caption>
-        <Caption style={styles.fileName}>{getFileName(log_text)}</Caption>
+          <Caption>{ACTIVITY_LABEL?.[log_type] || log_type}</Caption>
+          <Caption style={styles.fileName}>{getFileName(log_text)}</Caption>
+        </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
@@ -244,7 +246,9 @@ function RenderMenuModal(props) {
                 color="grey"
               />
             </View>
-            {modelContentType === 'menu' ? <MenuDialog {...props} /> : null}
+            {modelContentType === 'menu' ? (
+              <MenuDialog {...props} showShare={false} />
+            ) : null}
             {modelContentType === 'parentActivity' ? (
               <ActivityModal {...props} />
             ) : null}
@@ -479,12 +483,15 @@ function PlotsList(props) {
           />
         </ScrollView>
       </View>
-      <FAB
-        style={styles.fab}
-        icon="plus"
-        onPress={() => openFilePicker({type: 'file', onChoose})}
-        medium
-      />
+
+      {menuId === undefined ? (
+        <FAB
+          style={styles.fab}
+          icon="plus"
+          onPress={() => openFilePicker({type: 'file', onChoose})}
+          medium
+        />
+      ) : null}
     </>
   );
 }

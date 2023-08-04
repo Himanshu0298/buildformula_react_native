@@ -2,6 +2,7 @@ import React, {useEffect, useMemo, useRef} from 'react';
 import {
   FlatList,
   RefreshControl,
+  ScrollView,
   SectionList,
   StyleSheet,
   TouchableOpacity,
@@ -68,17 +69,19 @@ function RenderActivity({item}) {
   const {user_full_name, log_type, created, log_text} = item;
 
   return (
-    <View style={styles.activityContainer}>
-      <View style={styles.iconContainer}>{ACTIVITY_ICONS?.[log_type]}</View>
-      <View style={styles.activityBody}>
-        <View style={styles.activityUser}>
-          <Text>{user_full_name}</Text>
-          <Caption>{dayjs(created).fromNow()}</Caption>
+    <ScrollView contentContainerStyle={{paddingBottom: 100}}>
+      <View style={styles.activityContainer}>
+        <View style={styles.iconContainer}>{ACTIVITY_ICONS?.[log_type]}</View>
+        <View style={styles.activityBody}>
+          <View style={styles.activityUser}>
+            <Text>{user_full_name}</Text>
+            <Caption>{dayjs(created).fromNow()}</Caption>
+          </View>
+          <Caption>{ACTIVITY_LABEL?.[log_type] || log_type}</Caption>
+          <Caption style={styles.fileName}>{getFileName([log_text])}</Caption>
         </View>
-        <Caption>{ACTIVITY_LABEL?.[log_type] || log_type}</Caption>
-        <Caption style={styles.fileName}>{getFileName([log_text])}</Caption>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
@@ -179,7 +182,9 @@ function RenderMenuModal(props) {
                 color="grey"
               />
             </View>
-            {modelContentType === 'menu' ? <MenuDialog {...props} /> : null}
+            {modelContentType === 'menu' ? (
+              <MenuDialog {...props} showShare={false} />
+            ) : null}
             {modelContentType === 'parentActivity' ? (
               <ActivityModal {...props} />
             ) : null}
@@ -481,13 +486,14 @@ function WDTowerList(props) {
         dialogueContent={modalContent}
         deleteFileHandler={deleteFileHandler}
       />
-
-      <FAB
-        style={styles.fab}
-        icon="plus"
-        onPress={() => openFilePicker({type: 'file', onChoose})}
-        medium
-      />
+      {menuId === undefined ? (
+        <FAB
+          style={styles.fab}
+          icon="plus"
+          onPress={() => openFilePicker({type: 'file', onChoose})}
+          medium
+        />
+      ) : null}
     </View>
   );
 }

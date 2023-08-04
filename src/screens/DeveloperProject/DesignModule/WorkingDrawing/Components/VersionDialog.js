@@ -1,11 +1,5 @@
 import React, {useMemo} from 'react';
-import {
-  StyleSheet,
-  View,
-  Image,
-  ActivityIndicator,
-  ScrollView,
-} from 'react-native';
+import {StyleSheet, View, Image, ActivityIndicator} from 'react-native';
 import {
   IconButton,
   Text,
@@ -16,6 +10,7 @@ import {
 } from 'react-native-paper';
 import dayjs from 'dayjs';
 import FileViewer from 'react-native-file-viewer';
+import {ScrollView} from 'react-native-gesture-handler';
 import PdfIcon from 'assets/images/pdf_icon.png';
 import {checkDownloaded} from 'utils/download';
 import {theme} from 'styles/theme';
@@ -163,7 +158,7 @@ function VersionDialog(props) {
         ) : null}
       </View>
 
-      <ScrollView contentContainerStyle={{marginBottom: 20}}>
+      <ScrollView contentContainerStyle={{marginBottom: 100, flexGrow: 1}}>
         {filteredVersion?.map((version, index) => (
           <VersionFile
             {...props}

@@ -85,6 +85,61 @@ function RenderActivity({item}) {
   );
 }
 
+function RenderFile(props) {
+  const {index, item, toggleMenu, setModalContentType, setModalContent} = props;
+
+  const {title, created} = item || {};
+
+  const download = useDownload();
+
+  const onPressFile = async file => {
+    download.link({
+      name: getFileName(file.file_url),
+      data: {file_url: file.file_url, project_id: file.project_id},
+      showAction: false,
+      onFinish: ({dir}) => {
+        FileViewer.open(`file://${dir}`);
+      },
+    });
+  };
+
+  return (
+    <View style={styles.recentFiles}>
+      {title ? (
+        <TouchableOpacity
+          style={styles.sectionContainer}
+          onPress={() => onPressFile(item)}>
+          <Image source={FileIcon} style={styles.fileIcon} />
+          <View>
+            <Text style={(styles.verticalFlex, styles.text)} numberOfLines={2}>
+              {title}
+            </Text>
+          </View>
+        </TouchableOpacity>
+      ) : null}
+
+      <View style={styles.sectionContainer}>
+        <View>
+          <Text style={styles.date}>
+            {dayjs(created).format('DD MMM YYYY')}
+          </Text>
+        </View>
+
+        <View>
+          <IconButton
+            icon="dots-vertical"
+            onPress={() => {
+              toggleMenu(index);
+              setModalContentType('menu');
+              setModalContent(item);
+            }}
+          />
+        </View>
+      </View>
+    </View>
+  );
+}
+
 function ActivityModal(props) {
   const activities = useMemo(() => [], []);
 
@@ -201,61 +256,6 @@ function RenderMenuModal(props) {
   );
 }
 
-function RenderFile(props) {
-  const {index, item, toggleMenu, setModalContentType, setModalContent} = props;
-
-  const {title, created} = item || {};
-
-  const download = useDownload();
-
-  const onPressFile = async file => {
-    const fileUrl = getDownloadUrl(file.file_url);
-    const name = getFileName(file.title);
-    download.link({
-      name,
-      link: fileUrl,
-      showAction: false,
-      onFinish: ({dir}) => {
-        FileViewer.open(`file://${dir}`);
-      },
-    });
-  };
-
-  return (
-    <View style={styles.recentFiles}>
-      {title ? (
-        <View style={styles.sectionContainer} onPress={() => onPressFile(item)}>
-          <Image source={FileIcon} style={styles.fileIcon} />
-          <View>
-            <Text style={(styles.verticalFlex, styles.text)} numberOfLines={2}>
-              {title}
-            </Text>
-          </View>
-        </View>
-      ) : null}
-
-      <View style={styles.sectionContainer}>
-        <View>
-          <Text style={styles.date}>
-            {dayjs(created).format('DD MMM YYYY')}
-          </Text>
-        </View>
-
-        <View>
-          <IconButton
-            icon="dots-vertical"
-            onPress={() => {
-              toggleMenu(index);
-              setModalContentType('menu');
-              setModalContent(item);
-            }}
-          />
-        </View>
-      </View>
-    </View>
-  );
-}
-
 function RenderRow(props) {
   const {
     index,
@@ -263,31 +263,34 @@ function RenderRow(props) {
     toggleMenu,
     setModalContentType,
     setModalContent,
-    handleNewVersionUpload,
+    handleFileUpload,
   } = props;
-  const {folder_title} = item;
+  const {folder_title, title, id} = item;
 
   return (
     <View style={styles.optionContainer}>
       <Text style={{fontSize: 18, margin: 10}}>{folder_title} </Text>
-      <TouchableOpacity
-        style={styles.rightSection}
-        onPress={() => handleNewVersionUpload(item)}>
-        <OpacityButton opacity={1} style={styles.button}>
-          <MaterialCommunityIcons name="upload" size={10} color="#fff" />
-        </OpacityButton>
-        <Caption style={styles.uploadButton}>Upload</Caption>
-      </TouchableOpacity>
-      {/* <View>
-        <IconButton
-          icon="dots-vertical"
-          onPress={() => {
-            toggleMenu(index);
-            setModalContentType('menu');
-            setModalContent(item);
-          }}
+      <Divider />
+
+      {title ? (
+        <RenderFile
+          toggleMenu={toggleMenu}
+          item={item}
+          setModalContentType={setModalContentType}
+          setModalContent={setModalContent}
+          index={index}
         />
-      </View> */}
+      ) : null}
+      {!title ? (
+        <TouchableOpacity
+          style={styles.rightSection}
+          onPress={() => handleFileUpload(id)}>
+          <OpacityButton opacity={1} style={styles.button}>
+            <MaterialCommunityIcons name="upload" size={10} color="#fff" />
+          </OpacityButton>
+          <Caption style={styles.uploadButton}>Upload</Caption>
+        </TouchableOpacity>
+      ) : null}
     </View>
   );
 }
@@ -330,8 +333,6 @@ function WDFloorFolder(props) {
 
   const listData = wdFolderList?.list || [];
 
-  const fileData = wdFolderList?.working_drawing_tower_floors_files_list || {};
-
   const toggleMenu = folderIndex => setMenuId(folderIndex);
   const toggleDialog = v => setDialogType(v);
   const toggleShareDialog = () => setShareDialog(v => !v);
@@ -361,8 +362,6 @@ function WDFloorFolder(props) {
       type: 'file',
       onChoose: async v => {
         const formData = new FormData();
-
-        console.log('===========> v', v);
 
         formData.append('working_drawing_tower_files_id', file_id);
         formData.append('myfile', v);
@@ -421,6 +420,7 @@ function WDFloorFolder(props) {
     formData.append('working_drawing_floor_rows_folder_id', id);
 
     await uploadWDFloorFolderFile(formData);
+    loadData();
     toggleDialog();
     snackbar.showMessage({
       message: 'File Uploaded Successfully!',
@@ -450,13 +450,35 @@ function WDFloorFolder(props) {
       variant: 'success',
     });
   };
+  const deleteFileHandler = async id => {
+    await deleteWDFloorFolder({
+      folder_id: id,
+      project_id,
+    });
+    loadData();
+    toggleDialog();
+    snackbar.showMessage({
+      message: 'File Deleted!',
+      variant: 'success',
+    });
+  };
 
-  const renameFileHandler = async (name, id, type) => {
+  const renameFolderHandler = async (name, id, type) => {
     await renameWDFloorFolder({
       folder_title: name,
       working_drawing_floor_rows_folder_id: id,
       project_id,
     });
+    loadData();
+    toggleDialog();
+  };
+
+  const renameFileHandler = async (name, id, type) => {
+    // await renameWDFloorFolder({
+    //   folder_title: name,
+    //   working_drawing_floor_rows_folder_id: id,
+    //   project_id,
+    // });
     loadData();
     toggleDialog();
   };
@@ -496,8 +518,9 @@ function WDFloorFolder(props) {
         visible={DialogType === 'renameFile'}
         toggleDialogue={toggleDialog}
         dialogueContent={modalContent}
-        renameFolderHandler={renameFileHandler}
+        renameFolderHandler={renameFolderHandler}
       />
+
       <DeleteDialog
         visible={DialogType === 'deleteFileFolder'}
         toggleDialogue={toggleDialog}
@@ -551,11 +574,10 @@ function WDFloorFolder(props) {
                 <RenderRow
                   item={item}
                   index={index}
-                  fileData={fileData}
                   toggleMenu={toggleMenu}
                   setModalContentType={setModalContentType}
                   setModalContent={setModalContent}
-                  handleNewVersionUpload={handleNewVersionUpload}
+                  handleFileUpload={handleFileUpload}
                 />
               );
             }}
@@ -575,8 +597,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     ...getShadow(1),
     margin: 1,
-    justifyContent: 'space-between',
-    flexDirection: 'row',
     paddingHorizontal: 12,
   },
   recentFiles: {
@@ -700,16 +720,13 @@ const styles = StyleSheet.create({
   rightSection: {
     alignItems: 'center',
     flexDirection: 'row',
+    justifyContent: 'center',
+    margin: 5,
   },
   uploadButton: {
     marginLeft: 5,
     color: theme.colors.primary,
     fontSize: 16,
-  },
-  uploadContainer: {
-    justifyContent: 'space-between',
-    flexDirection: 'row',
-    alignItems: 'center',
   },
 });
 

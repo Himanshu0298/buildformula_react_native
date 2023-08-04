@@ -8,7 +8,6 @@ function DeleteDialog(props) {
   const {visible, toggleDialogue, dialogueContent, deleteFileHandler} = props;
 
   const {title, folder_title} = dialogueContent;
-  console.log('===========>dialogueContent ', dialogueContent);
 
   return (
     <Portal>
