@@ -27,7 +27,6 @@ const Attachments = props => {
   const onPressFile = async fileUrl => {
     download.link({
       name: getFileName(fileUrl.challan_image),
-
       data: {project_id: projectId, file_url: fileUrl.challan_image},
       showAction: false,
       onFinish: ({dir}) => {

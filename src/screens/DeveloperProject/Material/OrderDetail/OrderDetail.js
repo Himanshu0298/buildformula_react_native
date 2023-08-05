@@ -212,10 +212,23 @@ function CommonCard(props) {
     item,
     onDelete,
     onUpdateStatus,
+    materialChallanList,
   } = props;
+  const data = materialChallanList.infoData;
+
+  const {damage} = data.damaged_quentity;
+  const {missing} = data.missing_quentity;
+  const {quantity} = data.delivered_quentity;
 
   const onUpdate = () => {
-    navigation.navigate('AddChallan', {materialId: item.id, item, orderNumber});
+    navigation.navigate('AddChallan', {
+      materialId: item.id,
+      item,
+      orderNumber,
+      damage,
+      missing,
+      quantity,
+    });
   };
 
   return (
@@ -420,6 +433,7 @@ function OrderDetail(props) {
               onDelete={onDelete}
               onUpdateStatus={() => onUpdateStatus(item.id)}
               toggleAddDialog={toggleAddDialog}
+              materialChallanList={materialChallanList}
             />
           );
         })}

@@ -7,11 +7,12 @@ import {
   RefreshControl,
 } from 'react-native';
 import React, {useEffect, useMemo} from 'react';
+import {Caption, Searchbar, FAB} from 'react-native-paper';
+import {useSelector} from 'react-redux';
+import Spinner from 'react-native-loading-spinner-overlay';
 import {getShadow} from 'utils';
 import {theme} from 'styles/theme';
 import NoResult from 'components/Atoms/NoResult';
-import {Caption, Searchbar, FAB} from 'react-native-paper';
-import {useSelector} from 'react-redux';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 import {MODIFY_REQUEST_STATUS} from 'utils/constant';
 
@@ -85,7 +86,7 @@ const DirectGRN = props => {
   const [searchQuery, setSearchQuery] = React.useState('');
 
   const {selectedProject} = useSelector(s => s.project);
-  const {directGRNList} = useSelector(s => s.materialManagement);
+  const {directGRNList, loading} = useSelector(s => s.materialManagement);
 
   useEffect(() => {
     getList();
@@ -111,6 +112,7 @@ const DirectGRN = props => {
 
   return (
     <View style={styles.mainContainer}>
+      <Spinner visible={loading} />
       <Searchbar
         placeholder="Search"
         value={searchQuery}
@@ -119,7 +121,9 @@ const DirectGRN = props => {
       />
       <FlatList
         data={filteredUsers}
-        refreshControl={<RefreshControl refreshing={false} />}
+        refreshControl={
+          <RefreshControl refreshing={false} onRefresh={getList} />
+        }
         contentContainerStyle={styles.contentContainerStyle}
         showsVerticalScrollIndicator={false}
         keyExtractor={item => item.material_order_no}

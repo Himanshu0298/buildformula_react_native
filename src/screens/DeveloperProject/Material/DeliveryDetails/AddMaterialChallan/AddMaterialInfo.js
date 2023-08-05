@@ -285,13 +285,11 @@ function MaterialForm(props) {
 
 const AddMaterialInfo = props => {
   const {navigation, route} = props;
-  const {selectedMaterial} = route?.params || {};
+  const {selectedMaterial, damage, missing, quantity} = route?.params || {};
 
   const {selectedMaterialChallan} = useSelector(s => s.materialManagement);
 
   const navToStepFour = values => {
-    console.log('===========> values', values);
-
     navigation.navigate('AddVehicleInfo', {
       ...values,
       ...route?.params,
@@ -302,12 +300,12 @@ const AddMaterialInfo = props => {
     return {
       materials: selectedMaterial.map(i => ({
         id: i,
-        quantity: '',
-        damaged: '',
-        missing_qty: '',
+        quantity,
+        damaged: damage,
+        missing_qty: missing,
       })),
     };
-  }, [selectedMaterial]);
+  }, [damage, missing, quantity, selectedMaterial]);
 
   return (
     <Formik

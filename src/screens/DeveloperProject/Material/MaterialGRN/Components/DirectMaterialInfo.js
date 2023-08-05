@@ -9,13 +9,13 @@ import {
 } from 'react-native-paper';
 import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {theme} from 'styles/theme';
-import {getShadow} from 'utils';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {useSelector} from 'react-redux';
+import FileViewer from 'react-native-file-viewer';
+import {theme} from 'styles/theme';
+import {getShadow} from 'utils';
 import FileIcon from 'assets/images/file_icon.png';
 import NoResult from 'components/Atoms/NoResult';
-import FileViewer from 'react-native-file-viewer';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 import {useDownload} from 'components/Atoms/Download';
 import {getFileName} from 'utils/constant';
@@ -86,7 +86,6 @@ const renderImage = (item, index, type, projectId) => {
   const download = useDownload();
 
   const onPressFile = async fileUrl => {
-    console.log('material image direct grn===========> ', fileUrl);
     download.link({
       name: getFileName(fileUrl.image_url),
 

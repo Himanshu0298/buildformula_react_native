@@ -252,9 +252,15 @@ const RenderCard = props => {
     return units?.find(i => i.id === item?.material_units_id)?.title || 'NA';
   }, [item?.material_units_id, units]);
 
-  const makeOfListTitle = React.useMemo(() => {
-    return makeOfLists?.find(i => i.id === item?.lom)?.title || 'NA';
-  }, [item?.lom, makeOfLists]);
+  // const makeOfListTitle = React.useMemo(() => {
+  //   return makeOfLists?.find(i => i.id === item?.lom)?.title || 'NA';
+  // }, [item?.lom, makeOfLists]);
+
+  const makeOfList = React.useMemo(() => {
+    return (
+      makeOfLists?.find(i => String(i.id) === item.lomtitle)?.title || 'NA'
+    );
+  }, [item, makeOfLists]);
 
   return (
     <View style={styles.materialContainer}>
@@ -290,7 +296,7 @@ const RenderCard = props => {
       </View>
       <View style={styles.row}>
         <Caption>List of Makes: </Caption>
-        <Text style={styles.companyName}>{makeOfListTitle || lom}</Text>
+        <Text style={styles.companyName}>{makeOfList || lom}</Text>
       </View>
       <View style={styles.row}>
         <Caption>Fine Qty: </Caption>
@@ -330,7 +336,6 @@ const DirectGRNChallanMaterial = props => {
   const [directGRNDetails, setDirectGrnDetails] = useState(
     material_request_items || [],
   );
-
   const {material_request_items, challan_material_image = []} =
     directGRNDetails;
 
