@@ -1,6 +1,3 @@
-import CustomCheckbox from 'components/Atoms/CustomCheckbox';
-import CustomDialog from 'components/Atoms/CustomDialog';
-import {RenderError} from 'components/Atoms/RenderInput';
 import React, {useMemo, useState} from 'react';
 import {StyleSheet, TouchableOpacity, View, FlatList} from 'react-native';
 import {
@@ -12,6 +9,9 @@ import {
   Searchbar,
 } from 'react-native-paper';
 import {useSelector} from 'react-redux';
+import {RenderError} from 'components/Atoms/RenderInput';
+import CustomDialog from 'components/Atoms/CustomDialog';
+import CustomCheckbox from 'components/Atoms/CustomCheckbox';
 import {getShadow} from 'utils';
 
 function RenderUser(props) {

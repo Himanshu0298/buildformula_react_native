@@ -7,24 +7,22 @@ import {
   ScrollView,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
-import ActionButtons from 'components/Atoms/ActionButtons';
 import {Caption} from 'react-native-paper';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import * as Yup from 'yup';
+import {Formik} from 'formik';
+import {useSelector} from 'react-redux';
+import {isEqual, round} from 'lodash';
+import ActionButtons from 'components/Atoms/ActionButtons';
 import {RenderError} from 'components/Atoms/RenderInput';
 import {theme} from 'styles/theme';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import FileIcon from 'assets/images/file_icon.png';
 import {getShadow} from 'utils';
 import {useImagePicker} from 'hooks';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import * as Yup from 'yup';
-import {Formik} from 'formik';
-import {useSelector} from 'react-redux';
-import {isEqual, round} from 'lodash';
 import {useAlert} from 'components/Atoms/Alert';
 import useMaterialManagement from 'services/materialManagement';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
-import {useSnackbar} from 'components/Atoms/Snackbar';
-import {getUniqueOptions} from 'utils/constant';
 import Header from '../../CommonComponents/Header';
 import Pagination from '../../CommonComponents/Pagination';
 import AddMaterialModal from './AddMaterial';
@@ -254,9 +252,15 @@ const RenderCard = props => {
     return units?.find(i => i.id === item?.material_units_id)?.title || 'NA';
   }, [item?.material_units_id, units]);
 
-  const makeOfListTitle = React.useMemo(() => {
-    return makeOfLists?.find(i => i.id === item?.lom)?.title || 'NA';
-  }, [item?.lom, makeOfLists]);
+  // const makeOfListTitle = React.useMemo(() => {
+  //   return makeOfLists?.find(i => i.id === item?.lom)?.title || 'NA';
+  // }, [item?.lom, makeOfLists]);
+
+  const makeOfList = React.useMemo(() => {
+    return (
+      makeOfLists?.find(i => String(i.id) === item.lomtitle)?.title || 'NA'
+    );
+  }, [item, makeOfLists]);
 
   return (
     <View style={styles.materialContainer}>
@@ -292,7 +296,7 @@ const RenderCard = props => {
       </View>
       <View style={styles.row}>
         <Caption>List of Makes: </Caption>
-        <Text style={styles.companyName}>{makeOfListTitle || lom}</Text>
+        <Text style={styles.companyName}>{makeOfList || lom}</Text>
       </View>
       <View style={styles.row}>
         <Caption>Fine Qty: </Caption>
@@ -332,7 +336,6 @@ const DirectGRNChallanMaterial = props => {
   const [directGRNDetails, setDirectGrnDetails] = useState(
     material_request_items || [],
   );
-
   const {material_request_items, challan_material_image = []} =
     directGRNDetails;
 

@@ -8,18 +8,18 @@ import {
 } from 'react-native';
 import React, {useEffect} from 'react';
 import {Caption, Subheading} from 'react-native-paper';
-import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
+import FileViewer from 'react-native-file-viewer';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import {useSelector} from 'react-redux';
+import dayjs from 'dayjs';
+import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import {useAlert} from 'components/Atoms/Alert';
 import FileIcon from 'assets/images/file_icon.png';
 import ActionButtons from 'components/Atoms/ActionButtons';
-import {useSelector} from 'react-redux';
 import {getPermissions, getShadow} from 'utils';
 import {getFileName} from 'utils/constant';
 
 import {theme} from 'styles/theme';
-import dayjs from 'dayjs';
-import FileViewer from 'react-native-file-viewer';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 import {useDownload} from 'components/Atoms/Download';
 import Header from '../../CommonComponents/Header';

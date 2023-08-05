@@ -1,16 +1,17 @@
 import * as React from 'react';
-import {View, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, StyleSheet, TouchableOpacity, ScrollView} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Button, Dialog, Divider, Portal, Text} from 'react-native-paper';
 import {Formik} from 'formik';
+import {useSelector} from 'react-redux';
+import Spinner from 'react-native-loading-spinner-overlay';
+import {debounce} from 'lodash';
 import RenderInput from 'components/Atoms/RenderInput';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import {theme} from 'styles/theme';
 import useTodoActions from 'redux/actions/todoActions';
-import {useSelector} from 'react-redux';
 import {useAlert} from 'components/Atoms/Alert';
 import useSalesActions from 'redux/actions/salesActions';
-import Spinner from 'react-native-loading-spinner-overlay';
 import MenuDialog from '../Components/MenuDialog';
 import ShareTask from './ShareTask';
 
@@ -79,7 +80,7 @@ function AddTaskCategory(props) {
                         mode="contained"
                         contentStyle={styles.contentStyle}
                         theme={{roundness: 15}}
-                        onPress={handleSubmit}>
+                        onPress={debounce(handleSubmit, 500)}>
                         {selectedList ? 'Update' : 'Save'}
                       </Button>
                     </View>
@@ -109,14 +110,14 @@ function TaskList({navigation}) {
 
   const projectId = selectedProject.id;
 
-  const loadLists = () => {
+  const loadList = () => {
     get_todo_list({
       project_id: projectId,
     });
   };
 
   React.useEffect(() => {
-    loadLists();
+    loadList();
     getAssignToData({project_id: projectId});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -128,12 +129,12 @@ function TaskList({navigation}) {
   const toggleModal = () => setDialog(v => !v);
 
   const OnSubmit = async values => {
-    add_todo_list({
+    await add_todo_list({
       project_id: projectId,
       title: values?.listName,
       todo_id: values?.todo_id || 0,
     });
-    await loadLists({
+    await loadList({
       project_id: projectId,
     });
     await toggleDialog();
@@ -150,7 +151,7 @@ function TaskList({navigation}) {
           project_id: projectId,
           list_id,
         });
-        loadLists();
+        loadList();
       },
     });
   };
@@ -181,7 +182,6 @@ function TaskList({navigation}) {
         handleSubmit={handleShare}
         selectedList={selectedList}
       />
-
       <View style={styles.container}>
         <View style={styles.headerContainer} />
         <View style={styles.headingContainer2}>
@@ -197,62 +197,64 @@ function TaskList({navigation}) {
           </View>
         </View>
         <Divider />
-        {DEFAULT_LIST.map((ele, index) => {
-          return (
-            <View key={index}>
-              <TouchableOpacity
-                onPress={() => navToSubtask(ele.action, ele.title)}>
-                <View style={styles.sectionContainer}>
-                  <View style={styles.taskContainer}>
-                    <View style={styles.calenderIcon}>
-                      <MaterialCommunityIcons
-                        name={ele.name}
-                        size={23}
-                        color="black"
-                      />
+        <ScrollView contentContainerStyle={{paddingBottom: 100}}>
+          {DEFAULT_LIST.map((ele, index) => {
+            return (
+              <View key={index}>
+                <TouchableOpacity
+                  onPress={() => navToSubtask(ele.action, ele.title)}>
+                  <View style={styles.sectionContainer}>
+                    <View style={styles.taskContainer}>
+                      <View style={styles.calenderIcon}>
+                        <MaterialCommunityIcons
+                          name={ele.name}
+                          size={23}
+                          color="black"
+                        />
+                      </View>
+                      <Text style={styles.subHeading}>{ele.title}</Text>
                     </View>
-                    <Text style={styles.subHeading}>{ele.title}</Text>
                   </View>
-                </View>
-              </TouchableOpacity>
-              <Divider />
-            </View>
-          );
-        })}
-        {TODO_LIST?.map((ele, index) => {
-          return (
-            <View key={ele.id}>
-              <TouchableOpacity
-                onPress={() => navToSubtask(ele.id, ele.list_name)}>
-                <View style={styles.sectionContainer}>
-                  <View style={styles.taskContainer}>
-                    <View style={styles.calenderIcon}>
-                      <MaterialCommunityIcons
-                        name="chevron-right"
-                        size={23}
-                        color="black"
-                      />
+                </TouchableOpacity>
+                <Divider />
+              </View>
+            );
+          })}
+          {TODO_LIST?.map((ele, index) => {
+            return (
+              <View key={ele.id}>
+                <TouchableOpacity
+                  onPress={() => navToSubtask(ele.id, ele.list_name)}>
+                  <View style={styles.sectionContainer}>
+                    <View style={styles.taskContainer}>
+                      <View style={styles.calenderIcon}>
+                        <MaterialCommunityIcons
+                          name="chevron-right"
+                          size={23}
+                          color="black"
+                        />
+                      </View>
+                      <Text style={styles.subHeading}>{ele?.list_name}</Text>
                     </View>
-                    <Text style={styles.subHeading}>{ele?.list_name}</Text>
+                    <MenuDialog
+                      onUpdate={() => {
+                        toggleDialog();
+                        setSelectedList(ele);
+                      }}
+                      handleDelete={handleDelete}
+                      item={ele}
+                      onShare={() => {
+                        toggleModal();
+                        setSelectedList(ele);
+                      }}
+                    />
                   </View>
-                  <MenuDialog
-                    onUpdate={() => {
-                      toggleDialog();
-                      setSelectedList(ele);
-                    }}
-                    handleDelete={handleDelete}
-                    item={ele}
-                    onShare={() => {
-                      toggleModal();
-                      setSelectedList(ele);
-                    }}
-                  />
-                </View>
-              </TouchableOpacity>
-              <Divider />
-            </View>
-          );
-        })}
+                </TouchableOpacity>
+                <Divider />
+              </View>
+            );
+          })}
+        </ScrollView>
       </View>
     </>
   );

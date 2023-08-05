@@ -7,14 +7,14 @@ import {
   Image,
   ScrollView,
 } from 'react-native';
-import FileIcon from 'assets/images/file_icon.png';
-import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
+import FileViewer from 'react-native-file-viewer';
+import FileIcon from 'assets/images/file_icon.png';
+import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 
 import {useDownload} from 'components/Atoms/Download';
 import {getFileName} from 'utils/constant';
-import FileViewer from 'react-native-file-viewer';
 import MaterialInfo from '../MaterialInfo';
 import VehicleInfo from '../VehicleInfo';
 import Header from '../../../CommonComponents/Header';
@@ -27,7 +27,6 @@ const Attachments = props => {
   const onPressFile = async fileUrl => {
     download.link({
       name: getFileName(fileUrl.challan_image),
-
       data: {project_id: projectId, file_url: fileUrl.challan_image},
       showAction: false,
       onFinish: ({dir}) => {

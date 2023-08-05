@@ -13,23 +13,23 @@ import {
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {IconButton, Menu, withTheme} from 'react-native-paper';
 import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useSelector} from 'react-redux';
+import Spinner from 'react-native-loading-spinner-overlay';
+import {cloneDeep, debounce} from 'lodash';
+import FileViewer from 'react-native-file-viewer';
 import RenderTable from 'components/Atoms/RenderTable';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Layout from 'utils/Layout';
 import useDesignModuleActions from 'redux/actions/designModuleActions';
-import {useSelector} from 'react-redux';
 import {theme} from 'styles/theme';
 import FileIcon from 'assets/images/file_icon.png';
-import {getDownloadUrl, getFileExtension} from 'utils/download';
+import {getFileExtension} from 'utils/download';
 import {useImagePicker} from 'hooks';
 import {useSnackbar} from 'components/Atoms/Snackbar';
-import Spinner from 'react-native-loading-spinner-overlay';
 import {useAlert} from 'components/Atoms/Alert';
-import {cloneDeep, debounce} from 'lodash';
 import {getFileName} from 'utils/constant';
 import {useDownload} from 'components/Atoms/Download';
-import FileViewer from 'react-native-file-viewer';
 
 const Parking_DETAILS = [
   {label: 'Parking', key: 'parking', value: ''},
@@ -152,7 +152,7 @@ function Parking(props) {
   React.useEffect(() => {
     if (Platform.OS === 'android') {
       AndroidKeyboardAdjust?.setAdjustResize();
-      return () => AndroidKeyboardAdjust.setAdjustResize();
+      return AndroidKeyboardAdjust.setAdjustResize();
     }
     return null;
   }, []);
@@ -266,6 +266,7 @@ function Parking(props) {
       </View>
       <KeyboardAwareScrollView
         contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl refreshing={false} onRefresh={loadInitialData} />
         }

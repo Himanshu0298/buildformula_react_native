@@ -3,19 +3,19 @@ import {Formik} from 'formik';
 import {withTheme} from 'react-native-paper';
 import {Image, SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import * as Yup from 'yup';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useSelector} from 'react-redux';
+import dayjs from 'dayjs';
 import RenderInput, {RenderError} from 'components/Atoms/RenderInput';
 import RenderSelect from 'components/Atoms/RenderSelect';
 import RenderDatePicker from 'components/Atoms/RenderDatePicker';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import {theme} from 'styles/theme';
 import FileIcon from 'assets/images/file_icon.png';
-import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useImagePicker} from 'hooks';
 import ActionButtons from 'components/Atoms/ActionButtons';
 import {useAlert} from 'components/Atoms/Alert';
-import {useSelector} from 'react-redux';
-import dayjs from 'dayjs';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 import Header from '../../CommonComponents/Header';
 import Pagination from '../../CommonComponents/Pagination';
@@ -23,7 +23,7 @@ import Pagination from '../../CommonComponents/Pagination';
 const schema = Yup.object().shape({
   challan: Yup.string('Required').required('Required'),
   delivery_date: Yup.string('Required').required('Required'),
-  company: Yup.string('Required').required('Required'),
+  company_name: Yup.string('Required').required('Required'),
 });
 
 const RenderAttachments = props => {
@@ -69,7 +69,7 @@ const RenderAttachments = props => {
 
 function ChallanForm(props) {
   const alert = useAlert();
-  const [company, setCompany] = React.useState('');
+  const [company_name, setCompany] = React.useState('');
 
   const addCompany = () => {
     alert.show({
@@ -79,7 +79,7 @@ function ChallanForm(props) {
     });
   };
 
-  if (company === 'Add Company') {
+  if (company_name === 'Add Company') {
     addCompany();
   }
 
@@ -121,7 +121,7 @@ function ChallanForm(props) {
   };
 
   const handleSubMaterialChange = value => {
-    setFieldValue('company', value);
+    setFieldValue('company_name', value);
     const supplierName = suppliersList.find(i => i.id === value)?.supplier_name;
     if (supplierName) {
       setFieldValue('supplier', supplierName);
@@ -151,12 +151,12 @@ function ChallanForm(props) {
             error={errors.challan}
           />
           <RenderSelect
-            name="company"
+            name="company_name"
             options={companyOptions}
             containerStyles={styles.input}
-            value={values.company}
+            value={values.company_name}
             label="Select Company"
-            error={errors.company}
+            error={errors.company_name}
             onSelect={handleSubMaterialChange}
           />
           <RenderSelect
@@ -246,7 +246,7 @@ const AddDirectGRN = props => {
       const {
         challan_number: challan,
         delivery_date,
-        company,
+        company_name,
         supplier,
         challan_file: attachments,
       } = directGRNDetails.challanInfo;
@@ -254,13 +254,13 @@ const AddDirectGRN = props => {
         challan,
         delivery_date,
         supplier,
-        company,
+        company_name,
         attachments,
         ...directGRNDetails.challanInfo,
       };
     }
     return {};
-  }, [directGRNDetails, edit]);
+  }, [directGRNDetails.challanInfo, edit]);
 
   const onSubmit = async values => {
     const formData = new FormData();
@@ -271,7 +271,7 @@ const AddDirectGRN = props => {
     formData.append('challan_id', challan_id);
     formData.append('challan_number', values.challan);
     formData.append('delivery_date', values.delivery_date);
-    formData.append('company', values.company);
+    formData.append('company', values.company_name);
     formData.append('supplier', values.supplier);
 
     if (attachments) {

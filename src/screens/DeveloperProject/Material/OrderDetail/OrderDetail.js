@@ -1,4 +1,3 @@
-import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import React, {useMemo} from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -15,10 +14,11 @@ import {
 } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector} from 'react-redux';
+import dayjs from 'dayjs';
 import useMaterialManagementActions from 'redux/actions/materialManagementActions';
 import {getShadow} from 'utils';
 import {MODIFY_REQUEST_STATUS} from 'utils/constant';
-import dayjs from 'dayjs';
+import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import {useAlert} from 'components/Atoms/Alert';
 import {theme} from '../../../../styles/theme';
 import Header from '../CommonComponents/Header';
@@ -78,7 +78,7 @@ const OnStatusUpdate = props => {
 
 function ChallanSection(props) {
   const {item, onDelete, onUpdate, onUpdateStatus} = props;
-  const {created, id: materialId, challan_status: status} = item;
+  const {created, id: materialId, challan_status: status, delivery_date} = item;
 
   return (
     <View style={styles.challanContainer}>
@@ -89,7 +89,7 @@ function ChallanSection(props) {
         <RenderRow
           item={{
             label: 'Delivery Date',
-            value: dayjs(created).format('DD MMM YYYY'),
+            value: dayjs(delivery_date).format('DD MMM YYYY'),
           }}
         />
         <MenuDialog
@@ -212,10 +212,23 @@ function CommonCard(props) {
     item,
     onDelete,
     onUpdateStatus,
+    materialChallanList,
   } = props;
+  const data = materialChallanList.infoData;
+
+  const {damage} = data.damaged_quentity;
+  const {missing} = data.missing_quentity;
+  const {quantity} = data.delivered_quentity;
 
   const onUpdate = () => {
-    navigation.navigate('AddChallan', {materialId: item.id, item, orderNumber});
+    navigation.navigate('AddChallan', {
+      materialId: item.id,
+      item,
+      orderNumber,
+      damage,
+      missing,
+      quantity,
+    });
   };
 
   return (
@@ -420,6 +433,7 @@ function OrderDetail(props) {
               onDelete={onDelete}
               onUpdateStatus={() => onUpdateStatus(item.id)}
               toggleAddDialog={toggleAddDialog}
+              materialChallanList={materialChallanList}
             />
           );
         })}
