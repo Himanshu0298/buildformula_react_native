@@ -288,6 +288,7 @@ function PlotsList(props) {
     getFDPlotFileVersion,
     renameFDBungalowsFile,
     deleteFDBungalowsFile,
+    deleteFDPlotBungalowFileVersion,
   } = useDesignModuleActions();
 
   const {fdPlots, loading, versionData} = useSelector(s => s.designModule);
@@ -390,10 +391,17 @@ function PlotsList(props) {
     });
   };
 
-  const handleDeleteVersion = async () => {
+  const handleDeleteVersion = async (id, file_id) => {
     setModalContentType('version');
+    deleteFDPlotBungalowFileVersion({
+      project_id,
+      final_drawing_bunglow_plot_files_id: id,
+    });
+    getFDPlotFileVersion({
+      final_drawing_bunglow_plot_files_id: file_id,
+      project_id,
+    });
   };
-
   const onSelectStructure = values => {
     const tower_id = plotsList?.find(i => i.id === values)?.id;
     const towerLabel = plotsList?.find(i => i.id === values)?.project_unit;

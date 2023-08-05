@@ -30,8 +30,7 @@ function MenuDialog(props) {
     showShare = true,
     showVersion = true,
   } = props;
-  const {id, is_preset, file_type, title, files_id, folder_title} =
-    modalContent;
+  const {id, is_preset, file_type, title, files_id} = modalContent;
 
   const modulePermissions = getPermissions('Files');
 
@@ -111,19 +110,13 @@ function MenuDialog(props) {
 
   return (
     <View>
-      {folder_title ? (
-        <View>
-          <Subheading style={styles.title}>{folder_title}</Subheading>
-        </View>
-      ) : (
-        <View style={styles.viewDirection}>
-          <Image
-            source={is_preset && !file_type ? FolderIcon : FileIcon}
-            style={styles.PdfIcon}
-          />
-          <Subheading style={styles.title}>{title}</Subheading>
-        </View>
-      )}
+      <View style={styles.viewDirection}>
+        <Image
+          source={is_preset && !file_type ? FolderIcon : FileIcon}
+          style={styles.PdfIcon}
+        />
+        <Subheading style={styles.title}>{title}</Subheading>
+      </View>
 
       <View>
         {!fixedFolder ? (
@@ -184,7 +177,8 @@ function MenuDialog(props) {
             ) : null}
 
             {showActivity ? (
-              <TouchableOpacity onPress={() => activityDataHandler(id)}>
+              <TouchableOpacity
+                onPress={() => activityDataHandler(id, files_id)}>
                 <View style={styles.viewDirection}>
                   <IconButton icon="information" />
                   <Text style={styles.ModalText}>Activity</Text>

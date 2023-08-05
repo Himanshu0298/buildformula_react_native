@@ -12,10 +12,8 @@ import {
   IconButton,
   Subheading,
   Text,
-  FAB,
   Divider,
   Caption,
-  useTheme,
 } from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import FileViewer from 'react-native-file-viewer';
@@ -28,8 +26,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Feather from 'react-native-vector-icons/Feather';
 import dayjs from 'dayjs';
-import Fontisto from 'react-native-vector-icons/Fontisto';
-import Foundation from 'react-native-vector-icons/Foundation';
+
 import {getShadow} from 'utils';
 import FolderIcon from 'assets/images/folder_icon.png';
 import useDesignModuleActions from 'redux/actions/designModuleActions';
@@ -41,6 +38,8 @@ import {useImagePicker} from 'hooks';
 import {useDownload} from 'components/Atoms/Download';
 import {getDownloadUrl} from 'utils/download';
 import FileIcon from 'assets/images/file_icon.png';
+import {getFileName} from 'utils/constant';
+import {useAlert} from 'components/Atoms/Alert';
 import RenameDialogue from '../Components/RenameDialog';
 import CreateFolderDialogue from '../Components/CreateFolderDialog';
 import MenuDialog from '../Components/MenuDialog';
@@ -53,49 +52,6 @@ const relativeTime = require('dayjs/plugin/relativeTime');
 dayjs.extend(relativeTime);
 
 const SNAP_POINTS = [0, '70%'];
-
-function RenderFolder(props) {
-  const {
-    item,
-    index,
-    setModalContentType,
-    toggleMenu,
-    navigation,
-    setModalContent,
-  } = props;
-  const {folder_title} = item;
-
-  const navToNext = () => {
-    navigation.navigate('FDFloorFolderFile', {
-      ...props,
-      folder_title,
-      id: item.id,
-    });
-  };
-
-  return (
-    <View style={styles.sectionContainer}>
-      <TouchableOpacity style={{flexGrow: 1}} onPress={navToNext}>
-        <View style={styles.sectionContainer}>
-          <Image source={FolderIcon} style={styles.PdfIcon} />
-          <View>
-            <Text numberOfLines={2} style={styles.text}>
-              {folder_title}
-            </Text>
-          </View>
-        </View>
-      </TouchableOpacity>
-      <IconButton
-        icon="dots-vertical"
-        onPress={() => {
-          toggleMenu(index);
-          setModalContentType('menu');
-          setModalContent(item);
-        }}
-      />
-    </View>
-  );
-}
 
 const ACTIVITY_ICONS = {
   new_version: <MaterialIcons name="file-copy" size={20} />,
@@ -115,15 +71,6 @@ const ACTIVITY_LABEL = {
   rename: 'Renamed Folder',
   delete: 'Deleted Folder',
 };
-
-function getFileName(string) {
-  if (string.includes('/')) {
-    const splits = string.split('/');
-    return splits[splits.length - 1];
-  }
-
-  return string;
-}
 
 function RenderActivity({item}) {
   const {user_full_name, log_type, created, log_text} = item;
@@ -145,23 +92,22 @@ function RenderActivity({item}) {
 }
 
 function ActivityModal(props) {
-  const {activities = []} = useSelector(s => s.designModule);
+  const {wdFileActivities = {}} = useSelector(s => s.designModule);
 
   const processedActivities = useMemo(() => {
-    const sectionedData = [];
-    activities?.map(i => {
-      const key = dayjs(i.created).format('YYYY-MM-DD');
+    const data = [];
 
-      sectionedData[key] = sectionedData[key] || {};
-      sectionedData[key].title = key;
-      sectionedData[key].data = sectionedData[key].data || [];
-      sectionedData[key].data.push(i);
+    Object.entries(wdFileActivities)?.map(([key, values]) => {
+      data[key] = data[key] || {};
+      data[key].title = key;
 
-      return i;
+      data[key].data = [data[key].data || [], ...values];
+
+      return key;
     });
 
-    return Object.values(sectionedData);
-  }, [activities]);
+    return Object.values(data);
+  }, [wdFileActivities]);
 
   const renderSeparator = () => <Divider />;
   const renderEmpty = () => (
@@ -184,9 +130,9 @@ function ActivityModal(props) {
         stickySectionHeadersEnabled={false}
         ListEmptyComponent={renderEmpty}
         renderItem={params => <RenderActivity {...params} />}
-        renderSectionHeader={({section: {title}}) => (
-          <Caption>{dayjs(title).format('DD MMM')}</Caption>
-        )}
+        // renderSectionHeader={({section: {title}}) => (
+        //   <Caption>{dayjs(title).format('DD MMM')}</Caption>
+        // )}
       />
     </View>
   );
@@ -323,15 +269,40 @@ function RenderRow(props) {
     setModalContent,
     setModalContentType,
     handleFileUpload,
+    deleteFolderHandler,
   } = props;
   const {folder_title, title, id} = item;
 
   return (
     <View style={styles.optionContainer}>
-      <View>
-        <Text style={{fontSize: 18, margin: 10}}>{folder_title} </Text>
-      </View>
+      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+        <View>
+          <Text style={{fontSize: 18, margin: 10}}>{folder_title} </Text>
+        </View>
+        <View style={styles.headerSubContainers}>
+          {/* <View style={styles.editIconContainer}>
+            <OpacityButton
+              color="#4872f4"
+              opacity={0.18}
+              style={styles.editIcon}
+              onPress={() => {
+                toggleDialog('renameFile');
+              }}>
+              <MaterialIcons name="edit" color="#4872f4" size={13} />
+            </OpacityButton>
+          </View> */}
 
+          <View>
+            <OpacityButton
+              color="#FF5D5D"
+              opacity={0.18}
+              onPress={() => deleteFolderHandler(id)}
+              style={styles.deleteIcon}>
+              <MaterialIcons name="delete" color="#FF5D5D" size={13} />
+            </OpacityButton>
+          </View>
+        </View>
+      </View>
       <Divider />
 
       {title ? (
@@ -365,14 +336,16 @@ function FDFloorFolder(props) {
 
   const snackbar = useSnackbar();
   const {openFilePicker} = useImagePicker();
+  const alert = useAlert();
 
   const {selectedProject} = useSelector(s => s.project);
-  const {loading, towerFolderList, fdVersionData} = useSelector(
+  const {loading, towerFolderList, wdFolderFileVersion} = useSelector(
     s => s.designModule,
   );
+
   const folders = towerFolderList?.data?.list || [];
 
-  const versionData = fdVersionData?.data || [];
+  const versionData = wdFolderFileVersion?.list || [];
 
   const project_id = selectedProject.id;
 
@@ -380,11 +353,14 @@ function FDFloorFolder(props) {
     addFloorFolder,
     addFloorFolderFile,
     uploadFloorFileVersion,
-    getFDFloorFolderFileVersion,
     getFDTowerFloorFolder,
     deleteFDFloorFolderFileVersion,
     renameFDFloorFolder,
     deleteFDFloorFolder,
+    deleteFDFloorFolderFile,
+    renameFDFloorFolderFile,
+    getFDFloorFolderFileActivity,
+    getFDFolderFileVersion,
   } = useDesignModuleActions();
 
   const [menuId, setMenuId] = React.useState();
@@ -392,7 +368,6 @@ function FDFloorFolder(props) {
   const [modalContent, setModalContent] = React.useState({});
   const [shareDialog, setShareDialog] = React.useState(false);
   const [DialogType, setDialogType] = React.useState();
-  const [listMode, setListMode] = React.useState('list');
 
   React.useEffect(() => {
     loadData();
@@ -442,13 +417,13 @@ function FDFloorFolder(props) {
 
   const versionDataHandler = async (id, files_id) => {
     setModalContentType('version');
-    getFDFloorFolderFileVersion({
+    getFDFolderFileVersion({
       project_id,
-      final_drawing_tower_files_id: files_id,
+      final_drawing_tower_floors_files_id: files_id,
     });
   };
 
-  const onChooseFile = async (v, fileId) => {
+  const onChooseFile = async (v, fileId, id) => {
     const formData = new FormData();
 
     formData.append('project_id', project_id);
@@ -458,28 +433,29 @@ function FDFloorFolder(props) {
     formData.append('myfile', v);
 
     await uploadFloorFileVersion(formData);
-    await getFDFloorFolderFileVersion({
+    await getFDFolderFileVersion({
       project_id,
-      final_drawing_tower_files_id: fileId,
+      final_drawing_tower_floors_files_id: fileId,
     });
   };
 
   const handleNewVersionUpload = async (_id, file_id) => {
     openFilePicker({
       type: 'file',
-      onChoose: v => onChooseFile(v, file_id),
+      onChoose: v => onChooseFile(v, file_id, _id),
     });
   };
 
-  const handleDeleteVersion = async (version, fileId) => {
+  const handleDeleteVersion = async (id, fileId, data) => {
     setModalContentType('version');
     deleteFDFloorFolderFileVersion({
       project_id,
-      final_drawing_tower_floors_files_id: version.id,
+      final_drawing_tower_floors_files_id: id,
     });
-    getFDFloorFolderFileVersion({
+    getFDFolderFileVersion({
       project_id,
-      final_drawing_tower_files_id: version.final_drawing_tower_files_id,
+      final_drawing_tower_floors_files_id:
+        data.final_drawing_tower_floors_files_id,
     });
   };
 
@@ -512,13 +488,46 @@ function FDFloorFolder(props) {
     loadData();
   };
 
-  const deleteFolderHandler = async id => {
-    await deleteFDFloorFolder({folder_id: id, project_id});
+  const deleteFolderHandler = id => {
+    toggleMenu();
+    alert.show({
+      title: 'Confirm',
+      message: 'Are you sure you want to delete?',
+      confirmText: 'Delete',
+      onConfirm: () => {
+        deleteFDFloorFolder({folder_id: id, project_id});
+        loadData();
+      },
+    });
+  };
+  const deleteFileHandler = async (id, data) => {
+    await deleteFDFloorFolderFile({
+      final_drawing_tower_floors_files_id: data.files_id,
+      project_id,
+    });
     loadData();
     toggleDialog();
     snackbar.showMessage({
-      message: 'Folder Deleted!',
+      message: 'File Deleted!',
       variant: 'success',
+    });
+  };
+
+  const renameFileHandler = async (name, id, data) => {
+    await renameFDFloorFolderFile({
+      file_title: name,
+      final_drawing_tower_floors_files_id: data.files_id,
+      project_id,
+    });
+    loadData();
+    toggleDialog();
+  };
+
+  const activityDataHandler = (action_type, id, files_id) => {
+    setModalContentType('activity');
+    getFDFloorFolderFileActivity({
+      project_id,
+      final_drawing_tower_floors_files_id: id,
     });
   };
 
@@ -540,6 +549,7 @@ function FDFloorFolder(props) {
           toggleShareDialog,
           handleNewVersionUpload,
           handleDeleteVersion,
+          activityDataHandler,
         }}
       />
       {DialogType ? (
@@ -549,20 +559,19 @@ function FDFloorFolder(props) {
           createFolderHandler={createFolderHandler}
           placeholder="Destination Name"
           title="Create new destination"
-          handleFileUpload={handleFileUpload}
         />
       ) : null}
       <RenameDialogue
         visible={DialogType === 'renameFile'}
         toggleDialogue={toggleDialog}
         dialogueContent={modalContent}
-        renameFolderHandler={renameFolderHandler}
+        renameFolderHandler={renameFileHandler}
       />
       <DeleteDialog
         visible={DialogType === 'deleteFileFolder'}
         toggleDialogue={toggleDialog}
         dialogueContent={modalContent}
-        deleteFileHandler={deleteFolderHandler}
+        deleteFileHandler={deleteFileHandler}
       />
       <View style={styles.container}>
         <Spinner visible={loading} textContent="" />
@@ -615,6 +624,7 @@ function FDFloorFolder(props) {
                   setModalContentType={setModalContentType}
                   setModalContent={setModalContent}
                   handleFileUpload={handleFileUpload}
+                  deleteFolderHandler={deleteFolderHandler}
                 />
               );
             }}
@@ -755,12 +765,29 @@ const styles = StyleSheet.create({
   rightSection: {
     alignItems: 'center',
     flexDirection: 'row',
-    flexGrow: 1,
+    justifyContent: 'center',
+    margin: 5,
   },
   uploadButton: {
     marginLeft: 5,
     color: theme.colors.primary,
     fontSize: 16,
+  },
+
+  editIconContainer: {
+    marginRight: 15,
+  },
+  headerSubContainers: {
+    flexDirection: 'row',
+    marginEnd: 10,
+    alignSelf: 'center',
+  },
+  deleteIcon: {
+    borderRadius: 20,
+  },
+  editIcon: {
+    borderRadius: 20,
+    marginLeft: 15,
   },
 });
 

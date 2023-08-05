@@ -56,11 +56,11 @@ function VersionFile(props) {
     console.log('-----> open path', filePath);
     FileViewer.open(filePath);
   };
-
   const onDelete = () => {
     handleDeleteVersion(
       version?.id,
       version?.working_drawing_tower_floors_files_id,
+      version,
     );
     toggleVersionMenu();
   };

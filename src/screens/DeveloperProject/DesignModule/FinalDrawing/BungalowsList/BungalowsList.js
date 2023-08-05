@@ -282,6 +282,7 @@ function BungalowsList(props) {
     FDBungalowsFileActivityLog,
     uploadFDPlotBungalowFileVersion,
     getFDPlotFileVersion,
+    deleteFDPlotBungalowFileVersion,
   } = useDesignModuleActions();
 
   const [menuId, setMenuId] = React.useState();
@@ -394,8 +395,16 @@ function BungalowsList(props) {
     });
   };
 
-  const handleDeleteVersion = async () => {
+  const handleDeleteVersion = async (id, file_id) => {
     setModalContentType('version');
+    deleteFDPlotBungalowFileVersion({
+      project_id,
+      final_drawing_bunglow_plot_files_id: id,
+    });
+    getFDPlotFileVersion({
+      final_drawing_bunglow_plot_files_id: file_id,
+      project_id,
+    });
   };
   const onSelectStructure = values => {
     const tower_id = bungalowsList?.find(i => i.id === values)?.id;

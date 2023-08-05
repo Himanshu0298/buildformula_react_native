@@ -23,6 +23,7 @@ import {
   GET_FD_BUNGALOWS,
   GET_FD_BUNGALOWS_FILES,
   GET_FD_FLOOR_FILE_VERSION,
+  GET_FD_FLOOR_FOLDER_FILE_ACTIVITY,
   GET_FD_PLOTS,
   GET_FD_TOWERS,
   GET_FD_TOWER_FLOORS,
@@ -42,6 +43,7 @@ import {
   GET_WD_FLOOR_FOLDER,
   GET_WD_FLOOR_FOLDER_FILE,
   GET_WD_FLOOR_FOLDER_FILE_VERSION,
+  GET_WD_FOLDER_FILE_ACTIVITY,
   GET_WD_PLOT,
   GET_WD_PLOTS,
   GET_WD_TOWER,
@@ -335,6 +337,21 @@ export default (state = initialState, action = {}) => {
         wdFileActivities: payload.data,
       };
     }
+    case `${GET_WD_FOLDER_FILE_ACTIVITY}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+        wdFileActivities: payload.data,
+      };
+    }
+    case `${GET_FD_FLOOR_FOLDER_FILE_ACTIVITY}_FULFILLED`: {
+      return {
+        ...state,
+        loading: false,
+        wdFileActivities: payload.data,
+      };
+    }
+
     case `${GET_WD_FLOOR_FOLDER_FILE}_FULFILLED`: {
       return {
         ...state,
@@ -705,6 +722,8 @@ export default (state = initialState, action = {}) => {
     case `${GET_WD_TOWER_VERSION}_PENDING`:
     case `${GET_FD_FLOOR_FILE_VERSION}_PENDING`:
     case `${GET_WD_VERSION}_PENDING`:
+    case `${GET_WD_FOLDER_FILE_ACTIVITY}_PENDING`:
+    case `${GET_FD_FLOOR_FOLDER_FILE_ACTIVITY}_PENDING`:
       return {
         ...state,
         loading: true,
@@ -790,6 +809,8 @@ export default (state = initialState, action = {}) => {
     case `${GET_WD_TOWER_VERSION}_REJECTED`:
     case `${GET_FD_FLOOR_FILE_VERSION}_REJECTED`:
     case `${GET_WD_VERSION}_REJECTED`:
+    case `${GET_WD_FOLDER_FILE_ACTIVITY}_REJECTED`:
+    case `${GET_FD_FLOOR_FOLDER_FILE_ACTIVITY}_REJECTED`:
       return {
         ...state,
         loading: false,

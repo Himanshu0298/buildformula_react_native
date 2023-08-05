@@ -361,6 +361,14 @@ export default function useDesignModule() {
         config({multipart: true}),
       );
     },
+
+    uploadFloorFileVersion: data => {
+      return instance.post(
+        'finaldrawing/uploadtowerfloorsfileversion',
+        data,
+        config({multipart: true}),
+      );
+    },
     getFDFloorFolderFileVersion: data => {
       return instance.post(
         '/finaldrawing/gettowerversionfileslist',
@@ -368,6 +376,7 @@ export default function useDesignModule() {
         config({multipart: false}),
       );
     },
+
     getFDPlotFileVersion: data => {
       return instance.post(
         '/finaldrawing/getbunglowplotversionfileslist',
@@ -384,14 +393,43 @@ export default function useDesignModule() {
     },
     deleteFDFloorFolder: data => {
       return instance.post(
-        'finaldrawing/deletefloorfolder',
+        '/finaldrawing/deletefloorfolder',
+        data,
+        config({multipart: false}),
+      );
+    },
+    deleteFDPlotBungalowFileVersion: data => {
+      return instance.post(
+        '/finaldrawing/deletebungalowsplotfileversion',
+        data,
+        config({multipart: false}),
+      );
+    },
+    deleteFDFloorFolderFile: data => {
+      return instance.post(
+        '/finaldrawing/deletefloorfolderfiles',
+        data,
+        config({multipart: false}),
+      );
+    },
+
+    renameFDFloorFolderFile: data => {
+      return instance.post(
+        '/finaldrawing/renamefloorfolderfile',
         data,
         config({multipart: false}),
       );
     },
     renameFDFloorFolder: data => {
       return instance.post(
-        'finaldrawing/rename_floor_folder',
+        '/finaldrawing/rename_floor_folder',
+        data,
+        config({multipart: false}),
+      );
+    },
+    getFDFloorFolderFileActivity: data => {
+      return instance.post(
+        '/finaldrawing/activityfolorfolderfile',
         data,
         config({multipart: false}),
       );
@@ -455,6 +493,36 @@ export default function useDesignModule() {
         config({multipart: false}),
       );
     },
+    deleteWDPlotBungalowFileVersion: data => {
+      return instance.post(
+        '/workingdrawing/deletebungalowsplotfileversion',
+        data,
+        config({multipart: false}),
+      );
+    },
+
+    uploadWDFloorFolderFileVersion: data => {
+      return instance.post(
+        '/workingdrawing/uploadtowerfloorsfileversion',
+        data,
+        config({multipart: true}),
+      );
+    },
+    renameWDFloorFolderFile: data => {
+      return instance.post(
+        '/workingdrawing/rename_floor_folder_file',
+        data,
+        config({multipart: false}),
+      );
+    },
+    getWDFloorFolderFileActivity: data => {
+      return instance.post(
+        '/workingdrawing/activityfolorfolderfile',
+        data,
+        config({multipart: false}),
+      );
+    },
+
     getWDVersion: data => {
       return instance.post(
         '/workingdrawing/files_version',
@@ -557,13 +625,14 @@ export default function useDesignModule() {
         config({multipart: true}),
       );
     },
-    uploadWDFloorFolderFileVersion: data => {
+    getFloorFolderFileVersion: data => {
       return instance.post(
-        '/workingdrawing/uploadtowerfloorsfileversion',
+        '/workingdrawing/listfloorfolderfileversion',
         data,
-        config({multipart: true}),
+        config({multipart: false}),
       );
     },
+
     deleteFloorFolderFileVersion: data => {
       return instance.post(
         'workingdrawing/deleteFloorFolderFileVersion',
@@ -571,9 +640,9 @@ export default function useDesignModule() {
         config({multipart: false}),
       );
     },
-    getFloorFolderFileVersion: data => {
+    getFDFolderFileVersion: data => {
       return instance.post(
-        '/workingdrawing/listfloorfolderfileversion',
+        '/finaldrawing/listfloorfolderfileversion',
         data,
         config({multipart: false}),
       );
@@ -594,13 +663,6 @@ export default function useDesignModule() {
     },
     getTowerFileVersion: data => {
       return instance.post('', data, config({multipart: true}));
-    },
-    uploadFloorFileVersion: data => {
-      return instance.post(
-        'finaldrawing/uploadtowerfloorsfileversion',
-        data,
-        config({multipart: true}),
-      );
     },
 
     // CATEGORY SHEET
@@ -771,6 +833,13 @@ export default function useDesignModule() {
     uploadWDTowerFileVersion: data => {
       return instance.post(
         '/workingdrawing/uploadtowerfileversion',
+        data,
+        config({multipart: true}),
+      );
+    },
+    deleteWDTowerFloorFile: data => {
+      return instance.post(
+        '/workingdrawing/deletefloorfolderfiles',
         data,
         config({multipart: true}),
       );

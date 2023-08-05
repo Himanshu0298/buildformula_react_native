@@ -12,9 +12,12 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import Animated from 'react-native-reanimated';
 
 import {
+  Button,
   Caption,
+  Dialog,
   Divider,
   IconButton,
+  Portal,
   Subheading,
   Text,
   useTheme,
@@ -27,6 +30,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Feather from 'react-native-vector-icons/Feather';
 import _ from 'lodash';
 import BottomSheet from 'reanimated-bottom-sheet';
+import {Formik} from 'formik';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import NoResult from 'components/Atoms/NoResult';
 import {getShadow} from 'utils';
@@ -37,9 +41,10 @@ import {useImagePicker} from 'hooks';
 import {useSnackbar} from 'components/Atoms/Snackbar';
 
 import {useDownload} from 'components/Atoms/Download';
-import {getDownloadUrl} from 'utils/download';
 import {getFileName} from 'utils/constant';
-import {theme} from 'styles/theme';
+import {secondaryTheme, theme} from 'styles/theme';
+import RenderInput from 'components/Atoms/RenderInput';
+import {useAlert} from 'components/Atoms/Alert';
 import CreateFolderDialogue from '../Components/CreateFolderDialog';
 import MenuDialog from '../Components/MenuDialog';
 import VersionDialog from '../Components/VersionDialog';
@@ -65,6 +70,73 @@ const ACTIVITY_ICONS = {
     <MaterialCommunityIcons name="cloud-download-outline" size={20} />
   ),
 };
+
+function RenameFolderDialogue(props) {
+  const {visible, toggleDialogue, dialogueContent, renameFolderHandler} = props;
+  const {folder_title} = dialogueContent || {};
+
+  const renaNameRef = React.useRef();
+
+  const onRename = values => {
+    renameFolderHandler(values.name, dialogueContent?.id, dialogueContent);
+  };
+
+  return (
+    <Portal>
+      <Dialog visible={visible} onDismiss={toggleDialogue} style={{top: -100}}>
+        <View style={styles.dialogTitleContainer}>
+          <Text style={{color: '#000'}}>{folder_title}</Text>
+        </View>
+        <Formik
+          validateOnBlur={false}
+          validateOnChange={false}
+          initialValues={{
+            name: folder_title,
+          }}
+          onSubmit={values => {
+            onRename(values);
+          }}>
+          {({values, errors, handleChange, handleBlur, handleSubmit}) => {
+            return (
+              <View style={styles.dialogContentContainer}>
+                <RenderInput
+                  name="name"
+                  label="file name"
+                  containerStyles={styles.input}
+                  value={values.name}
+                  onChangeText={handleChange('name')}
+                  onBlur={handleBlur('name')}
+                  ref={renaNameRef}
+                  onSubmitEditing={handleSubmit}
+                  error={errors.name}
+                />
+
+                <View style={styles.dialogActionContainer}>
+                  <Button
+                    style={{width: '40%', marginHorizontal: 5}}
+                    contentStyle={{padding: 2}}
+                    theme={{roundness: 15}}
+                    mode="contained"
+                    onPress={toggleDialogue}>
+                    <Text theme={secondaryTheme}>cancel</Text>
+                  </Button>
+                  <Button
+                    style={{width: '40%', marginHorizontal: 5}}
+                    mode="contained"
+                    contentStyle={{padding: 1}}
+                    theme={{roundness: 15}}
+                    onPress={handleSubmit}>
+                    <Text theme={secondaryTheme}>save</Text>
+                  </Button>
+                </View>
+              </View>
+            );
+          }}
+        </Formik>
+      </Dialog>
+    </Portal>
+  );
+}
 
 function RenderActivity({item}) {
   const {user_full_name, log_type, created, log_text} = item;
@@ -141,23 +213,22 @@ function RenderFile(props) {
 }
 
 function ActivityModal(props) {
-  const activities = useMemo(() => [], []);
+  const {wdFileActivities = {}} = useSelector(s => s.designModule);
 
   const processedActivities = useMemo(() => {
-    const sectionedData = [];
-    activities?.map(i => {
-      const key = dayjs(i.created).format('YYYY-MM-DD');
+    const data = [];
 
-      sectionedData[key] = sectionedData[key] || {};
-      sectionedData[key].title = key;
-      sectionedData[key].data = sectionedData[key].data || [];
-      sectionedData[key].data.push(i);
+    Object.entries(wdFileActivities)?.map(([key, values]) => {
+      data[key] = data[key] || {};
+      data[key].title = key;
 
-      return i;
+      data[key].data = [data[key].data || [], ...values];
+
+      return key;
     });
 
-    return Object.values(sectionedData);
-  }, [activities]);
+    return Object.values(data);
+  }, [wdFileActivities]);
 
   const renderSeparator = () => <Divider />;
   const renderEmpty = () => (
@@ -180,9 +251,9 @@ function ActivityModal(props) {
         stickySectionHeadersEnabled={false}
         ListEmptyComponent={renderEmpty}
         renderItem={params => <RenderActivity {...params} />}
-        renderSectionHeader={({section: {title}}) => (
-          <Caption>{dayjs(title).format('DD MMM')}</Caption>
-        )}
+        // renderSectionHeader={({section: {title}}) => (
+        //   <Caption>{dayjs(title).format('DD MMM')}</Caption>
+        // )}
       />
     </View>
   );
@@ -264,12 +335,41 @@ function RenderRow(props) {
     setModalContentType,
     setModalContent,
     handleFileUpload,
+    deleteFolderHandler,
+    toggleDialog,
   } = props;
   const {folder_title, title, id} = item;
 
   return (
     <View style={styles.optionContainer}>
-      <Text style={{fontSize: 18, margin: 10}}>{folder_title} </Text>
+      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+        <View>
+          <Text style={{fontSize: 18, margin: 10}}>{folder_title} </Text>
+        </View>
+        <View style={styles.headerSubContainers}>
+          {/* <View style={styles.editIconContainer}>
+            <OpacityButton
+              color="#4872f4"
+              opacity={0.18}
+              style={styles.editIcon}
+              onPress={() => {
+                toggleDialog('renameFile');
+              }}>
+              <MaterialIcons name="edit" color="#4872f4" size={13} />
+            </OpacityButton>
+          </View> */}
+
+          <View>
+            <OpacityButton
+              color="#FF5D5D"
+              opacity={0.18}
+              onPress={() => deleteFolderHandler(id)}
+              style={styles.deleteIcon}>
+              <MaterialIcons name="delete" color="#FF5D5D" size={13} />
+            </OpacityButton>
+          </View>
+        </View>
+      </View>
       <Divider />
 
       {title ? (
@@ -304,6 +404,7 @@ function WDFloorFolder(props) {
   const {openFilePicker} = useImagePicker();
 
   const snackbar = useSnackbar();
+  const alert = useAlert();
 
   const {
     createWDFloorFolder,
@@ -314,6 +415,9 @@ function WDFloorFolder(props) {
     deleteFloorFolderFileVersion,
     deleteWDFloorFolder,
     renameWDFloorFolder,
+    deleteWDFloorFolderFile,
+    renameWDFloorFolderFile,
+    getWDFloorFolderFileActivity,
   } = useDesignModuleActions();
 
   const [menuId, setMenuId] = React.useState();
@@ -326,7 +430,6 @@ function WDFloorFolder(props) {
   const {loading, wdFolderList, wdFolderFileVersion} = useSelector(
     s => s.designModule,
   );
-
   const versionData = wdFolderFileVersion?.list || [];
 
   const project_id = selectedProject.id;
@@ -363,7 +466,7 @@ function WDFloorFolder(props) {
       onChoose: async v => {
         const formData = new FormData();
 
-        formData.append('working_drawing_tower_files_id', file_id);
+        formData.append('working_drawing_tower_floors_files_id', file_id);
         formData.append('myfile', v);
         formData.append('folder_id', id);
         formData.append('project_id', project_id);
@@ -377,7 +480,7 @@ function WDFloorFolder(props) {
     });
   };
 
-  const handleDeleteVersion = async (id, fileId) => {
+  const handleDeleteVersion = async (id, fileId, data) => {
     setModalContentType('version');
     deleteFloorFolderFileVersion({
       project_id,
@@ -438,21 +541,21 @@ function WDFloorFolder(props) {
     loadData();
   };
 
-  const deleteFolderHandler = async id => {
-    await deleteWDFloorFolder({
-      folder_id: id,
-      project_id,
-    });
-    loadData();
-    toggleDialog();
-    snackbar.showMessage({
-      message: 'File Deleted!',
-      variant: 'success',
+  const deleteFolderHandler = id => {
+    toggleMenu();
+    alert.show({
+      title: 'Confirm',
+      message: 'Are you sure you want to delete?',
+      confirmText: 'Delete',
+      onConfirm: () => {
+        deleteWDFloorFolder({folder_id: id, project_id});
+        loadData();
+      },
     });
   };
-  const deleteFileHandler = async id => {
-    await deleteWDFloorFolder({
-      folder_id: id,
+  const deleteFileHandler = async (id, data) => {
+    await deleteWDFloorFolderFile({
+      working_drawing_tower_floors_files_id: data.files_id,
       project_id,
     });
     loadData();
@@ -473,15 +576,24 @@ function WDFloorFolder(props) {
     toggleDialog();
   };
 
-  const renameFileHandler = async (name, id, type) => {
-    // await renameWDFloorFolder({
-    //   folder_title: name,
-    //   working_drawing_floor_rows_folder_id: id,
-    //   project_id,
-    // });
+  const renameFileHandler = async (name, id, data) => {
+    await renameWDFloorFolderFile({
+      file_title: name,
+      working_drawing_tower_floors_files_id: data.files_id,
+      project_id,
+    });
     loadData();
     toggleDialog();
   };
+
+  const activityDataHandler = (action_type, id, files_id) => {
+    setModalContentType('activity');
+    getWDFloorFolderFileActivity({
+      project_id,
+      working_drawing_tower_floors_files_id: id,
+    });
+  };
+
   const renderEmpty = () => <NoResult />;
 
   return (
@@ -500,6 +612,7 @@ function WDFloorFolder(props) {
           toggleShareDialog,
           handleNewVersionUpload,
           handleDeleteVersion,
+          activityDataHandler,
         }}
       />
       {DialogType ? (
@@ -518,14 +631,14 @@ function WDFloorFolder(props) {
         visible={DialogType === 'renameFile'}
         toggleDialogue={toggleDialog}
         dialogueContent={modalContent}
-        renameFolderHandler={renameFolderHandler}
+        renameFolderHandler={renameFileHandler}
       />
 
       <DeleteDialog
         visible={DialogType === 'deleteFileFolder'}
         toggleDialogue={toggleDialog}
         dialogueContent={modalContent}
-        deleteFileHandler={deleteFolderHandler}
+        deleteFileHandler={deleteFileHandler}
       />
       <View style={styles.container}>
         <Spinner visible={loading} textContent="" />
@@ -578,6 +691,9 @@ function WDFloorFolder(props) {
                   setModalContentType={setModalContentType}
                   setModalContent={setModalContent}
                   handleFileUpload={handleFileUpload}
+                  deleteFolderHandler={deleteFolderHandler}
+                  renameFolderHandler={renameFolderHandler}
+                  toggleDialog={toggleDialog}
                 />
               );
             }}
@@ -727,6 +843,21 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     color: theme.colors.primary,
     fontSize: 16,
+  },
+  editIconContainer: {
+    marginRight: 15,
+  },
+  headerSubContainers: {
+    flexDirection: 'row',
+    marginEnd: 10,
+    alignSelf: 'center',
+  },
+  deleteIcon: {
+    borderRadius: 20,
+  },
+  editIcon: {
+    borderRadius: 20,
+    marginLeft: 15,
   },
 });
 

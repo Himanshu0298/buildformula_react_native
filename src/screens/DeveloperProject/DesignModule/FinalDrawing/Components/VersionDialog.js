@@ -54,7 +54,14 @@ function VersionFile(props) {
     console.log('-----> open path', filePath);
     FileViewer.open(filePath);
   };
-
+  const onDelete = () => {
+    handleDeleteVersion(
+      version?.id,
+      version?.final_drawing_bunglow_plot_files_id,
+      version,
+    );
+    toggleVersionMenu();
+  };
   return (
     <View>
       <View style={styles.versionFiles}>
@@ -101,11 +108,7 @@ function VersionFile(props) {
             {modulePermissions?.editor || modulePermissions?.admin ? (
               <>
                 <Divider />
-                <Menu.Item
-                  icon="delete"
-                  onPress={() => handleDeleteVersion(version, version.files_id)}
-                  title="Delete"
-                />
+                <Menu.Item icon="delete" onPress={onDelete} title="Delete" />
               </>
             ) : null}
           </Menu>

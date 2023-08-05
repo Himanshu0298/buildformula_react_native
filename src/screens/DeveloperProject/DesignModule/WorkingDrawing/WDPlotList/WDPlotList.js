@@ -280,6 +280,7 @@ function WDPlotList(props) {
     renameFDBungalowsFile,
     deleteWDPlotBungalowFile,
     getWDCommonFileActivity,
+    deleteWDPlotBungalowFileVersion,
   } = useDesignModuleActions();
 
   const {plots, loading, version} = useSelector(s => s.designModule);
@@ -389,8 +390,16 @@ function WDPlotList(props) {
     });
   };
 
-  const handleDeleteVersion = async () => {
+  const handleDeleteVersion = async (id, file_id) => {
     setModalContentType('version');
+    deleteWDPlotBungalowFileVersion({
+      project_id,
+      working_drawing_bunglow_plot_file_version: id,
+    });
+    getBungalowPlotFileVersion({
+      project_id,
+      working_drawing_bunglow_plot_files: file_id,
+    });
   };
 
   const onSelectStructure = values => {

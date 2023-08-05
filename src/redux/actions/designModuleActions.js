@@ -114,6 +114,7 @@ export default function useDesignModuleActions() {
     uploadWDFloorFolderFileVersion,
     deleteFloorFolderFileVersion,
     getFloorFolderFileVersion,
+    getFDFolderFileVersion,
     getBungalowPlotFileVersion,
     uploadWDBungalowPlotFileVersion,
     getTowerFileVersion,
@@ -125,6 +126,13 @@ export default function useDesignModuleActions() {
     uploadFloorFileVersion,
     getFDPlotFileVersion,
     deleteFDFloorFolder,
+    deleteWDPlotBungalowFileVersion,
+    getWDFloorFolderFileActivity,
+    renameWDFloorFolderFile,
+    getFDFloorFolderFileActivity,
+    renameFDFloorFolderFile,
+    deleteFDPlotBungalowFileVersion,
+    deleteFDFloorFolderFile,
   } = useDesignModule();
   const {_err, _res} = useResProcessor();
   const snackbar = useSnackbar();
@@ -984,6 +992,21 @@ export default function useDesignModuleActions() {
           }
         },
       }),
+    deleteWDPlotBungalowFileVersion: params =>
+      dispatch({
+        type: types.DELETE_RD_FOLDER,
+        payload: async () => {
+          try {
+            const {data} = _res(await deleteWDPlotBungalowFileVersion(params));
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
 
     renameWDFloorFolder: params =>
       dispatch({
@@ -991,6 +1014,36 @@ export default function useDesignModuleActions() {
         payload: async () => {
           try {
             const {data} = _res(await renameWDFloorFolder(params));
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    renameWDFloorFolderFile: params =>
+      dispatch({
+        type: types.RENAME_RD_FOLDER,
+        payload: async () => {
+          try {
+            const {data} = _res(await renameWDFloorFolderFile(params));
+
+            return Promise.resolve({data});
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    getWDFloorFolderFileActivity: params =>
+      dispatch({
+        type: types.GET_WD_FOLDER_FILE_ACTIVITY,
+        payload: async () => {
+          try {
+            const {data} = _res(await getWDFloorFolderFileActivity(params));
 
             return Promise.resolve({data});
           } catch (error) {
@@ -1450,6 +1503,51 @@ export default function useDesignModuleActions() {
             });
           } catch (error) {
             const message = _err(error);
+            return Promise.reject(message);
+          }
+        },
+      }),
+    deleteFDPlotBungalowFileVersion: params =>
+      dispatch({
+        type: types.DELETE_RD_FOLDER,
+        payload: async () => {
+          try {
+            const res = _res(await deleteFDPlotBungalowFileVersion(params));
+            return Promise.resolve({
+              data: res.data,
+            });
+          } catch (error) {
+            const message = _err(error);
+            return Promise.reject(message);
+          }
+        },
+      }),
+    deleteFDFloorFolderFile: params =>
+      dispatch({
+        type: types.DELETE_RD_FOLDER,
+        payload: async () => {
+          try {
+            const res = _res(await deleteFDFloorFolderFile(params));
+            return Promise.resolve({
+              data: res.data,
+            });
+          } catch (error) {
+            const message = _err(error);
+            return Promise.reject(message);
+          }
+        },
+      }),
+    renameFDFloorFolderFile: params =>
+      dispatch({
+        type: types.RENAME_RD_FILES,
+        payload: async () => {
+          try {
+            const res = _res(await renameFDFloorFolderFile(params));
+            return Promise.resolve({
+              data: res.data,
+            });
+          } catch (error) {
+            const message = _err(error);
             snackbar.showMessage({message, variant: 'error'});
             return Promise.reject(message);
           }
@@ -1471,12 +1569,44 @@ export default function useDesignModuleActions() {
           }
         },
       }),
+    getFDFloorFolderFileActivity: params =>
+      dispatch({
+        type: types.GET_FD_FLOOR_FOLDER_FILE_ACTIVITY,
+        payload: async () => {
+          try {
+            const res = _res(await getFDFloorFolderFileActivity(params));
+            return Promise.resolve({
+              data: res.data,
+            });
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
     getFloorFolderFileVersion: params =>
       dispatch({
         type: types.GET_WD_FLOOR_FOLDER_FILE_VERSION,
         payload: async () => {
           try {
             const res = _res(await getFloorFolderFileVersion(params));
+            return Promise.resolve({
+              data: res.data,
+            });
+          } catch (error) {
+            const message = _err(error);
+            snackbar.showMessage({message, variant: 'error'});
+            return Promise.reject(message);
+          }
+        },
+      }),
+    getFDFolderFileVersion: params =>
+      dispatch({
+        type: types.GET_WD_FLOOR_FOLDER_FILE_VERSION,
+        payload: async () => {
+          try {
+            const res = _res(await getFDFolderFileVersion(params));
             return Promise.resolve({
               data: res.data,
             });

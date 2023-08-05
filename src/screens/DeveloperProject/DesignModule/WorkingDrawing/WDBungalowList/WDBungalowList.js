@@ -273,11 +273,10 @@ function WDBungalowList(props) {
     getWDCommonFileActivity,
     uploadWDBungalowPlotFileVersion,
     getBungalowPlotFileVersion,
+    deleteWDPlotBungalowFileVersion,
   } = useDesignModuleActions();
 
   const [menuId, setMenuId] = React.useState();
-  const [fab, setFab] = React.useState(false);
-
   const [modelContentType, setModalContentType] = React.useState('menu');
   const [modalContent, setModalContent] = React.useState({});
   const [shareDialog, setShareDialog] = React.useState(false);
@@ -387,9 +386,18 @@ function WDBungalowList(props) {
     });
   };
 
-  const handleDeleteVersion = async () => {
+  const handleDeleteVersion = async (id, file_id) => {
     setModalContentType('version');
+    deleteWDPlotBungalowFileVersion({
+      project_id,
+      working_drawing_bunglow_plot_file_version: id,
+    });
+    getBungalowPlotFileVersion({
+      project_id,
+      working_drawing_bunglow_plot_files: file_id,
+    });
   };
+
   const onSelectStructure = values => {
     const tower_id = bungalowsList?.find(i => i.id === values)?.id;
     const towerLabel = bungalowsList?.find(i => i.id === values)?.project_unit;
@@ -400,8 +408,6 @@ function WDBungalowList(props) {
       structureLabel,
     });
   };
-
-  console.log('menuId ===========> ', menuId);
 
   return (
     <>
@@ -484,10 +490,7 @@ function WDBungalowList(props) {
       </View>
       {menuId === undefined ? (
         <FAB
-          style={[
-            styles.fab,
-            {backgroundColor: fab ? theme.colors.white : theme.colors.primary},
-          ]}
+          style={styles.fab}
           icon="plus"
           onPress={() => openFilePicker({type: 'file', onChoose})}
           medium

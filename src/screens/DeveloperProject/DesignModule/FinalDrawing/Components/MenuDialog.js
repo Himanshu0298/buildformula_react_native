@@ -185,7 +185,8 @@ function MenuDialog(props) {
               ) : null
             ) : null}
             {showActivity ? (
-              <TouchableOpacity onPress={() => activityDataHandler(id)}>
+              <TouchableOpacity
+                onPress={() => activityDataHandler(id, files_id)}>
                 <View style={styles.viewDirection}>
                   <IconButton icon="information" />
                   <Text style={styles.ModalText}>Activity</Text>
