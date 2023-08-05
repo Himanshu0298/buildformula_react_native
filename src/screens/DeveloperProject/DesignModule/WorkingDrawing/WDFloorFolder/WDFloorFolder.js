@@ -176,18 +176,18 @@ function RenderFile(props) {
   };
 
   return (
-    <View style={styles.recentFiles}>
+    <TouchableOpacity
+      style={styles.recentFiles}
+      onPress={() => onPressFile(item)}>
       {title ? (
-        <TouchableOpacity
-          style={styles.sectionContainer}
-          onPress={() => onPressFile(item)}>
+        <View style={styles.sectionContainer}>
           <Image source={FileIcon} style={styles.fileIcon} />
           <View>
             <Text style={(styles.verticalFlex, styles.text)} numberOfLines={2}>
               {title}
             </Text>
           </View>
-        </TouchableOpacity>
+        </View>
       ) : null}
 
       <View style={styles.sectionContainer}>
@@ -208,7 +208,7 @@ function RenderFile(props) {
           />
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
 
@@ -476,6 +476,7 @@ function WDFloorFolder(props) {
           project_id,
           working_drawing_tower_floors_files_id: file_id,
         });
+        loadData();
       },
     });
   };

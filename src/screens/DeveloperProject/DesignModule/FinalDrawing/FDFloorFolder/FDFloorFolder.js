@@ -214,11 +214,9 @@ function RenderFile(props) {
   const download = useDownload();
 
   const onPressFile = async file => {
-    const fileUrl = getDownloadUrl(file.file_url);
-    const name = getFileName(file.title);
     download.link({
-      name,
-      link: fileUrl,
+      name: getFileName(file.file_url),
+      data: {file_url: file.file_url, project_id: file.project_id},
       showAction: false,
       onFinish: ({dir}) => {
         FileViewer.open(`file://${dir}`);
@@ -227,9 +225,11 @@ function RenderFile(props) {
   };
 
   return (
-    <View style={styles.recentFiles}>
+    <TouchableOpacity
+      style={styles.recentFiles}
+      onPress={() => onPressFile(item)}>
       {title ? (
-        <View style={styles.sectionContainer} onPress={() => onPressFile(item)}>
+        <View style={styles.sectionContainer}>
           <Image source={FileIcon} style={styles.fileIcon} />
           <View>
             <Text style={(styles.verticalFlex, styles.text)} numberOfLines={2}>
@@ -257,7 +257,7 @@ function RenderFile(props) {
           />
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
 
@@ -428,8 +428,7 @@ function FDFloorFolder(props) {
 
     formData.append('project_id', project_id);
     formData.append('folder_id', folderId);
-    formData.append('tower_id', tower_id);
-    formData.append('final_drawing_tower_files_id', fileId);
+    formData.append('final_drawing_tower_floors_files_id', fileId);
     formData.append('myfile', v);
 
     await uploadFloorFileVersion(formData);
@@ -437,6 +436,7 @@ function FDFloorFolder(props) {
       project_id,
       final_drawing_tower_floors_files_id: fileId,
     });
+    loadData();
   };
 
   const handleNewVersionUpload = async (_id, file_id) => {
