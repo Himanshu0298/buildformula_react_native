@@ -7,6 +7,7 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector} from 'react-redux';
 import dayjs from 'dayjs';
+import {debounce} from 'lodash';
 import RenderInput, {RenderError} from 'components/Atoms/RenderInput';
 import RenderSelect from 'components/Atoms/RenderSelect';
 import RenderDatePicker from 'components/Atoms/RenderDatePicker';
@@ -198,7 +199,7 @@ function ChallanForm(props) {
         </View>
       </KeyboardAwareScrollView>
       <ActionButtons
-        onSubmit={handleSubmit}
+        onSubmit={debounce(handleSubmit, 500)}
         submitLabel="Next"
         cancelLabel="Previous"
         onCancel={() => navigation.goBack()}
@@ -213,7 +214,7 @@ const AddDirectGRN = props => {
 
   const edit = Boolean(challan_id);
 
-  const {addDirectGRN, getVendorList, getSupplier} =
+  const {addDirectGRN, getVendorList, getSupplier, getDirectMaterialGRNList} =
     useMaterialManagementActions();
   const {selectedProject} = useSelector(s => s.project);
 
@@ -226,6 +227,12 @@ const AddDirectGRN = props => {
     getSupplier({project_id: selectedProject.id});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const getList = () => {
+    getDirectMaterialGRNList({
+      project_id: selectedProject.id,
+    });
+  };
 
   const supplierOptions = React.useMemo(() => {
     return suppliersList?.map(i => ({
@@ -284,7 +291,7 @@ const AddDirectGRN = props => {
     const res = await addDirectGRN(formData);
 
     const data = res.action.payload;
-
+    getList();
     navigation.navigate('DirectGRNChallanMaterial', {
       challan_id: challan_id || data?.challan_id,
       edit,
