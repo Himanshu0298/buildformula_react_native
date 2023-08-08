@@ -336,7 +336,6 @@ function RenderRow(props) {
     setModalContent,
     handleFileUpload,
     deleteFolderHandler,
-    toggleDialog,
   } = props;
   const {folder_title, title, id} = item;
 

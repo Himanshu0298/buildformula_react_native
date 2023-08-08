@@ -1,5 +1,5 @@
-import {BASE_API_URL} from 'utils/constant';
 import axios from 'axios';
+import {BASE_API_URL} from 'utils/constant';
 import {logoutPayload} from 'redux/actions/appActions';
 import {REFRESH_TOKEN} from 'redux/actions/actionTypes';
 import {store} from '../redux/store';

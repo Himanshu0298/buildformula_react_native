@@ -107,6 +107,7 @@ const handleFilePicker = async ({type, multiple, onChoose}) => {
     }
 
     onChoose(data);
+    console.log('===========> data', data);
   } catch (err) {
     console.log('----->err ', err);
     if (DocumentPicker.isCancel(err)) {
