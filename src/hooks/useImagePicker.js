@@ -77,7 +77,11 @@ async function processFiles(res) {
 
     const stat = await RNFS.stat(DEST_PATH);
 
-    const processedUri = Platform.OS === 'ios' ? res.uri : `file:///${res.uri}`;
+    let processedUri = res.uri;
+
+    if (Platform.OS === 'android' && !processedUri.startsWith('content')) {
+      processedUri = `file:///${processedUri}`;
+    }
 
     const data = {uri: processedUri, type, name};
     console.log('----->data ', data);

@@ -29,6 +29,7 @@ import {useSelector} from 'react-redux';
 import {Image} from 'react-native-svg';
 import FileViewer from 'react-native-file-viewer';
 import Spinner from 'react-native-loading-spinner-overlay';
+import {ScrollView} from 'react-native-gesture-handler';
 import {theme} from 'styles/theme';
 
 import {useSnackbar} from 'components/Atoms/Snackbar';
@@ -335,61 +336,64 @@ function BungalowsFileDetails(props) {
   };
 
   return (
-    <View style={styles.container}>
-      <Spinner visible={loading} textContent="" />
+    <>
+      <View style={styles.container}>
+        <Spinner visible={loading} textContent="" />
 
-      <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.titleContainer}
-          onPress={navigation.goBack}>
-          <IconButton icon="keyboard-backspace" />
-        </TouchableOpacity>
-        <Title>Bungalow </Title>
-      </View>
-      <View style={styles.towerContainer}>
-        <RenderTowerBox
-          towerId={towerId}
-          label={towerLabel}
-          active
-          towerType={structureLabel}
-        />
-      </View>
-
-      <View style={{margin: 10}}>
-        <Text style={{color: theme.colors.primary}}>
-          {towerLabel} Bungalow File Document
-        </Text>
-      </View>
-
-      <FlatList
-        refreshControl={
-          <RefreshControl refreshing={false} onRefresh={loadFiles} />
-        }
-        data={bungalowFiles}
-        extraData={bungalowFiles}
-        keyExtractor={i => i.id}
-        contentContainerStyle={styles.contentContainerStyle}
-        ListEmptyComponent={<NoResult title="No Data found!" />}
-        renderItem={({item, index}) => (
-          <RenderFile
-            {...props}
-            {...{
-              item,
-              index,
-              menuId,
-              toggleMenu,
-              setModalContentType,
-            }}
+        <View style={styles.header}>
+          <TouchableOpacity
+            style={styles.titleContainer}
+            onPress={navigation.goBack}>
+            <IconButton icon="keyboard-backspace" />
+          </TouchableOpacity>
+          <Title>Bungalow </Title>
+        </View>
+        <View style={styles.towerContainer}>
+          <RenderTowerBox
+            towerId={towerId}
+            label={towerLabel}
+            active
+            towerType={structureLabel}
           />
-        )}
-      />
+        </View>
+
+        <View style={{margin: 10}}>
+          <Text style={{color: theme.colors.primary}}>
+            {towerLabel} Bungalow File Document
+          </Text>
+        </View>
+        <ScrollView contentContainerStyle={{paddingBottom: '50%'}}>
+          <FlatList
+            refreshControl={
+              <RefreshControl refreshing={false} onRefresh={loadFiles} />
+            }
+            data={bungalowFiles}
+            extraData={bungalowFiles}
+            keyExtractor={i => i.id}
+            contentContainerStyle={styles.contentContainerStyle}
+            ListEmptyComponent={<NoResult title="No Data found!" />}
+            renderItem={({item, index}) => (
+              <RenderFile
+                {...props}
+                {...{
+                  item,
+                  index,
+                  menuId,
+                  toggleMenu,
+                  setModalContentType,
+                }}
+              />
+            )}
+          />
+        </ScrollView>
+      </View>
       <FAB
         style={styles.fab}
         icon="plus"
         onPress={() => openFilePicker({type: 'file', onChoose})}
         medium
       />
-    </View>
+    </>
   );
 }
 

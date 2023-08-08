@@ -606,7 +606,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   contentContainerStyle: {
-    paddingBottom: 40,
+    paddingBottom: '50%',
   },
 });
 export default WDBungalowList;

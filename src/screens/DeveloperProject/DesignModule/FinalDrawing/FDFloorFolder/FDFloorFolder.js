@@ -27,6 +27,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Feather from 'react-native-vector-icons/Feather';
 import dayjs from 'dayjs';
 
+import {ScrollView} from 'react-native-gesture-handler';
 import {getShadow} from 'utils';
 import FolderIcon from 'assets/images/folder_icon.png';
 import useDesignModuleActions from 'redux/actions/designModuleActions';
@@ -76,18 +77,20 @@ function RenderActivity({item}) {
   const {user_full_name, log_type, created, log_text} = item;
 
   return (
-    <View style={styles.activityContainer}>
-      <View style={styles.iconContainer}>{ACTIVITY_ICONS?.[log_type]}</View>
-      <View style={styles.activityBody}>
-        <View style={styles.activityUser}>
-          <Text>{user_full_name}</Text>
-          <Caption>{dayjs(created).fromNow()}</Caption>
-        </View>
+    <ScrollView contentContainerStyle={{paddingBottom: 100}}>
+      <View style={styles.activityContainer}>
+        <View style={styles.iconContainer}>{ACTIVITY_ICONS?.[log_type]}</View>
+        <View style={styles.activityBody}>
+          <View style={styles.activityUser}>
+            <Text>{user_full_name}</Text>
+            <Caption>{dayjs(created).fromNow()}</Caption>
+          </View>
 
-        <Caption>{ACTIVITY_LABEL?.[log_type] || log_type}</Caption>
-        <Caption style={styles.fileName}>{getFileName(log_text)}</Caption>
+          <Caption>{ACTIVITY_LABEL?.[log_type] || log_type}</Caption>
+          <Caption style={styles.fileName}>{getFileName(log_text)}</Caption>
+        </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 

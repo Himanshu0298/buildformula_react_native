@@ -27,6 +27,7 @@ import {Image} from 'react-native-svg';
 import dayjs from 'dayjs';
 import _ from 'lodash';
 import Spinner from 'react-native-loading-spinner-overlay';
+import {ScrollView} from 'react-native-gesture-handler';
 import NoResult from 'components/Atoms/NoResult';
 import {useDownload} from 'components/Atoms/Download';
 import {getFileName} from 'utils/constant';
@@ -411,50 +412,7 @@ function FDTowerList(props) {
   };
 
   return (
-    <View style={styles.container}>
-      <Spinner visible={loading} textContent="" />
-
-      <View style={styles.header}>
-        <OpacityButton
-          opacity={0.18}
-          style={styles.button}
-          onPress={() => navigation.goBack()}>
-          <MaterialCommunityIcons name="arrow-left" size={18} />
-        </OpacityButton>
-        <Subheading style={styles.Subheading}>Tower</Subheading>
-      </View>
-
-      <SelectTower
-        navigation={navigation}
-        structureLabel={structureLabel}
-        onSelectStructure={onSelectStructure}
-        data={towerList}
-      />
-      <FlatList
-        refreshControl={
-          <RefreshControl refreshing={false} onRefresh={loadFiles} />
-        }
-        data={towerCommonFiles}
-        extraData={towerCommonFiles}
-        keyExtractor={i => i.id}
-        contentContainerStyle={styles.contentContainerStyle}
-        ListEmptyComponent={<NoResult title="No Data found!" />}
-        renderItem={({item, index}) => (
-          <RenderFile
-            {...props}
-            {...{
-              item,
-              index,
-              menuId,
-              toggleMenu,
-              setModalContentType,
-              setModalContent,
-              onPressFile,
-            }}
-          />
-        )}
-      />
-
+    <>
       <RenderMenuModal
         {...props}
         {...{
@@ -472,7 +430,6 @@ function FDTowerList(props) {
           handleDeleteVersion,
         }}
       />
-
       <RenameDialogue
         visible={DialogType === 'renameFile'}
         toggleDialogue={toggleDialog}
@@ -485,6 +442,52 @@ function FDTowerList(props) {
         dialogueContent={modalContent}
         deleteFileHandler={deleteFileHandler}
       />
+      <View style={styles.container}>
+        <Spinner visible={loading} textContent="" />
+
+        <View style={styles.header}>
+          <OpacityButton
+            opacity={0.18}
+            style={styles.button}
+            onPress={() => navigation.goBack()}>
+            <MaterialCommunityIcons name="arrow-left" size={18} />
+          </OpacityButton>
+          <Subheading style={styles.Subheading}>Tower</Subheading>
+        </View>
+
+        <SelectTower
+          navigation={navigation}
+          structureLabel={structureLabel}
+          onSelectStructure={onSelectStructure}
+          data={towerList}
+        />
+        <ScrollView contentContainerStyle={{paddingBottom: '50%'}}>
+          <FlatList
+            refreshControl={
+              <RefreshControl refreshing={false} onRefresh={loadFiles} />
+            }
+            data={towerCommonFiles}
+            extraData={towerCommonFiles}
+            keyExtractor={i => i.id}
+            contentContainerStyle={styles.contentContainerStyle}
+            ListEmptyComponent={<NoResult title="No Data found!" />}
+            renderItem={({item, index}) => (
+              <RenderFile
+                {...props}
+                {...{
+                  item,
+                  index,
+                  menuId,
+                  toggleMenu,
+                  setModalContentType,
+                  setModalContent,
+                  onPressFile,
+                }}
+              />
+            )}
+          />
+        </ScrollView>
+      </View>
       {menuId === undefined ? (
         <FAB
           style={styles.fab}
@@ -493,7 +496,7 @@ function FDTowerList(props) {
           medium
         />
       ) : null}
-    </View>
+    </>
   );
 }
 

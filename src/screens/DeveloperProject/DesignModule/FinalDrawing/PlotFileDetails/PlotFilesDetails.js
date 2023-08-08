@@ -29,6 +29,7 @@ import {useSelector} from 'react-redux';
 import {Image} from 'react-native-svg';
 import FileViewer from 'react-native-file-viewer';
 import Spinner from 'react-native-loading-spinner-overlay';
+import {ScrollView} from 'react-native-gesture-handler';
 import {theme} from 'styles/theme';
 
 import {useSnackbar} from 'components/Atoms/Snackbar';
@@ -344,62 +345,6 @@ function PlotFileDetails(props) {
 
   return (
     <>
-      <View style={styles.container}>
-        <Spinner visible={loading} textContent="" />
-
-        <View style={styles.header}>
-          <TouchableOpacity
-            style={styles.titleContainer}
-            onPress={navigation.goBack}>
-            <IconButton icon="keyboard-backspace" />
-          </TouchableOpacity>
-          <Title>Plot</Title>
-        </View>
-        <View style={styles.towerContainer}>
-          <RenderTowerBox
-            towerId={plotId}
-            label={plotLabel}
-            active
-            towerType={structureLabel}
-          />
-        </View>
-
-        <View style={{margin: 10}}>
-          <Text style={{color: theme.colors.primary}}>
-            {plotLabel} Plot File Document
-          </Text>
-        </View>
-
-        <FlatList
-          refreshControl={
-            <RefreshControl refreshing={false} onRefresh={loadFiles} />
-          }
-          data={plotFiles}
-          extraData={plotFiles}
-          keyExtractor={i => i.id}
-          contentContainerStyle={styles.contentContainerStyle}
-          ListEmptyComponent={<NoResult title="No Data found!" />}
-          renderItem={({item, index}) => (
-            <RenderFile
-              {...props}
-              {...{
-                item,
-                index,
-                menuId,
-                toggleMenu,
-                setModalContentType,
-                setModalContent,
-              }}
-            />
-          )}
-        />
-        <FAB
-          style={styles.fab}
-          icon="plus"
-          onPress={() => openFilePicker({type: 'file', onChoose})}
-          medium
-        />
-      </View>
       <RenderMenuModal
         {...props}
         {...{
@@ -413,6 +358,64 @@ function PlotFileDetails(props) {
           activityDataHandler,
           toggleShareDialog,
         }}
+      />
+      <ScrollView contentContainerStyle={{paddingBottom: 100}}>
+        <View style={styles.container}>
+          <Spinner visible={loading} textContent="" />
+
+          <View style={styles.header}>
+            <TouchableOpacity
+              style={styles.titleContainer}
+              onPress={navigation.goBack}>
+              <IconButton icon="keyboard-backspace" />
+            </TouchableOpacity>
+            <Title>Plot</Title>
+          </View>
+          <View style={styles.towerContainer}>
+            <RenderTowerBox
+              towerId={plotId}
+              label={plotLabel}
+              active
+              towerType={structureLabel}
+            />
+          </View>
+
+          <View style={{margin: 10}}>
+            <Text style={{color: theme.colors.primary}}>
+              {plotLabel} Plot File Document
+            </Text>
+          </View>
+
+          <FlatList
+            refreshControl={
+              <RefreshControl refreshing={false} onRefresh={loadFiles} />
+            }
+            data={plotFiles}
+            extraData={plotFiles}
+            keyExtractor={i => i.id}
+            contentContainerStyle={styles.contentContainerStyle}
+            ListEmptyComponent={<NoResult title="No Data found!" />}
+            renderItem={({item, index}) => (
+              <RenderFile
+                {...props}
+                {...{
+                  item,
+                  index,
+                  menuId,
+                  toggleMenu,
+                  setModalContentType,
+                  setModalContent,
+                }}
+              />
+            )}
+          />
+        </View>
+      </ScrollView>
+      <FAB
+        style={styles.fab}
+        icon="plus"
+        onPress={() => openFilePicker({type: 'file', onChoose})}
+        medium
       />
     </>
   );

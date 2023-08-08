@@ -26,6 +26,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Feather from 'react-native-vector-icons/Feather';
 import Spinner from 'react-native-loading-spinner-overlay';
+import {ScrollView} from 'react-native-gesture-handler';
 import {getPermissions, getShadow} from 'utils';
 import {useImagePicker} from 'hooks';
 import {theme} from 'styles/theme';
@@ -65,7 +66,7 @@ function RenderFile(props) {
         style={styles.sectionContainer}
         onPress={() => onPressFile(item)}>
         <Image source={FileIcon} style={styles.fileIcon} />
-        <View>
+        <View style={{width: 120}}>
           <Text style={(styles.verticalFlex, styles.text)} numberOfLines={2}>
             {title}
           </Text>
@@ -409,42 +410,7 @@ function WDTowerFiles(props) {
   };
 
   return (
-    <View style={styles.container}>
-      <Spinner visible={loading} textContent="" />
-
-      <FlatList
-        refreshControl={
-          <RefreshControl refreshing={false} onRefresh={loadFloors} />
-        }
-        data={towerFiles}
-        extraData={towerFiles}
-        keyExtractor={i => i.id}
-        contentContainerStyle={styles.contentContainerStyle}
-        ListEmptyComponent={<NoResult title="No Data found!" />}
-        renderItem={({item, index}) => (
-          <RenderFile
-            {...props}
-            {...{
-              item,
-              index,
-              menuId,
-              toggleMenu,
-              setModalContentType,
-              setModalContent,
-              onPressFile,
-            }}
-          />
-        )}
-      />
-
-      {menuId === undefined ? (
-        <FAB
-          style={styles.fab}
-          icon="plus"
-          onPress={() => openFilePicker({type: 'file', onChoose})}
-          medium
-        />
-      ) : null}
+    <>
       <RenderMenuModal
         {...props}
         {...{
@@ -463,7 +429,6 @@ function WDTowerFiles(props) {
           handleDeleteVersion,
         }}
       />
-
       <RenameDialogue
         visible={DialogType === 'renameFile'}
         toggleDialogue={toggleDialog}
@@ -476,7 +441,45 @@ function WDTowerFiles(props) {
         dialogueContent={modalContent}
         deleteFileHandler={deleteFileHandler}
       />
-    </View>
+      <ScrollView contentContainerStyle={{paddingBottom: '50%'}}>
+        <View style={styles.container}>
+          <Spinner visible={loading} textContent="" />
+
+          <FlatList
+            refreshControl={
+              <RefreshControl refreshing={false} onRefresh={loadFloors} />
+            }
+            data={towerFiles}
+            extraData={towerFiles}
+            keyExtractor={i => i.id}
+            contentContainerStyle={styles.contentContainerStyle}
+            ListEmptyComponent={<NoResult title="No Data found!" />}
+            renderItem={({item, index}) => (
+              <RenderFile
+                {...props}
+                {...{
+                  item,
+                  index,
+                  menuId,
+                  toggleMenu,
+                  setModalContentType,
+                  setModalContent,
+                  onPressFile,
+                }}
+              />
+            )}
+          />
+        </View>
+      </ScrollView>
+      {menuId === undefined ? (
+        <FAB
+          style={styles.fab}
+          icon="plus"
+          onPress={() => openFilePicker({type: 'file', onChoose})}
+          medium
+        />
+      ) : null}
+    </>
   );
 }
 

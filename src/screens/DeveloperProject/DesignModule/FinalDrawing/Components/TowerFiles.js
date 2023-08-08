@@ -26,6 +26,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Feather from 'react-native-vector-icons/Feather';
 import Spinner from 'react-native-loading-spinner-overlay';
+import {ScrollView} from 'react-native-gesture-handler';
 import {getPermissions, getShadow} from 'utils';
 import {useImagePicker} from 'hooks';
 import {theme} from 'styles/theme';
@@ -66,14 +67,14 @@ function RenderFile(props) {
         style={styles.sectionContainer}
         onPress={() => onPressFile(item)}>
         <Image source={FileIcon} style={styles.fileIcon} />
-        <View>
+        <View style={{width: 120}}>
           <Text style={(styles.verticalFlex, styles.text)} numberOfLines={2}>
             {title}
           </Text>
         </View>
       </TouchableOpacity>
 
-      <View style={styles.sectionContainer}>
+      <View style={styles.sectionSubContainer}>
         <View>
           <Text style={styles.date}>
             {dayjs(created).format('DD MMM YYYY')}
@@ -413,41 +414,7 @@ function FinalDrawingTowerFiles(props) {
   };
 
   return (
-    <View style={styles.container}>
-      <Spinner visible={loading} textContent="" />
-
-      <FlatList
-        refreshControl={
-          <RefreshControl refreshing={false} onRefresh={loadFloors} />
-        }
-        data={towerFiles}
-        extraData={towerFiles}
-        keyExtractor={i => i.id}
-        contentContainerStyle={styles.contentContainerStyle}
-        ListEmptyComponent={<NoResult title="No Data found!" />}
-        renderItem={({item, index}) => (
-          <RenderFile
-            {...props}
-            {...{
-              item,
-              index,
-              menuId,
-              toggleMenu,
-              setModalContentType,
-              setModalContent,
-              onPressFile,
-            }}
-          />
-        )}
-      />
-      {menuId === undefined ? (
-        <FAB
-          style={styles.fab}
-          icon="plus"
-          onPress={() => openFilePicker({type: 'file', onChoose})}
-          medium
-        />
-      ) : null}
+    <>
       <RenderMenuModal
         {...props}
         {...{
@@ -466,7 +433,6 @@ function FinalDrawingTowerFiles(props) {
           handleDeleteVersion,
         }}
       />
-
       <RenameDialogue
         visible={DialogType === 'renameFile'}
         toggleDialogue={toggleDialog}
@@ -479,7 +445,44 @@ function FinalDrawingTowerFiles(props) {
         dialogueContent={modalContent}
         deleteFileHandler={deleteFileHandler}
       />
-    </View>
+      <View style={styles.container}>
+        <Spinner visible={loading} textContent="" />
+        <ScrollView contentContainerStyle={{paddingBottom: '50%'}}>
+          <FlatList
+            refreshControl={
+              <RefreshControl refreshing={false} onRefresh={loadFloors} />
+            }
+            data={towerFiles}
+            extraData={towerFiles}
+            keyExtractor={i => i.id}
+            contentContainerStyle={styles.contentContainerStyle}
+            ListEmptyComponent={<NoResult title="No Data found!" />}
+            renderItem={({item, index}) => (
+              <RenderFile
+                {...props}
+                {...{
+                  item,
+                  index,
+                  menuId,
+                  toggleMenu,
+                  setModalContentType,
+                  setModalContent,
+                  onPressFile,
+                }}
+              />
+            )}
+          />
+        </ScrollView>
+      </View>
+      {menuId === undefined ? (
+        <FAB
+          style={styles.fab}
+          icon="plus"
+          onPress={() => openFilePicker({type: 'file', onChoose})}
+          medium
+        />
+      ) : null}
+    </>
   );
 }
 
@@ -511,6 +514,12 @@ const styles = StyleSheet.create({
   sectionContainer: {
     alignItems: 'center',
     flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  sectionSubContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   recentFiles: {
     flexDirection: 'row',

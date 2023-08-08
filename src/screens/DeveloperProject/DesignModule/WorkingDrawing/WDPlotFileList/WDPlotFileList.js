@@ -29,6 +29,7 @@ import {useSelector} from 'react-redux';
 import {Image} from 'react-native-svg';
 import FileViewer from 'react-native-file-viewer';
 import Spinner from 'react-native-loading-spinner-overlay';
+import {ScrollView} from 'react-native-gesture-handler';
 import {theme} from 'styles/theme';
 
 import {useSnackbar} from 'components/Atoms/Snackbar';
@@ -338,6 +339,20 @@ function WDPlotFileList(props) {
 
   return (
     <>
+      <RenderMenuModal
+        {...props}
+        {...{
+          menuId,
+          modelContentType,
+          modalContent,
+          toggleMenu,
+          setModalContentType,
+          toggleDialog,
+          versionDataHandler,
+          activityDataHandler,
+          toggleShareDialog,
+        }}
+      />
       <View style={styles.container}>
         <Spinner visible={loading} textContent="" />
 
@@ -363,50 +378,37 @@ function WDPlotFileList(props) {
             {plotLabel} Plot File Document
           </Text>
         </View>
-
-        <FlatList
-          refreshControl={
-            <RefreshControl refreshing={false} onRefresh={loadFiles} />
-          }
-          data={plotFiles}
-          extraData={plotFiles}
-          keyExtractor={i => i.id}
-          contentContainerStyle={styles.contentContainerStyle}
-          ListEmptyComponent={<NoResult title="No Data found!" />}
-          renderItem={({item, index}) => (
-            <RenderFile
-              {...props}
-              {...{
-                item,
-                index,
-                menuId,
-                toggleMenu,
-                setModalContentType,
-                setModalContent,
-              }}
-            />
-          )}
-        />
-        <FAB
-          style={styles.fab}
-          icon="plus"
-          onPress={() => openFilePicker({type: 'file', onChoose})}
-          medium
-        />
+        <ScrollView contentContainerStyle={{paddingBottom: '50%'}}>
+          <FlatList
+            refreshControl={
+              <RefreshControl refreshing={false} onRefresh={loadFiles} />
+            }
+            data={plotFiles}
+            extraData={plotFiles}
+            keyExtractor={i => i.id}
+            contentContainerStyle={styles.contentContainerStyle}
+            ListEmptyComponent={<NoResult title="No Data found!" />}
+            renderItem={({item, index}) => (
+              <RenderFile
+                {...props}
+                {...{
+                  item,
+                  index,
+                  menuId,
+                  toggleMenu,
+                  setModalContentType,
+                  setModalContent,
+                }}
+              />
+            )}
+          />
+        </ScrollView>
       </View>
-      <RenderMenuModal
-        {...props}
-        {...{
-          menuId,
-          modelContentType,
-          modalContent,
-          toggleMenu,
-          setModalContentType,
-          toggleDialog,
-          versionDataHandler,
-          activityDataHandler,
-          toggleShareDialog,
-        }}
+      <FAB
+        style={styles.fab}
+        icon="plus"
+        onPress={() => openFilePicker({type: 'file', onChoose})}
+        medium
       />
     </>
   );

@@ -31,6 +31,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import _ from 'lodash';
 import BottomSheet from 'reanimated-bottom-sheet';
 import {Formik} from 'formik';
+import {ScrollView} from 'react-native-gesture-handler';
 import OpacityButton from 'components/Atoms/Buttons/OpacityButton';
 import NoResult from 'components/Atoms/NoResult';
 import {getShadow} from 'utils';
@@ -142,18 +143,20 @@ function RenderActivity({item}) {
   const {user_full_name, log_type, created, log_text} = item;
 
   return (
-    <View style={styles.activityContainer}>
-      <View style={styles.iconContainer}>{ACTIVITY_ICONS?.[log_type]}</View>
-      <View style={styles.activityBody}>
-        <View style={styles.activityUser}>
-          <Text>{user_full_name}</Text>
-          <Caption>{dayjs(created).fromNow()}</Caption>
-        </View>
+    <ScrollView contentContainerStyle={{marginBottom: 100}}>
+      <View style={styles.activityContainer}>
+        <View style={styles.iconContainer}>{ACTIVITY_ICONS?.[log_type]}</View>
+        <View style={styles.activityBody}>
+          <View style={styles.activityUser}>
+            <Text>{user_full_name}</Text>
+            <Caption>{dayjs(created).fromNow()}</Caption>
+          </View>
 
-        <Caption>{ACTIVITY_LABEL?.[log_type] || log_type}</Caption>
-        <Caption style={styles.fileName}>{getFileName(log_text)}</Caption>
+          <Caption>{ACTIVITY_LABEL?.[log_type] || log_type}</Caption>
+          <Caption style={styles.fileName}>{getFileName(log_text)}</Caption>
+        </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 

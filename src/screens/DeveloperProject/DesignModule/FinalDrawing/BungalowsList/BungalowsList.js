@@ -451,24 +451,23 @@ function BungalowsList(props) {
 
       <View styles={styles.container}>
         <Spinner visible={loading} textContent="" />
-        <ScrollView contentContainerStyle={styles.contentContainerStyle}>
-          <View style={styles.header}>
-            <IconButton
-              icon="keyboard-backspace"
-              size={20}
-              color="#4872f4"
-              style={styles.backIcon}
-              onPress={() => navigation.goBack()}
-            />
-            <Title> Bungalows</Title>
-          </View>
-          <SelectTower
-            structureLabel={structureLabel}
-            navigation={navigation}
-            onSelectStructure={onSelectStructure}
-            data={bungalowsList}
+        <View style={styles.header}>
+          <IconButton
+            icon="keyboard-backspace"
+            size={20}
+            color="#4872f4"
+            style={styles.backIcon}
+            onPress={() => navigation.goBack()}
           />
-
+          <Title> Bungalows</Title>
+        </View>
+        <SelectTower
+          structureLabel={structureLabel}
+          navigation={navigation}
+          onSelectStructure={onSelectStructure}
+          data={bungalowsList}
+        />
+        <ScrollView contentContainerStyle={styles.contentContainerStyle}>
           <FlatList
             refreshControl={
               <RefreshControl refreshing={false} onRefresh={loadFiles} />
@@ -612,7 +611,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   contentContainerStyle: {
-    marginBottom: 40,
+    marginBottom: '50%',
   },
 });
 export default BungalowsList;

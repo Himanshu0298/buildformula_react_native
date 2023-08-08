@@ -448,24 +448,23 @@ function PlotsList(props) {
 
       <View styles={styles.container}>
         <Spinner visible={loading} textContent="" />
-        <ScrollView contentContainerStyle={styles.contentContainerStyle}>
-          <View style={styles.header}>
-            <IconButton
-              icon="keyboard-backspace"
-              size={20}
-              color="#4872f4"
-              style={styles.backIcon}
-              onPress={() => navigation.goBack()}
-            />
-            <Title>Plots</Title>
-          </View>
-          <SelectTower
-            structureLabel={structureLabel}
-            navigation={navigation}
-            onSelectStructure={onSelectStructure}
-            data={plotsList}
+        <View style={styles.header}>
+          <IconButton
+            icon="keyboard-backspace"
+            size={20}
+            color="#4872f4"
+            style={styles.backIcon}
+            onPress={() => navigation.goBack()}
           />
-
+          <Title>Plots</Title>
+        </View>
+        <SelectTower
+          structureLabel={structureLabel}
+          navigation={navigation}
+          onSelectStructure={onSelectStructure}
+          data={plotsList}
+        />
+        <ScrollView contentContainerStyle={styles.contentContainerStyle}>
           <FlatList
             refreshControl={
               <RefreshControl refreshing={false} onRefresh={loadFiles} />
@@ -608,6 +607,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  contentContainerStyle: {marginBottom: 40},
+  contentContainerStyle: {marginBottom: '50%'},
 });
 export default PlotsList;

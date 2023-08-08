@@ -412,50 +412,7 @@ function WDTowerList(props) {
   };
 
   return (
-    <View style={styles.container}>
-      <Spinner visible={loading} textContent="" />
-
-      <View style={styles.header}>
-        <OpacityButton
-          opacity={0.18}
-          style={styles.button}
-          onPress={() => navigation.goBack()}>
-          <MaterialCommunityIcons name="arrow-left" size={15} />
-        </OpacityButton>
-        <Subheading style={styles.Subheading}>Tower</Subheading>
-      </View>
-
-      <SelectStructure
-        navigation={navigation}
-        structureLabel={structureLabel}
-        onSelectStructure={onSelectStructure}
-        data={towerList}
-      />
-      <FlatList
-        refreshControl={
-          <RefreshControl refreshing={false} onRefresh={loadFiles} />
-        }
-        data={towerCommonFiles}
-        extraData={towerCommonFiles}
-        keyExtractor={i => i.id}
-        contentContainerStyle={styles.contentContainerStyle}
-        ListEmptyComponent={<NoResult title="No Data found!" />}
-        renderItem={({item, index}) => (
-          <RenderFile
-            {...props}
-            {...{
-              item,
-              index,
-              menuId,
-              toggleMenu,
-              setModalContentType,
-              setModalContent,
-              onPressFile,
-            }}
-          />
-        )}
-      />
-
+    <>
       <RenderMenuModal
         {...props}
         {...{
@@ -473,7 +430,6 @@ function WDTowerList(props) {
           handleDeleteVersion,
         }}
       />
-
       <RenameDialogue
         visible={DialogType === 'renameFile'}
         toggleDialogue={toggleDialog}
@@ -486,6 +442,53 @@ function WDTowerList(props) {
         dialogueContent={modalContent}
         deleteFileHandler={deleteFileHandler}
       />
+
+      <View style={styles.container}>
+        <Spinner visible={loading} textContent="" />
+
+        <View style={styles.header}>
+          <OpacityButton
+            opacity={0.18}
+            style={styles.button}
+            onPress={() => navigation.goBack()}>
+            <MaterialCommunityIcons name="arrow-left" size={15} />
+          </OpacityButton>
+          <Subheading style={styles.Subheading}>Tower</Subheading>
+        </View>
+
+        <SelectStructure
+          navigation={navigation}
+          structureLabel={structureLabel}
+          onSelectStructure={onSelectStructure}
+          data={towerList}
+        />
+        <ScrollView contentContainerStyle={{paddingBottom: '50%'}}>
+          <FlatList
+            refreshControl={
+              <RefreshControl refreshing={false} onRefresh={loadFiles} />
+            }
+            data={towerCommonFiles}
+            extraData={towerCommonFiles}
+            keyExtractor={i => i.id}
+            contentContainerStyle={styles.contentContainerStyle}
+            ListEmptyComponent={<NoResult title="No Data found!" />}
+            renderItem={({item, index}) => (
+              <RenderFile
+                {...props}
+                {...{
+                  item,
+                  index,
+                  menuId,
+                  toggleMenu,
+                  setModalContentType,
+                  setModalContent,
+                  onPressFile,
+                }}
+              />
+            )}
+          />
+        </ScrollView>
+      </View>
       {menuId === undefined ? (
         <FAB
           style={styles.fab}
@@ -494,7 +497,7 @@ function WDTowerList(props) {
           medium
         />
       ) : null}
-    </View>
+    </>
   );
 }
 
