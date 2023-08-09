@@ -366,13 +366,13 @@ function WDBungalowList(props) {
     loadFiles();
   };
 
-  const handleNewVersionUpload = (id, file_id) => {
+  const handleNewVersionUpload = (files_id, id, data) => {
     openFilePicker({
       type: 'file',
       onChoose: async v => {
         const formData = new FormData();
 
-        formData.append('working_drawing_bunglow_plot_files_id', file_id);
+        formData.append('working_drawing_bunglow_plot_files_id', id);
         formData.append('myfile', v);
         formData.append('folder_id', folderId);
         formData.append('project_id', project_id);
@@ -380,13 +380,13 @@ function WDBungalowList(props) {
         await uploadWDBungalowPlotFileVersion(formData);
         getBungalowPlotFileVersion({
           project_id,
-          working_drawing_bunglow_plot_files: file_id,
+          working_drawing_bunglow_plot_files: id,
         });
       },
     });
   };
 
-  const handleDeleteVersion = async (id, file_id) => {
+  const handleDeleteVersion = async (id, data) => {
     setModalContentType('version');
     deleteWDPlotBungalowFileVersion({
       project_id,
@@ -394,7 +394,8 @@ function WDBungalowList(props) {
     });
     getBungalowPlotFileVersion({
       project_id,
-      working_drawing_bunglow_plot_files: file_id,
+      working_drawing_bunglow_plot_files:
+        data?.working_drawing_bunglow_plot_files_id,
     });
   };
 

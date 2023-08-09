@@ -54,12 +54,9 @@ function VersionFile(props) {
     console.log('-----> open path', filePath);
     FileViewer.open(filePath);
   };
+
   const onDelete = () => {
-    handleDeleteVersion(
-      version?.id,
-      version?.final_drawing_bunglow_plot_files_id,
-      version,
-    );
+    handleDeleteVersion(version?.id, version);
     toggleVersionMenu();
   };
   return (
@@ -139,7 +136,11 @@ function VersionDialog(props) {
             compact
             labelStyle={styles.labelStyle}
             onPress={() =>
-              handleNewVersionUpload(modalContent.id, modalContent.files_id)
+              handleNewVersionUpload(
+                modalContent.files_id,
+                modalContent.id,
+                modalContent,
+              )
             }>
             Add New Version
           </Button>

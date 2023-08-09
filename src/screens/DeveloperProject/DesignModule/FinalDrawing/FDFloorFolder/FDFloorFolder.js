@@ -255,7 +255,12 @@ function RenderFile(props) {
             onPress={() => {
               toggleMenu(index);
               setModalContentType('menu');
-              setModalContent(item);
+              setModalContent({
+                id: item.files_id,
+                title,
+                type: 'file',
+                folderId: item.id,
+              });
             }}
           />
         </View>
@@ -269,6 +274,7 @@ function RenderRow(props) {
     item,
     index,
     toggleMenu,
+    toggleDialog,
     setModalContent,
     setModalContentType,
     handleFileUpload,
@@ -283,17 +289,22 @@ function RenderRow(props) {
           <Text style={{fontSize: 18, margin: 10}}>{folder_title} </Text>
         </View>
         <View style={styles.headerSubContainers}>
-          {/* <View style={styles.editIconContainer}>
+          <View style={styles.editIconContainer}>
             <OpacityButton
               color="#4872f4"
               opacity={0.18}
               style={styles.editIcon}
               onPress={() => {
                 toggleDialog('renameFile');
+                setModalContent({
+                  id: item.id,
+                  title: folder_title,
+                  type: 'folder',
+                });
               }}>
               <MaterialIcons name="edit" color="#4872f4" size={13} />
             </OpacityButton>
-          </View> */}
+          </View>
 
           <View>
             <OpacityButton
@@ -422,30 +433,28 @@ function FDFloorFolder(props) {
     setModalContentType('version');
     getFDFolderFileVersion({
       project_id,
-      final_drawing_tower_floors_files_id: files_id,
+      final_drawing_tower_floors_files_id: id,
     });
   };
 
-  const onChooseFile = async (v, fileId, id) => {
-    const formData = new FormData();
-
-    formData.append('project_id', project_id);
-    formData.append('folder_id', folderId);
-    formData.append('final_drawing_tower_floors_files_id', fileId);
-    formData.append('myfile', v);
-
-    await uploadFloorFileVersion(formData);
-    await getFDFolderFileVersion({
-      project_id,
-      final_drawing_tower_floors_files_id: fileId,
-    });
-    loadData();
-  };
-
-  const handleNewVersionUpload = async (_id, file_id) => {
+  const handleNewVersionUpload = (fileId, id, data) => {
     openFilePicker({
       type: 'file',
-      onChoose: v => onChooseFile(v, file_id, _id),
+      onChoose: async v => {
+        const formData = new FormData();
+
+        formData.append('project_id', project_id);
+        formData.append('folder_id', folderId);
+        formData.append('final_drawing_tower_floors_files_id', id);
+        formData.append('myfile', v);
+
+        await uploadFloorFileVersion(formData);
+        await getFDFolderFileVersion({
+          project_id,
+          final_drawing_tower_floors_files_id: id,
+        });
+        loadData();
+      },
     });
   };
 
@@ -519,7 +528,7 @@ function FDFloorFolder(props) {
   const renameFileHandler = async (name, id, data) => {
     await renameFDFloorFolderFile({
       file_title: name,
-      final_drawing_tower_floors_files_id: data.files_id,
+      final_drawing_tower_floors_files_id: id,
       project_id,
     });
     loadData();
@@ -568,7 +577,8 @@ function FDFloorFolder(props) {
         visible={DialogType === 'renameFile'}
         toggleDialogue={toggleDialog}
         dialogueContent={modalContent}
-        renameFolderHandler={renameFileHandler}
+        renameFileHandler={renameFileHandler}
+        renameFolderHandler={renameFolderHandler}
       />
       <DeleteDialog
         visible={DialogType === 'deleteFileFolder'}
@@ -624,6 +634,7 @@ function FDFloorFolder(props) {
                   item={item}
                   index={index}
                   toggleMenu={toggleMenu}
+                  toggleDialog={toggleDialog}
                   setModalContentType={setModalContentType}
                   setModalContent={setModalContent}
                   handleFileUpload={handleFileUpload}
@@ -778,7 +789,7 @@ const styles = StyleSheet.create({
   },
 
   editIconContainer: {
-    marginRight: 15,
+    marginRight: 5,
   },
   headerSubContainers: {
     flexDirection: 'row',

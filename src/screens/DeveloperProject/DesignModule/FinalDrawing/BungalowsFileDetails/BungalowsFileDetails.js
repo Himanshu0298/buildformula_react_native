@@ -41,8 +41,11 @@ import {getFileExtension} from 'utils/download';
 import {getShadow} from 'utils';
 import {RenderTowerBox} from 'components/Molecules/TowerSelector';
 import {useImagePicker} from 'hooks';
+import {getFileName} from 'utils/constant';
 import MenuDialog from '../Components/MenuDialog';
 import VersionDialog from '../Components/VersionDialog';
+import RenameDialogue from '../Components/RenameDialog';
+import DeleteDialog from '../Components/DeleteDialog';
 
 const SNAP_POINTS = [0, '70%'];
 
@@ -64,17 +67,8 @@ const ACTIVITY_ICONS = {
   ),
 };
 
-function getFileName(string) {
-  if (string.includes('/')) {
-    const splits = string.split('/');
-    return splits[splits.length - 1];
-  }
-
-  return string;
-}
-
 function RenderFile(props) {
-  const {item} = props;
+  const {item, toggleMenu, index, setModalContentType, setModalContent} = props;
 
   const {title, created} = item;
 
@@ -115,18 +109,14 @@ function RenderFile(props) {
           </Text>
         </View>
         <View>
-          <Menu
-            visible={versionMenu}
-            onDismiss={toggleVersionMenu}
-            anchor={
-              <IconButton icon="dots-vertical" onPress={toggleVersionMenu} />
-            }>
-            <Menu.Item
-              icon="download"
-              onPress={() => onPressFile(item)}
-              title="Download"
-            />
-          </Menu>
+          <IconButton
+            icon="dots-vertical"
+            onPress={() => {
+              toggleMenu(index);
+              setModalContentType('menu');
+              setModalContent(item);
+            }}
+          />
         </View>
       </View>
     </View>
@@ -152,24 +142,22 @@ function RenderActivity({item}) {
   );
 }
 function ActivityModal(props) {
-  const activities = useMemo(() => [], []);
+  const {towerFileActivities = {}} = useSelector(s => s.designModule);
 
   const processedActivities = useMemo(() => {
-    const sectionedData = [];
-    activities?.map(i => {
-      const key = dayjs(i.created).format('YYYY-MM-DD');
+    const data = [];
 
-      sectionedData[key] = sectionedData[key] || {};
-      sectionedData[key].title = key;
-      sectionedData[key].data = sectionedData[key].data || [];
-      sectionedData[key].data.push(i);
+    Object.entries(towerFileActivities)?.map(([key, values]) => {
+      data[key] = data[key] || {};
+      data[key].title = key;
 
-      return i;
+      data[key].data = [data[key].data || [], ...values];
+
+      return key;
     });
 
-    return Object.values(sectionedData);
-  }, [activities]);
-
+    return Object.values(data);
+  }, [towerFileActivities]);
   const renderSeparator = () => <Divider />;
   const renderEmpty = () => (
     <View style={styles.emptyContainer}>
@@ -250,7 +238,9 @@ function RenderMenuModal(props) {
                 color="grey"
               />
             </View>
-            {modelContentType === 'menu' ? <MenuDialog {...props} /> : null}
+            {modelContentType === 'menu' ? (
+              <MenuDialog {...props} showShare={false} />
+            ) : null}
             {modelContentType === 'parentActivity' ? (
               <ActivityModal {...props} />
             ) : null}
@@ -281,7 +271,16 @@ function BungalowsFileDetails(props) {
   const snackbar = useSnackbar();
   const {openFilePicker} = useImagePicker();
 
-  const {uploadFDBungalowsFile, getFDBungalows} = useDesignModuleActions();
+  const {
+    uploadFDBungalowsFile,
+    getFDBungalows,
+    renameFDBungalowsFile,
+    deleteFDBungalowsFile,
+    getFDPlotFileVersion,
+    FDBungalowsFileActivityLog,
+    uploadFDPlotBungalowFileVersion,
+    deleteFDPlotBungalowFileVersion,
+  } = useDesignModuleActions();
 
   const [menuId, setMenuId] = React.useState();
   const [modelContentType, setModalContentType] = React.useState('menu');
@@ -291,7 +290,9 @@ function BungalowsFileDetails(props) {
   const toggleMenu = folderIndex => setMenuId(folderIndex);
   const toggleDialog = v => setDialogType(v);
 
-  const {fdBungalowsList, loading} = useSelector(s => s.designModule);
+  const {fdBungalowsList, loading, versionData} = useSelector(
+    s => s.designModule,
+  );
 
   const {selectedProject} = useSelector(s => s.project);
   const project_id = selectedProject.id;
@@ -310,6 +311,43 @@ function BungalowsFileDetails(props) {
     });
   };
 
+  const renameFileHandler = async (name, id) => {
+    await renameFDBungalowsFile({
+      file_name: name,
+      final_drawing_bunglow_plot_files_id: id,
+      project_id,
+    });
+    loadFiles();
+    toggleDialog();
+  };
+  const deleteFileHandler = async id => {
+    await deleteFDBungalowsFile({
+      final_drawing_bunglow_plot_files_id: id,
+      project_id,
+    });
+    loadFiles();
+    toggleDialog();
+    snackbar.showMessage({
+      message: 'File Deleted!',
+      variant: 'success',
+    });
+  };
+
+  const versionDataHandler = async (id, files_id) => {
+    setModalContentType('version');
+    getFDPlotFileVersion({
+      final_drawing_bunglow_plot_files_id: id,
+      project_id,
+    });
+  };
+
+  const activityDataHandler = id => {
+    setModalContentType('activity');
+    FDBungalowsFileActivityLog({
+      project_id,
+      final_drawing_bunglow_plot_files_id: id,
+    });
+  };
   const onChoose = v => {
     handleFileUpload(v);
   };
@@ -335,8 +373,69 @@ function BungalowsFileDetails(props) {
     loadFiles();
   };
 
+  const handleNewVersionUpload = (files_id, id, data) => {
+    openFilePicker({
+      type: 'file',
+      onChoose: async v => {
+        const formData = new FormData();
+
+        formData.append('final_drawing_bunglow_plot_files_id', id);
+        formData.append('myfile', v);
+        formData.append('folder_id', folderId);
+        formData.append('project_id', project_id);
+
+        await uploadFDPlotBungalowFileVersion(formData);
+        getFDPlotFileVersion({
+          final_drawing_bunglow_plot_files_id: id,
+          project_id,
+        });
+      },
+    });
+  };
+
+  const handleDeleteVersion = async (id, version) => {
+    setModalContentType('version');
+    deleteFDPlotBungalowFileVersion({
+      project_id,
+      final_drawing_bunglow_plot_files_id: id,
+    });
+    getFDPlotFileVersion({
+      final_drawing_bunglow_plot_files_id:
+        version.final_drawing_bunglow_plot_files_id,
+      project_id,
+    });
+  };
+
   return (
     <>
+      <RenderMenuModal
+        {...props}
+        {...{
+          menuId,
+          modelContentType,
+          modalContent,
+          versionData,
+          toggleMenu,
+          setModalContentType,
+          toggleDialog,
+          versionDataHandler,
+          activityDataHandler,
+          handleNewVersionUpload,
+          handleDeleteVersion,
+        }}
+      />
+      <RenameDialogue
+        visible={DialogType === 'renameFile'}
+        toggleDialogue={toggleDialog}
+        dialogueContent={modalContent}
+        renameFolderHandler={renameFileHandler}
+      />
+      <DeleteDialog
+        visible={DialogType === 'deleteFileFolder'}
+        toggleDialogue={toggleDialog}
+        dialogueContent={modalContent}
+        deleteFileHandler={deleteFileHandler}
+      />
       <View style={styles.container}>
         <Spinner visible={loading} textContent="" />
 
@@ -381,6 +480,7 @@ function BungalowsFileDetails(props) {
                   menuId,
                   toggleMenu,
                   setModalContentType,
+                  setModalContent,
                 }}
               />
             )}

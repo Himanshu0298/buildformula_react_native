@@ -344,13 +344,13 @@ function WDTowerList(props) {
     });
   };
 
-  const handleNewVersionUpload = file_id => {
+  const handleNewVersionUpload = (files_id, id, data) => {
     openFilePicker({
       type: 'file',
       onChoose: async v => {
         const formData = new FormData();
 
-        formData.append('working_drawing_tower_files_id', file_id);
+        formData.append('working_drawing_tower_files_id', id);
         formData.append('myfile', v);
         formData.append('folder_id', folderId);
         formData.append('project_id', project_id);
@@ -358,7 +358,7 @@ function WDTowerList(props) {
         await uploadWDTFileVersion(formData);
         getTowerFolderFileVersion({
           project_id,
-          working_drawing_tower_files_id: file_id,
+          working_drawing_tower_files_id: id,
         });
       },
     });

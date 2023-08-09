@@ -72,73 +72,6 @@ const ACTIVITY_ICONS = {
   ),
 };
 
-function RenameFolderDialogue(props) {
-  const {visible, toggleDialogue, dialogueContent, renameFolderHandler} = props;
-  const {folder_title} = dialogueContent || {};
-
-  const renaNameRef = React.useRef();
-
-  const onRename = values => {
-    renameFolderHandler(values.name, dialogueContent?.id, dialogueContent);
-  };
-
-  return (
-    <Portal>
-      <Dialog visible={visible} onDismiss={toggleDialogue} style={{top: -100}}>
-        <View style={styles.dialogTitleContainer}>
-          <Text style={{color: '#000'}}>{folder_title}</Text>
-        </View>
-        <Formik
-          validateOnBlur={false}
-          validateOnChange={false}
-          initialValues={{
-            name: folder_title,
-          }}
-          onSubmit={values => {
-            onRename(values);
-          }}>
-          {({values, errors, handleChange, handleBlur, handleSubmit}) => {
-            return (
-              <View style={styles.dialogContentContainer}>
-                <RenderInput
-                  name="name"
-                  label="file name"
-                  containerStyles={styles.input}
-                  value={values.name}
-                  onChangeText={handleChange('name')}
-                  onBlur={handleBlur('name')}
-                  ref={renaNameRef}
-                  onSubmitEditing={handleSubmit}
-                  error={errors.name}
-                />
-
-                <View style={styles.dialogActionContainer}>
-                  <Button
-                    style={{width: '40%', marginHorizontal: 5}}
-                    contentStyle={{padding: 2}}
-                    theme={{roundness: 15}}
-                    mode="contained"
-                    onPress={toggleDialogue}>
-                    <Text theme={secondaryTheme}>cancel</Text>
-                  </Button>
-                  <Button
-                    style={{width: '40%', marginHorizontal: 5}}
-                    mode="contained"
-                    contentStyle={{padding: 1}}
-                    theme={{roundness: 15}}
-                    onPress={handleSubmit}>
-                    <Text theme={secondaryTheme}>save</Text>
-                  </Button>
-                </View>
-              </View>
-            );
-          }}
-        </Formik>
-      </Dialog>
-    </Portal>
-  );
-}
-
 function RenderActivity({item}) {
   const {user_full_name, log_type, created, log_text} = item;
 
@@ -206,7 +139,12 @@ function RenderFile(props) {
             onPress={() => {
               toggleMenu(index);
               setModalContentType('menu');
-              setModalContent(item);
+              setModalContent({
+                id: item.files_id,
+                title,
+                type: 'file',
+                folderId: item.id,
+              });
             }}
           />
         </View>
@@ -337,6 +275,7 @@ function RenderRow(props) {
     toggleMenu,
     setModalContentType,
     setModalContent,
+    toggleDialog,
     handleFileUpload,
     deleteFolderHandler,
   } = props;
@@ -349,17 +288,22 @@ function RenderRow(props) {
           <Text style={{fontSize: 18, margin: 10}}>{folder_title} </Text>
         </View>
         <View style={styles.headerSubContainers}>
-          {/* <View style={styles.editIconContainer}>
+          <View style={styles.editIconContainer}>
             <OpacityButton
               color="#4872f4"
               opacity={0.18}
               style={styles.editIcon}
               onPress={() => {
                 toggleDialog('renameFile');
+                setModalContent({
+                  id: item.id,
+                  title: folder_title,
+                  type: 'folder',
+                });
               }}>
               <MaterialIcons name="edit" color="#4872f4" size={13} />
             </OpacityButton>
-          </View> */}
+          </View>
 
           <View>
             <OpacityButton
@@ -443,10 +387,7 @@ function WDFloorFolder(props) {
   const toggleShareDialog = () => setShareDialog(v => !v);
 
   const loadData = () => {
-    getWDFloorFolder({
-      working_drawing_floor_rows_id: floorId,
-      project_id,
-    });
+    getWDFloorFolder({working_drawing_floor_rows_id: floorId, project_id});
   };
 
   React.useEffect(() => {
@@ -458,25 +399,25 @@ function WDFloorFolder(props) {
     setModalContentType('version');
     getFloorFolderFileVersion({
       project_id,
-      working_drawing_tower_floors_files_id: files_id,
+      working_drawing_tower_floors_files_id: id,
     });
   };
 
-  const handleNewVersionUpload = (file_id, id) => {
+  const handleNewVersionUpload = (file_id, id, data) => {
     openFilePicker({
       type: 'file',
       onChoose: async v => {
         const formData = new FormData();
 
-        formData.append('working_drawing_tower_floors_files_id', file_id);
+        formData.append('working_drawing_tower_floors_files_id', id);
         formData.append('myfile', v);
-        formData.append('folder_id', id);
+        formData.append('folder_id', data.folderId);
         formData.append('project_id', project_id);
 
         await uploadWDFloorFolderFileVersion(formData);
         getFloorFolderFileVersion({
           project_id,
-          working_drawing_tower_floors_files_id: file_id,
+          working_drawing_tower_floors_files_id: id,
         });
         loadData();
       },
@@ -582,7 +523,7 @@ function WDFloorFolder(props) {
   const renameFileHandler = async (name, id, data) => {
     await renameWDFloorFolderFile({
       file_title: name,
-      working_drawing_tower_floors_files_id: data.files_id,
+      working_drawing_tower_floors_files_id: id,
       project_id,
     });
     loadData();
@@ -634,7 +575,8 @@ function WDFloorFolder(props) {
         visible={DialogType === 'renameFile'}
         toggleDialogue={toggleDialog}
         dialogueContent={modalContent}
-        renameFolderHandler={renameFileHandler}
+        renameFileHandler={renameFileHandler}
+        renameFolderHandler={renameFolderHandler}
       />
 
       <DeleteDialog
@@ -848,7 +790,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   editIconContainer: {
-    marginRight: 15,
+    marginRight: 5,
   },
   headerSubContainers: {
     flexDirection: 'row',

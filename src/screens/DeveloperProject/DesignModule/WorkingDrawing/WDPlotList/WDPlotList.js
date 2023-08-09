@@ -277,7 +277,7 @@ function WDPlotList(props) {
     uploadWDPlotsFile,
     getBungalowPlotFileVersion,
     uploadWDBungalowPlotFileVersion,
-    renameFDBungalowsFile,
+    renameWDCommonFile,
     deleteWDPlotBungalowFile,
     getWDCommonFileActivity,
     deleteWDPlotBungalowFileVersion,
@@ -307,9 +307,9 @@ function WDPlotList(props) {
   const toggleShareDialog = () => setShareDialog(v => !v);
 
   const renameFileHandler = async (name, id) => {
-    await renameFDBungalowsFile({
+    await renameWDCommonFile({
       file_name: name,
-      final_drawing_bunglow_plot_files_id: id,
+      working_drawing_bunglow_plot_files_id: id,
       project_id,
     });
     loadFiles();
@@ -370,13 +370,13 @@ function WDPlotList(props) {
     loadFiles();
   };
 
-  const handleNewVersionUpload = (id, file_id) => {
+  const handleNewVersionUpload = (files_id, id, data) => {
     openFilePicker({
       type: 'file',
       onChoose: async v => {
         const formData = new FormData();
 
-        formData.append('working_drawing_bunglow_plot_files_id', file_id);
+        formData.append('working_drawing_bunglow_plot_files_id', id);
         formData.append('myfile', v);
         formData.append('folder_id', folderId);
         formData.append('project_id', project_id);
@@ -384,13 +384,13 @@ function WDPlotList(props) {
         await uploadWDBungalowPlotFileVersion(formData);
         getBungalowPlotFileVersion({
           project_id,
-          working_drawing_bunglow_plot_files: file_id,
+          working_drawing_bunglow_plot_files: id,
         });
       },
     });
   };
 
-  const handleDeleteVersion = async (id, file_id) => {
+  const handleDeleteVersion = async (id, file_id, data) => {
     setModalContentType('version');
     deleteWDPlotBungalowFileVersion({
       project_id,
@@ -398,7 +398,8 @@ function WDPlotList(props) {
     });
     getBungalowPlotFileVersion({
       project_id,
-      working_drawing_bunglow_plot_files: file_id,
+      working_drawing_bunglow_plot_files:
+        data?.working_drawing_bunglow_plot_files_id,
     });
   };
 

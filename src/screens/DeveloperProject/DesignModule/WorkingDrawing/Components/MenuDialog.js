@@ -150,16 +150,14 @@ function MenuDialog(props) {
                 </View>
               </View>
             </TouchableOpacity>
-            {file_type === 'image/jpeg' ? (
-              showVersion ? (
-                <TouchableOpacity
-                  onPress={() => versionDataHandler(id, files_id)}>
-                  <View style={styles.viewDirection}>
-                    <IconButton icon="file-multiple" />
-                    <Text style={styles.ModalText}>Manage version</Text>
-                  </View>
-                </TouchableOpacity>
-              ) : null
+            {showVersion ? (
+              <TouchableOpacity
+                onPress={() => versionDataHandler(id, files_id)}>
+                <View style={styles.viewDirection}>
+                  <IconButton icon="file-multiple" />
+                  <Text style={styles.ModalText}>Manage version</Text>
+                </View>
+              </TouchableOpacity>
             ) : null}
             {showRename ? (
               modulePermissions?.editor || modulePermissions?.admin ? (

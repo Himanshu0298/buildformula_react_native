@@ -39,6 +39,7 @@ import {getFileExtension} from 'utils/download';
 import {getShadow} from 'utils';
 import {theme} from 'styles/theme';
 import {useImagePicker} from 'hooks';
+import {getFileName} from 'utils/constant';
 import SelectTower from '../Components/SelectTower';
 import MenuDialog from '../Components/MenuDialog';
 import VersionDialog from '../Components/VersionDialog';
@@ -65,33 +66,23 @@ const ACTIVITY_ICONS = {
   ),
 };
 
-function getFileName(string) {
-  if (string.includes('/')) {
-    const splits = string.split('/');
-    return splits[splits.length - 1];
-  }
-
-  return string;
-}
-
 function ActivityModal(props) {
-  const activities = useMemo(() => [], []);
+  const {towerFileActivities = {}} = useSelector(s => s.designModule);
 
   const processedActivities = useMemo(() => {
-    const sectionedData = [];
-    activities?.map(i => {
-      const key = dayjs(i.created).format('YYYY-MM-DD');
+    const data = [];
 
-      sectionedData[key] = sectionedData[key] || {};
-      sectionedData[key].title = key;
-      sectionedData[key].data = sectionedData[key].data || [];
-      sectionedData[key].data.push(i);
+    Object.entries(towerFileActivities)?.map(([key, values]) => {
+      data[key] = data[key] || {};
+      data[key].title = key;
 
-      return i;
+      data[key].data = [data[key].data || [], ...values];
+
+      return key;
     });
 
-    return Object.values(sectionedData);
-  }, [activities]);
+    return Object.values(data);
+  }, [towerFileActivities]);
 
   const renderSeparator = () => <Divider />;
   const renderEmpty = () => (
@@ -350,6 +341,7 @@ function BungalowsList(props) {
       final_drawing_bunglow_plot_files_id: id,
     });
   };
+
   const onChoose = v => {
     handleFileUpload(v);
   };
@@ -375,34 +367,35 @@ function BungalowsList(props) {
     loadFiles();
   };
 
-  const handleNewVersionUpload = file_id => {
+  const handleNewVersionUpload = (files_id, id, data) => {
     openFilePicker({
       type: 'file',
       onChoose: async v => {
         const formData = new FormData();
 
-        formData.append('final_drawing_bunglow_plot_files_id', file_id);
+        formData.append('final_drawing_bunglow_plot_files_id', id);
         formData.append('myfile', v);
         formData.append('folder_id', folderId);
         formData.append('project_id', project_id);
 
         await uploadFDPlotBungalowFileVersion(formData);
         getFDPlotFileVersion({
-          final_drawing_bunglow_plot_files_id: file_id,
+          final_drawing_bunglow_plot_files_id: id,
           project_id,
         });
       },
     });
   };
 
-  const handleDeleteVersion = async (id, file_id) => {
+  const handleDeleteVersion = async (id, version) => {
     setModalContentType('version');
     deleteFDPlotBungalowFileVersion({
       project_id,
       final_drawing_bunglow_plot_files_id: id,
     });
     getFDPlotFileVersion({
-      final_drawing_bunglow_plot_files_id: file_id,
+      final_drawing_bunglow_plot_files_id:
+        version.final_drawing_bunglow_plot_files_id,
       project_id,
     });
   };

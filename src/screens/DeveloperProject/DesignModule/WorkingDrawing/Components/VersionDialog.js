@@ -43,7 +43,7 @@ function VersionFile(props) {
     const name = getFileName(file.title);
     download.link({
       name,
-      data: {file_url: file.url, project_id: file.project_id},
+      data: {file_url: file.file_url, project_id: file.project_id},
       showAction: false,
       onFinish: ({dir}) => {
         FileViewer.open(`file://${dir}`);
@@ -77,7 +77,7 @@ function VersionFile(props) {
               {!countVersion ? 'Current Version' : `Version ${countVersion}`}
             </Text>
             <Text numberOfLines={1} style={styles.text}>
-              By {version?.first_name} {version?.last_name}
+              By {version?.user_id}
             </Text>
           </View>
         </View>

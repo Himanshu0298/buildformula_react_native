@@ -35,6 +35,8 @@ function MenuDialog(props) {
     modalContent;
   const modulePermissions = getPermissions('Files');
 
+  console.log('===========> modalContent', modalContent);
+
   const download = useDownload();
 
   const fileType = row_type ? 'folder' : 'file';
@@ -67,14 +69,15 @@ function MenuDialog(props) {
           project_id: modalContent.project_id,
         },
         onFinish: ({dir}) => {
-          setDownloaded(dir);
+          console.log('onFinish===========>dir ', dir);
+
+          FileViewer.open(`file://${dir}`);
         },
       });
     } catch (error) {
       console.log('----->erorr', error);
     }
   };
-
   const handleShare = async () => {
     try {
       toggleSharing();
@@ -107,7 +110,7 @@ function MenuDialog(props) {
   const openFile = filePath => {
     filePath = filePath || downloaded;
     console.log('-----> open path', filePath);
-    FileViewer.open(filePath);
+    FileViewer.open(`file://${filePath}`);
   };
 
   return (
@@ -146,29 +149,27 @@ function MenuDialog(props) {
             <IconButton icon="download" />
             <View style={styles.rowBetween}>
               <Text style={styles.ModalText}>Download</Text>
-              {downloading ? (
+              {/* {downloading ? (
                 <ActivityIndicator color={theme.colors.primary} />
               ) : downloaded ? (
                 <Button compact onPress={() => openFile()}>
                   Open
                 </Button>
-              ) : null}
+              ) : null} */}
             </View>
           </View>
         </TouchableOpacity>
 
         {!fixedFolder ? (
           <>
-            {file_type === 'image/jpeg' ? (
-              showVersion ? (
-                <TouchableOpacity
-                  onPress={() => versionDataHandler(id, files_id)}>
-                  <View style={styles.viewDirection}>
-                    <IconButton icon="file-multiple" />
-                    <Text style={styles.ModalText}>Manage version</Text>
-                  </View>
-                </TouchableOpacity>
-              ) : null
+            {showVersion ? (
+              <TouchableOpacity
+                onPress={() => versionDataHandler(id, files_id)}>
+                <View style={styles.viewDirection}>
+                  <IconButton icon="file-multiple" />
+                  <Text style={styles.ModalText}>Manage version</Text>
+                </View>
+              </TouchableOpacity>
             ) : null}
             {modulePermissions?.editor || modulePermissions?.admin ? (
               showRename ? (

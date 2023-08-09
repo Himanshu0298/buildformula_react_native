@@ -344,13 +344,13 @@ function FDTowerList(props) {
     });
   };
 
-  const handleNewVersionUpload = file_id => {
+  const handleNewVersionUpload = (file_id, id, data) => {
     openFilePicker({
       type: 'file',
       onChoose: async v => {
         const formData = new FormData();
 
-        formData.append('final_drawing_tower_files_id', file_id);
+        formData.append('final_drawing_tower_files_id', id);
         formData.append('myfile', v);
         formData.append('folder_id', folderId);
         formData.append('project_id', project_id);
@@ -358,7 +358,7 @@ function FDTowerList(props) {
         await uploadTowerFileVersion(formData);
         getFDFloorFolderFileVersion({
           project_id,
-          final_drawing_tower_files_id: file_id,
+          final_drawing_tower_files_id: id,
         });
       },
     });

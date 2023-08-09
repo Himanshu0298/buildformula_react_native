@@ -11,13 +11,23 @@ const schema = Yup.object().shape({
 });
 
 function RenameDialogue(props) {
-  const {visible, toggleDialogue, dialogueContent, renameFolderHandler} = props;
-  const {file_name, folder_name, title} = dialogueContent || {};
+  const {
+    visible,
+    toggleDialogue,
+    dialogueContent,
+    renameFolderHandler,
+    renameFileHandler,
+  } = props;
+  const {file_name, folder_name, title, type} = dialogueContent || {};
 
   const renaNameRef = React.useRef();
 
   const onRename = values => {
-    renameFolderHandler(values.name, dialogueContent?.id, dialogueContent);
+    if (type === 'file') {
+      renameFileHandler(values.name, dialogueContent?.id, dialogueContent);
+    } else {
+      renameFolderHandler(values.name, dialogueContent?.id, dialogueContent);
+    }
   };
 
   const initialValues = {

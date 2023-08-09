@@ -35,6 +35,7 @@ import {useSnackbar} from 'components/Atoms/Snackbar';
 import NoResult from 'components/Atoms/NoResult';
 import FileIcon from 'assets/images/file_icon.png';
 import {useDownload} from 'components/Atoms/Download';
+import {getFileName} from 'utils/constant';
 import MenuDialog from './MenuDialog';
 import RenameDialogue from './RenameDialog';
 import DeleteDialog from './DeleteDialog';
@@ -112,15 +113,6 @@ const ACTIVITY_ICONS = {
   ),
 };
 
-function getFileName(string) {
-  if (string.includes('/')) {
-    const splits = string.split('/');
-    return splits[splits.length - 1];
-  }
-
-  return string;
-}
-
 function RenderActivity({item}) {
   const {user_full_name, log_type, created, log_text} = item;
 
@@ -141,23 +133,22 @@ function RenderActivity({item}) {
 }
 
 function ActivityModal(props) {
-  const {activities = []} = useSelector(s => s.designModule);
+  const {towerFileActivities = {}} = useSelector(s => s.designModule);
 
   const processedActivities = useMemo(() => {
-    const sectionedData = [];
-    activities?.map(i => {
-      const key = dayjs(i.created).format('YYYY-MM-DD');
+    const data = [];
 
-      sectionedData[key] = sectionedData[key] || {};
-      sectionedData[key].title = key;
-      sectionedData[key].data = sectionedData[key].data || [];
-      sectionedData[key].data.push(i);
+    Object.entries(towerFileActivities)?.map(([key, values]) => {
+      data[key] = data[key] || {};
+      data[key].title = key;
 
-      return i;
+      data[key].data = [data[key].data || [], ...values];
+
+      return key;
     });
 
-    return Object.values(sectionedData);
-  }, [activities]);
+    return Object.values(data);
+  }, [towerFileActivities]);
 
   const renderSeparator = () => <Divider />;
   const renderEmpty = () => (
@@ -240,13 +231,7 @@ function RenderMenuModal(props) {
               />
             </View>
             {modelContentType === 'menu' ? (
-              <MenuDialog
-                {...props}
-                showActivity={false}
-                showShare={false}
-                showRename={false}
-                showVersion={false}
-              />
+              <MenuDialog {...props} showShare={false} />
             ) : null}
             {modelContentType === 'parentActivity' ? (
               <ActivityModal {...props} />
@@ -269,13 +254,13 @@ function WDTowerFiles(props) {
   const {folderId, tower_id} = route?.params || {};
 
   const {
-    renameFDTowerFile,
+    renameWDTowerFile,
     getTowerFolderFileVersion,
     deleteFDVersion,
     uploadWDTowersFile,
-    deleteFDTowerFile,
+    deleteWDTowerFile,
     WDTowerFileActivityLogs,
-    uploadWDFloorFolderFileVersion,
+    uploadWDTFileVersion,
     getWDTower,
   } = useDesignModuleActions();
   const {openFilePicker} = useImagePicker();
@@ -291,9 +276,11 @@ function WDTowerFiles(props) {
   const snackbar = useSnackbar();
   const download = useDownload();
   const {selectedProject} = useSelector(s => s.project);
-  const {versionData, loading, wdTowerFile} = useSelector(s => s.designModule);
+  const {wdVersion, loading, wdTowerFile} = useSelector(s => s.designModule);
 
   const towerFiles = wdTowerFile?.working_drawing_tower_files || [];
+
+  const versionData = wdVersion?.list || [];
 
   const project_id = selectedProject.id;
 
@@ -315,9 +302,9 @@ function WDTowerFiles(props) {
   const toggleShareDialog = () => setShareDialog(v => !v);
 
   const renameFileHandler = async (name, id) => {
-    await renameFDTowerFile({
+    await renameWDTowerFile({
       file_name: name,
-      final_drawing_tower_files_id: id,
+      working_drawing_tower_file_id: id,
       project_id,
     });
     loadFloors();
@@ -325,7 +312,7 @@ function WDTowerFiles(props) {
   };
 
   const deleteFileHandler = async id => {
-    await deleteFDTowerFile({final_drawing_tower_files_id: id, project_id});
+    await deleteWDTowerFile({working_drawing_tower_file_id: id, project_id});
     loadFloors();
     toggleDialog();
     snackbar.showMessage({
@@ -376,7 +363,7 @@ function WDTowerFiles(props) {
     loadFloors();
   };
 
-  const handleNewVersionUpload = (file_id, id) => {
+  const handleNewVersionUpload = (files_id, id, data) => {
     openFilePicker({
       type: 'file',
       onChoose: async v => {
@@ -387,7 +374,7 @@ function WDTowerFiles(props) {
         formData.append('folder_id', folderId);
         formData.append('project_id', project_id);
 
-        await uploadWDFloorFolderFileVersion(formData);
+        await uploadWDTFileVersion(formData);
         getTowerFolderFileVersion({
           project_id,
           working_drawing_tower_files_id: id,
