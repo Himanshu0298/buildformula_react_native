@@ -547,6 +547,7 @@ const styles = StyleSheet.create({
     right: 25,
     bottom: 30,
     zIndex: 1,
+    backgroundColor: theme.colors.primary,
   },
 
   backdrop: {

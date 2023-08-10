@@ -35,8 +35,6 @@ function MenuDialog(props) {
     modalContent;
   const modulePermissions = getPermissions('Files');
 
-  console.log('===========> modalContent', modalContent);
-
   const download = useDownload();
 
   const fileType = row_type ? 'folder' : 'file';
